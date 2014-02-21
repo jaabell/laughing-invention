@@ -1,0 +1,330 @@
+/* 
+ * Written: Jun Peng (junpeng@stanford.edu)
+ *          Prof. Kinch H. Law  
+ *	    09/2000
+ * Revised: Jun Peng  08/2001
+ *
+ * This is the interface to ORACLE8i by using Pro*C.
+ */
+
+
+#include <stdio.h>
+#include <string.h>
+#include <sqlca.h>
+
+/* include for dynamic SQL */
+#include <oraca.h>
+
+EXEC ORACLE OPTION (ORACA=YES);
+EXEC ORACLE OPTION (RELEASE_CURSOR=YES);
+
+#define NUM_FETCH  3
+
+void sql_error(char *msg)
+{
+  EXEC SQL BEGIN DECLARE SECTION;
+  char err_msg[512];
+  int buf_len, msg_len;
+  EXEC SQL END DECLARE SECTION; 
+
+
+  EXEC SQL WHENEVER SQLERROR CONTINUE;
+  
+  printf("\n%s\n", msg);
+  buf_len = sizeof(err_msg);
+  sqlglm(err_msg, &buf_len, &msg_len);
+  printf("%.*s\n", msg_len, err_msg);
+  
+  EXEC SQL ROLLBACK RELEASE;
+  exit(1);
+}
+
+
+void connectToDB(char *theUser, char *thePass)
+{
+  EXEC SQL BEGIN DECLARE SECTION;
+  char username[30];
+  char password[30];
+  EXEC SQL END DECLARE SECTION; 
+
+  strcpy(username, theUser);
+  strcpy(password, thePass);
+
+  EXEC SQL WHENEVER SQLERROR DO sql_error("ORACLE connection error");
+
+  EXEC SQL CONNECT :username IDENTIFIED BY :password;
+
+  printf("\nConnected to ORACLE! \n");
+}
+
+
+void changeProjTag(int projTag)
+{
+  EXEC SQL UPDATE TAGTAB
+	SET TAGS=:projTag
+	WHERE IDEN = 'projTag';
+}
+
+
+int queryTagOnName(char* projName)
+{
+  int projTag = 0;
+  short projTag_ind;
+
+  char tempName[32];
+  strcpy(tempName, projName);
+ 
+  EXEC SQL SELECT PROJTAG
+	INTO :projTag INDICATOR :projTag_ind
+	FROM PROJTAB
+	WHERE NAME = :tempName;  
+
+  return projTag;
+}
+
+
+int queryProjTag()
+{
+  int projTag;
+  short projTag_ind;
+
+  EXEC SQL SELECT TAGS
+	INTO :projTag INDICATOR :projTag_ind
+	FROM TAGTAB
+	WHERE IDEN = 'projTag';
+
+  return projTag;
+}
+
+
+
+/* create the ID table based on the input tableName 
+*/
+void createIDTable(char *tableName)
+{
+  char dynstmt1[128];
+  char dynst2[128];	
+
+  EXEC SQL WHENEVER SQLERROR DO sql_error("Create ID table error");
+
+  strcpy((char*)dynstmt1, "CREATE TABLE ");
+  strcat(dynstmt1, tableName);
+  strcat(dynstmt1, " (projTag INT, dbTag INT, commitTag INT, IDPos INT, IDvalue INT)" );
+
+  EXEC SQL EXECUTE IMMEDIATE :dynstmt1;
+	
+  strcpy(dynst2, "CREATE INDEX IDIndex ON ");
+  strcat(dynst2, tableName);
+  strcat(dynst2, " (projTag, dbTag, commitTag)");
+
+  EXEC SQL EXECUTE IMMEDIATE :dynst2;
+}
+
+/* create the Vector table based on the input tableName
+*/
+void createVectorTable(char *tableName)
+{
+  char dynstmt1[128];
+  char dynst2[128];	
+
+  EXEC SQL WHENEVER SQLERROR DO sql_error("Create VECTOR table error");
+
+  strcpy((char*)dynstmt1, "CREATE TABLE ");
+  strcat(dynstmt1, tableName);
+  strcat(dynstmt1, " (projTag INT, dbTag INT, commitTag INT, IDPos INT, VectorEntry FLOAT)" );
+
+  EXEC SQL EXECUTE IMMEDIATE :dynstmt1;
+	
+  strcpy(dynst2, "CREATE INDEX VectorIndex ON ");
+  strcat(dynst2, tableName);
+  strcat(dynst2, " (projTag, dbTag, commitTag)");
+
+  EXEC SQL EXECUTE IMMEDIATE :dynst2;
+}
+
+/* no longer in use
+*/
+void createMatrixTable(char *tableName)
+{
+  EXEC SQL WHENEVER SQLERROR DO sql_error("Create MATRIX table error");
+
+  EXEC SQL CREATE TABLE MATRIX
+	(projTag INT, dbTag INT, commitTag INT,
+	MatRow INT, MatCol INT, MatrixEntry FLOAT );
+
+  EXEC SQL CREATE INDEX MatrixIndex ON MATRIX(dbTag, commitTag);
+}
+
+
+void cleanTables(char *idTable, char* vecTable)
+{
+  EXEC SQL DELETE FROM ID;
+  EXEC SQL DELETE FROM VECTOR;
+  EXEC SQL DELETE FROM MATRIX;
+}
+
+void commitDatabase()
+{
+  EXEC SQL COMMIT RELEASE;
+  printf("\nGood bye! -- ORACLE\n");
+}
+
+
+void insertMatrixTable(int matrixSize, int *tempProjTag, int *tempDataTag, int
+	*tempCommitTag, int *row, int *col, double *tempMatrix)
+{
+  EXEC SQL WHENEVER SQLERROR DO sql_error("MATRIX table insertion error");
+
+  EXEC SQL FOR :matrixSize
+	INSERT INTO MATRIX(projTag, dbTag, commitTag, MatRow, MatCol, MatrixEntry)
+	VALUES(:tempProjTag, :tempDataTag, :tempCommitTag, :row, :col, :tempMatrix);	
+
+notfound:;
+
+}
+
+void queryMatrixTable(int rowSize, int colSize, int projTag, int dataTag, 
+		      int commitTag, double *tempMatrix)
+{
+  int i, j;
+  double MatBuf;
+  short MatBuf_ind;
+
+  for (i = 0; i < rowSize; i++) {
+    for (j = 0; j < colSize; j++) {
+
+    EXEC SQL WHENEVER NOT FOUND GOTO notfound;
+
+    EXEC SQL SELECT MatrixEntry
+	INTO :MatBuf INDICATOR :MatBuf_ind
+	FROM MATRIX
+	WHERE projTag=:projTag AND dbTag=:dataTag AND commitTag=:commitTag AND 
+		MatRow=:i AND MatCol=:j ;
+	
+    tempMatrix[i*colSize + j] = MatBuf;
+    }
+  }
+  goto done;
+ 
+notfound:
+  printf("\nThe queried ID entry cannot be found.\n");
+
+done:;
+}
+
+
+void insertVectorTable(int vectSize, int *tempProjTag, int *tempDataTag,
+		int *tempCommitTag, int *tempPos, double *tempVect)
+{
+  EXEC SQL WHENEVER SQLERROR DO sql_error("VECTOR table insertion error");
+
+  EXEC SQL FOR :vectSize
+	INSERT INTO VECTOR(projTag, dbTag, commitTag, IDPos, VectorEntry)
+	VALUES(:tempProjTag, :tempDataTag, :tempCommitTag, :tempPos, :tempVect);	
+
+notfound:;
+}
+
+	
+void queryVectorTable(int vectSize, int projTag, int dataTag, int commitTag, double *tempVect)
+{
+  int i;
+  double vectBuf;
+  short vectBuf_ind;
+
+  for (i = 0; i < vectSize; i++) {
+
+    EXEC SQL WHENEVER NOT FOUND GOTO notfound;
+
+    EXEC SQL SELECT VectorEntry
+	INTO :vectBuf INDICATOR :vectBuf_ind
+	FROM VECTOR
+	WHERE projTag=:projTag AND dbTag=:dataTag AND commitTag=:commitTag AND IDPos=:i;
+	
+    tempVect[i] = vectBuf;
+  }
+  goto done;
+ 
+notfound:
+  printf("\nThe queried ID entry cannot be found.\n");
+
+done:;
+}
+
+
+void insertIDTable(int idSize, int *tempProjTag, int *tempDataTag, 
+		int *tempCommitTag,  int *tempPos, int *tempID)
+{
+	
+  EXEC SQL WHENEVER SQLERROR DO sql_error("ID table insertion error");
+
+  EXEC SQL FOR :idSize
+	INSERT INTO ID(projTag, dbTag, commitTag, IDPos, IDvalue)
+	VALUES(:tempProjTag, :tempDataTag, :tempCommitTag, :tempPos, :tempID);	
+
+notfound:;
+}
+
+
+void queryIDTable(int idSize, int projTag, int dataTag, int commitTag, int *tempID)
+{
+  int idBuf, i;
+  short idBuf_ind;
+
+  for (i = 0; i < idSize; i++) {
+
+    EXEC SQL WHENEVER NOT FOUND GOTO notfound;
+
+    EXEC SQL SELECT IDvalue
+	INTO :idBuf INDICATOR :idBuf_ind
+	FROM ID
+	WHERE projTag=:projTag AND dbTag=:dataTag AND commitTag=:commitTag AND IDPos=:i;
+	
+    tempID[i] = idBuf;
+  }
+  goto done;
+ 
+notfound:
+  printf("\nThe queried ID entry cannot be found.\n");
+
+done:;
+}
+
+
+/*
+void queryIDTable(int idSize, int dataTag, int commitTag, int *tempID)
+{
+  int IDBUF[NUM_FETCH];
+  int pt = 0;
+  int i;
+
+  EXEC SQL DECLARE ID_cursor CURSOR FOR
+	SELECT IDvalue
+	FROM ID
+	WHERE dbTag=:dataTag AND commitTag=:commitTag
+	ORDER BY IDPos ;
+
+  EXEC SQL OPEN ID_cursor;
+	
+  while (1) {
+    EXEC SQL WHENEVER NOT FOUND GOTO notfound;
+
+    EXEC SQL FETCH ID_cursor
+	INTO :IDBUF;  
+    
+    for (i = 0; i < NUM_FETCH; i++) {
+	tempID[pt * NUM_FETCH + i] = IDBUF[i];
+    }
+
+    pt++;	
+  }
+  EXEC SQL CLOSE ID_cursor;
+
+  goto done;
+ 
+notfound:
+  printf("\nThe queried ID entry cannot be found.\n");
+
+done: ;
+}
+*/

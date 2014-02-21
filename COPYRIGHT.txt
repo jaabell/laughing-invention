@@ -1,0 +1,56 @@
+License below will become active in the future, currently, pre-release license
+is used. Pre-release license is transmitted by email to each user.
+
+Copyright is held by Boris Jeremic
+
+============================================
+Future Open Source License for ESSI system and ESSI components that we develop:
+
+Copyright is held by Boris Jeremic
+
+under
+
+Attribution-NonCommercial-ShareAlike 3.0 Unported
+(CC BY-NC-SA 3.0) license:
+
+  You are free:
+
+       to Share -- to copy, distribute and transmit the work
+
+       to Remix -- to adapt the work
+
+  Under the following conditions:
+
+      Attribution  --  You  must  attribute  parts or all (whatever used) of
+      this work to Boris Jeremic (with link to his web site).
+      
+      Noncommercial -- You may not use this work for commercial purposes.
+
+      Share  Alike  --  If you alter, transform, or build upon this work, you
+      may distribute the resulting work only under the same or similar license
+      to this one, which must have the above Attribution clause, and you must
+      inform Boris Jeremic of any such alteration, transformations or additions.
+
+With the understanding that:
+
+    Waiver  --  Any  of  the  above  conditions  can be waived if you get a
+    written permission from the copyright holder (Boris Jeremic).
+    
+    Public  Domain  --  Where  the  work or any of its elements is in the public
+    domain under applicable law, that status is in no way affected by the
+    license.
+
+    Other Rights -- In no way are any of the following rights affected by the
+    license:
+          Your  fair  dealing  or  fair  use  rights, or other applicable
+          copyright exceptions and limitations;
+          The author's moral rights;
+          Rights other persons may have either in the work itself or in how the
+          work is used, such as publicity or privacy rights.
+
+       Notice    --  For  any  reuse  or  distribution, you must make clear  to
+       others the license terms of this work. The best way to do this is with a
+       copy of this license and a link to original work at the web site of Boris
+       Jeremic. You musts also inform Boris Jeremic of any reuse of
+       distribution.
+

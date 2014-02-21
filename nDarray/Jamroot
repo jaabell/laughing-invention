@@ -1,0 +1,26 @@
+exe math_tst : math_tst.cpp nDarray ; 
+#exe math_tst : math_tst.cpp nDarray/<link>shared ; 
+
+lib nDarray  : 
+      basics.cpp 
+      BJmatrix.cpp 
+      BJtensor.cpp 
+      BJvector.cpp 
+      nDarray.cpp 
+      straint.cpp 
+      stresst.cpp :
+      <link>static ; 
+
+#lib nDarray  : 
+#      basics.cpp 
+#      BJmatrix.cpp 
+#      BJtensor.cpp 
+#      BJvector.cpp 
+#      nDarray.cpp 
+#      straint.cpp 
+#      stresst.cpp : 
+#      <link>shared 
+#    ; 
+#
+#
+																																																																																																	  

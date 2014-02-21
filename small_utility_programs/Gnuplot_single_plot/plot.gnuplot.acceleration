@@ -1,0 +1,36 @@
+# Nima Tafazzoli (October 2010)
+###############################
+set style line 1 lt 10 lc rgb "red" lw 3
+set style line 2 lt 10 lc rgb "orange" lw 3
+set style line 3 lt 10 lc rgb "blue" lw 3
+set style line 4 lt 10 lc rgb "yellow" lw 3
+set style line 4 lt 10 lc rgb "green" lw 3
+set style line 6  lw 3
+set style line 7  lw 3
+set style line 8  lw 3
+set style line 9  lw 3
+set style line 10 lw 3
+set style line 11 lw 3
+set style line 12 lw 3
+
+
+#set autoscale
+set xtic auto
+#set ytics 0.2
+set ytic auto
+#set autoscale xmin
+#set autoscale xfixmin
+set xrange [0:20]
+set xrange [0:20]
+set nokey
+#set title "Acceleration (g) - Time(s)"
+set terminal postscript enhanced color
+set output "| ps2pdf - Plots_Acceleration/nameofoutputfile.pdf" 
+set size 1, 0.6
+set xlabel "Time (s)"
+set ylabel "Acceleration (g)"
+set grid
+plot  "Datafiles_Acceleration/whichoutputfile" using 1:($2/9.81) with lines ls 3
+
+
+

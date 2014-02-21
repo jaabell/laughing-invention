@@ -1,0 +1,12 @@
+setenv BOOST_BUILD_PATH /home/jeremic/oofep/Boost/boost_1_37_0/tools/build/v2
+
+stavi u fajl:
+
+boost-build.jam
+
+
+ovu liniju 
+
+
+boost-build /home/jeremic/oofep/Boost/boost_1_37_0/tools/build/v2/example/kernel ;
+

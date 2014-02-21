@@ -1,0 +1,13 @@
+essi
+feiparser
+fei
+test_feidslcaller
+makedocumentation
+*.output
+*.o
+*.out
+*~
+fei.tags
+*.txt
+*.tex
+generate_command_patterns

@@ -1,0 +1,138 @@
+/* ****************************************************************** **
+**    OpenSees - Open System for Earthquake Engineering Simulation    **
+**          Pacific Earthquake Engineering Research Center            **
+**                                                                    **
+**                                                                    **
+** (C) Copyright 1999, The Regents of the University of California    **
+** All Rights Reserved.                                               **
+**                                                                    **
+** Commercial use of this program without express permission of the   **
+** University of California, Berkeley, is strictly prohibited.  See   **
+** file 'COPYRIGHT'  in main directory for information on usage and   **
+** redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           **
+**                                                                    **
+** Developed by:                                                      **
+**   Frank McKenna (fmckenna@ce.berkeley.edu)                         **
+**   Gregory L. Fenves (fenves@ce.berkeley.edu)                       **
+**   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
+**                                                                    **
+** ****************************************************************** */
+
+// $Revision: 1.1 $
+// $Date: 2003/02/14 22:56:59 $
+// $Source: /usr/local/cvs/OpenSees/SRC/handler/ostream.cpp,v $
+
+#include <ostream.h>
+
+ostream::ostream()
+{
+
+}
+ostream::~ostream()
+{
+
+}
+
+int ostream::setFile(const char* fileName, openMode mode)
+{
+    return 0;
+}
+int ostream::setPrecision(int precision)
+{
+    return 0;
+}
+int ostream::setFloatField(floatField)
+{
+    return 0;
+}
+int ostream::precision(int precision)
+{
+    return 0;
+}
+int ostream::width(int width)
+{
+    return 0;
+}
+
+ostream& ostream::write(const char* s, int n)
+{
+    return *this;
+}
+ostream& ostream::write(const unsigned char* s, int n)
+{
+    return *this;
+}
+ostream& ostream::write(const signed char* s, int n)
+{
+    return *this;
+}
+ostream& ostream::write(const void* s, int n)
+{
+    return *this;
+}
+
+ostream& ostream::operator<<(char c)
+{
+    return *this;
+}
+ostream& ostream::operator<<(unsigned char c)
+{
+    return *this;
+}
+ostream& ostream::operator<<(signed char c)
+{
+    return *this;
+}
+ostream& ostream::operator<<(const char* s)
+{
+    return *this;
+}
+ostream& ostream::operator<<(const unsigned char* s)
+{
+    return *this;
+}
+ostream& ostream::operator<<(const signed char* s)
+{
+    return *this;
+}
+ostream& ostream::operator<<(const void* p)
+{
+    return *this;
+}
+ostream& ostream::operator<<(int n)
+{
+    return *this;
+}
+ostream& ostream::operator<<(unsigned int n)
+{
+    return *this;
+}
+ostream& ostream::operator<<(long n)
+{
+    return *this;
+}
+ostream& ostream::operator<<(unsigned long n)
+{
+    return *this;
+}
+ostream& ostream::operator<<(short n)
+{
+    return *this;
+}
+ostream& ostream::operator<<(unsigned short n)
+{
+    return *this;
+}
+ostream& ostream::operator<<(bool b)
+{
+    return *this;
+}
+ostream& ostream::operator<<(double n)
+{
+    return *this;
+}
+ostream& ostream::operator<<(float n)
+{
+    return *this;
+}
+

@@ -1,0 +1,12 @@
+bin/essi
+*.o
+*.a
+*~
+*.out
+*.feioutput
+*.pyc
+*.save
+*.so
+*.layout
+exodus
+libs_compiled

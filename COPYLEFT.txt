@@ -1,0 +1,17 @@
+This used to be our old license, however, to prevent missuse (by a very small
+number of folks) we now provide a full COPYRIGHT.txt (in this folder)
+
+The Finite Element Interpreter (Comp&Vis tools, UCD CompGeoMech)
+
+ COPY LEFT and RIGHT:
+ Use of this set of tools (programs) for research and commerce  without express
+ permission of the University, is strictly encouraged. Copyright and Copyleft
+ are covered by the following clause:
+
+  Woody's (Guthrie) viral (GPL-like) license (adapted by BJ):
+ ``This source code is Copyrighted in U.S., by the The University and  by  the
+ Authors, for an indefinite period, and anybody caught using it without our
+ permission, will be mighty good friends of ourn, cause we don't give a darn.
+ Hack it. Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
+ all we wanted to do.''
+

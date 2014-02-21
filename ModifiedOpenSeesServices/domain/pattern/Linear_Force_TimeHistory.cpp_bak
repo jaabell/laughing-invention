@@ -1,0 +1,315 @@
+//===============================================================================
+//# COPYRIGHT (C): Woody's license (by BJ):
+//                 ``This    source  code is Copyrighted in
+//                 U.S.,  for  an  indefinite  period,  and anybody
+//                 caught  using it without our permission, will be
+//                 mighty good friends of ourn, cause we don't give
+//                 a  darn.  Hack it. Compile it. Debug it. Run it.
+//                 Yodel  it.  Enjoy it. We wrote it, that's all we
+//                 wanted to do.''
+//
+//# PROJECT:           Object Oriented Finite Element Program
+//# PURPOSE:
+//
+//# VERSION:
+//# LANGUAGE:          C++
+//# TARGET OS:         all...
+//# DESIGN:            Nima Tafazzoli , Boris Jeremic
+//# PROGRAMMER(S):     Jose Abell, Nima Tafazzoli , Boris Jeremic
+//
+//# DATE:              May 2012
+//# UPDATE HISTORY:    Feb 2014 - Changed the behaviour depending on constructor used.
+//
+//
+//===============================================================================
+
+
+#include <iomanip>
+#include <fstream>
+#include <math.h>
+#include <Linear_Force_TimeHistory.h>
+
+#ifdef _PARALLEL_PROCESSING
+#include <mpi.h>
+#endif
+
+Linear_Force_TimeHistory::Linear_Force_TimeHistory()
+    : LoadPattern(0, PATTERN_TAG_Linear_Force_TimeHistory),
+      tStart(0),
+      tFinish(0),
+      load_slope(0),
+      nodeTag(0),
+      dof(0)
+{
+    // does nothing
+}
+
+
+// This constructor specifies a ramp with a definite start and finish
+//
+// theFactor |        load_slope  ----------------
+//           |          |/  ------
+//           |        ------
+//           |_______._________________.________ t
+//                  tStart           tFinish
+//
+Linear_Force_TimeHistory::Linear_Force_TimeHistory(int tag,
+        int NodeNumber,
+        int dof_to_be_shaken,
+        double startTime,
+        double finishTime,
+        double Slope)
+    : LoadPattern(tag, PATTERN_TAG_Linear_Force_TimeHistory),
+      tStart(startTime),
+      tFinish(finishTime),
+      load_slope(Slope),
+      nodeTag(NodeNumber),
+      dof(dof_to_be_shaken)
+{
+    // does nothing
+}
+
+
+
+// This constructor specifies a ramp which grows forever starting from 0
+//
+// theFactor |   /
+//           |  /
+//           | / load_slope
+//           |._________________________ t
+//            0
+//
+Linear_Force_TimeHistory::Linear_Force_TimeHistory(int tag,
+        int NodeNumber,
+        int dof_to_be_shaken,
+        double Slope)
+    : LoadPattern(tag, PATTERN_TAG_Linear_Force_TimeHistory),
+      tStart(0),
+      tFinish(-1),
+      load_slope(Slope),
+      nodeTag(NodeNumber),
+      dof(dof_to_be_shaken)
+{
+    // does nothing
+}
+
+
+
+Linear_Force_TimeHistory::~Linear_Force_TimeHistory()
+{
+    // does nothing
+}
+
+
+void
+Linear_Force_TimeHistory::setDomain(Domain *theDomain)
+{
+
+    this->LoadPattern::setDomain(theDomain);
+
+}
+
+
+double
+Linear_Force_TimeHistory::getFactor(double pseudoTime)
+{
+    if (isConstant == 0)
+    {
+        theFactor = load_slope * pseudoTime;
+        // if (tStart > tFinish)   // Infinitely growing load with slope load_slope
+        //     //(unless or until Linear_Force_TimeHistory::setLoadConstant is called)
+        // {
+        //     theFactor = load_slope * (pseudoTime - tStart);
+        // }
+        // else if (pseudoTime > tStart && pseudoTime <= tFinish) // Ramp from tStart to tFinish with slope load_slope
+        // {
+        //     theFactor = load_slope * (pseudoTime - tStart);
+        // }
+        // else if (pseudoTime > tStart && pseudoTime > tFinish)  // After the ramp load is constant
+        // {
+        //     theFactor = load_slope * (tFinish - tStart);
+        // }
+        // else // Before the ramp there is zero load
+        // {
+        //     theFactor = 0.0;
+        // }
+    }
+    return theFactor;
+}
+
+
+void
+Linear_Force_TimeHistory::setLoadConstant(void)
+{
+    isConstant = 1;
+}
+
+
+void
+Linear_Force_TimeHistory::applyLoad(double time)
+{
+
+    Domain *theDomain = this->getDomain();
+
+    if (theDomain == 0)
+    {
+        cerr << "Linear_Force_TimeHistory::applyLoad -> No domain is set!" << endl;
+        return;
+    }
+
+#ifdef _BABAK_DEBUG
+    int numProcesses, processID;
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+    cerr << "Linear_Force_TimeHistory::applyLoad--PID # " << processID << "\n";
+#endif
+
+
+    Node *theNode;
+
+    theNode = theDomain->getNode(nodeTag);
+
+    if (theNode == 0)
+    {
+# ifdef _PARALLEL_PROCESSING
+
+        if ( !theDomain->hasInternalNode(nodeTag) && (theDomain->Domain::getNode (nodeTag ) == 0 ))
+        {
+            return;
+        }
+# else
+        cerr << "PathSeries_Force_TimeHistory - no nodes associtated to the nodeTag " << nodeTag << "\n";
+        return;
+#endif
+    }
+
+    //Create the nodal load vector accoding to the DOFs the node has
+    int numDOF        = theNode->getNumberDOF();
+    Vector *nodalLoad = new Vector(numDOF);
+    //nodalLoad->Zero();
+    //(*nodalLoad)(dof - 1) = getFactor(time);
+
+
+
+
+    for (int i = 0; i < numDOF; i++)
+    {
+        if ( i == (dof - 1) )
+        {
+            (*nodalLoad)(i) = getFactor(time);
+        }
+        else
+        {
+            (*nodalLoad)(i) = 0.0;
+        }
+    }
+
+    theNode->addUnbalancedLoad(*nodalLoad);
+
+#ifdef _BABAK_DEBUG
+    cerr << "Linear_Force_TimeHistory::applyLoad--PID # " << processID << "applying nodal load to node number #   " << nodeTag << "\n";
+#endif
+    delete nodalLoad;
+
+}
+
+
+int
+Linear_Force_TimeHistory::sendSelf(int commitTag, Channel &theChannel)
+{
+
+    int dbTag = this->getDbTag();
+
+    static Vector data(6);
+    data(0) = this->getTag();
+    data(1) = nodeTag;
+    data(2) = dof;
+    data(3) = tStart;
+    data(4) = tFinish;
+    data(5) = load_slope;
+
+    int res = theChannel.sendVector(dbTag, commitTag, data);
+
+    if (res < 0)
+    {
+        cerr << "Linear_Force_TimeHistory::sendSelf() - channel failed to send data\n";
+        return res;
+    }
+
+    return 0;
+
+}
+
+
+int
+Linear_Force_TimeHistory::recvSelf(int commitTag, Channel &theChannel,
+                                   FEM_ObjectBroker &theBroker)
+{
+    int dbTag = this->getDbTag();
+
+    static Vector data(6);
+    int res = theChannel.recvVector(dbTag, commitTag, data);
+
+    if (res < 0)
+    {
+        cerr << "Linear_Force_TimeHistory::recvSelf() - channel failed to recv data\n";
+        return res;
+    }
+
+    this->setTag(data(0));
+    nodeTag    = data(1);
+    dof        = data(2);
+    tStart     = data(3);
+    tFinish    = data(4);
+    load_slope = data(5);
+
+
+    return 0;
+}
+
+void
+Linear_Force_TimeHistory::Print(ostream &s, int flag)
+{
+    s << "Linear_Force_TimeHistory " << this->getTag() << endln;
+    s << "Node Number      : "   << nodeTag << endln;
+    s << "DOF to be Shaken : " << dof << endln;
+    s << "Slope            : "   << load_slope << endln;
+    s << "Start Time       : "   << tStart << endln;
+    s << "Finish Time      : "  << tFinish << endln;
+    s << "Factor           : "  << theFactor << endln;
+
+    if (isConstant == 1)
+    {
+        s << "isConstant       : true " << endln;
+    }
+    else
+    {
+        s << "isConstant       : false " << endln;
+    }
+
+#ifdef _PARALLEL_PROCESSING
+    int numProcesses, processID;
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+    s << endl << "Parallel Info:" << endl;
+    s << "numProcesses     : " << numProcesses << endln;
+    s << "processID        : " << processID << endln;
+#endif
+
+}
+
+
+LoadPattern *
+Linear_Force_TimeHistory::getCopy(void)
+{
+    LoadPattern *theCopy = new Linear_Force_TimeHistory(this->getTag(),
+            nodeTag,
+            dof,
+            tStart,
+            tFinish,
+            load_slope);
+    return theCopy;
+}
+
+
+

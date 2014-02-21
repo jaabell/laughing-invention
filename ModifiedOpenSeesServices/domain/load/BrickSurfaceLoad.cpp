@@ -1,0 +1,317 @@
+///////////////////////////////////////////////////////////////////////////////
+//   COPYLEFT (C): Woody's viral GPL-like license (by BJ):
+//                 ``This    source  code is Copyrighted in
+//                 U.S.,  for  an  indefinite  period,  and anybody
+//                 caught  using it without our permission, will be
+//                 mighty good friends of ourn, cause we don't give
+//                 a  darn.  Hack it. Compile it. Debug it. Run it.
+//                 Yodel  it.  Enjoy it. We wrote it, that's all we
+//                 wanted to do.''
+//
+//
+// COPYRIGHT (C):     :-))
+// PROJECT:           Object Oriented Finite Element Program
+//
+// PURPOSE:           Surface Load for Brick Elements
+//
+// RETURN:
+// VERSION:
+// LANGUAGE:          C++
+// TARGET OS:
+// PROGRAMMER:        Nima Tafazzoli, Boris Jeremic
+// DATE:              July 2012
+// UPDATE HISTORY:
+//
+///////////////////////////////////////////////////////////////////////////////
+
+
+// Order of the nodes:
+//
+//         ________
+//       2 |       | 1
+//         |       |
+//         |       |
+//       3 |_______| 4
+//
+//
+// Order of the nodes:
+//
+//         ________
+//       2 |   5   | 1
+//         |       |
+//         |6     8|
+//       3 |___7___| 4
+//
+//
+// Order of the nodes:
+//
+//         ________
+//       2 |   5   | 1
+//         |       |
+//         |6  9  8|
+//       3 |_______| 4
+//             7
+//
+
+
+#ifndef BrickSurfaceLoad_CPP
+#define BrickSurfaceLoad_CPP
+
+
+#include <BrickSurfaceLoad.h>
+#include <Vector.h>
+#include <Channel.h>
+#include <FEM_ObjectBroker.h>
+#include <iostream>
+using namespace std;
+
+
+Vector BrickSurfaceLoad::dataV8(8);
+Vector BrickSurfaceLoad::dataV16(16);
+Vector BrickSurfaceLoad::dataV18(18);
+
+
+BrickSurfaceLoad::BrickSurfaceLoad(int tag,
+                                   const ID& theElementTags,
+                                   int Node_1, int Node_2, int Node_3, int Node_4,
+                                   double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
+                                   double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4)
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+      node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
+      surface_load_magnitude1(SurfaceLoadMagnitude1),
+      surface_load_magnitude2(SurfaceLoadMagnitude2),
+      surface_load_magnitude3(SurfaceLoadMagnitude3),
+      surface_load_magnitude4(SurfaceLoadMagnitude4),
+      data(0)
+{
+
+    data = &dataV8;
+
+}
+
+
+
+BrickSurfaceLoad::BrickSurfaceLoad(int tag,
+                                   const ID& theElementTags,
+                                   int Node_1, int Node_2, int Node_3, int Node_4,
+                                   int Node_5, int Node_6, int Node_7, int Node_8,
+                                   double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
+                                   double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4,
+                                   double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
+                                   double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8)
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+      node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
+      node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8),
+      surface_load_magnitude1(SurfaceLoadMagnitude1),
+      surface_load_magnitude2(SurfaceLoadMagnitude2),
+      surface_load_magnitude3(SurfaceLoadMagnitude3),
+      surface_load_magnitude4(SurfaceLoadMagnitude4),
+      surface_load_magnitude5(SurfaceLoadMagnitude5),
+      surface_load_magnitude6(SurfaceLoadMagnitude6),
+      surface_load_magnitude7(SurfaceLoadMagnitude7),
+      surface_load_magnitude8(SurfaceLoadMagnitude8),
+      data(0)
+{
+
+    data = &dataV16;
+
+}
+
+
+
+
+BrickSurfaceLoad::BrickSurfaceLoad(int tag,
+                                   const ID& theElementTags,
+                                   int Node_1, int Node_2, int Node_3, int Node_4,
+                                   int Node_5, int Node_6, int Node_7, int Node_8, int Node_9,
+                                   double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
+                                   double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4,
+                                   double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
+                                   double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8,
+                                   double SurfaceLoadMagnitude9)
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+      node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
+      node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8), node9(Node_9),
+      surface_load_magnitude1(SurfaceLoadMagnitude1),
+      surface_load_magnitude2(SurfaceLoadMagnitude2),
+      surface_load_magnitude3(SurfaceLoadMagnitude3),
+      surface_load_magnitude4(SurfaceLoadMagnitude4),
+      surface_load_magnitude5(SurfaceLoadMagnitude5),
+      surface_load_magnitude6(SurfaceLoadMagnitude6),
+      surface_load_magnitude7(SurfaceLoadMagnitude7),
+      surface_load_magnitude8(SurfaceLoadMagnitude8),
+      surface_load_magnitude9(SurfaceLoadMagnitude9),
+      data(0)
+{
+
+    data = &dataV18;
+
+}
+
+
+
+BrickSurfaceLoad::BrickSurfaceLoad()
+    : ElementalLoad(LOAD_TAG_BrickSurfaceLoad)
+{
+
+}
+
+
+BrickSurfaceLoad::~BrickSurfaceLoad()
+{
+
+}
+
+
+const Vector&
+BrickSurfaceLoad::getData(int& type, double loadFactor)
+{
+    type = LOAD_TAG_BrickSurfaceLoad;
+
+    if ( (*data).Size() == 8 )
+    {
+        (*data)(0) = node1;
+        (*data)(1) = node2;
+        (*data)(2) = node3;
+        (*data)(3) = node4;
+        (*data)(4) = surface_load_magnitude1;
+        (*data)(5) = surface_load_magnitude2;
+        (*data)(6) = surface_load_magnitude3;
+        (*data)(7) = surface_load_magnitude4;
+
+    }
+    else if ( (*data).Size() == 16 )
+    {
+        (*data)(0)  = node1;
+        (*data)(1)  = node2;
+        (*data)(2)  = node3;
+        (*data)(3)  = node4;
+        (*data)(4)  = node5;
+        (*data)(5)  = node6;
+        (*data)(6)  = node7;
+        (*data)(7)  = node8;
+        (*data)(8)  = surface_load_magnitude1;
+        (*data)(9)  = surface_load_magnitude2;
+        (*data)(10) = surface_load_magnitude3;
+        (*data)(11) = surface_load_magnitude4;
+        (*data)(12) = surface_load_magnitude5;
+        (*data)(13) = surface_load_magnitude6;
+        (*data)(14) = surface_load_magnitude7;
+        (*data)(15) = surface_load_magnitude8;
+
+    }
+    else if ( (*data).Size() == 18 )
+    {
+        (*data)(0) = node1;
+        (*data)(1) = node2;
+        (*data)(2) = node3;
+        (*data)(3) = node4;
+        (*data)(4) = node5;
+        (*data)(5) = node6;
+        (*data)(6) = node7;
+        (*data)(7) = node8;
+        (*data)(8) = node9;
+        (*data)(9)  = surface_load_magnitude1;
+        (*data)(10) = surface_load_magnitude2;
+        (*data)(11) = surface_load_magnitude3;
+        (*data)(12) = surface_load_magnitude4;
+        (*data)(13) = surface_load_magnitude5;
+        (*data)(14) = surface_load_magnitude6;
+        (*data)(15) = surface_load_magnitude7;
+        (*data)(16) = surface_load_magnitude8;
+        (*data)(17) = surface_load_magnitude9;
+    }
+
+
+    return *data;
+
+}
+
+int
+BrickSurfaceLoad::sendSelf(int commitTag, Channel& theChannel)
+{
+    // (Nima) SHOULD BE CHECKED IN PARALLEL VERSION
+
+    //   int dbTag = this->getDbTag();
+    //   int myTag = this->getTag();
+    //   const ID &theElements = this->getElementTags();
+    //
+    //   static ID idData(10);
+    //   idData(0) = theElements.Size();
+    //   idData(1) = myTag;
+    //   idData(2) = node1;
+    //   idData(3) = node2;
+    //   idData(4) = node3;
+    //   idData(5) = node4;
+    //   idData(6) = surface_load_magnitude1;
+    //   idData(7) = surface_load_magnitude2;
+    //   idData(8) = surface_load_magnitude3;
+    //   idData(9) = surface_load_magnitude4;
+    //
+    //
+    //   int result = theChannel.sendID(dbTag, commitTag, idData);
+    //   if (result < 0) {
+    //     cerr << "BrickSurfaceLoad::sendSelf() - failed to send data\n";
+    //     return result;
+    //   }
+    //
+    //   result = theChannel.sendID(dbTag, commitTag, theElements);
+    //   if (result < 0) {
+    //     cerr << "BrickSurfaceLoad::sendSelf() - failed to send element tags\n";
+    //     return result;
+    //   }
+    //
+    //   return 0;
+}
+
+int
+BrickSurfaceLoad::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
+{
+    // (Nima) SHOULD BE CHECKED IN PARALLEL VERSION
+
+    //   int dbTag = this->getDbTag();
+    //   static ID idData(10);
+    //
+    //   int result = theChannel.recvID(dbTag, commitTag, idData);
+    //   if (result < 0) {
+    //     cerr << "BrickSurfaceLoad::recvSelf() - failed to recv data\n";
+    //     return result;
+    //   }
+    //
+    //   int numEle = idData(0);
+    //   int myTag = idData(1);
+    //
+    //   node1 = idData(2);
+    //   node2 = idData(3);
+    //   node3 = idData(4);
+    //   node4 = idData(5);
+    //   surface_load_magnitude1 = idData(6);
+    //   surface_load_magnitude2 = idData(7);
+    //   surface_load_magnitude3 = idData(8);
+    //   surface_load_magnitude4 = idData(9);
+    //
+    //
+    //   ID *NewTags = new ID(numEle);
+    //
+    //   result = theChannel.recvID(dbTag, commitTag, *NewTags);
+    //   if (result < 0) {
+    //     cerr << "BrickSurfaceLoad::recvSelf() - failed to recv element tags\n";
+    //     return result;
+    //   }
+    //
+    //   this->setTag(myTag);
+    //   this->setElementTags(*NewTags);
+    //   delete NewTags;
+    //
+    //   return 0;
+}
+
+void
+BrickSurfaceLoad::Print(ostream& s, int flag)
+{
+    s << "BrickSurfaceLoad...";
+    s << "Elements acted on: " << this->getElementTags();
+}
+
+#endif
+

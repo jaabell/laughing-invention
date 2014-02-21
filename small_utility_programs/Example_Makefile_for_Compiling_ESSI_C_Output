@@ -1,0 +1,23 @@
+include ../../../Makefile.Includes
+include ../../../Makefile.Compilers
+
+
+#####################
+OBJS = Test01_single_element
+#####################
+
+
+%.o : %.cpp
+	$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $< -o $@
+
+all:  $(OBJS)
+
+
+
+$(OBJS):  $(OBJS).o
+	$(LINKER) $(LINKFLAGS) $(OBJS).o $(LIBS) -o $(OBJS)
+
+
+###########################################################################
+clean:
+	$(RM) $(RMFLAGS) $(OBJS) *.o core* *.out *.feioutput
