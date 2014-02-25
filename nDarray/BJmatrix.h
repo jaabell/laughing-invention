@@ -76,34 +76,34 @@ class BJmatrix : public nDarray
 
 
     private:
-        void error(char* msg1, char* msg2 = ""); // private function
+        void error(const char *msg1, const char *msg2 = ""); // private function
 
     public:
         BJmatrix(int mrows = 1, int columns = 1, double initval = 0.0);
-        BJmatrix(int mrows, int columns, double* initvalues);
+        BJmatrix(int mrows, int columns, double *initvalues);
         //special for vector
-        BJmatrix(int rank, int mrows, int columns, double* initvalues);
+        BJmatrix(int rank, int mrows, int columns, double *initvalues);
         BJmatrix(int rank, int mrows, int columns, double initvalues);
 
-        BJmatrix(char* flag, int dimension ); // create an ident BJmatrix
-        BJmatrix(char* matfile); // read from a "standard" BJmatrix file
-        BJmatrix(char* matfile, char* outfile); // read from a flat BJmatrix file
+        BJmatrix(const char *flag, int dimension ); // create an ident BJmatrix
+        BJmatrix(const char *matfile); // read from a "standard" BJmatrix file
+        BJmatrix(const char *matfile, const char *outfile); // read from a flat BJmatrix file
         // and write test output to another mat file
-        BJmatrix(const BJmatrix& x);   // copy-initializer
-        BJmatrix(const nDarray& x);
+        BJmatrix(const BJmatrix &x);   // copy-initializer
+        BJmatrix(const nDarray &x);
 
         //--      ~BJmatrix( );
 
         int rows( void ) const;  // rows in BJmatrix
         int cols( void ) const;  // cols in BJmatrix
 
-        BJmatrix& operator=(const BJmatrix& rval);   // BJmatrix assignment
+        BJmatrix &operator=(const BJmatrix &rval);   // BJmatrix assignment
 
         // Write a "standard" BJmatrix file:
-        void write_standard(char* filename, char* msg = "");
+        void write_standard(const char *filename, const char *msg = "");
 
 
-        BJmatrix operator*( BJmatrix&);  // BJmatrix multiplication
+        BJmatrix operator*( BJmatrix &); // BJmatrix multiplication
         BJmatrix operator*( double rval); // scalar multiplication
         //....      vector operator*( vector &); // vector multiplication
         //      vector operator*( double ); // vector multiplication
@@ -148,15 +148,15 @@ class BJmatrix : public nDarray
 
     private: // functions used by inverse() and determinant()
         void switch_columns(int col1, int co12);
-        void copy_column(BJmatrix& m, int from_col, int to_col);
+        void copy_column(BJmatrix &m, int from_col, int to_col);
         BJmatrix scale( ); // scale a BJmatrix (used in L-U decomposition)
-        void deepcopy(BJmatrix& from, BJmatrix& to);   // make an image
-        BJmatrix lu_decompose(BJmatrix& indx, int& d );
+        void deepcopy(BJmatrix &from, BJmatrix &to);   // make an image
+        BJmatrix lu_decompose(BJmatrix &indx, int &d );
         // Returns the L-U decomposition of a BJmatrix
-        void lu_back_subst(BJmatrix& indx, BJmatrix& b);
+        void lu_back_subst(BJmatrix &indx, BJmatrix &b);
         // Uses L-U decomposition for BJmatrix inverse
 
-        double& mval (int row, int col);   // I am still keeping mval
+        double &mval (int row, int col);   // I am still keeping mval
         // operator for compatibility
         // with old BJmatrix class members
         // and they start from 0 ###
@@ -165,7 +165,7 @@ class BJmatrix : public nDarray
 
     public:
         // Tiejun Li Jan 2000
-        double*   BJmatrixtoarray(int&);
+        double   *BJmatrixtoarray(int &);
 
 
         // // prebacen u nDarray 14 oktobra 1996

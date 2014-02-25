@@ -70,23 +70,23 @@ using namespace std;
 // Constructor
 //    sets theModel and theSysOFEqn to 0 and the Algorithm to the one supplied
 
-DirectIntegrationAnalysis::DirectIntegrationAnalysis(Domain& the_Domain,
-        ConstraintHandler& theHandler,
-        DOF_Numberer& theNumberer,
-        AnalysisModel& theModel,
-        EquiSolnAlgo& theSolnAlgo,
-        LinearSOE& theLinSOE,
-        TransientIntegrator& theTransientIntegrator,
-        ConvergenceTest* theConvergenceTest)
+DirectIntegrationAnalysis::DirectIntegrationAnalysis(Domain &the_Domain,
+        ConstraintHandler &theHandler,
+        DOF_Numberer &theNumberer,
+        AnalysisModel &theModel,
+        EquiSolnAlgo &theSolnAlgo,
+        LinearSOE &theLinSOE,
+        TransientIntegrator &theTransientIntegrator,
+        ConvergenceTest *theConvergenceTest)
     : TransientAnalysis(the_Domain),
       theConstraintHandler(&theHandler),
       theDOF_Numberer(&theNumberer),
       theAnalysisModel(&theModel),
       theAlgorithm(&theSolnAlgo),
       theSOE(&theLinSOE),
-      theEigenSOE(0),
       theIntegrator(&theTransientIntegrator),
       theTest(theConvergenceTest),
+      theEigenSOE(0),
       domainStamp(0)
 {
     // first we set up the links needed by the elements in the
@@ -178,7 +178,7 @@ int
 DirectIntegrationAnalysis::initialize(void)
 {
     cerr << "DirectIntegrationAnalysis::initialize(void)\n";
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
 
     // check if domain has undergone change
     int stamp = the_Domain->hasDomainChanged();
@@ -213,7 +213,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 {
 
     int result = 0;
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
 
     for (int i = 0; i < numSteps; i++)
     {
@@ -289,7 +289,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 int
 DirectIntegrationAnalysis::domainChanged(void)
 {
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
     int stamp = the_Domain->hasDomainChanged();
     domainStamp = stamp;
 
@@ -336,15 +336,20 @@ DirectIntegrationAnalysis::domainChanged(void)
     // we invoke setGraph() on the LinearSOE which
     // causes that object to determine its size
 
-    //     theSOE->setSize(theAnalysisModel->getDOFGraph()); //Out by Babak 06/4/13
+
+#ifdef _PARALLEL_PROCESSING
     int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
     theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
+#else
+    theSOE->setSize(theAnalysisModel->getDOFGraph()); //Out by Babak 06/4/13
 
     // Nima Tafazzoli added for eigen analysis, June 2012
     if (theEigenSOE != 0)
     {
         theEigenSOE->setSize(theAnalysisModel->getDOFGraph());
     }
+#endif
+
 
 
 
@@ -360,7 +365,7 @@ DirectIntegrationAnalysis::domainChanged(void)
 
 
 int
-DirectIntegrationAnalysis::setNumberer(DOF_Numberer& theNewNumberer)
+DirectIntegrationAnalysis::setNumberer(DOF_Numberer &theNewNumberer)
 {
     int result = 0;
 
@@ -375,7 +380,7 @@ DirectIntegrationAnalysis::setNumberer(DOF_Numberer& theNewNumberer)
     theDOF_Numberer->setLinks(*theAnalysisModel);
 
     // invoke domainChanged() either indirectly or directly
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
     int stamp = the_Domain->hasDomainChanged();
     domainStamp = stamp;
     result = this->domainChanged();
@@ -392,7 +397,7 @@ DirectIntegrationAnalysis::setNumberer(DOF_Numberer& theNewNumberer)
 
 
 int
-DirectIntegrationAnalysis::setAlgorithm(EquiSolnAlgo& theNewAlgorithm)
+DirectIntegrationAnalysis::setAlgorithm(EquiSolnAlgo &theNewAlgorithm)
 {
     // invoke the destructor on the old one
     if (theAlgorithm != 0)
@@ -405,7 +410,7 @@ DirectIntegrationAnalysis::setAlgorithm(EquiSolnAlgo& theNewAlgorithm)
     theAlgorithm->setLinks(*theAnalysisModel, *theIntegrator, *theSOE);
 
     // invoke domainChanged() either indirectly or directly
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
     // check if domain has undergone change
     int stamp = the_Domain->hasDomainChanged();
 
@@ -435,10 +440,10 @@ DirectIntegrationAnalysis::setAlgorithm(EquiSolnAlgo& theNewAlgorithm)
 
 
 int
-DirectIntegrationAnalysis::setIntegrator(TransientIntegrator& theNewIntegrator)
+DirectIntegrationAnalysis::setIntegrator(TransientIntegrator &theNewIntegrator)
 {
     // set the links needed by the other objects in the aggregation
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
     theIntegrator = &theNewIntegrator;
     theIntegrator->setLinks(*theAnalysisModel, *theSOE);
     theConstraintHandler->setLinks(*the_Domain, *theAnalysisModel, *theIntegrator);
@@ -471,7 +476,7 @@ DirectIntegrationAnalysis::setIntegrator(TransientIntegrator& theNewIntegrator)
     return 0;
 }
 int
-DirectIntegrationAnalysis::setLinearSOE(LinearSOE& theNewSOE)
+DirectIntegrationAnalysis::setLinearSOE(LinearSOE &theNewSOE)
 {
     // invoke the destructor on the old one
     if (theSOE != 0)
@@ -485,7 +490,7 @@ DirectIntegrationAnalysis::setLinearSOE(LinearSOE& theNewSOE)
     theAlgorithm->setLinks(*theAnalysisModel, *theIntegrator, *theSOE);
 
     // set the size either indirectly or directly
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
     int stamp = the_Domain->hasDomainChanged();
 
     if (stamp != domainStamp)
@@ -501,17 +506,23 @@ DirectIntegrationAnalysis::setLinearSOE(LinearSOE& theNewSOE)
     }
     else
     {
-        //       Graph &theGraph = theAnalysisModel->getDOFGraph(); //Out by Babak 06/4/13
-        //       if (theSOE->setSize(theGraph) < 0) //Out by Babak 06/4/13
-        int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-
+#ifdef _PARALLEL_PROCESSING
         if (theSOE->setSize(MaxDOFtag) < 0); //Added by Babak 6/4/13
-
         {
             cerr << "DirectIntegrationAnalysis::setAlgorithm() - ";
             cerr << "LinearSOE::setSize() failed";
             return -2;
         }
+
+#else
+
+        Graph &theGraph = theAnalysisModel->getDOFGraph(); //Out by Babak 06/4/13
+        if (theSOE->setSize(theGraph) < 0) //Out by Babak 06/4/13
+        {
+            theAnalysisModel->getMaxDOFtag();    //Added by Babak 6/4/13
+        }
+#endif
+
     }
 
     return 0;
@@ -519,7 +530,7 @@ DirectIntegrationAnalysis::setLinearSOE(LinearSOE& theNewSOE)
 
 
 int
-DirectIntegrationAnalysis::setConvergenceTest(ConvergenceTest& theNewTest)
+DirectIntegrationAnalysis::setConvergenceTest(ConvergenceTest &theNewTest)
 {
     // invoke the destructor on the old one
     if (theTest != 0)
@@ -538,7 +549,7 @@ DirectIntegrationAnalysis::setConvergenceTest(ConvergenceTest& theNewTest)
 int
 DirectIntegrationAnalysis::checkDomainChange(void)
 {
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
 
     // check if domain has undergone change
     int stamp = the_Domain->hasDomainChanged();
@@ -558,20 +569,20 @@ DirectIntegrationAnalysis::checkDomainChange(void)
 }
 
 
-EquiSolnAlgo*
+EquiSolnAlgo *
 DirectIntegrationAnalysis::getAlgorithm(void)
 {
     return theAlgorithm;
 }
 
 
-TransientIntegrator*
+TransientIntegrator *
 DirectIntegrationAnalysis::getIntegrator(void)
 {
     return theIntegrator;
 }
 
-ConvergenceTest*
+ConvergenceTest *
 DirectIntegrationAnalysis::getConvergenceTest(void)
 {
     return theTest;
@@ -581,7 +592,7 @@ DirectIntegrationAnalysis::getConvergenceTest(void)
 
 // Nima Tafazzoli added for eigen analysis, June 2012
 int
-DirectIntegrationAnalysis::setEigenSOE(EigenSOE& theNewSOE)
+DirectIntegrationAnalysis::setEigenSOE(EigenSOE &theNewSOE)
 {
     // invoke the destructor on the old one
     if (theEigenSOE != 0)
@@ -612,7 +623,7 @@ DirectIntegrationAnalysis::eigen(int numMode)
     }
 
     int result = 0;
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
 
     result = theAnalysisModel->eigenAnalysis(numMode);
 
@@ -641,10 +652,10 @@ DirectIntegrationAnalysis::eigen(int numMode)
     // form K
     //
 
-    FE_EleIter& theEles = theAnalysisModel->getFEs();
-    FE_Element* elePtr;
+    FE_EleIter &theEles = theAnalysisModel->getFEs();
+    FE_Element *elePtr;
 
-    while((elePtr = theEles()) != 0)
+    while ((elePtr = theEles()) != 0)
     {
         elePtr->zeroTangent();
         elePtr->addKtToTang(1.0);
@@ -662,9 +673,9 @@ DirectIntegrationAnalysis::eigen(int numMode)
     //
     // form M
     //
-    FE_EleIter& theEles2 = theAnalysisModel->getFEs();
+    FE_EleIter &theEles2 = theAnalysisModel->getFEs();
 
-    while((elePtr = theEles2()) != 0)
+    while ((elePtr = theEles2()) != 0)
     {
         elePtr->zeroTangent();
         elePtr->addMtoTang(1.0);
@@ -677,10 +688,10 @@ DirectIntegrationAnalysis::eigen(int numMode)
         }
     }
 
-    DOF_Group* dofPtr;
-    DOF_GrpIter& theDofs = theAnalysisModel->getDOFs();
+    DOF_Group *dofPtr;
+    DOF_GrpIter &theDofs = theAnalysisModel->getDOFs();
 
-    while((dofPtr = theDofs()) != 0)
+    while ((dofPtr = theDofs()) != 0)
     {
         dofPtr->zeroTangent();
         dofPtr->addMtoTang(1.0);

@@ -123,7 +123,7 @@ nDarray::nDarray(int rank_of_nDarray, double initval)
     const int default_dim  = 1;
     pc_nDarray_rep->total_numb = 1;
 
-    for( int idim = 0 ; idim < pc_nDarray_rep->nDarray_rank ; idim++ )
+    for ( int idim = 0 ; idim < pc_nDarray_rep->nDarray_rank ; idim++ )
     {
         pc_nDarray_rep->dim[idim] = default_dim;
         pc_nDarray_rep->total_numb *= pc_nDarray_rep->dim[idim];
@@ -148,7 +148,7 @@ nDarray::nDarray(int rank_of_nDarray, double initval)
 }
 
 //##############################################################################
-nDarray::nDarray(int rank_of_nDarray, const int* pdim, double* values)
+nDarray::nDarray(int rank_of_nDarray, const int *pdim, double *values)
 {
     // create the structure:
     pc_nDarray_rep = new nDarray_rep; // this 'new' is overloaded 2
@@ -177,7 +177,7 @@ nDarray::nDarray(int rank_of_nDarray, const int* pdim, double* values)
 
     pc_nDarray_rep->total_numb = 1;
 
-    for( int idim = 0 ; idim < pc_nDarray_rep->nDarray_rank ; idim++ )
+    for ( int idim = 0 ; idim < pc_nDarray_rep->nDarray_rank ; idim++ )
     {
         pc_nDarray_rep->dim[idim] = pdim[idim];
         pc_nDarray_rep->total_numb *= pc_nDarray_rep->dim[idim];
@@ -204,7 +204,7 @@ nDarray::nDarray(int rank_of_nDarray, const int* pdim, double* values)
 }
 
 //##############################################################################
-nDarray::nDarray(int rank_of_nDarray, const int* pdim, double initvalue)
+nDarray::nDarray(int rank_of_nDarray, const int *pdim, double initvalue)
 {
     // create the structure:
     pc_nDarray_rep = new nDarray_rep; // this 'new' is overloaded 3
@@ -220,7 +220,7 @@ nDarray::nDarray(int rank_of_nDarray, const int* pdim, double initvalue)
     pc_nDarray_rep->dim = new int[4];// array for dimensions
 
     //added by babak on September 2012:
-    if( pc_nDarray_rep->dim == NULL)
+    if ( pc_nDarray_rep->dim == NULL)
     {
         ::fprintf(stderr, "\a\nnDarray::nDarray -- Insufficient memory for pc_nDarray_rep->dim \n");
         ::exit(1);
@@ -242,7 +242,7 @@ nDarray::nDarray(int rank_of_nDarray, const int* pdim, double initvalue)
 
     pc_nDarray_rep->total_numb = 1;
 
-    for( int idim = 0 ; idim < pc_nDarray_rep->nDarray_rank ; idim++ )
+    for ( int idim = 0 ; idim < pc_nDarray_rep->nDarray_rank ; idim++ )
     {
         pc_nDarray_rep->dim[idim] = pdim[idim];
         pc_nDarray_rep->total_numb *= pc_nDarray_rep->dim[idim];
@@ -269,7 +269,7 @@ nDarray::nDarray(int rank_of_nDarray, const int* pdim, double initvalue)
 
 //##############################################################################
 // special case for BJmatrix and BJvector . . .
-nDarray::nDarray(int rank_of_nDarray, int rows, int cols, double* values)
+nDarray::nDarray(int rank_of_nDarray, int rows, int cols, double *values)
 {
     // create the structure:
     pc_nDarray_rep =  new nDarray_rep; // this 'new' is overloaded 4
@@ -419,7 +419,7 @@ nDarray::nDarray(int rank_of_nDarray, int rows, int cols, double values)
 
 //...//##############################################################################
 // create a unit nDarray
-nDarray::nDarray(const char* flag, int rank_of_nDarray, const int* pdim)
+nDarray::nDarray(const char *flag, int rank_of_nDarray, const int *pdim)
 //Dec 2012, Jose Abell to remove the gcc warning "BJtensor.cpp|2988|warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]|"
 //nDarray::nDarray(const char *flag, int rank_of_nDarray, const int *pdim)
 {
@@ -459,7 +459,7 @@ nDarray::nDarray(const char* flag, int rank_of_nDarray, const int* pdim)
 
     pc_nDarray_rep->total_numb = 1;
 
-    for( int idim = 0 ; idim < pc_nDarray_rep->nDarray_rank ; idim++ )
+    for ( int idim = 0 ; idim < pc_nDarray_rep->nDarray_rank ; idim++ )
     {
         pc_nDarray_rep->dim[idim] = pdim[idim];
         pc_nDarray_rep->total_numb *= pc_nDarray_rep->dim[idim];
@@ -476,19 +476,19 @@ nDarray::nDarray(const char* flag, int rank_of_nDarray, const int* pdim)
 
     pc_nDarray_rep->n = 1;  // so far, there's one reference
 
-    switch(pc_nDarray_rep->nDarray_rank)
+    switch (pc_nDarray_rep->nDarray_rank)
     {
         case 0:
-            {
-                ::printf("\a\n Unit nDarray of rank 0 ???\n");
-                break;
-            }
+        {
+            ::printf("\a\n Unit nDarray of rank 0 ???\n");
+            break;
+        }
 
         case 1:
-            {
-                ::printf("\a\n Unit nDarray of rank 1 ???\n");
-                break;
-            }
+        {
+            ::printf("\a\n Unit nDarray of rank 1 ???\n");
+            break;
+        }
 
         case 2:   // Kronecker delta
 
@@ -507,35 +507,35 @@ nDarray::nDarray(const char* flag, int rank_of_nDarray, const int* pdim)
             }
 
         case 3:  // Levi - Civita permutation BJtensor
+        {
+            for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
             {
-                for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
+                for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
                 {
-                    for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+                    for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
                     {
-                        for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
+                        if ( (i3 == 1 && j3 == 2 && k3 == 3)  ||
+                                (i3 == 2 && j3 == 3 && k3 == 1)  ||
+                                (i3 == 3 && j3 == 1 && k3 == 2) )
                         {
-                            if ( (i3 == 1 && j3 == 2 && k3 == 3)  ||
-                                    (i3 == 2 && j3 == 3 && k3 == 1)  ||
-                                    (i3 == 3 && j3 == 1 && k3 == 2) )
-                            {
-                                val(i3, j3, k3) = 1.0;
-                            }
-                            else if ( (i3 == 3 && j3 == 2 && k3 == 1)  ||
-                                      (i3 == 2 && j3 == 1 && k3 == 3)  ||
-                                      (i3 == 1 && j3 == 3 && k3 == 2) )
-                            {
-                                val(i3, j3, k3) = -1.0;
-                            }
-                            else
-                            {
-                                val(i3, j3, k3) = 0.0;
-                            }
+                            val(i3, j3, k3) = 1.0;
+                        }
+                        else if ( (i3 == 3 && j3 == 2 && k3 == 1)  ||
+                                  (i3 == 2 && j3 == 1 && k3 == 3)  ||
+                                  (i3 == 1 && j3 == 3 && k3 == 2) )
+                        {
+                            val(i3, j3, k3) = -1.0;
+                        }
+                        else
+                        {
+                            val(i3, j3, k3) = 0.0;
                         }
                     }
                 }
-
-                break;
             }
+
+            break;
+        }
 
             //        case 4:
             //          for ( int i4=1 ; i4<=pc_nDarray_rep->dim[0] ; i4++ )
@@ -551,7 +551,7 @@ nDarray::nDarray(const char* flag, int rank_of_nDarray, const int* pdim)
 
 
 //##############################################################################
-nDarray::nDarray(const nDarray& x)
+nDarray::nDarray(const nDarray &x)
 {
     x.pc_nDarray_rep->n++; // we're adding another reference.
     pc_nDarray_rep = x.pc_nDarray_rep;  // point to the new nDarray_rep.
@@ -578,7 +578,7 @@ nDarray::~nDarray()
 
 //##############################################################################
 // use "from" and initialize already allocated BJtensor from "from" values
-void nDarray::Initialize( const nDarray& from )
+void nDarray::Initialize( const nDarray &from )
 {
     // copy only data because everything else has already been defined
     // WATCH OUT IT HAS TO BE DEFINED BEFORE THIS FUNCTIONS IS CALLED
@@ -602,7 +602,7 @@ void nDarray::Reset_to( double value )  // reset data to "value"
 // use "from" and initialize AND allocate BJtensor from "from" values
 // it should work on all the things that are missed by default constructor
 //(int rank_of_nDarray, const int *pdim, double *values)
-void nDarray::Initialize_all( const nDarray& from )
+void nDarray::Initialize_all( const nDarray &from )
 {
     // create the structure:
     //   pc_nDarray_rep = new nDarray_rep; // this 'new' is overloaded //IN DEFAULT
@@ -639,7 +639,7 @@ void nDarray::Initialize_all( const nDarray& from )
 
     this->pc_nDarray_rep->total_numb = 1;
 
-    for( int idim = 0 ; idim < this->pc_nDarray_rep->nDarray_rank ; idim++ )
+    for ( int idim = 0 ; idim < this->pc_nDarray_rep->nDarray_rank ; idim++ )
     {
         this->pc_nDarray_rep->dim[idim] = from.dim()[idim]; // fill dims from from!!
         this->pc_nDarray_rep->total_numb *= pc_nDarray_rep->dim[idim]; // find total number
@@ -701,7 +701,7 @@ nDarray nDarray::deep_copy()
 
 
 
-    for( int idim = 0 ; idim < temp.pc_nDarray_rep->nDarray_rank ; idim++ )
+    for ( int idim = 0 ; idim < temp.pc_nDarray_rep->nDarray_rank ; idim++ )
     {
         temp.pc_nDarray_rep->dim[idim] = this->pc_nDarray_rep->dim[idim] ;
     }
@@ -729,7 +729,7 @@ nDarray nDarray::deep_copy()
 
 
 //##############################################################################
-nDarray& nDarray::operator=(const nDarray& rval)
+nDarray &nDarray::operator=(const nDarray &rval)
 {
     rval.pc_nDarray_rep->n++;  // tell the rval it has another reference
 
@@ -739,7 +739,7 @@ nDarray& nDarray::operator=(const nDarray& rval)
     //       nDarray_rep to itself ( after ARKoenig JOOP May/June '90 )  */
 
     // clean up current value;
-    if(--pc_nDarray_rep->n == 0)  // if nobody else is referencing us.
+    if (--pc_nDarray_rep->n == 0) // if nobody else is referencing us.
     {
         // DEallocate memory of the actual nDarray
         //      delete [pc_nDarray_rep->pc_nDarray_rep->total_numb] pc_nDarray_rep->pd_nDdata;
@@ -758,10 +758,10 @@ nDarray& nDarray::operator=(const nDarray& rval)
 // ..JB..//JB
 #ifndef Brzi_nDarray_val
 //JB//##############################################################################
-double& nDarray::val(int subscript, ...)
+double &nDarray::val(int subscript, ...)
 {
     // if scalar get back
-    if(pc_nDarray_rep->nDarray_rank == 0)
+    if (pc_nDarray_rep->nDarray_rank == 0)
     {
         return (*pc_nDarray_rep->pd_nDdata);
     }
@@ -786,7 +786,7 @@ double& nDarray::val(int subscript, ...)
 
     va_end(p_arg);
     //::printf("*w=%2ld ",where);
-    double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+    double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
     return (*p_value);
 }
 
@@ -796,7 +796,7 @@ double& nDarray::val(int subscript, ...)
 double nDarray::cval(int subscript, ...)  const
 {
     // if scalar get back
-    if(pc_nDarray_rep->nDarray_rank == 0)
+    if (pc_nDarray_rep->nDarray_rank == 0)
     {
         return (*pc_nDarray_rep->pd_nDdata);
     }
@@ -822,7 +822,7 @@ double nDarray::cval(int subscript, ...)  const
     va_end(p_arg);
 
     //::printf("*w=%2ld ",where);
-    double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+    double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
     return (*p_value);
 }
 
@@ -830,7 +830,7 @@ double nDarray::cval(int subscript, ...)  const
 
 //##############################################################################
 // another overloading of operator() . . .  // overloaded for FOUR arguments
-double& nDarray::val4(int first, int second,
+double &nDarray::val4(int first, int second,
                       int third, int fourth)
 {
     //JB//JB    long int where = (((first-1)*pc_nDarray_rep->dim[1]+second-1)*pc_nDarray_rep->dim[2]+third-1)*pc_nDarray_rep->dim[3]+fourth-1;
@@ -840,30 +840,30 @@ double& nDarray::val4(int first, int second,
     //JB//    return (*pc_nDarray_rep->pd_nDdata + (size_t)(((first-1)*pc_nDarray_rep->dim[1]+second-1)*pc_nDarray_rep->dim[2]+third-1)*pc_nDarray_rep->dim[3]+fourth-1);
 
 
-    if(pc_nDarray_rep->nDarray_rank == 0)
+    if (pc_nDarray_rep->nDarray_rank == 0)
     {
         return (*pc_nDarray_rep->pd_nDdata);
     }
 
     long int where = first - 1;
 
-    if(pc_nDarray_rep->nDarray_rank == 2)
+    if (pc_nDarray_rep->nDarray_rank == 2)
     {
         where = where * pc_nDarray_rep->dim[1] + second - 1;
     }
 
-    if(pc_nDarray_rep->nDarray_rank == 3)
+    if (pc_nDarray_rep->nDarray_rank == 3)
     {
         where = where * pc_nDarray_rep->dim[2] + third  - 1;
     }
 
-    if(pc_nDarray_rep->nDarray_rank == 4)
+    if (pc_nDarray_rep->nDarray_rank == 4)
     {
         where = where * pc_nDarray_rep->dim[3] + fourth - 1;
     }
 
     //::printf(" w=%ld ",where);
-    double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+    double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
     return (*p_value);
 
 
@@ -1349,12 +1349,12 @@ double& nDarray::val4(int first, int second,
 
 //##############################################################################
 // nDarray addition
-nDarray& nDarray::operator+=(const nDarray& rval)
+nDarray &nDarray::operator+=(const nDarray &rval)
 {
     int this_rank_of_nDarray = this->pc_nDarray_rep->nDarray_rank;
     int rval_rank_of_nDarray =  rval.pc_nDarray_rep->nDarray_rank;
 
-    if(this_rank_of_nDarray != rval_rank_of_nDarray)
+    if (this_rank_of_nDarray != rval_rank_of_nDarray)
     {
         ::printf("\a\nnDarrays of different ranks: += not possible\n");
         ::exit ( 1 );
@@ -1379,7 +1379,7 @@ arg.pc_nDarray_rep->dim[%d]=%d\n",
         // "Letter From a Newcomer"
         //..............................................................................
         // create the structure:
-        nDarray_rep* New_pc_nDarray_rep = new nDarray_rep;  // this 'new' is overloaded
+        nDarray_rep *New_pc_nDarray_rep = new nDarray_rep;  // this 'new' is overloaded
         New_pc_nDarray_rep->nDarray_rank = this->pc_nDarray_rep->nDarray_rank;
         // out 19Nov2007// in the case of nDarray_rank=0 add one to get right thing from the
         // out 19Nov2007// operator new
@@ -1410,7 +1410,7 @@ arg.pc_nDarray_rep->dim[%d]=%d\n",
 
         New_pc_nDarray_rep->total_numb = 1;
 
-        for( int idim = 0 ; idim < New_pc_nDarray_rep->nDarray_rank ; idim++ )
+        for ( int idim = 0 ; idim < New_pc_nDarray_rep->nDarray_rank ; idim++ )
         {
             New_pc_nDarray_rep->dim[idim] = this->pc_nDarray_rep->dim[idim];
             New_pc_nDarray_rep->total_numb *= New_pc_nDarray_rep->dim[idim];
@@ -1450,7 +1450,7 @@ arg.pc_nDarray_rep->dim[%d]=%d\n",
 
 //##############################################################################
 // nDarray addition
-nDarray operator+(const nDarray& lval, const nDarray& rval)
+nDarray operator+(const nDarray &lval, const nDarray &rval)
 {
     nDarray result(lval);
     result += rval;
@@ -1551,18 +1551,18 @@ nDarray  nDarray::operator*( const double rval) const
 //    nDarray operator*( double lval, nDarray & rval);  // REVIEWER global
 //##############################################################################
 // scalar multiplication
-nDarray  operator*( const double lval, const nDarray& rval)
+nDarray  operator*( const double lval, const nDarray &rval)
 {
     return rval * lval;
 }
 //##############################################################################
 // nDarray substraction
-nDarray& nDarray::operator-=(const nDarray& rval)
+nDarray &nDarray::operator-=(const nDarray &rval)
 {
     int this_rank_of_nDarray = this->pc_nDarray_rep->nDarray_rank;
     int rval_rank_of_nDarray =  rval.pc_nDarray_rep->nDarray_rank;
 
-    if(this_rank_of_nDarray != rval_rank_of_nDarray)
+    if (this_rank_of_nDarray != rval_rank_of_nDarray)
     {
         ::printf("\a\nnDarrays of different ranks: -= not possible\n");
         ::exit ( 1 );
@@ -1587,7 +1587,7 @@ arg.pc_nDarray_rep->dim[%d]=%d\n",
         // "Letter From a Newcomer"
         //..............................................................................
         // create the structure:
-        nDarray_rep* New_pc_nDarray_rep = new nDarray_rep;  // this 'new' is overloaded
+        nDarray_rep *New_pc_nDarray_rep = new nDarray_rep;  // this 'new' is overloaded
         New_pc_nDarray_rep->nDarray_rank = this->pc_nDarray_rep->nDarray_rank;
 
 
@@ -1621,7 +1621,7 @@ arg.pc_nDarray_rep->dim[%d]=%d\n",
 
         New_pc_nDarray_rep->total_numb = 1;
 
-        for( int idim = 0 ; idim < New_pc_nDarray_rep->nDarray_rank ; idim++ )
+        for ( int idim = 0 ; idim < New_pc_nDarray_rep->nDarray_rank ; idim++ )
         {
             New_pc_nDarray_rep->dim[idim] = this->pc_nDarray_rep->dim[idim];
             New_pc_nDarray_rep->total_numb *= New_pc_nDarray_rep->dim[idim];
@@ -1661,7 +1661,7 @@ arg.pc_nDarray_rep->dim[%d]=%d\n",
 
 //##############################################################################
 // nDarray substraction
-nDarray operator-(const nDarray& lval, const nDarray& rval)
+nDarray operator-(const nDarray &lval, const nDarray &rval)
 {
     nDarray result(lval);
     result -= rval;
@@ -1859,80 +1859,80 @@ double nDarray::trace() const
     double tr = 0.0;
 
     // ovaj case ne treba vec moze sve do 4-tog reda ( ili kasnije osmog # )
-    switch(this->rank())
+    switch (this->rank())
     {
         case 0:
-            {
-                //            ::printf(" trace=%.4e  ", val(1));
-                //            ::printf("\n");
-                tr = cval(1);
-                break;
-            }
+        {
+            //            ::printf(" trace=%.4e  ", val(1));
+            //            ::printf("\n");
+            tr = cval(1);
+            break;
+        }
 
         case 1:
+        {
+            if (dim()[0] != 1)
             {
-                if(dim()[0] != 1)
-                {
-                    ::printf("\a\nERROR in trace function : not a squared 1-st rank BJtensor\n");
-                    ::exit( 1 );
-                }
-
-                tr = cval(1);
-                break;
+                ::printf("\a\nERROR in trace function : not a squared 1-st rank BJtensor\n");
+                ::exit( 1 );
             }
+
+            tr = cval(1);
+            break;
+        }
 
         case 2:
+        {
+            if (dim()[0] != dim()[1])
             {
-                if(dim()[0] != dim()[1])
-                {
-                    ::printf("\a\nERROR in trace function : not a sqared 2nd-rank BJtensor\n");
-                    ::exit( 1 );
-                }
-
-                for ( int i2 = 1 ; i2 <= dim()[0] ; i2++ )
-                {
-                    tr += cval(i2, i2);
-                }
-
-                break;
+                ::printf("\a\nERROR in trace function : not a sqared 2nd-rank BJtensor\n");
+                ::exit( 1 );
             }
+
+            for ( int i2 = 1 ; i2 <= dim()[0] ; i2++ )
+            {
+                tr += cval(i2, i2);
+            }
+
+            break;
+        }
 
         case 3:
+        {
+            if ( dim()[0] != dim()[1] ||
+                    dim()[1] != dim()[2] ||
+                    dim()[2] != dim()[0]    )
             {
-                if( dim()[0] != dim()[1] ||
-                        dim()[1] != dim()[2] ||
-                        dim()[2] != dim()[0]    )
-                {
-                    ::printf("\a\nERROR in trace function : not a sqared 3nd-rank BJtensor\n");
-                    ::exit( 1 );
-                }
-
-                for ( int i3 = 1 ; i3 <= dim()[0] ; i3++ )
-                {
-                    tr += cval(i3, i3, i3);
-                }
-
-                break;
+                ::printf("\a\nERROR in trace function : not a sqared 3nd-rank BJtensor\n");
+                ::exit( 1 );
             }
+
+            for ( int i3 = 1 ; i3 <= dim()[0] ; i3++ )
+            {
+                tr += cval(i3, i3, i3);
+            }
+
+            break;
+        }
 
         case 4:
+        {
+            if ( dim()[0] != dim()[1] ||
+                    dim()[1] != dim()[2] ||
+                    dim()[2] != dim()[3] ||
+                    dim()[3] != dim()[0]    )
             {
-                if( dim()[0] != dim()[1] ||
-                        dim()[1] != dim()[2] ||
-                        dim()[2] != dim()[3] ||
-                        dim()[3] != dim()[0]    )
-                {
-                    ::printf("\a\nERROR in trace function : not a sqared 4nd-rank BJtensor\n");
-                    ::exit( 1 );
-                }
-
-                for ( int i4 = 1 ; i4 <= dim()[0] ; i4++ )
-                {
-                    tr += cval(i4, i4, i4, i4);
-                }
-
-                break;
+                ::printf("\a\nERROR in trace function : not a sqared 4nd-rank BJtensor\n");
+                ::exit( 1 );
             }
+
+            for ( int i4 = 1 ; i4 <= dim()[0] ; i4++ )
+            {
+                tr += cval(i4, i4, i4, i4);
+            }
+
+            break;
+        }
     }
 
     //..........    null_indices();
@@ -1999,7 +1999,7 @@ double nDarray::trace() const
 
 //##############################################################################
 // nDarray comparisson                    // nDarray comparisson
-int nDarray::operator==( nDarray& rval)   // returns 1 if they are same
+int nDarray::operator==( nDarray &rval)   // returns 1 if they are same
 {
     // returns 0 if they are not
     int true_or_not = 1; // suppose that they are the same
@@ -2012,7 +2012,7 @@ int nDarray::operator==( nDarray& rval)   // returns 1 if they are same
     int this_rank_of_nDarray = this->pc_nDarray_rep->nDarray_rank;
     int rval_rank_of_nDarray =  rval.pc_nDarray_rep->nDarray_rank;
 
-    if(this_rank_of_nDarray != rval_rank_of_nDarray)
+    if (this_rank_of_nDarray != rval_rank_of_nDarray)
     {
         ::printf("\a\nnDarrays of different ranks: comparisson not possible\n");
         ::exit ( 1 );
@@ -2033,67 +2033,67 @@ int nDarray::operator==( nDarray& rval)   // returns 1 if they are same
     //..// original one .
     //..      nDarray add(pc_nDarray_rep->nDarray_rank, pc_nDarray_rep->dim, 0.0);
 
-    switch(pc_nDarray_rep->nDarray_rank)
+    switch (pc_nDarray_rep->nDarray_rank)
     {
         case 0:
+        {
+            if ( fabs( val(1) - rval.val(1) ) >= tolerance)
             {
-                if ( fabs( val(1) - rval.val(1) ) >= tolerance)
+                true_or_not = 0;
+            }
+
+            break;
+        }
+
+        case 1:
+        {
+            for ( int i1 = 1 ; i1 <= this->pc_nDarray_rep->dim[0] ; i1++ )
+                if ( fabs(  val(i1) - rval.val(i1) ) >= tolerance)
                 {
                     true_or_not = 0;
                 }
 
-                break;
-            }
+            break;
+        }
 
-        case 1:
-            {
-                for ( int i1 = 1 ; i1 <= this->pc_nDarray_rep->dim[0] ; i1++ )
-                    if ( fabs(  val(i1) - rval.val(i1) ) >= tolerance)
+        case 2:
+        {
+            for ( int i2 = 1 ; i2 <= this->pc_nDarray_rep->dim[0] ; i2++ )
+                for ( int j2 = 1 ; j2 <= this->pc_nDarray_rep->dim[1] ; j2++ )
+                    if ( fabs( val(i2, j2) - rval.val(i2, j2) ) >= tolerance)
                     {
                         true_or_not = 0;
                     }
 
-                break;
-            }
+            break;
+        }
 
-        case 2:
-            {
-                for ( int i2 = 1 ; i2 <= this->pc_nDarray_rep->dim[0] ; i2++ )
-                    for ( int j2 = 1 ; j2 <= this->pc_nDarray_rep->dim[1] ; j2++ )
-                        if ( fabs( val(i2, j2) - rval.val(i2, j2) ) >= tolerance)
+        case 3:
+        {
+            for ( int i3 = 1 ; i3 <= this->pc_nDarray_rep->dim[0] ; i3++ )
+                for ( int j3 = 1 ; j3 <= this->pc_nDarray_rep->dim[1] ; j3++ )
+                    for ( int k3 = 1 ; k3 <= this->pc_nDarray_rep->dim[2] ; k3++ )
+                        if (fabs(val(i3, j3, k3) - rval.val(i3, j3, k3)) >= tolerance)
                         {
                             true_or_not = 0;
                         }
 
-                break;
-            }
+            break;
+        }
 
-        case 3:
-            {
-                for ( int i3 = 1 ; i3 <= this->pc_nDarray_rep->dim[0] ; i3++ )
-                    for ( int j3 = 1 ; j3 <= this->pc_nDarray_rep->dim[1] ; j3++ )
-                        for ( int k3 = 1 ; k3 <= this->pc_nDarray_rep->dim[2] ; k3++ )
-                            if (fabs(val(i3, j3, k3) - rval.val(i3, j3, k3)) >= tolerance)
+        case 4:
+        {
+            for ( int i4 = 1 ; i4 <= this->pc_nDarray_rep->dim[0] ; i4++ )
+                for ( int j4 = 1 ; j4 <= this->pc_nDarray_rep->dim[1] ; j4++ )
+                    for ( int k4 = 1 ; k4 <= this->pc_nDarray_rep->dim[2] ; k4++ )
+                        for ( int l4 = 1 ; l4 <= this->pc_nDarray_rep->dim[3] ; l4++ )
+                            if (fabs(val(i4, j4, k4, l4) - rval.val(i4, j4, k4, l4)) >= tolerance)
                             {
                                 true_or_not = 0;
                             }
 
-                break;
-            }
-
-        case 4:
-            {
-                for ( int i4 = 1 ; i4 <= this->pc_nDarray_rep->dim[0] ; i4++ )
-                    for ( int j4 = 1 ; j4 <= this->pc_nDarray_rep->dim[1] ; j4++ )
-                        for ( int k4 = 1 ; k4 <= this->pc_nDarray_rep->dim[2] ; k4++ )
-                            for ( int l4 = 1 ; l4 <= this->pc_nDarray_rep->dim[3] ; l4++ )
-                                if(fabs(val(i4, j4, k4, l4) - rval.val(i4, j4, k4, l4)) >= tolerance)
-                                {
-                                    true_or_not = 0;
-                                }
-
-                break;
-            }
+            break;
+        }
     }
 
     return true_or_not;
@@ -2103,82 +2103,82 @@ int nDarray::operator==( nDarray& rval)   // returns 1 if they are same
 
 //##############################################################################
 // nDarray print function
-void nDarray::print(char* name , char* msg) const
+void nDarray::print(const char *name , const char *msg) const
 {
     if (*msg)
     {
         ::printf("%s\n", msg);
     }
 
-    switch(pc_nDarray_rep->nDarray_rank)
+    switch (pc_nDarray_rep->nDarray_rank)
     {
         case 0:
-            {
-                ::printf("%s(1)=%+8.4e  ", name, cval(1));
-                ::printf("\n");
-                break;
-            }
+        {
+            ::printf("%s(1)=%+8.4e  ", name, cval(1));
+            ::printf("\n");
+            break;
+        }
 
         case 1:
+        {
+            for ( int i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
             {
-                for ( int i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
-                {
-                    ::printf("%s(%2d)=%+8.4e  ", name, i, cval(i));
-                    ::printf("\n");
-                }
-
-                break;
+                ::printf("%s(%2d)=%+8.4e  ", name, i, cval(i));
+                ::printf("\n");
             }
 
+            break;
+        }
+
         case 2:
+        {
+            for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
             {
-                for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
+                for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
                 {
-                    for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
+                    ::printf("%s(%2d,%2d)=%+12.8e ", name, i2, j2, cval(i2, j2));
+                }
+
+                ::printf("\n");
+            }
+
+            break;
+        }
+
+        case 3:
+        {
+            for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
+                for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+                {
+                    for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
                     {
-                        ::printf("%s(%2d,%2d)=%+12.8e ", name, i2, j2, cval(i2, j2));
+                        ::printf("%s(%d,%d,%d)=%+8.4e  ", name, i3, j3, k3,
+                                 cval(i3, j3, k3));
                     }
 
                     ::printf("\n");
                 }
 
-                break;
-            }
+            break;
+        }
 
-        case 3:
-            {
-                for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
-                    for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+        case 4:
+        {
+            for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
+                for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
+                    for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
                     {
-                        for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
+                        for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
                         {
-                            ::printf("%s(%d,%d,%d)=%+8.4e  ", name, i3, j3, k3,
-                                     cval(i3, j3, k3));
+                            ::printf("%s(%d,%d,%d,%d)=%+8.4e  ", name, i4, j4, k4, l4,
+                                     cval(i4, j4, k4, l4));
                         }
 
                         ::printf("\n");
                     }
 
-                break;
-            }
-
-        case 4:
-            {
-                for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
-                    for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
-                        for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
-                        {
-                            for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
-                            {
-                                ::printf("%s(%d,%d,%d,%d)=%+8.4e  ", name, i4, j4, k4, l4,
-                                         cval(i4, j4, k4, l4));
-                            }
-
-                            ::printf("\n");
-                        }
-
-                break;
-            }
+            break;
+        }
     }
 
     ////*    ::printf("\n");
@@ -2187,80 +2187,80 @@ void nDarray::print(char* name , char* msg) const
 
 //##############################################################################
 // nDarray print function
-void nDarray::printshort(char* msg) const
+void nDarray::printshort(const char *msg) const
 {
     if (*msg)
     {
         ::printf("%s\n", msg);
     }
 
-    switch(pc_nDarray_rep->nDarray_rank)
+    switch (pc_nDarray_rep->nDarray_rank)
     {
         case 0:
-            {
-                ::printf("%+6.2e ", cval(1));
-                ::printf("\n");
-                break;
-            }
+        {
+            ::printf("%+6.2e ", cval(1));
+            ::printf("\n");
+            break;
+        }
 
         case 1:
+        {
+            for ( int i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
             {
-                for ( int i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
-                {
-                    ::printf("%+6.2e ", cval(i));
-                    ::printf("\n");
-                }
-
-                break;
+                ::printf("%+6.2e ", cval(i));
+                ::printf("\n");
             }
 
+            break;
+        }
+
         case 2:
+        {
+            for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
             {
-                for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
+                for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
                 {
-                    for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
+                    ::printf("%+6.2e ", cval(i2, j2));
+                }
+
+                ::printf("\n");
+            }
+
+            break;
+        }
+
+        case 3:
+        {
+            for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
+                for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+                {
+                    for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
                     {
-                        ::printf("%+6.2e ", cval(i2, j2));
+                        ::printf("%+6.2e  ", cval(i3, j3, k3));
                     }
 
                     ::printf("\n");
                 }
 
-                break;
-            }
+            break;
+        }
 
-        case 3:
-            {
-                for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
-                    for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+        case 4:
+        {
+            for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
+                for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
+                    for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
                     {
-                        for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
+                        for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
                         {
-                            ::printf("%+6.2e  ", cval(i3, j3, k3));
+                            ::printf("%+6.2e  ", cval(i4, j4, k4, l4));
                         }
 
                         ::printf("\n");
                     }
 
-                break;
-            }
-
-        case 4:
-            {
-                for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
-                    for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
-                        for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
-                        {
-                            for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
-                            {
-                                ::printf("%+6.2e  ", cval(i4, j4, k4, l4));
-                            }
-
-                            ::printf("\n");
-                        }
-
-                break;
-            }
+            break;
+        }
     }
 
     ////*    ::printf("\n");
@@ -2272,133 +2272,133 @@ void nDarray::printshort(char* msg) const
 void nDarray::mathprint(void) const
 {
 
-    switch(pc_nDarray_rep->nDarray_rank)
+    switch (pc_nDarray_rep->nDarray_rank)
     {
         case 0:
-            {
-                ::printf("{");
-                ::printf("%12f, ", cval(1));
-                ::printf("},\n");
-                break;
-            }
+        {
+            ::printf("{");
+            ::printf("%12f, ", cval(1));
+            ::printf("},\n");
+            break;
+        }
 
         case 1:
+        {
+            ::printf("{");
+            int i = 1;
+
+            for ( i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
             {
-                ::printf("{");
-                int i = 1;
+                ::printf("%12f, ", cval(i));
+                ::printf("\n");
 
-                for ( i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
+                if (i < pc_nDarray_rep->dim[0])
                 {
-                    ::printf("%12f, ", cval(i));
-                    ::printf("\n");
+                    ::printf(", ");
+                }
 
-                    if (i < pc_nDarray_rep->dim[0])
+                if (i == pc_nDarray_rep->dim[0])
+                {
+                    ::printf(" \n");
+                }
+            }
+
+            if (i < (pc_nDarray_rep->dim[0] + 1))
+            {
+                ::printf("},\n");
+            }
+
+            if (i == (pc_nDarray_rep->dim[0] + 1))
+            {
+                ::printf("}\n");
+            }
+
+            break;
+        }
+
+        case 2:
+        {
+            ::printf("{\n");
+
+            for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
+            {
+                if (pc_nDarray_rep->dim[1] != 1)
+                {
+                    ::printf("{");
+                }
+
+                for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
+                {
+                    ::printf("%12f", cval(i2, j2));
+
+                    if (j2 < pc_nDarray_rep->dim[1]  )
                     {
                         ::printf(", ");
                     }
 
-                    if (i == pc_nDarray_rep->dim[0])
-                    {
-                        ::printf(" \n");
-                    }
+                    //                    if (j2==pc_nDarray_rep->dim[1]) ::printf("");
                 }
 
-                if (i < (pc_nDarray_rep->dim[0] + 1))
+                //                if (i2<pc_nDarray_rep->dim[1] && pc_nDarray_rep->dim[1]!=1 )
+                //                  {
+                //                    ::printf(",\n");
+                //                  }
+                if ( pc_nDarray_rep->dim[1] == 1 && i2 < pc_nDarray_rep->dim[0] )
+                {
+                    ::printf(", ");
+                }
+
+                if (i2 < pc_nDarray_rep->dim[1] )
                 {
                     ::printf("},\n");
                 }
 
-                if (i == (pc_nDarray_rep->dim[0] + 1))
+                if (i2 == pc_nDarray_rep->dim[1] && pc_nDarray_rep->dim[1] != 1 )
                 {
                     ::printf("}\n");
                 }
-
-                break;
             }
 
-        case 2:
-            {
-                ::printf("{\n");
-
-                for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
-                {
-                    if (pc_nDarray_rep->dim[1] != 1)
-                    {
-                        ::printf("{");
-                    }
-
-                    for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
-                    {
-                        ::printf("%12f", cval(i2, j2));
-
-                        if (j2 < pc_nDarray_rep->dim[1]  )
-                        {
-                            ::printf(", ");
-                        }
-
-                        //                    if (j2==pc_nDarray_rep->dim[1]) ::printf("");
-                    }
-
-                    //                if (i2<pc_nDarray_rep->dim[1] && pc_nDarray_rep->dim[1]!=1 )
-                    //                  {
-                    //                    ::printf(",\n");
-                    //                  }
-                    if ( pc_nDarray_rep->dim[1] == 1 && i2 < pc_nDarray_rep->dim[0] )
-                    {
-                        ::printf(", ");
-                    }
-
-                    if (i2 < pc_nDarray_rep->dim[1] )
-                    {
-                        ::printf("},\n");
-                    }
-
-                    if (i2 == pc_nDarray_rep->dim[1] && pc_nDarray_rep->dim[1] != 1 )
-                    {
-                        ::printf("}\n");
-                    }
-                }
-
-                //            if (i2<(pc_nDarray_rep->dim[0]+1)) ::printf("},\n");
-                //            if (i2==(pc_nDarray_rep->dim[0]+1))
-                //              {
-                ::printf("}\n");
-                //              }
-                break;
-            }
+            //            if (i2<(pc_nDarray_rep->dim[0]+1)) ::printf("},\n");
+            //            if (i2==(pc_nDarray_rep->dim[0]+1))
+            //              {
+            ::printf("}\n");
+            //              }
+            break;
+        }
 
         case 3:
-            {
-                for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
-                    for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+        {
+            for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
+                for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+                {
+                    for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
                     {
-                        for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
+                        ::printf("%12f,  ", cval(i3, j3, k3));
+                    }
+
+                    ::printf("\n");
+                }
+
+            break;
+        }
+
+        case 4:
+        {
+            for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
+                for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
+                    for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
+                    {
+                        for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
                         {
-                            ::printf("%12f,  ", cval(i3, j3, k3));
+                            ::printf("%12f,  ", cval(i4, j4, k4, l4));
                         }
 
                         ::printf("\n");
                     }
 
-                break;
-            }
-
-        case 4:
-            {
-                for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
-                    for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
-                        for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
-                        {
-                            for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
-                            {
-                                ::printf("%12f,  ", cval(i4, j4, k4, l4));
-                            }
-
-                            ::printf("\n");
-                        }
-
-                break;
-            }
+            break;
+        }
     }
 
     ////*    ::printf("\n");
@@ -2413,65 +2413,65 @@ double nDarray::Frobenius_norm(void)  // BJmatrix, BJtensor, BJvector
     // see Dennis & Schnabel page 43
     double FN = 0.0;
 
-    switch(pc_nDarray_rep->nDarray_rank)
+    switch (pc_nDarray_rep->nDarray_rank)
     {
         case 0:
-            {
-                FN = (val(1)) * (val(1));
-                break;
-            }
+        {
+            FN = (val(1)) * (val(1));
+            break;
+        }
 
         case 1:
+        {
+            for ( int i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
             {
-                for ( int i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
-                {
-                    FN = FN + (val(i)) * (val(i));
-                }
-
-                break;
+                FN = FN + (val(i)) * (val(i));
             }
+
+            break;
+        }
 
         case 2:
+        {
+            for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
             {
-                for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
+                for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
                 {
-                    for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
+                    FN = FN + (val(i2, j2)) * (val(i2, j2));
+                }
+            }
+
+            break;
+        }
+
+        case 3:
+        {
+            for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
+                for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+                {
+                    for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
                     {
-                        FN = FN + (val(i2, j2)) * (val(i2, j2));
+                        FN = FN + (val(i3, j3, k3)) * (val(i3, j3, k3));
                     }
                 }
 
-                break;
-            }
+            break;
+        }
 
-        case 3:
-            {
-                for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
-                    for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+        case 4:
+        {
+            for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
+                for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
+                    for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
                     {
-                        for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
+                        for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
                         {
-                            FN = FN + (val(i3, j3, k3)) * (val(i3, j3, k3));
+                            FN = FN + (val(i4, j4, k4, l4)) * (val(i4, j4, k4, l4));
                         }
                     }
 
-                break;
-            }
-
-        case 4:
-            {
-                for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
-                    for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
-                        for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
-                        {
-                            for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
-                            {
-                                FN = FN + (val(i4, j4, k4, l4)) * (val(i4, j4, k4, l4));
-                            }
-                        }
-
-                break;
-            }
+            break;
+        }
     }
 
     return sqrt(FN);
@@ -2485,65 +2485,65 @@ double nDarray::General_norm(double p)  // BJmatrix, BJtensor, BJvector
     // see Dennis & Schnabel page 42
     double N = 0.0;
 
-    switch(pc_nDarray_rep->nDarray_rank)
+    switch (pc_nDarray_rep->nDarray_rank)
     {
         case 0:
-            {
-                N = pow(fabs(val(1)), p);
-                break;
-            }
+        {
+            N = pow(fabs(val(1)), p);
+            break;
+        }
 
         case 1:
+        {
+            for ( int i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
             {
-                for ( int i = 1 ; i <= pc_nDarray_rep->dim[0]; i++ )
-                {
-                    N = N + pow(fabs(val(i)), p);
-                }
-
-                break;
+                N = N + pow(fabs(val(i)), p);
             }
+
+            break;
+        }
 
         case 2:
+        {
+            for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
             {
-                for ( int i2 = 1 ; i2 <= pc_nDarray_rep->dim[0]  ; i2++ )
+                for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
                 {
-                    for ( int j2 = 1 ; j2 <= pc_nDarray_rep->dim[1] ; j2++ )
+                    N = N + pow(fabs(val(i2, j2)), p);
+                }
+            }
+
+            break;
+        }
+
+        case 3:
+        {
+            for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
+                for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+                {
+                    for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
                     {
-                        N = N + pow(fabs(val(i2, j2)), p);
+                        N = N + pow(fabs(val(i3, j3, k3)), p);
                     }
                 }
 
-                break;
-            }
+            break;
+        }
 
-        case 3:
-            {
-                for ( int i3 = 1 ; i3 <= pc_nDarray_rep->dim[0] ; i3++ )
-                    for ( int j3 = 1 ; j3 <= pc_nDarray_rep->dim[1] ; j3++ )
+        case 4:
+        {
+            for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
+                for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
+                    for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
                     {
-                        for ( int k3 = 1 ; k3 <= pc_nDarray_rep->dim[2] ; k3++ )
+                        for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
                         {
-                            N = N + pow(fabs(val(i3, j3, k3)), p);
+                            N = N + pow(fabs(val(i4, j4, k4, l4)), p);
                         }
                     }
 
-                break;
-            }
-
-        case 4:
-            {
-                for ( int i4 = 1 ; i4 <= pc_nDarray_rep->dim[0] ; i4++ )
-                    for ( int j4 = 1 ; j4 <= pc_nDarray_rep->dim[1] ; j4++ )
-                        for ( int k4 = 1 ; k4 <= pc_nDarray_rep->dim[2] ; k4++ )
-                        {
-                            for ( int l4 = 1 ; l4 <= pc_nDarray_rep->dim[3] ; l4++ )
-                            {
-                                N = N + pow(fabs(val(i4, j4, k4, l4)), p);
-                            }
-                        }
-
-                break;
-            }
+            break;
+        }
     }
 
     return pow(N, (1.0 / p));
@@ -2589,7 +2589,7 @@ nDarray nDarray::eigenvalues(void)
 
     // najbezbolinije da stvarno napravim dvodimenzioni niz pa da  ga kopiram u 'a'
     // PAZI oni u NRC rade kao u FORTRANU dakle nizovi od 1 do n
-    double** a = new double *[rows + 1];
+    double **a = new double *[rows + 1];
 
     if ( !a )
     {
@@ -2608,8 +2608,8 @@ nDarray nDarray::eigenvalues(void)
         }
     }
 
-    double* d = new double [rows + 1];
-    double* e = new double [rows + 1];
+    double *d = new double [rows + 1];
+    double *e = new double [rows + 1];
 
     for ( int j = 0 ; j < rows ; j++)
         for ( int k = 0 ; k < rows ; k++)
@@ -2666,7 +2666,7 @@ nDarray nDarray::eigenvectors(void)
 
     // najbezbolinije da stvarno napravim dvodimenzioni niz pa da  ga kopiram u 'a'
     // PAZI oni u NRC rade kao u FORTRANU dakle nizovi od 1 - n
-    double** a = new double *[rows + 1];
+    double **a = new double *[rows + 1];
 
     if ( !a )
     {
@@ -2685,8 +2685,8 @@ nDarray nDarray::eigenvectors(void)
         }
     }
 
-    double* d = new double [rows + 1];
-    double* e = new double [rows + 1];
+    double *d = new double [rows + 1];
+    double *e = new double [rows + 1];
 
     for ( int j = 0 ; j < rows ; j++)
         for ( int k = 0 ; k < rows ; k++)
@@ -2742,7 +2742,7 @@ nDarray nDarray::nDsqrt(void)  // returns all elements square root
 //#############################################################################
 #define SIGN(a,b) ((b)<0 ? -fabs(a) : fabs(a))
 
-void nDarray::tqli(double* d, double* e, int n, double** z)
+void nDarray::tqli(double *d, double *e, int n, double **z)
 {
     int m, l, iter, i, k;
     double s, r, p, g, f, dd, c, b;
@@ -2831,7 +2831,7 @@ void nDarray::tqli(double* d, double* e, int n, double** z)
 
 
 //#############################################################################
-void nDarray::tred2(double** a, int n, double* d, double* e)
+void nDarray::tred2(double **a, int n, double *d, double *e)
 {
     int l, k, j, i;
     double scale, hh, h, g, f;
@@ -2950,7 +2950,7 @@ void nDarray::tred2(double** a, int n, double* d, double* e)
 
 
 //#############################################################################
-void nDarray::eigsrt(double* d, double** v, int n)
+void nDarray::eigsrt(double *d, double **v, int n)
 {
     int k, j, i;
     double p;
@@ -2989,12 +2989,12 @@ void nDarray::eigsrt(double* d, double** v, int n)
 //##############################################################################
 // very private part
 //##############################################################################
-double* nDarray::data(void) const
+double *nDarray::data(void) const
 {
     return this->pc_nDarray_rep->pd_nDdata;
 }
 
-void nDarray::set_data_pointer(double* data_pointer)
+void nDarray::set_data_pointer(double *data_pointer)
 {
     this->pc_nDarray_rep->pd_nDdata = data_pointer;
 }
@@ -3019,17 +3019,17 @@ void nDarray::total_number(long int number)
     this->pc_nDarray_rep->total_numb = number;
 }
 
-int* nDarray::dim(void) const
+int *nDarray::dim(void) const
 {
     return this->pc_nDarray_rep->dim;
 }
 
-int& nDarray::get_dim_pointer(void) const
+int &nDarray::get_dim_pointer(void) const
 {
     return this->pc_nDarray_rep->dim[0];
 }
 
-void nDarray::set_dim_pointer(int* dim_pointer)
+void nDarray::set_dim_pointer(int *dim_pointer)
 {
     this->pc_nDarray_rep->dim = dim_pointer;
 }
@@ -3042,7 +3042,7 @@ int nDarray::dim(int which) const
 int nDarray::reference_count(int up_down)
 {
     this->pc_nDarray_rep->n += up_down;
-    return(this->pc_nDarray_rep->n);
+    return (this->pc_nDarray_rep->n);
 }
 
 void nDarray::set_reference_count(int ref_count)
@@ -3056,10 +3056,10 @@ void nDarray::set_reference_count(int ref_count)
 // #######################
 // memory manager part
 // overloading operator new in nDarray::nDarray_rep class  ##################
-void* nDarray_rep::operator new(size_t s)
+void *nDarray_rep::operator new(size_t s)
 {
     // see C++ reference manual by
-    void* void_pointer;                   // ELLIS and STROUSTRUP page 283.
+    void *void_pointer;                   // ELLIS and STROUSTRUP page 283.
     void_pointer = ::operator new(s);     // and ECKEL page 529.
 
     //    ::printf("\nnew pointer %p of size %d\n",void_pointer,s);
@@ -3073,7 +3073,7 @@ void* nDarray_rep::operator new(size_t s)
 }
 
 // overloading operator delete in nDarray::nDarray_rep class  ##################
-void nDarray_rep::operator delete(void* p)
+void nDarray_rep::operator delete(void *p)
 {
     // see C++ reference manual by
     // ELLIS and STROUSTRUP page 283.
@@ -3083,81 +3083,81 @@ void nDarray_rep::operator delete(void* p)
 }
 
 
-nDarray DTensor1_to_nDarray(DTensor1 input)
-{
-    int dim1 = input.get_dim1();
-    nDarray output(1, dim1, 1, 0.0);
+// nDarray DTensor1_to_nDarray(DTensor1 input)
+// {
+//     int dim1 = input.get_dim1();
+//     nDarray output(1, dim1, 1, 0.0);
 
-    for(int i = 0; i < dim1; i++)
-    {
-        output.cval(i) = input(i);
-    }
+//     for (int i = 0; i < dim1; i++)
+//     {
+//         output.cval(i) = input(i);
+//     }
 
-    return output;
-}
-nDarray DTensor2_to_nDarray(DTensor2 input)
-{
-    int dim1 = input.get_dim1();
-    int dim2 = input.get_dim2();
-    nDarray output(2, dim1, dim2, 0.0);
+//     return output;
+// }
+// nDarray DTensor2_to_nDarray(DTensor2 input)
+// {
+//     int dim1 = input.get_dim1();
+//     int dim2 = input.get_dim2();
+//     nDarray output(2, dim1, dim2, 0.0);
 
-    for(int i = 0; i < dim1; i++)
-    {
-        for(int j = 0; j < dim2; j++)
-        {
-            output.cval(i, j) = input(i, j);
-        }
-    }
+//     for (int i = 0; i < dim1; i++)
+//     {
+//         for (int j = 0; j < dim2; j++)
+//         {
+//             output.cval(i, j) = input(i, j);
+//         }
+//     }
 
-    return output;
-}
-nDarray DTensor3_to_nDarray(DTensor3 input)
-{
-    int dim1 = input.get_dim1();
-    int dim2 = input.get_dim2();
-    int dim3 = input.get_dim3();
-    int dims[3] = {dim1, dim2, dim3};
-    nDarray output(3, dims, 0.0);
+//     return output;
+// }
+// nDarray DTensor3_to_nDarray(DTensor3 input)
+// {
+//     int dim1 = input.get_dim1();
+//     int dim2 = input.get_dim2();
+//     int dim3 = input.get_dim3();
+//     int dims[3] = {dim1, dim2, dim3};
+//     nDarray output(3, dims, 0.0);
 
-    for(int i = 0; i < dim1; i++)
-    {
-        for(int j = 0; j < dim2; j++)
-        {
-            for(int k = 0; k < dim2; k++)
-            {
-                output.cval(i, j, k) = input(i, j, k);
-            }
-        }
-    }
+//     for (int i = 0; i < dim1; i++)
+//     {
+//         for (int j = 0; j < dim2; j++)
+//         {
+//             for (int k = 0; k < dim2; k++)
+//             {
+//                 output.cval(i, j, k) = input(i, j, k);
+//             }
+//         }
+//     }
 
-    return output;
-}
+//     return output;
+// }
 
-nDarray DTensor4_to_nDarray(DTensor4 input)
-{
-    int dim1 = input.get_dim1();
-    int dim2 = input.get_dim2();
-    int dim3 = input.get_dim3();
-    int dim4 = input.get_dim4();
-    int dims[4] = {dim1, dim2, dim3, dim4};
-    nDarray output(4, dims, 0.0);
+// nDarray DTensor4_to_nDarray(DTensor4 input)
+// {
+//     int dim1 = input.get_dim1();
+//     int dim2 = input.get_dim2();
+//     int dim3 = input.get_dim3();
+//     int dim4 = input.get_dim4();
+//     int dims[4] = {dim1, dim2, dim3, dim4};
+//     nDarray output(4, dims, 0.0);
 
-    for(int i = 0; i < dim1; i++)
-    {
-        for(int j = 0; j < dim2; j++)
-        {
-            for(int k = 0; k < dim3; k++)
-            {
-                for(int l = 0; l < dim4; l++)
-                {
-                    output.cval(i, j, k, l) = input(i, j, k, l);
-                }
-            }
-        }
-    }
+//     for (int i = 0; i < dim1; i++)
+//     {
+//         for (int j = 0; j < dim2; j++)
+//         {
+//             for (int k = 0; k < dim3; k++)
+//             {
+//                 for (int l = 0; l < dim4; l++)
+//                 {
+//                     output.cval(i, j, k, l) = input(i, j, k, l);
+//                 }
+//             }
+//         }
+//     }
 
-    return output;
-}
+//     return output;
+// }
 
 
 #endif

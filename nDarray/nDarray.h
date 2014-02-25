@@ -119,7 +119,7 @@ class nDarray_rep
 
 
     private:
-        double* pd_nDdata;  // nD array as 1D array
+        double *pd_nDdata;  // nD array as 1D array
         int nDarray_rank;   ///*  nDarray rank :
         //     0  ->  scalar
         //     1  ->  BJvector
@@ -127,7 +127,7 @@ class nDarray_rep
         //     *  ->  ********   */
         long int total_numb; // total number of elements in nDarray
 
-        int* dim;          //  array of dimensions in each rank direction
+        int *dim;          //  array of dimensions in each rank direction
         //  for example, if nDarray_rank = 3 :
         //      dim[0] = dimension in direction 1
         //      dim[1] = dimension in direction 2
@@ -136,8 +136,8 @@ class nDarray_rep
         int n;             // reference count
     public:
         // overloading operator new and delete in nDarray_rep class  ########
-        void* operator new(size_t s);  // see C++ reference manual by
-        void operator delete(void*);   // by ELLIS and STROUSTRUP page 283.
+        void *operator new(size_t s);  // see C++ reference manual by
+        void operator delete(void *);  // by ELLIS and STROUSTRUP page 283.
         // and ECKEL page 529.
 };
 
@@ -173,34 +173,34 @@ class nDarray
         // see in J. Coplien "Advanced C++..." page 96.
 
     private:
-        nDarray_rep* pc_nDarray_rep;
+        nDarray_rep *pc_nDarray_rep;
 
     public:
         nDarray(int rank_of_nDarray = 1, double initval = 0.0); // default constructor
-        nDarray(int rank_of_nDarray, const int* pdim, double* values);
-        nDarray(int rank_of_nDarray, const int* pdim, double initvalue);
+        nDarray(int rank_of_nDarray, const int *pdim, double *values);
+        nDarray(int rank_of_nDarray, const int *pdim, double initvalue);
         //..//  for skyBJmatrix --v
         //..    nDarray(int dim);
         //..    nDarray(int dim, double* initvalue);
 
         // special case for BJmatrix and BJvector . . .
-        nDarray(int rank_of_nDarray, int rows, int cols, double* values);
+        nDarray(int rank_of_nDarray, int rows, int cols, double *values);
         nDarray(int rank_of_nDarray, int rows, int cols, double initvalue);
 
         // special case when I don't want any initialization at all##
-        nDarray(char*) {};
+        nDarray(const char *) {};
 
 
-        nDarray(const char* flag, int rank_of_nDarray, const int* pdim); // create a unit nDarray
-        nDarray(const nDarray& x);   // copy-initializer
+        nDarray(const char *flag, int rank_of_nDarray, const int *pdim); // create a unit nDarray
+        nDarray(const nDarray &x);   // copy-initializer
         virtual ~nDarray();
 
         //##############################################################################
         // copy only data because everything else has already been defined
         // WATCH OUT IT HAS TO BE DEFINED BEFORE THIS FUNCTIONS IS CALLED
         // use "from" and initialize already allocated nDarray from "from" values
-        void Initialize( const nDarray& from );   // initialize data only
-        void Initialize_all( const nDarray& from ); // initialize and allocate all
+        void Initialize( const nDarray &from );   // initialize data only
+        void Initialize_all( const nDarray &from ); // initialize and allocate all
         // ( dimensions, rank and data )
         // for BJtensor
 
@@ -231,11 +231,11 @@ class nDarray
         //    BJtensor & operator()(char *indices_from_user);// to be defined in BJtensor class
 
 
-        #ifndef Brzi_nDarray_val
-        double& val(int subscript, ...);
+#ifndef Brzi_nDarray_val
+        double &val(int subscript, ...);
         double cval(int subscript, ...) const; // const
-        double& val4(int first, int second, int third, int fourth);   // overloaded for FOUR arguments for operator * for two tensors
-        #endif
+        double &val4(int first, int second, int third, int fourth);   // overloaded for FOUR arguments for operator * for two tensors
+#endif
 
         // Boris Jeremic 22April2008, suggestion from Jeremy Lea
         //defined here anyway #ifndef Brzi_nDarray_val
@@ -278,14 +278,14 @@ class nDarray
 
 
 
-        nDarray& operator=( const nDarray& rval);  // nDarray assignment
+        nDarray &operator=( const nDarray &rval);  // nDarray assignment
 
         //++    nDarray operator+( nDarray & rval); // nDarray addition
         //....// This is from JOOP May/June 1990 after ARKoenig
-        nDarray& operator +=( const nDarray&);   // nDarray addition
+        nDarray &operator +=( const nDarray &);  // nDarray addition
 
 
-        friend nDarray operator+(const nDarray&, const nDarray&);     // nDarray addition
+        friend nDarray operator+(const nDarray &, const nDarray &);   // nDarray addition
         ///////##############################################################################
         /////// nDarray addition
         /////friend nDarray operator+(const nDarray & lval, const nDarray & rval)
@@ -299,8 +299,8 @@ class nDarray
 
         //++    nDarray operator-( nDarray & rval); // nDarray subtraction
         //....// This is from JOOP May/June 1990 after ARKoenig
-        nDarray& operator -=( const nDarray&);   // nDarray subtraction
-        friend nDarray operator-(const nDarray&, const nDarray&);     // nDarray subtraction
+        nDarray &operator -=( const nDarray &);  // nDarray subtraction
+        friend nDarray operator-(const nDarray &, const nDarray &);   // nDarray subtraction
 
         nDarray operator+( double rval);  // scalar addition
         nDarray operator-( double rval);  // scalar subtraction
@@ -313,7 +313,7 @@ class nDarray
 
         nDarray deep_copy( ); // make an image
 
-        int operator==( nDarray& rval);   // nDarray comparisson
+        int operator==( nDarray &rval);   // nDarray comparisson
         // returns 1 if they are same
         // returns 0 if they are not
 
@@ -325,8 +325,8 @@ class nDarray
         nDarray nDsqrt(void);
 
 
-        void print(char* name = "t", char* msg = "Hi there#") const;
-        void printshort(char* msg = "Hi there#") const;
+        void print(const char *name = "t", const char *msg = "Hi there#") const;
+        void printshort(const char *msg = "Hi there#") const;
         void mathprint(void) const;
         // print nDarray with a "name" and the "message"
 
@@ -347,20 +347,20 @@ class nDarray
 
         // from Numerical recipes in C
     private:
-        void tqli(double* d, double* e, int n, double** z);
-        void tred2(double** a, int n, double* d, double* e);
-        void eigsrt(double* d, double** v, int n);
+        void tqli(double *d, double *e, int n, double **z);
+        void tred2(double **a, int n, double *d, double *e);
+        void eigsrt(double *d, double **v, int n);
 
     private:
-        double* data(void) const;
-        void set_data_pointer(double*);
+        double *data(void) const;
+        void set_data_pointer(double *);
         //    int rank(void) const;
         void rank(int );
         long int total_number(void) const ;
         void total_number(long int );
-        int* dim(void) const ;
-        int& get_dim_pointer(void) const ;
-        void set_dim_pointer(int*);
+        int *dim(void) const ;
+        int &get_dim_pointer(void) const ;
+        void set_dim_pointer(int *);
         //    int dim(int which) const;
         int reference_count(int );
         void set_reference_count(int );
@@ -376,40 +376,40 @@ class nDarray
         // INLINE FUNCTION BODIES
         // INLINE FUNCTION BODIES
         // INLINE FUNCTION BODIES
-        #ifdef Brzi_nDarray_val
+#ifdef Brzi_nDarray_val
 
         // ..JB..//##############################################################################
         // ..JB..// another overloading of operator() . . .  // overloaded for ONE argument
         //  inline double & nDarray::val(int first)
-        inline double& val(int first)
+        inline double &val(int first)
         {
             //      ::printf("\n KORISTIM   Brzi_nDarray_val \n ");
 
             long int where = first - 1;
 
             //::printf(" w=%ld ",where);
-            double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+            double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
             return (*p_value);
         }
 
         //##############################################################################
         // another overloading of operator() . . .  // overloaded for TWO arguments
         //  inline double & nDarray::val(int first, int second)
-        inline double& val(int first, int second)
+        inline double &val(int first, int second)
         {
             //      ::printf("\n KORISTIM   Brzi_nDarray_val \n ");
             long int where = first - 1;
             where = where * pc_nDarray_rep->dim[1] + second - 1;
 
             //::printf(" w=%ld ",where);
-            double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+            double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
             return (*p_value);
         }
 
         //##############################################################################
         // another overloading of operator() . . .  // overloaded for THREE arguments
         //  inline double & nDarray::val(int first, int second, int third )
-        inline double& val(int first, int second, int third )
+        inline double &val(int first, int second, int third )
         {
             //      ::printf("\n KORISTIM   Brzi_nDarray_val \n ");
             long int where = first - 1;
@@ -417,19 +417,19 @@ class nDarray
             where = where * pc_nDarray_rep->dim[2] + third  - 1;
 
             //::printf(" w=%ld ",where);
-            double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+            double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
             return (*p_value);
         }
 
         //##############################################################################
         // another overloading of operator() . . .  // overloaded for FOUR arguments
         //  inline double & nDarray::val(int first, int second,
-        inline double& val(int first, int second,
+        inline double &val(int first, int second,
                            int third, int fourth)
         {
             //      ::printf("\n KORISTIM   Brzi_nDarray_val \n ");
 
-            if(pc_nDarray_rep->nDarray_rank == 0)
+            if (pc_nDarray_rep->nDarray_rank == 0)
             {
                 return (*pc_nDarray_rep->pd_nDdata);
             }
@@ -442,7 +442,7 @@ class nDarray
             //     long int where = (((first-1)*pc_nDarray_rep->dim[1]+second-1)*pc_nDarray_rep->dim[2]+third-1)*pc_nDarray_rep->dim[3]+fourth-1;
             //     long int where = (((first-1)*pc_nDarray_rep->dim[1] + second-1) * pc_nDarray_rep->dim[2]+ third-1)*pc_nDarray_rep->dim[3]+fourth-1);
 
-            double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+            double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
 
             return (*p_value);
 
@@ -492,35 +492,35 @@ class nDarray
         // ..JB..//##############################################################################
         // ..JB..// another overloading of operator() . . .  // overloaded for ONE argument
         //  double & nDarray::cval(int first) const
-        double& cval(int first) const
+        double &cval(int first) const
         {
             //      ::printf("\n KORISTIM   Brzi_nDarray_val \n ");
 
             long int where = first - 1;
 
             //::printf(" w=%ld ",where);
-            double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+            double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
             return (*p_value);
         }
 
         //##############################################################################
         // another overloading of operator() . . .  // overloaded for TWO arguments
         //  double & nDarray::cval(int first, int second) const
-        double& cval(int first, int second) const
+        double &cval(int first, int second) const
         {
             //      ::printf("\n KORISTIM   Brzi_nDarray_val \n ");
             long int where = first - 1;
             where = where * pc_nDarray_rep->dim[1] + second - 1;
 
             //::printf(" w=%ld ",where);
-            double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+            double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
             return (*p_value);
         }
 
         //##############################################################################
         // another overloading of operator() . . .  // overloaded for THREE arguments
         //  double & nDarray::cval(int first, int second, int third ) const
-        double& cval(int first, int second, int third ) const
+        double &cval(int first, int second, int third ) const
         {
             //      ::printf("\n KORISTIM   Brzi_nDarray_val \n ");
             long int where = first - 1;
@@ -528,19 +528,19 @@ class nDarray
             where = where * pc_nDarray_rep->dim[2] + third  - 1;
 
             //::printf(" w=%ld ",where);
-            double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+            double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
             return (*p_value);
         }
 
         //##############################################################################
         // another overloading of operator() . . .  // overloaded for FOUR arguments
         //  double & nDarray::cval(int first, int second,
-        double& cval(int first, int second,
+        double &cval(int first, int second,
                      int third, int fourth)  const
         {
             //      ::printf("\n KORISTIM   Brzi_nDarray_val \n ");
 
-            if(pc_nDarray_rep->nDarray_rank == 0)
+            if (pc_nDarray_rep->nDarray_rank == 0)
             {
                 return (*pc_nDarray_rep->pd_nDdata);
             }
@@ -553,7 +553,7 @@ class nDarray
             //     long int where = (((first-1)*pc_nDarray_rep->dim[1]+second-1)*pc_nDarray_rep->dim[2]+third-1)*pc_nDarray_rep->dim[3]+fourth-1;
             //     long int where = (((first-1)*pc_nDarray_rep->dim[1] + second-1) * pc_nDarray_rep->dim[2]+ third-1)*pc_nDarray_rep->dim[3]+fourth-1);
 
-            double* p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
+            double *p_value = pc_nDarray_rep->pd_nDdata + (size_t)where;
 
             return (*p_value);
 
@@ -593,21 +593,21 @@ class nDarray
 
 
 
-        #endif
+#endif
 
 
 
 
 };
 // GLOBAL
-nDarray operator*( const double lval, const nDarray& rval);   // REVIEWER global *
+nDarray operator*( const double lval, const nDarray &rval);   // REVIEWER global *
 
 
 
-nDarray DTensor1_to_nDarray(DTensor1 input);
-nDarray DTensor2_to_nDarray(DTensor2 input);
-nDarray DTensor3_to_nDarray(DTensor3 input);
-nDarray DTensor4_to_nDarray(DTensor4 input);
+// nDarray DTensor1_to_nDarray(DTensor1 input);
+// nDarray DTensor2_to_nDarray(DTensor2 input);
+// nDarray DTensor3_to_nDarray(DTensor3 input);
+// nDarray DTensor4_to_nDarray(DTensor4 input);
 
 
 #endif

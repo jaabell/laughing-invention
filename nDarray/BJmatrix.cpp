@@ -40,7 +40,7 @@
 //#include <OPS_Stream.h>
 
 #define TINY  1e-20
-void BJmatrix::error(char* msg1, char* msg2)
+void BJmatrix::error(const char *msg1, const char *msg2)
 {
     ::fprintf(stderr, "BJmatrix error: %s %s\n", msg1, msg2);
     exit( 1 );
@@ -51,13 +51,13 @@ BJmatrix::BJmatrix(int rows, int columns, double initval):
     nDarray( 2, rows, columns, initval) { } // calling the appropriate
 // base constructor
 //##############################################################################
-BJmatrix::BJmatrix(int rows, int columns, double* initvalues):
+BJmatrix::BJmatrix(int rows, int columns, double *initvalues):
     nDarray( 2, rows, columns, initvalues) { } // calling the appropriate
 // base constructor
 //Xiaoyan found a bug it should be initvalue instead of *initvalue
 //##############################################################################
 //  special for vector
-BJmatrix::BJmatrix(int rank, int rows, int columns, double* initvalues):
+BJmatrix::BJmatrix(int rank, int rows, int columns, double *initvalues):
     nDarray( rank, rows, columns, initvalues) { } // calling the appropriate
 // base constructor
 //##############################################################################
@@ -66,7 +66,7 @@ BJmatrix::BJmatrix(int rank, int rows, int columns, double initvalues):
     nDarray( rank, rows, columns, initvalues) { } // calling the appropriate
 // base constructor
 //##############################################################################
-BJmatrix::BJmatrix(char* flag, int dimension ): // create an ident BJmatrix
+BJmatrix::BJmatrix(const char *flag, int dimension ): // create an ident BJmatrix
     nDarray("NO")           // with base class constructor cancelation
 {
     if ( flag[0] != 'I' && flag[0] != 'e' )
@@ -85,7 +85,7 @@ BJmatrix::BJmatrix(char* flag, int dimension ): // create an ident BJmatrix
     long int number = dimension * dimension;
     total_number(number);
 
-    for( int idim = 1 ; idim <= rank() ; idim++ )
+    for ( int idim = 1 ; idim <= rank() ; idim++ )
     {
         dim()[idim - 1] = dimension;
     }
@@ -120,11 +120,11 @@ static char nonstandard[] =
 
 //#############################################################################
 // read from "standard" BJmatrix file:
-BJmatrix::BJmatrix(char* initfile):
+BJmatrix::BJmatrix(const char *initfile):
     nDarray("NO")           // with base class constructor cancelation
 {
 #define BSIZE 120
-    FILE* from;
+    FILE *from;
 
     int rows    = 0;
     int columns = 0;
@@ -138,15 +138,15 @@ BJmatrix::BJmatrix(char* initfile):
     int rfound = 0, cfound = 0, colonsfound = 0;
 
     //        /*Parse file initialization header  */
-    while( fgets(buf, BSIZE, from) )         // for each header line
+    while ( fgets(buf, BSIZE, from) )        // for each header line
     {
         // Remove comments with ANSI C library function 'strp
-        if( ( cp = strpbrk(buf, "!")) != NULL ) // look for comments
+        if ( ( cp = strpbrk(buf, "!")) != NULL ) // look for comments
         {
             *cp = '\0';    // terminate string at comment
         }
 
-        if(( cp = strpbrk(buf, "r")) != NULL )
+        if (( cp = strpbrk(buf, "r")) != NULL )
             if (( cp2 = strpbrk(cp, "=")) != NULL )
                 if (( cp = strpbrk( cp2, "0123456789")) != NULL )
                 {
@@ -154,7 +154,7 @@ BJmatrix::BJmatrix(char* initfile):
                     rfound++;  // flag to say rows were found
                 }
 
-        if( ( cp = strpbrk(buf, "c") ) != NULL )
+        if ( ( cp = strpbrk(buf, "c") ) != NULL )
             if ( ( cp2 = strpbrk(cp, "=")) != NULL )
                 if ( ( cp = strpbrk(cp2, "O123456789")) != NULL )
                 {
@@ -206,7 +206,7 @@ BJmatrix::BJmatrix(char* initfile):
             fscanf(from, "%s", nb); // scan for space-delimited string
             val(row, col) = (double) atof(nb); // convert it to a double
 
-            if(ferror(from))
+            if (ferror(from))
             {
                 error("problem with BJmatrix initializer file ", initfile);
             }
@@ -217,11 +217,11 @@ BJmatrix::BJmatrix(char* initfile):
 
 //#############################################################################
 // read from flat BJmatrix file: and write to test output
-BJmatrix::BJmatrix(char* initfile, char* outfile):
+BJmatrix::BJmatrix(const char *initfile, const char *outfile):
     nDarray("NO")           // with base class constructor cancelation
 {
     //#define BSIZE 120
-    FILE* from;
+    FILE *from;
     //Kai  FILE *to;
 
     int rows    = 0;
@@ -266,7 +266,7 @@ BJmatrix::BJmatrix(char* initfile, char* outfile):
             fscanf(from, "%s", nb); // scan for space-delimited string
             val(row, col) = (double) atof(nb); // convert it to a double
 
-            if(ferror(from))
+            if (ferror(from))
             {
                 error("problem with BJmatrix initializer file ", initfile);
             }
@@ -280,7 +280,7 @@ BJmatrix::BJmatrix(char* initfile, char* outfile):
 }
 
 //##############################################################################
-BJmatrix::BJmatrix(const BJmatrix& x):  // copy-initializer
+BJmatrix::BJmatrix(const BJmatrix &x):  // copy-initializer
     nDarray("NO")     // with base class constructor cancelation
 {
     x.pc_nDarray_rep->n++;  // we're adding another reference.
@@ -291,7 +291,7 @@ BJmatrix::BJmatrix(const BJmatrix& x):  // copy-initializer
 
 
 //##############################################################################
-BJmatrix::BJmatrix(const nDarray& x):
+BJmatrix::BJmatrix(const nDarray &x):
     nDarray( x ) { }
 
 
@@ -332,7 +332,7 @@ int BJmatrix::cols( ) const       // cols in BJmatrix
 
 
 //#############################################################################
-BJmatrix& BJmatrix::operator=( const BJmatrix& rval)
+BJmatrix &BJmatrix::operator=( const BJmatrix &rval)
 {
     rval.pc_nDarray_rep->n++;  // we're adding another reference.
     //    rval.reference_count(+1);  // tell the rval it has another reference
@@ -342,7 +342,7 @@ BJmatrix& BJmatrix::operator=( const BJmatrix& rval)
     //       BJtensor_rep to itself ( after ARKoenig JOOP May/June '90 )  */
 
     // clean up current value;
-    if( reference_count(-1) == 0)  // if nobody else is referencing us.
+    if ( reference_count(-1) == 0) // if nobody else is referencing us.
     {
         delete [] data();
         delete [] dim();
@@ -357,9 +357,9 @@ BJmatrix& BJmatrix::operator=( const BJmatrix& rval)
 
 
 //#############################################################################
-void BJmatrix::write_standard(char* filename, char* msg)
+void BJmatrix::write_standard(const char *filename, const char *msg)
 {
-    FILE* to;
+    FILE *to;
 
     if ((to = fopen(filename, "w")) == NULL)
     {
@@ -376,11 +376,11 @@ void BJmatrix::write_standard(char* filename, char* msg)
 
     for ( int row = 0; row < rows() ; row++ )
     {
-        for( int col = 0; col < cols() ; col++ )
+        for ( int col = 0; col < cols() ; col++ )
         {
             fprintf(to, "%6.6g  ", mval(row, col));
 
-            if(ferror(to))
+            if (ferror(to))
             {
                 error("problem with BJmatrix output file ", filename);
             }
@@ -480,20 +480,20 @@ void BJmatrix::write_standard(char* filename, char* msg)
 
 //#############################################################################
 // OLD good version
-BJmatrix BJmatrix::operator*( BJmatrix& arg)
+BJmatrix BJmatrix::operator*( BJmatrix &arg)
 {
-    if( cols() != arg.rows())
+    if ( cols() != arg.rows())
         error("# rows of second mat must equal "
               "# cols of first for multiply#");
 
     BJmatrix result(rows(), arg.cols());
 
-    for( int row = 0 ; row < rows() ; row++ )
-        for( int col = 0 ; col < arg.cols() ; col++ )
+    for ( int row = 0 ; row < rows() ; row++ )
+        for ( int col = 0 ; col < arg.cols() ; col++ )
         {
             double sum = 0;
 
-            for( int i = 0 ; i < cols() ; i++ )
+            for ( int i = 0 ; i < cols() ; i++ )
             {
                 sum += mval(row, i) * arg.mval(i, col);
             }
@@ -619,7 +619,7 @@ double BJmatrix::mmax()
 {
     double temp;
 
-    if( rows() <= 0 || cols() <= 0)
+    if ( rows() <= 0 || cols() <= 0)
     {
         error("bad BJmatrix size for max()");
     }
@@ -699,7 +699,7 @@ double BJmatrix::variance()
 //#############################################################################
 double BJmatrix::determinant()
 {
-    if( rows() != cols() )
+    if ( rows() != cols() )
     {
         error("BJmatrix must be square for determinant()");
     }
@@ -712,7 +712,7 @@ double BJmatrix::determinant()
     //    decomp.print("decomposed BJmatrix");
     double determinant = d;
 
-    for( int i = 0 ; i < cols() ; i++ )
+    for ( int i = 0 ; i < cols() ; i++ )
     {
         determinant *= decomp.mval(i, i);
     }
@@ -724,7 +724,7 @@ double BJmatrix::determinant()
 //#############################################################################
 BJmatrix BJmatrix::inverse()
 {
-    if( rows() != cols() )
+    if ( rows() != cols() )
     {
         error("BJmatrix must be square for inverse()");
     }
@@ -736,7 +736,7 @@ BJmatrix BJmatrix::inverse()
     // perform the decomposition once:
     BJmatrix decomp = lu_decompose(indx, d);
 
-    for(int col = 0 ; col < cols() ; col++ )
+    for (int col = 0 ; col < cols() ; col++ )
     {
         B.copy_column(Y, col, 0);
         decomp.lu_back_subst(indx, B);
@@ -784,15 +784,15 @@ BJtensor BJmatrix::BJmatrix2BJtensor_2()  // convert BJmatrix of to 4th order BJ
     // building up a BJtensor back_conv
     // this is special case just for 4th order with def_dim_4 !!
     BJtensor back_conv( 4, def_dim_4, 0.0);
-    #ifdef SASA
+#ifdef SASA
     BJtensor Back_conv(4, def_dim_4_2, 0.0);
 
-    if(cols() == 4)
+    if (cols() == 4)
     {
         back_conv = Back_conv;    // dimenzije su po 2
     }
 
-    #endif
+#endif
     int m41 = 0;
     int m42 = 0;
 
@@ -958,14 +958,14 @@ BJtensor BJmatrix::BJmatrix2BJtensor_22()  // convert BJmatrix of to 2th order B
 
 //#############################################################################
 // copy the from_col of mm to the to  col of "this"
-void BJmatrix::copy_column( BJmatrix& mm, int from_col, int to_col)
+void BJmatrix::copy_column( BJmatrix &mm, int from_col, int to_col)
 {
-    if( rows() != mm.rows() )
+    if ( rows() != mm.rows() )
     {
         error("number of rows must be equal for copy_column()");
     }
 
-    for( int row = 0 ; row < rows() ; row++ )
+    for ( int row = 0 ; row < rows() ; row++ )
     {
         mval( row, to_col) = mm.mval(row, from_col);
     }
@@ -978,18 +978,18 @@ void BJmatrix::switch_columns(int col1, int col2 )
     int row = 0;
     BJmatrix temp( rows() );
 
-    for( row = 0 ; row < rows() ; row++ )
+    for ( row = 0 ; row < rows() ; row++ )
         // temporarily store col 1:
     {
         temp.mval(row, 0) = mval(row, col1);
     }
 
-    for( row = 0 ; row < rows() ; row++ )
+    for ( row = 0 ; row < rows() ; row++ )
     {
         mval(row, col1 ) = mval(row, col2);    // move col2 to col1
     }
 
-    for( row = 0 ; row < rows() ; row++ )
+    for ( row = 0 ; row < rows() ; row++ )
     {
         mval(row, col2) = temp.mval(row, 0);    // move temp to col2
     }
@@ -998,15 +998,15 @@ void BJmatrix::switch_columns(int col1, int col2 )
 
 //#############################################################################
 // make an image of a BJmatrix (used in L-U decomposition)
-void BJmatrix::deepcopy(BJmatrix& from, BJmatrix& to)
+void BJmatrix::deepcopy(BJmatrix &from, BJmatrix &to)
 {
-    if( from.rows() != to.rows() || from.cols() != to.cols() )
+    if ( from.rows() != to.rows() || from.cols() != to.cols() )
     {
         error("matrices must be equal dimensions for deepcopy()");
     }
 
-    for( int row = 0 ; row < from.rows() ; row++ )
-        for( int col = 0 ; col < from.cols() ; col++ )
+    for ( int row = 0 ; row < from.rows() ; row++ )
+        for ( int col = 0 ; col < from.cols() ; col++ )
         {
             to.mval(row, col) = from.mval(row, col);
         }
@@ -1022,12 +1022,12 @@ BJmatrix BJmatrix::scale( )
     double double_eps = d_macheps();
     double temp;
 
-    if( rows() <= 0 || cols() <= 0 )
+    if ( rows() <= 0 || cols() <= 0 )
     {
         error("bad BJmatrix size for scale()");
     }
 
-    if( rows() != cols() )
+    if ( rows() != cols() )
     {
         error("BJmatrix must be square for scale()");
     }
@@ -1038,13 +1038,13 @@ BJmatrix BJmatrix::scale( )
     {
         double maximum = 0.0;
 
-        for( int row = 0 ; row < rows() ; row++ )
+        for ( int row = 0 ; row < rows() ; row++ )
             if ( (temp = (double)fabs(mval(row, col))) > maximum )
             {
                 maximum = temp;    // find max column magnitude in this row
             }
 
-        if( fabs(maximum) <= double_eps )
+        if ( fabs(maximum) <= double_eps )
         {
             error("singular BJmatrix in scale()");
         }
@@ -1058,7 +1058,7 @@ BJmatrix BJmatrix::scale( )
 
 
 //#############################################################################
-BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
+BJmatrix BJmatrix::lu_decompose(BJmatrix &indx, int &d )
 {
     ///*
     // Returns the L-U decomposition of a BJmatrix. indx is an output
@@ -1068,7 +1068,7 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
     // This routine is used in combination with lu_back_subst to
     // solve linear equations or invert a BJmatrix.
     //*/
-    if( rows() != cols() )
+    if ( rows() != cols() )
     {
         error("Matrix must be square to L-U decompose#\n");
     }
@@ -1084,7 +1084,7 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
     BJmatrix scale_vector = lu_decomp.scale(); // scale the BJmatrix
 
     // The loop over columns of Crout's method:
-    for( row = 0 ; row < rows() ; row++ )
+    for ( row = 0 ; row < rows() ; row++ )
     {
         if ( row > 0 )      // eqn ±.3. 1 ± except for row=col:
         {
@@ -1092,9 +1092,9 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
             {
                 sum = lu_decomp.mval(row, col);
 
-                if( col > 0 )
+                if ( col > 0 )
                 {
-                    for( k = 0 ; k <= col - 1 ; k++ )
+                    for ( k = 0 ; k <= col - 1 ; k++ )
                     {
                         sum -= lu_decomp.mval(row, k) * lu_decomp.mval(k, col);
                     }
@@ -1108,13 +1108,13 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
         maximum = 0;
 
         // i=j of eq 2.3.12 & i=j+ 1.. N of 2.3.13.
-        for( col = row ; col <= cols() - 1 ; col++ )
+        for ( col = row ; col <= cols() - 1 ; col++ )
         {
             sum = lu_decomp.mval(row, col);
 
-            if( row > 0 )
+            if ( row > 0 )
             {
-                for( k = 0 ; k <= row - 1 ; k++ )
+                for ( k = 0 ; k <= row - 1 ; k++ )
                 {
                     sum -=  lu_decomp.mval(k, col) * lu_decomp.mval(row, k);
                 }
@@ -1133,7 +1133,7 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
         }
 
         // Do we need to interchange rows?
-        if( row != col_max)
+        if ( row != col_max)
         {
             lu_decomp.switch_columns(col_max, row); // Yes, do so ...
             d *= -1; //... and change the parity of d
@@ -1149,9 +1149,9 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
         indx.mval(row, 0) = col_max;
 
         // Now, finally, divide by the pivot element:
-        if( row != rows() - 1 )
+        if ( row != rows() - 1 )
         {
-            if( lu_decomp.mval(row, row) == 0 )
+            if ( lu_decomp.mval(row, row) == 0 )
             {
                 lu_decomp.mval(row, row) = TINY;
             }
@@ -1163,7 +1163,7 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
 
             dum = 1 / lu_decomp.mval(row, row);
 
-            for( col = row + 1 ; col <= cols() - 1 ; col++ )
+            for ( col = row + 1 ; col <= cols() - 1 ; col++ )
             {
                 lu_decomp.mval(row, col) *= dum;
             }
@@ -1172,7 +1172,7 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
 
     }
 
-    if( lu_decomp.mval(rows() - 1, cols() - 1 ) == 0 )
+    if ( lu_decomp.mval(rows() - 1, cols() - 1 ) == 0 )
     {
         lu_decomp.mval(rows() - 1, cols() - 1 ) = TINY;
     }
@@ -1184,7 +1184,7 @@ BJmatrix BJmatrix::lu_decompose(BJmatrix& indx, int& d )
 
 
 //#############################################################################
-void BJmatrix::lu_back_subst(BJmatrix& indx, BJmatrix& b)
+void BJmatrix::lu_back_subst(BJmatrix &indx, BJmatrix &b)
 {
     ///*
     // Solves the set of N linear equations A*X = B.  Here "this"
@@ -1197,17 +1197,17 @@ void BJmatrix::lu_back_subst(BJmatrix& indx, BJmatrix& b)
     // for use in BJmatrix inversion.  See pp 36-37 in
     // Press & Flannery.
     //*/
-    if( rows() != cols() )
+    if ( rows() != cols() )
     {
         error ("non-square lu_decomp BJmatrix in lu_back_subst()");
     }
 
-    if( rows() != b.rows() )
+    if ( rows() != b.rows() )
     {
         error("wrong size B vector passed to lu_back_subst()");
     }
 
-    if( rows() != indx.rows() )
+    if ( rows() != indx.rows() )
     {
         error("wrong size indx vector passed to lu_back_subst()");
     }
@@ -1216,18 +1216,18 @@ void BJmatrix::lu_back_subst(BJmatrix& indx, BJmatrix& b)
     int ii = 0;
     double sum;
 
-    for( col = 0 ; col < cols() ; col++ )
+    for ( col = 0 ; col < cols() ; col++ )
     {
         ll = (int)indx.mval(col, 0);
         sum = b.mval(ll, 0);
         b.mval(ll, 0) = b.mval(col, 0);
 
         if ( ii >= 0 )
-            for( row = ii ; row <= col - 1 ; row++ )
+            for ( row = ii ; row <= col - 1 ; row++ )
             {
                 sum -= mval(row, col) * b.mval(row, 0);
             }
-        else if( sum != 0 )
+        else if ( sum != 0 )
         {
             ii = col;
         }
@@ -1235,7 +1235,7 @@ void BJmatrix::lu_back_subst(BJmatrix& indx, BJmatrix& b)
         b.mval(col, 0) = sum;
     }
 
-    for( col = cols() - 1 ; col >= 0 ; col-- )
+    for ( col = cols() - 1 ; col >= 0 ; col-- )
     {
         sum = b.mval(col, 0);
 
@@ -1253,10 +1253,10 @@ void BJmatrix::lu_back_subst(BJmatrix& indx, BJmatrix& b)
 
 
 //#############################################################################
-double& BJmatrix::mval (int row, int col)  // I am still keeping mval
+double &BJmatrix::mval (int row, int col)  // I am still keeping mval
 {
     // operator for compatibility
-    return( this->val(row + 1, col + 1) ); // with old BJmatrix class members
+    return ( this->val(row + 1, col + 1) ); // with old BJmatrix class members
 }                                      // and they start from 0 !
 // used by BJmatrix functions which KNOW they aren't
 // exceeding the boundaries
@@ -1534,7 +1534,7 @@ double& BJmatrix::mval (int row, int col)  // I am still keeping mval
 
 
 // //#############################################################################
-double*  BJmatrix::BJmatrixtoarray(int& num)
+double  *BJmatrix::BJmatrixtoarray(int &num)
 {
     num = pc_nDarray_rep->total_numb;
     /*

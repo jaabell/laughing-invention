@@ -378,8 +378,6 @@ static RCM  *theRCM = new RCM();  // Not used in parallel
 // Store names of model and stages
 static string StageName;
 static string ModelName;
-static bool binary_output;
-static bool exodusii_output;
 
 
 // Numberers are hard-coded. For parallel processing use the Parallel numberer

@@ -210,9 +210,8 @@
 //--------------------------------------------------------------------------------------------------
 #ifdef _PARALLEL_PROCESSING
 #include "SIMULATION/define_solver_petsc_for_analysis.h"
-#include "SIMULATION/define_solver_parallel_for_analysis.h"
 #endif
-
+#include "SIMULATION/define_solver_parallel_for_analysis.h"
 #include "SIMULATION/define_solver_umfpack_for_analysis.h"
 #include "SIMULATION/define_solver_profilespd_for_analysis.h"
 

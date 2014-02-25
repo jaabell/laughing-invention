@@ -52,6 +52,7 @@
 int define_solver_parallel_for_analysis()
 {
 
+#ifdef _PARALLEL_PROCESSING
 
     PetscSolver *theSolver = new PetscSolver( "cg", "jacobi", 1.0e-7, 1.0e-50, 10000,  10000, "mpiaij");
     //    PetscSolver *theSolver = new PetscSolver( method, preconditioner);
@@ -70,10 +71,14 @@ int define_solver_parallel_for_analysis()
         }
     }
 
-    // define_constraint_handler_plain_for_analysis();
-    // define_parallel_numberer_plain_for_analysis();
-
     return 0;
+
+#else
+
+    cerr << "define_solver_parallel_for_analysis() : ERROR - Parallel solver not available in sequential mode." << endl;
+    return -1;
+#endif
+
 
 };
 

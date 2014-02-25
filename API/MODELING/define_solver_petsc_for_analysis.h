@@ -53,12 +53,13 @@
 //! - dTol: Divergence Tolerance
 //! -maxIts: Maximum Number of Iterations Allowed
 //! -matType: MAT_SOLVER_SUPERLU_DIST, MAT_SOLVER_SPOOLES MAT_SOLVER_MUMPS MATMPIAIJ
-#include "../ModifiedOpenSeesServices/domain/domain/SubdomainIter.h"
 
+
+#ifdef _PARALLEL_PROCESSING
+#include "../ModifiedOpenSeesServices/domain/domain/SubdomainIter.h"
 
 void define_solver_petsc_for_analysis(KSPType method, PCType preconditioner, double rTol, double aTol, double dTol, int maxIts, MatType matType)
 {
-#ifdef _PARALLEL_PROCESSING
     PetscSolver *theSolver = new PetscSolver( method, preconditioner, rTol, aTol, dTol,  maxIts, matType);
 
     if (theSolver == NULL)
@@ -86,14 +87,23 @@ void define_solver_petsc_for_analysis(KSPType method, PCType preconditioner, dou
             theSub->setAnalysisLinearSOE(*theSOE);
         }
     }
-    return 0;
-#else
-    cerr << "PETSc solver not available in sequential mode. " << endl;
-    return - 1;
-#endif
-
 
 };
+
+
+
+#else
+
+
+
+void define_solver_petsc_for_analysis()
+{
+    cerr << "define_solver_petsc_for_analysis(): ERROR - PETSc solver not available in sequential mode. " << endl;
+}
+
+
+
+#endif
 
 
 

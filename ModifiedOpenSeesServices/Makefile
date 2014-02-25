@@ -421,14 +421,11 @@ DOMAIN_LIBS =  ./domain/component/DomainComponent.o \
 endif
 
 
-ANALYSIS_LIBS = ./analysis/analysis/Analysis.o \
+ANALYSIS_LIBS_BASE = ./analysis/analysis/Analysis.o \
                 ./analysis/analysis/StaticAnalysis.o \
                 ./analysis/analysis/TransientAnalysis.o \
                 ./analysis/analysis/DirectIntegrationAnalysis.o \
                 ./analysis/analysis/VariableTimeStepDirectIntegrationAnalysis.o \
-                ./analysis/analysis/DomainDecompositionAnalysis.o \
-                ./analysis/analysis/StaticDomainDecompositionAnalysis.o \
-                ./analysis/analysis/TransientDomainDecompositionAnalysis.o \
                 ./analysis/analysis/SubstructuringAnalysis.o \
                 ./analysis/algorithm/SolutionAlgorithm.o \
                 ./analysis/algorithm/equiSolnAlgo/EquiSolnAlgo.o \
@@ -439,7 +436,6 @@ ANALYSIS_LIBS = ./analysis/analysis/Analysis.o \
                 ./convergenceTest/CTestNormUnbalance.o \
                 ./convergenceTest/CTestNormDispIncr.o \
                 ./convergenceTest/CTestEnergyIncr.o \
-                ./analysis/algorithm/domainDecompAlgo/DomainDecompAlgo.o \
                 ./analysis/integrator/Integrator.o \
                 ./analysis/integrator/StaticIntegrator.o \
                 ./analysis/integrator/LoadControl.o \
@@ -478,8 +474,16 @@ ANALYSIS_LIBS = ./analysis/analysis/Analysis.o \
                 ./analysis/fe_ele/lagrange/LagrangeSP_FE.o \
                 ./analysis/fe_ele/lagrange/LagrangeMP_FE.o \
                 ./analysis/fe_ele/transformation/TransformationFE.o 
-                
 
+ANALYSIS_LIBS_PARALLEL = 
+ifeq ($(PROGRAMMING_MODE), PARALLEL)                
+ANALYSIS_LIBS_PARALLEL = ./analysis/analysis/DomainDecompositionAnalysis.o \
+                ./analysis/analysis/StaticDomainDecompositionAnalysis.o \
+                ./analysis/analysis/TransientDomainDecompositionAnalysis.o \
+                ./analysis/algorithm/domainDecompAlgo/DomainDecompAlgo.o 
+endif
+
+ANALYSIS_LIBS = $(ANALYSIS_LIBS_BASE) $(ANALYSIS_LIBS_PARALLEL)
 
 ifeq ($(PROGRAMMING_MODE), PARALLEL)
 ACTOR_LIBS = ./actor/channel/Channel.o \

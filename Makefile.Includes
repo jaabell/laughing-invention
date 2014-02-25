@@ -1,4 +1,5 @@
 FEIBASEDIR = $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+ESSI_DEPEND_DIR = $(realpath $(dir $(lastword $(MAKEFILE_LIST))))/../essi_dependencies
 
 
 # ###################################################
@@ -189,56 +190,55 @@ ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
       $(FEIBASEDIR)/lib/libpenaltyelementapplydisplacement.a \
       $(FEIBASEDIR)/lib/libbase_3dep.a \
       $(FEIBASEDIR)/lib/libltensorbasedmaterials.a \
-      $(FEIBASEDIR)/lib/librefblas.a \
       $(FEIBASEDIR)/lib/libndarray.a \
       $(FEIBASEDIR)/lib/libquantity.a \
       $(FEIBASEDIR)/lib/libltensorutilities.a 
 
             
-SEQUENTIAL_NUMERIC_INCLUDES = -I$(FEIBASEDIR)/UMFPACK5.5.1 \
-            -I$(FEIBASEDIR)/UMFPACK5.5.1/UFconfig \
-            -I$(FEIBASEDIR)/UMFPACK5.5.1/AMD \
-            -I$(FEIBASEDIR)/UMFPACK5.5.1/AMD/Include \
-            -I$(FEIBASEDIR)/UMFPACK5.5.1/UMFPACK \
-            -I$(FEIBASEDIR)/UMFPACK5.5.1/UMFPACK/Include \
-            -I$(FEIBASEDIR)/SuperLU \
-            -I$(FEIBASEDIR)/boost 
+SEQUENTIAL_NUMERIC_INCLUDES = -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1 \
+            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UFconfig \
+            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/AMD \
+            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/AMD/Include \
+            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UMFPACK \
+            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UMFPACK/Include \
+            -I$(ESSI_DEPEND_DIR)/SuperLU \
+            -I$(ESSI_DEPEND_DIR)/boost 
 
-SEQUENTIAL_NUMERIC_LIBS = $(FEIBASEDIR)/lib/liblapack.a \
-      $(FEIBASEDIR)/lib/libarpack.a \
-      $(FEIBASEDIR)/lib/libumfpack.a \
-      $(FEIBASEDIR)/lib/libamd.a \
-      $(FEIBASEDIR)/lib/libcholmod.a \
-      $(FEIBASEDIR)/lib/libcolamd.a \
-      $(FEIBASEDIR)/lib/libcamd.a \
-      $(FEIBASEDIR)/lib/libccolamd.a \
-      $(FEIBASEDIR)/lib/libmetis.a \
-      $(FEIBASEDIR)/lib/libblas.a 
+SEQUENTIAL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/lib/liblapack.a \
+      $(ESSI_DEPEND_DIR)/lib/libarpack.a \
+      $(ESSI_DEPEND_DIR)/lib/libumfpack.a \
+      $(ESSI_DEPEND_DIR)/lib/libamd.a \
+      $(ESSI_DEPEND_DIR)/lib/libcholmod.a \
+      $(ESSI_DEPEND_DIR)/lib/libcolamd.a \
+      $(ESSI_DEPEND_DIR)/lib/libcamd.a \
+      $(ESSI_DEPEND_DIR)/lib/libccolamd.a \
+      $(ESSI_DEPEND_DIR)/lib/libmetis.a \
+      $(ESSI_DEPEND_DIR)/lib/libblas.a 
 
 PARALLEL_NUMERIC_INCLUDES = -I/usr/include/mpi \
-         -I$(FEIBASEDIR)/petsc-3.3-p7/include \
-         -I$(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/include \
-         -I$(FEIBASEDIR)/parmetis-4.0.2_install/include \
-         -I$(FEIBASEDIR)/metis-4.0.2_install/include \
+         -I$(ESSI_DEPEND_DIR)/petsc-3.3-p7/include \
+         -I$(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/include \
+         -I$(ESSI_DEPEND_DIR)/parmetis-4.0.2_install/include \
+         -I$(ESSI_DEPEND_DIR)/metis-4.0.2_install/include \
          -I/usr/lib/openmpi/include \
          -I/usr/lib/openmpi/include/openmpi \
-         -I$(FEIBASEDIR)/boost 
+         -I$(ESSI_DEPEND_DIR)/boost 
 
-PARALLEL_NUMERIC_LIBS = $(FEIBASEDIR)/petsc-3.3-p7/externalpackages/SuperLU_4.3/lib/libsuperlu_4.3.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/externalpackages/spooles-2.2-dec-2008/libspooles.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libpetsc.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libsuperlu_4.3.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libsuperlu_dist_3.1.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libspai.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libHYPRE.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libscalapack.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libPLAPACK.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libflapack.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libspooles.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libfblas.a \
-      $(FEIBASEDIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libblacs.a \
-      $(FEIBASEDIR)/parmetis-4.0.2_install/lib/libparmetis.a \
-      $(FEIBASEDIR)/metis-4.0.2_install/lib/libmetis.a 
+PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.3-p7/externalpackages/SuperLU_4.3/lib/libsuperlu_4.3.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/externalpackages/spooles-2.2-dec-2008/libspooles.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libpetsc.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libsuperlu_4.3.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libsuperlu_dist_3.1.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libspai.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libHYPRE.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libscalapack.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libPLAPACK.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libflapack.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libspooles.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libfblas.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libblacs.a \
+      $(ESSI_DEPEND_DIR)/parmetis-4.0.2_install/lib/libparmetis.a \
+      $(ESSI_DEPEND_DIR)/metis-4.0.2_install/lib/libmetis.a 
 
 
 SEQUENTIAL_MACHINE_LIBS =  -L/usr/lib64 \

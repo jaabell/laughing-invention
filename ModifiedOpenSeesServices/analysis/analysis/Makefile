@@ -8,6 +8,7 @@ include ../../../Makefile.Includes
 include ../../../Makefile.Compilers
 
 
+ifeq ($(PROGRAMMING_MODE), PARALLEL)
 OBJS       = DomainUser.o \
              Analysis.o \
              StaticAnalysis.o \
@@ -19,6 +20,16 @@ OBJS       = DomainUser.o \
              VariableTimeStepDirectIntegrationAnalysis.o \
              StaticDomainDecompositionAnalysis.o \
              TransientDomainDecompositionAnalysis.o
+else
+OBJS       = DomainUser.o \
+             Analysis.o \
+             StaticAnalysis.o \
+             TransientAnalysis.o \
+             DirectIntegrationAnalysis.o \
+             SubstructuringAnalysis.o \
+             EigenAnalysis.o \
+             VariableTimeStepDirectIntegrationAnalysis.o 
+endif
 
 # Compilation control
 all:         $(OBJS)
