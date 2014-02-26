@@ -507,6 +507,7 @@ DirectIntegrationAnalysis::setLinearSOE(LinearSOE &theNewSOE)
     else
     {
 #ifdef _PARALLEL_PROCESSING
+        int MaxDOFtag = theAnalysisModel->getMaxDOFtag();
         if (theSOE->setSize(MaxDOFtag) < 0); //Added by Babak 6/4/13
         {
             cerr << "DirectIntegrationAnalysis::setAlgorithm() - ";
