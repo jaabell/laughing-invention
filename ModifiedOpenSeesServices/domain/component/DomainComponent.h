@@ -53,9 +53,10 @@ class DomainComponent: public TaggedObject, public MovableObject
     public:
         virtual ~DomainComponent();
 
-        virtual void setDomain(Domain* myDomain);
-        virtual Domain* getDomain(void) const;
+        virtual void setDomain(Domain *myDomain);
+        virtual Domain *getDomain(void) const;
 
+        virtual int describeSelf(int commitTag, Channel &theChannel);
         // Method for visualisation, default does nothing
         //     virtual int displaySelf(Renderer &, int displayMode, float fact);
 
@@ -65,7 +66,7 @@ class DomainComponent: public TaggedObject, public MovableObject
         DomainComponent(int tag, int classTag);
 
     private:
-        Domain* myDomain; // a pointer to the enclosing Domain object
+        Domain *myDomain; // a pointer to the enclosing Domain object
 };
 
 #endif

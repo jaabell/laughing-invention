@@ -5246,17 +5246,220 @@ const Vector& TwentySevenNodeBrick::getResistingForceIncInertia ()
 }
 
 //=============================================================================
+//implemented by Babak Kamrani on 10/18/2012
 int TwentySevenNodeBrick::sendSelf (int commitTag, Channel& theChannel)
 {
-    // Not implemtented yet
+     int dataTag = this->getDbTag();
+     int matDbTag;
+     static ID idData(30);
+
+     idData(29) = this->getTag();
+
+     //}
+  
+  //the matDbTag will be the same for all matPoints in a SPECIFIC element
+  
+  idData(0) = (matpoint[0]->matmodel)->getClassTag();
+  
+  for (int i = 0; i<27; i++) 
+  {
+  	matDbTag = (matpoint[i]->matmodel)->getDbTag();
+	if ( matDbTag == 0 ) 
+	{
+		matDbTag = theChannel.getDbTag();
+		if ( matDbTag != 0 )
+		{
+			(matpoint[i]->matmodel)->setDbTag(matDbTag);	
+		}
+	}
+  }
+
+  idData(1) = matDbTag;
+ 
+  idData(2)  = connectedExternalNodes(0);
+  idData(3)  = connectedExternalNodes(1);
+  idData(4)  = connectedExternalNodes(2);
+  idData(5)  = connectedExternalNodes(3);
+  idData(6)  = connectedExternalNodes(4);
+  idData(7)  = connectedExternalNodes(5);
+  idData(8)  = connectedExternalNodes(6);
+  idData(9)  = connectedExternalNodes(7);
+  idData(10) = connectedExternalNodes(8);
+  idData(11) = connectedExternalNodes(9);
+  idData(12) = connectedExternalNodes(10);
+  idData(13) = connectedExternalNodes(11);
+  idData(14) = connectedExternalNodes(12);
+  idData(15) = connectedExternalNodes(13);
+  idData(16) = connectedExternalNodes(14);
+  idData(17) = connectedExternalNodes(15);
+  idData(18) = connectedExternalNodes(16);
+  idData(19) = connectedExternalNodes(17);
+  idData(20) = connectedExternalNodes(18);
+  idData(21) = connectedExternalNodes(19);
+  idData(22) = connectedExternalNodes(20);
+  idData(23) = connectedExternalNodes(21);
+  idData(24) = connectedExternalNodes(22);
+  idData(25) = connectedExternalNodes(23);
+  idData(26) = connectedExternalNodes(24);
+  idData(27) = connectedExternalNodes(25);
+  idData(28) = connectedExternalNodes(26);
+
+
+  if (theChannel.sendID(dataTag, commitTag, idData) < 0) 
+  {
+    	std::cerr << "WARNING TwentySevenNodeBrick::sendSelf() - " << this->getTag() << " failed to send ID\n";
+    	return -1;
+  }
+  // Finally, quad asks its material objects to send themselves
+  for (int i = 0; i < 27; i++) 
+  {
+    if ((matpoint[i]->matmodel)->sendSelf(commitTag, theChannel) < 0) 
+    {
+      	std::cerr << "WARNING TwentySevenNodeBrick::sendSelf() - " << this->getTag() << " failed to send material models\n";
+      	return -1;
+    }
+  }
+
+
+
+  static Vector matProp(4);
+  matProp(0) = rho;
+  matProp(1) = bf(0);
+  matProp(2) = bf(1);
+  matProp(3) = bf(2);
+  
+  if (theChannel.sendVector(dataTag, commitTag, matProp) < 0) 
+  {
+      	std::cerr << "WARNING TwentySevenNodeBrick::sendSelf() - " << this->getTag() << " failed to send its Material Property\n";
+      	return -1;
+  }
     return 0;
 }
 
 //=============================================================================
+//implemented by Babak Kamrani on 10/18/2012
 int TwentySevenNodeBrick::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
-    // Not implemtented yet
+  int dataTag = this->getDbTag();
+
+  static ID idData(30);
+  // Quad now receives the tags of its four external nodes
+  if (theChannel.recvID(dataTag, commitTag, idData) < 0) 
+  {
+    std::cerr << "WARNING TwentySevenNodeBrick::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+    return -1;
+  }
+
+  this->setTag(idData(29));
+
+  connectedExternalNodes(0)  = idData(2);
+  connectedExternalNodes(1)  = idData(3);
+  connectedExternalNodes(2)  = idData(4);
+  connectedExternalNodes(3)  = idData(5);
+  connectedExternalNodes(4)  = idData(6);
+  connectedExternalNodes(5)  = idData(7);
+  connectedExternalNodes(6)  = idData(8);
+  connectedExternalNodes(7)  = idData(9);
+  connectedExternalNodes(8)  = idData(10);
+  connectedExternalNodes(9)  = idData(11);
+  connectedExternalNodes(10) = idData(12);
+  connectedExternalNodes(11) = idData(13);
+  connectedExternalNodes(12) = idData(14);
+  connectedExternalNodes(13) = idData(15);
+  connectedExternalNodes(14) = idData(16);
+  connectedExternalNodes(15) = idData(17);
+  connectedExternalNodes(16) = idData(18);
+  connectedExternalNodes(17) = idData(19);
+  connectedExternalNodes(18) = idData(20);
+  connectedExternalNodes(19) = idData(21);
+  connectedExternalNodes(20) = idData(22);
+  connectedExternalNodes(21) = idData(23);
+  connectedExternalNodes(22) = idData(24);
+  connectedExternalNodes(23) = idData(25);
+  connectedExternalNodes(24) = idData(26);
+  connectedExternalNodes(25) = idData(27);
+  connectedExternalNodes(26) = idData(28);
+  
+  int matClassTag = idData(0);
+  int matDbTag = idData(1);  
+  
+    if (matpoint[0]->matmodel == 0) 
+    {
+    	for (int i = 0; i < 27; i++) 
+	{
+      		// Allocate new material with the sent class tag
+      		NDMaterial *ndmat = theBroker.getNewNDMaterial(matClassTag);
+      		if (ndmat == 0) 
+		{
+        		std::cerr << "TwentySevenNodeBrick::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+        		return -1;
+      		}
+      		// Now receive materials into the newly allocated space
+      		ndmat->setDbTag(matDbTag);
+      		if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0) 
+		{
+			std::cerr << "TwentySevenNodeBrick::recvSelf() - material " << i << "failed to recv itself\n";
+       			return -1;
+		} 
+      		matpoint[i]->matmodel = ndmat;
+
+    	}
+   }
+  // materials exist , ensure materials of correct type and recvSelf on them
+    else 
+    {
+    	for (int i = 0; i < 27; i++) 
+	{
+      		NDMaterial *ndmat = theBroker.getNewNDMaterial(matClassTag);;
+      		// Check that material is of the right type; if not,
+      		// delete it and create a new one of the right type
+      		if ((matpoint[i]->matmodel)->getClassTag() != matClassTag) 
+		{
+        		delete matpoint[i]->matmodel;
+			//        ndmat = theBroker.getNewNDMaterial(matClassTag);
+        		if (ndmat ==  0) 
+			{
+          			std::cerr << "TwentySevenNodeBrick::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+          			return -1;
+        		}
+      			ndmat->setDbTag(matDbTag);
+      		}
+      		// Receive the material
+     		if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0) 
+		{
+			std::cerr << "TwentySevenNodeBrick::recvSelf() - material " << i << "failed to recv itself\n";
+       			return -1;
+		} 
+      		matpoint[i]->matmodel = ndmat;
+
+    	}
+    }
+  static Vector matProp(4);
+  if ( theChannel.recvVector(dataTag, commitTag, matProp) < 0 ) 
+  {
+  	std::cerr << "TwentySevenNodeBrick::recvSelf() - failed to recv rho!\n";
+  	return -1;
+  }
+  
+  rho = matProp(0);
+  bf(0) = matProp(1);
+  bf(1) = matProp(2);
+  bf(2) = matProp(3);
     return 0;
+}
+//Babak added for PDD
+int TwentySevenNodeBrick::getObjectSize()
+{
+	int size = 0;
+	size += 11*sizeof(int);
+        size += 4*sizeof(double);
+        for(int i=0; i<8; i++)
+	{
+		size += (matpoint[i]->matmodel)->getObjectSize();
+	}
+        //size for resisting force vector
+    	//    size += 24*sizeof(double);
+  	return size;
 }
 
 

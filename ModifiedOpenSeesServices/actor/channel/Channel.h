@@ -46,7 +46,7 @@ class Matrix;
 class Vector;
 class ID;
 class FEM_ObjectBroker;
-class nDarray;//Guanzhou added to send nDarray
+class nDarray;
 class LTensor;
 
 class Channel
@@ -107,7 +107,6 @@ class Channel
                            ID &theID,
                            ChannelAddress *theAddress = 0) = 0;
 
-        //Guanzhou added
         virtual int sendnDarray(int dbTag, int commitTag,
                                 const nDarray &theNDarray,
                                 ChannelAddress *theAddress = 0) = 0;
@@ -115,8 +114,6 @@ class Channel
         virtual int recvnDarray(int dbTag, int commitTag,
                                 nDarray &theNDarray,
                                 ChannelAddress *theAddress = 0) = 0;
-
-
 
 
 

@@ -52,14 +52,14 @@ DomainComponent::~DomainComponent()
 
 
 void
-DomainComponent::setDomain(Domain* model)
+DomainComponent::setDomain(Domain *model)
 {
     // sets the pointer
     myDomain = model;
 }
 
 
-Domain*
+Domain *
 DomainComponent::getDomain(void) const
 {
     // returns the current pointer
@@ -67,10 +67,8 @@ DomainComponent::getDomain(void) const
 }
 
 
-
-// int
-// DomainComponent::displaySelf(Renderer &theViewer, int displayMode, float fact)
-// {
-//   return 0;
-// }
-
+int DomainComponent::describeSelf(int commitTag, Channel &theChannel)
+{
+    cerr << "DomainComponent::describeSelf() : WARNING! The domain component with tag " << this->getTag() << " is has not implemented describeSelf() and will not have database metadata! " << endl;
+    return 0;
+}
