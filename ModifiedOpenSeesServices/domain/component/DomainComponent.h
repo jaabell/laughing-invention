@@ -56,12 +56,6 @@ class DomainComponent: public TaggedObject, public MovableObject
         virtual void setDomain(Domain *myDomain);
         virtual Domain *getDomain(void) const;
 
-        virtual int describeSelf(int commitTag, Channel &theChannel);
-        // Method for visualisation, default does nothing
-        //     virtual int displaySelf(Renderer &, int displayMode, float fact);
-
-
-
     protected:
         DomainComponent(int tag, int classTag);
 

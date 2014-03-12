@@ -128,9 +128,11 @@ class NETCDF_Channel
         int status;
 
         // NCIDs
-        int ncid_root;
-        int ncid_grp_elements;
-        int ncid_grp_nodes;
+        int ncid_root;            // Root of dataset
+        int ncid_grp_elements;    // Elements
+        int ncid_grp_nodes;       // Nodes
+        int ncid_current;         // Current I/O takes place here
+        int ncid_current_parent;  // One level up from current place ... if any
         // int ncid_grp_materials;
 
         //Basic dimensions

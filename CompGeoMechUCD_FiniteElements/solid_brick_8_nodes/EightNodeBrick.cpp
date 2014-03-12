@@ -2669,21 +2669,17 @@ void EightNodeBrick::setDomain (Domain *theDomain)
         theNodes[1] = 0;
         theNodes[2] = 0;
         theNodes[3] = 0;
-        //Xiaoyan added 5-8  07/06/00
         theNodes[4] = 0;
         theNodes[5] = 0;
         theNodes[6] = 0;
         theNodes[7] = 0;
     }
-    //Added if-else for found a bug when trying removeElement from theDomain  07-19-2001 Zhaohui
     else
     {
         int Nd1 = connectedExternalNodes(0);
         int Nd2 = connectedExternalNodes(1);
         int Nd3 = connectedExternalNodes(2);
         int Nd4 = connectedExternalNodes(3);
-        //Xiaoyan added 5-8  07/06/00
-
         int Nd5 = connectedExternalNodes(4);
         int Nd6 = connectedExternalNodes(5);
         int Nd7 = connectedExternalNodes(6);
