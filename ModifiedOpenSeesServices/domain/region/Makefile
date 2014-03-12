@@ -5,7 +5,7 @@ current_directory := $(shell pwd)
 ModifiedOpenSeesServicesdir := $(current_directory)/../..
 
 include ../../../Makefile.Compilers
-include ../../Makefile.def
+#include ../../Makefile.def
 
 
 OBJS       = MeshRegion.o 

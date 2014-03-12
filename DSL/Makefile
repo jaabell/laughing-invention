@@ -34,3 +34,4 @@ cleanall:
 	$(RM) $(RMFLAGS) $(OBJS) *.tex *.txt fei.tags 
 	$(RM) $(RMFLAGS)  makedocumentation feiparser ../bin/essi 
 	
+clean: cleanall

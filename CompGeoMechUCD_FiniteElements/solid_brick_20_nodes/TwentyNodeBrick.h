@@ -87,17 +87,17 @@ class TwentyNodeBrick: public Element
                         int node_numb_9,  int node_numb_10, int node_numb_11, int node_numb_12,
                         int node_numb_13, int node_numb_14, int node_numb_15, int node_numb_16,
                         int node_numb_17, int node_numb_18, int node_numb_19, int node_numb_20,
-                        NDMaterial* Globalmmodel);
+                        NDMaterial *Globalmmodel);
 
         TwentyNodeBrick ();
         ~TwentyNodeBrick();
 
         int getNumExternalNodes () const;
-        const ID& getExternalNodes ();
-        Node** getNodePtrs();
+        const ID &getExternalNodes ();
+        Node **getNodePtrs();
 
         int getNumDOF ();
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState ();
@@ -110,48 +110,48 @@ class TwentyNodeBrick: public Element
         // public methods to obtain stiffness, mass, damping and residual information
         // We haven't build the following functions.
         // All the value of K M Dmp and F are nothing.
-        const Matrix& getTangentStiff ();
-        const Matrix& getInitialStiff();
-        const Matrix& getMass ();
+        const Matrix &getTangentStiff ();
+        const Matrix &getInitialStiff();
+        const Matrix &getMass ();
 
-        const Matrix& getConsMass ();
-        const Matrix& getLumpedMass ();
+        const Matrix &getConsMass ();
+        const Matrix &getLumpedMass ();
 
         void zeroLoad ();
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
         //int addLoad(const Vector &addP);
-        int addInertiaLoadToUnbalance(const Vector& accel);
-        const Vector  FormEquiBodyForce(const Vector& data);
-        const Vector& getResistingForce ();
-        const Vector& getResistingForceIncInertia ();
+        int addInertiaLoadToUnbalance(const Vector &accel);
+        const Vector  FormEquiBodyForce(const Vector &data);
+        const Vector &getResistingForce ();
+        const Vector &getResistingForceIncInertia ();
 
         // public methods for element output
-        int sendSelf (int commitTag, Channel& theChannel);
-        int recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker
+        int sendSelf (int commitTag, Channel &theChannel);
+        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
                       &theBroker);
         //    int displaySelf (Renderer &theViewer, int displayMode, float fact);
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
         //    Do nothing with void Print (ostream &s, int flag =0);
         //    use Brick3D report.  08/16/00
-        Response* setResponse (const char** argv, int argc, Information& eleInformation);
-        int getResponse (int responseID, Information& eleInformation);
+        Response *setResponse (const char **argv, int argc, Information &eleInformation);
+        int getResponse (int responseID, Information &eleInformation);
 
         // Nima Tafazzoli added to return the Mass matrix (Feb. 2010)
         //     Matrix returnMass(void);
 
 
         // Nima Tafazzoli added for surface load (July 2012)
-        Vector& Direction_Weight(double Xi , double Eta,
+        Vector &Direction_Weight(double Xi , double Eta,
                                  Vector coord1, Vector coord2, Vector coord3, Vector coord4,
                                  Vector coord5, Vector coord6, Vector coord7, Vector coord8);
         double SurfaceShapeFunctionValues(double Xi , double Eta, int whichcomponent);
         double SurfaceLoadValues(double Xi , double Eta, Vector Pressure);
-        const  Vector& getBodyForce(double loadFactor, const Vector& data);
-        const  Vector& getSurfaceForce(double loadFactor, const Vector& data);
+        const  Vector &getBodyForce(double loadFactor, const Vector &data);
+        const  Vector &getSurfaceForce(double loadFactor, const Vector &data);
 
 
         // Nima Tafazzoli added (Sep. 2012)
-        int CheckMesh(ofstream&);
+        int CheckMesh(ofstream &);
 
 
         //     int getDampingTag(void);
@@ -172,8 +172,8 @@ class TwentyNodeBrick: public Element
         int numDOF;             // Number of element DOF
         ID  connectedExternalNodes; // Tags of quad nodes
 
-        Matrix* Ki;
-        Node* theNodes[20];
+        Matrix *Ki;
+        Node *theNodes[20];
 
         static Matrix K;    // Element stiffness Matrix
         static Matrix C;    // Element damping matrix
@@ -203,7 +203,7 @@ class TwentyNodeBrick: public Element
         double determinant_of_Jacobian;
         int nodes_in_brick;      // number of nodes ( 20 now Zhaohui)
 
-        NDMaterial* mmodel;      // pointer to GLOBAL material models
+        NDMaterial *mmodel;      // pointer to GLOBAL material models
 
         int integration_order; // Gauss-Legendre integration order
 
@@ -212,7 +212,7 @@ class TwentyNodeBrick: public Element
         // Now I want 3D array of Material points!
         // MatPoint3D[r_integration_order][s_integration_order][t_integration_order]
         // 3D array of Material points
-        MatPoint3D** matpoint;   // pointer to array of Material Points
+        MatPoint3D **matpoint;   // pointer to array of Material Points
 
         // this is LM array. This array holds DOFs for this element
         //int  LM[60]; // for 20noded x 3 = 60
@@ -238,11 +238,11 @@ class TwentyNodeBrick: public Element
         tensor dh_drst_at(double r, double s, double t);
 
 
-        TwentyNodeBrick& operator[](int subscript);
+        TwentyNodeBrick &operator[](int subscript);
 
         tensor getStiffnessTensor(void);
 
-        void set_strain_stress_tensor(FILE* fp, double* u);
+        void set_strain_stress_tensor(FILE *fp, double *u);
         tensor getMassTensor(void);
 
         tensor Jacobian_3D(tensor dh);
@@ -252,10 +252,10 @@ class TwentyNodeBrick: public Element
         tensor incr_disp(void);
         tensor total_disp(void);
 
-        tensor total_disp(FILE* fp, double* u);
+        tensor total_disp(FILE *fp, double *u);
 
-        tensor stiffness_matrix(const tensor& K);
-        tensor mass_matrix(const tensor& M);
+        tensor stiffness_matrix(const tensor &K);
+        tensor mass_matrix(const tensor &M);
 
 
         int  get_global_number_of_node(int local_node_number);
@@ -274,21 +274,21 @@ class TwentyNodeBrick: public Element
         // returns nodal forces for ITERATIVE stress field in an element
         tensor iterative_nodal_forces(void);
         // returns nodal forces for given constant stress field in the element
-        tensor nodal_forces_from_stress(stresstensor&);
+        tensor nodal_forces_from_stress(stresstensor &);
         // returns nodal forces for given incremental strain field in an element
         // by using the linearized constitutive tensor from the begining of the step !
         tensor linearized_nodal_forces(void);
         // updates Material point stresses and strains from given displacements
-        tensor update_stress_strain(tensor& disp);
+        tensor update_stress_strain(tensor &disp);
 
-        void report(char*);
-        void reportshort(char*);
-        void reportPAK(char*);
+        void report(char *);
+        void reportshort(char *);
+        void reportPAK(char *);
         void reportpqtheta(int);
         //void reportLM(char *);
         void computeGaussPoint(void);
-        void reportCIPIC(char*);
-        void reportTensorF(FILE*);
+        void reportCIPIC(char *);
+        void reportTensorF(FILE *);
         Vector getWeightofGP(void);
 
 
@@ -297,7 +297,7 @@ class TwentyNodeBrick: public Element
         //void reportStressTensorF(FILE *);
 
         // Nima Tafazzoli (Jan. 2013)
-        Vector* getStress(void);
+        Vector *getStress(void);
 
 };
 
