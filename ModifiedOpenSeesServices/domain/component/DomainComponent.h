@@ -38,15 +38,17 @@
 //
 // What: "@(#) DomainComponent.h, revA"
 
+//Addition of interface to describe self by Jose Abell, March 2014
+
 #include <TaggedObject.h>
 #include <MovableObject.h>
-// AddingSensitivity:BEGIN ////////////////////////////////////
 #include <Vector.h>
-// AddingSensitivity:END //////////////////////////////////////
+
+
 
 class Domain;
-// class Renderer;
 class Information;
+class HDF5_Channel;
 
 class DomainComponent: public TaggedObject, public MovableObject
 {
@@ -55,6 +57,7 @@ class DomainComponent: public TaggedObject, public MovableObject
 
         virtual void setDomain(Domain *myDomain);
         virtual Domain *getDomain(void) const;
+        virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
 
     protected:
         DomainComponent(int tag, int classTag);

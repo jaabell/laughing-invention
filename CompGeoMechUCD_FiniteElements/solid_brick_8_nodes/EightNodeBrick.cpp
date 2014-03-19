@@ -3749,7 +3749,7 @@ int EightNodeBrick::sendSelf (int commitTag, Channel &theChannel)
     idData(25) = this->getTag();
 
 
-
+    //    theChannel.sendName(string name);
     if (theChannel.sendID(dataTag, commitTag, idData) < 0)
     {
         cerr << "WARNING EightNodeBrick::sendSelf() - " << this->getTag() << " failed to send ID\n";

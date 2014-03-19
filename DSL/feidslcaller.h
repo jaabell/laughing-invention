@@ -22,7 +22,7 @@
 
 bool argcheck(ArgumentType arguments, SignatureType signature);
 
-std::pair<string, bool (*)(const Quantity&)> this_signature(string s, bool (*f)(const Quantity&))
+std::pair<string, bool (*)(const Quantity &)> this_signature(string s, bool (*f)(const Quantity &))
 {
     return make_pair(s, f);
 }
@@ -45,16 +45,16 @@ std::pair<string, bool (*)(const Quantity&)> this_signature(string s, bool (*f)(
 
 // If T is not a string
 template<typename T>
-typename boost::disable_if_c<boost::is_same<std::string, T>::value, T>::type getTheArgument(ArgumentIterator& it)
+typename boost::disable_if_c<boost::is_same<std::string, T>::value, T>::type getTheArgument(ArgumentIterator &it)
 {
     return (*it)->value() .Getvalue();
 }
 
 // If T is a string
 template<typename T>
-typename boost::enable_if_c<boost::is_same<std::string, T>::value, T>::type getTheArgument(ArgumentIterator& it)
+typename boost::enable_if_c<boost::is_same<std::string, T>::value, T>::type getTheArgument(ArgumentIterator &it)
 {
-    FeiString* feistringpointer = dynamic_cast<FeiString*>(*it);
+    FeiString *feistringpointer = dynamic_cast<FeiString *>(*it);
 
     if (feistringpointer != 0)
     {
@@ -81,7 +81,7 @@ class FeiDslCallerBase : public DslAction
         SignatureType signature;
 
     public:
-        static fstream* cppfile;
+        static fstream *cppfile;
         FeiDslCallerBase(ArgumentType a, SignatureType s, string name) :
             DslAction(), args(a), signature(s)
         {
@@ -98,8 +98,8 @@ class FeiDslCallerBase : public DslAction
 
                 for (; it != args.end(); it++)
                 {
-                    Expression* e = (*it);
-                    FeiString* ptr = dynamic_cast<FeiString*>(e);
+                    Expression *e = (*it);
+                    FeiString *ptr = dynamic_cast<FeiString *>(e);
 
                     if ( ptr != 0) // Is a FEISTRING
                     {
@@ -127,10 +127,10 @@ class FeiDslCallerBase : public DslAction
         }
 
         virtual void execute() = 0;
-        virtual Expression* clone () = 0;
+        virtual Expression *clone () = 0;
 };
 
-fstream* FeiDslCallerBase::cppfile = 0;
+fstream *FeiDslCallerBase::cppfile = 0;
 
 
 // Derived Classes
@@ -147,7 +147,7 @@ class FeiDslCaller0 : public FeiDslCallerBase
             ReturnType retval = (*dslFunctionPointer)();
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller0(*this);
         }
@@ -182,7 +182,7 @@ class FeiDslCaller1 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller1(*this);
         }
@@ -224,7 +224,7 @@ class FeiDslCaller2 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller2(*this);
         }
@@ -267,7 +267,7 @@ class FeiDslCaller3 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller3(*this);
         }
@@ -312,7 +312,7 @@ class FeiDslCaller4 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller4(*this);
         }
@@ -359,7 +359,7 @@ class FeiDslCaller5 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller5(*this);
         }
@@ -408,7 +408,7 @@ class FeiDslCaller6 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller6(*this);
         }
@@ -459,7 +459,7 @@ class FeiDslCaller7 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller7(*this);
         }
@@ -512,7 +512,7 @@ class FeiDslCaller8 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller8(*this);
         }
@@ -567,7 +567,7 @@ class FeiDslCaller9 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller9(*this);
         }
@@ -624,7 +624,7 @@ class FeiDslCaller10 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller10(*this);
         }
@@ -683,7 +683,7 @@ class FeiDslCaller11 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller11(*this);
         }
@@ -744,7 +744,7 @@ class FeiDslCaller12 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller12(*this);
         }
@@ -807,7 +807,7 @@ class FeiDslCaller13 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller13(*this);
         }
@@ -872,7 +872,7 @@ class FeiDslCaller14 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller14(*this);
         }
@@ -939,7 +939,7 @@ class FeiDslCaller15 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller15(*this);
         }
@@ -1008,7 +1008,7 @@ class FeiDslCaller16 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller16(*this);
         }
@@ -1079,7 +1079,7 @@ class FeiDslCaller17 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller17(*this);
         }
@@ -1152,7 +1152,7 @@ class FeiDslCaller18 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller18(*this);
         }
@@ -1227,7 +1227,7 @@ class FeiDslCaller19 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller19(*this);
         }
@@ -1304,7 +1304,7 @@ class FeiDslCaller20 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller20(*this);
         }
@@ -1383,7 +1383,7 @@ class FeiDslCaller21 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller21(*this);
         }
@@ -1464,7 +1464,7 @@ class FeiDslCaller22 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller22(*this);
         }
@@ -1547,7 +1547,7 @@ class FeiDslCaller23 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller23(*this);
         }
@@ -1632,7 +1632,7 @@ class FeiDslCaller24 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller24(*this);
         }
@@ -1719,7 +1719,7 @@ class FeiDslCaller25 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller25(*this);
         }
@@ -1808,7 +1808,7 @@ class FeiDslCaller26 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller26(*this);
         }
@@ -1899,7 +1899,7 @@ class FeiDslCaller27 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller27(*this);
         }
@@ -1992,7 +1992,7 @@ class FeiDslCaller28 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller28(*this);
         }
@@ -2087,7 +2087,7 @@ class FeiDslCaller29 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller29(*this);
         }
@@ -2184,7 +2184,7 @@ class FeiDslCaller30 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller30(*this);
         }
@@ -2283,7 +2283,7 @@ class FeiDslCaller31 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller31(*this);
         }
@@ -2384,7 +2384,7 @@ class FeiDslCaller32 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller32(*this);
         }
@@ -2487,7 +2487,7 @@ class FeiDslCaller33 : public FeiDslCallerBase
 
             setReturnValue(Quantity(retval));
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new FeiDslCaller33(*this);
         }

@@ -2228,7 +2228,8 @@ char *yytext;
     #include "feiparser.tab.hh"
 
     //Boost for string to double conversion
-    #include <../boost/boost/lexical_cast.hpp>
+    //#include <../boost/boost/lexical_cast.hpp>
+    #include <boost/lexical_cast.hpp>
 
 
     int yycolumn = 1;
@@ -2301,7 +2302,7 @@ char *yytext;
 
 
 /* float exponent */
-#line 2305 "feiparser.lex.c"
+#line 2306 "feiparser.lex.c"
 
 #define INITIAL 0
 #define IFILE 1
@@ -2490,7 +2491,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 112 "feiparser.l"
+#line 113 "feiparser.l"
 
 
 
@@ -2505,7 +2506,7 @@ YY_DECL
  /* The order in this file matters. Patterns which are higher up are matched first */
  
  /* single character ops are directly passed to the parser (more grammatical clarity) */
-#line 2509 "feiparser.lex.c"
+#line 2510 "feiparser.lex.c"
 
 	if ( !(yy_init) )
 		{
@@ -2599,41 +2600,41 @@ do_action:	/* This label is used only to access EOF actions. */
 			goto yy_find_action;
 
 case 1:
-#line 127 "feiparser.l"
-case 2:
 #line 128 "feiparser.l"
-case 3:
+case 2:
 #line 129 "feiparser.l"
-case 4:
+case 3:
 #line 130 "feiparser.l"
-case 5:
+case 4:
 #line 131 "feiparser.l"
-case 6:
+case 5:
 #line 132 "feiparser.l"
-case 7:
+case 6:
 #line 133 "feiparser.l"
-case 8:
+case 7:
 #line 134 "feiparser.l"
-case 9:
+case 8:
 #line 135 "feiparser.l"
-case 10:
+case 9:
 #line 136 "feiparser.l"
-case 11:
+case 10:
 #line 137 "feiparser.l"
-case 12:
+case 11:
 #line 138 "feiparser.l"
-case 13:
+case 12:
 #line 139 "feiparser.l"
-case 14:
+case 13:
 #line 140 "feiparser.l"
+case 14:
+#line 141 "feiparser.l"
 case 15:
 YY_RULE_SETUP
-#line 140 "feiparser.l"
+#line 141 "feiparser.l"
 { return yytext[0]; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 142 "feiparser.l"
+#line 143 "feiparser.l"
 {
                                 yylloc->begin.line = yylineno;
                                 yylloc->begin.column = yycolumn;
@@ -2644,158 +2645,158 @@ YY_RULE_SETUP
 /* assign operate */
 case 17:
 YY_RULE_SETUP
-#line 150 "feiparser.l"
+#line 151 "feiparser.l"
 { return token::PLUSEQUAL; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 151 "feiparser.l"
+#line 152 "feiparser.l"
 { return token::MINUSEQUAL; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 152 "feiparser.l"
+#line 153 "feiparser.l"
 { return token::TIMESEQUAL; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 153 "feiparser.l"
+#line 154 "feiparser.l"
 { return token::DIVIDEEQUAL; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 154 "feiparser.l"
+#line 155 "feiparser.l"
 { return token::MODULUSEQUAL; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 155 "feiparser.l"
+#line 156 "feiparser.l"
 { return token::POWEQUAL; }
 	YY_BREAK
 /* comparison ops */
 case 23:
 YY_RULE_SETUP
-#line 159 "feiparser.l"
+#line 160 "feiparser.l"
 { yylval->fn = 1; return token::CMP; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 160 "feiparser.l"
+#line 161 "feiparser.l"
 { yylval->fn = 2; return token::CMP; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 161 "feiparser.l"
+#line 162 "feiparser.l"
 { yylval->fn = 3; return token::CMP; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 162 "feiparser.l"
+#line 163 "feiparser.l"
 { yylval->fn = 4; return token::CMP; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 163 "feiparser.l"
+#line 164 "feiparser.l"
 { yylval->fn = 5; return token::CMP; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 164 "feiparser.l"
+#line 165 "feiparser.l"
 { yylval->fn = 6; return token::CMP; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 165 "feiparser.l"
+#line 166 "feiparser.l"
 { yylval->fn = 7; return token::CMP; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 166 "feiparser.l"
+#line 167 "feiparser.l"
 { yylval->fn = 8; return token::CMP; }
 	YY_BREAK
 /* test for units */
 case 31:
-#line 171 "feiparser.l"
-case 32:
 #line 172 "feiparser.l"
-case 33:
+case 32:
 #line 173 "feiparser.l"
-case 34:
+case 33:
 #line 174 "feiparser.l"
-case 35:
+case 34:
 #line 175 "feiparser.l"
-case 36:
+case 35:
 #line 176 "feiparser.l"
-case 37:
+case 36:
 #line 177 "feiparser.l"
-case 38:
+case 37:
 #line 178 "feiparser.l"
-case 39:
+case 38:
 #line 179 "feiparser.l"
-case 40:
+case 39:
 #line 180 "feiparser.l"
-case 41:
+case 40:
 #line 181 "feiparser.l"
+case 41:
+#line 182 "feiparser.l"
 case 42:
 YY_RULE_SETUP
-#line 181 "feiparser.l"
+#line 182 "feiparser.l"
 {yylval->ident = new string(yytext); return token::ISUNITTYPE;}
 	YY_BREAK
 /* Flow control keywords */
 case 43:
 YY_RULE_SETUP
-#line 184 "feiparser.l"
+#line 185 "feiparser.l"
 { return token::IF; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 185 "feiparser.l"
+#line 186 "feiparser.l"
 { return token::THEN; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 186 "feiparser.l"
+#line 187 "feiparser.l"
 { return token::ELSE; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 187 "feiparser.l"
+#line 188 "feiparser.l"
 { return token::WHILE; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 188 "feiparser.l"
+#line 189 "feiparser.l"
 { return token::DO; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 189 "feiparser.l"
+#line 190 "feiparser.l"
 { return token::LET;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 190 "feiparser.l"
+#line 191 "feiparser.l"
 { return token::IN; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 191 "feiparser.l"
+#line 192 "feiparser.l"
 { return token::EXITSAFEMODE;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 192 "feiparser.l"
+#line 193 "feiparser.l"
 { return token::CONTINUE;}
 	YY_BREAK
 /* Include statement is handled by the lexer */
 case 52:
 YY_RULE_SETUP
-#line 195 "feiparser.l"
+#line 196 "feiparser.l"
 {BEGIN IFILE; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 196 "feiparser.l"
+#line 197 "feiparser.l"
 {
                                 {
                                     //This ignores anything up to the newline.
@@ -2814,7 +2815,7 @@ YY_RULE_SETUP
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 210 "feiparser.l"
+#line 211 "feiparser.l"
 {
                                 cerr << curfilename << ":" << yylineno << ": bad include line." << endl;
                                 yyterminate();
@@ -2822,40 +2823,40 @@ YY_RULE_SETUP
 	YY_BREAK
 /* built in functions */
 case 55:
-#line 218 "feiparser.l"
-case 56:
 #line 219 "feiparser.l"
-case 57:
+case 56:
 #line 220 "feiparser.l"
-case 58:
+case 57:
 #line 221 "feiparser.l"
-case 59:
+case 58:
 #line 222 "feiparser.l"
-case 60:
+case 59:
 #line 223 "feiparser.l"
-case 61:
+case 60:
 #line 224 "feiparser.l"
-case 62:
+case 61:
 #line 225 "feiparser.l"
-case 63:
+case 62:
 #line 226 "feiparser.l"
-case 64:
+case 63:
 #line 227 "feiparser.l"
-case 65:
+case 64:
 #line 228 "feiparser.l"
-case 66:
+case 65:
 #line 229 "feiparser.l"
-case 67:
+case 66:
 #line 230 "feiparser.l"
-case 68:
+case 67:
 #line 231 "feiparser.l"
-case 69:
+case 68:
 #line 232 "feiparser.l"
-case 70:
+case 69:
 #line 233 "feiparser.l"
+case 70:
+#line 234 "feiparser.l"
 case 71:
 YY_RULE_SETUP
-#line 233 "feiparser.l"
+#line 234 "feiparser.l"
 { yylval->ident = new string(yytext); return token::FUNCTION; }
 	YY_BREAK
 /* ================================================================================================= */
@@ -2863,88 +2864,88 @@ YY_RULE_SETUP
 /* ================================================================================================= */
 case 72:
 YY_RULE_SETUP
-#line 240 "feiparser.l"
+#line 241 "feiparser.l"
 {return token::MODEL;}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 241 "feiparser.l"
+#line 242 "feiparser.l"
 {return token::ADD;}
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 242 "feiparser.l"
+#line 243 "feiparser.l"
 {return token::DEFINE;}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 243 "feiparser.l"
+#line 244 "feiparser.l"
 {return token::FIX;}
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 244 "feiparser.l"
+#line 245 "feiparser.l"
 {return token::FREE;}
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 245 "feiparser.l"
+#line 246 "feiparser.l"
 {return token::REMOVE;}
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 246 "feiparser.l"
+#line 247 "feiparser.l"
 {return token::SIMULATE;}
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 247 "feiparser.l"
+#line 248 "feiparser.l"
 {return token::CMD_print;}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 248 "feiparser.l"
+#line 249 "feiparser.l"
 {return token::CMD_help;}
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 249 "feiparser.l"
+#line 250 "feiparser.l"
 {return token::CMD_whos;}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 250 "feiparser.l"
+#line 251 "feiparser.l"
 {return token::CMD_check;}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 251 "feiparser.l"
+#line 252 "feiparser.l"
 {return token::MESH;}
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 252 "feiparser.l"
+#line 253 "feiparser.l"
 {return token::REQUIRE;}
 	YY_BREAK
 /* New loading stage.... should change */
 case 85:
 YY_RULE_SETUP
-#line 256 "feiparser.l"
+#line 257 "feiparser.l"
 {return token::NEW;}
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 257 "feiparser.l"
+#line 258 "feiparser.l"
 {return token::LOADING;}
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 258 "feiparser.l"
+#line 259 "feiparser.l"
 {return token::STAGE;}
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 259 "feiparser.l"
+#line 260 "feiparser.l"
 {return token::RESTART;}
 	YY_BREAK
 /* ================================================================================================= */
@@ -2953,579 +2954,579 @@ YY_RULE_SETUP
 /* Things which can be added (nouns). May be several phrases */
 case 89:
 YY_RULE_SETUP
-#line 266 "feiparser.l"
+#line 267 "feiparser.l"
 {return token::NODE;}
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 267 "feiparser.l"
+#line 268 "feiparser.l"
 {return token::ELEMENT;}
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 268 "feiparser.l"
+#line 269 "feiparser.l"
 {return token::MATERIAL;}
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 269 "feiparser.l"
+#line 270 "feiparser.l"
 {return token::LOAD;}
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 270 "feiparser.l"
+#line 271 "feiparser.l"
 {return token::ACCELERATION_FIELD;}
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 271 "feiparser.l"
+#line 272 "feiparser.l"
 {return token::TIMEHISTORY;}
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 272 "feiparser.l"
+#line 273 "feiparser.l"
 {return token::MASS;}
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 273 "feiparser.l"
+#line 274 "feiparser.l"
 {return token::IMPOSEDMOTION;}
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 274 "feiparser.l"
+#line 275 "feiparser.l"
 {return token::DAMPING;}
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 275 "feiparser.l"
+#line 276 "feiparser.l"
 {return token::CONSTRAINT;}
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 276 "feiparser.l"
+#line 277 "feiparser.l"
 {return token::DRM;}
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 277 "feiparser.l"
+#line 278 "feiparser.l"
 {return token::SECTION;}
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 278 "feiparser.l"
+#line 279 "feiparser.l"
 {return token::LOADPATTERN;}
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 279 "feiparser.l"
+#line 280 "feiparser.l"
 {return token::PENALTYDISPLACEMENT;}
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 280 "feiparser.l"
+#line 281 "feiparser.l"
 {return token::LOADVALUE;}
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 281 "feiparser.l"
+#line 282 "feiparser.l"
 {return token::SAVEFORCES;}
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 282 "feiparser.l"
+#line 283 "feiparser.l"
 {return token::RESTOREFORCES;}
 	YY_BREAK
 /* Element names */
 case 106:
 YY_RULE_SETUP
-#line 285 "feiparser.l"
+#line 286 "feiparser.l"
 {return token::EightNodeBrick;}
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 286 "feiparser.l"
+#line 287 "feiparser.l"
 {return token::EightNodeBrickLT;}
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 287 "feiparser.l"
+#line 288 "feiparser.l"
 {return token::TwentyNodeBrick;}
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 288 "feiparser.l"
+#line 289 "feiparser.l"
 {return token::TwentySevenNodeBrick;}
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 289 "feiparser.l"
+#line 290 "feiparser.l"
 {return token::TwentySevenNodeBrickLT;}
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 290 "feiparser.l"
+#line 291 "feiparser.l"
 {return token::EightNodeBrickElastic;}
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 291 "feiparser.l"
+#line 292 "feiparser.l"
 {return token::TwentyNodeBrickElastic;}
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 292 "feiparser.l"
+#line 293 "feiparser.l"
 {return token::TwentySevenNodeBrickElastic;}
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 293 "feiparser.l"
+#line 294 "feiparser.l"
 {return token::EightNodeBrick_upU;}
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 294 "feiparser.l"
+#line 295 "feiparser.l"
 {return token::EightNodeBrick_up;}
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 295 "feiparser.l"
+#line 296 "feiparser.l"
 {return token::TwentyNodeBrick_uPU;}
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 296 "feiparser.l"
+#line 297 "feiparser.l"
 {return token::beam_displacement_based;}
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 297 "feiparser.l"
+#line 298 "feiparser.l"
 {return token::beam_elastic;}
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 298 "feiparser.l"
+#line 299 "feiparser.l"
 {return token::beam_9dof_elastic;}
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 299 "feiparser.l"
+#line 300 "feiparser.l"
 {return token::beam_elastic_lumped_mass;}
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 300 "feiparser.l"
+#line 301 "feiparser.l"
 {return token::FourNodeShellMITC4;}
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 301 "feiparser.l"
+#line 302 "feiparser.l"
 {return token::FourNodeShellNewMITC4;}
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 302 "feiparser.l"
+#line 303 "feiparser.l"
 {return token::ThreeNodeShellANDES;}
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 303 "feiparser.l"
+#line 304 "feiparser.l"
 {return token::FourNodeShellANDES;}
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 304 "feiparser.l"
+#line 305 "feiparser.l"
 {return token::truss;}
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 305 "feiparser.l"
+#line 306 "feiparser.l"
 {return token::penalty;}
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 306 "feiparser.l"
+#line 307 "feiparser.l"
 {return token::penalty_for_applying_generalized_displacement;}
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 307 "feiparser.l"
+#line 308 "feiparser.l"
 {return token::contact;}
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 308 "feiparser.l"
+#line 309 "feiparser.l"
 {return token::variable_node_brick_8_to_27;}
 	YY_BREAK
 /* Element options */
 case 130:
 YY_RULE_SETUP
-#line 312 "feiparser.l"
+#line 313 "feiparser.l"
 {return token::porosity;}
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 313 "feiparser.l"
+#line 314 "feiparser.l"
 {return token::rho_s;}
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 314 "feiparser.l"
+#line 315 "feiparser.l"
 {return token::rho_f;}
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 315 "feiparser.l"
+#line 316 "feiparser.l"
 {return token::k_x;}
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 316 "feiparser.l"
+#line 317 "feiparser.l"
 {return token::k_y;}
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 317 "feiparser.l"
+#line 318 "feiparser.l"
 {return token::k_z;}
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 318 "feiparser.l"
+#line 319 "feiparser.l"
 {return token::K_s;}
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 319 "feiparser.l"
+#line 320 "feiparser.l"
 {return token::K_f;}
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 320 "feiparser.l"
+#line 321 "feiparser.l"
 {return token::pressure;}
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 321 "feiparser.l"
+#line 322 "feiparser.l"
 {return token::cross_section;}
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 322 "feiparser.l"
+#line 323 "feiparser.l"
 {return token::shear_modulus;}
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 323 "feiparser.l"
+#line 324 "feiparser.l"
 {return token::torsion_Jx;}
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 324 "feiparser.l"
+#line 325 "feiparser.l"
 {return token::bending_Iz;}
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 325 "feiparser.l"
+#line 326 "feiparser.l"
 {return token::bending_Iy;}
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 326 "feiparser.l"
+#line 327 "feiparser.l"
 {return token::mass_density;}
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 327 "feiparser.l"
+#line 328 "feiparser.l"
 {return token::xz_plane_vector;}
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 328 "feiparser.l"
+#line 329 "feiparser.l"
 {return token::joint_1_offset;}
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 329 "feiparser.l"
+#line 330 "feiparser.l"
 {return token::joint_2_offset;}
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 330 "feiparser.l"
+#line 331 "feiparser.l"
 {return token::direction;}
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 331 "feiparser.l"
+#line 332 "feiparser.l"
 {return token::stiffness;}
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 332 "feiparser.l"
+#line 333 "feiparser.l"
 {return token::normal_stiffness;}
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 333 "feiparser.l"
+#line 334 "feiparser.l"
 {return token::tangential_stiffness;}
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 334 "feiparser.l"
+#line 335 "feiparser.l"
 {return token::friction_ratio;}
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 335 "feiparser.l"
+#line 336 "feiparser.l"
 {return token::maximum_gap;}
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 336 "feiparser.l"
+#line 337 "feiparser.l"
 {return token::contact_plane_vector;}
 	YY_BREAK
 /* section types */
 case 155:
 YY_RULE_SETUP
-#line 340 "feiparser.l"
+#line 341 "feiparser.l"
 {return token::MembranePlateFiber;}
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 341 "feiparser.l"
+#line 342 "feiparser.l"
 {return token::ElasticMembranePlate;}
 	YY_BREAK
 /* section options */
 case 157:
 YY_RULE_SETUP
-#line 344 "feiparser.l"
+#line 345 "feiparser.l"
 {return token::thickness;}
 	YY_BREAK
 /* Material Names*/
 case 158:
 YY_RULE_SETUP
-#line 347 "feiparser.l"
+#line 348 "feiparser.l"
 {return token::linear_elastic_isotropic_3d;}
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 348 "feiparser.l"
+#line 349 "feiparser.l"
 {return token::vonmises_perfectly_plastic;}
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 349 "feiparser.l"
+#line 350 "feiparser.l"
 {return token::vonmises_perfectly_plastic_accelerated;}
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 350 "feiparser.l"
+#line 351 "feiparser.l"
 {return token::vonmises_isotropic_hardening;}
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 351 "feiparser.l"
+#line 352 "feiparser.l"
 {return token::vonmises_isotropic_hardening_accelerated;}
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 352 "feiparser.l"
+#line 353 "feiparser.l"
 {return token::vonmises_kinematic_hardening;}
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 353 "feiparser.l"
+#line 354 "feiparser.l"
 {return token::vonmises_linear_kinematic_hardening;}
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 354 "feiparser.l"
+#line 355 "feiparser.l"
 {return token::vonmises_kinematic_hardening_accelerated;}
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 355 "feiparser.l"
+#line 356 "feiparser.l"
 {return token::vonmises_linear_kinematic_hardening_accelerated;}
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 356 "feiparser.l"
+#line 357 "feiparser.l"
 {return token::sanisand2008;}
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 357 "feiparser.l"
+#line 358 "feiparser.l"
 {return token::camclay;}
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 358 "feiparser.l"
+#line 359 "feiparser.l"
 {return token::camclay_accelerated;}
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 359 "feiparser.l"
+#line 360 "feiparser.l"
 {return token::sanisand2004;}
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 360 "feiparser.l"
+#line 361 "feiparser.l"
 {return token::druckerprager_isotropic_hardening;}
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 361 "feiparser.l"
+#line 362 "feiparser.l"
 {return token::druckerprager_isotropic_hardening_accelerated;}
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 362 "feiparser.l"
+#line 363 "feiparser.l"
 {return token::druckerprager_kinematic_hardening;}
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 363 "feiparser.l"
+#line 364 "feiparser.l"
 {return token::druckerprager_kinematic_hardening_accelerated;}
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 364 "feiparser.l"
+#line 365 "feiparser.l"
 {return token::druckerprager_perfectly_plastic;}
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 365 "feiparser.l"
+#line 366 "feiparser.l"
 {return token::druckerprager_perfectly_plastic_accelerated;}
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 366 "feiparser.l"
+#line 367 "feiparser.l"
 {return token::linear_elastic_crossanisotropic;}
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 367 "feiparser.l"
+#line 368 "feiparser.l"
 {return token::uniaxial_elastic_1d;}
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 368 "feiparser.l"
+#line 369 "feiparser.l"
 {return token::uniaxial_steel01;}
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 369 "feiparser.l"
+#line 370 "feiparser.l"
 {return token::uniaxial_steel02;}
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 370 "feiparser.l"
+#line 371 "feiparser.l"
 {return token::uniaxial_concrete02;}
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 371 "feiparser.l"
+#line 372 "feiparser.l"
 {return token::pisano;}
 	YY_BREAK
 /* LTensor based materials */
 case 183:
 YY_RULE_SETUP
-#line 374 "feiparser.l"
+#line 375 "feiparser.l"
 {return token::vonmises_perfectly_plastic_LT;}
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 375 "feiparser.l"
+#line 376 "feiparser.l"
 {return token::pisanoLT;}
 	YY_BREAK
 /* Material options */
 case 185:
 YY_RULE_SETUP
-#line 379 "feiparser.l"
+#line 380 "feiparser.l"
 {return token::elastic_modulus;}
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 380 "feiparser.l"
+#line 381 "feiparser.l"
 {return token::elastic_modulus_horizontal;}
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 381 "feiparser.l"
+#line 382 "feiparser.l"
 {return token::elastic_modulus_vertical;}
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 382 "feiparser.l"
+#line 383 "feiparser.l"
 {return token::viscoelastic_modulus;}
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 383 "feiparser.l"
+#line 384 "feiparser.l"
 {return token::poisson_ratio;}
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 384 "feiparser.l"
+#line 385 "feiparser.l"
 {return token::poisson_ratio_h_v;}
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 385 "feiparser.l"
+#line 386 "feiparser.l"
 {return token::poisson_ratio_h_h;}
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 386 "feiparser.l"
+#line 387 "feiparser.l"
 {return token::shear_modulus_h_v;}
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 387 "feiparser.l"
+#line 388 "feiparser.l"
 {return token::von_mises_radius;}
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 388 "feiparser.l"
+#line 389 "feiparser.l"
 {return token::druckerprager_angle;}
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 389 "feiparser.l"
+#line 390 "feiparser.l"
 {return token::armstrong_frederick_ha;}
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 390 "feiparser.l"
+#line 391 "feiparser.l"
 {return token::armstrong_frederick_cr;}
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 391 "feiparser.l"
+#line 392 "feiparser.l"
 {return token::initial_confining_stress;}
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 392 "feiparser.l"
+#line 393 "feiparser.l"
 {return token::pressure_reference_p0;}
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 393 "feiparser.l"
+#line 394 "feiparser.l"
 {return token::strain;}
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 394 "feiparser.l"
+#line 395 "feiparser.l"
 {return token::stress;}
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 395 "feiparser.l"
+#line 396 "feiparser.l"
 {return token::control;}
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 397 "feiparser.l"
+#line 398 "feiparser.l"
 {
                                         yylval->value = new Quantity(0.0,unitless);
                                         return token::NUMBER;
@@ -3533,7 +3534,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 401 "feiparser.l"
+#line 402 "feiparser.l"
 {
                                         yylval->value = new Quantity(1.0,unitless);
                                         return token::NUMBER;
@@ -3541,480 +3542,480 @@ YY_RULE_SETUP
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 405 "feiparser.l"
+#line 406 "feiparser.l"
 {return token::isotropic_hardening_rate;}
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 406 "feiparser.l"
+#line 407 "feiparser.l"
 {return token::kinematic_hardening_rate;}
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 407 "feiparser.l"
+#line 408 "feiparser.l"
 {return token::initial_void_ratio;}
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 408 "feiparser.l"
+#line 409 "feiparser.l"
 {return token::initial_shear_modulus;}
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 409 "feiparser.l"
+#line 410 "feiparser.l"
 {return token::initial_bulk_modulus;}
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 410 "feiparser.l"
+#line 411 "feiparser.l"
 {return token::reference_void_ratio;}
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 411 "feiparser.l"
+#line 412 "feiparser.l"
 {return token::critical_stress_ratio_M;}
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 412 "feiparser.l"
+#line 413 "feiparser.l"
 {return token::minimum_bulk_modulus;}
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 413 "feiparser.l"
+#line 414 "feiparser.l"
 {return token::initial_mean_pressure;}
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 414 "feiparser.l"
+#line 415 "feiparser.l"
 {return token::e0;}
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 415 "feiparser.l"
+#line 416 "feiparser.l"
 {return token::sanisand2008_Pat;}
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-#line 416 "feiparser.l"
+#line 417 "feiparser.l"
 {return token::sanisand2008_k_c;}
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 417 "feiparser.l"
+#line 418 "feiparser.l"
 {return token::sanisand2008_K0;}
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-#line 418 "feiparser.l"
+#line 419 "feiparser.l"
 {return token::sanisand2008_G0;}
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 419 "feiparser.l"
+#line 420 "feiparser.l"
 {return token::sanisand2008_alpha_cc;}
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 420 "feiparser.l"
+#line 421 "feiparser.l"
 {return token::sanisand2008_c;}
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 421 "feiparser.l"
+#line 422 "feiparser.l"
 {return token::sanisand2008_xi;}
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 422 "feiparser.l"
+#line 423 "feiparser.l"
 {return token::sanisand2008_lambda;}
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 423 "feiparser.l"
+#line 424 "feiparser.l"
 {return token::sanisand2008_ec_ref;}
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 424 "feiparser.l"
+#line 425 "feiparser.l"
 {return token::sanisand2008_m;}
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-#line 425 "feiparser.l"
+#line 426 "feiparser.l"
 {return token::sanisand2008_h0;}
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
-#line 426 "feiparser.l"
+#line 427 "feiparser.l"
 {return token::sanisand2008_ch;}
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-#line 427 "feiparser.l"
+#line 428 "feiparser.l"
 {return token::sanisand2008_nb;}
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
-#line 428 "feiparser.l"
+#line 429 "feiparser.l"
 {return token::sanisand2008_A0;}
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 429 "feiparser.l"
+#line 430 "feiparser.l"
 {return token::sanisand2008_nd;}
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
-#line 430 "feiparser.l"
+#line 431 "feiparser.l"
 {return token::sanisand2008_p_r;}
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
-#line 431 "feiparser.l"
+#line 432 "feiparser.l"
 {return token::sanisand2008_rho_c;}
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
-#line 432 "feiparser.l"
+#line 433 "feiparser.l"
 {return token::sanisand2008_theta_c;}
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
-#line 433 "feiparser.l"
+#line 434 "feiparser.l"
 {return token::sanisand2008_X;}
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
-#line 434 "feiparser.l"
+#line 435 "feiparser.l"
 {return token::sanisand2008_z_max;}
 	YY_BREAK
 case 234:
 YY_RULE_SETUP
-#line 435 "feiparser.l"
+#line 436 "feiparser.l"
 {return token::sanisand2008_cz;}
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
-#line 436 "feiparser.l"
+#line 437 "feiparser.l"
 {return token::sanisand2008_p0;}
 	YY_BREAK
 case 236:
 YY_RULE_SETUP
-#line 437 "feiparser.l"
+#line 438 "feiparser.l"
 {return token::sanisand2008_p_in;}
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
-#line 438 "feiparser.l"
+#line 439 "feiparser.l"
 {return token::yield_strength;}
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-#line 439 "feiparser.l"
+#line 440 "feiparser.l"
 {return token::strain_hardening_ratio;}
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 440 "feiparser.l"
+#line 441 "feiparser.l"
 {return token::a2;}
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
-#line 441 "feiparser.l"
+#line 442 "feiparser.l"
 {return token::a3;}
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
-#line 442 "feiparser.l"
+#line 443 "feiparser.l"
 {return token::a4;}
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
-#line 443 "feiparser.l"
+#line 444 "feiparser.l"
 {return token::R0;}
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-#line 444 "feiparser.l"
+#line 445 "feiparser.l"
 {return token::cR1;}
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 445 "feiparser.l"
+#line 446 "feiparser.l"
 {return token::cR2;}
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 446 "feiparser.l"
+#line 447 "feiparser.l"
 {return token::compressive_strength;}
 	YY_BREAK
 case 246:
 YY_RULE_SETUP
-#line 447 "feiparser.l"
+#line 448 "feiparser.l"
 {return token::strain_at_compressive_strength;}
 	YY_BREAK
 case 247:
 YY_RULE_SETUP
-#line 448 "feiparser.l"
+#line 449 "feiparser.l"
 {return token::crushing_strength;}
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
-#line 449 "feiparser.l"
+#line 450 "feiparser.l"
 {return token::strain_at_crushing_strength;}
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 450 "feiparser.l"
+#line 451 "feiparser.l"
 {return token::tensile_strength;}
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 451 "feiparser.l"
+#line 452 "feiparser.l"
 {return token::tension_softening_stiffness;}
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 452 "feiparser.l"
+#line 453 "feiparser.l"
 {return token::sanisand2004_Pat;}
 	YY_BREAK
 case 252:
 YY_RULE_SETUP
-#line 453 "feiparser.l"
+#line 454 "feiparser.l"
 {return token::sanisand2004_G0;}
 	YY_BREAK
 case 253:
 YY_RULE_SETUP
-#line 454 "feiparser.l"
+#line 455 "feiparser.l"
 {return token::sanisand2004_p_cut;}
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 455 "feiparser.l"
+#line 456 "feiparser.l"
 {return token::sanisand2004_Mc;}
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-#line 456 "feiparser.l"
+#line 457 "feiparser.l"
 {return token::sanisand2004_c;}
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 457 "feiparser.l"
+#line 458 "feiparser.l"
 {return token::sanisand2004_lambda_c;}
 	YY_BREAK
 case 257:
 YY_RULE_SETUP
-#line 458 "feiparser.l"
+#line 459 "feiparser.l"
 {return token::sanisand2004_xi;}
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
-#line 459 "feiparser.l"
+#line 460 "feiparser.l"
 {return token::sanisand2004_ec_ref;}
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
-#line 460 "feiparser.l"
+#line 461 "feiparser.l"
 {return token::sanisand2004_m;}
 	YY_BREAK
 case 260:
 YY_RULE_SETUP
-#line 461 "feiparser.l"
+#line 462 "feiparser.l"
 {return token::sanisand2004_h0;}
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-#line 462 "feiparser.l"
+#line 463 "feiparser.l"
 {return token::sanisand2004_ch;}
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
-#line 463 "feiparser.l"
+#line 464 "feiparser.l"
 {return token::sanisand2004_nb;}
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
-#line 464 "feiparser.l"
+#line 465 "feiparser.l"
 {return token::sanisand2004_A0;}
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
-#line 465 "feiparser.l"
+#line 466 "feiparser.l"
 {return token::sanisand2004_nd;}
 	YY_BREAK
 case 265:
 YY_RULE_SETUP
-#line 466 "feiparser.l"
+#line 467 "feiparser.l"
 {return token::sanisand2004_z_max;}
 	YY_BREAK
 case 266:
 YY_RULE_SETUP
-#line 467 "feiparser.l"
+#line 468 "feiparser.l"
 {return token::sanisand2004_cz;}
 	YY_BREAK
 case 267:
 YY_RULE_SETUP
-#line 468 "feiparser.l"
+#line 469 "feiparser.l"
 {return token::strain_increment_size;}
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
-#line 469 "feiparser.l"
+#line 470 "feiparser.l"
 {return token::maximum_strain;}
 	YY_BREAK
 case 269:
 YY_RULE_SETUP
-#line 470 "feiparser.l"
+#line 471 "feiparser.l"
 {return token::number_of_times_reaching_maximum_strain;}
 	YY_BREAK
 case 270:
 YY_RULE_SETUP
-#line 471 "feiparser.l"
+#line 472 "feiparser.l"
 {return token::constitutive;}
 	YY_BREAK
 case 271:
 YY_RULE_SETUP
-#line 472 "feiparser.l"
+#line 473 "feiparser.l"
 {return token::testing;}
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
-#line 473 "feiparser.l"
+#line 474 "feiparser.l"
 {return token::constant;}
 	YY_BREAK
 case 273:
 YY_RULE_SETUP
-#line 474 "feiparser.l"
+#line 475 "feiparser.l"
 {return token::mean;}
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
-#line 475 "feiparser.l"
+#line 476 "feiparser.l"
 {return token::triaxial;}
 	YY_BREAK
 case 275:
 YY_RULE_SETUP
-#line 476 "feiparser.l"
+#line 477 "feiparser.l"
 {return token::drained;}
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
-#line 477 "feiparser.l"
+#line 478 "feiparser.l"
 {return token::undrained;}
 	YY_BREAK
 case 277:
 YY_RULE_SETUP
-#line 478 "feiparser.l"
+#line 479 "feiparser.l"
 {return token::simple;}
 	YY_BREAK
 case 278:
 YY_RULE_SETUP
-#line 479 "feiparser.l"
+#line 480 "feiparser.l"
 {return token::shear;}
 	YY_BREAK
 case 279:
 YY_RULE_SETUP
-#line 480 "feiparser.l"
+#line 481 "feiparser.l"
 {return token::number_of_subincrements;}
 	YY_BREAK
 case 280:
 YY_RULE_SETUP
-#line 481 "feiparser.l"
+#line 482 "feiparser.l"
 {return token::maximum_number_of_iterations;}
 	YY_BREAK
 case 281:
 YY_RULE_SETUP
-#line 482 "feiparser.l"
+#line 483 "feiparser.l"
 {return token::tolerance_1;}
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 483 "feiparser.l"
+#line 484 "feiparser.l"
 {return token::tolerance_2;}
 	YY_BREAK
 case 283:
 YY_RULE_SETUP
-#line 484 "feiparser.l"
+#line 485 "feiparser.l"
 {return token::Gauss;}
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-#line 485 "feiparser.l"
+#line 486 "feiparser.l"
 {return token::each;}
 	YY_BREAK
 case 285:
 YY_RULE_SETUP
-#line 486 "feiparser.l"
+#line 487 "feiparser.l"
 {return token::points;}
 	YY_BREAK
 case 286:
 YY_RULE_SETUP
-#line 487 "feiparser.l"
+#line 488 "feiparser.l"
 {return token::point;}
 	YY_BREAK
 case 287:
 YY_RULE_SETUP
-#line 488 "feiparser.l"
+#line 489 "feiparser.l"
 {return token::single;}
 	YY_BREAK
 case 288:
 YY_RULE_SETUP
-#line 489 "feiparser.l"
+#line 490 "feiparser.l"
 {return token::value;}
 	YY_BREAK
 /* Pisano Model options  */
 case 289:
 YY_RULE_SETUP
-#line 493 "feiparser.l"
+#line 494 "feiparser.l"
 {return token::M_in;}
 	YY_BREAK
 case 290:
 YY_RULE_SETUP
-#line 494 "feiparser.l"
+#line 495 "feiparser.l"
 {return token::kd_in;}
 	YY_BREAK
 case 291:
 YY_RULE_SETUP
-#line 495 "feiparser.l"
+#line 496 "feiparser.l"
 {return token::xi_in;}
 	YY_BREAK
 case 292:
 YY_RULE_SETUP
-#line 496 "feiparser.l"
+#line 497 "feiparser.l"
 {return token::h_in;}
 	YY_BREAK
 case 293:
 YY_RULE_SETUP
-#line 497 "feiparser.l"
+#line 498 "feiparser.l"
 {return token::m_in;}
 	YY_BREAK
 case 294:
 YY_RULE_SETUP
-#line 498 "feiparser.l"
+#line 499 "feiparser.l"
 {return token::beta_min;}
 	YY_BREAK
 /* Load options */
 case 295:
-#line 502 "feiparser.l"
-case 296:
 #line 503 "feiparser.l"
-case 297:
+case 296:
 #line 504 "feiparser.l"
-case 298:
+case 297:
 #line 505 "feiparser.l"
-case 299:
+case 298:
 #line 506 "feiparser.l"
-case 300:
+case 299:
 #line 507 "feiparser.l"
-case 301:
+case 300:
 #line 508 "feiparser.l"
-case 302:
+case 301:
 #line 509 "feiparser.l"
+case 302:
+#line 510 "feiparser.l"
 case 303:
 YY_RULE_SETUP
-#line 509 "feiparser.l"
+#line 510 "feiparser.l"
 {
                                         yylval->ident = new string(yytext);
                                         return token::FORCE;
@@ -4023,207 +4024,207 @@ YY_RULE_SETUP
 /* Acceleration field options*/
 case 304:
 YY_RULE_SETUP
-#line 515 "feiparser.l"
+#line 516 "feiparser.l"
 {return token::ax;}
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-#line 516 "feiparser.l"
+#line 517 "feiparser.l"
 {return token::ay;}
 	YY_BREAK
 case 306:
 YY_RULE_SETUP
-#line 517 "feiparser.l"
+#line 518 "feiparser.l"
 {return token::az;}
 	YY_BREAK
 /* Time-History types */
 case 307:
 YY_RULE_SETUP
-#line 520 "feiparser.l"
+#line 521 "feiparser.l"
 {return token::TH_PATH_SERIES;}
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
-#line 521 "feiparser.l"
+#line 522 "feiparser.l"
 {return token::TH_PATH_TIME_SERIES;}
 	YY_BREAK
 case 309:
 YY_RULE_SETUP
-#line 522 "feiparser.l"
+#line 523 "feiparser.l"
 {return token::TH_RICKER2ND;}
 	YY_BREAK
 case 310:
 YY_RULE_SETUP
-#line 523 "feiparser.l"
+#line 524 "feiparser.l"
 {return token::TH_ORMSBY;}
 	YY_BREAK
 case 311:
 YY_RULE_SETUP
-#line 524 "feiparser.l"
+#line 525 "feiparser.l"
 {return token::TH_GROUNDMOTION;}
 	YY_BREAK
 case 312:
 YY_RULE_SETUP
-#line 525 "feiparser.l"
+#line 526 "feiparser.l"
 {return token::TH_RICKER1ST;}
 	YY_BREAK
 case 313:
 YY_RULE_SETUP
-#line 526 "feiparser.l"
+#line 527 "feiparser.l"
 {return token::TH_SINE;}
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 527 "feiparser.l"
+#line 528 "feiparser.l"
 {return token::TH_LINEAR;}
 	YY_BREAK
 /* Element load types */
 case 315:
 YY_RULE_SETUP
-#line 530 "feiparser.l"
+#line 531 "feiparser.l"
 {return token::self_weight;}
 	YY_BREAK
 case 316:
 YY_RULE_SETUP
-#line 531 "feiparser.l"
+#line 532 "feiparser.l"
 {return token::surface;}
 	YY_BREAK
 /* Time-History options */
 case 317:
 YY_RULE_SETUP
-#line 534 "feiparser.l"
+#line 535 "feiparser.l"
 {return token::startTime;}
 	YY_BREAK
 case 318:
 YY_RULE_SETUP
-#line 535 "feiparser.l"
+#line 536 "feiparser.l"
 {return token::endTime;}
 	YY_BREAK
 case 319:
 YY_RULE_SETUP
-#line 536 "feiparser.l"
+#line 537 "feiparser.l"
 {return token::Period;}
 	YY_BREAK
 case 320:
 YY_RULE_SETUP
-#line 537 "feiparser.l"
+#line 538 "feiparser.l"
 {return token::Phase;}
 	YY_BREAK
 case 321:
 YY_RULE_SETUP
-#line 538 "feiparser.l"
+#line 539 "feiparser.l"
 {return token::Amplitude;}
 	YY_BREAK
 case 322:
 YY_RULE_SETUP
-#line 539 "feiparser.l"
+#line 540 "feiparser.l"
 {return token::frequency;}
 	YY_BREAK
 case 323:
 YY_RULE_SETUP
-#line 540 "feiparser.l"
+#line 541 "feiparser.l"
 {return token::frequency1;}
 	YY_BREAK
 case 324:
 YY_RULE_SETUP
-#line 541 "feiparser.l"
+#line 542 "feiparser.l"
 {return token::frequency2;}
 	YY_BREAK
 case 325:
 YY_RULE_SETUP
-#line 542 "feiparser.l"
+#line 543 "feiparser.l"
 {return token::frequency3;}
 	YY_BREAK
 case 326:
 YY_RULE_SETUP
-#line 543 "feiparser.l"
+#line 544 "feiparser.l"
 {return token::frequency4;}
 	YY_BREAK
 case 327:
 YY_RULE_SETUP
-#line 544 "feiparser.l"
+#line 545 "feiparser.l"
 {return token::MaxTime;}
 	YY_BREAK
 case 328:
 YY_RULE_SETUP
-#line 545 "feiparser.l"
+#line 546 "feiparser.l"
 {return token::MAGNITUDES;}
 	YY_BREAK
 case 329:
 YY_RULE_SETUP
-#line 546 "feiparser.l"
+#line 547 "feiparser.l"
 {return token::MAGNITUDE;}
 	YY_BREAK
 /* Mass options */
 case 330:
 YY_RULE_SETUP
-#line 549 "feiparser.l"
+#line 550 "feiparser.l"
 {return token::mx;}
 	YY_BREAK
 case 331:
 YY_RULE_SETUP
-#line 550 "feiparser.l"
+#line 551 "feiparser.l"
 {return token::my;}
 	YY_BREAK
 case 332:
 YY_RULE_SETUP
-#line 551 "feiparser.l"
+#line 552 "feiparser.l"
 {return token::mz;}
 	YY_BREAK
 case 333:
 YY_RULE_SETUP
-#line 552 "feiparser.l"
+#line 553 "feiparser.l"
 {return token::Imx;}
 	YY_BREAK
 case 334:
 YY_RULE_SETUP
-#line 553 "feiparser.l"
+#line 554 "feiparser.l"
 {return token::Imy;}
 	YY_BREAK
 case 335:
 YY_RULE_SETUP
-#line 554 "feiparser.l"
+#line 555 "feiparser.l"
 {return token::Imz;}
 	YY_BREAK
 /* Damping model types */
 case 336:
 YY_RULE_SETUP
-#line 557 "feiparser.l"
+#line 558 "feiparser.l"
 {return token::DAMPING_RAYLEIGH;}
 	YY_BREAK
 case 337:
 YY_RULE_SETUP
-#line 558 "feiparser.l"
+#line 559 "feiparser.l"
 {return token::DAMPING_CAUGHEY3;}
 	YY_BREAK
 case 338:
 YY_RULE_SETUP
-#line 559 "feiparser.l"
+#line 560 "feiparser.l"
 {return token::DAMPING_CAUGHEY4;}
 	YY_BREAK
 /* Damping model options */
 case 339:
 YY_RULE_SETUP
-#line 562 "feiparser.l"
+#line 563 "feiparser.l"
 {return token::a0;}
 	YY_BREAK
 case 340:
 YY_RULE_SETUP
-#line 563 "feiparser.l"
+#line 564 "feiparser.l"
 {return token::a1;}
 	YY_BREAK
 case 341:
 YY_RULE_SETUP
-#line 564 "feiparser.l"
+#line 565 "feiparser.l"
 {return token::stiffness_to_use;}
 	YY_BREAK
 case 342:
-#line 566 "feiparser.l"
-case 343:
 #line 567 "feiparser.l"
+case 343:
+#line 568 "feiparser.l"
 case 344:
 YY_RULE_SETUP
-#line 567 "feiparser.l"
+#line 568 "feiparser.l"
 {
                                         yylval->ident = new string(yytext);
                                         return token::stiffness_to_use_opt;
@@ -4232,134 +4233,134 @@ YY_RULE_SETUP
 /* Constraint types */
 case 345:
 YY_RULE_SETUP
-#line 573 "feiparser.l"
+#line 574 "feiparser.l"
 {return token::equaldof;}
 	YY_BREAK
 case 346:
 YY_RULE_SETUP
-#line 574 "feiparser.l"
+#line 575 "feiparser.l"
 {return token::equaldof;}
 	YY_BREAK
 /* Constraint options */
 case 347:
 YY_RULE_SETUP
-#line 577 "feiparser.l"
+#line 578 "feiparser.l"
 {return token::master;}
 	YY_BREAK
 case 348:
 YY_RULE_SETUP
-#line 578 "feiparser.l"
+#line 579 "feiparser.l"
 {return token::slave;}
 	YY_BREAK
 case 349:
 YY_RULE_SETUP
-#line 579 "feiparser.l"
+#line 580 "feiparser.l"
 {return token::dof_to_constrain;}
 	YY_BREAK
 /* DRM OPtions */
 case 350:
 YY_RULE_SETUP
-#line 582 "feiparser.l"
+#line 583 "feiparser.l"
 {return token::scale_factor;}
 	YY_BREAK
 case 351:
 YY_RULE_SETUP
-#line 583 "feiparser.l"
+#line 584 "feiparser.l"
 {return token::displacement_scale_unit;}
 	YY_BREAK
 case 352:
 YY_RULE_SETUP
-#line 584 "feiparser.l"
+#line 585 "feiparser.l"
 {return token::velocity_scale_unit;}
 	YY_BREAK
 case 353:
 YY_RULE_SETUP
-#line 585 "feiparser.l"
+#line 586 "feiparser.l"
 {return token::acceleration_scale_unit;}
 	YY_BREAK
 case 354:
 YY_RULE_SETUP
-#line 586 "feiparser.l"
+#line 587 "feiparser.l"
 {return token::number_of_steps;}
 	YY_BREAK
 case 355:
 YY_RULE_SETUP
-#line 587 "feiparser.l"
+#line 588 "feiparser.l"
 {return token::number_of_drm_nodes;}
 	YY_BREAK
 case 356:
 YY_RULE_SETUP
-#line 588 "feiparser.l"
+#line 589 "feiparser.l"
 {return token::number_of_drm_elements;}
 	YY_BREAK
 case 357:
 YY_RULE_SETUP
-#line 589 "feiparser.l"
+#line 590 "feiparser.l"
 {return token::x_max;}
 	YY_BREAK
 case 358:
 YY_RULE_SETUP
-#line 590 "feiparser.l"
+#line 591 "feiparser.l"
 {return token::x_min;}
 	YY_BREAK
 case 359:
 YY_RULE_SETUP
-#line 591 "feiparser.l"
+#line 592 "feiparser.l"
 {return token::y_max;}
 	YY_BREAK
 case 360:
 YY_RULE_SETUP
-#line 592 "feiparser.l"
+#line 593 "feiparser.l"
 {return token::y_min;}
 	YY_BREAK
 case 361:
 YY_RULE_SETUP
-#line 593 "feiparser.l"
+#line 594 "feiparser.l"
 {return token::z_max;}
 	YY_BREAK
 case 362:
 YY_RULE_SETUP
-#line 594 "feiparser.l"
+#line 595 "feiparser.l"
 {return token::z_min;}
 	YY_BREAK
 case 363:
 YY_RULE_SETUP
-#line 595 "feiparser.l"
+#line 596 "feiparser.l"
 {return token::element_file;}
 	YY_BREAK
 case 364:
 YY_RULE_SETUP
-#line 596 "feiparser.l"
+#line 597 "feiparser.l"
 {return token::nodes_file;}
 	YY_BREAK
 case 365:
 YY_RULE_SETUP
-#line 597 "feiparser.l"
+#line 598 "feiparser.l"
 {return token::displacement_file;}
 	YY_BREAK
 case 366:
 YY_RULE_SETUP
-#line 598 "feiparser.l"
+#line 599 "feiparser.l"
 {return token::acceleration_file;}
 	YY_BREAK
 case 367:
 YY_RULE_SETUP
-#line 599 "feiparser.l"
+#line 600 "feiparser.l"
 {return token::velocity_file;}
 	YY_BREAK
 case 368:
 YY_RULE_SETUP
-#line 600 "feiparser.l"
+#line 601 "feiparser.l"
 {return token::force_file;}
 	YY_BREAK
 case 369:
 YY_RULE_SETUP
-#line 601 "feiparser.l"
+#line 602 "feiparser.l"
 {return token::series_file;}
 	YY_BREAK
 case 370:
 YY_RULE_SETUP
-#line 602 "feiparser.l"
+#line 603 "feiparser.l"
 {return token::time_series_file;}
 	YY_BREAK
 /* ================================================================================================= */
@@ -4368,48 +4369,48 @@ YY_RULE_SETUP
 /* Defineable things */
 case 371:
 YY_RULE_SETUP
-#line 610 "feiparser.l"
+#line 611 "feiparser.l"
 {return token::ALGORITHM;}
 	YY_BREAK
 case 372:
 YY_RULE_SETUP
-#line 611 "feiparser.l"
+#line 612 "feiparser.l"
 {return token::CONVERGENCE_TEST;}
 	YY_BREAK
 case 373:
 YY_RULE_SETUP
-#line 612 "feiparser.l"
+#line 613 "feiparser.l"
 {return token::SOLVER;}
 	YY_BREAK
 case 374:
 YY_RULE_SETUP
-#line 613 "feiparser.l"
+#line 614 "feiparser.l"
 {return token::DYNAMICINTEGRATOR;}
 	YY_BREAK
 case 375:
 YY_RULE_SETUP
-#line 614 "feiparser.l"
+#line 615 "feiparser.l"
 {return token::STATICINTEGRATOR;}
 	YY_BREAK
 case 376:
 YY_RULE_SETUP
-#line 615 "feiparser.l"
+#line 616 "feiparser.l"
 {return token::OUTPUT;}
 	YY_BREAK
 /* Algorithm options*/
 case 377:
-#line 619 "feiparser.l"
-case 378:
 #line 620 "feiparser.l"
-case 379:
+case 378:
 #line 621 "feiparser.l"
-case 380:
+case 379:
 #line 622 "feiparser.l"
-case 381:
+case 380:
 #line 623 "feiparser.l"
+case 381:
+#line 624 "feiparser.l"
 case 382:
 YY_RULE_SETUP
-#line 623 "feiparser.l"
+#line 624 "feiparser.l"
 {
                                         yylval->ident = new string(yytext);
                                         return token::ALGNAME;
@@ -4417,12 +4418,12 @@ YY_RULE_SETUP
 	YY_BREAK
 /* Test options */
 case 383:
-#line 629 "feiparser.l"
-case 384:
 #line 630 "feiparser.l"
+case 384:
+#line 631 "feiparser.l"
 case 385:
 YY_RULE_SETUP
-#line 630 "feiparser.l"
+#line 631 "feiparser.l"
 {
                                         yylval->ident = new string(yytext);
                                         return token::TESTNAME;
@@ -4430,46 +4431,46 @@ YY_RULE_SETUP
 	YY_BREAK
 case 386:
 YY_RULE_SETUP
-#line 634 "feiparser.l"
+#line 635 "feiparser.l"
 {return token::tolerance;}
 	YY_BREAK
 case 387:
 YY_RULE_SETUP
-#line 635 "feiparser.l"
+#line 636 "feiparser.l"
 {return token::maximum_iterations;}
 	YY_BREAK
 case 388:
 YY_RULE_SETUP
-#line 636 "feiparser.l"
+#line 637 "feiparser.l"
 {return token::verbose_level;}
 	YY_BREAK
 case 389:
 YY_RULE_SETUP
-#line 637 "feiparser.l"
+#line 638 "feiparser.l"
 {return token::minimum_time_step;}
 	YY_BREAK
 case 390:
 YY_RULE_SETUP
-#line 638 "feiparser.l"
+#line 639 "feiparser.l"
 {return token::maximum_time_step;}
 	YY_BREAK
 case 391:
 YY_RULE_SETUP
-#line 639 "feiparser.l"
+#line 640 "feiparser.l"
 {return token::number_of_iterations;}
 	YY_BREAK
 /* define solver options */
 case 392:
-#line 643 "feiparser.l"
-case 393:
 #line 644 "feiparser.l"
-case 394:
+case 393:
 #line 645 "feiparser.l"
-case 395:
+case 394:
 #line 646 "feiparser.l"
+case 395:
+#line 647 "feiparser.l"
 case 396:
 YY_RULE_SETUP
-#line 646 "feiparser.l"
+#line 647 "feiparser.l"
 {
                                         yylval->ident = new string(yytext);
                                         return token::SOLVERNAME;
@@ -4478,69 +4479,69 @@ YY_RULE_SETUP
 /* define static and dynamic integrator options */
 case 397:
 YY_RULE_SETUP
-#line 652 "feiparser.l"
+#line 653 "feiparser.l"
 {return token::DYNAMICINTEGRATOR_NEWMARK;}
 	YY_BREAK
 case 398:
 YY_RULE_SETUP
-#line 653 "feiparser.l"
+#line 654 "feiparser.l"
 {return token::DYNAMICINTEGRATOR_HHT;}
 	YY_BREAK
 case 399:
 YY_RULE_SETUP
-#line 654 "feiparser.l"
+#line 655 "feiparser.l"
 {return token::STATICINTEGRATOR_DISPLACEMENT;}
 	YY_BREAK
 /* SIMULATE*/
 case 400:
 YY_RULE_SETUP
-#line 658 "feiparser.l"
+#line 659 "feiparser.l"
 {return token::STATIC;}
 	YY_BREAK
 case 401:
 YY_RULE_SETUP
-#line 659 "feiparser.l"
+#line 660 "feiparser.l"
 {return token::DYNAMIC;}
 	YY_BREAK
 case 402:
 YY_RULE_SETUP
-#line 660 "feiparser.l"
+#line 661 "feiparser.l"
 {return token::TRANSIENT;}
 	YY_BREAK
 case 403:
 YY_RULE_SETUP
-#line 661 "feiparser.l"
+#line 662 "feiparser.l"
 {return token::VARIABLETRANSIENT;}
 	YY_BREAK
 case 404:
 YY_RULE_SETUP
-#line 662 "feiparser.l"
+#line 663 "feiparser.l"
 {return token::EIGEN;}
 	YY_BREAK
 case 405:
 YY_RULE_SETUP
-#line 663 "feiparser.l"
+#line 664 "feiparser.l"
 {return token::USING;}
 	YY_BREAK
 case 406:
 YY_RULE_SETUP
-#line 664 "feiparser.l"
+#line 665 "feiparser.l"
 {return token::time_step;}
 	YY_BREAK
 case 407:
 YY_RULE_SETUP
-#line 665 "feiparser.l"
+#line 666 "feiparser.l"
 {return token::number_of_modes;}
 	YY_BREAK
 /* OUTPUT */
 case 408:
 YY_RULE_SETUP
-#line 668 "feiparser.l"
+#line 669 "feiparser.l"
 {return token::BINARY;}
 	YY_BREAK
 case 409:
 YY_RULE_SETUP
-#line 669 "feiparser.l"
+#line 670 "feiparser.l"
 {return token::TEXT;}
 	YY_BREAK
 /* ================================================================================================= */
@@ -4548,167 +4549,167 @@ YY_RULE_SETUP
 /* ================================================================================================= */
 case 410:
 YY_RULE_SETUP
-#line 676 "feiparser.l"
+#line 677 "feiparser.l"
 {return token::AT;}
 	YY_BREAK
 case 411:
 YY_RULE_SETUP
-#line 677 "feiparser.l"
+#line 678 "feiparser.l"
 {return token::ALL;}
 	YY_BREAK
 case 412:
 YY_RULE_SETUP
-#line 678 "feiparser.l"
+#line 679 "feiparser.l"
 {return token::AND;}
 	YY_BREAK
 case 413:
 YY_RULE_SETUP
-#line 679 "feiparser.l"
+#line 680 "feiparser.l"
 {return token::TEXTDOFS;}
 	YY_BREAK
 case 414:
 YY_RULE_SETUP
-#line 680 "feiparser.l"
+#line 681 "feiparser.l"
 {return token::FACTOR;}
 	YY_BREAK
 case 415:
 YY_RULE_SETUP
-#line 681 "feiparser.l"
+#line 682 "feiparser.l"
 {return token::INCREMENT;}
 	YY_BREAK
 case 416:
 YY_RULE_SETUP
-#line 682 "feiparser.l"
+#line 683 "feiparser.l"
 {return token::NAME;}
 	YY_BREAK
 case 417:
 YY_RULE_SETUP
-#line 683 "feiparser.l"
+#line 684 "feiparser.l"
 {return token::TEXTNUMBER;}
 	YY_BREAK
 case 418:
 YY_RULE_SETUP
-#line 684 "feiparser.l"
+#line 685 "feiparser.l"
 {return token::TEXTNUMBER;}
 	YY_BREAK
 case 419:
 YY_RULE_SETUP
-#line 685 "feiparser.l"
+#line 686 "feiparser.l"
 {return token::TEXTNUMBER;}
 	YY_BREAK
 case 420:
 YY_RULE_SETUP
-#line 686 "feiparser.l"
+#line 687 "feiparser.l"
 {return token::of;}
 	YY_BREAK
 case 421:
 YY_RULE_SETUP
-#line 687 "feiparser.l"
+#line 688 "feiparser.l"
 {return token::STEPS;}
 	YY_BREAK
 case 422:
 YY_RULE_SETUP
-#line 688 "feiparser.l"
+#line 689 "feiparser.l"
 {return token::TO;}
 	YY_BREAK
 case 423:
 YY_RULE_SETUP
-#line 689 "feiparser.l"
+#line 690 "feiparser.l"
 {return token::TYPE;}
 	YY_BREAK
 case 424:
 YY_RULE_SETUP
-#line 690 "feiparser.l"
+#line 691 "feiparser.l"
 {return token::USE;}
 	YY_BREAK
 case 425:
 YY_RULE_SETUP
-#line 691 "feiparser.l"
+#line 692 "feiparser.l"
 {return token::WITH;}
 	YY_BREAK
 case 426:
 YY_RULE_SETUP
-#line 692 "feiparser.l"
+#line 693 "feiparser.l"
 {return token::NODES;}
 	YY_BREAK
 case 427:
 YY_RULE_SETUP
-#line 693 "feiparser.l"
+#line 694 "feiparser.l"
 {return token::DOMAIN_;}
 	YY_BREAK
 case 428:
 YY_RULE_SETUP
-#line 694 "feiparser.l"
+#line 695 "feiparser.l"
 {return token::dof;}
 	YY_BREAK
 case 429:
 YY_RULE_SETUP
-#line 695 "feiparser.l"
+#line 696 "feiparser.l"
 {return token::RESPONSE;}
 	YY_BREAK
 /* Greek */
 case 430:
 YY_RULE_SETUP
-#line 698 "feiparser.l"
+#line 699 "feiparser.l"
 {return token::alpha;}
 	YY_BREAK
 case 431:
 YY_RULE_SETUP
-#line 699 "feiparser.l"
+#line 700 "feiparser.l"
 {return token::beta;}
 	YY_BREAK
 case 432:
 YY_RULE_SETUP
-#line 700 "feiparser.l"
+#line 701 "feiparser.l"
 {return token::gamma;}
 	YY_BREAK
 case 433:
 YY_RULE_SETUP
-#line 701 "feiparser.l"
+#line 702 "feiparser.l"
 {return token::lambda;}
 	YY_BREAK
 case 434:
 YY_RULE_SETUP
-#line 702 "feiparser.l"
+#line 703 "feiparser.l"
 {return token::kappa;}
 	YY_BREAK
 case 435:
 YY_RULE_SETUP
-#line 703 "feiparser.l"
+#line 704 "feiparser.l"
 {return token::delta;}
 	YY_BREAK
 case 436:
 YY_RULE_SETUP
-#line 706 "feiparser.l"
+#line 707 "feiparser.l"
 {return token::INTEGRATIONPOINTS;}
 	YY_BREAK
 case 437:
 YY_RULE_SETUP
-#line 707 "feiparser.l"
+#line 708 "feiparser.l"
 {return token::IntegrationRule;}
 	YY_BREAK
 /* DOFS */
 case 438:
-#line 712 "feiparser.l"
-case 439:
 #line 713 "feiparser.l"
-case 440:
+case 439:
 #line 714 "feiparser.l"
-case 441:
+case 440:
 #line 715 "feiparser.l"
-case 442:
+case 441:
 #line 716 "feiparser.l"
-case 443:
+case 442:
 #line 717 "feiparser.l"
-case 444:
+case 443:
 #line 718 "feiparser.l"
-case 445:
+case 444:
 #line 719 "feiparser.l"
-case 446:
+case 445:
 #line 720 "feiparser.l"
+case 446:
+#line 721 "feiparser.l"
 case 447:
 YY_RULE_SETUP
-#line 720 "feiparser.l"
+#line 721 "feiparser.l"
 {
                                         yylval->ident = new string(yytext);
                                         return token::DOF;
@@ -4716,12 +4717,12 @@ YY_RULE_SETUP
 	YY_BREAK
 /*Other language commands*/
 case 448:
-#line 727 "feiparser.l"
-case 449:
 #line 728 "feiparser.l"
+case 449:
+#line 729 "feiparser.l"
 case 450:
 YY_RULE_SETUP
-#line 728 "feiparser.l"
+#line 729 "feiparser.l"
 {
                                     yylval->ident = new string(yytext);
                                     return token::BYE;
@@ -4729,7 +4730,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 451:
 YY_RULE_SETUP
-#line 732 "feiparser.l"
+#line 733 "feiparser.l"
 {void show_einstein(); show_einstein();}
 	YY_BREAK
 /* ================================================================================================= */
@@ -4738,7 +4739,7 @@ YY_RULE_SETUP
 /* names */
 case 452:
 YY_RULE_SETUP
-#line 742 "feiparser.l"
+#line 743 "feiparser.l"
 {
                                         yylval->ident = new string(yytext);
                                         return token::IDENT;
@@ -4746,10 +4747,10 @@ YY_RULE_SETUP
 	YY_BREAK
 /*numbers*/
 case 453:
-#line 749 "feiparser.l"
+#line 750 "feiparser.l"
 case 454:
 YY_RULE_SETUP
-#line 749 "feiparser.l"
+#line 750 "feiparser.l"
 {
                                         yylval->value = new Quantity(atof(yytext), unitless);
                                         return token::NUMBER;
@@ -4759,7 +4760,7 @@ YY_RULE_SETUP
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(IFILE):
 case YY_STATE_EOF(COMMENT):
-#line 754 "feiparser.l"
+#line 755 "feiparser.l"
 {
                                         if (popfile()==0)
                                         {
@@ -4789,18 +4790,18 @@ case YY_STATE_EOF(COMMENT):
 /* comments */
 case 455:
 YY_RULE_SETUP
-#line 781 "feiparser.l"
+#line 782 "feiparser.l"
 
 	YY_BREAK
 case 456:
 YY_RULE_SETUP
-#line 782 "feiparser.l"
+#line 783 "feiparser.l"
 
 	YY_BREAK
 /* ignore white space, tabs and carriage return*/
 case 457:
 YY_RULE_SETUP
-#line 786 "feiparser.l"
+#line 787 "feiparser.l"
 //{yylloc -> step();}
 	YY_BREAK
 /* ignore newline*/
@@ -4808,7 +4809,7 @@ YY_RULE_SETUP
 case 458:
 /* rule 458 can match eol */
 YY_RULE_SETUP
-#line 790 "feiparser.l"
+#line 791 "feiparser.l"
 {
                                         yycolumn = 1;
                                     }
@@ -4817,7 +4818,7 @@ YY_RULE_SETUP
 case 459:
 /* rule 459 can match eol */
 YY_RULE_SETUP
-#line 795 "feiparser.l"
+#line 796 "feiparser.l"
 {
                                         std::string* thisString = new std::string(yytext);
                                         yylval->ident = thisString;
@@ -4827,15 +4828,15 @@ YY_RULE_SETUP
 /* catch-all of the rest and report (only useless characters like ? get to this point */
 case 460:
 YY_RULE_SETUP
-#line 802 "feiparser.l"
+#line 803 "feiparser.l"
 { cout << "Failed to parse the character at line " << yylineno << " : " << *yytext << endl; }
 	YY_BREAK
 case 461:
 YY_RULE_SETUP
-#line 804 "feiparser.l"
+#line 805 "feiparser.l"
 ECHO;
 	YY_BREAK
-#line 4839 "feiparser.lex.c"
+#line 4840 "feiparser.lex.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -5843,7 +5844,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 804 "feiparser.l"
+#line 805 "feiparser.l"
 
 
 

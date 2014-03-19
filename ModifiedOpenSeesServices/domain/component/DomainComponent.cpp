@@ -66,3 +66,11 @@ DomainComponent::getDomain(void) const
     return myDomain;
 }
 
+
+
+
+int DomainComponent::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+{
+    cerr << "DomainComponent::describeSelf -> Element with tag " << this->getTag() << " does not implement describeSelf() ! " << endl;
+    return 0;
+}

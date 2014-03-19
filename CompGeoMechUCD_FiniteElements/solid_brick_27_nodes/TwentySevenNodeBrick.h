@@ -181,7 +181,7 @@ class TwentySevenNodeBrick: public Element
         static Matrix C;    // Element damping matrix
         static Matrix M;    // Element mass matrix
         static Vector P;    // Element resisting force vector
-        Vector Q;    // Applied nodal loads
+        Vector Q;           // Applied nodal loads
         Vector bf;
 
         // double thickness;  // Element thickness

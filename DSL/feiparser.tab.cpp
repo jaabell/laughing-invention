@@ -54,7 +54,7 @@
     #include <cstdio>
 
     // Boost
-    #include "../boost/boost/lexical_cast.hpp"
+    #include <boost/lexical_cast.hpp>
 
     // Own
     #include "feiast.h"

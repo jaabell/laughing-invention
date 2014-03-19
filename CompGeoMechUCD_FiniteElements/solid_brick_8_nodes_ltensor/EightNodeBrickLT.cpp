@@ -52,7 +52,7 @@ Vector Info_Strain(8 * 6 + 1);
 EightNodeBrickLT::EightNodeBrickLT( int element_number,
                                     int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
                                     int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                                    NDMaterialLT* Globalmmodel)
+                                    NDMaterialLT *Globalmmodel)
 
     : Element( element_number, ELE_TAG_EightNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 8 ),
@@ -60,15 +60,13 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 {
 
     rho = Globalmmodel->getRho();
-    //     bf = bodyforce->getBodyForceVector();
-
     determinant_of_Jacobian = 0.0;
     mmodel = Globalmmodel;
     initialized = false;
 
-    # ifndef _PARALLEL_PROCESSING
+# ifndef _PARALLEL_PROCESSING
     populate();
-    # endif
+# endif
 
     connectedExternalNodes( 0 ) = node_numb_1;
     connectedExternalNodes( 1 ) = node_numb_2;
@@ -94,7 +92,7 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 void EightNodeBrickLT::populate()
 {
     // Generate 8 NDMaterialLT for use at each Gauss point.
-    for(int k = 0; k < 8; k++)
+    for (int k = 0; k < 8; k++)
     {
         material_array[k] = mmodel->getCopy();
     }
@@ -104,11 +102,11 @@ void EightNodeBrickLT::populate()
     // which would be slightly more efficient.
     short where = 0;
 
-    for( short ii = 0 ; ii < 2 ; ii++ )
+    for ( short ii = 0 ; ii < 2 ; ii++ )
     {
-        for( short jj = 0 ; jj < 2 ; jj++ )
+        for ( short jj = 0 ; jj < 2 ; jj++ )
         {
-            for( short kk = 0 ; kk < 2 ; kk++ )
+            for ( short kk = 0 ; kk < 2 ; kk++ )
             {
                 gp_coords(where, 0) = (ii == 0) ? -0.577350269189626 : 0.577350269189626;
                 gp_coords(where, 1) = (jj == 0) ? -0.577350269189626 : 0.577350269189626;
@@ -142,9 +140,9 @@ EightNodeBrickLT::EightNodeBrickLT(): Element( 0, ELE_TAG_EightNodeBrickLT ),
     initialized = false;
     is_mass_computed = false;
 
-    # ifndef _PARALLEL_PROCESSING
+# ifndef _PARALLEL_PROCESSING
     populate();
-    # endif
+# endif
 
     nodes_in_brick = 8;
 
@@ -181,7 +179,7 @@ EightNodeBrickLT::~EightNodeBrickLT ()
 //#############################################################################
 //#############################################################################
 //***************************************************************
-const DTensor2& EightNodeBrickLT::H_3D( double r1, double r2, double r3 ) const
+const DTensor2 &EightNodeBrickLT::H_3D( double r1, double r2, double r3 ) const
 {
     static DTensor2 H( 24, 3, 0.0 );
 
@@ -215,7 +213,7 @@ const DTensor2& EightNodeBrickLT::H_3D( double r1, double r2, double r3 ) const
 
 //#############################################################################
 //***************************************************************
-const DTensor1& EightNodeBrickLT::interp_poli_at( double r1, double r2, double r3 ) const
+const DTensor1 &EightNodeBrickLT::interp_poli_at( double r1, double r2, double r3 ) const
 {
     static DTensor1 h( 8, 0.0 );
 
@@ -234,7 +232,7 @@ const DTensor1& EightNodeBrickLT::interp_poli_at( double r1, double r2, double r
 
 
 
-const DTensor2& EightNodeBrickLT::dh_drst_at( double r1, double r2, double r3 ) const
+const DTensor2 &EightNodeBrickLT::dh_drst_at( double r1, double r2, double r3 ) const
 {
     static DTensor2 dh( 8, 3, 0.0 );
 
@@ -268,7 +266,7 @@ const DTensor2& EightNodeBrickLT::dh_drst_at( double r1, double r2, double r3 ) 
 
 
 ////#############################################################################
-const DTensor4& EightNodeBrickLT::getStiffnessTensor( void ) const
+const DTensor4 &EightNodeBrickLT::getStiffnessTensor( void ) const
 {
     double r  = 0.0;
     double w_r = 0.0;
@@ -289,20 +287,20 @@ const DTensor4& EightNodeBrickLT::getStiffnessTensor( void ) const
     static DTensor4 Kk( 8, 3, 3, 8, 0.0);
     static DTensor4 Kkt( 8, 3, 3, 8, 0.0);
 
-    static Index<'a'> a;
-    static Index<'b'> b;
-    static Index<'c'> c;
-    static Index<'d'> d;
+    static Index < 'a' > a;
+    static Index < 'b' > b;
+    static Index < 'c' > c;
+    static Index < 'd' > d;
 
     //Set the stiffness tensor to zero (its static!)
     // Using STL-like iterators to linearly transverse the array
 
-    for( DTensor4::literator it = Kk.begin(); it != Kk.end(); it++) // Sucky syntax... 'it' is a DTensor4 iterator | *it is the current value of the iterator | it++ advances the current position of the iterator | learn to use the C++ STL
+    for ( DTensor4::literator it = Kk.begin(); it != Kk.end(); it++) // Sucky syntax... 'it' is a DTensor4 iterator | *it is the current value of the iterator | it++ advances the current position of the iterator | learn to use the C++ STL
     {
         *it = 0.0;
     }
 
-    for( short gp = 0; gp < 8; gp++ )
+    for ( short gp = 0; gp < 8; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -338,18 +336,18 @@ const DTensor4& EightNodeBrickLT::getStiffnessTensor( void ) const
 
 
 ////#############################################################################
-const DTensor2& EightNodeBrickLT::Jacobian_3D( const DTensor2& dh ) const
+const DTensor2 &EightNodeBrickLT::Jacobian_3D( const DTensor2 &dh ) const
 {
-    static const DTensor2& N_C = Nodal_Coordinates();
+    static const DTensor2 &N_C = Nodal_Coordinates();
     static DTensor2 Jacobian_3D_(3, 3, 0.0);
     Jacobian_3D_(j, k) = dh(i, j) * N_C(i, k);
     return Jacobian_3D_;
 }
 
 //#############################################################################
-const DTensor2&  EightNodeBrickLT::Jacobian_3Dinv( const DTensor2& dh ) const
+const DTensor2  &EightNodeBrickLT::Jacobian_3Dinv( const DTensor2 &dh ) const
 {
-    static const DTensor2& N_C = Nodal_Coordinates();
+    static const DTensor2 &N_C = Nodal_Coordinates();
     DTensor2 Jacobian_3D_(3, 3, 0.0);
     static DTensor2 Jacobian_3D_inv(3, 3, 0.0);
 
@@ -360,19 +358,19 @@ const DTensor2&  EightNodeBrickLT::Jacobian_3Dinv( const DTensor2& dh ) const
 
 
 ////#############################################################################
-const DTensor2& EightNodeBrickLT::Nodal_Coordinates( void ) const
+const DTensor2 &EightNodeBrickLT::Nodal_Coordinates( void ) const
 {
     static DTensor2 N_coord( 8, 3, 0.0 );
 
     //using node pointers, which come from the Domain
-    const Vector& nd1Crds = theNodes[0]->getCrds();
-    const Vector& nd2Crds = theNodes[1]->getCrds();
-    const Vector& nd3Crds = theNodes[2]->getCrds();
-    const Vector& nd4Crds = theNodes[3]->getCrds();
-    const Vector& nd5Crds = theNodes[4]->getCrds();
-    const Vector& nd6Crds = theNodes[5]->getCrds();
-    const Vector& nd7Crds = theNodes[6]->getCrds();
-    const Vector& nd8Crds = theNodes[7]->getCrds();
+    const Vector &nd1Crds = theNodes[0]->getCrds();
+    const Vector &nd2Crds = theNodes[1]->getCrds();
+    const Vector &nd3Crds = theNodes[2]->getCrds();
+    const Vector &nd4Crds = theNodes[3]->getCrds();
+    const Vector &nd5Crds = theNodes[4]->getCrds();
+    const Vector &nd6Crds = theNodes[5]->getCrds();
+    const Vector &nd7Crds = theNodes[6]->getCrds();
+    const Vector &nd8Crds = theNodes[7]->getCrds();
 
     N_coord( 0, 0 ) = nd1Crds( 0 );
     N_coord( 0, 1 ) = nd1Crds( 1 );
@@ -403,19 +401,19 @@ const DTensor2& EightNodeBrickLT::Nodal_Coordinates( void ) const
 }
 
 ////#############################################################################
-const DTensor2& EightNodeBrickLT::incr_disp( void ) const
+const DTensor2 &EightNodeBrickLT::incr_disp( void ) const
 {
     static DTensor2 increment_disp( 8, 3, 0.0 );
 
     //Have to get IncrDeltaDisp, not IncrDisp for cumulation of incr_disp
-    const Vector& IncrDis1 = theNodes[0]->getIncrDeltaDisp();
-    const Vector& IncrDis2 = theNodes[1]->getIncrDeltaDisp();
-    const Vector& IncrDis3 = theNodes[2]->getIncrDeltaDisp();
-    const Vector& IncrDis4 = theNodes[3]->getIncrDeltaDisp();
-    const Vector& IncrDis5 = theNodes[4]->getIncrDeltaDisp();
-    const Vector& IncrDis6 = theNodes[5]->getIncrDeltaDisp();
-    const Vector& IncrDis7 = theNodes[6]->getIncrDeltaDisp();
-    const Vector& IncrDis8 = theNodes[7]->getIncrDeltaDisp();
+    const Vector &IncrDis1 = theNodes[0]->getIncrDeltaDisp();
+    const Vector &IncrDis2 = theNodes[1]->getIncrDeltaDisp();
+    const Vector &IncrDis3 = theNodes[2]->getIncrDeltaDisp();
+    const Vector &IncrDis4 = theNodes[3]->getIncrDeltaDisp();
+    const Vector &IncrDis5 = theNodes[4]->getIncrDeltaDisp();
+    const Vector &IncrDis6 = theNodes[5]->getIncrDeltaDisp();
+    const Vector &IncrDis7 = theNodes[6]->getIncrDeltaDisp();
+    const Vector &IncrDis8 = theNodes[7]->getIncrDeltaDisp();
 
 
 
@@ -448,18 +446,18 @@ const DTensor2& EightNodeBrickLT::incr_disp( void ) const
 }
 
 ////#############################################################################
-const DTensor2& EightNodeBrickLT::total_disp( void ) const
+const DTensor2 &EightNodeBrickLT::total_disp( void ) const
 {
     static DTensor2 total_disp( 8, 3, 0.0 );
 
-    const Vector& TotDis1 = theNodes[0]->getTrialDisp();
-    const Vector& TotDis2 = theNodes[1]->getTrialDisp();
-    const Vector& TotDis3 = theNodes[2]->getTrialDisp();
-    const Vector& TotDis4 = theNodes[3]->getTrialDisp();
-    const Vector& TotDis5 = theNodes[4]->getTrialDisp();
-    const Vector& TotDis6 = theNodes[5]->getTrialDisp();
-    const Vector& TotDis7 = theNodes[6]->getTrialDisp();
-    const Vector& TotDis8 = theNodes[7]->getTrialDisp();
+    const Vector &TotDis1 = theNodes[0]->getTrialDisp();
+    const Vector &TotDis2 = theNodes[1]->getTrialDisp();
+    const Vector &TotDis3 = theNodes[2]->getTrialDisp();
+    const Vector &TotDis4 = theNodes[3]->getTrialDisp();
+    const Vector &TotDis5 = theNodes[4]->getTrialDisp();
+    const Vector &TotDis6 = theNodes[5]->getTrialDisp();
+    const Vector &TotDis7 = theNodes[6]->getTrialDisp();
+    const Vector &TotDis8 = theNodes[7]->getTrialDisp();
 
     total_disp( 0, 0 ) = TotDis1( 0 );
     total_disp( 0, 1 ) = TotDis1( 1 );
@@ -507,7 +505,7 @@ int  EightNodeBrickLT::get_Brick_Number( void )
 
 ////#############################################################################
 // returns nodal forces for given stress field in an element
-const DTensor2& EightNodeBrickLT::nodal_forces( void ) const
+const DTensor2 &EightNodeBrickLT::nodal_forces( void ) const
 {
     double r  = 0.0;
     double w_r = 0.0;
@@ -532,7 +530,7 @@ const DTensor2& EightNodeBrickLT::nodal_forces( void ) const
     }
 
 
-    for( short gp = 0; gp < 8; gp++ )
+    for ( short gp = 0; gp < 8; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -583,14 +581,14 @@ void EightNodeBrickLT::computeGaussPoint()
     DTensor2 material_arrayCoord( 3, 8, 0.0 );
     DTensor2 H( 24, 3, 0.0 );
 
-    const Vector& nd1Crds = theNodes[0]->getCrds();
-    const Vector& nd2Crds = theNodes[1]->getCrds();
-    const Vector& nd3Crds = theNodes[2]->getCrds();
-    const Vector& nd4Crds = theNodes[3]->getCrds();
-    const Vector& nd5Crds = theNodes[4]->getCrds();
-    const Vector& nd6Crds = theNodes[5]->getCrds();
-    const Vector& nd7Crds = theNodes[6]->getCrds();
-    const Vector& nd8Crds = theNodes[7]->getCrds();
+    const Vector &nd1Crds = theNodes[0]->getCrds();
+    const Vector &nd2Crds = theNodes[1]->getCrds();
+    const Vector &nd3Crds = theNodes[2]->getCrds();
+    const Vector &nd4Crds = theNodes[3]->getCrds();
+    const Vector &nd5Crds = theNodes[4]->getCrds();
+    const Vector &nd6Crds = theNodes[5]->getCrds();
+    const Vector &nd7Crds = theNodes[6]->getCrds();
+    const Vector &nd8Crds = theNodes[7]->getCrds();
 
     NodalCoord( 0, 0 ) = nd1Crds( 0 );
     NodalCoord( 1, 0 ) = nd1Crds( 1 );
@@ -618,7 +616,7 @@ void EightNodeBrickLT::computeGaussPoint()
     NodalCoord( 2, 7 ) = nd8Crds( 2 );
 
 
-    for( short gp = 0; gp < 8; gp++ )
+    for ( short gp = 0; gp < 8; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -652,12 +650,12 @@ int EightNodeBrickLT::getNumExternalNodes () const
 
 
 //=============================================================================
-const ID& EightNodeBrickLT::getExternalNodes ()
+const ID &EightNodeBrickLT::getExternalNodes ()
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 EightNodeBrickLT::getNodePtrs( void )
 {
     return theNodes;
@@ -670,7 +668,7 @@ int EightNodeBrickLT::getNumDOF ()
 }
 
 //=============================================================================
-void EightNodeBrickLT::setDomain ( Domain* theDomain )
+void EightNodeBrickLT::setDomain ( Domain *theDomain )
 {
     // Check Domain is not null - invoked when object removed from a domain
     if ( theDomain == 0 )
@@ -697,78 +695,78 @@ void EightNodeBrickLT::setDomain ( Domain* theDomain )
         int Nd8 = connectedExternalNodes( 7 );
 
         theNodes[0] = theDomain->getNode( Nd1 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[0] == 0 )
         {
             theNodes[0] = theDomain->getOutsideNode( Nd1 );
         }
 
-        # endif
+# endif
         theNodes[1] = theDomain->getNode( Nd2 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[1] == 0 )
         {
             theNodes[1] = theDomain->getOutsideNode( Nd2 );
         }
 
-        # endif
+# endif
         theNodes[2] = theDomain->getNode( Nd3 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[2] == 0 )
         {
             theNodes[2] = theDomain->getOutsideNode( Nd3 );
         }
 
-        # endif
+# endif
         theNodes[3] = theDomain->getNode( Nd4 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[3] == 0 )
         {
             theNodes[3] = theDomain->getOutsideNode( Nd4 );
         }
 
-        # endif
+# endif
 
         theNodes[4] = theDomain->getNode( Nd5 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[4] == 0 )
         {
             theNodes[4] = theDomain->getOutsideNode( Nd5 );
         }
 
-        # endif
+# endif
         theNodes[5] = theDomain->getNode( Nd6 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[5] == 0 )
         {
             theNodes[5] = theDomain->getOutsideNode( Nd6 );
         }
 
-        # endif
+# endif
         theNodes[6] = theDomain->getNode( Nd7 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[6] == 0 )
         {
             theNodes[6] = theDomain->getOutsideNode( Nd7 );
         }
 
-        # endif
+# endif
         theNodes[7] = theDomain->getNode( Nd8 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[7] == 0 )
         {
             theNodes[7] = theDomain->getOutsideNode( Nd8 );
         }
 
-        # endif
+# endif
 
         if ( theNodes[0] == 0 || theNodes[1] == 0 || theNodes[2] == 0 || theNodes[3] == 0 ||
                 theNodes[4] == 0 || theNodes[5] == 0 || theNodes[6] == 0 || theNodes[7] == 0 )
@@ -854,7 +852,7 @@ int EightNodeBrickLT::revertToStart ()
 
 
 //=============================================================================
-const Matrix& EightNodeBrickLT::getTangentStiff()
+const Matrix &EightNodeBrickLT::getTangentStiff()
 {
     DTensor4 stifftensor(8, 3, 3, 8, 0.0);
     stifftensor = getStiffnessTensor();
@@ -897,7 +895,7 @@ const Matrix& EightNodeBrickLT::getTangentStiff()
 }
 
 //=============================================================================
-const Matrix& EightNodeBrickLT::getInitialStiff ()
+const Matrix &EightNodeBrickLT::getInitialStiff ()
 {
 
     if ( Ki == 0 )
@@ -917,7 +915,7 @@ const Matrix& EightNodeBrickLT::getInitialStiff ()
 
 //=============================================================================
 
-const Matrix& EightNodeBrickLT::getMass ()
+const Matrix &EightNodeBrickLT::getMass ()
 {
 
     if (not is_mass_computed)
@@ -938,7 +936,7 @@ const Matrix& EightNodeBrickLT::getMass ()
         DTensor2 Mm( 24, 24, 0.0 );
         DTensor2 Jacobian(3, 3);
 
-        for( short gp = 0; gp < 8; gp++ )
+        for ( short gp = 0; gp < 8; gp++ )
         {
             r = gp_coords(gp, 0);
             s = gp_coords(gp, 1);
@@ -981,7 +979,7 @@ void EightNodeBrickLT::zeroLoad( void )
 
 
 //======================================================================
-const Vector& EightNodeBrickLT::getBodyForce( double loadFactor, const Vector& data )
+const Vector &EightNodeBrickLT::getBodyForce( double loadFactor, const Vector &data )
 {
 
     static Vector bforce( 24 );
@@ -1038,7 +1036,7 @@ const Vector& EightNodeBrickLT::getBodyForce( double loadFactor, const Vector& d
 
 
 //======================================================================
-const Vector& EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector& data )
+const Vector &EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector &data )
 {
 
     int node_exist = 0;
@@ -1073,10 +1071,10 @@ const Vector& EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
 
 
     // get the surface nodal coordinates
-    const Vector& coordnode1 = theNodes[node1_local]->getCrds();
-    const Vector& coordnode2 = theNodes[node2_local]->getCrds();
-    const Vector& coordnode3 = theNodes[node3_local]->getCrds();
-    const Vector& coordnode4 = theNodes[node4_local]->getCrds();
+    const Vector &coordnode1 = theNodes[node1_local]->getCrds();
+    const Vector &coordnode2 = theNodes[node2_local]->getCrds();
+    const Vector &coordnode3 = theNodes[node3_local]->getCrds();
+    const Vector &coordnode4 = theNodes[node4_local]->getCrds();
 
 
 
@@ -1124,13 +1122,13 @@ const Vector& EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
 
 
     // loop over dof
-    for( int k = 0; k < 3; k++ )
+    for ( int k = 0; k < 3; k++ )
     {
         // loop over nodes
-        for( int j = 0; j < 4; j++ )
+        for ( int j = 0; j < 4; j++ )
         {
 
-            for( int v = 0; v < 8; v++ )
+            for ( int v = 0; v < 8; v++ )
             {
                 if ( data( j ) == connectedExternalNodes( v ) )
                 {
@@ -1140,7 +1138,7 @@ const Vector& EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
             }
 
             // loop over Gauss points
-            for( int i = 0; i < 4; i++ )
+            for ( int i = 0; i < 4; i++ )
             {
 
                 ShapeFunctionValues = SurfaceShapeFunctionValues( GsPts( i, 0 ) , GsPts( i, 1 ), j );
@@ -1159,12 +1157,12 @@ const Vector& EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
 
 
 //=============================================================================
-int EightNodeBrickLT::addLoad( ElementalLoad* theLoad, double loadFactor )
+int EightNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
 {
 
 
     int type;
-    const Vector& data = theLoad->getData( type, loadFactor );
+    const Vector &data = theLoad->getData( type, loadFactor );
 
     if ( type == LOAD_TAG_ElementSelfWeight )
     {
@@ -1195,7 +1193,7 @@ int EightNodeBrickLT::addLoad( ElementalLoad* theLoad, double loadFactor )
 
 
 //=============================================================================
-int EightNodeBrickLT::addInertiaLoadToUnbalance( const Vector& accel )
+int EightNodeBrickLT::addInertiaLoadToUnbalance( const Vector &accel )
 {
     // Check for a quick return
     if ( rho == 0.0 )
@@ -1204,14 +1202,14 @@ int EightNodeBrickLT::addInertiaLoadToUnbalance( const Vector& accel )
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV( accel );
-    const Vector& Raccel2 = theNodes[1]->getRV( accel );
-    const Vector& Raccel3 = theNodes[2]->getRV( accel );
-    const Vector& Raccel4 = theNodes[3]->getRV( accel );
-    const Vector& Raccel5 = theNodes[4]->getRV( accel );
-    const Vector& Raccel6 = theNodes[5]->getRV( accel );
-    const Vector& Raccel7 = theNodes[6]->getRV( accel );
-    const Vector& Raccel8 = theNodes[7]->getRV( accel );
+    const Vector &Raccel1 = theNodes[0]->getRV( accel );
+    const Vector &Raccel2 = theNodes[1]->getRV( accel );
+    const Vector &Raccel3 = theNodes[2]->getRV( accel );
+    const Vector &Raccel4 = theNodes[3]->getRV( accel );
+    const Vector &Raccel5 = theNodes[4]->getRV( accel );
+    const Vector &Raccel6 = theNodes[5]->getRV( accel );
+    const Vector &Raccel7 = theNodes[6]->getRV( accel );
+    const Vector &Raccel8 = theNodes[7]->getRV( accel );
 
     if ( 3 != Raccel1.Size() || 3 != Raccel2.Size() || 3 != Raccel3.Size() ||
             3 != Raccel4.Size() || 3 != Raccel5.Size() || 3 != Raccel6.Size() ||
@@ -1274,7 +1272,7 @@ const Vector EightNodeBrickLT::FormEquiBodyForce( void )
 
 
 //=============================================================================
-const Vector& EightNodeBrickLT::getResistingForce()
+const Vector &EightNodeBrickLT::getResistingForce()
 {
     DTensor2 nodalforces( 8, 3, 0.0 );
     nodalforces = nodal_forces();
@@ -1292,7 +1290,7 @@ const Vector& EightNodeBrickLT::getResistingForce()
 }
 
 //=============================================================================
-const Vector& EightNodeBrickLT::getResistingForceIncInertia ()
+const Vector &EightNodeBrickLT::getResistingForceIncInertia ()
 {
     // form resisting force
     this->getResistingForce();
@@ -1308,14 +1306,14 @@ const Vector& EightNodeBrickLT::getResistingForceIncInertia ()
         // form the mass matrix
         this->getMass();
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
-        const Vector& accel3 = theNodes[2]->getTrialAccel();
-        const Vector& accel4 = theNodes[3]->getTrialAccel();
-        const Vector& accel5 = theNodes[4]->getTrialAccel();
-        const Vector& accel6 = theNodes[5]->getTrialAccel();
-        const Vector& accel7 = theNodes[6]->getTrialAccel();
-        const Vector& accel8 = theNodes[7]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel3 = theNodes[2]->getTrialAccel();
+        const Vector &accel4 = theNodes[3]->getTrialAccel();
+        const Vector &accel5 = theNodes[4]->getTrialAccel();
+        const Vector &accel6 = theNodes[5]->getTrialAccel();
+        const Vector &accel7 = theNodes[6]->getTrialAccel();
+        const Vector &accel8 = theNodes[7]->getTrialAccel();
 
         static Vector a( 24 ); // originally 8
 
@@ -1368,7 +1366,7 @@ const Vector& EightNodeBrickLT::getResistingForceIncInertia ()
 
 }
 
-int EightNodeBrickLT::sendSelf ( int commitTag, Channel& theChannel )
+int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 {
     cerr << "EightNodeBrickLT::sendSelf -- Not yet implemented!" << endl;
     return -1;
@@ -1448,7 +1446,7 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel& theChannel )
     */
 }
 
-int EightNodeBrickLT::recvSelf ( int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker )
+int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
     cerr << "EightNodeBrickLT::recvSelf -- Not yet implemented!" << endl;
     return -1;
@@ -1585,23 +1583,23 @@ int EightNodeBrickLT::getObjectSize()
 }
 
 //=============================================================================
-void EightNodeBrickLT::Print( ostream& s, int flag )
+void EightNodeBrickLT::Print( ostream &s, int flag )
 {
     cout << "EightNodeBrickLT: LTensor-based 8 node brick." << endl << endl;
 
     cout << "Element tag: " << getTag() << endl;
     cout << "Connected Nodes: " << endl;
 
-    for( int node = 0; node < 8; node++)
+    for ( int node = 0; node < 8; node++)
     {
         cout << "   #" << node + 1 << ": Domain node #" << connectedExternalNodes(node) << endl;
     }
 
     cout << "K = " << endl;
 
-    for(int ii = 0; ii < 24; ii++)
+    for (int ii = 0; ii < 24; ii++)
     {
-        for(int jj = 0; jj < 24; jj++)
+        for (int jj = 0; jj < 24; jj++)
         {
             cout << K(ii, jj);
 
@@ -1620,7 +1618,7 @@ void EightNodeBrickLT::Print( ostream& s, int flag )
 
     cout << "diag(K) = " << endl;
 
-    for(int ii = 0; ii < 24; ii++)
+    for (int ii = 0; ii < 24; ii++)
     {
         cout << K(ii, ii);
 
@@ -1638,7 +1636,7 @@ void EightNodeBrickLT::Print( ostream& s, int flag )
 
     cout << "Gauss point information:" << endl;
 
-    for(int gp = 0; gp < 8; gp++)
+    for (int gp = 0; gp < 8; gp++)
     {
         cout << "   GP # " << gp <<  ": (" << gp_coords(gp, 0) << ","
              << gp_coords(gp, 1) << ","
@@ -1649,7 +1647,7 @@ void EightNodeBrickLT::Print( ostream& s, int flag )
 }
 
 //=============================================================================
-Response* EightNodeBrickLT::setResponse ( const char** argv, int argc, Information& eleInformation )
+Response *EightNodeBrickLT::setResponse ( const char **argv, int argc, Information &eleInformation )
 {
     if ( strcmp( argv[0], "stiff" ) == 0 || strcmp( argv[0], "stiffness" ) == 0 )
     {
@@ -1679,7 +1677,7 @@ Response* EightNodeBrickLT::setResponse ( const char** argv, int argc, Informati
 }
 
 //=============================================================================
-int EightNodeBrickLT::getResponse ( int responseID, Information& eleInfo )
+int EightNodeBrickLT::getResponse ( int responseID, Information &eleInfo )
 {
     switch ( responseID )
     {
@@ -1688,55 +1686,55 @@ int EightNodeBrickLT::getResponse ( int responseID, Information& eleInfo )
             break;
 
         case 4: //response type: "stress"
+        {
+            DTensor2 stress(3, 3, 0.0);
+
+            Info_Stress( 0 ) = 8;  // Number of gauss points
+
+            for ( short gp = 0 ; gp < 8 ; gp++ )
             {
-                DTensor2 stress(3, 3, 0.0);
-
-                Info_Stress( 0 ) = 8;  // Number of gauss points
-
-                for( short gp = 0 ; gp < 8 ; gp++ )
-                {
-                    stress = material_array[gp]->getStressTensor();
-                    Info_Stress( gp * 6 + 1 ) = stress( 0, 0 ); //sigma_xx
-                    Info_Stress( gp * 6 + 2 ) = stress( 1, 1 ); //sigma_yy
-                    Info_Stress( gp * 6 + 3 ) = stress( 2, 2 ); //sigma_zz
-                    Info_Stress( gp * 6 + 4 ) = stress( 0, 1 ); //Assign sigma_xy
-                    Info_Stress( gp * 6 + 5 ) = stress( 0, 2 ); //Assign sigma_xz
-                    Info_Stress( gp * 6 + 6 ) = stress( 1, 2 ); //Assign sigma_yz
-                }
-
-                return eleInfo.setVector( Info_Stress );
-                break;
+                stress = material_array[gp]->getStressTensor();
+                Info_Stress( gp * 6 + 1 ) = stress( 0, 0 ); //sigma_xx
+                Info_Stress( gp * 6 + 2 ) = stress( 1, 1 ); //sigma_yy
+                Info_Stress( gp * 6 + 3 ) = stress( 2, 2 ); //sigma_zz
+                Info_Stress( gp * 6 + 4 ) = stress( 0, 1 ); //Assign sigma_xy
+                Info_Stress( gp * 6 + 5 ) = stress( 0, 2 ); //Assign sigma_xz
+                Info_Stress( gp * 6 + 6 ) = stress( 1, 2 ); //Assign sigma_yz
             }
+
+            return eleInfo.setVector( Info_Stress );
+            break;
+        }
 
         case 5: //response type: gausspoint
-            {
-                this->computeGaussPoint();
-                return eleInfo.setVector( Info_GaussCoordinates );
-                break;
-            }
+        {
+            this->computeGaussPoint();
+            return eleInfo.setVector( Info_GaussCoordinates );
+            break;
+        }
 
         case 7: //response type: strains
 
+        {
+            DTensor2 Strain(3, 3, 0.0);
+
+            Info_Strain( 0 ) = 8;
+
+            for ( short gp = 0 ; gp < 8 ; gp++ )
             {
-                DTensor2 Strain(3, 3, 0.0);
+                Strain = material_array[gp]->getStrainTensor();
 
-                Info_Strain( 0 ) = 8;
-
-                for( short gp = 0 ; gp < 8 ; gp++ )
-                {
-                    Strain = material_array[gp]->getStrainTensor();
-
-                    Info_Strain( gp * 6 + 1 ) = Strain( 0, 0); //sigma_xx
-                    Info_Strain( gp * 6 + 2 ) = Strain( 1, 1); //sigma_yy
-                    Info_Strain( gp * 6 + 3 ) = Strain( 2, 2); //sigma_zz
-                    Info_Strain( gp * 6 + 4 ) = Strain( 0, 1); //Assign sigma_xy
-                    Info_Strain( gp * 6 + 5 ) = Strain( 0, 2); //Assign sigma_xz
-                    Info_Strain( gp * 6 + 6 ) = Strain( 1, 2); //Assign sigma_yz
-                }
-
-                return eleInfo.setVector( Info_Strain );
-                break;
+                Info_Strain( gp * 6 + 1 ) = Strain( 0, 0); //sigma_xx
+                Info_Strain( gp * 6 + 2 ) = Strain( 1, 1); //sigma_yy
+                Info_Strain( gp * 6 + 3 ) = Strain( 2, 2); //sigma_zz
+                Info_Strain( gp * 6 + 4 ) = Strain( 0, 1); //Assign sigma_xy
+                Info_Strain( gp * 6 + 5 ) = Strain( 0, 2); //Assign sigma_xz
+                Info_Strain( gp * 6 + 6 ) = Strain( 1, 2); //Assign sigma_yz
             }
+
+            return eleInfo.setVector( Info_Strain );
+            break;
+        }
 
         default:
             return -1;
@@ -1762,7 +1760,7 @@ void EightNodeBrickLT::ComputeVolume()
     DTensor2 dh( 8, 3, 0.0 );
     DTensor2 Jacobian(3, 3, 0.0);
 
-    for( short gp = 0; gp < 8; gp++ )
+    for ( short gp = 0; gp < 8; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -1804,7 +1802,7 @@ int EightNodeBrickLT::update( void )
 
     trial_disp = total_disp();
 
-    for( short gp = 0; gp < 8; gp++ )
+    for ( short gp = 0; gp < 8; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -1845,7 +1843,7 @@ double EightNodeBrickLT::SurfaceShapeFunctionValues( double Xi , double Eta, int
 }
 
 
-Vector& EightNodeBrickLT::Direction_Weight( double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4 )
+Vector &EightNodeBrickLT::Direction_Weight( double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4 )
 {
     Vector J1( 3 );
     Vector J2( 3 );
@@ -1886,7 +1884,7 @@ double EightNodeBrickLT::SurfaceLoadValues( double Xi , double Eta, Vector Press
 
 
 int
-EightNodeBrickLT::CheckMesh( ofstream& checkmesh_file )
+EightNodeBrickLT::CheckMesh( ofstream &checkmesh_file )
 {
     bool jacobian_flag = false;
 
@@ -1898,7 +1896,7 @@ EightNodeBrickLT::CheckMesh( ofstream& checkmesh_file )
     DTensor2 dh( 8, 3, 0.0 );
     DTensor2 Jacobian(3, 3, 0.0);
 
-    for( short gp = 0; gp < 8; gp++ )
+    for ( short gp = 0; gp < 8; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -1934,13 +1932,13 @@ EightNodeBrickLT::CheckMesh( ofstream& checkmesh_file )
 
 
 //==================================================================================
-Vector*
+Vector *
 EightNodeBrickLT::getStress( void )
 {
     DTensor2 stress;
-    Vector* stresses = new Vector( 48 );   // FIXME: Who deallocates this guy???
+    Vector *stresses = new Vector( 48 );   // FIXME: Who deallocates this guy???
 
-    for( short gp = 0 ; gp < 8 ; gp++ )
+    for ( short gp = 0 ; gp < 8 ; gp++ )
     {
         stress = material_array[gp]->getStressTensor();
         ( *stresses )( gp * 6 + 0 ) = stress( 1, 1 ); //sigma_xx

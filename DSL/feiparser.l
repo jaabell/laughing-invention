@@ -32,7 +32,8 @@
     #include "feiparser.tab.hh"
 
     //Boost for string to double conversion
-    #include <../boost/boost/lexical_cast.hpp>
+    //#include <../boost/boost/lexical_cast.hpp>
+    #include <boost/lexical_cast.hpp>
 
 
     int yycolumn = 1;

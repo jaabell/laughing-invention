@@ -202,7 +202,8 @@ SEQUENTIAL_NUMERIC_INCLUDES = -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1 \
             -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UMFPACK \
             -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UMFPACK/Include \
             -I$(ESSI_DEPEND_DIR)/SuperLU \
-            -I$(ESSI_DEPEND_DIR)/boost 
+            -I$(ESSI_DEPEND_DIR)/hdf5_sequential/include 
+
 
 SEQUENTIAL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/lib/liblapack.a \
       $(ESSI_DEPEND_DIR)/lib/libarpack.a \
@@ -213,7 +214,8 @@ SEQUENTIAL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/lib/liblapack.a \
       $(ESSI_DEPEND_DIR)/lib/libcamd.a \
       $(ESSI_DEPEND_DIR)/lib/libccolamd.a \
       $(ESSI_DEPEND_DIR)/lib/libmetis.a \
-      $(ESSI_DEPEND_DIR)/lib/libblas.a 
+      $(ESSI_DEPEND_DIR)/lib/libblas.a \
+      $(ESSI_DEPEND_DIR)/hdf5_sequential/lib/libhdf5.a 
 
 PARALLEL_NUMERIC_INCLUDES = -I/usr/include/mpi \
          -I$(ESSI_DEPEND_DIR)/petsc-3.3-p7/include \
@@ -222,7 +224,7 @@ PARALLEL_NUMERIC_INCLUDES = -I/usr/include/mpi \
          -I$(ESSI_DEPEND_DIR)/metis-4.0.2_install/include \
          -I/usr/lib/openmpi/include \
          -I/usr/lib/openmpi/include/openmpi \
-         -I$(ESSI_DEPEND_DIR)/boost 
+         -I$(ESSI_DEPEND_DIR)/hdf5_parallel/include
 
 PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.3-p7/externalpackages/SuperLU_4.3/lib/libsuperlu_4.3.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/externalpackages/spooles-2.2-dec-2008/libspooles.a \
@@ -238,16 +240,19 @@ PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.3-p7/externalpackages/SuperLU
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libfblas.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libblacs.a \
       $(ESSI_DEPEND_DIR)/parmetis-4.0.2_install/lib/libparmetis.a \
-      $(ESSI_DEPEND_DIR)/metis-4.0.2_install/lib/libmetis.a 
+      $(ESSI_DEPEND_DIR)/metis-4.0.2_install/lib/libmetis.a \
+      $(ESSI_DEPEND_DIR)/hdf5_parallel/lib/libhdf5.a 
 
 
 SEQUENTIAL_MACHINE_LIBS =  -L/usr/lib64 \
       -L/usr/lib  \
       -lm \
       -ldl \
+      -lz \
       -lgfortran \
       -lieee \
-      -lc 
+      -lc \
+      -lboost
 
 PARALLEL_MACHINE_LIBS = -lm \
       -L/usr/lib/openmpi/lib \
@@ -259,8 +264,10 @@ PARALLEL_MACHINE_LIBS = -lm \
       -lgfortran \
       -lquadmath \
       -ldl \
+      -lz \
       -lhwloc \
       -lgcc_s \
-      -lpthread 
+      -lpthread \
+      -lboost
 
 # -L$(FEIBASEDIR)/lib \

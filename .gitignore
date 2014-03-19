@@ -8,5 +8,7 @@ bin/essi
 *.save
 *.so
 *.layout
+*.h5
+*.hdf5
 exodus
 libs_compiled
