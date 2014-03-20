@@ -190,7 +190,7 @@
 %token linear_elastic_isotropic_3d vonmises_perfectly_plastic vonmises_isotropic_hardening vonmises_linear_kinematic_hardening vonmises_linear_kinematic_hardening_accelerated vonmises_kinematic_hardening vonmises_perfectly_plastic_accelerated vonmises_isotropic_hardening_accelerated vonmises_kinematic_hardening_accelerated
 %token sanisand2008 camclay camclay_accelerated sanisand2004 druckerprager_isotropic_hardening druckerprager_isotropic_hardening_accelerated druckerprager_kinematic_hardening druckerprager_kinematic_hardening_accelerated
 %token druckerprager_perfectly_plastic druckerprager_perfectly_plastic_accelerated linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
-%token vonmises_perfectly_plastic_LT pisanoLT
+%token vonmises_perfectly_plastic_LT pisanoLT linear_elastic_isotropic_3d_LT
 // Material options tokens
 %token mass_density elastic_modulus viscoelastic_modulus poisson_ratio von_mises_radius druckerprager_angle
 %token armstrong_frederick_ha armstrong_frederick_cr initial_confining_stress isotropic_hardening_rate kinematic_hardening_rate poisson_ratio_h_v poisson_ratio_h_h shear_modulus_h_v elastic_modulus_horizontal elastic_modulus_vertical pressure_reference_p0
@@ -3094,6 +3094,22 @@ ADD_material
                                 double>(&add_constitutive_model_NDMaterialLT_pisano, args, signature, "add_constitutive_model_NDMaterialLT_pisano");
 
         for(int ii = 1;ii <=11; ii++) nodes.pop();
+        nodes.push($$);
+    }
+    | MATERIAL TEXTNUMBER exp TYPE linear_elastic_isotropic_3d_LT
+        mass_density '=' exp
+        elastic_modulus '=' exp
+        poisson_ratio '=' exp
+    {
+        args.clear(); signature.clear();
+        args.push_back($3); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));
+
+        $$ = new FeiDslCaller4<int, double, double, double>(&add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d, args,
+            signature,"add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d");
+        for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 4 exps
         nodes.push($$);
     }
     ;

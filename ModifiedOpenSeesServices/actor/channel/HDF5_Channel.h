@@ -145,20 +145,22 @@ class HDF5_Channel
 
 
 
+
     protected:
 
     private:
         static int numChannel;
         int tag;
 
-        int current_step_number;
+        unsigned int current_step_number;
         double current_time;
 
-        const int number_of_time_steps;
+        const unsigned int number_of_time_steps;
         const std::string filename;          // Name of the HDF5 file
         const std::string model_name;          // Name of the HDF5 file
         const std::string stage_name;          // Name of the HDF5 file
 
+        //herr_t, hid_t, and hsize_t are types defined in the HDF5 library
         herr_t status;                  // For error reporting. Each time a HDF5 function that returns herr_t is called, the macro HDF5_CHECK_ERROR should get called.
         hid_t id_file;                  // object id of the file
         hid_t id_model_group;           // object id of the base group for models
@@ -172,6 +174,14 @@ class HDF5_Channel
 
         //Some property lists
         hid_t group_creation_plist;
+        hid_t dataset_creation_plist;
+        hid_t dataset_access_plist;
+
+        //Used to create arrays of different dimensions
+        hsize_t dims_1d[1];
+        hsize_t dims_2d[2];
+        hsize_t dims_3d[3];
+        hsize_t dims_4d[4];
 
         //hid_t id_simulation_settings_group;// object id of the base group for simulation options
 

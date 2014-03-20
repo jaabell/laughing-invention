@@ -119,6 +119,7 @@
 // LTensor Based
 #include "MODELING/add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_pisano.h"
+#include "MODELING/add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d.h"
 
 // Uniaxial
 #include "MODELING/add_constitutive_model_uniaxial_elastic.h"

@@ -251,8 +251,8 @@ SEQUENTIAL_MACHINE_LIBS =  -L/usr/lib64 \
       -lz \
       -lgfortran \
       -lieee \
-      -lc \
-      -lboost
+      -lc 
+#      -lboost
 
 PARALLEL_MACHINE_LIBS = -lm \
       -L/usr/lib/openmpi/lib \
@@ -267,7 +267,7 @@ PARALLEL_MACHINE_LIBS = -lm \
       -lz \
       -lhwloc \
       -lgcc_s \
-      -lpthread \
-      -lboost
+      -lpthread 
+      # -lboost
 
 # -L$(FEIBASEDIR)/lib \

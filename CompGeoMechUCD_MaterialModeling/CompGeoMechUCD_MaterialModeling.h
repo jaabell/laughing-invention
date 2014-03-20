@@ -87,7 +87,7 @@
 //LTensor based material models
 #include "./LTensor_Based/vonMisesPPLT.h"
 #include "./LTensor_Based/PisanoLT.h"
-
+#include "./LTensor_Based/ElasticIsotropic3DLT.h"
 
 //Other materials
 #include "./ElasticIsotropic3D.h"

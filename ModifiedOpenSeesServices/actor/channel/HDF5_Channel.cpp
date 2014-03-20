@@ -44,15 +44,30 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
     numChannel++;
     tag = numChannel;
 
+    current_time = 0.0;
+    current_step_number = 0;
+
     std::cout << "Opening file" << endl;
+
+    //================================================================================
     //Create the file, overwriting it if it exists
+    //================================================================================
     id_file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
-    //Setup the property lists
+
+
+    //================================================================================
+    //Setup the global property lists
+    //================================================================================
     group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);
     status = H5Pset_link_creation_order(group_creation_plist, H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED);
     HDF5_CHECK_ERROR;
 
+
+
+    //================================================================================
+    // Create basic structure of the file
+    //================================================================================
     //Create the model name, stage name and number of steps fields
     write_string(id_file, "Model_Name", model_name);
     write_string(id_file, "Stage_Name", stage_name);
@@ -60,6 +75,9 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
 
     //Create the group to store the model
     id_model_group = create_group(id_file, "Model");
+
+    //Create the time vector
+
 
     //Create elements and nodes groups
     id_elements_group = create_group(id_model_group, "Elements");
@@ -139,17 +157,107 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
                              const Vector &theVector,
                              ChannelAddress *theAddress )
 {
+    // This function first checks if the field has to be created in the HDF5 file.
+    // (1) if the field has to be created
+    //      (i) If the field is time varying, an (extendible) 2D array will be created with time on the
+    //      second index.
+    //      (ii) If it is not time varying only a 1D array is created.
+    // (2) if the field is already created
+    //      (i) if it is time varying, write out the new data
+    //      (ii) if it is not time-varying, then do nothing the data has already been written out.
+    //
+    // The decision to create the field is based on the stack length. If there are items in the
+    // field stacks, then describeSelf has been called and we are trying to add these new fields
+    // Otherwise we are just outputting the data to existing fields.
+
+    // Get pointer to the data from the vector
+    //--------------------------------------------------------------------------------------
+
+    int fill_value = 0;   // Default value of empty array
+
+    int length_of_vector_data;
+    double *data = theVector.theData;
+    length_of_vector_data =  theVector.sz;
+    hid_t id_dataset;    //Points to the object in the file that is the data
+
     if (stack_length > 0)  // This is a new field to be added, need to create it
     {
+        //Get the field info
+        //--------------------------------------------------------------------------------------
         std::string field_name;
         bool is_time_dependent;
         std::string units;
-
         getNextField(field_name, is_time_dependent, units);
 
-        int nleft;
-        double *data = theVector.theData;
-        nleft =  theVector.sz;
+        //Create the field
+        //--------------------------------------------------------------------------------------
+        int rank;            // Rank of array to be created (2 if time varying and 1 if not)
+        hid_t id_dataspace;  // Identifier of the bject that describes data in file
+        hid_t id_memspace;   // Identifier of the Object that describes data in memory
+        hsize_t dims[2], maxdims[2];
+        hsize_t data_dims[1];
+        data_dims[0] = length_of_vector_data;
+        hsize_t data_maxdims[1];
+        data_maxdims[0] = length_of_vector_data;
+
+        if (is_time_dependent) // If it is time dependent
+        {
+            rank = 2;
+            //Starting array dimensions
+            dims[0] = length_of_vector_data;
+            dims[1] = number_of_time_steps;
+            //Max array dimensions
+            maxdims[0] = length_of_vector_data;
+            maxdims[1] = H5S_UNLIMITED;
+
+            //Setup the creation property list
+            dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
+            dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+
+            // Set the layout to be chunked, the chunk size and the fill value
+            // needs to be chunked because it is extensible
+            hsize_t chunk_dims[2];
+            chunk_dims[0] = length_of_vector_data;
+            chunk_dims[1] = 1;
+            status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
+            HDF5_CHECK_ERROR;
+            status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
+            HDF5_CHECK_ERROR;
+            status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
+            HDF5_CHECK_ERROR;
+        }
+        else  // If it is not time dependent
+        {
+            rank = 1;
+            dims[0] = length_of_vector_data;        // Starting array dims
+            maxdims[0] = length_of_vector_data;     // Max array dims
+
+            //Setup the creation property list (default)
+            dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
+            dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+
+            // Set the fill value
+            status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
+            HDF5_CHECK_ERROR;
+        }
+
+        //Create the data description both for data in file and in memory
+        id_dataspace = H5Screate_simple(rank, dims     , maxdims     );       // create dataspace
+        id_memspace  = H5Screate_simple(1   , data_dims, data_maxdims);       // create dataspace
+
+        // Create the dataset
+        cout << "!! Creating dataset" << endl;
+        id_dataset = H5Dcreate2(id_current_object_group,
+                                field_name.c_str(),
+                                H5T_NATIVE_DOUBLE,
+                                id_dataspace,
+                                H5P_DEFAULT,
+                                dataset_creation_plist,
+                                H5P_DEFAULT);
+
+        //Write out the data to the dataset
+
+
 
 
     }
@@ -354,9 +462,6 @@ int HDF5_Channel::addNewMaterial(std::string name, int tag)
 
 
 
-
-
-
 //Misc
 
 
@@ -380,3 +485,6 @@ std::string HDF5_Channel::generateRandomString()
 
     return s;
 }
+
+
+

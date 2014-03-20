@@ -372,6 +372,7 @@ EXP	([Ee][-+]?[0-9]+)
 "pisano"                            {return token::pisano;}
 
  /* LTensor based materials */
+"linear_elastic_isotropic_3d_LT"    {return token::linear_elastic_isotropic_3d_LT;}
 "vonmises_perfectly_plastic_LT"     {return token::vonmises_perfectly_plastic_LT;}
 "pisanoLT"                          {return token::pisanoLT;}
 
