@@ -488,6 +488,7 @@ ANALYSIS_LIBS = $(ANALYSIS_LIBS_BASE) $(ANALYSIS_LIBS_PARALLEL)
 ifeq ($(PROGRAMMING_MODE), PARALLEL)
 ACTOR_LIBS = ./actor/channel/Channel.o \
              ./actor/channel/MPI_Channel.o \
+             ./actor/channel/HDF5_Channel.o \
              ./actor/message/Message.o \
              ./actor/machineBroker/MachineBroker.o \
              ./actor/machineBroker/AlphaMachineBroker.o \
@@ -506,6 +507,7 @@ ACTOR_LIBS = ./actor/actor/MovableObject.o \
              ./actor/objectBroker/FEM_ObjectBroker.o \
              ./actor/message/Message.o \
              ./actor/channel/Channel.o \
+             ./actor/channel/HDF5_Channel.o \
              ./actor/actor/MovableObject.o
 endif
 

@@ -25,6 +25,7 @@
 #include <hdf5.h>
 #include <boost/lexical_cast.hpp>
 #include <Vector.h>
+#include <ID.h>
 
 int HDF5_Channel::numChannel = 0;
 
@@ -46,6 +47,7 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
 
     current_time = 0.0;
     current_step_number = 0;
+
 
     std::cout << "Opening file" << endl;
 
@@ -82,6 +84,17 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
     //Create elements and nodes groups
     id_elements_group = create_group(id_model_group, "Elements");
     id_nodes_group    = create_group(id_model_group, "Nodes");
+
+    //================================================================================
+    // Create time array
+    //================================================================================
+
+    hsize_t dims[1], maxdims[1];
+    int rank = 1;
+    dims[0] = number_of_time_steps;
+    maxdims[0] = H5S_UNLIMITED;
+    id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
+
 }
 
 HDF5_Channel::~HDF5_Channel()
@@ -166,21 +179,16 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
     //      (i) if it is time varying, write out the new data
     //      (ii) if it is not time-varying, then do nothing the data has already been written out.
     //
-    // The decision to create the field is based on the stack length. If there are items in the
-    // field stacks, then describeSelf has been called and we are trying to add these new fields
-    // Otherwise we are just outputting the data to existing fields.
-
+    // The decision to create the field is based on searching the database.
     // Get pointer to the data from the vector
     //--------------------------------------------------------------------------------------
-
-    int fill_value = 0;   // Default value of empty array
 
     int length_of_vector_data;
     double *data = theVector.theData;
     length_of_vector_data =  theVector.sz;
     hid_t id_dataset;    //Points to the object in the file that is the data
 
-    if (stack_length > 0)  // This is a new field to be added, need to create it
+    if (stack_length > 0)  // There is info available to write out data
     {
         //Get the field info
         //--------------------------------------------------------------------------------------
@@ -189,82 +197,122 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
         std::string units;
         getNextField(field_name, is_time_dependent, units);
 
-        //Create the field
-        //--------------------------------------------------------------------------------------
+        // Find out whether the field exists
+        htri_t exists = H5Lexists(id_current_object_group, field_name.c_str(), H5P_DEFAULT);
         int rank;            // Rank of array to be created (2 if time varying and 1 if not)
-        hid_t id_dataspace;  // Identifier of the bject that describes data in file
-        hid_t id_memspace;   // Identifier of the Object that describes data in memory
         hsize_t dims[2], maxdims[2];
         hsize_t data_dims[1];
-        data_dims[0] = length_of_vector_data;
         hsize_t data_maxdims[1];
-        data_maxdims[0] = length_of_vector_data;
 
-        if (is_time_dependent) // If it is time dependent
+        // Field does not exist
+        // --------------------------------
+        if (exists == false) // The field does not exist -> create it and write out
         {
-            rank = 2;
-            //Starting array dimensions
-            dims[0] = length_of_vector_data;
-            dims[1] = number_of_time_steps;
-            //Max array dimensions
-            maxdims[0] = length_of_vector_data;
-            maxdims[1] = H5S_UNLIMITED;
 
-            //Setup the creation property list
-            dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
-            dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+            //Create the field
+            //--------------------------------------------------------------------------------------
+            cout << "Adding field: " << subgroupname << field_name << endl;
 
-            // Set the layout to be chunked, the chunk size and the fill value
-            // needs to be chunked because it is extensible
-            hsize_t chunk_dims[2];
-            chunk_dims[0] = length_of_vector_data;
-            chunk_dims[1] = 1;
-            status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
-            HDF5_CHECK_ERROR;
-            status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
-            HDF5_CHECK_ERROR;
-            status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
-            HDF5_CHECK_ERROR;
+            data_dims[0] = length_of_vector_data;
+            data_maxdims[0] = length_of_vector_data;
+
+            if (is_time_dependent) // If it is time dependent
+            {
+                rank = 2;
+                dims[0] = length_of_vector_data;
+                dims[1] = number_of_time_steps;
+                maxdims[0] = length_of_vector_data;
+                maxdims[1] = H5S_UNLIMITED;
+
+                id_dataset = createVariableLengthDoubleArray(id_current_object_group,
+                             rank,
+                             dims,
+                             maxdims,
+                             field_name.c_str(),
+                             units);
+
+                //Write out the data to the dataset
+                hsize_t offset[2] = {       0,  0 };
+                hsize_t stride[2] = {       1,  1 };
+                hsize_t count[2]  = {       1,  1 };
+                hsize_t block[2]  = { dims[0],  1 };
+                id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                             dims,
+                             data_dims,
+                             offset,
+                             stride,
+                             count,
+                             block,
+                             data);
+
+            }
+            else  // If it is not time dependent
+            {
+                rank = 1;
+                dims[0] = length_of_vector_data;        // Starting array dims
+                maxdims[0] = length_of_vector_data;     // Max array dims
+
+                hid_t id_dataset = createConstantLengthDoubleArray(id_current_object_group,
+                                   rank,
+                                   dims,
+                                   maxdims,
+                                   field_name.c_str(),
+                                   units);
+
+                //Write out the data to the dataset
+                hsize_t offset[2] = {       0,  0 };
+                hsize_t stride[2] = {       1,  1 };
+                hsize_t count[2]  = {       1,  1 };
+                hsize_t block[2]  = { dims[0],  1 };
+
+                id_dataset = writeConstantLengthDoubleArray(id_dataset,
+                             dims,
+                             data_dims,
+                             offset,
+                             stride,
+                             count,
+                             block,
+                             data);
+            }
         }
-        else  // If it is not time dependent
+
+        // Field exists .....
+        // --------------------------------
+        else if (is_time_dependent) // .... and is time dependent
         {
-            rank = 1;
-            dims[0] = length_of_vector_data;        // Starting array dims
-            maxdims[0] = length_of_vector_data;     // Max array dims
 
-            //Setup the creation property list (default)
-            dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
-            dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+            cout << "Writing field: " << subgroupname << field_name << endl;
+            //First get information about object
+            id_dataset = H5Oopen(id_current_object_group, field_name.c_str(), H5P_DEFAULT);
+            if (id_dataset > 0)
+            {
+                rank = 2;
+                dims[0] = length_of_vector_data;
+                dims[1] = number_of_time_steps;
 
-            // Set the fill value
-            status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
-            HDF5_CHECK_ERROR;
-        }
+                //Write out the data to the dataset
+                hsize_t offset[2] = {       0,  current_step_number };
+                hsize_t stride[2] = {       1,  1 };
+                hsize_t count[2]  = {       1,  1 };
+                hsize_t block[2]  = { dims[0],  1 };
 
-        //Create the data description both for data in file and in memory
-        id_dataspace = H5Screate_simple(rank, dims     , maxdims     );       // create dataspace
-        id_memspace  = H5Screate_simple(1   , data_dims, data_maxdims);       // create dataspace
+                id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                             dims,
+                             data_dims,
+                             offset,
+                             stride,
+                             count,
+                             block,
+                             data);
+            }
+            else
+            {
+                cerr << "HDF5_Channel::sendVector() -> ";
+                cerr << "Group named " << field_name << " does not exist." << endl; // This should not happen...... ever
+            }
+        } // The field either does not exist (do nothing), or is not time dependent (do nothing)
 
-        // Create the dataset
-        cout << "!! Creating dataset" << endl;
-        id_dataset = H5Dcreate2(id_current_object_group,
-                                field_name.c_str(),
-                                H5T_NATIVE_DOUBLE,
-                                id_dataspace,
-                                H5P_DEFAULT,
-                                dataset_creation_plist,
-                                H5P_DEFAULT);
-
-        //Write out the data to the dataset
-
-
-
-
-    }
-    else // This field exists and will be written to, or it does not exist and will not be written to
-    {
-
-    }
+    } // if(stack_length > 0 ) -> cannot do anything without a stack
 
     return 0;
 }
@@ -280,6 +328,8 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                          const ID &theID,
                          ChannelAddress *theAddress )
 {
+
+
     return 0;
 }
 
@@ -304,6 +354,185 @@ int HDF5_Channel::recvnDarray(int dbTag, int commitTag,
 {
     return 0;
 }
+
+
+
+
+
+
+
+//Adding and getting new fields
+
+int HDF5_Channel::addNewField(std::string field_name,
+                              bool is_time_dependent,
+                              std::string units)
+{
+    field_name_stack.push(subgroupname + field_name);
+    field_is_time_dependent_stack.push(is_time_dependent);
+    field_units_stack.push(units);
+    stack_length++;
+    return 0;
+}
+
+
+int HDF5_Channel::getNextField(std::string &field_name,
+                               bool &is_time_dependent,
+                               std::string &units)
+{
+    if (stack_length > 0)
+    {
+        field_name = field_name_stack.front();
+        is_time_dependent = field_is_time_dependent_stack.front();
+        units = field_units_stack.front();
+        field_name_stack.pop();
+        field_is_time_dependent_stack.pop();
+        field_units_stack.pop();
+        stack_length--;
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+
+
+
+int HDF5_Channel::addNewElement(std::string name, int tag)
+{
+    //Set the current group identifier to the elements group
+    id_previous_group = id_current_group;
+    id_current_group = id_elements_group;
+
+    //Convert integer tag to string
+    string stag;
+    stag = boost::lexical_cast<std::string>(tag);
+
+    //Concatenate name and tag to create group name
+    string group_name;
+    group_name = name + "_" + stag;
+
+    //Check if group exists
+    hid_t id_current_object_group ;
+    htri_t element_exists = H5Lexists(id_elements_group, group_name.c_str(), H5P_DEFAULT);
+    if (element_exists == true) // If group doesn't exist -> create it
+    {
+        id_current_object_group = H5Oopen(id_elements_group,
+                                          group_name.c_str(),
+                                          H5P_DEFAULT);
+    }
+    else
+    {
+        //Create a group to hold the data for the element
+        id_current_object_group = create_group(id_elements_group, group_name.c_str());
+    }
+
+    subgroupname = "";
+
+    cout << "Adding element: " << group_name << endl;
+
+    //Return the tag of this group
+    return id_current_object_group;
+}
+
+int HDF5_Channel::addNewNode(int tag)
+{
+    //Set the current group identifier to the nodes group
+    id_previous_group = id_current_group;
+    id_current_group = id_nodes_group;
+
+    //Convert integer tag to string
+    string stag;
+    stag = boost::lexical_cast<std::string>(tag);
+
+
+    hid_t id_current_object_group = H5Oopen(id_current_group,
+                                            stag.c_str(),
+                                            H5P_DEFAULT);
+
+    // If group does not exist, create it!
+    if (id_current_object_group < 0)
+    {
+        //Create a group to hold the data for the node
+        id_current_object_group = create_group(id_current_group, stag.c_str());
+    }
+
+    //Return the tag of this group
+    return id_current_object_group;
+}
+
+int HDF5_Channel::addNewMaterial(std::string name, int tag)
+{
+
+
+
+    number_of_materials_in_current_element++;
+    //Set the current group identifier to the nodes group
+    id_previous_group = id_current_group;
+    //id_current_group = id_nodes_group;
+
+    //Convert integer tag to string
+    string stag;
+    stag = boost::lexical_cast<std::string>(tag);
+
+    //Concatenate name and tag and a number for current material in element
+    string group_name;
+    group_name = name + "_" + stag + "_" + boost::lexical_cast<std::string>(number_of_materials_in_current_element);
+
+    //Create a group to hold the data for the node
+    hid_t id_current_object_group = H5Oopen(id_current_group,
+                                            group_name.c_str(),
+                                            H5P_DEFAULT);
+
+    // If group does not exist, create it!
+    if (id_current_object_group < 0)
+    {
+        id_current_object_group = create_group(id_current_group, group_name.c_str());
+    }
+
+    //Set subgroup name
+    subgroupname = group_name + "/";
+
+
+    cout << "Adding material: " << group_name << endl;
+    //Return the tag of this group
+    return id_current_group;
+}
+
+
+int HDF5_Channel::setTime(double t)
+{
+    current_time = t;
+
+    //Extending past initial data allocation
+    if (current_step_number > number_of_time_steps)
+    {
+        number_of_time_steps = current_step_number;
+    }
+
+    hsize_t dims[1]      = {number_of_time_steps};
+    hsize_t data_dims[1] = {1};
+    hsize_t offset[1]    = {current_step_number };
+    hsize_t stride[1]    = {1};
+    hsize_t count[1]     = {1};
+    hsize_t block[1]     = {1};
+
+    writeVariableLengthDoubleArray(id_time_vector,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   &current_time);
+
+    cout << "HDF5_Channel::setTime -> time set to t = " << current_time <<  "s @ step number " << current_step_number << endl;
+
+    current_step_number++;
+    return 0;
+}
+
 
 
 
@@ -353,116 +582,13 @@ int HDF5_Channel::write_string(hid_t here, std::string name, std::string content
 
 int HDF5_Channel::create_group(hid_t here, std::string name)
 {
-    hid_t id_new_group;
+
+    cout << "Creating group : " << name << endl;    hid_t id_new_group;
     id_new_group = H5Gcreate(here, name.c_str(), H5P_DEFAULT, group_creation_plist , H5P_DEFAULT);
     return id_new_group;
 }
 
 
-
-
-
-//Adding new fields
-
-int HDF5_Channel::addNewField(std::string field_name,
-                              bool is_time_dependent,
-                              std::string units)
-{
-    field_name_stack.push(field_name);
-    field_is_time_dependent_stack.push(is_time_dependent);
-    field_units_stack.push(units);
-    stack_length++;
-    return 0;
-}
-
-
-int HDF5_Channel::getNextField(std::string &field_name,
-                               bool &is_time_dependent,
-                               std::string &units)
-{
-    if (stack_length > 0)
-    {
-        field_name = field_name_stack.front();
-        is_time_dependent = field_is_time_dependent_stack.front();
-        units = field_units_stack.front();
-        field_name_stack.pop();
-        field_is_time_dependent_stack.pop();
-        field_units_stack.pop();
-        stack_length--;
-        return 0;
-    }
-    else
-    {
-        return -1;
-    }
-}
-
-
-
-
-int HDF5_Channel::addNewElement(std::string name, int tag)
-{
-    //Set the current group identifier to the elements group
-    id_previous_group = id_current_group;
-    id_current_group = id_elements_group;
-
-    //Convert integer tag to string
-    string stag;
-    stag = boost::lexical_cast<std::string>(tag);
-
-    //Concatenate name and tag to create group name
-    string group_name;
-    group_name = name + "_" + stag;
-
-    //Create a group to hold the data for the element
-    id_current_object_group = create_group(id_current_group, group_name.c_str());
-
-    //Return the tag of this group
-    return id_current_object_group;
-}
-
-int HDF5_Channel::addNewNode(int tag)
-{
-    //Set the current group identifier to the nodes group
-    id_previous_group = id_current_group;
-    id_current_group = id_nodes_group;
-
-    //Convert integer tag to string
-    string stag;
-    stag = boost::lexical_cast<std::string>(tag);
-
-    //Create a group to hold the data for the node
-    id_current_object_group = create_group(id_current_group, stag.c_str());
-
-    //Return the tag of this group
-    return id_current_object_group;
-}
-
-int HDF5_Channel::addNewMaterial(std::string name, int tag)
-{
-
-    //Set the current group identifier to the nodes group
-    id_previous_group = id_current_group;
-    //id_current_group = id_nodes_group;
-
-    //Convert integer tag to string
-    string stag;
-    stag = boost::lexical_cast<std::string>(tag);
-
-    //Concatenate name and tag and a random string to create group name
-    string group_name;
-    group_name = name + "_" + stag + generateRandomString();
-
-    //Create a group to hold the data for the node
-    id_current_object_group = create_group(id_current_group, stag.c_str());
-
-    //Return the tag of this group
-    return id_current_object_group;
-}
-
-
-
-//Misc
 
 
 std::string HDF5_Channel::generateRandomString()
@@ -485,6 +611,375 @@ std::string HDF5_Channel::generateRandomString()
 
     return s;
 }
+
+int HDF5_Channel::setUnit(hid_t object, std::string units)
+{
+    hid_t atype;
+    hid_t attribute_dataspace_id;
+    hid_t attribute;
+
+    attribute_dataspace_id = H5Screate(H5S_SCALAR);
+    atype = H5Tcopy(H5T_C_S1);
+    H5Tset_size(atype, units.size() );
+    attribute = H5Acreate2(object,
+                           "units",
+                           atype,
+                           attribute_dataspace_id,
+                           H5P_DEFAULT,
+                           H5P_DEFAULT);
+    status = H5Awrite(attribute, atype, units.c_str());
+    H5Aclose(attribute);
+    H5Sclose(attribute_dataspace_id);
+
+    return 0;
+}
+
+
+
+
+
+
+hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
+        int rank,
+        hsize_t *dims,
+        hsize_t *maxdims,
+        std::string name,
+        std::string units)
+{
+    double fill_value = 0.0;
+
+    //Setup the creation property list
+    dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
+    dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+
+    // Set the layout to be chunked, the chunk size and the fill value
+    // needs to be chunked because it is extensible
+    hsize_t chunk_dims[rank];
+    for (int i = 0; i < rank; i++)
+    {
+        if (maxdims[i] == H5S_UNLIMITED)
+        {
+            chunk_dims[i] = 1;
+        }
+        else
+        {
+            chunk_dims[i] = maxdims[i];
+        }
+    }
+
+
+    status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
+    HDF5_CHECK_ERROR;
+    status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
+    HDF5_CHECK_ERROR;
+    status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
+    HDF5_CHECK_ERROR;
+
+
+    //Create the data description both for data in file and in memory
+    hid_t id_dataspace;
+    id_dataspace = H5Screate_simple(rank, dims     , maxdims     );       // create dataspace
+
+    // Create the dataset
+    hid_t id_array = H5Dcreate2(here,
+                                name.c_str(),
+                                H5T_NATIVE_DOUBLE,
+                                id_dataspace,
+                                H5P_DEFAULT,
+                                dataset_creation_plist,
+                                H5P_DEFAULT);
+    setUnit(id_array, units);
+    return id_array;
+}
+
+hid_t HDF5_Channel::createConstantLengthDoubleArray(hid_t here,
+        int rank,
+        hsize_t *dims,
+        hsize_t *maxdims,
+        std::string name,
+        std::string units)
+{
+    double fill_value = 0.0;
+
+    //Setup the creation property list
+    dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
+    dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+
+
+    status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
+    HDF5_CHECK_ERROR;
+
+
+    //Create the data description both for data in file and in memory
+    hid_t id_dataspace;
+    id_dataspace = H5Screate_simple(rank , dims     , maxdims     );       // create dataspace
+
+    // Create the dataset
+    hid_t id_array = H5Dcreate2(here,
+                                name.c_str(),
+                                H5T_NATIVE_DOUBLE,
+                                id_dataspace,
+                                H5P_DEFAULT,
+                                dataset_creation_plist,
+                                H5P_DEFAULT);
+    setUnit(id_array, units);
+    return id_array;
+}
+
+
+hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
+        int rank,
+        hsize_t *dims,
+        hsize_t *maxdims,
+        std::string name,
+        std::string units)
+{
+    int fill_value = 0;
+
+    //Setup the creation property list
+    dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
+    dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+
+    // Set the layout to be chunked, the chunk size and the fill value
+    // needs to be chunked because it is extensible
+    // Set the layout to be chunked, the chunk size and the fill value
+    // needs to be chunked because it is extensible
+    hsize_t chunk_dims[rank];
+    for (int i = 0; i < rank; i++)
+    {
+        if (maxdims[i] == H5S_UNLIMITED)
+        {
+            chunk_dims[i] = 1;
+        }
+        else
+        {
+            chunk_dims[i] = maxdims[i];
+        }
+    }
+
+
+    status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
+    HDF5_CHECK_ERROR;
+    status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
+    HDF5_CHECK_ERROR;
+    status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_INT, &fill_value);
+    HDF5_CHECK_ERROR;
+
+
+    //Create the data description both for data in file and in memory
+    hid_t id_dataspace;
+    id_dataspace = H5Screate_simple(rank, dims     , maxdims     );       // create dataspace
+
+    // Create the dataset
+    hid_t id_array = H5Dcreate2(here,
+                                name.c_str(),
+                                H5T_NATIVE_INT,
+                                id_dataspace,
+                                H5P_DEFAULT,
+                                dataset_creation_plist,
+                                H5P_DEFAULT);
+    setUnit(id_array, units);
+    return id_array;
+}
+
+hid_t HDF5_Channel::createConstantLengthIntegerArray(hid_t here,
+        int rank,
+        hsize_t *dims,
+        hsize_t *maxdims,
+        std::string name,
+        std::string units)
+{
+    int fill_value = 0;
+
+    //Setup the creation property list
+    dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
+    dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+
+
+    status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_INT, &fill_value);
+    HDF5_CHECK_ERROR;
+
+
+    //Create the data description both for data in file and in memory
+    hid_t id_dataspace;
+    id_dataspace = H5Screate_simple(rank , dims     , maxdims     );       // create dataspace
+
+    // Create the dataset
+    hid_t id_array = H5Dcreate2(here,
+                                name.c_str(),
+                                H5T_NATIVE_INT,
+                                id_dataspace,
+                                H5P_DEFAULT,
+                                dataset_creation_plist,
+                                H5P_DEFAULT);
+    setUnit(id_array, units);
+    return id_array;
+}
+
+
+
+hid_t HDF5_Channel::writeVariableLengthDoubleArray(hid_t id_array,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        double *data)
+{
+    // Extend it if necesary!
+    status =  H5Dset_extent( id_array, dims );
+    HDF5_CHECK_ERROR;
+
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = H5Dget_space(id_array);
+    hsize_t id_memspace  = H5Screate_simple(1   , data_dims, data_dims);       // create dataspace
+
+    //Select the region of data to output to
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+    HDF5_CHECK_ERROR;
+
+    //Write data!
+    status = H5Dwrite(
+                 id_time_vector,            // Dataset to write to
+                 H5T_NATIVE_DOUBLE,              // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 data                   // The actual data
+             );
+    HDF5_CHECK_ERROR;
+
+    return id_array;
+}
+
+hid_t HDF5_Channel::writeConstantLengthDoubleArray(hid_t id_array,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        double *data)
+{
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = H5Dget_space(id_array);
+    hsize_t id_memspace  = H5Screate_simple(1   , data_dims, data_dims);       // create dataspace
+
+    //Select the region of data to output to
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+    HDF5_CHECK_ERROR;
+
+    //Write data!
+    status = H5Dwrite(
+                 id_time_vector,            // Dataset to write to
+                 H5T_NATIVE_DOUBLE,              // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 data                   // The actual data
+             );
+    HDF5_CHECK_ERROR;
+
+    return id_array;
+}
+
+
+
+hid_t HDF5_Channel::writeVariableLengthIntegerArray(hid_t id_array,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        int *data)
+{
+    // Extend it if necesary!
+    status =  H5Dset_extent( id_array, dims );
+    HDF5_CHECK_ERROR;
+
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = H5Dget_space(id_array);
+    hsize_t id_memspace  = H5Screate_simple(1   , data_dims, data_dims);       // create dataspace
+
+    //Select the region of data to output to
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+    HDF5_CHECK_ERROR;
+
+    //Write data!
+    status = H5Dwrite(
+                 id_time_vector,            // Dataset to write to
+                 H5T_NATIVE_INT,              // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 data                   // The actual data
+             );
+    HDF5_CHECK_ERROR;
+
+    return id_array;
+}
+
+hid_t HDF5_Channel::writeConstantLengthIntegerArray(hid_t id_array,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        int *data)
+{
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = H5Dget_space(id_array);
+    hsize_t id_memspace  = H5Screate_simple(1   , data_dims, data_dims);       // create dataspace
+
+    //Select the region of data to output to
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+    HDF5_CHECK_ERROR;
+
+    //Write data!
+    status = H5Dwrite(
+                 id_time_vector,            // Dataset to write to
+                 H5T_NATIVE_INT,              // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 data                   // The actual data
+             );
+    HDF5_CHECK_ERROR;
+
+    return id_array;
+}
+
 
 
 

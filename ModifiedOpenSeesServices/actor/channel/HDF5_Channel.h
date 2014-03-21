@@ -63,6 +63,11 @@ class HDF5_Channel
 
         ~HDF5_Channel();
 
+
+        // ========================================================================
+        // Member functions inherited from Channel
+        // ========================================================================
+
         // methods to set up the HDF5_channel in an actor space
         char *addToProgram(void);
         int setUpConnection(void);
@@ -123,13 +128,12 @@ class HDF5_Channel
                         nDarray &theNDarray,
                         ChannelAddress *theAddress = 0);
 
-        int addNewField(std::string field_name,
-                        bool is_time_dependent,
-                        std::string units);
 
-        int getNextField(std::string &field_name,
-                         bool &is_time_dependent,
-                         std::string &units);
+        // ========================================================================
+        // Member functions specific to HDF5_Channel
+        // ========================================================================
+
+        int setTime(double t);
 
         int addNewElement(std::string name, int tag);
 
@@ -137,14 +141,83 @@ class HDF5_Channel
 
         int addNewMaterial(std::string name, int tag);
 
+        int addNewField(std::string field_name,
+                        bool is_time_dependent,
+                        std::string units);
+
+
+
     private:  // Functions
+
+        int getNextField(std::string &field_name,
+                         bool &is_time_dependent,
+                         std::string &units);
 
         int write_string(hid_t here, std::string name, std::string contents);
         int create_group(hid_t here, std::string name);
         std::string generateRandomString();
+        int setUnit(hid_t object, std::string units);
 
+        hid_t createVariableLengthDoubleArray(hid_t here,
+                                              int rank,
+                                              hsize_t *dims,
+                                              hsize_t *maxdims,
+                                              std::string name,
+                                              std::string units);
+        hid_t createConstantLengthDoubleArray(hid_t here,
+                                              int rank,
+                                              hsize_t *dims,
+                                              hsize_t *maxdims,
+                                              std::string name,
+                                              std::string units);
+        hid_t createVariableLengthIntegerArray(hid_t here,
+                                               int rank,
+                                               hsize_t *dims,
+                                               hsize_t *maxdims,
+                                               std::string name,
+                                               std::string units);
+        hid_t createConstantLengthIntegerArray(hid_t here,
+                                               int rank,
+                                               hsize_t *dims,
+                                               hsize_t *maxdims,
+                                               std::string name,
+                                               std::string units);
 
+        hid_t writeVariableLengthDoubleArray(hid_t id_array,
+                                             hsize_t *dims,
+                                             hsize_t *data_dims,
+                                             hsize_t *offset,
+                                             hsize_t *stride,
+                                             hsize_t *count,
+                                             hsize_t *block,
+                                             double *data);
 
+        hid_t writeConstantLengthDoubleArray(hid_t id_array,
+                                             hsize_t *dims,
+                                             hsize_t *data_dims,
+                                             hsize_t *offset,
+                                             hsize_t *stride,
+                                             hsize_t *count,
+                                             hsize_t *block,
+                                             double *data);
+
+        hid_t writeVariableLengthIntegerArray(hid_t id_array,
+                                              hsize_t *dims,
+                                              hsize_t *data_dims,
+                                              hsize_t *offset,
+                                              hsize_t *stride,
+                                              hsize_t *count,
+                                              hsize_t *block,
+                                              int *data);
+
+        hid_t writeConstantLengthIntegerArray(hid_t id_array,
+                                              hsize_t *dims,
+                                              hsize_t *data_dims,
+                                              hsize_t *offset,
+                                              hsize_t *stride,
+                                              hsize_t *count,
+                                              hsize_t *block,
+                                              int *data);
 
     protected:
 
@@ -154,8 +227,9 @@ class HDF5_Channel
 
         unsigned int current_step_number;
         double current_time;
+        unsigned int number_of_materials_in_current_element;
+        unsigned int number_of_time_steps;
 
-        const unsigned int number_of_time_steps;
         const std::string filename;          // Name of the HDF5 file
         const std::string model_name;          // Name of the HDF5 file
         const std::string stage_name;          // Name of the HDF5 file
@@ -166,6 +240,7 @@ class HDF5_Channel
         hid_t id_model_group;           // object id of the base group for models
         hid_t id_elements_group;        // object id of the base group for models
         hid_t id_nodes_group;           // object id of the base group for models
+        hid_t id_time_vector;           // object id of the time vector
 
         hid_t id_current_object;
         hid_t id_current_object_group;
@@ -185,11 +260,14 @@ class HDF5_Channel
 
         //hid_t id_simulation_settings_group;// object id of the base group for simulation options
 
+        //Stacks
         std::queue<string> field_name_stack;               // Contains names of fields for current object
         std::queue<bool>   field_is_time_dependent_stack;  // Contains info on whether each field in "name_stack" is time dependent
         std::queue<string>   field_units_stack;              // Contains the physical units for each field field in "name_stack"
-
         unsigned int stack_length;
+
+        //if inside materials, we need this
+        std::string subgroupname;
 };
 
 #endif
