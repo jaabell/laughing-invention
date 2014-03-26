@@ -134,6 +134,11 @@ class Element : public DomainComponent
         virtual Vector *getForce(void);
         void printSomeInformation(void); // Added by Babak to print
 
+        virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
+        virtual int sendSelf ( int commitTag, Channel &theChannel );
+        virtual int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &);
+
+
 
     protected:
         const Vector &getRayleighDampingForces(void);

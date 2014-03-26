@@ -38,9 +38,9 @@
 #include <Vector.h>
 #include <Matrix.h>
 #include <Channel.h>
+#include <HDF5_Channel.h>
 #include <FEM_ObjectBroker.h>
 #include <DOF_Group.h>
-// #include <Renderer.h>
 #include <string.h>
 #include <Information.h>
 
@@ -1399,6 +1399,24 @@ Node::getEigenvectors(void)
     }
 
     return *theEigenvectors;
+}
+
+
+int Node::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+{
+    theHDF5_Channel.beginNodeDescription(this->getTag());
+    theHDF5_Channel.addField("data"             , false     , "");
+    theHDF5_Channel.addField("coordinates"      , false     , "m");
+    theHDF5_Channel.addField("displacements"    , true      , "m");
+    theHDF5_Channel.addField("velocity"         , true      , "m*s^-1");
+    theHDF5_Channel.addField("acceleration"     , true      , "m*s^-2");
+    theHDF5_Channel.addField("mass_matrix"      , false     , "variable");
+    theHDF5_Channel.addField("nodal_participation_matrix", false     , "variable");
+    theHDF5_Channel.addField("unbalanced_load"  , false     , "variable");
+    theHDF5_Channel.addField("DOF_group"        , false     , "");
+    theHDF5_Channel.endNodeDescription();
+
+    return 0;
 }
 
 

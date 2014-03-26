@@ -30,7 +30,11 @@
 
 #define HDF5_CHECK_ERROR  {if(status < 0){cout << "status = " << status << endl; }}//return(-1);}}
 #define HDF5_CHANNEL_RANDOMSTRNG_LEN 16
-
+#define HDF5_CHANNEL_CHECK_DEFINITION_MODE if (inElementDefinitionMode | inNodeDefinitionMode) \
+    { \
+        std::cerr << "HDF5_Channel::sendID -> still in definition mode. Element or node must end definition mode by calling endElementDescription() or endNodeDescription() before exiting! " << endl;  \
+        return -1; \
+    }
 
 
 using namespace std;
@@ -135,15 +139,23 @@ class HDF5_Channel
 
         int setTime(double t);
 
-        int addNewElement(std::string name, int tag);
+        int beginElementDescription(std::string name, int tag);
 
-        int addNewNode(int tag);
+        int beginNodeDescription(int tag);
 
-        int addNewMaterial(std::string name, int tag);
+        int beginMaterialDescription(std::string name, int tag);
 
-        int addNewField(std::string field_name,
-                        bool is_time_dependent,
-                        std::string units);
+        int endElementDescription();
+
+        int endNodeDescription();
+
+        int endMaterialDescription();
+
+        int addField(std::string field_name,
+                     bool is_time_dependent,
+                     std::string units);
+
+        int printStack();
 
 
 
@@ -244,8 +256,8 @@ class HDF5_Channel
 
         hid_t id_current_object;
         hid_t id_current_object_group;
-        hid_t id_current_group;
-        hid_t id_previous_group;
+        //hid_t id_current_group;
+        //hid_t id_previous_group;
 
         //Some property lists
         hid_t group_creation_plist;
@@ -253,12 +265,15 @@ class HDF5_Channel
         hid_t dataset_access_plist;
 
         //Used to create arrays of different dimensions
-        hsize_t dims_1d[1];
-        hsize_t dims_2d[2];
-        hsize_t dims_3d[3];
-        hsize_t dims_4d[4];
+        // hsize_t dims_1d[1];
+        // hsize_t dims_2d[2];
+        // hsize_t dims_3d[3];
+        // hsize_t dims_4d[4];
 
         //hid_t id_simulation_settings_group;// object id of the base group for simulation options
+
+        bool inNodeDefinitionMode;
+        bool inElementDefinitionMode;
 
         //Stacks
         std::queue<string> field_name_stack;               // Contains names of fields for current object
@@ -269,5 +284,10 @@ class HDF5_Channel
         //if inside materials, we need this
         std::string subgroupname;
 };
+
+
+int H5Lexists_safe(hid_t base, std::string &path, hid_t lapl_id);
+
+
 
 #endif

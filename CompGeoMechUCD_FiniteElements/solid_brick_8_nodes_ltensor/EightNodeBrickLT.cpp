@@ -30,7 +30,11 @@
 #define EightNodeBrickLTLT_CPP
 
 #include "EightNodeBrickLT.h"
-#include "LTensorDisplay.h"
+#include <LTensorDisplay.h>
+#include <HDF5_Channel.h>
+
+
+
 double EightNodeBrickLT::SurfaceLoadValues_in_function;         // Nima added for surface load (July 2012)
 
 DTensor2 EightNodeBrickLT::gp_coords(8, 3, 0.0);
@@ -1366,84 +1370,86 @@ const Vector &EightNodeBrickLT::getResistingForceIncInertia ()
 
 }
 
+
+int EightNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+{
+    theHDF5_Channel.beginElementDescription("EightNodeBrickLT", this->getTag());
+    theHDF5_Channel.addField("data"             , false     , "");
+
+    // 8node brick asks its material objects to describe themselves
+    for ( int i = 0; i < 8; i++ )
+    {
+        if ( material_array[i]->describeSelf( commitTag, theHDF5_Channel ) < 0 )
+        {
+            cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send material models\n";
+            return -1;
+        }
+    }
+    theHDF5_Channel.addField("material_properties"      , false     , "m");
+    theHDF5_Channel.endElementDescription();
+
+    return 0;
+}
+
+
+
 int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 {
     cerr << "EightNodeBrickLT::sendSelf -- Not yet implemented!" << endl;
     return -1;
-    /*
-        if ( !initialized )
+
+    if ( !initialized )
+    {
+        populate();
+    }
+
+    int dataTag = this->getDbTag();
+    // int matDbTag;
+    static ID idData( 26 );
+
+    idData( 17 ) = connectedExternalNodes( 0 );
+    idData( 18 ) = connectedExternalNodes( 1 );
+    idData( 19 ) = connectedExternalNodes( 2 );
+    idData( 20 ) = connectedExternalNodes( 3 );
+    idData( 21 ) = connectedExternalNodes( 4 );
+    idData( 22 ) = connectedExternalNodes( 5 );
+    idData( 23 ) = connectedExternalNodes( 6 );
+    idData( 24 ) = connectedExternalNodes( 7 );
+    idData( 25 ) = this->getTag();
+
+
+    if ( theChannel.sendID( dataTag, commitTag, idData ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
+        return -1;
+    }
+
+    // Finally, 8node brick asks its material objects to send themselves
+    for ( int i = 0; i < 8; i++ )
+    {
+        if ( material_array[i]->sendSelf( commitTag, theChannel ) < 0 )
         {
-            populate();
-        }
-
-        int dataTag = this->getDbTag();
-        int matDbTag;
-        static ID idData( 26 );
-
-    //=========================================================================
-        for ( int i = 0; i < 8; i++ )
-        {
-            idData( i ) = material_array[i]->getClassTag();
-            matDbTag  = material_array[i] ->getDbTag();
-
-            // NOTE: we do have to ensure that the material has a database
-            // tag if we are sending it to a database channel.
-            if ( matDbTag == 0 )
-            {
-                matDbTag = theChannel.getDbTag();
-                if ( matDbTag != 0 )
-                {
-                    material_array[i]->setDbTag( matDbTag );
-                }
-            }
-
-            idData( i + 8 ) = matDbTag;
-        }
-    //=========================================================================
-
-        idData( 17 ) = connectedExternalNodes( 0 );
-        idData( 18 ) = connectedExternalNodes( 1 );
-        idData( 19 ) = connectedExternalNodes( 2 );
-        idData( 20 ) = connectedExternalNodes( 3 );
-        idData( 21 ) = connectedExternalNodes( 4 );
-        idData( 22 ) = connectedExternalNodes( 5 );
-        idData( 23 ) = connectedExternalNodes( 6 );
-        idData( 24 ) = connectedExternalNodes( 7 );
-        idData( 25 ) = this->getTag();
-
-
-        if ( theChannel.sendID( dataTag, commitTag, idData ) < 0 )
-        {
-            cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
+            cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send material models\n";
             return -1;
         }
+    }
 
-        // Finally, 8node brick asks its material objects to send themselves
-        for ( int i = 0; i < 8; i++ )
-        {
-            if ( material_array[i]->sendSelf( commitTag, theChannel ) < 0 )
-            {
-                cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send material models\n";
-                return -1;
-            }
-        }
+    static Vector matProp( 4 );
+    matProp( 0 ) = rho;
 
-        static Vector matProp( 4 );
-        matProp( 0 ) = rho;
+    //FIXME: may need to be saved as acceleration field
+    matProp( 1 ) = bf( 0 );
+    matProp( 2 ) = bf( 1 );
+    matProp( 3 ) = bf( 2 );
 
-        //FIXME: may need to be saved as acceleration field
-        matProp( 1 ) = bf( 0 );
-        matProp( 2 ) = bf( 1 );
-        matProp( 3 ) = bf( 2 );
+    if ( theChannel.sendVector( dataTag, commitTag, matProp ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Material Property\n";
+        return -1;
+    }
 
-        if ( theChannel.sendVector( dataTag, commitTag, matProp ) < 0 )
-        {
-            cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Material Property\n";
-            return -1;
-        }
+    return 0;
 
-        return 0;
-    */
 }
 
 int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )

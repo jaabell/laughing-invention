@@ -143,6 +143,7 @@ class Matrix
         friend class TCP_SocketNoDelay;
         friend class UDP_Socket;
         friend class MPI_Channel;
+        friend class HDF5_Channel;
         friend class MySqlDatastore;
         friend class MySqlDataRecorder;
         friend class BerkeleyDbDatastore;

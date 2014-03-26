@@ -43,6 +43,7 @@ class Element;
 class Vector;
 class Matrix;
 class Channel;
+class HDF5_Channel;
 class Renderer;
 
 class DOF_Group;
@@ -130,6 +131,7 @@ class Node : public DomainComponent
         virtual const Matrix &getEigenvectors(void);
 
         // public methods for output
+        virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         virtual int sendSelf(int commitTag, Channel &theChannel);
         virtual int recvSelf(int commitTag, Channel &theChannel,
                              FEM_ObjectBroker &theBroker);

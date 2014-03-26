@@ -37,6 +37,10 @@
 #include "PisanoLT.h"
 #include <limits>
 #include "LTensorDisplay.h"
+#include <Channel.h>
+#include <HDF5_Channel.h>
+#include <Matrix.h>
+#include <Vector.h>
 
 const  DTensor2 PisanoLT::ZeroStrain;
 const  DTensor2 PisanoLT::ZeroStress;
@@ -124,7 +128,7 @@ PisanoLT::~PisanoLT()
 //================================================================================
 //  Plasticity related setters and getters
 //================================================================================
-int PisanoLT::setTrialStrain(const DTensor2& v)
+int PisanoLT::setTrialStrain(const DTensor2 &v)
 {
     DTensor2 result( 3, 3, 0.0 );
     result( i, j ) = v( i, j ) - TrialStrain( i, j );
@@ -133,32 +137,32 @@ int PisanoLT::setTrialStrain(const DTensor2& v)
 }
 
 
-int PisanoLT::setTrialStrainIncr(const DTensor2& strain_increment)
+int PisanoLT::setTrialStrainIncr(const DTensor2 &strain_increment)
 {
     return this->Explicit(strain_increment);
 }
 
 
-const DTensor4& PisanoLT::getTangentTensor(void)
+const DTensor4 &PisanoLT::getTangentTensor(void)
 {
     return this->Stiffness;
 }
 
 
-const DTensor2&  PisanoLT::getStressTensor(void)
+const DTensor2  &PisanoLT::getStressTensor(void)
 {
     return this->TrialStress;
 }
 
 
 
-const DTensor2& PisanoLT::getStrainTensor(void)
+const DTensor2 &PisanoLT::getStrainTensor(void)
 {
     return this->TrialStrain;
 }
 
 
-const DTensor2& PisanoLT::getPlasticStrainTensor(void)
+const DTensor2 &PisanoLT::getPlasticStrainTensor(void)
 {
     return this->TrialPlastic_Strain;
 }
@@ -230,9 +234,9 @@ int PisanoLT::revertToStart(void)
 //================================================================================
 //  Deep Copy
 //================================================================================
-NDMaterialLT* PisanoLT::getCopy(void)
+NDMaterialLT *PisanoLT::getCopy(void)
 {
-    NDMaterialLT* tmp = new PisanoLT(this->getTag(),
+    NDMaterialLT *tmp = new PisanoLT(this->getTag(),
                                      this->getE(),
                                      this->getv(),
                                      this->getM(),
@@ -246,11 +250,11 @@ NDMaterialLT* PisanoLT::getCopy(void)
     return tmp;
 }
 
-NDMaterialLT* PisanoLT::getCopy(const char* code)
+NDMaterialLT *PisanoLT::getCopy(const char *code)
 {
     if (strcmp(code, "ThreeDimensional") == 0)
     {
-        PisanoLT* tmp = new PisanoLT( this->getTag(),
+        PisanoLT *tmp = new PisanoLT( this->getTag(),
                                       this->getE(),
                                       this->getv(),
                                       this->getM(),
@@ -275,7 +279,7 @@ NDMaterialLT* PisanoLT::getCopy(const char* code)
 //================================================================================
 //
 //================================================================================
-const char* PisanoLT::getType(void) const
+const char *PisanoLT::getType(void) const
 {
     return "ThreeDimensional";
 }
@@ -283,13 +287,31 @@ const char* PisanoLT::getType(void) const
 //================================================================================
 //  For the parallel / storage
 //================================================================================
-int PisanoLT::sendSelf(int commitTag, Channel& theChannel)
+
+int PisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+{
+    theHDF5_Channel.beginMaterialDescription("PisanoLT", this->getTag());
+    theHDF5_Channel.addField("strain", true, "");
+    theHDF5_Channel.addField("stress", true, "");
+    theHDF5_Channel.addField("plastic_strain", true, "");
+    theHDF5_Channel.addField("alpha", true, "");
+    theHDF5_Channel.addField("stress_n_minus_2", true, "");
+    theHDF5_Channel.addField("nij_dev", true, "");
+    theHDF5_Channel.addField("nij_dev_prev", true, "");
+    theHDF5_Channel.addField("model_parameters", false, "");
+    theHDF5_Channel.endMaterialDescription();
+
+    return 0;
+}
+
+
+int PisanoLT::sendSelf(int commitTag, Channel &theChannel)
 {
     return 0;
 }
 
 
-int PisanoLT::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int PisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }
@@ -298,7 +320,7 @@ int PisanoLT::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& the
 //
 //================================================================================
 
-void PisanoLT::Print(ostream& s, int flag)
+void PisanoLT::Print(ostream &s, int flag)
 {
     s << (*this);
 }
@@ -362,7 +384,7 @@ double PisanoLT::getInitialConfiningStress(void)
     return initialconfiningstress;
 }
 
-DTensor2& PisanoLT::getInternalTensor(void)
+DTensor2 &PisanoLT::getInternalTensor(void)
 {
     return alpha;
 }
@@ -371,7 +393,7 @@ DTensor2& PisanoLT::getInternalTensor(void)
 //  Plasticity!
 //================================================================================
 
-int PisanoLT::Explicit(const DTensor2& strain_incr)
+int PisanoLT::Explicit(const DTensor2 &strain_incr)
 {
 
     //=============================================================================================
@@ -587,7 +609,7 @@ int PisanoLT::Explicit(const DTensor2& strain_incr)
     else
     {
         //Set all values in alpha to zero
-        for(DTensor2::literator it = alpha.begin(); it != alpha.end(); it++ )
+        for (DTensor2::literator it = alpha.begin(); it != alpha.end(); it++ )
         {
             *it = 0.0;
         }
@@ -636,7 +658,7 @@ int PisanoLT::Explicit(const DTensor2& strain_incr)
 }
 
 // Probably should be inlined
-double PisanoLT::get_distance_coeff(DTensor2& start_stress)
+double PisanoLT::get_distance_coeff(DTensor2 &start_stress)
 {
 
     double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));

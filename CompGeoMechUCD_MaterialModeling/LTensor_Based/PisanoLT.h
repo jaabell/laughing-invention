@@ -69,7 +69,7 @@ class PisanoLT : public NDMaterialLT
 
         ~PisanoLT(void);
 
-        const char* getClassType(void) const
+        const char *getClassType(void) const
         {
             return "PisanoLT";
         };
@@ -77,14 +77,14 @@ class PisanoLT : public NDMaterialLT
 
 
         // methods to set and retrieve state using the Tensor class
-        int setTrialStrain( const DTensor2& v );         // Used
-        int setTrialStrainIncr( const DTensor2& v );     // Not used (used by setTrialStrain)
+        int setTrialStrain( const DTensor2 &v );         // Used
+        int setTrialStrainIncr( const DTensor2 &v );     // Not used (used by setTrialStrain)
 
 
-        const DTensor4& getTangentTensor( void );      // Used by element
-        const DTensor2& getStressTensor( void );   // Used
-        const DTensor2& getStrainTensor( void );    // Used
-        const DTensor2& getPlasticStrainTensor( void ); // Not used
+        const DTensor4 &getTangentTensor( void );      // Used by element
+        const DTensor2 &getStressTensor( void );   // Used
+        const DTensor2 &getStrainTensor( void );    // Used
+        const DTensor2 &getPlasticStrainTensor( void ); // Not used
 
         double getE();
         double getv();
@@ -95,22 +95,23 @@ class PisanoLT : public NDMaterialLT
         double getm();
         double getRho();
         double getbeta_min();
-        DTensor2&  getInternalTensor();
+        DTensor2  &getInternalTensor();
         double getInitialConfiningStress();
 
         int commitState(void);
         int revertToLastCommit(void);
         int revertToStart(void);
 
-        NDMaterialLT* getCopy(void);
-        NDMaterialLT* getCopy(const char* code);
+        NDMaterialLT *getCopy(void);
+        NDMaterialLT *getCopy(const char *code);
 
-        const char* getType(void) const;
+        const char *getType(void) const;
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
         //const Matrix &getTangent (void);
 
@@ -118,14 +119,14 @@ class PisanoLT : public NDMaterialLT
     private:
 
 
-        int Explicit(const DTensor2& strain_incr);
+        int Explicit(const DTensor2 &strain_incr);
 
 
         //  double zbrentstress(const stresstensor& start_stress,
         //                      const stresstensor& end_stress,
         //                      double x1, double x2, double tol) const;
 
-        double get_distance_coeff(DTensor2& start_stress);
+        double get_distance_coeff(DTensor2 &start_stress);
 
 
 
