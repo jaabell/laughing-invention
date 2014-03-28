@@ -89,6 +89,14 @@ int simulate_using_static_multistep(int numSteps)
         return -1;
     }
 
+    string filename;
+    filename = ModelName + "_" + StageName + ".h5.feioutput";
+
+    theDomain.setHDF5_Channel(filename,
+                              ModelName,
+                              StageName,
+                              numSteps);
+
     theStaticAnalysis = new StaticAnalysis(theDomain,
                                            *theHandler,
                                            *theNumberer,
@@ -231,16 +239,18 @@ int simulate_using_static_multistep(int numSteps)
     // Sequential Static Analysis
     //=====================================================================================
 #else
-    // bool isOutputBinary = false;
-    bool isTheAnalysisDynamic = false;
-    StateWriter output_writer(ModelName, StageName, isTheAnalysisDynamic);
+    // // bool isOutputBinary = false;
+    // bool isTheAnalysisDynamic = false;
+    // StateWriter output_writer(ModelName, StageName, isTheAnalysisDynamic);
     for (int step = 1; step <= numSteps; step++)
     {
         result = theStaticAnalysis->analyze(1);
-        output_writer.write_static_analysis_output();
+        // output_writer.write_static_analysis_output();
     }
 
 #endif
+
+    // delete channel;
 
     return result;
 

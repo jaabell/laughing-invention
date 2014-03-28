@@ -94,7 +94,8 @@ class SingleDomNDMaterialIter;
 class Graph;
 class NodeGraph;
 class ElementGraph;
-class Channel;
+// class Channel;
+#include <HDF5_Channel.h>
 class FEM_ObjectBroker;
 class FE_Datastore;
 
@@ -297,6 +298,11 @@ class Domain
         //Babak Added on October 2012:
         void Dump_All_Nodes_Displacement_Singlefile_GIDFormat(void);
 
+        virtual int setHDF5_Channel(std::string filename_in,
+                                    std::string model_name_in,
+                                    std::string stage_name_in,
+                                    int nsteps);
+
         //=======================================================================================
         // Nima Tafazzoli added for saving results using mySQL, November 2012
         //     virtual int saveResults(int commitTag, Channel &theChannel);
@@ -346,6 +352,8 @@ class Domain
         //Recorder **theRecorders;
         //int numRecorders;
 
+
+        HDF5_Channel theHDF5_Channel;
 
         // Nima Tafazzoli, Nov. 2012
         FE_Datastore **theDatabases;

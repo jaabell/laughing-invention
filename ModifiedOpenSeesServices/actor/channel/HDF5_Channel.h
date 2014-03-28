@@ -20,6 +20,7 @@
 #ifndef HDF5_Channel_h
 #define HDF5_Channel_h
 
+#include <Channel.h>
 #include <iostream>
 #include <string>
 #include <queue>
@@ -35,7 +36,10 @@
         std::cerr << "HDF5_Channel::sendID -> still in definition mode. Element or node must end definition mode by calling endElementDescription() or endNodeDescription() before exiting! " << endl;  \
         return -1; \
     }
-
+#define HDF5_CHANNEL_COUNT_OBJS ssize_t nobjects = H5Fget_obj_count( id_file, H5F_OBJ_ALL ); \
+    cout << "Objects open = "  << nobjects << endl;
+#define HDF5_CHANNEL_CLEAN if(stack_length == 0) \
+    { H5Oclose(id_current_object); }
 
 using namespace std;
 
@@ -49,11 +53,12 @@ class FEM_ObjectBroker;
 class nDarray;
 class LTensor;
 
-class HDF5_Channel
+class HDF5_Channel: public Channel
 {
     public:
 
         ////This constructor is used to open a previous analysis for restoring state
+        HDF5_Channel ();
         HDF5_Channel (std::string filename_in,
                       int step_to_restore);
         HDF5_Channel (std::string filename_in,
@@ -67,6 +72,10 @@ class HDF5_Channel
 
         ~HDF5_Channel();
 
+        void initialize(std::string filename_in,
+                        std::string model_name_in,
+                        std::string stage_name_in,
+                        int nsteps);
 
         // ========================================================================
         // Member functions inherited from Channel
@@ -196,6 +205,7 @@ class HDF5_Channel
                                                std::string units);
 
         hid_t writeVariableLengthDoubleArray(hid_t id_array,
+                                             int datarank,
                                              hsize_t *dims,
                                              hsize_t *data_dims,
                                              hsize_t *offset,
@@ -205,6 +215,7 @@ class HDF5_Channel
                                              double *data);
 
         hid_t writeConstantLengthDoubleArray(hid_t id_array,
+                                             int datarank,
                                              hsize_t *dims,
                                              hsize_t *data_dims,
                                              hsize_t *offset,
@@ -214,6 +225,7 @@ class HDF5_Channel
                                              double *data);
 
         hid_t writeVariableLengthIntegerArray(hid_t id_array,
+                                              int datarank,
                                               hsize_t *dims,
                                               hsize_t *data_dims,
                                               hsize_t *offset,
@@ -223,6 +235,7 @@ class HDF5_Channel
                                               int *data);
 
         hid_t writeConstantLengthIntegerArray(hid_t id_array,
+                                              int datarank,
                                               hsize_t *dims,
                                               hsize_t *data_dims,
                                               hsize_t *offset,
@@ -242,9 +255,9 @@ class HDF5_Channel
         unsigned int number_of_materials_in_current_element;
         unsigned int number_of_time_steps;
 
-        const std::string filename;          // Name of the HDF5 file
-        const std::string model_name;          // Name of the HDF5 file
-        const std::string stage_name;          // Name of the HDF5 file
+        std::string filename;          // Name of the HDF5 file
+        std::string model_name;          // Name of the HDF5 file
+        std::string stage_name;          // Name of the HDF5 file
 
         //herr_t, hid_t, and hsize_t are types defined in the HDF5 library
         herr_t status;                  // For error reporting. Each time a HDF5 function that returns herr_t is called, the macro HDF5_CHECK_ERROR should get called.
@@ -255,20 +268,13 @@ class HDF5_Channel
         hid_t id_time_vector;           // object id of the time vector
 
         hid_t id_current_object;
+        hid_t id_current_object_material;
         hid_t id_current_object_group;
-        //hid_t id_current_group;
-        //hid_t id_previous_group;
 
         //Some property lists
         hid_t group_creation_plist;
         hid_t dataset_creation_plist;
         hid_t dataset_access_plist;
-
-        //Used to create arrays of different dimensions
-        // hsize_t dims_1d[1];
-        // hsize_t dims_2d[2];
-        // hsize_t dims_3d[3];
-        // hsize_t dims_4d[4];
 
         //hid_t id_simulation_settings_group;// object id of the base group for simulation options
 

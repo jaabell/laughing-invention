@@ -1405,15 +1405,36 @@ Node::getEigenvectors(void)
 int Node::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginNodeDescription(this->getTag());
-    theHDF5_Channel.addField("data"             , false     , "");
+    theHDF5_Channel.addField("data"             , false     , "adim");
     theHDF5_Channel.addField("coordinates"      , false     , "m");
-    theHDF5_Channel.addField("displacements"    , true      , "m");
-    theHDF5_Channel.addField("velocity"         , true      , "m*s^-1");
-    theHDF5_Channel.addField("acceleration"     , true      , "m*s^-2");
-    theHDF5_Channel.addField("mass_matrix"      , false     , "variable");
-    theHDF5_Channel.addField("nodal_participation_matrix", false     , "variable");
-    theHDF5_Channel.addField("unbalanced_load"  , false     , "variable");
-    theHDF5_Channel.addField("DOF_group"        , false     , "");
+    if (commitDisp != 0)
+    {
+        theHDF5_Channel.addField("displacements"    , true      , "m");
+    }
+    if (commitVel != 0)
+    {
+        theHDF5_Channel.addField("velocity"         , true      , "m*s^-1");
+    }
+    if (commitAccel != 0)
+    {
+        theHDF5_Channel.addField("acceleration"     , true      , "m*s^-2");
+    }
+    if (mass != 0)
+    {
+        theHDF5_Channel.addField("mass_matrix"      , false     , "variable");
+    }
+    if (R != 0)
+    {
+        theHDF5_Channel.addField("nodal_participation_matrix", false     , "variable");
+    }
+    if (unbalLoad  != 0)
+    {
+        theHDF5_Channel.addField("unbalanced_load"  , false     , "variable");
+    }
+    if ( theDOF_GroupPtr != 0 )
+    {
+        theHDF5_Channel.addField("DOF_group"        , false     , "adim");
+    }
     theHDF5_Channel.endNodeDescription();
 
     return 0;
@@ -1487,30 +1508,30 @@ Node::sendSelf(int cTag, Channel &theChannel)
 
     data(7) = Crd->Size();
 
-    if (dbTag1 == 0)
-    {
-        dbTag1 = theChannel.getDbTag();
-    }
+    // if (dbTag1 == 0)
+    // {
+    //     dbTag1 = theChannel.getDbTag();
+    // }
 
-    if (dbTag2 == 0)
-    {
-        dbTag2 = theChannel.getDbTag();
-    }
+    // if (dbTag2 == 0)
+    // {
+    //     dbTag2 = theChannel.getDbTag();
+    // }
 
-    if (dbTag3 == 0)
-    {
-        dbTag3 = theChannel.getDbTag();
-    }
+    // if (dbTag3 == 0)
+    // {
+    //     dbTag3 = theChannel.getDbTag();
+    // }
 
-    if (dbTag4 == 0)
-    {
-        dbTag4 = theChannel.getDbTag();
-    }
+    // if (dbTag4 == 0)
+    // {
+    //     dbTag4 = theChannel.getDbTag();
+    // }
 
-    data(8) = dbTag1;
-    data(9) = dbTag2;
-    data(10) = dbTag3;
-    data(11) = dbTag4;
+    // data(8) = dbTag1;
+    // data(9) = dbTag2;
+    // data(10) = dbTag3;
+    // data(11) = dbTag4;
 
     if ( theDOF_GroupPtr != 0 )
     {

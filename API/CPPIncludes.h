@@ -88,6 +88,8 @@
 #include "../ModifiedOpenSeesServices/tagged/storage/MapOfTaggedObjectsIter.h"
 #include "../ModifiedOpenSeesServices/G3Globals.h"
 #include <../ModifiedOpenSeesServices/actor/objectBroker/FEM_ObjectBroker.h>
+#include "../ModifiedOpenSeesServices/actor/channel/Channel.h"
+#include "../ModifiedOpenSeesServices/actor/channel/HDF5_Channel.h"
 
 
 // Domain classes

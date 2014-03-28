@@ -1374,7 +1374,7 @@ const Vector &EightNodeBrickLT::getResistingForceIncInertia ()
 int EightNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginElementDescription("EightNodeBrickLT", this->getTag());
-    theHDF5_Channel.addField("data"             , false     , "");
+    theHDF5_Channel.addField("data"             , false     , "adim");
 
     // 8node brick asks its material objects to describe themselves
     for ( int i = 0; i < 8; i++ )
@@ -1395,8 +1395,8 @@ int EightNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 
 int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 {
-    cerr << "EightNodeBrickLT::sendSelf -- Not yet implemented!" << endl;
-    return -1;
+    // cerr << "EightNodeBrickLT::sendSelf -- Not yet implemented!" << endl;
+    // return -1;
 
     if ( !initialized )
     {

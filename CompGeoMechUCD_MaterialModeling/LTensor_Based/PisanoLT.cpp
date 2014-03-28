@@ -42,8 +42,8 @@
 #include <Matrix.h>
 #include <Vector.h>
 
-const  DTensor2 PisanoLT::ZeroStrain;
-const  DTensor2 PisanoLT::ZeroStress;
+const  DTensor2 PisanoLT::ZeroStrain(3, 3, 0.0);
+const  DTensor2 PisanoLT::ZeroStress(3, 3, 0.0);
 const double PisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::epsilon()); // used to check the variable nullity
 DTensor4 PisanoLT::Ee(3, 3, 3, 3, 0.0);
 
@@ -93,6 +93,8 @@ PisanoLT::PisanoLT(int tag,
     initialStress(2, 2) = -initialconfiningstress;
 
     ElasticStateStress = DTensor2(initialStress);
+    TrialPlastic_Strain(i, j) = 0 * initialStress(i, j);
+    nij_dev_prev(i, j) = 0 * initialStress(i, j);
 
     Stress_n_minus_2 = DTensor2(initialStress); //FP
     beta  = M * sqrt(2.0 / 3.0); //FP
@@ -199,7 +201,7 @@ int PisanoLT::revertToStart(void)
 
     TrialStress = CommitStress;
     TrialStrain = CommitStrain;
-    TrialPlastic_Strain = ZeroStrain;
+    // TrialPlastic_Strain = ZeroStrain;
 
     double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
     double mu = E / ( 2 * ( 1 + v ) );
@@ -291,14 +293,14 @@ const char *PisanoLT::getType(void) const
 int PisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginMaterialDescription("PisanoLT", this->getTag());
-    theHDF5_Channel.addField("strain", true, "");
-    theHDF5_Channel.addField("stress", true, "");
-    theHDF5_Channel.addField("plastic_strain", true, "");
-    theHDF5_Channel.addField("alpha", true, "");
-    theHDF5_Channel.addField("stress_n_minus_2", true, "");
-    theHDF5_Channel.addField("nij_dev", true, "");
-    theHDF5_Channel.addField("nij_dev_prev", true, "");
-    theHDF5_Channel.addField("model_parameters", false, "");
+    theHDF5_Channel.addField("strain", true, "adim");// 1.
+    theHDF5_Channel.addField("stress", true, "adim");// 2.
+    theHDF5_Channel.addField("plastic_strain", true, "adim");// 3.
+    theHDF5_Channel.addField("alpha", true, "adim");// 4.
+    theHDF5_Channel.addField("stress_n_minus_2", true, "adim");// 5.
+    theHDF5_Channel.addField("nij_dev", true, "adim");// 6.
+    theHDF5_Channel.addField("nij_dev_prev", true, "adim");// 7.
+    theHDF5_Channel.addField("model_parameters", false, "adim");// 8.
     theHDF5_Channel.endMaterialDescription();
 
     return 0;
@@ -307,6 +309,53 @@ int PisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 
 int PisanoLT::sendSelf(int commitTag, Channel &theChannel)
 {
+    Matrix a(3, 3);
+
+    //1 . Sending strain
+    a.setData(TrialStrain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, a);
+
+    //2. Sending stress
+    a.setData(TrialStress.data, 3, 3);
+    theChannel.sendMatrix(0, 0, a);
+
+    //3. Sending plastic_strain
+    a.setData(TrialPlastic_Strain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, a);
+
+    //4. Sending alpha
+    a.setData(alpha.data, 3, 3);
+    theChannel.sendMatrix(0, 0, a);
+
+    //5. Sending stress_n_minus_2
+    a.setData(Stress_n_minus_2.data, 3, 3);
+    theChannel.sendMatrix(0, 0, a);
+
+    //6. Sending nij_dev
+    a.setData(nij_dev.data, 3, 3);
+    theChannel.sendMatrix(0, 0, a);
+
+    //7. Sending nij_dev_prev
+    a.setData(nij_dev_prev.data, 3, 3);
+    theChannel.sendMatrix(0, 0, a);
+
+    //8. Sending model_parameters
+    Vector model_parameters(12);
+    model_parameters(0) = beta0;
+    model_parameters(1) = beta;
+    model_parameters(2) = beta_min;
+    model_parameters(3) = E;
+    model_parameters(4) = v;
+    model_parameters(5) = M;
+    model_parameters(6) = kd;
+    model_parameters(7) = xi;
+    model_parameters(8) = h;
+    model_parameters(9) = m;
+    model_parameters(10) = rho;
+    model_parameters(11) = initialconfiningstress;
+
+    theChannel.sendVector(0, 0, model_parameters);
+
     return 0;
 }
 

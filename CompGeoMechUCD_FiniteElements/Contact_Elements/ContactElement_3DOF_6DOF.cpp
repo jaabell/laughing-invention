@@ -218,7 +218,7 @@ ContactElement_3DOF_6DOF::setDomain(Domain* theDomain)
     else
     {
         cerr << "WARNING ContactElement_3DOF_6DOF::setDomain cannot handle " << dofNd1 <<
-               "dofs at nodes in " << dofNd1 << " d problem\n";
+             "dofs at nodes in " << dofNd1 << " d problem\n";
         return;
     }
 }

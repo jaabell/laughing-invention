@@ -76,8 +76,10 @@
 
 #include <Vertex.h>
 #include <Graph.h>
-//#include <Recorder.h>
-// #include <MeshRegion.h>
+
+#include <Channel.h>
+#include <HDF5_Channel.h>
+
 #include <Analysis.h>
 #include <FE_Datastore.h>
 #include <FEM_ObjectBroker.h>
@@ -2441,7 +2443,8 @@ Domain::initialize( void )
     while ( ( elePtr = theElemIter() ) != 0 )
         // lvalue needed here for M$ VC++ compiler -- MHS
     {
-        const Matrix &ret = elePtr->getInitialStiff();
+        //const Matrix &ret = elePtr->getInitialStiff();
+        elePtr->getInitialStiff(); //lvalue not needed anymore (J.Abell, Tue 25 Mar 2014 09:15:32 PM PDT)
     }
 
     return 0;
@@ -2580,14 +2583,18 @@ Domain::commit( void )
     //
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
+    //Channel *thePolymorphicHDF5_Channel;
+    //thePolymorphicHDF5_Channel = theHDF5_Channel;
+    theHDF5_Channel.setTime(currentTime);
+
 
     while ( ( nodePtr = theNodeIter() ) != 0 )
     {
         nodePtr->commitState();
         //   #ifdef _BABAK_DEBUG
-        int numProcesses, processID;
 
 #ifdef _PDD
+        int numProcesses, processID;
         MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
         MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
@@ -2613,6 +2620,15 @@ Domain::commit( void )
 #endif
         //}
         //   #endif
+
+
+
+        //Jose Added for node output
+
+        //theHDF5_Channel->beginNodeDescription(1);
+        nodePtr->describeSelf(0, theHDF5_Channel);
+        nodePtr->sendSelf(0, theHDF5_Channel);
+
     }
 
     Element *elePtr;
@@ -2621,7 +2637,9 @@ Domain::commit( void )
     while ( ( elePtr = theElemIter() ) != 0 )
     {
         elePtr->commitState();
-
+        //Jose Added for element output
+        elePtr->describeSelf(0, theHDF5_Channel);
+        elePtr->sendSelf(0, theHDF5_Channel);
     }
 
     // set the new committed time in the domain
@@ -5239,8 +5257,23 @@ int Domain::CheckMesh( const char *check_mesh_file )
 }
 
 
+
+
+
+
 // *******************************************************************************
-// Nima Tafazzoli added for saving results using mySQL, November 2012
+// Jose Abell for saving results via HDF5
+
+int
+Domain::setHDF5_Channel(std::string filename_in,
+                        std::string model_name_in,
+                        std::string stage_name_in,
+                        int nsteps)
+{
+    theHDF5_Channel.initialize(filename_in, model_name_in, stage_name_in, nsteps);
+    return 0;
+}
+
 
 
 

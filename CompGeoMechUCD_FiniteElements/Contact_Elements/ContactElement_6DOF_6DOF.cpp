@@ -209,7 +209,7 @@ ContactElement_6DOF_6DOF::setDomain(Domain* theDomain)
     if (dofNd1 != dofNd2)
     {
         cerr << "WARNING ContactElement_6DOF_6DOF::setDomain(): nodes " << Nd1 << " and " << Nd2 <<
-               "have differing dof at ends for ContactElement_6DOF_6DOF " << this->getTag() << endln;
+             "have differing dof at ends for ContactElement_6DOF_6DOF " << this->getTag() << endln;
         return;
     }
 
@@ -224,7 +224,7 @@ ContactElement_6DOF_6DOF::setDomain(Domain* theDomain)
     else
     {
         cerr << "WARNING ContactElement_6DOF_6DOF::setDomain cannot handle " << dofNd1 <<
-               "dofs at nodes in " << dofNd1 << " d problem\n";
+             "dofs at nodes in " << dofNd1 << " d problem\n";
         return;
     }
 }

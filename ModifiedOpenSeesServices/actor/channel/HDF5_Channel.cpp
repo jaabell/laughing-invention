@@ -35,17 +35,41 @@ int HDF5_Channel::numChannel = 0;
 
 
 
+HDF5_Channel::HDF5_Channel ():
+    number_of_time_steps(0),
+    filename(""),
+    model_name(""),
+    stage_name("")
+{
+    //nuthin
+}
 
 // This constructor is used to create a new output file
 HDF5_Channel::HDF5_Channel (std::string filename_in,
                             std::string model_name_in,
                             std::string stage_name_in,
                             int nsteps):
-    number_of_time_steps(nsteps),
-    filename(filename_in),
-    model_name(model_name_in),
-    stage_name(stage_name_in)
+    number_of_time_steps(0),
+    filename(""),
+    model_name(""),
+    stage_name(""),
+    subgroupname("")
 {
+    initialize(filename_in, model_name_in, stage_name_in, nsteps);
+}
+
+void HDF5_Channel::initialize(std::string filename_in,
+                              std::string model_name_in,
+                              std::string stage_name_in,
+                              int nsteps)
+{
+    number_of_time_steps = nsteps;
+    filename += filename_in;
+    model_name += model_name_in;
+    stage_name += stage_name_in;
+    subgroupname = "hi";
+
+
     numChannel++;
     tag = numChannel;
 
@@ -53,13 +77,12 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
     current_step_number = 0;
 
 
-    std::cout << "Opening file" << endl;
+    //std::cout << "Opening file" << endl;
 
     //================================================================================
     //Create the file, overwriting it if it exists
     //================================================================================
     id_file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-
 
 
     //================================================================================
@@ -104,11 +127,28 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
     inElementDefinitionMode = false;
     inNodeDefinitionMode = false;
 
+    HDF5_CHANNEL_COUNT_OBJS;
+    cout << "subgroupname" << subgroupname << endl;
 }
 
 HDF5_Channel::~HDF5_Channel()
 {
-    H5Fclose(id_file);
+    // ssize_t nchars;
+    // size_t NMAXCHARS = 80;
+    // char *name = 0;
+    // nchars = H5Fget_name(id_file, name, NMAXCHARS);
+
+    // std::string namae(name, nchars);
+
+    // cout << "Closing: " << namae << endl;
+
+    // H5Gclose(id_model_group);
+    // H5Gclose(id_nodes_group);
+    // H5Gclose(id_elements_group);
+
+    // H5Fclose(id_file);
+    // H5close();
+
 }
 
 int
@@ -214,16 +254,16 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
         {
             //Create the field
             //--------------------------------------------------------------------------------------
-            cout << "Adding field: " << subgroupname << field_name << endl;
+            // cout << "Adding field: " << subgroupname << field_name << endl;
 
             if (is_time_dependent) // If it is time dependent
             {
                 rank = 3;
                 dims[0] = numRows;
-                dims[1] = numRows;
+                dims[1] = numCols;
                 dims[2] = number_of_time_steps;
                 maxdims[0] = numRows;
-                maxdims[1] = numRows;
+                maxdims[1] = numCols;
                 maxdims[2] = H5S_UNLIMITED;
 
                 id_dataset = createVariableLengthDoubleArray(id_current_object,
@@ -239,6 +279,7 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
                 hsize_t count[3]  = {       1,  1, 1 };
                 hsize_t block[3]  = { dims[0],  dims[1], 1 };
                 id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                             2, //datarank
                              dims,
                              data_dims,
                              offset,
@@ -246,6 +287,7 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
 
             }
             else  // If it is not time dependent
@@ -270,6 +312,7 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
                 hsize_t block[2]  = { dims[0],  dims[1] };
 
                 id_dataset = writeConstantLengthDoubleArray(id_dataset,
+                             2, //datarank
                              dims,
                              data_dims,
                              offset,
@@ -277,6 +320,7 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
             }
         }
 
@@ -285,7 +329,7 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
         else if (is_time_dependent) // .... and is time dependent
         {
 
-            cout << "Writing field: " << subgroupname << field_name << endl;
+            // cout << "Writing field: " << subgroupname << field_name << endl;
             //First get information about object
             id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
             if (id_dataset > 0)
@@ -302,6 +346,7 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
                 hsize_t block[3]  = { dims[0], dims[1],  1 };
 
                 id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                             2,// datarank
                              dims,
                              data_dims,
                              offset,
@@ -309,6 +354,7 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
             }
             else
             {
@@ -319,6 +365,8 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
 
     } // if(stack_length > 0 ) -> cannot do anything without a stack
 
+    HDF5_CHANNEL_CLEAN;
+    HDF5_CHANNEL_COUNT_OBJS;
     return 0;
 }
 
@@ -378,7 +426,7 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
         {
             //Create the field
             //--------------------------------------------------------------------------------------
-            cout << "Adding field: " << subgroupname << field_name << endl;
+            // cout << "Adding field: " << subgroupname << field_name << endl;
 
             if (is_time_dependent) // If it is time dependent
             {
@@ -401,6 +449,7 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
                 hsize_t count[2]  = {       1,  1 };
                 hsize_t block[2]  = { dims[0],  1 };
                 id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                             1, //datarank
                              dims,
                              data_dims,
                              offset,
@@ -408,6 +457,7 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
 
             }
             else  // If it is not time dependent
@@ -430,6 +480,7 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
                 hsize_t block[2]  = { dims[0],  1 };
 
                 id_dataset = writeConstantLengthDoubleArray(id_dataset,
+                             1, //datarank
                              dims,
                              data_dims,
                              offset,
@@ -437,6 +488,7 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
             }
         }
 
@@ -445,7 +497,7 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
         else if (is_time_dependent) // .... and is time dependent
         {
 
-            cout << "Writing field: " << subgroupname << field_name << endl;
+            // cout << "Writing field: " << subgroupname << field_name << endl;
             //First get information about object
             id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
             if (id_dataset > 0)
@@ -461,6 +513,7 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
                 hsize_t block[2]  = { dims[0],  1 };
 
                 id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                             1, //datarank
                              dims,
                              data_dims,
                              offset,
@@ -468,6 +521,7 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
             }
             else
             {
@@ -478,6 +532,8 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
 
     } // if(stack_length > 0 ) -> cannot do anything without a stack
 
+    HDF5_CHANNEL_CLEAN;
+    HDF5_CHANNEL_COUNT_OBJS;
     return 0;
 }
 
@@ -538,7 +594,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
         {
             //Create the field
             //--------------------------------------------------------------------------------------
-            cout << "Adding field: " << subgroupname << field_name << endl;
+            // cout << "Adding field: " << subgroupname << field_name << endl;
 
             if (is_time_dependent) // If it is time dependent
             {
@@ -561,6 +617,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                 hsize_t count[2]  = {       1,  1 };
                 hsize_t block[2]  = { dims[0],  1 };
                 id_dataset = writeVariableLengthIntegerArray(id_dataset,
+                             1, //datarank
                              dims,
                              data_dims,
                              offset,
@@ -568,6 +625,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
 
             }
             else  // If it is not time dependent
@@ -590,6 +648,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                 hsize_t block[2]  = { dims[0],  1 };
 
                 id_dataset = writeConstantLengthIntegerArray(id_dataset,
+                             1, //datarank
                              dims,
                              data_dims,
                              offset,
@@ -597,6 +656,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
             }
         }
 
@@ -605,7 +665,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
         else if (is_time_dependent) // .... and is time dependent
         {
 
-            cout << "Writing field: " << subgroupname << field_name << endl;
+            // cout << "Writing field: " << subgroupname << field_name << endl;
             //First get information about object
             id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
             if (id_dataset > 0)
@@ -621,6 +681,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                 hsize_t block[2]  = { dims[0],  1 };
 
                 id_dataset = writeVariableLengthIntegerArray(id_dataset,
+                             1, //datarank
                              dims,
                              data_dims,
                              offset,
@@ -628,6 +689,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                              count,
                              block,
                              data);
+                H5Oclose(id_dataset);
             }
             else
             {
@@ -637,6 +699,9 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
         } // The field either does not exist (do nothing), or is not time dependent (do nothing)
 
     } // if(stack_length > 0 ) -> cannot do anything without a stack
+
+    HDF5_CHANNEL_CLEAN;
+    HDF5_CHANNEL_COUNT_OBJS;
 
     return 0;
 }
@@ -744,7 +809,7 @@ int HDF5_Channel::beginElementDescription(std::string name, int tag)
 
     subgroupname = "";
 
-    cout << "Adding element: " << group_name << endl;
+    // cout << "Adding element: " << group_name << endl;
 
     number_of_materials_in_current_element = 0;
 
@@ -755,6 +820,7 @@ int HDF5_Channel::beginElementDescription(std::string name, int tag)
 int HDF5_Channel::beginNodeDescription(int tag)
 {
     inNodeDefinitionMode = true;
+    subgroupname = "";
 
     stack_length = 0;
 
@@ -821,7 +887,7 @@ int HDF5_Channel::beginMaterialDescription(std::string name, int tag)
         subgroupname = group_name + "/";
 
 
-        cout << "Adding material: " << group_name << endl;
+        // cout << "Adding material: " << group_name << endl;
         //Return the tag of this group
     }
     else  // Not in element definition mode
@@ -835,12 +901,14 @@ int HDF5_Channel::beginMaterialDescription(std::string name, int tag)
 
 int HDF5_Channel::endElementDescription()
 {
+    // H5Oclose(id_current_object);
     inElementDefinitionMode = false;
     return 0;
 }
 
 int HDF5_Channel::endNodeDescription()
 {
+    // H5Oclose(id_current_object);
     inNodeDefinitionMode = false;
     return 0;
 }
@@ -873,6 +941,7 @@ int HDF5_Channel::setTime(double t)
     hsize_t block[1]     = {1};
 
     writeVariableLengthDoubleArray(id_time_vector,
+                                   1, //datarank
                                    dims,
                                    data_dims,
                                    offset,
@@ -881,12 +950,12 @@ int HDF5_Channel::setTime(double t)
                                    block,
                                    &current_time);
 
-    cout << "HDF5_Channel::setTime -> time set to t = " << current_time
-         <<  "s @ step number "
-         << current_step_number
-         << ", number_of_time_steps = "
-         << number_of_time_steps
-         << endl;
+    // cout << "HDF5_Channel::setTime -> time set to t = " << current_time
+    //      <<  "s @ step number "
+    //      << current_step_number
+    //      << ", number_of_time_steps = "
+    //      << number_of_time_steps
+    //      << endl;
 
     current_step_number++;
     return 0;
@@ -908,7 +977,7 @@ int HDF5_Channel::setTime(double t)
 
 int HDF5_Channel::write_string(hid_t here, std::string name, std::string contents)
 {
-    std::cout << "Writing string" << endl;
+    // std::cout << "Writing string" << endl;
     // Some variables needed
     hid_t id_type_string;           // Id of the string object type
     hid_t id_dataspace_string;      // Id of the string dataspace
@@ -934,6 +1003,10 @@ int HDF5_Channel::write_string(hid_t here, std::string name, std::string content
                       H5S_ALL,
                       H5P_DEFAULT,
                       contents.c_str());
+
+    H5Sclose(id_dataspace_string);
+    H5Dclose(id_data_string);
+
     HDF5_CHECK_ERROR;
 
     return 0;
@@ -942,7 +1015,8 @@ int HDF5_Channel::write_string(hid_t here, std::string name, std::string content
 int HDF5_Channel::create_group(hid_t here, std::string name)
 {
 
-    cout << "Creating group : " << name << endl;    hid_t id_new_group;
+    // cout << "Creating group : " << name << endl;
+    hid_t id_new_group;
     id_new_group = H5Gcreate(here, name.c_str(), H5P_DEFAULT, group_creation_plist , H5P_DEFAULT);
     return id_new_group;
 }
@@ -970,6 +1044,8 @@ std::string HDF5_Channel::generateRandomString()
 
     return s;
 }
+
+
 
 int HDF5_Channel::setUnit(hid_t object, std::string units)
 {
@@ -1048,6 +1124,8 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
                                 dataset_creation_plist,
                                 H5P_DEFAULT);
     setUnit(id_array, units);
+    H5Sclose(id_dataspace);
+
     return id_array;
 }
 
@@ -1082,6 +1160,8 @@ hid_t HDF5_Channel::createConstantLengthDoubleArray(hid_t here,
                                 dataset_creation_plist,
                                 H5P_DEFAULT);
     setUnit(id_array, units);
+    H5Sclose(id_dataspace);
+
     return id_array;
 }
 
@@ -1138,6 +1218,8 @@ hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
                                 dataset_creation_plist,
                                 H5P_DEFAULT);
     setUnit(id_array, units);
+    H5Sclose(id_dataspace);
+
     return id_array;
 }
 
@@ -1172,12 +1254,15 @@ hid_t HDF5_Channel::createConstantLengthIntegerArray(hid_t here,
                                 dataset_creation_plist,
                                 H5P_DEFAULT);
     setUnit(id_array, units);
+    H5Sclose(id_dataspace);
+
     return id_array;
 }
 
 
 
 hid_t HDF5_Channel::writeVariableLengthDoubleArray(hid_t id_array,
+        int datarank,
         hsize_t *dims,
         hsize_t *data_dims,
         hsize_t *offset,
@@ -1192,7 +1277,7 @@ hid_t HDF5_Channel::writeVariableLengthDoubleArray(hid_t id_array,
 
     //Get pointer to the dataspace and create the memory space
     hsize_t id_dataspace = H5Dget_space(id_array);
-    hsize_t id_memspace  = H5Screate_simple(1   , data_dims, data_dims);       // create dataspace
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
 
     //Select the region of data to output to
     status = H5Sselect_hyperslab(
@@ -1207,8 +1292,8 @@ hid_t HDF5_Channel::writeVariableLengthDoubleArray(hid_t id_array,
 
     //Write data!
     status = H5Dwrite(
-                 id_array,            // Dataset to write to
-                 H5T_NATIVE_DOUBLE,              // Format of data in memory
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_DOUBLE,     // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
                  H5P_DEFAULT,           // Form of writing
@@ -1216,10 +1301,15 @@ hid_t HDF5_Channel::writeVariableLengthDoubleArray(hid_t id_array,
              );
     HDF5_CHECK_ERROR;
 
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+
     return id_array;
 }
 
 hid_t HDF5_Channel::writeConstantLengthDoubleArray(hid_t id_array,
+        int datarank,
         hsize_t *dims,
         hsize_t *data_dims,
         hsize_t *offset,
@@ -1230,7 +1320,7 @@ hid_t HDF5_Channel::writeConstantLengthDoubleArray(hid_t id_array,
 {
     //Get pointer to the dataspace and create the memory space
     hsize_t id_dataspace = H5Dget_space(id_array);
-    hsize_t id_memspace  = H5Screate_simple(1   , data_dims, data_dims);       // create dataspace
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
 
     //Select the region of data to output to
     status = H5Sselect_hyperslab(
@@ -1245,14 +1335,18 @@ hid_t HDF5_Channel::writeConstantLengthDoubleArray(hid_t id_array,
 
     //Write data!
     status = H5Dwrite(
-                 id_array,            // Dataset to write to
-                 H5T_NATIVE_DOUBLE,              // Format of data in memory
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_DOUBLE,     // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
                  H5P_DEFAULT,           // Form of writing
                  data                   // The actual data
              );
     HDF5_CHECK_ERROR;
+
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
 
     return id_array;
 }
@@ -1260,6 +1354,7 @@ hid_t HDF5_Channel::writeConstantLengthDoubleArray(hid_t id_array,
 
 
 hid_t HDF5_Channel::writeVariableLengthIntegerArray(hid_t id_array,
+        int datarank,
         hsize_t *dims,
         hsize_t *data_dims,
         hsize_t *offset,
@@ -1274,11 +1369,11 @@ hid_t HDF5_Channel::writeVariableLengthIntegerArray(hid_t id_array,
 
     //Get pointer to the dataspace and create the memory space
     hsize_t id_dataspace = H5Dget_space(id_array);
-    hsize_t id_memspace  = H5Screate_simple(1   , data_dims, data_dims);       // create dataspace
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
 
     //Select the region of data to output to
     status = H5Sselect_hyperslab(
-                 id_array,          // Id of the parent dataspace
+                 id_array,              // Id of the parent dataspace
                  H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
                  offset,                // start of selection
                  stride,                // stride in each dimension, NULL  is select everything
@@ -1289,8 +1384,8 @@ hid_t HDF5_Channel::writeVariableLengthIntegerArray(hid_t id_array,
 
     //Write data!
     status = H5Dwrite(
-                 id_array,            // Dataset to write to
-                 H5T_NATIVE_INT,              // Format of data in memory
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_INT,        // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
                  H5P_DEFAULT,           // Form of writing
@@ -1298,10 +1393,15 @@ hid_t HDF5_Channel::writeVariableLengthIntegerArray(hid_t id_array,
              );
     HDF5_CHECK_ERROR;
 
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+
     return id_array;
 }
 
 hid_t HDF5_Channel::writeConstantLengthIntegerArray(hid_t id_array,
+        int datarank,
         hsize_t *dims,
         hsize_t *data_dims,
         hsize_t *offset,
@@ -1312,7 +1412,7 @@ hid_t HDF5_Channel::writeConstantLengthIntegerArray(hid_t id_array,
 {
     //Get pointer to the dataspace and create the memory space
     hsize_t id_dataspace = H5Dget_space(id_array);
-    hsize_t id_memspace  = H5Screate_simple(1   , data_dims, data_dims);       // create dataspace
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
 
     //Select the region of data to output to
     status = H5Sselect_hyperslab(
@@ -1327,14 +1427,18 @@ hid_t HDF5_Channel::writeConstantLengthIntegerArray(hid_t id_array,
 
     //Write data!
     status = H5Dwrite(
-                 id_array,            // Dataset to write to
-                 H5T_NATIVE_INT,              // Format of data in memory
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_INT,        // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
                  H5P_DEFAULT,           // Form of writing
                  data                   // The actual data
              );
     HDF5_CHECK_ERROR;
+
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
 
     return id_array;
 }
@@ -1347,22 +1451,22 @@ int HDF5_Channel::printStack()
     std::queue<string> temp_field_name_stack;
     std::queue<bool>   temp_field_is_time_dependent_stack;
     std::queue<string>   temp_field_units_stack;
-    cout << "Current stack: " << endl;
-    cout << "======================================================" << endl;
+    // cout << "Current stack: " << endl;
+    // cout << "======================================================" << endl;
     while ( stack_length > 0)
     {
         std::string name;
         bool td;
         std::string units;
 
-        cout << "Stack_length =" << stack_length << endl;
+        // cout << "Stack_length =" << stack_length << endl;
 
         getNextField(name, td, units);
         temp_field_name_stack.push(name);
         temp_field_is_time_dependent_stack.push(td);
         temp_field_units_stack.push(units);
 
-        cout << name << ", " << td << ", " <<  units << endl;
+        // cout << name << ", " << td << ", " <<  units << endl;
     }
     field_name_stack = temp_field_units_stack;
     field_is_time_dependent_stack = temp_field_is_time_dependent_stack;
@@ -1413,4 +1517,23 @@ int H5Lexists_safe(hid_t base, std::string &path,  hid_t lapl_id )
     }
 
     return 1;
+}
+
+
+
+char *HDF5_Channel::addToProgram(void)
+{
+    return 0;
+}
+int HDF5_Channel::setUpConnection(void)
+{
+    return 0;
+}
+int HDF5_Channel::setNextAddress(const ChannelAddress &theAddress)
+{
+    return 0;
+}
+ChannelAddress *HDF5_Channel::getLastSendersAddress(void)
+{
+    return 0;
 }
