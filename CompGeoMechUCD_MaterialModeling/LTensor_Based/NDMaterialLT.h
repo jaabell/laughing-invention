@@ -14,6 +14,8 @@
 class ID;
 class Information;
 class Response;
+class Channel;
+class HDF5_Channel;
 
 /*
 

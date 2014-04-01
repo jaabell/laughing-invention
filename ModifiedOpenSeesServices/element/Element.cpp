@@ -937,3 +937,19 @@ Element::printSomeInformation(void)
 }
 
 
+int Element::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+{
+    cerr << "Element::describeSelf -> Subclass responsability" << endl;
+    return -1;
+}
+
+int Element::sendSelf(int commitTag, Channel &theChannel)
+{
+    cerr << "Element::sendSelf -> Subclass responsability" << endl;
+    return -1;
+}
+int Element::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+{
+    cerr << "Element::recvSelf -> Subclass responsability" << endl;
+    return -1;
+}

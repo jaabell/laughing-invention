@@ -1,5 +1,5 @@
-#Compiler = GNU
-Compiler = CLANG
+Compiler = GNU
+#Compiler = CLANG
 #Compiler = PARALLEL
 
 DEBUG_MODE = DEBUG

@@ -878,8 +878,9 @@ int HDF5_Channel::beginMaterialDescription(std::string name, int tag)
         }
         else
         {
-            //Create a group to hold the data for the node
-            create_group(id_current_object, group_name.c_str());
+            //Create a group to hold the data for the material and close it right away!
+            hid_t temp_ = create_group(id_current_object, group_name.c_str());
+            H5Oclose(temp_);
 
         }
 

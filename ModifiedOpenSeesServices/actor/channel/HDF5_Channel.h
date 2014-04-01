@@ -36,8 +36,12 @@
         std::cerr << "HDF5_Channel::sendID -> still in definition mode. Element or node must end definition mode by calling endElementDescription() or endNodeDescription() before exiting! " << endl;  \
         return -1; \
     }
+#ifdef _DEBUG_HDF5_CHANNEL
 #define HDF5_CHANNEL_COUNT_OBJS ssize_t nobjects = H5Fget_obj_count( id_file, H5F_OBJ_ALL ); \
     cout << "Objects open = "  << nobjects << endl;
+#else
+#define HDF5_CHANNEL_COUNT_OBJS 0;
+#endif
 #define HDF5_CHANNEL_CLEAN if(stack_length == 0) \
     { H5Oclose(id_current_object); }
 
