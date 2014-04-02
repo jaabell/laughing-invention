@@ -77,8 +77,9 @@ ElasticIsotropic3DLT::~ElasticIsotropic3DLT()
 //================================================================================
 int ElasticIsotropic3DLT::setTrialStrain( const DTensor2 &v )
 {
-    DTensor2 result( 3, 3, 0.0 );
-    result( i, j ) = v( i, j ) - TrialStrain( i, j );
+    // DTensor2 result( 3, 3, 0.0 );
+    // result( i, j ) = v( i, j ) - TrialStrain( i, j );
+    TrialStrain(i, j) = v(i, j);
     TrialStress(i, j) = Ee(i, j, k, l) * TrialStrain(k, l);
     return 0;//setTrialStrainIncr( result );
 }
@@ -221,7 +222,7 @@ const char *ElasticIsotropic3DLT::getType( void ) const
 int ElasticIsotropic3DLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginMaterialDescription("ElasticIsotropic3DLT", this->getTag());
-    theHDF5_Channel.addField("data", true, "adim");// 1.
+    theHDF5_Channel.addField("data", false, "adim");// 1.
     theHDF5_Channel.addField("strain", true, "adim");// 2.
     theHDF5_Channel.addField("stress", true, "adim");// 3.
     theHDF5_Channel.endMaterialDescription();
