@@ -97,7 +97,7 @@ class ElasticIsotropic3DLT : public NDMaterialLT
 
         const char *getType( void ) const; // probably not needed
 
-
+        int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         int sendSelf( int commitTag, Channel &theChannel );
         int recvSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker );
 
@@ -117,7 +117,7 @@ class ElasticIsotropic3DLT : public NDMaterialLT
         DTensor2 CommitStress;
         DTensor2 CommitStrain;
 
-        DTensor4 Stiffness;
+        // DTensor4 Stiffness;
 
 
         double E;
@@ -135,6 +135,8 @@ class ElasticIsotropic3DLT : public NDMaterialLT
 
         Index < 'i' > i;
         Index < 'j' > j;
+        Index < 'k' > k;
+        Index < 'l' > l;
 
 };
 

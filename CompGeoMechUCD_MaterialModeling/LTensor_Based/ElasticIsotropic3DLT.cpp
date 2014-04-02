@@ -34,7 +34,10 @@
 // the functions embeded here for efficiency.
 
 #include "ElasticIsotropic3DLT.h"
-
+#include <Channel.h>
+#include <HDF5_Channel.h>
+#include <Matrix.h>
+#include <Vector.h>
 
 const  DTensor2 ElasticIsotropic3DLT::ZeroStrain( 3, 3, 0.0 );
 const  DTensor2 ElasticIsotropic3DLT::ZeroStress( 3, 3, 0.0 );
@@ -53,7 +56,6 @@ ElasticIsotropic3DLT::ElasticIsotropic3DLT( int tag,
       ElasticStateStress( 3, 3, 0.0 ),
       CommitStress( 3, 3, 0.0 ),
       CommitStrain( 3, 3, 0.0 ),
-      Stiffness( 3, 3, 3, 3, 0.0 ),
       E( E_in ),
       v( v_in ),
       rho( rho_in ),
@@ -77,13 +79,14 @@ int ElasticIsotropic3DLT::setTrialStrain( const DTensor2 &v )
 {
     DTensor2 result( 3, 3, 0.0 );
     result( i, j ) = v( i, j ) - TrialStrain( i, j );
-
-    return setTrialStrainIncr( result );
+    TrialStress(i, j) = Ee(i, j, k, l) * TrialStrain(k, l);
+    return 0;//setTrialStrainIncr( result );
 }
 
 //================================================================================
 int ElasticIsotropic3DLT::setTrialStrainIncr( const DTensor2 &strain_increment )
 {
+
     return 0;
 }
 
@@ -91,7 +94,7 @@ int ElasticIsotropic3DLT::setTrialStrainIncr( const DTensor2 &strain_increment )
 //================================================================================
 const DTensor4 &ElasticIsotropic3DLT::getTangentTensor( void )
 {
-    return Stiffness;
+    return Ee;
 }
 
 //================================================================================
@@ -167,7 +170,7 @@ int ElasticIsotropic3DLT::revertToStart( void )
     Ee( 2, 2, 1, 1 ) = lambda;
     Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
 
-    Stiffness = Ee;
+    // Stiffness = Ee;
 
     return 0;
 }
@@ -211,9 +214,61 @@ const char *ElasticIsotropic3DLT::getType( void ) const
     return "ThreeDimensional";
 }
 
+
+
+
+
+int ElasticIsotropic3DLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+{
+    theHDF5_Channel.beginMaterialDescription("ElasticIsotropic3DLT", this->getTag());
+    theHDF5_Channel.addField("data", true, "adim");// 1.
+    theHDF5_Channel.addField("strain", true, "adim");// 2.
+    theHDF5_Channel.addField("stress", true, "adim");// 3.
+    theHDF5_Channel.endMaterialDescription();
+
+    return 0;
+}
+
+
+
+
+
 //================================================================================
 int ElasticIsotropic3DLT::sendSelf( int commitTag, Channel &theChannel )
 {
+    int dataTag = this->getDbTag();
+    static Vector data(4);
+    static Matrix a(3, 3);
+
+    data(0) = this->getTag();
+    data(1) = E;
+    data(2) = v;
+    data(3) = rho;
+
+    if (theChannel.sendVector(dataTag, commitTag, data) < 0)
+    {
+        cerr << "ElasticIsotropic3DLT::sendSelf -- could not send Vector\n";
+        return -1;
+    }
+
+
+    //1 . Sending strain
+    a.setData(TrialStrain.data, 3, 3);
+    if (theChannel.sendMatrix(0, 0, a) < 0)
+    {
+        cerr << "ElasticIsotropic3DLT::sendSelf -- could not send Elastic Constant strain\n";
+        return -1;
+    }
+
+    //2 . Sending stress
+    a.setData(TrialStress.data, 3, 3);
+    if (theChannel.sendMatrix(0, 0, a) < 0)
+    {
+        cerr << "ElasticIsotropic3DLT::sendSelf -- could not send Elastic Constant Tensor\n";
+        return -1;
+    }
+
+
     return 0;
 }
 
