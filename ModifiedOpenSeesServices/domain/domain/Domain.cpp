@@ -2583,9 +2583,13 @@ Domain::commit( void )
     //
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
-    //Channel *thePolymorphicHDF5_Channel;
-    //thePolymorphicHDF5_Channel = theHDF5_Channel;
-    theHDF5_Channel.setTime(currentTime);
+    bool output_is_enabled = true;
+
+    if (output_is_enabled)
+    {
+        theHDF5_Channel.setTime(currentTime);
+    }
+
 
 
     while ( ( nodePtr = theNodeIter() ) != 0 )
@@ -2624,10 +2628,11 @@ Domain::commit( void )
 
 
         //Jose Added for node output
-
-        //theHDF5_Channel->beginNodeDescription(1);
-        nodePtr->describeSelf(0, theHDF5_Channel);
-        nodePtr->sendSelf(0, theHDF5_Channel);
+        if (output_is_enabled)
+        {
+            nodePtr->describeSelf(0, theHDF5_Channel);
+            nodePtr->sendSelf(0, theHDF5_Channel);
+        }
 
     }
 
@@ -2638,13 +2643,16 @@ Domain::commit( void )
     {
         elePtr->commitState();
         //Jose Added for element output
-        elePtr->describeSelf(0, theHDF5_Channel);
-        elePtr->sendSelf(0, theHDF5_Channel);
+        if (output_is_enabled)
+        {
+            elePtr->describeSelf(0, theHDF5_Channel);
+            elePtr->sendSelf(0, theHDF5_Channel);
+        }
     }
 
     // set the new committed time in the domain
-    committedTime = currentTime;
-    dT = 0.0;
+    // committedTime = currentTime;
+    // dT = 0.0;
 
     // invoke record on all recorders
     // for ( int i = 0; i < numRecorders; i++ )
@@ -2654,19 +2662,21 @@ Domain::commit( void )
     //     }
 
     // update the commitTag
-    commitTag++;
+    // commitTag++;
 
 
 
-    // Nima Tafazzoli (Nov. 2012)
-    for ( int i = 0; i < numDatabases; i++ )
-    {
-        if ( theDatabases[i] != 0 )
-        {
-            theDatabases[i]->saveResultsDatabase();
-        }
-    }
+    // // Nima Tafazzoli (Nov. 2012)
+    // for ( int i = 0; i < numDatabases; i++ )
+    // {
+    //     if ( theDatabases[i] != 0 )
+    //     {
+    //         theDatabases[i]->saveResultsDatabase();
+    //     }
+    // }
 
+
+    theHDF5_Channel.garbage_collect(); // This frees memory, and optimizes the HDF5 run.. it is not essential, but increases performance
 
     return 0;
 }

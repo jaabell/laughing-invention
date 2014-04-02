@@ -48,9 +48,9 @@ Vector EightNodeBrickLT::ShapeFunctionValues_in_function( 4 );  // Nima added fo
 Vector EightNodeBrickLT::J_vector_in_function( 3 );             // Nima added for surface load (July 2012)
 
 // These are for returning Information from the element
-Vector Info_Stress(8 * 6 + 1); // Stress 8*6+1  2X2X2
-Vector Info_GaussCoordinates(8 * 3 + 1);      //Gauss point coordinates
-Vector Info_Strain(8 * 6 + 1);
+// Vector Info_Stress(8 * 6 + 1); // Stress 8*6+1  2X2X2
+// Vector Info_GaussCoordinates(8 * 3 + 1);      //Gauss point coordinates
+// Vector Info_Strain(8 * 6 + 1);
 
 
 EightNodeBrickLT::EightNodeBrickLT( int element_number,
@@ -60,7 +60,7 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 
     : Element( element_number, ELE_TAG_EightNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 8 ),
-      Ki( 0 ), Q( 24 ), bf(3)
+      Ki( 0 ), Q( 24 ), bf(3), gauss_points(8, 3)
 {
 
     rho = Globalmmodel->getRho();
@@ -101,8 +101,7 @@ void EightNodeBrickLT::populate()
         material_array[k] = mmodel->getCopy();
     }
 
-    //This gets done for all the elements every time :/
-    // LTensor does not provide for initializer lists, so cant do static const
+    //This gets done for all the elements every time send    // LTensor does not provide for initializer lists, so cant do static const
     // which would be slightly more efficient.
     short where = 0;
 
@@ -139,7 +138,7 @@ void EightNodeBrickLT::populate()
 
 //====================================================================
 EightNodeBrickLT::EightNodeBrickLT(): Element( 0, ELE_TAG_EightNodeBrickLT ),
-    rho( 0.0 ), connectedExternalNodes( 8 ) , Ki( 0 ), mmodel( 0 ), Q( 24 ), bf(3)
+    rho( 0.0 ), connectedExternalNodes( 8 ) , Ki( 0 ), mmodel( 0 ), Q( 24 ), bf(3),  gauss_points(8, 3)
 {
     initialized = false;
     is_mass_computed = false;
@@ -578,7 +577,7 @@ void EightNodeBrickLT::computeGaussPoint()
     double s  = 0.0;
     double t  = 0.0;
 
-    Info_GaussCoordinates( 0 ) = 8;
+    // Matrix gauss_coordinates(8, 3);
 
     // special case for 8 nodes only
     DTensor2 NodalCoord( 3, 8, 0.0 );
@@ -636,10 +635,11 @@ void EightNodeBrickLT::computeGaussPoint()
             material_arrayCoord( 2, gp ) += NodalCoord( 2, encount ) * H( encount * 3 + 2, 2 );
         }
 
-        Info_GaussCoordinates( gp * 3 + 1 ) = material_arrayCoord( 0, gp );
-        Info_GaussCoordinates( gp * 3 + 2 ) = material_arrayCoord( 1, gp );
-        Info_GaussCoordinates( gp * 3 + 3 ) = material_arrayCoord( 2, gp );
+        gauss_points( gp, 0) = material_arrayCoord( 0, gp );
+        gauss_points( gp, 1 ) = material_arrayCoord( 1, gp );
+        gauss_points( gp, 2 ) = material_arrayCoord( 2, gp );
     }
+    // return gauss_points;
 }
 
 
@@ -800,6 +800,7 @@ void EightNodeBrickLT::setDomain ( Domain *theDomain )
     }
 
     ComputeVolume();
+    computeGaussPoint();
 }
 
 //=============================================================================
@@ -1164,7 +1165,6 @@ const Vector &EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
 int EightNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
 {
 
-
     int type;
     const Vector &data = theLoad->getData( type, loadFactor );
 
@@ -1172,7 +1172,6 @@ int EightNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
     {
 
         Vector Fbody = this->getBodyForce( loadFactor, data );
-
         Q.addVector( 1.0, Fbody, 1.0 );
 
     }
@@ -1180,12 +1179,12 @@ int EightNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
     {
         Vector Fsurface = this->getSurfaceForce( loadFactor, data );
 
-        Q.addVector( 1.0, Fsurface, 1.0 );
+        Q.addVector( 1.0, Fsurface, 1.0);
 
     }
     else
     {
-        cerr << "EightNodeBrickLT::addLoad() - 8NodeBrick " << this->getTag() << ",load type " << type << "unknown\n";
+        cerr << "EightNodeBrickLT::addLoad() - 8NodeBrickLT " << this->getTag() << ",load type " << type << "unknown\n";
         return -1;
     }
 
@@ -1374,7 +1373,8 @@ const Vector &EightNodeBrickLT::getResistingForceIncInertia ()
 int EightNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginElementDescription("EightNodeBrickLT", this->getTag());
-    theHDF5_Channel.addField("data"             , false     , "adim");
+    theHDF5_Channel.addField("tag"             , false     , "adim");
+    theHDF5_Channel.addField("connected_nodes"             , false     , "adim");
 
     // 8node brick asks its material objects to describe themselves
     for ( int i = 0; i < 8; i++ )
@@ -1385,7 +1385,9 @@ int EightNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
             return -1;
         }
     }
-    theHDF5_Channel.addField("material_properties"      , false     , "m");
+    theHDF5_Channel.addField("material_properties"      , false     , "adim");
+    theHDF5_Channel.addField("gauss_points"      , false     , "m");
+    theHDF5_Channel.addField("volume"      , false     , "m^3");
     theHDF5_Channel.endElementDescription();
 
     return 0;
@@ -1404,21 +1406,20 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     }
 
     int dataTag = this->getDbTag();
+
     // int matDbTag;
-    static ID idData( 26 );
-
-    idData( 17 ) = connectedExternalNodes( 0 );
-    idData( 18 ) = connectedExternalNodes( 1 );
-    idData( 19 ) = connectedExternalNodes( 2 );
-    idData( 20 ) = connectedExternalNodes( 3 );
-    idData( 21 ) = connectedExternalNodes( 4 );
-    idData( 22 ) = connectedExternalNodes( 5 );
-    idData( 23 ) = connectedExternalNodes( 6 );
-    idData( 24 ) = connectedExternalNodes( 7 );
-    idData( 25 ) = this->getTag();
-
+    static ID idData( 1 );
+    idData( 0 ) = this->getTag();
 
     if ( theChannel.sendID( dataTag, commitTag, idData ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
+        return -1;
+    }
+
+    // Send the nodes
+
+    if ( theChannel.sendID( dataTag, commitTag, connectedExternalNodes ) < 0 )
     {
         cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
         return -1;
@@ -1448,6 +1449,21 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
         return -1;
     }
 
+    if ( theChannel.sendMatrix( dataTag, commitTag, gauss_points ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss point coordinates\n";
+        return -1;
+    }
+
+    static Vector vol(1);
+    vol(0) = Volume;
+
+    if ( theChannel.sendVector( dataTag, commitTag, vol ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its volume\n";
+        return -1;
+    }
+
     return 0;
 
 }
@@ -1457,116 +1473,116 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
     cerr << "EightNodeBrickLT::recvSelf -- Not yet implemented!" << endl;
     return -1;
     /*
-        if ( !initialized )
-        {
-            populate();
-        }
+    if ( !initialized )
+    {
+    populate();
+    }
 
-        int dataTag = this->getDbTag();
+    int dataTag = this->getDbTag();
 
-        static ID idData( 26 );
+    static ID idData( 26 );
 
-        if ( theChannel.recvID( dataTag, commitTag, idData ) < 0 )
-        {
-            cerr << "WARNING EightNodeBrickLT::recvSelf() - failed to receive ID\n";
-            return -1;
-        }
+    if ( theChannel.recvID( dataTag, commitTag, idData ) < 0 )
+    {
+    cerr << "WARNING EightNodeBrickLT::recvSelf() - failed to receive ID\n";
+    return -1;
+    }
 
-        this->setTag( idData( 25 ) );
+    this->setTag( idData( 25 ) );
 
-        connectedExternalNodes( 0 ) = idData( 17 );
-        connectedExternalNodes( 1 ) = idData( 18 );
-        connectedExternalNodes( 2 ) = idData( 19 );
-        connectedExternalNodes( 3 ) = idData( 20 );
-        connectedExternalNodes( 4 ) = idData( 21 );
-        connectedExternalNodes( 5 ) = idData( 22 );
-        connectedExternalNodes( 6 ) = idData( 23 );
-        connectedExternalNodes( 7 ) = idData( 24 );
+    connectedExternalNodes( 0 ) = idData( 17 );
+    connectedExternalNodes( 1 ) = idData( 18 );
+    connectedExternalNodes( 2 ) = idData( 19 );
+    connectedExternalNodes( 3 ) = idData( 20 );
+    connectedExternalNodes( 4 ) = idData( 21 );
+    connectedExternalNodes( 5 ) = idData( 22 );
+    connectedExternalNodes( 6 ) = idData( 23 );
+    connectedExternalNodes( 7 ) = idData( 24 );
 
-        int matClassTag;
-        int matDbTag;
-
-
-        if ( material_array[0] == 0 )
-        {
-            for ( int i = 0; i < 8; i++ )
-            {
-
-                matClassTag = idData( i );
-                matDbTag    = idData( i + 8 );
+    int matClassTag;
+    int matDbTag;
 
 
-                // Allocate new material with the sent class tag
-                NDMaterialLT *ndmat = theBroker.getNewNDMaterial( matClassTag );
-                if ( ndmat == 0 )
-                {
-                    cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
-                    return -1;
-                }
-                // Now receive materials into the newly allocated space
-                ndmat->setDbTag( matDbTag );
-                if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
-                    return -1;
-                }
+    if ( material_array[0] == 0 )
+    {
+    for ( int i = 0; i < 8; i++ )
+    {
 
-                material_array[i] = ndmat;
-            }
-        }
-        // materials exist , ensure materials of correct type and recvSelf on them
-        else
-        {
-            for ( int i = 0; i < 8; i++ )
-            {
+    matClassTag = idData( i );
+    matDbTag    = idData( i + 8 );
 
-                matClassTag = idData( i );
-                matDbTag    = idData( i + 8 );
 
-                static Vector matProp( 4 );
-                if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
-                {
-                    cerr << "EightNodeBrickLT::recvSelf() - failed to recv rho!\n";
-                    return -1;
-                }
+    // Allocate new material with the sent class tag
+    NDMaterialLT *ndmat = theBroker.getNewNDMaterial( matClassTag );
+    if ( ndmat == 0 )
+    {
+    cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+    return -1;
+    }
+    // Now receive materials into the newly allocated space
+    ndmat->setDbTag( matDbTag );
+    if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+    {
+    cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
+    return -1;
+    }
 
-                NDMaterial *ndmat = theBroker.getNewNDMaterial( matClassTag );;
-                // Check that material is of the right type; if not,
-                // delete it and create a new one of the right type
-                if ( ( material_array[i]->matmodel )->getClassTag() != matClassTag )
-                {
-                    delete material_array[i];
-                    if ( ndmat ==  0 )
-                    {
-                        cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
-                        return -1;
-                    }
+    material_array[i] = ndmat;
+    }
+    }
+    // materials exist , ensure materials of correct type and recvSelf on them
+    else
+    {
+    for ( int i = 0; i < 8; i++ )
+    {
 
-                    ndmat->setDbTag( matDbTag );
-                }
-                // Receive the material
-                if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
-                    return -1;
-                }
+    matClassTag = idData( i );
+    matDbTag    = idData( i + 8 );
 
-                material_array[i] = ndmat;
-            }
-        }
+    static Vector matProp( 4 );
+    if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
+    {
+    cerr << "EightNodeBrickLT::recvSelf() - failed to recv rho!\n";
+    return -1;
+    }
 
-        static Vector matProp( 4 );
-        if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
-        {
-            cerr << "EightNodeBrickLT::recvSelf() - failed to recv rho!\n";
-            return -1;
-        }
+    NDMaterial *ndmat = theBroker.getNewNDMaterial( matClassTag );;
+    // Check that material is of the right type; if not,
+    // delete it and create a new one of the right type
+    if ( ( material_array[i]->matmodel )->getClassTag() != matClassTag )
+    {
+    delete material_array[i];
+    if ( ndmat ==  0 )
+    {
+    cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+    return -1;
+    }
 
-        rho = matProp( 0 );
-        bf( 0 ) = matProp( 1 );
-        bf( 1 ) = matProp( 2 );
-        bf( 2 ) = matProp( 3 );
-        return 0;
+    ndmat->setDbTag( matDbTag );
+    }
+    // Receive the material
+    if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+    {
+    cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
+    return -1;
+    }
+
+    material_array[i] = ndmat;
+    }
+    }
+
+    static Vector matProp( 4 );
+    if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
+    {
+    cerr << "EightNodeBrickLT::recvSelf() - failed to recv rho!\n";
+    return -1;
+    }
+
+    rho = matProp( 0 );
+    bf( 0 ) = matProp( 1 );
+    bf( 1 ) = matProp( 2 );
+    bf( 2 ) = matProp( 3 );
+    return 0;
     */
 }
 
@@ -1577,15 +1593,15 @@ int EightNodeBrickLT::getObjectSize()
 
     return 0;
     /*
-        int size = 0;
-        size += 11 * sizeof( int );
-        size += 4 * sizeof( double );
-        for( int i = 0; i < 8; i++ )
-        {
-            size += material_array[i]->getObjectSize();
-        }
-        return size;
-        */
+    int size = 0;
+    size += 11 * sizeof( int );
+    size += 4 * sizeof( double );
+    for( int i = 0; i < 8; i++ )
+    {
+    size += material_array[i]->getObjectSize();
+    }
+    return size;
+    */
 }
 
 //=============================================================================
@@ -1652,103 +1668,6 @@ void EightNodeBrickLT::Print( ostream &s, int flag )
 
 }
 
-//=============================================================================
-Response *EightNodeBrickLT::setResponse ( const char **argv, int argc, Information &eleInformation )
-{
-    if ( strcmp( argv[0], "stiff" ) == 0 || strcmp( argv[0], "stiffness" ) == 0 )
-    {
-        return new ElementResponse( this, 2, K );
-    }
-
-    //========================================================
-    else if ( strcmp( argv[0], "stress" ) == 0 || strcmp( argv[0], "stresses" ) == 0 )
-    {
-        return new ElementResponse( this, 4, Info_Stress );
-    }
-
-    //========================================================
-    else if ( strcmp( argv[0], "gausspoint" ) == 0 || strcmp( argv[0], "GaussPoint" ) == 0 )
-    {
-        return new ElementResponse( this, 5, Info_GaussCoordinates );
-    }
-    //========================================================
-    else if ( ( strcmp( argv[0], "strains" ) == 0 ) || ( strcmp( argv[0], "strain" ) == 0 ) )
-    {
-        return new ElementResponse( this, 7, Info_Strain );
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-//=============================================================================
-int EightNodeBrickLT::getResponse ( int responseID, Information &eleInfo )
-{
-    switch ( responseID )
-    {
-        case 2:
-            return eleInfo.setMatrix( this->getTangentStiff() );
-            break;
-
-        case 4: //response type: "stress"
-        {
-            DTensor2 stress(3, 3, 0.0);
-
-            Info_Stress( 0 ) = 8;  // Number of gauss points
-
-            for ( short gp = 0 ; gp < 8 ; gp++ )
-            {
-                stress = material_array[gp]->getStressTensor();
-                Info_Stress( gp * 6 + 1 ) = stress( 0, 0 ); //sigma_xx
-                Info_Stress( gp * 6 + 2 ) = stress( 1, 1 ); //sigma_yy
-                Info_Stress( gp * 6 + 3 ) = stress( 2, 2 ); //sigma_zz
-                Info_Stress( gp * 6 + 4 ) = stress( 0, 1 ); //Assign sigma_xy
-                Info_Stress( gp * 6 + 5 ) = stress( 0, 2 ); //Assign sigma_xz
-                Info_Stress( gp * 6 + 6 ) = stress( 1, 2 ); //Assign sigma_yz
-            }
-
-            return eleInfo.setVector( Info_Stress );
-            break;
-        }
-
-        case 5: //response type: gausspoint
-        {
-            this->computeGaussPoint();
-            return eleInfo.setVector( Info_GaussCoordinates );
-            break;
-        }
-
-        case 7: //response type: strains
-
-        {
-            DTensor2 Strain(3, 3, 0.0);
-
-            Info_Strain( 0 ) = 8;
-
-            for ( short gp = 0 ; gp < 8 ; gp++ )
-            {
-                Strain = material_array[gp]->getStrainTensor();
-
-                Info_Strain( gp * 6 + 1 ) = Strain( 0, 0); //sigma_xx
-                Info_Strain( gp * 6 + 2 ) = Strain( 1, 1); //sigma_yy
-                Info_Strain( gp * 6 + 3 ) = Strain( 2, 2); //sigma_zz
-                Info_Strain( gp * 6 + 4 ) = Strain( 0, 1); //Assign sigma_xy
-                Info_Strain( gp * 6 + 5 ) = Strain( 0, 2); //Assign sigma_xz
-                Info_Strain( gp * 6 + 6 ) = Strain( 1, 2); //Assign sigma_yz
-            }
-
-            return eleInfo.setVector( Info_Strain );
-            break;
-        }
-
-        default:
-            return -1;
-            break;
-    }
-
-    return -1; //Control should never reach this point anyway.....
-}
 
 void EightNodeBrickLT::ComputeVolume()
 {

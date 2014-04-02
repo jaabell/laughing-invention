@@ -66,7 +66,7 @@ LoadControl::~LoadControl()
 int
 LoadControl::newStep(void)
 {
-    AnalysisModel* theModel = this->getAnalysisModelPtr();
+    AnalysisModel *theModel = this->getAnalysisModelPtr();
 
     if (theModel == 0)
     {
@@ -91,6 +91,8 @@ LoadControl::newStep(void)
 
     currentLambda += deltaLambda;
 
+    // cout << "CurrentLambda = " << currentLambda << endl;
+
     theModel->applyLoadDomain(currentLambda);
     numIncrLastStep = 0;
 
@@ -98,10 +100,10 @@ LoadControl::newStep(void)
 }
 
 int
-LoadControl::update(const Vector& deltaU)
+LoadControl::update(const Vector &deltaU)
 {
-    AnalysisModel* myModel = this->getAnalysisModelPtr();
-    LinearSOE* theSOE = this->getLinearSOEPtr();
+    AnalysisModel *myModel = this->getAnalysisModelPtr();
+    LinearSOE *theSOE = this->getLinearSOEPtr();
 
     if (myModel == 0 || theSOE == 0)
     {
@@ -139,7 +141,7 @@ LoadControl::setDeltaLambda(double newValue)
 
 int
 LoadControl::sendSelf(int cTag,
-                      Channel& theChannel)
+                      Channel &theChannel)
 {
     Vector data(5);
     data(0) = deltaLambda;
@@ -160,7 +162,7 @@ LoadControl::sendSelf(int cTag,
 
 int
 LoadControl::recvSelf(int cTag,
-                      Channel& theChannel, FEM_ObjectBroker& theBroker)
+                      Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     Vector data(5);
 
@@ -182,9 +184,9 @@ LoadControl::recvSelf(int cTag,
 
 
 void
-LoadControl::Print(ostream& s, int flag)
+LoadControl::Print(ostream &s, int flag)
 {
-    AnalysisModel* theModel = this->getAnalysisModelPtr();
+    AnalysisModel *theModel = this->getAnalysisModelPtr();
 
     if (theModel != 0)
     {

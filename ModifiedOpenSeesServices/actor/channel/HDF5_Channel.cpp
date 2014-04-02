@@ -82,7 +82,16 @@ void HDF5_Channel::initialize(std::string filename_in,
     //================================================================================
     //Create the file, overwriting it if it exists
     //================================================================================
-    id_file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    unsigned flags = H5F_ACC_TRUNC;  // Truncate file (ie. if file exists overwrite it)
+    hid_t file_creation_plist = H5Pcreate(H5P_FILE_CREATE);
+    hid_t file_access_plist = H5Pcreate(H5P_FILE_ACCESS);
+    // status = H5Pset_meta_block_size(file_access_plist, HDF5_CHANNEL_META_BLOCK_SIZE);
+    // HDF5_CHECK_ERROR;
+    // status =  H5Pset_cache(file_access_plist, 0, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    // HDF5_CHECK_ERROR;
+    status = H5Pset_sieve_buf_size( file_access_plist, HDF5_CHANNEL_SIEVE_BUFFER_SIZE );
+    HDF5_CHECK_ERROR;
+    id_file = H5Fcreate(filename.c_str(), flags , file_creation_plist, file_access_plist);
 
 
     //================================================================================
@@ -128,7 +137,7 @@ void HDF5_Channel::initialize(std::string filename_in,
     inNodeDefinitionMode = false;
 
     HDF5_CHANNEL_COUNT_OBJS;
-    cout << "subgroupname" << subgroupname << endl;
+    // cout << "subgroupname" << subgroupname << endl;
 }
 
 HDF5_Channel::~HDF5_Channel()
@@ -1050,22 +1059,22 @@ std::string HDF5_Channel::generateRandomString()
 
 int HDF5_Channel::setUnit(hid_t object, std::string units)
 {
-    hid_t atype;
-    hid_t attribute_dataspace_id;
-    hid_t attribute;
+    // hid_t atype;
+    // hid_t attribute_dataspace_id;
+    // hid_t attribute;
 
-    attribute_dataspace_id = H5Screate(H5S_SCALAR);
-    atype = H5Tcopy(H5T_C_S1);
-    H5Tset_size(atype, units.size() );
-    attribute = H5Acreate2(object,
-                           "units",
-                           atype,
-                           attribute_dataspace_id,
-                           H5P_DEFAULT,
-                           H5P_DEFAULT);
-    status = H5Awrite(attribute, atype, units.c_str());
-    H5Aclose(attribute);
-    H5Sclose(attribute_dataspace_id);
+    // attribute_dataspace_id = H5Screate(H5S_SCALAR);
+    // atype = H5Tcopy(H5T_C_S1);
+    // H5Tset_size(atype, units.size() );
+    // attribute = H5Acreate2(object,
+    //                        "units",
+    //                        atype,
+    //                        attribute_dataspace_id,
+    //                        H5P_DEFAULT,
+    //                        H5P_DEFAULT);
+    // status = H5Awrite(attribute, atype, units.c_str());
+    // H5Aclose(attribute);
+    // H5Sclose(attribute_dataspace_id);
 
     return 0;
 }
@@ -1095,7 +1104,7 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
     {
         if (maxdims[i] == H5S_UNLIMITED)
         {
-            chunk_dims[i] = 1;
+            chunk_dims[i] = HDF5_CHANNEL_CHUNK_TIMEDIM;
         }
         else
         {
@@ -1108,6 +1117,9 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
     HDF5_CHECK_ERROR;
     status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
     HDF5_CHECK_ERROR;
+    status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    HDF5_CHECK_ERROR;
+
     status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
     HDF5_CHECK_ERROR;
 
@@ -1123,7 +1135,7 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
                                 id_dataspace,
                                 H5P_DEFAULT,
                                 dataset_creation_plist,
-                                H5P_DEFAULT);
+                                dataset_access_plist);
     setUnit(id_array, units);
     H5Sclose(id_dataspace);
 
@@ -1189,7 +1201,7 @@ hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
     {
         if (maxdims[i] == H5S_UNLIMITED)
         {
-            chunk_dims[i] = 1;
+            chunk_dims[i] = HDF5_CHANNEL_CHUNK_TIMEDIM;
         }
         else
         {
@@ -1201,6 +1213,8 @@ hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
     status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
     HDF5_CHECK_ERROR;
     status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
+    HDF5_CHECK_ERROR;
+    status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
     HDF5_CHECK_ERROR;
     status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_INT, &fill_value);
     HDF5_CHECK_ERROR;
@@ -1217,7 +1231,7 @@ hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
                                 id_dataspace,
                                 H5P_DEFAULT,
                                 dataset_creation_plist,
-                                H5P_DEFAULT);
+                                dataset_access_plist);
     setUnit(id_array, units);
     H5Sclose(id_dataspace);
 
@@ -1476,6 +1490,23 @@ int HDF5_Channel::printStack()
     return 0;
 }
 
+void HDF5_Channel::garbage_collect()
+{
+    status = H5garbage_collect();
+    HDF5_CHECK_ERROR;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // This is after: https://gist.github.com/jzrake/3025642
 // -----------------------------------------------------------------------------
 // The HDF5 specification only allows H5Lexists to be called on an immediate
@@ -1538,3 +1569,6 @@ ChannelAddress *HDF5_Channel::getLastSendersAddress(void)
 {
     return 0;
 }
+
+
+

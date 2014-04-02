@@ -46,7 +46,7 @@
 #include <FEM_ObjectBroker.h>
 
 
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 
 
@@ -62,7 +62,7 @@ class EightNodeBrickLT: public Element
         EightNodeBrickLT( int element_number,
                           int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
                           int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                          NDMaterialLT* Globalmmodel);
+                          NDMaterialLT *Globalmmodel);
 
         EightNodeBrickLT ();
         ~EightNodeBrickLT();
@@ -72,55 +72,55 @@ class EightNodeBrickLT: public Element
         // ===================================================================================================================
         int update( void );
         int getNumExternalNodes () const;
-        const ID& getExternalNodes ();
-        Node** getNodePtrs( void );
+        const ID &getExternalNodes ();
+        Node **getNodePtrs( void );
 
         int getNumDOF ();
-        void setDomain( Domain* theDomain );
+        void setDomain( Domain *theDomain );
 
         int commitState ();
         int revertToLastCommit ();
         int revertToStart ();
 
         // These NEED to return fmk Matrices
-        const Matrix& getTangentStiff ();
-        const Matrix& getInitialStiff();
-        const Matrix& getMass ();
+        const Matrix &getTangentStiff ();
+        const Matrix &getInitialStiff();
+        const Matrix &getMass ();
 
         void zeroLoad ();
-        int addLoad( ElementalLoad* theLoad, double loadFactor );
-        int addInertiaLoadToUnbalance( const Vector& accel );
+        int addLoad( ElementalLoad *theLoad, double loadFactor );
+        int addInertiaLoadToUnbalance( const Vector &accel );
 
         // These NEED to return fmk Vector
         const Vector  FormEquiBodyForce( void );
-        const Vector& getResistingForce ();
-        const Vector& getResistingForceIncInertia ();
+        const Vector &getResistingForce ();
+        const Vector &getResistingForceIncInertia ();
         int getObjectSize();
 
         //Used in parallel and in saving model
-        int describeSelf(int commitTag, HDF5_Channel& theHDF5_Channel);
-        int sendSelf ( int commitTag, Channel& theChannel );
-        int recvSelf ( int commitTag, Channel& theChannel, FEM_ObjectBroker
+        int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
+        int sendSelf ( int commitTag, Channel &theChannel );
+        int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
                        &theBroker );
 
         //For recorders
-        Response* setResponse ( const char** argv, int argc, Information& eleInformation );
-        int getResponse ( int responseID, Information& eleInformation );
+        // Response *setResponse ( const char **argv, int argc, Information &eleInformation );
+        // int getResponse ( int responseID, Information &eleInformation );
 
         //General reporting of element status
-        void Print( ostream& s, int flag = 0 );
+        void Print( ostream &s, int flag = 0 );
 
         //Determine if element is ok and calls CheckMesh on children material
-        int CheckMesh( ofstream&);
+        int CheckMesh( ofstream &);
 
         // ===================================================================================================================
         // For Body Forces and Surface forces
         // ===================================================================================================================
-        Vector& Direction_Weight( double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4 );
+        Vector &Direction_Weight( double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4 );
         double SurfaceShapeFunctionValues( double Xi , double Eta, int whichcomponent );
         double SurfaceLoadValues( double Xi , double Eta, Vector Pressure );
-        const Vector& getBodyForce( double loadFactor, const Vector& data );
-        const Vector& getSurfaceForce( double loadFactor, const Vector& data );
+        const Vector &getBodyForce( double loadFactor, const Vector &data );
+        const Vector &getSurfaceForce( double loadFactor, const Vector &data );
         double returnPressure(void);
 
 
@@ -133,24 +133,24 @@ class EightNodeBrickLT: public Element
 
         int  get_global_number_of_node( int local_node_number );
         int  get_Brick_Number( void );
-        int* get_LM( void );
+        int *get_LM( void );
 
-        const DTensor2& H_3D( double r1, double r2, double r3 ) const;
-        const DTensor1& interp_poli_at( double r, double s, double t ) const;
-        const DTensor2& dh_drst_at( double r, double s, double t ) const;
-        const DTensor4& getStiffnessTensor( void ) const;
-        const DTensor2& Jacobian_3D( const DTensor2& dh ) const;
-        const DTensor2& Jacobian_3Dinv( const DTensor2& dh ) const;
-        const DTensor2& Nodal_Coordinates( void ) const ;
-        const DTensor2& incr_disp( void ) const;
-        const DTensor2& total_disp( void ) const ;
-        const DTensor2& nodal_forces( void ) const;
+        const DTensor2 &H_3D( double r1, double r2, double r3 ) const;
+        const DTensor1 &interp_poli_at( double r, double s, double t ) const;
+        const DTensor2 &dh_drst_at( double r, double s, double t ) const;
+        const DTensor4 &getStiffnessTensor( void ) const;
+        const DTensor2 &Jacobian_3D( const DTensor2 &dh ) const;
+        const DTensor2 &Jacobian_3Dinv( const DTensor2 &dh ) const;
+        const DTensor2 &Nodal_Coordinates( void ) const ;
+        const DTensor2 &incr_disp( void ) const;
+        const DTensor2 &total_disp( void ) const ;
+        const DTensor2 &nodal_forces( void ) const;
         //DTensor2 iterative_nodal_forces( void );
         //DTensor2 nodal_forces_from_stress( DTensor2 & );
         //DTensor2 linearized_nodal_forces( void );
         //DTensor2 update_stress_strain( DTensor2 & disp );
 
-        Vector* getStress( void );
+        Vector *getStress( void );
 
     private:
         void populate();
@@ -175,11 +175,11 @@ class EightNodeBrickLT: public Element
 
         DTensor2 pl_stn[8];
         DTensor2 stress[8];
-        Matrix* Ki;
+        Matrix *Ki;
 
-        Node* theNodes[8];
-        NDMaterialLT* mmodel;
-        NDMaterialLT* material_array[8];
+        Node *theNodes[8];
+        NDMaterialLT *mmodel;
+        NDMaterialLT *material_array[8];
 
 
 
@@ -195,6 +195,8 @@ class EightNodeBrickLT: public Element
 
         static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
         static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
+
+        Matrix gauss_points;
 
         Index < 'i' > i;
         Index < 'j' > j;

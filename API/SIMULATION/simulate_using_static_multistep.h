@@ -242,11 +242,9 @@ int simulate_using_static_multistep(int numSteps)
     // // bool isOutputBinary = false;
     // bool isTheAnalysisDynamic = false;
     // StateWriter output_writer(ModelName, StageName, isTheAnalysisDynamic);
-    for (int step = 1; step <= numSteps; step++)
-    {
-        result = theStaticAnalysis->analyze(1);
-        // output_writer.write_static_analysis_output();
-    }
+
+    result = theStaticAnalysis->analyze(numSteps);
+
 
 #endif
 

@@ -2,8 +2,8 @@ Compiler = GNU
 #Compiler = CLANG
 #Compiler = PARALLEL
 
-DEBUG_MODE = DEBUG
-#DEBUG_MODE = NO_DEBUG
+#DEBUG_MODE = DEBUG
+DEBUG_MODE = NO_DEBUG
 
 PROGRAMMING_MODE = SEQUENTIAL
 #PROGRAMMING_MODE = PARALLEL
@@ -68,9 +68,9 @@ else ifeq ($(Compiler), PARALLEL)
 endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
-	C++FLAGS        = -Wall \
+	C++FLAGS        = -flto -Wall \
 										-Winline \
-										-O \
+										-O2 \
 										-finline \
 										-finline-functions \
 										-finline-limit=1000 \
@@ -88,14 +88,14 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-Wno-write-strings \
 										-march=native
 
-	CFLAGS          = -O \
+	CFLAGS          = -flto -O2 \
 										-D_LINUX \
 										-D_UNIX \
 										-D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84
 										-march=native $(MORE_CFLAGS)
 
-	FFLAGS          = -O $(MORE_FFLAGS)
-	LINKFLAGS       = -O $(MORE_LINKFLAGS)
+	FFLAGS          = -O2 $(MORE_FFLAGS)
+	LINKFLAGS       = -flto -O $(MORE_LINKFLAGS)
 
 else
 	C++FLAGS        = -Wall \

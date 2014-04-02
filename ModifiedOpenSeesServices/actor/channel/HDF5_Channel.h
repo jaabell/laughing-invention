@@ -40,10 +40,20 @@
 #define HDF5_CHANNEL_COUNT_OBJS ssize_t nobjects = H5Fget_obj_count( id_file, H5F_OBJ_ALL ); \
     cout << "Objects open = "  << nobjects << endl;
 #else
-#define HDF5_CHANNEL_COUNT_OBJS 0;
+#define HDF5_CHANNEL_COUNT_OBJS
 #endif
 #define HDF5_CHANNEL_CLEAN if(stack_length == 0) \
     { H5Oclose(id_current_object); }
+
+//These optimize access to HDF5 file (tuninng knobs)
+#define HDF5_CHANNEL_CHUNK_NSLOTS 512*32
+#define HDF5_CHANNEL_CHUNK_NBYTES 128*1024*1024
+#define HDF5_CHANNEL_CHUNK_TIMEDIM 1
+//#define HDF5_CHANNEL_META_BLOCK_SIZE 2048*16
+#define HDF5_CHANNEL_META_BLOCK_SIZE 2048
+//#define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*1024
+#define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*64
+
 
 using namespace std;
 
@@ -55,7 +65,7 @@ class Vector;
 class ID;
 class FEM_ObjectBroker;
 class nDarray;
-class LTensor;
+// class LTensor;
 
 class HDF5_Channel: public Channel
 {
@@ -169,6 +179,8 @@ class HDF5_Channel: public Channel
                      std::string units);
 
         int printStack();
+
+        void garbage_collect();
 
 
 

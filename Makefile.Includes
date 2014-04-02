@@ -194,6 +194,38 @@ ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
       $(FEIBASEDIR)/lib/libquantity.a \
       $(FEIBASEDIR)/lib/libltensorutilities.a 
 
+ESSI_LIBS_DEBUG = $(FEIBASEDIR)/lib_debug/libcontactelements.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_27_nodes.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_27_nodes_elastic.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_27_nodes_ltensor.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_20_nodes_elastic.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_20_nodes.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_8_nodes.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_8_nodes_ltensor.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_8_nodes_elastic.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_8_nodes_variable_gp.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_20_nodes_variable_gp.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_27_nodes_variable_gp.a \
+      $(FEIBASEDIR)/lib_debug/libcoupled_u-p-U_brick_8_nodes.a \
+      $(FEIBASEDIR)/lib_debug/libcoupled_u-p_brick_8_nodes.a \
+      $(FEIBASEDIR)/lib_debug/libcoupled_u-p-U_brick_20_nodes.a \
+      $(FEIBASEDIR)/lib_debug/libshell_3_node_andes.a \
+      $(FEIBASEDIR)/lib_debug/libsolid_brick_variable_nodes_8_to_27.a \
+      $(FEIBASEDIR)/lib_debug/libMOSS.a \
+      $(FEIBASEDIR)/lib_debug/libucbelements.a \
+      $(FEIBASEDIR)/lib_debug/libelasticbeam.a \
+      $(FEIBASEDIR)/lib_debug/librank_one_deficient_elastic_pinned_fixed_beam.a \
+      $(FEIBASEDIR)/lib_debug/libaccelerated3dep.a \
+      $(FEIBASEDIR)/lib_debug/libtemplate3dep.a \
+      $(FEIBASEDIR)/lib_debug/libnewtemplate3dep.a \
+      $(FEIBASEDIR)/lib_debug/libpenaltyelement.a \
+      $(FEIBASEDIR)/lib_debug/libpenaltyelementapplydisplacement.a \
+      $(FEIBASEDIR)/lib_debug/libbase_3dep.a \
+      $(FEIBASEDIR)/lib_debug/libltensorbasedmaterials.a \
+      $(FEIBASEDIR)/lib_debug/libndarray.a \
+      $(FEIBASEDIR)/lib_debug/libquantity.a \
+      $(FEIBASEDIR)/lib_debug/libltensorutilities.a 
+
             
 SEQUENTIAL_NUMERIC_INCLUDES = -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1 \
             -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UFconfig \

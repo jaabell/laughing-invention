@@ -10,5 +10,6 @@ bin/essi
 *.layout
 *.h5
 *.hdf5
+make_debug.sh
 exodus
 libs_compiled
