@@ -30,7 +30,9 @@
 #define TwentySevenNodeBrickLTLT_CPP
 
 #include "TwentySevenNodeBrickLT.h"
-//#include "../../ltensor/LTensorDisplay.h"
+#include <HDF5_Channel.h>
+
+
 double TwentySevenNodeBrickLT::SurfaceLoadValues_in_function;         // Nima added for surface load (July 2012)
 
 DTensor2 TwentySevenNodeBrickLT::gp_coords(27, 3, 0.0);
@@ -60,11 +62,11 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
         int node_numb_17, int node_numb_18, int node_numb_19, int node_numb_20,
         int node_numb_21,  int node_numb_22,  int node_numb_23,  int node_numb_24,
         int node_numb_25,  int node_numb_26,  int node_numb_27,
-        NDMaterialLT* Globalmmodel)
+        NDMaterialLT *Globalmmodel)
 
     : Element( element_number, ELE_TAG_TwentySevenNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 27 ),
-      Ki( 0 ), Q( 81 ), bf(3)
+      Ki( 0 ), Q( 81 ), bf(3), gauss_points(27, 3)
 {
 
 
@@ -75,9 +77,9 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
     mmodel = Globalmmodel;
     initialized = false;
 
-    # ifndef _PARALLEL_PROCESSING
+# ifndef _PARALLEL_PROCESSING
     populate();
-    # endif
+# endif
 
     connectedExternalNodes( 0 ) = node_numb_1;
     connectedExternalNodes( 1 ) = node_numb_2;
@@ -126,7 +128,7 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
 void TwentySevenNodeBrickLT::populate()
 {
     // Generate 27 NDMaterialLT for use at each Gauss point.
-    for(int k = 0; k < 27; k++)
+    for (int k = 0; k < 27; k++)
     {
         material_array[k] = mmodel->getCopy();
     }
@@ -136,17 +138,17 @@ void TwentySevenNodeBrickLT::populate()
     // which would be slightly more efficient.
     short where = 0;
 
-    for( short ii = 0 ; ii < 3 ; ii++ )
+    for ( short ii = 0 ; ii < 3 ; ii++ )
     {
-        for( short jj = 0 ; jj < 3 ; jj++ )
+        for ( short jj = 0 ; jj < 3 ; jj++ )
         {
-            for( short kk = 0 ; kk < 3 ; kk++ )
+            for ( short kk = 0 ; kk < 3 ; kk++ )
             {
-                if(ii == 0)
+                if (ii == 0)
                 {
                     gp_coords(where, 0) = -0.774596669241483;
                 }
-                else if(ii == 1)
+                else if (ii == 1)
                 {
                     gp_coords(where, 0) = 0.0;
                 }
@@ -155,11 +157,11 @@ void TwentySevenNodeBrickLT::populate()
                     gp_coords(where, 0) = 0.774596669241483;
                 }
 
-                if(jj == 0)
+                if (jj == 0)
                 {
                     gp_coords(where, 1) = -0.774596669241483;
                 }
-                else if(jj == 1)
+                else if (jj == 1)
                 {
                     gp_coords(where, 1) = 0.0;
                 }
@@ -168,11 +170,11 @@ void TwentySevenNodeBrickLT::populate()
                     gp_coords(where, 1) = 0.774596669241483;
                 }
 
-                if(kk == 0)
+                if (kk == 0)
                 {
                     gp_coords(where, 2) = -0.774596669241483;
                 }
-                else if(kk == 1)
+                else if (kk == 1)
                 {
                     gp_coords(where, 2) = 0.0;
                 }
@@ -188,17 +190,17 @@ void TwentySevenNodeBrickLT::populate()
 
     where = 0;
 
-    for( short ii = 0 ; ii < 3 ; ii++ )
+    for ( short ii = 0 ; ii < 3 ; ii++ )
     {
-        for( short jj = 0 ; jj < 3 ; jj++ )
+        for ( short jj = 0 ; jj < 3 ; jj++ )
         {
-            for( short kk = 0 ; kk < 3 ; kk++ )
+            for ( short kk = 0 ; kk < 3 ; kk++ )
             {
-                if(ii == 0)
+                if (ii == 0)
                 {
                     gp_weight(where, 0) = 0.555555555555556;
                 }
-                else if(ii == 1)
+                else if (ii == 1)
                 {
                     gp_weight(where, 0) = 0.888888888888889;
                 }
@@ -207,11 +209,11 @@ void TwentySevenNodeBrickLT::populate()
                     gp_weight(where, 0) = 0.555555555555556;
                 }
 
-                if(jj == 0)
+                if (jj == 0)
                 {
                     gp_weight(where, 1) = 0.555555555555556;
                 }
-                else if(jj == 1)
+                else if (jj == 1)
                 {
                     gp_weight(where, 1) = 0.888888888888889;
                 }
@@ -220,11 +222,11 @@ void TwentySevenNodeBrickLT::populate()
                     gp_weight(where, 1) = 0.555555555555556;
                 }
 
-                if(kk == 0)
+                if (kk == 0)
                 {
                     gp_weight(where, 2) = 0.555555555555556;
                 }
-                else if(kk == 1)
+                else if (kk == 1)
                 {
                     gp_weight(where, 2) = 0.888888888888889;
                 }
@@ -247,14 +249,14 @@ void TwentySevenNodeBrickLT::populate()
 
 //====================================================================
 TwentySevenNodeBrickLT::TwentySevenNodeBrickLT(): Element( 0, ELE_TAG_TwentySevenNodeBrickLT ),
-    rho( 0.0 ), connectedExternalNodes( 27 ) , Ki( 0 ), mmodel( 0 ), Q( 81 ), bf(3)
+    rho( 0.0 ), connectedExternalNodes( 27 ) , Ki( 0 ), mmodel( 0 ), Q( 81 ), bf(3), gauss_points(27, 3)
 {
     initialized = false;
     is_mass_computed = false;
 
-    # ifndef _PARALLEL_PROCESSING
+# ifndef _PARALLEL_PROCESSING
     populate();
-    # endif
+# endif
 
     nodes_in_brick = 27;
 
@@ -291,7 +293,7 @@ TwentySevenNodeBrickLT::~TwentySevenNodeBrickLT ()
 //#############################################################################
 //#############################################################################
 //***************************************************************
-const DTensor2& TwentySevenNodeBrickLT::H_3D( double r1, double r2, double r3 ) const
+const DTensor2 &TwentySevenNodeBrickLT::H_3D( double r1, double r2, double r3 ) const
 {
     static DTensor2 H( 81, 3, 0.0 );
 
@@ -455,7 +457,7 @@ const DTensor2& TwentySevenNodeBrickLT::H_3D( double r1, double r2, double r3 ) 
 
 //#############################################################################
 //***************************************************************
-const DTensor1& TwentySevenNodeBrickLT::interp_poli_at( double r1, double r2, double r3 ) const
+const DTensor1 &TwentySevenNodeBrickLT::interp_poli_at( double r1, double r2, double r3 ) const
 {
     static DTensor1 h( 27, 0.0 );
 
@@ -503,7 +505,7 @@ const DTensor1& TwentySevenNodeBrickLT::interp_poli_at( double r1, double r2, do
 
 
 
-const DTensor2& TwentySevenNodeBrickLT::dh_drst_at( double r1, double r2, double r3 ) const
+const DTensor2 &TwentySevenNodeBrickLT::dh_drst_at( double r1, double r2, double r3 ) const
 {
     static DTensor2 dh( 27, 3, 0.0 );
 
@@ -668,7 +670,7 @@ const DTensor2& TwentySevenNodeBrickLT::dh_drst_at( double r1, double r2, double
 
 
 ////#############################################################################
-const DTensor4& TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
+const DTensor4 &TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
 {
     double r  = 0.0;
     double w_r = 0.0;
@@ -689,20 +691,20 @@ const DTensor4& TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
     static DTensor4 Kk( 27, 3, 3, 27, 0.0);
     static DTensor4 Kkt( 27, 3, 3, 27, 0.0);
 
-    static Index<'a'> a;
-    static Index<'b'> b;
-    static Index<'c'> c;
-    static Index<'d'> d;
+    static Index < 'a' > a;
+    static Index < 'b' > b;
+    static Index < 'c' > c;
+    static Index < 'd' > d;
 
     //Set the stiffness tensor to zero (its static!)
     // Using STL-like iterators to linearly transverse the array
 
-    for( DTensor4::literator it = Kk.begin(); it != Kk.end(); it++) // Sucky syntax... 'it' is a DTensor4 iterator | *it is the current value of the iterator | it++ advances the current position of the iterator | learn to use the C++ STL
+    for ( DTensor4::literator it = Kk.begin(); it != Kk.end(); it++) // Sucky syntax... 'it' is a DTensor4 iterator | *it is the current value of the iterator | it++ advances the current position of the iterator | learn to use the C++ STL
     {
         *it = 0.0;
     }
 
-    for( short gp = 0; gp < 27; gp++ )
+    for ( short gp = 0; gp < 27; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -738,18 +740,18 @@ const DTensor4& TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
 
 
 ////#############################################################################
-const DTensor2& TwentySevenNodeBrickLT::Jacobian_3D( const DTensor2& dh ) const
+const DTensor2 &TwentySevenNodeBrickLT::Jacobian_3D( const DTensor2 &dh ) const
 {
-    static const DTensor2& N_C = Nodal_Coordinates();
+    static const DTensor2 &N_C = Nodal_Coordinates();
     static DTensor2 Jacobian_3D_(3, 3, 0.0);
     Jacobian_3D_(j, k) = dh(i, j) * N_C(i, k);
     return Jacobian_3D_;
 }
 
 //#############################################################################
-const DTensor2&  TwentySevenNodeBrickLT::Jacobian_3Dinv( const DTensor2& dh ) const
+const DTensor2  &TwentySevenNodeBrickLT::Jacobian_3Dinv( const DTensor2 &dh ) const
 {
-    static const DTensor2& N_C = Nodal_Coordinates();
+    static const DTensor2 &N_C = Nodal_Coordinates();
     DTensor2 Jacobian_3D_(3, 3, 0.0);
     static DTensor2 Jacobian_3D_inv(3, 3, 0.0);
 
@@ -760,43 +762,43 @@ const DTensor2&  TwentySevenNodeBrickLT::Jacobian_3Dinv( const DTensor2& dh ) co
 
 
 ////#############################################################################
-const DTensor2& TwentySevenNodeBrickLT::Nodal_Coordinates( void ) const
+const DTensor2 &TwentySevenNodeBrickLT::Nodal_Coordinates( void ) const
 {
     static DTensor2 N_coord( 27, 3, 0.0 );
 
     //using node pointers, which come from the Domain
-    const Vector& nd1Crds = theNodes[0]->getCrds();
-    const Vector& nd2Crds = theNodes[1]->getCrds();
-    const Vector& nd3Crds = theNodes[2]->getCrds();
-    const Vector& nd4Crds = theNodes[3]->getCrds();
-    const Vector& nd5Crds = theNodes[4]->getCrds();
-    const Vector& nd6Crds = theNodes[5]->getCrds();
-    const Vector& nd7Crds = theNodes[6]->getCrds();
-    const Vector& nd8Crds = theNodes[7]->getCrds();
+    const Vector &nd1Crds = theNodes[0]->getCrds();
+    const Vector &nd2Crds = theNodes[1]->getCrds();
+    const Vector &nd3Crds = theNodes[2]->getCrds();
+    const Vector &nd4Crds = theNodes[3]->getCrds();
+    const Vector &nd5Crds = theNodes[4]->getCrds();
+    const Vector &nd6Crds = theNodes[5]->getCrds();
+    const Vector &nd7Crds = theNodes[6]->getCrds();
+    const Vector &nd8Crds = theNodes[7]->getCrds();
 
-    const Vector& nd9Crds  =  theNodes[8]->getCrds();
-    const Vector& nd10Crds = theNodes[9]->getCrds();
-    const Vector& nd11Crds = theNodes[10]->getCrds();
-    const Vector& nd12Crds = theNodes[11]->getCrds();
+    const Vector &nd9Crds  =  theNodes[8]->getCrds();
+    const Vector &nd10Crds = theNodes[9]->getCrds();
+    const Vector &nd11Crds = theNodes[10]->getCrds();
+    const Vector &nd12Crds = theNodes[11]->getCrds();
 
-    const Vector& nd13Crds = theNodes[12]->getCrds();
-    const Vector& nd14Crds = theNodes[13]->getCrds();
-    const Vector& nd15Crds = theNodes[14]->getCrds();
-    const Vector& nd16Crds = theNodes[15]->getCrds();
+    const Vector &nd13Crds = theNodes[12]->getCrds();
+    const Vector &nd14Crds = theNodes[13]->getCrds();
+    const Vector &nd15Crds = theNodes[14]->getCrds();
+    const Vector &nd16Crds = theNodes[15]->getCrds();
 
 
-    const Vector& nd17Crds = theNodes[16]->getCrds();
-    const Vector& nd18Crds = theNodes[17]->getCrds();
-    const Vector& nd19Crds = theNodes[18]->getCrds();
-    const Vector& nd20Crds = theNodes[19]->getCrds();
+    const Vector &nd17Crds = theNodes[16]->getCrds();
+    const Vector &nd18Crds = theNodes[17]->getCrds();
+    const Vector &nd19Crds = theNodes[18]->getCrds();
+    const Vector &nd20Crds = theNodes[19]->getCrds();
 
-    const Vector& nd21Crds = theNodes[20]->getCrds();
-    const Vector& nd22Crds = theNodes[21]->getCrds();
-    const Vector& nd23Crds = theNodes[22]->getCrds();
-    const Vector& nd24Crds = theNodes[23]->getCrds();
-    const Vector& nd25Crds = theNodes[24]->getCrds();
-    const Vector& nd26Crds = theNodes[25]->getCrds();
-    const Vector& nd27Crds = theNodes[26]->getCrds();
+    const Vector &nd21Crds = theNodes[20]->getCrds();
+    const Vector &nd22Crds = theNodes[21]->getCrds();
+    const Vector &nd23Crds = theNodes[22]->getCrds();
+    const Vector &nd24Crds = theNodes[23]->getCrds();
+    const Vector &nd25Crds = theNodes[24]->getCrds();
+    const Vector &nd26Crds = theNodes[25]->getCrds();
+    const Vector &nd27Crds = theNodes[26]->getCrds();
 
     N_coord( 0, 0 ) = nd1Crds( 0 );
     N_coord( 0, 1 ) = nd1Crds( 1 );
@@ -888,42 +890,42 @@ const DTensor2& TwentySevenNodeBrickLT::Nodal_Coordinates( void ) const
 }
 
 ////#############################################################################
-const DTensor2& TwentySevenNodeBrickLT::incr_disp( void ) const
+const DTensor2 &TwentySevenNodeBrickLT::incr_disp( void ) const
 {
     static DTensor2 increment_disp( 27, 3, 0.0 );
 
     //Have to get IncrDeltaDisp, not IncrDisp for cumulation of incr_disp
-    const Vector& IncrDis1 = theNodes[0]->getIncrDeltaDisp();
-    const Vector& IncrDis2 = theNodes[1]->getIncrDeltaDisp();
-    const Vector& IncrDis3 = theNodes[2]->getIncrDeltaDisp();
-    const Vector& IncrDis4 = theNodes[3]->getIncrDeltaDisp();
-    const Vector& IncrDis5 = theNodes[4]->getIncrDeltaDisp();
-    const Vector& IncrDis6 = theNodes[5]->getIncrDeltaDisp();
-    const Vector& IncrDis7 = theNodes[6]->getIncrDeltaDisp();
-    const Vector& IncrDis8 = theNodes[7]->getIncrDeltaDisp();
+    const Vector &IncrDis1 = theNodes[0]->getIncrDeltaDisp();
+    const Vector &IncrDis2 = theNodes[1]->getIncrDeltaDisp();
+    const Vector &IncrDis3 = theNodes[2]->getIncrDeltaDisp();
+    const Vector &IncrDis4 = theNodes[3]->getIncrDeltaDisp();
+    const Vector &IncrDis5 = theNodes[4]->getIncrDeltaDisp();
+    const Vector &IncrDis6 = theNodes[5]->getIncrDeltaDisp();
+    const Vector &IncrDis7 = theNodes[6]->getIncrDeltaDisp();
+    const Vector &IncrDis8 = theNodes[7]->getIncrDeltaDisp();
 
-    const Vector& IncrDis9  = theNodes[8]->getIncrDeltaDisp();
-    const Vector& IncrDis10 = theNodes[9]->getIncrDeltaDisp();
-    const Vector& IncrDis11 = theNodes[10]->getIncrDeltaDisp();
-    const Vector& IncrDis12 = theNodes[11]->getIncrDeltaDisp();
+    const Vector &IncrDis9  = theNodes[8]->getIncrDeltaDisp();
+    const Vector &IncrDis10 = theNodes[9]->getIncrDeltaDisp();
+    const Vector &IncrDis11 = theNodes[10]->getIncrDeltaDisp();
+    const Vector &IncrDis12 = theNodes[11]->getIncrDeltaDisp();
 
-    const Vector& IncrDis13 = theNodes[12]->getIncrDeltaDisp();
-    const Vector& IncrDis14 = theNodes[13]->getIncrDeltaDisp();
-    const Vector& IncrDis15 = theNodes[14]->getIncrDeltaDisp();
-    const Vector& IncrDis16 = theNodes[15]->getIncrDeltaDisp();
+    const Vector &IncrDis13 = theNodes[12]->getIncrDeltaDisp();
+    const Vector &IncrDis14 = theNodes[13]->getIncrDeltaDisp();
+    const Vector &IncrDis15 = theNodes[14]->getIncrDeltaDisp();
+    const Vector &IncrDis16 = theNodes[15]->getIncrDeltaDisp();
 
-    const Vector& IncrDis17 = theNodes[16]->getIncrDeltaDisp();
-    const Vector& IncrDis18 = theNodes[17]->getIncrDeltaDisp();
-    const Vector& IncrDis19 = theNodes[18]->getIncrDeltaDisp();
-    const Vector& IncrDis20 = theNodes[19]->getIncrDeltaDisp();
+    const Vector &IncrDis17 = theNodes[16]->getIncrDeltaDisp();
+    const Vector &IncrDis18 = theNodes[17]->getIncrDeltaDisp();
+    const Vector &IncrDis19 = theNodes[18]->getIncrDeltaDisp();
+    const Vector &IncrDis20 = theNodes[19]->getIncrDeltaDisp();
 
-    const Vector& IncrDis21 = theNodes[20]->getIncrDeltaDisp();
-    const Vector& IncrDis22 = theNodes[21]->getIncrDeltaDisp();
-    const Vector& IncrDis23 = theNodes[22]->getIncrDeltaDisp();
-    const Vector& IncrDis24 = theNodes[23]->getIncrDeltaDisp();
-    const Vector& IncrDis25 = theNodes[24]->getIncrDeltaDisp();
-    const Vector& IncrDis26 = theNodes[25]->getIncrDeltaDisp();
-    const Vector& IncrDis27 = theNodes[26]->getIncrDeltaDisp();
+    const Vector &IncrDis21 = theNodes[20]->getIncrDeltaDisp();
+    const Vector &IncrDis22 = theNodes[21]->getIncrDeltaDisp();
+    const Vector &IncrDis23 = theNodes[22]->getIncrDeltaDisp();
+    const Vector &IncrDis24 = theNodes[23]->getIncrDeltaDisp();
+    const Vector &IncrDis25 = theNodes[24]->getIncrDeltaDisp();
+    const Vector &IncrDis26 = theNodes[25]->getIncrDeltaDisp();
+    const Vector &IncrDis27 = theNodes[26]->getIncrDeltaDisp();
 
 
 
@@ -1017,41 +1019,41 @@ const DTensor2& TwentySevenNodeBrickLT::incr_disp( void ) const
 }
 
 ////#############################################################################
-const DTensor2& TwentySevenNodeBrickLT::total_disp( void ) const
+const DTensor2 &TwentySevenNodeBrickLT::total_disp( void ) const
 {
     static DTensor2 total_disp( 27, 3, 0.0 );
 
-    const Vector& TotDis1 = theNodes[0]->getTrialDisp();
-    const Vector& TotDis2 = theNodes[1]->getTrialDisp();
-    const Vector& TotDis3 = theNodes[2]->getTrialDisp();
-    const Vector& TotDis4 = theNodes[3]->getTrialDisp();
-    const Vector& TotDis5 = theNodes[4]->getTrialDisp();
-    const Vector& TotDis6 = theNodes[5]->getTrialDisp();
-    const Vector& TotDis7 = theNodes[6]->getTrialDisp();
-    const Vector& TotDis8 = theNodes[7]->getTrialDisp();
+    const Vector &TotDis1 = theNodes[0]->getTrialDisp();
+    const Vector &TotDis2 = theNodes[1]->getTrialDisp();
+    const Vector &TotDis3 = theNodes[2]->getTrialDisp();
+    const Vector &TotDis4 = theNodes[3]->getTrialDisp();
+    const Vector &TotDis5 = theNodes[4]->getTrialDisp();
+    const Vector &TotDis6 = theNodes[5]->getTrialDisp();
+    const Vector &TotDis7 = theNodes[6]->getTrialDisp();
+    const Vector &TotDis8 = theNodes[7]->getTrialDisp();
 
-    const Vector& TotDis9 = theNodes[8]->getTrialDisp();
-    const Vector& TotDis10 = theNodes[9]->getTrialDisp();
-    const Vector& TotDis11 = theNodes[10]->getTrialDisp();
-    const Vector& TotDis12 = theNodes[11]->getTrialDisp();
+    const Vector &TotDis9 = theNodes[8]->getTrialDisp();
+    const Vector &TotDis10 = theNodes[9]->getTrialDisp();
+    const Vector &TotDis11 = theNodes[10]->getTrialDisp();
+    const Vector &TotDis12 = theNodes[11]->getTrialDisp();
 
-    const Vector& TotDis13 = theNodes[12]->getTrialDisp();
-    const Vector& TotDis14 = theNodes[13]->getTrialDisp();
-    const Vector& TotDis15 = theNodes[14]->getTrialDisp();
-    const Vector& TotDis16 = theNodes[15]->getTrialDisp();
+    const Vector &TotDis13 = theNodes[12]->getTrialDisp();
+    const Vector &TotDis14 = theNodes[13]->getTrialDisp();
+    const Vector &TotDis15 = theNodes[14]->getTrialDisp();
+    const Vector &TotDis16 = theNodes[15]->getTrialDisp();
 
-    const Vector& TotDis17 = theNodes[16]->getTrialDisp();
-    const Vector& TotDis18 = theNodes[17]->getTrialDisp();
-    const Vector& TotDis19 = theNodes[18]->getTrialDisp();
-    const Vector& TotDis20 = theNodes[19]->getTrialDisp();
+    const Vector &TotDis17 = theNodes[16]->getTrialDisp();
+    const Vector &TotDis18 = theNodes[17]->getTrialDisp();
+    const Vector &TotDis19 = theNodes[18]->getTrialDisp();
+    const Vector &TotDis20 = theNodes[19]->getTrialDisp();
 
-    const Vector& TotDis21 = theNodes[20]->getTrialDisp();
-    const Vector& TotDis22 = theNodes[21]->getTrialDisp();
-    const Vector& TotDis23 = theNodes[22]->getTrialDisp();
-    const Vector& TotDis24 = theNodes[23]->getTrialDisp();
-    const Vector& TotDis25 = theNodes[24]->getTrialDisp();
-    const Vector& TotDis26 = theNodes[25]->getTrialDisp();
-    const Vector& TotDis27 = theNodes[26]->getTrialDisp();
+    const Vector &TotDis21 = theNodes[20]->getTrialDisp();
+    const Vector &TotDis22 = theNodes[21]->getTrialDisp();
+    const Vector &TotDis23 = theNodes[22]->getTrialDisp();
+    const Vector &TotDis24 = theNodes[23]->getTrialDisp();
+    const Vector &TotDis25 = theNodes[24]->getTrialDisp();
+    const Vector &TotDis26 = theNodes[25]->getTrialDisp();
+    const Vector &TotDis27 = theNodes[26]->getTrialDisp();
 
 
     total_disp( 0, 0 ) = TotDis1( 0 );
@@ -1161,7 +1163,7 @@ int  TwentySevenNodeBrickLT::get_Brick_Number( void )
 
 ////#############################################################################
 // returns nodal forces for given stress field in an element
-const DTensor2& TwentySevenNodeBrickLT::nodal_forces( void ) const
+const DTensor2 &TwentySevenNodeBrickLT::nodal_forces( void ) const
 {
     double r  = 0.0;
     double w_r = 0.0;
@@ -1186,7 +1188,7 @@ const DTensor2& TwentySevenNodeBrickLT::nodal_forces( void ) const
     }
 
 
-    for( short gp = 0; gp < 27; gp++ )
+    for ( short gp = 0; gp < 27; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -1237,37 +1239,37 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
     DTensor2 material_arrayCoord( 3, 27, 0.0 );
     DTensor2 H( 81, 3, 0.0 );
 
-    const Vector& nd1Crds = theNodes[0]->getCrds();
-    const Vector& nd2Crds = theNodes[1]->getCrds();
-    const Vector& nd3Crds = theNodes[2]->getCrds();
-    const Vector& nd4Crds = theNodes[3]->getCrds();
-    const Vector& nd5Crds = theNodes[4]->getCrds();
-    const Vector& nd6Crds = theNodes[5]->getCrds();
-    const Vector& nd7Crds = theNodes[6]->getCrds();
-    const Vector& nd8Crds = theNodes[7]->getCrds();
+    const Vector &nd1Crds = theNodes[0]->getCrds();
+    const Vector &nd2Crds = theNodes[1]->getCrds();
+    const Vector &nd3Crds = theNodes[2]->getCrds();
+    const Vector &nd4Crds = theNodes[3]->getCrds();
+    const Vector &nd5Crds = theNodes[4]->getCrds();
+    const Vector &nd6Crds = theNodes[5]->getCrds();
+    const Vector &nd7Crds = theNodes[6]->getCrds();
+    const Vector &nd8Crds = theNodes[7]->getCrds();
 
-    const Vector& nd9Crds  = theNodes[8]->getCrds();
-    const Vector& nd10Crds = theNodes[9]->getCrds();
-    const Vector& nd11Crds = theNodes[10]->getCrds();
-    const Vector& nd12Crds = theNodes[11]->getCrds();
+    const Vector &nd9Crds  = theNodes[8]->getCrds();
+    const Vector &nd10Crds = theNodes[9]->getCrds();
+    const Vector &nd11Crds = theNodes[10]->getCrds();
+    const Vector &nd12Crds = theNodes[11]->getCrds();
 
-    const Vector& nd13Crds = theNodes[12]->getCrds();
-    const Vector& nd14Crds = theNodes[13]->getCrds();
-    const Vector& nd15Crds = theNodes[14]->getCrds();
-    const Vector& nd16Crds = theNodes[15]->getCrds();
+    const Vector &nd13Crds = theNodes[12]->getCrds();
+    const Vector &nd14Crds = theNodes[13]->getCrds();
+    const Vector &nd15Crds = theNodes[14]->getCrds();
+    const Vector &nd16Crds = theNodes[15]->getCrds();
 
-    const Vector& nd17Crds = theNodes[16]->getCrds();
-    const Vector& nd18Crds = theNodes[17]->getCrds();
-    const Vector& nd19Crds = theNodes[18]->getCrds();
-    const Vector& nd20Crds = theNodes[19]->getCrds();
+    const Vector &nd17Crds = theNodes[16]->getCrds();
+    const Vector &nd18Crds = theNodes[17]->getCrds();
+    const Vector &nd19Crds = theNodes[18]->getCrds();
+    const Vector &nd20Crds = theNodes[19]->getCrds();
 
-    const Vector& nd21Crds = theNodes[20]->getCrds();
-    const Vector& nd22Crds = theNodes[21]->getCrds();
-    const Vector& nd23Crds = theNodes[22]->getCrds();
-    const Vector& nd24Crds = theNodes[23]->getCrds();
-    const Vector& nd25Crds = theNodes[24]->getCrds();
-    const Vector& nd26Crds = theNodes[25]->getCrds();
-    const Vector& nd27Crds = theNodes[26]->getCrds();
+    const Vector &nd21Crds = theNodes[20]->getCrds();
+    const Vector &nd22Crds = theNodes[21]->getCrds();
+    const Vector &nd23Crds = theNodes[22]->getCrds();
+    const Vector &nd24Crds = theNodes[23]->getCrds();
+    const Vector &nd25Crds = theNodes[24]->getCrds();
+    const Vector &nd26Crds = theNodes[25]->getCrds();
+    const Vector &nd27Crds = theNodes[26]->getCrds();
 
 
     NodalCoord( 0, 0 ) = nd1Crds( 0 );
@@ -1357,7 +1359,7 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
     NodalCoord(2, 26) = nd27Crds(2);
 
 
-    for( short gp = 0; gp < 27; gp++ )
+    for ( short gp = 0; gp < 27; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -1373,9 +1375,10 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
             material_arrayCoord( 2, gp ) += NodalCoord( 2, encount ) * H( encount * 3 + 2, 2 );
         }
 
-        Info_GaussCoordinates( gp * 3 + 1 ) = material_arrayCoord( 0, gp );
-        Info_GaussCoordinates( gp * 3 + 2 ) = material_arrayCoord( 1, gp );
-        Info_GaussCoordinates( gp * 3 + 3 ) = material_arrayCoord( 2, gp );
+        gauss_points( gp, 0) = material_arrayCoord( 0, gp );
+        gauss_points( gp, 1 ) = material_arrayCoord( 1, gp );
+        gauss_points( gp, 2 ) = material_arrayCoord( 2, gp );
+
     }
 }
 
@@ -1391,12 +1394,12 @@ int TwentySevenNodeBrickLT::getNumExternalNodes () const
 
 
 //=============================================================================
-const ID& TwentySevenNodeBrickLT::getExternalNodes ()
+const ID &TwentySevenNodeBrickLT::getExternalNodes ()
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 TwentySevenNodeBrickLT::getNodePtrs( void )
 {
     return theNodes;
@@ -1409,7 +1412,7 @@ int TwentySevenNodeBrickLT::getNumDOF ()
 }
 
 //=============================================================================
-void TwentySevenNodeBrickLT::setDomain ( Domain* theDomain )
+void TwentySevenNodeBrickLT::setDomain ( Domain *theDomain )
 {
     // Check Domain is not null - invoked when object removed from a domain
     if ( theDomain == 0 )
@@ -1478,249 +1481,249 @@ void TwentySevenNodeBrickLT::setDomain ( Domain* theDomain )
 
 
         theNodes[0] = theDomain->getNode( Nd1 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[0] == 0 )
         {
             theNodes[0] = theDomain->getOutsideNode( Nd1 );
         }
 
-        # endif
+# endif
         theNodes[1] = theDomain->getNode( Nd2 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[1] == 0 )
         {
             theNodes[1] = theDomain->getOutsideNode( Nd2 );
         }
 
-        # endif
+# endif
         theNodes[2] = theDomain->getNode( Nd3 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[2] == 0 )
         {
             theNodes[2] = theDomain->getOutsideNode( Nd3 );
         }
 
-        # endif
+# endif
         theNodes[3] = theDomain->getNode( Nd4 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[3] == 0 )
         {
             theNodes[3] = theDomain->getOutsideNode( Nd4 );
         }
 
-        # endif
+# endif
 
         theNodes[4] = theDomain->getNode( Nd5 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[4] == 0 )
         {
             theNodes[4] = theDomain->getOutsideNode( Nd5 );
         }
 
-        # endif
+# endif
         theNodes[5] = theDomain->getNode( Nd6 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[5] == 0 )
         {
             theNodes[5] = theDomain->getOutsideNode( Nd6 );
         }
 
-        # endif
+# endif
         theNodes[6] = theDomain->getNode( Nd7 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[6] == 0 )
         {
             theNodes[6] = theDomain->getOutsideNode( Nd7 );
         }
 
-        # endif
+# endif
         theNodes[7] = theDomain->getNode( Nd8 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[7] == 0 )
         {
             theNodes[7] = theDomain->getOutsideNode( Nd8 );
         }
 
-        # endif
+# endif
         theNodes[8] = theDomain->getNode( Nd9 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[8] == 0 )
         {
             theNodes[8] = theDomain->getOutsideNode( Nd9 );
         }
 
-        # endif
+# endif
         theNodes[9] = theDomain->getNode( Nd10 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[9] == 0 )
         {
             theNodes[9] = theDomain->getOutsideNode( Nd10 );
         }
 
-        # endif
+# endif
         theNodes[10] = theDomain->getNode( Nd11 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[10] == 0 )
         {
             theNodes[10] = theDomain->getOutsideNode( Nd11 );
         }
 
-        # endif
+# endif
         theNodes[11] = theDomain->getNode( Nd12 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[11] == 0 )
         {
             theNodes[11] = theDomain->getOutsideNode( Nd12 );
         }
 
-        # endif
+# endif
         theNodes[12] = theDomain->getNode( Nd13 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[12] == 0 )
         {
             theNodes[12] = theDomain->getOutsideNode( Nd13 );
         }
 
-        # endif
+# endif
         theNodes[13] = theDomain->getNode( Nd14 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[13] == 0 )
         {
             theNodes[13] = theDomain->getOutsideNode( Nd14 );
         }
 
-        # endif
+# endif
         theNodes[14] = theDomain->getNode( Nd15 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[14] == 0 )
         {
             theNodes[14] = theDomain->getOutsideNode( Nd15 );
         }
 
-        # endif
+# endif
         theNodes[15] = theDomain->getNode( Nd16 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[15] == 0 )
         {
             theNodes[15] = theDomain->getOutsideNode( Nd16 );
         }
 
-        # endif
+# endif
         theNodes[16] = theDomain->getNode( Nd17 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[16] == 0 )
         {
             theNodes[16] = theDomain->getOutsideNode( Nd17 );
         }
 
-        # endif
+# endif
         theNodes[17] = theDomain->getNode( Nd18 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[17] == 0 )
         {
             theNodes[17] = theDomain->getOutsideNode( Nd18 );
         }
 
-        # endif
+# endif
         theNodes[18] = theDomain->getNode( Nd19 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[18] == 0 )
         {
             theNodes[18] = theDomain->getOutsideNode( Nd19 );
         }
 
-        # endif
+# endif
         theNodes[19] = theDomain->getNode( Nd20 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[19] == 0 )
         {
             theNodes[19] = theDomain->getOutsideNode( Nd20 );
         }
 
-        # endif
+# endif
         theNodes[20] = theDomain->getNode( Nd21 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[20] == 0 )
         {
             theNodes[20] = theDomain->getOutsideNode( Nd21 );
         }
 
-        # endif
+# endif
         theNodes[21] = theDomain->getNode( Nd22 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[21] == 0 )
         {
             theNodes[21] = theDomain->getOutsideNode( Nd22 );
         }
 
-        # endif
+# endif
         theNodes[22] = theDomain->getNode( Nd23 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[22] == 0 )
         {
             theNodes[22] = theDomain->getOutsideNode( Nd23 );
         }
 
-        # endif
+# endif
         theNodes[23] = theDomain->getNode( Nd24 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[23] == 0 )
         {
             theNodes[23] = theDomain->getOutsideNode( Nd24 );
         }
 
-        # endif
+# endif
         theNodes[24] = theDomain->getNode( Nd25 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[24] == 0 )
         {
             theNodes[24] = theDomain->getOutsideNode( Nd25 );
         }
 
-        # endif
+# endif
         theNodes[25] = theDomain->getNode( Nd26 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[25] == 0 )
         {
             theNodes[25] = theDomain->getOutsideNode( Nd26 );
         }
 
-        # endif
+# endif
         theNodes[26] = theDomain->getNode( Nd27 );
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[26] == 0 )
         {
             theNodes[26] = theDomain->getOutsideNode( Nd27 );
         }
 
-        # endif
+# endif
 
 
         if ( theNodes[0] == 0 || theNodes[1] == 0 || theNodes[2] == 0 || theNodes[3] == 0 ||
@@ -1784,6 +1787,8 @@ void TwentySevenNodeBrickLT::setDomain ( Domain* theDomain )
     }
 
     ComputeVolume();
+    computeGaussPoint();
+
 }
 
 //=============================================================================
@@ -1840,7 +1845,7 @@ int TwentySevenNodeBrickLT::revertToStart ()
 
 
 //=============================================================================
-const Matrix& TwentySevenNodeBrickLT::getTangentStiff()
+const Matrix &TwentySevenNodeBrickLT::getTangentStiff()
 {
     DTensor4 stifftensor(27, 3, 3, 27, 0.0);
     stifftensor = getStiffnessTensor();
@@ -1868,7 +1873,7 @@ const Matrix& TwentySevenNodeBrickLT::getTangentStiff()
 }
 
 //=============================================================================
-const Matrix& TwentySevenNodeBrickLT::getInitialStiff ()
+const Matrix &TwentySevenNodeBrickLT::getInitialStiff ()
 {
 
     if ( Ki == 0 )
@@ -1888,7 +1893,7 @@ const Matrix& TwentySevenNodeBrickLT::getInitialStiff ()
 
 //=============================================================================
 
-const Matrix& TwentySevenNodeBrickLT::getMass ()
+const Matrix &TwentySevenNodeBrickLT::getMass ()
 {
 
     if (not is_mass_computed)
@@ -1907,7 +1912,7 @@ const Matrix& TwentySevenNodeBrickLT::getMass ()
         DTensor2 Mm( 81, 81, 0.0 );
         DTensor2 Jacobian(3, 3);
 
-        for( short gp = 0; gp < 27; gp++ )
+        for ( short gp = 0; gp < 27; gp++ )
         {
             r = gp_coords(gp, 0);
             s = gp_coords(gp, 1);
@@ -1950,7 +1955,7 @@ void TwentySevenNodeBrickLT::zeroLoad( void )
 
 
 //======================================================================
-const Vector& TwentySevenNodeBrickLT::getBodyForce( double loadFactor, const Vector& data )
+const Vector &TwentySevenNodeBrickLT::getBodyForce( double loadFactor, const Vector &data )
 {
 
     static Vector bforce( 81 );
@@ -2066,7 +2071,7 @@ const Vector& TwentySevenNodeBrickLT::getBodyForce( double loadFactor, const Vec
 
 
 //======================================================================
-const Vector& TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const Vector& data )
+const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const Vector &data )
 {
 
     int node_exist = 0;
@@ -2106,15 +2111,15 @@ const Vector& TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
 
 
     // get the surface nodal coordinates
-    const Vector& coordnode1 = theNodes[node1_local]->getCrds();
-    const Vector& coordnode2 = theNodes[node2_local]->getCrds();
-    const Vector& coordnode3 = theNodes[node3_local]->getCrds();
-    const Vector& coordnode4 = theNodes[node4_local]->getCrds();
-    const Vector& coordnode5 = theNodes[node5_local]->getCrds();
-    const Vector& coordnode6 = theNodes[node6_local]->getCrds();
-    const Vector& coordnode7 = theNodes[node7_local]->getCrds();
-    const Vector& coordnode8 = theNodes[node8_local]->getCrds();
-    const Vector& coordnode9 = theNodes[node9_local]->getCrds();
+    const Vector &coordnode1 = theNodes[node1_local]->getCrds();
+    const Vector &coordnode2 = theNodes[node2_local]->getCrds();
+    const Vector &coordnode3 = theNodes[node3_local]->getCrds();
+    const Vector &coordnode4 = theNodes[node4_local]->getCrds();
+    const Vector &coordnode5 = theNodes[node5_local]->getCrds();
+    const Vector &coordnode6 = theNodes[node6_local]->getCrds();
+    const Vector &coordnode7 = theNodes[node7_local]->getCrds();
+    const Vector &coordnode8 = theNodes[node8_local]->getCrds();
+    const Vector &coordnode9 = theNodes[node9_local]->getCrds();
 
 
 
@@ -2174,13 +2179,13 @@ const Vector& TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
 
 
     // loop over dof
-    for( int k = 0; k < 3; k++ )
+    for ( int k = 0; k < 3; k++ )
     {
         // loop over nodes
-        for( int j = 0; j < 9; j++ )
+        for ( int j = 0; j < 9; j++ )
         {
 
-            for( int v = 0; v < 27; v++ )
+            for ( int v = 0; v < 27; v++ )
             {
                 if ( data( j ) == connectedExternalNodes( v ) )
                 {
@@ -2190,7 +2195,7 @@ const Vector& TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
             }
 
             // loop over Gauss points
-            for( int i = 0; i < 9; i++ )
+            for ( int i = 0; i < 9; i++ )
             {
 
                 ShapeFunctionValues = SurfaceShapeFunctionValues( GsPts( i, 0 ) , GsPts( i, 1 ), j );
@@ -2209,12 +2214,12 @@ const Vector& TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
 
 
 //=============================================================================
-int TwentySevenNodeBrickLT::addLoad( ElementalLoad* theLoad, double loadFactor )
+int TwentySevenNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
 {
 
 
     int type;
-    const Vector& data = theLoad->getData( type, loadFactor );
+    const Vector &data = theLoad->getData( type, loadFactor );
 
     if ( type == LOAD_TAG_ElementSelfWeight )
     {
@@ -2245,7 +2250,7 @@ int TwentySevenNodeBrickLT::addLoad( ElementalLoad* theLoad, double loadFactor )
 
 
 //=============================================================================
-int TwentySevenNodeBrickLT::addInertiaLoadToUnbalance( const Vector& accel )
+int TwentySevenNodeBrickLT::addInertiaLoadToUnbalance( const Vector &accel )
 {
     // Check for a quick return
     if ( rho == 0.0 )
@@ -2254,33 +2259,33 @@ int TwentySevenNodeBrickLT::addInertiaLoadToUnbalance( const Vector& accel )
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV( accel );
-    const Vector& Raccel2 = theNodes[1]->getRV( accel );
-    const Vector& Raccel3 = theNodes[2]->getRV( accel );
-    const Vector& Raccel4 = theNodes[3]->getRV( accel );
-    const Vector& Raccel5 = theNodes[4]->getRV( accel );
-    const Vector& Raccel6 = theNodes[5]->getRV( accel );
-    const Vector& Raccel7 = theNodes[6]->getRV( accel );
-    const Vector& Raccel8 = theNodes[7]->getRV( accel );
-    const Vector& Raccel9  = theNodes[8]->getRV(accel);
-    const Vector& Raccel10 = theNodes[9]->getRV(accel);
-    const Vector& Raccel11 = theNodes[10]->getRV(accel);
-    const Vector& Raccel12 = theNodes[11]->getRV(accel);
-    const Vector& Raccel13 = theNodes[12]->getRV(accel);
-    const Vector& Raccel14 = theNodes[13]->getRV(accel);
-    const Vector& Raccel15 = theNodes[14]->getRV(accel);
-    const Vector& Raccel16 = theNodes[15]->getRV(accel);
-    const Vector& Raccel17 = theNodes[16]->getRV(accel);
-    const Vector& Raccel18 = theNodes[17]->getRV(accel);
-    const Vector& Raccel19 = theNodes[18]->getRV(accel);
-    const Vector& Raccel20 = theNodes[19]->getRV(accel);
-    const Vector& Raccel21 = theNodes[20]->getRV(accel);
-    const Vector& Raccel22 = theNodes[21]->getRV(accel);
-    const Vector& Raccel23 = theNodes[22]->getRV(accel);
-    const Vector& Raccel24 = theNodes[23]->getRV(accel);
-    const Vector& Raccel25 = theNodes[24]->getRV(accel);
-    const Vector& Raccel26 = theNodes[25]->getRV(accel);
-    const Vector& Raccel27 = theNodes[26]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV( accel );
+    const Vector &Raccel2 = theNodes[1]->getRV( accel );
+    const Vector &Raccel3 = theNodes[2]->getRV( accel );
+    const Vector &Raccel4 = theNodes[3]->getRV( accel );
+    const Vector &Raccel5 = theNodes[4]->getRV( accel );
+    const Vector &Raccel6 = theNodes[5]->getRV( accel );
+    const Vector &Raccel7 = theNodes[6]->getRV( accel );
+    const Vector &Raccel8 = theNodes[7]->getRV( accel );
+    const Vector &Raccel9  = theNodes[8]->getRV(accel);
+    const Vector &Raccel10 = theNodes[9]->getRV(accel);
+    const Vector &Raccel11 = theNodes[10]->getRV(accel);
+    const Vector &Raccel12 = theNodes[11]->getRV(accel);
+    const Vector &Raccel13 = theNodes[12]->getRV(accel);
+    const Vector &Raccel14 = theNodes[13]->getRV(accel);
+    const Vector &Raccel15 = theNodes[14]->getRV(accel);
+    const Vector &Raccel16 = theNodes[15]->getRV(accel);
+    const Vector &Raccel17 = theNodes[16]->getRV(accel);
+    const Vector &Raccel18 = theNodes[17]->getRV(accel);
+    const Vector &Raccel19 = theNodes[18]->getRV(accel);
+    const Vector &Raccel20 = theNodes[19]->getRV(accel);
+    const Vector &Raccel21 = theNodes[20]->getRV(accel);
+    const Vector &Raccel22 = theNodes[21]->getRV(accel);
+    const Vector &Raccel23 = theNodes[22]->getRV(accel);
+    const Vector &Raccel24 = theNodes[23]->getRV(accel);
+    const Vector &Raccel25 = theNodes[24]->getRV(accel);
+    const Vector &Raccel26 = theNodes[25]->getRV(accel);
+    const Vector &Raccel27 = theNodes[26]->getRV(accel);
 
 
     if ( 3 != Raccel1.Size() || 3 != Raccel2.Size() || 3 != Raccel3.Size() ||
@@ -2385,7 +2390,7 @@ int TwentySevenNodeBrickLT::addInertiaLoadToUnbalance( const Vector& accel )
 }
 
 //=============================================================================
-const Vector TwentySevenNodeBrickLT::FormEquiBodyForce(const Vector& data)
+const Vector TwentySevenNodeBrickLT::FormEquiBodyForce(const Vector &data)
 {
     Vector bforce( 81 );
 
@@ -2490,7 +2495,7 @@ const Vector TwentySevenNodeBrickLT::FormEquiBodyForce(const Vector& data)
 
 
 //=============================================================================
-const Vector& TwentySevenNodeBrickLT::getResistingForce()
+const Vector &TwentySevenNodeBrickLT::getResistingForce()
 {
     DTensor2 nodalforces( 27, 3, 0.0 );
     nodalforces = nodal_forces();
@@ -2508,7 +2513,7 @@ const Vector& TwentySevenNodeBrickLT::getResistingForce()
 }
 
 //=============================================================================
-const Vector& TwentySevenNodeBrickLT::getResistingForceIncInertia ()
+const Vector &TwentySevenNodeBrickLT::getResistingForceIncInertia ()
 {
     // form resisting force
     this->getResistingForce();
@@ -2524,33 +2529,33 @@ const Vector& TwentySevenNodeBrickLT::getResistingForceIncInertia ()
         // form the mass matrix
         this->getMass();
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
-        const Vector& accel3 = theNodes[2]->getTrialAccel();
-        const Vector& accel4 = theNodes[3]->getTrialAccel();
-        const Vector& accel5 = theNodes[4]->getTrialAccel();
-        const Vector& accel6 = theNodes[5]->getTrialAccel();
-        const Vector& accel7 = theNodes[6]->getTrialAccel();
-        const Vector& accel8 = theNodes[7]->getTrialAccel();
-        const Vector& accel9 = theNodes[8]->getTrialAccel();
-        const Vector& accel10 = theNodes[9]->getTrialAccel();
-        const Vector& accel11 = theNodes[10]->getTrialAccel();
-        const Vector& accel12 = theNodes[11]->getTrialAccel();
-        const Vector& accel13 = theNodes[12]->getTrialAccel();
-        const Vector& accel14 = theNodes[13]->getTrialAccel();
-        const Vector& accel15 = theNodes[14]->getTrialAccel();
-        const Vector& accel16 = theNodes[15]->getTrialAccel();
-        const Vector& accel17 = theNodes[16]->getTrialAccel();
-        const Vector& accel18 = theNodes[17]->getTrialAccel();
-        const Vector& accel19 = theNodes[18]->getTrialAccel();
-        const Vector& accel20 = theNodes[19]->getTrialAccel();
-        const Vector& accel21 = theNodes[20]->getTrialAccel();
-        const Vector& accel22 = theNodes[21]->getTrialAccel();
-        const Vector& accel23 = theNodes[22]->getTrialAccel();
-        const Vector& accel24 = theNodes[23]->getTrialAccel();
-        const Vector& accel25 = theNodes[24]->getTrialAccel();
-        const Vector& accel26 = theNodes[25]->getTrialAccel();
-        const Vector& accel27 = theNodes[26]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel3 = theNodes[2]->getTrialAccel();
+        const Vector &accel4 = theNodes[3]->getTrialAccel();
+        const Vector &accel5 = theNodes[4]->getTrialAccel();
+        const Vector &accel6 = theNodes[5]->getTrialAccel();
+        const Vector &accel7 = theNodes[6]->getTrialAccel();
+        const Vector &accel8 = theNodes[7]->getTrialAccel();
+        const Vector &accel9 = theNodes[8]->getTrialAccel();
+        const Vector &accel10 = theNodes[9]->getTrialAccel();
+        const Vector &accel11 = theNodes[10]->getTrialAccel();
+        const Vector &accel12 = theNodes[11]->getTrialAccel();
+        const Vector &accel13 = theNodes[12]->getTrialAccel();
+        const Vector &accel14 = theNodes[13]->getTrialAccel();
+        const Vector &accel15 = theNodes[14]->getTrialAccel();
+        const Vector &accel16 = theNodes[15]->getTrialAccel();
+        const Vector &accel17 = theNodes[16]->getTrialAccel();
+        const Vector &accel18 = theNodes[17]->getTrialAccel();
+        const Vector &accel19 = theNodes[18]->getTrialAccel();
+        const Vector &accel20 = theNodes[19]->getTrialAccel();
+        const Vector &accel21 = theNodes[20]->getTrialAccel();
+        const Vector &accel22 = theNodes[21]->getTrialAccel();
+        const Vector &accel23 = theNodes[22]->getTrialAccel();
+        const Vector &accel24 = theNodes[23]->getTrialAccel();
+        const Vector &accel25 = theNodes[24]->getTrialAccel();
+        const Vector &accel26 = theNodes[25]->getTrialAccel();
+        const Vector &accel27 = theNodes[26]->getTrialAccel();
 
         static Vector a( 81 ); // originally 8
 
@@ -2660,87 +2665,105 @@ const Vector& TwentySevenNodeBrickLT::getResistingForceIncInertia ()
 
 }
 
-int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel& theChannel )
+
+
+int TwentySevenNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
-    cerr << "TwentySevenNodeBrickLT::sendSelf -- Not yet implemented!" << endl;
-    return -1;
-    /*
-        if ( !initialized )
+    theHDF5_Channel.beginElementDescription("TwentySevenNodeBrickLT", this->getTag());
+    theHDF5_Channel.addField("tag"             , false     , "adim");
+    theHDF5_Channel.addField("connected_nodes"             , false     , "adim");
+
+    // 8node brick asks its material objects to describe themselves
+    for ( int i = 0; i < 8; i++ )
+    {
+        if ( material_array[i]->describeSelf( commitTag, theHDF5_Channel ) < 0 )
         {
-            populate();
-        }
-
-        int dataTag = this->getDbTag();
-        int matDbTag;
-        static ID idData( 26 );
-
-    //=========================================================================
-        for ( int i = 0; i < 27; i++ )
-        {
-            idData( i ) = material_array[i]->getClassTag();
-            matDbTag  = material_array[i] ->getDbTag();
-
-            // NOTE: we do have to ensure that the material has a database
-            // tag if we are sending it to a database channel.
-            if ( matDbTag == 0 )
-            {
-                matDbTag = theChannel.getDbTag();
-                if ( matDbTag != 0 )
-                {
-                    material_array[i]->setDbTag( matDbTag );
-                }
-            }
-
-            idData( i + 8 ) = matDbTag;
-        }
-    //=========================================================================
-
-        idData( 17 ) = connectedExternalNodes( 0 );
-        idData( 18 ) = connectedExternalNodes( 1 );
-        idData( 19 ) = connectedExternalNodes( 2 );
-        idData( 20 ) = connectedExternalNodes( 3 );
-        idData( 21 ) = connectedExternalNodes( 4 );
-        idData( 22 ) = connectedExternalNodes( 5 );
-        idData( 23 ) = connectedExternalNodes( 6 );
-        idData( 24 ) = connectedExternalNodes( 7 );
-        idData( 25 ) = this->getTag();
-
-
-        if ( theChannel.sendID( dataTag, commitTag, idData ) < 0 )
-        {
-            cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
+            cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send material models\n";
             return -1;
         }
+    }
+    theHDF5_Channel.addField("material_properties"      , false     , "adim");
+    theHDF5_Channel.addField("gauss_points"      , false     , "m");
+    theHDF5_Channel.addField("volume"      , false     , "m^3");
+    theHDF5_Channel.endElementDescription();
 
-        // Finally, 27node brick asks its material objects to send themselves
-        for ( int i = 0; i < 27; i++ )
-        {
-            if ( material_array[i]->sendSelf( commitTag, theChannel ) < 0 )
-            {
-                cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send material models\n";
-                return -1;
-            }
-        }
-
-        static Vector matProp( 4 );
-        matProp( 0 ) = rho;
-
-        //FIXME: may need to be saved as acceleration field
-        matProp( 1 ) = bf( 0 );
-        matProp( 2 ) = bf( 1 );
-        matProp( 3 ) = bf( 2 );
-
-        if ( theChannel.sendVector( dataTag, commitTag, matProp ) < 0 )
-        {
-            cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Material Property\n";
-            return -1;
-        }
-
-        return 0;
-    */
+    return 0;
 }
 
-int TwentySevenNodeBrickLT::recvSelf ( int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker )
+
+
+
+
+int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
+{
+    if ( !initialized )
+    {
+        populate();
+    }
+
+    int dataTag = this->getDbTag();
+
+    // int matDbTag;
+    static ID idData( 1 );
+    idData( 0 ) = this->getTag();
+
+    if ( theChannel.sendID( dataTag, commitTag, idData ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
+        return -1;
+    }
+
+    // Send the nodes
+
+    if ( theChannel.sendID( dataTag, commitTag, connectedExternalNodes ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
+        return -1;
+    }
+
+    // Finally, 8node brick asks its material objects to send themselves
+    for ( int i = 0; i < 27; i++ )
+    {
+        if ( material_array[i]->sendSelf( commitTag, theChannel ) < 0 )
+        {
+            cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send material models\n";
+            return -1;
+        }
+    }
+
+    static Vector matProp( 4 );
+    matProp( 0 ) = rho;
+
+    //FIXME: may need to be saved as acceleration field
+    matProp( 1 ) = bf( 0 );
+    matProp( 2 ) = bf( 1 );
+    matProp( 3 ) = bf( 2 );
+
+    if ( theChannel.sendVector( dataTag, commitTag, matProp ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Material Property\n";
+        return -1;
+    }
+
+    if ( theChannel.sendMatrix( dataTag, commitTag, gauss_points ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss point coordinates\n";
+        return -1;
+    }
+
+    static Vector vol(1);
+    vol(0) = Volume;
+
+    if ( theChannel.sendVector( dataTag, commitTag, vol ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its volume\n";
+        return -1;
+    }
+
+    return 0;
+}
+
+int TwentySevenNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
     cerr << "TwentySevenNodeBrickLT::recvSelf -- Not yet implemented!" << endl;
     return -1;
@@ -2877,23 +2900,23 @@ int TwentySevenNodeBrickLT::getObjectSize()
 }
 
 //=============================================================================
-void TwentySevenNodeBrickLT::Print( ostream& s, int flag )
+void TwentySevenNodeBrickLT::Print( ostream &s, int flag )
 {
     cout << "TwentySevenNodeBrickLT: LTensor-based 27 node brick." << endl << endl;
 
     cout << "Element tag: " << getTag() << endl;
     cout << "Connected Nodes: " << endl;
 
-    for( int node = 0; node < 27; node++)
+    for ( int node = 0; node < 27; node++)
     {
         cout << "   #" << node + 1 << ": Domain node #" << connectedExternalNodes(node) << endl;
     }
 
     cout << "K = " << endl;
 
-    for(int ii = 0; ii < 81; ii++)
+    for (int ii = 0; ii < 81; ii++)
     {
-        for(int jj = 0; jj < 81; jj++)
+        for (int jj = 0; jj < 81; jj++)
         {
             cout << K(ii, jj);
 
@@ -2912,7 +2935,7 @@ void TwentySevenNodeBrickLT::Print( ostream& s, int flag )
 
     cout << "diag(K) = " << endl;
 
-    for(int ii = 0; ii < 81; ii++)
+    for (int ii = 0; ii < 81; ii++)
     {
         cout << K(ii, ii);
 
@@ -2930,7 +2953,7 @@ void TwentySevenNodeBrickLT::Print( ostream& s, int flag )
 
     cout << "Gauss point information:" << endl;
 
-    for(int gp = 0; gp < 27; gp++)
+    for (int gp = 0; gp < 27; gp++)
     {
         cout << "   GP # " << gp <<  ": (" << gp_coords(gp, 0) << ","
              << gp_coords(gp, 1) << ","
@@ -2940,106 +2963,7 @@ void TwentySevenNodeBrickLT::Print( ostream& s, int flag )
 
 }
 
-//=============================================================================
-Response* TwentySevenNodeBrickLT::setResponse ( const char** argv, int argc, Information& eleInformation )
-{
-    if ( strcmp( argv[0], "stiff" ) == 0 || strcmp( argv[0], "stiffness" ) == 0 )
-    {
-        return new ElementResponse( this, 5, K );
-    }
 
-    //========================================================
-    else if ( strcmp( argv[0], "stress" ) == 0 || strcmp( argv[0], "stresses" ) == 0 )
-    {
-        return new ElementResponse( this, 4, Info_Stress );
-    }
-
-    //========================================================
-    else if ( strcmp( argv[0], "gausspoint" ) == 0 || strcmp( argv[0], "GaussPoint" ) == 0 )
-    {
-        return new ElementResponse( this, 6, Info_GaussCoordinates );
-    }
-    //========================================================
-    else if ( ( strcmp( argv[0], "strains" ) == 0 ) || ( strcmp( argv[0], "strain" ) == 0 ) )
-    {
-        return new ElementResponse( this, 7, Info_Strain );
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-//=============================================================================
-int TwentySevenNodeBrickLT::getResponse ( int responseID, Information& eleInfo )
-{
-    switch ( responseID )
-    {
-        case 2:
-            return eleInfo.setMatrix( this->getTangentStiff() );
-            break;
-
-        case 4: //response type: "stress"
-            {
-                DTensor2 stress(3, 3, 0.0);
-
-                Info_Stress( 0 ) = 27;  // Number of gauss points
-
-                for( short gp = 0 ; gp < 27 ; gp++ )
-                {
-                    stress = material_array[gp]->getStressTensor();
-                    Info_Stress( gp * 6 + 1 ) = stress( 0, 0 ); //sigma_xx
-                    Info_Stress( gp * 6 + 2 ) = stress( 1, 1 ); //sigma_yy
-                    Info_Stress( gp * 6 + 3 ) = stress( 2, 2 ); //sigma_zz
-                    Info_Stress( gp * 6 + 4 ) = stress( 0, 1 ); //Assign sigma_xy
-                    Info_Stress( gp * 6 + 5 ) = stress( 0, 2 ); //Assign sigma_xz
-                    Info_Stress( gp * 6 + 6 ) = stress( 1, 2 ); //Assign sigma_yz
-                }
-
-                return eleInfo.setVector( Info_Stress );
-                break;
-            }
-
-        case 5: //response type: gausspoint
-            {
-                this->computeGaussPoint();
-                return eleInfo.setVector( Info_GaussCoordinates );
-                break;
-            }
-
-        case 7: //response type: strains
-
-            {
-                DTensor2 strain(3, 3, 0.0);
-
-                Info_Strain( 0 ) = 27;
-
-                for( short gp = 0 ; gp < 27 ; gp++ )
-                {
-                    strain = material_array[gp]->getStrainTensor();
-
-                    Info_Strain( gp * 6 + 1 ) = strain( 0, 0 ); //epsilon_xx
-                    Info_Strain( gp * 6 + 2 ) = strain( 1, 1 ); //epsilon_yy
-                    Info_Strain( gp * 6 + 3 ) = strain( 2, 2 ); //epsilon_zz
-                    Info_Strain( gp * 6 + 4 ) = strain( 0, 1 ); //Assign epsilon_xy
-                    Info_Strain( gp * 6 + 5 ) = strain( 0, 2 ); //Assign epsilon_xz
-                    Info_Strain( gp * 6 + 6 ) = strain( 1, 2 ); //Assign epsilon_yz
-                }
-
-                //cout << "Strain:" << Info_Strain(1) << endl;
-                //cout << "Strain:" << Info_Strain(2) << endl;
-                //cout << "Strain:" << Info_Strain(26*6+6) << endl;
-                return eleInfo.setVector( Info_Strain );
-                break;
-            }
-
-        default:
-            return -1;
-            break;
-    }
-
-    return -1; //Control should never reach this point anyway.....
-}
 
 void TwentySevenNodeBrickLT::ComputeVolume()
 {
@@ -3057,7 +2981,7 @@ void TwentySevenNodeBrickLT::ComputeVolume()
     DTensor2 dh( 27, 3, 0.0 );
     DTensor2 Jacobian(3, 3, 0.0);
 
-    for( short gp = 0; gp < 27; gp++ )
+    for ( short gp = 0; gp < 27; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -3099,7 +3023,7 @@ int TwentySevenNodeBrickLT::update( void )
 
     trial_disp = total_disp();
 
-    for( short gp = 0; gp < 27; gp++ )
+    for ( short gp = 0; gp < 27; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -3151,7 +3075,7 @@ double TwentySevenNodeBrickLT::SurfaceShapeFunctionValues( double Xi , double Et
 }
 
 
-Vector& TwentySevenNodeBrickLT::Direction_Weight( double Xi , double Eta, Vector coord1, Vector coord2,
+Vector &TwentySevenNodeBrickLT::Direction_Weight( double Xi , double Eta, Vector coord1, Vector coord2,
         Vector coord3, Vector coord4, Vector coord5,
         Vector coord6, Vector coord7, Vector coord8,
         Vector coord9 )
@@ -3260,7 +3184,7 @@ double TwentySevenNodeBrickLT::SurfaceLoadValues( double Xi , double Eta, Vector
 
 
 int
-TwentySevenNodeBrickLT::CheckMesh( ofstream& checkmesh_file )
+TwentySevenNodeBrickLT::CheckMesh( ofstream &checkmesh_file )
 {
     bool jacobian_flag = false;
 
@@ -3272,7 +3196,7 @@ TwentySevenNodeBrickLT::CheckMesh( ofstream& checkmesh_file )
     DTensor2 dh( 27, 3, 0.0 );
     DTensor2 Jacobian(3, 3, 0.0);
 
-    for( short gp = 0; gp < 27; gp++ )
+    for ( short gp = 0; gp < 27; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -3308,13 +3232,13 @@ TwentySevenNodeBrickLT::CheckMesh( ofstream& checkmesh_file )
 
 
 //==================================================================================
-Vector*
+Vector *
 TwentySevenNodeBrickLT::getStress( void )
 {
     DTensor2 stress;
-    Vector* stresses = new Vector( 162 );   // FIXME: Who deallocates this guy???
+    Vector *stresses = new Vector( 162 );   // FIXME: Who deallocates this guy???
 
-    for( short gp = 0 ; gp < 27 ; gp++ )
+    for ( short gp = 0 ; gp < 27 ; gp++ )
     {
         stress = material_array[gp]->getStressTensor();
         ( *stresses )( gp * 6 + 0 ) = stress( 0, 0 ); //sigma_xx

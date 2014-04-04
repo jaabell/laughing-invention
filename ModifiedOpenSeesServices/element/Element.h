@@ -111,8 +111,8 @@ class Element : public DomainComponent
         virtual const Vector &getResistingForceIncInertia(void);
 
         // method for obtaining information specific to an element
-        virtual Response *setResponse(const char **argv, int argc, Information &eleInformation);
-        virtual int getResponse(int responseID, Information &eleInformation);
+        // virtual Response *setResponse(const char **argv, int argc, Information &eleInformation);
+        // virtual int getResponse(int responseID, Information &eleInformation);
 
         //method for retrieving data size for repartitioning, Guanzhou added
         virtual int getObjectSize()

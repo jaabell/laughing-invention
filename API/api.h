@@ -176,7 +176,7 @@
 #include "MODELING/start_new_stage.h"
 #include "MODELING/define_model_name.h"
 #include "MODELING/write_domain_state_for_this_step.h"
-#include "MODELING/StateWriter.h"
+// #include "MODELING/StateWriter.h"
 #include "MODELING/output_of_node_to_screen.h"
 #include "MODELING/output_of_element_to_screen.h"
 // #include "MODELING/output_of_node_all_dofs_to_file.h"

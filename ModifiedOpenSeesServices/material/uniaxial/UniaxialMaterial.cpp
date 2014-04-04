@@ -37,7 +37,7 @@
 #include <UniaxialMaterial.h>
 #include <string.h>
 #include <Information.h>
-#include <MaterialResponse.h>
+// #include <MaterialResponse.h>
 #include <float.h>
 #include <Vector.h>
 #include <iostream>
@@ -55,7 +55,7 @@ UniaxialMaterial::~UniaxialMaterial()
 }
 
 int
-UniaxialMaterial::setTrial(double strain, double& stress, double& tangent, double strainRate)
+UniaxialMaterial::setTrial(double strain, double &stress, double &tangent, double strainRate)
 {
     int res = this->setTrialStrain(strain, strainRate);
 
@@ -111,88 +111,88 @@ UniaxialMaterial::getRho(void)
     return 0.0;
 }
 
-UniaxialMaterial*
-UniaxialMaterial::getCopy(SectionForceDeformation* s)
+UniaxialMaterial *
+UniaxialMaterial::getCopy(SectionForceDeformation *s)
 {
     return this->getCopy();
 }
 
-Response*
-UniaxialMaterial::setResponse(const char** argv, int argc, Information& matInfo)
-{
-    if (argc == 0)
-    {
-        return 0;
-    }
+// Response *
+// UniaxialMaterial::setResponse(const char **argv, int argc, Information &matInfo)
+// {
+//     if (argc == 0)
+//     {
+//         return 0;
+//     }
 
-    // stress
-    if (strcmp(argv[0], "stress") == 0)
-    {
-        return new MaterialResponse(this, 1, this->getStress());
-    }
+//     // stress
+//     if (strcmp(argv[0], "stress") == 0)
+//     {
+//         return new MaterialResponse(this, 1, this->getStress());
+//     }
 
-    // tangent
-    else if (strcmp(argv[0], "tangent") == 0)
-    {
-        return new MaterialResponse(this, 2, this->getTangent());
-    }
+//     // tangent
+//     else if (strcmp(argv[0], "tangent") == 0)
+//     {
+//         return new MaterialResponse(this, 2, this->getTangent());
+//     }
 
-    // strain
-    else if (strcmp(argv[0], "strain") == 0)
-    {
-        return new MaterialResponse(this, 3, this->getStrain());
-    }
+//     // strain
+//     else if (strcmp(argv[0], "strain") == 0)
+//     {
+//         return new MaterialResponse(this, 3, this->getStrain());
+//     }
 
-    // strain
-    else if ((strcmp(argv[0], "stressStrain") == 0) ||
-             (strcmp(argv[0], "stressANDstrain") == 0))
-    {
-        return new MaterialResponse(this, 4, Vector(2));
+//     // strain
+//     else if ((strcmp(argv[0], "stressStrain") == 0) ||
+//              (strcmp(argv[0], "stressANDstrain") == 0))
+//     {
+//         return new MaterialResponse(this, 4, Vector(2));
 
-    }
-    // otherwise unknown
-    else
-    {
-        return 0;
-    }
-}
+//     }
+//     // otherwise unknown
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-UniaxialMaterial::getResponse(int responseID, Information& matInfo)
-{
-    static Vector stressStrain(2);
+// int
+// UniaxialMaterial::getResponse(int responseID, Information &matInfo)
+// {
+//     static Vector stressStrain(2);
 
-    // each subclass must implement its own stuff
-    switch (responseID)
-    {
-        case 1:
-            matInfo.setDouble(this->getStress());
-            return 0;
+//     // each subclass must implement its own stuff
+//     switch (responseID)
+//     {
+//         case 1:
+//             matInfo.setDouble(this->getStress());
+//             return 0;
 
-        case 2:
-            matInfo.setDouble(this->getTangent());
-            return 0;
+//         case 2:
+//             matInfo.setDouble(this->getTangent());
+//             return 0;
 
-        case 3:
-            matInfo.setDouble(this->getStrain());
-            return 0;
+//         case 3:
+//             matInfo.setDouble(this->getStrain());
+//             return 0;
 
-        case 4:
-            stressStrain(0) = this->getStress();
-            stressStrain(1) = this->getStrain();
-            matInfo.setVector(stressStrain);
-            return 0;
+//         case 4:
+//             stressStrain(0) = this->getStress();
+//             stressStrain(1) = this->getStrain();
+//             matInfo.setVector(stressStrain);
+//             return 0;
 
-        default:
-            return -1;
-    }
-}
+//         default:
+//             return -1;
+//     }
+// }
 
 
 
 // Nima Tafazzoli added for checking the mesh (September 2012)
 int
-UniaxialMaterial::CheckMesh(ofstream& checkmesh_file)
+UniaxialMaterial::CheckMesh(ofstream &checkmesh_file)
 {
     return 0;
 }

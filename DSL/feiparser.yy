@@ -1585,28 +1585,28 @@ dofchain
 
 
 CMD_define
-    //!=========================================================================================================
-    //!
-    //!FEIDOC define output to binary;
-    : DEFINE OUTPUT TO BINARY
-    {
-        args.clear(); signature.clear();
-        $$ = new FeiDslCaller0<>(&define_output_to_binary,args,signature,"define_output_to_binary");
-        nodes.push($$);
-    }
-    //!=========================================================================================================
-    //!
-    //!FEIDOC define output to binary;
-    | DEFINE OUTPUT TO TEXT
-    {
-        args.clear(); signature.clear();
-        $$ = new FeiDslCaller0<>(&define_output_to_text,args,signature,"define_output_to_text");
-        nodes.push($$);
-    }
-    //!=========================================================================================================
-    //!
-    //!FEIDOC define load factor increment <.>;
-    | DEFINE LOAD FACTOR INCREMENT exp
+    ////!=========================================================================================================
+    ////!
+    ////!FEIDOC define output to binary;
+    //: DEFINE OUTPUT TO BINARY
+    //{
+    //    args.clear(); signature.clear();
+    //    $$ = new FeiDslCaller0<>(&define_output_to_binary,args,signature,"define_output_to_binary");
+    //    nodes.push($$);
+    //}
+    ////!=========================================================================================================
+    ////!
+    ////!FEIDOC define output to binary;
+    //| DEFINE OUTPUT TO TEXT
+    //{
+    //    args.clear(); signature.clear();
+    //    $$ = new FeiDslCaller0<>(&define_output_to_text,args,signature,"define_output_to_text");
+    //    nodes.push($$);
+    //}
+    ////!=========================================================================================================
+    ////!
+    ////!FEIDOC define load factor increment <.>;
+    : DEFINE LOAD FACTOR INCREMENT exp
     {
         args.clear(); signature.clear();
         args.push_back($5); signature.push_back(this_signature("factor", &isAdimensional));

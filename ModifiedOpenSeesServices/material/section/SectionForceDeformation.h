@@ -45,7 +45,7 @@
 #include <ID.h>
 
 class Information;
-class Response;
+// class Response;
 
 #define MAX_SECTION_RESPONSE_ID 10000
 
@@ -63,14 +63,14 @@ class SectionForceDeformation : public Material
         SectionForceDeformation ();
         virtual ~SectionForceDeformation ();
 
-        virtual int setTrialSectionDeformation (const Vector&) = 0;
-        virtual const Vector& getSectionDeformation (void) = 0;
+        virtual int setTrialSectionDeformation (const Vector &) = 0;
+        virtual const Vector &getSectionDeformation (void) = 0;
 
-        virtual const Vector& getStressResultant (void) = 0;
-        virtual const Matrix& getSectionTangent (void) = 0;
-        virtual const Matrix& getInitialTangent (void) = 0;
-        virtual const Matrix& getSectionFlexibility (void);
-        virtual const Matrix& getInitialFlexibility (void);
+        virtual const Vector &getStressResultant (void) = 0;
+        virtual const Matrix &getSectionTangent (void) = 0;
+        virtual const Matrix &getInitialTangent (void) = 0;
+        virtual const Matrix &getSectionFlexibility (void);
+        virtual const Matrix &getInitialFlexibility (void);
 
         virtual double getRho(void);
 
@@ -78,19 +78,19 @@ class SectionForceDeformation : public Material
         virtual int revertToLastCommit (void) = 0;
         virtual int revertToStart (void) = 0;
 
-        virtual SectionForceDeformation* getCopy (void) = 0;
-        virtual const ID& getType (void) = 0;
+        virtual SectionForceDeformation *getCopy (void) = 0;
+        virtual const ID &getType (void) = 0;
         virtual int getOrder (void) const = 0;
 
-        virtual Response* setResponse(const char** argv, int argc, Information& info);
-        virtual int getResponse(int responseID, Information& info);
+        // virtual Response* setResponse(const char** argv, int argc, Information& info);
+        // virtual int getResponse(int responseID, Information& info);
 
 
         // Nima Tafazzoli (Nov. 2012)
         virtual double getArea();
 
     protected:
-        Matrix* fDefault;   // Default flexibility matrix
+        Matrix *fDefault;   // Default flexibility matrix
 
     private:
 };

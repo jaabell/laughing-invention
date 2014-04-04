@@ -37,15 +37,15 @@
 #include <Information.h>
 #include <Matrix.h>
 #include <Vector.h>
-#include <MaterialResponse.h>
+// #include <MaterialResponse.h>
 #include <iostream>
 using namespace std;
 
 #include <string.h>
 
-double invert2by2Matrix(const Matrix& a, Matrix& b);
-double invert3by3Matrix(const Matrix& a, Matrix& b);
-void invertMatrix(int n, const Matrix& a, Matrix& b);
+double invert2by2Matrix(const Matrix &a, Matrix &b);
+double invert3by3Matrix(const Matrix &a, Matrix &b);
+void invertMatrix(int n, const Matrix &a, Matrix &b);
 
 SectionForceDeformation::SectionForceDeformation(int tag, int classTag)
     : Material(tag, classTag), fDefault(0)
@@ -61,7 +61,7 @@ SectionForceDeformation::~SectionForceDeformation()
     }
 }
 
-const Matrix&
+const Matrix &
 SectionForceDeformation::getSectionFlexibility ()
 {
     int order = this->getOrder();
@@ -77,9 +77,9 @@ SectionForceDeformation::getSectionFlexibility ()
         }
     }
 
-    const Matrix& k = this->getSectionTangent();
+    const Matrix &k = this->getSectionTangent();
 
-    switch(order)
+    switch (order)
     {
         case 1:
             if (k(0, 0) != 0.0)
@@ -105,7 +105,7 @@ SectionForceDeformation::getSectionFlexibility ()
     return *fDefault;
 }
 
-const Matrix&
+const Matrix &
 SectionForceDeformation::getInitialFlexibility ()
 {
     int order = this->getOrder();
@@ -121,9 +121,9 @@ SectionForceDeformation::getInitialFlexibility ()
         }
     }
 
-    const Matrix& k = this->getInitialTangent();
+    const Matrix &k = this->getInitialTangent();
 
-    switch(order)
+    switch (order)
     {
         case 1:
             if (k(0, 0) != 0.0)
@@ -208,73 +208,73 @@ SectionForceDeformation::setResponse(const char **argv, int argc, Information &s
 }
 */
 
-Response*
-SectionForceDeformation::setResponse(const char** argv, int argc, Information& sectInfo)
-{
-    // deformations
-    if (strcmp(argv[0], "deformations") == 0 || strcmp(argv[0], "deformation") == 0)
-    {
-        return new MaterialResponse(this, 1, this->getSectionDeformation());
-    }
+// Response *
+// SectionForceDeformation::setResponse(const char **argv, int argc, Information &sectInfo)
+// {
+//     // deformations
+//     if (strcmp(argv[0], "deformations") == 0 || strcmp(argv[0], "deformation") == 0)
+//     {
+//         return new MaterialResponse(this, 1, this->getSectionDeformation());
+//     }
 
-    // forces
-    else if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0)
-    {
-        return new MaterialResponse(this, 2, this->getStressResultant());
-    }
+//     // forces
+//     else if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0)
+//     {
+//         return new MaterialResponse(this, 2, this->getStressResultant());
+//     }
 
-    // tangent
-    else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new MaterialResponse(this, 3, this->getSectionTangent());
-    }
+//     // tangent
+//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new MaterialResponse(this, 3, this->getSectionTangent());
+//     }
 
-    // force and deformation
-    else if (strcmp(argv[0], "forceAndDeformation") == 0)
-    {
-        return new MaterialResponse(this, 4, Vector(2 * this->getOrder()));
-    }
+//     // force and deformation
+//     else if (strcmp(argv[0], "forceAndDeformation") == 0)
+//     {
+//         return new MaterialResponse(this, 4, Vector(2 * this->getOrder()));
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-SectionForceDeformation::getResponse(int responseID, Information& secInfo)
-{
-    switch (responseID)
-    {
-        case 1:
-            return secInfo.setVector(this->getSectionDeformation());
+// int
+// SectionForceDeformation::getResponse(int responseID, Information &secInfo)
+// {
+//     switch (responseID)
+//     {
+//         case 1:
+//             return secInfo.setVector(this->getSectionDeformation());
 
-        case 2:
-            return secInfo.setVector(this->getStressResultant());
+//         case 2:
+//             return secInfo.setVector(this->getStressResultant());
 
-        case 3:
-            return secInfo.setMatrix(this->getSectionTangent());
+//         case 3:
+//             return secInfo.setMatrix(this->getSectionTangent());
 
-        case 4:
-            {
-                Vector& theVec = *(secInfo.theVector);
-                const Vector& e = this->getSectionDeformation();
-                const Vector& s = this->getStressResultant();
-                int order = this->getOrder();
+//         case 4:
+//         {
+//             Vector &theVec = *(secInfo.theVector);
+//             const Vector &e = this->getSectionDeformation();
+//             const Vector &s = this->getStressResultant();
+//             int order = this->getOrder();
 
-                for (int i = 0; i < order; i++)
-                {
-                    theVec(i) = e(i);
-                    theVec(i + order) = s(i);
-                }
+//             for (int i = 0; i < order; i++)
+//             {
+//                 theVec(i) = e(i);
+//                 theVec(i + order) = s(i);
+//             }
 
-                return secInfo.setVector(theVec);
-            }
+//             return secInfo.setVector(theVec);
+//         }
 
-        default:
-            return -1;
-    }
-}
+//         default:
+//             return -1;
+//     }
+// }
 
 
 // Nima Tafazzoli (nov. 2012)

@@ -37,7 +37,6 @@ all:
 	$(CD) actor; $(MAKE);
 	$(CD) element; $(MAKE);
 	$(CD) utility; $(MAKE);
-	$(CD) response; $(MAKE);
 	@$(ECHO) "------------------"
 	$(AR) $(ARFLAGS) \
             $(MOSS_LIBRARY) \
@@ -60,6 +59,7 @@ all:
             $(ERRORHANDLER_LIBS) \
             $(RESPONSE_LIBS)
 
+	# $(CD) response; $(MAKE);
 	# $(CD) recorder; $(MAKE);
 #	$(CD) machine; $(MAKE);
    
@@ -132,10 +132,11 @@ RECORDER_LIBS =
                 #./handler/DataOutputStreamHandler.o \
                 #./handler/DataOutputFileHandler.o 
 
-RESPONSE_LIBS = ./response/Response.o \
-                ./response/ElementResponse.o \
-                ./response/MaterialResponse.o \
-                ./response/FiberResponse.o 
+RESPONSE_LIBS = 
+# ./response/Response.o \
+                # ./response/FiberResponse.o 
+                # ./response/MaterialResponse.o \
+                # ./response/ElementResponse.o \
 
 
 
@@ -531,7 +532,7 @@ clean:
 	@$(CD) ./convergenceTest; $(MAKE) wipe;
 	@$(CD) ./database; $(MAKE) wipe;
 	@$(CD) ./element; $(MAKE) wipe;
-	@$(CD) ./response; $(MAKE) wipe;
+	# @$(CD) ./response; $(MAKE) wipe;
 	# @$(CD) ./recorder; $(MAKE) wipe;
 	# @$(CD) ./handler; $(MAKE) wipe;
 	# @$(CD) ./machine; $(MAKE) wipe;
@@ -553,7 +554,7 @@ cleanall:
 	@$(CD) ./handler; $(MAKE) wipe;
 	@$(CD) ./element; $(MAKE) wipe;
 	@$(RM) $(RMFLAGS) $(WIPE_LIBS) *.o *~ core
-	@$(CD) ./response; $(MAKE) wipe;
+	# @$(CD) ./response; $(MAKE) wipe;
 	# @$(CD) ./recorder; $(MAKE) wipe;
 	# @$(CD) ./machine; $(MAKE) wipe;
 

@@ -30,22 +30,20 @@
 #include <Domain.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
-
-#include <Information.h>
-#include <ElementResponse.h>
 #include <ElementalLoad.h>
-#include <SectionForceDeformation.h>
+
 #include <ID.h>
 #include <math.h>
 #include <stdlib.h>
 #include <HDF5_Channel.h>
 
+
 ElasticBeam::ElasticBeam()
     : Element(0, ELE_TAG_ElasticBeam),
-      A(0), E(0), G(0), Jx(0), Iy(0), Iz(0), rho(0.0),
+      A(0), E(0), G(0), Jx(0), Iy(0), Iz(0), rho(0.0), L(0),
       nodeIOffset(0), nodeJOffset(0), Mass(12, 12), Stiffness(12, 12),
-      builtK(0), builtM(0), R(3, 3), P(12), Q(12), q(6),
-      connectedExternalNodes(2), L(0),
+      builtK(0), builtM(0),  R(3, 3), P(12), Q(12),
+      connectedExternalNodes(2),
       nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
 
@@ -68,9 +66,9 @@ ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
                          double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
                          double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
     : Element(tag, ELE_TAG_ElasticBeam),
-      A(a), E(e), G(g), Jx(jx), Iy(iy), Iz(iz), rho(r), sectionTag(sectTag), nodeIOffset(0), nodeJOffset(0),
+      A(a), E(e), G(g), Jx(jx), Iy(iy), Iz(iz), rho(r), L(0), nodeIOffset(0), nodeJOffset(0),
       Mass(12, 12), Stiffness(12, 12), builtK(0), builtM(0), R(3, 3), P(12),
-      Q(12), q(6), connectedExternalNodes(2), L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      Q(12),  connectedExternalNodes(2), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
     connectedExternalNodes(0) = Nd1;
     connectedExternalNodes(1) = Nd2;
@@ -120,47 +118,9 @@ ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *sec
                          double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
                          double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
     : Element(tag, ELE_TAG_ElasticBeam),
-      nodeIOffset(0), nodeJOffset(0), Mass(12, 12), Stiffness(12, 12), builtK(0), builtM(0), R(3, 3), P(12),
-      Q(12), q(6), connectedExternalNodes(2), L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      L(0), nodeIOffset(0), nodeJOffset(0), Mass(12, 12), Stiffness(12, 12), builtK(0), builtM(0), R(3, 3),  P(12),
+      Q(12), connectedExternalNodes(2),  nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
-    if (section != 0)
-    {
-        sectionTag = section->getTag();
-        E = 1.0;
-        G = 1.0;
-        Jx = 0.0;
-        rho = r;
-
-        const Matrix &sectTangent = section->getSectionTangent();
-        const ID &sectCode = section->getType();
-
-        for (int i = 0; i < sectCode.Size(); i++)
-        {
-            int code = sectCode(i);
-
-            switch (code)
-            {
-                case SECTION_RESPONSE_P:
-                    A = sectTangent(i, i);
-                    break;
-
-                case SECTION_RESPONSE_MZ:
-                    Iz = sectTangent(i, i);
-                    break;
-
-                case SECTION_RESPONSE_MY:
-                    Iy = sectTangent(i, i);
-                    break;
-
-                case SECTION_RESPONSE_T:
-                    Jx = sectTangent(i, i);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
 
     if (Jx == 0.0)
     {
@@ -484,6 +444,7 @@ void
 ElasticBeam::zeroLoad(void)
 {
     Q.Zero();
+    P.Zero();
 
     return;
 }
@@ -516,7 +477,7 @@ ElasticBeam::addInertiaLoadToUnbalance(const Vector &accel)
     }
 
 
-    Vector Raccel(12);
+    static Vector Raccel(12);
     Raccel(0)  = Raccel1(0);
     Raccel(1)  = Raccel1(1);
     Raccel(2)  = Raccel1(2);
@@ -635,60 +596,103 @@ int
 ElasticBeam::describeSelf(int cTag, HDF5_Channel &theHDF5Channel)
 {
 
-    theHDF5_Channel.beginElementDescription("ElasticBeam", this->getTag());
-    theHDF5_Channel.addField("data"             , false     , "adim");
-    theHDF5_Channel.endElementDescription();
+    theHDF5Channel.beginElementDescription("ElasticBeam", this->getTag());
+    theHDF5Channel.addField("parameters"             , false     , "adim");
+    theHDF5Channel.addField("connected_nodes"             , false     , "adim");
+    theHDF5Channel.addField("node_I_offset"             , false     , "adim");
+    theHDF5Channel.addField("node_J_offset"             , false     , "adim");
+    theHDF5Channel.addField("node_I_initial_displacement"             , false     , "adim");
+    theHDF5Channel.addField("node_J_initial_displacement"             , false     , "adim");
+    theHDF5Channel.addField("transformation_matrix"             , false     , "adim");
+    theHDF5Channel.addField("internal_forces"             , true     , "adim");
+    theHDF5Channel.addField("internal_forces2"             , true     , "adim");
+    theHDF5Channel.endElementDescription();
 
-
-    return res;
+    return 0;
 }
 
 int
 ElasticBeam::sendSelf(int cTag, Channel &theChannel)
 {
-    int res = 0;
+    static Vector parameters(8);
 
-    static Vector data(12);
+    parameters(0) = A;
+    parameters(1) = E;
+    parameters(2) = G;
+    parameters(3) = Jx;
+    parameters(4) = Iy;
+    parameters(5) = Iz;
+    parameters(6) = rho;
+    parameters(7) = this->getTag();
 
-    data(0) = A;
-    data(1) = E;
-    data(2) = G;
-    data(3) = Jx;
-    data(4) = Iy;
-    data(5) = Iz;
-    data(6) = rho;
-    data(7) = this->getTag();
-    data(8) = connectedExternalNodes(0);
-    data(9) = connectedExternalNodes(1);
-    //     data(10) = theCoordTransf->getClassTag();
 
-    //  int dbTag = theCoordTransf->getDbTag();
-    //
-    //  if (dbTag == 0) {
-    //      dbTag = theChannel.getDbTag();
-    //      if (dbTag != 0)
-    //          theCoordTransf->setDbTag(dbTag);
-    //  }
-    //
-    //  data(11) = dbTag;
-
-    // Send the data vector
-    res += theChannel.sendVector(this->getDbTag(), cTag, data);
-
-    if (res < 0)
+    // Send the parameters vector
+    if (theChannel.sendVector(this->getDbTag(), cTag, parameters) < 0)
     {
-        cerr.flush() << "ElasticBeam::sendSelf -- could not send data Vector\n";
-        return res;
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send parameters Vector\n";
+        return -1;
     }
 
-    // Ask the CoordTransf to send itself
-    //     res += theCoordTransf->sendSelf(cTag, theChannel);
-    //     if (res < 0) {
-    //       cerr.flush() << "ElasticBeam::sendSelf -- could not send CoordTransf\n";
-    //       return res;
-    //     }
 
-    return res;
+    // Send the connectivity vector
+    if (theChannel.sendID(this->getDbTag(), cTag, connectedExternalNodes) < 0)
+    {
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send connectivity Vector\n";
+        return -1;
+    }
+
+    //send node_I_offset
+    if (theChannel.sendVector(this->getDbTag(), cTag, *nodeIOffset) < 0)
+    {
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send nodeIOffset Vector\n";
+        return -1;
+    }
+
+    //send node_J_offset
+    if (theChannel.sendVector(this->getDbTag(), cTag, *nodeJOffset) < 0)
+    {
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send nodeJOffset Vector\n";
+        return -1;
+    }
+
+    //send node_I_initial_displacement
+    if (theChannel.sendVector(this->getDbTag(), cTag, *nodeIInitialDisp) < 0)
+    {
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send nodeIInitialDisp Vector\n";
+        return -1;
+    }
+
+    //send node_J_initial_displacement
+    if (theChannel.sendVector(this->getDbTag(), cTag, *nodeJInitialDisp) < 0)
+    {
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send nodeJInitialDisp Vector\n";
+        return -1;
+    }
+
+
+    // Send the R matrixx
+    if (theChannel.sendMatrix(this->getDbTag(), cTag, R) < 0)
+    {
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send R\n";
+        return -1;
+    }
+
+    // Send the P Vector
+    if (theChannel.sendVector(this->getDbTag(), cTag, P) < 0)
+    {
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send P\n";
+        return -1;
+    }
+
+    // Send the Q Vector
+    if (theChannel.sendVector(this->getDbTag(), cTag, Q) < 0)
+    {
+        cerr.flush() << "ElasticBeam::sendSelf -- could not send Q\n";
+        return -1;
+    }
+
+
+    return 0;
 }
 
 int
@@ -714,40 +718,56 @@ ElasticBeam::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
     Iz = data(5);
     rho = data(6);
     this->setTag((int)data(7));
-    connectedExternalNodes(0) = (int)data(8);
-    connectedExternalNodes(1) = (int)data(9);
 
-    // Check if the CoordTransf is null; if so, get a new one
-    //     int crdTag = (int)data(10);
-    //     if (theCoordTransf == 0) {
-    //       theCoordTransf = theBroker.getNewCrdTransf3d(crdTag);
-    //       if (theCoordTransf == 0) {
-    //  cerr.flush() << "ElasticBeam::recvSelf -- could not get a CrdTransf\n";
-    //  exit(-1);
-    //       }
-    //     }
+    res += theChannel.recvID(this->getDbTag(), cTag, connectedExternalNodes);
+    if (res < 0)
+    {
+        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data Vector\n";
+        return res;
+    }
+    res += theChannel.recvVector(this->getDbTag(), cTag, *nodeIOffset);
+    if (res < 0)
+    {
+        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data nodeIOffset\n";
+        return res;
+    }
+    res += theChannel.recvVector(this->getDbTag(), cTag, *nodeJOffset);
+    if (res < 0)
+    {
+        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data nodeJOffset\n";
+        return res;
+    }
+    res += theChannel.recvVector(this->getDbTag(), cTag, *nodeIInitialDisp);
+    if (res < 0)
+    {
+        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data nodeIInitialDisp\n";
+        return res;
+    }
+    res += theChannel.recvVector(this->getDbTag(), cTag, *nodeJInitialDisp);
+    if (res < 0)
+    {
+        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data nodeJInitialDisp\n";
+        return res;
+    }
+    res += theChannel.recvMatrix(this->getDbTag(), cTag, R);
+    if (res < 0)
+    {
+        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data R\n";
+        return res;
+    }
+    res += theChannel.recvVector(this->getDbTag(), cTag, P);
+    if (res < 0)
+    {
+        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data P\n";
+        return res;
+    }
+    res += theChannel.recvVector(this->getDbTag(), cTag, Q);
+    if (res < 0)
+    {
+        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data Q\n";
+        return res;
+    }
 
-    // Check that the CoordTransf is of the right type; if not, delete
-    // the current one and get a new one of the right type
-    //     if (theCoordTransf->getClassTag() != crdTag) {
-    //       delete theCoordTransf;
-    //       theCoordTransf = theBroker.getNewCrdTransf3d(crdTag);
-    //       if (theCoordTransf == 0) {
-    //  cerr.flush() << "ElasticBeam::recvSelf -- could not get a CrdTransf\n";
-    //  exit(-1);
-    //       }
-    //     }
-
-    // Now, receive the CoordTransf
-    //     theCoordTransf->setDbTag((int)data(11));
-    //     res += theCoordTransf->recvSelf(cTag, theChannel, theBroker);
-    //     if (res < 0) {
-    //       cerr.flush() << "ElasticBeam::recvSelf -- could not receive CoordTransf\n";
-    //       return res;
-    //     }
-
-    // Revert the crdtrasf to its last committed state
-    //     theCoordTransf->revertToLastCommit();
 
     return res;
 }
@@ -756,50 +776,6 @@ void
 ElasticBeam::Print(ostream &s, int flag)
 {
     //Do nothng now!
-}
-
-
-
-
-Response *
-ElasticBeam::setResponse(const char **argv, int argc, Information &info)
-{
-    // stiffness
-    if (strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 1, Stiffness);
-    }
-
-    // global forces
-    else if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
-             strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
-    {
-        return new ElementResponse(this, 2, P);
-    }
-
-
-    else
-    {
-        return 0;
-    }
-}
-
-int
-ElasticBeam::getResponse (int responseID, Information &eleInfo)
-{
-
-    switch (responseID)
-    {
-        case 1: // stiffness
-            return eleInfo.setMatrix(this->getTangentStiff());
-
-        case 2: // global forces
-            return eleInfo.setVector(this->getResistingForce());
-
-
-        default:
-            return -1;
-    }
 }
 
 

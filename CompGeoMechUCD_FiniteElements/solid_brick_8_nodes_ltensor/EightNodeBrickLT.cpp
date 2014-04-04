@@ -1397,9 +1397,6 @@ int EightNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 
 int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 {
-    // cerr << "EightNodeBrickLT::sendSelf -- Not yet implemented!" << endl;
-    // return -1;
-
     if ( !initialized )
     {
         populate();

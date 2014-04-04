@@ -73,13 +73,15 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-O2 \
 										-finline \
 										-finline-functions \
-										-finline-limit=1000 \
+										-finline-limit=10000 \
 										-fkeep-inline-functions \
 										-fdefault-inline \
 										-ffloat-store \
 										-ffast-math \
 										-funroll-loops \
-										-ftemplate-depth=1000 \
+										-ftemplate-depth=100000 \
+										--param large-function-growth=10000 \
+										--param inline-unit-growth=10000 \
 										-D_LINUX \
 										-D_UNIX \
 										$(PROGRAMMING_FLAG) \
@@ -88,18 +90,19 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-Wno-write-strings \
 										-march=native
 
-	CFLAGS          = -flto -O2 \
+	# CFLAGS          = -flto -O2 \
+	CFLAGS          =  -O2 \
 										-D_LINUX \
 										-D_UNIX \
 										-D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84
 										-march=native $(MORE_CFLAGS)
 
 	FFLAGS          = -O2 $(MORE_FFLAGS)
-	LINKFLAGS       = -flto -O $(MORE_LINKFLAGS)
+	#LINKFLAGS       = -flto -O $(MORE_LINKFLAGS)
+	LINKFLAGS       = -O $(MORE_LINKFLAGS)
 
 else
 	C++FLAGS        = -Wall \
-										-Winline \
 										-g \
 										-pg \
 										-D_G3DEBUG \

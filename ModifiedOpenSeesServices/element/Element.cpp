@@ -456,17 +456,17 @@ Element::isSubdomain(void)
     return false;
 }
 
-Response *
-Element::setResponse(const char **argv, int argc, Information &eleInfo)
-{
-    return 0;
-}
+// Response *
+// Element::setResponse(const char **argv, int argc, Information &eleInfo)
+// {
+//     return 0;
+// }
 
-int
-Element::getResponse(int responseID, Information &eleInformation)
-{
-    return -1;
-}
+// int
+// Element::getResponse(int responseID, Information &eleInformation)
+// {
+//     return -1;
+// }
 
 
 

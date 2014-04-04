@@ -109,9 +109,8 @@ class ElasticBeam : public Element
 
     private:
         double A, E, G, Jx, Iy, Iz;
-
         double rho;
-        int sectionTag;
+        double L;       // undeformed element length
 
         Vector *nodeIOffset; // rigid joint offsets
         Vector *nodeJOffset; // rigid joint offsets
@@ -124,18 +123,14 @@ class ElasticBeam : public Element
         Matrix R;       // Transformation matrix
         Vector P;
         Vector Q;
-        Vector q;
 
         ID  connectedExternalNodes;
-
-        double L;       // undeformed element length
 
         Vector *nodeIInitialDisp;
         Vector *nodeJInitialDisp;
         bool initialDispChecked;
 
         Node *theNodes[2];
-
 };
 
 #endif

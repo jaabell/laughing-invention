@@ -47,7 +47,7 @@ class ID;
 class Vector;
 class Matrix;
 class Information;
-class Response;
+// class Response;
 
 class SectionForceDeformation;
 
@@ -58,7 +58,7 @@ class UniaxialMaterial : public Material
         virtual ~UniaxialMaterial();
 
         virtual int setTrialStrain (double strain, double strainRate = 0.0) = 0;
-        virtual int setTrial (double strain, double& stress, double& tangent, double strainRate = 0.0);
+        virtual int setTrial (double strain, double &stress, double &tangent, double strainRate = 0.0);
         virtual double getStrain (void) = 0;
         virtual double getStrainRate (void);
         virtual double getStress (void) = 0;
@@ -72,15 +72,15 @@ class UniaxialMaterial : public Material
         virtual int revertToLastCommit (void) = 0;
         virtual int revertToStart (void) = 0;
 
-        virtual UniaxialMaterial* getCopy (void) = 0;
-        virtual UniaxialMaterial* getCopy(SectionForceDeformation* s);
+        virtual UniaxialMaterial *getCopy (void) = 0;
+        virtual UniaxialMaterial *getCopy(SectionForceDeformation *s);
 
-        virtual Response* setResponse (const char** argv, int argc, Information& matInformation);
-        virtual int getResponse (int responseID, Information& matInformation);
+        // virtual Response* setResponse (const char** argv, int argc, Information& matInformation);
+        // virtual int getResponse (int responseID, Information& matInformation);
 
 
         // Nima Tafazzoli added for checking the mesh (September 2012)
-        virtual int CheckMesh(ofstream&);
+        virtual int CheckMesh(ofstream &);
 
 
     protected:

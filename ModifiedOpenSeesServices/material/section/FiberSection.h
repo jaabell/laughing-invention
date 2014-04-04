@@ -38,55 +38,55 @@
 #include <Matrix.h>
 
 class Fiber;
-class Response;
+// class Response;
 
 class FiberSection : public SectionForceDeformation
 {
     public:
         FiberSection();
         FiberSection(int tag, int estNumFibers = 8);
-        FiberSection(int tag, int numFibers, Fiber** fibers);
+        FiberSection(int tag, int numFibers, Fiber **fibers);
         ~FiberSection();
 
-        int   setTrialSectionDeformation(const Vector& deforms);
-        const Vector& getSectionDeformation(void);
+        int   setTrialSectionDeformation(const Vector &deforms);
+        const Vector &getSectionDeformation(void);
 
-        const Vector& getStressResultant(void);
-        const Matrix& getSectionTangent(void);
+        const Vector &getStressResultant(void);
+        const Matrix &getSectionTangent(void);
 
         int   commitState(void);
         int   revertToLastCommit(void);
         int   revertToStart(void);
 
-        SectionForceDeformation* getCopy(void);
-        const ID& getType (void);
+        SectionForceDeformation *getCopy(void);
+        const ID &getType (void);
         int getOrder (void) const;
 
-        int sendSelf(int cTag, Channel& theChannel);
-        int recvSelf(int cTag, Channel& theChannel,
-                     FEM_ObjectBroker& theBroker);
-        void Print(ostream& s, int flag = 0);
+        int sendSelf(int cTag, Channel &theChannel);
+        int recvSelf(int cTag, Channel &theChannel,
+                     FEM_ObjectBroker &theBroker);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& info);
-        int getResponse(int responseID, Information& info);
+        // Response* setResponse(const char** argv, int argc, Information& info);
+        // int getResponse(int responseID, Information& info);
 
-        int addFiber(Fiber& theFiber);
+        int addFiber(Fiber &theFiber);
 
     protected:
 
     private:
         int numFibers;  // number of fibers in the section
-        Fiber** theFibers;   // array of pointers to fibers
+        Fiber **theFibers;   // array of pointers to fibers
         // that form the section
         int sizeFibers;              // size of the fibers array
 
         int order;
-        ID* code;
+        ID *code;
 
-        Vector* e;       // section trial deformations
-        Vector* eCommit;
-        Vector* s;       // section resisting forces  (axial force, bending moment)
-        Matrix* ks;       // section stiffness
+        Vector *e;       // section trial deformations
+        Vector *eCommit;
+        Vector *s;       // section resisting forces  (axial force, bending moment)
+        Matrix *ks;       // section stiffness
 
         int otherDbTag;
 };
