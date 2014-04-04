@@ -1429,7 +1429,11 @@ int Node::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
     }
     if (unbalLoad  != 0)
     {
-        theHDF5_Channel.addField("unbalanced_load"  , false     , "variable");
+        theHDF5_Channel.addField("unbalanced_load"  , true     , "variable");
+    }
+    if (reaction  != 0)
+    {
+        theHDF5_Channel.addField("reactions"  , true     , "variable");
     }
     if ( theDOF_GroupPtr != 0 )
     {
@@ -1446,7 +1450,7 @@ Node::sendSelf(int cTag, Channel &theChannel)
 {
     int dataTag = this->getDbTag();
 
-    ID data(17);
+    ID data(18);
     data(0) = this->getTag();
     data(1) = numberDOF;
 
@@ -1508,30 +1512,6 @@ Node::sendSelf(int cTag, Channel &theChannel)
 
     data(7) = Crd->Size();
 
-    // if (dbTag1 == 0)
-    // {
-    //     dbTag1 = theChannel.getDbTag();
-    // }
-
-    // if (dbTag2 == 0)
-    // {
-    //     dbTag2 = theChannel.getDbTag();
-    // }
-
-    // if (dbTag3 == 0)
-    // {
-    //     dbTag3 = theChannel.getDbTag();
-    // }
-
-    // if (dbTag4 == 0)
-    // {
-    //     dbTag4 = theChannel.getDbTag();
-    // }
-
-    // data(8) = dbTag1;
-    // data(9) = dbTag2;
-    // data(10) = dbTag3;
-    // data(11) = dbTag4;
 
     if ( theDOF_GroupPtr != 0 )
     {
@@ -1543,6 +1523,15 @@ Node::sendSelf(int cTag, Channel &theChannel)
     else
     {
         data(14) = 0;
+    }
+
+    if (reaction != 0)
+    {
+        data(17) = 1;
+    }
+    else
+    {
+        data(17) = 0;
     }
 
     int res = 0;
@@ -1639,6 +1628,16 @@ Node::sendSelf(int cTag, Channel &theChannel)
         }
     }
 
+    //Jose Added
+    if ( reaction != 0 )
+    {
+        if ( theChannel.sendVector(dataTag, cTag, *reaction) < 0)
+        {
+            cerr << "Node::sendSelf() - failed to send reactions vector!\n";
+            return -1;
+        }
+    }
+
     //Guanzhou added
     if ( theDOF_GroupPtr != 0 )
     {
@@ -1663,7 +1662,7 @@ Node::recvSelf(int cTag, Channel &theChannel,
     int dataTag = this->getDbTag();
 
 
-    ID data(17);
+    ID data(18);
     res = theChannel.recvID(dataTag, cTag, data);
 
     if (res < 0)
@@ -1854,38 +1853,26 @@ Node::recvSelf(int cTag, Channel &theChannel,
         }
     }
 
-    //   index = -1;
-    //   if (numMatrices != 0)
-    //   {
-    //     for (int i=0; i<numMatrices; i++)
-    //       if (theMatrices[i]->noRows() == numberDOF)
-    //       {
-    //  index = i;
-    //  i = numMatrices;
-    //       }
-    //   }
-    //   if (index == -1)
-    //   {
-    //     Matrix **nextMatrices = new Matrix *[numMatrices+1];
-    //     if (nextMatrices == 0)
-    //     {
-    //       cerr << "Element::getTheMatrix - out of memory\n";
-    //       exit(-1);
-    //     }
-    //     for (int j=0; j<numMatrices; j++)
-    //       nextMatrices[j] = theMatrices[j];
-    //     Matrix *theMatrix = new Matrix(numberDOF, numberDOF);
-    //     if (theMatrix == 0) {
-    //       cerr << "Element::getTheMatrix - out of memory\n";
-    //       exit(-1);
-    //     }
-    //     nextMatrices[numMatrices] = theMatrix;
-    //     if (numMatrices != 0)
-    //       delete [] theMatrices;
-    //     index = numMatrices;
-    //     numMatrices++;
-    //     theMatrices = nextMatrices;
-    //   }
+    //Jose added
+    if ( data(17) == 1)
+    {
+        if ( reaction != 0 )
+        {
+            delete reaction;
+        }
+
+        Vector newreaction;// = new Vector(data(15), this);
+        // ID newID(data(16));
+
+        if ( theChannel.recvVector(dataTag, cTag, newreaction) < 0)
+        {
+            cerr << "Node::recvSelf() - reaction failed to recv self!\n";
+            return -1;
+        }
+
+        *reaction = newreaction;
+    }
+
     //Guanzhou added
     if ( data(14) == 1)
     {
@@ -1905,6 +1892,7 @@ Node::recvSelf(int cTag, Channel &theChannel,
 
         theDOF_GroupPtr->setID(newID);
     }
+
 
     return 0;
 }

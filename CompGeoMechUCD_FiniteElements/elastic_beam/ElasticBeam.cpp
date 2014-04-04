@@ -38,7 +38,7 @@
 #include <ID.h>
 #include <math.h>
 #include <stdlib.h>
-
+#include <HDF5_Channel.h>
 
 ElasticBeam::ElasticBeam()
     : Element(0, ELE_TAG_ElasticBeam),
@@ -114,7 +114,7 @@ ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
 }
 
 
-ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation* section,
+ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *section,
                          double r,
                          double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
                          double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
@@ -131,14 +131,14 @@ ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation* sec
         Jx = 0.0;
         rho = r;
 
-        const Matrix& sectTangent = section->getSectionTangent();
-        const ID& sectCode = section->getType();
+        const Matrix &sectTangent = section->getSectionTangent();
+        const ID &sectCode = section->getType();
 
         for (int i = 0; i < sectCode.Size(); i++)
         {
             int code = sectCode(i);
 
-            switch(code)
+            switch (code)
             {
                 case SECTION_RESPONSE_P:
                     A = sectTangent(i, i);
@@ -219,13 +219,13 @@ ElasticBeam::getNumExternalNodes(void) const
     return 2;
 }
 
-const ID&
+const ID &
 ElasticBeam::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 ElasticBeam::getNodePtrs(void)
 {
     return theNodes;
@@ -238,7 +238,7 @@ ElasticBeam::getNumDOF(void)
 }
 
 void
-ElasticBeam::setDomain(Domain* theDomain)
+ElasticBeam::setDomain(Domain *theDomain)
 {
     if (theDomain == 0)
     {
@@ -321,11 +321,11 @@ ElasticBeam::update(void)
     return 0;
 }
 
-const Matrix&
+const Matrix &
 ElasticBeam::getTangentStiff(void)
 {
 
-    if(builtK == 0)
+    if (builtK == 0)
     {
 
         Stiffness.Zero();
@@ -386,7 +386,7 @@ ElasticBeam::getTangentStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 ElasticBeam::getInitialStiff(void)
 {
 
@@ -394,7 +394,7 @@ ElasticBeam::getInitialStiff(void)
 
 }
 
-const Matrix&
+const Matrix &
 ElasticBeam::getMass(void)
 {
 
@@ -489,7 +489,7 @@ ElasticBeam::zeroLoad(void)
 }
 
 int
-ElasticBeam::addLoad(ElementalLoad* theLoad, double loadFactor)
+ElasticBeam::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     // NOTE: To be completed later
 
@@ -498,7 +498,7 @@ ElasticBeam::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 
 int
-ElasticBeam::addInertiaLoadToUnbalance(const Vector& accel)
+ElasticBeam::addInertiaLoadToUnbalance(const Vector &accel)
 {
     if (rho == 0.0)
     {
@@ -506,8 +506,8 @@ ElasticBeam::addInertiaLoadToUnbalance(const Vector& accel)
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
 
     if (6 != Raccel1.Size() || 6 != Raccel2.Size())
     {
@@ -541,7 +541,7 @@ ElasticBeam::addInertiaLoadToUnbalance(const Vector& accel)
 
 
 
-const Vector&
+const Vector &
 ElasticBeam::getResistingForceIncInertia()
 {
 
@@ -561,8 +561,8 @@ ElasticBeam::getResistingForceIncInertia()
     }
     else
     {
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
 
         Vector accel(12);
@@ -586,7 +586,7 @@ ElasticBeam::getResistingForceIncInertia()
 }
 
 
-const Vector&
+const Vector &
 ElasticBeam::getResistingForce()
 {
 
@@ -632,7 +632,19 @@ ElasticBeam::getResistingForce()
 }
 
 int
-ElasticBeam::sendSelf(int cTag, Channel& theChannel)
+ElasticBeam::describeSelf(int cTag, HDF5_Channel &theHDF5Channel)
+{
+
+    theHDF5_Channel.beginElementDescription("ElasticBeam", this->getTag());
+    theHDF5_Channel.addField("data"             , false     , "adim");
+    theHDF5_Channel.endElementDescription();
+
+
+    return res;
+}
+
+int
+ElasticBeam::sendSelf(int cTag, Channel &theChannel)
 {
     int res = 0;
 
@@ -680,7 +692,7 @@ ElasticBeam::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ElasticBeam::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ElasticBeam::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -741,7 +753,7 @@ ElasticBeam::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker
 }
 
 void
-ElasticBeam::Print(ostream& s, int flag)
+ElasticBeam::Print(ostream &s, int flag)
 {
     //Do nothng now!
 }
@@ -749,8 +761,8 @@ ElasticBeam::Print(ostream& s, int flag)
 
 
 
-Response*
-ElasticBeam::setResponse(const char** argv, int argc, Information& info)
+Response *
+ElasticBeam::setResponse(const char **argv, int argc, Information &info)
 {
     // stiffness
     if (strcmp(argv[0], "stiffness") == 0)
@@ -773,7 +785,7 @@ ElasticBeam::setResponse(const char** argv, int argc, Information& info)
 }
 
 int
-ElasticBeam::getResponse (int responseID, Information& eleInfo)
+ElasticBeam::getResponse (int responseID, Information &eleInfo)
 {
 
     switch (responseID)
@@ -803,8 +815,8 @@ ElasticBeam::initialize()
     // see if there is some initial displacements at nodes
     if (initialDispChecked == false)
     {
-        const Vector& nodeIDisp = theNodes[0]->getDisp();
-        const Vector& nodeJDisp = theNodes[1]->getDisp();
+        const Vector &nodeIDisp = theNodes[0]->getDisp();
+        const Vector &nodeJDisp = theNodes[1]->getDisp();
 
         for (int i = 0; i < 6; i++)
             if (nodeIDisp(i) != 0.0)
@@ -863,8 +875,8 @@ ElasticBeam::computeElemtLengthAndOrient()
     // element projection
     static Vector dx(3);
 
-    const Vector& ndICoords = theNodes[0]->getCrds();
-    const Vector& ndJCoords = theNodes[1]->getCrds();
+    const Vector &ndICoords = theNodes[0]->getCrds();
+    const Vector &ndJCoords = theNodes[1]->getCrds();
 
     dx(0) = ndJCoords(0) - ndICoords(0);
     dx(1) = ndJCoords(1) - ndICoords(1);
@@ -925,7 +937,7 @@ ElasticBeam::computeElemtLengthAndOrient()
 
 
 int
-ElasticBeam::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
+ElasticBeam::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
 {
     // Compute y = v cross x
     // Note: v(i) is stored in R(2,i]
@@ -986,8 +998,8 @@ ElasticBeam::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
 
 
 
-const Matrix&
-ElasticBeam::getGlobalStiffnessMatrix(const Matrix& KB)
+const Matrix &
+ElasticBeam::getGlobalStiffnessMatrix(const Matrix &KB)
 {
 
     static Matrix kg(12, 12);   // Global stiffness for return
@@ -1134,8 +1146,8 @@ ElasticBeam::getGlobalStiffnessMatrix(const Matrix& KB)
 
 
 
-const Matrix&
-ElasticBeam::getGlobalConsistentMassMatrix(const Matrix& KB)
+const Matrix &
+ElasticBeam::getGlobalConsistentMassMatrix(const Matrix &KB)
 {
     static Matrix mg(12, 12);   // Global mass for return
     static Matrix ml(12, 12);   // Local mass
@@ -1279,10 +1291,10 @@ ElasticBeam::getGlobalConsistentMassMatrix(const Matrix& KB)
 
 
 //==================================================================================
-Vector*
+Vector *
 ElasticBeam::getForce(void)
 {
-    Vector* elementForces = new Vector(12);
+    Vector *elementForces = new Vector(12);
 
     (*elementForces)(0)  = P(0);
     (*elementForces)(1)  = P(1);
