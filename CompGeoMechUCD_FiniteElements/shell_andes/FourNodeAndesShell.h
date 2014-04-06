@@ -99,7 +99,7 @@ These documents all mirror published works in indexed journals.
 #include <Template3Dep.h>
 
 //Others
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 #include <../../ModifiedOpenSeesServices/domain/damping/Damping.h>
 
@@ -118,7 +118,7 @@ class FourNodeAndesShell: public Element
 
         FourNodeAndesShell(int element_number,
                            int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4, double t,
-                           NDMaterial* Globalmmodel);
+                           NDMaterial *Globalmmodel);
 
         ~FourNodeAndesShell();
 
@@ -129,10 +129,10 @@ class FourNodeAndesShell: public Element
         // They all overload virtual functions. Most are even pure virtual functions.
 
         int getNumExternalNodes () const;
-        const ID& getExternalNodes ();
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes ();
+        Node **getNodePtrs(void);
         int getNumDOF ();
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         int commitState ();
         int revertToLastCommit ();
@@ -140,30 +140,30 @@ class FourNodeAndesShell: public Element
         int update(void);
 
 
-        const Matrix& getTangentStiff ();
-        const Matrix& getInitialStiff();
-        const Matrix& getMass ();
+        const Matrix &getTangentStiff ();
+        const Matrix &getInitialStiff();
+        const Matrix &getMass ();
 
         void zeroLoad ();
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce ();
-        const Vector& getResistingForceIncInertia ();
+        const Vector &getResistingForce ();
+        const Vector &getResistingForceIncInertia ();
 
-        int sendSelf (int commitTag, Channel& theChannel);
-        int recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf (int commitTag, Channel &theChannel);
+        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        void Print(ostream& s, int flag);
-        Response* setResponse (const char** argv, int argc, Information& eleInformation);
-        int getResponse (int responseID, Information& eleInformation);
+        void Print(ostream &s, int flag);
+        // Response* setResponse (const char** argv, int argc, Information& eleInformation);
+        // int getResponse (int responseID, Information& eleInformation);
 
         void compute_internal_forces();
 
         Matrix returnMass(void);
 
         //Handling body and surface forces
-        const Vector& getBodyForce(double loadFactor, const Vector& data);
+        const Vector &getBodyForce(double loadFactor, const Vector &data);
         const Vector FormEquiBodyForce(void);
 
         void printMatrix(Matrix M, string name);
@@ -179,8 +179,8 @@ class FourNodeAndesShell: public Element
 
         // Pointers to other Domain components
         ID  connectedExternalNodes;     // Tags of  nodes
-        Node* theNodes[4];              // pointers to 3 nodes
-        NDMaterial** theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
+        Node *theNodes[4];              // pointers to 3 nodes
+        NDMaterial **theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
 
         // Finite element matrices
         Matrix K;                       // Element stiffness Matrix
@@ -196,10 +196,10 @@ class FourNodeAndesShell: public Element
         Vector x0;                      // Centroid in global coordinates
         Matrix T_lg;                    // Local-to-global transformation matrix T_lg = [x_l, y_l, z_l]
 
-        ThreeNodeAndesShell* triangle1;
-        ThreeNodeAndesShell* triangle2;
-        ThreeNodeAndesShell* triangle3;
-        ThreeNodeAndesShell* triangle4;
+        ThreeNodeAndesShell *triangle1;
+        ThreeNodeAndesShell *triangle2;
+        ThreeNodeAndesShell *triangle3;
+        ThreeNodeAndesShell *triangle4;
 
         static unsigned int number_of_four_node_andes_shells;
         static const unsigned int pl[4][18];

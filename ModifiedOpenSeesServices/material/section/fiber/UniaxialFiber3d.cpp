@@ -48,7 +48,7 @@
 #include <ID.h>
 #include <SectionForceDeformation.h>
 #include <Information.h>
-#include <FiberResponse.h>
+// #include <FiberResponse.h>
 #include <iostream>
 using namespace std;
 
@@ -360,37 +360,37 @@ void UniaxialFiber3d::Print(ostream &s, int flag)
     s << "\tMaterial, tag: " << theMaterial->getTag() << endln;
 }
 
-Response *
-UniaxialFiber3d::setResponse(const char **argv, int argc, Information &info)
-{
-    if (argc == 0)
-    {
-        return 0;
-    }
+// Response *
+// UniaxialFiber3d::setResponse(const char **argv, int argc, Information &info)
+// {
+//     if (argc == 0)
+//     {
+//         return 0;
+//     }
 
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new FiberResponse(this, 1, Vector(3));
-    }
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new FiberResponse(this, 1, Vector(3));
+//     }
 
-    else
-    {
-        return theMaterial->setResponse(argv, argc, info);
-    }
-}
+//     else
+//     {
+//         return theMaterial->setResponse(argv, argc, info);
+//     }
+// }
 
-int
-UniaxialFiber3d::getResponse(int responseID, Information &fibInfo)
-{
-    switch (responseID)
-    {
-        case 1:
-            return fibInfo.setVector(this->getFiberStressResultants());
+// int
+// UniaxialFiber3d::getResponse(int responseID, Information &fibInfo)
+// {
+//     switch (responseID)
+//     {
+//         case 1:
+//             return fibInfo.setVector(this->getFiberStressResultants());
 
-        default:
-            return -1;
-    }
-}
+//         default:
+//             return -1;
+//     }
+// }
 
 void
 UniaxialFiber3d::getFiberLocation(double &yLoc, double &zLoc)

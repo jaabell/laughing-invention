@@ -44,14 +44,14 @@
 class Node;
 class SectionForceDeformation;
 class BeamIntegration;
-class Response;
+// class Response;
 
 class DispBeamColumn3d : public Element
 {
     public:
         DispBeamColumn3d(int tag, int nd1, int nd2,
-                         int numSections, SectionForceDeformation** s,
-                         BeamIntegration& bi, double rho,
+                         int numSections, SectionForceDeformation **s,
+                         BeamIntegration &bi, double rho,
                          double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
                          double rigJntOffset1_x = 0, double rigJntOffset1_y = 0, double rigJntOffset1_z = 0,
                          double rigJntOffset2_x = 0, double rigJntOffset2_y = 0, double rigJntOffset2_z = 0);
@@ -60,17 +60,17 @@ class DispBeamColumn3d : public Element
         DispBeamColumn3d();
         ~DispBeamColumn3d();
 
-        const char* getClassType(void) const
+        const char *getClassType(void) const
         {
             return "DispBeamColumn3d";
         };
 
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState(void);
@@ -79,53 +79,53 @@ class DispBeamColumn3d : public Element
 
         // public methods to obtain stiffness, mass, damping and residual information
         int update(void);
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getMass(void);
 
         void zeroLoad();
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker
                      &theBroker);
         //     int displaySelf(Renderer &theViewer, int displayMode, float fact);
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        int getResponse(int responseID, Information& eleInfo);
+        // Response* setResponse(const char** argv, int argc, Information& eleInfo);
+        // int getResponse(int responseID, Information& eleInfo);
 
 
 
         // Nima Tafazzoli moved from transformation (Nov. 2012)
-        int getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis);
+        int getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis);
         int computeElemtLengthAndOrient();
         int initialize();
-        const Vector& getGlobalResistingForce(const Vector& pb, const Vector& p0);
-        const Matrix& getInitialGlobalStiffMatrix (const Matrix& KB);
-        const Matrix& getGlobalStiffMatrix (const Matrix& KB, const Vector& pb);
-        const Vector& getBasicTrialDisp (void);
-        Vector* getForce(void);
+        const Vector &getGlobalResistingForce(const Vector &pb, const Vector &p0);
+        const Matrix &getInitialGlobalStiffMatrix (const Matrix &KB);
+        const Matrix &getGlobalStiffMatrix (const Matrix &KB, const Vector &pb);
+        const Vector &getBasicTrialDisp (void);
+        Vector *getForce(void);
 
 
     protected:
 
     private:
-        const Matrix& getInitialBasicStiff(void);
+        const Matrix &getInitialBasicStiff(void);
 
         int numSections;
-        SectionForceDeformation** theSections; // pointer to the ND material objects
+        SectionForceDeformation **theSections; // pointer to the ND material objects
 
-        BeamIntegration* beamInt;
+        BeamIntegration *beamInt;
 
         ID connectedExternalNodes; // Tags of quad nodes
 
-        Node* theNodes[2];
+        Node *theNodes[2];
 
         static Matrix K;        // Element stiffness, damping, and mass Matrix
         static Vector P;        // Element resisting force vector
@@ -147,9 +147,9 @@ class DispBeamColumn3d : public Element
         // Nima Tafazzoli (Nov. 2012) moved from transformation
         double R[3][3];  // Transformation matrix
         double L;           // undeformed element length
-        double* nodeIInitialDisp, *nodeJInitialDisp;
+        double *nodeIInitialDisp, *nodeJInitialDisp;
         bool initialDispChecked;
-        double* nodeIOffset, *nodeJOffset;  // rigid joint offsets
+        double *nodeIOffset, *nodeJOffset;  // rigid joint offsets
         double A; // undeformed section area
 
 

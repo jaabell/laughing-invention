@@ -45,7 +45,7 @@ class ParallelMaterial : public UniaxialMaterial
     public:
         ParallelMaterial(int tag,
                          int numMaterial,
-                         UniaxialMaterial** theMaterials);
+                         UniaxialMaterial **theMaterials);
         ParallelMaterial();
         ~ParallelMaterial();
 
@@ -61,17 +61,17 @@ class ParallelMaterial : public UniaxialMaterial
         int revertToLastCommit(void);
         int revertToStart(void);
 
-        UniaxialMaterial* getCopy(void);
+        UniaxialMaterial *getCopy(void);
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
-                     FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel,
+                     FEM_ObjectBroker &theBroker);
 
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc,
-                              Information& matInformation);
-        int getResponse(int responseID, Information& matInformation);
+        // Response* setResponse(const char** argv, int argc,
+        //                       Information& matInformation);
+        // int getResponse(int responseID, Information& matInformation);
 
     protected:
 
@@ -79,7 +79,7 @@ class ParallelMaterial : public UniaxialMaterial
         double trialStrain;
         double trialStrainRate;
         int numMaterials;   // the number of UniaxialMaterials in the aggregation
-        UniaxialMaterial** theModels; // an array of pointers to the UniaxialMaterials
+        UniaxialMaterial **theModels; // an array of pointers to the UniaxialMaterials
 };
 
 

@@ -41,7 +41,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 Matrix CorotTruss::M2(2, 2);
 Matrix CorotTruss::M4(4, 4);
@@ -58,7 +58,7 @@ Vector CorotTruss::V12(12);
 //  and storing the tags of the CorotTruss end nodes.
 CorotTruss::CorotTruss(int tag, int dim,
                        int Nd1, int Nd2,
-                       UniaxialMaterial& theMat,
+                       UniaxialMaterial &theMat,
                        double a, double r)
     : Element(tag, ELE_TAG_CorotTruss),
       theMaterial(0), connectedExternalNodes(2),
@@ -135,13 +135,13 @@ CorotTruss::getNumExternalNodes(void) const
     return 2;
 }
 
-const ID&
+const ID &
 CorotTruss::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 CorotTruss::getNodePtrs(void)
 {
     return theNodes;
@@ -160,7 +160,7 @@ CorotTruss::getNumDOF(void)
 //    allocate space for t matrix, determine the length
 //    and set the transformation matrix.
 void
-CorotTruss::setDomain(Domain* theDomain)
+CorotTruss::setDomain(Domain *theDomain)
 {
     // check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -251,8 +251,8 @@ CorotTruss::setDomain(Domain* theDomain)
 
     // now determine the length, cosines and fill in the transformation
     // NOTE t = -t(every one else uses for residual calc)
-    const Vector& end1Crd = theNodes[0]->getCrds();
-    const Vector& end2Crd = theNodes[1]->getCrds();
+    const Vector &end1Crd = theNodes[0]->getCrds();
+    const Vector &end2Crd = theNodes[1]->getCrds();
 
     // Determine global offsets
     double cosX[3];
@@ -353,8 +353,8 @@ int
 CorotTruss::update(void)
 {
     // Nodal displacements
-    const Vector& end1Disp = theNodes[0]->getTrialDisp();
-    const Vector& end2Disp = theNodes[1]->getTrialDisp();
+    const Vector &end1Disp = theNodes[0]->getTrialDisp();
+    const Vector &end2Disp = theNodes[1]->getTrialDisp();
 
     // Initial offsets
     d21[0] = Lo;
@@ -380,7 +380,7 @@ CorotTruss::update(void)
     return theMaterial->setTrialStrain(strain);
 }
 
-const Matrix&
+const Matrix &
 CorotTruss::getTangentStiff(void)
 {
     static Matrix kl(3, 3);
@@ -420,7 +420,7 @@ CorotTruss::getTangentStiff(void)
     static Matrix kg(3, 3);
     kg.addMatrixTripleProduct(0.0, R, kl, 1.0);
 
-    Matrix& K = *theMatrix;
+    Matrix &K = *theMatrix;
     K.Zero();
 
     // Copy stiffness into appropriate blocks in element stiffness
@@ -440,7 +440,7 @@ CorotTruss::getTangentStiff(void)
     return *theMatrix;
 }
 
-const Matrix&
+const Matrix &
 CorotTruss::getInitialStiff(void)
 {
     static Matrix kl(3, 3);
@@ -453,7 +453,7 @@ CorotTruss::getInitialStiff(void)
     static Matrix kg(3, 3);
     kg.addMatrixTripleProduct(0.0, R, kl, 1.0);
 
-    Matrix& K = *theMatrix;
+    Matrix &K = *theMatrix;
     K.Zero();
 
     // Copy stiffness into appropriate blocks in element stiffness
@@ -474,10 +474,10 @@ CorotTruss::getInitialStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 CorotTruss::getMass(void)
 {
-    Matrix& Mass = *theMatrix;
+    Matrix &Mass = *theMatrix;
     Mass.Zero();
 
     // check for quick return
@@ -505,7 +505,7 @@ CorotTruss::zeroLoad(void)
 }
 
 int
-CorotTruss::addLoad(ElementalLoad* theLoad, double loadFactor)
+CorotTruss::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     std::cerr << "CorotTruss::addLoad - load type unknown for truss with tag: " << this->getTag() << endln;
 
@@ -515,12 +515,12 @@ CorotTruss::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 
 int
-CorotTruss::addInertiaLoadToUnbalance(const Vector& accel)
+CorotTruss::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
 
-const Vector&
+const Vector &
 CorotTruss::getResistingForce()
 {
     // Get material stress
@@ -536,7 +536,7 @@ CorotTruss::getResistingForce()
     static Vector qg(3);
     qg.addMatrixTransposeVector(0.0, R, ql, 1.0);
 
-    Vector& P = *theVector;
+    Vector &P = *theVector;
     P.Zero();
 
     // Copy forces into appropriate places
@@ -553,17 +553,17 @@ CorotTruss::getResistingForce()
 
 
 
-const Vector&
+const Vector &
 CorotTruss::getResistingForceIncInertia()
 {
-    Vector& P = *theVector;
+    Vector &P = *theVector;
     P = this->getResistingForce();
 
     if (rho != 0.0)
     {
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
         double M = 0.5 * rho * Lo;
         int numDOF2 = numDOF / 2;
@@ -585,7 +585,7 @@ CorotTruss::getResistingForceIncInertia()
 }
 
 int
-CorotTruss::sendSelf(int commitTag, Channel& theChannel)
+CorotTruss::sendSelf(int commitTag, Channel &theChannel)
 {
     int res;
 
@@ -652,7 +652,7 @@ CorotTruss::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-CorotTruss::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+CorotTruss::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res;
     int dataTag = this->getDbTag();
@@ -749,7 +749,7 @@ CorotTruss::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBr
 // }
 
 void
-CorotTruss::Print(ostream& s, int flag)
+CorotTruss::Print(ostream &s, int flag)
 {
     s << "\nCorotTruss, tag: " << this->getTag() << endln;
     s << "\tConnected Nodes: " << connectedExternalNodes;
@@ -761,51 +761,51 @@ CorotTruss::Print(ostream& s, int flag)
 
     if (theMaterial)
     {
-        s << "\tAxial Force: " << A* theMaterial->getStress() << endln;
+        s << "\tAxial Force: " << A *theMaterial->getStress() << endln;
         s << "\tUniaxialMaterial, tag: " << theMaterial->getTag() << endln;
         theMaterial->Print(s, flag);
     }
 }
 
-Response*
-CorotTruss::setResponse(const char** argv, int argc, Information& eleInfo)
-{
-    // force (axialForce)
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "axialForce") == 0)
-    {
-        return new ElementResponse(this, 1, 0.0);
-    }
+// Response*
+// CorotTruss::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
+//     // force (axialForce)
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "axialForce") == 0)
+//     {
+//         return new ElementResponse(this, 1, 0.0);
+//     }
 
-    else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
-             strcmp(argv[0], "deformation") == 0)
-    {
-        return new ElementResponse(this, 2, 0.0);
-    }
+//     else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
+//              strcmp(argv[0], "deformation") == 0)
+//     {
+//         return new ElementResponse(this, 2, 0.0);
+//     }
 
-    // a material quantity
-    else if (strcmp(argv[0], "material") == 0)
-    {
-        return theMaterial->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     // a material quantity
+//     else if (strcmp(argv[0], "material") == 0)
+//     {
+//         return theMaterial->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-CorotTruss::getResponse(int responseID, Information& eleInfo)
-{
-    switch (responseID)
-    {
-        case 1:
-            return eleInfo.setDouble(A * theMaterial->getStress());
+// int
+// CorotTruss::getResponse(int responseID, Information& eleInfo)
+// {
+//     switch (responseID)
+//     {
+//         case 1:
+//             return eleInfo.setDouble(A * theMaterial->getStress());
 
-        case 2:
-            return eleInfo.setDouble(Lo * theMaterial->getStrain());
+//         case 2:
+//             return eleInfo.setDouble(Lo * theMaterial->getStrain());
 
-        default:
-            return 0;
-    }
-}
+//         default:
+//             return 0;
+//     }
+// }

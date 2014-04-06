@@ -94,14 +94,14 @@ PenaltyElement::getNumExternalNodes(void) const
 }
 
 
-const ID&
+const ID &
 PenaltyElement::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
 
-Node**
+Node **
 PenaltyElement::getNodePtrs(void)
 {
     return theNodes;
@@ -117,7 +117,7 @@ PenaltyElement::getNumDOF(void)
 
 
 void
-PenaltyElement::setDomain(Domain* theDomain)
+PenaltyElement::setDomain(Domain *theDomain)
 {
 
     if (theDomain == 0)
@@ -177,7 +177,7 @@ PenaltyElement::commitState()
 
 
 
-const Matrix&
+const Matrix &
 PenaltyElement::getTangentStiff(void)
 {
     int node1_numDOF = theNodes[0]->getNumberDOF();
@@ -191,7 +191,7 @@ PenaltyElement::getTangentStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 PenaltyElement::getInitialStiff(void)
 {
 
@@ -208,7 +208,7 @@ PenaltyElement::getPenaltyStiffness()
 
 
 
-const Matrix&
+const Matrix &
 PenaltyElement::getMass(void)
 {
     //    tempZeroMatrix.Zero();
@@ -217,7 +217,7 @@ PenaltyElement::getMass(void)
 
 
 
-const Vector&
+const Vector &
 PenaltyElement::getResistingForce()
 {
     //    tempZeroVector = new Vector(numDOF);
@@ -232,7 +232,7 @@ PenaltyElement::zeroLoad(void)
 }
 
 
-const Vector&
+const Vector &
 PenaltyElement::getResistingForceIncInertia()
 {
     //    tempZeroVector.Zero();
@@ -242,7 +242,7 @@ PenaltyElement::getResistingForceIncInertia()
 
 
 int
-PenaltyElement::sendSelf(int commitTag, Channel& theChannel)
+PenaltyElement::sendSelf(int commitTag, Channel &theChannel)
 {
 
     //Iimplemented by Babak Kamrani on 6/12/13
@@ -272,7 +272,7 @@ PenaltyElement::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-PenaltyElement::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+PenaltyElement::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     //Iimplemented by Babak Kamrani on 6/12/13
     //-------------------
@@ -302,44 +302,44 @@ PenaltyElement::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& t
 
 
 void
-PenaltyElement::Print(ostream& s, int flag)
+PenaltyElement::Print(ostream &s, int flag)
 {
     s << "Element: " << this->getTag();
     s << " type: PenaltyElement Nodes: " << connectedExternalNodes(0) << "   " << connectedExternalNodes(1);
 }
 
 
-Response*
-PenaltyElement::setResponse(const char** argv, int argc, Information& eleInfo)
-{
+// Response*
+// PenaltyElement::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
 
-    if (strcmp(argv[0], "stiff") == 0)
-    {
-        return new ElementResponse(this, 1, Matrix(numDOF, numDOF) );
-    }
+//     if (strcmp(argv[0], "stiff") == 0)
+//     {
+//         return new ElementResponse(this, 1, Matrix(numDOF, numDOF) );
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
-
-
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
 
-int
-PenaltyElement::getResponse(int responseID, Information& eleInfo)
-{
-    switch (responseID)
-    {
 
-        case 1:
-            return eleInfo.setMatrix(this->getTangentStiff());
 
-        default:
-            return 0;
-    }
-}
+// int
+// PenaltyElement::getResponse(int responseID, Information& eleInfo)
+// {
+//     switch (responseID)
+//     {
+
+//         case 1:
+//             return eleInfo.setMatrix(this->getTangentStiff());
+
+//         default:
+//             return 0;
+//     }
+// }
 
 
 

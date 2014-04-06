@@ -96,7 +96,7 @@ TotalLagrangianFD8NodeBrick::TotalLagrangianFD8NodeBrick(int tag,
 
         int node_numb_5,  int node_numb_6,  int node_numb_7,  int node_numb_8,
 
-        NDMaterial& m, double b1, double b2, double b3)
+        NDMaterial &m, double b1, double b2, double b3)
 
     : Element(tag, ELE_TAG_TotalLagrangianFD8NodeBrick ),
 
@@ -236,7 +236,7 @@ TotalLagrangianFD8NodeBrick::~TotalLagrangianFD8NodeBrick ()
 
 
 
-    if(theMaterial)
+    if (theMaterial)
 
     {
         delete [] theMaterial;
@@ -244,7 +244,7 @@ TotalLagrangianFD8NodeBrick::~TotalLagrangianFD8NodeBrick ()
 
 
 
-    if(Ki)
+    if (Ki)
 
     {
         delete Ki;
@@ -274,7 +274,7 @@ int TotalLagrangianFD8NodeBrick::getNumExternalNodes () const
 
 //=============================================================================
 
-const ID& TotalLagrangianFD8NodeBrick::getExternalNodes ()
+const ID &TotalLagrangianFD8NodeBrick::getExternalNodes ()
 
 {
 
@@ -286,7 +286,7 @@ const ID& TotalLagrangianFD8NodeBrick::getExternalNodes ()
 
 //=============================================================================
 
-Node** TotalLagrangianFD8NodeBrick::getNodePtrs(void)
+Node **TotalLagrangianFD8NodeBrick::getNodePtrs(void)
 
 {
 
@@ -310,7 +310,7 @@ int TotalLagrangianFD8NodeBrick::getNumDOF ()
 
 //=============================================================================
 
-void TotalLagrangianFD8NodeBrick::setDomain (Domain* theDomain)
+void TotalLagrangianFD8NodeBrick::setDomain (Domain *theDomain)
 
 {
 
@@ -506,17 +506,17 @@ int TotalLagrangianFD8NodeBrick::update ()
 
 
 
-    for( GP_c_r = 0 ; GP_c_r < NumIntegrationPts ; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < NumIntegrationPts ; GP_c_r++ )
     {
 
         r = pts[GP_c_r ];
 
-        for( GP_c_s = 0 ; GP_c_s < NumIntegrationPts ; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < NumIntegrationPts ; GP_c_s++ )
         {
 
             s = pts[GP_c_s ];
 
-            for( GP_c_t = 0 ; GP_c_t < NumIntegrationPts ; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < NumIntegrationPts ; GP_c_t++ )
             {
 
                 t = pts[GP_c_t ];
@@ -681,21 +681,21 @@ tensor TotalLagrangianFD8NodeBrick::getStiffnessTensor(void)
 
 
 
-    for( GP_c_r = 0 ; GP_c_r < NumIntegrationPts ; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < NumIntegrationPts ; GP_c_r++ )
     {
 
         r = pts[GP_c_r ];
 
         rw = wts[GP_c_r ];
 
-        for( GP_c_s = 0 ; GP_c_s < NumIntegrationPts ; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < NumIntegrationPts ; GP_c_s++ )
         {
 
             s = pts[GP_c_s ];
 
             sw = wts[GP_c_s ];
 
-            for( GP_c_t = 0 ; GP_c_t < NumIntegrationPts ; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < NumIntegrationPts ; GP_c_t++ )
             {
 
                 t = pts[GP_c_t ];
@@ -842,21 +842,21 @@ tensor TotalLagrangianFD8NodeBrick::getRtensor(void)
 
 
 
-    for( GP_c_r = 0 ; GP_c_r < NumIntegrationPts ; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < NumIntegrationPts ; GP_c_r++ )
     {
 
         r = pts[GP_c_r ];
 
         rw = wts[GP_c_r ];
 
-        for( GP_c_s = 0 ; GP_c_s < NumIntegrationPts ; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < NumIntegrationPts ; GP_c_s++ )
         {
 
             s = pts[GP_c_s ];
 
             sw = wts[GP_c_s ];
 
-            for( GP_c_t = 0 ; GP_c_t < NumIntegrationPts ; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < NumIntegrationPts ; GP_c_t++ )
             {
 
                 t = pts[GP_c_t ];
@@ -971,21 +971,21 @@ tensor TotalLagrangianFD8NodeBrick::getBodyForce(void)
 
 
 
-    for( GP_c_r = 0 ; GP_c_r < NumIntegrationPts ; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < NumIntegrationPts ; GP_c_r++ )
     {
 
         r = pts[GP_c_r ];
 
         rw = wts[GP_c_r ];
 
-        for( GP_c_s = 0 ; GP_c_s < NumIntegrationPts ; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < NumIntegrationPts ; GP_c_s++ )
         {
 
             s = pts[GP_c_s ];
 
             sw = wts[GP_c_s ];
 
-            for( GP_c_t = 0 ; GP_c_t < NumIntegrationPts ; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < NumIntegrationPts ; GP_c_t++ )
             {
 
                 t = pts[GP_c_t ];
@@ -1064,7 +1064,7 @@ tensor TotalLagrangianFD8NodeBrick::getForces(void)
 
 //=============================================================================
 
-const Matrix& TotalLagrangianFD8NodeBrick::getTangentStiff ()
+const Matrix &TotalLagrangianFD8NodeBrick::getTangentStiff ()
 
 {
 
@@ -1120,7 +1120,7 @@ const Matrix& TotalLagrangianFD8NodeBrick::getTangentStiff ()
 
 //=============================================================================
 
-const Matrix& TotalLagrangianFD8NodeBrick::getInitialStiff ()
+const Matrix &TotalLagrangianFD8NodeBrick::getInitialStiff ()
 
 {
 
@@ -1149,7 +1149,7 @@ const Matrix& TotalLagrangianFD8NodeBrick::getInitialStiff ()
 
 //=============================================================================
 
-const Matrix& TotalLagrangianFD8NodeBrick::getMass ()
+const Matrix &TotalLagrangianFD8NodeBrick::getMass ()
 
 {
 
@@ -1180,7 +1180,7 @@ tensor TotalLagrangianFD8NodeBrick::getNodesCrds(void)
     for (i = 0; i < NumNodes; i++)
     {
 
-        const Vector& TNodesCrds = theNodes[i]->getCrds();
+        const Vector &TNodesCrds = theNodes[i]->getCrds();
 
         for (j = 0; j < NumDof; j++)
         {
@@ -1216,7 +1216,7 @@ tensor TotalLagrangianFD8NodeBrick::getNodesDisp(void)
     for (i = 0; i < NumNodes; i++)
     {
 
-        const Vector& TNodesDisp = theNodes[i]->getTrialDisp();
+        const Vector &TNodesDisp = theNodes[i]->getTrialDisp();
 
         for (j = 0; j < NumDof; j++)
         {
@@ -1263,7 +1263,7 @@ void TotalLagrangianFD8NodeBrick::zeroLoad(void)
 
 int
 
-TotalLagrangianFD8NodeBrick::addLoad(ElementalLoad* theLoad, double loadFactor)
+TotalLagrangianFD8NodeBrick::addLoad(ElementalLoad *theLoad, double loadFactor)
 
 {
 
@@ -1277,7 +1277,7 @@ TotalLagrangianFD8NodeBrick::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 //=============================================================================
 
-int TotalLagrangianFD8NodeBrick::addInertiaLoadToUnbalance(const Vector& accel)
+int TotalLagrangianFD8NodeBrick::addInertiaLoadToUnbalance(const Vector &accel)
 
 {
 
@@ -1299,7 +1299,7 @@ int TotalLagrangianFD8NodeBrick::addInertiaLoadToUnbalance(const Vector& accel)
     for (i = 0; i < NumNodes; i++)
     {
 
-        const Vector& RA = theNodes[i]->getRV(accel);
+        const Vector &RA = theNodes[i]->getRV(accel);
 
         if ( RA.Size() != NumDof )
         {
@@ -1353,7 +1353,7 @@ int TotalLagrangianFD8NodeBrick::addInertiaLoadToUnbalance(const Vector& accel)
 
 //=============================================================================
 
-const Vector& TotalLagrangianFD8NodeBrick::getResistingForce ()
+const Vector &TotalLagrangianFD8NodeBrick::getResistingForce ()
 
 {
 
@@ -1397,7 +1397,7 @@ const Vector& TotalLagrangianFD8NodeBrick::getResistingForce ()
 
 //=============================================================================
 
-const Vector& TotalLagrangianFD8NodeBrick::getResistingForceIncInertia ()
+const Vector &TotalLagrangianFD8NodeBrick::getResistingForceIncInertia ()
 
 {
 
@@ -1418,7 +1418,7 @@ const Vector& TotalLagrangianFD8NodeBrick::getResistingForceIncInertia ()
         for (i = 0; i < NumNodes; i++)
         {
 
-            const Vector& acc = theNodes[i]->getTrialAccel();
+            const Vector &acc = theNodes[i]->getTrialAccel();
 
             if ( acc.Size() != NumDof )
             {
@@ -1458,7 +1458,7 @@ const Vector& TotalLagrangianFD8NodeBrick::getResistingForceIncInertia ()
 
 //=============================================================================
 
-int TotalLagrangianFD8NodeBrick::sendSelf (int commitTag, Channel& theChannel)
+int TotalLagrangianFD8NodeBrick::sendSelf (int commitTag, Channel &theChannel)
 
 {
 
@@ -1472,9 +1472,9 @@ int TotalLagrangianFD8NodeBrick::sendSelf (int commitTag, Channel& theChannel)
 
 //=============================================================================
 
-int TotalLagrangianFD8NodeBrick::recvSelf (int commitTag, Channel& theChannel,
+int TotalLagrangianFD8NodeBrick::recvSelf (int commitTag, Channel &theChannel,
 
-        FEM_ObjectBroker& theBroker)
+        FEM_ObjectBroker &theBroker)
 
 {
 
@@ -1489,7 +1489,7 @@ int TotalLagrangianFD8NodeBrick::recvSelf (int commitTag, Channel& theChannel,
 
 //=============================================================================
 
-void TotalLagrangianFD8NodeBrick::Print(ostream& s, int flag)
+void TotalLagrangianFD8NodeBrick::Print(ostream &s, int flag)
 
 {
 
@@ -1543,151 +1543,151 @@ void TotalLagrangianFD8NodeBrick::Print(ostream& s, int flag)
 
 }
 
-//=============================================================================
-Response* TotalLagrangianFD8NodeBrick::setResponse (const char** argv, int argc, Information& eleInfo)
-{
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new ElementResponse(this, 1, Vector(NumElemDof));
-    }
+// //=============================================================================
+// Response* TotalLagrangianFD8NodeBrick::setResponse (const char** argv, int argc, Information& eleInfo)
+// {
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new ElementResponse(this, 1, Vector(NumElemDof));
+//     }
 
-    else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 2, Matrix(NumElemDof, NumElemDof));
-    }
+//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 2, Matrix(NumElemDof, NumElemDof));
+//     }
 
-    else if (strcmp(argv[0], "CauchyStress") == 0 || strcmp(argv[0], "stress") == 0)
-    {
-        return new ElementResponse(this, 3, Vector(NumTotalGaussPts * 6));
-    }
+//     else if (strcmp(argv[0], "CauchyStress") == 0 || strcmp(argv[0], "stress") == 0)
+//     {
+//         return new ElementResponse(this, 3, Vector(NumTotalGaussPts * 6));
+//     }
 
-    else if (strcmp(argv[0], "PK2Stress") == 0 || strcmp(argv[0], "PK2stress") == 0)
-    {
-        return new ElementResponse(this, 4, Vector(NumTotalGaussPts * 6));
-    }
+//     else if (strcmp(argv[0], "PK2Stress") == 0 || strcmp(argv[0], "PK2stress") == 0)
+//     {
+//         return new ElementResponse(this, 4, Vector(NumTotalGaussPts * 6));
+//     }
 
-    // Added ZC 01/18/2005 to output strains
-    else if (strcmp(argv[0], "EulerianStrain") == 0 || strcmp(argv[0], "strain") == 0)
-    {
-        return new ElementResponse(this, 5, Vector(NumTotalGaussPts * 6));
-    }
+//     // Added ZC 01/18/2005 to output strains
+//     else if (strcmp(argv[0], "EulerianStrain") == 0 || strcmp(argv[0], "strain") == 0)
+//     {
+//         return new ElementResponse(this, 5, Vector(NumTotalGaussPts * 6));
+//     }
 
-    else if (strcmp(argv[0], "LagrangianStrain") == 0 || strcmp(argv[0], "iniStrain") == 0)
-    {
-        return new ElementResponse(this, 6, Vector(NumTotalGaussPts * 6));
-    }
+//     else if (strcmp(argv[0], "LagrangianStrain") == 0 || strcmp(argv[0], "iniStrain") == 0)
+//     {
+//         return new ElementResponse(this, 6, Vector(NumTotalGaussPts * 6));
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-//=============================================================================
-int TotalLagrangianFD8NodeBrick::getResponse (int responseID, Information& eleInfo)
-{
-    int i;
-    static Vector P0(NumTotalGaussPts * 6);
+// //=============================================================================
+// int TotalLagrangianFD8NodeBrick::getResponse (int responseID, Information& eleInfo)
+// {
+//     int i;
+//     static Vector P0(NumTotalGaussPts * 6);
 
-    switch (responseID)
-    {
+//     switch (responseID)
+//     {
 
-        case 1:
-            return eleInfo.setVector(this->getResistingForce() );
+//         case 1:
+//             return eleInfo.setVector(this->getResistingForce() );
 
-        case 2:
-            return eleInfo.setMatrix(this->getTangentStiff() );
+//         case 2:
+//             return eleInfo.setMatrix(this->getTangentStiff() );
 
-        case 3:
-            {
-                Vector P0(NumTotalGaussPts * 6);
-                tensor sigma;
+//         case 3:
+//             {
+//                 Vector P0(NumTotalGaussPts * 6);
+//                 tensor sigma;
 
-                for (i = 0; i < NumTotalGaussPts; i++)
-                {
-                    sigma = theMaterial[i]->getCauchyStressTensor();
-                    P0(i * 6 + 0 ) = sigma.val(1, 1);
-                    P0(i * 6 + 1 ) = sigma.val(2, 2);
-                    P0(i * 6 + 2 ) = sigma.val(3, 3);
-                    P0(i * 6 + 3 ) = sigma.val(2, 3);
-                    P0(i * 6 + 4 ) = sigma.val(3, 1);
-                    P0(i * 6 + 5 ) = sigma.val(1, 2);
-                }
+//                 for (i = 0; i < NumTotalGaussPts; i++)
+//                 {
+//                     sigma = theMaterial[i]->getCauchyStressTensor();
+//                     P0(i * 6 + 0 ) = sigma.val(1, 1);
+//                     P0(i * 6 + 1 ) = sigma.val(2, 2);
+//                     P0(i * 6 + 2 ) = sigma.val(3, 3);
+//                     P0(i * 6 + 3 ) = sigma.val(2, 3);
+//                     P0(i * 6 + 4 ) = sigma.val(3, 1);
+//                     P0(i * 6 + 5 ) = sigma.val(1, 2);
+//                 }
 
-                return eleInfo.setVector(P0);
-            }
+//                 return eleInfo.setVector(P0);
+//             }
 
-        case 4:
-            {
-                Vector P0(NumTotalGaussPts * 6);
-                tensor sigma;
+//         case 4:
+//             {
+//                 Vector P0(NumTotalGaussPts * 6);
+//                 tensor sigma;
 
-                for (i = 0; i < NumTotalGaussPts; i++)
-                {
-                    sigma = theMaterial[i]->getStressTensor();
-                    P0(i * 6 + 0 ) = sigma.val(1, 1);
-                    P0(i * 6 + 1 ) = sigma.val(2, 2);
-                    P0(i * 6 + 2 ) = sigma.val(3, 3);
-                    P0(i * 6 + 3 ) = sigma.val(2, 3);
-                    P0(i * 6 + 4 ) = sigma.val(3, 1);
-                    P0(i * 6 + 5 ) = sigma.val(1, 2);
-                }
+//                 for (i = 0; i < NumTotalGaussPts; i++)
+//                 {
+//                     sigma = theMaterial[i]->getStressTensor();
+//                     P0(i * 6 + 0 ) = sigma.val(1, 1);
+//                     P0(i * 6 + 1 ) = sigma.val(2, 2);
+//                     P0(i * 6 + 2 ) = sigma.val(3, 3);
+//                     P0(i * 6 + 3 ) = sigma.val(2, 3);
+//                     P0(i * 6 + 4 ) = sigma.val(3, 1);
+//                     P0(i * 6 + 5 ) = sigma.val(1, 2);
+//                 }
 
-                return eleInfo.setVector(P0);
-            }
+//                 return eleInfo.setVector(P0);
+//             }
 
-        // Added ZC 01/18/2005 to output strains
-        case 5:
-            {
-                Vector P0(NumTotalGaussPts * 6);
-                tensor e;
-                tensor E;
-                tensor F;
-                tensor tI2("I", 2, def_dim_2);
+//         // Added ZC 01/18/2005 to output strains
+//         case 5:
+//             {
+//                 Vector P0(NumTotalGaussPts * 6);
+//                 tensor e;
+//                 tensor E;
+//                 tensor F;
+//                 tensor tI2("I", 2, def_dim_2);
 
-                for (i = 0; i < NumTotalGaussPts; i++)
-                {
-                    E = theMaterial[i]->getStrainTensor();
-                    F = theMaterial[i]->getF();
-                    F = F.inverse();
-                    e = F("ki") * F("kj");
-                    e.null_indices();
-                    e = (tI2 - e) * 0.5;
-                    P0(i * 6 + 0 ) = e.val(1, 1);
-                    P0(i * 6 + 1 ) = e.val(2, 2);
-                    P0(i * 6 + 2 ) = e.val(3, 3);
-                    P0(i * 6 + 3 ) = e.val(2, 3);
-                    P0(i * 6 + 4 ) = e.val(3, 1);
-                    P0(i * 6 + 5 ) = e.val(1, 2);
-                }
+//                 for (i = 0; i < NumTotalGaussPts; i++)
+//                 {
+//                     E = theMaterial[i]->getStrainTensor();
+//                     F = theMaterial[i]->getF();
+//                     F = F.inverse();
+//                     e = F("ki") * F("kj");
+//                     e.null_indices();
+//                     e = (tI2 - e) * 0.5;
+//                     P0(i * 6 + 0 ) = e.val(1, 1);
+//                     P0(i * 6 + 1 ) = e.val(2, 2);
+//                     P0(i * 6 + 2 ) = e.val(3, 3);
+//                     P0(i * 6 + 3 ) = e.val(2, 3);
+//                     P0(i * 6 + 4 ) = e.val(3, 1);
+//                     P0(i * 6 + 5 ) = e.val(1, 2);
+//                 }
 
-                return eleInfo.setVector(P0);
-            }
+//                 return eleInfo.setVector(P0);
+//             }
 
-        case 6:
-            {
-                Vector P0(NumTotalGaussPts * 6);
-                tensor E;
+//         case 6:
+//             {
+//                 Vector P0(NumTotalGaussPts * 6);
+//                 tensor E;
 
-                for (i = 0; i < NumTotalGaussPts; i++)
-                {
-                    E = theMaterial[i]->getStrainTensor();
-                    P0(i * 6 + 0 ) = E.val(1, 1);
-                    P0(i * 6 + 1 ) = E.val(2, 2);
-                    P0(i * 6 + 2 ) = E.val(3, 3);
-                    P0(i * 6 + 3 ) = E.val(2, 3);
-                    P0(i * 6 + 4 ) = E.val(3, 1);
-                    P0(i * 6 + 5 ) = E.val(1, 2);
-                }
+//                 for (i = 0; i < NumTotalGaussPts; i++)
+//                 {
+//                     E = theMaterial[i]->getStrainTensor();
+//                     P0(i * 6 + 0 ) = E.val(1, 1);
+//                     P0(i * 6 + 1 ) = E.val(2, 2);
+//                     P0(i * 6 + 2 ) = E.val(3, 3);
+//                     P0(i * 6 + 3 ) = E.val(2, 3);
+//                     P0(i * 6 + 4 ) = E.val(3, 1);
+//                     P0(i * 6 + 5 ) = E.val(1, 2);
+//                 }
 
-                return eleInfo.setVector(P0);
-            }
+//                 return eleInfo.setVector(P0);
+//             }
 
-        default:
-            return -1;
+//         default:
+//             return -1;
 
-    }
-}
+//     }
+// }
 
 
 

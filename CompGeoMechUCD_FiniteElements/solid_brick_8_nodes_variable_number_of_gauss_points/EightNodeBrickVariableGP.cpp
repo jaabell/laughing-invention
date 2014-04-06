@@ -49,7 +49,7 @@ double EightNodeBrickVariableGP::SurfaceLoadValues_in_function; // Nima added fo
 EightNodeBrickVariableGP::EightNodeBrickVariableGP(int element_number, int number_of_gauss_points_in_each_direction,
         int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
         int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-        NDMaterial* Globalmmodel)
+        NDMaterial *Globalmmodel)
 
     : Element(element_number, ELE_TAG_EightNodeBrickVariableGP),
       connectedExternalNodes(8), Ki(0), Q(24), rho(0.0), epEnergy(0.0)
@@ -81,9 +81,9 @@ EightNodeBrickVariableGP::EightNodeBrickVariableGP(int element_number, int numbe
     mmodel = Globalmmodel;
     initialized = false;
 
-    # ifndef _PARALLEL_PROCESSING
+# ifndef _PARALLEL_PROCESSING
     populate();
-    # endif
+# endif
 
     connectedExternalNodes(0) = node_numb_1;
     connectedExternalNodes(1) = node_numb_2;
@@ -122,17 +122,17 @@ void EightNodeBrickVariableGP::populate()
 
     short where = 0;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         double r = get_Gauss_p_c( integration_order, GP_c_r );
         double rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             double s = get_Gauss_p_c( integration_order, GP_c_s );
             double sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 double t = get_Gauss_p_c( integration_order, GP_c_t );
                 double tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -164,9 +164,9 @@ EightNodeBrickVariableGP::EightNodeBrickVariableGP(): Element(0, ELE_TAG_EightNo
 {
 
     initialized = false; //Guanzhou added!
-    # ifndef _PARALLEL_PROCESSING //Guanzhou added!
+# ifndef _PARALLEL_PROCESSING //Guanzhou added!
     populate();
-    # endif
+# endif
 
     nodes_in_brick = 8;
 
@@ -237,15 +237,15 @@ void EightNodeBrickVariableGP::incremental_Update()
 
     incremental_displacements = incr_disp();
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -395,7 +395,7 @@ tensor EightNodeBrickVariableGP::dh_drst_at(double r1, double r2, double r3)
 }
 
 ////#############################################################################
-EightNodeBrickVariableGP& EightNodeBrickVariableGP::operator[](int subscript)
+EightNodeBrickVariableGP &EightNodeBrickVariableGP::operator[](int subscript)
 {
     return ( *(this + subscript) );
 }
@@ -432,17 +432,17 @@ tensor EightNodeBrickVariableGP::getStiffnessTensor(void)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -482,7 +482,7 @@ tensor EightNodeBrickVariableGP::getStiffnessTensor(void)
 
 //#############################################################################
 
-void EightNodeBrickVariableGP::set_strain_stress_tensor(FILE* fp, double* u)
+void EightNodeBrickVariableGP::set_strain_stress_tensor(FILE *fp, double *u)
 {
 
 
@@ -518,15 +518,15 @@ void EightNodeBrickVariableGP::set_strain_stress_tensor(FILE* fp, double* u)
                  total_displacements.val(ii, 3));
     }
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 // this short routine is supposed to calculate position of
@@ -562,7 +562,7 @@ void EightNodeBrickVariableGP::set_strain_stress_tensor(FILE* fp, double* u)
 }
 ////#############################################################################
 
-tensor EightNodeBrickVariableGP::stiffness_matrix(const tensor& K)
+tensor EightNodeBrickVariableGP::stiffness_matrix(const tensor &K)
 {
     matrix Kmatrix(24, 24, 0.0);
 
@@ -590,7 +590,7 @@ tensor EightNodeBrickVariableGP::stiffness_matrix(const tensor& K)
 }
 
 //#############################################################################
-tensor EightNodeBrickVariableGP::mass_matrix(const tensor& M)
+tensor EightNodeBrickVariableGP::mass_matrix(const tensor &M)
 {
 
     matrix Mmatrix(24, 24, 0.0);
@@ -631,14 +631,14 @@ tensor EightNodeBrickVariableGP::Nodal_Coordinates(void)
     tensor N_coord(2, dimensions, 0.0);
 
 
-    const Vector& nd1Crds = theNodes[0]->getCrds();
-    const Vector& nd2Crds = theNodes[1]->getCrds();
-    const Vector& nd3Crds = theNodes[2]->getCrds();
-    const Vector& nd4Crds = theNodes[3]->getCrds();
-    const Vector& nd5Crds = theNodes[4]->getCrds();
-    const Vector& nd6Crds = theNodes[5]->getCrds();
-    const Vector& nd7Crds = theNodes[6]->getCrds();
-    const Vector& nd8Crds = theNodes[7]->getCrds();
+    const Vector &nd1Crds = theNodes[0]->getCrds();
+    const Vector &nd2Crds = theNodes[1]->getCrds();
+    const Vector &nd3Crds = theNodes[2]->getCrds();
+    const Vector &nd4Crds = theNodes[3]->getCrds();
+    const Vector &nd5Crds = theNodes[4]->getCrds();
+    const Vector &nd6Crds = theNodes[5]->getCrds();
+    const Vector &nd7Crds = theNodes[6]->getCrds();
+    const Vector &nd8Crds = theNodes[7]->getCrds();
 
     N_coord.val(1, 1) = nd1Crds(0);
     N_coord.val(1, 2) = nd1Crds(1);
@@ -674,14 +674,14 @@ tensor EightNodeBrickVariableGP::incr_disp(void)
     const int dimensions[] = {8, 3};
     tensor increment_disp(2, dimensions, 0.0);
 
-    const Vector& IncrDis1 = theNodes[0]->getIncrDeltaDisp();
-    const Vector& IncrDis2 = theNodes[1]->getIncrDeltaDisp();
-    const Vector& IncrDis3 = theNodes[2]->getIncrDeltaDisp();
-    const Vector& IncrDis4 = theNodes[3]->getIncrDeltaDisp();
-    const Vector& IncrDis5 = theNodes[4]->getIncrDeltaDisp();
-    const Vector& IncrDis6 = theNodes[5]->getIncrDeltaDisp();
-    const Vector& IncrDis7 = theNodes[6]->getIncrDeltaDisp();
-    const Vector& IncrDis8 = theNodes[7]->getIncrDeltaDisp();
+    const Vector &IncrDis1 = theNodes[0]->getIncrDeltaDisp();
+    const Vector &IncrDis2 = theNodes[1]->getIncrDeltaDisp();
+    const Vector &IncrDis3 = theNodes[2]->getIncrDeltaDisp();
+    const Vector &IncrDis4 = theNodes[3]->getIncrDeltaDisp();
+    const Vector &IncrDis5 = theNodes[4]->getIncrDeltaDisp();
+    const Vector &IncrDis6 = theNodes[5]->getIncrDeltaDisp();
+    const Vector &IncrDis7 = theNodes[6]->getIncrDeltaDisp();
+    const Vector &IncrDis8 = theNodes[7]->getIncrDeltaDisp();
 
 
     increment_disp.val(1, 1) = IncrDis1(0);
@@ -719,22 +719,22 @@ tensor EightNodeBrickVariableGP::total_disp(void)
     tensor total_disp(2, dimensions, 0.0);
 
     //Zhaohui using node pointers, which come from the Domain
-    const Vector& TotDis1 = theNodes[0]->getTrialDisp();
+    const Vector &TotDis1 = theNodes[0]->getTrialDisp();
     //cerr << "Element: " << this->getTag() << endln;
     //cerr<<"\ntot node " << theNodes[0]->getTag() <<" x "<< TotDis1(0) <<" y "<< TotDis1(1) << " z "<< TotDis1(2) << endln;
-    const Vector& TotDis2 = theNodes[1]->getTrialDisp();
+    const Vector &TotDis2 = theNodes[1]->getTrialDisp();
     //cerr << "tot node " << theNodes[1]->getTag() << " x " << TotDis2(0) <<" y "<< TotDis2(1) << " z "<< TotDis2(2) << endln;
-    const Vector& TotDis3 = theNodes[2]->getTrialDisp();
+    const Vector &TotDis3 = theNodes[2]->getTrialDisp();
     //cerr << "tot node " << theNodes[2]->getTag() << " x " << TotDis3(0) <<" y "<< TotDis3(1) << " z "<< TotDis3(2) << endln;
-    const Vector& TotDis4 = theNodes[3]->getTrialDisp();
+    const Vector &TotDis4 = theNodes[3]->getTrialDisp();
     //cerr << "tot node " << theNodes[3]->getTag() << " x " << TotDis4(0) <<" y "<< TotDis4(1) << " z "<< TotDis4(2) << endln;
-    const Vector& TotDis5 = theNodes[4]->getTrialDisp();
+    const Vector &TotDis5 = theNodes[4]->getTrialDisp();
     //cerr << "tot node " << theNodes[4]->getTag() << " x " << TotDis5(0) <<" y "<< TotDis5(1) << " z "<< TotDis5(2) << endln;
-    const Vector& TotDis6 = theNodes[5]->getTrialDisp();
+    const Vector &TotDis6 = theNodes[5]->getTrialDisp();
     //cerr << "tot node " << theNodes[5]->getTag() << " x " << TotDis6(0) <<" y "<< TotDis6(1) << " z "<< TotDis6(2) << endln;
-    const Vector& TotDis7 = theNodes[6]->getTrialDisp();
+    const Vector &TotDis7 = theNodes[6]->getTrialDisp();
     //cerr << "tot node " << theNodes[6]->getTag() << " x " << TotDis7(0) <<" y "<< TotDis7(1) << " z "<< TotDis7(2) << endln;
-    const Vector& TotDis8 = theNodes[7]->getTrialDisp();
+    const Vector &TotDis8 = theNodes[7]->getTrialDisp();
     //cerr << "tot node " << theNodes[7]->getTag() << " x " << TotDis8(0) <<" y "<< TotDis8(1) << " z "<< TotDis8(2) << endln;
 
     total_disp.val(1, 1) = TotDis1(0);
@@ -767,19 +767,19 @@ tensor EightNodeBrickVariableGP::total_disp(void)
 
 
 ////#############################################################################
-tensor EightNodeBrickVariableGP::total_disp(FILE* fp, double* u)
+tensor EightNodeBrickVariableGP::total_disp(FILE *fp, double *u)
 {
     const int dimensions[] = {8, 3}; // Xiaoyan changed from {20,3} to {8,3} for 8 nodes
     tensor total_disp(2, dimensions, 0.0);
 
-    const Vector& TotDis1 = theNodes[0]->getTrialDisp();
-    const Vector& TotDis2 = theNodes[1]->getTrialDisp();
-    const Vector& TotDis3 = theNodes[2]->getTrialDisp();
-    const Vector& TotDis4 = theNodes[3]->getTrialDisp();
-    const Vector& TotDis5 = theNodes[4]->getTrialDisp();
-    const Vector& TotDis6 = theNodes[5]->getTrialDisp();
-    const Vector& TotDis7 = theNodes[6]->getTrialDisp();
-    const Vector& TotDis8 = theNodes[7]->getTrialDisp();
+    const Vector &TotDis1 = theNodes[0]->getTrialDisp();
+    const Vector &TotDis2 = theNodes[1]->getTrialDisp();
+    const Vector &TotDis3 = theNodes[2]->getTrialDisp();
+    const Vector &TotDis4 = theNodes[3]->getTrialDisp();
+    const Vector &TotDis5 = theNodes[4]->getTrialDisp();
+    const Vector &TotDis6 = theNodes[5]->getTrialDisp();
+    const Vector &TotDis7 = theNodes[6]->getTrialDisp();
+    const Vector &TotDis8 = theNodes[7]->getTrialDisp();
 
     total_disp.val(1, 1) = TotDis1(0);
     total_disp.val(1, 2) = TotDis1(1);
@@ -823,7 +823,7 @@ int  EightNodeBrickVariableGP::get_Brick_Number(void)
 }
 
 ////#############################################################################
-int* EightNodeBrickVariableGP::get_LM(void)
+int *EightNodeBrickVariableGP::get_LM(void)
 {
     return LM;
 }
@@ -859,17 +859,17 @@ tensor EightNodeBrickVariableGP::nodal_forces(void)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -943,17 +943,17 @@ tensor EightNodeBrickVariableGP::iterative_nodal_forces(void)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -995,7 +995,7 @@ tensor EightNodeBrickVariableGP::iterative_nodal_forces(void)
 
 ////#############################################################################
 // returns nodal forces for given constant stress field in the element
-tensor EightNodeBrickVariableGP::nodal_forces_from_stress(stresstensor& stress)
+tensor EightNodeBrickVariableGP::nodal_forces_from_stress(stresstensor &stress)
 {
 
     int force_dim[] = {8, 3};
@@ -1021,17 +1021,17 @@ tensor EightNodeBrickVariableGP::nodal_forces_from_stress(stresstensor& stress)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1106,17 +1106,17 @@ tensor EightNodeBrickVariableGP::linearized_nodal_forces(void)
 
     incremental_displacements = incr_disp();
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1170,7 +1170,7 @@ tensor EightNodeBrickVariableGP::linearized_nodal_forces(void)
 }
 
 //#############################################################################
-void EightNodeBrickVariableGP::report(char* msg)
+void EightNodeBrickVariableGP::report(char *msg)
 {
     if ( msg )
     {
@@ -1222,11 +1222,11 @@ void EightNodeBrickVariableGP::report(char* msg)
 
 
 
-    for( int GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( int GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
-        for( int GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( int GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
-            for( int GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( int GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 // this short routine is supposed to calculate position of
                 // Gauss point from 3D array of short's
@@ -1246,7 +1246,7 @@ void EightNodeBrickVariableGP::report(char* msg)
 
 
 //#############################################################################
-void EightNodeBrickVariableGP::reportshort(char* msg)
+void EightNodeBrickVariableGP::reportshort(char *msg)
 {
     if ( msg )
     {
@@ -1278,7 +1278,7 @@ void EightNodeBrickVariableGP::reportshort(char* msg)
 
 
 //#############################################################################
-void EightNodeBrickVariableGP::reportPAK(char* msg)
+void EightNodeBrickVariableGP::reportPAK(char *msg)
 {
     if ( msg )
     {
@@ -1399,7 +1399,7 @@ void EightNodeBrickVariableGP::reportpqtheta(int GP_numb)
 
 
 //#############################################################################
-void EightNodeBrickVariableGP::reportTensorF(FILE* fp)
+void EightNodeBrickVariableGP::reportTensorF(FILE *fp)
 {
 
     double r  = 0.0;
@@ -1415,14 +1415,14 @@ void EightNodeBrickVariableGP::reportTensorF(FILE* fp)
 
     tensor H(2, h_dim, 0.0);
 
-    const Vector& nd1Crds = theNodes[0]->getCrds();
-    const Vector& nd2Crds = theNodes[1]->getCrds();
-    const Vector& nd3Crds = theNodes[2]->getCrds();
-    const Vector& nd4Crds = theNodes[3]->getCrds();
-    const Vector& nd5Crds = theNodes[4]->getCrds();
-    const Vector& nd6Crds = theNodes[5]->getCrds();
-    const Vector& nd7Crds = theNodes[6]->getCrds();
-    const Vector& nd8Crds = theNodes[7]->getCrds();
+    const Vector &nd1Crds = theNodes[0]->getCrds();
+    const Vector &nd2Crds = theNodes[1]->getCrds();
+    const Vector &nd3Crds = theNodes[2]->getCrds();
+    const Vector &nd4Crds = theNodes[3]->getCrds();
+    const Vector &nd5Crds = theNodes[4]->getCrds();
+    const Vector &nd6Crds = theNodes[5]->getCrds();
+    const Vector &nd7Crds = theNodes[6]->getCrds();
+    const Vector &nd8Crds = theNodes[7]->getCrds();
 
     NodalCoord.val(1, 1) = nd1Crds(0);
     NodalCoord.val(2, 1) = nd1Crds(1);
@@ -1449,15 +1449,15 @@ void EightNodeBrickVariableGP::reportTensorF(FILE* fp)
     NodalCoord.val(2, 8) = nd8Crds(1);
     NodalCoord.val(3, 8) = nd8Crds(2);
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 // this short routine is supposed to calculate position of
@@ -1497,12 +1497,12 @@ int EightNodeBrickVariableGP::getNumExternalNodes () const
 
 
 //=============================================================================
-const ID& EightNodeBrickVariableGP::getExternalNodes ()
+const ID &EightNodeBrickVariableGP::getExternalNodes ()
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 EightNodeBrickVariableGP::getNodePtrs(void)
 {
     return theNodes;
@@ -1515,7 +1515,7 @@ int EightNodeBrickVariableGP::getNumDOF ()
 }
 
 //=============================================================================
-void EightNodeBrickVariableGP::setDomain(Domain* theDomain)
+void EightNodeBrickVariableGP::setDomain(Domain *theDomain)
 {
     // Check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -1543,79 +1543,79 @@ void EightNodeBrickVariableGP::setDomain(Domain* theDomain)
         int Nd8 = connectedExternalNodes(7);
 
         theNodes[0] = theDomain->getNode(Nd1);
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[0] == 0)
         {
             theNodes[0] = theDomain->getOutsideNode(Nd1);
         }
 
-        # endif
+# endif
         theNodes[1] = theDomain->getNode(Nd2);
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[1] == 0)
         {
             theNodes[1] = theDomain->getOutsideNode(Nd2);
         }
 
-        # endif
+# endif
         theNodes[2] = theDomain->getNode(Nd3);
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[2] == 0)
         {
             theNodes[2] = theDomain->getOutsideNode(Nd3);
         }
 
-        # endif
+# endif
         theNodes[3] = theDomain->getNode(Nd4);
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[3] == 0)
         {
             theNodes[3] = theDomain->getOutsideNode(Nd4);
         }
 
-        # endif
+# endif
 
         //Xiaoyan added 5-8  07/06/00
         theNodes[4] = theDomain->getNode(Nd5);
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[4] == 0)
         {
             theNodes[4] = theDomain->getOutsideNode(Nd5);
         }
 
-        # endif
+# endif
         theNodes[5] = theDomain->getNode(Nd6);
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[5] == 0)
         {
             theNodes[5] = theDomain->getOutsideNode(Nd6);
         }
 
-        # endif
+# endif
         theNodes[6] = theDomain->getNode(Nd7);
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[6] == 0)
         {
             theNodes[6] = theDomain->getOutsideNode(Nd7);
         }
 
-        # endif
+# endif
         theNodes[7] = theDomain->getNode(Nd8);
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theNodes[7] == 0)
         {
             theNodes[7] = theDomain->getOutsideNode(Nd8);
         }
 
-        # endif
+# endif
 
         if (theNodes[0] == 0 || theNodes[1] == 0 || theNodes[2] == 0 || theNodes[3] == 0 ||
                 theNodes[4] == 0 || theNodes[5] == 0 || theNodes[6] == 0 || theNodes[7] == 0 )
@@ -1713,7 +1713,7 @@ int EightNodeBrickVariableGP::revertToStart ()
 
 
 //=============================================================================
-const Matrix& EightNodeBrickVariableGP::getTangentStiff()
+const Matrix &EightNodeBrickVariableGP::getTangentStiff()
 {
 
     tensor stifftensor = getStiffnessTensor();
@@ -1740,7 +1740,7 @@ const Matrix& EightNodeBrickVariableGP::getTangentStiff()
 }
 
 //=============================================================================
-const Matrix& EightNodeBrickVariableGP::getInitialStiff ()
+const Matrix &EightNodeBrickVariableGP::getInitialStiff ()
 {
     if (Ki == 0)
     {
@@ -1760,7 +1760,7 @@ const Matrix& EightNodeBrickVariableGP::getInitialStiff ()
 //=============================================================================
 // Nima Tafazzoli combined getMassTensor with getMass
 //Get consistent mass
-const Matrix& EightNodeBrickVariableGP::getMass()
+const Matrix &EightNodeBrickVariableGP::getMass()
 {
     int M_dim[] = {24, 24};
     tensor Mm(2, M_dim, 0.0);
@@ -1788,17 +1788,17 @@ const Matrix& EightNodeBrickVariableGP::getMass()
     double RHO;
     RHO = rho;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1840,7 +1840,7 @@ void EightNodeBrickVariableGP::zeroLoad(void)
 
 
 //======================================================================
-const Vector& EightNodeBrickVariableGP::getBodyForce(double loadFactor, const Vector& data)
+const Vector &EightNodeBrickVariableGP::getBodyForce(double loadFactor, const Vector &data)
 {
 
     static Vector bforce(24);
@@ -1898,7 +1898,7 @@ const Vector& EightNodeBrickVariableGP::getBodyForce(double loadFactor, const Ve
 
 
 //======================================================================
-const Vector& EightNodeBrickVariableGP::getSurfaceForce(double loadFactor, const Vector& data)
+const Vector &EightNodeBrickVariableGP::getSurfaceForce(double loadFactor, const Vector &data)
 {
 
     int node_exist = 0;
@@ -1933,10 +1933,10 @@ const Vector& EightNodeBrickVariableGP::getSurfaceForce(double loadFactor, const
 
 
     // get the surface nodal coordinates
-    const Vector& coordnode1 = theNodes[node1_local]->getCrds();
-    const Vector& coordnode2 = theNodes[node2_local]->getCrds();
-    const Vector& coordnode3 = theNodes[node3_local]->getCrds();
-    const Vector& coordnode4 = theNodes[node4_local]->getCrds();
+    const Vector &coordnode1 = theNodes[node1_local]->getCrds();
+    const Vector &coordnode2 = theNodes[node2_local]->getCrds();
+    const Vector &coordnode3 = theNodes[node3_local]->getCrds();
+    const Vector &coordnode4 = theNodes[node4_local]->getCrds();
 
 
 
@@ -1984,13 +1984,13 @@ const Vector& EightNodeBrickVariableGP::getSurfaceForce(double loadFactor, const
 
 
     // loop over dof
-    for(int k = 0; k < 3; k++)
+    for (int k = 0; k < 3; k++)
     {
         // loop over nodes
-        for(int j = 0; j < 4; j++)
+        for (int j = 0; j < 4; j++)
         {
 
-            for(int v = 0; v < 8; v++)
+            for (int v = 0; v < 8; v++)
             {
                 if (data(j) == connectedExternalNodes(v))
                 {
@@ -2000,7 +2000,7 @@ const Vector& EightNodeBrickVariableGP::getSurfaceForce(double loadFactor, const
             }
 
             // loop over Gauss points
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
 
                 ShapeFunctionValues = SurfaceShapeFunctionValues(GsPts(i, 0) , GsPts(i, 1), j);
@@ -2022,12 +2022,12 @@ const Vector& EightNodeBrickVariableGP::getSurfaceForce(double loadFactor, const
 
 
 //=============================================================================
-int EightNodeBrickVariableGP::addLoad(ElementalLoad* theLoad, double loadFactor)
+int EightNodeBrickVariableGP::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
 
 
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_ElementSelfWeight)
     {
@@ -2055,7 +2055,7 @@ int EightNodeBrickVariableGP::addLoad(ElementalLoad* theLoad, double loadFactor)
 }
 
 //=============================================================================
-int EightNodeBrickVariableGP::addInertiaLoadToUnbalance(const Vector& accel)
+int EightNodeBrickVariableGP::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // Check for a quick return
     if (rho == 0.0)
@@ -2064,14 +2064,14 @@ int EightNodeBrickVariableGP::addInertiaLoadToUnbalance(const Vector& accel)
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
-    const Vector& Raccel3 = theNodes[2]->getRV(accel);
-    const Vector& Raccel4 = theNodes[3]->getRV(accel);
-    const Vector& Raccel5 = theNodes[4]->getRV(accel);
-    const Vector& Raccel6 = theNodes[5]->getRV(accel);
-    const Vector& Raccel7 = theNodes[6]->getRV(accel);
-    const Vector& Raccel8 = theNodes[7]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel3 = theNodes[2]->getRV(accel);
+    const Vector &Raccel4 = theNodes[3]->getRV(accel);
+    const Vector &Raccel5 = theNodes[4]->getRV(accel);
+    const Vector &Raccel6 = theNodes[5]->getRV(accel);
+    const Vector &Raccel7 = theNodes[6]->getRV(accel);
+    const Vector &Raccel8 = theNodes[7]->getRV(accel);
 
     if (3 != Raccel1.Size() || 3 != Raccel2.Size() || 3 != Raccel3.Size() ||
             3 != Raccel4.Size() || 3 != Raccel5.Size() || 3 != Raccel6.Size() ||
@@ -2115,7 +2115,7 @@ int EightNodeBrickVariableGP::addInertiaLoadToUnbalance(const Vector& accel)
 }
 
 //=============================================================================
-const Vector EightNodeBrickVariableGP::FormEquiBodyForce(const Vector& data)
+const Vector EightNodeBrickVariableGP::FormEquiBodyForce(const Vector &data)
 {
 
     Vector bforce(24);
@@ -2170,7 +2170,7 @@ const Vector EightNodeBrickVariableGP::FormEquiBodyForce(const Vector& data)
 
 
 //=============================================================================
-const Vector& EightNodeBrickVariableGP::getResistingForce()
+const Vector &EightNodeBrickVariableGP::getResistingForce()
 {
 
     int force_dim[] = {8, 3};
@@ -2193,7 +2193,7 @@ const Vector& EightNodeBrickVariableGP::getResistingForce()
 }
 
 //=============================================================================
-const Vector& EightNodeBrickVariableGP::getResistingForceIncInertia ()
+const Vector &EightNodeBrickVariableGP::getResistingForceIncInertia ()
 {
     // form resisting force
     this->getResistingForce();
@@ -2204,14 +2204,14 @@ const Vector& EightNodeBrickVariableGP::getResistingForceIncInertia ()
         // form the mass matrix
         this->getMass();
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
-        const Vector& accel3 = theNodes[2]->getTrialAccel();
-        const Vector& accel4 = theNodes[3]->getTrialAccel();
-        const Vector& accel5 = theNodes[4]->getTrialAccel();
-        const Vector& accel6 = theNodes[5]->getTrialAccel();
-        const Vector& accel7 = theNodes[6]->getTrialAccel();
-        const Vector& accel8 = theNodes[7]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel3 = theNodes[2]->getTrialAccel();
+        const Vector &accel4 = theNodes[3]->getTrialAccel();
+        const Vector &accel5 = theNodes[4]->getTrialAccel();
+        const Vector &accel6 = theNodes[5]->getTrialAccel();
+        const Vector &accel7 = theNodes[6]->getTrialAccel();
+        const Vector &accel8 = theNodes[7]->getTrialAccel();
 
         static Vector a(24);
 
@@ -2265,7 +2265,7 @@ const Vector& EightNodeBrickVariableGP::getResistingForceIncInertia ()
 }
 
 
-int EightNodeBrickVariableGP::sendSelf (int commitTag, Channel& theChannel)
+int EightNodeBrickVariableGP::sendSelf (int commitTag, Channel &theChannel)
 {
     if ( !initialized )
     {
@@ -2340,7 +2340,7 @@ int EightNodeBrickVariableGP::sendSelf (int commitTag, Channel& theChannel)
 }
 
 
-int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     if ( !initialized )
     {
@@ -2377,7 +2377,7 @@ int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel& theChannel, FEM_
         for (int i = 0; i < 8; i++)
         {
             // Allocate new material with the sent class tag
-            NDMaterial* ndmat = theBroker.getNewNDMaterial(matClassTag);
+            NDMaterial *ndmat = theBroker.getNewNDMaterial(matClassTag);
 
             if (ndmat == 0)
             {
@@ -2403,7 +2403,7 @@ int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel& theChannel, FEM_
     {
         for (int i = 0; i < 8; i++)
         {
-            NDMaterial* ndmat = theBroker.getNewNDMaterial(matClassTag);;
+            NDMaterial *ndmat = theBroker.getNewNDMaterial(matClassTag);;
 
             // Check that material is of the right type; if not,
             // delete it and create a new one of the right type
@@ -2455,7 +2455,7 @@ int EightNodeBrickVariableGP::getObjectSize()
     size += 11 * sizeof(int);
     size += 4 * sizeof(double);
 
-    for(int i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++)
     {
         size += (matpoint[i]->matmodel)->getObjectSize();
     }
@@ -2465,7 +2465,7 @@ int EightNodeBrickVariableGP::getObjectSize()
 
 
 //=============================================================================
-void EightNodeBrickVariableGP::Print(ostream& s, int flag)
+void EightNodeBrickVariableGP::Print(ostream &s, int flag)
 {
     if (flag == 1)
     {
@@ -2484,438 +2484,438 @@ void EightNodeBrickVariableGP::Print(ostream& s, int flag)
     }
 }
 
-//=============================================================================
-Response* EightNodeBrickVariableGP::setResponse (const char** argv, int argc, Information& eleInformation)
-{
-    //========================================================
-    //     if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0)
-    //     return new ElementResponse(this, 1, P);
-
-    //========================================================
-    if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 2, K);
-    }
-
-    //========================================================
-    //     else if (strcmp(argv[0],"plasticGPC") == 0 || strcmp(argv[0],"plastifiedGPC") == 0)
-    //     {
-    //         return new ElementResponse(this, 3, Vector(integration_order*integration_order*integration_order*4+1));
-    //     }
-    //========================================================
-    else if (strcmp(argv[0], "plastic") == 0 || strcmp(argv[0], "plastified") == 0)
-    {
-        return new ElementResponse(this, 31, Vector(integration_order * integration_order * integration_order + 1));
-    }
-    //========================================================
-    else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
-    {
-        return new ElementResponse(this, 4, Vector(integration_order * integration_order * integration_order * 6 + 1));
-    }
-    //========================================================
-    else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
-    {
-        return new ElementResponse(this, 41, Vector(2));
-    }
-    //Added 06-27-02 for p-q
-    //========================================================
-    else if (strcmp(argv[0], "stresspq") == 0 || strcmp(argv[0], "stressespq") == 0)
-    {
-        return new ElementResponse(this, 41, Vector(2));
-    }
-    //Added 07-22-02 for all p-q, e_v_pl, xi
-    //========================================================
-    else if (strcmp(argv[0], "pqall") == 0 )
-    {
-        return new ElementResponse(this, 42, Vector(integration_order * integration_order * integration_order * 2 + 4));
-    }
-
-    //========================================================
-    //     else if (strcmp(argv[0],"gausspoint") == 0 || strcmp(argv[0],"GaussPoint") == 0)
-    //     {
-    //         return new ElementResponse(this, 5, Vector(integration_order*integration_order*integration_order*3+1));
-    //     }
-    //Guanzhou added
-    else if (strcmp(argv[0], "plasticEnergy") == 0 || strcmp(argv[0], "plasticenergy") == 0)
-    {
-        return new ElementResponse(this, 6, epEnergy);
-    }
-    //========================================================
-    //Nima added for recording the Strain (10-13-2008)
-
-    else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
-    {
-        return new ElementResponse(this, 7, Vector(integration_order * integration_order * integration_order * 6 + 1) );
-    }
-
-    //========================================================
-    //Nima added for recording the Strain (April 2010)
-
-    //     else if ( (strcmp(argv[0],"vol_strain") == 0) || (strcmp(argv[0],"volumetric_strain") ==0) )
-    //         return new ElementResponse(this, 71, e_p );
-
-    //========================================================
-
-    // otherwise response quantity is unknown for the quad class
-    else
-    {
-        return 0;
-    }
-}
-
-//=============================================================================
-int EightNodeBrickVariableGP::getResponse (int responseID, Information& eleInfo)
-{
-    switch (responseID)
-    {
-
-        //        case 1:
-        //          return eleInfo.setVector(this->getResistingForce());
-        //          break;
-
-        case 2:
-            return eleInfo.setMatrix(this->getTangentStiff());
-            break;
-
-
-        //     case 3:
-        //     {
-        //         //checking if element plastified
-        //         int count  = integration_order* integration_order * integration_order;
-        //         computeGaussPoint();
-        //
-        //         static Vector InfoP(integration_order*integration_order*integration_order*4+1);
-        //         InfoP(0) = Gsc8(0); //Number of Gauss point
-        //
-        //         straintensor pl_stn;
-        //
-        //         for (int i = 0; i < count; i++)
-        //         {
-        // //             plastify = 0;
-        //             InfoP(i*4+1) = Gsc8(i*3+1); //x
-        //             InfoP(i*4+2) = Gsc8(i*3+2); //y
-        //             InfoP(i*4+3) = Gsc8(i*3+3); //z
-        //             pl_stn = matpoint[i]->getPlasticStrainTensor();
-        //             double  q_plastc = pl_stn.q_deviatoric();
-        //
-        //             InfoP(i*4+4) = q_plastc; //plastify; //Plastified?
-        //
-        //         }
-        //         return eleInfo.setVector( InfoP );
-        //         break;
-        //
-        //         //return plastify;
-        //
-        //     }
-
-        case 4:
-            {
-                int count = integration_order * integration_order * integration_order;
-                int i;
-                stresstensor sts;
-                //Vector Gsc(81+1);  // 8*3 + count
-                //Gsc = this->reportTensor("Gauss Point Coor.");
-
-                //Vector Info(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
-                static Vector InfoS(integration_order * integration_order * integration_order * 6 + 1);
-                InfoS(0) = count;
-
-                for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-                {
-                    //r = get_Gauss_p_c( integration_order, GP_c_r );
-                    for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                    {
-                        //s = get_Gauss_p_c( integration_order, GP_c_s );
-                        //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
-
-                        for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                        {
-                            //for (int i = 0; i < count; i++)
-                            i =
-                                ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                            sts = matpoint[i]->getStressTensor();
-                            InfoS(i * 6 + 1) = sts.cval(1, 1); //sigma_xx
-                            InfoS(i * 6 + 2) = sts.cval(2, 2); //sigma_yy
-                            InfoS(i * 6 + 3) = sts.cval(3, 3); //sigma_zz
-                            InfoS(i * 6 + 4) = sts.cval(1, 2); //Assign sigma_xy
-                            InfoS(i * 6 + 5) = sts.cval(1, 3); //Assign sigma_xz
-                            InfoS(i * 6 + 6) = sts.cval(2, 3); //Assign sigma_yz
-                        }
-                    }
-                }
-
-                return eleInfo.setVector( InfoS );
-                break;
-            }
-
-        case 41:
-            {
-                int count = integration_order * integration_order * integration_order;
-                count = count / 2;
-                stresstensor sts;
-                static Vector InfoSpq(2);
-                sts = matpoint[count]->getStressTensor();
-                InfoSpq(0) = sts.p_hydrostatic();
-                InfoSpq(1) = sts.q_deviatoric();
-                return eleInfo.setVector( InfoSpq );
-            }
-
-        case 42:
-            {
-                //         int count = integration_order* integration_order * integration_order;
-                int i;
-                stresstensor sts, principle;
-
-                static Vector InfoSpq_all(integration_order * integration_order * integration_order * 2 + 4);
-
-                for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-                {
-                    //r = get_Gauss_p_c( integration_order, GP_c_r );
-                    for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                    {
-
-                        for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                        {
-                            i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                            sts = matpoint[i]->getStressTensor();
-                            InfoSpq_all(i * 2 + 0) = sts.p_hydrostatic();
-                            //deviatoric stress sqrt(J2/3)
-                            InfoSpq_all(i * 2 + 1) = sts.q_deviatoric();
-                            //deviator stress +/-
-                            principle = sts.principal();
-
-                            //InfoSpq_all(i*2+1) =principle.val(1,1)-principle.val(3,3);
-
-                            if (i == 7)
-                            {
-                                InfoSpq_all(i * 2 + 2) = principle.val(1, 1);
-                                //InfoSpq_all(i*2+3) = principle.val(2,2);
-                                InfoSpq_all(i * 2 + 3) = principle.val(3, 3);
-
-                                //Output volumetric strain for the eight Gauss point
-                                straintensor pl_stn;
-                                pl_stn = matpoint[i]->getPlasticStrainTensor();
-                                //pl_stn = matpoint[i]->getStrainTensor();
-                                InfoSpq_all(i * 2 + 4) = pl_stn.Iinvariant1();
-                                double psi = matpoint[i]->getpsi();
-                                InfoSpq_all(i * 2 + 5) = psi;
-                            }
-                        }
-                    }
-                }
-
-                return eleInfo.setVector( InfoSpq_all );
-                break;
-            }
-
-        //     case 5:
-        //     {
-        //         this->computeGaussPoint();
-        //         return eleInfo.setVector(Gsc8);
-        //         break;
-        //     }
-
-        case 31:
-            {
-                // Output element plastic info
-                int count  = integration_order * integration_order * integration_order;
-
-                static Vector InfoP1(integration_order * integration_order * integration_order + 1);
-                InfoP1(0) = count; //Number of Gauss point
-
-                straintensor pl_stn;
-
-                for (int i = 0; i < count; i++)
-                {
-                    pl_stn = matpoint[i]->getPlasticStrainTensor();
-                    //double  p_plastc = pl_stn.p_hydrostatic();
-                    double  q_plastc = pl_stn.q_deviatoric();
-
-                    InfoP1(i + 1) = q_plastc; //plastify; //Plastified?
-
-                }
-
-                return eleInfo.setVector( InfoP1 );
-                break;
-            }
-
-        //Guanzhou added
-        case 6:
-            {
-
-                NDMaterial* pMat;
-
-                straintensor tmp_strain;
-                stresstensor tmp_stress;
-                double r  = 0.0;
-                double rw = 0.0;
-                double s  = 0.0;
-                double sw = 0.0;
-                double t  = 0.0;
-                double tw = 0.0;
-
-                short where = 0;
-                double weight = 0.0;
-
-                int dh_dim[] = {8, 3}; // Xiaoyan changed from {20,3 to {8,3} for 8 nodes
-
-                tensor dh(2, dh_dim, 0.0);
-
-                double det_of_Jacobian = 0.0;
-
-                tensor Jacobian;
-
-                for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-                {
-                    r = get_Gauss_p_c( integration_order, GP_c_r );
-                    rw = get_Gauss_p_w( integration_order, GP_c_r );
-
-                    for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                    {
-                        s = get_Gauss_p_c( integration_order, GP_c_s );
-                        sw = get_Gauss_p_w( integration_order, GP_c_s );
-
-                        for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                        {
-                            t = get_Gauss_p_c( integration_order, GP_c_t );
-                            tw = get_Gauss_p_w( integration_order, GP_c_t );
-
-                            where =
-                                ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                            // derivatives of local coordiantes with respect to local coordiantes
-                            dh = dh_drst_at(r, s, t);
-
-                            // Jacobian tensor ( matrix )
-                            Jacobian = Jacobian_3D(dh);
-                            //....                Jacobian.print("J");
-
-                            det_of_Jacobian  = Jacobian.determinant();
-                            //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
-
-                            //weight
-                            weight = rw * sw * tw * det_of_Jacobian;
-                            //nodal_forces.print("nf","\n\n Nodal Forces \n");
-
-                            pMat = matpoint[where]->getNDMat();
-                            tmp_strain = pMat->getPlasticStrainTensor();
-                            //tmp_strain = pMat->getStrainTensor();
-                            tmp_stress = pMat->getStressTensor();
-                            //cerr << "tmp_strain: \n" << tmp_strain;
-                            //cerr << "tmp_stress: \n" << tmp_stress;
-                            tmp_strain = tmp_strain - pl_stn[where];//delta plastic strain
-                            tmp_stress = tmp_stress + stress[where];
-                            tmp_stress = tmp_stress * 0.5; //average stress
-
-
-                            //tensor temp1( 2, def_dim_2, 0.0);
-                            stresstensor temp1;
-
-
-                            temp1 = tmp_stress("ij") * tmp_strain("ij");
-                            //cerr << "temp1: \n" << temp1;
-                            temp1.null_indices();
-
-                            pl_stn[where] = pMat->getPlasticStrainTensor();
-                            stress[where] = pMat->getStressTensor();
-                            epEnergy = epEnergy + temp1.trace() * weight;
-                        }
-                    }
-                }
-
-                return eleInfo.setDouble(epEnergy);
-                break;
-            }
-
-
-        //************************************************************************************************
-
-        //Nima added for recording the Strain (10-13-2008)
-
-        case 7:
-
-            {
-                int count = integration_order * integration_order * integration_order;
-                int i;
-                straintensor str;
-
-                static Vector InfoStr(integration_order * integration_order * integration_order * 6 + 1);
-                InfoStr(0) = count;
-
-                for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-                {
-                    for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                    {
-                        for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                        {
-                            i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                            str = matpoint[i]->getStrainTensor();
-
-                            InfoStr(i * 6 + 1) = str.cval(1, 1); //sigma_xx
-                            InfoStr(i * 6 + 2) = str.cval(2, 2); //sigma_yy
-                            InfoStr(i * 6 + 3) = str.cval(3, 3); //sigma_zz
-                            InfoStr(i * 6 + 4) = str.cval(1, 2); //Assign sigma_xy
-                            InfoStr(i * 6 + 5) = str.cval(1, 3); //Assign sigma_xz
-                            InfoStr(i * 6 + 6) = str.cval(2, 3); //Assign sigma_yz
-                        }
-                    }
-                }
-
-                return eleInfo.setVector( InfoStr );
-                break;
-            }
-
-        //************************************************************************************************
-
-        //Nima added for recording the Volumetric_Strain (April 2010)
-        /*
-            case 71:
-
-            {
-                int count = integration_order* integration_order * integration_order;
-                int i;
-                straintensor str;
-
-                InfoStr(0) = count;
-
-                for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-                {
-                    for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                    {
-                        for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                        {
-                            i = ((GP_c_r-1)*integration_order+GP_c_s-1)*integration_order+GP_c_t-1;
-
-                            str = matpoint[i]->getStrainTensor();
-
-
-                            e_p = str.cval(1,1) + str.cval(2,2) + str.cval(3,3);
-                        }
-                    }
-                }
-
-                return eleInfo.setDouble(e_p);
-                break;
-            }*/
-
-
-        // //************************************************************************************************
-        // //Nima added for recording the Mass matrix (Feb. 2010)
-        //  case 8:
-        //            return eleInfo.setMatrix(this->getMass());
-        //     break;
-
-        default:
-            return -1;
-            break;
-    }
-
-    return (-1);
-
-}
+// //=============================================================================
+// Response* EightNodeBrickVariableGP::setResponse (const char** argv, int argc, Information& eleInformation)
+// {
+//     //========================================================
+//     //     if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0)
+//     //     return new ElementResponse(this, 1, P);
+
+//     //========================================================
+//     if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 2, K);
+//     }
+
+//     //========================================================
+//     //     else if (strcmp(argv[0],"plasticGPC") == 0 || strcmp(argv[0],"plastifiedGPC") == 0)
+//     //     {
+//     //         return new ElementResponse(this, 3, Vector(integration_order*integration_order*integration_order*4+1));
+//     //     }
+//     //========================================================
+//     else if (strcmp(argv[0], "plastic") == 0 || strcmp(argv[0], "plastified") == 0)
+//     {
+//         return new ElementResponse(this, 31, Vector(integration_order * integration_order * integration_order + 1));
+//     }
+//     //========================================================
+//     else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
+//     {
+//         return new ElementResponse(this, 4, Vector(integration_order * integration_order * integration_order * 6 + 1));
+//     }
+//     //========================================================
+//     else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
+//     {
+//         return new ElementResponse(this, 41, Vector(2));
+//     }
+//     //Added 06-27-02 for p-q
+//     //========================================================
+//     else if (strcmp(argv[0], "stresspq") == 0 || strcmp(argv[0], "stressespq") == 0)
+//     {
+//         return new ElementResponse(this, 41, Vector(2));
+//     }
+//     //Added 07-22-02 for all p-q, e_v_pl, xi
+//     //========================================================
+//     else if (strcmp(argv[0], "pqall") == 0 )
+//     {
+//         return new ElementResponse(this, 42, Vector(integration_order * integration_order * integration_order * 2 + 4));
+//     }
+
+//     //========================================================
+//     //     else if (strcmp(argv[0],"gausspoint") == 0 || strcmp(argv[0],"GaussPoint") == 0)
+//     //     {
+//     //         return new ElementResponse(this, 5, Vector(integration_order*integration_order*integration_order*3+1));
+//     //     }
+//     //Guanzhou added
+//     else if (strcmp(argv[0], "plasticEnergy") == 0 || strcmp(argv[0], "plasticenergy") == 0)
+//     {
+//         return new ElementResponse(this, 6, epEnergy);
+//     }
+//     //========================================================
+//     //Nima added for recording the Strain (10-13-2008)
+
+//     else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
+//     {
+//         return new ElementResponse(this, 7, Vector(integration_order * integration_order * integration_order * 6 + 1) );
+//     }
+
+//     //========================================================
+//     //Nima added for recording the Strain (April 2010)
+
+//     //     else if ( (strcmp(argv[0],"vol_strain") == 0) || (strcmp(argv[0],"volumetric_strain") ==0) )
+//     //         return new ElementResponse(this, 71, e_p );
+
+//     //========================================================
+
+//     // otherwise response quantity is unknown for the quad class
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+// //=============================================================================
+// int EightNodeBrickVariableGP::getResponse (int responseID, Information& eleInfo)
+// {
+//     switch (responseID)
+//     {
+
+//         //        case 1:
+//         //          return eleInfo.setVector(this->getResistingForce());
+//         //          break;
+
+//         case 2:
+//             return eleInfo.setMatrix(this->getTangentStiff());
+//             break;
+
+
+//         //     case 3:
+//         //     {
+//         //         //checking if element plastified
+//         //         int count  = integration_order* integration_order * integration_order;
+//         //         computeGaussPoint();
+//         //
+//         //         static Vector InfoP(integration_order*integration_order*integration_order*4+1);
+//         //         InfoP(0) = Gsc8(0); //Number of Gauss point
+//         //
+//         //         straintensor pl_stn;
+//         //
+//         //         for (int i = 0; i < count; i++)
+//         //         {
+//         // //             plastify = 0;
+//         //             InfoP(i*4+1) = Gsc8(i*3+1); //x
+//         //             InfoP(i*4+2) = Gsc8(i*3+2); //y
+//         //             InfoP(i*4+3) = Gsc8(i*3+3); //z
+//         //             pl_stn = matpoint[i]->getPlasticStrainTensor();
+//         //             double  q_plastc = pl_stn.q_deviatoric();
+//         //
+//         //             InfoP(i*4+4) = q_plastc; //plastify; //Plastified?
+//         //
+//         //         }
+//         //         return eleInfo.setVector( InfoP );
+//         //         break;
+//         //
+//         //         //return plastify;
+//         //
+//         //     }
+
+//         case 4:
+//             {
+//                 int count = integration_order * integration_order * integration_order;
+//                 int i;
+//                 stresstensor sts;
+//                 //Vector Gsc(81+1);  // 8*3 + count
+//                 //Gsc = this->reportTensor("Gauss Point Coor.");
+
+//                 //Vector Info(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
+//                 static Vector InfoS(integration_order * integration_order * integration_order * 6 + 1);
+//                 InfoS(0) = count;
+
+//                 for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//                 {
+//                     //r = get_Gauss_p_c( integration_order, GP_c_r );
+//                     for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                     {
+//                         //s = get_Gauss_p_c( integration_order, GP_c_s );
+//                         //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
+
+//                         for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                         {
+//                             //for (int i = 0; i < count; i++)
+//                             i =
+//                                 ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                             sts = matpoint[i]->getStressTensor();
+//                             InfoS(i * 6 + 1) = sts.cval(1, 1); //sigma_xx
+//                             InfoS(i * 6 + 2) = sts.cval(2, 2); //sigma_yy
+//                             InfoS(i * 6 + 3) = sts.cval(3, 3); //sigma_zz
+//                             InfoS(i * 6 + 4) = sts.cval(1, 2); //Assign sigma_xy
+//                             InfoS(i * 6 + 5) = sts.cval(1, 3); //Assign sigma_xz
+//                             InfoS(i * 6 + 6) = sts.cval(2, 3); //Assign sigma_yz
+//                         }
+//                     }
+//                 }
+
+//                 return eleInfo.setVector( InfoS );
+//                 break;
+//             }
+
+//         case 41:
+//             {
+//                 int count = integration_order * integration_order * integration_order;
+//                 count = count / 2;
+//                 stresstensor sts;
+//                 static Vector InfoSpq(2);
+//                 sts = matpoint[count]->getStressTensor();
+//                 InfoSpq(0) = sts.p_hydrostatic();
+//                 InfoSpq(1) = sts.q_deviatoric();
+//                 return eleInfo.setVector( InfoSpq );
+//             }
+
+//         case 42:
+//             {
+//                 //         int count = integration_order* integration_order * integration_order;
+//                 int i;
+//                 stresstensor sts, principle;
+
+//                 static Vector InfoSpq_all(integration_order * integration_order * integration_order * 2 + 4);
+
+//                 for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//                 {
+//                     //r = get_Gauss_p_c( integration_order, GP_c_r );
+//                     for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                     {
+
+//                         for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                         {
+//                             i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                             sts = matpoint[i]->getStressTensor();
+//                             InfoSpq_all(i * 2 + 0) = sts.p_hydrostatic();
+//                             //deviatoric stress sqrt(J2/3)
+//                             InfoSpq_all(i * 2 + 1) = sts.q_deviatoric();
+//                             //deviator stress +/-
+//                             principle = sts.principal();
+
+//                             //InfoSpq_all(i*2+1) =principle.val(1,1)-principle.val(3,3);
+
+//                             if (i == 7)
+//                             {
+//                                 InfoSpq_all(i * 2 + 2) = principle.val(1, 1);
+//                                 //InfoSpq_all(i*2+3) = principle.val(2,2);
+//                                 InfoSpq_all(i * 2 + 3) = principle.val(3, 3);
+
+//                                 //Output volumetric strain for the eight Gauss point
+//                                 straintensor pl_stn;
+//                                 pl_stn = matpoint[i]->getPlasticStrainTensor();
+//                                 //pl_stn = matpoint[i]->getStrainTensor();
+//                                 InfoSpq_all(i * 2 + 4) = pl_stn.Iinvariant1();
+//                                 double psi = matpoint[i]->getpsi();
+//                                 InfoSpq_all(i * 2 + 5) = psi;
+//                             }
+//                         }
+//                     }
+//                 }
+
+//                 return eleInfo.setVector( InfoSpq_all );
+//                 break;
+//             }
+
+//         //     case 5:
+//         //     {
+//         //         this->computeGaussPoint();
+//         //         return eleInfo.setVector(Gsc8);
+//         //         break;
+//         //     }
+
+//         case 31:
+//             {
+//                 // Output element plastic info
+//                 int count  = integration_order * integration_order * integration_order;
+
+//                 static Vector InfoP1(integration_order * integration_order * integration_order + 1);
+//                 InfoP1(0) = count; //Number of Gauss point
+
+//                 straintensor pl_stn;
+
+//                 for (int i = 0; i < count; i++)
+//                 {
+//                     pl_stn = matpoint[i]->getPlasticStrainTensor();
+//                     //double  p_plastc = pl_stn.p_hydrostatic();
+//                     double  q_plastc = pl_stn.q_deviatoric();
+
+//                     InfoP1(i + 1) = q_plastc; //plastify; //Plastified?
+
+//                 }
+
+//                 return eleInfo.setVector( InfoP1 );
+//                 break;
+//             }
+
+//         //Guanzhou added
+//         case 6:
+//             {
+
+//                 NDMaterial* pMat;
+
+//                 straintensor tmp_strain;
+//                 stresstensor tmp_stress;
+//                 double r  = 0.0;
+//                 double rw = 0.0;
+//                 double s  = 0.0;
+//                 double sw = 0.0;
+//                 double t  = 0.0;
+//                 double tw = 0.0;
+
+//                 short where = 0;
+//                 double weight = 0.0;
+
+//                 int dh_dim[] = {8, 3}; // Xiaoyan changed from {20,3 to {8,3} for 8 nodes
+
+//                 tensor dh(2, dh_dim, 0.0);
+
+//                 double det_of_Jacobian = 0.0;
+
+//                 tensor Jacobian;
+
+//                 for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//                 {
+//                     r = get_Gauss_p_c( integration_order, GP_c_r );
+//                     rw = get_Gauss_p_w( integration_order, GP_c_r );
+
+//                     for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                     {
+//                         s = get_Gauss_p_c( integration_order, GP_c_s );
+//                         sw = get_Gauss_p_w( integration_order, GP_c_s );
+
+//                         for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                         {
+//                             t = get_Gauss_p_c( integration_order, GP_c_t );
+//                             tw = get_Gauss_p_w( integration_order, GP_c_t );
+
+//                             where =
+//                                 ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                             // derivatives of local coordiantes with respect to local coordiantes
+//                             dh = dh_drst_at(r, s, t);
+
+//                             // Jacobian tensor ( matrix )
+//                             Jacobian = Jacobian_3D(dh);
+//                             //....                Jacobian.print("J");
+
+//                             det_of_Jacobian  = Jacobian.determinant();
+//                             //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
+
+//                             //weight
+//                             weight = rw * sw * tw * det_of_Jacobian;
+//                             //nodal_forces.print("nf","\n\n Nodal Forces \n");
+
+//                             pMat = matpoint[where]->getNDMat();
+//                             tmp_strain = pMat->getPlasticStrainTensor();
+//                             //tmp_strain = pMat->getStrainTensor();
+//                             tmp_stress = pMat->getStressTensor();
+//                             //cerr << "tmp_strain: \n" << tmp_strain;
+//                             //cerr << "tmp_stress: \n" << tmp_stress;
+//                             tmp_strain = tmp_strain - pl_stn[where];//delta plastic strain
+//                             tmp_stress = tmp_stress + stress[where];
+//                             tmp_stress = tmp_stress * 0.5; //average stress
+
+
+//                             //tensor temp1( 2, def_dim_2, 0.0);
+//                             stresstensor temp1;
+
+
+//                             temp1 = tmp_stress("ij") * tmp_strain("ij");
+//                             //cerr << "temp1: \n" << temp1;
+//                             temp1.null_indices();
+
+//                             pl_stn[where] = pMat->getPlasticStrainTensor();
+//                             stress[where] = pMat->getStressTensor();
+//                             epEnergy = epEnergy + temp1.trace() * weight;
+//                         }
+//                     }
+//                 }
+
+//                 return eleInfo.setDouble(epEnergy);
+//                 break;
+//             }
+
+
+//         //************************************************************************************************
+
+//         //Nima added for recording the Strain (10-13-2008)
+
+//         case 7:
+
+//             {
+//                 int count = integration_order * integration_order * integration_order;
+//                 int i;
+//                 straintensor str;
+
+//                 static Vector InfoStr(integration_order * integration_order * integration_order * 6 + 1);
+//                 InfoStr(0) = count;
+
+//                 for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//                 {
+//                     for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                     {
+//                         for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                         {
+//                             i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                             str = matpoint[i]->getStrainTensor();
+
+//                             InfoStr(i * 6 + 1) = str.cval(1, 1); //sigma_xx
+//                             InfoStr(i * 6 + 2) = str.cval(2, 2); //sigma_yy
+//                             InfoStr(i * 6 + 3) = str.cval(3, 3); //sigma_zz
+//                             InfoStr(i * 6 + 4) = str.cval(1, 2); //Assign sigma_xy
+//                             InfoStr(i * 6 + 5) = str.cval(1, 3); //Assign sigma_xz
+//                             InfoStr(i * 6 + 6) = str.cval(2, 3); //Assign sigma_yz
+//                         }
+//                     }
+//                 }
+
+//                 return eleInfo.setVector( InfoStr );
+//                 break;
+//             }
+
+//         //************************************************************************************************
+
+//         //Nima added for recording the Volumetric_Strain (April 2010)
+//         /*
+//             case 71:
+
+//             {
+//                 int count = integration_order* integration_order * integration_order;
+//                 int i;
+//                 straintensor str;
+
+//                 InfoStr(0) = count;
+
+//                 for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//                 {
+//                     for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                     {
+//                         for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                         {
+//                             i = ((GP_c_r-1)*integration_order+GP_c_s-1)*integration_order+GP_c_t-1;
+
+//                             str = matpoint[i]->getStrainTensor();
+
+
+//                             e_p = str.cval(1,1) + str.cval(2,2) + str.cval(3,3);
+//                         }
+//                     }
+//                 }
+
+//                 return eleInfo.setDouble(e_p);
+//                 break;
+//             }*/
+
+
+//         // //************************************************************************************************
+//         // //Nima added for recording the Mass matrix (Feb. 2010)
+//         //  case 8:
+//         //            return eleInfo.setMatrix(this->getMass());
+//         //     break;
+
+//         default:
+//             return -1;
+//             break;
+//     }
+
+//     return (-1);
+
+// }
 
 //Guanzhou added to calculate plastic energy
 void EightNodeBrickVariableGP::ComputeVolume()
@@ -2939,17 +2939,17 @@ void EightNodeBrickVariableGP::ComputeVolume()
 
     tensor Jacobian;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -3063,15 +3063,15 @@ int EightNodeBrickVariableGP::update(void)
     straintensor trial_strain;
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -3120,7 +3120,7 @@ double EightNodeBrickVariableGP::SurfaceShapeFunctionValues(double Xi , double E
 }
 
 
-Vector& EightNodeBrickVariableGP::Direction_Weight(double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4)
+Vector &EightNodeBrickVariableGP::Direction_Weight(double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4)
 {
     Vector J1(3);
     Vector J2(3);
@@ -3162,7 +3162,7 @@ double EightNodeBrickVariableGP::SurfaceLoadValues(double Xi , double Eta, Vecto
 
 // Nima Tafazzoli (September 2012)
 int
-EightNodeBrickVariableGP::CheckMesh(ofstream& checkmesh_file)
+EightNodeBrickVariableGP::CheckMesh(ofstream &checkmesh_file)
 {
 
 
@@ -3180,15 +3180,15 @@ EightNodeBrickVariableGP::CheckMesh(ofstream& checkmesh_file)
     tensor Jacobian;
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -3236,21 +3236,21 @@ EightNodeBrickVariableGP::CheckMesh(ofstream& checkmesh_file)
 
 
 //==================================================================================
-Vector*
+Vector *
 EightNodeBrickVariableGP::getStress(void)
 {
 
     int i = 0;
     int j = 0;
     stresstensor sts;
-    Vector* stresses = new Vector(6 * integration_order * integration_order * integration_order);
+    Vector *stresses = new Vector(6 * integration_order * integration_order * integration_order);
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
 

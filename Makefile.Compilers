@@ -68,7 +68,7 @@ else ifeq ($(Compiler), PARALLEL)
 endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
-	C++FLAGS        = -flto -Wall \
+	C++FLAGS        =  -Wall \
 										-Winline \
 										-O2 \
 										-finline \
@@ -80,16 +80,18 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-ffast-math \
 										-funroll-loops \
 										-ftemplate-depth=100000 \
-										--param large-function-growth=10000 \
-										--param inline-unit-growth=10000 \
+										-std=c++0x \
 										-D_LINUX \
 										-D_UNIX \
 										$(PROGRAMMING_FLAG) \
 										-DBrzi_nDarray_val \
-										-std=c++0x \
 										-Wno-write-strings \
 										-march=native
 
+										-std=c++11 \
+	# C++FLAGS        = -flto -Wall \
+										# --param large-function-growth=10000 \
+										# --param inline-unit-growth=10000 \
 	# CFLAGS          = -flto -O2 \
 	CFLAGS          =  -O2 \
 										-D_LINUX \

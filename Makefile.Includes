@@ -34,7 +34,6 @@ ESSI_INCLUDES  = -I$(FEIBASEDIR)/ModifiedOpenSeesServices/matrix \
             -I$(FEIBASEDIR)/ModifiedOpenSeesServices/material/yieldSurface/plasticHardeningMaterial \
             -I$(FEIBASEDIR)/ModifiedOpenSeesServices/material/yieldSurface/yieldSurfaceBC \
             -I$(FEIBASEDIR)/ModifiedOpenSeesServices/recorder \
-            -I$(FEIBASEDIR)/ModifiedOpenSeesServices/response \
             -I$(FEIBASEDIR)/ModifiedOpenSeesServices/handler \
             -I$(FEIBASEDIR)/ModifiedOpenSeesServices/database \
             -I$(FEIBASEDIR)/ModifiedOpenSeesServices/convergenceTest \
@@ -161,6 +160,7 @@ ESSI_INCLUDES  = -I$(FEIBASEDIR)/ModifiedOpenSeesServices/matrix \
             -I$(FEIBASEDIR)/API \
             -I$(FEIBASEDIR)/small_utility_programs/ltensor_utilities
 
+#            -I$(FEIBASEDIR)/ModifiedOpenSeesServices/response \
 
 ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
       $(FEIBASEDIR)/lib/libsolid_brick_27_nodes.a \

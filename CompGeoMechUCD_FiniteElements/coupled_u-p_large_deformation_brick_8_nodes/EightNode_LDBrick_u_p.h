@@ -22,7 +22,7 @@
 #endif
 
 #include <Information.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 #include <Domain.h>
 #include <Node.h>
@@ -45,47 +45,47 @@ class EightNode_LDBrick_u_p: public Element
         EightNode_LDBrick_u_p(int element_number,
                               int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
                               int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                              NDMaterial* Globalmmodel, double b1, double b2, double b3,
+                              NDMaterial *Globalmmodel, double b1, double b2, double b3,
                               double nf, double rs, double rf,
                               double permb_x, double permb_y, double permb_z,
                               double kkf);
         EightNode_LDBrick_u_p();
         ~EightNode_LDBrick_u_p();
 
-        const char* getClassType(void) const
+        const char *getClassType(void) const
         {
             return "EightNode_LDBrick_u_p";
         };
 
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         int commitState(void);
         int revertToLastCommit(void);
         int revertToStart(void);
         int update(void);
 
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getDamp(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getDamp(void);
+        const Matrix &getMass(void);
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
-        int displaySelf(Renderer& theViewer, int displayMode, float fact);
-        void Print(ostream& s, int flag = 0);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        int displaySelf(Renderer &theViewer, int displayMode, float fact);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInfo);
+        // int getResponse(int responseID, Information& eleInformation);
 
         //int setParameter (const char **argv, int argc, Information &info);
         //int updateParameter (int parameterID, Information &info);
@@ -109,17 +109,17 @@ class EightNode_LDBrick_u_p: public Element
         tensor getDampingTensorC1();
         tensor getDampingTensorC2();
         tensor getMatStiffness();
-        const Matrix& getStiff(int Ki_flag);
-        const Matrix& getStiffnessK0();
-        const Vector& getInternalForce();
-        const Vector& getForceU();
-        const Vector& getForceP();
-        tensor LagrangianPerm(const tensor& Finv, const tensor& permea, double Jin);
+        const Matrix &getStiff(int Ki_flag);
+        const Matrix &getStiffnessK0();
+        const Vector &getInternalForce();
+        const Vector &getForceU();
+        const Vector &getForceP();
+        tensor LagrangianPerm(const tensor &Finv, const tensor &permea, double Jin);
 
     private:
         ID  connectedExternalNodes;
-        Node* theNodes[8];
-        NDMaterial** theMaterial;
+        Node *theNodes[8];
+        NDMaterial **theMaterial;
 
         static Matrix MCK;
         static Vector P;
@@ -140,8 +140,8 @@ class EightNode_LDBrick_u_p: public Element
         double rho_f;
         double kf;
 
-        Vector* Q;
-        Matrix* Ki;
+        Vector *Q;
+        Matrix *Ki;
 };
 
 

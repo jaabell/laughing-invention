@@ -111,7 +111,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
 }
 
 
-rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_fixed_beam(int tag, int Nd1, int Nd2, SectionForceDeformation* section,
+rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_fixed_beam(int tag, int Nd1, int Nd2, SectionForceDeformation *section,
         double r,
         double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
         double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
@@ -129,14 +129,14 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
         Jx = 0.0;
         rho = r;
 
-        const Matrix& sectTangent = section->getSectionTangent();
-        const ID& sectCode = section->getType();
+        const Matrix &sectTangent = section->getSectionTangent();
+        const ID &sectCode = section->getType();
 
         for (int i = 0; i < sectCode.Size(); i++)
         {
             int code = sectCode(i);
 
-            switch(code)
+            switch (code)
             {
                 case SECTION_RESPONSE_P:
                     A = sectTangent(i, i);
@@ -217,13 +217,13 @@ rank_one_deficient_elastic_pinned_fixed_beam::getNumExternalNodes(void) const
     return 2;
 }
 
-const ID&
+const ID &
 rank_one_deficient_elastic_pinned_fixed_beam::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 rank_one_deficient_elastic_pinned_fixed_beam::getNodePtrs(void)
 {
     return theNodes;
@@ -236,7 +236,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::getNumDOF(void)
 }
 
 void
-rank_one_deficient_elastic_pinned_fixed_beam::setDomain(Domain* theDomain)
+rank_one_deficient_elastic_pinned_fixed_beam::setDomain(Domain *theDomain)
 {
     if (theDomain == 0)
     {
@@ -320,11 +320,11 @@ rank_one_deficient_elastic_pinned_fixed_beam::update(void)
 }
 
 
-const Matrix&
+const Matrix &
 rank_one_deficient_elastic_pinned_fixed_beam::getTangentStiff(void)
 {
 
-    if(builtK == 0)
+    if (builtK == 0)
     {
 
         Stiffness.Zero();
@@ -369,7 +369,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::getTangentStiff(void)
 
 
 
-const Matrix&
+const Matrix &
 rank_one_deficient_elastic_pinned_fixed_beam::getInitialStiff(void)
 {
 
@@ -379,7 +379,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::getInitialStiff(void)
 
 
 
-const Matrix&
+const Matrix &
 rank_one_deficient_elastic_pinned_fixed_beam::getMass(void)
 {
 
@@ -465,7 +465,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::zeroLoad(void)
 }
 
 int
-rank_one_deficient_elastic_pinned_fixed_beam::addLoad(ElementalLoad* theLoad, double loadFactor)
+rank_one_deficient_elastic_pinned_fixed_beam::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     // NOTE: To be completed later
 
@@ -474,7 +474,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::addLoad(ElementalLoad* theLoad, do
 
 
 int
-rank_one_deficient_elastic_pinned_fixed_beam::addInertiaLoadToUnbalance(const Vector& accel)
+rank_one_deficient_elastic_pinned_fixed_beam::addInertiaLoadToUnbalance(const Vector &accel)
 {
     if (rho == 0.0)
     {
@@ -482,8 +482,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::addInertiaLoadToUnbalance(const Ve
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
 
 
     if (Raccel1.Size() != 3 || Raccel2.Size() != 6)
@@ -516,7 +516,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::addInertiaLoadToUnbalance(const Ve
 
 
 
-const Vector&
+const Vector &
 rank_one_deficient_elastic_pinned_fixed_beam::getResistingForceIncInertia()
 {
 
@@ -536,8 +536,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::getResistingForceIncInertia()
     }
     else
     {
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
 
         Vector accel(9);
@@ -560,7 +560,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::getResistingForceIncInertia()
 }
 
 
-const Vector&
+const Vector &
 rank_one_deficient_elastic_pinned_fixed_beam::getResistingForce()
 {
 
@@ -601,7 +601,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::getResistingForce()
 }
 
 int
-rank_one_deficient_elastic_pinned_fixed_beam::sendSelf(int cTag, Channel& theChannel)
+rank_one_deficient_elastic_pinned_fixed_beam::sendSelf(int cTag, Channel &theChannel)
 {
     int res = 0;
 
@@ -649,7 +649,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::sendSelf(int cTag, Channel& theCha
 }
 
 int
-rank_one_deficient_elastic_pinned_fixed_beam::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+rank_one_deficient_elastic_pinned_fixed_beam::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -710,7 +710,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::recvSelf(int cTag, Channel& theCha
 }
 
 void
-rank_one_deficient_elastic_pinned_fixed_beam::Print(ostream& s, int flag)
+rank_one_deficient_elastic_pinned_fixed_beam::Print(ostream &s, int flag)
 {
     //Do nothng now!
 }
@@ -718,45 +718,45 @@ rank_one_deficient_elastic_pinned_fixed_beam::Print(ostream& s, int flag)
 
 
 
-Response*
-rank_one_deficient_elastic_pinned_fixed_beam::setResponse(const char** argv, int argc, Information& info)
-{
-    // stiffness
-    if (strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 1, Stiffness);
-    }
+// Response*
+// rank_one_deficient_elastic_pinned_fixed_beam::setResponse(const char** argv, int argc, Information& info)
+// {
+//     // stiffness
+//     if (strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 1, Stiffness);
+//     }
 
-    // global forces
-    else if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
-             strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
-    {
-        return new ElementResponse(this, 2, P);
-    }
+//     // global forces
+//     else if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+//              strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
+//     {
+//         return new ElementResponse(this, 2, P);
+//     }
 
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-rank_one_deficient_elastic_pinned_fixed_beam::getResponse (int responseID, Information& eleInfo)
-{
+// int
+// rank_one_deficient_elastic_pinned_fixed_beam::getResponse (int responseID, Information& eleInfo)
+// {
 
-    switch (responseID)
-    {
-        case 1: // stiffness
-            return eleInfo.setMatrix(this->getTangentStiff());
+//     switch (responseID)
+//     {
+//         case 1: // stiffness
+//             return eleInfo.setMatrix(this->getTangentStiff());
 
-        case 2: // global forces
-            return eleInfo.setVector(this->getResistingForce());
+//         case 2: // global forces
+//             return eleInfo.setVector(this->getResistingForce());
 
-        default:
-            return -1;
-    }
-}
+//         default:
+//             return -1;
+//     }
+// }
 
 
 
@@ -771,8 +771,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::initialize()
     // see if there is some initial displacements at nodes
     if (initialDispChecked == false)
     {
-        const Vector& nodeIDisp = theNodes[0]->getDisp();
-        const Vector& nodeJDisp = theNodes[1]->getDisp();
+        const Vector &nodeIDisp = theNodes[0]->getDisp();
+        const Vector &nodeJDisp = theNodes[1]->getDisp();
 
 
         for (int i = 0; i < 3; i++)
@@ -837,8 +837,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::computeElemtLengthAndOrient()
     // element projection
     static Vector dx(3);
 
-    const Vector& ndICoords = theNodes[0]->getCrds();
-    const Vector& ndJCoords = theNodes[1]->getCrds();
+    const Vector &ndICoords = theNodes[0]->getCrds();
+    const Vector &ndJCoords = theNodes[1]->getCrds();
 
     dx(0) = ndJCoords(0) - ndICoords(0);
     dx(1) = ndJCoords(1) - ndICoords(1);
@@ -894,7 +894,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::computeElemtLengthAndOrient()
 
 
 int
-rank_one_deficient_elastic_pinned_fixed_beam::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
+rank_one_deficient_elastic_pinned_fixed_beam::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
 {
     // Compute y = v cross x
     // Note: v(i) is stored in R[2][i]
@@ -957,8 +957,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::getLocalAxes(Vector& XAxis, Vector
 
 
 
-const Matrix&
-rank_one_deficient_elastic_pinned_fixed_beam::getGlobalStiffnessMatrix(const Matrix& KB)
+const Matrix &
+rank_one_deficient_elastic_pinned_fixed_beam::getGlobalStiffnessMatrix(const Matrix &KB)
 {
     static Matrix kg(9, 9); // Global stiffness for return
     static Matrix kl(9, 9); // Local stiffness
@@ -1053,8 +1053,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::getGlobalStiffnessMatrix(const Mat
 
 
 
-const Matrix&
-rank_one_deficient_elastic_pinned_fixed_beam::getGlobalConsistentMassMatrix(const Matrix& KB)
+const Matrix &
+rank_one_deficient_elastic_pinned_fixed_beam::getGlobalConsistentMassMatrix(const Matrix &KB)
 {
     static Matrix mg(9, 9); // Global mass for return
     static Matrix ml(9, 9); // Local mass
@@ -1150,10 +1150,10 @@ rank_one_deficient_elastic_pinned_fixed_beam::getGlobalConsistentMassMatrix(cons
 
 
 //==================================================================================
-Vector*
+Vector *
 rank_one_deficient_elastic_pinned_fixed_beam::getForce(void)
 {
-    Vector* elementForces = new Vector(12);
+    Vector *elementForces = new Vector(12);
 
     (*elementForces)(0)  = P(0);
     (*elementForces)(1)  = P(1);

@@ -45,7 +45,7 @@
 #include <FEM_ObjectBroker.h>
 
 #include <Information.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 // #include <Renderer.h>
 #include <SectionForceDeformation.h>
@@ -152,7 +152,7 @@ ElasticBeamLumpedMass::ElasticBeamLumpedMass(int tag, double a, double e, double
 }
 
 
-ElasticBeamLumpedMass::ElasticBeamLumpedMass(int tag, int Nd1, int Nd2, SectionForceDeformation* section,
+ElasticBeamLumpedMass::ElasticBeamLumpedMass(int tag, int Nd1, int Nd2, SectionForceDeformation *section,
         double r,
         double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
         double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
@@ -169,14 +169,14 @@ ElasticBeamLumpedMass::ElasticBeamLumpedMass(int tag, int Nd1, int Nd2, SectionF
         Jx = 0.0;
         rho = r;
 
-        const Matrix& sectTangent = section->getSectionTangent();
-        const ID& sectCode = section->getType();
+        const Matrix &sectTangent = section->getSectionTangent();
+        const ID &sectCode = section->getType();
 
         for (int i = 0; i < sectCode.Size(); i++)
         {
             int code = sectCode(i);
 
-            switch(code)
+            switch (code)
             {
                 case SECTION_RESPONSE_P:
                     A = sectTangent(i, i);
@@ -270,13 +270,13 @@ ElasticBeamLumpedMass::getNumExternalNodes(void) const
     return 2;
 }
 
-const ID&
+const ID &
 ElasticBeamLumpedMass::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 ElasticBeamLumpedMass::getNodePtrs(void)
 {
     return theNodes;
@@ -289,7 +289,7 @@ ElasticBeamLumpedMass::getNumDOF(void)
 }
 
 void
-ElasticBeamLumpedMass::setDomain(Domain* theDomain)
+ElasticBeamLumpedMass::setDomain(Domain *theDomain)
 {
     if (theDomain == 0)
     {
@@ -372,10 +372,10 @@ ElasticBeamLumpedMass::update(void)
     return 0;
 }
 
-const Matrix&
+const Matrix &
 ElasticBeamLumpedMass::getTangentStiff(void)
 {
-    const Vector& v = this->getBasicTrialDisp();
+    const Vector &v = this->getBasicTrialDisp();
 
     double oneOverL = 1.0 / L;
     double EoverL   = E * oneOverL;
@@ -397,7 +397,7 @@ ElasticBeamLumpedMass::getTangentStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 ElasticBeamLumpedMass::getInitialStiff(void)
 {
 
@@ -420,7 +420,7 @@ ElasticBeamLumpedMass::getInitialStiff(void)
     return this->getInitialGlobalStiffMatrix(kb);
 }
 
-const Matrix&
+const Matrix &
 ElasticBeamLumpedMass::getMass(void)
 {
     K.Zero();
@@ -471,10 +471,10 @@ ElasticBeamLumpedMass::zeroLoad(void)
 }
 
 int
-ElasticBeamLumpedMass::addLoad(ElementalLoad* theLoad, double loadFactor)
+ElasticBeamLumpedMass::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_Beam3dUniformLoad)
     {
@@ -556,7 +556,7 @@ ElasticBeamLumpedMass::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 
 int
-ElasticBeamLumpedMass::addInertiaLoadToUnbalance(const Vector& accel)
+ElasticBeamLumpedMass::addInertiaLoadToUnbalance(const Vector &accel)
 {
     if (rho == 0.0)
     {
@@ -564,8 +564,8 @@ ElasticBeamLumpedMass::addInertiaLoadToUnbalance(const Vector& accel)
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
 
     if (6 != Raccel1.Size() || 6 != Raccel2.Size())
     {
@@ -593,7 +593,7 @@ ElasticBeamLumpedMass::addInertiaLoadToUnbalance(const Vector& accel)
 
 
 
-const Vector&
+const Vector &
 ElasticBeamLumpedMass::getResistingForceIncInertia()
 {
     P = this->getResistingForce();
@@ -611,8 +611,8 @@ ElasticBeamLumpedMass::getResistingForceIncInertia()
 
     else
     {
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
 
         // Nima Tafazzoli (Nov. 2012)
@@ -632,10 +632,10 @@ ElasticBeamLumpedMass::getResistingForceIncInertia()
 }
 
 
-const Vector&
+const Vector &
 ElasticBeamLumpedMass::getResistingForce()
 {
-    const Vector& v = this->getBasicTrialDisp();
+    const Vector &v = this->getBasicTrialDisp();
 
     double oneOverL = 1.0 / L;
     double EoverL   = E * oneOverL;
@@ -674,7 +674,7 @@ ElasticBeamLumpedMass::getResistingForce()
 }
 
 int
-ElasticBeamLumpedMass::sendSelf(int cTag, Channel& theChannel)
+ElasticBeamLumpedMass::sendSelf(int cTag, Channel &theChannel)
 {
     int res = 0;
 
@@ -722,7 +722,7 @@ ElasticBeamLumpedMass::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ElasticBeamLumpedMass::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ElasticBeamLumpedMass::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -783,7 +783,7 @@ ElasticBeamLumpedMass::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker&
 }
 
 void
-ElasticBeamLumpedMass::Print(ostream& s, int flag)
+ElasticBeamLumpedMass::Print(ostream &s, int flag)
 {
     if (flag == -1)
     {
@@ -797,7 +797,7 @@ ElasticBeamLumpedMass::Print(ostream& s, int flag)
     {
         int counter = (flag + 1) * -1;
         int eleTag = this->getTag();
-        const Vector& force = this->getResistingForce();
+        const Vector &force = this->getResistingForce();
 
         double P, MZ1, MZ2, VY, MY1, MY2, VZ, T;
 
@@ -838,10 +838,10 @@ ElasticBeamLumpedMass::Print(ostream& s, int flag)
         s << " " << yAxis(0) << " " << yAxis(1) << " " << yAxis(2) << " ";
         s << zAxis(0) << " " << zAxis(1) << " " << zAxis(2) << endln;
 
-        const Vector& node1Crd = theNodes[0]->getCrds();
-        const Vector& node2Crd = theNodes[1]->getCrds();
-        const Vector& node1Disp = theNodes[0]->getDisp();
-        const Vector& node2Disp = theNodes[1]->getDisp();
+        const Vector &node1Crd = theNodes[0]->getCrds();
+        const Vector &node2Crd = theNodes[1]->getCrds();
+        const Vector &node1Disp = theNodes[0]->getDisp();
+        const Vector &node2Disp = theNodes[1]->getDisp();
 
         s << "#NODE " << node1Crd(0) << " " << node1Crd(1) << " " << node1Crd(2)
           << " " << node1Disp(0) << " " << node1Disp(1) << " " << node1Disp(2)
@@ -919,83 +919,83 @@ ElasticBeamLumpedMass::Print(ostream& s, int flag)
 //     return theViewer.drawLine (v1, v2, 1.0, 1.0);
 // }
 
-Response*
-ElasticBeamLumpedMass::setResponse(const char** argv, int argc, Information& info)
-{
-    // stiffness
-    if (strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 1, K);
-    }
+// Response*
+// ElasticBeamLumpedMass::setResponse(const char** argv, int argc, Information& info)
+// {
+//     // stiffness
+//     if (strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 1, K);
+//     }
 
-    // global forces
-    else if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
-             strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
-    {
-        return new ElementResponse(this, 2, P);
-    }
+//     // global forces
+//     else if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+//              strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
+//     {
+//         return new ElementResponse(this, 2, P);
+//     }
 
-    // local forces
-    else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
-    {
-        return new ElementResponse(this, 3, P);
-    }
+//     // local forces
+//     else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
+//     {
+//         return new ElementResponse(this, 3, P);
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-ElasticBeamLumpedMass::getResponse (int responseID, Information& eleInfo)
-{
-    double N, V, M1, M2, T;
-    double oneOverL = 1.0 / L;
+// int
+// ElasticBeamLumpedMass::getResponse (int responseID, Information& eleInfo)
+// {
+//     double N, V, M1, M2, T;
+//     double oneOverL = 1.0 / L;
 
-    switch (responseID)
-    {
-        case 1: // stiffness
-            return eleInfo.setMatrix(this->getTangentStiff());
+//     switch (responseID)
+//     {
+//         case 1: // stiffness
+//             return eleInfo.setMatrix(this->getTangentStiff());
 
-        case 2: // global forces
-            return eleInfo.setVector(this->getResistingForce());
+//         case 2: // global forces
+//             return eleInfo.setVector(this->getResistingForce());
 
-        case 3: // local forces
-            // Axial
-            N = q(0);
-            P(6) =  N;
-            P(0) = -N + p0[0];
+//         case 3: // local forces
+//             // Axial
+//             N = q(0);
+//             P(6) =  N;
+//             P(0) = -N + p0[0];
 
-            // Torsion
-            T = q(5);
-            P(9) =  T;
-            P(3) = -T;
+//             // Torsion
+//             T = q(5);
+//             P(9) =  T;
+//             P(3) = -T;
 
-            // Moments about z and shears along y
-            M1 = q(1);
-            M2 = q(2);
-            P(5)  = M1;
-            P(11) = M2;
-            V = (M1 + M2) * oneOverL;
-            P(1) =  V + p0[1];
-            P(7) = -V + p0[2];
+//             // Moments about z and shears along y
+//             M1 = q(1);
+//             M2 = q(2);
+//             P(5)  = M1;
+//             P(11) = M2;
+//             V = (M1 + M2) * oneOverL;
+//             P(1) =  V + p0[1];
+//             P(7) = -V + p0[2];
 
-            // Moments about y and shears along z
-            M1 = q(3);
-            M2 = q(4);
-            P(4)  = M1;
-            P(10) = M2;
-            V = -(M1 + M2) * oneOverL;
-            P(2) = -V + p0[3];
-            P(8) =  V + p0[4];
+//             // Moments about y and shears along z
+//             M1 = q(3);
+//             M2 = q(4);
+//             P(4)  = M1;
+//             P(10) = M2;
+//             V = -(M1 + M2) * oneOverL;
+//             P(2) = -V + p0[3];
+//             P(8) =  V + p0[4];
 
-            return eleInfo.setVector(P);
+//             return eleInfo.setVector(P);
 
-        default:
-            return -1;
-    }
-}
+//         default:
+//             return -1;
+//     }
+// }
 
 
 
@@ -1010,8 +1010,8 @@ ElasticBeamLumpedMass::initialize()
     // see if there is some initial displacements at nodes
     if (initialDispChecked == false)
     {
-        const Vector& nodeIDisp = theNodes[0]->getDisp();
-        const Vector& nodeJDisp = theNodes[1]->getDisp();
+        const Vector &nodeIDisp = theNodes[0]->getDisp();
+        const Vector &nodeJDisp = theNodes[1]->getDisp();
 
         for (int i = 0; i < 6; i++)
             if (nodeIDisp(i) != 0.0)
@@ -1070,8 +1070,8 @@ ElasticBeamLumpedMass::computeElemtLengthAndOrient()
     // element projection
     static Vector dx(3);
 
-    const Vector& ndICoords = theNodes[0]->getCrds();
-    const Vector& ndJCoords = theNodes[1]->getCrds();
+    const Vector &ndICoords = theNodes[0]->getCrds();
+    const Vector &ndJCoords = theNodes[1]->getCrds();
 
     dx(0) = ndJCoords(0) - ndICoords(0);
     dx(1) = ndJCoords(1) - ndICoords(1);
@@ -1131,7 +1131,7 @@ ElasticBeamLumpedMass::computeElemtLengthAndOrient()
 
 
 int
-ElasticBeamLumpedMass::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
+ElasticBeamLumpedMass::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
 {
     // Compute y = v cross x
     // Note: v(i) is stored in R(2,i]
@@ -1193,12 +1193,12 @@ ElasticBeamLumpedMass::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
 
 
 
-const Vector&
+const Vector &
 ElasticBeamLumpedMass::getBasicTrialDisp (void)
 {
     // determine global displacements
-    const Vector& disp1 = theNodes[0]->getTrialDisp();
-    const Vector& disp2 = theNodes[1]->getTrialDisp();
+    const Vector &disp1 = theNodes[0]->getTrialDisp();
+    const Vector &disp2 = theNodes[1]->getTrialDisp();
 
     static Vector ug(12);
 
@@ -1286,8 +1286,8 @@ ElasticBeamLumpedMass::getBasicTrialDisp (void)
 
 
 
-const Matrix&
-ElasticBeamLumpedMass::getGlobalStiffMatrix(const Matrix& KB)
+const Matrix &
+ElasticBeamLumpedMass::getGlobalStiffMatrix(const Matrix &KB)
 {
     static Matrix kg(12, 12);   // Global stiffness for return
     static Matrix kb(6, 6);     // Basic stiffness
@@ -1467,8 +1467,8 @@ ElasticBeamLumpedMass::getGlobalStiffMatrix(const Matrix& KB)
 
 
 
-const Matrix&
-ElasticBeamLumpedMass::getInitialGlobalStiffMatrix (const Matrix& KB)
+const Matrix &
+ElasticBeamLumpedMass::getInitialGlobalStiffMatrix (const Matrix &KB)
 {
     static Matrix kg(12, 12);   // Global stiffness for return
     static Matrix kb(6, 6);     // Basic stiffness
@@ -1649,8 +1649,8 @@ ElasticBeamLumpedMass::getInitialGlobalStiffMatrix (const Matrix& KB)
 
 
 
-const Vector&
-ElasticBeamLumpedMass::getGlobalResistingForce(const Vector& pb, const Vector& p0)
+const Vector &
+ElasticBeamLumpedMass::getGlobalResistingForce(const Vector &pb, const Vector &p0)
 {
     // transform resisting forces from the basic system to local coordinates
     static Vector pl(12);
@@ -1721,10 +1721,10 @@ ElasticBeamLumpedMass::getGlobalResistingForce(const Vector& pb, const Vector& p
 
 
 
-Vector*
+Vector *
 ElasticBeamLumpedMass::getForce(void)
 {
-    Vector* elementForces = new Vector(12);
+    Vector *elementForces = new Vector(12);
     Vector tempForces(12);
 
     tempForces = this->getResistingForceIncInertia();

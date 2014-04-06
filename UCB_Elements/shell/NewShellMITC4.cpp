@@ -45,7 +45,7 @@
 #include <NewShellMITC4.h>         // J.Abell edited July 11, 2012
 #include <R3vectors.h>
 //#include <Renderer.h>      // J.Abell edited July 11, 2012
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 
 #include <Channel.h>      // J.Abell edited July 11, 2012
@@ -143,7 +143,7 @@ NewShellMITC4::NewShellMITC4(  int tag,
                                int node2,
                                int node3,
                                int node4,
-                               SectionForceDeformation& theMaterial ) :
+                               SectionForceDeformation &theMaterial ) :
     Element( tag, ELE_TAG_NewShellMITC4 ),
     connectedExternalNodes(4), load(0), Ki(0)
 {
@@ -213,7 +213,7 @@ NewShellMITC4::~NewShellMITC4( )
 
 
 //set domain
-void  NewShellMITC4::setDomain( Domain* theDomain )
+void  NewShellMITC4::setDomain( Domain *theDomain )
 {
     int i, j ;
     static Vector eig(3) ;
@@ -230,7 +230,7 @@ void  NewShellMITC4::setDomain( Domain* theDomain )
             std::cerr << " exists in the model\n";
         }
 
-        const Vector& nodeDisp = nodePointers[i]->getTrialDisp();
+        const Vector &nodeDisp = nodePointers[i]->getTrialDisp();
 
         if (nodeDisp.Size() != 6)
         {
@@ -240,7 +240,7 @@ void  NewShellMITC4::setDomain( Domain* theDomain )
     }
 
     //compute drilling stiffness penalty parameter
-    const Matrix& dd = materialPointers[0]->getInitialTangent( ) ;
+    const Matrix &dd = materialPointers[0]->getInitialTangent( ) ;
 
     //assemble ddMembrane ;
     for ( i = 0; i < 3; i++ )
@@ -274,13 +274,13 @@ int  NewShellMITC4::getNumExternalNodes( ) const
 
 
 //return connected external nodes
-const ID&  NewShellMITC4::getExternalNodes( )
+const ID  &NewShellMITC4::getExternalNodes( )
 {
     return connectedExternalNodes ;
 }
 
 
-Node**
+Node **
 NewShellMITC4::getNodePtrs(void)
 {
     return nodePointers;
@@ -344,7 +344,7 @@ int  NewShellMITC4::revertToStart( )
 }
 
 //print out element data
-void  NewShellMITC4::Print( ostream& s, int flag )
+void  NewShellMITC4::Print( ostream &s, int flag )
 {
     if (flag == -1)
     {
@@ -368,7 +368,7 @@ void  NewShellMITC4::Print( ostream& s, int flag )
 
         for ( i = 0; i < 4; i++ )
         {
-            const Vector& stress = materialPointers[i]->getStressResultant();
+            const Vector &stress = materialPointers[i]->getStressResultant();
 
             s << "STRESS\t" << eleTag << "\t" << counter << "\t" << i << "\tTOP";
 
@@ -398,184 +398,184 @@ void  NewShellMITC4::Print( ostream& s, int flag )
     }
 }
 
-Response*
-NewShellMITC4::setResponse(const char** argv, int argc, Information& eleInformation)
-{
-    Response* theResponse = 0;
+// Response*
+// NewShellMITC4::setResponse(const char** argv, int argc, Information& eleInformation)
+// {
+//     Response* theResponse = 0;
 
-    //  output.tag("ElementOutput");
-    //  output.attr("eleType", "NewShellMITC4");
-    //  output.attr("eleTag",this->getTag());
-    int numNodes = this->getNumExternalNodes();
-    const ID& nodes = this->getExternalNodes();
-    //static char nodeData[32];
+//     //  output.tag("ElementOutput");
+//     //  output.attr("eleType", "NewShellMITC4");
+//     //  output.attr("eleTag",this->getTag());
+//     int numNodes = this->getNumExternalNodes();
+//     const ID& nodes = this->getExternalNodes();
+//     //static char nodeData[32];
 
-    //  for (int i=0; i<numNodes; i++) {
-    //    sprintf(nodeData,"node%d",i+1);
-    //    output.attr(nodeData,nodes(i));
-    //  }
+//     //  for (int i=0; i<numNodes; i++) {
+//     //    sprintf(nodeData,"node%d",i+1);
+//     //    output.attr(nodeData,nodes(i));
+//     //  }
 
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
-            strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
-    {
-        const Vector& force = this->getResistingForce();
-        //    int size = force.Size();
-        //    for (int i=0; i<size; i++) {
-        //      sprintf(nodeData,"P%d",i+1);
-        //      output.tag("ResponseType",nodeData);
-        //    }
-        theResponse = new ElementResponse(this, 1, this->getResistingForce());
-    }
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+//             strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
+//     {
+//         const Vector& force = this->getResistingForce();
+//         //    int size = force.Size();
+//         //    for (int i=0; i<size; i++) {
+//         //      sprintf(nodeData,"P%d",i+1);
+//         //      output.tag("ResponseType",nodeData);
+//         //    }
+//         theResponse = new ElementResponse(this, 1, this->getResistingForce());
+//     }
 
-    else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "Material") == 0)
-    {
-        if (argc < 2)
-        {
-            std::cerr << "NewShellMITC4::setResponse() - need to specify more data\n";
-            return 0;
-        }
+//     else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "Material") == 0)
+//     {
+//         if (argc < 2)
+//         {
+//             std::cerr << "NewShellMITC4::setResponse() - need to specify more data\n";
+//             return 0;
+//         }
 
-        int pointNum = atoi(argv[1]);
+//         int pointNum = atoi(argv[1]);
 
-        if (pointNum > 0 && pointNum <= 4)
-        {
+//         if (pointNum > 0 && pointNum <= 4)
+//         {
 
-            //      output.tag("GaussPoint");
-            //      output.attr("number",pointNum);
-            //      output.attr("eta",sg[pointNum-1]);
-            //      output.attr("neta",tg[pointNum-1]);
+//             //      output.tag("GaussPoint");
+//             //      output.attr("number",pointNum);
+//             //      output.attr("eta",sg[pointNum-1]);
+//             //      output.attr("neta",tg[pointNum-1]);
 
-            theResponse =  materialPointers[pointNum - 1]->setResponse(&argv[2], argc - 2, eleInformation);
+//             theResponse =  materialPointers[pointNum - 1]->setResponse(&argv[2], argc - 2, eleInformation);
 
-            //      output.endTag();
-        }
+//             //      output.endTag();
+//         }
 
-    }
-    else if (strcmp(argv[0], "stresses") == 0)
-    {
+//     }
+//     else if (strcmp(argv[0], "stresses") == 0)
+//     {
 
-        //    for (int i=0; i<4; i++) {
-        //      output.tag("GaussPoint");
-        //      output.attr("number",i+1);
-        //      output.attr("eta",sg[i]);
-        //      output.attr("neta",tg[i]);
-        //
-        //      output.tag("SectionForceDeformation");
-        //      output.attr("classType", materialPointers[i]->getClassTag());
-        //      output.attr("tag", materialPointers[i]->getTag());
-        //
-        //      output.tag("ResponseType","p11");
-        //      output.tag("ResponseType","p22");
-        //      output.tag("ResponseType","p1212");
-        //      output.tag("ResponseType","m11");
-        //      output.tag("ResponseType","m22");
-        //      output.tag("ResponseType","m12");
-        //      output.tag("ResponseType","q1");
-        //      output.tag("ResponseType","q2");
-        //
-        //      output.endTag(); // GaussPoint
-        //      output.endTag(); // NdMaterialOutput
-        //    }
+//         //    for (int i=0; i<4; i++) {
+//         //      output.tag("GaussPoint");
+//         //      output.attr("number",i+1);
+//         //      output.attr("eta",sg[i]);
+//         //      output.attr("neta",tg[i]);
+//         //
+//         //      output.tag("SectionForceDeformation");
+//         //      output.attr("classType", materialPointers[i]->getClassTag());
+//         //      output.attr("tag", materialPointers[i]->getTag());
+//         //
+//         //      output.tag("ResponseType","p11");
+//         //      output.tag("ResponseType","p22");
+//         //      output.tag("ResponseType","p1212");
+//         //      output.tag("ResponseType","m11");
+//         //      output.tag("ResponseType","m22");
+//         //      output.tag("ResponseType","m12");
+//         //      output.tag("ResponseType","q1");
+//         //      output.tag("ResponseType","q2");
+//         //
+//         //      output.endTag(); // GaussPoint
+//         //      output.endTag(); // NdMaterialOutput
+//         //    }
 
-        theResponse =  new ElementResponse(this, 2, Vector(32));
-    }
+//         theResponse =  new ElementResponse(this, 2, Vector(32));
+//     }
 
-    else if (strcmp(argv[0], "strains") == 0)
-    {
+//     else if (strcmp(argv[0], "strains") == 0)
+//     {
 
-        //    for (int i=0; i<4; i++) {
-        //      output.tag("GaussPoint");
-        //      output.attr("number",i+1);
-        //      output.attr("eta",sg[i]);
-        //      output.attr("neta",tg[i]);
-        //
-        //      output.tag("SectionForceDeformation");
-        //      output.attr("classType", materialPointers[i]->getClassTag());
-        //      output.attr("tag", materialPointers[i]->getTag());
-        //
-        //      output.tag("ResponseType","eps11");
-        //      output.tag("ResponseType","eps22");
-        //      output.tag("ResponseType","gamma12");
-        //      output.tag("ResponseType","theta11");
-        //      output.tag("ResponseType","theta22");
-        //      output.tag("ResponseType","theta33");
-        //      output.tag("ResponseType","gamma13");
-        //      output.tag("ResponseType","gamma23");
-        //
-        //      output.endTag(); // GaussPoint
-        //      output.endTag(); // NdMaterialOutput
-        //    }
+//         //    for (int i=0; i<4; i++) {
+//         //      output.tag("GaussPoint");
+//         //      output.attr("number",i+1);
+//         //      output.attr("eta",sg[i]);
+//         //      output.attr("neta",tg[i]);
+//         //
+//         //      output.tag("SectionForceDeformation");
+//         //      output.attr("classType", materialPointers[i]->getClassTag());
+//         //      output.attr("tag", materialPointers[i]->getTag());
+//         //
+//         //      output.tag("ResponseType","eps11");
+//         //      output.tag("ResponseType","eps22");
+//         //      output.tag("ResponseType","gamma12");
+//         //      output.tag("ResponseType","theta11");
+//         //      output.tag("ResponseType","theta22");
+//         //      output.tag("ResponseType","theta33");
+//         //      output.tag("ResponseType","gamma13");
+//         //      output.tag("ResponseType","gamma23");
+//         //
+//         //      output.endTag(); // GaussPoint
+//         //      output.endTag(); // NdMaterialOutput
+//         //    }
 
-        theResponse =  new ElementResponse(this, 3, Vector(32));
-    }
+//         theResponse =  new ElementResponse(this, 3, Vector(32));
+//     }
 
-    //  output.endTag();
-    return theResponse;
-}
+//     //  output.endTag();
+//     return theResponse;
+// }
 
-int
-NewShellMITC4::getResponse(int responseID, Information& eleInfo)
-{
-    int cnt = 0;
-    static Vector stresses(32);
-    static Vector strains(32);
+// int
+// NewShellMITC4::getResponse(int responseID, Information& eleInfo)
+// {
+//     int cnt = 0;
+//     static Vector stresses(32);
+//     static Vector strains(32);
 
-    switch (responseID)
-    {
-        case 1: // global forces
-            return eleInfo.setVector(this->getResistingForce());
-            break;
+//     switch (responseID)
+//     {
+//         case 1: // global forces
+//             return eleInfo.setVector(this->getResistingForce());
+//             break;
 
-        case 2: // stresses
-            for (int i = 0; i < 4; i++)
-            {
+//         case 2: // stresses
+//             for (int i = 0; i < 4; i++)
+//             {
 
-                // Get material stress response
-                const Vector& sigma = materialPointers[i]->getStressResultant();
-                stresses(cnt) = sigma(0);
-                stresses(cnt + 1) = sigma(1);
-                stresses(cnt + 2) = sigma(2);
-                stresses(cnt + 3) = sigma(3);
-                stresses(cnt + 4) = sigma(4);
-                stresses(cnt + 5) = sigma(5);
-                stresses(cnt + 6) = sigma(6);
-                stresses(cnt + 7) = sigma(7);
-                cnt += 8;
-            }
+//                 // Get material stress response
+//                 const Vector& sigma = materialPointers[i]->getStressResultant();
+//                 stresses(cnt) = sigma(0);
+//                 stresses(cnt + 1) = sigma(1);
+//                 stresses(cnt + 2) = sigma(2);
+//                 stresses(cnt + 3) = sigma(3);
+//                 stresses(cnt + 4) = sigma(4);
+//                 stresses(cnt + 5) = sigma(5);
+//                 stresses(cnt + 6) = sigma(6);
+//                 stresses(cnt + 7) = sigma(7);
+//                 cnt += 8;
+//             }
 
-            return eleInfo.setVector(stresses);
-            break;
+//             return eleInfo.setVector(stresses);
+//             break;
 
-        case 3: //strain
-            for (int i = 0; i < 4; i++)
-            {
+//         case 3: //strain
+//             for (int i = 0; i < 4; i++)
+//             {
 
-                // Get section deformation
-                const Vector& deformation = materialPointers[i]->getSectionDeformation();
-                strains(cnt) = deformation(0);
-                strains(cnt + 1) = deformation(1);
-                strains(cnt + 2) = deformation(2);
-                strains(cnt + 3) = deformation(3);
-                strains(cnt + 4) = deformation(4);
-                strains(cnt + 5) = deformation(5);
-                strains(cnt + 6) = deformation(6);
-                strains(cnt + 7) = deformation(7);
-                cnt += 8;
-            }
+//                 // Get section deformation
+//                 const Vector& deformation = materialPointers[i]->getSectionDeformation();
+//                 strains(cnt) = deformation(0);
+//                 strains(cnt + 1) = deformation(1);
+//                 strains(cnt + 2) = deformation(2);
+//                 strains(cnt + 3) = deformation(3);
+//                 strains(cnt + 4) = deformation(4);
+//                 strains(cnt + 5) = deformation(5);
+//                 strains(cnt + 6) = deformation(6);
+//                 strains(cnt + 7) = deformation(7);
+//                 cnt += 8;
+//             }
 
-            return eleInfo.setVector(strains);
-            break;
+//             return eleInfo.setVector(strains);
+//             break;
 
-        default:
-            return -1;
-    }
+//         default:
+//             return -1;
+//     }
 
-    cnt = 0;
-}
+//     cnt = 0;
+// }
 
 
 //return stiffness matrix
-const Matrix&  NewShellMITC4::getTangentStiff( )
+const Matrix  &NewShellMITC4::getTangentStiff( )
 {
     int tang_flag = 1 ; //get the tangent
 
@@ -586,7 +586,7 @@ const Matrix&  NewShellMITC4::getTangentStiff( )
 }
 
 //return secant matrix
-const Matrix&  NewShellMITC4::getInitialStiff( )
+const Matrix  &NewShellMITC4::getInitialStiff( )
 {
     if (Ki != 0)
     {
@@ -644,7 +644,7 @@ const Matrix&  NewShellMITC4::getInitialStiff( )
 
     static double BdrillK[ndf] ;
 
-    double* drillPointer ;
+    double *drillPointer ;
 
     static double saveB[nstress][ndf][numnodes] ;
 
@@ -901,7 +901,7 @@ const Matrix&  NewShellMITC4::getInitialStiff( )
 
 
 //return mass matrix
-const Matrix&  NewShellMITC4::getMass( )
+const Matrix  &NewShellMITC4::getMass( )
 {
     int tangFlag = 1 ;
 
@@ -923,11 +923,11 @@ void  NewShellMITC4::zeroLoad( )
 
 
 int
-NewShellMITC4::addLoad(ElementalLoad* theLoad, double loadFactor)
+NewShellMITC4::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
 
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_ElementSelfWeight)
     {
@@ -949,7 +949,7 @@ NewShellMITC4::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 
 int
-NewShellMITC4::addInertiaLoadToUnbalance(const Vector& accel)
+NewShellMITC4::addInertiaLoadToUnbalance(const Vector &accel)
 {
     int tangFlag = 1 ;
 
@@ -975,7 +975,7 @@ NewShellMITC4::addInertiaLoadToUnbalance(const Vector& accel)
 
     for (i = 0; i < 4; i++)
     {
-        const Vector& Raccel = nodePointers[i]->getRV(accel);
+        const Vector &Raccel = nodePointers[i]->getRV(accel);
 
         for (int j = 0; j < 6; j++)
         {
@@ -1004,7 +1004,7 @@ NewShellMITC4::addInertiaLoadToUnbalance(const Vector& accel)
 
 
 //get residual
-const Vector&  NewShellMITC4::getResistingForce( )
+const Vector  &NewShellMITC4::getResistingForce( )
 {
     int tang_flag = 0 ; //don't get the tangent
 
@@ -1021,7 +1021,7 @@ const Vector&  NewShellMITC4::getResistingForce( )
 
 
 //get residual with inertia terms
-const Vector&  NewShellMITC4::getResistingForceIncInertia( )
+const Vector  &NewShellMITC4::getResistingForceIncInertia( )
 {
     static Vector res(24);
     int tang_flag = 0 ; //don't get the tangent
@@ -1262,7 +1262,7 @@ NewShellMITC4::formResidAndTangent( int tang_flag )
 
     static double BdrillK[ndf] ;
 
-    double* drillPointer ;
+    double *drillPointer ;
 
     static double saveB[nstress][ndf][numnodes] ;
 
@@ -1406,7 +1406,7 @@ NewShellMITC4::formResidAndTangent( int tang_flag )
 
 
             //nodal "displacements"
-            const Vector& ul = nodePointers[j]->getTrialDisp( ) ;
+            const Vector &ul = nodePointers[j]->getTrialDisp( ) ;
 
             //compute the strain
             //strain += (BJ*ul) ;
@@ -1581,13 +1581,13 @@ NewShellMITC4::computeBasis( )
     //get two vectors (v1, v2) in plane of shell by
     // nodal coordinate differences
 
-    const Vector& coor0 = nodePointers[0]->getCrds( ) ;
+    const Vector &coor0 = nodePointers[0]->getCrds( ) ;
 
-    const Vector& coor1 = nodePointers[1]->getCrds( ) ;
+    const Vector &coor1 = nodePointers[1]->getCrds( ) ;
 
-    const Vector& coor2 = nodePointers[2]->getCrds( ) ;
+    const Vector &coor2 = nodePointers[2]->getCrds( ) ;
 
-    const Vector& coor3 = nodePointers[3]->getCrds( ) ;
+    const Vector &coor3 = nodePointers[3]->getCrds( ) ;
 
     v1.Zero( ) ;
     //v1 = 0.5 * ( coor2 + coor1 - coor3 - coor0 ) ;
@@ -1635,7 +1635,7 @@ NewShellMITC4::computeBasis( )
     for ( i = 0; i < 4; i++ )
     {
 
-        const Vector& coorI = nodePointers[i]->getCrds( ) ;
+        const Vector &coorI = nodePointers[i]->getCrds( ) ;
         xl[0][i] = coorI ^ v1 ;
         xl[1][i] = coorI ^ v2 ;
 
@@ -1654,7 +1654,7 @@ NewShellMITC4::computeBasis( )
 //*************************************************************************
 //compute Bdrill
 
-double*
+double *
 NewShellMITC4::computeBdrill( int node, const double shp[3][4] )
 {
 
@@ -1704,10 +1704,10 @@ NewShellMITC4::computeBdrill( int node, const double shp[3][4] )
 //********************************************************************
 //assemble a B matrix
 
-const Matrix&
-NewShellMITC4::assembleB( const Matrix& Bmembrane,
-                          const Matrix& Bbend,
-                          const Matrix& Bshear )
+const Matrix &
+NewShellMITC4::assembleB( const Matrix &Bmembrane,
+                          const Matrix &Bbend,
+                          const Matrix &Bshear )
 {
 
     //Matrix Bbend(3,3) ;  // plate bending B matrix
@@ -1766,7 +1766,7 @@ NewShellMITC4::assembleB( const Matrix& Bmembrane,
 
     //shell modified bending terms
 
-    Matrix& Gbend = Gmem ;
+    Matrix &Gbend = Gmem ;
 
     //BbendShell = Bbend * Gbend ;
     BbendShell.addMatrixProduct(0.0, Bbend, Gbend, 1.0 ) ;
@@ -1839,7 +1839,7 @@ NewShellMITC4::assembleB( const Matrix& Bmembrane,
 //***********************************************************************
 //compute Bmembrane matrix
 
-const Matrix&
+const Matrix &
 NewShellMITC4::computeBmembrane( int node, const double shp[3][4] )
 {
 
@@ -1870,7 +1870,7 @@ NewShellMITC4::computeBmembrane( int node, const double shp[3][4] )
 //***********************************************************************
 //compute Bbend matrix
 
-const Matrix&
+const Matrix &
 NewShellMITC4::computeBbend( int node, const double shp[3][4] )
 {
 
@@ -1906,7 +1906,7 @@ void
 NewShellMITC4::shape2d( double ss, double tt,
                         const double x[2][4],
                         double shp[3][4],
-                        double& xsj            )
+                        double &xsj            )
 
 {
 
@@ -1972,7 +1972,7 @@ NewShellMITC4::shape2d( double ss, double tt,
 Matrix
 NewShellMITC4::transpose( int dim1,
                           int dim2,
-                          const Matrix& M )
+                          const Matrix &M )
 {
     int i ;
     int j ;
@@ -1992,7 +1992,7 @@ NewShellMITC4::transpose( int dim1,
 
 //**********************************************************************
 
-int  NewShellMITC4::sendSelf (int commitTag, Channel& theChannel)
+int  NewShellMITC4::sendSelf (int commitTag, Channel &theChannel)
 {
     int res = 0;
 
@@ -2074,8 +2074,8 @@ int  NewShellMITC4::sendSelf (int commitTag, Channel& theChannel)
 }
 
 int  NewShellMITC4::recvSelf (int commitTag,
-                              Channel& theChannel,
-                              FEM_ObjectBroker& theBroker)
+                              Channel &theChannel,
+                              FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -2178,7 +2178,7 @@ int  NewShellMITC4::recvSelf (int commitTag,
 }
 
 // J.Abell Added Feb. 2013
-const Vector& NewShellMITC4::getBodyForce(double loadFactor)
+const Vector &NewShellMITC4::getBodyForce(double loadFactor)
 {
     static Vector bforce(24);
     Vector ba(24), bfx(3);

@@ -43,7 +43,7 @@
 #include <Vector.h>
 #include <stresst.h>
 #include <straint.h>
-#include <MaterialResponse.h>
+// #include <Material3.h>
 
 Matrix NDMaterial::errMatrix(1, 1);
 Vector NDMaterial::errVector(1);
@@ -93,13 +93,13 @@ double NDMaterial::getpsi(void)
     return 0.0;
 }
 
-const Vector&
+const Vector &
 NDMaterial::getCommittedStress(void)
 {
     return this->getStress();
 }
 
-const Vector&
+const Vector &
 NDMaterial::getCommittedStrain(void)
 {
     return this->getStrain();
@@ -107,48 +107,48 @@ NDMaterial::getCommittedStrain(void)
 
 // methods to set and retrieve state.
 int
-NDMaterial::setTrialStrain(const Vector& v)
+NDMaterial::setTrialStrain(const Vector &v)
 {
     cerr << "NDMaterial::setTrialStrain -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialStrain(const Vector& v, const Vector& r)
+NDMaterial::setTrialStrain(const Vector &v, const Vector &r)
 {
     cerr << "NDMaterial::setTrialStrain -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialStrainIncr(const Vector& v)
+NDMaterial::setTrialStrainIncr(const Vector &v)
 {
     cerr << "NDMaterial::setTrialStrainIncr -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialStrainIncr(const Vector& v, const Vector& r)
+NDMaterial::setTrialStrainIncr(const Vector &v, const Vector &r)
 {
     cerr << "NDMaterial::setTrialStrainIncr -- subclass responsibility\n";
     return -1;
 }
 
-const Matrix&
+const Matrix &
 NDMaterial::getTangent(void)
 {
     cerr << "NDMaterial::getTangent -- subclass responsibility\n";
     return errMatrix;
 }
 
-const Vector&
+const Vector &
 NDMaterial::getStress(void)
 {
     cerr << "NDMaterial::getStress -- subclass responsibility\n";
     return errVector;
 }
 
-const Vector&
+const Vector &
 NDMaterial::getStrain(void)
 {
     cerr << "NDMaterial::getStrain -- subclass responsibility\n";
@@ -156,28 +156,28 @@ NDMaterial::getStrain(void)
 }
 
 int
-NDMaterial::setTrialStrain(const Tensor& v)
+NDMaterial::setTrialStrain(const Tensor &v)
 {
     cerr << "NDMaterial::setTrialStrainIncr -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialStrain(const Tensor& v, const Tensor& r)
+NDMaterial::setTrialStrain(const Tensor &v, const Tensor &r)
 {
     cerr << "NDMaterial::setTrialStrainIncr -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialStrainIncr(const Tensor& v)
+NDMaterial::setTrialStrainIncr(const Tensor &v)
 {
     cerr << "NDMaterial::setTrialStrainIncr -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialStrainIncr(const Tensor& v, const Tensor& r)
+NDMaterial::setTrialStrainIncr(const Tensor &v, const Tensor &r)
 {
     cerr << "NDMaterial::setTrialStrainIncr -- subclass responsibility\n";
     return -1;
@@ -186,84 +186,84 @@ NDMaterial::setTrialStrainIncr(const Tensor& v, const Tensor& r)
 //Zhao (zcheng@ucdavis.edu)
 // added Sept 22 2003 for Large Deformation, F is the Deformation Grandient
 int
-NDMaterial::setTrialF(const straintensor& f)
+NDMaterial::setTrialF(const straintensor &f)
 {
     cerr << "NDMaterial::setTrialF -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialFIncr(const straintensor& df)
+NDMaterial::setTrialFIncr(const straintensor &df)
 {
     cerr << "NDMaterial::setTrialF -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialC(const straintensor& c)
+NDMaterial::setTrialC(const straintensor &c)
 {
     cerr << "NDMaterial::setTrialC -- subclass responsibility\n";
     return -1;
 }
 
 int
-NDMaterial::setTrialCIncr(const straintensor& c)
+NDMaterial::setTrialCIncr(const straintensor &c)
 {
     cerr << "NDMaterial::setTrialC -- subclass responsibility\n";
     return -1;
 }
 
-const stresstensor& NDMaterial::getPK1StressTensor(void)
+const stresstensor &NDMaterial::getPK1StressTensor(void)
 {
     cerr << "NDMaterial::getPK1StressTensor -- subclass responsibility\n";
     return errstresstensor;
 }
 
-const stresstensor& NDMaterial::getCauchyStressTensor(void)
+const stresstensor &NDMaterial::getCauchyStressTensor(void)
 {
     cerr << "NDMaterial::getCauchyStressTensor -- subclass responsibility\n";
     return errstresstensor;
 }
 
-const straintensor& NDMaterial::getF(void)
+const straintensor &NDMaterial::getF(void)
 {
     cerr << "NDMaterial::getF -- subclass responsibility\n";
     return errstraintensor;
 }
 
-const straintensor& NDMaterial::getC(void)
+const straintensor &NDMaterial::getC(void)
 {
     cerr << "NDMaterial::getF -- subclass responsibility\n";
     return errstraintensor;
 }
 
-const straintensor& NDMaterial::getFp(void)
+const straintensor &NDMaterial::getFp(void)
 {
     cerr << "NDMaterial::getFp -- subclass responsibility\n";
     return errstraintensor;
 }
 // Only For Large Deformation, END////////////////////////////
 
-const Tensor&
+const Tensor &
 NDMaterial::getTangentTensor(void)
 {
     cerr << "NDMaterial::getTangentTensor -- subclass responsibility\n";
     return errTensor;
 }
 
-const stresstensor& NDMaterial::getStressTensor(void)
+const stresstensor &NDMaterial::getStressTensor(void)
 {
     cerr << "NDMaterial::getStressTensor -- subclass responsibility\n";
     return errstresstensor;
 }
 
-const straintensor& NDMaterial::getStrainTensor(void)
+const straintensor &NDMaterial::getStrainTensor(void)
 {
     cerr << "NDMaterial::getStrainTensor -- subclass responsibility\n";
     return errstraintensor;
 }
 
-const straintensor& NDMaterial::getPlasticStrainTensor(void)
+const straintensor &NDMaterial::getPlasticStrainTensor(void)
 {
     cerr << "NDMaterial::getPlasticStrainTensor -- subclass responsibility\n";
     return errstraintensor;
@@ -278,51 +278,51 @@ const straintensor& NDMaterial::getPlasticStrainTensor(void)
 //}
 
 
-Response*
-NDMaterial::setResponse (const char** argv, int argc, Information& matInfo)
-{
-    // Boris Jeremic temp out 31Mar2009
-    //    if (strcmp(argv[0],"stress") == 0 || strcmp(argv[0],"stresses") == 0)
-    //      return new MaterialResponse(this, 1, this->getStress());
-    //
-    //    else if (strcmp(argv[0],"strain") == 0 || strcmp(argv[0],"strains") == 0)
-    //      return new MaterialResponse(this, 2, this->getStrain());
-    //
-    //    else if (strcmp(argv[0],"tangent") == 0)
-    //      return new MaterialResponse(this, 3, this->getTangent());
-    //
-    //    else
-    return 0;
-}
+// Response*
+// NDMaterial::setResponse (const char** argv, int argc, Information& matInfo)
+// {
+//     // Boris Jeremic temp out 31Mar2009
+//     //    if (strcmp(argv[0],"stress") == 0 || strcmp(argv[0],"stresses") == 0)
+//     //      return new MaterialResponse(this, 1, this->getStress());
+//     //
+//     //    else if (strcmp(argv[0],"strain") == 0 || strcmp(argv[0],"strains") == 0)
+//     //      return new MaterialResponse(this, 2, this->getStrain());
+//     //
+//     //    else if (strcmp(argv[0],"tangent") == 0)
+//     //      return new MaterialResponse(this, 3, this->getTangent());
+//     //
+//     //    else
+//     return 0;
+// }
 
-int
-NDMaterial::getResponse (int responseID, Information& matInfo)
-{
-    switch (responseID)
-    {
-            // Boris Jeremic temp out 31Mar2009
-            //      case 1:
-            //          return matInfo.setVector(this->getStress());
-            //
-            //      case 2:
-            //          return matInfo.setVector(this->getStrain());
-            //
-            //      case 3:
-            //          return matInfo.setMatrix(this->getTangent());
-            //
-            //      default:
-            return -1;
-    }
+// int
+// NDMaterial::getResponse (int responseID, Information& matInfo)
+// {
+//     switch (responseID)
+//     {
+//             // Boris Jeremic temp out 31Mar2009
+//             //      case 1:
+//             //          return matInfo.setVector(this->getStress());
+//             //
+//             //      case 2:
+//             //          return matInfo.setVector(this->getStrain());
+//             //
+//             //      case 3:
+//             //          return matInfo.setMatrix(this->getTangent());
+//             //
+//             //      default:
+//             return -1;
+//     }
 
-    return -1;
-}
+//     return -1;
+// }
 
 
 
 
 // Nima Tafazzoli added for checking the mesh (September 2012)
 int
-NDMaterial::CheckMesh(ofstream& checkmesh_file)
+NDMaterial::CheckMesh(ofstream &checkmesh_file)
 {
     return 0;
 }

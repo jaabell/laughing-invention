@@ -47,7 +47,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 // initialise the class wide variables
 Matrix ZeroLength::ZeroLengthM2(2, 2);
@@ -67,8 +67,8 @@ Vector ZeroLength::ZeroLengthV12(12);
 ZeroLength::ZeroLength(int tag,
                        int dim,
                        int Nd1, int Nd2,
-                       const Vector& x, const Vector& yp,
-                       UniaxialMaterial& theMat,
+                       const Vector &x, const Vector &yp,
+                       UniaxialMaterial &theMat,
                        int direction )
     : Element(tag, ELE_TAG_ZeroLength),
       connectedExternalNodes(2),
@@ -108,10 +108,10 @@ ZeroLength::ZeroLength(int tag,
 ZeroLength::ZeroLength(int tag,
                        int dim,
                        int Nd1, int Nd2,
-                       const Vector& x, const Vector& yp,
+                       const Vector &x, const Vector &yp,
                        int n1dMat,
-                       UniaxialMaterial** theMat,
-                       const ID& direction )
+                       UniaxialMaterial **theMat,
+                       const ID &direction )
     : Element(tag, ELE_TAG_ZeroLength),
       connectedExternalNodes(2),
       dimension(dim), numDOF(0), transformation(3, 3),
@@ -208,7 +208,7 @@ ZeroLength::getNumExternalNodes(void) const
 }
 
 
-const ID&
+const ID &
 ZeroLength::getExternalNodes(void)
 {
     return connectedExternalNodes;
@@ -216,7 +216,7 @@ ZeroLength::getExternalNodes(void)
 
 
 
-Node**
+Node **
 ZeroLength::getNodePtrs(void)
 {
     return theNodes;
@@ -236,7 +236,7 @@ ZeroLength::getNumDOF(void)
 //    allocate space for t matrix and define it as the basic deformation-
 //    displacement transformation matrix.
 void
-ZeroLength::setDomain(Domain* theDomain)
+ZeroLength::setDomain(Domain *theDomain)
 {
     // check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -287,8 +287,8 @@ ZeroLength::setDomain(Domain* theDomain)
     }
 
     // Check that length is zero within tolerance
-    const Vector& end1Crd = theNodes[0]->getCrds();
-    const Vector& end2Crd = theNodes[1]->getCrds();
+    const Vector &end1Crd = theNodes[0]->getCrds();
+    const Vector &end2Crd = theNodes[1]->getCrds();
     Vector diff = end1Crd - end2Crd;
     double L  = diff.Norm();
     double v1 = end1Crd.Norm();
@@ -414,11 +414,11 @@ ZeroLength::update(void)
     double strainRate;
 
     // get trial displacements and take difference
-    const Vector& disp1 = theNodes[0]->getTrialDisp();
-    const Vector& disp2 = theNodes[1]->getTrialDisp();
+    const Vector &disp1 = theNodes[0]->getTrialDisp();
+    const Vector &disp2 = theNodes[1]->getTrialDisp();
     Vector  diff  = disp2 - disp1;
-    const Vector& vel1  = theNodes[0]->getTrialVel();
-    const Vector& vel2  = theNodes[1]->getTrialVel();
+    const Vector &vel1  = theNodes[0]->getTrialVel();
+    const Vector &vel2  = theNodes[1]->getTrialVel();
     Vector  diffv = vel2 - vel1;
 
     // loop over 1d materials
@@ -437,20 +437,20 @@ ZeroLength::update(void)
     return ret;
 }
 
-const Matrix&
+const Matrix &
 ZeroLength::getTangentStiff(void)
 {
     double E;
 
     // stiff is a reference to the matrix holding the stiffness matrix
-    Matrix& stiff = *theMatrix;
+    Matrix &stiff = *theMatrix;
 
     // zero stiffness matrix
     stiff.Zero();
 
     // loop over 1d materials
 
-    Matrix& tran = *t1d;;
+    Matrix &tran = *t1d;;
 
     for (int mat = 0; mat < numMaterials1d; mat++)
     {
@@ -460,7 +460,7 @@ ZeroLength::getTangentStiff(void)
 
         // compute contribution of material to tangent matrix
         for (int i = 0; i < numDOF; i++)
-            for(int j = 0; j < i + 1; j++)
+            for (int j = 0; j < i + 1; j++)
             {
                 stiff(i, j) +=  tran(mat, i) * E * tran(mat, j);
             }
@@ -471,7 +471,7 @@ ZeroLength::getTangentStiff(void)
 
     // complete symmetric stiffness matrix
     for (int i = 0; i < numDOF; i++)
-        for(int j = 0; j < i; j++)
+        for (int j = 0; j < i; j++)
         {
             stiff(j, i) = stiff(i, j);
         }
@@ -480,20 +480,20 @@ ZeroLength::getTangentStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 ZeroLength::getInitialStiff(void)
 {
     double E;
 
     // stiff is a reference to the matrix holding the stiffness matrix
-    Matrix& stiff = *theMatrix;
+    Matrix &stiff = *theMatrix;
 
     // zero stiffness matrix
     stiff.Zero();
 
     // loop over 1d materials
 
-    Matrix& tran = *t1d;;
+    Matrix &tran = *t1d;;
 
     for (int mat = 0; mat < numMaterials1d; mat++)
     {
@@ -503,7 +503,7 @@ ZeroLength::getInitialStiff(void)
 
         // compute contribution of material to tangent matrix
         for (int i = 0; i < numDOF; i++)
-            for(int j = 0; j < i + 1; j++)
+            for (int j = 0; j < i + 1; j++)
             {
                 stiff(i, j) +=  tran(mat, i) * E * tran(mat, j);
             }
@@ -514,7 +514,7 @@ ZeroLength::getInitialStiff(void)
 
     // complete symmetric stiffness matrix
     for (int i = 0; i < numDOF; i++)
-        for(int j = 0; j < i; j++)
+        for (int j = 0; j < i; j++)
         {
             stiff(j, i) = stiff(i, j);
         }
@@ -523,19 +523,19 @@ ZeroLength::getInitialStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 ZeroLength::getDamp(void)
 {
     double eta;
 
     // damp is a reference to the matrix holding the damping matrix
-    Matrix& damp = *theMatrix;
+    Matrix &damp = *theMatrix;
 
     // zero stiffness matrix
     damp.Zero();
 
     // loop over 1d materials
-    Matrix& tran = *t1d;;
+    Matrix &tran = *t1d;;
 
     for (int mat = 0; mat < numMaterials1d; mat++)
     {
@@ -545,7 +545,7 @@ ZeroLength::getDamp(void)
 
         // compute contribution of material to tangent matrix
         for (int i = 0; i < numDOF; i++)
-            for(int j = 0; j < i + 1; j++)
+            for (int j = 0; j < i + 1; j++)
             {
                 damp(i, j) +=  tran(mat, i) * eta * tran(mat, j);
             }
@@ -554,7 +554,7 @@ ZeroLength::getDamp(void)
 
     // complete symmetric stiffness matrix
     for (int i = 0; i < numDOF; i++)
-        for(int j = 0; j < i; j++)
+        for (int j = 0; j < i; j++)
         {
             damp(j, i) = damp(i, j);
         }
@@ -563,7 +563,7 @@ ZeroLength::getDamp(void)
 }
 
 
-const Matrix&
+const Matrix &
 ZeroLength::getMass(void)
 {
     // no mass
@@ -579,7 +579,7 @@ ZeroLength::zeroLoad(void)
 }
 
 int
-ZeroLength::addLoad(ElementalLoad* theLoad, double loadFactor)
+ZeroLength::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     std::cerr << "ZeroLength::addLoad - load type unknown for truss with tag: " << this->getTag() << endln;
 
@@ -587,14 +587,14 @@ ZeroLength::addLoad(ElementalLoad* theLoad, double loadFactor)
 }
 
 int
-ZeroLength::addInertiaLoadToUnbalance(const Vector& accel)
+ZeroLength::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // does nothing as element has no mass yet!
     return 0;
 }
 
 
-const Vector&
+const Vector &
 ZeroLength::getResistingForce()
 {
     double force;
@@ -621,7 +621,7 @@ ZeroLength::getResistingForce()
 }
 
 
-const Vector&
+const Vector &
 ZeroLength::getResistingForceIncInertia()
 {
     // there is no mass, so return
@@ -631,7 +631,7 @@ ZeroLength::getResistingForceIncInertia()
 
 
 int
-ZeroLength::sendSelf(int commitTag, Channel& theChannel)
+ZeroLength::sendSelf(int commitTag, Channel &theChannel)
 {
     int res = 0;
 
@@ -727,7 +727,7 @@ ZeroLength::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ZeroLength::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ZeroLength::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -913,7 +913,7 @@ ZeroLength::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBr
 
 
 void
-ZeroLength::Print(ostream& s, int flag)
+ZeroLength::Print(ostream &s, int flag)
 {
     // compute the strain and axial force in the member
     double strain = 0.0;
@@ -943,118 +943,118 @@ ZeroLength::Print(ostream& s, int flag)
     }
 }
 
-Response*
-ZeroLength::setResponse(const char** argv, int argc, Information& eleInformation)
-{
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new ElementResponse(this, 1, Vector(numMaterials1d));
-    }
+// Response*
+// ZeroLength::setResponse(const char** argv, int argc, Information& eleInformation)
+// {
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new ElementResponse(this, 1, Vector(numMaterials1d));
+//     }
 
-    else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
-             strcmp(argv[0], "deformation") == 0)
-    {
-        return new ElementResponse(this, 2, Vector(numMaterials1d));
-    }
+//     else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
+//              strcmp(argv[0], "deformation") == 0)
+//     {
+//         return new ElementResponse(this, 2, Vector(numMaterials1d));
+//     }
 
-    else if ((strcmp(argv[0], "defoANDforce") == 0) ||
-             (strcmp(argv[0], "deformationANDforces") == 0) ||
-             (strcmp(argv[0], "deformationsANDforces") == 0))
-    {
-        return new ElementResponse(this, 4, Vector(2 * numMaterials1d));
-    }
+//     else if ((strcmp(argv[0], "defoANDforce") == 0) ||
+//              (strcmp(argv[0], "deformationANDforces") == 0) ||
+//              (strcmp(argv[0], "deformationsANDforces") == 0))
+//     {
+//         return new ElementResponse(this, 4, Vector(2 * numMaterials1d));
+//     }
 
-    // tangent stiffness matrix
-    else if (strcmp(argv[0], "stiff") == 0)
-    {
-        return new ElementResponse(this, 3, Matrix(numMaterials1d, numMaterials1d));
-    }
+//     // tangent stiffness matrix
+//     else if (strcmp(argv[0], "stiff") == 0)
+//     {
+//         return new ElementResponse(this, 3, Matrix(numMaterials1d, numMaterials1d));
+//     }
 
-    else if (strcmp(argv[0], "material") == 0)
-    {
-        if (argc <= 2)
-        {
-            return 0;
-        }
+//     else if (strcmp(argv[0], "material") == 0)
+//     {
+//         if (argc <= 2)
+//         {
+//             return 0;
+//         }
 
-        int matNum = atoi(argv[1]);
+//         int matNum = atoi(argv[1]);
 
-        if (matNum < 1 || matNum > numMaterials1d)
-        {
-            return 0;
-        }
-        else
-        {
-            return theMaterial1d[matNum - 1]->setResponse(&argv[2], argc - 2, eleInformation);
-        }
-    }
-    else
-    {
-        return 0;
-    }
-}
+//         if (matNum < 1 || matNum > numMaterials1d)
+//         {
+//             return 0;
+//         }
+//         else
+//         {
+//             return theMaterial1d[matNum - 1]->setResponse(&argv[2], argc - 2, eleInformation);
+//         }
+//     }
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-ZeroLength::getResponse(int responseID, Information& eleInformation)
-{
-    const Vector& disp1 = theNodes[0]->getTrialDisp();
-    const Vector& disp2 = theNodes[1]->getTrialDisp();
-    const Vector  diff  = disp2 - disp1;
+// int
+// ZeroLength::getResponse(int responseID, Information& eleInformation)
+// {
+//     const Vector& disp1 = theNodes[0]->getTrialDisp();
+//     const Vector& disp2 = theNodes[1]->getTrialDisp();
+//     const Vector  diff  = disp2 - disp1;
 
-    switch (responseID)
-    {
-        case -1:
-            return -1;
+//     switch (responseID)
+//     {
+//         case -1:
+//             return -1;
 
-        case 1:
-            if (eleInformation.theVector != 0)
-            {
-                for (int i = 0; i < numMaterials1d; i++)
-                {
-                    (*(eleInformation.theVector))(i) = theMaterial1d[i]->getStress();
-                }
-            }
+//         case 1:
+//             if (eleInformation.theVector != 0)
+//             {
+//                 for (int i = 0; i < numMaterials1d; i++)
+//                 {
+//                     (*(eleInformation.theVector))(i) = theMaterial1d[i]->getStress();
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        case 2:
-            if (eleInformation.theVector != 0)
-            {
-                for (int i = 0; i < numMaterials1d; i++)
-                {
-                    (*(eleInformation.theVector))(i) = theMaterial1d[i]->getStrain();
-                }
-            }
+//         case 2:
+//             if (eleInformation.theVector != 0)
+//             {
+//                 for (int i = 0; i < numMaterials1d; i++)
+//                 {
+//                     (*(eleInformation.theVector))(i) = theMaterial1d[i]->getStrain();
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        case 4:
-            if (eleInformation.theVector != 0)
-            {
-                for (int i = 0; i < numMaterials1d; i++)
-                {
-                    (*(eleInformation.theVector))(i) = theMaterial1d[i]->getStrain();
-                    (*(eleInformation.theVector))(i + numMaterials1d) = theMaterial1d[i]->getStress();
-                }
-            }
+//         case 4:
+//             if (eleInformation.theVector != 0)
+//             {
+//                 for (int i = 0; i < numMaterials1d; i++)
+//                 {
+//                     (*(eleInformation.theVector))(i) = theMaterial1d[i]->getStrain();
+//                     (*(eleInformation.theVector))(i + numMaterials1d) = theMaterial1d[i]->getStress();
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        case 3:
-            if (eleInformation.theMatrix != 0)
-            {
-                for (int i = 0; i < numMaterials1d; i++)
-                {
-                    (*(eleInformation.theMatrix))(i, i) = theMaterial1d[i]->getTangent();
-                }
-            }
+//         case 3:
+//             if (eleInformation.theMatrix != 0)
+//             {
+//                 for (int i = 0; i < numMaterials1d; i++)
+//                 {
+//                     (*(eleInformation.theMatrix))(i, i) = theMaterial1d[i]->getTangent();
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        default:
-            return -1;
-    }
-}
+//         default:
+//             return -1;
+//     }
+// }
 
 
 // Private methods
@@ -1064,8 +1064,8 @@ ZeroLength::getResponse(int responseID, Information& eleInformation)
 // for orientation
 void
 ZeroLength::setUp( int Nd1, int Nd2,
-                   const Vector& x,
-                   const Vector& yp )
+                   const Vector &x,
+                   const Vector &yp )
 {
     // ensure the connectedExternalNode ID is of correct size & set values
     if (connectedExternalNodes.Size() != 2)
@@ -1126,7 +1126,7 @@ ZeroLength::setUp( int Nd1, int Nd2,
 
 // Check that direction is in the range of 0 to 5
 void
-ZeroLength::checkDirection( ID& dir ) const
+ZeroLength::checkDirection( ID &dir ) const
 {
     for ( int i = 0; i < dir.Size(); i++)
         if ( dir(i) < 0 || dir(i) > 5 )
@@ -1157,7 +1157,7 @@ ZeroLength::setTran1d( Etype elemType,
     }
 
     // Use reference for convenience and zero matrix.
-    Matrix& tran = *t1d;
+    Matrix &tran = *t1d;
     tran.Zero();
 
     // loop over materials, setting row in tran for each material depending on dimensionality of element
@@ -1260,7 +1260,7 @@ ZeroLength::setTran1d( Etype elemType,
 // of node 1
 double
 ZeroLength::computeCurrentStrain1d( int mat,
-                                    const Vector& dispDiff ) const
+                                    const Vector &dispDiff ) const
 {
     double strain = 0.0;
 
@@ -1273,7 +1273,7 @@ ZeroLength::computeCurrentStrain1d( int mat,
 }
 
 void
-ZeroLength::updateDir(const Vector& x, const Vector& y)
+ZeroLength::updateDir(const Vector &x, const Vector &y)
 {
     this->setUp(connectedExternalNodes(0), connectedExternalNodes(1), x, y);
     this->setTran1d(elemType, numMaterials1d);

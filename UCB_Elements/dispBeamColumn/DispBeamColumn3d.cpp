@@ -45,7 +45,7 @@
 #include <Information.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 #include <BeamIntegration.h>
 
@@ -55,8 +55,8 @@ Vector DispBeamColumn3d::P(12);
 double DispBeamColumn3d::workArea[200];
 
 DispBeamColumn3d::DispBeamColumn3d(int tag, int nd1, int nd2,
-                                   int numSec, SectionForceDeformation** s,
-                                   BeamIntegration& bi, double r,
+                                   int numSec, SectionForceDeformation **s,
+                                   BeamIntegration &bi, double r,
                                    double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
                                    double rigJntOffset1_x,   double rigJntOffset1_y,   double rigJntOffset1_z,
                                    double rigJntOffset2_x,   double rigJntOffset2_y,   double rigJntOffset2_z)
@@ -227,13 +227,13 @@ DispBeamColumn3d::getNumExternalNodes() const
     return 2;
 }
 
-const ID&
+const ID &
 DispBeamColumn3d::getExternalNodes()
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 DispBeamColumn3d::getNodePtrs()
 {
 
@@ -247,7 +247,7 @@ DispBeamColumn3d::getNumDOF()
 }
 
 void
-DispBeamColumn3d::setDomain(Domain* theDomain)
+DispBeamColumn3d::setDomain(Domain *theDomain)
 {
     // Check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -353,7 +353,7 @@ DispBeamColumn3d::update(void)
 
 
     // Get basic deformations
-    const Vector& v = this->getBasicTrialDisp();
+    const Vector &v = this->getBasicTrialDisp();
 
     double oneOverL = 1.0 / L;
 
@@ -366,7 +366,7 @@ DispBeamColumn3d::update(void)
     {
 
         int order = theSections[i]->getOrder();
-        const ID& code = theSections[i]->getType();
+        const ID &code = theSections[i]->getType();
 
         Vector e(workArea, order);
 
@@ -376,7 +376,7 @@ DispBeamColumn3d::update(void)
 
         for (j = 0; j < order; j++)
         {
-            switch(code(j))
+            switch (code(j))
             {
                 case SECTION_RESPONSE_P:
                     e(j) = oneOverL * v(0);
@@ -413,7 +413,7 @@ DispBeamColumn3d::update(void)
     return 0;
 }
 
-const Matrix&
+const Matrix &
 DispBeamColumn3d::getTangentStiff()
 {
     static Matrix kb(6, 6);
@@ -436,7 +436,7 @@ DispBeamColumn3d::getTangentStiff()
     {
 
         int order = theSections[i]->getOrder();
-        const ID& code = theSections[i]->getType();
+        const ID &code = theSections[i]->getType();
 
         Matrix ka(workArea, order, 6);
         ka.Zero();
@@ -444,8 +444,8 @@ DispBeamColumn3d::getTangentStiff()
         double xi6 = 6.0 * xi[i];
 
         // Get the section tangent stiffness and stress resultant
-        const Matrix& ks = theSections[i]->getSectionTangent();
-        const Vector& s = theSections[i]->getStressResultant();
+        const Matrix &ks = theSections[i]->getSectionTangent();
+        const Vector &s = theSections[i]->getStressResultant();
 
         // Perform numerical integration
         //kb.addMatrixTripleProduct(1.0, *B, ks, wts(i)/L);
@@ -455,7 +455,7 @@ DispBeamColumn3d::getTangentStiff()
 
         for (j = 0; j < order; j++)
         {
-            switch(code(j))
+            switch (code(j))
             {
                 case SECTION_RESPONSE_P:
                     for (k = 0; k < order; k++)
@@ -550,7 +550,7 @@ DispBeamColumn3d::getTangentStiff()
         {
             si = s(j) * wt[i];
 
-            switch(code(j))
+            switch (code(j))
             {
                 case SECTION_RESPONSE_P:
                     q(0) += si;
@@ -589,7 +589,7 @@ DispBeamColumn3d::getTangentStiff()
     return K;
 }
 
-const Matrix&
+const Matrix &
 DispBeamColumn3d::getInitialBasicStiff()
 {
     static Matrix kb(6, 6);
@@ -611,7 +611,7 @@ DispBeamColumn3d::getInitialBasicStiff()
     {
 
         int order = theSections[i]->getOrder();
-        const ID& code = theSections[i]->getType();
+        const ID &code = theSections[i]->getType();
 
         Matrix ka(workArea, order, 6);
         ka.Zero();
@@ -619,7 +619,7 @@ DispBeamColumn3d::getInitialBasicStiff()
         double xi6 = 6.0 * xi[i];
 
         // Get the section tangent stiffness and stress resultant
-        const Matrix& ks = theSections[i]->getInitialTangent();
+        const Matrix &ks = theSections[i]->getInitialTangent();
 
         // Perform numerical integration
         //kb.addMatrixTripleProduct(1.0, *B, ks, wts(i)/L);
@@ -629,7 +629,7 @@ DispBeamColumn3d::getInitialBasicStiff()
 
         for (j = 0; j < order; j++)
         {
-            switch(code(j))
+            switch (code(j))
             {
                 case SECTION_RESPONSE_P:
                     for (k = 0; k < order; k++)
@@ -722,10 +722,10 @@ DispBeamColumn3d::getInitialBasicStiff()
     return kb;
 }
 
-const Matrix&
+const Matrix &
 DispBeamColumn3d::getInitialStiff()
 {
-    const Matrix& kb = this->getInitialBasicStiff();
+    const Matrix &kb = this->getInitialBasicStiff();
 
     // Transform to global stiffness
     K = this->getInitialGlobalStiffMatrix(kb);
@@ -733,7 +733,7 @@ DispBeamColumn3d::getInitialStiff()
     return K;
 }
 
-const Matrix&
+const Matrix &
 DispBeamColumn3d::getMass()
 {
     K.Zero();
@@ -774,10 +774,10 @@ DispBeamColumn3d::zeroLoad(void)
 }
 
 int
-DispBeamColumn3d::addLoad(ElementalLoad* theLoad, double loadFactor)
+DispBeamColumn3d::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_Beam3dUniformLoad)
     {
@@ -859,7 +859,7 @@ DispBeamColumn3d::addLoad(ElementalLoad* theLoad, double loadFactor)
 }
 
 int
-DispBeamColumn3d::addInertiaLoadToUnbalance(const Vector& accel)
+DispBeamColumn3d::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // Check for a quick return
     if (rho == 0.0)
@@ -868,8 +868,8 @@ DispBeamColumn3d::addInertiaLoadToUnbalance(const Vector& accel)
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
 
     if (6 != Raccel1.Size() || 6 != Raccel2.Size())
     {
@@ -894,7 +894,7 @@ DispBeamColumn3d::addInertiaLoadToUnbalance(const Vector& accel)
     return 0;
 }
 
-const Vector&
+const Vector &
 DispBeamColumn3d::getResistingForce()
 {
 
@@ -913,12 +913,12 @@ DispBeamColumn3d::getResistingForce()
     {
 
         int order = theSections[i]->getOrder();
-        const ID& code = theSections[i]->getType();
+        const ID &code = theSections[i]->getType();
 
         double xi6 = 6.0 * xi[i];
 
         // Get section stress resultant
-        const Vector& s = theSections[i]->getStressResultant();
+        const Vector &s = theSections[i]->getStressResultant();
 
         // Perform numerical integration on internal force
         //q.addMatrixTransposeVector(1.0, *B, s, wts(i));
@@ -929,7 +929,7 @@ DispBeamColumn3d::getResistingForce()
         {
             si = s(j) * wt[i];
 
-            switch(code(j))
+            switch (code(j))
             {
                 case SECTION_RESPONSE_P:
                     q(0) += si;
@@ -972,15 +972,15 @@ DispBeamColumn3d::getResistingForce()
     return P;
 }
 
-const Vector&
+const Vector &
 DispBeamColumn3d::getResistingForceIncInertia()
 {
     this->getResistingForce();
 
     if (rho != 0.0)
     {
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
         // Compute the current resisting force
         this->getResistingForce();
@@ -1018,7 +1018,7 @@ DispBeamColumn3d::getResistingForceIncInertia()
 }
 
 int
-DispBeamColumn3d::sendSelf(int commitTag, Channel& theChannel)
+DispBeamColumn3d::sendSelf(int commitTag, Channel &theChannel)
 {
     // place the integer data into an ID
 
@@ -1126,8 +1126,8 @@ DispBeamColumn3d::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-DispBeamColumn3d::recvSelf(int commitTag, Channel& theChannel,
-                           FEM_ObjectBroker& theBroker)
+DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
+                           FEM_ObjectBroker &theBroker)
 {
     //
     // receive the integer data containing tag, numSections and coord transformation info
@@ -1312,7 +1312,7 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel& theChannel,
 }
 
 void
-DispBeamColumn3d::Print(ostream& s, int flag)
+DispBeamColumn3d::Print(ostream &s, int flag)
 {
     s << "\nDispBeamColumn3d, element id:  " << this->getTag() << endln;
     s << "\tConnected external nodes:  " << connectedExternalNodes;
@@ -1380,128 +1380,128 @@ DispBeamColumn3d::Print(ostream& s, int flag)
 //   return theViewer.drawLine (v1, v2, 1.0, 1.0);
 // }
 
-Response*
-DispBeamColumn3d::setResponse(const char** argv, int argc, Information& eleInfo)
-{
-    // global force -
-    if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0
-            || strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
-    {
-        return new ElementResponse(this, 1, P);
-    }
+// Response*
+// DispBeamColumn3d::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
+//     // global force -
+//     if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0
+//             || strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
+//     {
+//         return new ElementResponse(this, 1, P);
+//     }
 
-    // local force -
-    else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
-    {
-        return new ElementResponse(this, 2, P);
-    }
+//     // local force -
+//     else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
+//     {
+//         return new ElementResponse(this, 2, P);
+//     }
 
-    // chord rotation -
-    else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0
-             || strcmp(argv[0], "basicDeformation") == 0)
-    {
-        return new ElementResponse(this, 3, Vector(6));
-    }
+//     // chord rotation -
+//     else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0
+//              || strcmp(argv[0], "basicDeformation") == 0)
+//     {
+//         return new ElementResponse(this, 3, Vector(6));
+//     }
 
-    // plastic rotation -
-    else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0)
-    {
-        return new ElementResponse(this, 4, Vector(6));
-    }
+//     // plastic rotation -
+//     else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0)
+//     {
+//         return new ElementResponse(this, 4, Vector(6));
+//     }
 
-    // section response -
-    else if (strcmp(argv[0], "section") == 0 || strcmp(argv[0], "-section") == 0)
-    {
-        if (argc <= 2)
-        {
-            return 0;
-        }
+//     // section response -
+//     else if (strcmp(argv[0], "section") == 0 || strcmp(argv[0], "-section") == 0)
+//     {
+//         if (argc <= 2)
+//         {
+//             return 0;
+//         }
 
-        int sectionNum = atoi(argv[1]);
+//         int sectionNum = atoi(argv[1]);
 
-        if (sectionNum > 0 && sectionNum <= numSections)
-        {
-            return theSections[sectionNum - 1]->setResponse(&argv[2], argc - 2, eleInfo);
-        }
-        else
-        {
-            return 0;
-        }
-    }
+//         if (sectionNum > 0 && sectionNum <= numSections)
+//         {
+//             return theSections[sectionNum - 1]->setResponse(&argv[2], argc - 2, eleInfo);
+//         }
+//         else
+//         {
+//             return 0;
+//         }
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-DispBeamColumn3d::getResponse(int responseID, Information& eleInfo)
-{
-    double N, V, M1, M2, T;
-    double oneOverL = 1.0 / L;
+// int
+// DispBeamColumn3d::getResponse(int responseID, Information& eleInfo)
+// {
+//     double N, V, M1, M2, T;
+//     double oneOverL = 1.0 / L;
 
-    if (responseID == 1)
-    {
-        return eleInfo.setVector(this->getResistingForce());
-    }
+//     if (responseID == 1)
+//     {
+//         return eleInfo.setVector(this->getResistingForce());
+//     }
 
-    else if (responseID == 2)
-    {
-        // Axial
-        N = q(0);
-        P(6) =  N;
-        P(0) = -N + p0[0];
+//     else if (responseID == 2)
+//     {
+//         // Axial
+//         N = q(0);
+//         P(6) =  N;
+//         P(0) = -N + p0[0];
 
-        // Torsion
-        T = q(5);
-        P(9) =  T;
-        P(3) = -T;
+//         // Torsion
+//         T = q(5);
+//         P(9) =  T;
+//         P(3) = -T;
 
-        // Moments about z and shears along y
-        M1 = q(1);
-        M2 = q(2);
-        P(5)  = M1;
-        P(11) = M2;
-        V = (M1 + M2) * oneOverL;
-        P(1) =  V + p0[1];
-        P(7) = -V + p0[2];
+//         // Moments about z and shears along y
+//         M1 = q(1);
+//         M2 = q(2);
+//         P(5)  = M1;
+//         P(11) = M2;
+//         V = (M1 + M2) * oneOverL;
+//         P(1) =  V + p0[1];
+//         P(7) = -V + p0[2];
 
-        // Moments about y and shears along z
-        M1 = q(3);
-        M2 = q(4);
-        P(4)  = M1;
-        P(10) = M2;
-        V = -(M1 + M2) * oneOverL;
-        P(2) = -V + p0[3];
-        P(8) =  V + p0[4];
+//         // Moments about y and shears along z
+//         M1 = q(3);
+//         M2 = q(4);
+//         P(4)  = M1;
+//         P(10) = M2;
+//         V = -(M1 + M2) * oneOverL;
+//         P(2) = -V + p0[3];
+//         P(8) =  V + p0[4];
 
-        return eleInfo.setVector(P);
-    }
+//         return eleInfo.setVector(P);
+//     }
 
-    // Chord rotation
-    else if (responseID == 3)
-    {
-        return eleInfo.setVector(this->getBasicTrialDisp());
-    }
+//     // Chord rotation
+//     else if (responseID == 3)
+//     {
+//         return eleInfo.setVector(this->getBasicTrialDisp());
+//     }
 
-    // Plastic rotation
-    else if (responseID == 4)
-    {
-        static Vector vp(6);
-        static Vector ve(6);
-        const Matrix& kb = this->getInitialBasicStiff();
-        kb.Solve(q, ve);
-        vp = this->getBasicTrialDisp();
-        vp -= ve;
-        return eleInfo.setVector(vp);
-    }
+//     // Plastic rotation
+//     else if (responseID == 4)
+//     {
+//         static Vector vp(6);
+//         static Vector ve(6);
+//         const Matrix& kb = this->getInitialBasicStiff();
+//         kb.Solve(q, ve);
+//         vp = this->getBasicTrialDisp();
+//         vp -= ve;
+//         return eleInfo.setVector(vp);
+//     }
 
-    else
-    {
-        return -1;
-    }
-}
+//     else
+//     {
+//         return -1;
+//     }
+// }
 
 
 
@@ -1517,8 +1517,8 @@ DispBeamColumn3d::initialize()
     // see if there is some initial displacements at nodes
     if (initialDispChecked == false)
     {
-        const Vector& nodeIDisp = theNodes[0]->getDisp();
-        const Vector& nodeJDisp = theNodes[1]->getDisp();
+        const Vector &nodeIDisp = theNodes[0]->getDisp();
+        const Vector &nodeJDisp = theNodes[1]->getDisp();
 
         for (int i = 0; i < 6; i++)
             if (nodeIDisp(i) != 0.0)
@@ -1577,8 +1577,8 @@ DispBeamColumn3d::computeElemtLengthAndOrient()
     // element projection
     static Vector dx(3);
 
-    const Vector& ndICoords = theNodes[0]->getCrds();
-    const Vector& ndJCoords = theNodes[1]->getCrds();
+    const Vector &ndICoords = theNodes[0]->getCrds();
+    const Vector &ndJCoords = theNodes[1]->getCrds();
 
     dx(0) = ndJCoords(0) - ndICoords(0);
     dx(1) = ndJCoords(1) - ndICoords(1);
@@ -1634,7 +1634,7 @@ DispBeamColumn3d::computeElemtLengthAndOrient()
 
 
 int
-DispBeamColumn3d::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
+DispBeamColumn3d::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
 {
     // Compute y = v cross x
     // Note: v(i) is stored in R[2][i]
@@ -1696,12 +1696,12 @@ DispBeamColumn3d::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
 
 
 
-const Vector&
+const Vector &
 DispBeamColumn3d::getBasicTrialDisp (void)
 {
     // determine global displacements
-    const Vector& disp1 = theNodes[0]->getTrialDisp();
-    const Vector& disp2 = theNodes[1]->getTrialDisp();
+    const Vector &disp1 = theNodes[0]->getTrialDisp();
+    const Vector &disp2 = theNodes[1]->getTrialDisp();
 
     static double ug[12];
 
@@ -1789,8 +1789,8 @@ DispBeamColumn3d::getBasicTrialDisp (void)
 
 
 
-const Matrix&
-DispBeamColumn3d::getGlobalStiffMatrix (const Matrix& KB, const Vector& pb)
+const Matrix &
+DispBeamColumn3d::getGlobalStiffMatrix (const Matrix &KB, const Vector &pb)
 {
     static Matrix kg(12, 12);   // Global stiffness for return
     static double kb[6][6];     // Basic stiffness
@@ -1957,8 +1957,8 @@ DispBeamColumn3d::getGlobalStiffMatrix (const Matrix& KB, const Vector& pb)
 
 
 
-const Matrix&
-DispBeamColumn3d::getInitialGlobalStiffMatrix (const Matrix& KB)
+const Matrix &
+DispBeamColumn3d::getInitialGlobalStiffMatrix (const Matrix &KB)
 {
     static Matrix kg(12, 12); // Global stiffness for return
     static double kb[6][6];   // Basic stiffness
@@ -2126,8 +2126,8 @@ DispBeamColumn3d::getInitialGlobalStiffMatrix (const Matrix& KB)
 
 
 
-const Vector&
-DispBeamColumn3d::getGlobalResistingForce(const Vector& pb, const Vector& p0)
+const Vector &
+DispBeamColumn3d::getGlobalResistingForce(const Vector &pb, const Vector &p0)
 {
     // transform resisting forces from the basic system to local coordinates
     static double pl[12];
@@ -2198,10 +2198,10 @@ DispBeamColumn3d::getGlobalResistingForce(const Vector& pb, const Vector& p0)
 
 
 
-Vector*
+Vector *
 DispBeamColumn3d::getForce(void)
 {
-    Vector* elementForces = new Vector(12);
+    Vector *elementForces = new Vector(12);
     Vector tempForces(12);
 
     tempForces = this->getResistingForceIncInertia();

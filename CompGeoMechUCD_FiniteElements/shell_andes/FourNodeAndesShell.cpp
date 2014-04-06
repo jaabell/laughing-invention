@@ -133,7 +133,7 @@ FourNodeAndesShell::FourNodeAndesShell()
 FourNodeAndesShell::FourNodeAndesShell(int element_number,
                                        int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
                                        double t,
-                                       NDMaterial* Globalmmodel)
+                                       NDMaterial *Globalmmodel)
     :
     Element(element_number, ELE_TAG_FourNodeAndesShell ),
     connectedExternalNodes(4),
@@ -201,12 +201,12 @@ int FourNodeAndesShell::getNumExternalNodes() const
     return 4;
 }
 
-const ID& FourNodeAndesShell::getExternalNodes()
+const ID &FourNodeAndesShell::getExternalNodes()
 {
     return connectedExternalNodes;
 }
 
-Node** FourNodeAndesShell::getNodePtrs(void)
+Node **FourNodeAndesShell::getNodePtrs(void)
 {
     return theNodes;
 }
@@ -216,7 +216,7 @@ int FourNodeAndesShell::getNumDOF()
     return 24;
 }
 
-void FourNodeAndesShell::setDomain(Domain* theDomain)
+void FourNodeAndesShell::setDomain(Domain *theDomain)
 {
     if (theDomain == 0)
     {
@@ -345,7 +345,7 @@ void FourNodeAndesShell::setDomain(Domain* theDomain)
         e2.Normalize();
 
         //Local-to-global transformation matrix
-        for(int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             T_lg(i, 0) = e1(i);
             T_lg(i, 1) = e2(i);
@@ -380,7 +380,7 @@ int FourNodeAndesShell::update(void)
     return 0;
 }
 
-const Matrix& FourNodeAndesShell::getTangentStiff ()
+const Matrix &FourNodeAndesShell::getTangentStiff ()
 {
     // Since this is a linear element, the stiffness is calculated only once.
     if (!is_stiffness_calculated)
@@ -413,12 +413,12 @@ const Matrix& FourNodeAndesShell::getTangentStiff ()
     return K;
 }
 
-const Matrix& FourNodeAndesShell::getInitialStiff()
+const Matrix &FourNodeAndesShell::getInitialStiff()
 {
     return getTangentStiff();
 }
 
-const Matrix& FourNodeAndesShell::getMass ()
+const Matrix &FourNodeAndesShell::getMass ()
 {
     if (!is_mass_calculated)
     {
@@ -488,12 +488,12 @@ void FourNodeAndesShell::zeroLoad ()
     Q.Zero();
 }
 
-int FourNodeAndesShell::addLoad(ElementalLoad* theLoad, double loadFactor)
+int FourNodeAndesShell::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
 
 
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_ElementSelfWeight)
     {
@@ -515,7 +515,7 @@ int FourNodeAndesShell::addLoad(ElementalLoad* theLoad, double loadFactor)
 }
 
 
-int FourNodeAndesShell::addInertiaLoadToUnbalance(const Vector& accel)
+int FourNodeAndesShell::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // Check for a quick return
     if ( !triangle1->gotMass() & !triangle2->gotMass() & !triangle3->gotMass() & !triangle4->gotMass())
@@ -525,10 +525,10 @@ int FourNodeAndesShell::addInertiaLoadToUnbalance(const Vector& accel)
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
-    const Vector& Raccel3 = theNodes[2]->getRV(accel);
-    const Vector& Raccel4 = theNodes[3]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel3 = theNodes[2]->getRV(accel);
+    const Vector &Raccel4 = theNodes[3]->getRV(accel);
 
     if (6 != Raccel1.Size() || 6 != Raccel2.Size() || 6 != Raccel3.Size() || 6 != Raccel4.Size()  )
     {
@@ -583,7 +583,7 @@ int FourNodeAndesShell::addInertiaLoadToUnbalance(const Vector& accel)
 }
 
 
-const Vector& FourNodeAndesShell::getResistingForce ()
+const Vector &FourNodeAndesShell::getResistingForce ()
 {
     P.Zero();
 
@@ -592,7 +592,7 @@ const Vector& FourNodeAndesShell::getResistingForce ()
 
     for (int node = 0; node < 4; node++)
     {
-        Node* node_i = theNodes[node];
+        Node *node_i = theNodes[node];
         disp_i = node_i->getTrialDisp();
 
         NodalDisplacements(6 * node + 0) = disp_i(0);
@@ -611,7 +611,7 @@ const Vector& FourNodeAndesShell::getResistingForce ()
     return P;
 }
 
-const Vector& FourNodeAndesShell::getResistingForceIncInertia ()
+const Vector &FourNodeAndesShell::getResistingForceIncInertia ()
 {
     Vector NodalDisplacements(24);
     Vector disp_i(6);
@@ -620,7 +620,7 @@ const Vector& FourNodeAndesShell::getResistingForceIncInertia ()
 
     for (int node = 0; node < 4; node++)
     {
-        Node* node_i = theNodes[node];
+        Node *node_i = theNodes[node];
 
         disp_i = node_i->getTrialDisp();
         accel_i = node_i->getTrialAccel();
@@ -640,7 +640,7 @@ const Vector& FourNodeAndesShell::getResistingForceIncInertia ()
         NodalAccelerations(6 * node + 5) = accel_i(5);
     }
 
-    if(!is_mass_calculated)
+    if (!is_mass_calculated)
     {
         this->getMass();
     }
@@ -659,7 +659,7 @@ const Vector& FourNodeAndesShell::getResistingForceIncInertia ()
     return P;
 }
 
-int FourNodeAndesShell::sendSelf (int commitTag, Channel& theChannel)
+int FourNodeAndesShell::sendSelf (int commitTag, Channel &theChannel)
 //Implemented by Babak Kamrani on 12/27/12:
 {
     int dataTag = this->getDbTag();
@@ -705,7 +705,7 @@ int FourNodeAndesShell::sendSelf (int commitTag, Channel& theChannel)
     matProp(3) = bf(2);
     matProp(4) = thickness;
 
-    if(matProp(4) == 0.0)
+    if (matProp(4) == 0.0)
 
     {
         std::cerr << " FourNodeAndesShell::sendSelf -- Element Number #" << this->getTag() << "  Element thickness is zero ... \n";
@@ -722,7 +722,7 @@ int FourNodeAndesShell::sendSelf (int commitTag, Channel& theChannel)
     return 0;
 }
 
-int FourNodeAndesShell::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int FourNodeAndesShell::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 //Implemented by Babak Kamrani on 12/27/12:
 {
     int dataTag = this->getDbTag();
@@ -785,7 +785,7 @@ int FourNodeAndesShell::recvSelf (int commitTag, Channel& theChannel, FEM_Object
     double t = (double)matProp(4);
     thickness = t;
 
-    if(t == 0.0)
+    if (t == 0.0)
 
     {
         std::cerr << "FourNodeAndesShell::recvSelf() -- Element Number #" << element_number << "   Element thickness is zero ... \n";
@@ -800,12 +800,12 @@ int FourNodeAndesShell::recvSelf (int commitTag, Channel& theChannel, FEM_Object
     return 0;
 }
 
-void FourNodeAndesShell::Print(ostream& s, int flag = 0)
+void FourNodeAndesShell::Print(ostream &s, int flag = 0)
 {
     cout << "Element # " << this->getTag() << " Four Node ANDES Shell " << endl << endl;
     cout << "Nodes: " << endl;
 
-    for(int n = 0; n < 4; n++)
+    for (int n = 0; n < 4; n++)
     {
         Vector crd = this->theNodes[n]->getCrds();
         cout << "  " << n + 1 << " (domain node # " << connectedExternalNodes(n) << ") : (" << crd(0) << ", " << crd(1) << ", " << crd(2) << ") " << endl;
@@ -815,11 +815,11 @@ void FourNodeAndesShell::Print(ostream& s, int flag = 0)
     cout << "Thickness: " << this->thickness << endl;
     cout << "Local axes (e1, e2, e3):" << endl;
 
-    for(int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
         cout << "    |";
 
-        for(int j = 0; j < 3; j++)
+        for (int j = 0; j < 3; j++)
         {
             cout << setw(6) << setprecision(4) << this->T_lg(i, j);
 
@@ -849,50 +849,50 @@ const double FourNodeAndesShell::getThickness()
     return thickness;
 }
 
-Response* FourNodeAndesShell::setResponse (const char** argv, int argc, Information& eleInformation)
-{
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new ElementResponse(this, 1, P);
-    }
-    else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 5, K);
-    }
-    else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
-    {
-        return new ElementResponse(this, 4, internal_forces);
-    }
-    else
-    {
-        return 0;  // Return a null pointer
-    }
-}
+// Response* FourNodeAndesShell::setResponse (const char** argv, int argc, Information& eleInformation)
+// {
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new ElementResponse(this, 1, P);
+//     }
+//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 5, K);
+//     }
+//     else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
+//     {
+//         return new ElementResponse(this, 4, internal_forces);
+//     }
+//     else
+//     {
+//         return 0;  // Return a null pointer
+//     }
+// }
 
-int FourNodeAndesShell::getResponse (int responseID, Information& eleInformation)
-{
-    if (responseID == 1) //forces
-    {
-        return eleInformation.setVector(P);
-    }
-    else if (responseID == 5) //stiffness
-    {
-        return eleInformation.setMatrix(K);
-    }
-    else if (responseID == 4)
-    {
-        compute_internal_forces();
-        return eleInformation.setVector(internal_forces);
-    }
-    else
-    {
-        return -1;
-    }
-}
+// int FourNodeAndesShell::getResponse (int responseID, Information& eleInformation)
+// {
+//     if (responseID == 1) //forces
+//     {
+//         return eleInformation.setVector(P);
+//     }
+//     else if (responseID == 5) //stiffness
+//     {
+//         return eleInformation.setMatrix(K);
+//     }
+//     else if (responseID == 4)
+//     {
+//         compute_internal_forces();
+//         return eleInformation.setVector(internal_forces);
+//     }
+//     else
+//     {
+//         return -1;
+//     }
+// }
 
 Matrix FourNodeAndesShell::returnMass(void)
 {
-    if(!is_mass_calculated)
+    if (!is_mass_calculated)
     {
         return getMass();
     }
@@ -902,7 +902,7 @@ Matrix FourNodeAndesShell::returnMass(void)
     }
 }
 
-const Vector& FourNodeAndesShell::getBodyForce(double loadFactor, const Vector& data)
+const Vector &FourNodeAndesShell::getBodyForce(double loadFactor, const Vector &data)
 {
     static Vector bforce(24);
     Vector ba(24), bfx(3);

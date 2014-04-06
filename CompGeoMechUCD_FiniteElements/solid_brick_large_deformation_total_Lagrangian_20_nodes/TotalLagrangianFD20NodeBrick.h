@@ -53,7 +53,7 @@
 #include <Information.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 
 
@@ -66,46 +66,46 @@ class TotalLagrangianFD20NodeBrick: public Element
                                      int node_numb_9,  int node_numb_10, int node_numb_11, int node_numb_12,
                                      int node_numb_13, int node_numb_14, int node_numb_15, int node_numb_16,
                                      int node_numb_17, int node_numb_18, int node_numb_19, int node_numb_20,
-                                     NDMaterial& m, double b1 = 0.0, double b2 = 0.0, double b3 = 0.0);
+                                     NDMaterial &m, double b1 = 0.0, double b2 = 0.0, double b3 = 0.0);
 
         TotalLagrangianFD20NodeBrick ();
         ~TotalLagrangianFD20NodeBrick();
 
-        const char* getClassType(void) const
+        const char *getClassType(void) const
         {
             return "TotalLagrangianFD20NodeBrick";
         };
 
         int getNumExternalNodes () const;
-        const ID& getExternalNodes ();
-        Node** getNodePtrs();
+        const ID &getExternalNodes ();
+        Node **getNodePtrs();
 
         int getNumDOF ();
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         int commitState ();
         int revertToLastCommit ();
         int revertToStart ();
         int update();
 
-        const Matrix& getTangentStiff ();
-        const Matrix& getInitialStiff();
-        const Matrix& getMass ();
+        const Matrix &getTangentStiff ();
+        const Matrix &getInitialStiff();
+        const Matrix &getMass ();
 
         void zeroLoad ();
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce ();
-        const Vector& getResistingForceIncInertia ();
+        const Vector &getResistingForce ();
+        const Vector &getResistingForceIncInertia ();
 
         // public methods for element output
-        int sendSelf (int commitTag, Channel& theChannel);
-        int recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
-        void Print(ostream& s, int flag = 0);
+        int sendSelf (int commitTag, Channel &theChannel);
+        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse (const char** argv, int argc, Information& eleInformation);
-        int getResponse (int responseID, Information& eleInformation);
+        // Response* setResponse (const char** argv, int argc, Information& eleInformation);
+        // int getResponse (int responseID, Information& eleInformation);
 
         //    int setParameter(const char **argv, int argc, Information &info);
         //    int updateParameter(int parameterID, Information &info);
@@ -115,9 +115,9 @@ class TotalLagrangianFD20NodeBrick: public Element
 
     private:
 
-        NDMaterial** theMaterial; // Pointer to the NDMaterial objects
+        NDMaterial **theMaterial; // Pointer to the NDMaterial objects
         ID  connectedExternalNodes; // Tags of TotalLagrangianFD20Brick nodes
-        Node* theNodes[20];
+        Node *theNodes[20];
 
         static Matrix K;    // Element stiffness Matrix
         //    static Matrix C;    // Element damping matrix
@@ -125,14 +125,14 @@ class TotalLagrangianFD20NodeBrick: public Element
         static Vector P;    // Element resisting force vector
         static const double pts[3];   // Stores quadrature points
         static const double wts[3];   // Stores quadrature weights
-        Vector* Q;     // Applied nodal loads
+        Vector *Q;     // Applied nodal loads
         Vector bf;    // Body forces
 
         double rho;    // Mass per unit volume
 
         double det_of_Jacobian;
 
-        Matrix* Ki;
+        Matrix *Ki;
 
     private:
 

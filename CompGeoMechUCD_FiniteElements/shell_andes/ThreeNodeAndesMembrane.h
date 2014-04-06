@@ -96,7 +96,7 @@ These documents all mirror published works in indexed journals.
 #include <Template3Dep.h>
 
 //Others
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 #include <Damping.h>
 // #include <BodyForce.h>
@@ -116,10 +116,10 @@ class ThreeNodeAndesMembrane: public Element
 
         ThreeNodeAndesMembrane(int element_number,
                                int node_numb_1, int node_numb_2, int node_numb_3, double t,
-                               NDMaterial* Globalmmodel);
+                               NDMaterial *Globalmmodel);
         ThreeNodeAndesMembrane(int element_number,
                                int node_numb_1, int node_numb_2, int node_numb_3, double t,
-                               NDMaterial** material);  // Need this to be called when this element is part of complete shell element :P
+                               NDMaterial **material);  // Need this to be called when this element is part of complete shell element :P
         ~ThreeNodeAndesMembrane();
 
         //===================================================================================
@@ -129,10 +129,10 @@ class ThreeNodeAndesMembrane: public Element
         // They all overload virtual functions. Most are even pure virtual functions.
 
         int getNumExternalNodes () const;
-        const ID& getExternalNodes ();
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes ();
+        Node **getNodePtrs(void);
         int getNumDOF ();
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         int commitState ();
         int revertToLastCommit ();
@@ -140,23 +140,23 @@ class ThreeNodeAndesMembrane: public Element
         int update(void);
 
 
-        const Matrix& getTangentStiff ();
-        const Matrix& getInitialStiff();
-        const Matrix& getMass ();
+        const Matrix &getTangentStiff ();
+        const Matrix &getInitialStiff();
+        const Matrix &getMass ();
 
         void zeroLoad ();
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce ();
-        const Vector& getResistingForceIncInertia ();
+        const Vector &getResistingForce ();
+        const Vector &getResistingForceIncInertia ();
 
-        int sendSelf (int commitTag, Channel& theChannel);
-        int recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf (int commitTag, Channel &theChannel);
+        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        void Print(ostream& s, int flag);
-        Response* setResponse (const char** argv, int argc, Information& eleInformation);
-        int getResponse (int responseID, Information& eleInformation);
+        void Print(ostream &s, int flag);
+        // Response* setResponse (const char** argv, int argc, Information& eleInformation);
+        // int getResponse (int responseID, Information& eleInformation);
 
         Matrix returnMass(void);
 
@@ -188,8 +188,8 @@ class ThreeNodeAndesMembrane: public Element
 
         // Pointers to other Domain components
         ID  connectedExternalNodes;     // Tags of  nodes
-        Node* theNodes[3];              // pointers to 3 nodes
-        NDMaterial** theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
+        Node *theNodes[3];              // pointers to 3 nodes
+        NDMaterial **theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
 
         // Finite element matrices
         Matrix K;                       // Element stiffness Matrix

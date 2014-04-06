@@ -51,7 +51,7 @@ class Truss : public Element
     public:
         Truss(int tag,
               int Nd1, int Nd2,
-              UniaxialMaterial& theMaterial,
+              UniaxialMaterial &theMaterial,
               double A, double rho = 0.0);
 
         Truss();
@@ -59,11 +59,11 @@ class Truss : public Element
 
         // public methods to obtain inforrmation about dof & connectivity
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState(void);
@@ -72,28 +72,28 @@ class Truss : public Element
         int update(void);
 
         // public methods to obtain stiffness, mass, damping and residual information
-        const Matrix& getKi(void);
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getDamp(void);
-        const Matrix& getMass(void);
+        const Matrix &getKi(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getDamp(void);
+        const Matrix &getMass(void);
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         //     int displaySelf(Renderer &theViewer, int displayMode, float fact);
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        int getResponse(int responseID, Information& eleInformation);
-        Vector* getForce(void);
+        // Response* setResponseResponse(const char** argv, int argc, Information& eleInfo);
+        // int getResponse(int responseID, Information& eleInformation);
+        Vector *getForce(void);
 
 
 
@@ -107,13 +107,13 @@ class Truss : public Element
         double computeCurrentStrainRate(void) const;
 
         // private attributes - a copy for each object of the class
-        UniaxialMaterial* theMaterial;  // pointer to a material
+        UniaxialMaterial *theMaterial;  // pointer to a material
         ID  connectedExternalNodes;     // contains the tags of the end nodes
         int numDOF;                     // number of dof for truss
 
-        Vector* theLoad;     // pointer to the load vector P
-        Matrix* theMatrix; // pointer to objects matrix (a class wide Matrix)
-        Vector* theVector; // pointer to objects vector (a clas wide Vector)
+        Vector *theLoad;     // pointer to the load vector P
+        Matrix *theMatrix; // pointer to objects matrix (a class wide Matrix)
+        Vector *theVector; // pointer to objects vector (a clas wide Vector)
 
         double L;       // length of truss based on undeformed configuration
         double A;       // area of truss
@@ -121,7 +121,7 @@ class Truss : public Element
 
         double cosX[3]; // direction cosines
 
-        Node* theNodes[2];
+        Node *theNodes[2];
 
         // static data - single copy for all objects of the class
         static Matrix trussM6;   // class wide matrix for 6*6

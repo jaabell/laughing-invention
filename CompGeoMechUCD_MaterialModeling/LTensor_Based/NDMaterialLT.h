@@ -13,7 +13,7 @@
 
 class ID;
 class Information;
-class Response;
+// class Response;
 class Channel;
 class HDF5_Channel;
 
@@ -87,8 +87,8 @@ class NDMaterialLT : public Material
         virtual int sendSelf(int commitTag, Channel &theChannel);
         virtual int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        virtual Response *setResponse (const char **argv, int argc, Information &matInformation);
-        virtual int getResponse (int responseID, Information &matInformation);
+        // virtual Response *setResponse (const char **argv, int argc, Information &matInformation);
+        // virtual int getResponse (int responseID, Information &matInformation);
         virtual int getObjectSize()
         {
             return 1;

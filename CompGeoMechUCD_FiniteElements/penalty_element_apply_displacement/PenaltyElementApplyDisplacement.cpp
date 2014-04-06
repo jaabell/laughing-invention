@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //   COPYLEFT (C): Woody's viral GPL-like license (by BJ):
 //                 ``This    source  code is Copyrighted in
 //                 U.S.,  for  an  indefinite  period,  and anybody
@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 //#include <fstream>
 
@@ -123,14 +123,14 @@ PenaltyElementApplyDisplacement::getNumExternalNodes(void) const
 }
 
 
-const ID&
+const ID &
 PenaltyElementApplyDisplacement::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
 
-Node**
+Node **
 PenaltyElementApplyDisplacement::getNodePtrs(void)
 {
     return theNodes;
@@ -152,7 +152,7 @@ PenaltyElementApplyDisplacement::getNumDOF(void)
 //    allocate space for t matrix, determine the length
 //    and set the transformation matrix.
 void
-PenaltyElementApplyDisplacement::setDomain(Domain* theDomain)
+PenaltyElementApplyDisplacement::setDomain(Domain *theDomain)
 {
     // check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -273,12 +273,12 @@ PenaltyElementApplyDisplacement::update(void)
 
 
 
-const Matrix&
+const Matrix &
 PenaltyElementApplyDisplacement::getTangentStiff(void)
 {
 
 
-    Matrix& stiff = *theMatrix;
+    Matrix &stiff = *theMatrix;
 
 
     if (numDOF == 3)
@@ -339,7 +339,7 @@ PenaltyElementApplyDisplacement::getTangentStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 PenaltyElementApplyDisplacement::getInitialStiff(void)
 {
 
@@ -358,20 +358,20 @@ PenaltyElementApplyDisplacement::getPenaltyStiffness()
 
 
 
-const Matrix&
+const Matrix &
 PenaltyElementApplyDisplacement::getDamp(void)
 {
-    Matrix& damp = *theMatrix;
+    Matrix &damp = *theMatrix;
     damp.Zero();
     return damp;
 }
 
 
 
-const Matrix&
+const Matrix &
 PenaltyElementApplyDisplacement::getMass(void)
 {
-    Matrix& mass = *theMatrix;
+    Matrix &mass = *theMatrix;
     mass.Zero();
     return mass;
 }
@@ -387,7 +387,7 @@ PenaltyElementApplyDisplacement::zeroLoad(void)
 
 
 int
-PenaltyElementApplyDisplacement::addLoad(ElementalLoad* theLoad, double loadFactor)
+PenaltyElementApplyDisplacement::addLoad(ElementalLoad *theLoad, double loadFactor)
 
 {
     cerr << "PenaltyElementApplyDisplacement::addLoad - load type unknown for PenaltyElementApplyDisplacement with tag: " << this->getTag() << endln;
@@ -398,14 +398,14 @@ PenaltyElementApplyDisplacement::addLoad(ElementalLoad* theLoad, double loadFact
 
 
 int
-PenaltyElementApplyDisplacement::addInertiaLoadToUnbalance(const Vector& accel)
+PenaltyElementApplyDisplacement::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
 
 
 
-const Vector&
+const Vector &
 PenaltyElementApplyDisplacement::getResistingForce()
 {
 
@@ -437,7 +437,7 @@ PenaltyElementApplyDisplacement::getResistingForce()
 
 
 
-const Vector&
+const Vector &
 PenaltyElementApplyDisplacement::getResistingForceIncInertia()
 {
 
@@ -450,7 +450,7 @@ PenaltyElementApplyDisplacement::getResistingForceIncInertia()
 
 
 int
-PenaltyElementApplyDisplacement::sendSelf(int commitTag, Channel& theChannel)
+PenaltyElementApplyDisplacement::sendSelf(int commitTag, Channel &theChannel)
 {
 
     //Iimplemented by Babak Kamrani on 6/12/13
@@ -480,7 +480,7 @@ PenaltyElementApplyDisplacement::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-PenaltyElementApplyDisplacement::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+PenaltyElementApplyDisplacement::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     //Iimplemented by Babak Kamrani on 6/12/13
     //-----------
@@ -509,59 +509,59 @@ PenaltyElementApplyDisplacement::recvSelf(int commitTag, Channel& theChannel, FE
 
 
 void
-PenaltyElementApplyDisplacement::Print(ostream& s, int flag)
+PenaltyElementApplyDisplacement::Print(ostream &s, int flag)
 {
     s << "Element: " << this->getTag();
     s << " type: PenaltyElementApplyDisplacement Node: " << connectedExternalNodes(0);
 }
 
 
-Response*
-PenaltyElementApplyDisplacement::setResponse(const char** argv, int argc, Information& eleInfo)
-{
+// Response*
+// PenaltyElementApplyDisplacement::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
 
 
-    //   if (strcmp(argv[0],"defo") == 0 || strcmp(argv[0],"deformations") == 0 ||
-    //     strcmp(argv[0],"deformation") == 0)
-    //     return new ElementResponse(this, 2, 0.0);
+//     //   if (strcmp(argv[0],"defo") == 0 || strcmp(argv[0],"deformations") == 0 ||
+//     //     strcmp(argv[0],"deformation") == 0)
+//     //     return new ElementResponse(this, 2, 0.0);
 
-    // tangent stiffness matrix
-    if (strcmp(argv[0], "stiff") == 0)
-    {
-        return new ElementResponse(this, 3, *theMatrix);
-    }
+//     // tangent stiffness matrix
+//     if (strcmp(argv[0], "stiff") == 0)
+//     {
+//         return new ElementResponse(this, 3, *theMatrix);
+//     }
 
-    // a material quantity
-    //   else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"-material") == 0)
-    //     return theMaterial->setResponse(&argv[1], argc-1, eleInfo);
+//     // a material quantity
+//     //   else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"-material") == 0)
+//     //     return theMaterial->setResponse(&argv[1], argc-1, eleInfo);
 
-    else
-    {
-        return 0;
-    }
-}
-
-
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
 
-int
-PenaltyElementApplyDisplacement::getResponse(int responseID, Information& eleInfo)
-{
-    switch (responseID)
-    {
-        //     case 1:
-        //       return eleInfo.setDouble(theMaterial->getStress());
 
-        //     case 2:
-        //       return eleInfo.setDouble(theMaterial->getStrain());
 
-        case 3:
-            return eleInfo.setMatrix(this->getTangentStiff());
+// int
+// PenaltyElementApplyDisplacement::getResponse(int responseID, Information& eleInfo)
+// {
+//     switch (responseID)
+//     {
+//         //     case 1:
+//         //       return eleInfo.setDouble(theMaterial->getStress());
 
-        default:
-            return 0;
-    }
-}
+//         //     case 2:
+//         //       return eleInfo.setDouble(theMaterial->getStrain());
+
+//         case 3:
+//             return eleInfo.setMatrix(this->getTangentStiff());
+
+//         default:
+//             return 0;
+//     }
+// }
 
 
 

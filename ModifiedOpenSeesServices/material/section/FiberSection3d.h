@@ -42,7 +42,7 @@ using namespace std;
 
 class UniaxialMaterial;
 class Fiber;
-class Response;
+// class Response;
 
 class FiberSection3d : public SectionForceDeformation
 {
@@ -71,8 +71,8 @@ class FiberSection3d : public SectionForceDeformation
                      FEM_ObjectBroker &theBroker);
         void Print(ostream &s, int flag = 0);
 
-        Response *setResponse(const char **argv, int argc, Information &info);
-        int getResponse(int responseID, Information &info);
+        // Response *setResponse(const char **argv, int argc, Information &info);
+        // int getResponse(int responseID, Information &info);
 
         int addFiber(Fiber &theFiber);
 

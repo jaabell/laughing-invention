@@ -50,7 +50,7 @@ class FatigueMaterial : public UniaxialMaterial
         // Default calibrated values from Ballio and Castiglioni Calibrations for
         // European steel, wide flange sections.
 
-        FatigueMaterial(int tag, UniaxialMaterial& material,
+        FatigueMaterial(int tag, UniaxialMaterial &material,
                         double Dmax    =  1.0,
                         double E0      =  0.191,
                         double m       = -0.458,
@@ -75,21 +75,21 @@ class FatigueMaterial : public UniaxialMaterial
         int revertToLastCommit(void);
         int revertToStart(void);
 
-        UniaxialMaterial* getCopy(void);
+        UniaxialMaterial *getCopy(void);
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
-                     FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel,
+                     FEM_ObjectBroker &theBroker);
 
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse (const char** argv, int argc, Information& matInformation);
-        int getResponse (int responseID, Information& matInformation);
+        // Response* setResponse (const char** argv, int argc, Information& matInformation);
+        // int getResponse (int responseID, Information& matInformation);
 
     protected:
 
     private:
-        UniaxialMaterial* theMaterial;
+        UniaxialMaterial *theMaterial;
 
         double DI; //Damage index
         double  X; //Range in consideration

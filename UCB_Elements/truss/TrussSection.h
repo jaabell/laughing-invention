@@ -52,7 +52,7 @@ class TrussSection : public Element
         TrussSection(int tag,
                      int dimension,
                      int Nd1, int Nd2,
-                     SectionForceDeformation& theSection,
+                     SectionForceDeformation &theSection,
                      double rho = 0.0);
 
         TrussSection();
@@ -60,11 +60,11 @@ class TrussSection : public Element
 
         // public methods to obtain inforrmation about dof & connectivity
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState(void);
@@ -73,28 +73,28 @@ class TrussSection : public Element
         int update(void);
 
         // public methods to obtain stiffness, mass, damping and residual information
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getMass(void);
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         //     int displaySelf(Renderer &theViewer, int displayMode, float fact);
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInformation);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInformation);
+        // int getResponse(int responseID, Information& eleInformation);
 
-        int setParameter (const char** argv, int argc, Information& info);
-        int updateParameter (int parameterID, Information& info);
+        int setParameter (const char **argv, int argc, Information &info);
+        int updateParameter (int parameterID, Information &info);
 
     protected:
 
@@ -106,18 +106,18 @@ class TrussSection : public Element
         int dimension;                       // truss in 2 or 3d domain
         int numDOF;                          // number of dof for truss
 
-        Vector* theLoad;          // pointer to the load vector P
-        Matrix* theMatrix;  // pointer to objects matrix (one of class Matrices)
-        Vector* theVector;      // pointer to objects vector (one of class Vectors)
+        Vector *theLoad;          // pointer to the load vector P
+        Matrix *theMatrix;  // pointer to objects matrix (one of class Matrices)
+        Vector *theVector;      // pointer to objects vector (one of class Vectors)
 
         double cosX[3];     // direction cosines
 
         double L;       // length of truss based on undeformed configuration
         double rho;         // mass density per unit length
 
-        Node* theNodes[2];
+        Node *theNodes[2];
 
-        SectionForceDeformation*  theSection;
+        SectionForceDeformation  *theSection;
 
         // static data - single copy for all objects of the class
         static Matrix trussM2;   // class wide matrix for 2*2

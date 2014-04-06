@@ -46,7 +46,7 @@ class CorotTruss : public Element
     public:
         CorotTruss(int tag, int dim,
                    int Nd1, int Nd2,
-                   UniaxialMaterial& theMaterial,
+                   UniaxialMaterial &theMaterial,
                    double A, double rho = 0.0);
 
         CorotTruss();
@@ -54,11 +54,11 @@ class CorotTruss : public Element
 
         // public methods to obtain inforrmation about dof & connectivity
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState(void);
@@ -67,32 +67,32 @@ class CorotTruss : public Element
         int update(void);
 
         // public methods to obtain stiffness, mass, damping and residual information
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getMass(void);
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         //     int displaySelf(Renderer &theViewer, int displayMode, float fact);
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInfo);
+        // int getResponse(int responseID, Information& eleInformation);
 
     protected:
 
     private:
 
         // private attributes - a copy for each object of the class
-        UniaxialMaterial* theMaterial;  // pointer to a material
+        UniaxialMaterial *theMaterial;  // pointer to a material
         ID  connectedExternalNodes;     // contains the tags of the end nodes
         int numDOF;                     // number of dof for CorotTruss
         int numDIM;                     // number of dimensions
@@ -103,18 +103,18 @@ class CorotTruss : public Element
         double A;           // area of CorotTruss
         double rho;             // mass density per unit length
 
-        Node* theNodes[2];
+        Node *theNodes[2];
 
         Matrix R;   // Rotation matrix
 
-        Matrix* theMatrix;
+        Matrix *theMatrix;
 
         static Matrix M2;
         static Matrix M4;
         static Matrix M6;
         static Matrix M12;
 
-        Vector* theVector;
+        Vector *theVector;
 
         static Vector V2;
         static Vector V4;

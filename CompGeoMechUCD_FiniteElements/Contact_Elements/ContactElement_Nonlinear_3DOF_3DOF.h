@@ -43,7 +43,7 @@
 
 class Node;
 class Channel;
-class Response;
+// class Response;
 
 
 class ContactElement_Nonlinear_3DOF_3DOF: public Element
@@ -66,10 +66,10 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
 
         // public methods to obtain information about dof & connectivity
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
 
         // public methods to set the state of the element
@@ -77,34 +77,34 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         int revertToLastCommit(void);
         int revertToStart(void);
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
 
         // public methods to obtain stiffness, mass, damping and residual information
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getDamp(void);
-        const Matrix& getMass(void);
-        const Vector& getResistingForce(void);
-        const Vector& getLocalResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getDamp(void);
+        const Matrix &getMass(void);
+        const Vector &getResistingForce(void);
+        const Vector &getLocalResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
-        void Print(ostream& s, int flag = 0);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInformation);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInformation);
+        // int getResponse(int responseID, Information& eleInformation);
 
         // defining the contact plane, node connectivity, sticking or sliding
-        int ContactPlane(const Vector&);
+        int ContactPlane(const Vector &);
         int if_nodes_are_in_contact_or_not(void);
         int stick_or_slide(void);
 
-        int CheckMesh(ofstream&);
+        int CheckMesh(ofstream &);
 
 
     protected:
@@ -113,7 +113,7 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
 
         ID  connectedExternalNodes;   // contains the tags of the end nodes
         static const int  numberNodes  ;
-        Node* nodePointers[2];   // node pointer
+        Node *nodePointers[2];   // node pointer
 
 
         // parameters

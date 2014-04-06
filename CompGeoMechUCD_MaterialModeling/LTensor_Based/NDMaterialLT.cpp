@@ -44,7 +44,7 @@
 //#include <Vector.h>
 //#include <stresst.h>
 //#include <straint.h>
-#include <MaterialResponse.h>
+// #include <MaterialResponse.h>
 #include <iostream>
 #include "../../ltensor/LTensor.h"
 using namespace std;
@@ -238,55 +238,55 @@ const DTensor2    &NDMaterialLT::getPlasticStrainTensor(void)
 }
 
 
-Response *
-NDMaterialLT::setResponse (const char **argv, int argc, Information &matInfo)
-{
-    if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
-    {
-        return 0;
-    }
-    //  return new MaterialResponse(this, 1, DTensor1_to_nDarray(this->getStress()));
+// Response *
+// NDMaterialLT::setResponse (const char **argv, int argc, Information &matInfo)
+// {
+//     if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
+//     {
+//         return 0;
+//     }
+//     //  return new MaterialResponse(this, 1, DTensor1_to_nDarray(this->getStress()));
 
-    else if (strcmp(argv[0], "strain") == 0 || strcmp(argv[0], "strains") == 0)
-    {
-        return 0;
-    }
-    //return new MaterialResponse(this, 2, this->getStrain());
+//     else if (strcmp(argv[0], "strain") == 0 || strcmp(argv[0], "strains") == 0)
+//     {
+//         return 0;
+//     }
+//     //return new MaterialResponse(this, 2, this->getStrain());
 
-    else if (strcmp(argv[0], "tangent") == 0)
-    {
-        return 0;
-    }
-    //return new MaterialResponse(this, 3, this->getTangent());
+//     else if (strcmp(argv[0], "tangent") == 0)
+//     {
+//         return 0;
+//     }
+//     //return new MaterialResponse(this, 3, this->getTangent());
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-// TODO: Need to interface LTensor with old tensors so that information can be passed.
-//   Optionally we can rewrite or overload functions everywhere to also work with LTensor types.
-int
-NDMaterialLT::getResponse (int responseID, Information &matInfo)
-{
-    switch (responseID)
-    {
-        case 1:
-            break;//return matInfo.setVector(this->getStress());
+// // TODO: Need to interface LTensor with old tensors so that information can be passed.
+// //   Optionally we can rewrite or overload functions everywhere to also work with LTensor types.
+// int
+// NDMaterialLT::getResponse (int responseID, Information &matInfo)
+// {
+//     switch (responseID)
+//     {
+//         case 1:
+//             break;//return matInfo.setVector(this->getStress());
 
-        case 2:
-            break;//return matInfo.setVector(this->getStrain());
+//         case 2:
+//             break;//return matInfo.setVector(this->getStrain());
 
-        case 3:
-            break;//return matInfo.setDTensor2(this->getTangent());
+//         case 3:
+//             break;//return matInfo.setDTensor2(this->getTangent());
 
-        default:
-            return -1;
-    }
+//         default:
+//             return -1;
+//     }
 
-    return -1;
-}
+//     return -1;
+// }
 
 
 // Nima Tafazzoli added for checking the mesh (September 2012)

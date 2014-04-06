@@ -3983,481 +3983,481 @@ void EightNodeBrick::Print(ostream &s, int flag)
 }
 
 //=============================================================================
-Response *EightNodeBrick::setResponse (const char **argv, int argc, Information &eleInformation)
-{
-    //========================================================
-    //     if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0)
-    //     return new ElementResponse(this, 1, P);
-
-    //========================================================
-    if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 2, K);
-    }
-
-    //========================================================
-    else if (strcmp(argv[0], "plasticGPC") == 0 || strcmp(argv[0], "plastifiedGPC") == 0)
-    {
-        //checking if element plastified
-        //int count  = integration_order* integration_order * integration_order;
-        //straintensor pl_stn;
-        //int plastify = 0;
-        //
-        //for (int i = 0; i < count; i++) {
-        //  pl_stn = matpoint[i]->getPlasticStrainTensor();
-        //   double  p_plastc = pl_stn.p_hydrostatic();
-        //
-        //   if (  fabs(p_plastc) > 0 ) {
-        //      plastify = 1;
-        //      break;
-        //   }
-        //}
-
-        return new ElementResponse(this, 3, InfoP);
-    }
-    //========================================================
-    else if (strcmp(argv[0], "plastic") == 0 || strcmp(argv[0], "plastified") == 0)
-    {
-        return new ElementResponse(this, 31, InfoP1);
-    }
-    //========================================================
-    else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
-    {
-        return new ElementResponse(this, 4, InfoS);
-    }
-    //========================================================
-    else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
-    {
-        return new ElementResponse(this, 41, InfoSpq);
-    }
-    //Added 06-27-02 for p-q
-    //========================================================
-    else if (strcmp(argv[0], "stresspq") == 0 || strcmp(argv[0], "stressespq") == 0)
-    {
-        return new ElementResponse(this, 41, InfoSpq);
-    }
-    //Added 07-22-02 for all p-q, e_v_pl, xi
-    //========================================================
-    else if (strcmp(argv[0], "pqall") == 0 )
-    {
-        return new ElementResponse(this, 42, InfoSpq_all);
-    }
-
-    //========================================================
-    else if (strcmp(argv[0], "gausspoint") == 0 || strcmp(argv[0], "GaussPoint") == 0)
-    {
-        return new ElementResponse(this, 5, Gsc8);
-    }
-    //Guanzhou added
-    else if (strcmp(argv[0], "plasticEnergy") == 0 || strcmp(argv[0], "plasticenergy") == 0)
-    {
-        return new ElementResponse(this, 6, epEnergy);
-    }
-    //========================================================
-    //Nima added for recording the Strain (10-13-2008)
-
-    else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
-    {
-        return new ElementResponse(this, 7, InfoStr );
-    }
-
-    //========================================================
-    //Nima added for recording the Strain (April 2010)
-
-    else if ( (strcmp(argv[0], "vol_strain") == 0) || (strcmp(argv[0], "volumetric_strain") == 0) )
-    {
-        return new ElementResponse(this, 71, e_p );
-    }
-
-    //========================================================
-    //Nima added for recording the Mass Matrix (Feb 2010)
-
-    //    else if ( (strcmp(argv[0],"mass") == 0) || (strcmp(argv[0],"Mass") ==0) )
-    //      return new ElementResponse(this, 8, M);
-
-    //========================================================
-
-
-    /*else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
-      int pointNum = atoi(argv[1]);
-      if (pointNum > 0 && pointNum <= 4)
-        return theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, eleInfo);
-        else
-        return 0;
-    }*/
-
-    // otherwise response quantity is unknown for the quad class
-    else
-    {
-        return 0;
-    }
-}
-
-//=============================================================================
-int EightNodeBrick::getResponse (int responseID, Information &eleInfo)
-{
-    switch (responseID)
-    {
-
-            //        case 1:
-            //          return eleInfo.setVector(this->getResistingForce());
-            //          break;
-
-        case 2:
-            return eleInfo.setMatrix(this->getTangentStiff());
-            break;
-
-
-        case 3:
-        {
-            //checking if element plastified
-            int count  = integration_order * integration_order * integration_order;
-            //cerr << count << endln;
-            //Vector Gsc(FixedOrder*FixedOrder*FixedOrder*3+1);  // 8*3 + count
-            computeGaussPoint();
-            //cerr << count << endln;
-
-            //Vector Info(109); // count * 4 +1
-            InfoP(0) = Gsc8(0); //Number of Gauss point
-
-            straintensor pl_stn;
-
-            //         int plastify;
-            for (int i = 0; i < count; i++)
-            {
-                //             plastify = 0;
-                InfoP(i * 4 + 1) = Gsc8(i * 3 + 1); //x
-                InfoP(i * 4 + 2) = Gsc8(i * 3 + 2); //y
-                InfoP(i * 4 + 3) = Gsc8(i * 3 + 3); //z
-                pl_stn = matpoint[i]->getPlasticStrainTensor();
-                //double  p_plastc = pl_stn.p_hydrostatic();
-                double  q_plastc = pl_stn.q_deviatoric();
-
-                InfoP(i * 4 + 4) = q_plastc; //plastify; //Plastified?
-
-            }
-
-            return eleInfo.setVector( InfoP );
-            break;
-
-            //return plastify;
-
-        }
-
-        case 4:
-        {
-            int count = integration_order * integration_order * integration_order;
-            int i;
-            stresstensor sts;
-            //Vector Gsc(81+1);  // 8*3 + count
-            //Gsc = this->reportTensor("Gauss Point Coor.");
-
-            //Vector Info(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
-            InfoS(0) = count;
-
-            for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-            {
-                //r = get_Gauss_p_c( integration_order, GP_c_r );
-                for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                {
-                    //s = get_Gauss_p_c( integration_order, GP_c_s );
-                    //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
-
-                    for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                    {
-                        //for (int i = 0; i < count; i++)
-                        i =
-                            ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                        sts = matpoint[i]->getStressTensor();
-                        InfoS(i * 6 + 1) = sts.cval(1, 1); //sigma_xx
-                        InfoS(i * 6 + 2) = sts.cval(2, 2); //sigma_yy
-                        InfoS(i * 6 + 3) = sts.cval(3, 3); //sigma_zz
-                        InfoS(i * 6 + 4) = sts.cval(1, 2); //Assign sigma_xy
-                        InfoS(i * 6 + 5) = sts.cval(1, 3); //Assign sigma_xz
-                        InfoS(i * 6 + 6) = sts.cval(2, 3); //Assign sigma_yz
-                    }
-                }
-            }
-
-            return eleInfo.setVector( InfoS );
-            break;
-        }
-
-        case 41:
-        {
-            int count = integration_order * integration_order * integration_order;
-            count = count / 2;
-            stresstensor sts;
-            sts = matpoint[count]->getStressTensor();
-            InfoSpq(0) = sts.p_hydrostatic();
-            InfoSpq(1) = sts.q_deviatoric();
-            return eleInfo.setVector( InfoSpq );
-        }
-
-        case 42:
-        {
-            //         int count = integration_order* integration_order * integration_order;
-            int i;
-            stresstensor sts, principle;
-
-            //InfoSpq_all(0) = count;
-
-            for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-            {
-                //r = get_Gauss_p_c( integration_order, GP_c_r );
-                for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                {
-                    //s = get_Gauss_p_c( integration_order, GP_c_s );
-                    //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
-
-                    for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                    {
-                        //for (int i = 0; i < count; i++)
-                        i =
-                            ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                        sts = matpoint[i]->getStressTensor();
-                        InfoSpq_all(i * 2 + 0) = sts.p_hydrostatic();
-                        //deviatoric stress sqrt(J2/3)
-                        InfoSpq_all(i * 2 + 1) = sts.q_deviatoric();
-                        //deviator stress +/-
-                        principle = sts.principal();
-
-                        //InfoSpq_all(i*2+1) =principle.val(1,1)-principle.val(3,3);
-
-                        if (i == 7)
-                        {
-                            InfoSpq_all(i * 2 + 2) = principle.val(1, 1);
-                            //InfoSpq_all(i*2+3) = principle.val(2,2);
-                            InfoSpq_all(i * 2 + 3) = principle.val(3, 3);
-
-                            //Output volumetric strain for the eight Gauss point
-                            straintensor pl_stn;
-                            pl_stn = matpoint[i]->getPlasticStrainTensor();
-                            //pl_stn = matpoint[i]->getStrainTensor();
-                            InfoSpq_all(i * 2 + 4) = pl_stn.Iinvariant1();
-                            double psi = matpoint[i]->getpsi();
-                            InfoSpq_all(i * 2 + 5) = psi;
-                        }
-                    }
-                }
-            }
-
-            return eleInfo.setVector( InfoSpq_all );
-            break;
-        }
-
-        case 5:
-        {
-            this->computeGaussPoint();
-            return eleInfo.setVector(Gsc8);
-            break;
-        }
-
-        case 31:
-        {
-            // Output element plastic info
-            int count  = integration_order * integration_order * integration_order;
-
-            InfoP1(0) = count; //Number of Gauss point
-
-            straintensor pl_stn;
-
-            for (int i = 0; i < count; i++)
-            {
-                pl_stn = matpoint[i]->getPlasticStrainTensor();
-                //double  p_plastc = pl_stn.p_hydrostatic();
-                double  q_plastc = pl_stn.q_deviatoric();
-
-                InfoP1(i + 1) = q_plastc; //plastify; //Plastified?
-
-            }
-
-            return eleInfo.setVector( InfoP1 );
-            break;
-        }
-
-        //Guanzhou added
-        case 6:
-        {
-
-            NDMaterial *pMat;
-            //static straintensor pl_stn[8];
-            //static stresstensor stress[8];
-            //double tmp = 0.0;
-            //epEnergy = 0.0;
-            straintensor tmp_strain;
-            stresstensor tmp_stress;
-            double r  = 0.0;
-            double rw = 0.0;
-            double s  = 0.0;
-            double sw = 0.0;
-            double t  = 0.0;
-            double tw = 0.0;
-
-            short where = 0;
-            double weight = 0.0;
-
-            int dh_dim[] = {8, 3}; // Xiaoyan changed from {20,3 to {8,3} for 8 nodes
-
-            tensor dh(2, dh_dim, 0.0);
-
-            double det_of_Jacobian = 0.0;
-
-            tensor Jacobian;
-
-            for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-            {
-                r = get_Gauss_p_c( integration_order, GP_c_r );
-                rw = get_Gauss_p_w( integration_order, GP_c_r );
-
-                for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                {
-                    s = get_Gauss_p_c( integration_order, GP_c_s );
-                    sw = get_Gauss_p_w( integration_order, GP_c_s );
-
-                    for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                    {
-                        t = get_Gauss_p_c( integration_order, GP_c_t );
-                        tw = get_Gauss_p_w( integration_order, GP_c_t );
-
-                        where =
-                            ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                        // derivatives of local coordiantes with respect to local coordiantes
-                        dh = dh_drst_at(r, s, t);
-
-                        // Jacobian tensor ( matrix )
-                        Jacobian = Jacobian_3D(dh);
-                        //....                Jacobian.print("J");
-
-                        det_of_Jacobian  = Jacobian.determinant();
-                        //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
-
-                        //weight
-                        weight = rw * sw * tw * det_of_Jacobian;
-                        //nodal_forces.print("nf","\n\n Nodal Forces \n");
-
-                        pMat = matpoint[where]->getNDMat();
-                        tmp_strain = pMat->getPlasticStrainTensor();
-                        //tmp_strain = pMat->getStrainTensor();
-                        tmp_stress = pMat->getStressTensor();
-                        //cerr << "tmp_strain: \n" << tmp_strain;
-                        //cerr << "tmp_stress: \n" << tmp_stress;
-                        tmp_strain = tmp_strain - pl_stn[where];//delta plastic strain
-                        tmp_stress = tmp_stress + stress[where];
-                        tmp_stress = tmp_stress * 0.5; //average stress
-                        //cerr << "tmp_strain: \n" << tmp_strain;
-                        //cerr << "tmp_stress: \n" << tmp_stress;
-
-                        //tensor temp1( 2, def_dim_2, 0.0);
-                        stresstensor temp1;
-
-
-                        temp1 = tmp_stress("ij") * tmp_strain("ij");
-                        //cerr << "temp1: \n" << temp1;
-                        temp1.null_indices();
-                        //tmp = tmp + temp1.trace();
-                        //cerr << "tmp" << tmp << '\n';
-                        //pl_stn[where] = pMat->getStrainTensor();
-                        pl_stn[where] = pMat->getPlasticStrainTensor();
-                        stress[where] = pMat->getStressTensor();
-                        epEnergy = epEnergy + temp1.trace() * weight;
-                    }
-                }
-            }
-
-            return eleInfo.setDouble(epEnergy);
-            break;
-        }
-
-
-        //************************************************************************************************
-
-        //Nima added for recording the Strain (10-13-2008)
-
-        case 7:
-
-        {
-            int count = integration_order * integration_order * integration_order;
-            int i;
-            straintensor str;
-
-            InfoStr(0) = count;
-
-            for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-            {
-                for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                {
-                    for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                    {
-                        i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                        str = matpoint[i]->getStrainTensor();
-
-                        InfoStr(i * 6 + 1) = str.cval(1, 1); //sigma_xx
-                        InfoStr(i * 6 + 2) = str.cval(2, 2); //sigma_yy
-                        InfoStr(i * 6 + 3) = str.cval(3, 3); //sigma_zz
-                        InfoStr(i * 6 + 4) = str.cval(1, 2); //Assign sigma_xy
-                        InfoStr(i * 6 + 5) = str.cval(1, 3); //Assign sigma_xz
-                        InfoStr(i * 6 + 6) = str.cval(2, 3); //Assign sigma_yz
-                    }
-                }
-            }
-
-            return eleInfo.setVector( InfoStr );
-            break;
-        }
-
-        //************************************************************************************************
-
-        //Nima added for recording the Volumetric_Strain (April 2010)
-
-        case 71:
-
-        {
-            int count = integration_order * integration_order * integration_order;
-            int i;
-            straintensor str;
-
-            InfoStr(0) = count;
-
-            for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-            {
-                for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                {
-                    for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                    {
-                        i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                        str = matpoint[i]->getStrainTensor();
-
-
-                        e_p = str.cval(1, 1) + str.cval(2, 2) + str.cval(3, 3);
-                    }
-                }
-            }
-
-            return eleInfo.setDouble(e_p);
-            break;
-        }
-
-
-        // //************************************************************************************************
-        // //Nima added for recording the Mass matrix (Feb. 2010)
-        //  case 8:
-        //            return eleInfo.setMatrix(this->getMass());
-        //     break;
-
-        default:
-            return -1;
-            break;
-    }
-
-    return (-1);
-
-}
+// Response *EightNodeBrick::setResponse (const char **argv, int argc, Information &eleInformation)
+// {
+//     //========================================================
+//     //     if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0)
+//     //     return new ElementResponse(this, 1, P);
+
+//     //========================================================
+//     if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 2, K);
+//     }
+
+//     //========================================================
+//     else if (strcmp(argv[0], "plasticGPC") == 0 || strcmp(argv[0], "plastifiedGPC") == 0)
+//     {
+//         //checking if element plastified
+//         //int count  = integration_order* integration_order * integration_order;
+//         //straintensor pl_stn;
+//         //int plastify = 0;
+//         //
+//         //for (int i = 0; i < count; i++) {
+//         //  pl_stn = matpoint[i]->getPlasticStrainTensor();
+//         //   double  p_plastc = pl_stn.p_hydrostatic();
+//         //
+//         //   if (  fabs(p_plastc) > 0 ) {
+//         //      plastify = 1;
+//         //      break;
+//         //   }
+//         //}
+
+//         return new ElementResponse(this, 3, InfoP);
+//     }
+//     //========================================================
+//     else if (strcmp(argv[0], "plastic") == 0 || strcmp(argv[0], "plastified") == 0)
+//     {
+//         return new ElementResponse(this, 31, InfoP1);
+//     }
+//     //========================================================
+//     else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
+//     {
+//         return new ElementResponse(this, 4, InfoS);
+//     }
+//     //========================================================
+//     else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
+//     {
+//         return new ElementResponse(this, 41, InfoSpq);
+//     }
+//     //Added 06-27-02 for p-q
+//     //========================================================
+//     else if (strcmp(argv[0], "stresspq") == 0 || strcmp(argv[0], "stressespq") == 0)
+//     {
+//         return new ElementResponse(this, 41, InfoSpq);
+//     }
+//     //Added 07-22-02 for all p-q, e_v_pl, xi
+//     //========================================================
+//     else if (strcmp(argv[0], "pqall") == 0 )
+//     {
+//         return new ElementResponse(this, 42, InfoSpq_all);
+//     }
+
+//     //========================================================
+//     else if (strcmp(argv[0], "gausspoint") == 0 || strcmp(argv[0], "GaussPoint") == 0)
+//     {
+//         return new ElementResponse(this, 5, Gsc8);
+//     }
+//     //Guanzhou added
+//     else if (strcmp(argv[0], "plasticEnergy") == 0 || strcmp(argv[0], "plasticenergy") == 0)
+//     {
+//         return new ElementResponse(this, 6, epEnergy);
+//     }
+//     //========================================================
+//     //Nima added for recording the Strain (10-13-2008)
+
+//     else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
+//     {
+//         return new ElementResponse(this, 7, InfoStr );
+//     }
+
+//     //========================================================
+//     //Nima added for recording the Strain (April 2010)
+
+//     else if ( (strcmp(argv[0], "vol_strain") == 0) || (strcmp(argv[0], "volumetric_strain") == 0) )
+//     {
+//         return new ElementResponse(this, 71, e_p );
+//     }
+
+//     //========================================================
+//     //Nima added for recording the Mass Matrix (Feb 2010)
+
+//     //    else if ( (strcmp(argv[0],"mass") == 0) || (strcmp(argv[0],"Mass") ==0) )
+//     //      return new ElementResponse(this, 8, M);
+
+//     //========================================================
+
+
+//     /*else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
+//       int pointNum = atoi(argv[1]);
+//       if (pointNum > 0 && pointNum <= 4)
+//         return theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, eleInfo);
+//         else
+//         return 0;
+//     }*/
+
+//     // otherwise response quantity is unknown for the quad class
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+// //=============================================================================
+// int EightNodeBrick::getResponse (int responseID, Information &eleInfo)
+// {
+//     switch (responseID)
+//     {
+
+//             //        case 1:
+//             //          return eleInfo.setVector(this->getResistingForce());
+//             //          break;
+
+//         case 2:
+//             return eleInfo.setMatrix(this->getTangentStiff());
+//             break;
+
+
+//         case 3:
+//         {
+//             //checking if element plastified
+//             int count  = integration_order * integration_order * integration_order;
+//             //cerr << count << endln;
+//             //Vector Gsc(FixedOrder*FixedOrder*FixedOrder*3+1);  // 8*3 + count
+//             computeGaussPoint();
+//             //cerr << count << endln;
+
+//             //Vector Info(109); // count * 4 +1
+//             InfoP(0) = Gsc8(0); //Number of Gauss point
+
+//             straintensor pl_stn;
+
+//             //         int plastify;
+//             for (int i = 0; i < count; i++)
+//             {
+//                 //             plastify = 0;
+//                 InfoP(i * 4 + 1) = Gsc8(i * 3 + 1); //x
+//                 InfoP(i * 4 + 2) = Gsc8(i * 3 + 2); //y
+//                 InfoP(i * 4 + 3) = Gsc8(i * 3 + 3); //z
+//                 pl_stn = matpoint[i]->getPlasticStrainTensor();
+//                 //double  p_plastc = pl_stn.p_hydrostatic();
+//                 double  q_plastc = pl_stn.q_deviatoric();
+
+//                 InfoP(i * 4 + 4) = q_plastc; //plastify; //Plastified?
+
+//             }
+
+//             return eleInfo.setVector( InfoP );
+//             break;
+
+//             //return plastify;
+
+//         }
+
+//         case 4:
+//         {
+//             int count = integration_order * integration_order * integration_order;
+//             int i;
+//             stresstensor sts;
+//             //Vector Gsc(81+1);  // 8*3 + count
+//             //Gsc = this->reportTensor("Gauss Point Coor.");
+
+//             //Vector Info(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
+//             InfoS(0) = count;
+
+//             for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//             {
+//                 //r = get_Gauss_p_c( integration_order, GP_c_r );
+//                 for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                 {
+//                     //s = get_Gauss_p_c( integration_order, GP_c_s );
+//                     //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
+
+//                     for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                     {
+//                         //for (int i = 0; i < count; i++)
+//                         i =
+//                             ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                         sts = matpoint[i]->getStressTensor();
+//                         InfoS(i * 6 + 1) = sts.cval(1, 1); //sigma_xx
+//                         InfoS(i * 6 + 2) = sts.cval(2, 2); //sigma_yy
+//                         InfoS(i * 6 + 3) = sts.cval(3, 3); //sigma_zz
+//                         InfoS(i * 6 + 4) = sts.cval(1, 2); //Assign sigma_xy
+//                         InfoS(i * 6 + 5) = sts.cval(1, 3); //Assign sigma_xz
+//                         InfoS(i * 6 + 6) = sts.cval(2, 3); //Assign sigma_yz
+//                     }
+//                 }
+//             }
+
+//             return eleInfo.setVector( InfoS );
+//             break;
+//         }
+
+//         case 41:
+//         {
+//             int count = integration_order * integration_order * integration_order;
+//             count = count / 2;
+//             stresstensor sts;
+//             sts = matpoint[count]->getStressTensor();
+//             InfoSpq(0) = sts.p_hydrostatic();
+//             InfoSpq(1) = sts.q_deviatoric();
+//             return eleInfo.setVector( InfoSpq );
+//         }
+
+//         case 42:
+//         {
+//             //         int count = integration_order* integration_order * integration_order;
+//             int i;
+//             stresstensor sts, principle;
+
+//             //InfoSpq_all(0) = count;
+
+//             for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//             {
+//                 //r = get_Gauss_p_c( integration_order, GP_c_r );
+//                 for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                 {
+//                     //s = get_Gauss_p_c( integration_order, GP_c_s );
+//                     //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
+
+//                     for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                     {
+//                         //for (int i = 0; i < count; i++)
+//                         i =
+//                             ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                         sts = matpoint[i]->getStressTensor();
+//                         InfoSpq_all(i * 2 + 0) = sts.p_hydrostatic();
+//                         //deviatoric stress sqrt(J2/3)
+//                         InfoSpq_all(i * 2 + 1) = sts.q_deviatoric();
+//                         //deviator stress +/-
+//                         principle = sts.principal();
+
+//                         //InfoSpq_all(i*2+1) =principle.val(1,1)-principle.val(3,3);
+
+//                         if (i == 7)
+//                         {
+//                             InfoSpq_all(i * 2 + 2) = principle.val(1, 1);
+//                             //InfoSpq_all(i*2+3) = principle.val(2,2);
+//                             InfoSpq_all(i * 2 + 3) = principle.val(3, 3);
+
+//                             //Output volumetric strain for the eight Gauss point
+//                             straintensor pl_stn;
+//                             pl_stn = matpoint[i]->getPlasticStrainTensor();
+//                             //pl_stn = matpoint[i]->getStrainTensor();
+//                             InfoSpq_all(i * 2 + 4) = pl_stn.Iinvariant1();
+//                             double psi = matpoint[i]->getpsi();
+//                             InfoSpq_all(i * 2 + 5) = psi;
+//                         }
+//                     }
+//                 }
+//             }
+
+//             return eleInfo.setVector( InfoSpq_all );
+//             break;
+//         }
+
+//         case 5:
+//         {
+//             this->computeGaussPoint();
+//             return eleInfo.setVector(Gsc8);
+//             break;
+//         }
+
+//         case 31:
+//         {
+//             // Output element plastic info
+//             int count  = integration_order * integration_order * integration_order;
+
+//             InfoP1(0) = count; //Number of Gauss point
+
+//             straintensor pl_stn;
+
+//             for (int i = 0; i < count; i++)
+//             {
+//                 pl_stn = matpoint[i]->getPlasticStrainTensor();
+//                 //double  p_plastc = pl_stn.p_hydrostatic();
+//                 double  q_plastc = pl_stn.q_deviatoric();
+
+//                 InfoP1(i + 1) = q_plastc; //plastify; //Plastified?
+
+//             }
+
+//             return eleInfo.setVector( InfoP1 );
+//             break;
+//         }
+
+//         //Guanzhou added
+//         case 6:
+//         {
+
+//             NDMaterial *pMat;
+//             //static straintensor pl_stn[8];
+//             //static stresstensor stress[8];
+//             //double tmp = 0.0;
+//             //epEnergy = 0.0;
+//             straintensor tmp_strain;
+//             stresstensor tmp_stress;
+//             double r  = 0.0;
+//             double rw = 0.0;
+//             double s  = 0.0;
+//             double sw = 0.0;
+//             double t  = 0.0;
+//             double tw = 0.0;
+
+//             short where = 0;
+//             double weight = 0.0;
+
+//             int dh_dim[] = {8, 3}; // Xiaoyan changed from {20,3 to {8,3} for 8 nodes
+
+//             tensor dh(2, dh_dim, 0.0);
+
+//             double det_of_Jacobian = 0.0;
+
+//             tensor Jacobian;
+
+//             for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//             {
+//                 r = get_Gauss_p_c( integration_order, GP_c_r );
+//                 rw = get_Gauss_p_w( integration_order, GP_c_r );
+
+//                 for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                 {
+//                     s = get_Gauss_p_c( integration_order, GP_c_s );
+//                     sw = get_Gauss_p_w( integration_order, GP_c_s );
+
+//                     for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                     {
+//                         t = get_Gauss_p_c( integration_order, GP_c_t );
+//                         tw = get_Gauss_p_w( integration_order, GP_c_t );
+
+//                         where =
+//                             ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                         // derivatives of local coordiantes with respect to local coordiantes
+//                         dh = dh_drst_at(r, s, t);
+
+//                         // Jacobian tensor ( matrix )
+//                         Jacobian = Jacobian_3D(dh);
+//                         //....                Jacobian.print("J");
+
+//                         det_of_Jacobian  = Jacobian.determinant();
+//                         //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
+
+//                         //weight
+//                         weight = rw * sw * tw * det_of_Jacobian;
+//                         //nodal_forces.print("nf","\n\n Nodal Forces \n");
+
+//                         pMat = matpoint[where]->getNDMat();
+//                         tmp_strain = pMat->getPlasticStrainTensor();
+//                         //tmp_strain = pMat->getStrainTensor();
+//                         tmp_stress = pMat->getStressTensor();
+//                         //cerr << "tmp_strain: \n" << tmp_strain;
+//                         //cerr << "tmp_stress: \n" << tmp_stress;
+//                         tmp_strain = tmp_strain - pl_stn[where];//delta plastic strain
+//                         tmp_stress = tmp_stress + stress[where];
+//                         tmp_stress = tmp_stress * 0.5; //average stress
+//                         //cerr << "tmp_strain: \n" << tmp_strain;
+//                         //cerr << "tmp_stress: \n" << tmp_stress;
+
+//                         //tensor temp1( 2, def_dim_2, 0.0);
+//                         stresstensor temp1;
+
+
+//                         temp1 = tmp_stress("ij") * tmp_strain("ij");
+//                         //cerr << "temp1: \n" << temp1;
+//                         temp1.null_indices();
+//                         //tmp = tmp + temp1.trace();
+//                         //cerr << "tmp" << tmp << '\n';
+//                         //pl_stn[where] = pMat->getStrainTensor();
+//                         pl_stn[where] = pMat->getPlasticStrainTensor();
+//                         stress[where] = pMat->getStressTensor();
+//                         epEnergy = epEnergy + temp1.trace() * weight;
+//                     }
+//                 }
+//             }
+
+//             return eleInfo.setDouble(epEnergy);
+//             break;
+//         }
+
+
+//         //************************************************************************************************
+
+//         //Nima added for recording the Strain (10-13-2008)
+
+//         case 7:
+
+//         {
+//             int count = integration_order * integration_order * integration_order;
+//             int i;
+//             straintensor str;
+
+//             InfoStr(0) = count;
+
+//             for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//             {
+//                 for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                 {
+//                     for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                     {
+//                         i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                         str = matpoint[i]->getStrainTensor();
+
+//                         InfoStr(i * 6 + 1) = str.cval(1, 1); //sigma_xx
+//                         InfoStr(i * 6 + 2) = str.cval(2, 2); //sigma_yy
+//                         InfoStr(i * 6 + 3) = str.cval(3, 3); //sigma_zz
+//                         InfoStr(i * 6 + 4) = str.cval(1, 2); //Assign sigma_xy
+//                         InfoStr(i * 6 + 5) = str.cval(1, 3); //Assign sigma_xz
+//                         InfoStr(i * 6 + 6) = str.cval(2, 3); //Assign sigma_yz
+//                     }
+//                 }
+//             }
+
+//             return eleInfo.setVector( InfoStr );
+//             break;
+//         }
+
+//         //************************************************************************************************
+
+//         //Nima added for recording the Volumetric_Strain (April 2010)
+
+//         case 71:
+
+//         {
+//             int count = integration_order * integration_order * integration_order;
+//             int i;
+//             straintensor str;
+
+//             InfoStr(0) = count;
+
+//             for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//             {
+//                 for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                 {
+//                     for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                     {
+//                         i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                         str = matpoint[i]->getStrainTensor();
+
+
+//                         e_p = str.cval(1, 1) + str.cval(2, 2) + str.cval(3, 3);
+//                     }
+//                 }
+//             }
+
+//             return eleInfo.setDouble(e_p);
+//             break;
+//         }
+
+
+//         // //************************************************************************************************
+//         // //Nima added for recording the Mass matrix (Feb. 2010)
+//         //  case 8:
+//         //            return eleInfo.setMatrix(this->getMass());
+//         //     break;
+
+//         default:
+//             return -1;
+//             break;
+//     }
+
+//     return (-1);
+
+// }
 
 //Guanzhou added to calculate plastic energy
 void EightNodeBrick::ComputeVolume()

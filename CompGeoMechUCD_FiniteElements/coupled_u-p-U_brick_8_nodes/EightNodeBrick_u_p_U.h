@@ -40,7 +40,7 @@
 #endif
 
 #include <Information.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 #include <Domain.h>
 #include <Node.h>
@@ -65,24 +65,24 @@ class EightNodeBrick_u_p_U: public Element
         EightNodeBrick_u_p_U(int element_number,
                              int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
                              int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                             NDMaterial* Globalmmodel,
+                             NDMaterial *Globalmmodel,
                              double nn, double alf, double rs, double rf,
                              double permb_x, double permb_y, double permb_z,
                              double kks, double kkf);
         EightNodeBrick_u_p_U ();
         ~EightNodeBrick_u_p_U();
 
-        const char* getClassType(void) const
+        const char *getClassType(void) const
         {
             return "EightNodeBrick_u_P_U";
         };
 
         // public methods to obtain information about dof & connectivity
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState(void);
@@ -91,34 +91,34 @@ class EightNodeBrick_u_p_U: public Element
         int update(void);
 
         // public methods to obtain stiffness, mass, damping and residual information
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getDamp(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getDamp(void);
+        const Matrix &getMass(void);
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
-        int displaySelf(Renderer& theViewer, int displayMode, float fact);
-        void Print(ostream& s, int flag = 0);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        int displaySelf(Renderer &theViewer, int displayMode, float fact);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInfo);
+        // int getResponse(int responseID, Information& eleInformation);
 
         //int setParameter (const char **argv, int argc, Information &info);
         //int updateParameter (int parameterID, Information &info);
 
         //alisa
-        const Matrix& getTangent( int gaussNum );
+        const Matrix &getTangent( int gaussNum );
 
         // Nima Tafazzoli (Feb. 2013)
-        Vector* getStress(void);
+        Vector *getStress(void);
 
         // Nima Tafazzoli added to return the Mass matrix (Feb. 2010)
         //     Matrix returnMass(void);
@@ -138,16 +138,16 @@ class EightNodeBrick_u_p_U: public Element
         tensor getStiffnessTensorG12();
         tensor getMassTensorMsf();
         tensor getDampTensorC123();
-        const Matrix& getStiff00(void);
-        const Matrix& getStiff(int Ki_flag);
+        const Matrix &getStiff00(void);
+        const Matrix &getStiff(int Ki_flag);
         double getPorePressure(double, double, double);
-        const Vector& getInternalForce();
-        const Vector& getBodyForce(const Vector& data);
+        const Vector &getInternalForce();
+        const Vector &getBodyForce(const Vector &data);
 
     private:
         ID  connectedExternalNodes;    // tags of nodes
-        Node* theNodes[8] ;            // pointers to eight nodes
-        NDMaterial** theMaterial;      // pointers to the ND material objects
+        Node *theNodes[8] ;            // pointers to eight nodes
+        NDMaterial **theMaterial;      // pointers to the ND material objects
 
         static Matrix MCK;             // Mass, Damping, Stiffness
         static Vector P;
@@ -171,8 +171,8 @@ class EightNodeBrick_u_p_U: public Element
         double kf;                     // Bulk modulus of fluid
         //     double pressure;               // Normal surface traction (pressure) over entire element  //?
 
-        Vector* Q;
-        Matrix* Ki;
+        Vector *Q;
+        Matrix *Ki;
 };
 
 

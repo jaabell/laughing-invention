@@ -39,7 +39,7 @@ class SeriesMaterial : public UniaxialMaterial
     public:
         SeriesMaterial(int tag,
                        int numMaterial,
-                       UniaxialMaterial** theMaterials,
+                       UniaxialMaterial **theMaterials,
                        int maxIter = 1, double tol = 1.0e-10);
         SeriesMaterial();
         ~SeriesMaterial();
@@ -54,17 +54,17 @@ class SeriesMaterial : public UniaxialMaterial
         int revertToLastCommit(void);
         int revertToStart(void);
 
-        UniaxialMaterial* getCopy(void);
+        UniaxialMaterial *getCopy(void);
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
-                     FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel,
+                     FEM_ObjectBroker &theBroker);
 
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc,
-                              Information& matInformation);
-        int getResponse(int responseID, Information& matInformation);
+        // Response* setResponse(const char** argv, int argc,
+        //                       Information& matInformation);
+        // int getResponse(int responseID, Information& matInformation);
 
     protected:
 
@@ -79,14 +79,14 @@ class SeriesMaterial : public UniaxialMaterial
         int maxIterations;
         double tolerance;
 
-        double* stress;
-        double* flex;
-        double* strain;
+        double *stress;
+        double *flex;
+        double *strain;
 
         bool initialFlag;
 
         int numMaterials;   // the number of UniaxialMaterials in the aggregation
-        UniaxialMaterial** theModels; // an array of pointers to the UniaxialMaterials
+        UniaxialMaterial **theModels; // an array of pointers to the UniaxialMaterials
 };
 
 

@@ -35,7 +35,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 
 const int ContactElement_Nonlinear_3DOF_3DOF::numberNodes = 2 ;
@@ -237,14 +237,14 @@ ContactElement_Nonlinear_3DOF_3DOF::getNumExternalNodes(void) const
 }
 
 // returning the nodes of the elements
-const ID&
+const ID &
 ContactElement_Nonlinear_3DOF_3DOF::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
 // returning a pointer for nodes of the element
-Node**
+Node **
 ContactElement_Nonlinear_3DOF_3DOF::getNodePtrs(void)
 {
     return nodePointers;
@@ -259,7 +259,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getNumDOF(void)
 
 
 void
-ContactElement_Nonlinear_3DOF_3DOF::setDomain(Domain* theDomain)
+ContactElement_Nonlinear_3DOF_3DOF::setDomain(Domain *theDomain)
 {
 
     // check Domain is not null - invoked when object removed from a domain
@@ -363,7 +363,7 @@ ContactElement_Nonlinear_3DOF_3DOF::revertToStart()
 }
 
 
-const Matrix&
+const Matrix &
 ContactElement_Nonlinear_3DOF_3DOF::getDamp(void)
 {
     zeroMatrix.Zero();
@@ -371,7 +371,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getDamp(void)
 }
 
 
-const Matrix&
+const Matrix &
 ContactElement_Nonlinear_3DOF_3DOF::getMass(void)
 {
     zeroMatrix.Zero();
@@ -385,13 +385,13 @@ ContactElement_Nonlinear_3DOF_3DOF::zeroLoad(void)
 }
 
 int
-ContactElement_Nonlinear_3DOF_3DOF::addLoad(ElementalLoad* theLoad, double loadFactor)
+ContactElement_Nonlinear_3DOF_3DOF::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     return 0;
 }
 
 int
-ContactElement_Nonlinear_3DOF_3DOF::addInertiaLoadToUnbalance(const Vector& accel)
+ContactElement_Nonlinear_3DOF_3DOF::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
@@ -763,7 +763,7 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
 
 
 
-const Matrix&
+const Matrix &
 ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
 {
 
@@ -834,7 +834,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
 
 
 
-const Matrix&
+const Matrix &
 ContactElement_Nonlinear_3DOF_3DOF::getInitialStiff(void)
 {
 
@@ -845,7 +845,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getInitialStiff(void)
 
 
 
-const Vector&
+const Vector &
 ContactElement_Nonlinear_3DOF_3DOF::getResistingForce()
 {
 
@@ -892,7 +892,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getResistingForce()
 
 
 
-const Vector&
+const Vector &
 ContactElement_Nonlinear_3DOF_3DOF::getLocalResistingForce()
 {
     ContactFlag = if_nodes_are_in_contact_or_not();
@@ -935,7 +935,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getLocalResistingForce()
 
 
 
-const Vector&
+const Vector &
 ContactElement_Nonlinear_3DOF_3DOF::getResistingForceIncInertia()
 {
     return this->getResistingForce();
@@ -944,7 +944,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getResistingForceIncInertia()
 
 
 void
-ContactElement_Nonlinear_3DOF_3DOF::Print(ostream& s, int flag)
+ContactElement_Nonlinear_3DOF_3DOF::Print(ostream &s, int flag)
 {
     if (flag == 0)   // print everything
     {
@@ -961,118 +961,118 @@ ContactElement_Nonlinear_3DOF_3DOF::Print(ostream& s, int flag)
 
 
 
-Response*
-ContactElement_Nonlinear_3DOF_3DOF::setResponse(const char** argv, int argc, Information& eleInformation)
-{
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new ElementResponse(this, 1, resid);
-    }
+// Response*
+// ContactElement_Nonlinear_3DOF_3DOF::setResponse(const char** argv, int argc, Information& eleInformation)
+// {
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new ElementResponse(this, 1, resid);
+//     }
 
-    // tangent stiffness matrix
-    else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 2, stiff);
-    }
+//     // tangent stiffness matrix
+//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 2, stiff);
+//     }
 
-    if (strcmp(argv[0], "localforce") == 0 || strcmp(argv[0], "localforces") == 0)
-    {
-        return new ElementResponse(this, 3, localresid);
-    }
+//     if (strcmp(argv[0], "localforce") == 0 || strcmp(argv[0], "localforces") == 0)
+//     {
+//         return new ElementResponse(this, 3, localresid);
+//     }
 
-    if (strcmp(argv[0], "nodaldisplacement") == 0 || strcmp(argv[0], "nodesdisp") == 0)
-    {
-        return new ElementResponse(this, 4, Vector(3 * 2) );
-    }
+//     if (strcmp(argv[0], "nodaldisplacement") == 0 || strcmp(argv[0], "nodesdisp") == 0)
+//     {
+//         return new ElementResponse(this, 4, Vector(3 * 2) );
+//     }
 
-    if (strcmp(argv[0], "contactsituation") == 0 || strcmp(argv[0], "contactsituation") == 0)
-    {
-        return new ElementResponse(this, 5, Vector(2) );
-    }
+//     if (strcmp(argv[0], "contactsituation") == 0 || strcmp(argv[0], "contactsituation") == 0)
+//     {
+//         return new ElementResponse(this, 5, Vector(2) );
+//     }
 
-    if (strcmp(argv[0], "relativedisplacement") == 0 || strcmp(argv[0], "reldisp") == 0)
-    {
-        return new ElementResponse(this, 6, Vector(3) );
-    }
+//     if (strcmp(argv[0], "relativedisplacement") == 0 || strcmp(argv[0], "reldisp") == 0)
+//     {
+//         return new ElementResponse(this, 6, Vector(3) );
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+
+// int
+// ContactElement_Nonlinear_3DOF_3DOF::getResponse(int responseID, Information& eleInfo)
+// {
+//     if (responseID == 1)
+//     {
+//         return eleInfo.setVector(resid);
+//     }
+
+//     else if (responseID == 2)
+//     {
+//         return eleInfo.setMatrix(stiff);
+//     }
+
+//     else if (responseID == 3)
+//     {
+//         return eleInfo.setVector(localresid);
+//     }
+
+//     else if (responseID == 4)
+//     {
+//         static Vector nodaldisplacements(3 * 2);
+//         Vector slaveNode_displacement(3);
+//         Vector masterNode_displacement(3);
+
+//         slaveNode_displacement  = nodePointers[0]->getTrialDisp();
+//         masterNode_displacement = nodePointers[1]->getTrialDisp();
+
+
+//         for (int i = 0; i < 6; i++)
+//         {
+//             nodaldisplacements(0) = slaveNode_displacement(0);
+//             nodaldisplacements(1) = slaveNode_displacement(1);
+//             nodaldisplacements(2) = slaveNode_displacement(2);
+//             nodaldisplacements(3) = masterNode_displacement(0);
+//             nodaldisplacements(4) = masterNode_displacement(1);
+//             nodaldisplacements(5) = masterNode_displacement(2);
+//         }
+
+//         return eleInfo.setVector(nodaldisplacements);
+//     }
+//     else if (responseID == 5)
+//     {
+//         static Vector contactsituation(2);
+//         contactsituation(0) = ContactFlag;
+//         contactsituation(1) = SlidingFlag;
+
+//         return eleInfo.setVector(contactsituation);
+//     }
+
+//     else if (responseID == 6)
+//     {
+//         static Vector RelativeDisplacement(3);
+//         RelativeDisplacement(0) = normalforce_np1   / Kn;
+//         RelativeDisplacement(1) = shearforce_np1(0) / Kt;
+//         RelativeDisplacement(2) = shearforce_np1(1) / Kt;
+
+//         return eleInfo.setVector(RelativeDisplacement);
+//     }
+
+//     else
+//     {
+//         return -1;
+//     }
+// }
+
+
+
 
 
 int
-ContactElement_Nonlinear_3DOF_3DOF::getResponse(int responseID, Information& eleInfo)
-{
-    if (responseID == 1)
-    {
-        return eleInfo.setVector(resid);
-    }
-
-    else if (responseID == 2)
-    {
-        return eleInfo.setMatrix(stiff);
-    }
-
-    else if (responseID == 3)
-    {
-        return eleInfo.setVector(localresid);
-    }
-
-    else if (responseID == 4)
-    {
-        static Vector nodaldisplacements(3 * 2);
-        Vector slaveNode_displacement(3);
-        Vector masterNode_displacement(3);
-
-        slaveNode_displacement  = nodePointers[0]->getTrialDisp();
-        masterNode_displacement = nodePointers[1]->getTrialDisp();
-
-
-        for (int i = 0; i < 6; i++)
-        {
-            nodaldisplacements(0) = slaveNode_displacement(0);
-            nodaldisplacements(1) = slaveNode_displacement(1);
-            nodaldisplacements(2) = slaveNode_displacement(2);
-            nodaldisplacements(3) = masterNode_displacement(0);
-            nodaldisplacements(4) = masterNode_displacement(1);
-            nodaldisplacements(5) = masterNode_displacement(2);
-        }
-
-        return eleInfo.setVector(nodaldisplacements);
-    }
-    else if (responseID == 5)
-    {
-        static Vector contactsituation(2);
-        contactsituation(0) = ContactFlag;
-        contactsituation(1) = SlidingFlag;
-
-        return eleInfo.setVector(contactsituation);
-    }
-
-    else if (responseID == 6)
-    {
-        static Vector RelativeDisplacement(3);
-        RelativeDisplacement(0) = normalforce_np1   / Kn;
-        RelativeDisplacement(1) = shearforce_np1(0) / Kt;
-        RelativeDisplacement(2) = shearforce_np1(1) / Kt;
-
-        return eleInfo.setVector(RelativeDisplacement);
-    }
-
-    else
-    {
-        return -1;
-    }
-}
-
-
-
-
-
-int
-ContactElement_Nonlinear_3DOF_3DOF::ContactPlane(const Vector& x_local)
+ContactElement_Nonlinear_3DOF_3DOF::ContactPlane(const Vector &x_local)
 {
 
     if ((x_local(0) == 0.0) && (x_local(2) == 0.0))
@@ -1183,7 +1183,7 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactPlane(const Vector& x_local)
 //=============================================================================
 //implemented by Babak Kamrani on 11/22/2013
 int
-ContactElement_Nonlinear_3DOF_3DOF::sendSelf(int commitTag, Channel& theChannel)
+ContactElement_Nonlinear_3DOF_3DOF::sendSelf(int commitTag, Channel &theChannel)
 {
     int res = 0;
     int dataTag = this->getDbTag();
@@ -1280,7 +1280,7 @@ ContactElement_Nonlinear_3DOF_3DOF::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ContactElement_Nonlinear_3DOF_3DOF::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ContactElement_Nonlinear_3DOF_3DOF::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -1383,7 +1383,7 @@ ContactElement_Nonlinear_3DOF_3DOF::recvSelf(int commitTag, Channel& theChannel,
 }
 
 int
-ContactElement_Nonlinear_3DOF_3DOF::CheckMesh(ofstream& checkmesh_file)
+ContactElement_Nonlinear_3DOF_3DOF::CheckMesh(ofstream &checkmesh_file)
 {
     return 0;
 }

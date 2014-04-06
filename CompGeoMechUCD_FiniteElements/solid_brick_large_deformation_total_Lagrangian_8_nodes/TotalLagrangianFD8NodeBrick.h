@@ -108,7 +108,7 @@
 
 #include <FEM_ObjectBroker.h>
 
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 #include <ElementalLoad.h>
 
@@ -128,7 +128,7 @@ class TotalLagrangianFD8NodeBrick: public Element
 
                                     int node_numb_5,  int node_numb_6,  int node_numb_7,  int node_numb_8,
 
-                                    NDMaterial& m, double b1 = 0.0, double b2 = 0.0, double b3 = 0.0);
+                                    NDMaterial &m, double b1 = 0.0, double b2 = 0.0, double b3 = 0.0);
 
 
 
@@ -138,7 +138,7 @@ class TotalLagrangianFD8NodeBrick: public Element
 
 
 
-        const char* getClassType(void) const
+        const char *getClassType(void) const
         {
             return "TotalLagrangianFD8NodeBrick";
         };
@@ -147,15 +147,15 @@ class TotalLagrangianFD8NodeBrick: public Element
 
         int getNumExternalNodes () const;
 
-        const ID& getExternalNodes ();
+        const ID &getExternalNodes ();
 
-        Node** getNodePtrs();
+        Node **getNodePtrs();
 
 
 
         int getNumDOF ();
 
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
 
 
@@ -169,43 +169,43 @@ class TotalLagrangianFD8NodeBrick: public Element
 
 
 
-        const Matrix& getTangentStiff ();
+        const Matrix &getTangentStiff ();
 
-        const Matrix& getInitialStiff();
+        const Matrix &getInitialStiff();
 
-        const Matrix& getMass ();
+        const Matrix &getMass ();
 
 
 
         void zeroLoad ();
 
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
 
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
 
 
-        const Vector& getResistingForce ();
+        const Vector &getResistingForce ();
 
-        const Vector& getResistingForceIncInertia ();
+        const Vector &getResistingForceIncInertia ();
 
 
 
         // public methods for element output
 
-        int sendSelf (int commitTag, Channel& theChannel);
+        int sendSelf (int commitTag, Channel &theChannel);
 
-        int recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        int displaySelf (Renderer& theViewer, int displayMode, float fact);
+        int displaySelf (Renderer &theViewer, int displayMode, float fact);
 
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
 
 
-        Response* setResponse (const char** argv, int argc, Information& eleInformation);
+        // Response* setResponse (const char** argv, int argc, Information& eleInformation);
 
-        int getResponse (int responseID, Information& eleInformation);
+        // int getResponse (int responseID, Information& eleInformation);
 
 
 
@@ -225,11 +225,11 @@ class TotalLagrangianFD8NodeBrick: public Element
 
 
 
-        NDMaterial** theMaterial; // Pointer to the NDMaterial objects
+        NDMaterial **theMaterial; // Pointer to the NDMaterial objects
 
         ID  connectedExternalNodes; // Tags of TotalLagrangianFD20Brick nodes
 
-        Node* theNodes[8];
+        Node *theNodes[8];
 
 
 
@@ -245,7 +245,7 @@ class TotalLagrangianFD8NodeBrick: public Element
 
         static const double wts[2];   // Stores quadrature weights
 
-        Vector* Q;     // Applied nodal loads
+        Vector *Q;     // Applied nodal loads
 
         Vector bf;     // Body forces
 
@@ -259,7 +259,7 @@ class TotalLagrangianFD8NodeBrick: public Element
 
 
 
-        Matrix* Ki;
+        Matrix *Ki;
 
 
 

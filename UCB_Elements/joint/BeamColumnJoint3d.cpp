@@ -42,7 +42,7 @@
 // #include <MatrixUtil.h>
 #include <UniaxialMaterial.h>
 #include <string.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 // class wide matrices
 Matrix BeamColumnJoint3d::Transf(12, 24);
@@ -50,19 +50,19 @@ Matrix BeamColumnJoint3d::Tran(3, 6);
 
 // full constructors:
 BeamColumnJoint3d::BeamColumnJoint3d(int tag, int Nd1, int Nd2, int Nd3, int Nd4,
-                                     UniaxialMaterial& theMat1,
-                                     UniaxialMaterial& theMat2,
-                                     UniaxialMaterial& theMat3,
-                                     UniaxialMaterial& theMat4,
-                                     UniaxialMaterial& theMat5,
-                                     UniaxialMaterial& theMat6,
-                                     UniaxialMaterial& theMat7,
-                                     UniaxialMaterial& theMat8,
-                                     UniaxialMaterial& theMat9,
-                                     UniaxialMaterial& theMat10,
-                                     UniaxialMaterial& theMat11,
-                                     UniaxialMaterial& theMat12,
-                                     UniaxialMaterial& theMat13):
+                                     UniaxialMaterial &theMat1,
+                                     UniaxialMaterial &theMat2,
+                                     UniaxialMaterial &theMat3,
+                                     UniaxialMaterial &theMat4,
+                                     UniaxialMaterial &theMat5,
+                                     UniaxialMaterial &theMat6,
+                                     UniaxialMaterial &theMat7,
+                                     UniaxialMaterial &theMat8,
+                                     UniaxialMaterial &theMat9,
+                                     UniaxialMaterial &theMat10,
+                                     UniaxialMaterial &theMat11,
+                                     UniaxialMaterial &theMat12,
+                                     UniaxialMaterial &theMat13):
     Element(tag, ELE_TAG_BeamColumnJoint3d),
     connectedExternalNodes(4), elemActHeight(0.0), elemActWidth(0.0),
     elemWidth(0.0), elemHeight(0.0), HgtFac(1.0), WdtFac(1.0),
@@ -201,19 +201,19 @@ BeamColumnJoint3d::BeamColumnJoint3d(int tag, int Nd1, int Nd2, int Nd3, int Nd4
 
 // full constructors:
 BeamColumnJoint3d::BeamColumnJoint3d(int tag, int Nd1, int Nd2, int Nd3, int Nd4,
-                                     UniaxialMaterial& theMat1,
-                                     UniaxialMaterial& theMat2,
-                                     UniaxialMaterial& theMat3,
-                                     UniaxialMaterial& theMat4,
-                                     UniaxialMaterial& theMat5,
-                                     UniaxialMaterial& theMat6,
-                                     UniaxialMaterial& theMat7,
-                                     UniaxialMaterial& theMat8,
-                                     UniaxialMaterial& theMat9,
-                                     UniaxialMaterial& theMat10,
-                                     UniaxialMaterial& theMat11,
-                                     UniaxialMaterial& theMat12,
-                                     UniaxialMaterial& theMat13,
+                                     UniaxialMaterial &theMat1,
+                                     UniaxialMaterial &theMat2,
+                                     UniaxialMaterial &theMat3,
+                                     UniaxialMaterial &theMat4,
+                                     UniaxialMaterial &theMat5,
+                                     UniaxialMaterial &theMat6,
+                                     UniaxialMaterial &theMat7,
+                                     UniaxialMaterial &theMat8,
+                                     UniaxialMaterial &theMat9,
+                                     UniaxialMaterial &theMat10,
+                                     UniaxialMaterial &theMat11,
+                                     UniaxialMaterial &theMat12,
+                                     UniaxialMaterial &theMat13,
                                      double elHgtFac, double elWdtFac):
     Element(tag, ELE_TAG_BeamColumnJoint3d),
     connectedExternalNodes(4), elemActHeight(0.0), elemActWidth(0.0),
@@ -395,13 +395,13 @@ BeamColumnJoint3d::getNumExternalNodes(void) const
     return 4;
 }
 
-const ID&
+const ID &
 BeamColumnJoint3d::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node** BeamColumnJoint3d::getNodePtrs(void)
+Node **BeamColumnJoint3d::getNodePtrs(void)
 {
     return nodePtr;
 }
@@ -413,7 +413,7 @@ BeamColumnJoint3d::getNumDOF(void)
 }
 
 void
-BeamColumnJoint3d::setDomain(Domain* theDomain)
+BeamColumnJoint3d::setDomain(Domain *theDomain)
 {
     if (theDomain == 0)
     {
@@ -456,10 +456,10 @@ BeamColumnJoint3d::setDomain(Domain* theDomain)
     }
 
     // obtain the nodal coordinates
-    const Vector& end1Crd = nodePtr[0]->getCrds();
-    const Vector& end2Crd = nodePtr[1]->getCrds();
-    const Vector& end3Crd = nodePtr[2]->getCrds();
-    const Vector& end4Crd = nodePtr[3]->getCrds();
+    const Vector &end1Crd = nodePtr[0]->getCrds();
+    const Vector &end2Crd = nodePtr[1]->getCrds();
+    const Vector &end3Crd = nodePtr[2]->getCrds();
+    const Vector &end4Crd = nodePtr[3]->getCrds();
 
     // determine the element width and the element height. It should be noted that the element width is determined by nodal coordinates 2 and 4
     // whereas the element height is determined by the nodal coordinates 1 and 3
@@ -587,25 +587,25 @@ BeamColumnJoint3d::update()
 }
 
 
-const Matrix&
+const Matrix &
 BeamColumnJoint3d::getTangentStiff(void)
 {
     return K;
 }
 
-const Matrix&
+const Matrix &
 BeamColumnJoint3d::getInitialStiff(void)
 {
     return getTangentStiff();
 }
 
-const Vector&
+const Vector &
 BeamColumnJoint3d::getResistingForce()
 {
     return R;
 }
 
-void BeamColumnJoint3d::getGlobalDispls(Vector& dg)
+void BeamColumnJoint3d::getGlobalDispls(Vector &dg)
 {
     // local variables that will be used in this method
     int converge = 0;
@@ -912,7 +912,7 @@ void BeamColumnJoint3d::getGlobalDispls(Vector& dg)
 
 }
 
-void BeamColumnJoint3d::getMatResponse(Vector U, Vector& fS, Vector& kS)
+void BeamColumnJoint3d::getMatResponse(Vector U, Vector &fS, Vector &kS)
 {
     double jh = HgtFac;            // factor for beams
     double jw = WdtFac;            // factor for column
@@ -984,7 +984,7 @@ void BeamColumnJoint3d::getdDef_du()
     }
 }
 
-void BeamColumnJoint3d::matDiag(Vector k, Matrix& dfd)
+void BeamColumnJoint3d::matDiag(Vector k, Matrix &dfd)
 {
     dfd.Zero();
 
@@ -1052,11 +1052,11 @@ void BeamColumnJoint3d::formK(Vector k)
     K2Temp.addMatrixProduct(0.0, kRFT3, kRSTinv, 1.0);
 
     // done for some idiotic reason
-    for(int i = 0; i < 12; ++i)
+    for (int i = 0; i < 12; ++i)
     {
-        for(int j = 0; j < 4; ++j)
+        for (int j = 0; j < 4; ++j)
         {
-            if(fabs(K2Temp(i, j)) < 1e-15)
+            if (fabs(K2Temp(i, j)) < 1e-15)
             {
                 K2Temp(i, j) = 0.;
             }
@@ -1066,11 +1066,11 @@ void BeamColumnJoint3d::formK(Vector k)
     K2.addMatrixProduct(0.0, K2Temp, kRFT1, 1.0);   // K2 = kRFT3*kRSTinv*kRFT1
 
     // done for some idiotic reason
-    for(int i1 = 0; i1 < 12; ++i1)
+    for (int i1 = 0; i1 < 12; ++i1)
     {
-        for(int j1 = 0; j1 < 12; ++j1)
+        for (int j1 = 0; j1 < 12; ++j1)
         {
-            if(fabs(K2(i1, j1)) < 1e-15)
+            if (fabs(K2(i1, j1)) < 1e-15)
             {
                 K2(i1, j1) = 0.;
             }
@@ -1337,14 +1337,14 @@ double BeamColumnJoint3d::getStepSize(double s0, double s1, Vector uExt, Vector 
     return eta;
 }
 
-const Matrix&
+const Matrix &
 BeamColumnJoint3d::getDamp(void)
 {
     // yet to do (stiffness being returned)
     return K;
 }
 
-const Matrix&
+const Matrix &
 BeamColumnJoint3d::getMass(void)
 {
     // yet to do (stiffness being returned)
@@ -1358,19 +1358,19 @@ BeamColumnJoint3d::zeroLoad(void)
 }
 
 int
-BeamColumnJoint3d::addLoad(ElementalLoad* theLoad, double loadFactor)
+BeamColumnJoint3d::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     return 0;
 }
 
 int
-BeamColumnJoint3d::addInertiaLoadToUnbalance(const Vector& accel)
+BeamColumnJoint3d::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
 
 
-const Vector&
+const Vector &
 BeamColumnJoint3d::getResistingForceIncInertia()
 {
     //yet to do  (residual being returned)
@@ -1378,13 +1378,13 @@ BeamColumnJoint3d::getResistingForceIncInertia()
 }
 
 int
-BeamColumnJoint3d::sendSelf(int commitTag, Channel& theChannel)
+BeamColumnJoint3d::sendSelf(int commitTag, Channel &theChannel)
 {
     return -1;
 }
 
 int
-BeamColumnJoint3d::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+BeamColumnJoint3d::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return -1;
 }
@@ -1396,7 +1396,7 @@ BeamColumnJoint3d::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
 // }
 
 void
-BeamColumnJoint3d::Print(ostream& s, int flag)
+BeamColumnJoint3d::Print(ostream &s, int flag)
 {
     s << "Element: " << this->getTag() << " Type: Beam Column Joint " << endln;
 
@@ -1410,196 +1410,196 @@ BeamColumnJoint3d::Print(ostream& s, int flag)
     return;
 }
 
-Response*
-BeamColumnJoint3d::setResponse(const char** argv, int argc, Information& eleInfo)
-{
-    // we will compare argv[0] to determine the type of response required
+// Response*
+// BeamColumnJoint3d::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
+//     // we will compare argv[0] to determine the type of response required
 
-    if (strcmp(argv[0], "node1BarSlipL") == 0 || strcmp(argv[0], "node1BarslipL") == 0 || strcmp(argv[0], "Node1BarSlipL") == 0)
-    {
-        return MaterialPtr[0]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     if (strcmp(argv[0], "node1BarSlipL") == 0 || strcmp(argv[0], "node1BarslipL") == 0 || strcmp(argv[0], "Node1BarSlipL") == 0)
+//     {
+//         return MaterialPtr[0]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node1BarSlipR") == 0 || strcmp(argv[0], "node1BarslipR") == 0 || strcmp(argv[0], "Node1BarSlipR") == 0)
-    {
-        return MaterialPtr[1]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node1BarSlipR") == 0 || strcmp(argv[0], "node1BarslipR") == 0 || strcmp(argv[0], "Node1BarSlipR") == 0)
+//     {
+//         return MaterialPtr[1]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node1InterfaceShear") == 0 || strcmp(argv[0], "node1Interfaceshear") == 0 || strcmp(argv[0], "Node1InterfaceShear") == 0 )
-    {
-        return MaterialPtr[2]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node1InterfaceShear") == 0 || strcmp(argv[0], "node1Interfaceshear") == 0 || strcmp(argv[0], "Node1InterfaceShear") == 0 )
+//     {
+//         return MaterialPtr[2]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node2BarSlipB") == 0 || strcmp(argv[0], "node2BarslipB") == 0 || strcmp(argv[0], "Node2BarSlipB") == 0)
-    {
-        return MaterialPtr[3]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node2BarSlipB") == 0 || strcmp(argv[0], "node2BarslipB") == 0 || strcmp(argv[0], "Node2BarSlipB") == 0)
+//     {
+//         return MaterialPtr[3]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node2BarSlipT") == 0 || strcmp(argv[0], "node2BarslipT") == 0 || strcmp(argv[0], "Node2BarSlipT") == 0)
-    {
-        return MaterialPtr[4]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node2BarSlipT") == 0 || strcmp(argv[0], "node2BarslipT") == 0 || strcmp(argv[0], "Node2BarSlipT") == 0)
+//     {
+//         return MaterialPtr[4]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node2InterfaceShear") == 0 || strcmp(argv[0], "node2Interfaceshear") == 0 || strcmp(argv[0], "Node2InterfaceShear") == 0 )
-    {
-        return MaterialPtr[5]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node2InterfaceShear") == 0 || strcmp(argv[0], "node2Interfaceshear") == 0 || strcmp(argv[0], "Node2InterfaceShear") == 0 )
+//     {
+//         return MaterialPtr[5]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node3BarSlipL") == 0 || strcmp(argv[0], "node3BarslipL") == 0 || strcmp(argv[0], "Node3BarSlipL") == 0)
-    {
-        return MaterialPtr[6]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node3BarSlipL") == 0 || strcmp(argv[0], "node3BarslipL") == 0 || strcmp(argv[0], "Node3BarSlipL") == 0)
+//     {
+//         return MaterialPtr[6]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node3BarSlipR") == 0 || strcmp(argv[0], "node3BarslipR") == 0 || strcmp(argv[0], "Node3BarSlipR") == 0)
-    {
-        return MaterialPtr[7]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node3BarSlipR") == 0 || strcmp(argv[0], "node3BarslipR") == 0 || strcmp(argv[0], "Node3BarSlipR") == 0)
+//     {
+//         return MaterialPtr[7]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node3InterfaceShear") == 0 || strcmp(argv[0], "node3Interfaceshear") == 0 || strcmp(argv[0], "Node3InterfaceShear") == 0 )
-    {
-        return MaterialPtr[8]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node3InterfaceShear") == 0 || strcmp(argv[0], "node3Interfaceshear") == 0 || strcmp(argv[0], "Node3InterfaceShear") == 0 )
+//     {
+//         return MaterialPtr[8]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node4BarSlipB") == 0 || strcmp(argv[0], "node4BarslipB") == 0 || strcmp(argv[0], "Node4BarSlipB") == 0)
-    {
-        return MaterialPtr[9]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node4BarSlipB") == 0 || strcmp(argv[0], "node4BarslipB") == 0 || strcmp(argv[0], "Node4BarSlipB") == 0)
+//     {
+//         return MaterialPtr[9]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node4BarSlipT") == 0 || strcmp(argv[0], "node4BarslipT") == 0 || strcmp(argv[0], "Node4BarSlipT") == 0)
-    {
-        return MaterialPtr[10]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node4BarSlipT") == 0 || strcmp(argv[0], "node4BarslipT") == 0 || strcmp(argv[0], "Node4BarSlipT") == 0)
+//     {
+//         return MaterialPtr[10]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "node4InterfaceShear") == 0 || strcmp(argv[0], "node4Interfaceshear") == 0 || strcmp(argv[0], "Node4InterfaceShear") == 0 )
-    {
-        return MaterialPtr[11]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "node4InterfaceShear") == 0 || strcmp(argv[0], "node4Interfaceshear") == 0 || strcmp(argv[0], "Node4InterfaceShear") == 0 )
+//     {
+//         return MaterialPtr[11]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else if (strcmp(argv[0], "shearpanel") == 0 || strcmp(argv[0], "shearPanel") == 0)
-    {
-        return MaterialPtr[12]->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     else if (strcmp(argv[0], "shearpanel") == 0 || strcmp(argv[0], "shearPanel") == 0)
+//     {
+//         return MaterialPtr[12]->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
 
-    else if (strcmp(argv[0], "externalDisplacement") == 0 || strcmp(argv[0], "externaldisplacement") == 0)
-    {
-        return new ElementResponse(this, 1, Vector(12));
-    }
+//     else if (strcmp(argv[0], "externalDisplacement") == 0 || strcmp(argv[0], "externaldisplacement") == 0)
+//     {
+//         return new ElementResponse(this, 1, Vector(12));
+//     }
 
-    else if (strcmp(argv[0], "internalDisplacement") == 0 || strcmp(argv[0], "internaldisplacement") == 0)
-    {
-        return new ElementResponse(this, 2, Vector(4));
-    }
+//     else if (strcmp(argv[0], "internalDisplacement") == 0 || strcmp(argv[0], "internaldisplacement") == 0)
+//     {
+//         return new ElementResponse(this, 2, Vector(4));
+//     }
 
-    else if (strcmp(argv[0], "deformation") == 0 || strcmp(argv[0], "Deformation") == 0)
-    {
-        return new ElementResponse(this, 3, Vector(4));
-    }
+//     else if (strcmp(argv[0], "deformation") == 0 || strcmp(argv[0], "Deformation") == 0)
+//     {
+//         return new ElementResponse(this, 3, Vector(4));
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+// int
+// BeamColumnJoint3d::getResponse(int responseID, Information& eleInfo)
+// {
+//     static Vector delta(13);
+//     static Vector def(4);
+//     static Vector U(16);
+//     static Vector Utemp(12);
+//     double bsFa, bsFb, bsFc, bsFd;
+//     double bsFac, bsFbd, isFac, isFbd;
+
+//     switch (responseID)
+//     {
+//         case 1:
+//             if(eleInfo.theVector != 0)
+//             {
+//                 (*(eleInfo.theVector))(0) =  UeprCommit(0);
+//                 (*(eleInfo.theVector))(1) =  UeprCommit(1);
+//                 (*(eleInfo.theVector))(2) =  UeprCommit(2);
+//                 (*(eleInfo.theVector))(3) =  UeprCommit(3);
+//                 (*(eleInfo.theVector))(4) =  UeprCommit(4);
+//                 (*(eleInfo.theVector))(5) =  UeprCommit(5);
+//                 (*(eleInfo.theVector))(6) =  UeprCommit(6);
+//                 (*(eleInfo.theVector))(7) =  UeprCommit(7);
+//                 (*(eleInfo.theVector))(8) =  UeprCommit(8);
+//                 (*(eleInfo.theVector))(9) =  UeprCommit(9);
+//                 (*(eleInfo.theVector))(10) = UeprCommit(10);
+//                 (*(eleInfo.theVector))(11) = UeprCommit(11);
+//                 (*(eleInfo.theVector))(12) = UeprCommit(12);
+//                 (*(eleInfo.theVector))(13) = UeprCommit(13);
+//                 (*(eleInfo.theVector))(14) = UeprCommit(14);
+//                 (*(eleInfo.theVector))(15) = UeprCommit(15);
+//                 (*(eleInfo.theVector))(16) = UeprCommit(16);
+//                 (*(eleInfo.theVector))(17) = UeprCommit(17);
+//                 (*(eleInfo.theVector))(18) = UeprCommit(18);
+//                 (*(eleInfo.theVector))(19) = UeprCommit(19);
+//                 (*(eleInfo.theVector))(20) = UeprCommit(20);
+//                 (*(eleInfo.theVector))(21) = UeprCommit(21);
+//                 (*(eleInfo.theVector))(22) = UeprCommit(22);
+//                 (*(eleInfo.theVector))(23) = UeprCommit(23);
+//             }
+
+//             return 0;
+
+//         case 2:
+//             if (eleInfo.theVector != 0)
+//             {
+//                 (*(eleInfo.theVector))(0) = UeprIntCommit(0);
+//                 (*(eleInfo.theVector))(1) = UeprIntCommit(1);
+//                 (*(eleInfo.theVector))(2) = UeprIntCommit(2);
+//                 (*(eleInfo.theVector))(3) = UeprIntCommit(3);
+//             }
+
+//             return 0;
+
+//         case 3:
+
+//             // modified 01.04.03  -------- determine which plane the joint lies
+//             Utemp.addMatrixVector(0.0, Transf, UeprCommit, 1.0);
+//             U.Assemble(Utemp, 0, 1.0);
+//             U.Assemble(UeprIntCommit, 12, 1.0);
+
+//             delta.addMatrixVector(0.0, BCJoint, U, 1.0);
+
+//             bsFa = fabs(delta(0) - delta(1)) / elemWidth;
+//             bsFc = fabs(delta(7) - delta(6)) / elemWidth;
+//             bsFac = bsFa + bsFc;
+//             bsFb = fabs(delta(4) - delta(3)) / elemHeight;
+//             bsFd = fabs(delta(10) - delta(9)) / elemHeight;
+//             bsFbd = bsFb + bsFd;
+
+//             def(0) = bsFac + bsFbd; // contribution of bar slip deformation
+
+
+//             isFac = (delta(2) + delta(8)) / elemHeight;
+//             isFbd = (delta(5) + delta(11)) / elemWidth;
+
+//             def(1) = isFac + isFbd;  // contribution due to interface shear spring
+
+//             def(2) = delta(12);  // contribution due to shear panel
+
+//             def(3) = def(0) + def(1) + def(2);  // total joint deformation
+
+
+//             return eleInfo.setVector(def);
+
+//         default:
+//             return -1;
+//     }
+// }
 
 int
-BeamColumnJoint3d::getResponse(int responseID, Information& eleInfo)
-{
-    static Vector delta(13);
-    static Vector def(4);
-    static Vector U(16);
-    static Vector Utemp(12);
-    double bsFa, bsFb, bsFc, bsFd;
-    double bsFac, bsFbd, isFac, isFbd;
-
-    switch (responseID)
-    {
-        case 1:
-            if(eleInfo.theVector != 0)
-            {
-                (*(eleInfo.theVector))(0) =  UeprCommit(0);
-                (*(eleInfo.theVector))(1) =  UeprCommit(1);
-                (*(eleInfo.theVector))(2) =  UeprCommit(2);
-                (*(eleInfo.theVector))(3) =  UeprCommit(3);
-                (*(eleInfo.theVector))(4) =  UeprCommit(4);
-                (*(eleInfo.theVector))(5) =  UeprCommit(5);
-                (*(eleInfo.theVector))(6) =  UeprCommit(6);
-                (*(eleInfo.theVector))(7) =  UeprCommit(7);
-                (*(eleInfo.theVector))(8) =  UeprCommit(8);
-                (*(eleInfo.theVector))(9) =  UeprCommit(9);
-                (*(eleInfo.theVector))(10) = UeprCommit(10);
-                (*(eleInfo.theVector))(11) = UeprCommit(11);
-                (*(eleInfo.theVector))(12) = UeprCommit(12);
-                (*(eleInfo.theVector))(13) = UeprCommit(13);
-                (*(eleInfo.theVector))(14) = UeprCommit(14);
-                (*(eleInfo.theVector))(15) = UeprCommit(15);
-                (*(eleInfo.theVector))(16) = UeprCommit(16);
-                (*(eleInfo.theVector))(17) = UeprCommit(17);
-                (*(eleInfo.theVector))(18) = UeprCommit(18);
-                (*(eleInfo.theVector))(19) = UeprCommit(19);
-                (*(eleInfo.theVector))(20) = UeprCommit(20);
-                (*(eleInfo.theVector))(21) = UeprCommit(21);
-                (*(eleInfo.theVector))(22) = UeprCommit(22);
-                (*(eleInfo.theVector))(23) = UeprCommit(23);
-            }
-
-            return 0;
-
-        case 2:
-            if (eleInfo.theVector != 0)
-            {
-                (*(eleInfo.theVector))(0) = UeprIntCommit(0);
-                (*(eleInfo.theVector))(1) = UeprIntCommit(1);
-                (*(eleInfo.theVector))(2) = UeprIntCommit(2);
-                (*(eleInfo.theVector))(3) = UeprIntCommit(3);
-            }
-
-            return 0;
-
-        case 3:
-
-            // modified 01.04.03  -------- determine which plane the joint lies
-            Utemp.addMatrixVector(0.0, Transf, UeprCommit, 1.0);
-            U.Assemble(Utemp, 0, 1.0);
-            U.Assemble(UeprIntCommit, 12, 1.0);
-
-            delta.addMatrixVector(0.0, BCJoint, U, 1.0);
-
-            bsFa = fabs(delta(0) - delta(1)) / elemWidth;
-            bsFc = fabs(delta(7) - delta(6)) / elemWidth;
-            bsFac = bsFa + bsFc;
-            bsFb = fabs(delta(4) - delta(3)) / elemHeight;
-            bsFd = fabs(delta(10) - delta(9)) / elemHeight;
-            bsFbd = bsFb + bsFd;
-
-            def(0) = bsFac + bsFbd; // contribution of bar slip deformation
-
-
-            isFac = (delta(2) + delta(8)) / elemHeight;
-            isFbd = (delta(5) + delta(11)) / elemWidth;
-
-            def(1) = isFac + isFbd;  // contribution due to interface shear spring
-
-            def(2) = delta(12);  // contribution due to shear panel
-
-            def(3) = def(0) + def(1) + def(2);  // total joint deformation
-
-
-            return eleInfo.setVector(def);
-
-        default:
-            return -1;
-    }
-}
-
-int
-BeamColumnJoint3d::setParameter (char** argv, int argc, Information& info)
+BeamColumnJoint3d::setParameter (char **argv, int argc, Information &info)
 {
     return -1;
 }
 
 int
-BeamColumnJoint3d::updateParameter (int parameterID, Information& info)
+BeamColumnJoint3d::updateParameter (int parameterID, Information &info)
 {
     return -1;
 }

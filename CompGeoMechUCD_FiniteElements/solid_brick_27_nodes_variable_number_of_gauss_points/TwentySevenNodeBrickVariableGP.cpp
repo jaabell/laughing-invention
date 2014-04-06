@@ -54,7 +54,7 @@ TwentySevenNodeBrickVariableGP::TwentySevenNodeBrickVariableGP(int element_numbe
         int node_numb_17, int node_numb_18, int node_numb_19, int node_numb_20,
         int node_numb_21,  int node_numb_22,  int node_numb_23,  int node_numb_24,
         int node_numb_25,  int node_numb_26,  int node_numb_27,
-        NDMaterial* Globalmmodel)
+        NDMaterial *Globalmmodel)
 
     : Element(element_number, ELE_TAG_TwentySevenNodeBrickVariableGP ),
       connectedExternalNodes(27), Ki(0), Q(81), rho(0.0)
@@ -89,17 +89,17 @@ TwentySevenNodeBrickVariableGP::TwentySevenNodeBrickVariableGP(int element_numbe
     ////////////////////////////////////////////////////////////////////
     short where = 0;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         double r = get_Gauss_p_c( integration_order, GP_c_r );
         double rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             double s = get_Gauss_p_c( integration_order, GP_c_s );
             double sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 double t = get_Gauss_p_c( integration_order, GP_c_t );
                 double tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -239,17 +239,17 @@ void TwentySevenNodeBrickVariableGP::incremental_Update()
 
     incremental_displacements = incr_disp();
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
         //--        rw = get_Gauss_p_w( integration_order, GP_c_r );
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
             //--            sw = get_Gauss_p_w( integration_order, GP_c_s );
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -631,7 +631,7 @@ tensor TwentySevenNodeBrickVariableGP::dh_drst_at(double r1, double r2, double r
 
 
 ////#############################################################################
-TwentySevenNodeBrickVariableGP& TwentySevenNodeBrickVariableGP::operator[](int subscript)
+TwentySevenNodeBrickVariableGP &TwentySevenNodeBrickVariableGP::operator[](int subscript)
 {
     return ( *(this + subscript) );
 }
@@ -675,17 +675,17 @@ tensor TwentySevenNodeBrickVariableGP::getStiffnessTensor(void)
     tensor JacobianINVtemp;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -732,7 +732,7 @@ tensor TwentySevenNodeBrickVariableGP::getStiffnessTensor(void)
 
 //#############################################################################
 
-void TwentySevenNodeBrickVariableGP::set_strain_stress_tensor(FILE* fp, double* u)
+void TwentySevenNodeBrickVariableGP::set_strain_stress_tensor(FILE *fp, double *u)
 {
     int dh_dim[] = {27, 3};
     tensor dh(2, dh_dim, 0.0);
@@ -771,15 +771,15 @@ void TwentySevenNodeBrickVariableGP::set_strain_stress_tensor(FILE* fp, double* 
                  total_displacements.val(ii, 3));
     }
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 // this short routine is supposed to calculate position of
@@ -857,17 +857,17 @@ tensor TwentySevenNodeBrickVariableGP::getMassTensor(void)
     double RHO;
     RHO = rho;   //global
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -900,7 +900,7 @@ tensor TwentySevenNodeBrickVariableGP::getMassTensor(void)
 
 ////#############################################################################
 
-tensor TwentySevenNodeBrickVariableGP::stiffness_matrix(const tensor& K)
+tensor TwentySevenNodeBrickVariableGP::stiffness_matrix(const tensor &K)
 {
     //    int K_dim[] = {20,3,3,20};
     //    tensor K(4,K_dim,0.0);
@@ -932,7 +932,7 @@ tensor TwentySevenNodeBrickVariableGP::stiffness_matrix(const tensor& K)
 //#############################################################################
 
 ////#############################################################################
-tensor TwentySevenNodeBrickVariableGP::mass_matrix(const tensor& M)
+tensor TwentySevenNodeBrickVariableGP::mass_matrix(const tensor &M)
 {
     //    int K_dim[] = {20,3,3,20};
     //    tensor K(4,K_dim,0.0);
@@ -974,38 +974,38 @@ tensor TwentySevenNodeBrickVariableGP::Nodal_Coordinates(void)
     tensor N_coord(2, dimensions, 0.0);
 
     //Zhaohui using node pointers, which come from the Domain
-    const Vector& nd1Crds = theNodes[0]->getCrds();
-    const Vector& nd2Crds = theNodes[1]->getCrds();
-    const Vector& nd3Crds = theNodes[2]->getCrds();
-    const Vector& nd4Crds = theNodes[3]->getCrds();
-    const Vector& nd5Crds = theNodes[4]->getCrds();
-    const Vector& nd6Crds = theNodes[5]->getCrds();
-    const Vector& nd7Crds = theNodes[6]->getCrds();
-    const Vector& nd8Crds = theNodes[7]->getCrds();
+    const Vector &nd1Crds = theNodes[0]->getCrds();
+    const Vector &nd2Crds = theNodes[1]->getCrds();
+    const Vector &nd3Crds = theNodes[2]->getCrds();
+    const Vector &nd4Crds = theNodes[3]->getCrds();
+    const Vector &nd5Crds = theNodes[4]->getCrds();
+    const Vector &nd6Crds = theNodes[5]->getCrds();
+    const Vector &nd7Crds = theNodes[6]->getCrds();
+    const Vector &nd8Crds = theNodes[7]->getCrds();
 
-    const Vector& nd9Crds  =  theNodes[8]->getCrds();
-    const Vector& nd10Crds = theNodes[9]->getCrds();
-    const Vector& nd11Crds = theNodes[10]->getCrds();
-    const Vector& nd12Crds = theNodes[11]->getCrds();
+    const Vector &nd9Crds  =  theNodes[8]->getCrds();
+    const Vector &nd10Crds = theNodes[9]->getCrds();
+    const Vector &nd11Crds = theNodes[10]->getCrds();
+    const Vector &nd12Crds = theNodes[11]->getCrds();
 
-    const Vector& nd13Crds = theNodes[12]->getCrds();
-    const Vector& nd14Crds = theNodes[13]->getCrds();
-    const Vector& nd15Crds = theNodes[14]->getCrds();
-    const Vector& nd16Crds = theNodes[15]->getCrds();
+    const Vector &nd13Crds = theNodes[12]->getCrds();
+    const Vector &nd14Crds = theNodes[13]->getCrds();
+    const Vector &nd15Crds = theNodes[14]->getCrds();
+    const Vector &nd16Crds = theNodes[15]->getCrds();
 
 
-    const Vector& nd17Crds = theNodes[16]->getCrds();
-    const Vector& nd18Crds = theNodes[17]->getCrds();
-    const Vector& nd19Crds = theNodes[18]->getCrds();
-    const Vector& nd20Crds = theNodes[19]->getCrds();
+    const Vector &nd17Crds = theNodes[16]->getCrds();
+    const Vector &nd18Crds = theNodes[17]->getCrds();
+    const Vector &nd19Crds = theNodes[18]->getCrds();
+    const Vector &nd20Crds = theNodes[19]->getCrds();
 
-    const Vector& nd21Crds = theNodes[20]->getCrds();
-    const Vector& nd22Crds = theNodes[21]->getCrds();
-    const Vector& nd23Crds = theNodes[22]->getCrds();
-    const Vector& nd24Crds = theNodes[23]->getCrds();
-    const Vector& nd25Crds = theNodes[24]->getCrds();
-    const Vector& nd26Crds = theNodes[25]->getCrds();
-    const Vector& nd27Crds = theNodes[26]->getCrds();
+    const Vector &nd21Crds = theNodes[20]->getCrds();
+    const Vector &nd22Crds = theNodes[21]->getCrds();
+    const Vector &nd23Crds = theNodes[22]->getCrds();
+    const Vector &nd24Crds = theNodes[23]->getCrds();
+    const Vector &nd25Crds = theNodes[24]->getCrds();
+    const Vector &nd26Crds = theNodes[25]->getCrds();
+    const Vector &nd27Crds = theNodes[26]->getCrds();
 
 
 
@@ -1106,37 +1106,37 @@ tensor TwentySevenNodeBrickVariableGP::incr_disp(void)
     const int dimensions[] = {27, 3};
     tensor increment_disp(2, dimensions, 0.0);
 
-    const Vector& IncrDis1 = theNodes[0]->getIncrDeltaDisp();
-    const Vector& IncrDis2 = theNodes[1]->getIncrDeltaDisp();
-    const Vector& IncrDis3 = theNodes[2]->getIncrDeltaDisp();
-    const Vector& IncrDis4 = theNodes[3]->getIncrDeltaDisp();
-    const Vector& IncrDis5 = theNodes[4]->getIncrDeltaDisp();
-    const Vector& IncrDis6 = theNodes[5]->getIncrDeltaDisp();
-    const Vector& IncrDis7 = theNodes[6]->getIncrDeltaDisp();
-    const Vector& IncrDis8 = theNodes[7]->getIncrDeltaDisp();
+    const Vector &IncrDis1 = theNodes[0]->getIncrDeltaDisp();
+    const Vector &IncrDis2 = theNodes[1]->getIncrDeltaDisp();
+    const Vector &IncrDis3 = theNodes[2]->getIncrDeltaDisp();
+    const Vector &IncrDis4 = theNodes[3]->getIncrDeltaDisp();
+    const Vector &IncrDis5 = theNodes[4]->getIncrDeltaDisp();
+    const Vector &IncrDis6 = theNodes[5]->getIncrDeltaDisp();
+    const Vector &IncrDis7 = theNodes[6]->getIncrDeltaDisp();
+    const Vector &IncrDis8 = theNodes[7]->getIncrDeltaDisp();
 
-    const Vector& IncrDis9  = theNodes[8]->getIncrDeltaDisp();
-    const Vector& IncrDis10 = theNodes[9]->getIncrDeltaDisp();
-    const Vector& IncrDis11 = theNodes[10]->getIncrDeltaDisp();
-    const Vector& IncrDis12 = theNodes[11]->getIncrDeltaDisp();
+    const Vector &IncrDis9  = theNodes[8]->getIncrDeltaDisp();
+    const Vector &IncrDis10 = theNodes[9]->getIncrDeltaDisp();
+    const Vector &IncrDis11 = theNodes[10]->getIncrDeltaDisp();
+    const Vector &IncrDis12 = theNodes[11]->getIncrDeltaDisp();
 
-    const Vector& IncrDis13 = theNodes[12]->getIncrDeltaDisp();
-    const Vector& IncrDis14 = theNodes[13]->getIncrDeltaDisp();
-    const Vector& IncrDis15 = theNodes[14]->getIncrDeltaDisp();
-    const Vector& IncrDis16 = theNodes[15]->getIncrDeltaDisp();
+    const Vector &IncrDis13 = theNodes[12]->getIncrDeltaDisp();
+    const Vector &IncrDis14 = theNodes[13]->getIncrDeltaDisp();
+    const Vector &IncrDis15 = theNodes[14]->getIncrDeltaDisp();
+    const Vector &IncrDis16 = theNodes[15]->getIncrDeltaDisp();
 
-    const Vector& IncrDis17 = theNodes[16]->getIncrDeltaDisp();
-    const Vector& IncrDis18 = theNodes[17]->getIncrDeltaDisp();
-    const Vector& IncrDis19 = theNodes[18]->getIncrDeltaDisp();
-    const Vector& IncrDis20 = theNodes[19]->getIncrDeltaDisp();
+    const Vector &IncrDis17 = theNodes[16]->getIncrDeltaDisp();
+    const Vector &IncrDis18 = theNodes[17]->getIncrDeltaDisp();
+    const Vector &IncrDis19 = theNodes[18]->getIncrDeltaDisp();
+    const Vector &IncrDis20 = theNodes[19]->getIncrDeltaDisp();
 
-    const Vector& IncrDis21 = theNodes[20]->getIncrDeltaDisp();
-    const Vector& IncrDis22 = theNodes[21]->getIncrDeltaDisp();
-    const Vector& IncrDis23 = theNodes[22]->getIncrDeltaDisp();
-    const Vector& IncrDis24 = theNodes[23]->getIncrDeltaDisp();
-    const Vector& IncrDis25 = theNodes[24]->getIncrDeltaDisp();
-    const Vector& IncrDis26 = theNodes[25]->getIncrDeltaDisp();
-    const Vector& IncrDis27 = theNodes[26]->getIncrDeltaDisp();
+    const Vector &IncrDis21 = theNodes[20]->getIncrDeltaDisp();
+    const Vector &IncrDis22 = theNodes[21]->getIncrDeltaDisp();
+    const Vector &IncrDis23 = theNodes[22]->getIncrDeltaDisp();
+    const Vector &IncrDis24 = theNodes[23]->getIncrDeltaDisp();
+    const Vector &IncrDis25 = theNodes[24]->getIncrDeltaDisp();
+    const Vector &IncrDis26 = theNodes[25]->getIncrDeltaDisp();
+    const Vector &IncrDis27 = theNodes[26]->getIncrDeltaDisp();
 
 
 
@@ -1238,62 +1238,62 @@ tensor TwentySevenNodeBrickVariableGP::total_disp(void)
     tensor total_disp(2, dimensions, 0.0);
 
     //Zhaohui using node pointers, which come from the Domain
-    const Vector& TotDis1 = theNodes[0]->getTrialDisp();
+    const Vector &TotDis1 = theNodes[0]->getTrialDisp();
     cerr << "\ntot node " << theNodes[0]->getTag() << " x " << TotDis1(0) << " y " << TotDis1(1) << " z " << TotDis1(2) << endln;
-    const Vector& TotDis2 = theNodes[1]->getTrialDisp();
+    const Vector &TotDis2 = theNodes[1]->getTrialDisp();
     cerr << "tot node " << theNodes[1]->getTag() << " x " << TotDis2(0) << " y " << TotDis2(1) << " z " << TotDis2(2) << endln;
-    const Vector& TotDis3 = theNodes[2]->getTrialDisp();
+    const Vector &TotDis3 = theNodes[2]->getTrialDisp();
     cerr << "tot node " << theNodes[2]->getTag() << " x " << TotDis3(0) << " y " << TotDis3(1) << " z " << TotDis3(2) << endln;
-    const Vector& TotDis4 = theNodes[3]->getTrialDisp();
+    const Vector &TotDis4 = theNodes[3]->getTrialDisp();
     cerr << "tot node " << theNodes[3]->getTag() << " x " << TotDis4(0) << " y " << TotDis4(1) << " z " << TotDis4(2) << endln;
-    const Vector& TotDis5 = theNodes[4]->getTrialDisp();
+    const Vector &TotDis5 = theNodes[4]->getTrialDisp();
     cerr << "tot node " << theNodes[4]->getTag() << " x " << TotDis5(0) << " y " << TotDis5(1) << " z " << TotDis5(2) << endln;
-    const Vector& TotDis6 = theNodes[5]->getTrialDisp();
+    const Vector &TotDis6 = theNodes[5]->getTrialDisp();
     cerr << "tot node " << theNodes[5]->getTag() << " x " << TotDis6(0) << " y " << TotDis6(1) << " z " << TotDis6(2) << endln;
-    const Vector& TotDis7 = theNodes[6]->getTrialDisp();
+    const Vector &TotDis7 = theNodes[6]->getTrialDisp();
     cerr << "tot node " << theNodes[6]->getTag() << " x " << TotDis7(0) << " y " << TotDis7(1) << " z " << TotDis7(2) << endln;
-    const Vector& TotDis8 = theNodes[7]->getTrialDisp();
+    const Vector &TotDis8 = theNodes[7]->getTrialDisp();
     cerr << "tot node " << theNodes[7]->getTag() << " x " << TotDis8(0) << " y " << TotDis8(1) << " z " << TotDis8(2) << endln;
 
-    const Vector& TotDis9 = theNodes[8]->getTrialDisp();
+    const Vector &TotDis9 = theNodes[8]->getTrialDisp();
     cerr << "tot node " << theNodes[8]->getTag() << " x " << TotDis9(0) << " y " << TotDis9(1) << " z " << TotDis9(2) << endln;
-    const Vector& TotDis10 = theNodes[9]->getTrialDisp();
+    const Vector &TotDis10 = theNodes[9]->getTrialDisp();
     cerr << "tot node " << theNodes[9]->getTag() << " x " << TotDis10(0) << " y " << TotDis10(1) << " z " << TotDis10(2) << endln;
-    const Vector& TotDis11 = theNodes[10]->getTrialDisp();
+    const Vector &TotDis11 = theNodes[10]->getTrialDisp();
     cerr << "tot node " << theNodes[10]->getTag() << " x " << TotDis11(0) << " y " << TotDis11(1) << " z " << TotDis11(2) << endln;
-    const Vector& TotDis12 = theNodes[11]->getTrialDisp();
+    const Vector &TotDis12 = theNodes[11]->getTrialDisp();
     cerr << "tot node " << theNodes[11]->getTag() << " x " << TotDis12(0) << " y " << TotDis12(1) << " z " << TotDis12(2) << endln;
 
-    const Vector& TotDis13 = theNodes[12]->getTrialDisp();
+    const Vector &TotDis13 = theNodes[12]->getTrialDisp();
     cerr << "tot node " << theNodes[12]->getTag() << " x " << TotDis13(0) << " y " << TotDis13(1) << " z " << TotDis13(2) << endln;
-    const Vector& TotDis14 = theNodes[13]->getTrialDisp();
+    const Vector &TotDis14 = theNodes[13]->getTrialDisp();
     cerr << "tot node " << theNodes[13]->getTag() << " x " << TotDis14(0) << " y " << TotDis14(1) << " z " << TotDis14(2) << endln;
-    const Vector& TotDis15 = theNodes[14]->getTrialDisp();
+    const Vector &TotDis15 = theNodes[14]->getTrialDisp();
     cerr << "tot node " << theNodes[14]->getTag() << " x " << TotDis15(0) << " y " << TotDis15(1) << " z " << TotDis15(2) << endln;
-    const Vector& TotDis16 = theNodes[15]->getTrialDisp();
+    const Vector &TotDis16 = theNodes[15]->getTrialDisp();
     cerr << "tot node " << theNodes[15]->getTag() << " x " << TotDis16(0) << " y " << TotDis16(1) << " z " << TotDis16(2) << endln;
 
-    const Vector& TotDis17 = theNodes[16]->getTrialDisp();
+    const Vector &TotDis17 = theNodes[16]->getTrialDisp();
     cerr << "tot node " << theNodes[16]->getTag() << " x " << TotDis17(0) << " y " << TotDis17(1) << " z " << TotDis17(2) << endln;
-    const Vector& TotDis18 = theNodes[17]->getTrialDisp();
+    const Vector &TotDis18 = theNodes[17]->getTrialDisp();
     cerr << "tot node " << theNodes[17]->getTag() << " x " << TotDis18(0) << " y " << TotDis18(1) << " z " << TotDis18(2) << endln;
-    const Vector& TotDis19 = theNodes[18]->getTrialDisp();
+    const Vector &TotDis19 = theNodes[18]->getTrialDisp();
     cerr << "tot node " << theNodes[18]->getTag() << " x " << TotDis19(0) << " y " << TotDis19(1) << " z " << TotDis19(2) << endln;
-    const Vector& TotDis20 = theNodes[19]->getTrialDisp();
+    const Vector &TotDis20 = theNodes[19]->getTrialDisp();
     cerr << "tot node " << theNodes[19]->getTag() << " x " << TotDis20(0) << " y " << TotDis20(1) << " z " << TotDis20(2) << endln;
-    const Vector& TotDis21 = theNodes[20]->getTrialDisp();
+    const Vector &TotDis21 = theNodes[20]->getTrialDisp();
     cerr << "tot node " << theNodes[20]->getTag() << " x " << TotDis21(0) << " y " << TotDis21(1) << " z " << TotDis21(2) << endln;
-    const Vector& TotDis22 = theNodes[21]->getTrialDisp();
+    const Vector &TotDis22 = theNodes[21]->getTrialDisp();
     cerr << "tot node " << theNodes[21]->getTag() << " x " << TotDis22(0) << " y " << TotDis22(1) << " z " << TotDis22(2) << endln;
-    const Vector& TotDis23 = theNodes[22]->getTrialDisp();
+    const Vector &TotDis23 = theNodes[22]->getTrialDisp();
     cerr << "tot node " << theNodes[22]->getTag() << " x " << TotDis23(0) << " y " << TotDis23(1) << " z " << TotDis23(2) << endln;
-    const Vector& TotDis24 = theNodes[23]->getTrialDisp();
+    const Vector &TotDis24 = theNodes[23]->getTrialDisp();
     cerr << "tot node " << theNodes[23]->getTag() << " x " << TotDis24(0) << " y " << TotDis24(1) << " z " << TotDis24(2) << endln;
-    const Vector& TotDis25 = theNodes[24]->getTrialDisp();
+    const Vector &TotDis25 = theNodes[24]->getTrialDisp();
     cerr << "tot node " << theNodes[24]->getTag() << " x " << TotDis25(0) << " y " << TotDis25(1) << " z " << TotDis25(2) << endln;
-    const Vector& TotDis26 = theNodes[25]->getTrialDisp();
+    const Vector &TotDis26 = theNodes[25]->getTrialDisp();
     cerr << "tot node " << theNodes[25]->getTag() << " x " << TotDis26(0) << " y " << TotDis26(1) << " z " << TotDis26(2) << endln;
-    const Vector& TotDis27 = theNodes[26]->getTrialDisp();
+    const Vector &TotDis27 = theNodes[26]->getTrialDisp();
     cerr << "tot node " << theNodes[26]->getTag() << " x " << TotDis27(0) << " y " << TotDis27(1) << " z " << TotDis27(2) << endln;
 
 
@@ -1391,19 +1391,19 @@ tensor TwentySevenNodeBrickVariableGP::total_disp(void)
 
 
 ////#############################################################################
-tensor TwentySevenNodeBrickVariableGP::total_disp(FILE* fp, double* u)  //Not implemented yet??? Guanzhou Oct. 2003
+tensor TwentySevenNodeBrickVariableGP::total_disp(FILE *fp, double *u)  //Not implemented yet??? Guanzhou Oct. 2003
 {
     const int dimensions[] = {27, 3};
     tensor total_disp(2, dimensions, 0.0);
 
-    const Vector& TotDis1 = theNodes[0]->getTrialDisp();
-    const Vector& TotDis2 = theNodes[1]->getTrialDisp();
-    const Vector& TotDis3 = theNodes[2]->getTrialDisp();
-    const Vector& TotDis4 = theNodes[3]->getTrialDisp();
-    const Vector& TotDis5 = theNodes[4]->getTrialDisp();
-    const Vector& TotDis6 = theNodes[5]->getTrialDisp();
-    const Vector& TotDis7 = theNodes[6]->getTrialDisp();
-    const Vector& TotDis8 = theNodes[7]->getTrialDisp();
+    const Vector &TotDis1 = theNodes[0]->getTrialDisp();
+    const Vector &TotDis2 = theNodes[1]->getTrialDisp();
+    const Vector &TotDis3 = theNodes[2]->getTrialDisp();
+    const Vector &TotDis4 = theNodes[3]->getTrialDisp();
+    const Vector &TotDis5 = theNodes[4]->getTrialDisp();
+    const Vector &TotDis6 = theNodes[5]->getTrialDisp();
+    const Vector &TotDis7 = theNodes[6]->getTrialDisp();
+    const Vector &TotDis8 = theNodes[7]->getTrialDisp();
 
     total_disp.val(1, 1) = TotDis1(0);
     total_disp.val(1, 2) = TotDis1(1);
@@ -1486,17 +1486,17 @@ tensor TwentySevenNodeBrickVariableGP::nodal_forces(void)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1572,17 +1572,17 @@ tensor TwentySevenNodeBrickVariableGP::iterative_nodal_forces(void)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1636,7 +1636,7 @@ tensor TwentySevenNodeBrickVariableGP::iterative_nodal_forces(void)
 
 ////#############################################################################
 // returns nodal forces for given constant stress field in the element
-tensor TwentySevenNodeBrickVariableGP::nodal_forces_from_stress(stresstensor& stress)
+tensor TwentySevenNodeBrickVariableGP::nodal_forces_from_stress(stresstensor &stress)
 {
     int force_dim[] = {27, 3};
 
@@ -1661,17 +1661,17 @@ tensor TwentySevenNodeBrickVariableGP::nodal_forces_from_stress(stresstensor& st
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1755,17 +1755,17 @@ tensor TwentySevenNodeBrickVariableGP::linearized_nodal_forces(void)
     incremental_displacements = incr_disp();
     //incremental_displacements.print("disp","\n incremental_displacements tensor at GAUSS point in iterative_Update\n");
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1829,7 +1829,7 @@ tensor TwentySevenNodeBrickVariableGP::linearized_nodal_forces(void)
 
 
 //#############################################################################
-void TwentySevenNodeBrickVariableGP::report(char* msg)
+void TwentySevenNodeBrickVariableGP::report(char *msg)
 {
     if ( msg )
     {
@@ -1917,11 +1917,11 @@ void TwentySevenNodeBrickVariableGP::report(char* msg)
 
 
 
-    for( int GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( int GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
-        for( int GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( int GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
-            for( int GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( int GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 // this short routine is supposed to calculate position of
                 // Gauss point from 3D array of short's
@@ -1943,7 +1943,7 @@ void TwentySevenNodeBrickVariableGP::report(char* msg)
 
 
 //#############################################################################
-void TwentySevenNodeBrickVariableGP::reportshort(char* msg)
+void TwentySevenNodeBrickVariableGP::reportshort(char *msg)
 {
     if ( msg )
     {
@@ -1981,7 +1981,7 @@ void TwentySevenNodeBrickVariableGP::reportshort(char* msg)
 
 
 //#############################################################################
-void TwentySevenNodeBrickVariableGP::reportPAK(char* msg)
+void TwentySevenNodeBrickVariableGP::reportPAK(char *msg)
 {
     if ( msg )
     {
@@ -2150,7 +2150,7 @@ void TwentySevenNodeBrickVariableGP::reportpqtheta(int GP_numb)
 //void TwentySevenNodeBrickVariableGP::reportTensor(char * msg)
 // ZHaohui added to print gauss point coord. to file fp
 
-void TwentySevenNodeBrickVariableGP::reportTensorF(FILE* fp)
+void TwentySevenNodeBrickVariableGP::reportTensorF(FILE *fp)
 {
     //if ( msg ) ::printf("** %s\n",msg);
 
@@ -2172,33 +2172,33 @@ void TwentySevenNodeBrickVariableGP::reportTensorF(FILE* fp)
 
 
     //Zhaohui using node pointers, which come from the Domain
-    const Vector& nd1Crds = theNodes[0]->getCrds();
-    const Vector& nd2Crds = theNodes[1]->getCrds();
-    const Vector& nd3Crds = theNodes[2]->getCrds();
-    const Vector& nd4Crds = theNodes[3]->getCrds();
-    const Vector& nd5Crds = theNodes[4]->getCrds();
-    const Vector& nd6Crds = theNodes[5]->getCrds();
-    const Vector& nd7Crds = theNodes[6]->getCrds();
-    const Vector& nd8Crds = theNodes[7]->getCrds();
-    const Vector& nd9Crds  =  theNodes[8]->getCrds();
-    const Vector& nd10Crds = theNodes[9]->getCrds();
-    const Vector& nd11Crds = theNodes[10]->getCrds();
-    const Vector& nd12Crds = theNodes[11]->getCrds();
-    const Vector& nd13Crds = theNodes[12]->getCrds();
-    const Vector& nd14Crds = theNodes[13]->getCrds();
-    const Vector& nd15Crds = theNodes[14]->getCrds();
-    const Vector& nd16Crds = theNodes[15]->getCrds();
-    const Vector& nd17Crds = theNodes[16]->getCrds();
-    const Vector& nd18Crds = theNodes[17]->getCrds();
-    const Vector& nd19Crds = theNodes[18]->getCrds();
-    const Vector& nd20Crds = theNodes[19]->getCrds();
-    const Vector& nd21Crds = theNodes[20]->getCrds();
-    const Vector& nd22Crds = theNodes[21]->getCrds();
-    const Vector& nd23Crds = theNodes[22]->getCrds();
-    const Vector& nd24Crds = theNodes[23]->getCrds();
-    const Vector& nd25Crds = theNodes[24]->getCrds();
-    const Vector& nd26Crds = theNodes[25]->getCrds();
-    const Vector& nd27Crds = theNodes[26]->getCrds();
+    const Vector &nd1Crds = theNodes[0]->getCrds();
+    const Vector &nd2Crds = theNodes[1]->getCrds();
+    const Vector &nd3Crds = theNodes[2]->getCrds();
+    const Vector &nd4Crds = theNodes[3]->getCrds();
+    const Vector &nd5Crds = theNodes[4]->getCrds();
+    const Vector &nd6Crds = theNodes[5]->getCrds();
+    const Vector &nd7Crds = theNodes[6]->getCrds();
+    const Vector &nd8Crds = theNodes[7]->getCrds();
+    const Vector &nd9Crds  =  theNodes[8]->getCrds();
+    const Vector &nd10Crds = theNodes[9]->getCrds();
+    const Vector &nd11Crds = theNodes[10]->getCrds();
+    const Vector &nd12Crds = theNodes[11]->getCrds();
+    const Vector &nd13Crds = theNodes[12]->getCrds();
+    const Vector &nd14Crds = theNodes[13]->getCrds();
+    const Vector &nd15Crds = theNodes[14]->getCrds();
+    const Vector &nd16Crds = theNodes[15]->getCrds();
+    const Vector &nd17Crds = theNodes[16]->getCrds();
+    const Vector &nd18Crds = theNodes[17]->getCrds();
+    const Vector &nd19Crds = theNodes[18]->getCrds();
+    const Vector &nd20Crds = theNodes[19]->getCrds();
+    const Vector &nd21Crds = theNodes[20]->getCrds();
+    const Vector &nd22Crds = theNodes[21]->getCrds();
+    const Vector &nd23Crds = theNodes[22]->getCrds();
+    const Vector &nd24Crds = theNodes[23]->getCrds();
+    const Vector &nd25Crds = theNodes[24]->getCrds();
+    const Vector &nd26Crds = theNodes[25]->getCrds();
+    const Vector &nd27Crds = theNodes[26]->getCrds();
 
 
 
@@ -2284,15 +2284,15 @@ void TwentySevenNodeBrickVariableGP::reportTensorF(FILE* fp)
     NodalCoord.val(2, 27) = nd27Crds(1);
     NodalCoord.val(3, 27) = nd27Crds(2);
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 // this short routine is supposed to calculate position of
@@ -2338,12 +2338,12 @@ int TwentySevenNodeBrickVariableGP::getNumExternalNodes () const
 
 
 //=============================================================================
-const ID& TwentySevenNodeBrickVariableGP::getExternalNodes ()
+const ID &TwentySevenNodeBrickVariableGP::getExternalNodes ()
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 TwentySevenNodeBrickVariableGP::getNodePtrs(void)
 {
     return theNodes;
@@ -2356,7 +2356,7 @@ int TwentySevenNodeBrickVariableGP::getNumDOF ()
 }
 
 //=============================================================================
-void TwentySevenNodeBrickVariableGP::setDomain (Domain* theDomain)
+void TwentySevenNodeBrickVariableGP::setDomain (Domain *theDomain)
 {
     // Check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -2599,7 +2599,7 @@ int TwentySevenNodeBrickVariableGP::revertToStart ()
 
 
 //=============================================================================
-const Matrix& TwentySevenNodeBrickVariableGP::getTangentStiff ()
+const Matrix &TwentySevenNodeBrickVariableGP::getTangentStiff ()
 {
     tensor stifftensor = getStiffnessTensor();
     int Ki = 0;
@@ -2626,7 +2626,7 @@ const Matrix& TwentySevenNodeBrickVariableGP::getTangentStiff ()
 }
 
 //=============================================================================
-const Matrix& TwentySevenNodeBrickVariableGP::getInitialStiff ()
+const Matrix &TwentySevenNodeBrickVariableGP::getInitialStiff ()
 {
     //cerr << "WARNING - TwentySevenNodeBrickVariableGP::getInitialStiff() - not yet implemented\n";
     return this->getTangentStiff();
@@ -2635,7 +2635,7 @@ const Matrix& TwentySevenNodeBrickVariableGP::getInitialStiff ()
 //=============================================================================
 //Get lumped mass
 //const Matrix &TwentySevenNodeBrickVariableGP::getMass ()
-const Matrix& TwentySevenNodeBrickVariableGP::getConsMass ()
+const Matrix &TwentySevenNodeBrickVariableGP::getConsMass ()
 {
     tensor masstensor = getMassTensor();
 
@@ -2665,7 +2665,7 @@ const Matrix& TwentySevenNodeBrickVariableGP::getConsMass ()
 //=============================================================================
 //Get consistent mass
 //const Matrix &TwentySevenNodeBrickVariableGP::getConsMass ()
-const Matrix& TwentySevenNodeBrickVariableGP::getMass ()
+const Matrix &TwentySevenNodeBrickVariableGP::getMass ()
 {
     tensor masstensor = getMassTensor();
 
@@ -2694,7 +2694,7 @@ void TwentySevenNodeBrickVariableGP::zeroLoad(void)
 
 
 //======================================================================
-const Vector& TwentySevenNodeBrickVariableGP::getBodyForce(double loadFactor, const Vector& data)
+const Vector &TwentySevenNodeBrickVariableGP::getBodyForce(double loadFactor, const Vector &data)
 {
 
 
@@ -2814,7 +2814,7 @@ const Vector& TwentySevenNodeBrickVariableGP::getBodyForce(double loadFactor, co
 
 
 //======================================================================
-const Vector& TwentySevenNodeBrickVariableGP::getSurfaceForce(double loadFactor, const Vector& data)
+const Vector &TwentySevenNodeBrickVariableGP::getSurfaceForce(double loadFactor, const Vector &data)
 {
 
 
@@ -2855,15 +2855,15 @@ const Vector& TwentySevenNodeBrickVariableGP::getSurfaceForce(double loadFactor,
 
 
     // get the surface nodal coordinates
-    const Vector& coordnode1 = theNodes[node1_local]->getCrds();
-    const Vector& coordnode2 = theNodes[node2_local]->getCrds();
-    const Vector& coordnode3 = theNodes[node3_local]->getCrds();
-    const Vector& coordnode4 = theNodes[node4_local]->getCrds();
-    const Vector& coordnode5 = theNodes[node5_local]->getCrds();
-    const Vector& coordnode6 = theNodes[node6_local]->getCrds();
-    const Vector& coordnode7 = theNodes[node7_local]->getCrds();
-    const Vector& coordnode8 = theNodes[node8_local]->getCrds();
-    const Vector& coordnode9 = theNodes[node9_local]->getCrds();
+    const Vector &coordnode1 = theNodes[node1_local]->getCrds();
+    const Vector &coordnode2 = theNodes[node2_local]->getCrds();
+    const Vector &coordnode3 = theNodes[node3_local]->getCrds();
+    const Vector &coordnode4 = theNodes[node4_local]->getCrds();
+    const Vector &coordnode5 = theNodes[node5_local]->getCrds();
+    const Vector &coordnode6 = theNodes[node6_local]->getCrds();
+    const Vector &coordnode7 = theNodes[node7_local]->getCrds();
+    const Vector &coordnode8 = theNodes[node8_local]->getCrds();
+    const Vector &coordnode9 = theNodes[node9_local]->getCrds();
 
 
 
@@ -2947,13 +2947,13 @@ const Vector& TwentySevenNodeBrickVariableGP::getSurfaceForce(double loadFactor,
 
 
     // loop over dof
-    for(int k = 0; k < 3; k++)
+    for (int k = 0; k < 3; k++)
     {
         // loop over nodes
-        for(int j = 0; j < 9; j++)
+        for (int j = 0; j < 9; j++)
         {
 
-            for(int v = 0; v < 27; v++)
+            for (int v = 0; v < 27; v++)
             {
                 if (data(j) == connectedExternalNodes(v))
                 {
@@ -2963,7 +2963,7 @@ const Vector& TwentySevenNodeBrickVariableGP::getSurfaceForce(double loadFactor,
             }
 
             // loop over Gauss points
-            for(int i = 0; i < 9; i++)
+            for (int i = 0; i < 9; i++)
             {
 
                 ShapeFunctionValues = SurfaceShapeFunctionValues(GsPts(i, 0) , GsPts(i, 1));
@@ -3013,10 +3013,10 @@ const Vector& TwentySevenNodeBrickVariableGP::getSurfaceForce(double loadFactor,
 
 //=============================================================================
 int
-TwentySevenNodeBrickVariableGP::addLoad(ElementalLoad* theLoad, double loadFactor)
+TwentySevenNodeBrickVariableGP::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_ElementSelfWeight)
     {
@@ -3071,7 +3071,7 @@ TwentySevenNodeBrickVariableGP::addLoad(ElementalLoad* theLoad, double loadFacto
 
 
 //=============================================================================
-int TwentySevenNodeBrickVariableGP::addInertiaLoadToUnbalance(const Vector& accel)
+int TwentySevenNodeBrickVariableGP::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // Check for a quick return
     if (rho == 0.0)
@@ -3080,33 +3080,33 @@ int TwentySevenNodeBrickVariableGP::addInertiaLoadToUnbalance(const Vector& acce
     }
 
     // Get R * accel from the nodes
-    const Vector& Raccel1  = theNodes[0]->getRV(accel);
-    const Vector& Raccel2  = theNodes[1]->getRV(accel);
-    const Vector& Raccel3  = theNodes[2]->getRV(accel);
-    const Vector& Raccel4  = theNodes[3]->getRV(accel);
-    const Vector& Raccel5  = theNodes[4]->getRV(accel);
-    const Vector& Raccel6  = theNodes[5]->getRV(accel);
-    const Vector& Raccel7  = theNodes[6]->getRV(accel);
-    const Vector& Raccel8  = theNodes[7]->getRV(accel);
-    const Vector& Raccel9  = theNodes[8]->getRV(accel);
-    const Vector& Raccel10 = theNodes[9]->getRV(accel);
-    const Vector& Raccel11 = theNodes[10]->getRV(accel);
-    const Vector& Raccel12 = theNodes[11]->getRV(accel);
-    const Vector& Raccel13 = theNodes[12]->getRV(accel);
-    const Vector& Raccel14 = theNodes[13]->getRV(accel);
-    const Vector& Raccel15 = theNodes[14]->getRV(accel);
-    const Vector& Raccel16 = theNodes[15]->getRV(accel);
-    const Vector& Raccel17 = theNodes[16]->getRV(accel);
-    const Vector& Raccel18 = theNodes[17]->getRV(accel);
-    const Vector& Raccel19 = theNodes[18]->getRV(accel);
-    const Vector& Raccel20 = theNodes[19]->getRV(accel);
-    const Vector& Raccel21 = theNodes[20]->getRV(accel);
-    const Vector& Raccel22 = theNodes[21]->getRV(accel);
-    const Vector& Raccel23 = theNodes[22]->getRV(accel);
-    const Vector& Raccel24 = theNodes[23]->getRV(accel);
-    const Vector& Raccel25 = theNodes[24]->getRV(accel);
-    const Vector& Raccel26 = theNodes[25]->getRV(accel);
-    const Vector& Raccel27 = theNodes[26]->getRV(accel);
+    const Vector &Raccel1  = theNodes[0]->getRV(accel);
+    const Vector &Raccel2  = theNodes[1]->getRV(accel);
+    const Vector &Raccel3  = theNodes[2]->getRV(accel);
+    const Vector &Raccel4  = theNodes[3]->getRV(accel);
+    const Vector &Raccel5  = theNodes[4]->getRV(accel);
+    const Vector &Raccel6  = theNodes[5]->getRV(accel);
+    const Vector &Raccel7  = theNodes[6]->getRV(accel);
+    const Vector &Raccel8  = theNodes[7]->getRV(accel);
+    const Vector &Raccel9  = theNodes[8]->getRV(accel);
+    const Vector &Raccel10 = theNodes[9]->getRV(accel);
+    const Vector &Raccel11 = theNodes[10]->getRV(accel);
+    const Vector &Raccel12 = theNodes[11]->getRV(accel);
+    const Vector &Raccel13 = theNodes[12]->getRV(accel);
+    const Vector &Raccel14 = theNodes[13]->getRV(accel);
+    const Vector &Raccel15 = theNodes[14]->getRV(accel);
+    const Vector &Raccel16 = theNodes[15]->getRV(accel);
+    const Vector &Raccel17 = theNodes[16]->getRV(accel);
+    const Vector &Raccel18 = theNodes[17]->getRV(accel);
+    const Vector &Raccel19 = theNodes[18]->getRV(accel);
+    const Vector &Raccel20 = theNodes[19]->getRV(accel);
+    const Vector &Raccel21 = theNodes[20]->getRV(accel);
+    const Vector &Raccel22 = theNodes[21]->getRV(accel);
+    const Vector &Raccel23 = theNodes[22]->getRV(accel);
+    const Vector &Raccel24 = theNodes[23]->getRV(accel);
+    const Vector &Raccel25 = theNodes[24]->getRV(accel);
+    const Vector &Raccel26 = theNodes[25]->getRV(accel);
+    const Vector &Raccel27 = theNodes[26]->getRV(accel);
 
 
     if (3 != Raccel1.Size()  || 3 != Raccel2.Size()  || 3 != Raccel3.Size()  || 3 != Raccel4.Size() ||
@@ -3214,7 +3214,7 @@ int TwentySevenNodeBrickVariableGP::addInertiaLoadToUnbalance(const Vector& acce
 }
 
 //=============================================================================
-const Vector TwentySevenNodeBrickVariableGP::FormEquiBodyForce(const Vector& data)
+const Vector TwentySevenNodeBrickVariableGP::FormEquiBodyForce(const Vector &data)
 {
     Vector bforce(81);
 
@@ -3328,7 +3328,7 @@ const Vector TwentySevenNodeBrickVariableGP::FormEquiBodyForce(const Vector& dat
 }
 
 //=============================================================================
-const Vector& TwentySevenNodeBrickVariableGP::getResistingForce ()
+const Vector &TwentySevenNodeBrickVariableGP::getResistingForce ()
 {
     int force_dim[] = {27, 3};
     tensor nodalforces(2, force_dim, 0.0);
@@ -3352,7 +3352,7 @@ const Vector& TwentySevenNodeBrickVariableGP::getResistingForce ()
 }
 
 //=============================================================================
-const Vector& TwentySevenNodeBrickVariableGP::getResistingForceIncInertia ()
+const Vector &TwentySevenNodeBrickVariableGP::getResistingForceIncInertia ()
 {
 
     this->getResistingForce();
@@ -3368,33 +3368,33 @@ const Vector& TwentySevenNodeBrickVariableGP::getResistingForceIncInertia ()
         // form the mass matrix
         this->getMass();
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
-        const Vector& accel3 = theNodes[2]->getTrialAccel();
-        const Vector& accel4 = theNodes[3]->getTrialAccel();
-        const Vector& accel5 = theNodes[4]->getTrialAccel();
-        const Vector& accel6 = theNodes[5]->getTrialAccel();
-        const Vector& accel7 = theNodes[6]->getTrialAccel();
-        const Vector& accel8 = theNodes[7]->getTrialAccel();
-        const Vector& accel9 = theNodes[8]->getTrialAccel();
-        const Vector& accel10 = theNodes[9]->getTrialAccel();
-        const Vector& accel11 = theNodes[10]->getTrialAccel();
-        const Vector& accel12 = theNodes[11]->getTrialAccel();
-        const Vector& accel13 = theNodes[12]->getTrialAccel();
-        const Vector& accel14 = theNodes[13]->getTrialAccel();
-        const Vector& accel15 = theNodes[14]->getTrialAccel();
-        const Vector& accel16 = theNodes[15]->getTrialAccel();
-        const Vector& accel17 = theNodes[16]->getTrialAccel();
-        const Vector& accel18 = theNodes[17]->getTrialAccel();
-        const Vector& accel19 = theNodes[18]->getTrialAccel();
-        const Vector& accel20 = theNodes[19]->getTrialAccel();
-        const Vector& accel21 = theNodes[20]->getTrialAccel();
-        const Vector& accel22 = theNodes[21]->getTrialAccel();
-        const Vector& accel23 = theNodes[22]->getTrialAccel();
-        const Vector& accel24 = theNodes[23]->getTrialAccel();
-        const Vector& accel25 = theNodes[24]->getTrialAccel();
-        const Vector& accel26 = theNodes[25]->getTrialAccel();
-        const Vector& accel27 = theNodes[26]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel3 = theNodes[2]->getTrialAccel();
+        const Vector &accel4 = theNodes[3]->getTrialAccel();
+        const Vector &accel5 = theNodes[4]->getTrialAccel();
+        const Vector &accel6 = theNodes[5]->getTrialAccel();
+        const Vector &accel7 = theNodes[6]->getTrialAccel();
+        const Vector &accel8 = theNodes[7]->getTrialAccel();
+        const Vector &accel9 = theNodes[8]->getTrialAccel();
+        const Vector &accel10 = theNodes[9]->getTrialAccel();
+        const Vector &accel11 = theNodes[10]->getTrialAccel();
+        const Vector &accel12 = theNodes[11]->getTrialAccel();
+        const Vector &accel13 = theNodes[12]->getTrialAccel();
+        const Vector &accel14 = theNodes[13]->getTrialAccel();
+        const Vector &accel15 = theNodes[14]->getTrialAccel();
+        const Vector &accel16 = theNodes[15]->getTrialAccel();
+        const Vector &accel17 = theNodes[16]->getTrialAccel();
+        const Vector &accel18 = theNodes[17]->getTrialAccel();
+        const Vector &accel19 = theNodes[18]->getTrialAccel();
+        const Vector &accel20 = theNodes[19]->getTrialAccel();
+        const Vector &accel21 = theNodes[20]->getTrialAccel();
+        const Vector &accel22 = theNodes[21]->getTrialAccel();
+        const Vector &accel23 = theNodes[22]->getTrialAccel();
+        const Vector &accel24 = theNodes[23]->getTrialAccel();
+        const Vector &accel25 = theNodes[24]->getTrialAccel();
+        const Vector &accel26 = theNodes[25]->getTrialAccel();
+        const Vector &accel27 = theNodes[26]->getTrialAccel();
 
         static Vector a(81);  // originally 8
 
@@ -3507,14 +3507,14 @@ const Vector& TwentySevenNodeBrickVariableGP::getResistingForceIncInertia ()
 }
 
 //=============================================================================
-int TwentySevenNodeBrickVariableGP::sendSelf (int commitTag, Channel& theChannel)
+int TwentySevenNodeBrickVariableGP::sendSelf (int commitTag, Channel &theChannel)
 {
     // Not implemtented yet
     return 0;
 }
 
 //=============================================================================
-int TwentySevenNodeBrickVariableGP::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int TwentySevenNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     // Not implemtented yet
     return 0;
@@ -3522,7 +3522,7 @@ int TwentySevenNodeBrickVariableGP::recvSelf (int commitTag, Channel& theChannel
 
 
 //=============================================================================
-void TwentySevenNodeBrickVariableGP::Print(ostream& s, int flag)
+void TwentySevenNodeBrickVariableGP::Print(ostream &s, int flag)
 {
     //report(" TwentySevenNodeBrickVariableGP ");
     s << "TwentySevenNodeBrickVariableGP, element id:  " << this->getTag() << endln;
@@ -3566,11 +3566,11 @@ void TwentySevenNodeBrickVariableGP::Print(ostream& s, int flag)
     s << "Element mass density:  " << rho << endln << endln;
     s << "Material model:  " << endln;
 
-    for( int GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( int GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
-        for( int GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( int GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
-            for( int GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( int GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 // this short routine is supposed to calculate position of
                 // Gauss point from 3D array of short's
@@ -3590,356 +3590,356 @@ void TwentySevenNodeBrickVariableGP::Print(ostream& s, int flag)
 }
 
 //=============================================================================
-Response* TwentySevenNodeBrickVariableGP::setResponse (const char** argv, int argc, Information& eleInformation)
-{
-    //========================================================
-    //     if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0)
-    //     return new ElementResponse(this, 1, P);
+// Response* TwentySevenNodeBrickVariableGP::setResponse (const char** argv, int argc, Information& eleInformation)
+// {
+//     //========================================================
+//     //     if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0)
+//     //     return new ElementResponse(this, 1, P);
 
-    //========================================================
-    if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 5, K);
-    }
+//     //========================================================
+//     if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 5, K);
+//     }
 
-    //========================================================
-    //     else if (strcmp(argv[0],"plastic") == 0 || strcmp(argv[0],"plastified") == 0)
-    //     {
-    ////checking if element plastified
-    //int count  = integration_order* integration_order * integration_order;
-    //straintensor pl_stn;
-    //int plastify = 0;
-    //
-    //for (int i = 0; i < count; i++) {
-    //  pl_stn = matpoint[i]->getPlasticStrainTensor();
-    //   double  p_plastc = pl_stn.p_hydrostatic();
-    //
-    //   if (  fabs(p_plastc) > 0 ) {
-    //      plastify = 1;
-    //      break;
-    //   }
-    //}
+//     //========================================================
+//     //     else if (strcmp(argv[0],"plastic") == 0 || strcmp(argv[0],"plastified") == 0)
+//     //     {
+//     ////checking if element plastified
+//     //int count  = integration_order* integration_order * integration_order;
+//     //straintensor pl_stn;
+//     //int plastify = 0;
+//     //
+//     //for (int i = 0; i < count; i++) {
+//     //  pl_stn = matpoint[i]->getPlasticStrainTensor();
+//     //   double  p_plastc = pl_stn.p_hydrostatic();
+//     //
+//     //   if (  fabs(p_plastc) > 0 ) {
+//     //      plastify = 1;
+//     //      break;
+//     //   }
+//     //}
 
-    //        return new ElementResponse(this, 2, InfoPlastic);
-    //     }
-    //========================================================
-    //Specially designed for moment computation of solid pile elements Zhaohui Yang UCDavis August 1, 2001
-    //     else if (strcmp(argv[0],"PileM") == 0 || strcmp(argv[0],"PileM") == 0)
-    //     {
-    //        return new ElementResponse(this, 3, Vector(integration_order*integration_order*integration_order*6+1));
-    //     }
-    //========================================================
-    else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
-    {
-        return new ElementResponse(this, 4, Vector(integration_order * integration_order * integration_order * 6 + 1));
-    }
+//     //        return new ElementResponse(this, 2, InfoPlastic);
+//     //     }
+//     //========================================================
+//     //Specially designed for moment computation of solid pile elements Zhaohui Yang UCDavis August 1, 2001
+//     //     else if (strcmp(argv[0],"PileM") == 0 || strcmp(argv[0],"PileM") == 0)
+//     //     {
+//     //        return new ElementResponse(this, 3, Vector(integration_order*integration_order*integration_order*6+1));
+//     //     }
+//     //========================================================
+//     else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
+//     {
+//         return new ElementResponse(this, 4, Vector(integration_order * integration_order * integration_order * 6 + 1));
+//     }
 
-    //========================================================
-    //Nima added for recording the Strain (02-21-2011)
+//     //========================================================
+//     //Nima added for recording the Strain (02-21-2011)
 
-    else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
-    {
-        return new ElementResponse(this, 7, Vector(Num_TotalGaussPts * 6 + 1) );
-    }
-
-
-    //========================================================
-    else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
-    {
-        return new ElementResponse(this, 41, Vector(2));
-    }
-
-    //========================================================
-    //     else if (strcmp(argv[0],"GaussPoint") == 0 || strcmp(argv[0],"gausspoint") == 0)
-    //     {
-    //        return new ElementResponse(this, 6, GaussCoord);
-    //     }
-    /*else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
-        int pointNum = atoi(argv[1]);
-    if (pointNum > 0 && pointNum <= 4)
-    return theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, eleInfo);
-        else
-          return 0;
-    }*/
-
-    // otherwise response quantity is unknown for the quad class
-    else
-    {
-        return 0;
-    }
-}
-
-//=============================================================================
-int TwentySevenNodeBrickVariableGP::getResponse (int responseID, Information& eleInfo)
-{
-    switch (responseID)
-    {
-
-        //      case 1:
-        //        return eleInfo.setVector( this->getResistingForce() );
-
-        //      case 2:
-        //                {
-        //     //checking if element plastified
-        //                  int count  = integration_order* integration_order * integration_order;
-        //
-        //                  //Vector GaussCoord(81+1);  // 27*3 + count
-        //     //GaussCoord = this->reportGaussPoint();
-        //     this->computeGaussPoint();
-        //
-        //     //Vector Info(109); // count * 4 +1
-        //     InfoPlastic(0) = GaussCoord(0);
-        //
-        //                  straintensor pl_stn;
-        //
-        // //     int plastify;
-        //                  for (int i = 0; i < count; i++) {
-        // //                    plastify = 0;
-        //          InfoPlastic(i*4+1) = GaussCoord(i*3+1); //x
-        //          InfoPlastic(i*4+2) = GaussCoord(i*3+2); //y
-        //          InfoPlastic(i*4+3) = GaussCoord(i*3+3); //z
-        //                    pl_stn = matpoint[i]->getPlasticStrainTensor();
-        //                    //double  p_plastc = pl_stn.p_hydrostatic();
-        //                    double  q_plastc = pl_stn.q_deviatoric();
-        //
-        //       //if (  fabs(p_plastc) > 0 ) {
-        //                    //   plastify = 1;
-        //                    //}
-        //       //else
-        //       //   plastify = 0;
-        //
-        //          InfoPlastic(i*4+4) = q_plastc; //plastify; //Plastified?
-        //
-        //                  }
-        //        return eleInfo.setVector( InfoPlastic );
-        //     //return plastify;
-        //
-        //         }
-        //      case 3:
-        //         {
-        // //                  int count = integration_order* integration_order * integration_order;
-        //                 stresstensor sts;
-        //                  //Vector GaussCoord(81+1);  // 27*3 + count
-        //     this->computeGaussPoint();
-        //     Vector wt(9);
-        //     int i, rs;
-        //
-        //     //Vector Info(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
-        //     InfoMoment(0) = GaussCoord(0);
-        //     Vector Mt(3), Q(3);
-        //
-        //     //Vector Zcoor(3);
-        //     InfoMoment(109+0) = GaussCoord(6); //Zcoor of middle layer
-        //
-        //                 //Computing Height of element
-        // //     const Vector &coor = theNodes[17]->getCrds();
-        //                 const Vector &TotDis = theNodes[17]->getTrialDisp();
-        //           //checking Z-coor. of moddile layer gauss point
-        //     //if ( (coor(2) - GaussCoord(6)) > 0.0001 )
-        //     //  cerr << " Warning: Middle layer Gauss Point Z-coor. wrong...\n";
-        //
-        //     //InfoMoment(109+0) = GaussCoord(6);
-        //     InfoMoment(109+1) = TotDis(0); //x-displacement ...Lateral displacement
-        //     //InfoMoment(109+3) = GaussCoord(6);
-        //     //InfoMoment(109+6) = GaussCoord(9);
-        //     //cerr << " Zz " << GaussCoord(3) << " " << GaussCoord(6) << " "<< GaussCoord(9) << endln;
-        //
-        //                 const char *tp = matpoint[1]->getType();
-        //                 int tag = matpoint[1]->getTag();
-        //     //cerr << "Materail Tag:" << tag << endln;
-        //     //tp = "ElasticIsotropic3D";
-        //     float height = 1;
-        //              //cerr << "height" << height;
-        //     double offset[30];
-        //     //single pile group My ---- change multiplier to y
-        //     offset[1] = -0.000;/*pile no. 1 */  offset[4] = -0.000;/*pile no. 4 3X3*/
-        //     offset[2] =  0.000;/*pile no. 2 */  offset[5] =  0.000;/*pile no. 5    */
-        //     offset[3] =  0.000;/*pile no. 3 */  offset[6] =  0.000;/*pile no. 6    */
-        //
-        //     //3X3 pile group My ---- change multiplier to y
-        //     //offset[1] = -1.287;/*pile no. 1 */  offset[4] = -1.287;/*pile no. 4 3X3 or 2X2*/
-        //     //offset[2] =  0.000;/*pile no. 2 */  offset[5] =  0.000;/*pile no. 5    */
-        //     //offset[3] =  1.287;/*pile no. 3 */  offset[6] =  1.287;/*pile no. 6    */
-        //
-        //     //3X3 pile group Mx ---- change multiplier to y
-        //     //offset[1] = 1.287;/*pile no. 1 */  offset[4] = 0.0000;/*pile no. 4 3X3*/
-        //     //offset[2] = 1.287;/*pile no. 2 */  offset[5] = 0.0000;/*pile no. 5    */
-        //     //offset[3] = 1.287;/*pile no. 3 */  offset[6] = 0.0000;/*pile no. 6    */
-        //
-        //     //4X3 pile group My  ---- change multiplier to x
-        //     //offset[1] = -1.9305;/*pile no. 1*/  offset[5] = -1.9305;/*pile no. 4 4X3*/
-        //     //offset[2] = -0.6435;/*pile no. 2*/  offset[6] = -0.6435;/*pile no. 5    */
-        //     //offset[3] =  0.6435;/*pile no. 3*/  offset[7] =  0.6435;/*pile no. 6    */
-        //     //offset[4] =  1.9305;/*pile no. 3*/  offset[8] =  1.9305;/*pile no. 6    */
-        //
-        //     //4X3 pile group Mx  ---- change multiplier to y
-        //     //offset[1] = 1.287;/*pile no. 1*/  offset[5] = 0.0000;/*pile no. 4 4X3*/
-        //     //offset[2] = 1.287;/*pile no. 2*/  offset[6] = 0.0000;/*pile no. 5    */
-        //     //offset[3] = 1.287;/*pile no. 3*/  offset[7] = 0.0000;/*pile no. 6    */
-        //     //offset[4] = 1.287;/*pile no. 3*/  offset[8] = 0.0000;/*pile no. 6    */
-        //
-        //
-        //     if (strcmp(tp, "ElasticIsotropic3D") == 0 )
-        //     {
-        //        wt = getWeightofGP();
-        //              const Vector &end1Crd = theNodes[0]->getCrds();
-        //                    const Vector &end5Crd = theNodes[4]->getCrds();
-        //        height = end1Crd(2) - end5Crd(2);
-        //        //if  (getTag() == 432) {
-        //        //   cerr << getTag() << " height " << height << endln;
-        //        //   cerr << " Weight " << wt << endln;
-        //        //}
-        //     }
-        //
-        //
-        //     Mt(0) = 0; Mt(1) = 0; Mt(2) = 0;
-        //     //Q(0) = 0; Q(1) = 0; Q(2) = 0;
-        //
-        //
-        //                 for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-        //                 {
-        //                     //r = get_Gauss_p_c( integration_order, GP_c_r );
-        //                     for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-        //                     {
-        //                         //s = get_Gauss_p_c( integration_order, GP_c_s );
-        //                         rs = (GP_c_r-1)*integration_order+GP_c_s-1;
-        //
-        //       for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-        //                         {
-        //               //for (int i = 0; i < count; i++)
-        //                           i =
-        //                              ((GP_c_r-1)*integration_order+GP_c_s-1)*integration_order+GP_c_t-1;
-        //
-        //                           sts = matpoint[i]->getStressTensor();
-        //            InfoMoment(i*4+1) = GaussCoord(i*3+1); //x
-        //            InfoMoment(i*4+2) = GaussCoord(i*3+2); //y
-        //            InfoMoment(i*4+3) = GaussCoord(i*3+3); //z
-        //            InfoMoment(i*4+4) = sts.cval(3,3);//Assign sigma_zz
-        //               //if  (getTag() == 432) {
-        //         //    sts.print();
-        //         //    cerr << " rs " << rs << "\n "<< InfoMoment(i*4+1) << " " ;
-        //         //    cerr << InfoMoment(i*4+2) << " "<< InfoMoment(i*4+3)<< " sts "<< InfoMoment(i*4+4) << "\n ";
-        //               //}
-        //         if (strcmp(tp, "ElasticIsotropic3D") == 0 ){
-        //            Mt(GP_c_t-1) += wt(rs)*sts.cval(3,3)*( InfoMoment(i*4+1)-offset[tag] )/height;//x--Calculating Moment_y wt(ts) / height = Area corresponding to the gauss point stress
-        //            //Mt(GP_c_t-1) += wt(rs)*sts.cval(3,3)*( InfoMoment(i*4+2)-offset[tag] )/height; //y--Calculating Moment_x wt(ts) / height = Area corresponding to the gauss point stress
-        //                       //Q(GP_c_t-1) += wt(rs)*sts.cval(3,1)/ height;   //Calculating Q
-        //         }
-        //
-        //               //if  (getTag() == 432) {
-        //         //   cerr << (GP_c_t-1) << " " << Mt(GP_c_t-1) << endln ;
-        //         //   cerr << (GP_c_t-1) << " " << Q(GP_c_t-1) << endln ;
-        //                     //}
-        //             }
-        //         }
-        //     }
-        //     //Storing avg. M and Q to InfoMoment
-        //     InfoMoment(109+2) = ( Mt(0)+Mt(1)+Mt(2) )*0.3333;
-        //     //InfoMoment(109+3) = (  Q(0)+ Q(1)+ Q(2) )*0.3333;
-        //     //InfoMoment(109+4) = Mt(1);
-        //     //InfoMoment(109+5) = Q(1);
-        //     //InfoMoment(109+7) = Mt(2);
-        //     //InfoMoment(109+8) = Q(2);
-        //
-        //     //cerr << " Mt " << Mt(0) << " " << Mt(1) << " "<< Mt(2) << endln;
-        //         return eleInfo.setVector( InfoMoment );
-        //         }
-        case 4:
-            {
-                int count = integration_order * integration_order * integration_order;
-                int i;
-                stresstensor sts;
-                //Vector GaussCoord(81+1);  // 8*3 + count
-                //GaussCoord = this->reportTensor("Gauss Point Coor.");
-
-                static Vector InfoStress(integration_order * integration_order * integration_order * 6 + 1);
-                InfoStress(0) = count;
-
-                for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-                {
-                    //r = get_Gauss_p_c( integration_order, GP_c_r );
-                    for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                    {
-                        //s = get_Gauss_p_c( integration_order, GP_c_s );
-                        //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
-
-                        for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                        {
-                            //for (int i = 0; i < count; i++)
-                            i =
-                                ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                            sts = matpoint[i]->getStressTensor();
-                            InfoStress(i * 6 + 1) = sts.cval(1, 1); //sigma_xx
-                            InfoStress(i * 6 + 2) = sts.cval(2, 2); //sigma_yy
-                            InfoStress(i * 6 + 3) = sts.cval(3, 3); //sigma_zz
-                            InfoStress(i * 6 + 4) = sts.cval(1, 2); //Assign sigma_xy
-                            InfoStress(i * 6 + 5) = sts.cval(1, 3); //Assign sigma_xz
-                            InfoStress(i * 6 + 6) = sts.cval(2, 3); //Assign sigma_yz
-                        }
-                    }
-                }
-
-                return eleInfo.setVector( InfoStress );
-            }
-
-        //Added Joey 03-12-03
-        case 41:
-            {
-                int count = integration_order * integration_order * integration_order;
-                count = count / 2;
-                stresstensor sts;
-                sts = matpoint[count]->getStressTensor();
-                static Vector Info_pq2(2);
-                Info_pq2(0) = sts.p_hydrostatic();
-                Info_pq2(1) = sts.q_deviatoric();
-                return eleInfo.setVector( Info_pq2 );
-            }
-
-        case 5:
-            return eleInfo.setMatrix(this->getTangentStiff());
-
-        //      case 6:
-        //      {
-        //     this->computeGaussPoint();
-        //        return eleInfo.setVector( GaussCoord );
-        //      }
-
-        //************************************************************************************************
-
-        //Nima added for recording the Strain (02-21-2011)
-
-        case 7:
-
-            {
-                static Vector strains(Num_TotalGaussPts * 6 + 1);
-
-                strains(0) = Num_TotalGaussPts;
-
-                straintensor epsilon;
-                int i;
-
-                for (i = 0; i < Num_TotalGaussPts; i++)
-                {
-                    epsilon = matpoint[i]->getStrainTensor();
-                    strains(i * 6 + 1) = epsilon.cval(1, 1); //xx
-                    strains(i * 6 + 2) = epsilon.cval(2, 2); //yy
-                    strains(i * 6 + 3) = epsilon.cval(3, 3); //zz
-                    strains(i * 6 + 4) = epsilon.cval(2, 3); //yz
-                    strains(i * 6 + 5) = epsilon.cval(3, 1); //zx
-                    strains(i * 6 + 6) = epsilon.cval(1, 2); //xy
-                }
-
-                return eleInfo.setVector(strains);
-            }
+//     else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
+//     {
+//         return new ElementResponse(this, 7, Vector(Num_TotalGaussPts * 6 + 1) );
+//     }
 
 
-        default:
-            return -1;
-    }
+//     //========================================================
+//     else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
+//     {
+//         return new ElementResponse(this, 41, Vector(2));
+//     }
 
-    //return 0;
-}
+//     //========================================================
+//     //     else if (strcmp(argv[0],"GaussPoint") == 0 || strcmp(argv[0],"gausspoint") == 0)
+//     //     {
+//     //        return new ElementResponse(this, 6, GaussCoord);
+//     //     }
+//     /*else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
+//         int pointNum = atoi(argv[1]);
+//     if (pointNum > 0 && pointNum <= 4)
+//     return theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, eleInfo);
+//         else
+//           return 0;
+//     }*/
+
+//     // otherwise response quantity is unknown for the quad class
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+// //=============================================================================
+// int TwentySevenNodeBrickVariableGP::getResponse (int responseID, Information& eleInfo)
+// {
+//     switch (responseID)
+//     {
+
+//         //      case 1:
+//         //        return eleInfo.setVector( this->getResistingForce() );
+
+//         //      case 2:
+//         //                {
+//         //     //checking if element plastified
+//         //                  int count  = integration_order* integration_order * integration_order;
+//         //
+//         //                  //Vector GaussCoord(81+1);  // 27*3 + count
+//         //     //GaussCoord = this->reportGaussPoint();
+//         //     this->computeGaussPoint();
+//         //
+//         //     //Vector Info(109); // count * 4 +1
+//         //     InfoPlastic(0) = GaussCoord(0);
+//         //
+//         //                  straintensor pl_stn;
+//         //
+//         // //     int plastify;
+//         //                  for (int i = 0; i < count; i++) {
+//         // //                    plastify = 0;
+//         //          InfoPlastic(i*4+1) = GaussCoord(i*3+1); //x
+//         //          InfoPlastic(i*4+2) = GaussCoord(i*3+2); //y
+//         //          InfoPlastic(i*4+3) = GaussCoord(i*3+3); //z
+//         //                    pl_stn = matpoint[i]->getPlasticStrainTensor();
+//         //                    //double  p_plastc = pl_stn.p_hydrostatic();
+//         //                    double  q_plastc = pl_stn.q_deviatoric();
+//         //
+//         //       //if (  fabs(p_plastc) > 0 ) {
+//         //                    //   plastify = 1;
+//         //                    //}
+//         //       //else
+//         //       //   plastify = 0;
+//         //
+//         //          InfoPlastic(i*4+4) = q_plastc; //plastify; //Plastified?
+//         //
+//         //                  }
+//         //        return eleInfo.setVector( InfoPlastic );
+//         //     //return plastify;
+//         //
+//         //         }
+//         //      case 3:
+//         //         {
+//         // //                  int count = integration_order* integration_order * integration_order;
+//         //                 stresstensor sts;
+//         //                  //Vector GaussCoord(81+1);  // 27*3 + count
+//         //     this->computeGaussPoint();
+//         //     Vector wt(9);
+//         //     int i, rs;
+//         //
+//         //     //Vector Info(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
+//         //     InfoMoment(0) = GaussCoord(0);
+//         //     Vector Mt(3), Q(3);
+//         //
+//         //     //Vector Zcoor(3);
+//         //     InfoMoment(109+0) = GaussCoord(6); //Zcoor of middle layer
+//         //
+//         //                 //Computing Height of element
+//         // //     const Vector &coor = theNodes[17]->getCrds();
+//         //                 const Vector &TotDis = theNodes[17]->getTrialDisp();
+//         //           //checking Z-coor. of moddile layer gauss point
+//         //     //if ( (coor(2) - GaussCoord(6)) > 0.0001 )
+//         //     //  cerr << " Warning: Middle layer Gauss Point Z-coor. wrong...\n";
+//         //
+//         //     //InfoMoment(109+0) = GaussCoord(6);
+//         //     InfoMoment(109+1) = TotDis(0); //x-displacement ...Lateral displacement
+//         //     //InfoMoment(109+3) = GaussCoord(6);
+//         //     //InfoMoment(109+6) = GaussCoord(9);
+//         //     //cerr << " Zz " << GaussCoord(3) << " " << GaussCoord(6) << " "<< GaussCoord(9) << endln;
+//         //
+//         //                 const char *tp = matpoint[1]->getType();
+//         //                 int tag = matpoint[1]->getTag();
+//         //     //cerr << "Materail Tag:" << tag << endln;
+//         //     //tp = "ElasticIsotropic3D";
+//         //     float height = 1;
+//         //              //cerr << "height" << height;
+//         //     double offset[30];
+//         //     //single pile group My ---- change multiplier to y
+//         //     offset[1] = -0.000;/*pile no. 1 */  offset[4] = -0.000;/*pile no. 4 3X3*/
+//         //     offset[2] =  0.000;/*pile no. 2 */  offset[5] =  0.000;/*pile no. 5    */
+//         //     offset[3] =  0.000;/*pile no. 3 */  offset[6] =  0.000;/*pile no. 6    */
+//         //
+//         //     //3X3 pile group My ---- change multiplier to y
+//         //     //offset[1] = -1.287;/*pile no. 1 */  offset[4] = -1.287;/*pile no. 4 3X3 or 2X2*/
+//         //     //offset[2] =  0.000;/*pile no. 2 */  offset[5] =  0.000;/*pile no. 5    */
+//         //     //offset[3] =  1.287;/*pile no. 3 */  offset[6] =  1.287;/*pile no. 6    */
+//         //
+//         //     //3X3 pile group Mx ---- change multiplier to y
+//         //     //offset[1] = 1.287;/*pile no. 1 */  offset[4] = 0.0000;/*pile no. 4 3X3*/
+//         //     //offset[2] = 1.287;/*pile no. 2 */  offset[5] = 0.0000;/*pile no. 5    */
+//         //     //offset[3] = 1.287;/*pile no. 3 */  offset[6] = 0.0000;/*pile no. 6    */
+//         //
+//         //     //4X3 pile group My  ---- change multiplier to x
+//         //     //offset[1] = -1.9305;/*pile no. 1*/  offset[5] = -1.9305;/*pile no. 4 4X3*/
+//         //     //offset[2] = -0.6435;/*pile no. 2*/  offset[6] = -0.6435;/*pile no. 5    */
+//         //     //offset[3] =  0.6435;/*pile no. 3*/  offset[7] =  0.6435;/*pile no. 6    */
+//         //     //offset[4] =  1.9305;/*pile no. 3*/  offset[8] =  1.9305;/*pile no. 6    */
+//         //
+//         //     //4X3 pile group Mx  ---- change multiplier to y
+//         //     //offset[1] = 1.287;/*pile no. 1*/  offset[5] = 0.0000;/*pile no. 4 4X3*/
+//         //     //offset[2] = 1.287;/*pile no. 2*/  offset[6] = 0.0000;/*pile no. 5    */
+//         //     //offset[3] = 1.287;/*pile no. 3*/  offset[7] = 0.0000;/*pile no. 6    */
+//         //     //offset[4] = 1.287;/*pile no. 3*/  offset[8] = 0.0000;/*pile no. 6    */
+//         //
+//         //
+//         //     if (strcmp(tp, "ElasticIsotropic3D") == 0 )
+//         //     {
+//         //        wt = getWeightofGP();
+//         //              const Vector &end1Crd = theNodes[0]->getCrds();
+//         //                    const Vector &end5Crd = theNodes[4]->getCrds();
+//         //        height = end1Crd(2) - end5Crd(2);
+//         //        //if  (getTag() == 432) {
+//         //        //   cerr << getTag() << " height " << height << endln;
+//         //        //   cerr << " Weight " << wt << endln;
+//         //        //}
+//         //     }
+//         //
+//         //
+//         //     Mt(0) = 0; Mt(1) = 0; Mt(2) = 0;
+//         //     //Q(0) = 0; Q(1) = 0; Q(2) = 0;
+//         //
+//         //
+//         //                 for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//         //                 {
+//         //                     //r = get_Gauss_p_c( integration_order, GP_c_r );
+//         //                     for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//         //                     {
+//         //                         //s = get_Gauss_p_c( integration_order, GP_c_s );
+//         //                         rs = (GP_c_r-1)*integration_order+GP_c_s-1;
+//         //
+//         //       for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//         //                         {
+//         //               //for (int i = 0; i < count; i++)
+//         //                           i =
+//         //                              ((GP_c_r-1)*integration_order+GP_c_s-1)*integration_order+GP_c_t-1;
+//         //
+//         //                           sts = matpoint[i]->getStressTensor();
+//         //            InfoMoment(i*4+1) = GaussCoord(i*3+1); //x
+//         //            InfoMoment(i*4+2) = GaussCoord(i*3+2); //y
+//         //            InfoMoment(i*4+3) = GaussCoord(i*3+3); //z
+//         //            InfoMoment(i*4+4) = sts.cval(3,3);//Assign sigma_zz
+//         //               //if  (getTag() == 432) {
+//         //         //    sts.print();
+//         //         //    cerr << " rs " << rs << "\n "<< InfoMoment(i*4+1) << " " ;
+//         //         //    cerr << InfoMoment(i*4+2) << " "<< InfoMoment(i*4+3)<< " sts "<< InfoMoment(i*4+4) << "\n ";
+//         //               //}
+//         //         if (strcmp(tp, "ElasticIsotropic3D") == 0 ){
+//         //            Mt(GP_c_t-1) += wt(rs)*sts.cval(3,3)*( InfoMoment(i*4+1)-offset[tag] )/height;//x--Calculating Moment_y wt(ts) / height = Area corresponding to the gauss point stress
+//         //            //Mt(GP_c_t-1) += wt(rs)*sts.cval(3,3)*( InfoMoment(i*4+2)-offset[tag] )/height; //y--Calculating Moment_x wt(ts) / height = Area corresponding to the gauss point stress
+//         //                       //Q(GP_c_t-1) += wt(rs)*sts.cval(3,1)/ height;   //Calculating Q
+//         //         }
+//         //
+//         //               //if  (getTag() == 432) {
+//         //         //   cerr << (GP_c_t-1) << " " << Mt(GP_c_t-1) << endln ;
+//         //         //   cerr << (GP_c_t-1) << " " << Q(GP_c_t-1) << endln ;
+//         //                     //}
+//         //             }
+//         //         }
+//         //     }
+//         //     //Storing avg. M and Q to InfoMoment
+//         //     InfoMoment(109+2) = ( Mt(0)+Mt(1)+Mt(2) )*0.3333;
+//         //     //InfoMoment(109+3) = (  Q(0)+ Q(1)+ Q(2) )*0.3333;
+//         //     //InfoMoment(109+4) = Mt(1);
+//         //     //InfoMoment(109+5) = Q(1);
+//         //     //InfoMoment(109+7) = Mt(2);
+//         //     //InfoMoment(109+8) = Q(2);
+//         //
+//         //     //cerr << " Mt " << Mt(0) << " " << Mt(1) << " "<< Mt(2) << endln;
+//         //         return eleInfo.setVector( InfoMoment );
+//         //         }
+//         case 4:
+//             {
+//                 int count = integration_order * integration_order * integration_order;
+//                 int i;
+//                 stresstensor sts;
+//                 //Vector GaussCoord(81+1);  // 8*3 + count
+//                 //GaussCoord = this->reportTensor("Gauss Point Coor.");
+
+//                 static Vector InfoStress(integration_order * integration_order * integration_order * 6 + 1);
+//                 InfoStress(0) = count;
+
+//                 for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//                 {
+//                     //r = get_Gauss_p_c( integration_order, GP_c_r );
+//                     for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                     {
+//                         //s = get_Gauss_p_c( integration_order, GP_c_s );
+//                         //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
+
+//                         for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                         {
+//                             //for (int i = 0; i < count; i++)
+//                             i =
+//                                 ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                             sts = matpoint[i]->getStressTensor();
+//                             InfoStress(i * 6 + 1) = sts.cval(1, 1); //sigma_xx
+//                             InfoStress(i * 6 + 2) = sts.cval(2, 2); //sigma_yy
+//                             InfoStress(i * 6 + 3) = sts.cval(3, 3); //sigma_zz
+//                             InfoStress(i * 6 + 4) = sts.cval(1, 2); //Assign sigma_xy
+//                             InfoStress(i * 6 + 5) = sts.cval(1, 3); //Assign sigma_xz
+//                             InfoStress(i * 6 + 6) = sts.cval(2, 3); //Assign sigma_yz
+//                         }
+//                     }
+//                 }
+
+//                 return eleInfo.setVector( InfoStress );
+//             }
+
+//         //Added Joey 03-12-03
+//         case 41:
+//             {
+//                 int count = integration_order * integration_order * integration_order;
+//                 count = count / 2;
+//                 stresstensor sts;
+//                 sts = matpoint[count]->getStressTensor();
+//                 static Vector Info_pq2(2);
+//                 Info_pq2(0) = sts.p_hydrostatic();
+//                 Info_pq2(1) = sts.q_deviatoric();
+//                 return eleInfo.setVector( Info_pq2 );
+//             }
+
+//         case 5:
+//             return eleInfo.setMatrix(this->getTangentStiff());
+
+//         //      case 6:
+//         //      {
+//         //     this->computeGaussPoint();
+//         //        return eleInfo.setVector( GaussCoord );
+//         //      }
+
+//         //************************************************************************************************
+
+//         //Nima added for recording the Strain (02-21-2011)
+
+//         case 7:
+
+//             {
+//                 static Vector strains(Num_TotalGaussPts * 6 + 1);
+
+//                 strains(0) = Num_TotalGaussPts;
+
+//                 straintensor epsilon;
+//                 int i;
+
+//                 for (i = 0; i < Num_TotalGaussPts; i++)
+//                 {
+//                     epsilon = matpoint[i]->getStrainTensor();
+//                     strains(i * 6 + 1) = epsilon.cval(1, 1); //xx
+//                     strains(i * 6 + 2) = epsilon.cval(2, 2); //yy
+//                     strains(i * 6 + 3) = epsilon.cval(3, 3); //zz
+//                     strains(i * 6 + 4) = epsilon.cval(2, 3); //yz
+//                     strains(i * 6 + 5) = epsilon.cval(3, 1); //zx
+//                     strains(i * 6 + 6) = epsilon.cval(1, 2); //xy
+//                 }
+
+//                 return eleInfo.setVector(strains);
+//             }
+
+
+//         default:
+//             return -1;
+//     }
+
+//     //return 0;
+// }
 
 
 ////#############################################################################
@@ -3972,12 +3972,12 @@ Vector TwentySevenNodeBrickVariableGP::getWeightofGP(void)
 
     tensor Jacobian;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
@@ -3985,7 +3985,7 @@ Vector TwentySevenNodeBrickVariableGP::getWeightofGP(void)
             rs = (GP_c_r - 1) * integration_order + GP_c_s - 1;
             Weight(rs) = 0;
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -4117,17 +4117,17 @@ int TwentySevenNodeBrickVariableGP::update()  //Guanzhou added May 6, 2004
 
     incremental_displacements = incr_disp();
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
         //--        rw = get_Gauss_p_w( integration_order, GP_c_r );
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
             //--            sw = get_Gauss_p_w( integration_order, GP_c_s );
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 //--                tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -4170,7 +4170,7 @@ int TwentySevenNodeBrickVariableGP::update()  //Guanzhou added May 6, 2004
 
 /////////////////////////////////////////////////////////////////////////
 // Nima Tafazzoli added for surface load (July 2012)
-Vector& TwentySevenNodeBrickVariableGP::SurfaceShapeFunctionValues(double Xi , double Eta)
+Vector &TwentySevenNodeBrickVariableGP::SurfaceShapeFunctionValues(double Xi , double Eta)
 {
 
     ShapeFunctionValues_in_function(0) = 0.25 * (1 + Xi) * (1 + Eta) - 0.25 * (1 - Xi * Xi) * (1 + Eta)  - 0.25 * (1 - Eta * Eta) * (1 + Xi)  + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
@@ -4188,7 +4188,7 @@ Vector& TwentySevenNodeBrickVariableGP::SurfaceShapeFunctionValues(double Xi , d
 }
 
 
-Vector& TwentySevenNodeBrickVariableGP::Direction_Weight(double Xi , double Eta,
+Vector &TwentySevenNodeBrickVariableGP::Direction_Weight(double Xi , double Eta,
         Vector coord1, Vector coord2, Vector coord3, Vector coord4,
         Vector coord5, Vector coord6, Vector coord7, Vector coord8,
         Vector coord9)
@@ -4279,7 +4279,7 @@ Vector& TwentySevenNodeBrickVariableGP::Direction_Weight(double Xi , double Eta,
 
 
 
-double& TwentySevenNodeBrickVariableGP::SurfaceLoadValues(double Xi , double Eta, Vector Pressure)
+double &TwentySevenNodeBrickVariableGP::SurfaceLoadValues(double Xi , double Eta, Vector Pressure)
 {
 
 
@@ -4498,7 +4498,7 @@ double& TwentySevenNodeBrickVariableGP::SurfaceLoadValues(double Xi , double Eta
 
 // Nima Tafazzoli (September 2012)
 int
-TwentySevenNodeBrickVariableGP::CheckMesh(ofstream& checkmesh_file)
+TwentySevenNodeBrickVariableGP::CheckMesh(ofstream &checkmesh_file)
 {
 
 
@@ -4516,15 +4516,15 @@ TwentySevenNodeBrickVariableGP::CheckMesh(ofstream& checkmesh_file)
     tensor Jacobian;
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -4572,21 +4572,21 @@ TwentySevenNodeBrickVariableGP::CheckMesh(ofstream& checkmesh_file)
 
 
 //==================================================================================
-Vector*
+Vector *
 TwentySevenNodeBrickVariableGP::getStress(void)
 {
 
     int i = 0;
     int j = 0;
     stresstensor sts;
-    Vector* stresses = new Vector(27 * 6);
+    Vector *stresses = new Vector(27 * 6);
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
 

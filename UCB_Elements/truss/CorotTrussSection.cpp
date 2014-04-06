@@ -41,7 +41,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 Matrix CorotTrussSection::M2(2, 2);
 Matrix CorotTrussSection::M4(4, 4);
@@ -58,7 +58,7 @@ Vector CorotTrussSection::V12(12);
 //  and storing the tags of the CorotTrussSection end nodes.
 CorotTrussSection::CorotTrussSection(int tag, int dim,
                                      int Nd1, int Nd2,
-                                     SectionForceDeformation& theSec,
+                                     SectionForceDeformation &theSec,
                                      double r)
     : Element(tag, ELE_TAG_CorotTrussSection),
       theSection(0), connectedExternalNodes(2),
@@ -137,14 +137,14 @@ CorotTrussSection::getNumExternalNodes(void) const
     return 2;
 }
 
-const ID&
+const ID &
 CorotTrussSection::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
 
-Node**
+Node **
 CorotTrussSection::getNodePtrs(void)
 {
     return theNodes;
@@ -163,7 +163,7 @@ CorotTrussSection::getNumDOF(void)
 //    allocate space for t matrix, determine the length
 //    and set the transformation matrix.
 void
-CorotTrussSection::setDomain(Domain* theDomain)
+CorotTrussSection::setDomain(Domain *theDomain)
 {
     // check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -254,8 +254,8 @@ CorotTrussSection::setDomain(Domain* theDomain)
 
     // now determine the length, cosines and fill in the transformation
     // NOTE t = -t(every one else uses for residual calc)
-    const Vector& end1Crd = theNodes[0]->getCrds();
-    const Vector& end2Crd = theNodes[1]->getCrds();
+    const Vector &end1Crd = theNodes[0]->getCrds();
+    const Vector &end2Crd = theNodes[1]->getCrds();
 
     // Determine global offsets
     double cosX[3];
@@ -356,8 +356,8 @@ int
 CorotTrussSection::update(void)
 {
     // Nodal displacements
-    const Vector& end1Disp = theNodes[0]->getTrialDisp();
-    const Vector& end2Disp = theNodes[1]->getTrialDisp();
+    const Vector &end1Disp = theNodes[0]->getTrialDisp();
+    const Vector &end2Disp = theNodes[1]->getTrialDisp();
 
     // Initial offsets
     d21[0] = Lo;
@@ -382,7 +382,7 @@ CorotTrussSection::update(void)
     double strain = (Ln - Lo) / Lo;
 
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
     static double data[10];
     Vector e(data, order);
@@ -403,7 +403,7 @@ CorotTrussSection::update(void)
     return theSection->setTrialSectionDeformation(e);
 }
 
-const Matrix&
+const Matrix &
 CorotTrussSection::getTangentStiff(void)
 {
     static Matrix kl(3, 3);
@@ -412,10 +412,10 @@ CorotTrussSection::getTangentStiff(void)
     //
     // Get material tangent
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
-    const Matrix& ks = theSection->getSectionTangent();
-    const Vector& s  = theSection->getStressResultant();
+    const Matrix &ks = theSection->getSectionTangent();
+    const Vector &s  = theSection->getStressResultant();
 
     double EA = 0.0;
     double q = 0.0;
@@ -459,7 +459,7 @@ CorotTrussSection::getTangentStiff(void)
     static Matrix kg(3, 3);
     kg.addMatrixTripleProduct(0.0, R, kl, 1.0);
 
-    Matrix& K = *theMatrix;
+    Matrix &K = *theMatrix;
     K.Zero();
 
     // Copy stiffness into appropriate blocks in element stiffness
@@ -479,7 +479,7 @@ CorotTrussSection::getTangentStiff(void)
     return *theMatrix;
 }
 
-const Matrix&
+const Matrix &
 CorotTrussSection::getInitialStiff(void)
 {
     static Matrix kl(3, 3);
@@ -488,9 +488,9 @@ CorotTrussSection::getInitialStiff(void)
     //
     // Get material tangent
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
-    const Matrix& ks = theSection->getInitialTangent();
+    const Matrix &ks = theSection->getInitialTangent();
 
     double EA = 0.0;
 
@@ -510,7 +510,7 @@ CorotTrussSection::getInitialStiff(void)
     static Matrix kg(3, 3);
     kg.addMatrixTripleProduct(0.0, R, kl, 1.0);
 
-    Matrix& K = *theMatrix;
+    Matrix &K = *theMatrix;
     K.Zero();
 
     // Copy stiffness into appropriate blocks in element stiffness
@@ -530,10 +530,10 @@ CorotTrussSection::getInitialStiff(void)
     return *theMatrix;
 }
 
-const Matrix&
+const Matrix &
 CorotTrussSection::getMass(void)
 {
-    Matrix& Mass = *theMatrix;
+    Matrix &Mass = *theMatrix;
     Mass.Zero();
 
     // check for quick return
@@ -561,25 +561,25 @@ CorotTrussSection::zeroLoad(void)
 }
 
 int
-CorotTrussSection::addLoad(ElementalLoad* theLoad, double loadFactor)
+CorotTrussSection::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     std::cerr << "CorotTrussSection::addLoad - load type unknown for truss with tag: " <<  this->getTag() << endln;
     return -1;
 }
 
 int
-CorotTrussSection::addInertiaLoadToUnbalance(const Vector& accel)
+CorotTrussSection::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
 
-const Vector&
+const Vector &
 CorotTrussSection::getResistingForce()
 {
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
-    const Vector& s  = theSection->getStressResultant();
+    const Vector &s  = theSection->getStressResultant();
 
     double SA = 0.0;
 
@@ -604,7 +604,7 @@ CorotTrussSection::getResistingForce()
     static Vector qg(3);
     qg.addMatrixTransposeVector(0.0, R, ql, 1.0);
 
-    Vector& P = *theVector;
+    Vector &P = *theVector;
     P.Zero();
 
     // Copy forces into appropriate places
@@ -619,17 +619,17 @@ CorotTrussSection::getResistingForce()
     return *theVector;
 }
 
-const Vector&
+const Vector &
 CorotTrussSection::getResistingForceIncInertia()
 {
-    Vector& P = *theVector;
+    Vector &P = *theVector;
     P = this->getResistingForce();
 
     if (rho != 0.0)
     {
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
         double M = 0.5 * rho * Lo;
         int numDOF2 = numDOF / 2;
@@ -651,13 +651,13 @@ CorotTrussSection::getResistingForceIncInertia()
 }
 
 int
-CorotTrussSection::sendSelf(int commitTag, Channel& theChannel)
+CorotTrussSection::sendSelf(int commitTag, Channel &theChannel)
 {
     return -1;
 }
 
 int
-CorotTrussSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+CorotTrussSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return -1;
 }
@@ -688,7 +688,7 @@ CorotTrussSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
 // }
 
 void
-CorotTrussSection::Print(ostream& s, int flag)
+CorotTrussSection::Print(ostream &s, int flag)
 {
     s << "\nCorotTrussSection, tag: " << this->getTag() << endln;
     s << "\tConnected Nodes: " << connectedExternalNodes;
@@ -704,23 +704,23 @@ CorotTrussSection::Print(ostream& s, int flag)
     }
 }
 
-Response*
-CorotTrussSection::setResponse(const char** argv, int argc, Information& eleInfo)
-{
-    // a material quantity
-    if (strcmp(argv[0], "section") == 0)
-    {
-        return theSection->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+// Response*
+// CorotTrussSection::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
+//     // a material quantity
+//     if (strcmp(argv[0], "section") == 0)
+//     {
+//         return theSection->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-CorotTrussSection::getResponse(int responseID, Information& eleInfo)
-{
-    return 0;
-}
+// int
+// CorotTrussSection::getResponse(int responseID, Information& eleInfo)
+// {
+//     return 0;
+// }

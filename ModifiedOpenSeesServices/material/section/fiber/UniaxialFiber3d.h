@@ -48,7 +48,7 @@ using namespace std;
 
 
 class UniaxialMaterial;
-class Response;
+// class Response;
 
 class UniaxialFiber3d: public Fiber
 {
@@ -75,8 +75,8 @@ class UniaxialFiber3d: public Fiber
         int recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         void Print(ostream &s, int flag = 0);
 
-        Response *setResponse(const char **argv, int argc, Information &info);
-        int getResponse(int responseID, Information &info);
+        // Response *setResponse(const char **argv, int argc, Information &info);
+        // int getResponse(int responseID, Information &info);
 
         void getFiberLocation(double &y, double &z);
         UniaxialMaterial *getMaterial(void)

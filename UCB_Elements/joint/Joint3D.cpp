@@ -40,7 +40,7 @@
 #include <string.h>
 #include <MP_Constraint.h>
 #include <MP_Joint3D.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <UniaxialMaterial.h>
 #include <Joint3D.h>
 
@@ -72,8 +72,8 @@ Joint3D::Joint3D()
 
 
 Joint3D::Joint3D(int tag, int nd1, int nd2, int nd3, int nd4, int nd5, int nd6, int IntNodeTag,
-                 UniaxialMaterial& springx, UniaxialMaterial& springy, UniaxialMaterial& springz,
-                 Domain* theDomain, int LrgDisp)
+                 UniaxialMaterial &springx, UniaxialMaterial &springy, UniaxialMaterial &springz,
+                 Domain *theDomain, int LrgDisp)
     : Element(tag, ELE_TAG_Joint3D ), ExternalNodes(7), InternalConstraints(6),
       TheDomain(0), numDof(0), nodeDbTag(0), dofDbTag(0)
 {
@@ -85,7 +85,7 @@ Joint3D::Joint3D(int tag, int nd1, int nd2, int nd3, int nd4, int nd5, int nd6, 
 
     TheDomain = theDomain;
 
-    if( TheDomain == NULL )
+    if ( TheDomain == NULL )
     {
         std::cerr << "WARNING Joint3D(): Specified domain does not exist , Domain = 0\n";
         return;
@@ -116,12 +116,12 @@ Joint3D::Joint3D(int tag, int nd1, int nd2, int nd3, int nd4, int nd5, int nd6, 
     }
 
     // check for a two dimensional domain, since this element supports only two dimensions
-    const Vector& end1Crd = theNodes[0]->getCrds();
-    const Vector& end2Crd = theNodes[1]->getCrds();
-    const Vector& end3Crd = theNodes[2]->getCrds();
-    const Vector& end4Crd = theNodes[3]->getCrds();
-    const Vector& end5Crd = theNodes[4]->getCrds();
-    const Vector& end6Crd = theNodes[5]->getCrds();
+    const Vector &end1Crd = theNodes[0]->getCrds();
+    const Vector &end2Crd = theNodes[1]->getCrds();
+    const Vector &end3Crd = theNodes[2]->getCrds();
+    const Vector &end4Crd = theNodes[3]->getCrds();
+    const Vector &end5Crd = theNodes[4]->getCrds();
+    const Vector &end6Crd = theNodes[5]->getCrds();
 
     int dimNd1 = end1Crd.Size();
     int dimNd2 = end2Crd.Size();
@@ -164,7 +164,7 @@ Joint3D::Joint3D(int tag, int nd1, int nd2, int nd3, int nd4, int nd5, int nd6, 
     double L2 = Center2.Norm();
     double L3 = Center3.Norm();
 
-    if( Center1.Norm() < 1e-12  || Center2.Norm() < 1e-12  || Center3.Norm() < 1e-12 )
+    if ( Center1.Norm() < 1e-12  || Center2.Norm() < 1e-12  || Center3.Norm() < 1e-12 )
     {
         std::cerr << "WARNING Joint3D::(): zero length\n";
         return;
@@ -208,7 +208,7 @@ Joint3D::Joint3D(int tag, int nd1, int nd2, int nd3, int nd4, int nd5, int nd6, 
     }
     else
     {
-        if( TheDomain->addNode( theNodes[6] ) == false )        // add intenal nodes to domain
+        if ( TheDomain->addNode( theNodes[6] ) == false )       // add intenal nodes to domain
         {
             std::cerr << "Joint3D::Joint3D - unable to add internal nodeto domain\n";
         }
@@ -315,7 +315,7 @@ Joint3D::~Joint3D()
 
     if ( TheDomain != NULL)
     {
-        MP_Constraint* Temp_MP;
+        MP_Constraint *Temp_MP;
 
         for ( int i = 0 ; i < 6 ; i++ )
         {
@@ -345,12 +345,12 @@ Joint3D::~Joint3D()
 
 
 
-void Joint3D::setDomain(Domain* theDomain)
+void Joint3D::setDomain(Domain *theDomain)
 {
     //Ckeck domain not null - invoked when object removed from a domain
     if (theDomain == 0)
     {
-        for(int i = 0 ; i < 7 ; i++)
+        for (int i = 0 ; i < 7 ; i++)
         {
             theNodes[i] = NULL;
         }
@@ -370,9 +370,9 @@ void Joint3D::setDomain(Domain* theDomain)
 }
 
 
-int Joint3D::addMP_Joint(Domain* theDomain, int mpNum, int RetNodeID, int ConNodeID, int RotNodeID, int Rdof, int DspNodeID, int Ddof, int LrgDispFlag )
+int Joint3D::addMP_Joint(Domain *theDomain, int mpNum, int RetNodeID, int ConNodeID, int RotNodeID, int Rdof, int DspNodeID, int Ddof, int LrgDispFlag )
 {
-    MP_Constraint* Temp_MP;
+    MP_Constraint *Temp_MP;
 
     // create MP_ForJoint constraint
     Temp_MP = new MP_Joint3D( theDomain, mpNum, RetNodeID, ConNodeID, RotNodeID, Rdof, DspNodeID, Ddof, LrgDispFlag );
@@ -400,7 +400,7 @@ int Joint3D::addMP_Joint(Domain* theDomain, int mpNum, int RetNodeID, int ConNod
 
 int Joint3D::update(void)
 {
-    const Vector& dispC = theNodes[6]->getTrialDisp();
+    const Vector &dispC = theNodes[6]->getTrialDisp();
 
     int result = 0;
 
@@ -486,12 +486,12 @@ int Joint3D::getNumExternalNodes(void) const
     return 7;
 }
 
-const ID& Joint3D::getExternalNodes(void)
+const ID &Joint3D::getExternalNodes(void)
 {
     return ExternalNodes;
 }
 
-Node** Joint3D::getNodePtrs(void)
+Node **Joint3D::getNodePtrs(void)
 {
     return theNodes;
 }
@@ -501,7 +501,7 @@ int Joint3D::getNumDOF(void)
     return numDof;
 }
 
-const Matrix& Joint3D::getTangentStiff(void)
+const Matrix &Joint3D::getTangentStiff(void)
 {
     double Ktangent[3] ;
 
@@ -525,7 +525,7 @@ const Matrix& Joint3D::getTangentStiff(void)
 }
 
 
-const Matrix& Joint3D::getInitialStiff(void)
+const Matrix &Joint3D::getInitialStiff(void)
 {
     double Kintial[3] ;
 
@@ -549,19 +549,19 @@ const Matrix& Joint3D::getInitialStiff(void)
 }
 
 
-const Matrix& Joint3D::getDamp(void)
+const Matrix &Joint3D::getDamp(void)
 {
     K.Zero();
     return K;
 }
 
-const Matrix& Joint3D::getMass(void)
+const Matrix &Joint3D::getMass(void)
 {
     K.Zero();
     return K;
 }
 
-void Joint3D::Print(ostream& s, int flag )
+void Joint3D::Print(ostream &s, int flag )
 {
     s << "\nElement: " << getTag() << " type: Joint3D iNode: "
       << ExternalNodes(0) << " jNode: " << ExternalNodes(1) << "\n"
@@ -579,19 +579,19 @@ void Joint3D::zeroLoad(void)
 
 }
 
-int Joint3D::addLoad(ElementalLoad* theLoad, double loadFactor)
+int Joint3D::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     return 0;
 }
 
-int Joint3D::addInertiaLoadToUnbalance(const Vector& accel)
+int Joint3D::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
 
 
 
-const Vector& Joint3D::getResistingForce()
+const Vector &Joint3D::getResistingForce()
 {
     double Force[3] ;
 
@@ -614,7 +614,7 @@ const Vector& Joint3D::getResistingForce()
     return V;
 }
 
-const Vector&
+const Vector &
 Joint3D::getResistingForceIncInertia()
 {
     return this->getResistingForce();
@@ -729,209 +729,209 @@ Joint3D::getResistingForceIncInertia()
 // }
 
 
-//most-probably requires to be overridden
-Response* Joint3D::setResponse(const char** argv, int argc, Information& eleInformation)
-{
-    //
-    // we compare argv[0] for known response types for the Truss
-    //
+// //most-probably requires to be overridden
+// Response* Joint3D::setResponse(const char** argv, int argc, Information& eleInformation)
+// {
+//     //
+//     // we compare argv[0] for known response types for the Truss
+//     //
 
-    if (strcmp(argv[0], "node") == 0 || strcmp(argv[0], "internalNode") == 0 )
-    {
-        return new ElementResponse(this, 1, Vector(9));
-    }
+//     if (strcmp(argv[0], "node") == 0 || strcmp(argv[0], "internalNode") == 0 )
+//     {
+//         return new ElementResponse(this, 1, Vector(9));
+//     }
 
-    else if (strcmp(argv[0], "size") == 0 || strcmp(argv[0], "jointSize") == 0 )
-    {
-        return new ElementResponse(this, 2, Vector(3));
-    }
+//     else if (strcmp(argv[0], "size") == 0 || strcmp(argv[0], "jointSize") == 0 )
+//     {
+//         return new ElementResponse(this, 2, Vector(3));
+//     }
 
-    else if (strcmp(argv[0], "moment") == 0 || strcmp(argv[0], "moments") == 0
-             || strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 )
-    {
-        return new ElementResponse(this, 3, Vector(3));
-    }
+//     else if (strcmp(argv[0], "moment") == 0 || strcmp(argv[0], "moments") == 0
+//              || strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 )
+//     {
+//         return new ElementResponse(this, 3, Vector(3));
+//     }
 
-    else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
-             strcmp(argv[0], "deformation") == 0 )
-    {
-        return new ElementResponse(this, 4, Vector(3));
-    }
+//     else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
+//              strcmp(argv[0], "deformation") == 0 )
+//     {
+//         return new ElementResponse(this, 4, Vector(3));
+//     }
 
-    else if (strcmp(argv[0], "defoANDforce") == 0 || strcmp(argv[0], "deformationANDforce") == 0 ||
-             strcmp(argv[0], "deformationsANDforces") == 0 )
-    {
-        return new ElementResponse(this, 5, Vector(6));
-    }
+//     else if (strcmp(argv[0], "defoANDforce") == 0 || strcmp(argv[0], "deformationANDforce") == 0 ||
+//              strcmp(argv[0], "deformationsANDforces") == 0 )
+//     {
+//         return new ElementResponse(this, 5, Vector(6));
+//     }
 
-    else if ( strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0 )
-    {
-        return new ElementResponse(this, 6, Matrix(45, 45) );
-    }
+//     else if ( strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0 )
+//     {
+//         return new ElementResponse(this, 6, Matrix(45, 45) );
+//     }
 
-    else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0)
-    {
-        return new ElementResponse(this, 7, Vector(3));
-    }
+//     else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0)
+//     {
+//         return new ElementResponse(this, 7, Vector(3));
+//     }
 
-    else
-    {
-        return 0;
-    }
+//     else
+//     {
+//         return 0;
+//     }
 
-}
+// }
 
-int Joint3D::getResponse(int responseID, Information& eleInformation)
-{
-    switch (responseID)
-    {
-        case -1:
-            return -1;
+// int Joint3D::getResponse(int responseID, Information& eleInformation)
+// {
+//     switch (responseID)
+//     {
+//         case -1:
+//             return -1;
 
-        case 1:
-            if(eleInformation.theVector != 0)
-            {
-                const Vector& disp = theNodes[6]->getTrialDisp();
+//         case 1:
+//             if(eleInformation.theVector != 0)
+//             {
+//                 const Vector& disp = theNodes[6]->getTrialDisp();
 
-                for ( int i = 0 ; i < 9 ; i++ )
-                {
-                    (*(eleInformation.theVector))(i) = disp(i);
-                }
-            }
+//                 for ( int i = 0 ; i < 9 ; i++ )
+//                 {
+//                     (*(eleInformation.theVector))(i) = disp(i);
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        case 2:
-            if(eleInformation.theVector != 0)
-            {
-                const Vector& node1Crd = theNodes[0]->getCrds();
-                const Vector& node2Crd = theNodes[1]->getCrds();
-                const Vector& node3Crd = theNodes[2]->getCrds();
-                const Vector& node4Crd = theNodes[3]->getCrds();
-                const Vector& node5Crd = theNodes[4]->getCrds();
-                const Vector& node6Crd = theNodes[5]->getCrds();
+//         case 2:
+//             if(eleInformation.theVector != 0)
+//             {
+//                 const Vector& node1Crd = theNodes[0]->getCrds();
+//                 const Vector& node2Crd = theNodes[1]->getCrds();
+//                 const Vector& node3Crd = theNodes[2]->getCrds();
+//                 const Vector& node4Crd = theNodes[3]->getCrds();
+//                 const Vector& node5Crd = theNodes[4]->getCrds();
+//                 const Vector& node6Crd = theNodes[5]->getCrds();
 
-                const Vector& node1Disp = theNodes[0]->getDisp();
-                const Vector& node2Disp = theNodes[1]->getDisp();
-                const Vector& node3Disp = theNodes[2]->getDisp();
-                const Vector& node4Disp = theNodes[3]->getDisp();
-                const Vector& node5Disp = theNodes[4]->getDisp();
-                const Vector& node6Disp = theNodes[5]->getDisp();
+//                 const Vector& node1Disp = theNodes[0]->getDisp();
+//                 const Vector& node2Disp = theNodes[1]->getDisp();
+//                 const Vector& node3Disp = theNodes[2]->getDisp();
+//                 const Vector& node4Disp = theNodes[3]->getDisp();
+//                 const Vector& node5Disp = theNodes[4]->getDisp();
+//                 const Vector& node6Disp = theNodes[5]->getDisp();
 
-                Vector v1(3);
-                Vector v2(3);
-                Vector v3(3);
-                Vector v4(3);
-                Vector v5(3);
-                Vector v6(3);
+//                 Vector v1(3);
+//                 Vector v2(3);
+//                 Vector v3(3);
+//                 Vector v4(3);
+//                 Vector v5(3);
+//                 Vector v6(3);
 
-                // calculate the current coordinates of four external nodes
-                for (int i = 0; i < 3; i++)
-                {
-                    v1(i) = node1Crd(i) + node1Disp(i);
-                    v2(i) = node2Crd(i) + node2Disp(i);
-                    v3(i) = node3Crd(i) + node3Disp(i);
-                    v4(i) = node4Crd(i) + node4Disp(i);
-                    v5(i) = node5Crd(i) + node5Disp(i);
-                    v6(i) = node6Crd(i) + node6Disp(i);
-                }
+//                 // calculate the current coordinates of four external nodes
+//                 for (int i = 0; i < 3; i++)
+//                 {
+//                     v1(i) = node1Crd(i) + node1Disp(i);
+//                     v2(i) = node2Crd(i) + node2Disp(i);
+//                     v3(i) = node3Crd(i) + node3Disp(i);
+//                     v4(i) = node4Crd(i) + node4Disp(i);
+//                     v5(i) = node5Crd(i) + node5Disp(i);
+//                     v6(i) = node6Crd(i) + node6Disp(i);
+//                 }
 
-                v2 = v2 - v1;
-                v4 = v4 - v3;
-                v6 = v6 - v5;
+//                 v2 = v2 - v1;
+//                 v4 = v4 - v3;
+//                 v6 = v6 - v5;
 
-                v1(0) = sqrt( v2(0) * v2(0) + v2(1) * v2(1) + v2(2) * v2(2) );
-                v1(1) = sqrt( v4(0) * v4(0) + v4(1) * v4(1) + v4(2) * v4(2) );
-                v1(2) = sqrt( v6(0) * v6(0) + v6(1) * v6(1) + v6(2) * v6(2) );
+//                 v1(0) = sqrt( v2(0) * v2(0) + v2(1) * v2(1) + v2(2) * v2(2) );
+//                 v1(1) = sqrt( v4(0) * v4(0) + v4(1) * v4(1) + v4(2) * v4(2) );
+//                 v1(2) = sqrt( v6(0) * v6(0) + v6(1) * v6(1) + v6(2) * v6(2) );
 
-                *(eleInformation.theVector) = v1;
-            }
+//                 *(eleInformation.theVector) = v1;
+//             }
 
-            return 0;
+//             return 0;
 
-        case 3:
-            if( eleInformation.theVector != 0 )
-            {
-                for ( int i = 0 ; i < 3 ; i++ )
-                {
-                    (*(eleInformation.theVector))(i) = 0.0;
+//         case 3:
+//             if( eleInformation.theVector != 0 )
+//             {
+//                 for ( int i = 0 ; i < 3 ; i++ )
+//                 {
+//                     (*(eleInformation.theVector))(i) = 0.0;
 
-                    if ( theSprings[i] != NULL )
-                    {
-                        (*(eleInformation.theVector))(i) = theSprings[i]->getStress();
-                    }
-                }
-            }
+//                     if ( theSprings[i] != NULL )
+//                     {
+//                         (*(eleInformation.theVector))(i) = theSprings[i]->getStress();
+//                     }
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        case 4:
-            if(eleInformation.theVector != 0)
-            {
-                for ( int i = 0 ; i < 3 ; i++ )
-                {
-                    (*(eleInformation.theVector))(i) = 0.0;
+//         case 4:
+//             if(eleInformation.theVector != 0)
+//             {
+//                 for ( int i = 0 ; i < 3 ; i++ )
+//                 {
+//                     (*(eleInformation.theVector))(i) = 0.0;
 
-                    if ( theSprings[i] != NULL )
-                    {
-                        (*(eleInformation.theVector))(i) = theSprings[i]->getStrain();
-                    }
-                }
-            }
+//                     if ( theSprings[i] != NULL )
+//                     {
+//                         (*(eleInformation.theVector))(i) = theSprings[i]->getStrain();
+//                     }
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        case 5:
-            if(eleInformation.theVector != 0)
-            {
-                for ( int i = 0 ; i < 3 ; i++ )
-                {
-                    (*(eleInformation.theVector))(i) = 0.0;
-                    (*(eleInformation.theVector))(i + 3) = 0.0;
+//         case 5:
+//             if(eleInformation.theVector != 0)
+//             {
+//                 for ( int i = 0 ; i < 3 ; i++ )
+//                 {
+//                     (*(eleInformation.theVector))(i) = 0.0;
+//                     (*(eleInformation.theVector))(i + 3) = 0.0;
 
-                    if ( theSprings[i] != NULL )
-                    {
-                        (*(eleInformation.theVector))(i) = theSprings[i]->getStrain();
-                        (*(eleInformation.theVector))(i + 3) = theSprings[i]->getStress();
-                    }
-                }
-            }
+//                     if ( theSprings[i] != NULL )
+//                     {
+//                         (*(eleInformation.theVector))(i) = theSprings[i]->getStrain();
+//                         (*(eleInformation.theVector))(i + 3) = theSprings[i]->getStress();
+//                     }
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        case 6:
-            return eleInformation.setMatrix(this->getTangentStiff());
+//         case 6:
+//             return eleInformation.setMatrix(this->getTangentStiff());
 
-        case 7:
-            if(eleInformation.theVector != 0)
-            {
-                for ( int i = 0 ; i < 3 ; i++ )
-                {
-                    (*(eleInformation.theVector))(i) = 0.0;
+//         case 7:
+//             if(eleInformation.theVector != 0)
+//             {
+//                 for ( int i = 0 ; i < 3 ; i++ )
+//                 {
+//                     (*(eleInformation.theVector))(i) = 0.0;
 
-                    if ( theSprings[i] != NULL && theSprings[i]->getInitialTangent() != 0.0 )
-                    {
-                        (*(eleInformation.theVector))(i) =
-                            theSprings[i]->getStrain() - theSprings[i]->getStress() / theSprings[i]->getInitialTangent();
-                    }
+//                     if ( theSprings[i] != NULL && theSprings[i]->getInitialTangent() != 0.0 )
+//                     {
+//                         (*(eleInformation.theVector))(i) =
+//                             theSprings[i]->getStrain() - theSprings[i]->getStress() / theSprings[i]->getInitialTangent();
+//                     }
 
-                }
-            }
+//                 }
+//             }
 
-            return 0;
+//             return 0;
 
-        default:
-            return -1;
-    }
-}
+//         default:
+//             return -1;
+//     }
+// }
 
 
-int Joint3D::sendSelf(int commitTag, Channel& theChannel)
+int Joint3D::sendSelf(int commitTag, Channel &theChannel)
 {
     return 0;
 }
 
-int Joint3D::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int Joint3D::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }

@@ -56,12 +56,11 @@ all:
             $(DOMAIN_LIBS) \
             $(ANALYSIS_LIBS) \
             $(ACTOR_LIBS) \
-            $(ERRORHANDLER_LIBS) \
-            $(RESPONSE_LIBS)
-
-	# $(CD) response; $(MAKE);
-	# $(CD) recorder; $(MAKE);
-#	$(CD) machine; $(MAKE);
+            $(ERRORHANDLER_LIBS) 
+# $(RESPONSE_LIBS)
+# $(CD) response; $(MAKE);
+# $(CD) recorder; $(MAKE);
+# $(CD) machine; $(MAKE);
    
 
 FMK_LIBS = ./database/FE_Datastore.o

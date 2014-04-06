@@ -42,7 +42,7 @@
 class Channel;
 class Information;
 class CrdTransf;
-class Response;
+// class Response;
 // class Renderer;
 class SectionForceDeformation;
 
@@ -57,7 +57,7 @@ class ElasticBeamLumpedMass : public Element
                               double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
                               double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z);
 
-        ElasticBeamLumpedMass(int tag, int Nd1, int Nd2, SectionForceDeformation* section,
+        ElasticBeamLumpedMass(int tag, int Nd1, int Nd2, SectionForceDeformation *section,
                               double rho,
                               double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
                               double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
@@ -65,52 +65,52 @@ class ElasticBeamLumpedMass : public Element
 
         ~ElasticBeamLumpedMass();
 
-        const char* getClassType(void) const
+        const char *getClassType(void) const
         {
             return "ElasticBeamLumpedMass";
         };
 
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         int commitState(void);
         int revertToLastCommit(void);
         int revertToStart(void);
 
         int update(void);
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getMass(void);
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse (const char** argv, int argc, Information& info);
-        int getResponse (int responseID, Information& info);
+        // Response* setResponse (const char** argv, int argc, Information& info);
+        // int getResponse (int responseID, Information& info);
 
         // Nima Tafazzoli moved from transformation (Nov. 2012)
-        int getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis);
+        int getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis);
         int computeElemtLengthAndOrient();
         int initialize();
-        const Vector& getGlobalResistingForce(const Vector& pb, const Vector& p0);
-        const Matrix& getInitialGlobalStiffMatrix (const Matrix& KB);
-        const Matrix& getGlobalStiffMatrix (const Matrix& KB);
-        const Vector& getBasicTrialDisp (void);
+        const Vector &getGlobalResistingForce(const Vector &pb, const Vector &p0);
+        const Matrix &getInitialGlobalStiffMatrix (const Matrix &KB);
+        const Matrix &getGlobalStiffMatrix (const Matrix &KB);
+        const Vector &getBasicTrialDisp (void);
 
-        Vector* getForce(void);
+        Vector *getForce(void);
 
     private:
         double A, E, G, Jx, Iy, Iz;
@@ -127,7 +127,7 @@ class ElasticBeamLumpedMass : public Element
         double q0[5];  // Fixed end forces in basic system (no torsion)
         double p0[5];  // Reactions in basic system (no torsion)
 
-        Node* theNodes[2];
+        Node *theNodes[2];
 
         ID  connectedExternalNodes;
 
@@ -135,11 +135,11 @@ class ElasticBeamLumpedMass : public Element
         // Nima Tafazzoli (Nov. 2012) moved from transformation
         Matrix R;       // Transformation matrix
         double L;       // undeformed element length
-        Vector* nodeIInitialDisp;
-        Vector* nodeJInitialDisp;
+        Vector *nodeIInitialDisp;
+        Vector *nodeJInitialDisp;
         bool initialDispChecked;
-        Vector* nodeIOffset; // rigid joint offsets
-        Vector* nodeJOffset; // rigid joint offsets
+        Vector *nodeIOffset; // rigid joint offsets
+        Vector *nodeJOffset; // rigid joint offsets
 
 };
 

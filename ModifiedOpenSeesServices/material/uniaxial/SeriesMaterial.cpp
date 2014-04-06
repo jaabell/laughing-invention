@@ -37,14 +37,14 @@
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
 #include <stdlib.h>
-#include <MaterialResponse.h>
+// #include <MaterialResponse.h>
 #include <iostream>
 using namespace std;
 
 #include <OPS_Globals.h>
 
 SeriesMaterial::SeriesMaterial(int tag, int num,
-                               UniaxialMaterial** theMaterialModels,
+                               UniaxialMaterial **theMaterialModels,
                                int maxIter, double tol)
     : UniaxialMaterial(tag, MAT_TAG_SeriesMaterial),
       Tstrain(0.0), Cstrain(0.0), Tstress(0.0), Cstress(0.0),
@@ -369,10 +369,10 @@ SeriesMaterial::revertToStart(void)
 
 
 
-UniaxialMaterial*
+UniaxialMaterial *
 SeriesMaterial::getCopy(void)
 {
-    SeriesMaterial* theCopy = new
+    SeriesMaterial *theCopy = new
     SeriesMaterial(this->getTag(), numMaterials, theModels,
                    maxIterations, tolerance);
 
@@ -393,7 +393,7 @@ SeriesMaterial::getCopy(void)
 
 
 int
-SeriesMaterial::sendSelf(int cTag, Channel& theChannel)
+SeriesMaterial::sendSelf(int cTag, Channel &theChannel)
 {
     int res = 0;
 
@@ -461,8 +461,8 @@ SeriesMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-SeriesMaterial::recvSelf(int cTag, Channel& theChannel,
-                         FEM_ObjectBroker& theBroker)
+SeriesMaterial::recvSelf(int cTag, Channel &theChannel,
+                         FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -600,7 +600,7 @@ SeriesMaterial::recvSelf(int cTag, Channel& theChannel,
 }
 
 void
-SeriesMaterial::Print(ostream& s, int flag)
+SeriesMaterial::Print(ostream &s, int flag)
 {
     s << "\nSeriesMaterial, tag: " << this->getTag() << endln;
     s << "\tUniaxial Componenets" << endln;
@@ -611,62 +611,62 @@ SeriesMaterial::Print(ostream& s, int flag)
     }
 }
 
-Response*
-SeriesMaterial::setResponse(const char** argv, int argc,
-                            Information& info)
-{
-    // See if the response is one of the defaults
-    Response* res = UniaxialMaterial::setResponse(argv, argc, info);
+// Response*
+// SeriesMaterial::setResponse(const char** argv, int argc,
+//                             Information& info)
+// {
+//     // See if the response is one of the defaults
+//     Response* res = UniaxialMaterial::setResponse(argv, argc, info);
 
-    if (res != 0)
-    {
-        return res;
-    }
+//     if (res != 0)
+//     {
+//         return res;
+//     }
 
-    if (strcmp(argv[0], "strains") == 0)
-    {
-        return new MaterialResponse(this, 100, Vector(numMaterials));
-    }
+//     if (strcmp(argv[0], "strains") == 0)
+//     {
+//         return new MaterialResponse(this, 100, Vector(numMaterials));
+//     }
 
-    else if (strcmp(argv[0], "material") == 0 ||
-             strcmp(argv[0], "component") == 0)
-    {
-        if (argc > 1)
-        {
-            int matNum = atoi(argv[1]) - 1;
+//     else if (strcmp(argv[0], "material") == 0 ||
+//              strcmp(argv[0], "component") == 0)
+//     {
+//         if (argc > 1)
+//         {
+//             int matNum = atoi(argv[1]) - 1;
 
-            if (matNum >= 0 && matNum < numMaterials)
-            {
-                return theModels[matNum]->setResponse(&argv[2], argc - 2, info);
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        else
-        {
-            return 0;
-        }
-    }
+//             if (matNum >= 0 && matNum < numMaterials)
+//             {
+//                 return theModels[matNum]->setResponse(&argv[2], argc - 2, info);
+//             }
+//             else
+//             {
+//                 return 0;
+//             }
+//         }
+//         else
+//         {
+//             return 0;
+//         }
+//     }
 
-    else
-    {
-        return this->UniaxialMaterial::setResponse(argv, argc, info);
-    }
-}
+//     else
+//     {
+//         return this->UniaxialMaterial::setResponse(argv, argc, info);
+//     }
+// }
 
-int
-SeriesMaterial::getResponse(int responseID, Information& info)
-{
-    Vector strains(strain, numMaterials);
+// int
+// SeriesMaterial::getResponse(int responseID, Information& info)
+// {
+//     Vector strains(strain, numMaterials);
 
-    switch (responseID)
-    {
-        case 100:
-            return info.setVector(strains);
+//     switch (responseID)
+//     {
+//         case 100:
+//             return info.setVector(strains);
 
-        default:
-            return this->UniaxialMaterial::getResponse(responseID, info);
-    }
-}
+//         default:
+//             return this->UniaxialMaterial::getResponse(responseID, info);
+//     }
+// }

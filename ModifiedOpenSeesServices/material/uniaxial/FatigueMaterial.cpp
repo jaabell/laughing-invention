@@ -40,7 +40,7 @@
 // shown below.
 
 #include <stdlib.h>
-#include <MaterialResponse.h>
+// #include <MaterialResponse.h>
 #include <Information.h>
 
 
@@ -53,7 +53,7 @@
 #include <iostream>
 using namespace std;
 
-FatigueMaterial::FatigueMaterial(int tag, UniaxialMaterial& material,
+FatigueMaterial::FatigueMaterial(int tag, UniaxialMaterial &material,
                                  double dmax, double E_0, double slope_m,
                                  double epsmin, double epsmax )
     : UniaxialMaterial(tag, MAT_TAG_Fatigue), theMaterial(0),
@@ -588,10 +588,10 @@ FatigueMaterial::revertToStart(void)
     return theMaterial->revertToStart();
 }
 
-UniaxialMaterial*
+UniaxialMaterial *
 FatigueMaterial::getCopy(void)
 {
-    FatigueMaterial* theCopy =
+    FatigueMaterial *theCopy =
         new FatigueMaterial(this->getTag(), *theMaterial, Dmax, E0, m , minStrain, maxStrain);
 
     theCopy->Cfailed = Cfailed;
@@ -601,7 +601,7 @@ FatigueMaterial::getCopy(void)
 }
 
 int
-FatigueMaterial::sendSelf(int cTag, Channel& theChannel)
+FatigueMaterial::sendSelf(int cTag, Channel &theChannel)
 {
     int dbTag = this->getDbTag();
 
@@ -671,8 +671,8 @@ FatigueMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-FatigueMaterial::recvSelf(int cTag, Channel& theChannel,
-                          FEM_ObjectBroker& theBroker)
+FatigueMaterial::recvSelf(int cTag, Channel &theChannel,
+                          FEM_ObjectBroker &theBroker)
 {
     int dbTag = this->getDbTag();
 
@@ -755,7 +755,7 @@ FatigueMaterial::recvSelf(int cTag, Channel& theChannel,
 //  the damage recorded at the last peak, along with current damage
 
 void
-FatigueMaterial::Print(ostream& s, int flag)
+FatigueMaterial::Print(ostream &s, int flag)
 {
     if (flag == 100)
     {
@@ -772,85 +772,85 @@ FatigueMaterial::Print(ostream& s, int flag)
     }
 }
 
-Response*
-FatigueMaterial::setResponse(const char** argv, int argc, Information& matInfo)
-{
-    if (argc == 0)
-    {
-        return 0;
-    }
+// Response*
+// FatigueMaterial::setResponse(const char** argv, int argc, Information& matInfo)
+// {
+//     if (argc == 0)
+//     {
+//         return 0;
+//     }
 
-    // stress
-    if (strcmp(argv[0], "stress") == 0)
-    {
-        return new MaterialResponse(this, 1, this->getStress());
-    }
+//     // stress
+//     if (strcmp(argv[0], "stress") == 0)
+//     {
+//         return new MaterialResponse(this, 1, this->getStress());
+//     }
 
-    // tangent
-    else if (strcmp(argv[0], "tangent") == 0)
-    {
-        return new MaterialResponse(this, 2, this->getTangent());
-    }
+//     // tangent
+//     else if (strcmp(argv[0], "tangent") == 0)
+//     {
+//         return new MaterialResponse(this, 2, this->getTangent());
+//     }
 
-    // strain
-    else if (strcmp(argv[0], "strain") == 0)
-    {
-        return new MaterialResponse(this, 3, this->getStrain());
-    }
+//     // strain
+//     else if (strcmp(argv[0], "strain") == 0)
+//     {
+//         return new MaterialResponse(this, 3, this->getStrain());
+//     }
 
-    // strain
-    else if ((strcmp(argv[0], "stressStrain") == 0) ||
-             (strcmp(argv[0], "stressANDstrain") == 0))
-    {
-        return new MaterialResponse(this, 4, Vector(2));
+//     // strain
+//     else if ((strcmp(argv[0], "stressStrain") == 0) ||
+//              (strcmp(argv[0], "stressANDstrain") == 0))
+//     {
+//         return new MaterialResponse(this, 4, Vector(2));
 
-    }
+//     }
 
-    else if (strcmp(argv[0], "damage") == 0)
-    {
-        return new MaterialResponse(this, 5, DL);
-    }
+//     else if (strcmp(argv[0], "damage") == 0)
+//     {
+//         return new MaterialResponse(this, 5, DL);
+//     }
 
-    // otherwise unknown
-    else
-    {
-        return 0;
-    }
-}
+//     // otherwise unknown
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-FatigueMaterial::getResponse(int responseID, Information& matInfo)
-{
-    static Vector stressStrain(2);
+// int
+// FatigueMaterial::getResponse(int responseID, Information& matInfo)
+// {
+//     static Vector stressStrain(2);
 
-    // each subclass must implement its own stuff
-    switch (responseID)
-    {
-        case 1:
-            matInfo.setDouble(this->getStress());
-            return 0;
+//     // each subclass must implement its own stuff
+//     switch (responseID)
+//     {
+//         case 1:
+//             matInfo.setDouble(this->getStress());
+//             return 0;
 
-        case 2:
-            matInfo.setDouble(this->getTangent());
-            return 0;
+//         case 2:
+//             matInfo.setDouble(this->getTangent());
+//             return 0;
 
-        case 3:
-            matInfo.setDouble(this->getStrain());
-            return 0;
+//         case 3:
+//             matInfo.setDouble(this->getStrain());
+//             return 0;
 
-        case 4:
-            stressStrain(0) = this->getStress();
-            stressStrain(1) = this->getStrain();
-            matInfo.setVector(stressStrain);
-            return 0;
+//         case 4:
+//             stressStrain(0) = this->getStress();
+//             stressStrain(1) = this->getStrain();
+//             matInfo.setVector(stressStrain);
+//             return 0;
 
-        case 5:
-            matInfo.setDouble(DL);
-            return 0;
+//         case 5:
+//             matInfo.setDouble(DL);
+//             return 0;
 
-        default:
-            return -1;
-    }
-}
+//         default:
+//             return -1;
+//     }
+// }
 
 

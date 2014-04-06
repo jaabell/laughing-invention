@@ -56,7 +56,7 @@ class Matrix;
 class ID;
 class Vector;
 class Information;
-class Response;
+// class Response;
 
 class NDMaterial : public Material
 {
@@ -73,62 +73,62 @@ class NDMaterial : public Material
         virtual double getpsi(void);
 
 
-        virtual int setTrialStrain(const Vector& v);
-        virtual int setTrialStrain(const Vector& v, const Vector& r);
-        virtual int setTrialStrainIncr(const Vector& v);
-        virtual int setTrialStrainIncr(const Vector& v, const Vector& r);
-        virtual const Matrix& getTangent(void);
-        virtual const Matrix& getInitialTangent(void)
+        virtual int setTrialStrain(const Vector &v);
+        virtual int setTrialStrain(const Vector &v, const Vector &r);
+        virtual int setTrialStrainIncr(const Vector &v);
+        virtual int setTrialStrainIncr(const Vector &v, const Vector &r);
+        virtual const Matrix &getTangent(void);
+        virtual const Matrix &getInitialTangent(void)
         {
             return this->getTangent();
         };
 
-        virtual const Vector& getStress(void);
-        virtual const Vector& getStrain(void);
+        virtual const Vector &getStress(void);
+        virtual const Vector &getStrain(void);
 
         // new methods for recorder requested by Zhouhui Yang .. MAY NOT STAY
-        virtual const Vector& getCommittedStress(void);
-        virtual const Vector& getCommittedStrain(void);
+        virtual const Vector &getCommittedStress(void);
+        virtual const Vector &getCommittedStrain(void);
 
         // methods to set and retrieve state using the Tensor class
-        virtual int setTrialStrain(const Tensor& v);
-        virtual int setTrialStrain(const Tensor& v, const Tensor& r);
-        virtual int setTrialStrainIncr(const Tensor& v);
-        virtual int setTrialStrainIncr(const Tensor& v, const Tensor& r);
-        virtual const Tensor& getTangentTensor(void);
-        virtual const stresstensor& getStressTensor(void);
-        virtual const straintensor& getStrainTensor(void);
+        virtual int setTrialStrain(const Tensor &v);
+        virtual int setTrialStrain(const Tensor &v, const Tensor &r);
+        virtual int setTrialStrainIncr(const Tensor &v);
+        virtual int setTrialStrainIncr(const Tensor &v, const Tensor &r);
+        virtual const Tensor &getTangentTensor(void);
+        virtual const stresstensor &getStressTensor(void);
+        virtual const straintensor &getStrainTensor(void);
         //Added Joey Aug. 13, 2001
-        virtual const straintensor& getPlasticStrainTensor(void);
+        virtual const straintensor &getPlasticStrainTensor(void);
 
         //Zhao (zcheng@ucdavis.edu)
         // added Sept 22 2003 for Large Deformation, F is the Deformation Gradient
-        virtual int setTrialF(const straintensor& f);
-        virtual int setTrialFIncr(const straintensor& df);
-        virtual int setTrialC(const straintensor& c);
-        virtual int setTrialCIncr(const straintensor& dc);
-        virtual const stresstensor& getPK1StressTensor(void);
-        virtual const stresstensor& getCauchyStressTensor(void);
-        virtual const straintensor& getF(void);
-        virtual const straintensor& getC(void);
-        virtual const straintensor& getFp(void);
+        virtual int setTrialF(const straintensor &f);
+        virtual int setTrialFIncr(const straintensor &df);
+        virtual int setTrialC(const straintensor &c);
+        virtual int setTrialCIncr(const straintensor &dc);
+        virtual const stresstensor &getPK1StressTensor(void);
+        virtual const stresstensor &getCauchyStressTensor(void);
+        virtual const straintensor &getF(void);
+        virtual const straintensor &getC(void);
+        virtual const straintensor &getFp(void);
         // Only For Large Deformation, END////////////////////////////////////////
 
         virtual int commitState(void) = 0;
         virtual int revertToLastCommit(void) = 0;
         virtual int revertToStart(void) = 0;
 
-        virtual NDMaterial* getCopy(void) = 0;
-        virtual NDMaterial* getCopy(const char* code) = 0;
+        virtual NDMaterial *getCopy(void) = 0;
+        virtual NDMaterial *getCopy(const char *code) = 0;
 
-        virtual const char* getType(void) const = 0;
+        virtual const char *getType(void) const = 0;
         virtual int getOrder(void) const
         {
             return 1;
         };
 
-        virtual Response* setResponse (const char** argv, int argc, Information& matInformation);
-        virtual int getResponse (int responseID, Information& matInformation);
+        // virtual Response* setResponse (const char** argv, int argc, Information& matInformation);
+        // virtual int getResponse (int responseID, Information& matInformation);
 
 
 
@@ -139,7 +139,7 @@ class NDMaterial : public Material
 
 
         // Nima Tafazzoli added for checking the mesh (September 2012)
-        virtual int CheckMesh(ofstream&);
+        virtual int CheckMesh(ofstream &);
 
 
 

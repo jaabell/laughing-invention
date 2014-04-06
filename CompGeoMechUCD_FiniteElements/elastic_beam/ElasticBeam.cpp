@@ -54,7 +54,6 @@ ElasticBeam::ElasticBeam()
         theNodes[i] = 0;
     }
 
-
     R.Zero();
 
 }

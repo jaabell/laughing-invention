@@ -44,7 +44,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 
 class Node;
@@ -62,11 +62,11 @@ class PenaltyElement : public Element
 
         // public methods to obtain inforrmation about dof & connectivity
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState(void);
@@ -83,33 +83,33 @@ class PenaltyElement : public Element
             return 0;
         };
 
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getMass(void);
 
         double getPenaltyStiffness(void);
 
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor)
+        int addLoad(ElementalLoad *theLoad, double loadFactor)
         {
             return 0;
         };
-        int addInertiaLoadToUnbalance(const Vector& accel)
+        int addInertiaLoadToUnbalance(const Vector &accel)
         {
             return 0;
         };
 
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
-        void Print(ostream& s, int flag = 0);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInfo);
+        // int getResponse(int responseID, Information& eleInformation);
 
 
 
@@ -120,12 +120,12 @@ class PenaltyElement : public Element
         int numDOF;
         int dof;
 
-        Matrix* Stiffness;
+        Matrix *Stiffness;
 
 
 
         int direction;
-        Node* theNodes[2];
+        Node *theNodes[2];
         double penaltystiffness;
 
         Vector tempZeroVector;

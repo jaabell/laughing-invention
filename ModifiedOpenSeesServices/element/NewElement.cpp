@@ -1,22 +1,22 @@
-/* ****************************************************************** **
-**    OpenSees - Open System for Earthquake Engineering Simulation    **
-**          Pacific Earthquake Engineering Research Center            **
-**                                                                    **
-**                                                                    **
-** (C) Copyright 1999, The Regents of the University of California    **
-** All Rights Reserved.                                               **
-**                                                                    **
-** Commercial use of this program without express permission of the   **
-** University of California, Berkeley, is strictly prohibited.  See   **
-** file 'COPYRIGHT'  in main directory for information on usage and   **
-** redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           **
-**                                                                    **
-** Developed by:                                                      **
-**   Frank McKenna (fmckenna@ce.berkeley.edu)                         **
-**   Gregory L. Fenves (fenves@ce.berkeley.edu)                       **
-**   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
-**                                                                    **
-** ****************************************************************** */
+// ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
+// **OpenSees - Open System for Earthquake Engineering Simulation    **
+// **Pacific Earthquake Engineering Research Center            **
+// ** **
+// ** **
+// **(C) Copyright 1999, The Regents of the University of California    **
+//     **All Rights Reserved.                                               * *
+//     ** **
+//     **Commercial use of this program without express permission of the   **
+//     **University of California, Berkeley, is strictly prohibited.  See   **
+//     **file 'COPYRIGHT'  in main directory for information on usage and   **
+//     **redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           * *
+//         ** **
+// **Developed by :                                                      **
+//         **Frank McKenna (fmckenna@ce.berkeley.edu)                         **
+//             **Gregory L. Fenves (fenves@ce.berkeley.edu)                       **
+//             **Filip C. Filippou (filippou@ce.berkeley.edu)                     **
+//             ** **
+//             ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** **
 
 // $Revision: 1.5 $
 // $Date: 2003/03/11 20:40:07 $
@@ -31,7 +31,7 @@
 
 #include "NewElement.h"
 #include <Information.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 #include <Domain.h>
 #include <Node.h>
@@ -73,13 +73,13 @@ NewElement::getNumExternalNodes(void) const
     return NUM_NODE;
 }
 
-const ID&
+const ID &
 NewElement::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 NewElement::getNodePtrs(void)
 {
     return 0;
@@ -93,7 +93,7 @@ NewElement::getNumDOF(void)
 
 
 void
-NewElement::setDomain(Domain* theDomain)
+NewElement::setDomain(Domain *theDomain)
 {
     // call the base class method
     this->DomainComponent::setDomain(theDomain);
@@ -137,13 +137,13 @@ NewElement::update(void)
 }
 
 
-const Matrix&
+const Matrix &
 NewElement::getTangentStiff(void)
 {
     return theMatrix;
 }
 
-const Matrix&
+const Matrix &
 NewElement::getInitialStiff(void)
 {
     return theMatrix;
@@ -156,25 +156,25 @@ NewElement::zeroLoad(void)
 }
 
 int
-NewElement::addLoad(const Vector& addP)
+NewElement::addLoad(const Vector &addP)
 {
     return 0;
 }
 
 int
-NewElement::addInertiaLoadToUnbalance(const Vector& accel)
+NewElement::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
 
-const Vector&
+const Vector &
 NewElement::getResistingForce()
 {
     return theVector;
 }
 
 
-const Vector&
+const Vector &
 NewElement::getResistingForceIncInertia()
 {
     return theVector;
@@ -182,55 +182,55 @@ NewElement::getResistingForceIncInertia()
 
 
 int
-NewElement::sendSelf(int commitTag, Channel& theChannel)
+NewElement::sendSelf(int commitTag, Channel &theChannel)
 {
     return -1;
 }
 
 int
-NewElement::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+NewElement::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return -1;
 }
 
 
 int
-NewElement::displaySelf(Renderer& theViewer, int displayMode, float fact)
+NewElement::displaySelf(Renderer &theViewer, int displayMode, float fact)
 {
     return 0;
 }
 
 
 void
-NewElement::Print(ostream& s, int flag)
+NewElement::Print(ostream &s, int flag)
 {
     return;
 }
 
 
-Response*
-NewElement::setResponse(const char** argv, int argc, Information& eleInfo)
-{
-    return 0;
-}
+// Response*
+// NewElement::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
+//     return 0;
+// }
+
+
+// int
+// NewElement::getResponse(int responseID, Information& eleInfo)
+// {
+//     return -1;
+// }
 
 
 int
-NewElement::getResponse(int responseID, Information& eleInfo)
+NewElement::setParameter(const char **argv, int argc, Information &info)
 {
     return -1;
 }
 
 
 int
-NewElement::setParameter(const char** argv, int argc, Information& info)
-{
-    return -1;
-}
-
-
-int
-NewElement::updateParameter(int parameterID, Information& info)
+NewElement::updateParameter(int parameterID, Information &info)
 {
     return -1;
 }

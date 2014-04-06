@@ -40,7 +40,7 @@
 // #include <MatrixUtil.h>
 #include <classTags.h>
 #include <SectionAggregator.h>
-#include <MaterialResponse.h>
+// #include <MaterialResponse.h>
 #include <ID.h>
 #include <iostream>
 using namespace std;
@@ -977,39 +977,39 @@ SectionAggregator::Print(ostream &s, int flag)
     }
 }
 
-Response *
-SectionAggregator::setResponse(const char **argv, int argc, Information &info)
-{
-    // See if the response is one of the defaults
-    Response *res = SectionForceDeformation::setResponse(argv, argc, info);
+// Response *
+// SectionAggregator::setResponse(const char **argv, int argc, Information &info)
+// {
+//     // See if the response is one of the defaults
+//     Response *res = SectionForceDeformation::setResponse(argv, argc, info);
 
-    if (res != 0)
-    {
-        return res;
-    }
+//     if (res != 0)
+//     {
+//         return res;
+//     }
 
-    // If not, forward the request to the section (need to do this to get fiber response)
-    // CURRENTLY NOT SENDING ANYTHING OFF TO THE UniaxialMaterials ... Probably
-    // don't need anything more from them than stress, strain, and stiffness,
-    // which are covered in base class method ... can change if need arises
-    else if (theSection != 0)
-    {
-        return theSection->setResponse(argv, argc, info);
-    }
+//     // If not, forward the request to the section (need to do this to get fiber response)
+//     // CURRENTLY NOT SENDING ANYTHING OFF TO THE UniaxialMaterials ... Probably
+//     // don't need anything more from them than stress, strain, and stiffness,
+//     // which are covered in base class method ... can change if need arises
+//     else if (theSection != 0)
+//     {
+//         return theSection->setResponse(argv, argc, info);
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-SectionAggregator::getResponse(int responseID, Information &info)
-{
-    // Just call the base class method ... don't need to define
-    // this function, but keeping it here just for clarity
-    return SectionForceDeformation::getResponse(responseID, info);
-}
+// int
+// SectionAggregator::getResponse(int responseID, Information &info)
+// {
+//     // Just call the base class method ... don't need to define
+//     // this function, but keeping it here just for clarity
+//     return SectionForceDeformation::getResponse(responseID, info);
+// }
 
 int
 SectionAggregator::setVariable(const char *argv)

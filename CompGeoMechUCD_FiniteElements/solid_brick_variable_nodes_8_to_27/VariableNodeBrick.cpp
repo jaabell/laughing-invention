@@ -55,7 +55,7 @@ VariableNodeBrick::VariableNodeBrick(int element_number,
                                      int node_numb_25,
                                      int node_numb_26,
                                      int node_numb_27,
-                                     NDMaterial* Globalmmodel)
+                                     NDMaterial *Globalmmodel)
     : Element(element_number, ELE_TAG_VariableNodeBrick),
       connectedExternalNodes(27), node_existance(19)
 {
@@ -75,9 +75,9 @@ VariableNodeBrick::VariableNodeBrick(int element_number,
     mmodel = Globalmmodel;
 
 
-    # ifndef _PARALLEL_PROCESSING
+# ifndef _PARALLEL_PROCESSING
     populate();
-    # endif
+# endif
 
 
 
@@ -184,17 +184,17 @@ void VariableNodeBrick::populate()
 
     short where = 0;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         double r = get_Gauss_p_c( integration_order, GP_c_r );
         double rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             double s = get_Gauss_p_c( integration_order, GP_c_s );
             double sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 double t = get_Gauss_p_c( integration_order, GP_c_t );
                 double tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -229,9 +229,9 @@ VariableNodeBrick::VariableNodeBrick()
     initialized = false;
 
 
-    # ifndef _PARALLEL_PROCESSING
+# ifndef _PARALLEL_PROCESSING
     populate();
-    # endif
+# endif
 
 
 }
@@ -299,15 +299,15 @@ void VariableNodeBrick::incremental_Update()
 
     incremental_displacements = incr_disp();
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -686,7 +686,7 @@ tensor VariableNodeBrick::dh_drst_at(double r1, double r2, double r3)
 }
 
 ////#############################################################################
-VariableNodeBrick& VariableNodeBrick::operator[](int subscript)
+VariableNodeBrick &VariableNodeBrick::operator[](int subscript)
 {
     return ( *(this + subscript) );
 }
@@ -724,17 +724,17 @@ tensor VariableNodeBrick::getStiffnessTensor(void)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -773,7 +773,7 @@ tensor VariableNodeBrick::getStiffnessTensor(void)
 
 //#############################################################################
 
-void VariableNodeBrick::set_strain_stress_tensor(FILE* fp, double* u)
+void VariableNodeBrick::set_strain_stress_tensor(FILE *fp, double *u)
 {
 
     int dh_dim[] = {27, 3};
@@ -812,15 +812,15 @@ void VariableNodeBrick::set_strain_stress_tensor(FILE* fp, double* u)
                  total_displacements.val(ii, 3));
     }
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -856,7 +856,7 @@ void VariableNodeBrick::set_strain_stress_tensor(FILE* fp, double* u)
 
 
 
-tensor VariableNodeBrick::stiffness_matrix(const tensor& K)
+tensor VariableNodeBrick::stiffness_matrix(const tensor &K)
 {
 
     matrix Kmatrix(nodes_in_brick * 3, nodes_in_brick * 3, 0.0);
@@ -888,7 +888,7 @@ tensor VariableNodeBrick::stiffness_matrix(const tensor& K)
 
 
 
-tensor VariableNodeBrick::mass_matrix(const tensor& M)
+tensor VariableNodeBrick::mass_matrix(const tensor &M)
 {
 
     matrix Mmatrix(nodes_in_brick * 3, nodes_in_brick * 3, 0.0);
@@ -999,7 +999,7 @@ tensor VariableNodeBrick::total_disp(void)
 
 
 ////#############################################################################
-tensor VariableNodeBrick::total_disp(FILE* fp, double* u)
+tensor VariableNodeBrick::total_disp(FILE *fp, double *u)
 {
 
 
@@ -1065,17 +1065,17 @@ tensor VariableNodeBrick::nodal_forces(void)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1144,17 +1144,17 @@ tensor VariableNodeBrick::iterative_nodal_forces(void)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1198,7 +1198,7 @@ tensor VariableNodeBrick::iterative_nodal_forces(void)
 
 
 
-tensor VariableNodeBrick::nodal_forces_from_stress(stresstensor& stress)
+tensor VariableNodeBrick::nodal_forces_from_stress(stresstensor &stress)
 {
     int force_dim[] = {nodes_in_brick, 3};
 
@@ -1223,17 +1223,17 @@ tensor VariableNodeBrick::nodal_forces_from_stress(stresstensor& stress)
     tensor JacobianINV;
     tensor dhGlobal;
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1307,17 +1307,17 @@ tensor VariableNodeBrick::linearized_nodal_forces(void)
     stresstensor final_linearized_stress;
     incremental_displacements = incr_disp();
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1404,15 +1404,15 @@ void VariableNodeBrick::computeGaussPoint()
 
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -1445,7 +1445,7 @@ void VariableNodeBrick::computeGaussPoint()
 
 
 
-void VariableNodeBrick::reportTensorF(FILE* fp)
+void VariableNodeBrick::reportTensorF(FILE *fp)
 {
 
     double r  = 0.0;
@@ -1475,15 +1475,15 @@ void VariableNodeBrick::reportTensorF(FILE* fp)
 
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -1524,13 +1524,13 @@ int VariableNodeBrick::getNumExternalNodes () const
 
 
 //=============================================================================
-const ID& VariableNodeBrick::getExternalNodes ()
+const ID &VariableNodeBrick::getExternalNodes ()
 {
     return *existing_node_numbers;
 }
 
 
-Node**
+Node **
 VariableNodeBrick::getNodePtrs(void)
 {
     return theNodes;
@@ -1543,7 +1543,7 @@ int VariableNodeBrick::getNumDOF ()
 }
 
 //=============================================================================
-void VariableNodeBrick::setDomain (Domain* theDomain)
+void VariableNodeBrick::setDomain (Domain *theDomain)
 {
     // Check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -1562,7 +1562,7 @@ void VariableNodeBrick::setDomain (Domain* theDomain)
 
             if (connectedExternalNodes(i) != 0)
             {
-                if(theNodes[i] == 0)
+                if (theNodes[i] == 0)
                 {
                     cerr << "VariableNodeBrick (tag: " << this->getTag() << " ) does not have node " <<  (*existing_node_numbers)(i) << "\n";
                     exit(-1);
@@ -1577,7 +1577,7 @@ void VariableNodeBrick::setDomain (Domain* theDomain)
         {
             if (connectedExternalNodes(i) != 0)
             {
-                if(theNodes[i]->getNumberDOF() != 3)
+                if (theNodes[i]->getNumberDOF() != 3)
                 {
                     cerr << "VariableNodeBrick (tag: " << this->getTag() << ") has differing number of DOFs at its nodes\n";
                     exit(-1);
@@ -1643,7 +1643,7 @@ int VariableNodeBrick::revertToStart ()
 
 
 //=============================================================================
-const Matrix& VariableNodeBrick::getTangentStiff()
+const Matrix &VariableNodeBrick::getTangentStiff()
 {
     tensor stifftensor = getStiffnessTensor();
     int Ki = 0;
@@ -1743,14 +1743,14 @@ const Matrix& VariableNodeBrick::getTangentStiff()
 }
 
 //=============================================================================
-const Matrix& VariableNodeBrick::getInitialStiff ()
+const Matrix &VariableNodeBrick::getInitialStiff ()
 {
     return this->getTangentStiff();
 }
 
 
 //=============================================================================
-const Matrix& VariableNodeBrick::getMassFullSize()
+const Matrix &VariableNodeBrick::getMassFullSize()
 {
 
     int M_dim[] = {81, 81};
@@ -1780,17 +1780,17 @@ const Matrix& VariableNodeBrick::getMassFullSize()
     M_temp.Zero();
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
         rw = get_Gauss_p_w( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
             sw = get_Gauss_p_w( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
                 tw = get_Gauss_p_w( integration_order, GP_c_t );
@@ -1828,7 +1828,7 @@ const Matrix& VariableNodeBrick::getMassFullSize()
 }
 
 //=============================================================================
-const Matrix& VariableNodeBrick::getMass()
+const Matrix &VariableNodeBrick::getMass()
 {
 
     static Matrix M_temp(27 * 3, 27 * 3);
@@ -1908,7 +1908,7 @@ void VariableNodeBrick::zeroLoad(void)
 
 
 //======================================================================
-const Vector& VariableNodeBrick::getBodyForce(double loadFactor, const Vector& data)
+const Vector &VariableNodeBrick::getBodyForce(double loadFactor, const Vector &data)
 {
 
     static Vector bforce(nodes_in_brick * 3);
@@ -1956,7 +1956,7 @@ const Vector& VariableNodeBrick::getBodyForce(double loadFactor, const Vector& d
 
 
 //======================================================================
-const Vector& VariableNodeBrick::getSurfaceForce(double loadFactor, const Vector& data)
+const Vector &VariableNodeBrick::getSurfaceForce(double loadFactor, const Vector &data)
 {
     cerr << "VariableNodeBrick::getSurfaceForce() haven't implemented yet!\n";
     (*tempZero).Zero();
@@ -1966,10 +1966,10 @@ const Vector& VariableNodeBrick::getSurfaceForce(double loadFactor, const Vector
 
 
 //=============================================================================
-int VariableNodeBrick::addLoad(ElementalLoad* theLoad, double loadFactor)
+int VariableNodeBrick::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_ElementSelfWeight)
     {
@@ -1992,7 +1992,7 @@ int VariableNodeBrick::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 
 //=============================================================================
-int VariableNodeBrick::addInertiaLoadToUnbalance(const Vector& accel)
+int VariableNodeBrick::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // Check for a quick return
     if (rho == 0.0)
@@ -2019,7 +2019,7 @@ int VariableNodeBrick::addInertiaLoadToUnbalance(const Vector& accel)
 }
 
 //=============================================================================
-const Vector VariableNodeBrick::FormEquiBodyForce(const Vector& data)
+const Vector VariableNodeBrick::FormEquiBodyForce(const Vector &data)
 {
 
     static Vector bforce(nodes_in_brick * 3);
@@ -2063,7 +2063,7 @@ const Vector VariableNodeBrick::FormEquiBodyForce(const Vector& data)
 
 
 //=============================================================================
-const Vector& VariableNodeBrick::getResistingForce()
+const Vector &VariableNodeBrick::getResistingForce()
 {
 
     (*P).Zero();
@@ -2165,7 +2165,7 @@ const Vector& VariableNodeBrick::getResistingForce()
 
 
 //=============================================================================
-const Vector& VariableNodeBrick::getResistingForceIncInertia()
+const Vector &VariableNodeBrick::getResistingForceIncInertia()
 {
 
     (*P).Zero();
@@ -2224,7 +2224,7 @@ const Vector& VariableNodeBrick::getResistingForceIncInertia()
 
 //=============================================================================
 
-int VariableNodeBrick::sendSelf (int commitTag, Channel& theChannel)
+int VariableNodeBrick::sendSelf (int commitTag, Channel &theChannel)
 {
     cerr << "VariableNodeBrick::sendSelf() haven't implemented yet!\n";
     return 0;
@@ -2232,7 +2232,7 @@ int VariableNodeBrick::sendSelf (int commitTag, Channel& theChannel)
 
 
 
-int VariableNodeBrick::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int VariableNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     cerr << "VariableNodeBrick::recvSelf() haven't implemented yet!\n";
     return 0;
@@ -2241,7 +2241,7 @@ int VariableNodeBrick::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectB
 
 
 //=============================================================================
-void VariableNodeBrick::Print(ostream& s, int flag)
+void VariableNodeBrick::Print(ostream &s, int flag)
 {
     s << "VariableNodeBrick, element id:  " << this->getTag() << endln;
     s << "Connected external nodes:  " << connectedExternalNodes;
@@ -2261,11 +2261,11 @@ void VariableNodeBrick::Print(ostream& s, int flag)
     s << "Material model:  " << endln;
 
 
-    for( int GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( int GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
-        for( int GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( int GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
-            for( int GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( int GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 // this short routine is supposed to calculate position of
                 // Gauss point from 3D array of short's
@@ -2282,96 +2282,96 @@ void VariableNodeBrick::Print(ostream& s, int flag)
 }
 
 //=============================================================================
-Response* VariableNodeBrick::setResponse (const char** argv, int argc, Information& eleInformation)
-{
+// Response* VariableNodeBrick::setResponse (const char** argv, int argc, Information& eleInformation)
+// {
 
-    //=====================================================================================
-    if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 5, *K);
-    }
-    //=====================================================================================
-    else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
-    {
-        return new ElementResponse(this, 4, Vector(Num_TotalGaussPts * 6 + 1) );
-    }
-    //=====================================================================================
-    else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
-    {
-        return new ElementResponse(this, 7, Vector(Num_TotalGaussPts * 6 + 1) );
-    }
-    //=====================================================================================
-    else
-    {
-        return 0;
-    }
+//     //=====================================================================================
+//     if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 5, *K);
+//     }
+//     //=====================================================================================
+//     else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
+//     {
+//         return new ElementResponse(this, 4, Vector(Num_TotalGaussPts * 6 + 1) );
+//     }
+//     //=====================================================================================
+//     else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
+//     {
+//         return new ElementResponse(this, 7, Vector(Num_TotalGaussPts * 6 + 1) );
+//     }
+//     //=====================================================================================
+//     else
+//     {
+//         return 0;
+//     }
 
-}
+// }
 
-//=============================================================================
-int VariableNodeBrick::getResponse (int responseID, Information& eleInfo)
-{
+// //=============================================================================
+// int VariableNodeBrick::getResponse (int responseID, Information& eleInfo)
+// {
 
-    switch (responseID)
-    {
+//     switch (responseID)
+//     {
 
-        case 4:
-            {
-                static Vector stresses(Num_TotalGaussPts * 6 + 1);
+//         case 4:
+//             {
+//                 static Vector stresses(Num_TotalGaussPts * 6 + 1);
 
-                stresses(0) = Num_TotalGaussPts;
+//                 stresses(0) = Num_TotalGaussPts;
 
-                stresstensor sigma;
-
-
-                for (int i = 0; i < Num_TotalGaussPts; i++)
-                {
-                    sigma = matpoint[i]->getStressTensor();
-                    stresses(i * 6 + 1) = sigma.cval(1, 1); //xx
-                    stresses(i * 6 + 2) = sigma.cval(2, 2); //yy
-                    stresses(i * 6 + 3) = sigma.cval(3, 3); //zz
-                    stresses(i * 6 + 4) = sigma.cval(1, 2); //xy
-                    stresses(i * 6 + 5) = sigma.cval(1, 3); //xz
-                    stresses(i * 6 + 6) = sigma.cval(2, 3); //yz
-                }
+//                 stresstensor sigma;
 
 
-                return eleInfo.setVector(stresses);
-            }
-
-        case 5:
-            return eleInfo.setMatrix(this->getTangentStiff());
-
-
-        case 7:
-            {
-                static Vector strains(Num_TotalGaussPts * 6 + 1);
-
-                strains(0) = Num_TotalGaussPts;
-
-                straintensor epsilon;
-
-                for (int i = 0; i < Num_TotalGaussPts; i++)
-                {
-                    epsilon = matpoint[i]->getStrainTensor();
-                    strains(i * 6 + 1) = epsilon.cval(1, 1); //xx
-                    strains(i * 6 + 2) = epsilon.cval(2, 2); //yy
-                    strains(i * 6 + 3) = epsilon.cval(3, 3); //zz
-                    strains(i * 6 + 4) = epsilon.cval(1, 2); //xy
-                    strains(i * 6 + 5) = epsilon.cval(1, 3); //xz
-                    strains(i * 6 + 6) = epsilon.cval(2, 3); //yz
-                }
-
-                return eleInfo.setVector(strains);
-            }
+//                 for (int i = 0; i < Num_TotalGaussPts; i++)
+//                 {
+//                     sigma = matpoint[i]->getStressTensor();
+//                     stresses(i * 6 + 1) = sigma.cval(1, 1); //xx
+//                     stresses(i * 6 + 2) = sigma.cval(2, 2); //yy
+//                     stresses(i * 6 + 3) = sigma.cval(3, 3); //zz
+//                     stresses(i * 6 + 4) = sigma.cval(1, 2); //xy
+//                     stresses(i * 6 + 5) = sigma.cval(1, 3); //xz
+//                     stresses(i * 6 + 6) = sigma.cval(2, 3); //yz
+//                 }
 
 
-        default:
-            return -1;
-    }
+//                 return eleInfo.setVector(stresses);
+//             }
+
+//         case 5:
+//             return eleInfo.setMatrix(this->getTangentStiff());
 
 
-}
+//         case 7:
+//             {
+//                 static Vector strains(Num_TotalGaussPts * 6 + 1);
+
+//                 strains(0) = Num_TotalGaussPts;
+
+//                 straintensor epsilon;
+
+//                 for (int i = 0; i < Num_TotalGaussPts; i++)
+//                 {
+//                     epsilon = matpoint[i]->getStrainTensor();
+//                     strains(i * 6 + 1) = epsilon.cval(1, 1); //xx
+//                     strains(i * 6 + 2) = epsilon.cval(2, 2); //yy
+//                     strains(i * 6 + 3) = epsilon.cval(3, 3); //zz
+//                     strains(i * 6 + 4) = epsilon.cval(1, 2); //xy
+//                     strains(i * 6 + 5) = epsilon.cval(1, 3); //xz
+//                     strains(i * 6 + 6) = epsilon.cval(2, 3); //yz
+//                 }
+
+//                 return eleInfo.setVector(strains);
+//             }
+
+
+//         default:
+//             return -1;
+//     }
+
+
+// }
 
 
 double VariableNodeBrick::get_Gauss_p_c(short order, short point_numb)
@@ -2464,15 +2464,15 @@ int VariableNodeBrick::update(void)
 
     incremental_displacements = incr_disp();
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -2507,7 +2507,7 @@ int VariableNodeBrick::update(void)
 
 
 int
-VariableNodeBrick::CheckMesh(ofstream& checkmesh_file)
+VariableNodeBrick::CheckMesh(ofstream &checkmesh_file)
 {
 
     double r  = 0.0;
@@ -2524,15 +2524,15 @@ VariableNodeBrick::CheckMesh(ofstream& checkmesh_file)
     tensor Jacobian;
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
 
@@ -2577,21 +2577,21 @@ VariableNodeBrick::CheckMesh(ofstream& checkmesh_file)
 }
 
 //==================================================================================
-Vector*
+Vector *
 VariableNodeBrick::getStress(void)
 {
 
     int i = 0;
     int j = 0;
     stresstensor sts;
-    Vector* stresses = new Vector(nodes_in_brick * 6);
+    Vector *stresses = new Vector(nodes_in_brick * 6);
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
-        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
-            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 i = ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
 

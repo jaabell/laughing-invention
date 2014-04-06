@@ -54,7 +54,7 @@ enum Etype { D1N2, D2N4, D2N6, D3N6, D3N12 };
 class Node;
 class Channel;
 class UniaxialMaterial;
-class Response;
+// class Response;
 
 class ZeroLength : public Element
 {
@@ -64,31 +64,31 @@ class ZeroLength : public Element
         ZeroLength(int tag,
                    int dimension,
                    int Nd1, int Nd2,
-                   const Vector& x,
-                   const Vector& yprime,
-                   UniaxialMaterial& theMaterial,
+                   const Vector &x,
+                   const Vector &yprime,
+                   UniaxialMaterial &theMaterial,
                    int direction );
 
         // Constructor for a multiple 1d material models
         ZeroLength(int tag,
                    int dimension,
                    int Nd1, int Nd2,
-                   const Vector& x,
-                   const Vector& yprime,
+                   const Vector &x,
+                   const Vector &yprime,
                    int n1dMat,
-                   UniaxialMaterial** theMaterial,
-                   const ID& direction );
+                   UniaxialMaterial **theMaterial,
+                   const ID &direction );
 
         ZeroLength();
         ~ZeroLength();
 
         // public methods to obtain inforrmation about dof & connectivity
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState(void);
@@ -97,28 +97,28 @@ class ZeroLength : public Element
         int update(void);
 
         // public methods to obtain stiffness, mass, damping and residual information
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getDamp(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getDamp(void);
+        const Matrix &getMass(void);
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         //     int displaySelf(Renderer &theViewer, int displayMode, float fact);
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInformation);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInformation);
+        // int getResponse(int responseID, Information& eleInformation);
 
-        void updateDir (const Vector& x, const Vector& y);
+        void updateDir (const Vector &x, const Vector &y);
 
     protected:
 
@@ -126,11 +126,11 @@ class ZeroLength : public Element
         Etype elemType;
 
         // private methods
-        void   setUp ( int Nd1, int Nd2, const Vector& x, const Vector& y);
-        void   checkDirection (  ID& dir ) const;
+        void   setUp ( int Nd1, int Nd2, const Vector &x, const Vector &y);
+        void   checkDirection (  ID &dir ) const;
 
         void   setTran1d ( Etype e, int n );
-        double computeCurrentStrain1d ( int mat, const Vector& diff ) const;
+        double computeCurrentStrain1d ( int mat, const Vector &diff ) const;
 
         // private attributes - a copy for each object of the class
         ID  connectedExternalNodes;         // contains the tags of the end nodes
@@ -138,16 +138,16 @@ class ZeroLength : public Element
         int numDOF;                         // number of dof for ZeroLength
         Matrix transformation;      // transformation matrix for orientation
 
-        Node* theNodes[2];
+        Node *theNodes[2];
 
-        Matrix* theMatrix;          // pointer to objects matrix (a class Matrix)
-        Vector* theVector;          // pointer to objects vector (a class Vector)
+        Matrix *theMatrix;          // pointer to objects matrix (a class Matrix)
+        Vector *theVector;          // pointer to objects vector (a class Vector)
 
         // Storage for uniaxial material models
         int numMaterials1d;            // number of 1d materials
-        UniaxialMaterial** theMaterial1d;      // array of pointers to 1d materials
-        ID*                     dir1d;         // array of directions 0-5 for 1d materials
-        Matrix*                 t1d;       // hold the transformation matrix
+        UniaxialMaterial **theMaterial1d;      // array of pointers to 1d materials
+        ID                     *dir1d;         // array of directions 0-5 for 1d materials
+        Matrix                 *t1d;       // hold the transformation matrix
 
         // static data - single copy for all objects of the class
         static Matrix ZeroLengthM2;   // class wide matrix for 2*2

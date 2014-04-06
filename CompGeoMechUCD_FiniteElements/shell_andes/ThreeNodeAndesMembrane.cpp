@@ -114,7 +114,7 @@ ThreeNodeAndesMembrane::ThreeNodeAndesMembrane()
 ThreeNodeAndesMembrane::ThreeNodeAndesMembrane(int element_number,
         int node_numb_1, int node_numb_2, int node_numb_3,
         double t,
-        NDMaterial* Globalmmodel)
+        NDMaterial *Globalmmodel)
     :
     Element(element_number, ELE_TAG_ThreeNodeAndesMembrane ),
     connectedExternalNodes(3),
@@ -169,7 +169,7 @@ ThreeNodeAndesMembrane::ThreeNodeAndesMembrane(int element_number,
 ThreeNodeAndesMembrane::ThreeNodeAndesMembrane(int element_number,
         int node_numb_1, int node_numb_2, int node_numb_3,
         double t,
-        NDMaterial** material)
+        NDMaterial **material)
     :
     Element(element_number, ELE_TAG_ThreeNodeAndesMembrane ),
     connectedExternalNodes(3),
@@ -226,12 +226,12 @@ int ThreeNodeAndesMembrane::getNumExternalNodes() const
     return 3;
 }
 
-const ID& ThreeNodeAndesMembrane::getExternalNodes()
+const ID &ThreeNodeAndesMembrane::getExternalNodes()
 {
     return connectedExternalNodes;
 }
 
-Node** ThreeNodeAndesMembrane::getNodePtrs(void)
+Node **ThreeNodeAndesMembrane::getNodePtrs(void)
 {
     return theNodes;
 }
@@ -241,7 +241,7 @@ int ThreeNodeAndesMembrane::getNumDOF()
     return 18;
 }
 
-void ThreeNodeAndesMembrane::setDomain(Domain* theDomain)
+void ThreeNodeAndesMembrane::setDomain(Domain *theDomain)
 {
     if (theDomain == 0)
     {
@@ -301,7 +301,7 @@ int ThreeNodeAndesMembrane::update(void)
     return 0;
 }
 
-const Matrix& ThreeNodeAndesMembrane::getTangentStiff ()
+const Matrix &ThreeNodeAndesMembrane::getTangentStiff ()
 {
     // Since this is a linear element, the stiffness is calculated only once.
     if (!is_stiffness_calculated)
@@ -390,12 +390,12 @@ const Matrix& ThreeNodeAndesMembrane::getTangentStiff ()
     return K;
 }
 
-const Matrix& ThreeNodeAndesMembrane::getInitialStiff()
+const Matrix &ThreeNodeAndesMembrane::getInitialStiff()
 {
     return getTangentStiff();
 }
 
-const Matrix& ThreeNodeAndesMembrane::getMass ()
+const Matrix &ThreeNodeAndesMembrane::getMass ()
 {
     if (!is_mass_calculated)
     {
@@ -563,24 +563,24 @@ void ThreeNodeAndesMembrane::zeroLoad ()
     Q.Zero();
 }
 
-int ThreeNodeAndesMembrane::addLoad(ElementalLoad* theLoad, double loadFactor)
+int ThreeNodeAndesMembrane::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     return 0;
 }
 
-int ThreeNodeAndesMembrane::addInertiaLoadToUnbalance(const Vector& accel)
+int ThreeNodeAndesMembrane::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
 
-const Vector& ThreeNodeAndesMembrane::getResistingForce ()
+const Vector &ThreeNodeAndesMembrane::getResistingForce ()
 {
     Vector NodalDisplacements(18);
     Vector disp_i(6);
 
     for (int node = 0; node < 3; node++)
     {
-        Node* node_i = theNodes[node];
+        Node *node_i = theNodes[node];
         disp_i = node_i->getDisp();
         //disp_i += node_i->getIncrDeltaDisp();
         disp_i += node_i->getIncrDisp();
@@ -598,7 +598,7 @@ const Vector& ThreeNodeAndesMembrane::getResistingForce ()
     return P;
 }
 
-const Vector& ThreeNodeAndesMembrane::getResistingForceIncInertia ()
+const Vector &ThreeNodeAndesMembrane::getResistingForceIncInertia ()
 {
     Vector NodalDisplacements(18);
     Vector disp_i(6);
@@ -607,7 +607,7 @@ const Vector& ThreeNodeAndesMembrane::getResistingForceIncInertia ()
 
     for (int node = 0; node < 3; node++)
     {
-        Node* node_i = theNodes[node];
+        Node *node_i = theNodes[node];
         disp_i = node_i->getDisp();
         //disp_i += node_i->getIncrDeltaDisp();
         disp_i += node_i->getIncrDisp();
@@ -634,57 +634,57 @@ const Vector& ThreeNodeAndesMembrane::getResistingForceIncInertia ()
     return P;
 }
 
-int ThreeNodeAndesMembrane::sendSelf (int commitTag, Channel& theChannel)
+int ThreeNodeAndesMembrane::sendSelf (int commitTag, Channel &theChannel)
 {
     return 0;
 }
 
-int ThreeNodeAndesMembrane::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int ThreeNodeAndesMembrane::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }
 
-void ThreeNodeAndesMembrane::Print(ostream& s, int flag = 0)
+void ThreeNodeAndesMembrane::Print(ostream &s, int flag = 0)
 {
 
 }
 
-Response* ThreeNodeAndesMembrane::setResponse (const char** argv, int argc, Information& eleInformation)
-{
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new ElementResponse(this, 1, P);
-    }
-    else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 5, K);
-    }
-    else
-    {
-        return 0;  // Return a null pointer
-    }
-}
+// Response* ThreeNodeAndesMembrane::setResponse (const char** argv, int argc, Information& eleInformation)
+// {
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new ElementResponse(this, 1, P);
+//     }
+//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 5, K);
+//     }
+//     else
+//     {
+//         return 0;  // Return a null pointer
+//     }
+// }
 
-int ThreeNodeAndesMembrane::getResponse (int responseID, Information& eleInformation)
-{
-    if (responseID == 1) //forces
-    {
-        return eleInformation.setVector(P);
-    }
+// int ThreeNodeAndesMembrane::getResponse (int responseID, Information& eleInformation)
+// {
+//     if (responseID == 1) //forces
+//     {
+//         return eleInformation.setVector(P);
+//     }
 
-    if (responseID == 5) //stiffness
-    {
-        return eleInformation.setMatrix(K);
-    }
-    else
-    {
-        return -1;
-    }
-}
+//     if (responseID == 5) //stiffness
+//     {
+//         return eleInformation.setMatrix(K);
+//     }
+//     else
+//     {
+//         return -1;
+//     }
+// }
 
 Matrix ThreeNodeAndesMembrane::returnMass(void)
 {
-    if(!is_mass_calculated)
+    if (!is_mass_calculated)
     {
         return getMass();
     }
@@ -743,7 +743,7 @@ void ThreeNodeAndesMembrane::initializeGeometry()
 void ThreeNodeAndesMembrane::useThisCoordinateSystem(Vector e1, Vector e2, Vector e3)
 {
     //Local-to-global transformation matrix
-    for(int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
         T_lg(i, 0) = e1(i);
         T_lg(i, 1) = e2(i);

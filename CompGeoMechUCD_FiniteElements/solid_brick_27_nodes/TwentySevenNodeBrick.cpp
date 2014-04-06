@@ -39,7 +39,7 @@
 #include <Information.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 #include <TwentySevenNodeBrick.h>
 #include <ElementalLoad.h>
@@ -5614,365 +5614,365 @@ void TwentySevenNodeBrick::Print(ostream &s, int flag)
 }
 
 //=============================================================================
-Response *TwentySevenNodeBrick::setResponse (const char **argv, int argc, Information &eleInformation)
-{
-    //========================================================
-    //     if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0)
-    //     return new ElementResponse(this, 1, P);
-
-    //========================================================
-    if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 5, K);
-    }
-
-    //========================================================
-    else if (strcmp(argv[0], "plastic") == 0 || strcmp(argv[0], "plastified") == 0)
-    {
-        ////checking if element plastified
-        //int count  = integration_order* integration_order * integration_order;
-        //straintensor pl_stn;
-        //int plastify = 0;
-        //
-        //for (int i = 0; i < count; i++) {
-        //  pl_stn = matpoint[i]->getPlasticStrainTensor();
-        //   double  p_plastc = pl_stn.p_hydrostatic();
-        //
-        //   if (  fabs(p_plastc) > 0 ) {
-        //      plastify = 1;
-        //      break;
-        //   }
-        //}
-
-        return new ElementResponse(this, 2, InfoPlastic);
-    }
-    //========================================================
-    //Specially designed for moment computation of solid pile elements Zhaohui Yang UCDavis August 1, 2001
-    else if (strcmp(argv[0], "PileM") == 0 || strcmp(argv[0], "PileM") == 0)
-    {
-        return new ElementResponse(this, 3, InfoStress);
-    }
-    //========================================================
-    else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
-    {
-        return new ElementResponse(this, 4, InfoStress);
-    }
-
-    //========================================================
-    //Nima added for recording the Strain (02-21-2011)
-
-    else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
-    {
-        return new ElementResponse(this, 7, Vector(Num_TotalGaussPts * 6 + 1) );
-    }
-
-
-    //========================================================
-    else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
-    {
-        return new ElementResponse(this, 41, Info_pq2);
-    }
-
-    //========================================================
-    else if (strcmp(argv[0], "GaussPoint") == 0 || strcmp(argv[0], "gausspoint") == 0)
-    {
-        return new ElementResponse(this, 6, GaussCoord);
-    }
-    /*else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
-        int pointNum = atoi(argv[1]);
-    if (pointNum > 0 && pointNum <= 4)
-    return theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, eleInfo);
-        else
-          return 0;
-    }*/
-
-    // otherwise response quantity is unknown for the quad class
-    else
-    {
-        return 0;
-    }
-}
-
-//=============================================================================
-int TwentySevenNodeBrick::getResponse (int responseID, Information &eleInfo)
-{
-    switch (responseID)
-    {
-
-            //      case 1:
-            //        return eleInfo.setVector( this->getResistingForce() );
-
-        case 2:
-        {
-            //checking if element plastified
-            int count  = integration_order * integration_order * integration_order;
-
-            //Vector GaussCoord(81+1);  // 27*3 + count
-            //GaussCoord = this->reportGaussPoint();
-            this->computeGaussPoint();
-
-            //Vector Info(109); // count * 4 +1
-            InfoPlastic(0) = GaussCoord(0);
-
-            straintensor pl_stn;
-
-            //     int plastify;
-            for (int i = 0; i < count; i++)
-            {
-                //                    plastify = 0;
-                InfoPlastic(i * 4 + 1) = GaussCoord(i * 3 + 1); //x
-                InfoPlastic(i * 4 + 2) = GaussCoord(i * 3 + 2); //y
-                InfoPlastic(i * 4 + 3) = GaussCoord(i * 3 + 3); //z
-                pl_stn = matpoint[i]->getPlasticStrainTensor();
-                //double  p_plastc = pl_stn.p_hydrostatic();
-                double  q_plastc = pl_stn.q_deviatoric();
-
-                //if (  fabs(p_plastc) > 0 ) {
-                //   plastify = 1;
-                //}
-                //else
-                //   plastify = 0;
-
-                InfoPlastic(i * 4 + 4) = q_plastc; //plastify; //Plastified?
-
-            }
-
-            return eleInfo.setVector( InfoPlastic );
-            //return plastify;
-
-        }
-
-        case 3:
-        {
-            //                  int count = integration_order* integration_order * integration_order;
-            stresstensor sts;
-            //Vector GaussCoord(81+1);  // 27*3 + count
-            this->computeGaussPoint();
-            Vector wt(9);
-            int i, rs;
-
-            //Vector Info(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
-            InfoMoment(0) = GaussCoord(0);
-            Vector Mt(3), Q(3);
-
-            //Vector Zcoor(3);
-            InfoMoment(109 + 0) = GaussCoord(6); //Zcoor of middle layer
-
-            //Computing Height of element
-            //     const Vector &coor = theNodes[17]->getCrds();
-            const Vector &TotDis = theNodes[17]->getTrialDisp();
-            //checking Z-coor. of moddile layer gauss point
-            //if ( (coor(2) - GaussCoord(6)) > 0.0001 )
-            //  cerr << " Warning: Middle layer Gauss Point Z-coor. wrong...\n";
-
-            //InfoMoment(109+0) = GaussCoord(6);
-            InfoMoment(109 + 1) = TotDis(0); //x-displacement ...Lateral displacement
-            //InfoMoment(109+3) = GaussCoord(6);
-            //InfoMoment(109+6) = GaussCoord(9);
-            //cerr << " Zz " << GaussCoord(3) << " " << GaussCoord(6) << " "<< GaussCoord(9) << endln;
-
-            const char *tp = matpoint[1]->getType();
-            int tag = matpoint[1]->getTag();
-            //cerr << "Materail Tag:" << tag << endln;
-            //tp = "ElasticIsotropic3D";
-            float height = 1;
-            //cerr << "height" << height;
-            double offset[30];
-            //single pile group My ---- change multiplier to y
-            offset[1] = -0.000;/*pile no. 1 */  offset[4] = -0.000;/*pile no. 4 3X3*/
-            offset[2] =  0.000;/*pile no. 2 */  offset[5] =  0.000;/*pile no. 5    */
-            offset[3] =  0.000;/*pile no. 3 */  offset[6] =  0.000;/*pile no. 6    */
-
-            //3X3 pile group My ---- change multiplier to y
-            //offset[1] = -1.287;/*pile no. 1 */  offset[4] = -1.287;/*pile no. 4 3X3 or 2X2*/
-            //offset[2] =  0.000;/*pile no. 2 */  offset[5] =  0.000;/*pile no. 5    */
-            //offset[3] =  1.287;/*pile no. 3 */  offset[6] =  1.287;/*pile no. 6    */
-
-            //3X3 pile group Mx ---- change multiplier to y
-            //offset[1] = 1.287;/*pile no. 1 */  offset[4] = 0.0000;/*pile no. 4 3X3*/
-            //offset[2] = 1.287;/*pile no. 2 */  offset[5] = 0.0000;/*pile no. 5    */
-            //offset[3] = 1.287;/*pile no. 3 */  offset[6] = 0.0000;/*pile no. 6    */
-
-            //4X3 pile group My  ---- change multiplier to x
-            //offset[1] = -1.9305;/*pile no. 1*/  offset[5] = -1.9305;/*pile no. 4 4X3*/
-            //offset[2] = -0.6435;/*pile no. 2*/  offset[6] = -0.6435;/*pile no. 5    */
-            //offset[3] =  0.6435;/*pile no. 3*/  offset[7] =  0.6435;/*pile no. 6    */
-            //offset[4] =  1.9305;/*pile no. 3*/  offset[8] =  1.9305;/*pile no. 6    */
-
-            //4X3 pile group Mx  ---- change multiplier to y
-            //offset[1] = 1.287;/*pile no. 1*/  offset[5] = 0.0000;/*pile no. 4 4X3*/
-            //offset[2] = 1.287;/*pile no. 2*/  offset[6] = 0.0000;/*pile no. 5    */
-            //offset[3] = 1.287;/*pile no. 3*/  offset[7] = 0.0000;/*pile no. 6    */
-            //offset[4] = 1.287;/*pile no. 3*/  offset[8] = 0.0000;/*pile no. 6    */
-
-
-            if (strcmp(tp, "ElasticIsotropic3D") == 0 )
-            {
-                wt = getWeightofGP();
-                const Vector &end1Crd = theNodes[0]->getCrds();
-                const Vector &end5Crd = theNodes[4]->getCrds();
-                height = end1Crd(2) - end5Crd(2);
-                //if  (getTag() == 432) {
-                //   cerr << getTag() << " height " << height << endln;
-                //   cerr << " Weight " << wt << endln;
-                //}
-            }
-
-
-            Mt(0) = 0;
-            Mt(1) = 0;
-            Mt(2) = 0;
-
-            //Q(0) = 0; Q(1) = 0; Q(2) = 0;
-
-
-            for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-            {
-                //r = get_Gauss_p_c( integration_order, GP_c_r );
-                for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                {
-                    //s = get_Gauss_p_c( integration_order, GP_c_s );
-                    rs = (GP_c_r - 1) * integration_order + GP_c_s - 1;
-
-                    for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                    {
-                        //for (int i = 0; i < count; i++)
-                        i =
-                            ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                        sts = matpoint[i]->getStressTensor();
-                        InfoMoment(i * 4 + 1) = GaussCoord(i * 3 + 1); //x
-                        InfoMoment(i * 4 + 2) = GaussCoord(i * 3 + 2); //y
-                        InfoMoment(i * 4 + 3) = GaussCoord(i * 3 + 3); //z
-                        InfoMoment(i * 4 + 4) = sts.cval(3, 3); //Assign sigma_zz
-
-                        //if  (getTag() == 432) {
-                        //    sts.print();
-                        //    cerr << " rs " << rs << "\n "<< InfoMoment(i*4+1) << " " ;
-                        //    cerr << InfoMoment(i*4+2) << " "<< InfoMoment(i*4+3)<< " sts "<< InfoMoment(i*4+4) << "\n ";
-                        //}
-                        if (strcmp(tp, "ElasticIsotropic3D") == 0 )
-                        {
-                            Mt(GP_c_t - 1) += wt(rs) * sts.cval(3, 3) * ( InfoMoment(i * 4 + 1) - offset[tag] ) / height; //x--Calculating Moment_y wt(ts) / height = Area corresponding to the gauss point stress
-                            //Mt(GP_c_t-1) += wt(rs)*sts.cval(3,3)*( InfoMoment(i*4+2)-offset[tag] )/height; //y--Calculating Moment_x wt(ts) / height = Area corresponding to the gauss point stress
-                            //Q(GP_c_t-1) += wt(rs)*sts.cval(3,1)/ height;   //Calculating Q
-                        }
-
-                        //if  (getTag() == 432) {
-                        //   cerr << (GP_c_t-1) << " " << Mt(GP_c_t-1) << endln ;
-                        //   cerr << (GP_c_t-1) << " " << Q(GP_c_t-1) << endln ;
-                        //}
-                    }
-                }
-            }
-
-            //Storing avg. M and Q to InfoMoment
-            InfoMoment(109 + 2) = ( Mt(0) + Mt(1) + Mt(2) ) * 0.3333;
-            //InfoMoment(109+3) = (  Q(0)+ Q(1)+ Q(2) )*0.3333;
-            //InfoMoment(109+4) = Mt(1);
-            //InfoMoment(109+5) = Q(1);
-            //InfoMoment(109+7) = Mt(2);
-            //InfoMoment(109+8) = Q(2);
-
-            //cerr << " Mt " << Mt(0) << " " << Mt(1) << " "<< Mt(2) << endln;
-            return eleInfo.setVector( InfoMoment );
-        }
-
-        case 4:
-        {
-            int count = integration_order * integration_order * integration_order;
-            int i;
-            stresstensor sts;
-            //Vector GaussCoord(81+1);  // 8*3 + count
-            //GaussCoord = this->reportTensor("Gauss Point Coor.");
-
-            //Vector InfoMoment(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
-            InfoStress(0) = count;
-
-            for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
-            {
-                //r = get_Gauss_p_c( integration_order, GP_c_r );
-                for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
-                {
-                    //s = get_Gauss_p_c( integration_order, GP_c_s );
-                    //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
-
-                    for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
-                    {
-                        //for (int i = 0; i < count; i++)
-                        i =
-                            ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-
-                        sts = matpoint[i]->getStressTensor();
-                        InfoStress(i * 6 + 1) = sts.cval(1, 1); //sigma_xx
-                        InfoStress(i * 6 + 2) = sts.cval(2, 2); //sigma_yy
-                        InfoStress(i * 6 + 3) = sts.cval(3, 3); //sigma_zz
-                        InfoStress(i * 6 + 4) = sts.cval(1, 2); //Assign sigma_xy
-                        InfoStress(i * 6 + 5) = sts.cval(1, 3); //Assign sigma_xz
-                        InfoStress(i * 6 + 6) = sts.cval(2, 3); //Assign sigma_yz
-                    }
-                }
-            }
-
-            return eleInfo.setVector( InfoStress );
-        }
-
-        //Added Joey 03-12-03
-        case 41:
-        {
-            int count = integration_order * integration_order * integration_order;
-            count = count / 2;
-            stresstensor sts;
-            sts = matpoint[count]->getStressTensor();
-            Info_pq2(0) = sts.p_hydrostatic();
-            Info_pq2(1) = sts.q_deviatoric();
-            return eleInfo.setVector( Info_pq2 );
-        }
-
-        case 5:
-            return eleInfo.setMatrix(this->getTangentStiff());
-
-        case 6:
-        {
-            this->computeGaussPoint();
-            return eleInfo.setVector( GaussCoord );
-        }
-
-        //************************************************************************************************
-
-        //Nima added for recording the Strain (02-21-2011)
-
-        case 7:
-
-        {
-            static Vector strains(Num_TotalGaussPts * 6 + 1);
-
-            strains(0) = Num_TotalGaussPts;
-
-            straintensor epsilon;
-            int i;
-
-            for (i = 0; i < Num_TotalGaussPts; i++)
-            {
-                epsilon = matpoint[i]->getStrainTensor();
-                strains(i * 6 + 1) = epsilon.cval(1, 1); //xx
-                strains(i * 6 + 2) = epsilon.cval(2, 2); //yy
-                strains(i * 6 + 3) = epsilon.cval(3, 3); //zz
-                strains(i * 6 + 4) = epsilon.cval(1, 2); //xy
-                strains(i * 6 + 5) = epsilon.cval(1, 3); //xz
-                strains(i * 6 + 6) = epsilon.cval(2, 3); //yz
-            }
-
-            return eleInfo.setVector(strains);
-        }
-
-
-        default:
-            return -1;
-    }
-
-    //return 0;
-}
+// Response *TwentySevenNodeBrick::setResponse (const char **argv, int argc, Information &eleInformation)
+// {
+//     //========================================================
+//     //     if (strcmp(argv[0],"force") == 0 || strcmp(argv[0],"forces") == 0)
+//     //     return new ElementResponse(this, 1, P);
+
+//     //========================================================
+//     if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 5, K);
+//     }
+
+//     //========================================================
+//     else if (strcmp(argv[0], "plastic") == 0 || strcmp(argv[0], "plastified") == 0)
+//     {
+//         ////checking if element plastified
+//         //int count  = integration_order* integration_order * integration_order;
+//         //straintensor pl_stn;
+//         //int plastify = 0;
+//         //
+//         //for (int i = 0; i < count; i++) {
+//         //  pl_stn = matpoint[i]->getPlasticStrainTensor();
+//         //   double  p_plastc = pl_stn.p_hydrostatic();
+//         //
+//         //   if (  fabs(p_plastc) > 0 ) {
+//         //      plastify = 1;
+//         //      break;
+//         //   }
+//         //}
+
+//         return new ElementResponse(this, 2, InfoPlastic);
+//     }
+//     //========================================================
+//     //Specially designed for moment computation of solid pile elements Zhaohui Yang UCDavis August 1, 2001
+//     else if (strcmp(argv[0], "PileM") == 0 || strcmp(argv[0], "PileM") == 0)
+//     {
+//         return new ElementResponse(this, 3, InfoStress);
+//     }
+//     //========================================================
+//     else if (strcmp(argv[0], "stress") == 0 || strcmp(argv[0], "stresses") == 0)
+//     {
+//         return new ElementResponse(this, 4, InfoStress);
+//     }
+
+//     //========================================================
+//     //Nima added for recording the Strain (02-21-2011)
+
+//     else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
+//     {
+//         return new ElementResponse(this, 7, Vector(Num_TotalGaussPts * 6 + 1) );
+//     }
+
+
+//     //========================================================
+//     else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
+//     {
+//         return new ElementResponse(this, 41, Info_pq2);
+//     }
+
+//     //========================================================
+//     else if (strcmp(argv[0], "GaussPoint") == 0 || strcmp(argv[0], "gausspoint") == 0)
+//     {
+//         return new ElementResponse(this, 6, GaussCoord);
+//     }
+//     /*else if (strcmp(argv[0],"material") == 0 || strcmp(argv[0],"integrPoint") == 0) {
+//         int pointNum = atoi(argv[1]);
+//     if (pointNum > 0 && pointNum <= 4)
+//     return theMaterial[pointNum-1]->setResponse(&argv[2], argc-2, eleInfo);
+//         else
+//           return 0;
+//     }*/
+
+//     // otherwise response quantity is unknown for the quad class
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+// //=============================================================================
+// int TwentySevenNodeBrick::getResponse (int responseID, Information &eleInfo)
+// {
+//     switch (responseID)
+//     {
+
+//             //      case 1:
+//             //        return eleInfo.setVector( this->getResistingForce() );
+
+//         case 2:
+//         {
+//             //checking if element plastified
+//             int count  = integration_order * integration_order * integration_order;
+
+//             //Vector GaussCoord(81+1);  // 27*3 + count
+//             //GaussCoord = this->reportGaussPoint();
+//             this->computeGaussPoint();
+
+//             //Vector Info(109); // count * 4 +1
+//             InfoPlastic(0) = GaussCoord(0);
+
+//             straintensor pl_stn;
+
+//             //     int plastify;
+//             for (int i = 0; i < count; i++)
+//             {
+//                 //                    plastify = 0;
+//                 InfoPlastic(i * 4 + 1) = GaussCoord(i * 3 + 1); //x
+//                 InfoPlastic(i * 4 + 2) = GaussCoord(i * 3 + 2); //y
+//                 InfoPlastic(i * 4 + 3) = GaussCoord(i * 3 + 3); //z
+//                 pl_stn = matpoint[i]->getPlasticStrainTensor();
+//                 //double  p_plastc = pl_stn.p_hydrostatic();
+//                 double  q_plastc = pl_stn.q_deviatoric();
+
+//                 //if (  fabs(p_plastc) > 0 ) {
+//                 //   plastify = 1;
+//                 //}
+//                 //else
+//                 //   plastify = 0;
+
+//                 InfoPlastic(i * 4 + 4) = q_plastc; //plastify; //Plastified?
+
+//             }
+
+//             return eleInfo.setVector( InfoPlastic );
+//             //return plastify;
+
+//         }
+
+//         case 3:
+//         {
+//             //                  int count = integration_order* integration_order * integration_order;
+//             stresstensor sts;
+//             //Vector GaussCoord(81+1);  // 27*3 + count
+//             this->computeGaussPoint();
+//             Vector wt(9);
+//             int i, rs;
+
+//             //Vector Info(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
+//             InfoMoment(0) = GaussCoord(0);
+//             Vector Mt(3), Q(3);
+
+//             //Vector Zcoor(3);
+//             InfoMoment(109 + 0) = GaussCoord(6); //Zcoor of middle layer
+
+//             //Computing Height of element
+//             //     const Vector &coor = theNodes[17]->getCrds();
+//             const Vector &TotDis = theNodes[17]->getTrialDisp();
+//             //checking Z-coor. of moddile layer gauss point
+//             //if ( (coor(2) - GaussCoord(6)) > 0.0001 )
+//             //  cerr << " Warning: Middle layer Gauss Point Z-coor. wrong...\n";
+
+//             //InfoMoment(109+0) = GaussCoord(6);
+//             InfoMoment(109 + 1) = TotDis(0); //x-displacement ...Lateral displacement
+//             //InfoMoment(109+3) = GaussCoord(6);
+//             //InfoMoment(109+6) = GaussCoord(9);
+//             //cerr << " Zz " << GaussCoord(3) << " " << GaussCoord(6) << " "<< GaussCoord(9) << endln;
+
+//             const char *tp = matpoint[1]->getType();
+//             int tag = matpoint[1]->getTag();
+//             //cerr << "Materail Tag:" << tag << endln;
+//             //tp = "ElasticIsotropic3D";
+//             float height = 1;
+//             //cerr << "height" << height;
+//             double offset[30];
+//             //single pile group My ---- change multiplier to y
+//             offset[1] = -0.000;/*pile no. 1 */  offset[4] = -0.000;/*pile no. 4 3X3*/
+//             offset[2] =  0.000;/*pile no. 2 */  offset[5] =  0.000;/*pile no. 5    */
+//             offset[3] =  0.000;/*pile no. 3 */  offset[6] =  0.000;/*pile no. 6    */
+
+//             //3X3 pile group My ---- change multiplier to y
+//             //offset[1] = -1.287;/*pile no. 1 */  offset[4] = -1.287;/*pile no. 4 3X3 or 2X2*/
+//             //offset[2] =  0.000;/*pile no. 2 */  offset[5] =  0.000;/*pile no. 5    */
+//             //offset[3] =  1.287;/*pile no. 3 */  offset[6] =  1.287;/*pile no. 6    */
+
+//             //3X3 pile group Mx ---- change multiplier to y
+//             //offset[1] = 1.287;/*pile no. 1 */  offset[4] = 0.0000;/*pile no. 4 3X3*/
+//             //offset[2] = 1.287;/*pile no. 2 */  offset[5] = 0.0000;/*pile no. 5    */
+//             //offset[3] = 1.287;/*pile no. 3 */  offset[6] = 0.0000;/*pile no. 6    */
+
+//             //4X3 pile group My  ---- change multiplier to x
+//             //offset[1] = -1.9305;/*pile no. 1*/  offset[5] = -1.9305;/*pile no. 4 4X3*/
+//             //offset[2] = -0.6435;/*pile no. 2*/  offset[6] = -0.6435;/*pile no. 5    */
+//             //offset[3] =  0.6435;/*pile no. 3*/  offset[7] =  0.6435;/*pile no. 6    */
+//             //offset[4] =  1.9305;/*pile no. 3*/  offset[8] =  1.9305;/*pile no. 6    */
+
+//             //4X3 pile group Mx  ---- change multiplier to y
+//             //offset[1] = 1.287;/*pile no. 1*/  offset[5] = 0.0000;/*pile no. 4 4X3*/
+//             //offset[2] = 1.287;/*pile no. 2*/  offset[6] = 0.0000;/*pile no. 5    */
+//             //offset[3] = 1.287;/*pile no. 3*/  offset[7] = 0.0000;/*pile no. 6    */
+//             //offset[4] = 1.287;/*pile no. 3*/  offset[8] = 0.0000;/*pile no. 6    */
+
+
+//             if (strcmp(tp, "ElasticIsotropic3D") == 0 )
+//             {
+//                 wt = getWeightofGP();
+//                 const Vector &end1Crd = theNodes[0]->getCrds();
+//                 const Vector &end5Crd = theNodes[4]->getCrds();
+//                 height = end1Crd(2) - end5Crd(2);
+//                 //if  (getTag() == 432) {
+//                 //   cerr << getTag() << " height " << height << endln;
+//                 //   cerr << " Weight " << wt << endln;
+//                 //}
+//             }
+
+
+//             Mt(0) = 0;
+//             Mt(1) = 0;
+//             Mt(2) = 0;
+
+//             //Q(0) = 0; Q(1) = 0; Q(2) = 0;
+
+
+//             for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//             {
+//                 //r = get_Gauss_p_c( integration_order, GP_c_r );
+//                 for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                 {
+//                     //s = get_Gauss_p_c( integration_order, GP_c_s );
+//                     rs = (GP_c_r - 1) * integration_order + GP_c_s - 1;
+
+//                     for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                     {
+//                         //for (int i = 0; i < count; i++)
+//                         i =
+//                             ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                         sts = matpoint[i]->getStressTensor();
+//                         InfoMoment(i * 4 + 1) = GaussCoord(i * 3 + 1); //x
+//                         InfoMoment(i * 4 + 2) = GaussCoord(i * 3 + 2); //y
+//                         InfoMoment(i * 4 + 3) = GaussCoord(i * 3 + 3); //z
+//                         InfoMoment(i * 4 + 4) = sts.cval(3, 3); //Assign sigma_zz
+
+//                         //if  (getTag() == 432) {
+//                         //    sts.print();
+//                         //    cerr << " rs " << rs << "\n "<< InfoMoment(i*4+1) << " " ;
+//                         //    cerr << InfoMoment(i*4+2) << " "<< InfoMoment(i*4+3)<< " sts "<< InfoMoment(i*4+4) << "\n ";
+//                         //}
+//                         if (strcmp(tp, "ElasticIsotropic3D") == 0 )
+//                         {
+//                             Mt(GP_c_t - 1) += wt(rs) * sts.cval(3, 3) * ( InfoMoment(i * 4 + 1) - offset[tag] ) / height; //x--Calculating Moment_y wt(ts) / height = Area corresponding to the gauss point stress
+//                             //Mt(GP_c_t-1) += wt(rs)*sts.cval(3,3)*( InfoMoment(i*4+2)-offset[tag] )/height; //y--Calculating Moment_x wt(ts) / height = Area corresponding to the gauss point stress
+//                             //Q(GP_c_t-1) += wt(rs)*sts.cval(3,1)/ height;   //Calculating Q
+//                         }
+
+//                         //if  (getTag() == 432) {
+//                         //   cerr << (GP_c_t-1) << " " << Mt(GP_c_t-1) << endln ;
+//                         //   cerr << (GP_c_t-1) << " " << Q(GP_c_t-1) << endln ;
+//                         //}
+//                     }
+//                 }
+//             }
+
+//             //Storing avg. M and Q to InfoMoment
+//             InfoMoment(109 + 2) = ( Mt(0) + Mt(1) + Mt(2) ) * 0.3333;
+//             //InfoMoment(109+3) = (  Q(0)+ Q(1)+ Q(2) )*0.3333;
+//             //InfoMoment(109+4) = Mt(1);
+//             //InfoMoment(109+5) = Q(1);
+//             //InfoMoment(109+7) = Mt(2);
+//             //InfoMoment(109+8) = Q(2);
+
+//             //cerr << " Mt " << Mt(0) << " " << Mt(1) << " "<< Mt(2) << endln;
+//             return eleInfo.setVector( InfoMoment );
+//         }
+
+//         case 4:
+//         {
+//             int count = integration_order * integration_order * integration_order;
+//             int i;
+//             stresstensor sts;
+//             //Vector GaussCoord(81+1);  // 8*3 + count
+//             //GaussCoord = this->reportTensor("Gauss Point Coor.");
+
+//             //Vector InfoMoment(109 + 3 ); //Z values, x-disp. and corresponding avg. moment
+//             InfoStress(0) = count;
+
+//             for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+//             {
+//                 //r = get_Gauss_p_c( integration_order, GP_c_r );
+//                 for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+//                 {
+//                     //s = get_Gauss_p_c( integration_order, GP_c_s );
+//                     //rs = (GP_c_r-1)*integration_order+GP_c_s-1;
+
+//                     for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+//                     {
+//                         //for (int i = 0; i < count; i++)
+//                         i =
+//                             ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+//                         sts = matpoint[i]->getStressTensor();
+//                         InfoStress(i * 6 + 1) = sts.cval(1, 1); //sigma_xx
+//                         InfoStress(i * 6 + 2) = sts.cval(2, 2); //sigma_yy
+//                         InfoStress(i * 6 + 3) = sts.cval(3, 3); //sigma_zz
+//                         InfoStress(i * 6 + 4) = sts.cval(1, 2); //Assign sigma_xy
+//                         InfoStress(i * 6 + 5) = sts.cval(1, 3); //Assign sigma_xz
+//                         InfoStress(i * 6 + 6) = sts.cval(2, 3); //Assign sigma_yz
+//                     }
+//                 }
+//             }
+
+//             return eleInfo.setVector( InfoStress );
+//         }
+
+//         //Added Joey 03-12-03
+//         case 41:
+//         {
+//             int count = integration_order * integration_order * integration_order;
+//             count = count / 2;
+//             stresstensor sts;
+//             sts = matpoint[count]->getStressTensor();
+//             Info_pq2(0) = sts.p_hydrostatic();
+//             Info_pq2(1) = sts.q_deviatoric();
+//             return eleInfo.setVector( Info_pq2 );
+//         }
+
+//         case 5:
+//             return eleInfo.setMatrix(this->getTangentStiff());
+
+//         case 6:
+//         {
+//             this->computeGaussPoint();
+//             return eleInfo.setVector( GaussCoord );
+//         }
+
+//         //************************************************************************************************
+
+//         //Nima added for recording the Strain (02-21-2011)
+
+//         case 7:
+
+//         {
+//             static Vector strains(Num_TotalGaussPts * 6 + 1);
+
+//             strains(0) = Num_TotalGaussPts;
+
+//             straintensor epsilon;
+//             int i;
+
+//             for (i = 0; i < Num_TotalGaussPts; i++)
+//             {
+//                 epsilon = matpoint[i]->getStrainTensor();
+//                 strains(i * 6 + 1) = epsilon.cval(1, 1); //xx
+//                 strains(i * 6 + 2) = epsilon.cval(2, 2); //yy
+//                 strains(i * 6 + 3) = epsilon.cval(3, 3); //zz
+//                 strains(i * 6 + 4) = epsilon.cval(1, 2); //xy
+//                 strains(i * 6 + 5) = epsilon.cval(1, 3); //xz
+//                 strains(i * 6 + 6) = epsilon.cval(2, 3); //yz
+//             }
+
+//             return eleInfo.setVector(strains);
+//         }
+
+
+//         default:
+//             return -1;
+//     }
+
+//     //return 0;
+// }
 
 
 ////#############################################################################

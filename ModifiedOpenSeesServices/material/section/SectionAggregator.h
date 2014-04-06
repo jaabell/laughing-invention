@@ -85,8 +85,8 @@ class SectionAggregator : public SectionForceDeformation
 
         void Print(ostream &s, int flag = 0);
 
-        Response *setResponse(const char **argv, int argc, Information &info);
-        int getResponse(int responseID, Information &info);
+        // Response *setResponse(const char **argv, int argc, Information &info);
+        // int getResponse(int responseID, Information &info);
 
         int setVariable(const char *argv);
         int getVariable(int variableID, double &info);

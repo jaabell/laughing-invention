@@ -37,7 +37,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 
 const int ContactElement_6DOF_6DOF::numberNodes = 2 ;
@@ -142,14 +142,14 @@ ContactElement_6DOF_6DOF::getNumExternalNodes(void) const
 }
 
 // returning the nodes of the elements
-const ID&
+const ID &
 ContactElement_6DOF_6DOF::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
 // returning a pointer for nodes of the element
-Node**
+Node **
 ContactElement_6DOF_6DOF::getNodePtrs(void)
 {
     return nodePointers;
@@ -168,7 +168,7 @@ ContactElement_6DOF_6DOF::getNumDOF(void)
 //    also determines the number of dof associated
 //    with the ContactElement_6DOF_6DOF element
 void
-ContactElement_6DOF_6DOF::setDomain(Domain* theDomain)
+ContactElement_6DOF_6DOF::setDomain(Domain *theDomain)
 {
 
     // check Domain is not null - invoked when object removed from a domain
@@ -251,7 +251,7 @@ ContactElement_6DOF_6DOF::revertToStart()
 }
 
 
-const Matrix&
+const Matrix &
 ContactElement_6DOF_6DOF::getDamp(void)
 {
     // no mass
@@ -260,7 +260,7 @@ ContactElement_6DOF_6DOF::getDamp(void)
 }
 
 
-const Matrix&
+const Matrix &
 ContactElement_6DOF_6DOF::getMass(void)
 {
     // no mass
@@ -276,14 +276,14 @@ ContactElement_6DOF_6DOF::zeroLoad(void)
 }
 
 int
-ContactElement_6DOF_6DOF::addLoad(ElementalLoad* theLoad, double loadFactor)
+ContactElement_6DOF_6DOF::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     // meaningless to addLoad to a contact
     return 0;
 }
 
 int
-ContactElement_6DOF_6DOF::addInertiaLoadToUnbalance(const Vector& accel)
+ContactElement_6DOF_6DOF::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // does nothing as element has no mass
     return 0;
@@ -291,7 +291,7 @@ ContactElement_6DOF_6DOF::addInertiaLoadToUnbalance(const Vector& accel)
 
 
 
-const Matrix&
+const Matrix &
 ContactElement_6DOF_6DOF::getTangentStiff(void)
 {
 
@@ -470,7 +470,7 @@ ContactElement_6DOF_6DOF::getTangentStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 ContactElement_6DOF_6DOF::getInitialStiff(void)
 {
 
@@ -480,7 +480,7 @@ ContactElement_6DOF_6DOF::getInitialStiff(void)
 }
 
 
-const Vector&
+const Vector &
 ContactElement_6DOF_6DOF::getResistingForce()
 {
 
@@ -553,7 +553,7 @@ ContactElement_6DOF_6DOF::getResistingForce()
 
 
 
-const Vector&
+const Vector &
 ContactElement_6DOF_6DOF::getResistingForceIncInertia()
 {
     return this->getResistingForce();
@@ -561,7 +561,7 @@ ContactElement_6DOF_6DOF::getResistingForceIncInertia()
 
 
 void
-ContactElement_6DOF_6DOF::Print(ostream& s, int flag)
+ContactElement_6DOF_6DOF::Print(ostream &s, int flag)
 {
     if (flag == 0)   // print everything
     {
@@ -576,43 +576,43 @@ ContactElement_6DOF_6DOF::Print(ostream& s, int flag)
 }
 
 
-Response*
-ContactElement_6DOF_6DOF::setResponse(const char** argv, int argc, Information& eleInformation)
-{
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new ElementResponse(this, 1, resid);
-    }
+// Response*
+// ContactElement_6DOF_6DOF::setResponse(const char** argv, int argc, Information& eleInformation)
+// {
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new ElementResponse(this, 1, resid);
+//     }
 
-    // tangent stiffness matrix
-    else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 2, stiff);
-    }
+//     // tangent stiffness matrix
+//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 2, stiff);
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
 
-int
-ContactElement_6DOF_6DOF::getResponse(int responseID, Information& eleInfo)
-{
-    if (responseID == 1)
-    {
-        return eleInfo.setVector(this->getResistingForce());
-    }
-    else if (responseID == 2)
-    {
-        return eleInfo.setMatrix(this->getTangentStiff());
-    }
-    else
-    {
-        return -1;
-    }
-}
+// int
+// ContactElement_6DOF_6DOF::getResponse(int responseID, Information& eleInfo)
+// {
+//     if (responseID == 1)
+//     {
+//         return eleInfo.setVector(this->getResistingForce());
+//     }
+//     else if (responseID == 2)
+//     {
+//         return eleInfo.setMatrix(this->getTangentStiff());
+//     }
+//     else
+//     {
+//         return -1;
+//     }
+// }
 
 
 
@@ -776,7 +776,7 @@ int ContactElement_6DOF_6DOF::stick_or_slide(void)
 
 
 int
-ContactElement_6DOF_6DOF::ContactPlane(const Vector& x_local)
+ContactElement_6DOF_6DOF::ContactPlane(const Vector &x_local)
 {
 
     if ((x_local(0) == 0.0) && (x_local(2) == 0.0))
@@ -886,13 +886,13 @@ ContactElement_6DOF_6DOF::ContactPlane(const Vector& x_local)
 
 
 int
-ContactElement_6DOF_6DOF::sendSelf(int commitTag, Channel& theChannel)
+ContactElement_6DOF_6DOF::sendSelf(int commitTag, Channel &theChannel)
 {
     return 0;
 }
 
 int
-ContactElement_6DOF_6DOF::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ContactElement_6DOF_6DOF::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }

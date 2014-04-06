@@ -47,7 +47,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 //#include <fstream>
 
@@ -62,7 +62,7 @@ Vector Truss::trussV12(12);
 //  and storing the tags of the truss end nodes.
 Truss::Truss(int tag,
              int Nd1, int Nd2,
-             UniaxialMaterial& theMat,
+             UniaxialMaterial &theMat,
              double a, double r)
     : Element(tag, ELE_TAG_Truss),
       theMaterial(0), connectedExternalNodes(2),
@@ -154,13 +154,13 @@ Truss::getNumExternalNodes(void) const
     return 2;
 }
 
-const ID&
+const ID &
 Truss::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 Truss::getNodePtrs(void)
 {
     return theNodes;
@@ -180,7 +180,7 @@ Truss::getNumDOF(void)
 //    allocate space for t matrix, determine the length
 //    and set the transformation matrix.
 void
-Truss::setDomain(Domain* theDomain)
+Truss::setDomain(Domain *theDomain)
 {
     // check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -269,8 +269,8 @@ Truss::setDomain(Domain* theDomain)
 
     // now determine the length, cosines and fill in the transformation
     // NOTE t = -t(every one else uses for residual calc)
-    const Vector& end1Crd = theNodes[0]->getCrds();
-    const Vector& end2Crd = theNodes[1]->getCrds();
+    const Vector &end1Crd = theNodes[0]->getCrds();
+    const Vector &end2Crd = theNodes[1]->getCrds();
 
 
 
@@ -330,7 +330,7 @@ Truss::update(void)
 }
 
 
-const Matrix&
+const Matrix &
 Truss::getTangentStiff(void)
 {
     if (L == 0.0)   // - problem in setDomain() no further warnings
@@ -342,7 +342,7 @@ Truss::getTangentStiff(void)
     double E = theMaterial->getTangent();
 
     // come back later and redo this if too slow
-    Matrix& stiff = *theMatrix;
+    Matrix &stiff = *theMatrix;
 
     int numDOF2 = numDOF / 2;
     double temp;
@@ -366,7 +366,7 @@ Truss::getTangentStiff(void)
 }
 
 
-const Matrix&
+const Matrix &
 Truss::getInitialStiff(void)
 {
     if (L == 0.0)   // - problem in setDomain() no further warnings
@@ -378,7 +378,7 @@ Truss::getInitialStiff(void)
     double E = theMaterial->getInitialTangent();
 
     // come back later and redo this if too slow
-    Matrix& stiff = *theMatrix;
+    Matrix &stiff = *theMatrix;
 
     int numDOF2 = numDOF / 2;
     double temp;
@@ -399,7 +399,7 @@ Truss::getInitialStiff(void)
     return *theMatrix;
 }
 
-const Matrix&
+const Matrix &
 Truss::getDamp(void)
 {
     if (L == 0.0)   // - problem in setDomain() no further warnings
@@ -411,7 +411,7 @@ Truss::getDamp(void)
     double eta = theMaterial->getDampTangent();
 
     // come back later and redo this if too slow
-    Matrix& damp = *theMatrix;
+    Matrix &damp = *theMatrix;
 
     int numDOF2 = numDOF / 2;
     double temp;
@@ -433,11 +433,11 @@ Truss::getDamp(void)
 }
 
 
-const Matrix&
+const Matrix &
 Truss::getMass(void)
 {
     // zero the matrix
-    Matrix& mass = *theMatrix;
+    Matrix &mass = *theMatrix;
     mass.Zero();
 
     // check for quick return
@@ -465,7 +465,7 @@ Truss::zeroLoad(void)
 }
 
 int
-Truss::addLoad(ElementalLoad* theLoad, double loadFactor)
+Truss::addLoad(ElementalLoad *theLoad, double loadFactor)
 
 {
     std::cerr << "Truss::addLoad - load type unknown for truss with tag: " << this->getTag() << endln;
@@ -474,7 +474,7 @@ Truss::addLoad(ElementalLoad* theLoad, double loadFactor)
 }
 
 int
-Truss::addInertiaLoadToUnbalance(const Vector& accel)
+Truss::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // check for a quick return
     if (L == 0.0 || rho == 0.0)
@@ -483,12 +483,12 @@ Truss::addInertiaLoadToUnbalance(const Vector& accel)
     }
 
     // get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
 
     int nodalDOF = numDOF / 2;
 
-    #ifdef _G3DEBUG
+#ifdef _G3DEBUG
 
     if (nodalDOF != Raccel1.Size() || nodalDOF != Raccel2.Size())
     {
@@ -497,7 +497,7 @@ Truss::addInertiaLoadToUnbalance(const Vector& accel)
         return -1;
     }
 
-    #endif
+#endif
 
     double M = 0.5 * rho * L;
 
@@ -522,7 +522,7 @@ Truss::addInertiaLoadToUnbalance(const Vector& accel)
 
 
 
-const Vector&
+const Vector &
 Truss::getResistingForce()
 {
     if (L == 0.0)   // - problem in setDomain() no further warnings
@@ -553,7 +553,7 @@ Truss::getResistingForce()
 }
 
 
-const Vector&
+const Vector &
 Truss::getResistingForceIncInertia()
 {
     this->getResistingForce();
@@ -562,8 +562,8 @@ Truss::getResistingForceIncInertia()
     if (L != 0.0 && rho != 0.0)
     {
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
         int numDOF2 = numDOF / 2;
         double M = 0.5 * rho * L;
@@ -594,7 +594,7 @@ Truss::getResistingForceIncInertia()
 }
 
 int
-Truss::sendSelf(int commitTag, Channel& theChannel)
+Truss::sendSelf(int commitTag, Channel &theChannel)
 {
     int res;
 
@@ -660,7 +660,7 @@ Truss::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-Truss::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+Truss::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res;
     int dataTag = this->getDbTag();
@@ -793,7 +793,7 @@ Truss::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 
 
 void
-Truss::Print(ostream& s, int flag)
+Truss::Print(ostream &s, int flag)
 {
     // compute the strain and axial force in the member
     double strain, force;
@@ -841,8 +841,8 @@ Truss::computeCurrentStrain(void) const
     // NOTE method will not be called if L == 0
 
     // determine the strain
-    const Vector& disp1 = theNodes[0]->getTrialDisp();
-    const Vector& disp2 = theNodes[1]->getTrialDisp();
+    const Vector &disp1 = theNodes[0]->getTrialDisp();
+    const Vector &disp2 = theNodes[1]->getTrialDisp();
 
     double dLength = 0.0;
 
@@ -861,8 +861,8 @@ Truss::computeCurrentStrainRate(void) const
     // NOTE method will not be called if L == 0
 
     // determine the strain
-    const Vector& vel1 = theNodes[0]->getTrialVel();
-    const Vector& vel2 = theNodes[1]->getTrialVel();
+    const Vector &vel1 = theNodes[0]->getTrialVel();
+    const Vector &vel2 = theNodes[1]->getTrialVel();
 
     double dLength = 0.0;
 
@@ -875,67 +875,67 @@ Truss::computeCurrentStrainRate(void) const
     return dLength / L;
 }
 
-Response*
-Truss::setResponse(const char** argv, int argc, Information& eleInfo)
-{
-    //
-    // we compare argv[0] for known response types for the Truss
-    //
+// Response*
+// Truss::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
+//     //
+//     // we compare argv[0] for known response types for the Truss
+//     //
 
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "axialForce") == 0)
-    {
-        return new ElementResponse(this, 1, 0.0);
-    }
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "axialForce") == 0)
+//     {
+//         return new ElementResponse(this, 1, 0.0);
+//     }
 
-    else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
-             strcmp(argv[0], "deformation") == 0)
-    {
-        return new ElementResponse(this, 2, 0.0);
-    }
+//     else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
+//              strcmp(argv[0], "deformation") == 0)
+//     {
+//         return new ElementResponse(this, 2, 0.0);
+//     }
 
-    // tangent stiffness matrix
-    else if (strcmp(argv[0], "stiff") == 0)
-    {
-        return new ElementResponse(this, 3, *theMatrix);
-    }
+//     // tangent stiffness matrix
+//     else if (strcmp(argv[0], "stiff") == 0)
+//     {
+//         return new ElementResponse(this, 3, *theMatrix);
+//     }
 
-    // a material quantity
-    else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "-material") == 0)
-    {
-        return theMaterial->setResponse(&argv[1], argc - 1, eleInfo);
-    }
+//     // a material quantity
+//     else if (strcmp(argv[0], "material") == 0 || strcmp(argv[0], "-material") == 0)
+//     {
+//         return theMaterial->setResponse(&argv[1], argc - 1, eleInfo);
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
 
-int
-Truss::getResponse(int responseID, Information& eleInfo)
-{
-    switch (responseID)
-    {
-        case 1:
-            return eleInfo.setDouble(A * theMaterial->getStress());
+// int
+// Truss::getResponse(int responseID, Information& eleInfo)
+// {
+//     switch (responseID)
+//     {
+//         case 1:
+//             return eleInfo.setDouble(A * theMaterial->getStress());
 
-        case 2:
-            return eleInfo.setDouble(L * theMaterial->getStrain());
+//         case 2:
+//             return eleInfo.setDouble(L * theMaterial->getStrain());
 
-        case 3:
-            return eleInfo.setMatrix(this->getTangentStiff());
+//         case 3:
+//             return eleInfo.setMatrix(this->getTangentStiff());
 
-        default:
-            return 0;
-    }
-}
+//         default:
+//             return 0;
+//     }
+// }
 
 
 
-Vector*
+Vector *
 Truss::getForce(void)
 {
-    Vector* elementForces;
+    Vector *elementForces;
 
     if (numDOF == 6)
     {

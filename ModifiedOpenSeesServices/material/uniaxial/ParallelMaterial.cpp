@@ -41,7 +41,7 @@
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
 #include <stdlib.h>
-#include <MaterialResponse.h>
+// #include <MaterialResponse.h>
 #include <iostream>
 using namespace std;
 
@@ -49,7 +49,7 @@ using namespace std;
 ParallelMaterial::ParallelMaterial(
     int tag,
     int num,
-    UniaxialMaterial** theMaterialModels)
+    UniaxialMaterial **theMaterialModels)
     : UniaxialMaterial(tag, MAT_TAG_ParallelMaterial),
       trialStrain(0.0), trialStrainRate(0.0), numMaterials(num), theModels(0)
 {
@@ -240,10 +240,10 @@ ParallelMaterial::revertToStart(void)
 
 
 
-UniaxialMaterial*
+UniaxialMaterial *
 ParallelMaterial::getCopy(void)
 {
-    ParallelMaterial* theCopy = new
+    ParallelMaterial *theCopy = new
     ParallelMaterial(this->getTag(), numMaterials, theModels);
 
     theCopy->trialStrain = trialStrain;
@@ -254,7 +254,7 @@ ParallelMaterial::getCopy(void)
 
 
 int
-ParallelMaterial::sendSelf(int cTag, Channel& theChannel)
+ParallelMaterial::sendSelf(int cTag, Channel &theChannel)
 {
 
     int res = 0;
@@ -315,8 +315,8 @@ ParallelMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ParallelMaterial::recvSelf(int cTag, Channel& theChannel,
-                           FEM_ObjectBroker& theBroker)
+ParallelMaterial::recvSelf(int cTag, Channel &theChannel,
+                           FEM_ObjectBroker &theBroker)
 {
     int res = 0;
     static ID data(3);
@@ -386,7 +386,7 @@ ParallelMaterial::recvSelf(int cTag, Channel& theChannel,
                 delete theModels[i];
             }
 
-            UniaxialMaterial* theMaterialModel =
+            UniaxialMaterial *theMaterialModel =
                 theBroker.getNewUniaxialMaterial(matClassTag);
 
             if (theMaterialModel != 0)
@@ -409,7 +409,7 @@ ParallelMaterial::recvSelf(int cTag, Channel& theChannel,
 }
 
 void
-ParallelMaterial::Print(ostream& s, int flag)
+ParallelMaterial::Print(ostream &s, int flag)
 {
     s << "Parallel tag: " << this->getTag() << endln;
 
@@ -421,68 +421,68 @@ ParallelMaterial::Print(ostream& s, int flag)
 
 }
 
-Response*
-ParallelMaterial::setResponse(const char** argv, int argc,
-                              Information& info)
-{
-    // See if the response is one of the defaults
-    Response* res = UniaxialMaterial::setResponse(argv, argc, info);
+// Response*
+// ParallelMaterial::setResponse(const char** argv, int argc,
+//                               Information& info)
+// {
+//     // See if the response is one of the defaults
+//     Response* res = UniaxialMaterial::setResponse(argv, argc, info);
 
-    if (res != 0)
-    {
-        return res;
-    }
+//     if (res != 0)
+//     {
+//         return res;
+//     }
 
-    if (strcmp(argv[0], "stresses") == 0)
-    {
-        return new MaterialResponse(this, 100, Vector(numMaterials));
-    }
+//     if (strcmp(argv[0], "stresses") == 0)
+//     {
+//         return new MaterialResponse(this, 100, Vector(numMaterials));
+//     }
 
-    else if (strcmp(argv[0], "material") == 0 ||
-             strcmp(argv[0], "component") == 0)
-    {
-        if (argc > 1)
-        {
-            int matNum = atoi(argv[1]) - 1;
+//     else if (strcmp(argv[0], "material") == 0 ||
+//              strcmp(argv[0], "component") == 0)
+//     {
+//         if (argc > 1)
+//         {
+//             int matNum = atoi(argv[1]) - 1;
 
-            if (matNum >= 0 && matNum < numMaterials)
-            {
-                return theModels[matNum]->setResponse(&argv[2], argc - 2, info);
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        else
-        {
-            return 0;
-        }
-    }
+//             if (matNum >= 0 && matNum < numMaterials)
+//             {
+//                 return theModels[matNum]->setResponse(&argv[2], argc - 2, info);
+//             }
+//             else
+//             {
+//                 return 0;
+//             }
+//         }
+//         else
+//         {
+//             return 0;
+//         }
+//     }
 
-    else
-    {
-        return this->UniaxialMaterial::setResponse(argv, argc, info);
-    }
-}
+//     else
+//     {
+//         return this->UniaxialMaterial::setResponse(argv, argc, info);
+//     }
+// }
 
-int
-ParallelMaterial::getResponse(int responseID, Information& info)
-{
-    Vector stresses(numMaterials);
-    int i;
+// int
+// ParallelMaterial::getResponse(int responseID, Information& info)
+// {
+//     Vector stresses(numMaterials);
+//     int i;
 
-    switch (responseID)
-    {
-        case 100:
-            for (i = 0; i < numMaterials; i++)
-            {
-                stresses(i) = theModels[i]->getStress();
-            }
+//     switch (responseID)
+//     {
+//         case 100:
+//             for (i = 0; i < numMaterials; i++)
+//             {
+//                 stresses(i) = theModels[i]->getStress();
+//             }
 
-            return info.setVector(stresses);
+//             return info.setVector(stresses);
 
-        default:
-            return this->UniaxialMaterial::getResponse(responseID, info);
-    }
-}
+//         default:
+//             return this->UniaxialMaterial::getResponse(responseID, info);
+//     }
+// }

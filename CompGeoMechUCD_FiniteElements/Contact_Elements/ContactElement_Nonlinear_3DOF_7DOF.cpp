@@ -35,7 +35,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 
 const int ContactElement_Nonlinear_3DOF_7DOF::numberNodes = 2 ;
@@ -180,7 +180,7 @@ ContactElement_Nonlinear_3DOF_7DOF::ContactElement_Nonlinear_3DOF_7DOF(void)
     print_option = 0;
     jjj = jjj + 1;
 
-    if(jjj == numb_contact_element)
+    if (jjj == numb_contact_element)
     {
         jjj = 0;
     }
@@ -205,14 +205,14 @@ ContactElement_Nonlinear_3DOF_7DOF::getNumExternalNodes(void) const
 }
 
 // returning the nodes of the elements
-const ID&
+const ID &
 ContactElement_Nonlinear_3DOF_7DOF::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
 // returning a pointer for nodes of the element
-Node**
+Node **
 ContactElement_Nonlinear_3DOF_7DOF::getNodePtrs(void)
 {
     return nodePointers;
@@ -228,7 +228,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getNumDOF(void)
 
 
 void
-ContactElement_Nonlinear_3DOF_7DOF::setDomain(Domain* theDomain)
+ContactElement_Nonlinear_3DOF_7DOF::setDomain(Domain *theDomain)
 {
 
     // check Domain is not null - invoked when object removed from a domain
@@ -336,7 +336,7 @@ ContactElement_Nonlinear_3DOF_7DOF::revertToStart()
 }
 
 
-const Matrix&
+const Matrix &
 ContactElement_Nonlinear_3DOF_7DOF::getDamp(void)
 {
     zeroMatrix.Zero();
@@ -344,7 +344,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getDamp(void)
 }
 
 
-const Matrix&
+const Matrix &
 ContactElement_Nonlinear_3DOF_7DOF::getMass(void)
 {
     zeroMatrix.Zero();
@@ -358,13 +358,13 @@ ContactElement_Nonlinear_3DOF_7DOF::zeroLoad(void)
 }
 
 int
-ContactElement_Nonlinear_3DOF_7DOF::addLoad(ElementalLoad* theLoad, double loadFactor)
+ContactElement_Nonlinear_3DOF_7DOF::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     return 0;
 }
 
 int
-ContactElement_Nonlinear_3DOF_7DOF::addInertiaLoadToUnbalance(const Vector& accel)
+ContactElement_Nonlinear_3DOF_7DOF::addInertiaLoadToUnbalance(const Vector &accel)
 {
     return 0;
 }
@@ -402,7 +402,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::if_nodes_are_in_contact_or_not(void)
     gap = Gap_max + local_gap_np1(0);
 
 
-    if(print_option == 1)
+    if (print_option == 1)
     {
         cerr << "slaveNode_TrialDisp_reduced(2)= " << slaveNode_TrialDisp_reduced(2) << endln;
         cerr << "masterNode_location= " << masterNode_location(2) << endln;
@@ -423,7 +423,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::if_nodes_are_in_contact_or_not(void)
     if (gap > Gap_max)
     {
         // Not in contact
-        if(print_option == 1)
+        if (print_option == 1)
         {
             cerr << "Nodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " are NOT in Contact ..." << endln;
         }
@@ -434,7 +434,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::if_nodes_are_in_contact_or_not(void)
     else
     {
         // contact occur
-        if(print_option == 1)
+        if (print_option == 1)
         {
             cerr << "Nodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " are in Contact ..." << endln;
         }
@@ -484,7 +484,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::stick_or_slide(void)
     DispTrial[4] = DispTrialSlave(1);
     DispTrial[5] = DispTrialSlave(2);
 
-    if(print_option == 1)
+    if (print_option == 1)
     {
         cerr << "\n "  << endln;
         cerr << "DispTrial[0]= " << DispTrial[0] << endln;
@@ -552,7 +552,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::stick_or_slide(void)
     //    if(Kn>Kn_max) Kn=Kn_max;
 
 
-    if(print_option == 1)
+    if (print_option == 1)
     {
         //Kn = Kn_np1;
         //cerr<< "Kn_n [kN/m] = " << Kn_n << endln;
@@ -589,7 +589,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::stick_or_slide(void)
     {
         n_trial_np1(i) = shearforce_trial_np1(i) / shear_force_trial_np1_norm;
 
-        if(shear_force_trial_np1_norm == 0.0)
+        if (shear_force_trial_np1_norm == 0.0)
         {
             n_trial_np1(i) = 0;
         }
@@ -603,11 +603,11 @@ int ContactElement_Nonlinear_3DOF_7DOF::stick_or_slide(void)
 
     // Trial state is outside the yield surface
     // Compute correct force state and plastic displacement
-    if(yield_criteria > tol)
+    if (yield_criteria > tol)
     {
         lamda = 1 / Kt * (shear_force_trial_np1_norm - fs * fabs(normalforce_np1) - tol);
 
-        for(i = 0; i < 2; i++)
+        for (i = 0; i < 2; i++)
         {
             //shearforce_np1(i) = shearforce_trial_np1(i) - lamda*Kt*n_trial_np1(i);
             shearforce_np1(i) = fs * fabs(normalforce_np1) * n_trial_np1(i);
@@ -625,7 +625,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::stick_or_slide(void)
 
 
 
-        if(print_option == 1)
+        if (print_option == 1)
         {
             // slide
             cerr << "Sliding ..." << endln;
@@ -661,7 +661,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::stick_or_slide(void)
     {
         // stick
 
-        for(i = 0; i < 2; i++)
+        for (i = 0; i < 2; i++)
         {
             lamda = 0.0; // no plastic deformation
             shearforce_np1(i) = shearforce_trial_np1(i) - lamda * Kt * n_trial_np1(i);
@@ -673,7 +673,7 @@ int ContactElement_Nonlinear_3DOF_7DOF::stick_or_slide(void)
 
 
 
-        if(print_option == 1)
+        if (print_option == 1)
         {
             cerr << "Sticking ..." << endln;
             cerr << "incr_normal_relative_displ_np1 = " << incr_normal_relative_displ_np1 << endln;
@@ -715,20 +715,20 @@ int ContactElement_Nonlinear_3DOF_7DOF::stick_or_slide(void)
 
 
 
-const Matrix&
+const Matrix &
 ContactElement_Nonlinear_3DOF_7DOF::getTangentStiff(void)
 {
 
     // print option
     jjj = jjj + 1;
 
-    if(jjj == numb_contact_element)
+    if (jjj == numb_contact_element)
     {
         jjj = 0;
     }
 
 
-    if(print_option == 1)
+    if (print_option == 1)
     {
         cerr << "\n  "  << endln;
         cerr << "\nSTIFFNESS MATRIX  "  << endln;
@@ -770,7 +770,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getTangentStiff(void)
 
 
 
-    if(print_option == 1)
+    if (print_option == 1)
     {
 
         for (int i = 0; i < 6; i++)
@@ -794,7 +794,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getTangentStiff(void)
 
 
 
-const Matrix&
+const Matrix &
 ContactElement_Nonlinear_3DOF_7DOF::getInitialStiff(void)
 {
 
@@ -805,7 +805,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getInitialStiff(void)
 
 
 
-const Vector&
+const Vector &
 ContactElement_Nonlinear_3DOF_7DOF::getResistingForce()
 {
 
@@ -825,7 +825,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getResistingForce()
         }
 
 
-        if(print_option == 1)
+        if (print_option == 1)
         {
             for (i = 0; i < 6; i++)
             {
@@ -852,7 +852,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getResistingForce()
 
 
 
-const Vector&
+const Vector &
 ContactElement_Nonlinear_3DOF_7DOF::getLocalResistingForce()
 {
     ContactFlag = if_nodes_are_in_contact_or_not();
@@ -896,7 +896,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getLocalResistingForce()
 
 
 
-const Vector&
+const Vector &
 ContactElement_Nonlinear_3DOF_7DOF::getResistingForceIncInertia()
 {
     return this->getResistingForce();
@@ -907,7 +907,7 @@ ContactElement_Nonlinear_3DOF_7DOF::getResistingForceIncInertia()
 
 
 void
-ContactElement_Nonlinear_3DOF_7DOF::Print(ostream& s, int flag)
+ContactElement_Nonlinear_3DOF_7DOF::Print(ostream &s, int flag)
 {
     if (flag == 0)
     {
@@ -925,120 +925,120 @@ ContactElement_Nonlinear_3DOF_7DOF::Print(ostream& s, int flag)
 
 
 
-Response*
-ContactElement_Nonlinear_3DOF_7DOF::setResponse(const char** argv, int argc, Information& eleInformation)
-{
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new ElementResponse(this, 1, resid);
-    }
+// Response*
+// ContactElement_Nonlinear_3DOF_7DOF::setResponse(const char** argv, int argc, Information& eleInformation)
+// {
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new ElementResponse(this, 1, resid);
+//     }
 
-    // tangent stiffness matrix
-    else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 2, stiff);
-    }
+//     // tangent stiffness matrix
+//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 2, stiff);
+//     }
 
-    if (strcmp(argv[0], "localforce") == 0 || strcmp(argv[0], "localforces") == 0)
-    {
-        return new ElementResponse(this, 3, localresid);
-    }
+//     if (strcmp(argv[0], "localforce") == 0 || strcmp(argv[0], "localforces") == 0)
+//     {
+//         return new ElementResponse(this, 3, localresid);
+//     }
 
-    if (strcmp(argv[0], "nodaldisplacement") == 0 || strcmp(argv[0], "nodesdisp") == 0)
-    {
-        return new ElementResponse(this, 4, Vector(10) );
-    }
+//     if (strcmp(argv[0], "nodaldisplacement") == 0 || strcmp(argv[0], "nodesdisp") == 0)
+//     {
+//         return new ElementResponse(this, 4, Vector(10) );
+//     }
 
-    if (strcmp(argv[0], "contactsituation") == 0 || strcmp(argv[0], "contactsituation") == 0)
-    {
-        return new ElementResponse(this, 5, Vector(2) );
-    }
+//     if (strcmp(argv[0], "contactsituation") == 0 || strcmp(argv[0], "contactsituation") == 0)
+//     {
+//         return new ElementResponse(this, 5, Vector(2) );
+//     }
 
-    if (strcmp(argv[0], "relativedisplacement") == 0 || strcmp(argv[0], "reldisp") == 0)
-    {
-        return new ElementResponse(this, 6, Vector(3) );
-    }
+//     if (strcmp(argv[0], "relativedisplacement") == 0 || strcmp(argv[0], "reldisp") == 0)
+//     {
+//         return new ElementResponse(this, 6, Vector(3) );
+//     }
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+
+
+// int
+// ContactElement_Nonlinear_3DOF_7DOF::getResponse(int responseID, Information& eleInfo)
+// {
+//     if (responseID == 1)
+//     {
+//         return eleInfo.setVector(resid);
+//     }
+
+//     else if (responseID == 2)
+//     {
+//         return eleInfo.setMatrix(stiff);
+//     }
+
+//     else if (responseID == 3)
+//     {
+//         return eleInfo.setVector(localresid);
+//     }
+
+//     else if (responseID == 4)
+//     {
+//         static Vector nodaldisplacements(3 * 2);
+//         Vector slaveNode_displacement(7);
+//         Vector masterNode_displacement(3);
+
+//         slaveNode_displacement  = nodePointers[0]->getTrialDisp();
+//         masterNode_displacement = nodePointers[1]->getTrialDisp();
+
+
+//         for (int i = 0; i < 6; i++)
+//         {
+//             nodaldisplacements(0) = slaveNode_displacement(0);
+//             nodaldisplacements(1) = slaveNode_displacement(1);
+//             nodaldisplacements(2) = slaveNode_displacement(2);
+//             nodaldisplacements(3) = masterNode_displacement(0);
+//             nodaldisplacements(4) = masterNode_displacement(1);
+//             nodaldisplacements(5) = masterNode_displacement(2);
+//         }
+
+//         return eleInfo.setVector(nodaldisplacements);
+//     }
+//     else if (responseID == 5)
+//     {
+//         static Vector contactsituation(2);
+//         contactsituation(0) = ContactFlag;
+//         contactsituation(1) = SlidingFlag;
+
+//         return eleInfo.setVector(contactsituation);
+//     }
+
+//     else if (responseID == 6)
+//     {
+//         static Vector RelativeDisplacement(3);
+
+//         RelativeDisplacement(0) = total_normal_relative_displ_np1;
+//         RelativeDisplacement(1) = total_shear_relative_displ_np1(0);
+//         RelativeDisplacement(2) = total_shear_relative_displ_np1(1);
+
+//         return eleInfo.setVector(RelativeDisplacement);
+//     }
+
+//     else
+//     {
+//         return -1;
+//     }
+// }
+
+
 
 
 
 int
-ContactElement_Nonlinear_3DOF_7DOF::getResponse(int responseID, Information& eleInfo)
-{
-    if (responseID == 1)
-    {
-        return eleInfo.setVector(resid);
-    }
-
-    else if (responseID == 2)
-    {
-        return eleInfo.setMatrix(stiff);
-    }
-
-    else if (responseID == 3)
-    {
-        return eleInfo.setVector(localresid);
-    }
-
-    else if (responseID == 4)
-    {
-        static Vector nodaldisplacements(3 * 2);
-        Vector slaveNode_displacement(7);
-        Vector masterNode_displacement(3);
-
-        slaveNode_displacement  = nodePointers[0]->getTrialDisp();
-        masterNode_displacement = nodePointers[1]->getTrialDisp();
-
-
-        for (int i = 0; i < 6; i++)
-        {
-            nodaldisplacements(0) = slaveNode_displacement(0);
-            nodaldisplacements(1) = slaveNode_displacement(1);
-            nodaldisplacements(2) = slaveNode_displacement(2);
-            nodaldisplacements(3) = masterNode_displacement(0);
-            nodaldisplacements(4) = masterNode_displacement(1);
-            nodaldisplacements(5) = masterNode_displacement(2);
-        }
-
-        return eleInfo.setVector(nodaldisplacements);
-    }
-    else if (responseID == 5)
-    {
-        static Vector contactsituation(2);
-        contactsituation(0) = ContactFlag;
-        contactsituation(1) = SlidingFlag;
-
-        return eleInfo.setVector(contactsituation);
-    }
-
-    else if (responseID == 6)
-    {
-        static Vector RelativeDisplacement(3);
-
-        RelativeDisplacement(0) = total_normal_relative_displ_np1;
-        RelativeDisplacement(1) = total_shear_relative_displ_np1(0);
-        RelativeDisplacement(2) = total_shear_relative_displ_np1(1);
-
-        return eleInfo.setVector(RelativeDisplacement);
-    }
-
-    else
-    {
-        return -1;
-    }
-}
-
-
-
-
-
-int
-ContactElement_Nonlinear_3DOF_7DOF::ContactPlane(const Vector& x_local)
+ContactElement_Nonlinear_3DOF_7DOF::ContactPlane(const Vector &x_local)
 {
 
     if ((x_local(0) == 0.0) && (x_local(2) == 0.0))
@@ -1123,13 +1123,13 @@ ContactElement_Nonlinear_3DOF_7DOF::ContactPlane(const Vector& x_local)
 
 
 int
-ContactElement_Nonlinear_3DOF_7DOF::sendSelf(int commitTag, Channel& theChannel)
+ContactElement_Nonlinear_3DOF_7DOF::sendSelf(int commitTag, Channel &theChannel)
 {
     return 0;
 }
 
 int
-ContactElement_Nonlinear_3DOF_7DOF::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ContactElement_Nonlinear_3DOF_7DOF::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }

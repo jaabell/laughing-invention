@@ -50,11 +50,11 @@ class PenaltyElementApplyDisplacement : public Element
 
         // public methods to obtain inforrmation about dof & connectivity
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState(void);
@@ -63,29 +63,29 @@ class PenaltyElementApplyDisplacement : public Element
         int update(void);
 
         // public methods to obtain stiffness, mass, damping and residual information
-        const Matrix& getKi(void);
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getDamp(void);
-        const Matrix& getMass(void);
+        const Matrix &getKi(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getDamp(void);
+        const Matrix &getMass(void);
 
         double getPenaltyStiffness(void);
 
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
         // public methods for element output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
-        void Print(ostream& s, int flag = 0);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInfo);
+        // int getResponse(int responseID, Information& eleInformation);
 
         //    Matrix returnMass(void);
 
@@ -98,15 +98,15 @@ class PenaltyElementApplyDisplacement : public Element
         ID  connectedExternalNodes;     // contains the tags of the end nodes
         int numDOF;                     // number of dof for PenaltyElementApplyDisplacement
 
-        Vector* theLoad;     // pointer to the load vector P
-        Matrix* theMatrix; // pointer to objects matrix (a class wide Matrix)
-        Vector* theVector; // pointer to objects vector (a class wide Vector)
-        Matrix* tempMatrix; // pointer to objects matrix (a class wide Matrix)
-        Vector* tempVector; // pointer to objects vector (a class wide Vector)
+        Vector *theLoad;     // pointer to the load vector P
+        Matrix *theMatrix; // pointer to objects matrix (a class wide Matrix)
+        Vector *theVector; // pointer to objects vector (a class wide Vector)
+        Matrix *tempMatrix; // pointer to objects matrix (a class wide Matrix)
+        Vector *tempVector; // pointer to objects vector (a class wide Vector)
 
 
         int direction;
-        Node* theNodes[1];
+        Node *theNodes[1];
         double penaltystiffness;
 
 

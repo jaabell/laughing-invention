@@ -117,7 +117,7 @@ ThreeNodeAndesBending::ThreeNodeAndesBending()
 ThreeNodeAndesBending::ThreeNodeAndesBending(int element_number,
         int node_numb_1, int node_numb_2, int node_numb_3,
         double t,
-        NDMaterial* Globalmmodel)
+        NDMaterial *Globalmmodel)
     :
     Element(element_number, ELE_TAG_ThreeNodeAndesBending ),
     connectedExternalNodes(3),
@@ -177,7 +177,7 @@ ThreeNodeAndesBending::ThreeNodeAndesBending(int element_number,
 ThreeNodeAndesBending::ThreeNodeAndesBending(int element_number,
         int node_numb_1, int node_numb_2, int node_numb_3,
         double t,
-        NDMaterial** material)
+        NDMaterial **material)
     :
     Element(element_number, ELE_TAG_ThreeNodeAndesBending ),
     connectedExternalNodes(3),
@@ -240,12 +240,12 @@ int ThreeNodeAndesBending::getNumExternalNodes() const
     return 3;
 }
 
-const ID& ThreeNodeAndesBending::getExternalNodes()
+const ID &ThreeNodeAndesBending::getExternalNodes()
 {
     return connectedExternalNodes;
 }
 
-Node** ThreeNodeAndesBending::getNodePtrs(void)
+Node **ThreeNodeAndesBending::getNodePtrs(void)
 {
     return theNodes;
 }
@@ -255,7 +255,7 @@ int ThreeNodeAndesBending::getNumDOF()
     return 18;
 }
 
-void ThreeNodeAndesBending::setDomain(Domain* theDomain)
+void ThreeNodeAndesBending::setDomain(Domain *theDomain)
 {
     if (theDomain == 0)
     {
@@ -315,7 +315,7 @@ int ThreeNodeAndesBending::update(void)
     return 0;
 }
 
-const Matrix& ThreeNodeAndesBending::getTangentStiff ()
+const Matrix &ThreeNodeAndesBending::getTangentStiff ()
 {
     // Since this is a linear element, the stiffness is calculated only once.
     if (!is_stiffness_calculated)
@@ -393,12 +393,12 @@ const Matrix& ThreeNodeAndesBending::getTangentStiff ()
     return K;
 }
 
-const Matrix& ThreeNodeAndesBending::getInitialStiff()
+const Matrix &ThreeNodeAndesBending::getInitialStiff()
 {
     return getTangentStiff();
 }
 
-const Matrix& ThreeNodeAndesBending::getMass ()
+const Matrix &ThreeNodeAndesBending::getMass ()
 {
     if (!is_mass_calculated)
     {
@@ -581,19 +581,19 @@ void ThreeNodeAndesBending::zeroLoad ()
     Q.Zero();
 }
 
-int ThreeNodeAndesBending::addLoad(ElementalLoad* theLoad, double loadFactor)
+int ThreeNodeAndesBending::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
 
     return 0;
 }
 
-int ThreeNodeAndesBending::addInertiaLoadToUnbalance(const Vector& accel)
+int ThreeNodeAndesBending::addInertiaLoadToUnbalance(const Vector &accel)
 
 {
     // Get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
-    const Vector& Raccel3 = theNodes[2]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel3 = theNodes[2]->getRV(accel);
 
     if (6 != Raccel1.Size() || 6 != Raccel2.Size() || 6 != Raccel3.Size() )
     {
@@ -631,7 +631,7 @@ int ThreeNodeAndesBending::addInertiaLoadToUnbalance(const Vector& accel)
     return 0;
 }
 
-const Vector& ThreeNodeAndesBending::getResistingForce ()
+const Vector &ThreeNodeAndesBending::getResistingForce ()
 {
     //cout << "Called getResistingForce() for ThreeNodeAndesBending # " << getTag() << endl;
 
@@ -640,7 +640,7 @@ const Vector& ThreeNodeAndesBending::getResistingForce ()
 
     for (int node = 0; node < 3; node++)
     {
-        Node* node_i = theNodes[node];
+        Node *node_i = theNodes[node];
 
         disp_i = node_i->getDisp();
         disp_i += node_i->getIncrDisp();
@@ -658,7 +658,7 @@ const Vector& ThreeNodeAndesBending::getResistingForce ()
     return P;
 }
 
-const Vector& ThreeNodeAndesBending::getResistingForceIncInertia ()
+const Vector &ThreeNodeAndesBending::getResistingForceIncInertia ()
 {
     Vector NodalDisplacements(18);
     Vector NodalAccelerations(18);
@@ -668,7 +668,7 @@ const Vector& ThreeNodeAndesBending::getResistingForceIncInertia ()
 
     for (int node = 0; node < 3; node++)
     {
-        Node* node_i = theNodes[node];
+        Node *node_i = theNodes[node];
         disp_i = node_i->getDisp();
         //disp_i += node_i->getIncrDeltaDisp();
         disp_i += node_i->getIncrDisp();
@@ -698,59 +698,59 @@ const Vector& ThreeNodeAndesBending::getResistingForceIncInertia ()
     return P;
 }
 
-int ThreeNodeAndesBending::sendSelf (int commitTag, Channel& theChannel)
+int ThreeNodeAndesBending::sendSelf (int commitTag, Channel &theChannel)
 {
     cout << "ThreeNodeAndesBending::sendSelf ()" << endl;
     return 0;
 }
 
-int ThreeNodeAndesBending::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int ThreeNodeAndesBending::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     cout << "ThreeNodeAndesBending::recvSelf ()" << endl;
     return 0;
 }
 
-void ThreeNodeAndesBending::Print(ostream& s, int flag = 0)
+void ThreeNodeAndesBending::Print(ostream &s, int flag = 0)
 {
 
 }
 
-Response* ThreeNodeAndesBending::setResponse (const char** argv, int argc, Information& eleInformation)
-{
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-    {
-        return new ElementResponse(this, 1, P);
-    }
-    else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 5, K);
-    }
-    else
-    {
-        return 0;  // Return a null pointer
-    }
-}
+// Response* ThreeNodeAndesBending::setResponse (const char** argv, int argc, Information& eleInformation)
+// {
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
+//     {
+//         return new ElementResponse(this, 1, P);
+//     }
+//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 5, K);
+//     }
+//     else
+//     {
+//         return 0;  // Return a null pointer
+//     }
+// }
 
-int ThreeNodeAndesBending::getResponse (int responseID, Information& eleInformation)
-{
-    if (responseID == 1) //forces
-    {
-        return eleInformation.setVector(P);
-    }
+// int ThreeNodeAndesBending::getResponse (int responseID, Information& eleInformation)
+// {
+//     if (responseID == 1) //forces
+//     {
+//         return eleInformation.setVector(P);
+//     }
 
-    if (responseID == 5) //stiffness
-    {
-        return eleInformation.setMatrix(K);
-    }
-    else
-    {
-        return -1;
-    }
-}
+//     if (responseID == 5) //stiffness
+//     {
+//         return eleInformation.setMatrix(K);
+//     }
+//     else
+//     {
+//         return -1;
+//     }
+// }
 
 Matrix ThreeNodeAndesBending::returnMass(void)
 {
-    if(!is_mass_calculated)
+    if (!is_mass_calculated)
     {
         return getMass();
     }
@@ -809,7 +809,7 @@ void ThreeNodeAndesBending::initializeGeometry()
 void ThreeNodeAndesBending::useThisCoordinateSystem(Vector e1, Vector e2, Vector e3)
 {
     //Local-to-global transformation matrix
-    for(int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
         T_lg(i, 0) = e1(i);
         T_lg(i, 1) = e2(i);

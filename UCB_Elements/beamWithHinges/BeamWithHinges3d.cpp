@@ -46,7 +46,7 @@
 #include <SectionForceDeformation.h>
 
 #include <Information.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 // #include <Renderer.h>
 
@@ -86,8 +86,8 @@ BeamWithHinges3d::BeamWithHinges3d(void)
 BeamWithHinges3d::BeamWithHinges3d(int tag, int nodeI, int nodeJ,
                                    double e, double a, double iz,
                                    double iy, double g, double j,
-                                   SectionForceDeformation& sectionRefI, double lpi,
-                                   SectionForceDeformation& sectionRefJ, double lpj,
+                                   SectionForceDeformation &sectionRefI, double lpi,
+                                   SectionForceDeformation &sectionRefJ, double lpj,
                                    double r, int max, double tol,
                                    double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
                                    double rigJntOffset1_x = 0, double rigJntOffset1_y = 0, double rigJntOffset1_z = 0,
@@ -214,13 +214,13 @@ BeamWithHinges3d::getNumExternalNodes(void) const
     return 2;
 }
 
-const ID&
+const ID &
 BeamWithHinges3d::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 BeamWithHinges3d::getNodePtrs()
 {
     return theNodes;
@@ -234,12 +234,12 @@ BeamWithHinges3d::getNumDOF(void)
 }
 
 void
-BeamWithHinges3d::setDomain(Domain* theDomain)
+BeamWithHinges3d::setDomain(Domain *theDomain)
 {
     //This function may be called after a beam is constructed, so
     //geometry may change.  Therefore calculate all beam geometry here.
 
-    if(theDomain == 0)
+    if (theDomain == 0)
     {
         theNodes[0] = 0;
         theNodes[1] = 0;
@@ -361,14 +361,14 @@ BeamWithHinges3d::revertToStart(void)
     return err;
 }
 
-const Matrix&
+const Matrix &
 BeamWithHinges3d::getTangentStiff(void)
 {
     return this->getGlobalStiffMatrix(kb, q);
 }
 
 
-const Matrix&
+const Matrix &
 BeamWithHinges3d::getInitialStiff(void)
 {
     double oneOverL = 1.0 / L;
@@ -447,7 +447,7 @@ BeamWithHinges3d::getInitialStiff(void)
 
         // Get section information
         int order = section[i]->getOrder();
-        const ID& code = section[i]->getType();
+        const ID &code = section[i]->getType();
 
         Vector s(workArea, order);
         Vector ds(&workArea[order], order);
@@ -459,7 +459,7 @@ BeamWithHinges3d::getInitialStiff(void)
         double xL1 = xL - 1.0;
 
         // get section flexibility matrix
-        const Matrix& fSec = section[i]->getInitialFlexibility();
+        const Matrix &fSec = section[i]->getInitialFlexibility();
 
         // integrate section flexibility matrix
         // f += (b^ fs * b) * lp[i];
@@ -470,7 +470,7 @@ BeamWithHinges3d::getInitialStiff(void)
 
         for (ii = 0; ii < order; ii++)
         {
-            switch(code(ii))
+            switch (code(ii))
             {
                 case SECTION_RESPONSE_P:
                     for (jj = 0; jj < order; jj++)
@@ -613,7 +613,7 @@ BeamWithHinges3d::getInitialStiff(void)
     return this->getInitialGlobalStiffMatrix(kbInit);
 }
 
-const Matrix&
+const Matrix &
 BeamWithHinges3d::getMass(void)
 {
     theMatrix.Zero();
@@ -651,10 +651,10 @@ BeamWithHinges3d::zeroLoad(void)
 }
 
 int
-BeamWithHinges3d::addLoad(ElementalLoad* theLoad, double loadFactor)
+BeamWithHinges3d::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (sp == 0)
     {
@@ -683,7 +683,7 @@ BeamWithHinges3d::addLoad(ElementalLoad* theLoad, double loadFactor)
         double wz = data(1) * loadFactor; // Transverse
         double wx = data(2) * loadFactor; // Axial
 
-        Matrix& s_p = *sp;
+        Matrix &s_p = *sp;
 
         // Accumulate applied section forces due to uniform load
         for (int i = 0; i < 2; i++)
@@ -761,7 +761,7 @@ BeamWithHinges3d::addLoad(ElementalLoad* theLoad, double loadFactor)
         double Vz2 = Pz * aOverL;
         double Vz1 = Pz - Vz2;
 
-        Matrix& s_p = *sp;
+        Matrix &s_p = *sp;
 
         // Accumulate applied section forces due to point load
         for (int i = 0; i < 2; i++)
@@ -925,15 +925,15 @@ BeamWithHinges3d::addLoad(ElementalLoad* theLoad, double loadFactor)
 }
 
 int
-BeamWithHinges3d::addInertiaLoadToUnbalance(const Vector& accel)
+BeamWithHinges3d::addInertiaLoadToUnbalance(const Vector &accel)
 {
     if (rho == 0.0)
     {
         return 0;
     }
 
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
 
     double mass = 0.5 * L * rho;
 
@@ -948,7 +948,7 @@ BeamWithHinges3d::addInertiaLoadToUnbalance(const Vector& accel)
     return 0;
 }
 
-const Vector&
+const Vector &
 BeamWithHinges3d::getResistingForce(void)
 {
     Vector p0Vec(p0, 5);
@@ -956,7 +956,7 @@ BeamWithHinges3d::getResistingForce(void)
     return this->getGlobalResistingForce(q, p0Vec);
 }
 
-const Vector&
+const Vector &
 BeamWithHinges3d::getResistingForceIncInertia(void)
 {
     theVector = this->getResistingForce();
@@ -966,8 +966,8 @@ BeamWithHinges3d::getResistingForceIncInertia(void)
 
         double ag[12];
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
         ag[0] = accel1(0);
         ag[1] = accel1(1);
@@ -1011,7 +1011,7 @@ BeamWithHinges3d::getResistingForceIncInertia(void)
 
 
 int
-BeamWithHinges3d::sendSelf(int commitTag, Channel& theChannel)
+BeamWithHinges3d::sendSelf(int commitTag, Channel &theChannel)
 {
     // place the integer data into an ID
     int dbTag = this->getDbTag();
@@ -1132,8 +1132,8 @@ BeamWithHinges3d::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-BeamWithHinges3d::recvSelf(int commitTag, Channel& theChannel,
-                           FEM_ObjectBroker& theBroker)
+BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
+                           FEM_ObjectBroker &theBroker)
 {
     // place the integer data into an ID
     int dbTag = this->getDbTag();
@@ -1312,7 +1312,7 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel& theChannel,
 
 
 void
-BeamWithHinges3d::Print(ostream& s, int flag)
+BeamWithHinges3d::Print(ostream &s, int flag)
 {
     s << "\nBeamWithHinges3d, tag: " << this->getTag() << endln;
     s << "\tConnected Nodes: " << connectedExternalNodes;
@@ -1344,14 +1344,14 @@ BeamWithHinges3d::Print(ostream& s, int flag)
     if (section[0] != 0)
     {
         s << "Hinge 1, section tag: " << section[0]->getTag() <<
-          ", length: " << beta1* L << endln;
+          ", length: " << beta1 *L << endln;
         section[0]->Print(s, flag);
     }
 
     if (section[1] != 0)
     {
         s << "Hinge 2, section tag: " << section[2]->getTag() <<
-          ", length: " << beta2* L << endln;
+          ", length: " << beta2 *L << endln;
         section[1]->Print(s, flag);
     }
 }
@@ -1360,18 +1360,18 @@ BeamWithHinges3d::Print(ostream& s, int flag)
 //Private Function Definitions
 
 void
-BeamWithHinges3d::setNodePtrs(Domain* theDomain)
+BeamWithHinges3d::setNodePtrs(Domain *theDomain)
 {
     theNodes[0] = theDomain->getNode(connectedExternalNodes(0));
     theNodes[1] = theDomain->getNode(connectedExternalNodes(1));
 
-    if(theNodes[0] == 0)
+    if (theNodes[0] == 0)
     {
         std::cerr << "BeamWithHinges3d::setNodePtrs() -- node 1 does not exist\n";
         exit(-1);
     }
 
-    if(theNodes[1] == 0)
+    if (theNodes[1] == 0)
     {
         std::cerr << "BeamWithHinges3d::setNodePtrs() -- node 2 does not exist\n";
         exit(-1);
@@ -1503,7 +1503,7 @@ BeamWithHinges3d::update(void)
 
             // Get section information
             int order = section[i]->getOrder();
-            const ID& code = section[i]->getType();
+            const ID &code = section[i]->getType();
 
             Vector s(workArea, order);
             Vector ds(&workArea[order], order);
@@ -1522,7 +1522,7 @@ BeamWithHinges3d::update(void)
             //s.addMatrixVector(0.0, b, q, 1.0);
             for (ii = 0; ii < order; ii++)
             {
-                switch(code(ii))
+                switch (code(ii))
                 {
                     case SECTION_RESPONSE_P:
                         s(ii) = q(0);
@@ -1557,11 +1557,11 @@ BeamWithHinges3d::update(void)
             // Add the effects of element loads, if present
             if (sp != 0)
             {
-                const Matrix& s_p = *sp;
+                const Matrix &s_p = *sp;
 
                 for (ii = 0; ii < order; ii++)
                 {
-                    switch(code(ii))
+                    switch (code(ii))
                     {
                         case SECTION_RESPONSE_P:
                             s(ii) += s_p(0, i);
@@ -1624,11 +1624,11 @@ BeamWithHinges3d::update(void)
             int jj;
             fb.Zero();
             double tmp;
-            const Matrix& fSec = fs[i];
+            const Matrix &fSec = fs[i];
 
             for (ii = 0; ii < order; ii++)
             {
-                switch(code(ii))
+                switch (code(ii))
                 {
                     case SECTION_RESPONSE_P:
                         for (jj = 0; jj < order; jj++)
@@ -1767,7 +1767,7 @@ BeamWithHinges3d::update(void)
             //vr.addMatrixTransposeVector(1.0, b, de, lp[i]);
             for (ii = 0; ii < order; ii++)
             {
-                switch(code(ii))
+                switch (code(ii))
                 {
                     case SECTION_RESPONSE_P:
                         vr(0) += de(ii) * lp[i];
@@ -1861,7 +1861,7 @@ BeamWithHinges3d::setHinges(void)
 }
 
 void
-BeamWithHinges3d::getForceInterpMatrix(Matrix& b, double x, const ID& code)
+BeamWithHinges3d::getForceInterpMatrix(Matrix &b, double x, const ID &code)
 {
     b.Zero();
 
@@ -1904,7 +1904,7 @@ BeamWithHinges3d::getForceInterpMatrix(Matrix& b, double x, const ID& code)
 }
 
 void
-BeamWithHinges3d::getDistrLoadInterpMatrix(Matrix& bp, double x, const ID& code)
+BeamWithHinges3d::getDistrLoadInterpMatrix(Matrix &bp, double x, const ID &code)
 {
     bp.Zero();
 
@@ -1944,154 +1944,154 @@ BeamWithHinges3d::getDistrLoadInterpMatrix(Matrix& bp, double x, const ID& code)
     }
 }
 
-Response*
-BeamWithHinges3d::setResponse(const char** argv, int argc, Information& info)
-{
-    // hinge rotations
-    if (strcmp(argv[0], "plasticDeformation") == 0 ||
-            strcmp(argv[0], "plasticRotation") == 0)
-    {
-        return new ElementResponse(this, 1, Vector(3));
-    }
-
-    // global forces
-    else if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
-             strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
-    {
-        return new ElementResponse(this, 2, theVector);
-    }
-
-    // stiffness
-    else if (strcmp(argv[0], "stiffness") == 0)
-    {
-        return new ElementResponse(this, 3, theMatrix);
-    }
-
-    // local forces
-    else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
-    {
-        return new ElementResponse(this, 4, theVector);
-    }
-
-    // section response
-    else if (strcmp(argv[0], "section") == 0)
-    {
-        int sectionNum = atoi(argv[1]) - 1;
-
-        if (sectionNum >= 0 && sectionNum < 2)
-            if (section[sectionNum] != 0)
-            {
-                return section[sectionNum]->setResponse(&argv[2], argc - 2, info);
-            }
-
-        return 0;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-int
-BeamWithHinges3d::getResponse(int responseID, Information& eleInfo)
-{
-    double V, N, T, M1, M2;
-    static Vector force(12);
-    static Vector def(6);
-
-    switch (responseID)
-    {
-        case 1:
-            {
-                const Vector& v = this->getBasicTrialDisp();
-                double LoverEA   = L / (E * A);
-                double Lover3EIz = L / (3 * E * Iz);
-                double Lover6EIz = 0.5 * Lover3EIz;
-                double LoverGJ   = L / (G * J);
-                double Lover3EIy = L / (3 * E * Iy);
-                double Lover6EIy = 0.5 * Lover3EIy;
-
-                double q1 = qCommit(1);
-                double q2 = qCommit(2);
-                double q3 = qCommit(3);
-                double q4 = qCommit(4);
-
-                def(0) = v(0) - LoverEA * qCommit(0);
-                def(1) = v(1) - Lover3EIz * q1 + Lover6EIz * q2;
-                def(2) = v(2) + Lover6EIz * q1 - Lover3EIz * q2;
-                def(3) = v(3) - Lover3EIy * q3 + Lover6EIy * q4;
-                def(4) = v(4) + Lover6EIy * q3 - Lover3EIy * q4;
-                def(5) = v(5) - LoverGJ * qCommit(5);
-
-                return eleInfo.setVector(def);
-            }
-
-        case 2: // global forces
-            return eleInfo.setVector(this->getResistingForce());
-
-        case 3: // stiffness
-            return eleInfo.setMatrix(this->getTangentStiff());
-
-        case 4: // local forces
-            // Axial
-            N = q(0);
-            force(6) =  N;
-            force(0) = -N + p0[0];
-
-            // Torsion
-            T = q(5);
-            force(9) =  T;
-            force(3) = -T;
-
-            // Moments about z and shears along y
-            M1 = q(1);
-            M2 = q(2);
-            force(5)  = M1;
-            force(11) = M2;
-            V = (M1 + M2) / L;
-            force(1) =  V + p0[1];
-            force(7) = -V + p0[2];
-
-            // Moments about y and shears along z
-            M1 = q(3);
-            M2 = q(4);
-            force(4)  = M1;
-            force(10) = M2;
-            V = (M1 + M2) / L;
-            force(2) = -V + p0[3];
-            force(8) =  V + p0[4];
-
-            return eleInfo.setVector(force);
-
-        default:
-            return -1;
-    }
-}
-
-// int
-// BeamWithHinges3d::displaySelf(Renderer &theViewer, int displayMode, float fact)
+// Response*
+// BeamWithHinges3d::setResponse(const char** argv, int argc, Information& info)
 // {
-//   // first determine the end points of the quad based on
-//   // the display factor (a measure of the distorted image)
-//   const Vector &end1Crd = theNodes[0]->getCrds();
-//   const Vector &end2Crd = theNodes[1]->getCrds();
-//
-//   const Vector &end1Disp = theNodes[0]->getDisp();
-//   const Vector &end2Disp = theNodes[1]->getDisp();
-//
-//   static Vector v1(3);
-//   static Vector v2(3);
-//
-//   for (int i = 0; i < 3; i++) {
-//     v1(i) = end1Crd(i) + end1Disp(i)*fact;
-//     v2(i) = end2Crd(i) + end2Disp(i)*fact;
-//   }
-//
-//   return theViewer.drawLine (v1, v2, 1.0, 1.0);
+//     // hinge rotations
+//     if (strcmp(argv[0], "plasticDeformation") == 0 ||
+//             strcmp(argv[0], "plasticRotation") == 0)
+//     {
+//         return new ElementResponse(this, 1, Vector(3));
+//     }
+
+//     // global forces
+//     else if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+//              strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
+//     {
+//         return new ElementResponse(this, 2, theVector);
+//     }
+
+//     // stiffness
+//     else if (strcmp(argv[0], "stiffness") == 0)
+//     {
+//         return new ElementResponse(this, 3, theMatrix);
+//     }
+
+//     // local forces
+//     else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
+//     {
+//         return new ElementResponse(this, 4, theVector);
+//     }
+
+//     // section response
+//     else if (strcmp(argv[0], "section") == 0)
+//     {
+//         int sectionNum = atoi(argv[1]) - 1;
+
+//         if (sectionNum >= 0 && sectionNum < 2)
+//             if (section[sectionNum] != 0)
+//             {
+//                 return section[sectionNum]->setResponse(&argv[2], argc - 2, info);
+//             }
+
+//         return 0;
+//     }
+//     else
+//     {
+//         return 0;
+//     }
 // }
 
+// int
+// BeamWithHinges3d::getResponse(int responseID, Information& eleInfo)
+// {
+//     double V, N, T, M1, M2;
+//     static Vector force(12);
+//     static Vector def(6);
+
+//     switch (responseID)
+//     {
+//         case 1:
+//             {
+//                 const Vector& v = this->getBasicTrialDisp();
+//                 double LoverEA   = L / (E * A);
+//                 double Lover3EIz = L / (3 * E * Iz);
+//                 double Lover6EIz = 0.5 * Lover3EIz;
+//                 double LoverGJ   = L / (G * J);
+//                 double Lover3EIy = L / (3 * E * Iy);
+//                 double Lover6EIy = 0.5 * Lover3EIy;
+
+//                 double q1 = qCommit(1);
+//                 double q2 = qCommit(2);
+//                 double q3 = qCommit(3);
+//                 double q4 = qCommit(4);
+
+//                 def(0) = v(0) - LoverEA * qCommit(0);
+//                 def(1) = v(1) - Lover3EIz * q1 + Lover6EIz * q2;
+//                 def(2) = v(2) + Lover6EIz * q1 - Lover3EIz * q2;
+//                 def(3) = v(3) - Lover3EIy * q3 + Lover6EIy * q4;
+//                 def(4) = v(4) + Lover6EIy * q3 - Lover3EIy * q4;
+//                 def(5) = v(5) - LoverGJ * qCommit(5);
+
+//                 return eleInfo.setVector(def);
+//             }
+
+//         case 2: // global forces
+//             return eleInfo.setVector(this->getResistingForce());
+
+//         case 3: // stiffness
+//             return eleInfo.setMatrix(this->getTangentStiff());
+
+//         case 4: // local forces
+//             // Axial
+//             N = q(0);
+//             force(6) =  N;
+//             force(0) = -N + p0[0];
+
+//             // Torsion
+//             T = q(5);
+//             force(9) =  T;
+//             force(3) = -T;
+
+//             // Moments about z and shears along y
+//             M1 = q(1);
+//             M2 = q(2);
+//             force(5)  = M1;
+//             force(11) = M2;
+//             V = (M1 + M2) / L;
+//             force(1) =  V + p0[1];
+//             force(7) = -V + p0[2];
+
+//             // Moments about y and shears along z
+//             M1 = q(3);
+//             M2 = q(4);
+//             force(4)  = M1;
+//             force(10) = M2;
+//             V = (M1 + M2) / L;
+//             force(2) = -V + p0[3];
+//             force(8) =  V + p0[4];
+
+//             return eleInfo.setVector(force);
+
+//         default:
+//             return -1;
+//     }
+// }
+
+// // int
+// // BeamWithHinges3d::displaySelf(Renderer &theViewer, int displayMode, float fact)
+// // {
+// //   // first determine the end points of the quad based on
+// //   // the display factor (a measure of the distorted image)
+// //   const Vector &end1Crd = theNodes[0]->getCrds();
+// //   const Vector &end2Crd = theNodes[1]->getCrds();
+// //
+// //   const Vector &end1Disp = theNodes[0]->getDisp();
+// //   const Vector &end2Disp = theNodes[1]->getDisp();
+// //
+// //   static Vector v1(3);
+// //   static Vector v2(3);
+// //
+// //   for (int i = 0; i < 3; i++) {
+// //     v1(i) = end1Crd(i) + end1Disp(i)*fact;
+// //     v2(i) = end2Crd(i) + end2Disp(i)*fact;
+// //   }
+// //
+// //   return theViewer.drawLine (v1, v2, 1.0, 1.0);
+// // }
+
 int
-BeamWithHinges3d::setParameter(const char** argv, int argc, Information& info)
+BeamWithHinges3d::setParameter(const char **argv, int argc, Information &info)
 {
     // E of the beam interior
     if (strcmp(argv[0], "E") == 0)
@@ -2158,7 +2158,7 @@ BeamWithHinges3d::setParameter(const char** argv, int argc, Information& info)
 }
 
 int
-BeamWithHinges3d::updateParameter(int parameterID, Information& info)
+BeamWithHinges3d::updateParameter(int parameterID, Information &info)
 {
     switch (parameterID)
     {
@@ -2212,8 +2212,8 @@ BeamWithHinges3d::initialize()
     // see if there is some initial displacements at nodes
     if (initialDispChecked == false)
     {
-        const Vector& nodeIDisp = theNodes[0]->getDisp();
-        const Vector& nodeJDisp = theNodes[1]->getDisp();
+        const Vector &nodeIDisp = theNodes[0]->getDisp();
+        const Vector &nodeJDisp = theNodes[1]->getDisp();
 
         for (int i = 0; i < 6; i++)
             if (nodeIDisp(i) != 0.0)
@@ -2272,8 +2272,8 @@ BeamWithHinges3d::computeElemtLengthAndOrient()
     // element projection
     static Vector dx(3);
 
-    const Vector& ndICoords = theNodes[0]->getCrds();
-    const Vector& ndJCoords = theNodes[1]->getCrds();
+    const Vector &ndICoords = theNodes[0]->getCrds();
+    const Vector &ndJCoords = theNodes[1]->getCrds();
 
     dx(0) = ndJCoords(0) - ndICoords(0);
     dx(1) = ndJCoords(1) - ndICoords(1);
@@ -2329,7 +2329,7 @@ BeamWithHinges3d::computeElemtLengthAndOrient()
 
 
 int
-BeamWithHinges3d::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
+BeamWithHinges3d::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
 {
     // Compute y = v cross x
     // Note: v(i) is stored in R[2][i]
@@ -2391,12 +2391,12 @@ BeamWithHinges3d::getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis)
 
 
 
-const Vector&
+const Vector &
 BeamWithHinges3d::getBasicTrialDisp (void)
 {
     // determine global displacements
-    const Vector& disp1 = theNodes[0]->getTrialDisp();
-    const Vector& disp2 = theNodes[1]->getTrialDisp();
+    const Vector &disp1 = theNodes[0]->getTrialDisp();
+    const Vector &disp2 = theNodes[1]->getTrialDisp();
 
     static double ug[12];
 
@@ -2484,8 +2484,8 @@ BeamWithHinges3d::getBasicTrialDisp (void)
 
 
 
-const Matrix&
-BeamWithHinges3d::getGlobalStiffMatrix (const Matrix& KB, const Vector& pb)
+const Matrix &
+BeamWithHinges3d::getGlobalStiffMatrix (const Matrix &KB, const Vector &pb)
 {
     static Matrix kg(12, 12);   // Global stiffness for return
     static double kb[6][6];     // Basic stiffness
@@ -2652,8 +2652,8 @@ BeamWithHinges3d::getGlobalStiffMatrix (const Matrix& KB, const Vector& pb)
 
 
 
-const Matrix&
-BeamWithHinges3d::getInitialGlobalStiffMatrix (const Matrix& KB)
+const Matrix &
+BeamWithHinges3d::getInitialGlobalStiffMatrix (const Matrix &KB)
 {
     static Matrix kg(12, 12); // Global stiffness for return
     static double kb[6][6];   // Basic stiffness
@@ -2821,8 +2821,8 @@ BeamWithHinges3d::getInitialGlobalStiffMatrix (const Matrix& KB)
 
 
 
-const Vector&
-BeamWithHinges3d::getGlobalResistingForce(const Vector& pb, const Vector& p0)
+const Vector &
+BeamWithHinges3d::getGlobalResistingForce(const Vector &pb, const Vector &p0)
 {
     // transform resisting forces from the basic system to local coordinates
     static double pl[12];
@@ -2892,12 +2892,12 @@ BeamWithHinges3d::getGlobalResistingForce(const Vector& pb, const Vector& p0)
 }
 
 
-const Vector&
+const Vector &
 BeamWithHinges3d::getBasicIncrDeltaDisp(void)
 {
     // determine global displacements
-    const Vector& disp1 = theNodes[0]->getIncrDeltaDisp();
-    const Vector& disp2 = theNodes[1]->getIncrDeltaDisp();
+    const Vector &disp1 = theNodes[0]->getIncrDeltaDisp();
+    const Vector &disp2 = theNodes[1]->getIncrDeltaDisp();
 
     static double ug[12];
 

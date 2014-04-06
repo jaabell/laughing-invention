@@ -37,7 +37,7 @@ class FEM_ObjectBroker;
 class SectionForceDeformation;
 
 class CrdTransf;
-class Response;
+// class Response;
 // class Renderer;
 
 class BeamWithHinges3d: public Element
@@ -45,8 +45,8 @@ class BeamWithHinges3d: public Element
     public:
         BeamWithHinges3d(int tag, int nodeI, int nodeJ,
                          double E, double A, double Iz, double Iy, double G, double J,
-                         SectionForceDeformation& sectionRefI, double hingeIlen,
-                         SectionForceDeformation& sectionRefJ, double hingeJlen,
+                         SectionForceDeformation &sectionRefI, double hingeIlen,
+                         SectionForceDeformation &sectionRefJ, double hingeJlen,
                          double massDensPerUnitLength,
                          int max, double tol,
                          double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
@@ -56,71 +56,71 @@ class BeamWithHinges3d: public Element
         ~BeamWithHinges3d();
 
         int getNumExternalNodes(void) const;
-        const ID& getExternalNodes(void);
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes(void);
+        Node **getNodePtrs(void);
 
         int getNumDOF(void);
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         int commitState(void);
         int revertToLastCommit(void);
         int revertToStart(void);
 
         int update(void);
-        const Matrix& getTangentStiff(void);
-        const Matrix& getInitialStiff(void);
-        const Matrix& getMass(void);
+        const Matrix &getTangentStiff(void);
+        const Matrix &getInitialStiff(void);
+        const Matrix &getMass(void);
 
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
-        const Vector& getResistingForce(void);
-        const Vector& getResistingForceIncInertia(void);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
+        const Vector &getResistingForce(void);
+        const Vector &getResistingForceIncInertia(void);
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
-                     FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel,
+                     FEM_ObjectBroker &theBroker);
 
-        Response* setResponse(const char** argv, int argc, Information& info);
-        int getResponse(int responseID, Information& info);
+        // Response* setResponse(const char** argv, int argc, Information& info);
+        // int getResponse(int responseID, Information& info);
 
-        int setParameter(const char** argv, int argc, Information& info);
-        int updateParameter(int parameterID, Information& info);
+        int setParameter(const char **argv, int argc, Information &info);
+        int updateParameter(int parameterID, Information &info);
 
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
         //   int displaySelf(Renderer &theViewer, int displayMode, float fact);
 
 
         // Nima Tafazzoli moved from transformation (Nov. 2012)
-        int getLocalAxes(Vector& XAxis, Vector& YAxis, Vector& ZAxis);
+        int getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis);
         int computeElemtLengthAndOrient();
         int initialize();
-        const Vector& getGlobalResistingForce(const Vector& pb, const Vector& p0);
-        const Matrix& getInitialGlobalStiffMatrix (const Matrix& KB);
-        const Matrix& getGlobalStiffMatrix (const Matrix& KB, const Vector& pb);
-        const Vector& getBasicTrialDisp (void);
-        const Vector& getBasicIncrDisp (void);
-        const Vector& getBasicIncrDeltaDisp (void);
+        const Vector &getGlobalResistingForce(const Vector &pb, const Vector &p0);
+        const Matrix &getInitialGlobalStiffMatrix (const Matrix &KB);
+        const Matrix &getGlobalStiffMatrix (const Matrix &KB, const Vector &pb);
+        const Vector &getBasicTrialDisp (void);
+        const Vector &getBasicIncrDisp (void);
+        const Vector &getBasicIncrDeltaDisp (void);
 
 
     protected:
 
     private:
 
-        void setNodePtrs(Domain* theDomain);
+        void setNodePtrs(Domain *theDomain);
         void setHinges(void);
 
-        void getForceInterpMatrix(Matrix& b, double x, const ID& c);
-        void getDistrLoadInterpMatrix(Matrix& bp, double x, const ID& c);
+        void getForceInterpMatrix(Matrix &b, double x, const ID &c);
+        void getDistrLoadInterpMatrix(Matrix &bp, double x, const ID &c);
 
         double E, A, Iz, Iy, G, J;
         double beta1, beta2;
         double rho;
-        SectionForceDeformation* section[2];
-        CrdTransf* theCoordTransf;
+        SectionForceDeformation *section[2];
+        CrdTransf *theCoordTransf;
 
         ID connectedExternalNodes;
-        Node* theNodes[2];
+        Node *theNodes[2];
 
         Matrix fs[2];
         Vector sr[2];
@@ -139,7 +139,7 @@ class BeamWithHinges3d: public Element
         int maxIter;
         double tolerance;
 
-        Matrix* sp;  // Applied section forces due to element loads, 5 x nSections
+        Matrix *sp;  // Applied section forces due to element loads, 5 x nSections
         double p0[5]; // Reactions in the basic system due to element loads
         double v0[5]; // Basic deformations due to element loads on the interior
 
@@ -151,9 +151,9 @@ class BeamWithHinges3d: public Element
         // Nima Tafazzoli (Nov. 2012) moved from transformation
         double R[3][3];  // Transformation matrix
         double L;           // undeformed element length
-        double* nodeIInitialDisp, *nodeJInitialDisp;
+        double *nodeIInitialDisp, *nodeJInitialDisp;
         bool initialDispChecked;
-        double* nodeIOffset, *nodeJOffset;  // rigid joint offsets
+        double *nodeIOffset, *nodeJOffset;  // rigid joint offsets
 
 };
 

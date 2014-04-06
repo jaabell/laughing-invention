@@ -41,7 +41,7 @@ EightNode_Brick_u_p::EightNode_Brick_u_p(int element_ID,
         int node_numb_6,
         int node_numb_7,
         int node_numb_8,
-        NDMaterial* Globalmmodel,
+        NDMaterial *Globalmmodel,
         double fn,
         double alphaf,
         double rs,
@@ -171,13 +171,13 @@ int EightNode_Brick_u_p::getNumExternalNodes (void) const
 }
 
 //======================================================================
-const ID& EightNode_Brick_u_p::getExternalNodes (void)
+const ID &EightNode_Brick_u_p::getExternalNodes (void)
 {
     return connectedExternalNodes;
 }
 
 //======================================================================
-Node** EightNode_Brick_u_p::getNodePtrs (void)
+Node **EightNode_Brick_u_p::getNodePtrs (void)
 {
     return theNodes;
 }
@@ -189,7 +189,7 @@ int EightNode_Brick_u_p::getNumDOF (void)
 }
 
 //======================================================================
-void EightNode_Brick_u_p::setDomain (Domain* theDomain)
+void EightNode_Brick_u_p::setDomain (Domain *theDomain)
 {
     int i;
     int Ndof;
@@ -214,7 +214,7 @@ void EightNode_Brick_u_p::setDomain (Domain* theDomain)
 
         Ndof = theNodes[i]->getNumberDOF();
 
-        if( Ndof != Num_Dof )
+        if ( Ndof != Num_Dof )
         {
             cerr << "Error: EightNode_Brick_u_p: has wrong number of DOFs at its nodes " << i << " \n";
             return ;
@@ -274,19 +274,19 @@ int EightNode_Brick_u_p::revertToStart (void)
 }
 
 //======================================================================
-const Matrix& EightNode_Brick_u_p::getTangentStiff (void)
+const Matrix &EightNode_Brick_u_p::getTangentStiff (void)
 {
     return getStiff(1);
 }
 
 //======================================================================
-const Matrix& EightNode_Brick_u_p::getInitialStiff (void)
+const Matrix &EightNode_Brick_u_p::getInitialStiff (void)
 {
     return getStiff(0);
 }
 
 //======================================================================
-const Matrix& EightNode_Brick_u_p::getDamp (void)
+const Matrix &EightNode_Brick_u_p::getDamp (void)
 {
     MCK.Zero();
 
@@ -299,7 +299,7 @@ const Matrix& EightNode_Brick_u_p::getDamp (void)
     {
         for ( j = 0; j < Num_Nodes; j++ )
         {
-            for( m = 0; m < Num_Dim; m++)
+            for ( m = 0; m < Num_Dim; m++)
             {
                 MCK(i * Num_Dof + 3, j * Num_Dof + m) = C1.cval(j + 1, m + 1, i + 1);
             }
@@ -324,9 +324,9 @@ const Matrix& EightNode_Brick_u_p::getDamp (void)
         {
             for ( j = 0; j < Num_Nodes; j++ )
             {
-                for( m = 0; m < Num_Dim; m++)
+                for ( m = 0; m < Num_Dim; m++)
                 {
-                    for( n = 0; n < Num_Dim; n++)
+                    for ( n = 0; n < Num_Dim; n++)
                     {
                         MCK(i * Num_Dof + m, j * Num_Dof + n) += Ks.cval(i + 1, m + 1, j + 1, n + 1) * a1;
                     }
@@ -355,7 +355,7 @@ const Matrix& EightNode_Brick_u_p::getDamp (void)
 }
 
 //======================================================================
-const Matrix& EightNode_Brick_u_p::getMass (void)
+const Matrix &EightNode_Brick_u_p::getMass (void)
 {
     MCK.Zero();
 
@@ -388,10 +388,10 @@ void EightNode_Brick_u_p::zeroLoad()
 }
 
 //======================================================================
-int EightNode_Brick_u_p::addLoad(ElementalLoad* theLoad, double loadFactor)
+int EightNode_Brick_u_p::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     int type;
-    const Vector& data = theLoad->getData(type, loadFactor);
+    const Vector &data = theLoad->getData(type, loadFactor);
 
     if ( type == LOAD_TAG_ElementSelfWeight )
     {
@@ -412,14 +412,14 @@ int EightNode_Brick_u_p::addLoad(ElementalLoad* theLoad, double loadFactor)
 }
 
 //======================================================================
-int EightNode_Brick_u_p::addInertiaLoadToUnbalance(const Vector& accel)
+int EightNode_Brick_u_p::addInertiaLoadToUnbalance(const Vector &accel)
 {
     static Vector ra(Num_ElemDof);
     int i;
 
     for (i = 0; i < Num_Nodes; i++)
     {
-        const Vector& RA = theNodes[i]->getRV(accel);
+        const Vector &RA = theNodes[i]->getRV(accel);
 
         if ( RA.Size() != Num_Dof )
         {
@@ -446,7 +446,7 @@ int EightNode_Brick_u_p::addInertiaLoadToUnbalance(const Vector& accel)
 }
 
 //========================================================================
-const Vector& EightNode_Brick_u_p::getResistingForce ()
+const Vector &EightNode_Brick_u_p::getResistingForce ()
 {
     int i, j;
     static Vector avu(Num_ElemDof);
@@ -455,7 +455,7 @@ const Vector& EightNode_Brick_u_p::getResistingForce ()
 
     for (i = 0; i < Num_Nodes; i++)
     {
-        const Vector& disp = theNodes[i]->getTrialDisp();
+        const Vector &disp = theNodes[i]->getTrialDisp();
 
         if ( disp.Size() != Num_Dof )
         {
@@ -484,7 +484,7 @@ const Vector& EightNode_Brick_u_p::getResistingForce ()
 }
 
 //========================================================================
-const Vector& EightNode_Brick_u_p::getResistingForceIncInertia ()
+const Vector &EightNode_Brick_u_p::getResistingForceIncInertia ()
 {
     int i, j;
     static Vector avu(Num_ElemDof);
@@ -493,7 +493,7 @@ const Vector& EightNode_Brick_u_p::getResistingForceIncInertia ()
 
     for (i = 0; i < Num_Nodes; i++)
     {
-        const Vector& acc = theNodes[i]->getTrialAccel();
+        const Vector &acc = theNodes[i]->getTrialAccel();
 
         if ( acc.Size() != Num_Dof )
         {
@@ -512,7 +512,7 @@ const Vector& EightNode_Brick_u_p::getResistingForceIncInertia ()
 
     for (i = 0; i < Num_Nodes; i++)
     {
-        const Vector& vel = theNodes[i]->getTrialVel();
+        const Vector &vel = theNodes[i]->getTrialVel();
 
         if ( vel.Size() != Num_Dof )
         {
@@ -533,133 +533,133 @@ const Vector& EightNode_Brick_u_p::getResistingForceIncInertia ()
 }
 
 //=============================================================================
-int EightNode_Brick_u_p::sendSelf (int commitTag, Channel& theChannel)
+int EightNode_Brick_u_p::sendSelf (int commitTag, Channel &theChannel)
 {
     // Not implemtented yet
     return 0;
 }
 
 //=============================================================================
-int EightNode_Brick_u_p::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int EightNode_Brick_u_p::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     // Not implemtented yet
     return 0;
 }
 
 //=============================================================================
-int EightNode_Brick_u_p::displaySelf (Renderer& theViewer, int displayMode, float fact)
+int EightNode_Brick_u_p::displaySelf (Renderer &theViewer, int displayMode, float fact)
 {
     // Not implemtented yet
     return 0;
 }
 
 //=============================================================================
-Response* EightNode_Brick_u_p::setResponse(const char** argv, int argc, Information& eleInfo)
-{
-    if ( (strcmp(argv[0], "stresses") == 0) || (strcmp(argv[0], "stress") == 0) )
-    {
-        return new ElementResponse(this, 1, Vector(Num_TotalGaussPts * 6) );
-    }
+// // Response* EightNode_Brick_u_p::setResponse(const char** argv, int argc, Information& eleInfo)
+// {
+//     if ( (strcmp(argv[0], "stresses") == 0) || (strcmp(argv[0], "stress") == 0) )
+//     {
+//         return new ElementResponse(this, 1, Vector(Num_TotalGaussPts * 6) );
+//     }
 
-    else if (strcmp(argv[0], "gausspoint") == 0 || strcmp(argv[0], "GaussPoint") == 0)
-    {
-        return new ElementResponse(this, 2, Vector(Num_TotalGaussPts * 3) );
-    }
+//     else if (strcmp(argv[0], "gausspoint") == 0 || strcmp(argv[0], "GaussPoint") == 0)
+//     {
+//         return new ElementResponse(this, 2, Vector(Num_TotalGaussPts * 3) );
+//     }
 
 
-    //start changes-Mahdi-Jan07
-    else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
-    {
-        return new ElementResponse(this, 4, Vector(Num_TotalGaussPts * 6) );
-    }
-    //end changes-Mahdi-Jan07
+//     //start changes-Mahdi-Jan07
+//     else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
+//     {
+//         return new ElementResponse(this, 4, Vector(Num_TotalGaussPts * 6) );
+//     }
+//     //end changes-Mahdi-Jan07
 
-    else
-    {
-        return 0;
-    }
-}
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+// //=============================================================================
+// int EightNode_Brick_u_p::getResponse(int responseID, Information& eleInfo)
+// {
+//     if (responseID == 1)
+//     {
+//         static Vector Str(Num_TotalGaussPts * 6);
+//         stresstensor sigma;
+//         int i;
+
+//         for (i = 0; i < Num_TotalGaussPts; i++)
+//         {
+//             sigma = theMaterial[i]->getStressTensor();
+//             //sigma.print("C", " ");
+//             Str(i * 6  ) = sigma.cval(1, 1); //xx
+//             Str(i * 6 + 1) = sigma.cval(2, 2); //yy
+//             Str(i * 6 + 2) = sigma.cval(3, 3); //zz
+//             Str(i * 6 + 3) = sigma.cval(2, 3); //yz
+//             Str(i * 6 + 4) = sigma.cval(3, 1); //zx
+//             Str(i * 6 + 5) = sigma.cval(2, 3); //xy
+//         }
+
+//         return eleInfo.setVector(Str);
+//     }
+
+//     else if (responseID == 2)
+//     {
+//         static Vector Gpts(Num_TotalGaussPts * Num_Dim);
+//         tensor GCoord;
+//         int cnt = 0;
+//         int i, j;
+//         GCoord = getGaussPts();
+
+//         for (i = 0; i < Num_TotalGaussPts; i++)
+//         {
+//             for (j = 0; j < Num_Dim; j++)
+//             {
+//                 Gpts(cnt++) = GCoord.cval(i + 1, j + 1);
+//             }
+//         }
+
+//         return eleInfo.setVector(Gpts);
+//     }
+
+
+
+//     //start changes-Mahdi-Jan07
+//     else if (responseID == 4)
+//     {
+//         static Vector strains(Num_TotalGaussPts * 6);
+//         straintensor epsilon;
+//         int cnt = 0;
+//         int i;
+
+//         for (i = 0; i < Num_TotalGaussPts; i++)
+//         {
+//             epsilon = theMaterial[i]->getStrainTensor();
+//             strains(cnt++) = epsilon.cval(1, 1); //xx
+//             strains(cnt++) = epsilon.cval(2, 2); //yy
+//             strains(cnt++) = epsilon.cval(3, 3); //zz
+//             strains(cnt++) = epsilon.cval(2, 3); //yz
+//             strains(cnt++) = epsilon.cval(3, 1); //zx
+//             strains(cnt++) = epsilon.cval(1, 2); //xy
+//         }
+
+//         return eleInfo.setVector(strains);
+//     }
+// //     //end changes-Mahdi-Jan07
+
+
+
+// else
+// {
+//     return (-1);
+// }
+// }
+
+
 
 //=============================================================================
-int EightNode_Brick_u_p::getResponse(int responseID, Information& eleInfo)
-{
-    if (responseID == 1)
-    {
-        static Vector Str(Num_TotalGaussPts * 6);
-        stresstensor sigma;
-        int i;
-
-        for (i = 0; i < Num_TotalGaussPts; i++)
-        {
-            sigma = theMaterial[i]->getStressTensor();
-            //sigma.print("C", " ");
-            Str(i * 6  ) = sigma.cval(1, 1); //xx
-            Str(i * 6 + 1) = sigma.cval(2, 2); //yy
-            Str(i * 6 + 2) = sigma.cval(3, 3); //zz
-            Str(i * 6 + 3) = sigma.cval(2, 3); //yz
-            Str(i * 6 + 4) = sigma.cval(3, 1); //zx
-            Str(i * 6 + 5) = sigma.cval(2, 3); //xy
-        }
-
-        return eleInfo.setVector(Str);
-    }
-
-    else if (responseID == 2)
-    {
-        static Vector Gpts(Num_TotalGaussPts * Num_Dim);
-        tensor GCoord;
-        int cnt = 0;
-        int i, j;
-        GCoord = getGaussPts();
-
-        for (i = 0; i < Num_TotalGaussPts; i++)
-        {
-            for (j = 0; j < Num_Dim; j++)
-            {
-                Gpts(cnt++) = GCoord.cval(i + 1, j + 1);
-            }
-        }
-
-        return eleInfo.setVector(Gpts);
-    }
-
-
-
-    //start changes-Mahdi-Jan07
-    else if (responseID == 4)
-    {
-        static Vector strains(Num_TotalGaussPts * 6);
-        straintensor epsilon;
-        int cnt = 0;
-        int i;
-
-        for (i = 0; i < Num_TotalGaussPts; i++)
-        {
-            epsilon = theMaterial[i]->getStrainTensor();
-            strains(cnt++) = epsilon.cval(1, 1); //xx
-            strains(cnt++) = epsilon.cval(2, 2); //yy
-            strains(cnt++) = epsilon.cval(3, 3); //zz
-            strains(cnt++) = epsilon.cval(2, 3); //yz
-            strains(cnt++) = epsilon.cval(3, 1); //zx
-            strains(cnt++) = epsilon.cval(1, 2); //xy
-        }
-
-        return eleInfo.setVector(strains);
-    }
-    //end changes-Mahdi-Jan07
-
-
-
-    else
-    {
-        return (-1);
-    }
-}
-
-
-
-//=============================================================================
-void EightNode_Brick_u_p::Print(ostream& s, int flag)
+void EightNode_Brick_u_p::Print(ostream &s, int flag)
 {
     s << "EightNode_Brick_u_p, element id:  " << this->getTag() << "\n";
     s << "Connected external nodes:  " << connectedExternalNodes << "\n";
@@ -677,11 +677,11 @@ void EightNode_Brick_u_p::Print(ostream& s, int flag)
 
     int GP_c_r, GP_c_s, GP_c_t, where;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts ; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts ; GP_c_r++ )
     {
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts ; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts ; GP_c_s++ )
         {
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts ; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts ; GP_c_t++ )
             {
                 where = (GP_c_r * Num_IntegrationPts + GP_c_s) * Num_IntegrationPts + GP_c_t;
                 s << "\n where = " << where + 1 << "\n";
@@ -727,15 +727,15 @@ int EightNode_Brick_u_p::update()
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 where = (GP_c_r * Num_IntegrationPts + GP_c_s) * Num_IntegrationPts + GP_c_t;
@@ -757,7 +757,7 @@ int EightNode_Brick_u_p::update()
 }
 
 //======================================================================
-const Vector& EightNode_Brick_u_p::getInternalForce ()
+const Vector &EightNode_Brick_u_p::getInternalForce ()
 {
     static Vector Pforce(Num_ElemDof);
 
@@ -780,17 +780,17 @@ const Vector& EightNode_Brick_u_p::getInternalForce ()
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
         rw = wts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
             sw = wts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 tw = wts[GP_c_t];
@@ -821,7 +821,7 @@ const Vector& EightNode_Brick_u_p::getInternalForce ()
 }
 
 //======================================================================
-const Vector& EightNode_Brick_u_p::getForceU(const Vector& data)
+const Vector &EightNode_Brick_u_p::getForceU(const Vector &data)
 {
     static Vector PpU(Num_ElemDof);
 
@@ -855,17 +855,17 @@ const Vector& EightNode_Brick_u_p::getForceU(const Vector& data)
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
         rw = wts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
             sw = wts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 tw = wts[GP_c_t];
@@ -894,7 +894,7 @@ const Vector& EightNode_Brick_u_p::getForceU(const Vector& data)
 }
 
 //======================================================================
-const Vector& EightNode_Brick_u_p::getForceP(const Vector& data)
+const Vector &EightNode_Brick_u_p::getForceP(const Vector &data)
 {
     static Vector PpP(Num_ElemDof);
 
@@ -928,17 +928,17 @@ const Vector& EightNode_Brick_u_p::getForceP(const Vector& data)
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
         rw = wts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
             sw = wts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 tw = wts[GP_c_t];
@@ -988,17 +988,17 @@ tensor EightNode_Brick_u_p::getStiffnessTensorKep( )
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
         rw = wts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
             sw = wts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 tw = wts[GP_c_t];
@@ -1019,7 +1019,7 @@ tensor EightNode_Brick_u_p::getStiffnessTensorKep( )
 }
 
 //======================================================================
-const Matrix& EightNode_Brick_u_p::getStiff00 ( )
+const Matrix &EightNode_Brick_u_p::getStiff00 ( )
 {
     int i, j, m;
 
@@ -1032,7 +1032,7 @@ const Matrix& EightNode_Brick_u_p::getStiff00 ( )
     {
         for ( m = 0; m < Num_Dim; m++ )
         {
-            for( j = 0; j < Num_Nodes; j++)
+            for ( j = 0; j < Num_Nodes; j++)
             {
                 MCK(i * Num_Dof + m, j * Num_Dof + 3) = - K1.cval(i + 1, m + 1, j + 1); //Note '-'
             }
@@ -1054,7 +1054,7 @@ const Matrix& EightNode_Brick_u_p::getStiff00 ( )
 }
 
 //======================================================================
-const Matrix& EightNode_Brick_u_p::getStiff (int Ki_flag)
+const Matrix &EightNode_Brick_u_p::getStiff (int Ki_flag)
 {
     int i, j, m, n;
 
@@ -1078,9 +1078,9 @@ const Matrix& EightNode_Brick_u_p::getStiff (int Ki_flag)
     {
         for ( j = 0; j < Num_Nodes; j++ )
         {
-            for( m = 0; m < Num_Dim; m++)
+            for ( m = 0; m < Num_Dim; m++)
             {
-                for( n = 0; n < Num_Dim; n++)
+                for ( n = 0; n < Num_Dim; n++)
                 {
                     MCK(i * Num_Dof + m, j * Num_Dof + n) = Km.cval(i + 1, m + 1, n + 1, j + 1);
                 }
@@ -1088,7 +1088,7 @@ const Matrix& EightNode_Brick_u_p::getStiff (int Ki_flag)
         }
     }
 
-    if( Ki_flag == 1)
+    if ( Ki_flag == 1)
     {
         return MCK;
     }
@@ -1130,17 +1130,17 @@ tensor EightNode_Brick_u_p::getStiffnessTensorQ( )
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
         rw = wts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
             sw = wts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 tw = wts[GP_c_t];
@@ -1179,17 +1179,17 @@ tensor EightNode_Brick_u_p::getStiffnessTensorH( )
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
         rw = wts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
             sw = wts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 tw = wts[GP_c_t];
@@ -1229,17 +1229,17 @@ tensor EightNode_Brick_u_p::getDampingTensorS( )
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
         rw = wts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
             sw = wts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 tw = wts[GP_c_t];
@@ -1278,17 +1278,17 @@ tensor EightNode_Brick_u_p::getMassTensorM1()
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
         rw = wts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
             sw = wts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 tw = wts[GP_c_t];
@@ -1342,7 +1342,7 @@ tensor EightNode_Brick_u_p::getNodesCrds(void)
 
     for (i = 0; i < Num_Nodes; i++)
     {
-        const Vector& TNodesCrds = theNodes[i]->getCrds();
+        const Vector &TNodesCrds = theNodes[i]->getCrds();
 
         for (j = 0; j < Num_Dim; j++)
         {
@@ -1362,7 +1362,7 @@ tensor EightNode_Brick_u_p::getNodesDisp(void)
 
     for (i = 0; i < Num_Nodes; i++)
     {
-        const Vector& TNodesDisp = theNodes[i]->getTrialDisp();
+        const Vector &TNodesDisp = theNodes[i]->getTrialDisp();
 
         for (j = 0; j < Num_Dof; j++)
         {
@@ -1382,7 +1382,7 @@ double EightNode_Brick_u_p::getPorePressure(double x1, double x2, double x3)
 
     for (i = 0; i < Num_Nodes; i++)
     {
-        const Vector& T_disp = theNodes[i]->getTrialDisp();
+        const Vector &T_disp = theNodes[i]->getTrialDisp();
         pp += shapeFunction(x1, x2, x3).cval(i + 1) * T_disp(3);
     }
 
@@ -1466,15 +1466,15 @@ tensor EightNode_Brick_u_p::getGaussPts(void)
 
     int GP_c_r, GP_c_s, GP_c_t;
 
-    for( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
 
-        for( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
         {
             s = pts[GP_c_s];
 
-            for( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
             {
                 t = pts[GP_c_t];
                 where = (GP_c_r * Num_IntegrationPts + GP_c_s) * Num_IntegrationPts + GP_c_t;
@@ -1482,7 +1482,7 @@ tensor EightNode_Brick_u_p::getGaussPts(void)
 
                 for (i = 0; i < Num_Nodes; i++)
                 {
-                    const Vector& T_Crds = theNodes[i]->getCrds();
+                    const Vector &T_Crds = theNodes[i]->getCrds();
 
                     for (j = 0; j < Num_Dim; j++)
                     {
@@ -1501,21 +1501,21 @@ tensor EightNode_Brick_u_p::getGaussPts(void)
 
 //==================================================================================
 // Nima Tafazzoli (Feb. 2013)
-Vector*
+Vector *
 EightNode_Brick_u_p::getStress(void)
 {
 
     int i = 0;
     int j = 0;
     stresstensor sts;
-    Vector* stresses = new Vector(48);
+    Vector *stresses = new Vector(48);
 
 
-    for( short GP_c_r = 1 ; GP_c_r <= 2 ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= 2 ; GP_c_r++ )
     {
-        for( short GP_c_s = 1 ; GP_c_s <= 2 ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= 2 ; GP_c_s++ )
         {
-            for( short GP_c_t = 1 ; GP_c_t <= 2 ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= 2 ; GP_c_t++ )
             {
                 i = ((GP_c_r - 1) * 2 + GP_c_s - 1) * 2 + GP_c_t - 1;
 

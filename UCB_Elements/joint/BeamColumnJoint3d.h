@@ -45,7 +45,7 @@
 class Node;
 class Channel;
 class FEM_ObjectBroker;
-class Response;
+// class Response;
 // class Renderer;
 class UniaxialMaterial;
 
@@ -145,8 +145,8 @@ class BeamColumnJoint3d : public Element
         void Print(ostream &s, int flag = 0);
 
         // implemented to print into file
-        Response *setResponse(const char **argv, int argc, Information &eleInfo);
-        int getResponse(int responseID, Information &eleInformation);
+        // Response *setResponse(const char **argv, int argc, Information &eleInfo);
+        // int getResponse(int responseID, Information &eleInformation);
 
         int setParameter (char **argv, int argc, Information &info);
         int updateParameter (int parameterID, Information &info);

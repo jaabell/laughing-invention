@@ -48,7 +48,7 @@
 #include <Information.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 #include <Damping.h>
 
@@ -70,7 +70,7 @@ class VariableNodeBrick: public Element
                           int node_numb_17, int node_numb_18, int node_numb_19, int node_numb_20,
                           int node_numb_21, int node_numb_22, int node_numb_23, int node_numb_24,
                           int node_numb_25, int node_numb_26, int node_numb_27,
-                          NDMaterial* Globalmmodel);
+                          NDMaterial *Globalmmodel);
 
 
         VariableNodeBrick();
@@ -80,47 +80,47 @@ class VariableNodeBrick: public Element
         int update(void);
 
         int getNumExternalNodes() const;
-        const ID& getExternalNodes();
-        Node** getNodePtrs(void);
+        const ID &getExternalNodes();
+        Node **getNodePtrs(void);
 
         int getNumDOF();
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
 
         // public methods to set the state of the element
         int commitState();
         int revertToLastCommit();
         int revertToStart();
 
-        const Matrix& getTangentStiff();
-        const Matrix& getInitialStiff();
+        const Matrix &getTangentStiff();
+        const Matrix &getInitialStiff();
 
 
-        const Matrix& getMass();
-        const Matrix& getMassFullSize();
+        const Matrix &getMass();
+        const Matrix &getMassFullSize();
 
         void zeroLoad();
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector FormEquiBodyForce(const Vector& data);
-        const Vector& getResistingForce();
-        const Vector& getResistingForceIncInertia();
+        const Vector FormEquiBodyForce(const Vector &data);
+        const Vector &getResistingForce();
+        const Vector &getResistingForceIncInertia();
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
 
-        Response* setResponse(const char** argv, int argc, Information& eleInformation);
-        int getResponse(int responseID, Information& eleInformation);
+        // Response* setResponse(const char** argv, int argc, Information& eleInformation);
+        // int getResponse(int responseID, Information& eleInformation);
 
 
-        int CheckMesh(ofstream&);
-        Vector& Direction_Weight(double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4);
+        int CheckMesh(ofstream &);
+        Vector &Direction_Weight(double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4);
         double SurfaceShapeFunctionValues(double Xi , double Eta, int whichcomponent);
         double SurfaceLoadValues(double Xi , double Eta, Vector Pressure);
-        const Vector& getBodyForce(double loadFactor, const Vector& data);
-        const Vector& getSurfaceForce(double loadFactor, const Vector& data);
+        const Vector &getBodyForce(double loadFactor, const Vector &data);
+        const Vector &getSurfaceForce(double loadFactor, const Vector &data);
 
 
         void incremental_Update(void);
@@ -131,12 +131,12 @@ class VariableNodeBrick: public Element
         tensor dh_drst_at(double r, double s, double t);
 
 
-        VariableNodeBrick& operator[](int subscript);
+        VariableNodeBrick &operator[](int subscript);
 
 
         tensor getStiffnessTensor(void);
 
-        void set_strain_stress_tensor(FILE* fp, double* u);
+        void set_strain_stress_tensor(FILE *fp, double *u);
 
 
         tensor Jacobian_3D(tensor dh);
@@ -146,10 +146,10 @@ class VariableNodeBrick: public Element
         tensor incr_disp(void);
         tensor total_disp(void);
 
-        tensor total_disp(FILE* fp, double* u);
+        tensor total_disp(FILE *fp, double *u);
 
-        tensor stiffness_matrix(const tensor& K);
-        tensor mass_matrix(const tensor& M);
+        tensor stiffness_matrix(const tensor &K);
+        tensor mass_matrix(const tensor &M);
 
 
         int  get_global_number_of_node(int local_node_number);
@@ -164,21 +164,21 @@ class VariableNodeBrick: public Element
         // returns nodal forces for ITERATIVE stress field in an element
         tensor iterative_nodal_forces(void);
         // returns nodal forces for given constant stress field in the element
-        tensor nodal_forces_from_stress(stresstensor&);
+        tensor nodal_forces_from_stress(stresstensor &);
         // returns nodal forces for given incremental strain field in an element
         // by using the linearized constitutive tensor from the begining of the step !
         tensor linearized_nodal_forces(void);
         // updates Material point stresses and strains from given displacements
-        tensor update_stress_strain(tensor& disp);
+        tensor update_stress_strain(tensor &disp);
 
-        void reportshort(char*);
-        void reportPAK(char*);
+        void reportshort(char *);
+        void reportPAK(char *);
         void reportpqtheta(int);
         void computeGaussPoint(void);
-        void reportCIPIC(char*);
-        void reportTensorF(FILE*);
+        void reportCIPIC(char *);
+        void reportTensorF(FILE *);
 
-        Vector* getStress(void);
+        Vector *getStress(void);
 
 
 
@@ -187,19 +187,19 @@ class VariableNodeBrick: public Element
         int numDOF;
         ID  connectedExternalNodes;
         ID  node_existance;
-        ID*  existing_node_numbers;
+        ID  *existing_node_numbers;
 
-        Node** theNodes;
+        Node **theNodes;
 
-        Matrix* K;      // Element stiffness Matrix
-        Matrix* M;      // Element mass matrix
-        Vector* P;      // Element resisting force vector
-        Vector* Q;      // Applied nodal loads
+        Matrix *K;      // Element stiffness Matrix
+        Matrix *M;      // Element mass matrix
+        Vector *P;      // Element resisting force vector
+        Vector *Q;      // Applied nodal loads
 
-        Vector* GaussCoord;
+        Vector *GaussCoord;
 
 
-        Vector* tempZero;
+        Vector *tempZero;
 
         double rho;     // Mass per unit volume
         int    order;   // Order of the quadrature rule
@@ -208,7 +208,7 @@ class VariableNodeBrick: public Element
         int nodes_in_brick;      // number of nodes ( from 8-20 //8 now Zhaohui)
 
 
-        NDMaterial* mmodel;      // pointer to GLOBAL material models
+        NDMaterial *mmodel;      // pointer to GLOBAL material models
 
         bool initialized; //Guanzhou added for populate function
         void populate(); //Guanzhou added for parallel processing
@@ -220,7 +220,7 @@ class VariableNodeBrick: public Element
         // Now I want 3D array of Material points!
         // MatPoint3D[r_integration_order][s_integration_order][t_integration_order]
         // 3D array of Material points
-        MatPoint3D** matpoint;   // pointer to array of Material Points
+        MatPoint3D **matpoint;   // pointer to array of Material Points
 
 
 };

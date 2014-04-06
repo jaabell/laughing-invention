@@ -43,7 +43,7 @@
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
 #include <SectionForceDeformation.h>
-#include <ElementResponse.h>
+// #include <ElementResponse.h>
 
 // #include <Renderer.h>
 
@@ -65,7 +65,7 @@ Vector TrussSection::trussV12(12);
 TrussSection::TrussSection(int tag,
                            int dim,
                            int Nd1, int Nd2,
-                           SectionForceDeformation& theSect,
+                           SectionForceDeformation &theSect,
                            double r)
     : Element(tag, ELE_TAG_TrussSection),
       connectedExternalNodes(2),
@@ -84,7 +84,7 @@ TrussSection::TrussSection(int tag,
     }
 
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
     int i;
 
@@ -166,13 +166,13 @@ TrussSection::getNumExternalNodes(void) const
     return 2;
 }
 
-const ID&
+const ID &
 TrussSection::getExternalNodes(void)
 {
     return connectedExternalNodes;
 }
 
-Node**
+Node **
 TrussSection::getNodePtrs(void)
 {
     return theNodes;
@@ -192,7 +192,7 @@ TrussSection::getNumDOF(void)
 //    allocate space for t matrix, determine the length
 //    and set the transformation matrix.
 void
-TrussSection::setDomain(Domain* theDomain)
+TrussSection::setDomain(Domain *theDomain)
 {
     // check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
@@ -295,8 +295,8 @@ TrussSection::setDomain(Domain* theDomain)
 
     // now determine the length, cosines and fill in the transformation
     // NOTE t = -t(every one else uses for residual calc)
-    const Vector& end1Crd = theNodes[0]->getCrds();
-    const Vector& end2Crd = theNodes[1]->getCrds();
+    const Vector &end1Crd = theNodes[0]->getCrds();
+    const Vector &end2Crd = theNodes[1]->getCrds();
 
     if (dimension == 1)
     {
@@ -414,7 +414,7 @@ TrussSection::update()
     double strain = this->computeCurrentStrain();
 
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
     Vector e (order);
 
@@ -432,7 +432,7 @@ TrussSection::update()
 }
 
 
-const Matrix&
+const Matrix &
 TrussSection::getTangentStiff(void)
 {
     if (L == 0.0)   // - problem in setDomain() no further warnings
@@ -442,9 +442,9 @@ TrussSection::getTangentStiff(void)
     }
 
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
-    const Matrix& k = theSection->getSectionTangent();
+    const Matrix &k = theSection->getSectionTangent();
     double AE = 0.0;
     int i;
 
@@ -457,7 +457,7 @@ TrussSection::getTangentStiff(void)
     }
 
     // come back later and redo this if too slow
-    Matrix& stiff = *theMatrix;
+    Matrix &stiff = *theMatrix;
 
     int numDOF2 = numDOF / 2;
     double temp;
@@ -478,7 +478,7 @@ TrussSection::getTangentStiff(void)
     return *theMatrix;
 }
 
-const Matrix&
+const Matrix &
 TrussSection::getInitialStiff(void)
 {
     if (L == 0.0)   // - problem in setDomain() no further warnings
@@ -488,9 +488,9 @@ TrussSection::getInitialStiff(void)
     }
 
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
-    const Matrix& k = theSection->getInitialTangent();
+    const Matrix &k = theSection->getInitialTangent();
     double AE = 0.0;
     int i;
 
@@ -503,7 +503,7 @@ TrussSection::getInitialStiff(void)
     }
 
     // come back later and redo this if too slow
-    Matrix& stiff = *theMatrix;
+    Matrix &stiff = *theMatrix;
 
     int numDOF2 = numDOF / 2;
     double temp;
@@ -524,11 +524,11 @@ TrussSection::getInitialStiff(void)
     return *theMatrix;
 }
 
-const Matrix&
+const Matrix &
 TrussSection::getMass(void)
 {
     // zero the matrix
-    Matrix& mass = *theMatrix;
+    Matrix &mass = *theMatrix;
     mass.Zero();
 
     // check for quick return
@@ -560,7 +560,7 @@ TrussSection::zeroLoad(void)
 
 
 int
-TrussSection::addLoad(ElementalLoad* theLoad, double loadFactor)
+TrussSection::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     std::cerr << "TrussSection::addLoad - load type unknown for truss with tag: " << this->getTag() << endln;
     return -1;
@@ -568,7 +568,7 @@ TrussSection::addLoad(ElementalLoad* theLoad, double loadFactor)
 
 
 int
-TrussSection::addInertiaLoadToUnbalance(const Vector& accel)
+TrussSection::addInertiaLoadToUnbalance(const Vector &accel)
 {
     // check for a quick return
     if (L == 0.0 || rho == 0.0)
@@ -577,12 +577,12 @@ TrussSection::addInertiaLoadToUnbalance(const Vector& accel)
     }
 
     // get R * accel from the nodes
-    const Vector& Raccel1 = theNodes[0]->getRV(accel);
-    const Vector& Raccel2 = theNodes[1]->getRV(accel);
+    const Vector &Raccel1 = theNodes[0]->getRV(accel);
+    const Vector &Raccel2 = theNodes[1]->getRV(accel);
 
     int nodalDOF = numDOF / 2;
 
-    #ifdef _G3DEBUG
+#ifdef _G3DEBUG
 
     if (nodalDOF != Raccel1.Size() || nodalDOF != Raccel2.Size())
     {
@@ -591,7 +591,7 @@ TrussSection::addInertiaLoadToUnbalance(const Vector& accel)
         return -1;
     }
 
-    #endif
+#endif
 
     double M = 0.5 * rho * L;
 
@@ -613,7 +613,7 @@ TrussSection::addInertiaLoadToUnbalance(const Vector& accel)
 }
 
 
-const Vector&
+const Vector &
 TrussSection::getResistingForce()
 {
     if (L == 0.0)   // - problem in setDomain() no further warnings
@@ -623,9 +623,9 @@ TrussSection::getResistingForce()
     }
 
     int order = theSection->getOrder();
-    const ID& code = theSection->getType();
+    const ID &code = theSection->getType();
 
-    const Vector& s = theSection->getStressResultant();
+    const Vector &s = theSection->getStressResultant();
     double force = 0.0;
     int i;
 
@@ -655,7 +655,7 @@ TrussSection::getResistingForce()
 
 
 
-const Vector&
+const Vector &
 TrussSection::getResistingForceIncInertia()
 {
     this->getResistingForce();
@@ -664,8 +664,8 @@ TrussSection::getResistingForceIncInertia()
     if (L != 0.0 && rho != 0.0)
     {
 
-        const Vector& accel1 = theNodes[0]->getTrialAccel();
-        const Vector& accel2 = theNodes[1]->getTrialAccel();
+        const Vector &accel1 = theNodes[0]->getTrialAccel();
+        const Vector &accel2 = theNodes[1]->getTrialAccel();
 
         double M = 0.5 * rho * L;
         int dof = dimension;
@@ -689,7 +689,7 @@ TrussSection::getResistingForceIncInertia()
 
 
 int
-TrussSection::sendSelf(int commitTag, Channel& theChannel)
+TrussSection::sendSelf(int commitTag, Channel &theChannel)
 {
     int res;
 
@@ -755,7 +755,7 @@ TrussSection::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-TrussSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+TrussSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
 
     int res;
@@ -905,7 +905,7 @@ TrussSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& the
 
 
 void
-TrussSection::Print(ostream& s, int flag)
+TrussSection::Print(ostream &s, int flag)
 {
     // compute the strain and axial force in the member
     double strain, force;
@@ -920,7 +920,7 @@ TrussSection::Print(ostream& s, int flag)
         strain = this->computeCurrentStrain();
 
         int order = theSection->getOrder();
-        const ID& code = theSection->getType();
+        const ID &code = theSection->getType();
 
         Vector e (order);
 
@@ -936,7 +936,7 @@ TrussSection::Print(ostream& s, int flag)
 
         theSection->setTrialSectionDeformation(e);
 
-        const Vector& s = theSection->getStressResultant();
+        const Vector &s = theSection->getStressResultant();
 
         for (i = 0; i < order; i++)
         {
@@ -988,8 +988,8 @@ TrussSection::computeCurrentStrain(void) const
     // NOTE method will not be called if L == 0
 
     // determine the strain
-    const Vector& disp1 = theNodes[0]->getTrialDisp();
-    const Vector& disp2 = theNodes[1]->getTrialDisp();
+    const Vector &disp1 = theNodes[0]->getTrialDisp();
+    const Vector &disp2 = theNodes[1]->getTrialDisp();
 
     double dLength = 0.0;
 
@@ -1002,114 +1002,114 @@ TrussSection::computeCurrentStrain(void) const
     return dLength / L;
 }
 
-Response*
-TrussSection::setResponse(const char** argv, int argc, Information& eleInformation)
-{
-    //
-    // we compare argv[0] for known response types for the Truss
-    //
+// Response*
+// TrussSection::setResponse(const char** argv, int argc, Information& eleInformation)
+// {
+//     //
+//     // we compare argv[0] for known response types for the Truss
+//     //
 
-    // axial force
-    if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
-            strcmp(argv[0], "axialForce") == 0)
-    {
-        return new ElementResponse(this, 1, 0);
-    }
+//     // axial force
+//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0 ||
+//             strcmp(argv[0], "axialForce") == 0)
+//     {
+//         return new ElementResponse(this, 1, 0);
+//     }
 
-    else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
-             strcmp(argv[0], "deformation") == 0)
-    {
-        return new ElementResponse(this, 2, 0);
-    }
+//     else if (strcmp(argv[0], "defo") == 0 || strcmp(argv[0], "deformations") == 0 ||
+//              strcmp(argv[0], "deformation") == 0)
+//     {
+//         return new ElementResponse(this, 2, 0);
+//     }
 
-    // a section quantity
-    else if (strcmp(argv[0], "section") == 0)
-    {
-        return theSection->setResponse(&argv[1], argc - 1, eleInformation);
-    }
+//     // a section quantity
+//     else if (strcmp(argv[0], "section") == 0)
+//     {
+//         return theSection->setResponse(&argv[1], argc - 1, eleInformation);
+//     }
 
-    // otherwise response quantity is unknown for the Truss class
-    else
-    {
-        return 0;
-    }
-}
+//     // otherwise response quantity is unknown for the Truss class
+//     else
+//     {
+//         return 0;
+//     }
+// }
+
+// int
+// TrussSection::getResponse(int responseID, Information& eleInformation)
+// {
+//     double strain, force;
+
+//     switch (responseID)
+//     {
+//         case 1:
+//             if (L == 0.0)
+//             {
+//                 strain = 0;
+//                 force = 0.0;
+//             }
+//             else
+//             {
+//                 strain = this->computeCurrentStrain();
+//                 int order = theSection->getOrder();
+//                 const ID& code = theSection->getType();
+
+//                 Vector e (order);
+
+//                 int i;
+
+//                 for (i = 0; i < order; i++)
+//                 {
+//                     if (code(i) == SECTION_RESPONSE_P)
+//                     {
+//                         e(i) = strain;
+//                     }
+//                 }
+
+//                 theSection->setTrialSectionDeformation(e);
+
+//                 const Vector& s = theSection->getStressResultant();
+
+//                 for (i = 0; i < order; i++)
+//                 {
+//                     if (code(i) == SECTION_RESPONSE_P)
+//                     {
+//                         force += s(i);
+//                     }
+//                 }
+
+//             }
+
+//             eleInformation.theDouble = force;
+//             return 0;
+
+//         case 2:
+//             if (L == 0.0)
+//             {
+//                 strain = 0;
+//             }
+//             else
+//             {
+//                 strain = this->computeCurrentStrain();
+//             }
+
+//             eleInformation.theDouble = strain * L;
+//             return 0;
+
+//         default:
+//             if (responseID >= 100)
+//             {
+//                 return theSection->getResponse(responseID - 100, eleInformation);
+//             }
+//             else
+//             {
+//                 return -1;
+//             }
+//     }
+// }
 
 int
-TrussSection::getResponse(int responseID, Information& eleInformation)
-{
-    double strain, force;
-
-    switch (responseID)
-    {
-        case 1:
-            if (L == 0.0)
-            {
-                strain = 0;
-                force = 0.0;
-            }
-            else
-            {
-                strain = this->computeCurrentStrain();
-                int order = theSection->getOrder();
-                const ID& code = theSection->getType();
-
-                Vector e (order);
-
-                int i;
-
-                for (i = 0; i < order; i++)
-                {
-                    if (code(i) == SECTION_RESPONSE_P)
-                    {
-                        e(i) = strain;
-                    }
-                }
-
-                theSection->setTrialSectionDeformation(e);
-
-                const Vector& s = theSection->getStressResultant();
-
-                for (i = 0; i < order; i++)
-                {
-                    if (code(i) == SECTION_RESPONSE_P)
-                    {
-                        force += s(i);
-                    }
-                }
-
-            }
-
-            eleInformation.theDouble = force;
-            return 0;
-
-        case 2:
-            if (L == 0.0)
-            {
-                strain = 0;
-            }
-            else
-            {
-                strain = this->computeCurrentStrain();
-            }
-
-            eleInformation.theDouble = strain * L;
-            return 0;
-
-        default:
-            if (responseID >= 100)
-            {
-                return theSection->getResponse(responseID - 100, eleInformation);
-            }
-            else
-            {
-                return -1;
-            }
-    }
-}
-
-int
-TrussSection::setParameter (const char** argv, int argc, Information& info)
+TrussSection::setParameter (const char **argv, int argc, Information &info)
 {
     // a material parameter
     if (strcmp(argv[0], "section") == 0 || strcmp(argv[0], "-section") == 0)
@@ -1135,7 +1135,7 @@ TrussSection::setParameter (const char** argv, int argc, Information& info)
 }
 
 int
-TrussSection::updateParameter (int parameterID, Information& info)
+TrussSection::updateParameter (int parameterID, Information &info)
 {
     switch (parameterID)
     {
