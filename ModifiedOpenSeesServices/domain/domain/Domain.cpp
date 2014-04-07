@@ -709,34 +709,34 @@ Domain::addElement( Element *element )
 
 
     //==============================================================
-    // Nima Tafazzoli (Feb. 2013)
-    if ( ( element->getElementclassTag() == ELE_TAG_EightNodeBrick ) ||
-            ( element->getElementclassTag() == ELE_TAG_EightNodeBrickElastic ) ||
-            ( element->getElementclassTag() == ELE_TAG_EightNodeBrick_u_p_U ) ||
-            ( element->getElementclassTag() == ELE_TAG_EightNode_Brick_u_p ) )
-    {
-        number_of_8GP_brick_elements++;
-    }
+    // Nima Tafazzoli (Feb. 2013) [Out by Jose, Sun 06 Apr 2014 02:46:29 PM PDT]
+    // if ( ( element->getElementclassTag() == ELE_TAG_EightNodeBrick ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_EightNodeBrickElastic ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_EightNodeBrick_u_p_U ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_EightNode_Brick_u_p ) )
+    // {
+    //     number_of_8GP_brick_elements++;
+    // }
 
 
-    if ( ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick ) ||
-            ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrickElastic ) ||
-            ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrick ) ||
-            ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrickElastic ) ||
-            ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick_u_p_U ) )
-    {
-        number_of_27GP_brick_elements++;
-    }
+    // if ( ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrickElastic ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrick ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrickElastic ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick_u_p_U ) )
+    // {
+    //     number_of_27GP_brick_elements++;
+    // }
 
 
-    if ( ( element->getElementclassTag() == ELE_TAG_ElasticBeamLumpedMass ) ||
-            ( element->getElementclassTag() == ELE_TAG_DispBeamColumn3d ) ||
-            ( element->getElementclassTag() == ELE_TAG_Truss ) ||
-            ( element->getElementclassTag() == ELE_TAG_ElasticBeam ) ||
-            ( element->getElementclassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam ) )
-    {
-        number_of_line_elements++;
-    }
+    // if ( ( element->getElementclassTag() == ELE_TAG_ElasticBeamLumpedMass ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_DispBeamColumn3d ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_Truss ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_ElasticBeam ) ||
+    //         ( element->getElementclassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam ) )
+    // {
+    //     number_of_line_elements++;
+    // }
 
     //==============================================================
 

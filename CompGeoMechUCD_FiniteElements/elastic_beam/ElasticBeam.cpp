@@ -72,42 +72,26 @@ ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
     connectedExternalNodes(0) = Nd1;
     connectedExternalNodes(1) = Nd2;
 
-
-
     // set node pointers to NULL
     for (int i = 0; i < 2; i++)
     {
         theNodes[i] = 0;
     }
 
-
     R(2, 0) = vecInLocXZPlane_x;
     R(2, 1) = vecInLocXZPlane_y;
     R(2, 2) = vecInLocXZPlane_z;
 
+    nodeIOffset = new Vector(3);
+    nodeJOffset = new Vector(3);
 
+    (*nodeIOffset)(0) = rigJntOffset1_x;
+    (*nodeIOffset)(1) = rigJntOffset1_y;
+    (*nodeIOffset)(2) = rigJntOffset1_z;
 
-    double normI = sqrt(rigJntOffset1_x * rigJntOffset1_x + rigJntOffset1_y * rigJntOffset1_y + rigJntOffset1_z * rigJntOffset1_z);
-
-    if (normI > 0)
-    {
-        nodeIOffset = new Vector(3);
-        (*nodeIOffset)(0) = rigJntOffset1_x;
-        (*nodeIOffset)(1) = rigJntOffset1_y;
-        (*nodeIOffset)(2) = rigJntOffset1_z;
-    }
-
-
-    double normJ = sqrt(rigJntOffset2_x * rigJntOffset2_x + rigJntOffset2_y * rigJntOffset2_y + rigJntOffset2_z * rigJntOffset2_z);
-
-    if (normJ > 0)
-    {
-        nodeJOffset = new Vector(3);
-        (*nodeJOffset)(0) = rigJntOffset2_x;
-        (*nodeJOffset)(1) = rigJntOffset2_y;
-        (*nodeJOffset)(2) = rigJntOffset2_z;
-    }
-
+    (*nodeJOffset)(0) = rigJntOffset2_x;
+    (*nodeJOffset)(1) = rigJntOffset2_y;
+    (*nodeJOffset)(2) = rigJntOffset2_z;
 }
 
 
@@ -137,34 +121,18 @@ ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *sec
         theNodes[i] = 0;
     }
 
-
     R(2, 0) = vecInLocXZPlane_x;
     R(2, 1) = vecInLocXZPlane_y;
     R(2, 2) = vecInLocXZPlane_z;
 
-
-    double normI = sqrt(rigJntOffset1_x * rigJntOffset1_x + rigJntOffset1_y * rigJntOffset1_y + rigJntOffset1_z * rigJntOffset1_z);
-
-    if (normI > 0)
-    {
-        nodeIOffset = new Vector(3);
-        (*nodeIOffset)(0) = rigJntOffset1_x;
-        (*nodeIOffset)(1) = rigJntOffset1_y;
-        (*nodeIOffset)(2) = rigJntOffset1_z;
-    }
-
-
-    double normJ = sqrt(rigJntOffset2_x * rigJntOffset2_x + rigJntOffset2_y * rigJntOffset2_y + rigJntOffset2_z * rigJntOffset2_z);
-
-    if (normJ > 0)
-    {
-        nodeJOffset = new Vector(3);
-        (*nodeJOffset)(0) = rigJntOffset2_x;
-        (*nodeJOffset)(1) = rigJntOffset2_y;
-        (*nodeJOffset)(2) = rigJntOffset2_z;
-    }
-
-
+    nodeIOffset = new Vector(3);
+    nodeJOffset = new Vector(3);
+    (*nodeIOffset)(0) = rigJntOffset1_x;
+    (*nodeIOffset)(1) = rigJntOffset1_y;
+    (*nodeIOffset)(2) = rigJntOffset1_z;
+    (*nodeJOffset)(0) = rigJntOffset2_x;
+    (*nodeJOffset)(1) = rigJntOffset2_y;
+    (*nodeJOffset)(2) = rigJntOffset2_z;
 }
 
 ElasticBeam::~ElasticBeam()
@@ -199,6 +167,7 @@ ElasticBeam::getNumDOF(void)
 void
 ElasticBeam::setDomain(Domain *theDomain)
 {
+
     if (theDomain == 0)
     {
         cerr.flush() << "ElasticBeam::setDomain -- Domain is null\n";
@@ -525,7 +494,7 @@ ElasticBeam::getResistingForceIncInertia()
         const Vector &accel2 = theNodes[1]->getTrialAccel();
 
 
-        Vector accel(12);
+        static Vector accel(12);
         accel(0)  = accel1(0);
         accel(1)  = accel1(1);
         accel(2)  = accel1(2);
@@ -552,8 +521,8 @@ ElasticBeam::getResistingForce()
 
     P.Zero();
 
-    Vector displacement1 = theNodes[0]->getDisp();
-    Vector displacement2 = theNodes[1]->getDisp();
+    Vector displacement1 = theNodes[0]->getTrialDisp();
+    Vector displacement2 = theNodes[1]->getTrialDisp();
 
 
     if (displacement1.Size() != 6 || displacement2.Size() != 6 )
@@ -577,13 +546,7 @@ ElasticBeam::getResistingForce()
     displacement(10) = displacement2(4);
     displacement(11) = displacement2(5);
 
-
-    P.addMatrixVector(1.0, this->getTangentStiff(), displacement, 1.0);
-
-    //   P = (this->getTangentStiff())*displacement;
-
-
-    // P = P - Q;
+    P.addMatrixVector(1.0, Stiffness, displacement, 1.0);
     P.addVector(1.0, Q, -1.0);
 
     return P;
@@ -594,7 +557,6 @@ ElasticBeam::getResistingForce()
 int
 ElasticBeam::describeSelf(int cTag, HDF5_Channel &theHDF5Channel)
 {
-
     theHDF5Channel.beginElementDescription("ElasticBeam", this->getTag());
     theHDF5Channel.addField("parameters"             , false     , "adim");
     theHDF5Channel.addField("connected_nodes"             , false     , "adim");
@@ -613,6 +575,8 @@ ElasticBeam::describeSelf(int cTag, HDF5_Channel &theHDF5Channel)
 int
 ElasticBeam::sendSelf(int cTag, Channel &theChannel)
 {
+
+
     static Vector parameters(8);
 
     parameters(0) = A;
@@ -675,6 +639,7 @@ ElasticBeam::sendSelf(int cTag, Channel &theChannel)
         cerr.flush() << "ElasticBeam::sendSelf -- could not send R\n";
         return -1;
     }
+
 
     // Send the P Vector
     if (theChannel.sendVector(this->getDbTag(), cTag, P) < 0)
@@ -793,31 +758,22 @@ ElasticBeam::initialize()
         const Vector &nodeIDisp = theNodes[0]->getDisp();
         const Vector &nodeJDisp = theNodes[1]->getDisp();
 
-        for (int i = 0; i < 6; i++)
-            if (nodeIDisp(i) != 0.0)
-            {
-                nodeIInitialDisp = new Vector(6);
+        cout << "done!"  << endl;
 
-                for (int j = 0; j < 6; j++)
-                {
-                    (*nodeIInitialDisp)(j) = nodeIDisp(j);
-                }
-
-                i = 6;
-            }
+        nodeIInitialDisp = new Vector(6);
 
         for (int j = 0; j < 6; j++)
-            if (nodeJDisp(j) != 0.0)
-            {
-                nodeJInitialDisp = new Vector(6);
+        {
+            (*nodeIInitialDisp)(j) = nodeIDisp(j);
+        }
 
-                for (int i = 0; i < 6; i++)
-                {
-                    (*nodeJInitialDisp)(i) = nodeJDisp(i);
-                }
+        nodeJInitialDisp = new Vector(6);
 
-                j = 6;
-            }
+        for (int i = 0; i < 6; i++)
+        {
+            (*nodeJInitialDisp)(i) = nodeJDisp(i);
+        }
+
 
         initialDispChecked = true;
     }

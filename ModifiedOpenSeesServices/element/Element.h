@@ -137,6 +137,8 @@ class Element : public DomainComponent
         virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         virtual int sendSelf ( int commitTag, Channel &theChannel );
         virtual int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &);
+        // virtual void setDomain(Domain *myDomain);
+        using DomainComponent::setDomain;
 
 
 
