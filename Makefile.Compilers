@@ -87,9 +87,10 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										--param inline-unit-growth=10000 \
 										--param large-function-growth=10000 \
 										-DBrzi_nDarray_val \
+										-std=c++0x \
 										-Wno-write-strings \
-										-std=c++11 \
 										-march=native
+										# -std=c++11 \
 	# C++FLAGS        = -flto -Wall \
 	# CFLAGS          = -flto -O2 \
 	CFLAGS          =  -O2 \
