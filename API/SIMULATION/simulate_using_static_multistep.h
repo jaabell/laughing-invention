@@ -89,7 +89,7 @@ int simulate_using_static_multistep(int numSteps)
         return -1;
     }
 
-    string filename;
+    string filename("");
     filename = ModelName + "_" + StageName + ".h5.feioutput";
 
     theDomain.setHDF5_Channel(filename,

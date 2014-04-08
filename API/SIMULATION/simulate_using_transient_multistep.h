@@ -124,7 +124,7 @@ int simulate_using_transient_multistep(double dT,
 
     //     cout<<"\nTransient Analysis!\n";
 
-    string filename;
+    string filename("");
     filename = ModelName + "_" + StageName + ".h5.feioutput";
 
     theDomain.setHDF5_Channel(filename,
