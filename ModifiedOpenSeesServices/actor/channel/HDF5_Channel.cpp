@@ -64,6 +64,7 @@ void HDF5_Channel::initialize(std::string filename_in,
                               int nsteps)
 {
     number_of_time_steps = nsteps;
+    filename = "";
     filename += filename_in;
     model_name += model_name_in;
     stage_name += stage_name_in;
