@@ -168,8 +168,8 @@
 //Model query
 //--------------------------------------------------------------------------------------------------
 #include "MODELING/get_nodal_coordinate.h"
-#include "MODELING/obtain_pseudo_time.h"
-
+//#include "MODELING/obtain_pseudo_time.h"
+#include "MODELING/query_domain.h"
 
 // Output control
 //--------------------------------------------------------------------------------------------------

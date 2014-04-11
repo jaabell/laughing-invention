@@ -37,7 +37,7 @@ int add_load_to_node_from_reaction(int LoadNumber, int NodeNumber)
 
     if (theLoadPattern == NULL)
     {
-        cerr << "Error: (start_new_stage) memory allocation problem for theLoadPattern!" << endl;
+        cerr << "Error: (add_load_to_node_from_reaction) memory allocation problem for theLoadPattern!" << endl;
         return -1;
     }
 
@@ -45,7 +45,7 @@ int add_load_to_node_from_reaction(int LoadNumber, int NodeNumber)
 
     if ( theDomain.addLoadPattern(theLoadPattern) == false )
     {
-        cerr << "Error: (start_new_stage) LoadPattern " << LoadNumber << " could not be added to the domain " << endl;
+        cerr << "Error: (add_load_to_node_from_reaction) LoadPattern " << LoadNumber << " could not be added to the domain " << endl;
         return -1;
     }
 

@@ -68,7 +68,7 @@ else ifeq ($(Compiler), PARALLEL)
 endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
-	C++FLAGS        =  -flto -Wall \
+	C++FLAGS        =   -Wall \
 										-Winline \
 										-O2 \
 										-finline \
@@ -100,7 +100,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-march=native $(MORE_CFLAGS)
 
 	FFLAGS          = -O2 $(MORE_FFLAGS)
-	LINKFLAGS       = -flto -O $(MORE_LINKFLAGS)
+	LINKFLAGS       = -O $(MORE_LINKFLAGS)
 	#LINKFLAGS       = -O $(MORE_LINKFLAGS)
 
 else

@@ -118,6 +118,7 @@
 %token IDENT NUMBER STRING EOL ISUNITTYPE FUNCTION
 %token IF THEN ELSE WHILE DO LET EXITSAFEMODE CONTINUE BYE IN REQUIRE
 %token PLUSEQUAL MINUSEQUAL TIMESEQUAL DIVIDEEQUAL MODULUSEQUAL POWEQUAL
+%token NUMBER_OF_NODES NUMBER_OF_ELEMENTS CURRENT_TIME NUMBER_OF_SP_CONSTRAINTS NUMBER_OF_MP_CONSTRAINTS NUMBER_OF_LOADS
 
 // Inform Bison about the type of each terminal and non-terminal (rule or token)
 %type <exp>     exp stmt list cpd_stmt dsl CMD_add CMD_fix CMD_misc CMD_define CMD_remove
@@ -4527,6 +4528,37 @@ exp
         temp.erase(0, 1);                               //remove quotes
         temp.erase(temp.length()-1, temp.length());     //remove quotes
         $$ = new FeiString(temp);
+        nodes.push($$);
+    }
+    | NUMBER_OF_NODES
+    {
+        args.clear(); signature.clear();
+        $$ = new FeiDslCaller0<>(&query_domain_number_of_nodes, args, signature, "query_domain_number_of_nodes");
+        nodes.push($$);
+    }
+    | NUMBER_OF_ELEMENTS
+    {
+        $$ = new FeiDslCaller0<>(&query_domain_number_of_elements, args, signature, "query_domain_number_of_elements");
+        nodes.push($$);
+    }
+    | CURRENT_TIME
+    {
+        $$ = new FeiDslCaller0<double>(&query_domain_current_time, args, signature, "query_domain_current_time");
+        nodes.push($$);
+    }
+    | NUMBER_OF_SP_CONSTRAINTS
+    {
+        $$ = new FeiDslCaller0<>(&query_domain_number_of_sp_constraints, args, signature, "query_domain_number_of_sp_constraints");
+        nodes.push($$);
+    }
+    | NUMBER_OF_MP_CONSTRAINTS
+    {
+        $$ = new FeiDslCaller0<>(&query_domain_number_of_mp_constraints, args, signature, "query_domain_number_of_mp_constraints");
+        nodes.push($$);
+    }
+    | NUMBER_OF_LOADS
+    {
+        $$ = new FeiDslCaller0<>(&query_domain_number_of_loads, args, signature, "query_domain_number_of_loads");
         nodes.push($$);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////

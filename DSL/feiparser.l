@@ -181,6 +181,14 @@ EXP	([Ee][-+]?[0-9]+)
 "isBodyForce"               |
 "isDensity"                 {yylval->ident = new string(yytext); return token::ISUNITTYPE;}
 
+ /* Auto-variables (keywords)  */
+"NUMBER_OF_NODES "          {return token::NUMBER_OF_NODES;}
+"NUMBER_OF_ELEMENTS "       {return token::NUMBER_OF_ELEMENTS;}
+"CURRENT_TIME"              {return token::CURRENT_TIME;}
+"NUMBER_OF_SP_CONSTRAINTS"  {return token::NUMBER_OF_SP_CONSTRAINTS;}
+"NUMBER_OF_MP_CONSTRAINTS"  {return token::NUMBER_OF_MP_CONSTRAINTS;}
+"NUMBER_OF_LOADS"           {return token::NUMBER_OF_LOADS;}
+
  /* Flow control keywords */
 "if"                        { return token::IF; }
 "then"                      { return token::THEN; }
