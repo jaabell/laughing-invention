@@ -154,7 +154,7 @@
 %token SIMULATE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations
 %token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE
 %token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT
-%token TH_GROUNDMOTION TH_RICKER2ND TH_ORMSBY TH_RICKER1ST TH_SINE TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES
+%token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
 %token self_weight surface load_value
 %token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit number_of_steps number_of_drm_nodes number_of_drm_elements x_max x_min y_max y_min z_max z_min element_file nodes_file displacement_file acceleration_file velocity_file force_file series_file time_series_file MAGNITUDES MAGNITUDE
 %token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain constitutive testing constant mean triaxial drained undrained simple shear
@@ -811,139 +811,36 @@ CMD_add
         for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 5 exps
             nodes.push($$);
     }
-/*    //!=========================================================================================================
+    //!=========================================================================================================
     //!
-    //!FEIDOC add load # <.> to node # <.> type [sine_wave] [FORCETYPE] = <force or moment> start_time = <time> end_time = <time> period = <time> phase = <.>;
-    | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_SINE
-            FORCE '=' exp
-            startTime '=' exp
-            endTime '=' exp
-            Period '=' exp
-            Phase '=' exp
+    //!FEIDOC add load # <.> to node # <.> type [from_reactions];
+    | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_FROM_REACTIONS
     {
         args.clear(); signature.clear();
 
-        Expression* dof_number                         = force2number(*$11);
-        UnitCheckerFunctionPointerType function_ptr    = force2signature(*$11);
-
         args.push_back($4);         signature.push_back(this_signature("number", &isAdimensional));
         args.push_back($8);         signature.push_back(this_signature("to_node", &isAdimensional));
-        args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
 
-        args.push_back($16); signature.push_back(this_signature("startTime", &isTime));
-        args.push_back($19); signature.push_back(this_signature("endTime",  &isTime));
-        args.push_back($22); signature.push_back(this_signature("Period",  &isTime));
-        args.push_back($25); signature.push_back(this_signature("Phase",    &isAdimensional));
+        $$ = new FeiDslCaller2<int, int>(&add_load_to_node_from_reaction, args, signature, "add_load_to_node_from_reaction");
 
-        args.push_back($13);        signature.push_back(this_signature(*$11, function_ptr));
-
-        $$ = new FeiDslCaller8<int, int, int, double, double, double, double, double>(&add_force_time_history_sine_wave, args, signature, "add_force_time_history_sine_wave");
-
-        for(int ii = 1;ii <=7; ii++) nodes.pop(); //pop 5 exps
+        for(int ii = 1;ii <=2; ii++) nodes.pop(); //pop 2 exps
         nodes.push($$);
     }
     //!=========================================================================================================
     //!
-    //!FEIDOC add load # <.> to node # <.> type [ricker2nd_wavelet] [FORCETYPE] = <force or moment> start_time = <time> end_time = <time> frequency = <1/time> max_time = <time>;
-    | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_RICKER1ST
-                FORCE '=' exp
-                startTime '=' exp
-                endTime '=' exp
-                frequency '=' exp
-                MaxTime '=' exp
+    //!FEIDOC add load # <.> to node # <.> type [from_reactions];
+    | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER ALL TYPE TH_FROM_REACTIONS
     {
         args.clear(); signature.clear();
 
-        Expression* dof_number                         = force2number(*$11);
-        UnitCheckerFunctionPointerType function_ptr    = force2signature(*$11);
-
         args.push_back($4);         signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back($8);         signature.push_back(this_signature("to_node", &isAdimensional));
-        args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
+        args.push_back(new Number(-1, unitless));         signature.push_back(this_signature("to_node", &isAdimensional));
 
-        args.push_back($16); signature.push_back(this_signature("startTime", &isTime));
-        args.push_back($19); signature.push_back(this_signature("endTime",  &isTime));
-        args.push_back($22); signature.push_back(this_signature("frequency",  &isFrequency));
-        args.push_back($25); signature.push_back(this_signature("MaxTime", &isTime));
+        $$ = new FeiDslCaller2<int, int>(&add_load_to_node_from_reaction, args, signature, "add_load_to_node_from_reaction");
 
-        args.push_back($13);        signature.push_back(this_signature(*$11, function_ptr));
-
-        $$ = new FeiDslCaller8<int, int, int, double, double, double, double, double>(&add_force_time_history_ricker1st_wavelet, args, signature, "add_force_time_history_ricker1st_wavelet");
-
-
-        for(int ii = 1;ii <=6; ii++) nodes.pop(); //pop 6 exps
+        nodes.pop(); //pop 1 exps
         nodes.push($$);
     }
-    //!=========================================================================================================
-    //!
-    //!FEIDOC add load # <.> to node # <.> type [ricker2nd_wavelet] [FORCETYPE] = <force or moment> start_time = <time> end_time = <time> frequency = <1/time> max_time = <time>;
-    | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_RICKER2ND
-                FORCE '=' exp
-                startTime '=' exp
-                endTime '=' exp
-                frequency '=' exp
-                MaxTime '=' exp
-    {
-        args.clear(); signature.clear();
-
-        Expression* dof_number                         = force2number(*$11);
-        UnitCheckerFunctionPointerType function_ptr    = force2signature(*$11);
-
-        args.push_back($4);         signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back($8);         signature.push_back(this_signature("to_node", &isAdimensional));
-        args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
-
-        args.push_back($16); signature.push_back(this_signature("startTime", &isTime));
-        args.push_back($19); signature.push_back(this_signature("endTime",  &isTime));
-        args.push_back($22); signature.push_back(this_signature("frequency",  &isFrequency));
-        args.push_back($25); signature.push_back(this_signature("MaxTime", &isTime));
-
-        args.push_back($13);        signature.push_back(this_signature(*$11, function_ptr));
-
-        $$ = new FeiDslCaller8<int, int, int, double, double, double, double, double>(&add_force_time_history_ricker2nd_wavelet, args, signature, "add_force_time_history_ricker2nd_wavelet");
-
-
-        for(int ii = 1;ii <=6; ii++) nodes.pop(); //pop 6 exps
-        nodes.push($$);
-    }
-    //!=========================================================================================================
-    //!
-    //!FEIDOC add load # <.> to node # <.> type [ormsby_wavelet] [FORCETYPE] = <force or moment> start_time = <time> end_time = <time> frequency1 = <1/time> frequency2 = <1/time> frequency3 = <1/time> frequency4 = <1/time> max_time = <time>;
-    | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_ORMSBY
-            FORCE '=' exp
-            startTime '=' exp
-            endTime '=' exp
-            frequency1 '=' exp
-            frequency2 '=' exp
-            frequency3 '=' exp
-            frequency4 '=' exp
-            MaxTime '=' exp
-    {
-
-        args.clear(); signature.clear();
-
-        Expression* dof_number                         = force2number(*$11);
-        UnitCheckerFunctionPointerType function_ptr    = force2signature(*$11);
-
-        args.push_back($4);         signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back($8);         signature.push_back(this_signature("to_node", &isAdimensional));
-        args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
-
-        args.push_back($16); signature.push_back(this_signature("startTime", &isTime));
-        args.push_back($19); signature.push_back(this_signature("endTime",  &isTime));
-        args.push_back($22); signature.push_back(this_signature("frequency1",  &isFrequency));
-        args.push_back($25); signature.push_back(this_signature("frequency2",  &isFrequency));
-        args.push_back($28); signature.push_back(this_signature("frequency3",  &isFrequency));
-        args.push_back($31); signature.push_back(this_signature("frequency4",  &isFrequency));
-        args.push_back($34); signature.push_back(this_signature("MaxTime", &isTime));
-
-        args.push_back($13);        signature.push_back(this_signature(*$11, function_ptr));
-
-        $$ = new FeiDslCaller11<int, int, int, double, double, double, double, double, double, double, double>(&add_force_time_history_ormsby_wavelet, args, signature, "add_force_time_history_ormsby_wavelet");
-
-        for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 9 exps
-        nodes.push($$);
-    }*/
     //!=========================================================================================================
     //!
     //!FEIDOC add imposed motion # <.> to node # <.> dof [DOFTYPE] time_step = <t> displacement_scale_unit = <length> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";

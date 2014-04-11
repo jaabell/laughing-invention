@@ -1170,9 +1170,10 @@ int EightNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
 
     if ( type == LOAD_TAG_ElementSelfWeight )
     {
-
+        // cout << "data = " << data << endl;
         Vector Fbody = this->getBodyForce( loadFactor, data );
         Q.addVector( 1.0, Fbody, 1.0 );
+        // cout << "Fbody = " << Fbody << endl;
 
     }
     else if ( type == LOAD_TAG_BrickSurfaceLoad )

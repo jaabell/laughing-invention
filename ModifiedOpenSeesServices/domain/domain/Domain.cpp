@@ -2590,7 +2590,8 @@ Domain::commit( void )
         theHDF5_Channel.setTime(currentTime);
     }
 
-
+    this->calculateNodalReactions(0);
+    theNodIter->reset();
 
     while ( ( nodePtr = theNodeIter() ) != 0 )
     {

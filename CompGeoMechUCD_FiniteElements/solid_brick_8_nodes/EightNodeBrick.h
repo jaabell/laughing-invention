@@ -42,7 +42,7 @@
 #include <Element.h>
 #include <Node.h>
 
-// Commented by Xiaoyan. Use  ~/fem/node.hh  08/04/00
+// Commented by Xiaoyan. Use  ~/fem/node.hh  08/04/00`
 // Released Node.h now. Wu use Opensees's Node.09/27/00
 
 

@@ -56,6 +56,7 @@
 #include "MODELING/add_penalty_displacement_time_history_linear.h"
 #include "MODELING/add_penalty_displacement_time_history_path_series.h"
 #include "MODELING/add_imposed_motion.h"
+#include "MODELING/add_load_to_node_from_reaction.h"
 
 
 // Elements

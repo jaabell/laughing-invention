@@ -521,12 +521,8 @@ EXP	([Ee][-+]?[0-9]+)
  /* Time-History types */
 "path_series"                       {return token::TH_PATH_SERIES;}
 "path_time_series"                  {return token::TH_PATH_TIME_SERIES;}
-"ricker2nd_wavelet"                 {return token::TH_RICKER2ND;}
-"ormsby_wavelet"                    {return token::TH_ORMSBY;}
-"ground_motion"                     {return token::TH_GROUNDMOTION;}
-"ricker1st_wavelet"                 {return token::TH_RICKER1ST;}
-"sine_wave"                         {return token::TH_SINE;}
 "linear"                            {return token::TH_LINEAR;}
+"from_reactions"                    {return token::TH_FROM_REACTIONS;}
 
  /* Element load types */
 "self_weight"                       {return token::self_weight;}

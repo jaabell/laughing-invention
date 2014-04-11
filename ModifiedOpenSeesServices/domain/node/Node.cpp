@@ -1429,7 +1429,7 @@ int Node::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
     }
     if (unbalLoad  != 0)
     {
-        theHDF5_Channel.addField("unbalanced_load"  , true     , "variable");
+        theHDF5_Channel.addField("applied_forces"  , true     , "variable");
     }
     if (reaction  != 0)
     {
