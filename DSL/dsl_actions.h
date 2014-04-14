@@ -33,15 +33,11 @@ New actions must at *least*:
    assigned to the action.
 
 Actions must operate only on passed variables or references.
-DSL actions return an (double) error code with the following
-meanings:
-  0.0   : normal execution. Is not reported by the shell.
-  < 0.0 : error. Is reported by the shell.
-  > 0.0 : warning or some other information code. Is reported by the shell.
+DSL actions return a double.
 
-To set the error code use the setErrorCode() member function within your
-execute() code. setErrorCode() is inherited from DslAction. By default
-the errocode is set to 0.0 so, if nothing is done, this value is
+To set the return value use the setRetunValue() member function within your
+execute() code. setRetunValue() is inherited from DslAction. By default
+the return value  is set to 0.0 so, if nothing is done, this value is
 returned.
 
 DSL actions also have a name which is set via the setDslActionName function
@@ -92,7 +88,7 @@ class DslPrint : public DslAction
 {
     public:
         // Constructor sets internal data
-        DslPrint (Expression* e)  // <- Actually a VariableReference type object. (see the cast below)
+        DslPrint (Expression *e)  // <- Actually a VariableReference type object. (see the cast below)
         {
             exp = e;
             setDslActionName("print");
@@ -103,15 +99,15 @@ class DslPrint : public DslAction
         {
             if (exp != 0) //check for null pointer
             {
-                VariableReference* vref_ptr =
-                    dynamic_cast<VariableReference*>(exp);
+                VariableReference *vref_ptr =
+                    dynamic_cast<VariableReference *>(exp);
 
                 if (vref_ptr != 0)
                 {
                     cout << vref_ptr->getName() << " = ";
                 }
 
-                FeiString* feistring_ptr = dynamic_cast<FeiString*>(exp);
+                FeiString *feistring_ptr = dynamic_cast<FeiString *>(exp);
 
                 if (feistring_ptr != 0)
                 {
@@ -125,7 +121,7 @@ class DslPrint : public DslAction
                 cout << endl;
             }
         }
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new DslPrint (*this);
         }
@@ -136,7 +132,7 @@ class DslPrint : public DslAction
         // Remember the rule of 3 when holding pointers and
         // references to variables or objects.
         // http://en.wikipedia.org/wiki/Rule_of_three_(C%2B%2B_programming)
-        Expression* exp;
+        Expression *exp;
 };
 
 #include <iomanip>
@@ -144,7 +140,7 @@ class DslPrint : public DslAction
 class DslWhos : public DslAction
 {
     public:
-        DslWhos(const varMapType& v , const set<string>& l) : vars(v), lockedvars(l)
+        DslWhos(const varMapType &v , const set<string> &l) : vars(v), lockedvars(l)
         {
         }
 
@@ -152,7 +148,7 @@ class DslWhos : public DslAction
         {
             cout << endl << "Declared variables:" << endl;
 
-            for(varMapConstIterator iter = vars.begin();
+            for (varMapConstIterator iter = vars.begin();
                     iter != vars.end();
                     iter ++)
             {
@@ -172,14 +168,14 @@ class DslWhos : public DslAction
             cout << endl;
         }
 
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new DslWhos (*this);
         }
 
     private:
-        const varMapType& vars;
-        const set<string>& lockedvars;
+        const varMapType &vars;
+        const set<string> &lockedvars;
 };
 
 
@@ -203,7 +199,7 @@ class DslParseError : public DslAction
             cout << "Line " << line << ": Parse error --> " << str << endl;
         }
 
-        virtual Expression* clone ()
+        virtual Expression *clone ()
         {
             return new DslParseError (*this);
         }

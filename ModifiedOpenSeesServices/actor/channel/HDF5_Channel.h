@@ -266,6 +266,8 @@ class HDF5_Channel: public Channel
         static int numChannel;
         int tag;
 
+        bool file_is_open;
+
         unsigned int current_step_number;
         double current_time;
         unsigned int number_of_materials_in_current_element;

@@ -49,6 +49,8 @@
 int start_new_stage(string CurrentStageName)
 {
 
+    cout << "Starting new stage: " << CurrentStageName << endl;
+
     StageName = CurrentStageName;
 
     //Iterate through load patterns and set them all constant
@@ -100,24 +102,24 @@ int start_new_stage(string CurrentStageName)
     theEigenSOE                          = 0;
 
     //Set numberer and check that it is correctly set
-//Babak Added 2/20/14:
+    //Babak Added 2/20/14:
     //-------------
 #ifdef _PARALLEL_PROCESSING
-//     theNumberer = new DOF_Numberer(*theParallelNumberer);
-  {
-     //PlainNumberer   *plainnumberer  = new ParallelNumberer();
-     theNumberer = new ParallelNumberer(); 
-     
-         if (theNumberer == NULL)
+    //     theNumberer = new DOF_Numberer(*theParallelNumberer);
     {
-      cerr << "Error: (start_new_stage) memory for theNumberer  can not be allocated!" << endl;
-      abort();
-    }
-  };
+        //PlainNumberer   *plainnumberer  = new ParallelNumberer();
+        theNumberer = new ParallelNumberer();
+
+        if (theNumberer == NULL)
+        {
+            cerr << "Error: (start_new_stage) memory for theNumberer  can not be allocated!" << endl;
+            abort();
+        }
+    };
 #else
-  
-  //-------------------
-  
+
+    //-------------------
+
     theNumberer = new DOF_Numberer(*theRCM);
 #endif
 

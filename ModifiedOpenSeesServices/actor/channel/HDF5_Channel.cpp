@@ -36,6 +36,7 @@ int HDF5_Channel::numChannel = 0;
 
 
 HDF5_Channel::HDF5_Channel ():
+    file_is_open(false),
     number_of_time_steps(0),
     filename(""),
     model_name(""),
@@ -49,6 +50,7 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
                             std::string model_name_in,
                             std::string stage_name_in,
                             int nsteps):
+    file_is_open(false),
     number_of_time_steps(0),
     filename(""),
     model_name(""),
@@ -63,6 +65,14 @@ void HDF5_Channel::initialize(std::string filename_in,
                               std::string stage_name_in,
                               int nsteps)
 {
+
+    if (file_is_open)
+    {
+        cout << "In here!" << endl;
+        H5close();
+        file_is_open = false;
+    }
+
     number_of_time_steps = nsteps;
     filename = "";
     filename += filename_in;
@@ -93,6 +103,7 @@ void HDF5_Channel::initialize(std::string filename_in,
     status = H5Pset_sieve_buf_size( file_access_plist, HDF5_CHANNEL_SIEVE_BUFFER_SIZE );
     HDF5_CHECK_ERROR;
     id_file = H5Fcreate(filename.c_str(), flags , file_creation_plist, file_access_plist);
+    file_is_open = true;
 
 
     //================================================================================
@@ -139,6 +150,7 @@ void HDF5_Channel::initialize(std::string filename_in,
 
     HDF5_CHANNEL_COUNT_OBJS;
     // cout << "subgroupname" << subgroupname << endl;
+
 }
 
 HDF5_Channel::~HDF5_Channel()

@@ -182,8 +182,8 @@ EXP	([Ee][-+]?[0-9]+)
 "isDensity"                 {yylval->ident = new string(yytext); return token::ISUNITTYPE;}
 
  /* Auto-variables (keywords)  */
-"NUMBER_OF_NODES "          {return token::NUMBER_OF_NODES;}
-"NUMBER_OF_ELEMENTS "       {return token::NUMBER_OF_ELEMENTS;}
+"NUMBER_OF_NODES"          {return token::NUMBER_OF_NODES;}
+"NUMBER_OF_ELEMENTS"       {return token::NUMBER_OF_ELEMENTS;}
 "CURRENT_TIME"              {return token::CURRENT_TIME;}
 "NUMBER_OF_SP_CONSTRAINTS"  {return token::NUMBER_OF_SP_CONSTRAINTS;}
 "NUMBER_OF_MP_CONSTRAINTS"  {return token::NUMBER_OF_MP_CONSTRAINTS;}
