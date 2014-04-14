@@ -37,7 +37,7 @@ DSL actions return a double.
 
 To set the return value use the setRetunValue() member function within your
 execute() code. setRetunValue() is inherited from DslAction. By default
-the return value  is set to 0.0 so, if nothing is done, this value is
+the return value is set to 0.0 so, if nothing is done, this value is
 returned.
 
 DSL actions also have a name which is set via the setDslActionName function
