@@ -1909,39 +1909,39 @@ Node::Print(ostream &s, int flag)
 
         if (commitDisp != 0)
         {
-            s << "Displacements: " << *trialDisp;
+            s << "Displacements     : " << *trialDisp;
         }
 
         if (commitVel != 0)
         {
-            s << "\tVelocities   : " << *trialVel;
+            s << "\tVelocities      : " << *trialVel;
         }
 
         if (commitAccel != 0)
         {
-            s << "\tAcceleration: " << *trialAccel;
+            s << "\tAcceleration    : " << *trialAccel;
         }
 
         if (unbalLoad != 0)
         {
-            s << "\tUnbalanced Load: " << *unbalLoad;
+            s << "\tUnbalanced Load : " << *unbalLoad;
         }
 
         //     if (mass != 0)
         //  s << "\tMass : " << *mass;
         if (theEigenvectors != 0)
         {
-            s << "\tEigenvectors: " << *theEigenvectors;
+            s << "\tEigenvectors    : " << *theEigenvectors;
         }
 
         if (reaction != 0)
         {
-            s << "\tReactions: " << *reaction;
+            s << "\tReactions       : " << *reaction;
         }
 
         if (theDOF_GroupPtr != 0)
         {
-            s << "\tDOF Groups : " << theDOF_GroupPtr->getID();
+            s << "\tDOF Groups      : " << theDOF_GroupPtr->getID();
         }
 
         s << "\n";
