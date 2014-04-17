@@ -68,7 +68,6 @@ void HDF5_Channel::initialize(std::string filename_in,
 
     if (file_is_open)
     {
-        cout << "In here!" << endl;
         H5close();
         file_is_open = false;
     }
