@@ -49,7 +49,7 @@
 int start_new_stage(string CurrentStageName)
 {
 
-    cout << endl << endl "Starting new stage: " << CurrentStageName << endl << endl;
+    cout << endl << endl << "Starting new stage: " << CurrentStageName << endl << endl;
 
     StageName = CurrentStageName;
 

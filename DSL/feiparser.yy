@@ -278,7 +278,7 @@ dsl
     | CMD_print DOMAIN_
     {
         //theDomain.Print(cerr);
-        cerr << "Not currently working. Should be implemented a API function and used here." << endl;
+        cerr << "Not currently working. Should be implemented as API function and used here." << endl;
         $$ = new Empty();
         nodes.push($$);
     }
