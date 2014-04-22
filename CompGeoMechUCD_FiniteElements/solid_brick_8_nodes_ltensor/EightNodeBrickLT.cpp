@@ -1745,8 +1745,8 @@ int EightNodeBrickLT::update( void )
 
         //trial_strain(j,k) = dhGlobal( i,j ) * trial_disp( i,k );
         //Debug
-        LTensorDisplay::print(trial_strain, "trial_strain");
         trial_strain(i, j) = 0.5 * (dhGlobal( k, i ) * trial_disp( k, j ) + dhGlobal( k, j ) * trial_disp( k, i ));
+        LTensorDisplay::print(trial_strain, "trial_strain");
 
         if ( ( material_array[gp]->setTrialStrain( trial_strain ) ) )
         {
