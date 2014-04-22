@@ -92,6 +92,10 @@ NewPisanoLT::NewPisanoLT(int tag,
     initialStress(1, 1) = -initialconfiningstress;
     initialStress(2, 2) = -initialconfiningstress;
 
+    //DEBUG
+    LTensorDisplay::print(initialStress, "initialStress");
+
+
     ElasticStateStress = DTensor2(initialStress);
     TrialPlastic_Strain(i, j) = 0 * initialStress(i, j);
 
@@ -451,6 +455,7 @@ DTensor2 &NewPisanoLT::getInternalTensor(void)
 int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 {
 
+    cout << endl << endl << "NewPisanoLT::Explicit()" << endl;
     //=============================================================================================
     // Some local definitions
     //=============================================================================================
@@ -465,20 +470,13 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     double incr_strain_vol        = 0.0;    // Volumetric incremental strain
     double p_incr_prev            = 0.0;    // Mean pressure previous (compression = positive)
     double pressure_ratio         = 0.0;    //
-    double sign                   = 0.0;    //
-    double beta                   = 0.0;    // distance coefficient
     double unload_prod            = 0.0;    //
-    // double arg_den                = 0.0;    //
-    // double arg_den_min            = 0.0;    //
     double H                      = 0.0;    // Hardening modulus
-    // double alpha_norm             = 0.0;    //
-    // double xi_var                 = 0.0;    //
     double D                      = 0.0;    //
     double incr_strain_dev_nijdev = 0.0;    //
     double alpha_nijdev           = 0.0;    //
     double ep_stress_p            = 0.0;    //
 
-    // where do we initialize alpha0?
     DTensor2 mij(3, 3, 0.0);                // Unit vector normal to potential surface
     DTensor2 incr_strain(3, 3, 0.0);        //
     DTensor2 incr_stress(3, 3, 0.0);        //
@@ -546,25 +544,48 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     // FP this formula for nij_dev is correct only for 1D shear wave propagation with no dilatancy
 
-    if (fabs(incr_strain_dev(0, 2)) > check_for_zero)
-    {
-        sign = incr_strain_dev(0, 2) / fabs(incr_strain_dev(0, 2));
-    }
-    else
-    {
-        sign = 0.0;
-    }
+    // if (fabs(incr_strain_dev(0, 2)) > check_for_zero)
+    // {
+    //     sign = incr_strain_dev(0, 2) / fabs(incr_strain_dev(0, 2));
+    // }
+    // else
+    // {
+    //     sign = 0.0;
+    // }
 
-    nij_dev(0, 2) = sign * 0.7071;
-    nij_dev(2, 0) = sign * 0.7071;
+    // nij_dev(0, 2) = sign * 0.7071;
+    // nij_dev(2, 0) = sign * 0.7071;
 
     // in any other case
 
-    // nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) - p_incr_prev * alpha(i, j); // and then normalization
-    // double norm_nij_dev = sqrt(nij_dev(i, j) * nij_dev(i, j));
-    // nij_dev(i, j) = nij_dev(i, j) / norm_nij_dev;
+    double norm_nij_dev;
 
 
+    nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) - p_incr_prev * alpha(i, j); // and then normalization
+    norm_nij_dev = sqrt(nij_dev(i, j) * nij_dev(i, j));
+
+    if (norm_nij_dev > check_for_zero)
+    {
+        nij_dev(i, j) = nij_dev(i, j) / norm_nij_dev;
+    }
+    else
+    {
+        nij_dev(i, j) = incr_strain_dev(i, j) * 0;
+    }
+
+
+
+
+    //DEBUG
+    LTensorDisplay::print(incr_strain, "incr_strain");
+    //DEBUG
+    LTensorDisplay::print(incr_strain_dev, "incr_strain_dev");
+    //DEBUG
+    LTensorDisplay::print(nij_dev, "nij_dev");
+    //DEBUG
+    LTensorDisplay::print(alpha, "alpha");
+    //DEBUG
+    LTensorDisplay::print(alpha0, "alpha0");
 
     //---------------------------------------------------------------------------------------------
     // Compute distance coeff

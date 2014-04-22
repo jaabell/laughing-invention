@@ -1725,6 +1725,10 @@ int EightNodeBrickLT::update( void )
 
     trial_disp = total_disp();
 
+    //Debug
+    cout << endl << endl << "EightNodeBrickLT::update()" << endl;
+    LTensorDisplay::print(trial_disp, "trial_disp");
+
     for ( short gp = 0; gp < 8; gp++ )
     {
         r = gp_coords(gp, 0);
@@ -1740,6 +1744,8 @@ int EightNodeBrickLT::update( void )
         dhGlobal(i, k) = dh(i, j) * JacobianINV(k, j);
 
         //trial_strain(j,k) = dhGlobal( i,j ) * trial_disp( i,k );
+        //Debug
+        LTensorDisplay::print(trial_strain, "trial_strain");
         trial_strain(i, j) = 0.5 * (dhGlobal( k, i ) * trial_disp( k, j ) + dhGlobal( k, j ) * trial_disp( k, i ));
 
         if ( ( material_array[gp]->setTrialStrain( trial_strain ) ) )

@@ -3023,7 +3023,6 @@ ADD_material
                         m_in '=' exp
                         mass_density '=' exp
                         initial_confining_stress '=' exp
-                        beta_min '=' exp
       {
         args.clear(); signature.clear();
 
@@ -3037,15 +3036,13 @@ ADD_material
         args.push_back($26); signature.push_back(this_signature("m_in",                     &isAdimensional));
         args.push_back($29); signature.push_back(this_signature("mass_density",             &isDensity));
         args.push_back($32); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-        args.push_back($35); signature.push_back(this_signature("beta_min",                 &isAdimensional));
 
-        $$ = new FeiDslCaller11<int,
+        $$ = new FeiDslCaller10<int,
                                 double, double, double,
                                 double, double, double,
-                                double, double, double,
-                                double>(&add_constitutive_model_NDMaterialLT_pisano, args, signature, "add_constitutive_model_NDMaterialLT_pisano");
+                                double, double, double>(&add_constitutive_model_NDMaterialLT_New_Pisano, args, signature, "add_constitutive_model_NDMaterialLT_New_Pisano");
 
-        for(int ii = 1;ii <=11; ii++) nodes.pop();
+        for(int ii = 1;ii <=10; ii++) nodes.pop();
         nodes.push($$);
     }
     ;
