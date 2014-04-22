@@ -6,6 +6,7 @@ include ../../Makefile.Compilers
 OBJS = NDMaterialLT.o \
        vonMisesPPLT.o \
        PisanoLT.o \
+       NewPisanoLT.o \
        ElasticIsotropic3DLT.o
 
 LIBRARY_Constitutive_Models  = ../../lib/libltensorbasedmaterials.a

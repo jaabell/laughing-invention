@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2011 Free Software Foundation, Inc.
+      Copyright (C) 2002-2013 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,10 +30,15 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/**
+ ** \file feiparser.tab.hh
+ ** Define the yy::parser class.
+ */
+
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef PARSER_HEADER_H
-# define PARSER_HEADER_H
+#ifndef YY_YY_FEIPARSER_TAB_HH_INCLUDED
+# define YY_YY_FEIPARSER_TAB_HH_INCLUDED
 
 
 
@@ -47,24 +52,10 @@
 # define YYDEBUG 0
 #endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
 
 namespace yy {
-
-/* Line 35 of lalr1.cc  */
-#line 68 "feiparser.tab.hh"
+/* Line 33 of lalr1.cc  */
+#line 59 "feiparser.tab.hh"
 
   /// A Bison parser.
   class feiparser
@@ -74,8 +65,7 @@ namespace yy {
 #ifndef YYSTYPE
     union semantic_type
     {
-
-/* Line 35 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 109 "feiparser.yy"
 
   Expression    *exp;           /* For the expressions. Since it is a pointer, no problem. */
@@ -85,9 +75,8 @@ namespace yy {
   int           errcode;
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 91 "feiparser.tab.hh"
+/* Line 33 of lalr1.cc  */
+#line 80 "feiparser.tab.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -349,137 +338,138 @@ namespace yy {
      pisano = 505,
      vonmises_perfectly_plastic_LT = 506,
      pisanoLT = 507,
-     linear_elastic_isotropic_3d_LT = 508,
-     mass_density = 509,
-     elastic_modulus = 510,
-     viscoelastic_modulus = 511,
-     poisson_ratio = 512,
-     von_mises_radius = 513,
-     druckerprager_angle = 514,
-     armstrong_frederick_ha = 515,
-     armstrong_frederick_cr = 516,
-     initial_confining_stress = 517,
-     isotropic_hardening_rate = 518,
-     kinematic_hardening_rate = 519,
-     poisson_ratio_h_v = 520,
-     poisson_ratio_h_h = 521,
-     shear_modulus_h_v = 522,
-     elastic_modulus_horizontal = 523,
-     elastic_modulus_vertical = 524,
-     pressure_reference_p0 = 525,
-     initial_void_ratio = 526,
-     initial_shear_modulus = 527,
-     initial_bulk_modulus = 528,
-     sanisand2008_Pat = 529,
-     sanisand2008_k_c = 530,
-     sanisand2008_K0 = 531,
-     sanisand2008_alpha_cc = 532,
-     sanisand2008_c = 533,
-     sanisand2008_xi = 534,
-     sanisand2008_lambda = 535,
-     sanisand2008_ec_ref = 536,
-     sanisand2008_m = 537,
-     sanisand2008_h0 = 538,
-     sanisand2008_ch = 539,
-     sanisand2008_nb = 540,
-     sanisand2008_A0 = 541,
-     sanisand2008_nd = 542,
-     sanisand2008_p_r = 543,
-     sanisand2008_rho_c = 544,
-     sanisand2008_theta_c = 545,
-     sanisand2008_X = 546,
-     sanisand2008_z_max = 547,
-     sanisand2008_cz = 548,
-     sanisand2008_p0 = 549,
-     sanisand2008_p_in = 550,
-     sanisand2008_G0 = 551,
-     sanisand2004_K0 = 552,
-     sanisand2004_Pat = 553,
-     e0 = 554,
-     sanisand2004_G0 = 555,
-     sanisand2004_p_cut = 556,
-     sanisand2004_Mc = 557,
-     sanisand2004_c = 558,
-     sanisand2004_lambda_c = 559,
-     sanisand2004_xi = 560,
-     sanisand2004_ec_ref = 561,
-     sanisand2004_m = 562,
-     sanisand2004_h0 = 563,
-     sanisand2004_ch = 564,
-     sanisand2004_nb = 565,
-     sanisand2004_A0 = 566,
-     sanisand2004_nd = 567,
-     sanisand2004_z_max = 568,
-     sanisand2004_cz = 569,
-     reference_void_ratio = 570,
-     critical_stress_ratio_M = 571,
-     minimum_bulk_modulus = 572,
-     initial_mean_pressure = 573,
-     yield_strength = 574,
-     strain_hardening_ratio = 575,
-     compressive_strength = 576,
-     strain_at_compressive_strength = 577,
-     crushing_strength = 578,
-     strain_at_crushing_strength = 579,
-     tensile_strength = 580,
-     tension_softening_stiffness = 581,
-     M_in = 582,
-     kd_in = 583,
-     xi_in = 584,
-     h_in = 585,
-     m_in = 586,
-     beta_min = 587,
-     ax = 588,
-     ay = 589,
-     az = 590,
-     verbose_level = 591,
-     maximum_iterations = 592,
-     tolerance = 593,
-     beta = 594,
-     gamma = 595,
-     kappa = 596,
-     lambda = 597,
-     delta = 598,
-     DOMAIN_ = 599,
-     startTime = 600,
-     endTime = 601,
-     Period = 602,
-     Phase = 603,
-     Amplitude = 604,
-     frequency = 605,
-     MaxTime = 606,
-     frequency1 = 607,
-     frequency2 = 608,
-     frequency3 = 609,
-     frequency4 = 610,
-     stiffness_to_use_opt = 611,
-     DAMPING_RAYLEIGH = 612,
-     DAMPING_CAUGHEY3 = 613,
-     DAMPING_CAUGHEY4 = 614,
-     a0 = 615,
-     a1 = 616,
-     stiffness_to_use = 617,
-     a2 = 618,
-     a3 = 619,
-     a4 = 620,
-     R0 = 621,
-     cR1 = 622,
-     cR2 = 623,
-     MASS = 624,
-     mx = 625,
-     my = 626,
-     mz = 627,
-     Imx = 628,
-     Imy = 629,
-     Imz = 630,
-     equaldof = 631,
-     master = 632,
-     slave = 633,
-     dof_to_constrain = 634,
-     of = 635,
-     OUTPUT = 636,
-     BINARY = 637,
-     TEXT = 638
+     New_PisanoLT = 508,
+     linear_elastic_isotropic_3d_LT = 509,
+     mass_density = 510,
+     elastic_modulus = 511,
+     viscoelastic_modulus = 512,
+     poisson_ratio = 513,
+     von_mises_radius = 514,
+     druckerprager_angle = 515,
+     armstrong_frederick_ha = 516,
+     armstrong_frederick_cr = 517,
+     initial_confining_stress = 518,
+     isotropic_hardening_rate = 519,
+     kinematic_hardening_rate = 520,
+     poisson_ratio_h_v = 521,
+     poisson_ratio_h_h = 522,
+     shear_modulus_h_v = 523,
+     elastic_modulus_horizontal = 524,
+     elastic_modulus_vertical = 525,
+     pressure_reference_p0 = 526,
+     initial_void_ratio = 527,
+     initial_shear_modulus = 528,
+     initial_bulk_modulus = 529,
+     sanisand2008_Pat = 530,
+     sanisand2008_k_c = 531,
+     sanisand2008_K0 = 532,
+     sanisand2008_alpha_cc = 533,
+     sanisand2008_c = 534,
+     sanisand2008_xi = 535,
+     sanisand2008_lambda = 536,
+     sanisand2008_ec_ref = 537,
+     sanisand2008_m = 538,
+     sanisand2008_h0 = 539,
+     sanisand2008_ch = 540,
+     sanisand2008_nb = 541,
+     sanisand2008_A0 = 542,
+     sanisand2008_nd = 543,
+     sanisand2008_p_r = 544,
+     sanisand2008_rho_c = 545,
+     sanisand2008_theta_c = 546,
+     sanisand2008_X = 547,
+     sanisand2008_z_max = 548,
+     sanisand2008_cz = 549,
+     sanisand2008_p0 = 550,
+     sanisand2008_p_in = 551,
+     sanisand2008_G0 = 552,
+     sanisand2004_K0 = 553,
+     sanisand2004_Pat = 554,
+     e0 = 555,
+     sanisand2004_G0 = 556,
+     sanisand2004_p_cut = 557,
+     sanisand2004_Mc = 558,
+     sanisand2004_c = 559,
+     sanisand2004_lambda_c = 560,
+     sanisand2004_xi = 561,
+     sanisand2004_ec_ref = 562,
+     sanisand2004_m = 563,
+     sanisand2004_h0 = 564,
+     sanisand2004_ch = 565,
+     sanisand2004_nb = 566,
+     sanisand2004_A0 = 567,
+     sanisand2004_nd = 568,
+     sanisand2004_z_max = 569,
+     sanisand2004_cz = 570,
+     reference_void_ratio = 571,
+     critical_stress_ratio_M = 572,
+     minimum_bulk_modulus = 573,
+     initial_mean_pressure = 574,
+     yield_strength = 575,
+     strain_hardening_ratio = 576,
+     compressive_strength = 577,
+     strain_at_compressive_strength = 578,
+     crushing_strength = 579,
+     strain_at_crushing_strength = 580,
+     tensile_strength = 581,
+     tension_softening_stiffness = 582,
+     M_in = 583,
+     kd_in = 584,
+     xi_in = 585,
+     h_in = 586,
+     m_in = 587,
+     beta_min = 588,
+     ax = 589,
+     ay = 590,
+     az = 591,
+     verbose_level = 592,
+     maximum_iterations = 593,
+     tolerance = 594,
+     beta = 595,
+     gamma = 596,
+     kappa = 597,
+     lambda = 598,
+     delta = 599,
+     DOMAIN_ = 600,
+     startTime = 601,
+     endTime = 602,
+     Period = 603,
+     Phase = 604,
+     Amplitude = 605,
+     frequency = 606,
+     MaxTime = 607,
+     frequency1 = 608,
+     frequency2 = 609,
+     frequency3 = 610,
+     frequency4 = 611,
+     stiffness_to_use_opt = 612,
+     DAMPING_RAYLEIGH = 613,
+     DAMPING_CAUGHEY3 = 614,
+     DAMPING_CAUGHEY4 = 615,
+     a0 = 616,
+     a1 = 617,
+     stiffness_to_use = 618,
+     a2 = 619,
+     a3 = 620,
+     a4 = 621,
+     R0 = 622,
+     cR1 = 623,
+     cR2 = 624,
+     MASS = 625,
+     mx = 626,
+     my = 627,
+     mz = 628,
+     Imx = 629,
+     Imy = 630,
+     Imz = 631,
+     equaldof = 632,
+     master = 633,
+     slave = 634,
+     dof_to_constrain = 635,
+     of = 636,
+     OUTPUT = 637,
+     BINARY = 638,
+     TEXT = 639
    };
 
     };
@@ -509,6 +499,10 @@ namespace yy {
 #endif
 
   private:
+    /// This class is not copyable.
+    feiparser (const feiparser&);
+    feiparser& operator= (const feiparser&);
+
     /// Report a syntax error.
     /// \param loc    where the syntax error is found.
     /// \param msg    a description of the syntax error.
@@ -592,14 +586,12 @@ namespace yy {
     /// For a rule, its LHS.
     static const unsigned short int yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[];
-
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
-#endif
+    static const unsigned char yyr2_[]; 
 
 #if YYDEBUG
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
+
     /// A type to store symbol numbers and -1.
     typedef short int rhs_number_type;
     /// A `-1'-separated list of the rules' RHS.
@@ -625,6 +617,7 @@ namespace yy {
 
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg        Why this token is reclaimed.
+    ///                     If null, do not display the symbol, just free it.
     /// \param yytype       The symbol type.
     /// \param yyvaluep     Its semantic value.
     /// \param yylocationp  Its location.
@@ -652,10 +645,9 @@ namespace yy {
   };
 
 } // yy
-
-/* Line 35 of lalr1.cc  */
-#line 658 "feiparser.tab.hh"
-
+/* Line 33 of lalr1.cc  */
+#line 650 "feiparser.tab.hh"
 
 
-#endif /* ! defined PARSER_HEADER_H */
+
+#endif /* !YY_YY_FEIPARSER_TAB_HH_INCLUDED  */

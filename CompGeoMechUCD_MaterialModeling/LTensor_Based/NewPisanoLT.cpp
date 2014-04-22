@@ -34,7 +34,7 @@
 #ifndef PisanoLT_CPP
 #define PisanoLT_CPP
 
-#include "PisanoLT.h"
+#include "NewPisanoLT.h"
 #include <limits>
 #include "LTensorDisplay.h"
 #include <Channel.h>
@@ -42,27 +42,27 @@
 #include <Matrix.h>
 #include <Vector.h>
 
-const  DTensor2 PisanoLT::ZeroStrain(3, 3, 0.0);
-const  DTensor2 PisanoLT::ZeroStress(3, 3, 0.0);
-const double PisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::epsilon()); // used to check the variable nullity
-DTensor4 PisanoLT::Ee(3, 3, 3, 3, 0.0);
+const  DTensor2 NewPisanoLT::ZeroStrain(3, 3, 0.0);
+const  DTensor2 NewPisanoLT::ZeroStress(3, 3, 0.0);
+const double NewPisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::epsilon()); // used to check the variable nullity
+DTensor4 NewPisanoLT::Ee(3, 3, 3, 3, 0.0);
 
 
 //================================================================================
 // Constructors & Destructors
 //================================================================================
-PisanoLT::PisanoLT(int tag,
-                   double E_in,
-                   double v_in,
-                   double M_in,
-                   double kd_in,
-                   double xi_in,
-                   double h_in,
-                   double m_in,
-                   double rho_in,
-                   double initialconfiningstress_in,
-                   double beta_min_in)
-    : NDMaterialLT(tag, ND_TAG_PisanoLT),
+NewPisanoLT::NewPisanoLT(int tag,
+                         double E_in,
+                         double v_in,
+                         double M_in,
+                         double kd_in,
+                         double xi_in,
+                         double h_in,
+                         double m_in,
+                         double rho_in,
+                         double initialconfiningstress_in,
+                         double beta_min_in)
+    : NDMaterialLT(tag, ND_TAG_NewPisanoLT),
       TrialStrain( 3, 3, 0.0 ),
       TrialStress( 3, 3, 0.0 ),
       TrialPlastic_Strain( 3, 3, 0.0 ),
@@ -72,9 +72,9 @@ PisanoLT::PisanoLT(int tag,
       CommitStrain( 3, 3, 0.0 ),
       CommitPlastic_Strain( 3, 3, 0.0 ),
       alpha( 3, 3, 0.0 ),
+      alpha0( 3, 3, 0.0 ),
       Stress_n_minus_2( 3, 3, 0.0 ),
       nij_dev( 3, 3, 0.0 ),
-      nij_dev_prev( 3, 3, 0.0 ), // not needed
       Stiffness( 3, 3, 3, 3, 0.0 ),
       beta_min(beta_min_in),
       E(E_in),
@@ -94,16 +94,12 @@ PisanoLT::PisanoLT(int tag,
 
     ElasticStateStress = DTensor2(initialStress);
     TrialPlastic_Strain(i, j) = 0 * initialStress(i, j);
-    nij_dev_prev(i, j) = 0 * initialStress(i, j);  // not needed
 
     Stress_n_minus_2 = DTensor2(initialStress); //FP
 
     // need to initialize here both alpha and alpha0 tensors
 
-
     beta  = M * sqrt(2.0 / 3.0); //FP: this is ok initialization when alpha is initially nil. Otherwise, consistent evaluation needed
-
-    beta0 = beta; //FP not needed anymore
 
 
     // FIXME: Hard-coded n_ij deviatoric!!!! FP: no general rule for this, because it comes from stress increment - which is initially not given!!!
@@ -121,13 +117,13 @@ PisanoLT::PisanoLT(int tag,
 }
 
 
-PisanoLT::PisanoLT()
-    : NDMaterialLT(0, ND_TAG_PisanoLT)
+NewPisanoLT::NewPisanoLT()
+    : NDMaterialLT(0, ND_TAG_NewPisanoLT)
 {
     this->revertToStart();
 }
 
-PisanoLT::~PisanoLT()
+NewPisanoLT::~NewPisanoLT()
 {
 
 }
@@ -135,7 +131,7 @@ PisanoLT::~PisanoLT()
 //================================================================================
 //  Plasticity related setters and getters
 //================================================================================
-int PisanoLT::setTrialStrain(const DTensor2 &v)
+int NewPisanoLT::setTrialStrain(const DTensor2 &v)
 {
     DTensor2 result( 3, 3, 0.0 );
     result( i, j ) = v( i, j ) - TrialStrain( i, j );
@@ -144,32 +140,32 @@ int PisanoLT::setTrialStrain(const DTensor2 &v)
 }
 
 
-int PisanoLT::setTrialStrainIncr(const DTensor2 &strain_increment)
+int NewPisanoLT::setTrialStrainIncr(const DTensor2 &strain_increment)
 {
     return this->Explicit(strain_increment);
 }
 
 
-const DTensor4 &PisanoLT::getTangentTensor(void)
+const DTensor4 &NewPisanoLT::getTangentTensor(void)
 {
     return this->Stiffness;
 }
 
 
-const DTensor2  &PisanoLT::getStressTensor(void)
+const DTensor2  &NewPisanoLT::getStressTensor(void)
 {
     return this->TrialStress;
 }
 
 
 
-const DTensor2 &PisanoLT::getStrainTensor(void)
+const DTensor2 &NewPisanoLT::getStrainTensor(void)
 {
     return this->TrialStrain;
 }
 
 
-const DTensor2 &PisanoLT::getPlasticStrainTensor(void)
+const DTensor2 &NewPisanoLT::getPlasticStrainTensor(void)
 {
     return this->TrialPlastic_Strain;
 }
@@ -178,7 +174,7 @@ const DTensor2 &PisanoLT::getPlasticStrainTensor(void)
 //================================================================================
 //  Save / Restore
 //================================================================================
-int PisanoLT::commitState(void)
+int NewPisanoLT::commitState(void)
 {
     Stress_n_minus_2 = CommitStress; // before updating the CommitStress, we keep track of the previous one
     CommitStress = TrialStress;
@@ -189,7 +185,7 @@ int PisanoLT::commitState(void)
 }
 
 
-int PisanoLT::revertToLastCommit(void)
+int NewPisanoLT::revertToLastCommit(void)
 {
     TrialStress = CommitStress;
     TrialStrain = CommitStrain;
@@ -198,7 +194,7 @@ int PisanoLT::revertToLastCommit(void)
 }
 
 
-int PisanoLT::revertToStart(void)
+int NewPisanoLT::revertToStart(void)
 {
     CommitStress = ElasticStateStress;
     CommitStrain = ElasticStateStrain;
@@ -241,42 +237,42 @@ int PisanoLT::revertToStart(void)
 //================================================================================
 //  Deep Copy
 //================================================================================
-NDMaterialLT *PisanoLT::getCopy(void)
+NDMaterialLT *NewPisanoLT::getCopy(void)
 {
-    NDMaterialLT *tmp = new PisanoLT(this->getTag(),
-                                     this->getE(),
-                                     this->getv(),
-                                     this->getM(),
-                                     this->getkd(),
-                                     this->getxi(),
-                                     this->geth(),
-                                     this->getm(),
-                                     this->getRho(),
-                                     this->getInitialConfiningStress(),
-                                     this->getbeta_min());
+    NDMaterialLT *tmp = new NewPisanoLT(this->getTag(),
+                                        this->getE(),
+                                        this->getv(),
+                                        this->getM(),
+                                        this->getkd(),
+                                        this->getxi(),
+                                        this->geth(),
+                                        this->getm(),
+                                        this->getRho(),
+                                        this->getInitialConfiningStress(),
+                                        this->getbeta_min());
     return tmp;
 }
 
-NDMaterialLT *PisanoLT::getCopy(const char *code)
+NDMaterialLT *NewPisanoLT::getCopy(const char *code)
 {
     if (strcmp(code, "ThreeDimensional") == 0)
     {
-        PisanoLT *tmp = new PisanoLT( this->getTag(),
-                                      this->getE(),
-                                      this->getv(),
-                                      this->getM(),
-                                      this->getkd(),
-                                      this->getxi(),
-                                      this->geth(),
-                                      this->getm(),
-                                      this->getRho(),
-                                      this->getInitialConfiningStress(),
-                                      this->getbeta_min());
+        NewPisanoLT *tmp = new NewPisanoLT( this->getTag(),
+                                            this->getE(),
+                                            this->getv(),
+                                            this->getM(),
+                                            this->getkd(),
+                                            this->getxi(),
+                                            this->geth(),
+                                            this->getm(),
+                                            this->getRho(),
+                                            this->getInitialConfiningStress(),
+                                            this->getbeta_min());
         return tmp;
     }
     else
     {
-        cout.flush() << "PisanoLT::getCopy failed to get model: " <<  code << endln;
+        cout.flush() << "NewPisanoLT::getCopy failed to get model: " <<  code << endln;
         exit(1);
     }
 
@@ -286,7 +282,7 @@ NDMaterialLT *PisanoLT::getCopy(const char *code)
 //================================================================================
 //
 //================================================================================
-const char *PisanoLT::getType(void) const
+const char *NewPisanoLT::getType(void) const
 {
     return "ThreeDimensional";
 }
@@ -295,16 +291,16 @@ const char *PisanoLT::getType(void) const
 //  For the parallel / storage
 //================================================================================
 
-int PisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+int NewPisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
-    theHDF5_Channel.beginMaterialDescription("PisanoLT", this->getTag());
+    theHDF5_Channel.beginMaterialDescription("NewPisanoLT", this->getTag());
     theHDF5_Channel.addField("strain", true, "adim");// 1.
     theHDF5_Channel.addField("stress", true, "adim");// 2.
     theHDF5_Channel.addField("plastic_strain", true, "adim");// 3.
     theHDF5_Channel.addField("alpha", true, "adim");// 4.
-    theHDF5_Channel.addField("alpha0", true, "adim");// 4.
-    theHDF5_Channel.addField("stress_n_minus_2", true, "adim");// 5.
-    theHDF5_Channel.addField("nij_dev", true, "adim");// 6.
+    theHDF5_Channel.addField("alpha0", true, "adim");// 5.
+    theHDF5_Channel.addField("stress_n_minus_2", true, "adim");// 6.
+    theHDF5_Channel.addField("nij_dev", true, "adim");// 7.
     //theHDF5_Channel.addField("nij_dev_prev", true, "adim");// 7. // not needed anymore. Can we put alpha0 here instead?
     theHDF5_Channel.addField("model_parameters", false, "adim");// 8.
     theHDF5_Channel.endMaterialDescription();
@@ -313,7 +309,7 @@ int PisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 }
 
 
-int PisanoLT::sendSelf(int commitTag, Channel &theChannel)
+int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 {
     Matrix a(3, 3);
 
@@ -333,11 +329,15 @@ int PisanoLT::sendSelf(int commitTag, Channel &theChannel)
     a.setData(alpha.data, 3, 3);
     theChannel.sendMatrix(0, 0, a);
 
-    //5. Sending stress_n_minus_2
+    //5. Sending alpha0
+    a.setData(alpha0.data, 3, 3);
+    theChannel.sendMatrix(0, 0, a);
+
+    //6. Sending stress_n_minus_2
     a.setData(Stress_n_minus_2.data, 3, 3);
     theChannel.sendMatrix(0, 0, a);
 
-    //6. Sending nij_dev
+    //7. Sending nij_dev
     a.setData(nij_dev.data, 3, 3);
     theChannel.sendMatrix(0, 0, a);
 
@@ -346,19 +346,19 @@ int PisanoLT::sendSelf(int commitTag, Channel &theChannel)
     //theChannel.sendMatrix(0, 0, a);
 
     //8. Sending model_parameters
-    Vector model_parameters(12);
+    Vector model_parameters(10);
     //model_parameters(0) = beta0; // not needed anymore
-    model_parameters(1) = beta;  // this is not parameter
     //model_parameters(2) = beta_min;  // this is not parameter
-    model_parameters(3) = E;
-    model_parameters(4) = v;
-    model_parameters(5) = M;
-    model_parameters(6) = kd;
-    model_parameters(7) = xi;
-    model_parameters(8) = h;
-    model_parameters(9) = m;
-    model_parameters(10) = rho;
-    model_parameters(11) = initialconfiningstress;
+    model_parameters(0) = beta;  // this is not parameter
+    model_parameters(1) = E;
+    model_parameters(2) = v;
+    model_parameters(3) = M;
+    model_parameters(4) = kd;
+    model_parameters(5) = xi;
+    model_parameters(6) = h;
+    model_parameters(7) = m;
+    model_parameters(8) = rho;
+    model_parameters(9) = initialconfiningstress;
 
     theChannel.sendVector(0, 0, model_parameters);
 
@@ -366,7 +366,7 @@ int PisanoLT::sendSelf(int commitTag, Channel &theChannel)
 }
 
 
-int PisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }
@@ -375,7 +375,7 @@ int PisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
 //
 //================================================================================
 
-void PisanoLT::Print(ostream &s, int flag)
+void NewPisanoLT::Print(ostream &s, int flag)
 {
     s << (*this);
 }
@@ -383,63 +383,63 @@ void PisanoLT::Print(ostream &s, int flag)
 //================================================================================
 //   Getters!
 //================================================================================
-double PisanoLT::getE()
+double NewPisanoLT::getE()
 {
     return E;
 }
 
-double PisanoLT::getv()
+double NewPisanoLT::getv()
 {
     return v;
 }
 
 
-double PisanoLT::getM()
+double NewPisanoLT::getM()
 {
     return M;
 }
 
 
-double PisanoLT::getkd()
+double NewPisanoLT::getkd()
 {
     return kd;
 }
 
 
-double PisanoLT::getxi()
+double NewPisanoLT::getxi()
 {
     return xi;
 }
 
 
-double PisanoLT::geth()
+double NewPisanoLT::geth()
 {
     return h;
 }
 
 
-double PisanoLT::getm()
+double NewPisanoLT::getm()
 {
     return m;
 }
 
 
-double PisanoLT::getRho(void)
+double NewPisanoLT::getRho(void)
 {
     return rho;
 }
 
-double PisanoLT::getbeta_min(void)
+double NewPisanoLT::getbeta_min(void)
 {
     return beta_min;
 }
 
-double PisanoLT::getInitialConfiningStress(void)
+double NewPisanoLT::getInitialConfiningStress(void)
 {
     return initialconfiningstress;
 }
 
-DTensor2 &PisanoLT::getInternalTensor(void)
+DTensor2 &NewPisanoLT::getInternalTensor(void)
 {
     return alpha;
 }
@@ -448,7 +448,7 @@ DTensor2 &PisanoLT::getInternalTensor(void)
 //  Plasticity!
 //================================================================================
 
-int PisanoLT::Explicit(const DTensor2 &strain_incr)
+int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 {
 
     //=============================================================================================
@@ -468,11 +468,11 @@ int PisanoLT::Explicit(const DTensor2 &strain_incr)
     double sign                   = 0.0;    //
     double beta                   = 0.0;    // distance coefficient
     double unload_prod            = 0.0;    //
-    double arg_den                = 0.0;    //
-    double arg_den_min            = 0.0;    //
+    // double arg_den                = 0.0;    //
+    // double arg_den_min            = 0.0;    //
     double H                      = 0.0;    // Hardening modulus
-    double alpha_norm             = 0.0;    //
-    double xi_var                 = 0.0;    //
+    // double alpha_norm             = 0.0;    //
+    // double xi_var                 = 0.0;    //
     double D                      = 0.0;    //
     double incr_strain_dev_nijdev = 0.0;    //
     double alpha_nijdev           = 0.0;    //
@@ -570,7 +570,7 @@ int PisanoLT::Explicit(const DTensor2 &strain_incr)
     // Compute distance coeff
     //---------------------------------------------------------------------------------------------
     // beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
-    beta = get_distance_coeff(); // this should be able to read alpha and alpha0
+    beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
 
 
     //---------------------------------------------------------------------------------------------
@@ -712,15 +712,14 @@ int PisanoLT::Explicit(const DTensor2 &strain_incr)
 
     // LTensorDisplay::print(Stiffness,"a","Hi there!",1);
 
-    nij_dev_prev = nij_dev;  // keeps track of the previous nij_dev tensor USELESS NOW
+    // nij_dev_prev = nij_dev;  // keeps track of the previous nij_dev tensor USELESS NOW
 
     return err;
 }
 
 // Probably should be inlined
-double PisanoLT::get_distance_coeff(DTensor2 &start_stress)
+double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 {
-
     double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));
 
     if (nij_dev_norm > 1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary

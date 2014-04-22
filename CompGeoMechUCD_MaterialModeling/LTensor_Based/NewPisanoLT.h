@@ -34,8 +34,8 @@
 // the functions embeded here for efficiency.
 
 
-#ifndef PisanoLT_H
-#define PisanoLT_H
+#ifndef NewPisanoLT_H
+#define NewPisanoLT_H
 
 
 #include "NDMaterialLT.h"
@@ -48,30 +48,30 @@
 using namespace std;
 
 
-class PisanoLT : public NDMaterialLT
+class NewPisanoLT : public NDMaterialLT
 {
 
     public:
 
-        PisanoLT( int tag,
-                  double E_in,  // Young modulus
-                  double v_in,  // Poisson's ratio
-                  double M_in,  // strength parameter
-                  double kd_in, // flow rule parameter
-                  double xi_in, // flow rule parameter
-                  double h_in,  // hardening parameter
-                  double m_in,  // hardening parameter
-                  double rho_in,
-                  double initialconfiningstress_in,
-                  double beta_min_in);
+        NewPisanoLT( int tag,
+                     double E_in,  // Young modulus
+                     double v_in,  // Poisson's ratio
+                     double M_in,  // strength parameter
+                     double kd_in, // flow rule parameter
+                     double xi_in, // flow rule parameter
+                     double h_in,  // hardening parameter
+                     double m_in,  // hardening parameter
+                     double rho_in,
+                     double initialconfiningstress_in,
+                     double beta_min_in);
 
-        PisanoLT(void);
+        NewPisanoLT(void);
 
-        ~PisanoLT(void);
+        ~NewPisanoLT(void);
 
         const char *getClassType(void) const
         {
-            return "PisanoLT";
+            return "NewPisanoLT";
         };
 
 
@@ -149,10 +149,8 @@ class PisanoLT : public NDMaterialLT
         DTensor2 alpha0;             // back stress ratio tensor
         DTensor2 Stress_n_minus_2;  // Stress tensor at step n-2
         DTensor2 nij_dev;           // direction of deviatoric plastic strain increment(unit tensor)
-        //DTensor2 nij_dev_prev;
         DTensor4 Stiffness;
 
-        //double beta0;               // to be determined after checking the loading/unloading condition
         double beta;                // scalar distance coefficient as internal variable
         double beta_min;
         double E;
@@ -169,7 +167,6 @@ class PisanoLT : public NDMaterialLT
         static const  DTensor2 ZeroStress;
         static const double check_for_zero;
         static DTensor4 Ee;
-        //static Matrix D;
 
         Index < 'i' > i;
         Index < 'j' > j;

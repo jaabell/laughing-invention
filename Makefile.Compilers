@@ -69,7 +69,6 @@ endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
 	C++FLAGS        =   -Wall \
-										-Winline \
 										-O2 \
 										-finline \
 										-finline-functions \
@@ -87,6 +86,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-std=c++0x \
 										-Wno-write-strings \
 										-march=native
+										# -Winline \
 										# -ftemplate-depth=100000 \
 										# --param inline-unit-growth=10000 \
 										# --param large-function-growth=10000 \

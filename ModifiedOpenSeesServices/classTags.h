@@ -229,6 +229,7 @@
 // LTensor Materials
 #define ND_TAG_vonMisesPPLT 4001
 #define ND_TAG_PisanoLT 4002
+#define ND_TAG_NewPisanoLT 4003
 #define ND_TAG_ElasticIsotropic3DLT 4003
 
 

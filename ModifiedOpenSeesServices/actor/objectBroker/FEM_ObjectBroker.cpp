@@ -244,6 +244,7 @@
 #include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/NDMaterialLT.h"
 #include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/vonMisesPPLT.h"
 #include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/PisanoLT.h"
+#include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/NewPisanoLT.h"
 #include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/ConstitutiveMaterialParameter.h"
 #include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/vonMisesPP.h"
 #include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/vonMisesIH.h"

@@ -191,7 +191,7 @@
 %token linear_elastic_isotropic_3d vonmises_perfectly_plastic vonmises_isotropic_hardening vonmises_linear_kinematic_hardening vonmises_linear_kinematic_hardening_accelerated vonmises_kinematic_hardening vonmises_perfectly_plastic_accelerated vonmises_isotropic_hardening_accelerated vonmises_kinematic_hardening_accelerated
 %token sanisand2008 camclay camclay_accelerated sanisand2004 druckerprager_isotropic_hardening druckerprager_isotropic_hardening_accelerated druckerprager_kinematic_hardening druckerprager_kinematic_hardening_accelerated
 %token druckerprager_perfectly_plastic druckerprager_perfectly_plastic_accelerated linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
-%token vonmises_perfectly_plastic_LT pisanoLT linear_elastic_isotropic_3d_LT
+%token vonmises_perfectly_plastic_LT pisanoLT New_PisanoLT linear_elastic_isotropic_3d_LT
 // Material options tokens
 %token mass_density elastic_modulus viscoelastic_modulus poisson_ratio von_mises_radius druckerprager_angle
 %token armstrong_frederick_ha armstrong_frederick_cr initial_confining_stress isotropic_hardening_rate kinematic_hardening_rate poisson_ratio_h_v poisson_ratio_h_h shear_modulus_h_v elastic_modulus_horizontal elastic_modulus_vertical pressure_reference_p0
@@ -3008,6 +3008,44 @@ ADD_material
         $$ = new FeiDslCaller4<int, double, double, double>(&add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d, args,
             signature,"add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d");
         for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 4 exps
+        nodes.push($$);
+    }
+    //!=========================================================================================================
+    //!
+    //!FEIDOC add material # <.> type [New_PisanoLT] elastic_modulus = <F/L^2> poisson_ratio = <.> M_in = <F/L^2> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> mass_density = <M/L^2> initial_confining_stress = <F/L^2> beta_min = <.>;
+    | MATERIAL TEXTNUMBER exp TYPE New_PisanoLT
+                        elastic_modulus '=' exp
+                        poisson_ratio '=' exp
+                        M_in '=' exp
+                        kd_in '=' exp
+                        xi_in '=' exp
+                        h_in '=' exp
+                        m_in '=' exp
+                        mass_density '=' exp
+                        initial_confining_stress '=' exp
+                        beta_min '=' exp
+      {
+        args.clear(); signature.clear();
+
+        args.push_back($3); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back($8); signature.push_back(this_signature("elastic_modulus",           &isPressure));
+        args.push_back($11); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
+        args.push_back($14); signature.push_back(this_signature("M_in",                     &isAdimensional));
+        args.push_back($17); signature.push_back(this_signature("kd_in",                    &isAdimensional));
+        args.push_back($20); signature.push_back(this_signature("xi_in",                    &isAdimensional));
+        args.push_back($23); signature.push_back(this_signature("h_in",                     &isAdimensional));
+        args.push_back($26); signature.push_back(this_signature("m_in",                     &isAdimensional));
+        args.push_back($29); signature.push_back(this_signature("mass_density",             &isDensity));
+        args.push_back($32); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back($35); signature.push_back(this_signature("beta_min",                 &isAdimensional));
+
+        $$ = new FeiDslCaller11<int,
+                                double, double, double,
+                                double, double, double,
+                                double, double, double,
+                                double>(&add_constitutive_model_NDMaterialLT_pisano, args, signature, "add_constitutive_model_NDMaterialLT_pisano");
+
+        for(int ii = 1;ii <=11; ii++) nodes.pop();
         nodes.push($$);
     }
     ;
