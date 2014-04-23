@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2011 Free Software Foundation, Inc.
+      Copyright (C) 2002-2013 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,10 +30,15 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/**
+ ** \file feiparser.tab.hh
+ ** Define the yy::parser class.
+ */
+
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef PARSER_HEADER_H
-# define PARSER_HEADER_H
+#ifndef YY_YY_FEIPARSER_TAB_HH_INCLUDED
+# define YY_YY_FEIPARSER_TAB_HH_INCLUDED
 
 
 
@@ -47,24 +52,10 @@
 # define YYDEBUG 0
 #endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
 
 namespace yy {
-
-/* Line 35 of lalr1.cc  */
-#line 68 "feiparser.tab.hh"
+/* Line 33 of lalr1.cc  */
+#line 59 "feiparser.tab.hh"
 
   /// A Bison parser.
   class feiparser
@@ -74,8 +65,7 @@ namespace yy {
 #ifndef YYSTYPE
     union semantic_type
     {
-
-/* Line 35 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 109 "feiparser.yy"
 
   Expression    *exp;           /* For the expressions. Since it is a pointer, no problem. */
@@ -85,9 +75,8 @@ namespace yy {
   int           errcode;
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 91 "feiparser.tab.hh"
+/* Line 33 of lalr1.cc  */
+#line 80 "feiparser.tab.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -510,6 +499,10 @@ namespace yy {
 #endif
 
   private:
+    /// This class is not copyable.
+    feiparser (const feiparser&);
+    feiparser& operator= (const feiparser&);
+
     /// Report a syntax error.
     /// \param loc    where the syntax error is found.
     /// \param msg    a description of the syntax error.
@@ -593,14 +586,12 @@ namespace yy {
     /// For a rule, its LHS.
     static const unsigned short int yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[];
-
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
-#endif
+    static const unsigned char yyr2_[]; 
 
 #if YYDEBUG
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
+
     /// A type to store symbol numbers and -1.
     typedef short int rhs_number_type;
     /// A `-1'-separated list of the rules' RHS.
@@ -626,6 +617,7 @@ namespace yy {
 
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg        Why this token is reclaimed.
+    ///                     If null, do not display the symbol, just free it.
     /// \param yytype       The symbol type.
     /// \param yyvaluep     Its semantic value.
     /// \param yylocationp  Its location.
@@ -653,10 +645,9 @@ namespace yy {
   };
 
 } // yy
-
-/* Line 35 of lalr1.cc  */
-#line 659 "feiparser.tab.hh"
-
+/* Line 33 of lalr1.cc  */
+#line 650 "feiparser.tab.hh"
 
 
-#endif /* ! defined PARSER_HEADER_H */
+
+#endif /* !YY_YY_FEIPARSER_TAB_HH_INCLUDED  */

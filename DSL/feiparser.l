@@ -13,6 +13,7 @@
     //Old C libraries are used in lexer....
     #include <cstdlib>
     #include <cstring>
+    #include <csignal>
     #include <stdio.h>                         // Provides printf, etc.
     #include <string.h>
     #include <getopt.h>                        // For the command-line argument parser
@@ -1092,8 +1093,50 @@ int start_parser(int argc, char**argv)
 #endif
 
 
+/*  SIGNAL HANDLING  */
+
+
+void signalHandler(int signum)
+{
+    if(signum == SIGINT)
+    {
+        cout << "Caught SIGINT! Program ending." << endl;
+    }
+    else if(signum == SIGABRT)
+    {
+        cout << "Caught SIGABRT! Program ending." << endl;
+    }
+    else if(signum == SIGSEGV)
+    {
+        cout << "Caught SIGSEGV! Program ending." << endl;
+    }
+    else if(signum == SIGTERM)
+    {
+        cout << "Caught SIGTERM! Program ending." << endl;
+    }
+    else if(signum == SIGILL)
+    {
+        cout << "Caught SIGILL! Program ending." << endl;
+    }
+    else if(signum == SIGFPE)
+    {
+        cout << "Caught SIGFPE! Program ending." << endl;
+    }
+    exit(signum);
+}
+
+/* END SIGNALS */
+
 int main (int argc, char**argv)
 {
+    signal(SIGINT, signalHandler);
+    signal(SIGABRT, signalHandler);
+    signal(SIGSEGV, signalHandler);
+    signal(SIGTERM, signalHandler);
+    signal(SIGILL, signalHandler);
+    signal(SIGFPE, signalHandler);
+
+
     int exitflag = -1;
 
 #ifdef _PARALLEL_PROCESSING

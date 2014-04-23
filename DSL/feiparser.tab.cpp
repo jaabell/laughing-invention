@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 2.7.12-4996.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2011 Free Software Foundation, Inc.
+      Copyright (C) 2002-2013 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -32,8 +32,7 @@
 
 
 /* First part of user declarations.  */
-
-/* Line 293 of lalr1.cc  */
+/* Line 283 of lalr1.cc  */
 #line 11 "feiparser.yy"
 
     // Basic
@@ -130,24 +129,30 @@
     //    CommandSuggestion cmd_advisor;
 
 
-
-/* Line 293 of lalr1.cc  */
-#line 136 "feiparser.tab.cc"
+/* Line 283 of lalr1.cc  */
+#line 134 "feiparser.tab.cc"
 
 
 #include "feiparser.tab.hh"
 
 /* User implementation prologue.  */
-
-/* Line 299 of lalr1.cc  */
+/* Line 289 of lalr1.cc  */
 #line 239 "feiparser.yy"
 
 extern int yylex(yy::feiparser::semantic_type *yylval,
                  yy::feiparser::location_type *yylloc);
 
+/* Line 289 of lalr1.cc  */
+#line 147 "feiparser.tab.cc"
 
-/* Line 299 of lalr1.cc  */
-#line 151 "feiparser.tab.cc"
+
+# ifndef YY_NULL
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULL nullptr
+#  else
+#   define YY_NULL 0
+#  endif
+# endif
 
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
@@ -161,25 +166,26 @@ extern int yylex(yy::feiparser::semantic_type *yylval,
 # endif
 #endif
 
+#define YYRHSLOC(Rhs, K) ((Rhs)[K])
 /* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
    If N is 0, then set CURRENT to the empty location which ends
    the previous symbol: RHS[0] (always defined).  */
 
-#define YYRHSLOC(Rhs, K) ((Rhs)[K])
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)                               \
- do                                                                    \
-   if (N)                                                              \
-     {                                                                 \
-       (Current).begin = YYRHSLOC (Rhs, 1).begin;                      \
-       (Current).end   = YYRHSLOC (Rhs, N).end;                        \
-     }                                                                 \
-   else                                                                \
-     {                                                                 \
-       (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;        \
-     }                                                                 \
- while (false)
-#endif
+# ifndef YYLLOC_DEFAULT
+#  define YYLLOC_DEFAULT(Current, Rhs, N)                               \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).begin  = YYRHSLOC (Rhs, 1).begin;                   \
+          (Current).end    = YYRHSLOC (Rhs, N).end;                     \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
+        }                                                               \
+    while (/*CONSTCOND*/ false)
+# endif
+
 
 /* Suppress unused-variable warnings by "using" E.  */
 #define YYUSE(e) ((void) (e))
@@ -215,9 +221,9 @@ do {					\
 #else /* !YYDEBUG */
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
-# define YY_REDUCE_PRINT(Rule)
-# define YY_STACK_PRINT()
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location) YYUSE(Type)
+# define YY_REDUCE_PRINT(Rule)        static_cast<void>(0)
+# define YY_STACK_PRINT()             static_cast<void>(0)
 
 #endif /* !YYDEBUG */
 
@@ -231,9 +237,8 @@ do {					\
 
 
 namespace yy {
-
-/* Line 382 of lalr1.cc  */
-#line 237 "feiparser.tab.cc"
+/* Line 357 of lalr1.cc  */
+#line 242 "feiparser.tab.cc"
 
   /// Build a parser object.
   feiparser::feiparser ()
@@ -259,11 +264,10 @@ namespace yy {
   {
     YYUSE (yylocationp);
     YYUSE (yyvaluep);
-    switch (yytype)
-      {
-         default:
-	  break;
-      }
+    std::ostream& yyo = debug_stream ();
+    std::ostream& yyoutput = yyo;
+    YYUSE (yyoutput);
+    YYUSE (yytype);
   }
 
 
@@ -287,14 +291,10 @@ namespace yy {
     YYUSE (yymsg);
     YYUSE (yyvaluep);
 
-    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+    if (yymsg)
+      YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
-    switch (yytype)
-      {
-  
-	default:
-	  break;
-      }
+    YYUSE (yytype);
   }
 
   void
@@ -351,17 +351,18 @@ namespace yy {
     int yychar = yyempty_;
     int yytoken = 0;
 
-    /* State.  */
+    // State.
     int yyn;
     int yylen = 0;
     int yystate = 0;
 
-    /* Error handling.  */
+    // Error handling.
     int yynerrs_ = 0;
     int yyerrstatus_ = 0;
 
     /// Semantic value of the lookahead.
-    semantic_type yylval;
+    static semantic_type yyval_default;
+    semantic_type yylval = yyval_default;
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
@@ -374,27 +375,29 @@ namespace yy {
 
     int yyresult;
 
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
+    try
+      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
-    /* User initialization code.  */
-    
-/* Line 565 of lalr1.cc  */
+/* User initialization code.  */
+/* Line 539 of lalr1.cc  */
 #line 244 "feiparser.yy"
 {
     yylloc.begin.filename = yylloc.end.filename = new std::string(curfilename);
 }
-
-/* Line 565 of lalr1.cc  */
-#line 390 "feiparser.tab.cc"
+/* Line 539 of lalr1.cc  */
+#line 393 "feiparser.tab.cc"
 
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
-    yystate_stack_ = state_stack_type (0);
-    yysemantic_stack_ = semantic_stack_type (0);
-    yylocation_stack_ = location_stack_type (0);
+    yystate_stack_.clear ();
+    yysemantic_stack_.clear ();
+    yylocation_stack_.clear ();
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yylloc);
 
@@ -420,10 +423,9 @@ namespace yy {
     /* Read a lookahead token.  */
     if (yychar == yyempty_)
       {
-	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc);
+        YYCDEBUG << "Reading a token: ";
+        yychar = yylex (&yylval, &yylloc);
       }
-
 
     /* Convert token to internal form.  */
     if (yychar <= yyeof_)
@@ -495,16 +497,18 @@ namespace yy {
     else
       yyval = yysemantic_stack_[0];
 
+    // Compute the default @$.
     {
       slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
       YYLLOC_DEFAULT (yyloc, slice, yylen);
     }
+
+    // Perform the reduction.
     YY_REDUCE_PRINT (yyn);
     switch (yyn)
       {
-	  case 2:
-
-/* Line 690 of lalr1.cc  */
+          case 2:
+/* Line 664 of lalr1.cc  */
 #line 265 "feiparser.yy"
     {
         if ( (yysemantic_stack_[(2) - (2)].exp) != 0 ) // ... and deliver us from the null pointer
@@ -519,8 +523,7 @@ namespace yy {
     break;
 
   case 3:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 279 "feiparser.yy"
     {
         //theDomain.Print(cerr);
@@ -531,8 +534,7 @@ namespace yy {
     break;
 
   case 4:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 289 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -546,8 +548,7 @@ namespace yy {
     break;
 
   case 5:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 312 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -561,8 +562,7 @@ namespace yy {
     break;
 
   case 6:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 325 "feiparser.yy"
     {
         cerr << "Not currently working. Should be implemented a API function and used here." << endl;
@@ -574,8 +574,7 @@ namespace yy {
     break;
 
   case 7:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 336 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -589,8 +588,7 @@ namespace yy {
     break;
 
   case 8:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 424 "feiparser.yy"
     {
         (yyval.exp) = new DslWhos(global_variables, locked_global_variables);
@@ -599,8 +597,7 @@ namespace yy {
     break;
 
   case 9:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 432 "feiparser.yy"
     {
         cout << "\n Please refer to ESSI Notes for available syntax and examples. \n\n" << endl;
@@ -610,43 +607,37 @@ namespace yy {
     break;
 
   case 10:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 437 "feiparser.yy"
     {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
     break;
 
   case 11:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 438 "feiparser.yy"
     {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
     break;
 
   case 12:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 439 "feiparser.yy"
     {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
     break;
 
   case 13:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 440 "feiparser.yy"
     {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
     break;
 
   case 14:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 441 "feiparser.yy"
     {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
     break;
 
   case 15:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 445 "feiparser.yy"
     {
                                     cout << "    *** Commands will now be execued. " << endl << endl;
@@ -658,15 +649,13 @@ namespace yy {
     break;
 
   case 16:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 455 "feiparser.yy"
     {  (yyval.exp) = new DslParseError("add", yylineno); nodes.push((yyval.exp)); }
     break;
 
   case 17:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 460 "feiparser.yy"
     {
 
@@ -708,15 +697,13 @@ namespace yy {
     break;
 
   case 18:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 497 "feiparser.yy"
     { (yyval.exp) = (yysemantic_stack_[(2) - (2)].exp);}
     break;
 
   case 19:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 502 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -733,15 +720,13 @@ namespace yy {
     break;
 
   case 20:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 514 "feiparser.yy"
     { (yyval.exp) = (yysemantic_stack_[(3) - (3)].exp); }
     break;
 
   case 21:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 520 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -759,8 +744,7 @@ namespace yy {
     break;
 
   case 22:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 539 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -785,8 +769,7 @@ namespace yy {
     break;
 
   case 23:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 565 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -814,8 +797,7 @@ namespace yy {
     break;
 
   case 24:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 594 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -844,8 +826,7 @@ namespace yy {
     break;
 
   case 25:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 624 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -881,8 +862,7 @@ namespace yy {
     break;
 
   case 26:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 661 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -912,8 +892,7 @@ namespace yy {
     break;
 
   case 27:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 692 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -952,8 +931,7 @@ namespace yy {
     break;
 
   case 28:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 730 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -974,8 +952,7 @@ namespace yy {
     break;
 
   case 29:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 752 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1007,8 +984,7 @@ namespace yy {
     break;
 
   case 30:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 786 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1042,8 +1018,7 @@ namespace yy {
     break;
 
   case 31:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 819 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1059,8 +1034,7 @@ namespace yy {
     break;
 
   case 32:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 834 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1076,8 +1050,7 @@ namespace yy {
     break;
 
   case 33:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 856 "feiparser.yy"
     {
 
@@ -1123,8 +1096,7 @@ namespace yy {
     break;
 
   case 34:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 907 "feiparser.yy"
     {
 
@@ -1168,8 +1140,7 @@ namespace yy {
     break;
 
   case 35:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 950 "feiparser.yy"
     {
 
@@ -1192,8 +1163,7 @@ namespace yy {
     break;
 
   case 36:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 975 "feiparser.yy"
     {
 
@@ -1218,8 +1188,7 @@ namespace yy {
     break;
 
   case 37:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1001 "feiparser.yy"
     {
 
@@ -1243,8 +1212,7 @@ namespace yy {
     break;
 
   case 38:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1024 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1262,8 +1230,7 @@ namespace yy {
     break;
 
   case 39:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1042 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1282,8 +1249,7 @@ namespace yy {
     break;
 
   case 40:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1061 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1303,8 +1269,7 @@ namespace yy {
     break;
 
   case 41:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1080 "feiparser.yy"
     {
         //add_damping_to_element(int elementNumber, int dampingNumber)
@@ -1321,8 +1286,7 @@ namespace yy {
     break;
 
   case 42:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1096 "feiparser.yy"
     {
         //add_damping_to_node(int nodeNumber, int dampingNumber)
@@ -1339,8 +1303,7 @@ namespace yy {
     break;
 
   case 43:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1112 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1359,8 +1322,7 @@ namespace yy {
     break;
 
   case 44:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1130 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1382,8 +1344,7 @@ namespace yy {
     break;
 
   case 45:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1151 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1421,8 +1382,7 @@ namespace yy {
     break;
 
   case 46:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1203 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1454,8 +1414,7 @@ namespace yy {
     break;
 
   case 47:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1250 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1488,8 +1447,7 @@ namespace yy {
     break;
 
   case 48:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1296 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1520,8 +1478,7 @@ namespace yy {
     break;
 
   case 49:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1326 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1538,8 +1495,7 @@ namespace yy {
     break;
 
   case 50:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1346 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1558,8 +1514,7 @@ namespace yy {
     break;
 
   case 51:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1372 "feiparser.yy"
     {
         // This implementation is a bit uncommon. The need arises due to the unknown
@@ -1600,8 +1555,7 @@ namespace yy {
     break;
 
   case 52:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1412 "feiparser.yy"
     {
         args.clear();           signature.clear();
@@ -1616,8 +1570,7 @@ namespace yy {
     break;
 
   case 53:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1426 "feiparser.yy"
     {
         args.clear();           signature.clear();
@@ -1640,8 +1593,7 @@ namespace yy {
     break;
 
   case 54:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1448 "feiparser.yy"
     {
                 Expression* cmd;
@@ -1670,8 +1622,7 @@ namespace yy {
     break;
 
   case 55:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1476 "feiparser.yy"
     {
                             dofchain_holder.clear();
@@ -1680,8 +1631,7 @@ namespace yy {
     break;
 
   case 56:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1480 "feiparser.yy"
     {
                             dofchain_holder.push_back(dof2number(*(yysemantic_stack_[(2) - (1)].ident)));
@@ -1689,8 +1639,7 @@ namespace yy {
     break;
 
   case 57:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1508 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1704,8 +1653,7 @@ namespace yy {
     break;
 
   case 58:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1521 "feiparser.yy"
     {
         // This case is a bit different. ALGNAME contains a string to
@@ -1743,8 +1691,7 @@ namespace yy {
     break;
 
   case 59:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1558 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1782,8 +1729,7 @@ namespace yy {
     break;
 
   case 60:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1595 "feiparser.yy"
     {
         int (*f)() = &define_solver_umfpack_for_analysis;         // function poiner to the algorithm DSL
@@ -1813,8 +1759,7 @@ namespace yy {
     break;
 
   case 61:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1624 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1829,8 +1774,7 @@ namespace yy {
     break;
 
   case 62:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1638 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1844,8 +1788,7 @@ namespace yy {
     break;
 
   case 63:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1651 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1867,8 +1810,7 @@ namespace yy {
     break;
 
   case 64:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1678 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1907,8 +1849,7 @@ namespace yy {
     break;
 
   case 65:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1716 "feiparser.yy"
     {
         Quantity returnQuantity;
@@ -1937,8 +1878,7 @@ namespace yy {
     break;
 
   case 66:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1744 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1952,8 +1892,7 @@ namespace yy {
     break;
 
   case 67:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1757 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1970,8 +1909,7 @@ namespace yy {
     break;
 
   case 68:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1777 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -1991,8 +1929,7 @@ namespace yy {
     break;
 
   case 69:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1796 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2007,8 +1944,7 @@ namespace yy {
     break;
 
   case 70:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1813 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2030,8 +1966,7 @@ namespace yy {
     break;
 
   case 71:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1837 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2053,8 +1988,7 @@ namespace yy {
     break;
 
   case 72:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1861 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2076,8 +2010,7 @@ namespace yy {
     break;
 
   case 73:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1885 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2099,8 +2032,7 @@ namespace yy {
     break;
 
   case 74:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1909 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2122,8 +2054,7 @@ namespace yy {
     break;
 
   case 75:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1935 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2137,8 +2068,7 @@ namespace yy {
     break;
 
   case 76:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1948 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2152,8 +2082,7 @@ namespace yy {
     break;
 
   case 77:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1961 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2168,8 +2097,7 @@ namespace yy {
     break;
 
   case 78:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1975 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2182,8 +2110,7 @@ namespace yy {
     break;
 
   case 79:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 1987 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2196,8 +2123,7 @@ namespace yy {
     break;
 
   case 80:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2011 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2213,8 +2139,7 @@ namespace yy {
     break;
 
   case 81:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2036 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2239,8 +2164,7 @@ namespace yy {
     break;
 
   case 82:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2068 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2262,8 +2186,7 @@ namespace yy {
     break;
 
   case 83:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2097 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2285,8 +2208,7 @@ namespace yy {
     break;
 
   case 84:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2129 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2310,8 +2232,7 @@ namespace yy {
     break;
 
   case 85:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2161 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2334,8 +2255,7 @@ namespace yy {
     break;
 
   case 86:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2195 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2361,8 +2281,7 @@ namespace yy {
     break;
 
   case 87:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2231 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2387,8 +2306,7 @@ namespace yy {
     break;
 
   case 88:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2265 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2412,8 +2330,7 @@ namespace yy {
     break;
 
   case 89:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2297 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2436,8 +2353,7 @@ namespace yy {
     break;
 
   case 90:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2349 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2491,8 +2407,7 @@ namespace yy {
     break;
 
   case 91:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2416 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2526,8 +2441,7 @@ namespace yy {
     break;
 
   case 92:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2461 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2557,8 +2471,7 @@ namespace yy {
     break;
 
   case 93:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2515 "feiparser.yy"
     {
 
@@ -2608,8 +2521,7 @@ namespace yy {
     break;
 
   case 94:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2575 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2639,8 +2551,7 @@ namespace yy {
     break;
 
   case 95:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2613 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2667,8 +2578,7 @@ namespace yy {
     break;
 
   case 96:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2651 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2700,8 +2610,7 @@ namespace yy {
     break;
 
   case 97:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2692 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2730,8 +2639,7 @@ namespace yy {
     break;
 
   case 98:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2731 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2760,8 +2668,7 @@ namespace yy {
     break;
 
   case 99:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2767 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2787,8 +2694,7 @@ namespace yy {
     break;
 
   case 100:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2798 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2808,8 +2714,7 @@ namespace yy {
     break;
 
   case 101:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2817 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2825,8 +2730,7 @@ namespace yy {
     break;
 
   case 102:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2839 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2849,8 +2753,7 @@ namespace yy {
     break;
 
   case 103:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2871 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2876,8 +2779,7 @@ namespace yy {
     break;
 
   case 104:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2903 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2900,8 +2802,7 @@ namespace yy {
     break;
 
   case 105:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2935 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2930,8 +2831,7 @@ namespace yy {
     break;
 
   case 106:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 2973 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2960,8 +2860,7 @@ namespace yy {
     break;
 
   case 107:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3001 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -2978,8 +2877,7 @@ namespace yy {
     break;
 
   case 108:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3026 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3006,8 +2904,7 @@ namespace yy {
     break;
 
   case 109:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3064 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3031,8 +2928,7 @@ namespace yy {
     break;
 
   case 110:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3090 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3055,8 +2951,7 @@ namespace yy {
     break;
 
   case 111:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3115 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3079,8 +2974,7 @@ namespace yy {
     break;
 
   case 112:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3139 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3106,8 +3000,7 @@ namespace yy {
     break;
 
   case 113:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3168 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3151,8 +3044,7 @@ namespace yy {
     break;
 
   case 114:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3215 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3196,8 +3088,7 @@ namespace yy {
     break;
 
   case 115:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3262 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3242,8 +3133,7 @@ namespace yy {
     break;
 
   case 116:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3311 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3287,8 +3177,7 @@ namespace yy {
     break;
 
   case 117:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3358 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3335,8 +3224,7 @@ namespace yy {
     break;
 
   case 118:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3409 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3373,8 +3261,7 @@ namespace yy {
     break;
 
   case 119:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3449 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3412,8 +3299,7 @@ namespace yy {
     break;
 
   case 120:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3491 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3450,8 +3336,7 @@ namespace yy {
     break;
 
   case 121:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3539 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3487,8 +3372,7 @@ namespace yy {
     break;
 
   case 122:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3579 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3522,8 +3406,7 @@ namespace yy {
     break;
 
   case 123:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3618 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3572,8 +3455,7 @@ namespace yy {
     break;
 
   case 124:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3677 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3627,8 +3509,7 @@ namespace yy {
     break;
 
   case 125:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3741 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3682,8 +3563,7 @@ namespace yy {
     break;
 
   case 126:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3802 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3729,8 +3609,7 @@ namespace yy {
     break;
 
   case 127:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3849 "feiparser.yy"
     {
 
@@ -3753,8 +3632,7 @@ namespace yy {
     break;
 
   case 128:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3873 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3779,8 +3657,7 @@ namespace yy {
     break;
 
   case 129:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3908 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3822,8 +3699,7 @@ namespace yy {
     break;
 
   case 130:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3955 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3853,8 +3729,7 @@ namespace yy {
     break;
 
   case 131:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 3987 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3878,8 +3753,7 @@ namespace yy {
     break;
 
   case 132:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4013 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3903,8 +3777,7 @@ namespace yy {
     break;
 
   case 133:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4039 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3926,8 +3799,7 @@ namespace yy {
     break;
 
   case 134:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4063 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3950,8 +3822,7 @@ namespace yy {
     break;
 
   case 135:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4089 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -3971,8 +3842,7 @@ namespace yy {
     break;
 
   case 136:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4277 "feiparser.yy"
     {
         if ((yysemantic_stack_[(1) - (1)].exp)) // Null pointer safety
@@ -4018,8 +3888,7 @@ namespace yy {
     break;
 
   case 137:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4319 "feiparser.yy"
     {
         if ((yysemantic_stack_[(2) - (2)].exp)) // Null pointer safety
@@ -4065,8 +3934,7 @@ namespace yy {
     break;
 
   case 138:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4361 "feiparser.yy"
     {
         clear_stack ();
@@ -4082,8 +3950,7 @@ namespace yy {
     break;
 
   case 139:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4376 "feiparser.yy"
     {   /*  Just a reminder...
         ">"  = 1
@@ -4132,8 +3999,7 @@ namespace yy {
     break;
 
   case 140:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4421 "feiparser.yy"
     {
         (yyval.exp) = new Plus ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
@@ -4144,8 +4010,7 @@ namespace yy {
     break;
 
   case 141:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4428 "feiparser.yy"
     {
         (yyval.exp) = new Minus ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
@@ -4156,8 +4021,7 @@ namespace yy {
     break;
 
   case 142:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4435 "feiparser.yy"
     {
         (yyval.exp) = new Times ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
@@ -4168,8 +4032,7 @@ namespace yy {
     break;
 
   case 143:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4442 "feiparser.yy"
     {
         (yyval.exp) = new Divide ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
@@ -4180,8 +4043,7 @@ namespace yy {
     break;
 
   case 144:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4449 "feiparser.yy"
     {
         (yyval.exp) = new Modulo ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
@@ -4192,8 +4054,7 @@ namespace yy {
     break;
 
   case 145:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4456 "feiparser.yy"
     {
         (yyval.exp) = new Pow ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
@@ -4204,8 +4065,7 @@ namespace yy {
     break;
 
   case 146:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4463 "feiparser.yy"
     {
         (yyval.exp) = new LogicalNot ((yysemantic_stack_[(2) - (2)].exp));
@@ -4215,8 +4075,7 @@ namespace yy {
     break;
 
   case 147:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4469 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
@@ -4227,8 +4086,7 @@ namespace yy {
     break;
 
   case 148:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4476 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
@@ -4240,8 +4098,7 @@ namespace yy {
     break;
 
   case 149:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4484 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
@@ -4253,8 +4110,7 @@ namespace yy {
     break;
 
   case 150:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4492 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
@@ -4266,8 +4122,7 @@ namespace yy {
     break;
 
   case 151:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4500 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
@@ -4279,8 +4134,7 @@ namespace yy {
     break;
 
   case 152:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4508 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
@@ -4292,8 +4146,7 @@ namespace yy {
     break;
 
   case 153:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4516 "feiparser.yy"
     {
         (yyval.exp) = (yysemantic_stack_[(3) - (2)].exp);
@@ -4301,8 +4154,7 @@ namespace yy {
     break;
 
   case 154:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4520 "feiparser.yy"
     {
         (yyval.exp) = new Minus (new Number(0.0, (yysemantic_stack_[(2) - (2)].exp) -> value().Getunit() ), (yysemantic_stack_[(2) - (2)].exp));
@@ -4312,8 +4164,7 @@ namespace yy {
     break;
 
   case 155:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4526 "feiparser.yy"
     {
         (yyval.exp) = new Number (*(yysemantic_stack_[(1) - (1)].value));
@@ -4322,8 +4173,7 @@ namespace yy {
     break;
 
   case 156:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4531 "feiparser.yy"
     {
 
@@ -4333,8 +4183,7 @@ namespace yy {
     break;
 
   case 157:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4537 "feiparser.yy"
     {
         (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), (yysemantic_stack_[(3) - (3)].exp), global_variables, locked_global_variables);
@@ -4344,8 +4193,7 @@ namespace yy {
     break;
 
   case 158:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4543 "feiparser.yy"
     {
         (yyval.exp) = new ConvertUnits(*(yysemantic_stack_[(3) - (1)].ident), *(yysemantic_stack_[(3) - (3)].ident), global_variables);
@@ -4355,8 +4203,7 @@ namespace yy {
     break;
 
   case 159:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4549 "feiparser.yy"
     {
         (yyval.exp) = new FeiMath(*(yysemantic_stack_[(4) - (1)].ident), (yysemantic_stack_[(4) - (3)].exp));
@@ -4366,8 +4213,7 @@ namespace yy {
     break;
 
   case 160:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4555 "feiparser.yy"
     {
         (yyval.exp) = new UnitTypeTest(*(yysemantic_stack_[(4) - (1)].ident), (yysemantic_stack_[(4) - (3)].exp));
@@ -4377,8 +4223,7 @@ namespace yy {
     break;
 
   case 161:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4561 "feiparser.yy"
     {
         string temp = *(yysemantic_stack_[(1) - (1)].ident);
@@ -4390,8 +4235,7 @@ namespace yy {
     break;
 
   case 162:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4569 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -4401,8 +4245,7 @@ namespace yy {
     break;
 
   case 163:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4575 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_elements, args, signature, "query_domain_number_of_elements");
@@ -4411,8 +4254,7 @@ namespace yy {
     break;
 
   case 164:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4580 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<double>(&query_domain_current_time, args, signature, "query_domain_current_time");
@@ -4421,8 +4263,7 @@ namespace yy {
     break;
 
   case 165:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4585 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_sp_constraints, args, signature, "query_domain_number_of_sp_constraints");
@@ -4431,8 +4272,7 @@ namespace yy {
     break;
 
   case 166:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4590 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_mp_constraints, args, signature, "query_domain_number_of_mp_constraints");
@@ -4441,8 +4281,7 @@ namespace yy {
     break;
 
   case 167:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4595 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_loads, args, signature, "query_domain_number_of_loads");
@@ -4451,8 +4290,7 @@ namespace yy {
     break;
 
   case 168:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4603 "feiparser.yy"
     {
         args.clear();
@@ -4484,8 +4322,7 @@ namespace yy {
     break;
 
   case 169:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4634 "feiparser.yy"
     {
         (yyval.exp) = new Empty();
@@ -4494,8 +4331,7 @@ namespace yy {
     break;
 
   case 170:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4639 "feiparser.yy"
     {
         (yyval.exp) = (yysemantic_stack_[(2) - (1)].exp);
@@ -4503,8 +4339,7 @@ namespace yy {
     break;
 
   case 171:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4643 "feiparser.yy"
     {
         (yyval.exp) = (yysemantic_stack_[(2) - (1)].exp);
@@ -4514,8 +4349,7 @@ namespace yy {
     break;
 
   case 172:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4652 "feiparser.yy"
     {
         Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(3) - (2)].exp));
@@ -4538,8 +4372,7 @@ namespace yy {
     break;
 
   case 173:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4674 "feiparser.yy"
     {
         Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(5) - (2)].exp));
@@ -4565,8 +4398,7 @@ namespace yy {
     break;
 
   case 174:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4699 "feiparser.yy"
     {
         Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(3) - (2)].exp));
@@ -4590,8 +4422,7 @@ namespace yy {
     break;
 
   case 175:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4719 "feiparser.yy"
     {
         if (FLAG_generate_cpp_output == 1)
@@ -4609,8 +4440,7 @@ namespace yy {
     break;
 
   case 176:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4733 "feiparser.yy"
     {
         args.clear(); signature.clear();
@@ -4625,8 +4455,7 @@ namespace yy {
     break;
 
   case 177:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4744 "feiparser.yy"
     {
         (yyval.exp) = new Empty();
@@ -4636,8 +4465,7 @@ namespace yy {
     break;
 
   case 178:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4754 "feiparser.yy"
     {
         // empty statement generates an  empty expression
@@ -4647,8 +4475,7 @@ namespace yy {
     break;
 
   case 179:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4760 "feiparser.yy"
     {
         // Used to initialize a list of statements (compound statement)
@@ -4657,8 +4484,7 @@ namespace yy {
     break;
 
   case 180:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4768 "feiparser.yy"
     {
         (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp);
@@ -4666,8 +4492,7 @@ namespace yy {
     break;
 
   case 181:
-
-/* Line 690 of lalr1.cc  */
+/* Line 664 of lalr1.cc  */
 #line 4772 "feiparser.yy"
     {
         if ((yysemantic_stack_[(2) - (2)].exp) == NULL)
@@ -4683,12 +4508,12 @@ namespace yy {
     break;
 
 
-
-/* Line 690 of lalr1.cc  */
-#line 4689 "feiparser.tab.cc"
-	default:
-          break;
+/* Line 664 of lalr1.cc  */
+#line 4513 "feiparser.tab.cc"
+      default:
+        break;
       }
+
     /* User semantic actions sometimes alter yychar, and that requires
        that yytoken be updated with the new translation.  We take the
        approach of translating immediately before every use of yytoken.
@@ -4739,20 +4564,19 @@ namespace yy {
     yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
-
-	if (yychar <= yyeof_)
-	  {
-	  /* Return failure if at end of input.  */
-	  if (yychar == yyeof_)
-	    YYABORT;
-	  }
-	else
-	  {
-	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-	    yychar = yyempty_;
-	  }
+        /* If just tried and failed to reuse lookahead token after an
+           error, discard it.  */
+        if (yychar <= yyeof_)
+          {
+            /* Return failure if at end of input.  */
+            if (yychar == yyeof_)
+              YYABORT;
+          }
+        else
+          {
+            yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
+            yychar = yyempty_;
+          }
       }
 
     /* Else will try to reuse lookahead token after shifting the error
@@ -4801,7 +4625,7 @@ namespace yy {
 
 	/* Pop the current state because it cannot handle the error token.  */
 	if (yystate_stack_.height () == 1)
-	YYABORT;
+	  YYABORT;
 
 	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
@@ -4849,16 +4673,42 @@ namespace yy {
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (yystate_stack_.height () != 1)
+    while (1 < yystate_stack_.height ())
       {
-	yydestruct_ ("Cleanup: popping",
-		   yystos_[yystate_stack_[0]],
-		   &yysemantic_stack_[0],
-		   &yylocation_stack_[0]);
-	yypop_ ();
+        yydestruct_ ("Cleanup: popping",
+                     yystos_[yystate_stack_[0]],
+                     &yysemantic_stack_[0],
+                     &yylocation_stack_[0]);
+        yypop_ ();
       }
 
     return yyresult;
+    }
+    catch (...)
+      {
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
+        // Do not try to display the values of the reclaimed symbols,
+        // as their printer might throw an exception.
+        if (yychar != yyempty_)
+          {
+            /* Make sure we have latest lookahead translation.  See
+               comments at user semantic actions for why this is
+               necessary.  */
+            yytoken = yytranslate_ (yychar);
+            yydestruct_ (YY_NULL, yytoken, &yylval, &yylloc);
+          }
+
+        while (1 < yystate_stack_.height ())
+          {
+            yydestruct_ (YY_NULL,
+                         yystos_[yystate_stack_[0]],
+                         &yysemantic_stack_[0],
+                         &yylocation_stack_[0]);
+            yypop_ ();
+          }
+        throw;
+      }
   }
 
   // Generate an error message.
@@ -8003,7 +7853,7 @@ namespace yy {
        1,     2
   };
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+#if YYDEBUG
   /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
      First, the terminals, then, starting at \a yyntokens_, nonterminals.  */
   const char*
@@ -8115,11 +7965,10 @@ namespace yy {
   "BINARY", "TEXT", "'('", "','", "')'", "'['", "']'", "'.'", "';'", "'{'",
   "'}'", "$accept", "dsl", "CMD_add", "CMD_fix", "dofchain", "CMD_define",
   "CMD_misc", "CMD_remove", "ADD_material", "ADD_element", "prompt", "exp",
-  "stmt", "cpd_stmt", "list", 0
+  "stmt", "cpd_stmt", "list", YY_NULL
   };
-#endif
 
-#if YYDEBUG
+
   /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
   const feiparser::rhs_number_type
   feiparser::yyrhs_[] =
@@ -8655,12 +8504,9 @@ namespace yy {
 
 
 } // yy
-
+/* Line 1135 of lalr1.cc  */
+#line 8509 "feiparser.tab.cc"
 /* Line 1136 of lalr1.cc  */
-#line 8661 "feiparser.tab.cc"
-
-
-/* Line 1138 of lalr1.cc  */
 #line 4799 "feiparser.yy"
 
 
@@ -8891,7 +8737,6 @@ void set_outcppfile_name(string newfilename)
 
 
 // That's all folks.
-
 
 
 
