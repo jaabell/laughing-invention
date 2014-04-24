@@ -299,6 +299,9 @@ class HDF5_Channel: public Channel
         bool inNodeDefinitionMode;
         bool inElementDefinitionMode;
 
+        unsigned int current_node_index;
+        unsigned int current_elem_index;
+
         //Stacks
         std::queue<string> field_name_stack;               // Contains names of fields for current object
         std::queue<bool>   field_is_time_dependent_stack;  // Contains info on whether each field in "name_stack" is time dependent

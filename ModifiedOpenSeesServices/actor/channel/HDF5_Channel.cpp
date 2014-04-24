@@ -146,6 +146,8 @@ void HDF5_Channel::initialize(std::string filename_in,
 
     inElementDefinitionMode = false;
     inNodeDefinitionMode = false;
+    current_node_index = 0;
+    current_elem_index = 0;
 
     HDF5_CHANNEL_COUNT_OBJS;
     // cout << "subgroupname" << subgroupname << endl;
@@ -168,7 +170,8 @@ HDF5_Channel::~HDF5_Channel()
     // H5Gclose(id_elements_group);
 
     // H5Fclose(id_file);
-    // H5close();
+    H5close();
+    file_is_open = false;
 
 }
 

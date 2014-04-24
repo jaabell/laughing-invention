@@ -731,7 +731,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     Stiffness(2, 2, 2, 2) = Stiffness(2, 2, 2, 2) + (2.0 * G);
 
-    // LTensorDisplay::print(Stiffness,"a","Hi there!",1);
+    LTensorDisplay::print(Stiffness, "Stiffness", "\n\n\n", 1);
 
     // nij_dev_prev = nij_dev;  // keeps track of the previous nij_dev tensor USELESS NOW
 
