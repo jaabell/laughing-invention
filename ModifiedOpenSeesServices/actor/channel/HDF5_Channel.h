@@ -45,7 +45,7 @@
 #define HDF5_CHANNEL_CLEAN if(stack_length == 0) \
     { H5Oclose(id_current_object); }
 
-//These optimize access to HDF5 file (tuning knobs)
+//These optimize access to HDF5 file (tuninng knobs)
 #define HDF5_CHANNEL_CHUNK_NSLOTS 512*32
 #define HDF5_CHANNEL_CHUNK_NBYTES 128*1024*1024
 #define HDF5_CHANNEL_CHUNK_TIMEDIM 1
@@ -162,7 +162,7 @@ class HDF5_Channel: public Channel
 
         int setTime(double t);
 
-        int i(std::string name, int tag);
+        int beginElementDescription(std::string name, int tag);
 
         int beginNodeDescription(int tag);
 
@@ -298,8 +298,6 @@ class HDF5_Channel: public Channel
 
         bool inNodeDefinitionMode;
         bool inElementDefinitionMode;
-
-        unsigned int current_object_index;
 
         //Stacks
         std::queue<string> field_name_stack;               // Contains names of fields for current object
