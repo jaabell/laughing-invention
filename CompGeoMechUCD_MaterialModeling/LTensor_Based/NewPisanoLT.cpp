@@ -30,6 +30,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+// #define DEBUG_PISANO 1
 
 #ifndef PisanoLT_CPP
 #define PisanoLT_CPP
@@ -45,6 +46,8 @@
 const  DTensor2 NewPisanoLT::ZeroStrain(3, 3, 0.0);
 const  DTensor2 NewPisanoLT::ZeroStress(3, 3, 0.0);
 const double NewPisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::epsilon()); // used to check the variable nullity
+const double NewPisanoLT::beta_min = 1e-16;
+const double NewPisanoLT::beta_max = 1e+16;
 DTensor4 NewPisanoLT::Ee(3, 3, 3, 3, 0.0);
 
 
@@ -60,8 +63,7 @@ NewPisanoLT::NewPisanoLT(int tag,
                          double h_in,
                          double m_in,
                          double rho_in,
-                         double initialconfiningstress_in,
-                         double beta_min_in)
+                         double initialconfiningstress_in)
     : NDMaterialLT(tag, ND_TAG_NewPisanoLT),
       TrialStrain( 3, 3, 0.0 ),
       TrialStress( 3, 3, 0.0 ),
@@ -76,7 +78,6 @@ NewPisanoLT::NewPisanoLT(int tag,
       Stress_n_minus_2( 3, 3, 0.0 ),
       nij_dev( 3, 3, 0.0 ),
       Stiffness( 3, 3, 3, 3, 0.0 ),
-      beta_min(beta_min_in),
       E(E_in),
       v(v_in), M(M_in),
       kd(kd_in),
@@ -91,9 +92,10 @@ NewPisanoLT::NewPisanoLT(int tag,
     initialStress(0, 0) = -initialconfiningstress;
     initialStress(1, 1) = -initialconfiningstress;
     initialStress(2, 2) = -initialconfiningstress;
-
+#ifdef DEBUG_PISANO
     //DEBUG
     LTensorDisplay::print(initialStress, "initialStress");
+#endif
 
 
     ElasticStateStress = DTensor2(initialStress);
@@ -252,8 +254,7 @@ NDMaterialLT *NewPisanoLT::getCopy(void)
                                         this->geth(),
                                         this->getm(),
                                         this->getRho(),
-                                        this->getInitialConfiningStress(),
-                                        this->getbeta_min());
+                                        this->getInitialConfiningStress());
     return tmp;
 }
 
@@ -270,8 +271,7 @@ NDMaterialLT *NewPisanoLT::getCopy(const char *code)
                                             this->geth(),
                                             this->getm(),
                                             this->getRho(),
-                                            this->getInitialConfiningStress(),
-                                            this->getbeta_min());
+                                            this->getInitialConfiningStress());
         return tmp;
     }
     else
@@ -298,15 +298,14 @@ const char *NewPisanoLT::getType(void) const
 int NewPisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginMaterialDescription("NewPisanoLT", this->getTag());
-    theHDF5_Channel.addField("strain", true, "adim");// 1.
-    theHDF5_Channel.addField("stress", true, "adim");// 2.
-    theHDF5_Channel.addField("plastic_strain", true, "adim");// 3.
-    theHDF5_Channel.addField("alpha", true, "adim");// 4.
-    theHDF5_Channel.addField("alpha0", true, "adim");// 5.
-    theHDF5_Channel.addField("stress_n_minus_2", true, "adim");// 6.
-    theHDF5_Channel.addField("nij_dev", true, "adim");// 7.
-    //theHDF5_Channel.addField("nij_dev_prev", true, "adim");// 7. // not needed anymore. Can we put alpha0 here instead?
-    theHDF5_Channel.addField("model_parameters", false, "adim");// 8.
+    theHDF5_Channel.addField("strain", true, "adim");               // 1.
+    theHDF5_Channel.addField("stress", true, "adim");               // 2.
+    theHDF5_Channel.addField("plastic_strain", true, "adim");       // 3.
+    theHDF5_Channel.addField("alpha", true, "adim");                // 4.
+    theHDF5_Channel.addField("alpha0", true, "adim");               // 5.
+    theHDF5_Channel.addField("stress_n_minus_2", true, "adim");     // 6.
+    theHDF5_Channel.addField("nij_dev", true, "adim");              // 7.
+    theHDF5_Channel.addField("model_parameters", false, "adim");    // 8.
     theHDF5_Channel.endMaterialDescription();
 
     return 0;
@@ -345,9 +344,6 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
     a.setData(nij_dev.data, 3, 3);
     theChannel.sendMatrix(0, 0, a);
 
-    //7. Sending nij_dev_prev
-    //a.setData(nij_dev_prev.data, 3, 3); // not needed anymore. Can we put alpha0 here instead?
-    //theChannel.sendMatrix(0, 0, a);
 
     //8. Sending model_parameters
     Vector model_parameters(10);
@@ -454,8 +450,9 @@ DTensor2 &NewPisanoLT::getInternalTensor(void)
 
 int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 {
-
+#ifdef DEBUG_PISANO
     cout << endl << endl << "NewPisanoLT::Explicit()" << endl;
+#endif
     //=============================================================================================
     // Some local definitions
     //=============================================================================================
@@ -538,29 +535,12 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
         p_incr_prev = 0.0;
     }
 
+
     //---------------------------------------------------------------------------------------------
     // Define tangent to yield surface with the sign of the deviatoric strain increment
     //---------------------------------------------------------------------------------------------
 
-    // FP this formula for nij_dev is correct only for 1D shear wave propagation with no dilatancy
-
-    // if (fabs(incr_strain_dev(0, 2)) > check_for_zero)
-    // {
-    //     sign = incr_strain_dev(0, 2) / fabs(incr_strain_dev(0, 2));
-    // }
-    // else
-    // {
-    //     sign = 0.0;
-    // }
-
-    // nij_dev(0, 2) = sign * 0.7071;
-    // nij_dev(2, 0) = sign * 0.7071;
-
-    // in any other case
-
     double norm_nij_dev;
-
-
     nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) - p_incr_prev * alpha(i, j); // and then normalization
     norm_nij_dev = sqrt(nij_dev(i, j) * nij_dev(i, j));
 
@@ -573,9 +553,21 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
         nij_dev(i, j) = incr_strain_dev(i, j) * 0;
     }
 
+    //---------------------------------------------------------------------------------------------
+    // Check for unloading!!!
+    //---------------------------------------------------------------------------------------------
+
+    unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
+
+    if (unload_prod <= 0.0)
+    {
+        cout << "negative!!!" << endl;
+        // beta0 = beta; // stress tensor at last load reversal : not needed now
+        alpha0(i, j) = alpha(i, j); // back-stress tensor at last load reversal
+    }
 
 
-
+#ifdef DEBUG_PISANO
     //DEBUG
     LTensorDisplay::print(incr_strain, "incr_strain");
     //DEBUG
@@ -587,24 +579,18 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     //DEBUG
     LTensorDisplay::print(alpha0, "alpha0");
 
+#endif
     //---------------------------------------------------------------------------------------------
     // Compute distance coeff
     //---------------------------------------------------------------------------------------------
     // beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
     beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
 
+#ifdef DEBUG_PISANO
+    //DEBUG
+    cout << "beta = " << beta << endl;
+#endif
 
-    //---------------------------------------------------------------------------------------------
-    // Check for unloading!!!
-    //---------------------------------------------------------------------------------------------
-
-    unload_prod =   nij_dev(i, j) * (alpha(i, j) - alpha0(i, j));
-
-    if (unload_prod < 0.0)
-    {
-        // beta0 = beta; // stress tensor at last load reversal : not needed now
-        alpha0 = alpha; // back-stress tensor at last load reversal
-    }
 
     //---------------------------------------------------------------------------------------------
     // Compute plastic modulus (H)
@@ -667,15 +653,15 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // Plastic strain increment
 
     incr_Pstrain(i, j) = mij(i, j) * (Delta_lambda);
-    incr_stress(i, j) = Ee(i, j, p, q) * (  incr_strain(p, q) - incr_Pstrain(p, q) );
-    ep_stress(i, j) = start_stress(i, j) + incr_stress(i, j);
+    incr_stress(i, j)  = Ee(i, j, p, q) * (  incr_strain(p, q) - incr_Pstrain(p, q) );
+    ep_stress(i, j)    = start_stress(i, j) + incr_stress(i, j);
 
     // Update all variables
-    TrialStress         = ep_stress;              // try again Initiailize whenever you have tensor = tensor...
-    TrialStrain         = start_strain;
-    TrialStrain         += incr_strain;
-    TrialPlastic_Strain = start_Pstrain;
-    TrialPlastic_Strain += incr_Pstrain;
+    TrialStress(i, j)         = ep_stress(i, j);            // try again Initiailize whenever you have tensor = tensor...
+    TrialStrain(i, j)         = start_strain(i, j);
+    TrialStrain(i, j)         += incr_strain(i, j);
+    TrialPlastic_Strain(i, j) = start_Pstrain(i, j);
+    TrialPlastic_Strain(i, j) += incr_Pstrain(i, j);
 
     ep_stress.compute_deviatoric_tensor(ep_stress_dev, ep_stress_p);
     ep_stress_p = -ep_stress_p;
@@ -684,7 +670,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // stress rapporto -> stress ratio
     if (ep_stress_p > 1000 * check_for_zero)   // FIXME: the 1000 factor is arbitrary
     {
-        alpha = ep_stress_dev;
+        alpha(i, j) = ep_stress_dev(i, j);
         alpha /= ep_stress_p;
     }
     else
@@ -700,6 +686,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // Compute Elastic-Plastic stiffness
     //---------------------------------------------------------------------------------------------
     // To obtain Eep, at the last step
+
 
     //Initialize identity matrix
     I2(0, 0) = 1;
@@ -731,9 +718,18 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     Stiffness(2, 2, 2, 2) = Stiffness(2, 2, 2, 2) + (2.0 * G);
 
+#ifdef DEBUG_PISANO
     LTensorDisplay::print(Stiffness, "Stiffness", "\n\n\n", 1);
+#endif
 
-    // nij_dev_prev = nij_dev;  // keeps track of the previous nij_dev tensor USELESS NOW
+#ifdef DEBUG_PISANO
+    cout << endl << endl << "unload_prod = " << unload_prod <<
+         "  nij(1,3) = " <<  nij_dev(0, 2) <<
+         "  alpha(1,3) = " <<  alpha(0, 2) <<
+         "  alpha0(1,3) = " <<  alpha0(0, 2) <<
+         "  beta = " <<  beta << endl;
+#endif
+
 
     return err;
 }
@@ -745,7 +741,6 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 
     if (nij_dev_norm > 1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
     {
-        //      cout << "standard beta calculation. nij_dev_norm=" << nij_dev_norm << endl;
 
         //coefficients 2nd order equation
         double a;
@@ -757,57 +752,52 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 
         //// a
 
-        // a = 1.0;
-
         a = (alpha(i, j) - alpha0(i, j)) * (alpha(i, j) - alpha0(i, j));
 
         //// b
-
-        // double alpha_nijdev = alpha(i, j) * nij_dev(i, j);
-
-        // b = 2.0 * alpha_nijdev;
 
         b = 2 * alpha(i, j) * (alpha(i, j) - alpha0(i, j));
 
         //// c
 
-        // double alpha_norm = sqrt (alpha(i, j) * alpha(i, j));
-
-
-        // c = alpha_norm * alpha_norm  -  (2.0 / 3.0) * (M * M);
-
-        c = alpha(i, j) * alpha(i, j) - (2 / 3) * M * M;
+        // c = alpha(i, j) * alpha(i, j) - (2.0 / 3.0) * M * M;
+        c = alpha(i, j) * alpha(i, j) - (0.6666666666666666666666666666666666666) * M * M;
 
         //// solution
 
-
-        Delta_equation = b * b - 4.0 * a * c;
-
-        if (Delta_equation < 0.0)
+        if ( a > check_for_zero)
         {
-            beta = beta_min;
+            Delta_equation = b * b - 4.0 * a * c;
 
-            //             cout << "negative Delta in the distance coefficient equation" <<alpha_norm << "e" << alpha_nijdev << endl;
+            if (Delta_equation < 0.0)
+            {
+                beta = beta_min;
+
+                //             cout << "negative Delta in the distance coefficient equation" <<alpha_norm << "e" << alpha_nijdev << endl;
+            }
+            else
+            {
+                beta = (-b + sqrt(Delta_equation)) / (2.0 * a);
+            };
+
+
+
+            if (beta < beta_min)
+            {
+                //        cout << "negative distance coefficient" << endl;
+                beta = beta_min;
+            };
         }
-        else
+        else  // a is close to zero
         {
-            beta = (-b + sqrt(Delta_equation)) / (2.0 * a);
-        };
-
-
-
-        if (beta < beta_min)
-        {
-            //        cout << "negative distance coefficient" << endl;
-            beta = beta_min;
-        };
-
+            beta = beta_max;
+        }
 
     }
     else
     {
-        cerr << "The norm of nij is not 1! This should never happen. Something wrong... ask Pisano." << endl;
-        //     cout << "nil nij_dev...beta not modified" << endl;
+        // cerr << "The norm of nij is not 1! This should never happen. Something wrong... ask Pisano." << endl;
+        cout << "Norm of nij_dev is nil. Might be non-deviatoric loading step... or something is wrong. Ask Pisano." << endl;
 
     };
 

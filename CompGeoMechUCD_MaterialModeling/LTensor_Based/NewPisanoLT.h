@@ -62,8 +62,7 @@ class NewPisanoLT : public NDMaterialLT
                      double h_in,  // hardening parameter
                      double m_in,  // hardening parameter
                      double rho_in,
-                     double initialconfiningstress_in,
-                     double beta_min_in);
+                     double initialconfiningstress_in);
 
         NewPisanoLT(void);
 
@@ -152,7 +151,6 @@ class NewPisanoLT : public NDMaterialLT
         DTensor4 Stiffness;
 
         double beta;                // scalar distance coefficient as internal variable
-        double beta_min;
         double E;
         double v;
         double M;
@@ -162,6 +160,9 @@ class NewPisanoLT : public NDMaterialLT
         double m;
         double rho;
         double initialconfiningstress;
+
+        const static double beta_min;
+        const static double beta_max;
 
         static const  DTensor2 ZeroStrain;
         static const  DTensor2 ZeroStress;

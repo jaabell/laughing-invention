@@ -50,8 +50,7 @@ int add_constitutive_model_NDMaterialLT_New_Pisano(int tag,
                                    h_in,
                                    m_in,
                                    rho_in,
-                                   initialconfiningstress_in,
-                                   beta_min_in);
+                                   initialconfiningstress_in);
 
     if (theMaterial == NULL)
     {
