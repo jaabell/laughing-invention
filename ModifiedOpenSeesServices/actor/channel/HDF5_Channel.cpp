@@ -146,8 +146,7 @@ void HDF5_Channel::initialize(std::string filename_in,
 
     inElementDefinitionMode = false;
     inNodeDefinitionMode = false;
-    current_node_index = 0;
-    current_elem_index = 0;
+    current_object_index = 0;
 
     HDF5_CHANNEL_COUNT_OBJS;
     // cout << "subgroupname" << subgroupname << endl;
@@ -622,11 +621,13 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
 
             if (is_time_dependent) // If it is time dependent
             {
-                rank = 2;
+                rank = 3;
                 dims[0] = length_of_vector_data;
-                dims[1] = number_of_time_steps;
+                dims[1] = 1;                            //Number of objects of this type
+                dims[2] = number_of_time_steps;
                 maxdims[0] = length_of_vector_data;
                 maxdims[1] = H5S_UNLIMITED;
+                maxdims[2] = H5S_UNLIMITED;
 
                 id_dataset = createVariableLengthIntegerArray(id_current_object,
                              rank,
@@ -636,10 +637,10 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                              units);
 
                 //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  0 };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  1 };
+                hsize_t offset[3] = {       0,  0 , 0};
+                hsize_t stride[3] = {       1,  1 , 1};
+                hsize_t count[3]  = {       1,  1 , 1};
+                hsize_t block[3]  = { dims[0],  1 , 1};
                 id_dataset = writeVariableLengthIntegerArray(id_dataset,
                              1, //datarank
                              dims,
@@ -654,11 +655,13 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
             }
             else  // If it is not time dependent
             {
-                rank = 1;
+                rank = 2;
                 dims[0] = length_of_vector_data;        // Starting array dims
+                dims[1] = 1;                            // Number of objects (unknown)
                 maxdims[0] = length_of_vector_data;     // Max array dims
+                maxdims[0] = H5S_UNLIMITED;             // Max objects
 
-                hid_t id_dataset = createConstantLengthIntegerArray(id_current_object,
+                hid_t id_dataset = createVariableLengthIntegerArray(id_current_object,
                                    rank,
                                    dims,
                                    maxdims,
@@ -671,7 +674,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
                 hsize_t count[2]  = {       1,  1 };
                 hsize_t block[2]  = { dims[0],  1 };
 
-                id_dataset = writeConstantLengthIntegerArray(id_dataset,
+                id_dataset = writeVariableLengthIntegerArray(id_dataset,
                              1, //datarank
                              dims,
                              data_dims,
@@ -694,15 +697,16 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
             id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
             if (id_dataset > 0)
             {
-                rank = 2;
+                rank = 3;
                 dims[0] = length_of_vector_data;
-                dims[1] = number_of_time_steps;
+                dims[1] = current_object_index + 1;
+                dims[2] = number_of_time_steps;
 
                 //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  current_step_number - 1  };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  1 };
+                hsize_t offset[3] = {       0, current_object_index , current_step_number - 1  };
+                hsize_t stride[3] = {       1, 1 , 1 };
+                hsize_t count[3]  = {       1, 1 , 1 };
+                hsize_t block[3]  = { dims[0], 1 , 1 };
 
                 id_dataset = writeVariableLengthIntegerArray(id_dataset,
                              1, //datarank
@@ -799,7 +803,17 @@ int HDF5_Channel::getNextField(std::string &field_name,
 int HDF5_Channel::beginElementDescription(std::string name, int tag)
 {
 
-    inElementDefinitionMode = true;
+    if (!inElementDefinitionMode)
+    {
+        inNodeDefinitionMode = false;
+        inElementDefinitionMode = true;
+        current_object_index = 0;
+    }
+    else
+    {
+        current_object_index++;
+    }
+
 
     stack_length = 0;
 
@@ -808,15 +822,15 @@ int HDF5_Channel::beginElementDescription(std::string name, int tag)
     // id_current_group = id_elements_group;
 
     //Convert integer tag to string
-    string stag;
-    stag = boost::lexical_cast<std::string>(tag);
+    // string stag;
+    // stag = boost::lexical_cast<std::string>(tag);
 
     //Concatenate name and tag to create group name
-    string group_name;
-    group_name = name + "_" + stag;
+    // string group_name;
+    // group_name = name + "_" + stag;
 
     //Check if group exists
-    int element_exists = H5Lexists_safe(id_elements_group, group_name, H5P_DEFAULT);
+    int element_exists = H5Lexists_safe(id_elements_group, name, H5P_DEFAULT);
     if (element_exists) // If group doesn't exist -> create it
     {
         id_current_object = H5Oopen(id_elements_group,
@@ -843,7 +857,18 @@ int HDF5_Channel::beginElementDescription(std::string name, int tag)
 
 int HDF5_Channel::beginNodeDescription(int tag)
 {
-    inNodeDefinitionMode = true;
+    if (!inNodeDefinitionMode)
+    {
+        inNodeDefinitionMode = true;
+        inElementDefinitionMode = false;
+        current_object_index = 0;
+    }
+    else
+    {
+        current_object_index++;
+    }
+
+
     subgroupname = "";
 
     stack_length = 0;
@@ -853,25 +878,28 @@ int HDF5_Channel::beginNodeDescription(int tag)
     // id_current_group = id_nodes_group;
 
     //Convert integer tag to string
-    string stag;
-    stag = boost::lexical_cast<std::string>(tag);
+    // string stag;
+    // stag = boost::lexical_cast<std::string>(tag);
 
     //Check if group exists
-    int node_exists = H5Lexists_safe(id_nodes_group, stag, H5P_DEFAULT);
-    if (node_exists) // If group doesn't exist -> create it
-    {
-        id_current_object = H5Oopen(id_nodes_group,
-                                    stag.c_str(),
-                                    H5P_DEFAULT);
-        id_current_object_group = id_nodes_group;
-    }
-    else
-    {
-        //Create a group to hold the data for the node
-        id_current_object = create_group(id_nodes_group, stag.c_str());
-        id_current_object_group = id_nodes_group;
+    // int node_exists = H5Lexists_safe(id_nodes_group, stag, H5P_DEFAULT);
+    // if (node_exists) // If group doesn't exist -> create it
+    // {
+    //     id_current_object = H5Oopen(id_nodes_group,
+    //                                 stag.c_str(),
+    //                                 H5P_DEFAULT);
+    //     id_current_object_group = id_nodes_group;
+    // }
+    // else
+    // {
+    //     //Create a group to hold the data for the node
+    //     id_current_object = create_group(id_nodes_group, stag.c_str());
+    //     id_current_object_group = id_nodes_group;
 
-    }
+    // }
+    id_current_object_group = id_nodes_group;
+    id_current_object = id_nodes_group;
+
     //Return the tag of this group
     return id_current_object_group;
 }
@@ -905,15 +933,10 @@ int HDF5_Channel::beginMaterialDescription(std::string name, int tag)
             //Create a group to hold the data for the material and close it right away!
             hid_t temp_ = create_group(id_current_object, group_name.c_str());
             H5Oclose(temp_);
-
         }
 
         //Set subgroup name
         subgroupname = group_name + "/";
-
-
-        // cout << "Adding material: " << group_name << endl;
-        //Return the tag of this group
     }
     else  // Not in element definition mode
     {
@@ -974,13 +997,6 @@ int HDF5_Channel::setTime(double t)
                                    count,
                                    block,
                                    &current_time);
-
-    // cout << "HDF5_Channel::setTime -> time set to t = " << current_time
-    //      <<  "s @ step number "
-    //      << current_step_number
-    //      << ", number_of_time_steps = "
-    //      << number_of_time_steps
-    //      << endl;
 
     current_step_number++;
     return 0;
