@@ -46,11 +46,11 @@
     { H5Oclose(id_current_object); }
 
 //These optimize access to HDF5 file (tuninng knobs)
-#define HDF5_CHANNEL_CHUNK_NSLOTS 512*32
+#define HDF5_CHANNEL_CHUNK_NSLOTS 1 //512*32
 #define HDF5_CHANNEL_CHUNK_NBYTES 128*1024*1024
 #define HDF5_CHANNEL_CHUNK_TIMEDIM 1
 //#define HDF5_CHANNEL_META_BLOCK_SIZE 2048*16
-#define HDF5_CHANNEL_META_BLOCK_SIZE 2048
+#define HDF5_CHANNEL_META_BLOCK_SIZE 16
 //#define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*1024
 #define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*64
 
@@ -106,52 +106,52 @@ class HDF5_Channel: public Channel
         int getTag(void);
 
         // methods to send/receive messages and objects on HDF5_channels.
-        int sendObj(int commitTag,
+        int sendObj(int outputLevel,
                     MovableObject &theObject,
                     ChannelAddress *theAddress = 0);
 
-        int recvObj(int commitTag,
+        int recvObj(int outputLevel,
                     MovableObject &theObject,
                     FEM_ObjectBroker &theBroker,
                     ChannelAddress *theAddress = 0);
 
-        int sendMsg(int dbTag, int commitTag,
+        int sendMsg(int not_used, int outputLevel,
                     const Message &theMessage,
                     ChannelAddress *theAddress = 0);
 
-        int recvMsg(int dbTag, int commitTag,
+        int recvMsg(int not_used, int outputLevel,
                     Message &theMessage,
                     ChannelAddress *theAddress = 0);
 
-        int sendMatrix(int dbTag, int commitTag,
+        int sendMatrix(int not_used, int outputLevel,
                        const Matrix &theMatrix,
                        ChannelAddress *theAddress = 0);
 
-        int recvMatrix(int dbTag, int commitTag,
+        int recvMatrix(int not_used, int outputLevel,
                        Matrix &theMatrix,
                        ChannelAddress *theAddress = 0);
 
-        int sendVector(int dbTag, int commitTag,
+        int sendVector(int not_used, int outputLevel,
                        const Vector &theVector,
                        ChannelAddress *theAddress = 0);
 
-        int recvVector(int dbTag, int commitTag,
+        int recvVector(int not_used, int outputLevel,
                        Vector &theVector,
                        ChannelAddress *theAddress = 0);
 
-        int sendID(int dbTag, int commitTag,
+        int sendID(int not_used, int outputLevel,
                    const ID &theID,
                    ChannelAddress *theAddress = 0);
 
-        int recvID(int dbTag, int commitTag,
+        int recvID(int not_used, int outputLevel,
                    ID &theID,
                    ChannelAddress *theAddress = 0);
 
-        int sendnDarray(int dbTag, int commitTag,
+        int sendnDarray(int not_used, int outputLevel,
                         const nDarray &theNDarray,
                         ChannelAddress *theAddress = 0);
 
-        int recvnDarray(int dbTag, int commitTag,
+        int recvnDarray(int not_used, int outputLevel,
                         nDarray &theNDarray,
                         ChannelAddress *theAddress = 0);
 

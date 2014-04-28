@@ -10,6 +10,7 @@ OBJS       = Material.o \
              ElasticIsotropicMaterial.o \
              ElasticCrossAnisotropic.o \
              BardetConstraint.o \
+             BardetConstraintLT.o \
              TwoStageEquivalentElasticIsotropic3D.o
 
 LIBRARY_Base_3D_EP  = ../lib/libbase_3dep.a

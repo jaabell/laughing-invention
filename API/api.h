@@ -174,6 +174,7 @@
 
 // Output control
 //--------------------------------------------------------------------------------------------------
+#include "MODELING/enable_output.h"
 #include "MODELING/define_output_to_binary.h"
 #include "MODELING/start_new_stage.h"
 #include "MODELING/define_model_name.h"

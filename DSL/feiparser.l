@@ -673,8 +673,10 @@ EXP	([Ee][-+]?[0-9]+)
 "number_of_modes"                   {return token::number_of_modes;}
 
  /* OUTPUT */
-"binary"                             {return token::BINARY;}
-"text"                             {return token::TEXT;}
+"binary"                            {return token::BINARY;}
+"text"                              {return token::TEXT;}
+"enable"                            {return token::ENABLE;}
+"disable"                           {return token::DISABLE;}
 
 
  /* ================================================================================================= */

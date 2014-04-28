@@ -561,7 +561,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     if (unload_prod <= 0.0)
     {
-        cout << "negative!!!" << endl;
+        //cout << "negative!!!" << endl;
         // beta0 = beta; // stress tensor at last load reversal : not needed now
         alpha0(i, j) = alpha(i, j); // back-stress tensor at last load reversal
     }
@@ -797,7 +797,7 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
     else
     {
         // cerr << "The norm of nij is not 1! This should never happen. Something wrong... ask Pisano." << endl;
-        cout << "Norm of nij_dev is nil. Might be non-deviatoric loading step... or something is wrong. Ask Pisano." << endl;
+        // cout << "Norm of nij_dev is nil. Might be non-deviatoric loading step... or something is wrong. Ask Pisano." << endl;
 
     };
 

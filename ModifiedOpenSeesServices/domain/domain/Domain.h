@@ -321,6 +321,7 @@ class Domain
         virtual int removeDatabase(int tag);
         //=======================================================================================
 
+        virtual int enableOutput(bool is_output_enabled);
 
 
 # ifdef _PDD //Guanzhou added
@@ -424,6 +425,8 @@ class Domain
         int number_of_line_elements;
 
         int lastChannel;
+
+        bool output_is_enabled;
 };
 
 #endif

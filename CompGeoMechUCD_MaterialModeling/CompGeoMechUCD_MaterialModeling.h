@@ -97,3 +97,4 @@
 
 //Constitutive testing
 #include "./BardetConstraint.h"
+#include "./BardetConstraintLT.h"

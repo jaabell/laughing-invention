@@ -131,7 +131,8 @@ Domain::Domain()
     theElementGraph( 0 ),
     commitTag( 0 ),
     theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
-    number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
+    number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
+    output_is_enabled(true)
 {
 
     // init the arrays for storing the domain components
@@ -218,7 +219,8 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
       theElementGraph( 0 ),
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
+      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
+      output_is_enabled(true)
 {
     // init the arrays for storing the domain components
     theElements = new ArrayOfTaggedObjects( numElements );
@@ -322,7 +324,8 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
       theLoadPatterns( &theLoadPatternsStorage ),
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
+      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
+      output_is_enabled(true)
 {
     // init the iters
     theEleIter = new SingleDomEleIter( theElements );
@@ -382,7 +385,8 @@ Domain::Domain( TaggedObjectStorage &theStorage )
       theElementGraph( 0 ),
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
+      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
+      output_is_enabled(true)
 {
     // init the arrays for storing the domain components
     theStorage.clearAll(); // clear the storage just in case populated
@@ -2583,7 +2587,6 @@ Domain::commit( void )
     //
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
-    bool output_is_enabled = true;
 
     if (output_is_enabled)
     {
@@ -5781,5 +5784,12 @@ Domain::saveLineElementForces( int stepNumber, Channel &theChannel )
     return 0;
 }
 
+
+
+int Domain::enableOutput(bool is_output_enabled_)
+{
+    output_is_enabled =  is_output_enabled_;
+    return 0;
+}
 
 

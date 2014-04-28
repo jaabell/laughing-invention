@@ -97,8 +97,8 @@ void HDF5_Channel::initialize(std::string filename_in,
     hid_t file_access_plist = H5Pcreate(H5P_FILE_ACCESS);
     // status = H5Pset_meta_block_size(file_access_plist, HDF5_CHANNEL_META_BLOCK_SIZE);
     // HDF5_CHECK_ERROR;
-    // status =  H5Pset_cache(file_access_plist, 0, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
-    // HDF5_CHECK_ERROR;
+    status =  H5Pset_cache(file_access_plist, 0, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    HDF5_CHECK_ERROR;
     status = H5Pset_sieve_buf_size( file_access_plist, HDF5_CHANNEL_SIEVE_BUFFER_SIZE );
     HDF5_CHECK_ERROR;
     id_file = H5Fcreate(filename.c_str(), flags , file_creation_plist, file_access_plist);
@@ -193,14 +193,14 @@ HDF5_Channel::getTag(void)
 
 
 // methods to send/receive messages and objects on HDF5_channels.
-int HDF5_Channel::sendObj(int commitTag,
+int HDF5_Channel::sendObj(int outputLevel,
                           MovableObject &theObject,
                           ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::recvObj(int commitTag,
+int HDF5_Channel::recvObj(int outputLevel,
                           MovableObject &theObject,
                           FEM_ObjectBroker &theBroker,
                           ChannelAddress *theAddress )
@@ -208,21 +208,21 @@ int HDF5_Channel::recvObj(int commitTag,
     return 0;
 }
 
-int HDF5_Channel::sendMsg(int dbTag, int commitTag,
+int HDF5_Channel::sendMsg(int not_used, int outputLevel,
                           const Message &theMessage,
                           ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::recvMsg(int dbTag, int commitTag,
+int HDF5_Channel::recvMsg(int not_used, int outputLevel,
                           Message &theMessage,
                           ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
+int HDF5_Channel::sendMatrix(int not_used, int outputLevel,
                              const Matrix &theMatrix,
                              ChannelAddress *theAddress )
 {
@@ -391,14 +391,14 @@ int HDF5_Channel::sendMatrix(int dbTag, int commitTag,
     return 0;
 }
 
-int HDF5_Channel::recvMatrix(int dbTag, int commitTag,
+int HDF5_Channel::recvMatrix(int not_used, int outputLevel,
                              Matrix &theMatrix,
                              ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::sendVector(int id_object, int commitTag,
+int HDF5_Channel::sendVector(int id_object, int outputLevel,
                              const Vector &theVector,
                              ChannelAddress *theAddress )
 {
@@ -558,14 +558,14 @@ int HDF5_Channel::sendVector(int id_object, int commitTag,
     return 0;
 }
 
-int HDF5_Channel::recvVector(int dbTag, int commitTag,
+int HDF5_Channel::recvVector(int not_used, int outputLevel,
                              Vector &theVector,
                              ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::sendID(int dbTag, int commitTag,
+int HDF5_Channel::sendID(int not_used, int outputLevel,
                          const ID &theID,
                          ChannelAddress *theAddress )
 {
@@ -727,7 +727,7 @@ int HDF5_Channel::sendID(int dbTag, int commitTag,
     return 0;
 }
 
-int HDF5_Channel::recvID(int dbTag, int commitTag,
+int HDF5_Channel::recvID(int not_used, int outputLevel,
                          ID &theID,
                          ChannelAddress *theAddress )
 {
@@ -735,14 +735,14 @@ int HDF5_Channel::recvID(int dbTag, int commitTag,
 }
 
 //Guanzhou added
-int HDF5_Channel::sendnDarray(int dbTag, int commitTag,
+int HDF5_Channel::sendnDarray(int not_used, int outputLevel,
                               const nDarray &theNDarray,
                               ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::recvnDarray(int dbTag, int commitTag,
+int HDF5_Channel::recvnDarray(int not_used, int outputLevel,
                               nDarray &theNDarray,
                               ChannelAddress *theAddress )
 {
@@ -1129,12 +1129,14 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
     HDF5_CHECK_ERROR;
     status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
     HDF5_CHECK_ERROR;
-    status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    // status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    // HDF5_CHECK_ERROR;
+    // status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
+    // HDF5_CHECK_ERROR;
+    status = H5Pset_fill_time(dataset_creation_plist, H5D_FILL_TIME_NEVER);
     HDF5_CHECK_ERROR;
-
-    status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
-    HDF5_CHECK_ERROR;
-
+    // status = H5Pset_deflate (dataset_creation_plist, 6);
+    // HDF5_CHECK_ERROR;
 
     //Create the data description both for data in file and in memory
     hid_t id_dataspace;
@@ -1226,10 +1228,15 @@ hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
     HDF5_CHECK_ERROR;
     status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
     HDF5_CHECK_ERROR;
-    status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    // status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    // HDF5_CHECK_ERROR;
+    // status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_INT, &fill_value);
+    // HDF5_CHECK_ERROR;
+    status = H5Pset_fill_time(dataset_creation_plist, H5D_FILL_TIME_NEVER);
     HDF5_CHECK_ERROR;
-    status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_INT, &fill_value);
-    HDF5_CHECK_ERROR;
+    // status = H5Pset_deflate (dataset_creation_plist, 6);
+    // HDF5_CHECK_ERROR;
+
 
 
     //Create the data description both for data in file and in memory
