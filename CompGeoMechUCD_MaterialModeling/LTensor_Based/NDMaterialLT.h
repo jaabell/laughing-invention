@@ -51,11 +51,12 @@ class NDMaterialLT : public Material
         virtual int setTrialStrain(const DTensor1 &v, const DTensor1 &r);
         virtual int setTrialStrainIncr(const DTensor1 &v);
         virtual int setTrialStrainIncr(const DTensor1 &v, const DTensor1 &r);
-        virtual const DTensor2 &getTangent(void);
+        virtual const DTensor2 &getTangent(void);// = 0;
         virtual const DTensor2 &getInitialTangent(void)
         {
             return this->getTangent();
         };
+
         virtual const DTensor1 &getStress(void);
         virtual const DTensor1 &getStrain(void);
         virtual const DTensor1 &getCommittedStress(void);
@@ -65,7 +66,8 @@ class NDMaterialLT : public Material
         virtual int setTrialStrain(const DTensor2 &v, const DTensor2 &r);
         virtual int setTrialStrainIncr(const DTensor2 &v);
         virtual int setTrialStrainIncr(const DTensor2 &v, const DTensor2 &r);
-        virtual const DTensor4 &getTangentTensor(void);
+
+        virtual const DTensor4 &getTangentTensor(void) = 0;
         virtual const DTensor2 &getStressTensor(void);
         virtual const DTensor2 &getStrainTensor(void);
         virtual const DTensor2 &getPlasticStrainTensor(void);

@@ -50,6 +50,28 @@
 #define UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL      5
 
 
-DTensor2 BardetConstraintLT(int , double , NDMaterialLT *);
+// DTensor2 BardetConstraintLT(int , double , NDMaterialLT *);
+
+class BardetConstraintLT
+{
+    public:
+        BardetConstraintLT(int test_type,  NDMaterialLT *material);
+        void  applyIncrement(double increment);
+        const DTensor2 &getStrainIncrement() const ;
+        const DTensor2 &getStress() const ;
+
+    private:
+        int type_of_test;
+        NDMaterialLT *material;
+        Index < 'i' > i;
+        Index < 'j' > j;
+        Index < 'p' > p;
+        DTensor2 S;//(6, 6);
+        DTensor2 E;//(6, 6);
+        DTensor1 Y;//(6, 0.0);
+        DTensor2 CurrentStiffness;
+        DTensor2 d_epsilon_tensor;//(3, 3, 0.0);
+};
+
 
 #endif

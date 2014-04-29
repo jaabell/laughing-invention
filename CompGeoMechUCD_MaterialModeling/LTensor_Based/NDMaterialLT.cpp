@@ -212,12 +212,12 @@ NDMaterialLT::getStrain(void)
 }
 
 
-const DTensor4 &
-NDMaterialLT::getTangentTensor(void)
-{
-    cerr << "NDMaterialLT::getTangentTensor  -- subclass responsibility\n";
-    return errTensor4;
-}
+// const DTensor4 &
+// NDMaterialLT::getTangentTensor(void)
+// {
+//     cerr << "NDMaterialLT::getTangentTensor  -- subclass responsibility\n";
+//     return errTensor4;
+// }
 
 const DTensor2    &NDMaterialLT::getStressTensor(void)
 {

@@ -5135,16 +5135,6 @@ Domain::recvNode( Node *thePtr )
 
 # ifdef _PARALLEL_PROCESSING
 
-// int
-// Domain::resetRecorders( void )
-// {
-//     for ( int i = 0; i < numRecorders; i++ )
-//     {
-//         theRecorders[i]->initialize();
-//     }
-
-// }
-
 
 bool
 Domain::hasInternalNode( int nodeTag )
@@ -5152,6 +5142,7 @@ Domain::hasInternalNode( int nodeTag )
     return false;
     //cerr << "Domain::hasInternalNode - should never be called!!!\n";
 }
+
 # endif
 
 
@@ -5439,14 +5430,6 @@ Domain::saveNodalDisplacements( int stepNumber, Channel &theChannel )
         comma = true;
 
     }
-
-
-    // if ( theChannel.sendquery( 0, query ) < 0 )
-    // {
-    //     cerr << "Domain::saveNodalDisplacements - failed to send the query\n";
-    //     return -7;
-    // }
-
 
 
     return 0;

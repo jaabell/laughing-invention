@@ -39,7 +39,6 @@ int add_constitutive_model_NDMaterialLT_New_Pisano(int tag,
         double rho_in,
         double initialconfiningstress_in)
 {
-    double beta_min_in = 1e-16;
     NDMaterialLT *theMaterial = 0;
     theMaterial = new NewPisanoLT( tag,
                                    E_in,

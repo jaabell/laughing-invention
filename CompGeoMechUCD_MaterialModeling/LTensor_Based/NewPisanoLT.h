@@ -80,10 +80,10 @@ class NewPisanoLT : public NDMaterialLT
         int setTrialStrainIncr( const DTensor2 &v );     // Not used (used by setTrialStrain)
 
 
-        const DTensor4 &getTangentTensor( void );      // Used by element
-        const DTensor2 &getStressTensor( void );   // Used
-        const DTensor2 &getStrainTensor( void );    // Used
-        const DTensor2 &getPlasticStrainTensor( void ); // Not used
+        virtual const DTensor4 &getTangentTensor( void );      // Used by element
+        virtual const DTensor2 &getStressTensor( void );   // Used
+        virtual const DTensor2 &getStrainTensor( void );    // Used
+        virtual const DTensor2 &getPlasticStrainTensor( void ); // Not used
 
         double getE();
         double getv();
@@ -112,7 +112,7 @@ class NewPisanoLT : public NDMaterialLT
 
         void Print(ostream &s, int flag = 0);
 
-        //const Matrix &getTangent (void);
+        // const DTensor2 &getTangent (void);
 
 
     private:

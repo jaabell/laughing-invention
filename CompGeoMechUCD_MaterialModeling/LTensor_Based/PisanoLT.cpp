@@ -461,7 +461,7 @@ int PisanoLT::Explicit(const DTensor2 &strain_incr)
     double beta                   = 0.0;    // distance coefficient
     double unload_prod            = 0.0;    //
     double arg_den                = 0.0;    //
-    double arg_den_min            = 0.0;    //
+    // double arg_den_min            ;//= 0.0;    //
     double H                      = 0.0;    // Hardening parameter
     double alpha_norm             = 0.0;    //
     double xi_var                 = 0.0;    // Damping ratio
@@ -574,7 +574,7 @@ int PisanoLT::Explicit(const DTensor2 &strain_incr)
     // Compute plastic modulus (H)
     //---------------------------------------------------------------------------------------------
     arg_den = fabs(beta - beta0);
-    arg_den_min =  1.0e3 * check_for_zero;
+    // double arg_den_min =  1.0e3 * check_for_zero;
 
     if (arg_den > 1e-15)
     {

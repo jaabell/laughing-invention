@@ -303,6 +303,8 @@ class Domain
                                     std::string stage_name_in,
                                     int nsteps);
 
+        virtual int enableOutput(bool is_output_enabled);
+
         //=======================================================================================
         // Nima Tafazzoli added for saving results using mySQL, November 2012
         //     virtual int saveResults(int commitTag, Channel &theChannel);
@@ -321,7 +323,6 @@ class Domain
         virtual int removeDatabase(int tag);
         //=======================================================================================
 
-        virtual int enableOutput(bool is_output_enabled);
 
 
 # ifdef _PDD //Guanzhou added
