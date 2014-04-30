@@ -319,6 +319,8 @@ class HDF5_Channel: public Channel
         std::string subgroupname;
 
         int maxOutputLevel;
+
+        bool useIndexDataset;
 };
 
 

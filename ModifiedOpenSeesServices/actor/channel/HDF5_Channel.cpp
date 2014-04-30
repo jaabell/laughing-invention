@@ -41,7 +41,8 @@ HDF5_Channel::HDF5_Channel ():
     filename(""),
     model_name(""),
     stage_name(""),
-    maxOutputLevel(ESSI_OUTPUT_LEVEL_BASIC)
+    maxOutputLevel(ESSI_OUTPUT_LEVEL_BASIC),
+    useIndexDataset(false)
 {
     //nuthin
 }
@@ -57,7 +58,8 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
     model_name(""),
     stage_name(""),
     subgroupname(""),
-    maxOutputLevel(ESSI_OUTPUT_LEVEL_BASIC)
+    maxOutputLevel(ESSI_OUTPUT_LEVEL_BASIC),
+    useIndexDataset(false)
 {
     initialize(filename_in, model_name_in, stage_name_in, nsteps);
 }
