@@ -558,15 +558,15 @@ int
 ElasticBeam::describeSelf(int cTag, HDF5_Channel &theHDF5Channel)
 {
     theHDF5Channel.beginElementDescription("ElasticBeam", this->getTag());
-    theHDF5Channel.addField("parameters"             , false     , "adim");
-    theHDF5Channel.addField("connected_nodes"             , false     , "adim");
-    theHDF5Channel.addField("node_I_offset"             , false     , "adim");
-    theHDF5Channel.addField("node_J_offset"             , false     , "adim");
-    theHDF5Channel.addField("node_I_initial_displacement"             , false     , "adim");
-    theHDF5Channel.addField("node_J_initial_displacement"             , false     , "adim");
-    theHDF5Channel.addField("transformation_matrix"             , false     , "adim");
-    theHDF5Channel.addField("internal_forces"             , true     , "adim");
-    theHDF5Channel.addField("internal_forces2"             , true     , "adim");
+    theHDF5Channel.addField("parameters"                  , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_BASIC);
+    theHDF5Channel.addField("connected_nodes"             , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_BASIC);
+    theHDF5Channel.addField("node_I_offset"               , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+    theHDF5Channel.addField("node_J_offset"               , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+    theHDF5Channel.addField("node_I_initial_displacement" , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+    theHDF5Channel.addField("node_J_initial_displacement" , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+    theHDF5Channel.addField("transformation_matrix"       , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+    theHDF5Channel.addField("internal_forces"             , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
+    theHDF5Channel.addField("internal_forces2"            , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED);
     theHDF5Channel.endElementDescription();
 
     return 0;

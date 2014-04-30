@@ -49,11 +49,18 @@
 #define HDF5_CHANNEL_CHUNK_NSLOTS 1 //512*32
 #define HDF5_CHANNEL_CHUNK_NBYTES 128*1024*1024
 #define HDF5_CHANNEL_CHUNK_TIMEDIM 1
-//#define HDF5_CHANNEL_META_BLOCK_SIZE 2048*16
-#define HDF5_CHANNEL_META_BLOCK_SIZE 16
-//#define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*1024
-#define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*64
+#define HDF5_CHANNEL_META_BLOCK_SIZE 2048*16
+#define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*1024
 
+
+
+// Some definitions to make writing functions more readable
+#define ESSI_OUTPUT_LEVEL_BASIC 0
+#define ESSI_OUTPUT_LEVEL_DETAILED 1
+#define ESSI_OUTPUT_LEVEL_DEBUG 2
+#define ESSI_OUTPUT_LEVEL_COMPLETE 10
+#define ESSI_OUTPUT_TIME_DEPENDENT true
+#define ESSI_OUTPUT_TIME_INDEPENDENT false
 
 using namespace std;
 
@@ -100,6 +107,7 @@ class HDF5_Channel: public Channel
         int setUpConnection(void);
         int setNextAddress(const ChannelAddress &theAddress);
         ChannelAddress *getLastSendersAddress(void);
+
 
         int isDatastore(void);
         int getDbTag(void);
@@ -176,11 +184,13 @@ class HDF5_Channel: public Channel
 
         int addField(std::string field_name,
                      bool is_time_dependent,
-                     std::string units);
+                     int output_level);
 
         int printStack();
 
         void garbage_collect();
+
+        void setMaxOutputLevel(int new_level);
 
 
 
@@ -188,7 +198,7 @@ class HDF5_Channel: public Channel
 
         int getNextField(std::string &field_name,
                          bool &is_time_dependent,
-                         std::string &units);
+                         int &output_level);
 
         int write_string(hid_t here, std::string name, std::string contents);
         int create_group(hid_t here, std::string name);
@@ -302,11 +312,13 @@ class HDF5_Channel: public Channel
         //Stacks
         std::queue<string> field_name_stack;               // Contains names of fields for current object
         std::queue<bool>   field_is_time_dependent_stack;  // Contains info on whether each field in "name_stack" is time dependent
-        std::queue<string>   field_units_stack;              // Contains the physical units for each field field in "name_stack"
+        std::queue<int>    field_output_level_stack;              // Contains the physical units for each field field in "name_stack"
         unsigned int stack_length;
 
         //if inside materials, we need this
         std::string subgroupname;
+
+        int maxOutputLevel;
 };
 
 

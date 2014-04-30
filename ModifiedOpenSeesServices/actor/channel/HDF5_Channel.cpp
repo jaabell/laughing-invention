@@ -40,7 +40,8 @@ HDF5_Channel::HDF5_Channel ():
     number_of_time_steps(0),
     filename(""),
     model_name(""),
-    stage_name("")
+    stage_name(""),
+    maxOutputLevel(ESSI_OUTPUT_LEVEL_BASIC)
 {
     //nuthin
 }
@@ -55,7 +56,8 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
     filename(""),
     model_name(""),
     stage_name(""),
-    subgroupname("")
+    subgroupname(""),
+    maxOutputLevel(ESSI_OUTPUT_LEVEL_BASIC)
 {
     initialize(filename_in, model_name_in, stage_name_in, nsteps);
 }
@@ -193,14 +195,14 @@ HDF5_Channel::getTag(void)
 
 
 // methods to send/receive messages and objects on HDF5_channels.
-int HDF5_Channel::sendObj(int outputLevel,
+int HDF5_Channel::sendObj(int not_used2,
                           MovableObject &theObject,
                           ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::recvObj(int outputLevel,
+int HDF5_Channel::recvObj(int not_used2,
                           MovableObject &theObject,
                           FEM_ObjectBroker &theBroker,
                           ChannelAddress *theAddress )
@@ -208,21 +210,21 @@ int HDF5_Channel::recvObj(int outputLevel,
     return 0;
 }
 
-int HDF5_Channel::sendMsg(int not_used, int outputLevel,
+int HDF5_Channel::sendMsg(int not_used, int not_used2,
                           const Message &theMessage,
                           ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::recvMsg(int not_used, int outputLevel,
+int HDF5_Channel::recvMsg(int not_used, int not_used2,
                           Message &theMessage,
                           ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::sendMatrix(int not_used, int outputLevel,
+int HDF5_Channel::sendMatrix(int not_used, int not_used2,
                              const Matrix &theMatrix,
                              ChannelAddress *theAddress )
 {
@@ -253,152 +255,157 @@ int HDF5_Channel::sendMatrix(int not_used, int outputLevel,
         //--------------------------------------------------------------------------------------
         std::string field_name;
         bool is_time_dependent;
-        std::string units;
-        getNextField(field_name, is_time_dependent, units);
-
-        // Find out whether the field exists
-        int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
-        int rank;            // Rank of array to be created (2 if time varying and 1 if not)
-        hsize_t dims[3], maxdims[3];
-        hsize_t data_dims[2];
-        hsize_t data_maxdims[2];
-        data_dims[0] = numRows;
-        data_dims[1] = numCols;
-        data_maxdims[0] = numRows;
-        data_maxdims[1] = numCols;
+        int output_level;
+        getNextField(field_name, is_time_dependent, output_level);
 
 
-
-        // Field does not exist
-        // --------------------------------
-        if (!exists) // The field does not exist -> create it and write out
+        if (output_level <= maxOutputLevel)
         {
-            //Create the field
-            //--------------------------------------------------------------------------------------
-            // cout << "Adding field: " << subgroupname << field_name << endl;
+            // Find out whether the field exists
+            int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
+            int rank;            // Rank of array to be created (2 if time varying and 1 if not)
+            hsize_t dims[3], maxdims[3];
+            hsize_t data_dims[2];
+            hsize_t data_maxdims[2];
+            data_dims[0] = numRows;
+            data_dims[1] = numCols;
+            data_maxdims[0] = numRows;
+            data_maxdims[1] = numCols;
 
-            if (is_time_dependent) // If it is time dependent
+
+
+            // Field does not exist
+            // --------------------------------
+            if (!exists) // The field does not exist -> create it and write out
             {
-                rank = 3;
-                dims[0] = numRows;
-                dims[1] = numCols;
-                dims[2] = number_of_time_steps;
-                maxdims[0] = numRows;
-                maxdims[1] = numCols;
-                maxdims[2] = H5S_UNLIMITED;
+                //Create the field
+                //--------------------------------------------------------------------------------------
+                // cout << "Adding field: " << subgroupname << field_name << endl;
 
-                id_dataset = createVariableLengthDoubleArray(id_current_object,
-                             rank,
-                             dims,
-                             maxdims,
-                             field_name,
-                             units);
+                if (is_time_dependent) // If it is time dependent
+                {
+                    rank = 3;
+                    dims[0] = numRows;
+                    dims[1] = numCols;
+                    dims[2] = number_of_time_steps;
+                    maxdims[0] = numRows;
+                    maxdims[1] = numCols;
+                    maxdims[2] = H5S_UNLIMITED;
 
-                //Write out the data to the dataset
-                hsize_t offset[3] = {       0,  0, 0 };
-                hsize_t stride[3] = {       1,  1, 1 };
-                hsize_t count[3]  = {       1,  1, 1 };
-                hsize_t block[3]  = { dims[0],  dims[1], 1 };
-                id_dataset = writeVariableLengthDoubleArray(id_dataset,
-                             2, //datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
+                    id_dataset = createVariableLengthDoubleArray(id_current_object,
+                                 rank,
+                                 dims,
+                                 maxdims,
+                                 field_name,
+                                 " ");
 
+                    //Write out the data to the dataset
+                    hsize_t offset[3] = {       0,  0, 0 };
+                    hsize_t stride[3] = {       1,  1, 1 };
+                    hsize_t count[3]  = {       1,  1, 1 };
+                    hsize_t block[3]  = { dims[0],  dims[1], 1 };
+                    id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                                 2, //datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+
+                }
+                else  // If it is not time dependent
+                {
+                    rank = 2;
+                    dims[0] = numRows;        // Starting array dims
+                    dims[1] = numCols;        // Starting array dims
+                    maxdims[0] = numRows;     // Max array dims
+                    maxdims[1] = numCols;     // Max array dims
+
+                    hid_t id_dataset = createConstantLengthDoubleArray(id_current_object,
+                                       rank,
+                                       dims,
+                                       maxdims,
+                                       field_name,
+                                       " ");
+
+                    //Write out the data to the dataset
+                    hsize_t offset[2] = {       0,  0 };
+                    hsize_t stride[2] = {       1,  1 };
+                    hsize_t count[2]  = {       1,  1 };
+                    hsize_t block[2]  = { dims[0],  dims[1] };
+
+                    id_dataset = writeConstantLengthDoubleArray(id_dataset,
+                                 2, //datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+                }
             }
-            else  // If it is not time dependent
+
+            // Field exists .....
+            // --------------------------------
+            else if (is_time_dependent) // .... and is time dependent
             {
-                rank = 2;
-                dims[0] = numRows;        // Starting array dims
-                dims[1] = numCols;        // Starting array dims
-                maxdims[0] = numRows;     // Max array dims
-                maxdims[1] = numCols;     // Max array dims
 
-                hid_t id_dataset = createConstantLengthDoubleArray(id_current_object,
-                                   rank,
-                                   dims,
-                                   maxdims,
-                                   field_name,
-                                   units);
+                // cout << "Writing field: " << subgroupname << field_name << endl;
+                //First get information about object
+                id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
+                if (id_dataset > 0)
+                {
+                    rank = 3;
+                    dims[0] = numRows;
+                    dims[1] = numCols;
+                    dims[2] = number_of_time_steps;
 
-                //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  0 };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  dims[1] };
+                    //Write out the data to the dataset
+                    hsize_t offset[3] = {       0,      0,  current_step_number - 1  };
+                    hsize_t stride[3] = {       1,      1,  1 };
+                    hsize_t count[3]  = {       1,      1,  1 };
+                    hsize_t block[3]  = { dims[0], dims[1],  1 };
 
-                id_dataset = writeConstantLengthDoubleArray(id_dataset,
-                             2, //datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
-            }
-        }
+                    id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                                 2,// datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+                }
+                else
+                {
+                    cerr << "HDF5_Channel::sendVector() -> ";
+                    cerr << "Group named " << field_name << " does not exist." << endl; // This should not happen...... ever
+                }
+            } // The field either does not exist (do nothing), or is not time dependent (do nothing)
 
-        // Field exists .....
-        // --------------------------------
-        else if (is_time_dependent) // .... and is time dependent
-        {
+        } // if(stack_length > 0 ) -> cannot do anything without a stack
 
-            // cout << "Writing field: " << subgroupname << field_name << endl;
-            //First get information about object
-            id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
-            if (id_dataset > 0)
-            {
-                rank = 3;
-                dims[0] = numRows;
-                dims[1] = numCols;
-                dims[2] = number_of_time_steps;
+        HDF5_CHANNEL_CLEAN;
+        HDF5_CHANNEL_COUNT_OBJS;
 
-                //Write out the data to the dataset
-                hsize_t offset[3] = {       0,      0,  current_step_number - 1  };
-                hsize_t stride[3] = {       1,      1,  1 };
-                hsize_t count[3]  = {       1,      1,  1 };
-                hsize_t block[3]  = { dims[0], dims[1],  1 };
-
-                id_dataset = writeVariableLengthDoubleArray(id_dataset,
-                             2,// datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
-            }
-            else
-            {
-                cerr << "HDF5_Channel::sendVector() -> ";
-                cerr << "Group named " << field_name << " does not exist." << endl; // This should not happen...... ever
-            }
-        } // The field either does not exist (do nothing), or is not time dependent (do nothing)
-
-    } // if(stack_length > 0 ) -> cannot do anything without a stack
-
-    HDF5_CHANNEL_CLEAN;
-    HDF5_CHANNEL_COUNT_OBJS;
+    }
     return 0;
 }
 
-int HDF5_Channel::recvMatrix(int not_used, int outputLevel,
+int HDF5_Channel::recvMatrix(int not_used, int not_used2,
                              Matrix &theMatrix,
                              ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::sendVector(int id_object, int outputLevel,
+int HDF5_Channel::sendVector(int id_object, int not_used2,
                              const Vector &theVector,
                              ChannelAddress *theAddress )
 {
@@ -427,145 +434,149 @@ int HDF5_Channel::sendVector(int id_object, int outputLevel,
         //--------------------------------------------------------------------------------------
         std::string field_name;
         bool is_time_dependent;
-        std::string units;
-        getNextField(field_name, is_time_dependent, units);
-
-        // Find out whether the field exists
-        int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
-        int rank;            // Rank of array to be created (2 if time varying and 1 if not)
-        hsize_t dims[2], maxdims[2];
-        hsize_t data_dims[1];
-        hsize_t data_maxdims[1];
-        data_dims[0] = length_of_vector_data;
-        data_maxdims[0] = length_of_vector_data;
+        int output_level;
+        getNextField(field_name, is_time_dependent, output_level);
 
 
-
-        // Field does not exist
-        // --------------------------------
-        if (!exists) // The field does not exist -> create it and write out
+        if (output_level <= maxOutputLevel)
         {
-            //Create the field
-            //--------------------------------------------------------------------------------------
-            // cout << "Adding field: " << subgroupname << field_name << endl;
+            // Find out whether the field exists
+            int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
+            int rank;            // Rank of array to be created (2 if time varying and 1 if not)
+            hsize_t dims[2], maxdims[2];
+            hsize_t data_dims[1];
+            hsize_t data_maxdims[1];
+            data_dims[0] = length_of_vector_data;
+            data_maxdims[0] = length_of_vector_data;
 
-            if (is_time_dependent) // If it is time dependent
+
+
+            // Field does not exist
+            // --------------------------------
+            if (!exists) // The field does not exist -> create it and write out
             {
-                rank = 2;
-                dims[0] = length_of_vector_data;
-                dims[1] = number_of_time_steps;
-                maxdims[0] = length_of_vector_data;
-                maxdims[1] = H5S_UNLIMITED;
+                //Create the field
+                //--------------------------------------------------------------------------------------
+                // cout << "Adding field: " << subgroupname << field_name << endl;
 
-                id_dataset = createVariableLengthDoubleArray(id_current_object,
-                             rank,
-                             dims,
-                             maxdims,
-                             field_name,
-                             units);
+                if (is_time_dependent) // If it is time dependent
+                {
+                    rank = 2;
+                    dims[0] = length_of_vector_data;
+                    dims[1] = number_of_time_steps;
+                    maxdims[0] = length_of_vector_data;
+                    maxdims[1] = H5S_UNLIMITED;
 
-                //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  0 };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  1 };
-                id_dataset = writeVariableLengthDoubleArray(id_dataset,
-                             1, //datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
+                    id_dataset = createVariableLengthDoubleArray(id_current_object,
+                                 rank,
+                                 dims,
+                                 maxdims,
+                                 field_name,
+                                 " ");
 
+                    //Write out the data to the dataset
+                    hsize_t offset[2] = {       0,  0 };
+                    hsize_t stride[2] = {       1,  1 };
+                    hsize_t count[2]  = {       1,  1 };
+                    hsize_t block[2]  = { dims[0],  1 };
+                    id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                                 1, //datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+
+                }
+                else  // If it is not time dependent
+                {
+                    rank = 1;
+                    dims[0] = length_of_vector_data;        // Starting array dims
+                    maxdims[0] = length_of_vector_data;     // Max array dims
+
+                    hid_t id_dataset = createConstantLengthDoubleArray(id_current_object,
+                                       rank,
+                                       dims,
+                                       maxdims,
+                                       field_name,
+                                       " ");
+
+                    //Write out the data to the dataset
+                    hsize_t offset[2] = {       0,  0 };
+                    hsize_t stride[2] = {       1,  1 };
+                    hsize_t count[2]  = {       1,  1 };
+                    hsize_t block[2]  = { dims[0],  1 };
+
+                    id_dataset = writeConstantLengthDoubleArray(id_dataset,
+                                 1, //datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+                }
             }
-            else  // If it is not time dependent
+
+            // Field exists .....
+            // --------------------------------
+            else if (is_time_dependent) // .... and is time dependent
             {
-                rank = 1;
-                dims[0] = length_of_vector_data;        // Starting array dims
-                maxdims[0] = length_of_vector_data;     // Max array dims
 
-                hid_t id_dataset = createConstantLengthDoubleArray(id_current_object,
-                                   rank,
-                                   dims,
-                                   maxdims,
-                                   field_name,
-                                   units);
+                // cout << "Writing field: " << subgroupname << field_name << endl;
+                //First get information about object
+                id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
+                if (id_dataset > 0)
+                {
+                    rank = 2;
+                    dims[0] = length_of_vector_data;
+                    dims[1] = number_of_time_steps;
 
-                //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  0 };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  1 };
+                    //Write out the data to the dataset
+                    hsize_t offset[2] = {       0,  current_step_number - 1  };
+                    hsize_t stride[2] = {       1,  1 };
+                    hsize_t count[2]  = {       1,  1 };
+                    hsize_t block[2]  = { dims[0],  1 };
 
-                id_dataset = writeConstantLengthDoubleArray(id_dataset,
-                             1, //datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
-            }
-        }
+                    id_dataset = writeVariableLengthDoubleArray(id_dataset,
+                                 1, //datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+                }
+                else
+                {
+                    cerr << "HDF5_Channel::sendVector() -> ";
+                    cerr << "Group named " << field_name << " does not exist." << endl; // This should not happen...... ever
+                }
+            } // The field either does not exist (do nothing), or is not time dependent (do nothing)
 
-        // Field exists .....
-        // --------------------------------
-        else if (is_time_dependent) // .... and is time dependent
-        {
+        } // if(stack_length > 0 ) -> cannot do anything without a stack
 
-            // cout << "Writing field: " << subgroupname << field_name << endl;
-            //First get information about object
-            id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
-            if (id_dataset > 0)
-            {
-                rank = 2;
-                dims[0] = length_of_vector_data;
-                dims[1] = number_of_time_steps;
-
-                //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  current_step_number - 1  };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  1 };
-
-                id_dataset = writeVariableLengthDoubleArray(id_dataset,
-                             1, //datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
-            }
-            else
-            {
-                cerr << "HDF5_Channel::sendVector() -> ";
-                cerr << "Group named " << field_name << " does not exist." << endl; // This should not happen...... ever
-            }
-        } // The field either does not exist (do nothing), or is not time dependent (do nothing)
-
-    } // if(stack_length > 0 ) -> cannot do anything without a stack
-
-    HDF5_CHANNEL_CLEAN;
-    HDF5_CHANNEL_COUNT_OBJS;
+        HDF5_CHANNEL_CLEAN;
+        HDF5_CHANNEL_COUNT_OBJS;
+    }
     return 0;
 }
 
-int HDF5_Channel::recvVector(int not_used, int outputLevel,
+int HDF5_Channel::recvVector(int not_used, int not_used2,
                              Vector &theVector,
                              ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::sendID(int not_used, int outputLevel,
+int HDF5_Channel::sendID(int not_used, int not_used2,
                          const ID &theID,
                          ChannelAddress *theAddress )
 {
@@ -595,139 +606,143 @@ int HDF5_Channel::sendID(int not_used, int outputLevel,
         //--------------------------------------------------------------------------------------
         std::string field_name;
         bool is_time_dependent;
-        std::string units;
-        getNextField(field_name, is_time_dependent, units);
-
-        // Find out whether the field exists
-        int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
-        int rank;            // Rank of array to be created (2 if time varying and 1 if not)
-        hsize_t dims[2], maxdims[2];
-        hsize_t data_dims[1];
-        hsize_t data_maxdims[1];
-        data_dims[0] = length_of_vector_data;
-        data_maxdims[0] = length_of_vector_data;
+        int output_level;
+        getNextField(field_name, is_time_dependent, output_level);
 
 
-
-        // Field does not exist
-        // --------------------------------
-        if (!exists) // The field does not exist -> create it and write out
+        if (output_level <= maxOutputLevel)
         {
-            //Create the field
-            //--------------------------------------------------------------------------------------
-            // cout << "Adding field: " << subgroupname << field_name << endl;
+            // Find out whether the field exists
+            int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
+            int rank;            // Rank of array to be created (2 if time varying and 1 if not)
+            hsize_t dims[2], maxdims[2];
+            hsize_t data_dims[1];
+            hsize_t data_maxdims[1];
+            data_dims[0] = length_of_vector_data;
+            data_maxdims[0] = length_of_vector_data;
 
-            if (is_time_dependent) // If it is time dependent
+
+
+            // Field does not exist
+            // --------------------------------
+            if (!exists) // The field does not exist -> create it and write out
             {
-                rank = 2;
-                dims[0] = length_of_vector_data;
-                dims[1] = number_of_time_steps;
-                maxdims[0] = length_of_vector_data;
-                maxdims[1] = H5S_UNLIMITED;
+                //Create the field
+                //--------------------------------------------------------------------------------------
+                // cout << "Adding field: " << subgroupname << field_name << endl;
 
-                id_dataset = createVariableLengthIntegerArray(id_current_object,
-                             rank,
-                             dims,
-                             maxdims,
-                             field_name,
-                             units);
+                if (is_time_dependent) // If it is time dependent
+                {
+                    rank = 2;
+                    dims[0] = length_of_vector_data;
+                    dims[1] = number_of_time_steps;
+                    maxdims[0] = length_of_vector_data;
+                    maxdims[1] = H5S_UNLIMITED;
 
-                //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  0 };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  1 };
-                id_dataset = writeVariableLengthIntegerArray(id_dataset,
-                             1, //datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
+                    id_dataset = createVariableLengthIntegerArray(id_current_object,
+                                 rank,
+                                 dims,
+                                 maxdims,
+                                 field_name,
+                                 " ");
 
+                    //Write out the data to the dataset
+                    hsize_t offset[2] = {       0,  0 };
+                    hsize_t stride[2] = {       1,  1 };
+                    hsize_t count[2]  = {       1,  1 };
+                    hsize_t block[2]  = { dims[0],  1 };
+                    id_dataset = writeVariableLengthIntegerArray(id_dataset,
+                                 1, //datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+
+                }
+                else  // If it is not time dependent
+                {
+                    rank = 1;
+                    dims[0] = length_of_vector_data;        // Starting array dims
+                    maxdims[0] = length_of_vector_data;     // Max array dims
+
+                    hid_t id_dataset = createConstantLengthIntegerArray(id_current_object,
+                                       rank,
+                                       dims,
+                                       maxdims,
+                                       field_name,
+                                       " ");
+
+                    //Write out the data to the dataset
+                    hsize_t offset[2] = {       0,  0 };
+                    hsize_t stride[2] = {       1,  1 };
+                    hsize_t count[2]  = {       1,  1 };
+                    hsize_t block[2]  = { dims[0],  1 };
+
+                    id_dataset = writeConstantLengthIntegerArray(id_dataset,
+                                 1, //datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+                }
             }
-            else  // If it is not time dependent
+
+            // Field exists .....
+            // --------------------------------
+            else if (is_time_dependent) // .... and is time dependent
             {
-                rank = 1;
-                dims[0] = length_of_vector_data;        // Starting array dims
-                maxdims[0] = length_of_vector_data;     // Max array dims
 
-                hid_t id_dataset = createConstantLengthIntegerArray(id_current_object,
-                                   rank,
-                                   dims,
-                                   maxdims,
-                                   field_name,
-                                   units);
+                // cout << "Writing field: " << subgroupname << field_name << endl;
+                //First get information about object
+                id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
+                if (id_dataset > 0)
+                {
+                    rank = 2;
+                    dims[0] = length_of_vector_data;
+                    dims[1] = number_of_time_steps;
 
-                //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  0 };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  1 };
+                    //Write out the data to the dataset
+                    hsize_t offset[2] = {       0,  current_step_number - 1  };
+                    hsize_t stride[2] = {       1,  1 };
+                    hsize_t count[2]  = {       1,  1 };
+                    hsize_t block[2]  = { dims[0],  1 };
 
-                id_dataset = writeConstantLengthIntegerArray(id_dataset,
-                             1, //datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
-            }
-        }
+                    id_dataset = writeVariableLengthIntegerArray(id_dataset,
+                                 1, //datarank
+                                 dims,
+                                 data_dims,
+                                 offset,
+                                 stride,
+                                 count,
+                                 block,
+                                 data);
+                    H5Oclose(id_dataset);
+                }
+                else
+                {
+                    cerr << "HDF5_Channel::sendVector() -> ";
+                    cerr << "Group named " << field_name << " does not exist." << endl; // This should not happen...... ever
+                }
+            } // The field either does not exist (do nothing), or is not time dependent (do nothing)
 
-        // Field exists .....
-        // --------------------------------
-        else if (is_time_dependent) // .... and is time dependent
-        {
+        } // if(stack_length > 0 ) -> cannot do anything without a stack
 
-            // cout << "Writing field: " << subgroupname << field_name << endl;
-            //First get information about object
-            id_dataset = H5Oopen(id_current_object, field_name.c_str(), H5P_DEFAULT);
-            if (id_dataset > 0)
-            {
-                rank = 2;
-                dims[0] = length_of_vector_data;
-                dims[1] = number_of_time_steps;
-
-                //Write out the data to the dataset
-                hsize_t offset[2] = {       0,  current_step_number - 1  };
-                hsize_t stride[2] = {       1,  1 };
-                hsize_t count[2]  = {       1,  1 };
-                hsize_t block[2]  = { dims[0],  1 };
-
-                id_dataset = writeVariableLengthIntegerArray(id_dataset,
-                             1, //datarank
-                             dims,
-                             data_dims,
-                             offset,
-                             stride,
-                             count,
-                             block,
-                             data);
-                H5Oclose(id_dataset);
-            }
-            else
-            {
-                cerr << "HDF5_Channel::sendVector() -> ";
-                cerr << "Group named " << field_name << " does not exist." << endl; // This should not happen...... ever
-            }
-        } // The field either does not exist (do nothing), or is not time dependent (do nothing)
-
-    } // if(stack_length > 0 ) -> cannot do anything without a stack
-
-    HDF5_CHANNEL_CLEAN;
-    HDF5_CHANNEL_COUNT_OBJS;
+        HDF5_CHANNEL_CLEAN;
+        HDF5_CHANNEL_COUNT_OBJS;
+    }
 
     return 0;
 }
 
-int HDF5_Channel::recvID(int not_used, int outputLevel,
+int HDF5_Channel::recvID(int not_used, int not_used2,
                          ID &theID,
                          ChannelAddress *theAddress )
 {
@@ -735,14 +750,14 @@ int HDF5_Channel::recvID(int not_used, int outputLevel,
 }
 
 //Guanzhou added
-int HDF5_Channel::sendnDarray(int not_used, int outputLevel,
+int HDF5_Channel::sendnDarray(int not_used, int not_used2,
                               const nDarray &theNDarray,
                               ChannelAddress *theAddress )
 {
     return 0;
 }
 
-int HDF5_Channel::recvnDarray(int not_used, int outputLevel,
+int HDF5_Channel::recvnDarray(int not_used, int not_used2,
                               nDarray &theNDarray,
                               ChannelAddress *theAddress )
 {
@@ -759,11 +774,11 @@ int HDF5_Channel::recvnDarray(int not_used, int outputLevel,
 
 int HDF5_Channel::addField(std::string field_name,
                            bool is_time_dependent,
-                           std::string units)
+                           int output_level)
 {
     field_name_stack.push(subgroupname + field_name);
     field_is_time_dependent_stack.push(is_time_dependent);
-    field_units_stack.push(units);
+    field_output_level_stack.push(output_level);
     stack_length++;
     return 0;
 }
@@ -771,16 +786,16 @@ int HDF5_Channel::addField(std::string field_name,
 
 int HDF5_Channel::getNextField(std::string &field_name,
                                bool &is_time_dependent,
-                               std::string &units)
+                               int &output_level)
 {
     if (stack_length > 0)
     {
         field_name = field_name_stack.front();
         is_time_dependent = field_is_time_dependent_stack.front();
-        units = field_units_stack.front();
+        output_level = field_output_level_stack.front();
         field_name_stack.pop();
         field_is_time_dependent_stack.pop();
-        field_units_stack.pop();
+        field_output_level_stack.pop();
         stack_length--;
         return 0;
     }
@@ -1103,7 +1118,7 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
         std::string name,
         std::string units)
 {
-    double fill_value = 0.0;
+    // double fill_value = 0.0;
 
     //Setup the creation property list
     dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
@@ -1200,7 +1215,7 @@ hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
         std::string name,
         std::string units)
 {
-    int fill_value = 0;
+    // int fill_value = 0;
 
     //Setup the creation property list
     dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
@@ -1484,27 +1499,27 @@ int HDF5_Channel::printStack()
 {
     std::queue<string> temp_field_name_stack;
     std::queue<bool>   temp_field_is_time_dependent_stack;
-    std::queue<string>   temp_field_units_stack;
+    std::queue<int>   temp_field_output_level_stack;
     // cout << "Current stack: " << endl;
     // cout << "======================================================" << endl;
     while ( stack_length > 0)
     {
         std::string name;
         bool td;
-        std::string units;
+        int output_level;
 
         // cout << "Stack_length =" << stack_length << endl;
 
-        getNextField(name, td, units);
+        getNextField(name, td, output_level);
         temp_field_name_stack.push(name);
         temp_field_is_time_dependent_stack.push(td);
-        temp_field_units_stack.push(units);
+        temp_field_output_level_stack.push(output_level);
 
         // cout << name << ", " << td << ", " <<  units << endl;
     }
-    field_name_stack = temp_field_units_stack;
+    field_name_stack = temp_field_name_stack;
     field_is_time_dependent_stack = temp_field_is_time_dependent_stack;
-    field_units_stack = temp_field_units_stack;
+    // field_units_stack = temp_field_units_stack;
 
     return 0;
 }
@@ -1589,5 +1604,7 @@ ChannelAddress *HDF5_Channel::getLastSendersAddress(void)
     return 0;
 }
 
-
-
+void HDF5_Channel::setMaxOutputLevel(int new_level)
+{
+    maxOutputLevel = new_level;
+}

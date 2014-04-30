@@ -297,15 +297,15 @@ const char *NewPisanoLT::getType(void) const
 
 int NewPisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
-    theHDF5_Channel.beginMaterialDescription("NewPisanoLT", this->getTag());
-    theHDF5_Channel.addField("strain", true, "adim");               // 1.
-    theHDF5_Channel.addField("stress", true, "adim");               // 2.
-    theHDF5_Channel.addField("plastic_strain", true, "adim");       // 3.
-    theHDF5_Channel.addField("alpha", true, "adim");                // 4.
-    theHDF5_Channel.addField("alpha0", true, "adim");               // 5.
-    theHDF5_Channel.addField("stress_n_minus_2", true, "adim");     // 6.
-    theHDF5_Channel.addField("nij_dev", true, "adim");              // 7.
-    theHDF5_Channel.addField("model_parameters", false, "adim");    // 8.
+    theHDF5_Channel.beginMaterialDescription("NewPisanoLT" , this->getTag());
+    theHDF5_Channel.addField("strain"                      , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);    // 1.
+    theHDF5_Channel.addField("stress"                      , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);    // 2.
+    theHDF5_Channel.addField("plastic_strain"              , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED); // 3.
+    theHDF5_Channel.addField("alpha"                       , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 4.
+    theHDF5_Channel.addField("alpha0"                      , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 5.
+    theHDF5_Channel.addField("stress_n_minus_2"            , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 6.
+    theHDF5_Channel.addField("nij_dev"                     , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 7.
+    theHDF5_Channel.addField("model_parameters"            , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_BASIC);    // 8.
     theHDF5_Channel.endMaterialDescription();
 
     return 0;

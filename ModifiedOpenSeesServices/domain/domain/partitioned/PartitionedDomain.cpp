@@ -1635,6 +1635,25 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
         //----
 
 
+        if ( elePtr->getClassTag() == ELE_TAG_EightNodeBrickLT)
+        {
+            if (tagdObjPtr->getTag() > maxEleNum)
+            {
+                maxEleNum = tagdObjPtr->getTag();
+            }
+        }
+
+
+
+        if ( elePtr->getClassTag() == ELE_TAG_TwentySevenNodeBrickLT)
+        {
+            if (tagdObjPtr->getTag() > maxEleNum)
+            {
+                maxEleNum = tagdObjPtr->getTag();
+            }
+        }
+
+
     }
 
 

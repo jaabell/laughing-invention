@@ -2670,8 +2670,8 @@ const Vector &TwentySevenNodeBrickLT::getResistingForceIncInertia ()
 int TwentySevenNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginElementDescription("TwentySevenNodeBrickLT", this->getTag());
-    theHDF5_Channel.addField("tag"             , false     , "adim");
-    theHDF5_Channel.addField("connected_nodes"             , false     , "adim");
+    theHDF5_Channel.addField("tag"             , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
+    theHDF5_Channel.addField("connected_nodes" , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
 
     // 8node brick asks its material objects to describe themselves
     for ( int i = 0; i < 8; i++ )
@@ -2682,9 +2682,9 @@ int TwentySevenNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Ch
             return -1;
         }
     }
-    theHDF5_Channel.addField("material_properties"      , false     , "adim");
-    theHDF5_Channel.addField("gauss_points"      , false     , "m");
-    theHDF5_Channel.addField("volume"      , false     , "m^3");
+    theHDF5_Channel.addField("material_properties"  , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
+    theHDF5_Channel.addField("gauss_points"         , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
+    theHDF5_Channel.addField("volume"               , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
     theHDF5_Channel.endElementDescription();
 
     return 0;

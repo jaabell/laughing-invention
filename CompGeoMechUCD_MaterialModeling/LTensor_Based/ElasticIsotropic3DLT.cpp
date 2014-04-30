@@ -222,9 +222,9 @@ const char *ElasticIsotropic3DLT::getType( void ) const
 int ElasticIsotropic3DLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginMaterialDescription("ElasticIsotropic3DLT", this->getTag());
-    theHDF5_Channel.addField("data", false, "adim");// 1.
-    theHDF5_Channel.addField("strain", true, "adim");// 2.
-    theHDF5_Channel.addField("stress", true, "adim");// 3.
+    theHDF5_Channel.addField("data"   , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED); // 1.
+    theHDF5_Channel.addField("strain" , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);    // 2.
+    theHDF5_Channel.addField("stress" , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);    // 3.
     theHDF5_Channel.endMaterialDescription();
 
     return 0;

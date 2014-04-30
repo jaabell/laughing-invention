@@ -1405,39 +1405,39 @@ Node::getEigenvectors(void)
 int Node::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 {
     theHDF5_Channel.beginNodeDescription(this->getTag());
-    theHDF5_Channel.addField("data"             , false     , "adim");
-    theHDF5_Channel.addField("coordinates"      , false     , "m");
+    theHDF5_Channel.addField("data"                       , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+    theHDF5_Channel.addField("coordinates"                , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_BASIC);
     if (commitDisp != 0)
     {
-        theHDF5_Channel.addField("displacements"    , true      , "m");
+        theHDF5_Channel.addField("displacements"              , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
     }
     if (commitVel != 0)
     {
-        theHDF5_Channel.addField("velocity"         , true      , "m*s^-1");
+        theHDF5_Channel.addField("velocity"                   , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
     }
     if (commitAccel != 0)
     {
-        theHDF5_Channel.addField("acceleration"     , true      , "m*s^-2");
+        theHDF5_Channel.addField("acceleration"               , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
     }
     if (mass != 0)
     {
-        theHDF5_Channel.addField("mass_matrix"      , false     , "variable");
+        theHDF5_Channel.addField("mass_matrix"                , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
     }
     if (R != 0)
     {
-        theHDF5_Channel.addField("nodal_participation_matrix", false     , "variable");
+        theHDF5_Channel.addField("nodal_participation_matrix" , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
     }
     if (unbalLoad  != 0)
     {
-        theHDF5_Channel.addField("applied_forces"  , true     , "variable");
+        theHDF5_Channel.addField("applied_forces"             , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED);
     }
     if (reaction  != 0)
     {
-        theHDF5_Channel.addField("reactions"  , true     , "variable");
+        theHDF5_Channel.addField("reactions"                  , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
     }
     if ( theDOF_GroupPtr != 0 )
     {
-        theHDF5_Channel.addField("DOF_group"        , false     , "adim");
+        theHDF5_Channel.addField("DOF_group"                  , ESSI_OUTPUT_TIME_INDEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED);
     }
     theHDF5_Channel.endNodeDescription();
 
