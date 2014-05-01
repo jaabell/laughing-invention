@@ -758,7 +758,7 @@ ElasticBeam::initialize()
         const Vector &nodeIDisp = theNodes[0]->getDisp();
         const Vector &nodeJDisp = theNodes[1]->getDisp();
 
-        cout << "done!"  << endl;
+        // cout << "done!"  << endl;
 
         nodeIInitialDisp = new Vector(6);
 

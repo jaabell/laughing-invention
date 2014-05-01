@@ -101,8 +101,8 @@ void HDF5_Channel::initialize(std::string filename_in,
     hid_t file_access_plist = H5Pcreate(H5P_FILE_ACCESS);
     // status = H5Pset_meta_block_size(file_access_plist, HDF5_CHANNEL_META_BLOCK_SIZE);
     // HDF5_CHECK_ERROR;
-    status =  H5Pset_cache(file_access_plist, 0, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
-    HDF5_CHECK_ERROR;
+    // status =  H5Pset_cache(file_access_plist, 0, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    // HDF5_CHECK_ERROR;
     status = H5Pset_sieve_buf_size( file_access_plist, HDF5_CHANNEL_SIEVE_BUFFER_SIZE );
     HDF5_CHECK_ERROR;
     id_file = H5Fcreate(filename.c_str(), flags , file_creation_plist, file_access_plist);
@@ -261,7 +261,20 @@ int HDF5_Channel::sendMatrix(int not_used, int not_used2,
         getNextField(field_name, is_time_dependent, output_level);
 
 
-        if (output_level <= maxOutputLevel)
+        bool write_this_time_independent_array = true;
+        if (!is_time_dependent)  //If its time-independent
+        {
+            if (current_step_number == 0)  // And its the first step -> do the output
+            {
+                write_this_time_independent_array = true;
+            }
+            else  // If its not the first step -> dont output
+            {
+                write_this_time_independent_array = false;
+            }
+        }
+
+        if ( (output_level <= maxOutputLevel) &&  ( write_this_time_independent_array ) )
         {
             // Find out whether the field exists
             int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
@@ -440,7 +453,21 @@ int HDF5_Channel::sendVector(int id_object, int not_used2,
         getNextField(field_name, is_time_dependent, output_level);
 
 
-        if (output_level <= maxOutputLevel)
+
+        bool write_this_time_independent_array = true;
+        if (!is_time_dependent)  //If its time-independent
+        {
+            if (current_step_number == 0)  // And its the first step -> do the output
+            {
+                write_this_time_independent_array = true;
+            }
+            else  // If its not the first step -> dont output
+            {
+                write_this_time_independent_array = false;
+            }
+        }
+
+        if ( (output_level <= maxOutputLevel) &&  ( write_this_time_independent_array ) )
         {
             // Find out whether the field exists
             int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
@@ -612,7 +639,21 @@ int HDF5_Channel::sendID(int not_used, int not_used2,
         getNextField(field_name, is_time_dependent, output_level);
 
 
-        if (output_level <= maxOutputLevel)
+
+        bool write_this_time_independent_array = true;
+        if (!is_time_dependent)  //If its time-independent
+        {
+            if (current_step_number == 0)  // And its the first step -> do the output
+            {
+                write_this_time_independent_array = true;
+            }
+            else  // If its not the first step -> dont output
+            {
+                write_this_time_independent_array = false;
+            }
+        }
+
+        if ( (output_level <= maxOutputLevel) &&  ( write_this_time_independent_array ) )
         {
             // Find out whether the field exists
             int exists = H5Lexists_safe(id_current_object, field_name, H5P_DEFAULT);
@@ -1120,7 +1161,50 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
         std::string name,
         std::string units)
 {
-    // double fill_value = 0.0;
+    hid_t id_array;
+    id_array = createVariableLengthArray(here,
+                                         rank,
+                                         dims,
+                                         maxdims,
+                                         name,
+                                         units,
+                                         H5T_NATIVE_DOUBLE,
+                                         sizeof(double));
+
+    return id_array;
+}
+
+hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
+        int rank,
+        hsize_t *dims,
+        hsize_t *maxdims,
+        std::string name,
+        std::string units)
+{
+    hid_t id_array;
+    id_array = createVariableLengthArray(here,
+                                         rank,
+                                         dims,
+                                         maxdims,
+                                         name,
+                                         units,
+                                         H5T_NATIVE_INT,
+                                         sizeof(int));
+
+    return id_array;
+}
+
+
+
+hid_t HDF5_Channel::createVariableLengthArray(hid_t here,
+        int rank,
+        hsize_t *dims,
+        hsize_t *maxdims,
+        std::string name,
+        std::string units,
+        hid_t type, int sizeof_type)
+{
+    // int fill_value = 0;
 
     //Setup the creation property list
     dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
@@ -1128,7 +1212,10 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
 
     // Set the layout to be chunked, the chunk size and the fill value
     // needs to be chunked because it is extensible
+    // Set the layout to be chunked, the chunk size and the fill value
+    // needs to be chunked because it is extensible
     hsize_t chunk_dims[rank];
+    int nbytes_one_chunk = sizeof_type;// sizeof(int);
     for (int i = 0; i < rank; i++)
     {
         if (maxdims[i] == H5S_UNLIMITED)
@@ -1139,6 +1226,7 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
         {
             chunk_dims[i] = maxdims[i];
         }
+        nbytes_one_chunk *= chunk_dims[i];
     }
 
 
@@ -1146,14 +1234,16 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
     HDF5_CHECK_ERROR;
     status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
     HDF5_CHECK_ERROR;
-    // status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
+    status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, nbytes_one_chunk * HDF5_CHANNEL_CHUNK_NBYTES_OVER_SIZEOF_CHUNK, 1 );
     // HDF5_CHECK_ERROR;
-    // status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
+    // status = H5Pset_fill_value(dataset_creation_plist, type, &fill_value);
     // HDF5_CHECK_ERROR;
     status = H5Pset_fill_time(dataset_creation_plist, H5D_FILL_TIME_NEVER);
     HDF5_CHECK_ERROR;
     // status = H5Pset_deflate (dataset_creation_plist, 6);
     // HDF5_CHECK_ERROR;
+
+
 
     //Create the data description both for data in file and in memory
     hid_t id_dataspace;
@@ -1162,7 +1252,7 @@ hid_t HDF5_Channel::createVariableLengthDoubleArray(hid_t here,
     // Create the dataset
     hid_t id_array = H5Dcreate2(here,
                                 name.c_str(),
-                                H5T_NATIVE_DOUBLE,
+                                type,
                                 id_dataspace,
                                 H5P_DEFAULT,
                                 dataset_creation_plist,
@@ -1210,69 +1300,7 @@ hid_t HDF5_Channel::createConstantLengthDoubleArray(hid_t here,
 }
 
 
-hid_t HDF5_Channel::createVariableLengthIntegerArray(hid_t here,
-        int rank,
-        hsize_t *dims,
-        hsize_t *maxdims,
-        std::string name,
-        std::string units)
-{
-    // int fill_value = 0;
 
-    //Setup the creation property list
-    dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
-    dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
-
-    // Set the layout to be chunked, the chunk size and the fill value
-    // needs to be chunked because it is extensible
-    // Set the layout to be chunked, the chunk size and the fill value
-    // needs to be chunked because it is extensible
-    hsize_t chunk_dims[rank];
-    for (int i = 0; i < rank; i++)
-    {
-        if (maxdims[i] == H5S_UNLIMITED)
-        {
-            chunk_dims[i] = HDF5_CHANNEL_CHUNK_TIMEDIM;
-        }
-        else
-        {
-            chunk_dims[i] = maxdims[i];
-        }
-    }
-
-
-    status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
-    HDF5_CHECK_ERROR;
-    status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
-    HDF5_CHECK_ERROR;
-    // status = H5Pset_chunk_cache(dataset_access_plist, HDF5_CHANNEL_CHUNK_NSLOTS, HDF5_CHANNEL_CHUNK_NBYTES, 0 );
-    // HDF5_CHECK_ERROR;
-    // status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_INT, &fill_value);
-    // HDF5_CHECK_ERROR;
-    status = H5Pset_fill_time(dataset_creation_plist, H5D_FILL_TIME_NEVER);
-    HDF5_CHECK_ERROR;
-    // status = H5Pset_deflate (dataset_creation_plist, 6);
-    // HDF5_CHECK_ERROR;
-
-
-
-    //Create the data description both for data in file and in memory
-    hid_t id_dataspace;
-    id_dataspace = H5Screate_simple(rank, dims     , maxdims     );       // create dataspace
-
-    // Create the dataset
-    hid_t id_array = H5Dcreate2(here,
-                                name.c_str(),
-                                H5T_NATIVE_INT,
-                                id_dataspace,
-                                H5P_DEFAULT,
-                                dataset_creation_plist,
-                                dataset_access_plist);
-    setUnit(id_array, units);
-    H5Sclose(id_dataspace);
-
-    return id_array;
-}
 
 hid_t HDF5_Channel::createConstantLengthIntegerArray(hid_t here,
         int rank,

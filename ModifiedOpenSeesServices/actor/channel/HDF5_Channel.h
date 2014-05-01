@@ -46,11 +46,11 @@
     { H5Oclose(id_current_object); }
 
 //These optimize access to HDF5 file (tuninng knobs)
-#define HDF5_CHANNEL_CHUNK_NSLOTS 1 //512*32
-#define HDF5_CHANNEL_CHUNK_NBYTES 128*1024*1024
-#define HDF5_CHANNEL_CHUNK_TIMEDIM 1
-#define HDF5_CHANNEL_META_BLOCK_SIZE 2048*16
-#define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*1024
+#define HDF5_CHANNEL_CHUNK_NSLOTS 10007                        // Good if it is a prime number
+#define HDF5_CHANNEL_CHUNK_NBYTES_OVER_SIZEOF_CHUNK 100       // 
+#define HDF5_CHANNEL_CHUNK_TIMEDIM 100                        // Size of chunks in time dimension
+#define HDF5_CHANNEL_META_BLOCK_SIZE 2048*16                  // Not used
+#define HDF5_CHANNEL_SIEVE_BUFFER_SIZE 1024*1024              // Not used because of chunking
 
 
 
@@ -223,12 +223,24 @@ class HDF5_Channel: public Channel
                                                hsize_t *maxdims,
                                                std::string name,
                                                std::string units);
+
         hid_t createConstantLengthIntegerArray(hid_t here,
                                                int rank,
                                                hsize_t *dims,
                                                hsize_t *maxdims,
                                                std::string name,
                                                std::string units);
+
+        hid_t createVariableLengthArray(hid_t here,
+                                        int rank,
+                                        hsize_t *dims,
+                                        hsize_t *maxdims,
+                                        std::string name,
+                                        std::string units,
+                                        hid_t type, int sizeof_type);
+
+
+
 
         hid_t writeVariableLengthDoubleArray(hid_t id_array,
                                              int datarank,
