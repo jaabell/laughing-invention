@@ -127,7 +127,11 @@ int simulate_using_transient_multistep(double dT,
     string filename("");
     filename = ModelName + "_" + StageName + ".h5.feioutput";
 
-    theDomain.setHDF5_Channel(filename,
+    // theDomain.setHDF5_Channel(filename,
+    //                           ModelName,
+    //                           StageName,
+    //                           numSteps);
+    theDomain.setOutputWriter(filename,
                               ModelName,
                               StageName,
                               numSteps);

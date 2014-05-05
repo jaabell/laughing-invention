@@ -7,6 +7,7 @@ include ../Makefile.Compilers
 
 all:
 	$(CD) $(PATH_TO_CompGeoMechUCD_Miscellaneous)/units; $(MAKE);
+	$(CD) $(PATH_TO_CompGeoMechUCD_Miscellaneous)/output; $(MAKE);
 
 clean:
 	$(CD) $(PATH_TO_CompGeoMechUCD_Miscellaneous)/units; $(MAKE) clean;

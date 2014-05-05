@@ -59,7 +59,8 @@ HDF5_Channel::HDF5_Channel (std::string filename_in,
     stage_name(""),
     subgroupname(""),
     maxOutputLevel(ESSI_OUTPUT_LEVEL_BASIC),
-    useIndexDataset(false)
+    useIndexDataset(false),
+    createIndex(true)
 {
     initialize(filename_in, model_name_in, stage_name_in, nsteps);
 }
@@ -363,6 +364,11 @@ int HDF5_Channel::sendMatrix(int not_used, int not_used2,
                                  data);
                     H5Oclose(id_dataset);
                 }
+
+                if (createIndex)
+                {
+                    index.push_back(id_dataset);
+                }
             }
 
             // Field exists .....
@@ -503,6 +509,7 @@ int HDF5_Channel::sendVector(int id_object, int not_used2,
                                  field_name,
                                  " ");
 
+
                     //Write out the data to the dataset
                     hsize_t offset[2] = {       0,  0 };
                     hsize_t stride[2] = {       1,  1 };
@@ -549,6 +556,11 @@ int HDF5_Channel::sendVector(int id_object, int not_used2,
                                  block,
                                  data);
                     H5Oclose(id_dataset);
+                }
+
+                if (createIndex)
+                {
+                    index.push_back(id_dataset);
                 }
             }
 
@@ -735,6 +747,11 @@ int HDF5_Channel::sendID(int not_used, int not_used2,
                                  block,
                                  data);
                     H5Oclose(id_dataset);
+                }
+
+                if (createIndex)
+                {
+                    index.push_back(id_dataset);
                 }
             }
 
@@ -1554,8 +1571,9 @@ int HDF5_Channel::printStack()
     return 0;
 }
 
-void HDF5_Channel::garbage_collect()
+void HDF5_Channel::done()
 {
+    createIndex = false;
     status = H5garbage_collect();
     HDF5_CHECK_ERROR;
 }
@@ -1621,14 +1639,17 @@ char *HDF5_Channel::addToProgram(void)
 {
     return 0;
 }
+
 int HDF5_Channel::setUpConnection(void)
 {
     return 0;
 }
+
 int HDF5_Channel::setNextAddress(const ChannelAddress &theAddress)
 {
     return 0;
 }
+
 ChannelAddress *HDF5_Channel::getLastSendersAddress(void)
 {
     return 0;
@@ -1637,4 +1658,18 @@ ChannelAddress *HDF5_Channel::getLastSendersAddress(void)
 void HDF5_Channel::setMaxOutputLevel(int new_level)
 {
     maxOutputLevel = new_level;
+}
+
+
+void HDF5_Channel::useIndex()
+{
+    createIndex     = false;
+    useIndexDataset = true;
+}
+
+void HDF5_Channel::wipeIndexAndCreateNewOne()
+{
+    index.clear();
+    createIndex     = true;
+    useIndexDataset = false;
 }

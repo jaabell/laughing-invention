@@ -124,6 +124,8 @@ class Vector
         friend class MySqlDatastore;
         friend class MySqlDataRecorder;
         friend class BerkeleyDbDatastore;
+        friend class OutputWriter;
+        friend class H5OutputWriter;
 
     private:
         static double VECTOR_NOT_VALID_ENTRY;

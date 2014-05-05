@@ -96,6 +96,8 @@ class NodeGraph;
 class ElementGraph;
 // class Channel;
 #include <HDF5_Channel.h>
+#include <OutputWriter.h>
+#include <H5OutputWriter.h>
 class FEM_ObjectBroker;
 class FE_Datastore;
 
@@ -303,6 +305,11 @@ class Domain
                                     std::string stage_name_in,
                                     int nsteps);
 
+        virtual int setOutputWriter(std::string filename_in,
+                                    std::string model_name_in,
+                                    std::string stage_name_in,
+                                    int nsteps);
+
         virtual int enableOutput(bool is_output_enabled);
 
         //=======================================================================================
@@ -356,6 +363,7 @@ class Domain
 
 
         HDF5_Channel theHDF5_Channel;
+        H5OutputWriter theOutputWriter;
 
         // Nima Tafazzoli, Nov. 2012
         FE_Datastore **theDatabases;

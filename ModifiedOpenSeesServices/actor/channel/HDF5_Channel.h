@@ -188,9 +188,13 @@ class HDF5_Channel: public Channel
 
         int printStack();
 
-        void garbage_collect();
+        void done();
 
         void setMaxOutputLevel(int new_level);
+
+        void useIndex();
+
+        void wipeIndexAndCreateNewOne();
 
 
 
@@ -332,7 +336,11 @@ class HDF5_Channel: public Channel
 
         int maxOutputLevel;
 
+
+        //index
         bool useIndexDataset;
+        bool createIndex;
+        std::vector<hid_t> index;
 };
 
 

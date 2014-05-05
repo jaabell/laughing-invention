@@ -2590,7 +2590,10 @@ Domain::commit( void )
 
     if (output_is_enabled)
     {
-        theHDF5_Channel.setTime(currentTime);
+        // theHDF5_Channel.setTime(currentTime);/
+        theOutputWriter.setTime(currentTime);
+        theOutputWriter.writeNumberOfElements(this->getNumElements());
+        theOutputWriter.writeNumberOfNodes(this->getNumNodes());
     }
 
     this->calculateNodalReactions(0);
@@ -2634,8 +2637,9 @@ Domain::commit( void )
         //Jose Added for node output
         if (output_is_enabled)
         {
-            nodePtr->describeSelf(0, theHDF5_Channel);
-            nodePtr->sendSelf(0, theHDF5_Channel);
+            // nodePtr->describeSelf(0, theHDF5_Channel);
+            // nodePtr->sendSelf(0, theHDF5_Channel);
+            theOutputWriter.writeNodeData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
         }
 
     }
@@ -2649,8 +2653,8 @@ Domain::commit( void )
         //Jose Added for element output
         if (output_is_enabled)
         {
-            elePtr->describeSelf(0, theHDF5_Channel);
-            elePtr->sendSelf(0, theHDF5_Channel);
+            // elePtr->describeSelf(0, theHDF5_Channel);
+            // elePtr->sendSelf(0, theHDF5_Channel);
         }
     }
 
@@ -2680,7 +2684,8 @@ Domain::commit( void )
     // }
 
 
-    theHDF5_Channel.garbage_collect(); // This frees memory, and optimizes the HDF5 run.. it is not essential, but increases performance
+    // theHDF5_Channel.done(); // This frees memory, and optimizes the HDF5 run.. it is not essential, but increases performance
+    // theHDF5_Channel.useIndex();
 
     return 0;
 }
@@ -5276,6 +5281,17 @@ Domain::setHDF5_Channel(std::string filename_in,
                         int nsteps)
 {
     theHDF5_Channel.initialize(filename_in, model_name_in, stage_name_in, nsteps);
+    return 0;
+}
+
+
+int
+Domain::setOutputWriter(std::string filename_in,
+                        std::string model_name_in,
+                        std::string stage_name_in,
+                        int nsteps)
+{
+    theOutputWriter.initialize(filename_in, model_name_in, stage_name_in, nsteps);
     return 0;
 }
 
