@@ -44,9 +44,9 @@ class OutputWriter
         // Mesh output
         virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) = 0 ;
         virtual int writeNumberOfElements(unsigned int numberOfElements_ ) = 0;
-        virtual int writeNodeData(int tag     , const Vector &coords   , int ndofs ) = 0;
-        virtual int writeElementData(int tag  , std::string type , ID &connectivity         , int materialtag , Vector &parameters, int length_of_output) = 0;
-        virtual int writeMaterialData(int tag , std::string type , Vector &parameters) = 0;
+        virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) = 0;
+        virtual int writeElementMeshData(int tag  , std::string type , ID &connectivity         , int materialtag , Vector &parameters, int length_of_output) = 0;
+        virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) = 0;
 
         // Results for Nodes
         virtual int writeDisplacements(  int nodeTag, const Vector &displacements) = 0;

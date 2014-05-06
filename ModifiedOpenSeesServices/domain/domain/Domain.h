@@ -436,6 +436,7 @@ class Domain
         int lastChannel;
 
         bool output_is_enabled;
+        bool have_written_static_mesh_data;
 };
 
 #endif

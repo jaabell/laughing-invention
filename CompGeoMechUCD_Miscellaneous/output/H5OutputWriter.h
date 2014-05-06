@@ -44,31 +44,27 @@
         std::cerr << "H5OutputWriter::send##() -> still in definition mode. Element or node must end definition mode by calling endElementDescription() or endNodeDescription() before exiting! " << endl;  \
         return -1; \
     }
+
+//Comment to untoggle
+// #define _DEBUG_H5OUTPUTWRITER 1
 #ifdef _DEBUG_H5OUTPUTWRITER
 #define H5OUTPUTWRITER_COUNT_OBJS ssize_t nobjects = H5Fget_obj_count( id_file, H5F_OBJ_ALL ); \
     cout << "Objects open = "  << nobjects << endl;
 #else
 #define H5OUTPUTWRITER_COUNT_OBJS
 #endif
+
+
 #define H5OUTPUTWRITER_CLEAN if(stack_length == 0) \
     { H5Oclose(id_current_object); }
 
 //These optimize access to HDF5 file (tuninng knobs)
-#define H5OUTPUTWRITER_CHUNK_NSLOTS 10007                        // Good if it is a prime number
-#define H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK 100       // 
+#define H5OUTPUTWRITER_CHUNK_NSLOTS 1009                        // Good if it is a prime number 101 1009  10007 (http://primes.utm.edu/lists/small/100000.txt)
+#define H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK 10        // 
 #define H5OUTPUTWRITER_CHUNK_TIMEDIM 100                        // Size of chunks in time dimension
-#define H5OUTPUTWRITER_META_BLOCK_SIZE 2048*16                  // Not used
-#define H5OUTPUTWRITER_SIEVE_BUFFER_SIZE 1024*1024              // Not used because of chunking
-
-
-
-// Some definitions to make writing functions more readable
-#define ESSI_OUTPUT_LEVEL_BASIC 0
-#define ESSI_OUTPUT_LEVEL_DETAILED 1
-#define ESSI_OUTPUT_LEVEL_DEBUG 2
-#define ESSI_OUTPUT_LEVEL_COMPLETE 10
-#define ESSI_OUTPUT_TIME_DEPENDENT true
-#define ESSI_OUTPUT_TIME_INDEPENDENT false
+#define H5OUTPUTWRITER_META_BLOCK_SIZE 2048*16                 // Not used
+#define H5OUTPUTWRITER_SIEVE_BUFFER_SIZE 1024*1024             // Not used because of chunking
+#define H5OUTPUTWRITER_PREEMPTION_POLICY 0.75
 
 
 
@@ -90,9 +86,9 @@ class H5OutputWriter: public OutputWriter
         virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
         virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
 
-        virtual int writeNodeData(int tag     , const Vector &coords   , int ndofs ) ;
-        virtual int writeElementData(int tag  , std::string type , ID &connectivity         , int materialtag , Vector &parameters, int length_of_output) ;
-        virtual int writeMaterialData(int tag , std::string type , Vector &parameters) ;
+        virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
+        virtual int writeElementMeshData(int tag  , std::string type , ID &connectivity         , int materialtag , Vector &parameters, int length_of_output) ;
+        virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
 
         // Results for Nodes
         virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
@@ -242,6 +238,7 @@ class H5OutputWriter: public OutputWriter
         hid_t id_nodes_displacements , id_index_to_nodes_outputs;
         hid_t id_nodes_velocities    ;
         hid_t id_nodes_accelerations ;
+        hid_t id_nodes_reaction_forces ;
 
         hid_t id_current_object;
         hid_t id_current_object_material;
@@ -252,7 +249,15 @@ class H5OutputWriter: public OutputWriter
         hid_t dataset_creation_plist;
         hid_t dataset_access_plist;
 
+        bool create_nodeMeshData_arrays;
+        bool create_nodeDisplacements_arrays;
+        bool create_nodeVelocities_arrays;
+        bool create_nodeAccelerations_arrays;
+        bool create_nodeReactionForces_arrays;
+        bool create_elementMeshData_arrays;
 
+        int pos_nodes_outputs;
+        int pos_nodes_coordinates;
 
 };
 

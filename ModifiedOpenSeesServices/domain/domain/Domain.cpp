@@ -2592,17 +2592,31 @@ Domain::commit( void )
     {
         // theHDF5_Channel.setTime(currentTime);/
         theOutputWriter.setTime(currentTime);
-        theOutputWriter.writeNumberOfElements(this->getNumElements());
-        theOutputWriter.writeNumberOfNodes(this->getNumNodes());
+
+        //Write out static mesh data once!
+        if (!have_written_static_mesh_data)
+        {
+            //Write Node Mesh data!
+            theOutputWriter.writeNumberOfNodes(this->getNumNodes());
+            while ( ( nodePtr = theNodeIter() ) != 0 )
+            {
+                theOutputWriter.writeNodeMeshData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
+            }
+
+            //Write Element Mesh data!
+            theOutputWriter.writeNumberOfElements(this->getNumElements());
+        }
+        have_written_static_mesh_data = true;
     }
 
     this->calculateNodalReactions(0);
     theNodIter->reset();
 
+    theNodeIter = this->getNodes();
+
     while ( ( nodePtr = theNodeIter() ) != 0 )
     {
         nodePtr->commitState();
-        //   #ifdef _BABAK_DEBUG
 
 #ifdef _PDD
         int numProcesses, processID;
@@ -2610,14 +2624,13 @@ Domain::commit( void )
         MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
         const Vector &NodeDisp = nodePtr->getDisp();
-        //if (nodePtr->getTag() ==26)
-        //{
+
         std::stringstream Nodes_outfile;
         Nodes_outfile << "NODES_DISP_PID#" << processID << ".out";
         ofstream file;
         file.open(Nodes_outfile.str().c_str(), ios::out | ios::app);
 
-        //cerr << "BABAK@Domain::commit -- PID # "<< processID<< "Current time" << currentTime <<"Node Number#" << nodePtr->getTag() <<" Disp:" << NodeDisp << ".\n ";
+
         if (nodePtr->getNumberDOF() == 6)
         {
             file <<  processID << " " << committedTime << " " << nodePtr->getTag() << " " << NodeDisp(0) << " " << NodeDisp(1) << " " << NodeDisp(2) << " " << NodeDisp(3) << " " << NodeDisp(4) << " " << NodeDisp(5) << "\n";
@@ -2625,13 +2638,10 @@ Domain::commit( void )
         else
         {
             file <<  processID << " " << committedTime << " " << nodePtr->getTag() << " " << NodeDisp(0) << " " << NodeDisp(1) << " " << NodeDisp(2) << "\n";
-        }//      file <<   committedTime <<" " << NodeDisp(0)<<  "\n";
+        }
 
         file.close();
 #endif
-        //}
-        //   #endif
-
 
 
         //Jose Added for node output
@@ -2639,7 +2649,11 @@ Domain::commit( void )
         {
             // nodePtr->describeSelf(0, theHDF5_Channel);
             // nodePtr->sendSelf(0, theHDF5_Channel);
-            theOutputWriter.writeNodeData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
+
+            theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
+            // theOutputWriter.writeVelocities(nodePtr->getTag(), nodePtr->getTrialVel());
+            // theOutputWriter.writeAccelerations(nodePtr->getTag(), nodePtr->getTrialAccel());
+            // theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
         }
 
     }
@@ -2658,34 +2672,12 @@ Domain::commit( void )
         }
     }
 
-    // set the new committed time in the domain
-    // committedTime = currentTime;
-    // dT = 0.0;
 
-    // invoke record on all recorders
-    // for ( int i = 0; i < numRecorders; i++ )
-    //     if ( theRecorders[i] != 0 )
-    //     {
-    //         theRecorders[i]->record( commitTag, currentTime );
-    //     }
-
-    // update the commitTag
-    // commitTag++;
-
-
-
-    // // Nima Tafazzoli (Nov. 2012)
-    // for ( int i = 0; i < numDatabases; i++ )
-    // {
-    //     if ( theDatabases[i] != 0 )
-    //     {
-    //         theDatabases[i]->saveResultsDatabase();
-    //     }
-    // }
 
 
     // theHDF5_Channel.done(); // This frees memory, and optimizes the HDF5 run.. it is not essential, but increases performance
     // theHDF5_Channel.useIndex();
+
 
     return 0;
 }
@@ -5292,6 +5284,7 @@ Domain::setOutputWriter(std::string filename_in,
                         int nsteps)
 {
     theOutputWriter.initialize(filename_in, model_name_in, stage_name_in, nsteps);
+    have_written_static_mesh_data = false;
     return 0;
 }
 
@@ -5788,6 +5781,7 @@ Domain::saveLineElementForces( int stepNumber, Channel &theChannel )
 int Domain::enableOutput(bool is_output_enabled_)
 {
     output_is_enabled =  is_output_enabled_;
+    have_written_static_mesh_data = false;
     return 0;
 }
 
