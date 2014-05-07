@@ -29,6 +29,7 @@
 #include <string>
 #include <ID.h>
 #include <Vector.h>
+#include <Matrix.h>
 
 #ifndef OutputWriter_H
 #define OutputWriter_H
@@ -44,9 +45,18 @@ class OutputWriter
         // Mesh output
         virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) = 0 ;
         virtual int writeNumberOfElements(unsigned int numberOfElements_ ) = 0;
-        virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) = 0;
-        virtual int writeElementMeshData(int tag  , std::string type , ID &connectivity         , int materialtag , Vector &parameters, int length_of_output) = 0;
-        virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) = 0;
+        virtual int writeNodeMeshData(int tag,
+                                      const Vector &coords,
+                                      int ndofs ) = 0;
+        virtual int writeElementMeshData(int         tag,
+                                         std::string  type,
+                                         const        ID &connectivity,
+                                         int          materialtag,
+                                         const        Matrix &gausscoordinates,
+                                         int          length_of_output) = 0;
+        virtual int writeMaterialMeshData(int         tag,
+                                          std::string type,
+                                          Vector     &parameters) = 0;
 
         // Results for Nodes
         virtual int writeDisplacements(  int nodeTag, const Vector &displacements) = 0;
@@ -55,7 +65,7 @@ class OutputWriter
         virtual int writeReactionForces( int nodeTag, const Vector &reactionForces) = 0;
 
         // Results for Elements
-        virtual int writeElementOutput(int elementTag, Vector &output) = 0;
+        virtual int writeElementOutput(int elementTag, const Vector &output) = 0;
 
 
     private:

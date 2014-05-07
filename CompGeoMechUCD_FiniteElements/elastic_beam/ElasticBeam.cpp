@@ -42,7 +42,7 @@ ElasticBeam::ElasticBeam()
     : Element(0, ELE_TAG_ElasticBeam),
       A(0), E(0), G(0), Jx(0), Iy(0), Iz(0), rho(0.0), L(0),
       nodeIOffset(0), nodeJOffset(0), Mass(12, 12), Stiffness(12, 12),
-      builtK(0), builtM(0),  R(3, 3), P(12), Q(12),
+      builtK(0), builtM(0),  R(3, 3), P(12), Q(12), outputVector(ELASTIC_BEAM_OUTPUT_SIZE),
       connectedExternalNodes(2),
       nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
@@ -67,7 +67,8 @@ ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
     : Element(tag, ELE_TAG_ElasticBeam),
       A(a), E(e), G(g), Jx(jx), Iy(iy), Iz(iz), rho(r), L(0), nodeIOffset(0), nodeJOffset(0),
       Mass(12, 12), Stiffness(12, 12), builtK(0), builtM(0), R(3, 3), P(12),
-      Q(12),  connectedExternalNodes(2), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      Q(12), outputVector(ELASTIC_BEAM_OUTPUT_SIZE),
+      connectedExternalNodes(2), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
     connectedExternalNodes(0) = Nd1;
     connectedExternalNodes(1) = Nd2;
@@ -102,7 +103,8 @@ ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *sec
                          double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
     : Element(tag, ELE_TAG_ElasticBeam),
       L(0), nodeIOffset(0), nodeJOffset(0), Mass(12, 12), Stiffness(12, 12), builtK(0), builtM(0), R(3, 3),  P(12),
-      Q(12), connectedExternalNodes(2),  nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      Q(12), outputVector(ELASTIC_BEAM_OUTPUT_SIZE),
+      connectedExternalNodes(2),  nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
 
     if (Jx == 0.0)
@@ -221,6 +223,10 @@ int
 ElasticBeam::commitState()
 {
     int retVal = 0;
+
+    formOutputVector();
+
+
 
     // call element commitState to do any base class stuff
     if ((retVal = this->Element::commitState()) != 0)
@@ -1245,3 +1251,183 @@ ElasticBeam::getForce(void)
 }
 
 
+int ElasticBeam::getOutputSize() const
+{
+    return ELASTIC_BEAM_OUTPUT_SIZE;
+}
+
+const Vector &ElasticBeam::getOutput() const
+{
+    return outputVector;
+}
+
+
+void ElasticBeam::formOutputVector()
+{
+    Vector LocalDisplacements(12);
+
+
+    Vector displacement1 = theNodes[0]->getTrialDisp();
+    Vector displacement2 = theNodes[1]->getTrialDisp();
+
+
+    if (displacement1.Size() != 6 || displacement2.Size() != 6 )
+    {
+        cerr.flush() << "ElasticBeam::getResistingForce matrix and vector sizes are incompatable\n";
+        exit(-1);
+    }
+
+    Vector displacement(12);
+    displacement(0)  = displacement1(0);
+    displacement(1)  = displacement1(1);
+    displacement(2)  = displacement1(2);
+    displacement(3)  = displacement1(3);
+    displacement(4)  = displacement1(4);
+    displacement(5)  = displacement1(5);
+    displacement(6)  = displacement2(0);
+    displacement(7)  = displacement2(1);
+    displacement(8)  = displacement2(2);
+    displacement(9)  = displacement2(3);
+    displacement(10) = displacement2(4);
+    displacement(11) = displacement2(5);
+
+    static Matrix RWI(3, 3);
+    if (nodeIOffset)
+    {
+        // Compute RWI
+        RWI(0, 0) = -R(0, 1) * (*nodeIOffset)(2) + R(0, 2) * (*nodeIOffset)(1);
+        RWI(1, 0) = -R(1, 1) * (*nodeIOffset)(2) + R(1, 2) * (*nodeIOffset)(1);
+        RWI(2, 0) = -R(2, 1) * (*nodeIOffset)(2) + R(2, 2) * (*nodeIOffset)(1);
+
+        RWI(0, 1) =  R(0, 0) * (*nodeIOffset)(2) - R(0, 2) * (*nodeIOffset)(0);
+        RWI(1, 1) =  R(1, 0) * (*nodeIOffset)(2) - R(1, 2) * (*nodeIOffset)(0);
+        RWI(2, 1) =  R(2, 0) * (*nodeIOffset)(2) - R(2, 2) * (*nodeIOffset)(0);
+
+        RWI(0, 2) = -R(0, 0) * (*nodeIOffset)(1) + R(0, 1) * (*nodeIOffset)(0);
+        RWI(1, 2) = -R(1, 0) * (*nodeIOffset)(1) + R(1, 1) * (*nodeIOffset)(0);
+        RWI(2, 2) = -R(2, 0) * (*nodeIOffset)(1) + R(2, 1) * (*nodeIOffset)(0);
+    }
+
+
+    static Matrix RWJ(3, 3);
+
+
+    if (nodeJOffset)
+    {
+        // Compute RWJ
+        RWJ(0, 0) = -R(0, 1) * (*nodeJOffset)(2) + R(0, 2) * (*nodeJOffset)(1);
+        RWJ(1, 0) = -R(1, 1) * (*nodeJOffset)(2) + R(1, 2) * (*nodeJOffset)(1);
+        RWJ(2, 0) = -R(2, 1) * (*nodeJOffset)(2) + R(2, 2) * (*nodeJOffset)(1);
+
+        RWJ(0, 1) =  R(0, 0) * (*nodeJOffset)(2) - R(0, 2) * (*nodeJOffset)(0);
+        RWJ(1, 1) =  R(1, 0) * (*nodeJOffset)(2) - R(1, 2) * (*nodeJOffset)(0);
+        RWJ(2, 1) =  R(2, 0) * (*nodeJOffset)(2) - R(2, 2) * (*nodeJOffset)(0);
+
+        RWJ(0, 2) = -R(0, 0) * (*nodeJOffset)(1) + R(0, 1) * (*nodeJOffset)(0);
+        RWJ(1, 2) = -R(1, 0) * (*nodeJOffset)(1) + R(1, 1) * (*nodeJOffset)(0);
+        RWJ(2, 2) = -R(2, 0) * (*nodeJOffset)(1) + R(2, 1) * (*nodeJOffset)(0);
+    }
+
+
+    // Transform displacements to local displacements
+
+
+    LocalDisplacements(0) = displacement(0) * R(0, 0) + displacement(1) * R(1, 0)  + displacement(2) * R(2, 0);
+    LocalDisplacements(1) = displacement(0) * R(0, 1) + displacement(1) * R(1, 1)  + displacement(2) * R(2, 1);
+    LocalDisplacements(2) = displacement(0) * R(0, 2) + displacement(1) * R(1, 2)  + displacement(2) * R(2, 2);
+
+    LocalDisplacements(3) = displacement(3) * R(0, 0) + displacement(4) * R(1, 0)  + displacement(5) * R(2, 0);
+    LocalDisplacements(4) = displacement(3) * R(0, 1) + displacement(4) * R(1, 1)  + displacement(5) * R(2, 1);
+    LocalDisplacements(5) = displacement(3) * R(0, 2) + displacement(4) * R(1, 2)  + displacement(5) * R(2, 2);
+
+
+    if (nodeIOffset)
+    {
+        LocalDisplacements(3)  += displacement(0) * RWI(0, 0)  + displacement(1) * RWI(1, 0)  + displacement(2) * RWI(2, 0);
+        LocalDisplacements(4)  += displacement(0) * RWI(0, 1)  + displacement(1) * RWI(1, 1)  + displacement(2) * RWI(2, 1);
+        LocalDisplacements(5)  += displacement(0) * RWI(0, 2)  + displacement(1) * RWI(1, 2)  + displacement(2) * RWI(2, 2);
+    }
+
+
+    LocalDisplacements(6) = displacement(6) * R(0, 0) + displacement(7) * R(1, 0)  + displacement(8) * R(2, 0);
+    LocalDisplacements(7) = displacement(6) * R(0, 1) + displacement(7) * R(1, 1)  + displacement(8) * R(2, 1);
+    LocalDisplacements(8) = displacement(6) * R(0, 2) + displacement(7) * R(1, 2)  + displacement(8) * R(2, 2);
+
+    LocalDisplacements(9)  = displacement(9) * R(0, 0) + displacement(10) * R(1, 0) + displacement(11) * R(2, 0);
+    LocalDisplacements(10) = displacement(9) * R(0, 1) + displacement(10) * R(1, 1) + displacement(11) * R(2, 1);
+    LocalDisplacements(11) = displacement(9) * R(0, 2) + displacement(10) * R(1, 2) + displacement(11) * R(2, 2);
+
+
+    if (nodeJOffset)
+    {
+        LocalDisplacements(9)   += displacement(6) * RWJ(0, 0)  + displacement(7) * RWJ(1, 0)  + displacement(8) * RWJ(2, 0);
+        LocalDisplacements(10)  += displacement(6) * RWJ(0, 1)  + displacement(7) * RWJ(1, 1)  + displacement(8) * RWJ(2, 1);
+        LocalDisplacements(11)  += displacement(6) * RWJ(0, 2)  + displacement(7) * RWJ(1, 2)  + displacement(8) * RWJ(2, 2);
+    }
+
+
+    Vector LocalForces(12);
+
+    // Transform resisting forces to local forces
+
+
+    LocalForces(0) = P(0) * R(0, 0) + P(1) * R(1, 0)  + P(2) * R(2, 0);
+    LocalForces(1) = P(0) * R(0, 1) + P(1) * R(1, 1)  + P(2) * R(2, 1);
+    LocalForces(2) = P(0) * R(0, 2) + P(1) * R(1, 2)  + P(2) * R(2, 2);
+
+    LocalForces(3) = P(3) * R(0, 0) + P(4) * R(1, 0)  + P(5) * R(2, 0);
+    LocalForces(4) = P(3) * R(0, 1) + P(4) * R(1, 1)  + P(5) * R(2, 1);
+    LocalForces(5) = P(3) * R(0, 2) + P(4) * R(1, 2)  + P(5) * R(2, 2);
+
+
+    if (nodeIOffset)
+    {
+        LocalForces(3)  += P(0) * RWI(0, 0)  + P(1) * RWI(1, 0)  + P(2) * RWI(2, 0);
+        LocalForces(4)  += P(0) * RWI(0, 1)  + P(1) * RWI(1, 1)  + P(2) * RWI(2, 1);
+        LocalForces(5)  += P(0) * RWI(0, 2)  + P(1) * RWI(1, 2)  + P(2) * RWI(2, 2);
+    }
+
+
+    LocalForces(6) = P(6) * R(0, 0) + P(7) * R(1, 0)  + P(8) * R(2, 0);
+    LocalForces(7) = P(6) * R(0, 1) + P(7) * R(1, 1)  + P(8) * R(2, 1);
+    LocalForces(8) = P(6) * R(0, 2) + P(7) * R(1, 2)  + P(8) * R(2, 2);
+
+    LocalForces(9)  = P(9) * R(0, 0) + P(10) * R(1, 0) + P(11) * R(2, 0);
+    LocalForces(10) = P(9) * R(0, 1) + P(10) * R(1, 1) + P(11) * R(2, 1);
+    LocalForces(11) = P(9) * R(0, 2) + P(10) * R(1, 2) + P(11) * R(2, 2);
+
+
+    if (nodeJOffset)
+    {
+        LocalForces(9)   += P(6) * RWJ(0, 0)  + P(7) * RWJ(1, 0)  + P(8) * RWJ(2, 0);
+        LocalForces(10)  += P(6) * RWJ(0, 1)  + P(7) * RWJ(1, 1)  + P(8) * RWJ(2, 1);
+        LocalForces(11)  += P(6) * RWJ(0, 2)  + P(7) * RWJ(1, 2)  + P(8) * RWJ(2, 2);
+    }
+
+    //Output Vector
+    outputVector(0) = LocalDisplacements(0);
+    outputVector(1) = LocalDisplacements(1);
+    outputVector(2) = LocalDisplacements(2);
+    outputVector(3) = LocalDisplacements(3);
+    outputVector(4) = LocalDisplacements(4);
+    outputVector(5) = LocalDisplacements(5);
+    outputVector(6) = LocalDisplacements(6);
+    outputVector(7) = LocalDisplacements(7);
+    outputVector(8) = LocalDisplacements(8);
+    outputVector(9) = LocalDisplacements(9);
+    outputVector(10) = LocalDisplacements(10);
+    outputVector(11) = LocalDisplacements(11);
+    outputVector(12) = LocalForces(0);
+    outputVector(13) = LocalForces(1);
+    outputVector(14) = LocalForces(2);
+    outputVector(15) = LocalForces(3);
+    outputVector(16) = LocalForces(4);
+    outputVector(17) = LocalForces(5);
+    outputVector(18) = LocalForces(6);
+    outputVector(19) = LocalForces(7);
+    outputVector(20) = LocalForces(8);
+    outputVector(21) = LocalForces(9);
+    outputVector(22) = LocalForces(10);
+    outputVector(23) = LocalForces(11);
+
+}

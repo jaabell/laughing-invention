@@ -2587,6 +2587,8 @@ Domain::commit( void )
     //
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
+    Element *elePtr;
+    ElementIter &theElemIter = this->getElements();
 
     if (output_is_enabled)
     {
@@ -2605,6 +2607,16 @@ Domain::commit( void )
 
             //Write Element Mesh data!
             theOutputWriter.writeNumberOfElements(this->getNumElements());
+            while ( ( elePtr = theElemIter() ) != 0 )
+            {
+                int materialtag = 0;
+                theOutputWriter.writeElementMeshData(elePtr->getTag() ,
+                                                     "not-implemented" ,
+                                                     elePtr->getExternalNodes(),
+                                                     materialtag ,
+                                                     elePtr->getGaussCoordinates(),
+                                                     elePtr->getOutputSize());
+            }
         }
         have_written_static_mesh_data = true;
     }
@@ -2658,9 +2670,7 @@ Domain::commit( void )
 
     }
 
-    Element *elePtr;
-    ElementIter &theElemIter = this->getElements();
-
+    theElemIter = this->getElements();
     while ( ( elePtr = theElemIter() ) != 0 )
     {
         elePtr->commitState();
@@ -2669,6 +2679,7 @@ Domain::commit( void )
         {
             // elePtr->describeSelf(0, theHDF5_Channel);
             // elePtr->sendSelf(0, theHDF5_Channel);
+            theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
         }
     }
 

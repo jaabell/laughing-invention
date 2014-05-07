@@ -87,7 +87,7 @@ class H5OutputWriter: public OutputWriter
         virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
 
         virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
-        virtual int writeElementMeshData(int tag  , std::string type , ID &connectivity         , int materialtag , Vector &parameters, int length_of_output) ;
+        virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity         , int materialtag , const Matrix &gausscoordinates, int length_of_output) ;
         virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
 
         // Results for Nodes
@@ -97,7 +97,7 @@ class H5OutputWriter: public OutputWriter
         virtual int writeReactionForces( int nodeTag, const Vector &reactionForces) ;
 
         // Results for Elements
-        virtual int writeElementOutput(int elementTag, Vector &output) ;
+        virtual int writeElementOutput(int elementTag, const Vector &output) ;
 
 
     public:  //Additional stuff
@@ -240,24 +240,37 @@ class H5OutputWriter: public OutputWriter
         hid_t id_nodes_accelerations ;
         hid_t id_nodes_reaction_forces ;
 
-        hid_t id_current_object;
-        hid_t id_current_object_material;
-        hid_t id_current_object_group;
+        //For Elements
+        hid_t id_elements_nnodes;
+        hid_t id_elements_connectivity , id_index_to_elements_connectivity;
+        hid_t id_elements_noutputs;
+        hid_t id_elements_ngauss;
+        hid_t id_elements_gausscoords  , index_to_elements_gausscoords;
+        hid_t id_elements_output       , index_to_elements_output;
+
+
 
         //Some property lists
         hid_t group_creation_plist;
         hid_t dataset_creation_plist;
         hid_t dataset_access_plist;
 
+        //Some flags
         bool create_nodeMeshData_arrays;
         bool create_nodeDisplacements_arrays;
         bool create_nodeVelocities_arrays;
         bool create_nodeAccelerations_arrays;
         bool create_nodeReactionForces_arrays;
         bool create_elementMeshData_arrays;
+        bool create_elementOutput_arrays;
 
+        //Positions within some arrays
         int pos_nodes_outputs;
         int pos_nodes_coordinates;
+
+        int pos_elements_outputs;
+        int pos_elements_gausscoords;
+        int pos_elements_connectivity;
 
 };
 

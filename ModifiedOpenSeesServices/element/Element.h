@@ -68,6 +68,7 @@ class Element : public DomainComponent
         virtual const ID &getExternalNodes(void)  = 0;
         virtual Node **getNodePtrs(void)  = 0;
         virtual int getNumDOF(void) = 0;
+        virtual Matrix &getGaussCoordinates(void);
 
         // methods dealing with committed state and update
         virtual int commitState(void);
@@ -134,6 +135,10 @@ class Element : public DomainComponent
         virtual Vector *getForce(void);
         void printSomeInformation(void); // Added by Babak to print
 
+
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
         virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         virtual int sendSelf ( int commitTag, Channel &theChannel );
         virtual int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &);
@@ -163,6 +168,8 @@ class Element : public DomainComponent
         Vector *SizedVector1;
         Vector *SizedVector2;
         int index_sized_matrix_vector;
+
+        static Matrix zero_gauss_coordinates;
 };
 
 

@@ -54,6 +54,8 @@ using namespace std;
 //  constructor that takes the element's unique tag and the number
 //  of external nodes for the element.
 
+Matrix Element::zero_gauss_coordinates(0, 0);
+
 Element::Element(int tag, int cTag)
     : DomainComponent(tag, cTag), a0(0.0),
       a1(0.0), a2(0.0), a3(0.0), classTag(cTag),
@@ -952,4 +954,22 @@ int Element::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theB
 {
     cerr << "Element::recvSelf -> Subclass responsability" << endl;
     return -1;
+}
+
+int Element::getOutputSize() const
+{
+    cerr << "Element::getOutputSize() -- Subclass responsability.\n\n";
+    return 0;
+}
+
+const Vector &Element::getOutput() const
+{
+    cerr << "Element::getOutput() -- Subclass responsability.\n\n";
+    return *SizedVector1;
+}
+
+Matrix &Element::getGaussCoordinates(void)
+{
+    // cerr << "Element::getGaussCoordinates() -- Subclass responsability.\n\n";
+    return zero_gauss_coordinates;
 }

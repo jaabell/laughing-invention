@@ -85,6 +85,8 @@ class ID
         friend class TCP_Socket;
         friend class TCP_SocketNoDelay;
         friend class MPI_Channel;
+        friend class OutputWriter;
+        friend class H5OutputWriter;
         friend class HDF5_Channel;
         friend class MySqlDatastore;
         friend class MySqlDataRecorder;

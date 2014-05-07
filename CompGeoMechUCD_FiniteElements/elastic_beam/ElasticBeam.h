@@ -30,6 +30,8 @@
 #ifndef ElasticBeam_h
 #define ElasticBeam_h
 
+#define ELASTIC_BEAM_OUTPUT_SIZE 24
+
 #include <Element.h>
 #include <Node.h>
 #include <Matrix.h>
@@ -87,6 +89,10 @@ class ElasticBeam : public Element
         const Vector &getResistingForce(void);
         const Vector &getResistingForceIncInertia(void);
 
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
+
         int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         int sendSelf(int commitTag, Channel &theChannel);
         int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
@@ -96,18 +102,19 @@ class ElasticBeam : public Element
         Response *setResponse (const char **argv, int argc, Information &info);
         int getResponse (int responseID, Information &info);
 
-        // Nima Tafazzoli moved from transformation (Nov. 2012)
         int getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis);
         int computeElemtLengthAndOrient();
         int initialize();
         const Matrix &getGlobalStiffnessMatrix (const Matrix &KB);
-        // function for global consistent mass matrix
         const Matrix &getGlobalConsistentMassMatrix (const Matrix &KB);
         Vector *getForce(void);
 
 
 
     private:
+
+        void formOutputVector();
+
         double A, E, G, Jx, Iy, Iz;
         double rho;
         double L;       // undeformed element length
@@ -123,6 +130,9 @@ class ElasticBeam : public Element
         Matrix R;       // Transformation matrix
         Vector P;
         Vector Q;
+        // Vector LocalDisplacements;
+        // Vector LocalEndForces;
+        Vector outputVector;
 
         ID  connectedExternalNodes;
 

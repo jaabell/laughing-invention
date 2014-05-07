@@ -144,6 +144,8 @@ class Matrix
         friend class UDP_Socket;
         friend class MPI_Channel;
         friend class HDF5_Channel;
+        friend class H5OutputWriter;
+        friend class OutputWriter;
         friend class MySqlDatastore;
         friend class MySqlDataRecorder;
         friend class BerkeleyDbDatastore;
