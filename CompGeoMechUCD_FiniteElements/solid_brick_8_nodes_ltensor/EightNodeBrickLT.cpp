@@ -60,7 +60,7 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 
     : Element( element_number, ELE_TAG_EightNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 8 ),
-      Ki( 0 ), Q( 24 ), bf(3), gauss_points(8, 3)
+      Ki( 0 ), Q( 24 ), bf(3), gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
 {
 
     rho = Globalmmodel->getRho();
@@ -138,7 +138,7 @@ void EightNodeBrickLT::populate()
 
 //====================================================================
 EightNodeBrickLT::EightNodeBrickLT(): Element( 0, ELE_TAG_EightNodeBrickLT ),
-    rho( 0.0 ), connectedExternalNodes( 8 ) , Ki( 0 ), mmodel( 0 ), Q( 24 ), bf(3),  gauss_points(8, 3)
+    rho( 0.0 ), connectedExternalNodes( 8 ) , Ki( 0 ), mmodel( 0 ), Q( 24 ), bf(3),  gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
 {
     initialized = false;
     is_mass_computed = false;
@@ -822,7 +822,40 @@ int EightNodeBrickLT::commitState ()
         retVal += material_array[ii]->commitState();
     }
 
+    formOutput();
+
     return retVal;
+}
+
+
+void EightNodeBrickLT::formOutput()
+{
+    DTensor2 stress(2, 2);
+    DTensor2 strain(2, 2);
+
+    int ii = 0;
+    for (int gp = 0; gp < 8; gp++)
+    {
+        strain = material_array[gp]->getStrainTensor();
+        stress = material_array[gp]->getStressTensor();
+
+        //Write strain
+        outputVector(ii++) = strain(0, 0);
+        outputVector(ii++) = strain(1, 1);
+        outputVector(ii++) = strain(2, 2);
+        outputVector(ii++) = strain(0, 1);
+        outputVector(ii++) = strain(0, 2);
+        outputVector(ii++) = strain(1, 2);
+
+
+        //Write stress
+        outputVector(ii++) = stress(0, 0);
+        outputVector(ii++) = stress(1, 1);
+        outputVector(ii++) = stress(2, 2);
+        outputVector(ii++) = stress(0, 1);
+        outputVector(ii++) = stress(0, 2);
+        outputVector(ii++) = stress(1, 2);
+    }
 }
 
 //=============================================================================
@@ -1864,6 +1897,7 @@ EightNodeBrickLT::CheckMesh( ofstream &checkmesh_file )
 Vector *
 EightNodeBrickLT::getStress( void )
 {
+    cout << "EightNodeBrickLT::getStress( void ) got called!\n\n";
     DTensor2 stress;
     Vector *stresses = new Vector( 48 );   // FIXME: Who deallocates this guy???
 
@@ -1889,14 +1923,20 @@ double EightNodeBrickLT::returnPressure(void)
 
 Matrix &EightNodeBrickLT::getGaussCoordinates(void)
 {
-
+    return gauss_points;
 }
 
 int EightNodeBrickLT::getOutputSize() const
 {
-    return ELASTIC_EightNodeBrickLT_OUTPUT_SIZE;
+    return EightNodeBrickLT_OUTPUT_SIZE;
 }
-const Vector &EightNodeBrickLT::getOutput() const;
+
+
+
+const Vector &EightNodeBrickLT::getOutput() const
+{
+    return outputVector;
+}
 
 
 

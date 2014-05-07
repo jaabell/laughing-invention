@@ -50,8 +50,9 @@
 #include <ElementalLoad.h>
 
 
-
-#define ELASTIC_EightNodeBrickLT_OUTPUT_SIZE 146
+// Output is 6 components of strain and 6 of stress per gauss point
+#define EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS 8
+#define EightNodeBrickLT_OUTPUT_SIZE EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*2)
 
 class Node;
 
@@ -128,6 +129,7 @@ class EightNodeBrickLT: public Element
         // Internal member functions
         // ===================================================================================================================
 
+        void formOutput();
         void ComputeVolume();
         void computeGaussPoint( void );
 
@@ -145,11 +147,6 @@ class EightNodeBrickLT: public Element
         const DTensor2 &incr_disp( void ) const;
         const DTensor2 &total_disp( void ) const ;
         const DTensor2 &nodal_forces( void ) const;
-        //DTensor2 iterative_nodal_forces( void );
-        //DTensor2 nodal_forces_from_stress( DTensor2 & );
-        //DTensor2 linearized_nodal_forces( void );
-        //DTensor2 update_stress_strain( DTensor2 & disp );
-
 
 
         Matrix &getGaussCoordinates(void);
@@ -205,6 +202,7 @@ class EightNodeBrickLT: public Element
         static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
 
         Matrix gauss_points;
+        Vector outputVector;
 
         Index < 'i' > i;
         Index < 'j' > j;

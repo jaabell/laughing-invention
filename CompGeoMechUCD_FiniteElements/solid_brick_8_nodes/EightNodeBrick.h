@@ -35,6 +35,10 @@
 #ifndef EIGHTNODEBRICK_H
 #define EIGHTNODEBRICK_H
 
+// Output is 6 components of strain and 6 of stress per gauss point
+#define EightNodeBrick_NUMBER_OF_GAUSSPOINTS 8
+#define EightNodeBrick_OUTPUT_SIZE EightNodeBrick_NUMBER_OF_GAUSSPOINTS*(6*2)
+
 #ifndef _bool_h
 #include "bool.h"
 #endif
@@ -254,6 +258,11 @@ class EightNodeBrick: public Element
         //    void formBMatrix (double r, double s, double t);     // and added t
         //    static void formNMatrix (double r, double s, double t);  // 07/06/00
 
+        //Jose Added for output
+        Matrix &getGaussCoordinates(void);
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
     private:
         // element number (tag)
         //unsigned int  elem_numb;
@@ -285,6 +294,9 @@ class EightNodeBrick: public Element
 
 
         int  LM[24]; // for 8noded x 3 = 24
+
+        Matrix gauss_points;
+        Vector outputVector;
 
 
     public:
