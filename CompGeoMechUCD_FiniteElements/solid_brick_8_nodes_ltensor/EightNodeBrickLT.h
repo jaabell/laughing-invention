@@ -51,7 +51,7 @@
 
 
 
-
+#define ELASTIC_EightNodeBrickLT_OUTPUT_SIZE 146
 
 class Node;
 
@@ -149,6 +149,14 @@ class EightNodeBrickLT: public Element
         //DTensor2 nodal_forces_from_stress( DTensor2 & );
         //DTensor2 linearized_nodal_forces( void );
         //DTensor2 update_stress_strain( DTensor2 & disp );
+
+
+
+        Matrix &getGaussCoordinates(void);
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
+
 
         Vector *getStress( void );
 

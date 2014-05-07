@@ -1887,6 +1887,18 @@ double EightNodeBrickLT::returnPressure(void)
 }
 
 
+Matrix &EightNodeBrickLT::getGaussCoordinates(void)
+{
+
+}
+
+int EightNodeBrickLT::getOutputSize() const
+{
+    return ELASTIC_EightNodeBrickLT_OUTPUT_SIZE;
+}
+const Vector &EightNodeBrickLT::getOutput() const;
+
+
 
 #endif
 
