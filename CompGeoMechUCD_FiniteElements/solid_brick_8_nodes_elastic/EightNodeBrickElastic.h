@@ -33,6 +33,11 @@
 #ifndef EIGHTNODEBRICKELASTIC_H
 #define EIGHTNODEBRICKELASTIC_H
 
+
+// Output is 6 components of strain and 6 of stress per gauss point
+#define EightNodeBrickElastic_NUMBER_OF_GAUSSPOINTS 8
+#define EightNodeBrickElastic_OUTPUT_SIZE EightNodeBrickElastic_NUMBER_OF_GAUSSPOINTS*(6*2)
+
 #ifndef _bool_h
 #include "bool.h"
 #endif
@@ -182,6 +187,11 @@ class EightNodeBrickElastic: public Element
         //     string getDamping_stiffnesstype(void);
         //     string getDamping_type(void);
 
+        //Jose Added for output
+        Matrix &getGaussCoordinates(void);
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
     protected:
 
     private:
@@ -288,6 +298,10 @@ class EightNodeBrickElastic: public Element
 
 
         int  LM[24]; // for 8noded x 3 = 24
+
+
+        Matrix gauss_points;
+        Vector outputVector;
 
 
     public:

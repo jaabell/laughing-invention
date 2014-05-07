@@ -1763,7 +1763,7 @@ void EightNodeBrick::computeGaussPoint()
 
                 //matpoint[where].reportTensor("");
 
-
+                gp++;
             }
         }
     }
