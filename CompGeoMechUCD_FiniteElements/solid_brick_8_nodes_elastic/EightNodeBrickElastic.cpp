@@ -727,7 +727,7 @@ void EightNodeBrickElastic::incremental_Update()
                 //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
                 // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
                 //dhGlobal = dh("ij") * JacobianINV("jk"); //Zhaohui Yang 09-02-2001
-                dhGlobal = dh((char *)"ij") * JacobianINV((char *)"kj");
+                dhGlobal = dh("ij") * JacobianINV("kj");
                 //....                dhGlobal.print((char*)"dh","dhGlobal");
                 //weight
                 //                weight = rw * sw * tw * det_of_Jacobian;
@@ -742,7 +742,7 @@ void EightNodeBrickElastic::incremental_Update()
                 // now in Update we know the incremental displacements so let's find
                 // the incremental strain
                 incremental_strain =
-                    (dhGlobal((char *)"ib") * incremental_displacements((char *)"ia")).symmetrize11();
+                    (dhGlobal("ib") * incremental_displacements("ia")).symmetrize11();
                 incremental_strain.null_indices();
                 //incremental_strain.reportshort("\n incremental_strain tensor at GAUSS point\n");
 
@@ -1091,7 +1091,7 @@ tensor EightNodeBrickElastic::getStiffnessTensor(void)
                 //      cout << "Det of Jacobian is: " << det_of_Jacobian << endl;
 
                 // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                dhGlobal = dh((char *)"ij") * JacobianINV((char *)"kj");
+                dhGlobal = dh("ij") * JacobianINV("kj");
                 //        ::fprintf(stdout," # %d \n\n\n\n\n\n\n\n", El_count);
                 //dhGlobal.print("dhGlobal");
                 //weight
@@ -1210,8 +1210,8 @@ tensor EightNodeBrickElastic::getStiffnessTensor(void)
 
                 //K = K + temp2;
 
-                Kkt = dhGlobal((char *)"ib") * Constitutive((char *)"abcd");
-                Kkt = Kkt((char *)"aicd") * dhGlobal((char *)"jd") * weight;
+                Kkt = dhGlobal("ib") * Constitutive("abcd");
+                Kkt = Kkt("aicd") * dhGlobal("jd") * weight;
                 Kk = Kk + Kkt;
 
                 //Kk = Kk + dhGlobal("ib")*Constitutive("abcd")*dhGlobal("jd")*weight;
@@ -1307,10 +1307,10 @@ void EightNodeBrickElastic::set_strain_stress_tensor(FILE *fp, double *u)
                 // determinant of Jacobian tensor ( matrix )
                 //                 det_of_Jacobian  = Jacobian.determinant();
                 // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                dhGlobal = dh((char *)"ij") * JacobianINV((char *)"kj");
+                dhGlobal = dh("ij") * JacobianINV("kj");
                 //weight
                 // straines at this Gauss point from displacement
-                strain = (dhGlobal((char *)"ib") * total_displacements((char *)"ia")).symmetrize11();
+                strain = (dhGlobal("ib") * total_displacements("ia")).symmetrize11();
                 strain.null_indices();
                 // here comes the final_stress calculation
                 // at this Gauss point.
@@ -1320,13 +1320,13 @@ void EightNodeBrickElastic::set_strain_stress_tensor(FILE *fp, double *u)
                 // if set total displ, then it should be elstic material
                 Constitutive =  ( matpoint[where]->matmodel)->getTangentTensor();
 
-                stress = Constitutive((char *)"ijkl") * strain((char *)"kl"); //<<<<<<<<<<<<<<<
+                stress = Constitutive("ijkl") * strain("kl"); //<<<<<<<<<<<<<<<
                 stress.null_indices();
 
-                ::printf((char *) "\n  strain tensor at GAUSS point %d \n", where + 1);
-                strain.reportshort((char *)"");
-                ::printf((char *) "\n  stress tensor at GAUSS point %d \n", where + 1);
-                stress.reportshort((char *)"");
+                ::printf( "\n  strain tensor at GAUSS point %d \n", where + 1);
+                strain.reportshort("");
+                ::printf( "\n  stress tensor at GAUSS point %d \n", where + 1);
+                stress.reportshort("");
 
 
             }
@@ -1530,7 +1530,7 @@ tensor EightNodeBrickElastic::Jacobian_3D(tensor dh)
 
     //       dh ( 20*3)  // dh(8*3) Xiaoyan
     tensor N_C = Nodal_Coordinates(); // 20*3    // 8*3 Xiaoyan
-    tensor Jacobian_3D = dh((char *)"ij") * N_C((char *)"ik");
+    tensor Jacobian_3D = dh("ij") * N_C("ik");
     return Jacobian_3D;
 }
 
@@ -1542,7 +1542,7 @@ tensor EightNodeBrickElastic::Jacobian_3Dinv(tensor dh)
 
     //       dh ( 20*3)    // dh(8*3) Xiaoyan
     tensor N_C = Nodal_Coordinates(); // 20*3        // 8*3 Xiaoyan
-    tensor Jacobian_3Dinv = (dh((char *)"ij") * N_C((char *)"ik")).inverse();
+    tensor Jacobian_3Dinv = (dh("ij") * N_C("ik")).inverse();
     return Jacobian_3Dinv;
 }
 
@@ -1922,7 +1922,7 @@ tensor EightNodeBrickElastic::nodal_forces(void)
                 //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
 
                 // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                dhGlobal = dh((char *)"ij") * JacobianINV((char *)"kj");
+                dhGlobal = dh("ij") * JacobianINV("kj");
 
                 //weight
                 weight = rw * sw * tw * det_of_Jacobian;
@@ -2033,7 +2033,7 @@ tensor EightNodeBrickElastic::nodal_forces(void)
 
                 // nodal forces See Zienkievicz part 1 pp 108
                 nodal_forces =
-                    nodal_forces + dhGlobal((char *)"ib") * stress_at_GP((char *)"ab") * weight;
+                    nodal_forces + dhGlobal("ib") * stress_at_GP("ab") * weight;
                 //nodal_forces.print("nf","\n\n Nodal Forces \n");
 
             }
@@ -2124,7 +2124,7 @@ tensor EightNodeBrickElastic::iterative_nodal_forces(void)
                 //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
 
                 // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                dhGlobal = dh((char *)"ij") * JacobianINV((char *)"kj");
+                dhGlobal = dh("ij") * JacobianINV("kj");
 
                 //weight
                 weight = rw * sw * tw * det_of_Jacobian;
@@ -2134,11 +2134,11 @@ tensor EightNodeBrickElastic::iterative_nodal_forces(void)
 
                 //stress_at_GP = ( matpoint[where].getTrialEPS() )->getStress();
                 stress_at_GP = matpoint[where]->getStressTensor();
-                stress_at_GP.reportshortpqtheta((char *)"\n iterative_stress at GAUSS point in iterative_nodal_force\n");
+                stress_at_GP.reportshortpqtheta("\n iterative_stress at GAUSS point in iterative_nodal_force\n");
 
                 // nodal forces See Zienkievicz part 1 pp 108
                 nodal_forces =
-                    nodal_forces + dhGlobal((char *)"ib") * stress_at_GP((char *)"ab") * weight;
+                    nodal_forces + dhGlobal("ib") * stress_at_GP("ab") * weight;
                 //nodal_forces.print("nf","\n EightNodeBrickElastic::iterative_nodal_forces Nodal Forces ~~~~\n");
 
             }
@@ -2225,7 +2225,7 @@ tensor EightNodeBrickElastic::nodal_forces_from_stress(stresstensor &stress)
                 //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
 
                 // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                dhGlobal = dh((char *)"ij") * JacobianINV((char *)"kj");
+                dhGlobal = dh("ij") * JacobianINV("kj");
 
                 //weight
                 weight = rw * sw * tw * det_of_Jacobian;
@@ -2236,7 +2236,7 @@ tensor EightNodeBrickElastic::nodal_forces_from_stress(stresstensor &stress)
 
                 // nodal forces See Zienkievicz part 1 pp 108
                 nodal_forces =
-                    nodal_forces + dhGlobal((char *)"ib") * stress((char *)"ab") * weight;
+                    nodal_forces + dhGlobal("ib") * stress("ab") * weight;
                 //nodal_forces.print("nf","\n EightNodeBrickElastic::iterative_nodal_forces Nodal Forces ~~~~\n");
 
             }
@@ -2331,7 +2331,7 @@ tensor EightNodeBrickElastic::linearized_nodal_forces(void)
                 //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
 
                 // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                dhGlobal = dh((char *)"ij") * JacobianINV((char *)"kj");
+                dhGlobal = dh("ij") * JacobianINV("kj");
 
                 //weight
                 weight = rw * sw * tw * det_of_Jacobian;
@@ -2344,7 +2344,7 @@ tensor EightNodeBrickElastic::linearized_nodal_forces(void)
                 // now in Update we know the incremental displacements so let's find
                 // the incremental strain
                 incremental_strain =
-                    (dhGlobal((char *)"ib") * incremental_displacements((char *)"ia")).symmetrize11();
+                    (dhGlobal("ib") * incremental_displacements("ia")).symmetrize11();
                 incremental_strain.null_indices();
                 //incremental_strain.reportshort("\n incremental_strain tensor at GAUSS point in iterative_Update\n");
 
@@ -2376,11 +2376,11 @@ tensor EightNodeBrickElastic::linearized_nodal_forces(void)
                 //..//GPtangent_E[where].print("\n tangent E at GAUSS point \n");
 
                 final_linearized_stress =
-                    Constitutive((char *)"ijkl") * incremental_strain((char *)"kl");
+                    Constitutive("ijkl") * incremental_strain("kl");
 
                 // nodal forces See Zienkievicz part 1 pp 108
                 linearized_nodal_forces = linearized_nodal_forces +
-                                          dhGlobal((char *)"ib") * final_linearized_stress((char *)"ab") * weight;
+                                          dhGlobal("ib") * final_linearized_stress("ab") * weight;
                 //::::::                   nodal_forces.print("nf","\n\n Nodal Forces \n");
 
             }
@@ -2477,7 +2477,7 @@ void EightNodeBrickElastic::report(char *msg)
                 ::printf("\n\n----------------**************** where = %d \n", where);
                 ::printf("                    GP_c_r = %d,  GP_c_s = %d,  GP_c_t = %d\n",
                          GP_c_r, GP_c_s, GP_c_t);
-                matpoint[where]->report((char *)"Material Point\n");
+                matpoint[where]->report("Material Point\n");
                 //GPstress[where].reportshort("stress at Gauss Point");
                 //GPstrain[where].reportshort("strain at Gauss Point");
                 //matpoint[where].report("Material model  at Gauss Point");
@@ -2560,7 +2560,7 @@ void EightNodeBrickElastic::reportPAK(char *msg)
 void EightNodeBrickElastic::reportpqtheta(int GP_numb)
 {
     short where = GP_numb - 1;
-    matpoint[where]->reportpqtheta((char *)"");
+    matpoint[where]->reportpqtheta("");
 }
 
 ////#############################################################################
@@ -3522,7 +3522,7 @@ const Matrix &EightNodeBrickElastic::getMass()
                     weight = rw * sw * tw * RHO * det_of_Jacobian;
 
 
-                    Mm = Mm + H((char *)"ib") * H((char *)"kb") * weight;
+                    Mm = Mm + H("ib") * H("kb") * weight;
 
                 }
             }
@@ -5906,12 +5906,12 @@ int EightNodeBrickElastic::update(void) //Note: Guanzhou finished the algorithm 
                 //--                det_of_Jacobian  = Jacobian.determinant();
                 //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
                 // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                dhGlobal = dh((char *)"ij") * JacobianINV((char *)"kj");
+                dhGlobal = dh("ij") * JacobianINV("kj");
                 // incrmental straines at this Gauss point
                 // now in Update we know the total displacements so let's find
                 // the total strain
                 trial_strain =
-                    (dhGlobal((char *)"ib") * trial_disp((char *)"ia")).symmetrize11();
+                    (dhGlobal("ib") * trial_disp("ia")).symmetrize11();
                 trial_strain.null_indices();
 
                 //Guanzhou out Mar2005 if ( ( (matpoint[where]->matmodel)->setTrialStrainIncr( incr_strain)) )
