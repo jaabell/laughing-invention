@@ -176,6 +176,11 @@ class ThreeNodeAndesShell: public Element
         //Utility
         bool gotMass() const;           // Got Mass?  (check for rho value)
 
+        std::string getElementName() const
+        {
+            return "ThreeNodeAndesShell";
+        }
+
     private:
 
 

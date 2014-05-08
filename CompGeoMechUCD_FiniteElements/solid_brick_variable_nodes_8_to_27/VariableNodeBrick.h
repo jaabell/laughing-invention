@@ -180,7 +180,10 @@ class VariableNodeBrick: public Element
 
         Vector *getStress(void);
 
-
+        std::string getElementName() const
+        {
+            return "VariableNodeBrick";
+        }
 
     private:
 

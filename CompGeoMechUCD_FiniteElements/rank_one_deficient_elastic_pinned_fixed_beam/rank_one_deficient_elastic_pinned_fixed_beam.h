@@ -127,7 +127,10 @@ class rank_one_deficient_elastic_pinned_fixed_beam : public Element
         const Matrix &getConsistentMass(void);
         Vector *getForce(void);
 
-
+        std::string getElementName() const
+        {
+            return "rank_one_deficient_elastic_pinned_fixed_beam";
+        }
 
     private:
         double A, E, G, Jx, Iy, Iz;

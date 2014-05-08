@@ -163,6 +163,11 @@ class TwentyNodeBrickVariableGP: public Element
         //     string getDamping_stiffnesstype(void);
         //     string getDamping_type(void);
 
+        std::string getElementName() const
+        {
+            return "TwentyNodeBrickVariableGP";
+        }
+
     protected:
 
     private:

@@ -173,6 +173,11 @@ class ThreeNodeAndesBending: public Element
         //Utility
         bool gotMass() const;           // Got Mass?  (check for rho value)
 
+        std::string getElementName() const
+        {
+            return "ThreeNodeAndesBending";
+        }
+
     private:
         //===================================================================================
         // Internal Functions

@@ -106,7 +106,10 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
 
         int CheckMesh(ofstream &);
 
-
+        std::string getElementName() const
+        {
+            return "ContactElement_Nonlinear_3DOF_3DOF";
+        }
     protected:
 
     private:

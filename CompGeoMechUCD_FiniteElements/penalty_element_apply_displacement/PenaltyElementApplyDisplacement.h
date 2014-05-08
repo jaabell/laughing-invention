@@ -89,6 +89,12 @@ class PenaltyElementApplyDisplacement : public Element
 
         //    Matrix returnMass(void);
 
+
+        std::string getElementName() const
+        {
+            return "PenaltyElementApplyDisplacement";
+        }
+
     protected:
 
     private:

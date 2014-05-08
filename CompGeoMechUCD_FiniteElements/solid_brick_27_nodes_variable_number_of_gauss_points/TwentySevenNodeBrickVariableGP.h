@@ -293,6 +293,11 @@ class TwentySevenNodeBrickVariableGP: public Element
         Vector getWeightofGP(void);
 
 
+        std::string getElementName() const
+        {
+            return "TwentySevenNodeBrickVariableGP";
+        }
+
         // Setting initial E according to the initial pressure
         //void setInitE(void);
         //void reportStressTensorF(FILE *);

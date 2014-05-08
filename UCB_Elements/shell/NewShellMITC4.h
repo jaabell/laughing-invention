@@ -118,6 +118,12 @@ class NewShellMITC4 : public Element
         const Vector &getBodyForce(double loadFactor);
 
 
+        std::string getElementName() const
+        {
+            return "NewShellMITC4";
+        }
+
+
     private :
 
         //static data

@@ -112,6 +112,10 @@ class DispBeamColumn3d : public Element
         const Vector &getBasicTrialDisp (void);
         Vector *getForce(void);
 
+        std::string getElementName() const
+        {
+            return "DispBeamColumn3d";
+        }
 
     protected:
 

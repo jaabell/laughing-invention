@@ -170,6 +170,12 @@ class FourNodeAndesShell: public Element
         const double getThickness(); //Added by Babak Kamrani to return the element thickness
         void fillM();           //Added by Babak to calculate mass matrices and fill in M on 2/7/13:
 
+        std::string getElementName() const
+        {
+            return "FourNodeAndesShell";
+        }
+
+
     private:
 
 

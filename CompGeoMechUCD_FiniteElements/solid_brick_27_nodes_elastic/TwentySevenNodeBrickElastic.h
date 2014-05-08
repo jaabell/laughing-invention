@@ -182,6 +182,12 @@ class TwentySevenNodeBrickElastic: public Element
         //     string getDamping_type(void);
 
 
+
+        std::string getElementName() const
+        {
+            return "TwentySevenNodeBrickElastic";
+        }
+
     protected:
 
     private:

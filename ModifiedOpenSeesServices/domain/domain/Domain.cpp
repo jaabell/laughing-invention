@@ -2611,7 +2611,7 @@ Domain::commit( void )
             {
                 int materialtag = 0;
                 theOutputWriter.writeElementMeshData(elePtr->getTag() ,
-                                                     "not-implemented" ,
+                                                     elePtr->getElementName(),
                                                      elePtr->getExternalNodes(),
                                                      materialtag ,
                                                      elePtr->getGaussCoordinates(),

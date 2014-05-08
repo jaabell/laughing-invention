@@ -103,7 +103,10 @@ class ContactElement_Nonlinear_3DOF_7DOF: public Element
 
         // Nima Tafazzoli added for returning pore pressure for generating forces
         double returnPressure(void);
-
+        std::string getElementName() const
+        {
+            return "ContactElement_Nonlinear_3DOF_7DOF";
+        }
 
     private:
 

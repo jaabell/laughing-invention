@@ -111,7 +111,10 @@ class PenaltyElement : public Element
         // Response* setResponse(const char** argv, int argc, Information& eleInfo);
         // int getResponse(int responseID, Information& eleInformation);
 
-
+        std::string getElementName() const
+        {
+            return "PenaltyElement";
+        }
 
     private:
 

@@ -112,6 +112,11 @@ class ElasticBeamLumpedMass : public Element
 
         Vector *getForce(void);
 
+        std::string getElementName() const
+        {
+            return "ElasticBeamLumpedMass";
+        }
+
     private:
         double A, E, G, Jx, Iy, Iz;
 

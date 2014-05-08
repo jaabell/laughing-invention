@@ -123,6 +123,12 @@ class TwentyNodeBrick_u_p_U: public Element
         //     Matrix returnMass(void);
 
 
+        std::string getElementName() const
+        {
+            return "TwentyNodeBrick_u_p_U";
+        }
+
+
     private:
         tensor shapeFunction(double, double, double);
         tensor shapeFunctionDerivative(double, double, double);

@@ -95,7 +95,10 @@ class Truss : public Element
         // int getResponse(int responseID, Information& eleInformation);
         Vector *getForce(void);
 
-
+        std::string getElementName() const
+        {
+            return "Truss";
+        }
 
         // Nima Tafazzoli added to return the Mass matrix (Feb. 2010)
         //    Matrix returnMass(void);

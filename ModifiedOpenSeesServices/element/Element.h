@@ -142,6 +142,8 @@ class Element : public DomainComponent
         virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         virtual int sendSelf ( int commitTag, Channel &theChannel );
         virtual int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &);
+
+        virtual std::string getElementName() const = 0;
         // virtual void setDomain(Domain *myDomain);
         using DomainComponent::setDomain;
 
@@ -170,6 +172,7 @@ class Element : public DomainComponent
         int index_sized_matrix_vector;
 
         static Matrix zero_gauss_coordinates;
+
 };
 
 

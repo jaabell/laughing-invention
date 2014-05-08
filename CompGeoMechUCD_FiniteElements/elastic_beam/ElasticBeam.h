@@ -109,6 +109,10 @@ class ElasticBeam : public Element
         const Matrix &getGlobalConsistentMassMatrix (const Matrix &KB);
         Vector *getForce(void);
 
+        std::string getElementName() const
+        {
+            return "ElasticBeam";
+        }
 
 
     private:

@@ -196,7 +196,10 @@ class TwentyNodeBrick: public Element
         static Vector J_vector_in_function;
         static double SurfaceLoadValues_in_function;
 
-
+        std::string getElementName() const
+        {
+            return "TwentyNodeBrick";
+        }
 
     private:
 

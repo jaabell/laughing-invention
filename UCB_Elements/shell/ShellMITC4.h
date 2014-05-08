@@ -53,20 +53,20 @@ class ShellMITC4 : public Element
                    int node2,
                    int node3,
                    int node4,
-                   SectionForceDeformation& theMaterial ) ;
+                   SectionForceDeformation &theMaterial ) ;
 
         //destructor
         virtual ~ShellMITC4( ) ;
 
         //set domain because frank is a dumb ass
-        void setDomain( Domain* theDomain ) ;
+        void setDomain( Domain *theDomain ) ;
 
         //get the number of external nodes
         int getNumExternalNodes( ) const ;
 
         //return connected external nodes
-        const ID& getExternalNodes( ) ;
-        Node** getNodePtrs();
+        const ID &getExternalNodes( ) ;
+        Node **getNodePtrs();
 
         //return number of dofs
         int getNumDOF( ) ;
@@ -81,28 +81,34 @@ class ShellMITC4 : public Element
         int revertToStart( ) ;
 
         //print out element data
-        void Print( ostream& s, int flag ) ;
+        void Print( ostream &s, int flag ) ;
 
         //return stiffness matrix
-        const Matrix& getTangentStiff( ) ;
-        const Matrix& getInitialStiff();
-        const Matrix& getMass();
+        const Matrix &getTangentStiff( ) ;
+        const Matrix &getInitialStiff();
+        const Matrix &getMass();
 
         // methods for applying loads
         void zeroLoad(void);
-        int addLoad(ElementalLoad* theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector& accel);
+        int addLoad(ElementalLoad *theLoad, double loadFactor);
+        int addInertiaLoadToUnbalance(const Vector &accel);
 
         //get residual
-        const Vector& getResistingForce( ) ;
+        const Vector &getResistingForce( ) ;
 
         //get residual with inertia terms
-        const Vector& getResistingForceIncInertia( ) ;
+        const Vector &getResistingForceIncInertia( ) ;
 
         // public methods for element output
-        int sendSelf (int commitTag, Channel& theChannel);
-        int recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker
+        int sendSelf (int commitTag, Channel &theChannel);
+        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
                       &theBroker);
+
+        std::string getElementName() const
+        {
+            return "ShellMITC4";
+        }
+
 
         //plotting
         //     int displaySelf(Renderer &theViewer, int displayMode, float fact);
@@ -123,23 +129,23 @@ class ShellMITC4 : public Element
         static double wg[4] ;
 
         //B-bar data
-        static Matrix**  GammaB1pointer ;
-        static Matrix**  GammaD1pointer ;
-        static Matrix**  GammaA2pointer ;
-        static Matrix**  GammaC2pointer ;
+        static Matrix  **GammaB1pointer ;
+        static Matrix  **GammaD1pointer ;
+        static Matrix  **GammaA2pointer ;
+        static Matrix  **GammaC2pointer ;
 
         //Bhat data
-        static Matrix** Bhat ;
+        static Matrix **Bhat ;
 
         //node information
         ID connectedExternalNodes ;  //four node numbers
-        Node* nodePointers[4] ;      //pointers to four nodes
+        Node *nodePointers[4] ;      //pointers to four nodes
 
         //drilling stiffness
         double Ktt ;
 
         //material information
-        SectionForceDeformation* materialPointers[4] ; //pointers to four materials
+        SectionForceDeformation *materialPointers[4] ; //pointers to four materials
 
         //local nodal coordinates, two coordinates for each of four nodes
         //static double xl[][4] ;
@@ -162,46 +168,46 @@ class ShellMITC4 : public Element
         //compute Jacobian matrix and inverse at point {L1,L2}
         void  computeJacobian( double L1, double L2,
                                const double x[2][4],
-                               Matrix& JJ,
-                               Matrix& JJinv ) ;
+                               Matrix &JJ,
+                               Matrix &JJinv ) ;
 
         //compute Bdrill matrix
-        double* computeBdrill( int node, const double shp[3][4] ) ;
+        double *computeBdrill( int node, const double shp[3][4] ) ;
 
         //assemble a B matrix
-        const Matrix& assembleB( const Matrix& Bmembrane,
-                                 const Matrix& Bbend,
-                                 const Matrix& Bshear ) ;
+        const Matrix &assembleB( const Matrix &Bmembrane,
+                                 const Matrix &Bbend,
+                                 const Matrix &Bshear ) ;
 
         //compute Bmembrane matrix
-        const Matrix& computeBmembrane( int node, const double shp[3][4] ) ;
+        const Matrix &computeBmembrane( int node, const double shp[3][4] ) ;
 
         //compute Bbend matrix
-        const Matrix& computeBbend( int node, const double shp[3][4] ) ;
+        const Matrix &computeBbend( int node, const double shp[3][4] ) ;
 
         //compute standard Bshear matrix
-        const Matrix&  computeBshear( int node, const double shp[3][4] ) ;
+        const Matrix  &computeBshear( int node, const double shp[3][4] ) ;
 
         //compute Bbar shear matrix
-        const Matrix&  computeBbarShear( int node, double L1, double L2,
-                                         const Matrix& Jinv ) ;
+        const Matrix  &computeBbarShear( int node, double L1, double L2,
+                                         const Matrix &Jinv ) ;
 
 
         //compute the gamma's
-        void  computeGamma( const double xl[2][4], const Matrix& J ) ;
+        void  computeGamma( const double xl[2][4], const Matrix &J ) ;
 
         //Matrix transpose
-        Matrix transpose( int dim1, int dim2, const Matrix& M ) ;
+        Matrix transpose( int dim1, int dim2, const Matrix &M ) ;
 
         //shape function routine for four node quads
         void shape2d( double ss, double tt,
                       const double x[2][4],
                       double shp[3][4],
-                      double& xsj ) ;
+                      double &xsj ) ;
 
         // vector for applying loads
-        Vector* load;
-        Matrix* Ki;
+        Vector *load;
+        Matrix *Ki;
 } ;
 
 

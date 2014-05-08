@@ -133,6 +133,10 @@ class H5OutputWriter: public OutputWriter
                                                std::string name,
                                                std::string attibute);
 
+        hid_t createVariableLengthStringArray(hid_t here,
+                                              std::string name,
+                                              std::string attribute);
+
         hid_t createConstantLengthDoubleArray(hid_t here,
                                               int rank,
                                               hsize_t *dims,
@@ -168,6 +172,12 @@ class H5OutputWriter: public OutputWriter
                                               hsize_t *count,
                                               hsize_t *block,
                                               int *data);
+
+
+        hid_t writeVariableLengthStringArray(hid_t id_array,
+                                             hsize_t datasize,
+                                             hsize_t offset,
+                                             std::string &data);
 
 
         hid_t writeConstantLengthDoubleArray(hid_t id_array,
@@ -245,8 +255,10 @@ class H5OutputWriter: public OutputWriter
         hid_t id_elements_connectivity , id_index_to_elements_connectivity;
         hid_t id_elements_noutputs;
         hid_t id_elements_ngauss;
-        hid_t id_elements_gausscoords  , index_to_elements_gausscoords;
-        hid_t id_elements_output       , index_to_elements_output;
+        hid_t id_elements_gausscoords  , id_index_to_elements_gausscoords;
+        hid_t id_elements_output       , id_index_to_elements_output;
+        hid_t id_elements_type;
+        hid_t id_elements_materialtag;
 
 
 

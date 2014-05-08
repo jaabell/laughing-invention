@@ -173,6 +173,15 @@ class TwentySevenNodeBrick: public Element
         virtual int getOutputSize() const;
         virtual const Vector &getOutput() const;
 
+
+
+        std::string getElementName() const
+        {
+            return "TwentySevenNodeBrick";
+        }
+
+
+
     protected:
 
     private:

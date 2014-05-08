@@ -180,6 +180,10 @@ class EightNodeBrick: public Element
         // Nima Tafazzoli added (Sep. 2012)
         int CheckMesh(ofstream &);
 
+        std::string getElementName() const
+        {
+            return "EightNodeBrick";
+        }
 
         //     int getDampingTag(void);
         //     double getDamping_a0(void);

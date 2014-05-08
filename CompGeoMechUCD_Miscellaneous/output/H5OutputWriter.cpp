@@ -342,10 +342,12 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
         id_elements_connectivity          = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Connectivity", " ");
         id_index_to_elements_connectivity = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Connectivity", " ");
         id_elements_noutputs              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Output_Fields", " ");
-        index_to_elements_output          = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
+        id_index_to_elements_output       = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
         id_elements_ngauss                = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
         id_elements_gausscoords           = createVariableLengthDoubleArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
-        index_to_elements_gausscoords     = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
+        id_index_to_elements_gausscoords  = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
+        id_elements_type                  = createVariableLengthStringArray (id_elements_group,  "Element_types", " ");
+        id_elements_materialtag           = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
 
         create_elementMeshData_arrays = false;
     }
@@ -431,10 +433,10 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 
 
     //Write index to outputs
-    dims[0]      = max_element_tag;
-    offset[0]    = tag ;
+    // dims[0]      = max_element_tag;
+    // offset[0]    = tag ;
     data = &pos_elements_outputs;
-    writeVariableLengthIntegerArray(index_to_elements_output,
+    writeVariableLengthIntegerArray(id_index_to_elements_output,
                                     datarank,
                                     dims,
                                     data_dims,
@@ -446,6 +448,32 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 
     pos_elements_outputs += length_of_output;
     length_element_output    = pos_elements_outputs;
+
+
+
+    //Write material tags
+    // dims[0]      = max_element_tag;
+    // offset[0]    = tag ;
+    data = &materialtag;
+    writeVariableLengthIntegerArray(id_elements_materialtag,
+                                    datarank,
+                                    dims,
+                                    data_dims,
+                                    offset,
+                                    stride,
+                                    count,
+                                    block,
+                                    data);
+
+
+    //Write material tags
+    // dims[0]      = max_element_tag;
+    // offset[0]    = tag ;
+
+    writeVariableLengthStringArray(id_elements_type,
+                                   tag,
+                                   type.size(),
+                                   type);
 
 
 
@@ -473,7 +501,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
         dims[0]      = max_element_tag;
         offset[0]    = tag ;
         data = &pos_elements_gausscoords;
-        writeVariableLengthIntegerArray(index_to_elements_gausscoords,
+        writeVariableLengthIntegerArray(id_index_to_elements_gausscoords,
                                         datarank,
                                         dims,
                                         data_dims,
@@ -933,7 +961,7 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
     HDF5_CHECK_ERROR;
 
     H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
-    H5Dread(index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+    H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
 
 
     //Write data
@@ -1124,6 +1152,66 @@ hid_t H5OutputWriter::createVariableLengthIntegerArray(hid_t here,
 
     return id_array;
 }
+
+
+
+
+hid_t H5OutputWriter::createVariableLengthStringArray(hid_t here,
+        std::string name,
+        std::string attribute)
+{
+    int rank = 1;
+    hsize_t dims[1] = {1};
+    hsize_t maxdims[1] = {H5S_UNLIMITED};
+    hid_t id_array;
+
+    //Create the data description both for data in file and in memory
+    hid_t id_dataspace;
+    id_dataspace = H5Screate_simple(rank, dims     , maxdims     );       // create dataspace
+
+
+    //Use unlimited string type
+    hid_t type = H5Tcopy(H5T_C_S1);
+    status = H5Tset_size(type, H5T_VARIABLE);
+    HDF5_CHECK_ERROR;
+
+    //Setup the creation property list
+    dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
+    dataset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
+
+    // Set the layout to be chunked, the chunk size and the fill value
+    // needs to be chunked because it is extensible
+    // Set the layout to be chunked, the chunk size and the fill value
+    // needs to be chunked because it is extensible
+    hsize_t chunk_dims[1] = {1};
+
+    // cout << "nbytes_one_chunk = " << nbytes_one_chunk << "\n\n\n";
+    // cout << "nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK = " << nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK << "\n\n\n";
+
+    status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
+    HDF5_CHECK_ERROR;
+    status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
+    HDF5_CHECK_ERROR;
+
+
+    // Create the dataset
+    id_array = H5Dcreate2(here,
+                          name.c_str(),
+                          type,
+                          id_dataspace,
+                          H5P_DEFAULT,
+                          dataset_creation_plist,
+                          dataset_access_plist);
+    setAttribute(id_array, attribute);
+
+    H5Sclose(id_dataspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+
+
+
+    return id_array;
+}
+
 
 
 hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
@@ -1379,6 +1467,71 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
 }
 
 
+
+hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
+        hsize_t offset_,
+        hsize_t datasize,
+        std::string &data)
+{
+    int datarank = 1;
+    hsize_t dims[1] = {offset_ + 1};
+    hsize_t data_dims[1] = {1};
+    hsize_t stride[1] = {1};
+    hsize_t count[1] = {1};
+    hsize_t block[1] = {1};
+    hsize_t offset[1] = {offset_};
+
+
+
+    // Extend it if necesary!
+    status =  H5Dset_extent( id_array, dims );
+    HDF5_CHECK_ERROR;
+
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = H5Dget_space(id_array);
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+
+    //Select the region of data to output to
+    status = H5Sselect_hyperslab(
+                 id_dataspace,              // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+    HDF5_CHECK_ERROR;
+
+    //Write data!
+
+    hid_t type = H5Tcopy(H5T_C_S1);
+    status = H5Tset_size(type, H5T_VARIABLE);
+    HDF5_CHECK_ERROR;
+
+
+    const char *dat = data.c_str();
+    char *thedata[1] = {(char *)dat};
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 type,                  // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 thedata// The actual data
+             );
+
+
+    // cout << "done! \n\n";
+
+    HDF5_CHECK_ERROR;
+
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+    return id_array;
+}
 
 
 

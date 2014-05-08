@@ -192,6 +192,11 @@ class EightNodeBrickElastic: public Element
         virtual int getOutputSize() const;
         virtual const Vector &getOutput() const;
 
+        std::string getElementName() const
+        {
+            return "EightNodeBrickElastic";
+        }
+
     protected:
 
     private:

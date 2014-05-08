@@ -123,7 +123,10 @@ class EightNodeBrick_u_p_U: public Element
         // Nima Tafazzoli added to return the Mass matrix (Feb. 2010)
         //     Matrix returnMass(void);
 
-
+        std::string getElementName() const
+        {
+            return "EightNodeBrick_u_p_U";
+        }
     private:
         tensor shapeFunction(double, double, double);
         tensor shapeFunctionDerivative(double, double, double);
