@@ -28,6 +28,12 @@
 #ifndef TWENTYSEVENNODEBRICK_H
 #define TWENTYSEVENNODEBRICK_H
 
+
+// Output is 6 components of strain and 6 of stress per gauss point
+#define TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS 27
+#define TwentySevenNodeBrick_OUTPUT_SIZE TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS*(6*2)
+
+
 #ifndef _bool_h
 #include "bool.h"
 #endif
@@ -162,7 +168,10 @@ class TwentySevenNodeBrick: public Element
         //     double getDamping_a3(void);
         //     string getDamping_stiffnesstype(void);
         //     string getDamping_type(void);
-
+        //Jose Added for output
+        Matrix &getGaussCoordinates(void);
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
 
     protected:
 
@@ -230,6 +239,9 @@ class TwentySevenNodeBrick: public Element
 
         // this is LM array. This array holds DOFs for this element
         //int  LM[60]; // for 20noded x 3 = 60
+
+        Matrix gauss_points;
+        Vector outputVector;
     public:
 
         void incremental_Update(void);

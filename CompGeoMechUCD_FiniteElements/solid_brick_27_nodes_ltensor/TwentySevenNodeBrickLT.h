@@ -137,6 +137,7 @@ class TwentySevenNodeBrickLT: public Element
         // Internal member functions
         // ===================================================================================================================
 
+        void formOutput();
         void ComputeVolume();
         void computeGaussPoint( void );
 

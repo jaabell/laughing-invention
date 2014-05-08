@@ -66,7 +66,7 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
 
     : Element( element_number, ELE_TAG_TwentySevenNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 27 ),
-      Ki( 0 ), Q( 81 ), bf(3), gauss_points(27, 3)
+      Ki( 0 ), Q( 81 ), bf(3), gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
 {
 
 
@@ -249,7 +249,7 @@ void TwentySevenNodeBrickLT::populate()
 
 //====================================================================
 TwentySevenNodeBrickLT::TwentySevenNodeBrickLT(): Element( 0, ELE_TAG_TwentySevenNodeBrickLT ),
-    rho( 0.0 ), connectedExternalNodes( 27 ) , Ki( 0 ), mmodel( 0 ), Q( 81 ), bf(3), gauss_points(27, 3)
+    rho( 0.0 ), connectedExternalNodes( 27 ) , Ki( 0 ), mmodel( 0 ), Q( 81 ), bf(3), gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
 {
     initialized = false;
     is_mass_computed = false;
@@ -1810,8 +1810,46 @@ int TwentySevenNodeBrickLT::commitState ()
         retVal += material_array[ii]->commitState();
     }
 
+    formOutput();
+
+
     return retVal;
 }
+
+
+
+
+void TwentySevenNodeBrickLT::formOutput()
+{
+    DTensor2 stress(2, 2);
+    DTensor2 strain(2, 2);
+
+    int ii = 0;
+    for (int gp = 0; gp < 27; gp++)
+    {
+        strain = material_array[gp]->getStrainTensor();
+        stress = material_array[gp]->getStressTensor();
+
+        //Write strain
+        outputVector(ii++) = strain(0, 0);
+        outputVector(ii++) = strain(1, 1);
+        outputVector(ii++) = strain(2, 2);
+        outputVector(ii++) = strain(0, 1);
+        outputVector(ii++) = strain(0, 2);
+        outputVector(ii++) = strain(1, 2);
+
+
+        //Write stress
+        outputVector(ii++) = stress(0, 0);
+        outputVector(ii++) = stress(1, 1);
+        outputVector(ii++) = stress(2, 2);
+        outputVector(ii++) = stress(0, 1);
+        outputVector(ii++) = stress(0, 2);
+        outputVector(ii++) = stress(1, 2);
+    }
+}
+
+
 
 //=============================================================================
 int TwentySevenNodeBrickLT::revertToLastCommit ()
