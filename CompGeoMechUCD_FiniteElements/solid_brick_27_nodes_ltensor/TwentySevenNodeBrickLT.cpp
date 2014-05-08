@@ -3252,5 +3252,39 @@ TwentySevenNodeBrickLT::getStress( void )
     return stresses;
 }
 
+
+
+
+
+Matrix &TwentySevenNodeBrickLT::getGaussCoordinates(void)
+{
+    return gauss_points;
+}
+
+int TwentySevenNodeBrickLT::getOutputSize() const
+{
+    return TwentySevenNodeBrickLT_OUTPUT_SIZE;
+}
+
+
+
+const Vector &TwentySevenNodeBrickLT::getOutput() const
+{
+    return outputVector;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #endif
 
