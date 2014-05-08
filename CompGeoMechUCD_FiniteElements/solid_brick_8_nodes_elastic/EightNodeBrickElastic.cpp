@@ -325,7 +325,7 @@ void EightNodeBrickElastic::populate()
     }
 
     initialized = true; //Guanzhou added!
-    computeGaussPoint();
+    // computeGaussPoint();
 }
 
 
@@ -3016,6 +3016,7 @@ void EightNodeBrickElastic::setDomain (Domain *theDomain)
 
     //Guanzhou added
     ComputeVolume();
+    computeGaussPoint();
 
 }
 

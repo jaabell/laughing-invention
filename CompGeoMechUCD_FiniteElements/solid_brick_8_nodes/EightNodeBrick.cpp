@@ -145,7 +145,7 @@ void EightNodeBrick::populate()
     }
 
     initialized = true;
-    computeGaussPoint();
+    // computeGaussPoint();
 }
 
 
@@ -1659,26 +1659,6 @@ void EightNodeBrick::computeGaussPoint()
     int h_dim[] = {24, 3};  // Xiaoyan changed from {60,3} to {24,3} for 8 nodes
     tensor H(2, h_dim, 0.0);
 
-    //for (int ncount = 1 ; ncount <= 8 ; ncount++ )
-    ////  for (int ncount = 0 ; ncount <= 7 ; ncount++ )
-    //  {
-    //  //int global_node_number = get_global_number_of_node(ncount-1);
-    //  // printf("global node num %d",global_node_number);
-    //
-    //    //   NodalCoord.val(1,ncount) = nodes[global_node_number].x_coordinate();
-    //    //   NodalCoord.val(2,ncount) = nodes[global_node_number].y_coordinate();
-    //    //   NodalCoord.val(3,ncount) = nodes[global_node_number].z_coordinate();
-    //    // Xiaoyan changed to the following:  09/27/00
-    //  Vector Coordinates = nodes[global_node_number].getCrds();
-    //
-    //    NodalCoord.val(1,ncount) = Coordinates(0);
-    //    NodalCoord.val(2,ncount) = Coordinates(1);
-    //    NodalCoord.val(3,ncount) = Coordinates(2);
-    //printf("global point %d     x=%+.6e   y=%+.6e   z=%+.6e \n ", global_node_number,
-    //                                                      NodalCoord.val(1,ncount),
-    //                  NodalCoord.val(2,ncount),
-    //                  NodalCoord.val(3,ncount));
-    //}
 
     //Zhaohui using node pointers, which come from the Domain
     const Vector &nd1Crds = theNodes[0]->getCrds();
@@ -2059,6 +2039,7 @@ void EightNodeBrick::setDomain (Domain *theDomain)
 
     //Guanzhou added
     ComputeVolume();
+    computeGaussPoint();
 
 }
 
