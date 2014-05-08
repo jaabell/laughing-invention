@@ -33,6 +33,12 @@
 #ifndef TWENTYSEVENNODEBRICKELASTIC_H
 #define TWENTYSEVENNODEBRICKELASTIC_H
 
+// Output is 6 components of strain and 6 of stress per gauss point
+#define TwentySevenNodeBrickElastic_NUMBER_OF_GAUSSPOINTS 27
+#define TwentySevenNodeBrickElastic_OUTPUT_SIZE TwentySevenNodeBrickElastic_NUMBER_OF_GAUSSPOINTS*(6*2)
+
+
+
 #ifndef _bool_h
 #include "bool.h"
 #endif
@@ -163,6 +169,10 @@ class TwentySevenNodeBrickElastic: public Element
         int CheckMesh(ofstream &);
 
 
+        Matrix &getGaussCoordinates(void);
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
         //     int getDampingTag(void);
         //     double getDamping_a0(void);
         //     double getDamping_a1(void);
@@ -240,6 +250,9 @@ class TwentySevenNodeBrickElastic: public Element
 
         // this is LM array. This array holds DOFs for this element
         //int  LM[60]; // for 20noded x 3 = 60
+
+        Matrix gauss_points;
+        Vector outputVector;
     public:
 
         void incremental_Update(void);

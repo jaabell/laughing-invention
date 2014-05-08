@@ -50,11 +50,7 @@ Matrix TwentySevenNodeBrick::K(81, 81);
 Matrix TwentySevenNodeBrick::C(81, 81);
 Matrix TwentySevenNodeBrick::M(81, 81);
 Vector TwentySevenNodeBrick::P(81);
-Vector InfoMoment(109 + 3); //For computing moment
-Vector InfoPlastic(FixedOrder *FixedOrder *FixedOrder * 4 + 1); //Plastic info
-Vector InfoStress(FixedOrder *FixedOrder *FixedOrder * 6 + 1); //Stress info
-Vector GaussCoord(FixedOrder *FixedOrder *FixedOrder * 3 + 1); //Gauss point coordinates
-Vector Info_pq2(2); //p and q of count/2
+
 const int TwentySevenNodeBrick::Num_TotalGaussPts = FixedOrder * FixedOrder * FixedOrder; //Nima added for recording the Strain (02-21-2011)
 Vector TwentySevenNodeBrick::ShapeFunctionValues_in_function(9); // Nima added for surface load (July 2012)
 Vector TwentySevenNodeBrick::J_vector_in_function(3); // Nima added for surface load (July 2012)
@@ -363,196 +359,6 @@ void TwentySevenNodeBrick::incremental_Update()
 }
 
 
-// Nima Tafazzoli removed (Nov. 2011)
-
-// //#############################################################################
-// //#############################################################################
-// //***************************************************************
-// tensor TwentySevenNodeBrick::H_3D(double r1, double r2, double r3)
-//   {
-//
-//     int dimension[] = {81,3};
-//
-//     tensor H(2, dimension, 0.0);
-//
-//     //Shape Functions of Node 1 Along Three Coordinate Directions
-//     H.val(1,1)=0.5*r1*(r1+1.0)*0.5*r2*(r2+1.0)*0.5*r3*(r3+1.0);
-//     H.val(2,2)=H.val(1,1);
-//     H.val(3,3)=H.val(1,1);
-//
-//     //Shape Functions of Node 2 Along Three Coordinate Directions
-//     H.val(4,1)=0.5*r1*(r1-1.0)*0.5*r2*(r2+1.0)*0.5*r3*(r3+1.0);
-//     H.val(5,2)=H.val(4,1);
-//     H.val(6,3)=H.val(4,1);
-//
-//     //Shape Functions of Node 3 Along Three Coordinate Directions
-//     H.val(7,1)=0.5*r1*(r1-1.0)*0.5*r2*(r2-1.0)*0.5*r3*(r3+1.0);
-//     H.val(8,2)=H.val(7,1);
-//     H.val(9,3)=H.val(7,1);
-//
-//     //Shape Functions of Node 4 Along Three Coordinate Directions
-//     H.val(10,1)=0.5*r1*(r1+1.0)*0.5*r2*(r2-1.0)*0.5*r3*(r3+1.0);
-//     H.val(11,2)=H.val(10,1);
-//     H.val(12,3)=H.val(10,1);
-//
-//     //Shape Functions of Node 5 Along Three Coordinate Directions
-//     H.val(13,1)=0.5*r1*(r1+1.0)*0.5*r2*(r2+1.0)*0.5*r3*(r3-1.0);
-//     H.val(14,2)=H.val(13,1);
-//     H.val(15,3)=H.val(13,1);
-//
-//     //Shape Functions of Node 6 Along Three Coordinate Directions
-//     H.val(16,1)=0.5*r1*(r1-1.0)*0.5*r2*(r2+1.0)*0.5*r3*(r3-1.0);
-//     H.val(17,2)=H.val(16,1);
-//     H.val(18,3)=H.val(16,1);
-//
-//     //Shape Functions of Node 7 Along Three Coordinate Directions
-//     H.val(19,1)=0.5*r1*(r1-1.0)*0.5*r2*(r2-1.0)*0.5*r3*(r3-1.0);
-//     H.val(20,2)=H.val(19,1);
-//     H.val(21,3)=H.val(19,1);
-//
-//
-//     //Shape Functions of Node 8 Along Three Coordinate Directions
-//     H.val(22,1)=0.5*r1*(r1+1.0)*0.5*r2*(r2-1.0)*0.5*r3*(r3-1.0);
-//     H.val(23,2)=H.val(22,1);
-//     H.val(24,3)=H.val(22,1);
-//
-//
-//     //Shape Functions of Node 9 Along Three Coordinate Directions
-//     H.val(25,1)=0.5*r1*(r1+1.0)*0.5*r2*(r2+1.0)*(1.0-r3*r3);
-//     H.val(26,2)=H.val(25,1);
-//     H.val(27,3)=H.val(25,1);
-//
-//
-//     //Shape Functions of Node 10 Along Three Coordinate Directions
-//     H.val(28,1)=0.5*r1*(r1-1.0)*0.5*r2*(r2+1.0)*(1.0-r3*r3);
-//     H.val(29,2)=H.val(28,1);
-//     H.val(30,3)=H.val(28,1);
-//
-//
-//     //Shape Functions of Node 11Along Three Coordinate Directions
-//     H.val(31,1)=0.5*r1*(r1-1.0)*0.5*r2*(r2-1.0)*(1.0-r3*r3);
-//     H.val(32,2)=H.val(31,1);
-//     H.val(33,3)=H.val(31,1);
-//
-//
-//     //Shape Functions of Node 12Along Three Coordinate Directions
-//     H.val(34,1)=0.5*r1*(r1+1.0)*0.5*r2*(r2-1.0)*(1.0-r3*r3);
-//     H.val(35,2)=H.val(34,1);
-//     H.val(36,3)=H.val(34,1);
-//
-//
-//     //Shape Functions of Node 13Along Three Coordinate Directions
-//     H.val(37,1)=(1.0-r1*r1)*0.5*r2*(r2+1.0)*0.5*r3*(r3+1.0);
-//     H.val(38,2)=H.val(37,1);
-//     H.val(39,3)=H.val(37,1);
-//
-//
-//     //Shape Functions of Node 14Along Three Coordinate Directions
-//     H.val(40,1)=0.5*r1*(r1-1.0)*(1.0-r2*r2)*0.5*r3*(r3+1.0);
-//     H.val(41,2)=H.val(40,1);
-//     H.val(42,3)=H.val(40,1);
-//
-//
-//     //Shape Functions of Node 15Along Three Coordinate Directions
-//     H.val(43,1)=(1.0-r1*r1)*0.5*r2*(r2-1.0)*0.5*r3*(r3+1.0);
-//     H.val(44,2)=H.val(43,1);
-//     H.val(45,3)=H.val(43,1);
-//
-//
-//     //Shape Functions of Node 16Along Three Coordinate Directions
-//     H.val(46,1)=0.5*r1*(r1+1.0)*(1.0-r2*r2)*0.5*r3*(r3+1.0);
-//     H.val(47,2)=H.val(46,1);
-//     H.val(48,3)=H.val(46,1);
-//
-//
-//     //Shape Functions of Node 17Along Three Coordinate Directions
-//     H.val(49,1)=(1.0-r1*r1)*0.5*r2*(r2+1.0)*0.5*r3*(r3-1.0);
-//     H.val(50,2)=H.val(49,1);
-//     H.val(51,3)=H.val(49,1);
-//
-//
-//     //Shape Functions of Node 18Along Three Coordinate Directions
-//     H.val(52,1)=0.5*r1*(r1-1.0)*(1.0-r2*r2)*0.5*r3*(r3-1.0);
-//     H.val(53,2)=H.val(52,1);
-//     H.val(54,3)=H.val(52,1);
-//
-//
-//     //Shape Functions of Node 19Along Three Coordinate Directions
-//     H.val(55,1)=(1.0-r1*r1)*0.5*r2*(r2-1.0)*0.5*r3*(r3-1.0);
-//     H.val(56,2)=H.val(55,1);
-//     H.val(57,3)=H.val(55,1);
-//
-//
-//     //Shape Functions of Node 20Along Three Coordinate Directions
-//     H.val(58,1)=0.5*r1*(r1+1.0)*(1.0-r2*r2)*0.5*r3*(r3-1.0);
-//     H.val(59,2)=H.val(58,1);
-//     H.val(60,3)=H.val(58,1);
-//
-//
-//     //Shape Functions of Node 21Along Three Coordinate Directions
-//     H.val(61,1)=(1.0-r1*r1)*0.5*r2*(r2+1.0)*(1.0-r3*r3);
-//     H.val(62,2)=H.val(61,1);
-//     H.val(63,3)=H.val(61,1);
-//
-//
-//     //Shape Functions of Node 22Along Three Coordinate Directions
-//     H.val(64,1)=0.5*r1*(r1-1.0)*(1.0-r2*r2)*(1.0-r3*r3);
-//     H.val(65,2)=H.val(64,1);
-//     H.val(66,3)=H.val(64,1);
-//
-//
-//     //Shape Functions of Node 23Along Three Coordinate Directions
-//     H.val(67,1)=(1.0-r1*r1)*0.5*r2*(r2-1.0)*(1.0-r3*r3);
-//     H.val(68,2)=H.val(67,1);
-//     H.val(69,3)=H.val(67,1);
-//
-//
-//     //Shape Functions of Node 24Along Three Coordinate Directions
-//     H.val(70,1)=0.5*r1*(r1+1.0)*(1.0-r2*r2)*(1.0-r3*r3);
-//     H.val(71,2)=H.val(70,1);
-//     H.val(72,3)=H.val(70,1);
-//
-//
-//     //Shape Functions of Node 25Along Three Coordinate Directions
-//     H.val(73,1)=(1.0-r1*r1)*(1.0-r2*r2)*0.5*r3*(r3+1.0);
-//     H.val(74,2)=H.val(73,1);
-//     H.val(75,3)=H.val(73,1);
-//
-//
-//     //Shape Functions of Node 26Along Three Coordinate Directions
-//     H.val(76,1)=(1.0-r1*r1)*(1.0-r2*r2)*0.5*r3*(r3-1.0);
-//     H.val(77,2)=H.val(76,1);
-//     H.val(78,3)=H.val(76,1);
-//
-//
-//     //Shape Functions of Node 27Along Three Coordinate Directions
-//     H.val(79,1)=(1.0-r1*r1)*(1.0-r2*r2)*(1.0-r3*r3);
-//     H.val(80,2)=H.val(79,1);
-//     H.val(81,3)=H.val(79,1);
-//
-//
-//     //         double sum = 0;
-//     //
-//     //   for (int i=1; i<=81 ; i++)
-//     //           {
-//     // //        sum+=H.cval(i,1);
-//     //       for (int j=1; j<= 1; j++)
-//     //          {
-//     //                    sum+=H.cval(i,1);
-//     //             ::printf( "  %+9.2e", H.cval(i,j) );
-//     //           }
-//     //            // ::printf( "  %d \n", i);
-//     //      }
-//     //       ::printf( " \n sum= %+6.2e\n", sum );
-//
-//
-//     //    printf("r1 = %lf, r2 = %lf, r3 = %lf\n", r1, r2, r3);
-//     //    H.print("h"); *///Commented out by Guanzhou, Oct. 2003
-//
-//     return H;
-//   }
-
-
 
 //#############################################################################
 //#############################################################################
@@ -732,326 +538,6 @@ tensor TwentySevenNodeBrick::H_3D(double r1, double r2, double r3)
 
     return H;
 }
-
-
-
-//#############################################################################
-//***************************************************************
-/*tensor TwentySevenNodeBrick::interp_poli_at(double r1, double r2, double r3)
-  {
-
-    int dimension[] = {20};
-    tensor h(1, dimension, 0.0);
-
-
-    // influence of the node number 20
-    //    h.val(20)=(1.0+r1)*(1.0-r2)*(1.0-r3*r3)/4.0;
-        h.val(20)=(1.0+r1)*(1.0-r2)*(1.0-r3*r3)*0.25;
-    // influence of the node number 19
-        h.val(19)=(1.0-r1)*(1.0-r2)*(1.0-r3*r3)*0.25;
-    // influence of the node number 18
-        h.val(18)=(1.0-r1)*(1.0+r2)*(1.0-r3*r3)*0.25;
-    // influence of the node number 17
-        h.val(17)=(1.0+r1)*(1.0+r2)*(1.0-r3*r3)*0.25;
-
-    // influence of the node number 16
-        h.val(16)=(1.0+r1)*(1.0-r2*r2)*(1.0-r3)*0.25;
-    // influence of the node number 15
-        h.val(15)=(1.0-r1*r1)*(1.0-r2)*(1.0-r3)*0.25;
-    // influence of the node number 14
-        h.val(14)=(1.0-r1)*(1.0-r2*r2)*(1.0-r3)*0.25;
-    // influence of the node number 13
-        h.val(13)=(1.0-r1*r1)*(1.0+r2)*(1.0-r3)*0.25;
-
-    // influence of the node number 12
-        h.val(12)=(1.0+r1)*(1.0-r2*r2)*(1.0+r3)*0.25;
-    // influence of the node number 11
-        h.val(11)=(1.0-r1*r1)*(1.0-r2)*(1.0+r3)*0.25;
-    // influence of the node number 10
-        h.val(10)=(1.0-r1)*(1.0-r2*r2)*(1.0+r3)*0.25;
-    // influence of the node number 9
-        h.val( 9)=(1.0-r1*r1)*(1.0+r2)*(1.0+r3)*0.25;
-
-      // influence of the node number 8
-    //h.val(8)=(1.0+r1)*(1.0-r2)*(1.0-r3)/8.0 - (h.val(15)+h.val(16)+h.val(20))/2.0;
-    h.val(8)=(1.0+r1)*(1.0-r2)*(1.0-r3)*0.125 - (h.val(15)+h.val(16)+h.val(20))*0.5;
-      // influence of the node number 7
-    h.val(7)=(1.0-r1)*(1.0-r2)*(1.0-r3)*0.125 - (h.val(14)+h.val(15)+h.val(19))*0.5;
-      // influence of the node number 6
-    h.val(6)=(1.0-r1)*(1.0+r2)*(1.0-r3)*0.125 - (h.val(13)+h.val(14)+h.val(18))*0.5;
-      // influence of the node number 5
-    h.val(5)=(1.0+r1)*(1.0+r2)*(1.0-r3)*0.125 - (h.val(13)+h.val(16)+h.val(17))*0.5;
-
-      // influence of the node number 4
-    h.val(4)=(1.0+r1)*(1.0-r2)*(1.0+r3)*0.125 - (h.val(11)+h.val(12)+h.val(20))*0.5;
-      // influence of the node number 3
-    h.val(3)=(1.0-r1)*(1.0-r2)*(1.0+r3)*0.125 - (h.val(10)+h.val(11)+h.val(19))*0.5;
-      // influence of the node number 2
-    h.val(2)=(1.0-r1)*(1.0+r2)*(1.0+r3)*0.125 - (h.val(10)+h.val(18)+h.val( 9))*0.5;
-      // influence of the node number 1
-    h.val(1)=(1.0+r1)*(1.0+r2)*(1.0+r3)*0.125 - (h.val(12)+h.val(17)+h.val( 9))*0.5;
-    //    printf("r1 = %lf, r2 = %lf, r3 = %lf\n", r1, r2, r3);
-    //    h.print("h");
-
-    return h;
-  }*///Commented out by Guanzhou, Oct. 2003
-
-
-
-// Nima Tafazzoli removed (Nov. 2011)
-//***************************************************************
-// tensor TwentySevenNodeBrick::dh_drst_at(double r1, double r2, double r3)
-//   {
-//
-//     int dimensions[] = {27,3};  // Changed from{20,3} to {27,3} Guanzhou Oct. 2003
-//     tensor dh(2, dimensions, 0.0);
-//
-//
-//     //Shape Functions of Node 1 Along Three Coordinate Directions
-//     dh.val(1,1)=0.5*(2.0*r1+1.0)*0.5*r2*(r2+1.0)*0.5*r3*(r3+1.0);
-//     dh.val(1,2)=0.5*r1*(r1+1.0)*0.5*(2.0*r2+1.0)*0.5*r3*(r3+1.0);
-//     dh.val(1,3)=0.5*r1*(r1+1.0)*0.5*r2*(r2+1.0)*0.5*(2.0*r3+1.0);
-//
-//     //Shape Functions of Node 2 Along Three Coordinate Directions
-//     dh.val(2,1)=0.5*(2.0*r1-1.0)*0.5*r2*(r2+1.0)*0.5*r3*(r3+1.0);
-//     dh.val(2,2)=0.5*r1*(r1-1.0)*0.5*(2.0*r2+1.0)*0.5*r3*(r3+1.0);
-//     dh.val(2,3)=0.5*r1*(r1-1.0)*0.5*r2*(r2+1.0)*0.5*(2.0*r3+1.0);
-//
-//     //Shape Functions of Node 3 Along Three Coordinate Directions
-//     dh.val(3,1)=0.5*(2.0*r1-1.0)*0.5*r2*(r2-1.0)*0.5*r3*(r3+1.0);
-//     dh.val(3,2)=0.5*r1*(r1-1.0)*0.5*(2.0*r2-1.0)*0.5*r3*(r3+1.0);
-//     dh.val(3,3)=0.5*r1*(r1-1.0)*0.5*r2*(r2-1.0)*0.5*(2.0*r3+1.0);
-//
-//     //Shape Functions of Node 4 Along Three Coordinate Directions
-//     dh.val(4,1)=0.5*(2.0*r1+1.0)*0.5*r2*(r2-1.0)*0.5*r3*(r3+1.0);
-//     dh.val(4,2)=0.5*r1*(r1+1.0)*0.5*(2.0*r2-1.0)*0.5*r3*(r3+1.0);
-//     dh.val(4,3)=0.5*r1*(r1+1.0)*0.5*r2*(r2-1.0)*0.5*(2.0*r3+1.0);
-//
-//     //Shape Functions of Node 5 Along Three Coordinate Directions
-//     dh.val(5,1)=0.5*(2.0*r1+1.0)*0.5*r2*(r2+1.0)*0.5*r3*(r3-1.0);
-//     dh.val(5,2)=0.5*r1*(r1+1.0)*0.5*(2.0*r2+1.0)*0.5*r3*(r3-1.0);
-//     dh.val(5,3)=0.5*r1*(r1+1.0)*0.5*r2*(r2+1.0)*0.5*(2.0*r3-1.0);
-//
-//     //Shape Functions of Node 6 Along Three Coordinate Directions
-//     dh.val(6,1)=0.5*(2.0*r1-1.0)*0.5*r2*(r2+1.0)*0.5*r3*(r3-1.0);
-//     dh.val(6,2)=0.5*r1*(r1-1.0)*0.5*(2.0*r2+1.0)*0.5*r3*(r3-1.0);
-//     dh.val(6,3)=0.5*r1*(r1-1.0)*0.5*r2*(r2+1.0)*0.5*(2.0*r3-1.0);
-//
-//     //Shape Functions of Node 7 Along Three Coordinate Directions
-//     dh.val(7,1)=0.5*(2.0*r1-1.0)*0.5*r2*(r2-1.0)*0.5*r3*(r3-1.0);
-//     dh.val(7,2)=0.5*r1*(r1-1.0)*0.5*(2.0*r2-1.0)*0.5*r3*(r3-1.0);
-//     dh.val(7,3)=0.5*r1*(r1-1.0)*0.5*r2*(r2-1.0)*0.5*(2.0*r3-1.0);
-//
-//
-//     //Shape Functions of Node 8 Along Three Coordinate Directions
-//     dh.val(8,1)=0.5*(2.0*r1+1.0)*0.5*r2*(r2-1.0)*0.5*r3*(r3-1.0);
-//     dh.val(8,2)=0.5*r1*(r1+1.0)*0.5*(2.0*r2-1.0)*0.5*r3*(r3-1.0);
-//     dh.val(8,3)=0.5*r1*(r1+1.0)*0.5*r2*(r2-1.0)*0.5*(2.0*r3-1.0);
-//
-//
-//     //Shape Functions of Node 9 Along Three Coordinate Directions
-//     dh.val(9,1)=0.5*(2.0*r1+1.0)*0.5*r2*(r2+1.0)*(1.0-r3*r3);
-//     dh.val(9,2)=0.5*r1*(r1+1.0)*0.5*(2.0*r2+1.0)*(1.0-r3*r3);
-//     dh.val(9,3)=0.5*r1*(r1+1.0)*0.5*r2*(r2+1.0)*(-2.0*r3);
-//
-//
-//     //Shape Functions of Node 10Along Three Coordinate Directions
-//     dh.val(10,1)=0.5*(2.0*r1-1.0)*0.5*r2*(r2+1.0)*(1.0-r3*r3);
-//     dh.val(10,2)=0.5*r1*(r1-1.0)*0.5*(2.0*r2+1.0)*(1.0-r3*r3);
-//     dh.val(10,3)=0.5*r1*(r1-1.0)*0.5*r2*(r2+1.0)*(-2.0*r3);
-//
-//
-//     //Shape Functions of Node 11Along Three Coordinate Directions
-//     dh.val(11,1)=0.5*(2.0*r1-1.0)*0.5*r2*(r2-1.0)*(1.0-r3*r3);
-//     dh.val(11,2)=0.5*r1*(r1-1.0)*0.5*(2.0*r2-1.0)*(1.0-r3*r3);
-//     dh.val(11,3)=0.5*r1*(r1-1.0)*0.5*r2*(r2-1.0)*(-2.0*r3);
-//
-//
-//     //Shape Functions of Node 12Along Three Coordinate Directions
-//     dh.val(12,1)=0.5*(2.0*r1+1.0)*0.5*r2*(r2-1.0)*(1.0-r3*r3);
-//     dh.val(12,2)=0.5*r1*(r1+1.0)*0.5*(2.0*r2-1.0)*(1.0-r3*r3);
-//     dh.val(12,3)=0.5*r1*(r1+1.0)*0.5*r2*(r2-1.0)*(-2.0*r3);
-//
-//
-//     //Shape Functions of Node 13Along Three Coordinate Directions
-//     dh.val(13,1)=(-2.0*r1)*0.5*r2*(r2+1.0)*0.5*r3*(r3+1.0);
-//     dh.val(13,2)=(1.0-r1*r1)*0.5*(2.0*r2+1.0)*0.5*r3*(r3+1.0);
-//     dh.val(13,3)=(1.0-r1*r1)*0.5*r2*(r2+1.0)*0.5*(2.0*r3+1.0);
-//
-//
-//     //Shape Functions of Node 14Along Three Coordinate Directions
-//     dh.val(14,1)=0.5*(2.0*r1-1.0)*(1.0-r2*r2)*0.5*r3*(r3+1.0);
-//     dh.val(14,2)=0.5*r1*(r1-1.0)*(-2.0*r2)*0.5*r3*(r3+1.0);
-//     dh.val(14,3)=0.5*r1*(r1-1.0)*(1.0-r2*r2)*0.5*(2.0*r3+1.0);
-//
-//
-//     //Shape Functions of Node 15Along Three Coordinate Directions
-//     dh.val(15,1)=(-2.0*r1)*0.5*r2*(r2-1.0)*0.5*r3*(r3+1.0);
-//     dh.val(15,2)=(1.0-r1*r1)*0.5*(2.0*r2-1.0)*0.5*r3*(r3+1.0);
-//     dh.val(15,3)=(1.0-r1*r1)*0.5*r2*(r2-1.0)*0.5*(2.0*r3+1.0);
-//
-//
-//     //Shape Functions of Node 16Along Three Coordinate Directions
-//     dh.val(16,1)=0.5*(2.0*r1+1.0)*(1.0-r2*r2)*0.5*r3*(r3+1.0);
-//     dh.val(16,2)=0.5*r1*(r1+1.0)*(-2.0*r2)*0.5*r3*(r3+1.0);
-//     dh.val(16,3)=0.5*r1*(r1+1.0)*(1.0-r2*r2)*0.5*(2.0*r3+1.0);
-//
-//
-//     //Shape Functions of Node 17Along Three Coordinate Directions
-//     dh.val(17,1)=(-2.0*r1)*0.5*r2*(r2+1.0)*0.5*r3*(r3-1.0);
-//     dh.val(17,2)=(1.0-r1*r1)*0.5*(2.0*r2+1.0)*0.5*r3*(r3-1.0);
-//     dh.val(17,3)=(1.0-r1*r1)*0.5*r2*(r2+1.0)*0.5*(2.0*r3-1.0);
-//
-//
-//     //Shape Functions of Node 18Along Three Coordinate Directions
-//     dh.val(18,1)=0.5*(2.0*r1-1.0)*(1.0-r2*r2)*0.5*r3*(r3-1.0);
-//     dh.val(18,2)=0.5*r1*(r1-1.0)*(-2.0*r2)*0.5*r3*(r3-1.0);
-//     dh.val(18,3)=0.5*r1*(r1-1.0)*(1.0-r2*r2)*0.5*(2.0*r3-1.0);
-//
-//
-//     //Shape Functions of Node 19Along Three Coordinate Directions
-//     dh.val(19,1)=(-2.0*r1)*0.5*r2*(r2-1.0)*0.5*r3*(r3-1.0);
-//     dh.val(19,2)=(1.0-r1*r1)*0.5*(2.0*r2-1.0)*0.5*r3*(r3-1.0);
-//     dh.val(19,3)=(1.0-r1*r1)*0.5*r2*(r2-1.0)*0.5*(2.0*r3-1.0);
-//
-//
-//     //Shape Functions of Node 20Along Three Coordinate Directions
-//     dh.val(20,1)=0.5*(2.0*r1+1.0)*(1.0-r2*r2)*0.5*r3*(r3-1.0);
-//     dh.val(20,2)=0.5*r1*(r1+1.0)*(-2.0*r2)*0.5*r3*(r3-1.0);
-//     dh.val(20,3)=0.5*r1*(r1+1.0)*(1.0-r2*r2)*0.5*(2.0*r3-1.0);
-//
-//
-//     //Shape Functions of Node 21Along Three Coordinate Directions
-//     dh.val(21,1)=(-2.0*r1)*0.5*r2*(r2+1.0)*(1.0-r3*r3);
-//     dh.val(21,2)=(1.0-r1*r1)*0.5*(2.0*r2+1.0)*(1.0-r3*r3);
-//     dh.val(21,3)=(1.0-r1*r1)*0.5*r2*(r2+1.0)*(-2.0*r3);
-//
-//
-//     //Shape Functions of Node 22Along Three Coordinate Directions
-//     dh.val(22,1)=0.5*(2.0*r1-1.0)*(1.0-r2*r2)*(1.0-r3*r3);
-//     dh.val(22,2)=0.5*r1*(r1-1.0)*(-2.0*r2)*(1.0-r3*r3);
-//     dh.val(22,3)=0.5*r1*(r1-1.0)*(1.0-r2*r2)*(-2.0*r3);
-//
-//
-//     //Shape Functions of Node 23Along Three Coordinate Directions
-//     dh.val(23,1)=(-2.0*r1)*0.5*r2*(r2-1.0)*(1.0-r3*r3);
-//     dh.val(23,2)=(1.0-r1*r1)*0.5*(2.0*r2-1.0)*(1.0-r3*r3);
-//     dh.val(23,3)=(1.0-r1*r1)*0.5*r2*(r2-1.0)*(-2.0*r3);
-//
-//
-//     //Shape Functions of Node 24Along Three Coordinate Directions
-//     dh.val(24,1)=0.5*(2.0*r1+1.0)*(1.0-r2*r2)*(1.0-r3*r3);
-//     dh.val(24,2)=0.5*r1*(r1+1.0)*(-2.0*r2)*(1.0-r3*r3);
-//     dh.val(24,3)=0.5*r1*(r1+1.0)*(1.0-r2*r2)*(-2.0*r3);
-//
-//
-//     //Shape Functions of Node 25Along Three Coordinate Directions
-//     dh.val(25,1)=(-2.0*r1)*(1.0-r2*r2)*0.5*r3*(r3+1.0);
-//     dh.val(25,2)=(1.0-r1*r1)*(-2.0*r2)*0.5*r3*(r3+1.0);
-//     dh.val(25,3)=(1.0-r1*r1)*(1.0-r2*r2)*0.5*(2.0*r3+1.0);
-//
-//
-//     //Shape Functions of Node 26Along Three Coordinate Directions
-//     dh.val(26,1)=(-2.0*r1)*(1.0-r2*r2)*0.5*r3*(r3-1.0);
-//     dh.val(26,2)=(1.0-r1*r1)*(-2.0*r2)*0.5*r3*(r3-1.0);
-//     dh.val(26,3)=(1.0-r1*r1)*(1.0-r2*r2)*0.5*(2.0*r3-1.0);
-//
-//
-//     //Shape Functions of Node 27Along Three Coordinate Directions
-//     dh.val(27,1)=(-2.0*r1)*(1.0-r2*r2)*(1.0-r3*r3);
-//     dh.val(27,2)=(1.0-r1*r1)*(-2.0*r2)*(1.0-r3*r3);
-//     dh.val(27,3)=(1.0-r1*r1)*(1.0-r2*r2)*(-2.0*r3);
-//
-//
-//
-// /*    // influence of the node number 20
-//         dh.val(20,1) =   (1.0-r2)*(1.0-r3*r3)*0.25; ///4.0;
-//         dh.val(20,2) = - (1.0+r1)*(1.0-r3*r3)*0.25; ///4.0;
-//         dh.val(20,3) = - (1.0+r1)*(1.0-r2)*r3*0.50; ///2.0;
-//     // influence of the node number 19
-//         dh.val(19,1) = - (1.0-r2)*(1.0-r3*r3)*0.25; ///4.0;
-//         dh.val(19,2) = - (1.0-r1)*(1.0-r3*r3)*0.25; ///4.0;
-//         dh.val(19,3) = - (1.0-r1)*(1.0-r2)*r3*0.50; ///2.0;
-//     // influence of the node number 18
-//         dh.val(18,1) = - (1.0+r2)*(1.0-r3*r3)*0.25; ///4.0;
-//         dh.val(18,2) =   (1.0-r1)*(1.0-r3*r3)*0.25; ///4.0;
-//         dh.val(18,3) = - (1.0-r1)*(1.0+r2)*r3*0.50; ///2.0;
-//     // influence of the node number 17
-//         dh.val(17,1) =   (1.0+r2)*(1.0-r3*r3)*0.25; ///4.0;
-//         dh.val(17,2) =   (1.0+r1)*(1.0-r3*r3)*0.25; ///4.0;
-//         dh.val(17,3) = - (1.0+r1)*(1.0+r2)*r3*0.50; ///2.0;
-//
-//     // influence of the node number 16
-//         dh.val(16,1) =   (1.0-r2*r2)*(1.0-r3)*0.25; ///4.0;
-//         dh.val(16,2) = - (1.0+r1)*r2*(1.0-r3)*0.50; ///2.0;
-//         dh.val(16,3) = - (1.0+r1)*(1.0-r2*r2)*0.25; ///4.0;
-//     // influnce of the node number 15
-//         dh.val(15,1) = - r1*(1.0-r2)*(1.0-r3)*0.50; ///2.0;
-//         dh.val(15,2) = - (1.0-r1*r1)*(1.0-r3)*0.25; ///4.0;
-//         dh.val(15,3) = - (1.0-r1*r1)*(1.0-r2)*0.25; ///4.0;
-//     // influence of the node number 14
-//         dh.val(14,1) = - (1.0-r2*r2)*(1.0-r3)*0.25; ///4.0;
-//         dh.val(14,2) = - (1.0-r1)*r2*(1.0-r3)*0.50; ///2.0;
-//         dh.val(14,3) = - (1.0-r1)*(1.0-r2*r2)*0.25; ///4.0;
-//     // influence of the node number 13
-//         dh.val(13,1) = - r1*(1.0+r2)*(1.0-r3)*0.50; ///2.0;
-//         dh.val(13,2) =   (1.0-r1*r1)*(1.0-r3)*0.25; ///4.0;
-//         dh.val(13,3) = - (1.0-r1*r1)*(1.0+r2)*0.25; ///4.0;
-//
-//     // influence of the node number 12
-//         dh.val(12,1) =   (1.0-r2*r2)*(1.0+r3)*0.25; ///4.0;
-//         dh.val(12,2) = - (1.0+r1)*r2*(1.0+r3)*0.50; ///2.0;
-//         dh.val(12,3) =   (1.0+r1)*(1.0-r2*r2)*0.25; ///4.0;
-//     // influence of the node number 11
-//         dh.val(11,1) = - r1*(1.0-r2)*(1.0+r3)*0.50; ///2.0;
-//         dh.val(11,2) = - (1.0-r1*r1)*(1.0+r3)*0.25; ///4.0; // bug discovered 01 aug '95 2.0 -> 4.0
-//         dh.val(11,3) =   (1.0-r1*r1)*(1.0-r2)*0.25; ///4.0;
-//     // influence of the node number 10
-//         dh.val(10,1) = - (1.0-r2*r2)*(1.0+r3)*0.25; ///4.0;
-//         dh.val(10,2) = - (1.0-r1)*r2*(1.0+r3)*0.50; ///2.0;
-//         dh.val(10,3) =   (1.0-r1)*(1.0-r2*r2)*0.25; ///4.0;
-//     // influence of the node number 9
-//         dh.val(9,1)  = - r1*(1.0+r2)*(1.0+r3)*0.50; ///2.0;
-//         dh.val(9,2)  =   (1.0-r1*r1)*(1.0+r3)*0.25; ///4.0;
-//         dh.val(9,3)  =   (1.0-r1*r1)*(1.0+r2)*0.25; ///4.0;
-//
-//       // influence of the node number 8
-//     //dh.val(8,1)= (1.0-r2)*(1.0-r3)/8.0 - (dh.val(15,1)+dh.val(16,1)+dh.val(20,1))/2.0;
-//     dh.val(8,1)= (1.0-r2)*(1.0-r3)*0.125 - (dh.val(15,1)+dh.val(16,1)+dh.val(20,1))*0.50; ///2.0;
-//     dh.val(8,2)=-(1.0+r1)*(1.0-r3)*0.125 - (dh.val(15,2)+dh.val(16,2)+dh.val(20,2))*0.50; ///2.0;
-//     dh.val(8,3)=-(1.0+r1)*(1.0-r2)*0.125 - (dh.val(15,3)+dh.val(16,3)+dh.val(20,3))*0.50; ///2.0;
-//       // influence of the node number 7
-//     dh.val(7,1)=-(1.0-r2)*(1.0-r3)*0.125 - (dh.val(14,1)+dh.val(15,1)+dh.val(19,1))*0.50; ///2.0;
-//     dh.val(7,2)=-(1.0-r1)*(1.0-r3)*0.125 - (dh.val(14,2)+dh.val(15,2)+dh.val(19,2))*0.50; ///2.0;
-//     dh.val(7,3)=-(1.0-r1)*(1.0-r2)*0.125 - (dh.val(14,3)+dh.val(15,3)+dh.val(19,3))*0.50; ///2.0;
-//       // influence of the node number 6
-//     dh.val(6,1)=-(1.0+r2)*(1.0-r3)*0.125 - (dh.val(13,1)+dh.val(14,1)+dh.val(18,1))*0.50; ///2.0;
-//     dh.val(6,2)= (1.0-r1)*(1.0-r3)*0.125 - (dh.val(13,2)+dh.val(14,2)+dh.val(18,2))*0.50; ///2.0;
-//     dh.val(6,3)=-(1.0-r1)*(1.0+r2)*0.125 - (dh.val(13,3)+dh.val(14,3)+dh.val(18,3))*0.50; ///2.0;
-//       // influence of the node number 5
-//     dh.val(5,1)= (1.0+r2)*(1.0-r3)*0.125 - (dh.val(13,1)+dh.val(16,1)+dh.val(17,1))*0.50; ///2.0;
-//     dh.val(5,2)= (1.0+r1)*(1.0-r3)*0.125 - (dh.val(13,2)+dh.val(16,2)+dh.val(17,2))*0.50; ///2.0;
-//     dh.val(5,3)=-(1.0+r1)*(1.0+r2)*0.125 - (dh.val(13,3)+dh.val(16,3)+dh.val(17,3))*0.50; ///2.0;
-//
-//       // influence of the node number 4
-//     dh.val(4,1)= (1.0-r2)*(1.0+r3)*0.125 - (dh.val(11,1)+dh.val(12,1)+dh.val(20,1))*0.50; ///2.0;
-//     dh.val(4,2)=-(1.0+r1)*(1.0+r3)*0.125 - (dh.val(11,2)+dh.val(12,2)+dh.val(20,2))*0.50; ///2.0;
-//     dh.val(4,3)= (1.0+r1)*(1.0-r2)*0.125 - (dh.val(11,3)+dh.val(12,3)+dh.val(20,3))*0.50; ///2.0;
-//       // influence of the node number 3
-//     dh.val(3,1)=-(1.0-r2)*(1.0+r3)*0.125 - (dh.val(10,1)+dh.val(11,1)+dh.val(19,1))*0.50; ///2.0;
-//     dh.val(3,2)=-(1.0-r1)*(1.0+r3)*0.125 - (dh.val(10,2)+dh.val(11,2)+dh.val(19,2))*0.50; ///2.0;
-//     dh.val(3,3)= (1.0-r1)*(1.0-r2)*0.125 - (dh.val(10,3)+dh.val(11,3)+dh.val(19,3))*0.50; ///2.0;
-//       // influence of the node number 2
-//     dh.val(2,1)=-(1.0+r2)*(1.0+r3)*0.125 - (dh.val(10,1)+dh.val(18,1)+dh.val( 9,1))*0.50; ///2.0;
-//     dh.val(2,2)= (1.0-r1)*(1.0+r3)*0.125 - (dh.val(10,2)+dh.val(18,2)+dh.val( 9,2))*0.50; ///2.0;
-//     dh.val(2,3)= (1.0-r1)*(1.0+r2)*0.125 - (dh.val(10,3)+dh.val(18,3)+dh.val( 9,3))*0.50; ///2.0;
-//       // influence of the node number 1
-//     dh.val(1,1)= (1.0+r2)*(1.0+r3)*0.125 - (dh.val(12,1)+dh.val(17,1)+dh.val( 9,1))*0.50; ///2.0;
-//     dh.val(1,2)= (1.0+r1)*(1.0+r3)*0.125 - (dh.val(12,2)+dh.val(17,2)+dh.val( 9,2))*0.50; ///2.0;
-//     dh.val(1,3)= (1.0+r1)*(1.0+r2)*0.125 - (dh.val(12,3)+dh.val(17,3)+dh.val( 9,3))*0.50; ///2.0;*///Commented out by Guanzhou, Oct. 2003
-//
-//     return dh;
-//   }
 
 
 // Nima Tafazzoli (Nov. 2011)
@@ -3135,7 +2621,7 @@ void TwentySevenNodeBrick::computeGaussPoint(void)
     int count;
     count = FixedOrder * FixedOrder * FixedOrder;
     //Vector GaussCoord(count*3+1); //+1: number of Gauss point in element
-    GaussCoord(0) = count;
+    // GaussCoord(0) = count;
 
     double r  = 0.0;
     double s  = 0.0;
@@ -3292,6 +2778,7 @@ void TwentySevenNodeBrick::computeGaussPoint(void)
 
     //NodalCoord.print("NC");
 
+    int gp = 0;
     for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
@@ -3329,11 +2816,15 @@ void TwentySevenNodeBrick::computeGaussPoint(void)
                 //                               matpointCoord.val(2,where+1),
                 //                               matpointCoord.val(3,where+1));
 
-                GaussCoord(where * 3 + 1) = matpointCoord.val(1, where + 1);
-                GaussCoord(where * 3 + 2) = matpointCoord.val(2, where + 1);
-                GaussCoord(where * 3 + 3) = matpointCoord.val(3, where + 1);
+                // GaussCoord(where * 3 + 1) = matpointCoord.val(1, where + 1);
+                // GaussCoord(where * 3 + 2) = matpointCoord.val(2, where + 1);
+                // GaussCoord(where * 3 + 3) = matpointCoord.val(3, where + 1);
 
+                gauss_points(gp, 0) = matpointCoord.val(1, where + 1);
+                gauss_points(gp, 1) = matpointCoord.val(2, where + 1);
+                gauss_points(gp, 2) = matpointCoord.val(3, where + 1);
 
+                gp++;
             }
         }
     }
@@ -3736,6 +3227,8 @@ void TwentySevenNodeBrick::setDomain (Domain *theDomain)
 
         this->DomainComponent::setDomain(theDomain);
     }
+
+    computeGaussPoint();
 }
 
 //=============================================================================

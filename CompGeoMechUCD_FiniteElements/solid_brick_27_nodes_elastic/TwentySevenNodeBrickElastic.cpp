@@ -49,17 +49,9 @@
 #define FixedOrder 3
 
 
-// Matrix TwentySevenNodeBrickElastic::K(81, 81);
 Matrix TwentySevenNodeBrickElastic::C(81, 81);
-// Matrix TwentySevenNodeBrickElastic::M(81, 81);
 Vector TwentySevenNodeBrickElastic::P(81);
-// int TwentySevenNodeBrickElastic::builtK(0);
-// int TwentySevenNodeBrickElastic::builtM(0);
-Vector InfoMomentElastic(109 + 3); //For computing moment
-Vector InfoPlasticElastic(FixedOrder *FixedOrder *FixedOrder * 4 + 1); //Plastic info
-Vector InfoStressElastic(FixedOrder *FixedOrder *FixedOrder * 6 + 1); //Stress info
-Vector GaussCoordElastic(FixedOrder *FixedOrder *FixedOrder * 3 + 1); //Gauss point coordinates
-Vector Info_pq2Elastic(2); //p and q of count/2
+
 const int TwentySevenNodeBrickElastic::Num_TotalGaussPts = FixedOrder * FixedOrder * FixedOrder; //Nima added for recording the Strain (02-21-2011)
 Vector TwentySevenNodeBrickElastic::ShapeFunctionValues_in_function(9); // Nima added for surface load (July 2012)
 Vector TwentySevenNodeBrickElastic::J_vector_in_function(3); // Nima added for surface load (July 2012)
@@ -81,7 +73,9 @@ TwentySevenNodeBrickElastic::TwentySevenNodeBrickElastic(int element_number,
         NDMaterial *Globalmmodel)
 
     : Element(element_number, ELE_TAG_TwentySevenNodeBrickElastic),
-      connectedExternalNodes(27), Kinitial(0), Mass(0), Q(81), builtK(0), builtM(0), rho(0.0)
+      connectedExternalNodes(27), Kinitial(0), Mass(0), Q(81), builtK(0), builtM(0), rho(0.0),
+      gauss_points(TwentySevenNodeBrickElastic_NUMBER_OF_GAUSSPOINTS, 3),
+      outputVector(TwentySevenNodeBrickElastic_OUTPUT_SIZE)
 {
     //elem_numb = element_number;
 
@@ -227,7 +221,9 @@ TwentySevenNodeBrickElastic::TwentySevenNodeBrickElastic(int element_number,
 
 //====================================================================
 TwentySevenNodeBrickElastic::TwentySevenNodeBrickElastic (): Element(0, ELE_TAG_TwentySevenNodeBrickElastic ),
-    connectedExternalNodes(27), Kinitial(0), Mass(0), Q(81), builtK(0), builtM(0), rho(0.0), mmodel(0)
+    connectedExternalNodes(27), Kinitial(0), Mass(0), Q(81), builtK(0), builtM(0), rho(0.0), mmodel(0),
+    gauss_points(TwentySevenNodeBrickElastic_NUMBER_OF_GAUSSPOINTS, 3),
+    outputVector(TwentySevenNodeBrickElastic_OUTPUT_SIZE)
 {
     matpoint = 0;
 
@@ -3142,7 +3138,7 @@ void TwentySevenNodeBrickElastic::computeGaussPoint(void)
     int count;
     count = FixedOrder * FixedOrder * FixedOrder;
     //Vector GaussCoordElastic(count*3+1); //+1: number of Gauss point in element
-    GaussCoordElastic(0) = count;
+    // GaussCoordElastic(0) = count;
 
     double r  = 0.0;
     double s  = 0.0;
@@ -3299,6 +3295,7 @@ void TwentySevenNodeBrickElastic::computeGaussPoint(void)
 
     //NodalCoord.print("NC");
 
+    int gp = 0;
     for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
@@ -3336,10 +3333,14 @@ void TwentySevenNodeBrickElastic::computeGaussPoint(void)
                 //                               matpointCoord.val(2,where+1),
                 //                               matpointCoord.val(3,where+1));
 
-                GaussCoordElastic(where * 3 + 1) = matpointCoord.val(1, where + 1);
-                GaussCoordElastic(where * 3 + 2) = matpointCoord.val(2, where + 1);
-                GaussCoordElastic(where * 3 + 3) = matpointCoord.val(3, where + 1);
+                // GaussCoordElastic(where * 3 + 1) = matpointCoord.val(1, where + 1);
+                // GaussCoordElastic(where * 3 + 2) = matpointCoord.val(2, where + 1);
+                // GaussCoordElastic(where * 3 + 3) = matpointCoord.val(3, where + 1);
+                gauss_points(gp, 0) = matpointCoord.val(1, where + 1);
+                gauss_points(gp, 1) = matpointCoord.val(2, where + 1);
+                gauss_points(gp, 2) = matpointCoord.val(3, where + 1);
 
+                gp++;
 
             }
         }
@@ -3743,6 +3744,8 @@ void TwentySevenNodeBrickElastic::setDomain (Domain *theDomain)
 
         this->DomainComponent::setDomain(theDomain);
     }
+
+    computeGaussPoint();
 }
 
 //=============================================================================
@@ -3787,91 +3790,37 @@ int TwentySevenNodeBrickElastic::commitState ()
         prin = st.principal();
         stn = matpoint[i]->getStrainTensor();
         stnprin = stn.principal();
-        /*
-        cerr << "\nGauss Point: " << i << endln;
-        cerr << "sigma11: "<< st.cval(1, 1) << " "<< st.cval(1, 2) << " " << st.cval(1, 3) << endln;
-        cerr << "sigma21: "<< st.cval(2, 1) << " "<< st.cval(2, 2) << " " << st.cval(2, 3) << endln;
-        cerr << "sigma31: "<< st.cval(3, 1) << " "<< st.cval(3, 2) << " " << st.cval(3, 3) << endln << endln;
-        */
-        //cerr << "strain11: "<< stn.cval(1, 1) << " "<< stn.cval(1, 2) << " " << stn.cval(1, 3) << endln;
-        //cerr << "strain21: "<< stn.cval(2, 1) << " "<< stn.cval(2, 2) << " " << stn.cval(2, 3) << endln;
-        //cerr << "strain31: "<< stn.cval(3, 1) << " "<< stn.cval(3, 2) << " " << stn.cval(3, 3) << endln;
 
-        //    double  p = -1*( prin.cval(1, 1)+ prin.cval(2, 2) +prin.cval(3, 3) )/3.0;
-        //    double  ev = -1*( stnprin.cval(1, 1)+ stnprin.cval(2, 2) + stnprin.cval(3, 3) )/3.0;
-        //cerr << "   " << p;
-
-        //if (p < 0)
-        //  cerr  << "gs pnt:" << i << "  p="<< p;
-
-
-        //    double q;
-        //    //if ( fabs(prin.cval(1, 1) - prin.cval(2, 2) ) <=  0.0001 )
-        //          if ( fabs(prin.cval(1, 1) - prin.cval(2, 2) ) <=  0.001 )
-        //          {
-        //              q = prin.cval(1, 1) - prin.cval(3, 3);
-        //              //cerr << "1 = 2";
-        //          }
-        //          else
-        //              q = prin.cval(3, 3) - prin.cval(1, 1);
-
-        //Triaxial compr.  fabs
-        //cerr << "     " << st.cval(2, 3); //tau_yz
-        //cerr << "     " << q;
-        ////----cerr << "     " << fabs(q);
-
-        //cerr << "     " << ev << endln;
-
-        //out22Jan2001   if (strcmp(matpoint[i]->matmodel->getType(),"Template3Dep") == 0)
-        //out22Jan2001          {
-        //out22Jan2001           st = ( ((Template3Dep *)(matpoint[i]->matmodel))->getEPS())->getStress();
-        //out22Jan2001           prin = st.principal();
-        //out22Jan2001    }
-        //out22Jan2001    else
-        //out22Jan2001    {
-        //out22Jan2001            st = matpoint[i]->getStressTensor();
-        //out22Jan2001           prin = st.principal();
-        //out22Jan2001
-        //out22Jan2001    }
-
-        //double  p = st.p_hydrostatic();
-        //double  p = -1*( prin.cval(1, 1)+ prin.cval(2, 2) +prin.cval(3, 3) )/3.0;
-        //cerr << "\n " << prin.cval(1, 1) << "   " << prin.cval(2, 2) << "  " <<  prin.cval(3, 3) << endln;
-        //if ( getTag() == 981)
-        //cerr << " El= " << getTag() << " , p    " << p << endln;
-
-        //printf(stderr, " Gauss Point i = %d ", (i+1));
-        //printf(stderr, " Gauss Point i = %d ", (i+1));
-
-
-        //if ( p < 0 )
-        //{
-        //  cerr << getTag();
-        //  cerr << " ***p  =    " << p << endln;
-        //}
-        //J2D
-        //cerr << "        " << st.q_deviatoric();
-
-        //double q;
-        //if ( fabs(prin.cval(1, 1) - prin.cval(2, 2) ) <=  0.0001 )
-        //{
-        //    q = prin.cval(1, 1) - prin.cval(3, 3);
-        //    //cerr << "1 = 2";
-        //}
-        //else
-        //    q = prin.cval(3, 3) - prin.cval(1, 1);
-
-        //Triaxial compr.
-        //cerr << "        " << q;
-        //}
     }
 
-    //cerr << " at elements " << this->getTag() << endln;
+
+    //Forming output
+    stresstensor stress;
+    straintensor strain;
+    int ii = 0;
+    for (int gp = 0; gp < 27; gp++)
+    {
+        stress = matpoint[gp]->getStressTensor();
+        strain = matpoint[gp]->getStrainTensor();
+
+        //Write strain
+        outputVector(ii++) = strain.cval(1, 1);
+        outputVector(ii++) = strain.cval(2, 2);
+        outputVector(ii++) = strain.cval(3, 3);
+        outputVector(ii++) = strain.cval(1, 2);
+        outputVector(ii++) = strain.cval(1, 3);
+        outputVector(ii++) = strain.cval(2, 3);
 
 
-    //output nodal force
-    //cerr << "    " << pp(2) << endln;
-    //}
+        //Write stress
+        outputVector(ii++) = stress.cval(1, 1);
+        outputVector(ii++) = stress.cval(2, 2);
+        outputVector(ii++) = stress.cval(3, 3);
+        outputVector(ii++) = stress.cval(1, 2);
+        outputVector(ii++) = stress.cval(1, 3);
+        outputVector(ii++) = stress.cval(2, 3);
+    }
+
 
     return retVal;
 }
@@ -7082,6 +7031,28 @@ TwentySevenNodeBrickElastic::getStress(void)
 
 }
 
+
+
+Matrix &TwentySevenNodeBrickElastic::getGaussCoordinates(void)
+{
+    return gauss_points;
+}
+
+
+
+int TwentySevenNodeBrickElastic::getOutputSize() const
+{
+    return TwentySevenNodeBrickElastic_OUTPUT_SIZE;
+}
+
+
+
+const Vector &TwentySevenNodeBrickElastic::getOutput() const
+{
+
+
+    return outputVector;
+}
 
 
 #endif
