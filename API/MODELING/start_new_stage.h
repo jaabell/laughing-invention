@@ -137,6 +137,22 @@ int start_new_stage(string CurrentStageName)
         return -1;
     }
 
+
+
+    string filename("");
+    filename = ModelName + "_" + StageName + ".h5.feioutput";
+
+    // theDomain.setHDF5_Channel(filename,
+    //                           ModelName,
+    //                           StageName,
+    //                           numSteps);
+    theDomain.setOutputWriter(filename,
+                              ModelName,
+                              StageName,
+                              numSteps);
+
+
+
     return 0;
 };
 

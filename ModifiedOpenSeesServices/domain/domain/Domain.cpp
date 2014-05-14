@@ -1472,6 +1472,8 @@ Domain::clearAll( void )
     dbSPs = 0;
     dbMPs = 0;
     dbLPs = 0;
+
+    theOutputWriter.finalize();
 }
 
 

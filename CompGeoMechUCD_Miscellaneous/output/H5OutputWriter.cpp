@@ -31,6 +31,7 @@
 #include <Vector.h>
 #include <H5OutputWriter.h>
 #include <hdf5.h>
+#include <time.h>
 
 
 H5OutputWriter::H5OutputWriter():
@@ -72,10 +73,27 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
 
 H5OutputWriter::~H5OutputWriter()
 {
-
+    finalize();
 }
 
 
+void H5OutputWriter::finalize()
+{
+    if (file_is_open)
+    {
+        cout << "endingtime \n\n";
+        time_t current ;
+        time(&current);
+        char *timestring;
+        timestring = ctime(&current);
+        write_string(id_file, "Date_and_Time_End", timestring);
+
+
+        //Close file
+        file_is_open = false;
+        H5close();
+    }
+}
 
 
 void H5OutputWriter::initialize(std::string filename_in,
@@ -84,13 +102,23 @@ void H5OutputWriter::initialize(std::string filename_in,
                                 int nsteps)
 {
 
+    //Check if this is a new file!
     if (file_is_open)
     {
-        H5close();
-        file_is_open = false;
+        finalize();
+        previous_stage_name  = stage_name;
+    }
+    else
+    {
+        previous_stage_name = "none";
     }
 
+    //Initialize datamembers
+    file_is_open = false;
+
     file_name = "";
+    model_name = "";
+    stage_name = "";
     file_name += filename_in;
     model_name += model_name_in;
     stage_name += stage_name_in;
@@ -103,6 +131,7 @@ void H5OutputWriter::initialize(std::string filename_in,
     number_of_time_steps                 = nsteps;
     max_node_tag                         = 0;
     max_element_tag                      = 0;
+
     length_nodes_displacements_output    = 0;
     length_nodes_velocities_output       = 0;
     length_nodes_accelerations_output    = 0;
@@ -113,6 +142,8 @@ void H5OutputWriter::initialize(std::string filename_in,
     pos_elements_outputs                 = 0;
     pos_elements_gausscoords             = 0;
     pos_elements_connectivity            = 0;
+
+    current_time = 0.0;
 
     create_nodeMeshData_arrays           = true;
     create_nodeDisplacements_arrays      = true;
@@ -136,51 +167,77 @@ void H5OutputWriter::initialize(std::string filename_in,
     // status = H5Pset_sieve_buf_size( file_access_plist, H5OUTPUTWRITER_SIEVE_BUFFER_SIZE );
     // HDF5_CHECK_ERROR;
     id_file = H5Fcreate(file_name.c_str(), flags , file_creation_plist, file_access_plist);
-    file_is_open = true;
+
+    if (id_file > 0)
+    {
+        file_is_open = true;
 
 
-    //================================================================================
-    //Setup the global property lists
-    //================================================================================
-    // group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);
-    // status = H5Pset_link_creation_order(group_creation_plist, H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED);
-    // HDF5_CHECK_ERROR;
-
-
-
-    //================================================================================
-    // Create basic structure of the file
-    //================================================================================
-    //Create the model name, stage name and number of steps fields
-    write_string(id_file, "Model_Name", model_name);
-    write_string(id_file, "Stage_Name", stage_name);
-
-
-    //Create the group to store the model
-    id_model_group = create_group(id_file, "Model");
-
-    //Create the time vector
-
-
-    //Create elements and nodes groups
-    id_elements_group = create_group(id_model_group, "Elements");
-    id_nodes_group    = create_group(id_model_group, "Nodes");
-
-    //================================================================================
-    // Create time array
-    //================================================================================
-
-    hsize_t dims[1], maxdims[1];
-    int rank = 1;
-    dims[0] = number_of_time_steps;
-    maxdims[0] = H5S_UNLIMITED;
-    id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
+        //================================================================================
+        //Setup the global property lists
+        //================================================================================
+        // group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);
+        // status = H5Pset_link_creation_order(group_creation_plist, H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED);
+        // HDF5_CHECK_ERROR;
 
 
 
-    H5OUTPUTWRITER_COUNT_OBJS;
-    // cout << "subgroupname" << subgroupname << endl;
+        //================================================================================
+        // Create basic structure of the file
+        //================================================================================
+        //Create the model name, stage name and previous stage fields
+        write_string(id_file, "Model_Name", model_name);
+        write_string(id_file, "Stage_Name", stage_name);
+        write_string(id_file, "Previous_Stage", previous_stage_name);
 
+
+        //Create the group to store the model
+        id_model_group = create_group(id_file, "Model");
+
+
+        //Create elements and nodes groups
+        id_elements_group = create_group(id_model_group, "Elements");
+        id_nodes_group    = create_group(id_model_group, "Nodes");
+
+        //================================================================================
+        // Create time array
+        //================================================================================
+
+        hsize_t dims[1], maxdims[1];
+        int rank = 1;
+        dims[0] = number_of_time_steps;
+        maxdims[0] = H5S_UNLIMITED;
+        id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
+
+
+        //================================================================================
+        // Domain metadata
+        //================================================================================
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = 1;
+        id_number_of_elements   = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Elements", " ");
+        id_number_of_nodes      = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Nodes", " ");
+        id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
+
+        //Write time of creation
+        time_t current;
+        time(&current);
+        char *timestring;
+        timestring = ctime(&current);
+        write_string(id_file, "Date_and_Time_Start", timestring);
+
+
+        createVariableLengthStringArray(id_file, "Analysis_Options", " ")
+
+
+        H5OUTPUTWRITER_COUNT_OBJS;
+        // cout << "subgroupname" << subgroupname << endl;
+    }
+    else  //Could not open file
+    {
+        cerr << "H5OutputWriter::initialize() -> could not open file: " << file_name << "!\n\n";
+    }
 }
 
 
@@ -202,13 +259,34 @@ void H5OutputWriter::initialize(std::string filename_in,
 int H5OutputWriter::writeNumberOfNodes(unsigned int number_of_nodes_in )
 {
     number_of_nodes = number_of_nodes_in;
+    hsize_t rank        = 1;
+    hsize_t dims[1]     = {1};
+    hsize_t datadims[1] = {1};
+    hsize_t offset[1]   = {0};
+    hsize_t stride[1]   = {1};
+    hsize_t count[1]    = {1};
+    hsize_t block[1]    = {1};
+
+    writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, datadims, offset, stride, count, block,
+                                    &number_of_nodes);
 
     return 0;
 }
 
 int H5OutputWriter::writeNumberOfElements(unsigned int numberOfElements_ )
 {
-    number_of_elements = number_of_elements;
+    number_of_elements = numberOfElements_;
+    hsize_t rank        = 1;
+    hsize_t dims[1]     = {1};
+    hsize_t datadims[1] = {1};
+    hsize_t offset[1]   = {0};
+    hsize_t stride[1]   = {1};
+    hsize_t count[1]    = {1};
+    hsize_t block[1]    = {1};
+
+    writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, datadims, offset, stride, count, block,
+                                    &number_of_elements);
+
     return 0;
 }
 
@@ -230,7 +308,7 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
         maxdims[0] = H5S_UNLIMITED;
         id_nodes_coordinates = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Coordinates", " ");
         id_index_to_nodes_coordinates = createVariableLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Index_to_Coordinates", " ");
-        id_index_to_nodes_outputs = createVariableLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Index_to_Nodes_Output", " ");
+        id_index_to_nodes_outputs = createVariableLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Index_to_Generalized_Displacements", " ");
 
         create_nodeMeshData_arrays = false;
     }
@@ -513,9 +591,9 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 
 
         //Write gauss coordinate values
-        dims[0]      = pos_nodes_coordinates + ngausscoord * 3;
+        dims[0]      = pos_elements_gausscoords + ngausscoord * 3;
         data_dims[0] = ngausscoord * 3;
-        offset[0]    = pos_nodes_coordinates;
+        offset[0]    = pos_elements_gausscoords;
         count[0]     = ngausscoord * 3;
 
 
@@ -544,11 +622,10 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     return 0;
 
 
-
-
-
-    return 0;
 }
+
+
+
 int H5OutputWriter::writeMaterialMeshData(int tag , std::string type , Vector &parameters)
 {
     return 0;
@@ -578,7 +655,7 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
         maxdims[0] = (hsize_t)  length_nodes_displacements_output;
         maxdims[1] = H5S_UNLIMITED;
 
-        id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Displacements", " ");
+        id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
 
         create_nodeDisplacements_arrays = false;
 
@@ -1029,6 +1106,11 @@ int H5OutputWriter::setTime(double t)
                                    count,
                                    block,
                                    &current_time);
+
+    offset[0]   = 0;
+
+    writeConstantLengthIntegerArray(id_number_of_time_steps, 1, dims, data_dims, offset, stride, count, block,
+                                    &number_of_time_steps);
 
     current_time_step++;
     H5OUTPUTWRITER_COUNT_OBJS;

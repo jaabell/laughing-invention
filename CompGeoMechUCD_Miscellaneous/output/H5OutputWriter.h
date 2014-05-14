@@ -66,7 +66,7 @@
 #define H5OUTPUTWRITER_SIEVE_BUFFER_SIZE 1024*1024             // Not used because of chunking
 #define H5OUTPUTWRITER_PREEMPTION_POLICY 0.75
 
-
+#define H5OUTPUTWRITER_TIMESTRING_MAX_SIZE 64
 
 
 class H5OutputWriter: public OutputWriter
@@ -105,6 +105,8 @@ class H5OutputWriter: public OutputWriter
                         std::string model_name_in,
                         std::string stage_name_in,
                         int nsteps);
+
+        void finalize();
 
 
         int write_string(hid_t here, std::string name, std::string contents);
@@ -228,6 +230,7 @@ class H5OutputWriter: public OutputWriter
         std::string file_name;          // Name of the HDF5 file
         std::string model_name;          // Name of the HDF5 file
         std::string stage_name;          // Name of the HDF5 file
+        std::string previous_stage_name;          // Name of the HDF5 file
 
         //herr_t, hid_t, and hsize_t are types defined in the HDF5 library
         herr_t status;                  // For error reporting. Each time a HDF5 function that returns herr_t is called, the macro HDF5_CHECK_ERROR should get called.
@@ -235,12 +238,14 @@ class H5OutputWriter: public OutputWriter
 
 
         // HDF5 "hid_t" handles to objects within file
-
-
         hid_t id_model_group;           // object id of the base group for models
         hid_t id_elements_group;        // object id of the base group for models
         hid_t id_nodes_group;           // object id of the base group for models
         hid_t id_time_vector;           // object id of the time vector
+        hid_t id_number_of_time_steps;
+        hid_t id_number_of_elements;
+        hid_t id_number_of_nodes;
+        hid_t id_analysis_options;
 
         // For Nodes
         hid_t id_nodes_ndofs         , id_index_to_nodes_ndofs;

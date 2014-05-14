@@ -89,17 +89,6 @@ int simulate_using_static_multistep(int numSteps)
         return -1;
     }
 
-    string filename("");
-    filename = ModelName + "_" + StageName + ".h5.feioutput";
-
-    // theDomain.setHDF5_Channel(filename,
-    //                           ModelName,
-    //                           StageName,
-    //                           numSteps);
-    theDomain.setOutputWriter(filename,
-                              ModelName,
-                              StageName,
-                              numSteps);
 
     theStaticAnalysis = new StaticAnalysis(theDomain,
                                            *theHandler,

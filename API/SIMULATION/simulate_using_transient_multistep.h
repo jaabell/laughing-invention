@@ -124,17 +124,7 @@ int simulate_using_transient_multistep(double dT,
 
     //     cout<<"\nTransient Analysis!\n";
 
-    string filename("");
-    filename = ModelName + "_" + StageName + ".h5.feioutput";
 
-    // theDomain.setHDF5_Channel(filename,
-    //                           ModelName,
-    //                           StageName,
-    //                           numSteps);
-    theDomain.setOutputWriter(filename,
-                              ModelName,
-                              StageName,
-                              numSteps);
 
     theTransientAnalysis = new DirectIntegrationAnalysis(theDomain,
             *theHandler,
