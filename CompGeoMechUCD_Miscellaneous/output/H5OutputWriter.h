@@ -78,6 +78,7 @@ class H5OutputWriter: public OutputWriter
                        std::string model_name_in,
                        std::string stage_name_in,
                        int nsteps);
+
         ~H5OutputWriter();
 
         virtual int setTime(double t);

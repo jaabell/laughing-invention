@@ -146,6 +146,7 @@ int start_new_stage(string CurrentStageName)
     //                           ModelName,
     //                           StageName,
     //                           numSteps);
+    int numSteps = 1;
     theDomain.setOutputWriter(filename,
                               ModelName,
                               StageName,

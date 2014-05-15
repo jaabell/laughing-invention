@@ -71,6 +71,8 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
                nsteps);
 }
 
+
+
 H5OutputWriter::~H5OutputWriter()
 {
     finalize();

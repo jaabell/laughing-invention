@@ -156,7 +156,7 @@ int simulate_using_static_multistep(int numSteps)
         // create a partitioner & partition the domain
         if (OPS_DOMAIN_PARTITIONER == 0)
         {
-#ifdef _PDD //Guanzhou added
+#ifdef _PDD
             OPS_GRAPH_PARTITIONER  = new ParMetis;
 #else
             OPS_GRAPH_PARTITIONER  = new Metis;
