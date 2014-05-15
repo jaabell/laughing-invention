@@ -1375,7 +1375,7 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
             material_arrayCoord( 2, gp ) += NodalCoord( 2, encount ) * H( encount * 3 + 2, 2 );
         }
 
-        gauss_points( gp, 0) = material_arrayCoord( 0, gp );
+        gauss_points( gp, 0 ) = material_arrayCoord( 0, gp );
         gauss_points( gp, 1 ) = material_arrayCoord( 1, gp );
         gauss_points( gp, 2 ) = material_arrayCoord( 2, gp );
 

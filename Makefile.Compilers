@@ -68,11 +68,15 @@ else ifeq ($(Compiler), PARALLEL)
 endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
-	C++FLAGS        =   -Wall \
+	C++FLAGS        = -flto -Wall \
 										-O2 \
 										-finline \
 										-finline-functions \
 										-finline-limit=10000 \
+										-Winline \
+										-ftemplate-depth=100000 \
+										--param inline-unit-growth=10000 \
+										--param large-function-growth=10000 \
 										-fkeep-inline-functions \
 										-fdefault-inline \
 										-ffloat-store \
@@ -86,21 +90,17 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-std=c++0x \
 										-Wno-write-strings \
 										-march=native
-										# -Winline \
-										# -ftemplate-depth=100000 \
-										# --param inline-unit-growth=10000 \
-										# --param large-function-growth=10000 \
 										# -std=c++11 \
-	# C++FLAGS        = -flto -Wall \
-	# CFLAGS          = -flto -O2 \
-	CFLAGS          =  -O2 \
+	# C++FLAGS        =   -Wall \
+	CFLAGS          = -flto -O2 \
 										-D_LINUX \
 										-D_UNIX \
 										-D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84
 										-march=native $(MORE_CFLAGS)
+	# CFLAGS          =  -O2 \
 
 	FFLAGS          = -O2 $(MORE_FFLAGS)
-	LINKFLAGS       = -O $(MORE_LINKFLAGS)
+	LINKFLAGS       = -O2 -flto $(MORE_LINKFLAGS)
 	#LINKFLAGS       = -O $(MORE_LINKFLAGS)
 
 else
