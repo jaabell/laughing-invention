@@ -83,7 +83,7 @@ void H5OutputWriter::finalize()
 {
     if (file_is_open)
     {
-        cout << "endingtime \n\n";
+        // cout << "endingtime \n\n";
         time_t current ;
         time(&current);
         char *timestring;
