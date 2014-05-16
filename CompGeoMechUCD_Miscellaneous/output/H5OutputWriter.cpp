@@ -559,7 +559,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 
     //Write index to gauss coordinates (if any)
 
-    int ngausscoord = gausscoordinates.dataSize;
+    int ngausscoord = gausscoordinates.numRows;
 
     if (ngausscoord > 0)
     {
@@ -594,16 +594,24 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 
         //Write gauss coordinate values
         dims[0]      = pos_elements_gausscoords + ngausscoord * 3;
-        data_dims[0] = ngausscoord * 3;
+        hsize_t gpdata_dims[2] = {ngausscoord , 3};
         offset[0]    = pos_elements_gausscoords;
         count[0]     = ngausscoord * 3;
 
 
-        double *gaussdata = gausscoordinates.data;
+        double gaussdata[ngausscoord * 3];
+        int c = 0;
+        for (int i = 0; i < ngausscoord; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                gaussdata[c++] = gausscoordinates.data[i + j * ngausscoord];
+            }
+        }
         writeVariableLengthDoubleArray(id_elements_gausscoords,
-                                       datarank,
+                                       2,
                                        dims,
-                                       data_dims,
+                                       gpdata_dims,
                                        offset,
                                        stride,
                                        count,
@@ -617,7 +625,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 
 
 
-    number_of_elements++;
+    number_of_gausspoints++;
 
 
     H5OUTPUTWRITER_COUNT_OBJS;

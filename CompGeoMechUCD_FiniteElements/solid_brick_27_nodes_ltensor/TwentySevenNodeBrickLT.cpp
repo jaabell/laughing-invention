@@ -1232,7 +1232,7 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
     double s  = 0.0;
     double t  = 0.0;
 
-    Info_GaussCoordinates( 0 ) = 27;
+    // Info_GaussCoordinates( 0 ) = 27;
 
     // special case for 27 nodes only
     DTensor2 NodalCoord( 3, 27, 0.0 );

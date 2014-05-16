@@ -215,6 +215,7 @@ class H5OutputWriter: public OutputWriter
 
         int number_of_nodes;
         int number_of_elements;
+        int number_of_gausspoints;
         int current_time_step;
         int number_of_time_steps;
         int max_node_tag;
