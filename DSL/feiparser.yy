@@ -4721,7 +4721,7 @@ stmt
         {
             *FeiDslCallerBase::cppfile << "}" << endl;
         }
-        if($1->compare("quit") == 0) cout << "Quitter!" << endl ;
+        if($1->compare("quit") == 0) cout << "quit: \n/kwit/ \nverb \n   1. leave (a place), usually permanently. \n " << endl ;
         if($1->compare("exit") == 0) cout << "All exits are marked by the \"exit\" word..."<< endl ;
         if($1->compare("bye") == 0) cout << "How polite! Bye, have a nice day!" << endl ;
 

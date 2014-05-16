@@ -4620,7 +4620,7 @@ namespace yy {
         {
             *FeiDslCallerBase::cppfile << "}" << endl;
         }
-        if((yysemantic_stack_[(1) - (1)].ident)->compare("quit") == 0) cout << "Quitter!" << endl ;
+        if((yysemantic_stack_[(1) - (1)].ident)->compare("quit") == 0) cout << "quit: \n/kwit/ \nverb \n   1. leave (a place), usually permanently. \n " << endl ;
         if((yysemantic_stack_[(1) - (1)].ident)->compare("exit") == 0) cout << "All exits are marked by the \"exit\" word..."<< endl ;
         if((yysemantic_stack_[(1) - (1)].ident)->compare("bye") == 0) cout << "How polite! Bye, have a nice day!" << endl ;
 

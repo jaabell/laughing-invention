@@ -104,6 +104,7 @@
     extern int recovery_mode;
     extern void set_model_name(char* cstring);
     extern void set_outcppfile_name(string newfilename);
+    extern void wipe_model();
 
 
 %}
@@ -774,7 +775,8 @@ EXP	([Ee][-+]?[0-9]+)
                                             }
                                             else
                                             {
-                                                cout << endl << "Program exits! " << endl;
+                                                cout << endl << "You forgot to say \"bye\"... " << endl;
+                                                wipe_model();
                                                 exit(0);
                                             }
 
