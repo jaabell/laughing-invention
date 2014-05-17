@@ -830,13 +830,15 @@ int EightNodeBrickLT::commitState ()
 
 void EightNodeBrickLT::formOutput()
 {
-    DTensor2 stress(2, 2);
-    DTensor2 strain(2, 2);
+    DTensor2 stress(3, 3);
+    DTensor2 strain(3, 3);
+    DTensor2 plstrain(3, 3);
 
     int ii = 0;
     for (int gp = 0; gp < 8; gp++)
     {
         strain = material_array[gp]->getStrainTensor();
+        plstrain = material_array[gp]->getPlasticStrainTensor();
         stress = material_array[gp]->getStressTensor();
 
         //Write strain
@@ -846,6 +848,14 @@ void EightNodeBrickLT::formOutput()
         outputVector(ii++) = strain(0, 1);
         outputVector(ii++) = strain(0, 2);
         outputVector(ii++) = strain(1, 2);
+
+        //Write plastic strain
+        outputVector(ii++) = plstrain(0, 0);
+        outputVector(ii++) = plstrain(1, 1);
+        outputVector(ii++) = plstrain(2, 2);
+        outputVector(ii++) = plstrain(0, 1);
+        outputVector(ii++) = plstrain(0, 2);
+        outputVector(ii++) = plstrain(1, 2);
 
 
         //Write stress

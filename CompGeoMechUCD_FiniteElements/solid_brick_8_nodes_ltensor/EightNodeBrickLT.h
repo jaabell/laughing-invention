@@ -50,9 +50,9 @@
 #include <ElementalLoad.h>
 
 
-// Output is 6 components of strain and 6 of stress per gauss point
+// Output is 6 components of strain 6 components of plastic strain and 6 of stress per gauss point
 #define EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS 8
-#define EightNodeBrickLT_OUTPUT_SIZE EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*2)
+#define EightNodeBrickLT_OUTPUT_SIZE EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*3)
 
 class Node;
 

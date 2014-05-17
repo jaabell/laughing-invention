@@ -35,6 +35,15 @@
 #ifndef EIGHTNODEBRICK_U_P_U_H
 #define EIGHTNODEBRICK_U_P_U_H
 
+
+
+// Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point,
+// and one of pore pressure at each gauss
+#define EightNodeBrick_U_P_U_NUMBER_OF_GAUSSPOINTS 8
+#define EightNodeBrick_U_P_U_OUTPUT_SIZE EightNodeBrick_U_P_U_NUMBER_OF_GAUSSPOINTS*(6*3 + 1)
+
+
+
 #ifndef _bool_h
 #include "bool.h"
 #endif
@@ -147,6 +156,12 @@ class EightNodeBrick_u_p_U: public Element
         const Vector &getInternalForce();
         const Vector &getBodyForce(const Vector &data);
 
+
+        //Jose Added for output
+        Matrix &getGaussCoordinates(void);
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
     private:
         ID  connectedExternalNodes;    // tags of nodes
         Node *theNodes[8] ;            // pointers to eight nodes
@@ -176,6 +191,10 @@ class EightNodeBrick_u_p_U: public Element
 
         Vector *Q;
         Matrix *Ki;
+
+
+        Matrix gauss_points;
+        Vector outputVector;
 };
 
 

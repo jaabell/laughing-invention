@@ -51,9 +51,9 @@
 
 
 
-// Output is 6 components of strain and 6 of stress per gauss point
+// Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point
 #define TwentySevenNodeBrickLT_NUMBER_OF_GAUSSPOINTS 27
-#define TwentySevenNodeBrickLT_OUTPUT_SIZE TwentySevenNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*2)
+#define TwentySevenNodeBrickLT_OUTPUT_SIZE TwentySevenNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*3)
 
 
 

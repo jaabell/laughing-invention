@@ -3280,11 +3280,13 @@ int TwentySevenNodeBrick::commitState ()
     //Forming output
     stresstensor stress;
     straintensor strain;
+    straintensor plstrain;
     int ii = 0;
     for (int gp = 0; gp < 27; gp++)
     {
         stress = matpoint[gp]->getStressTensor();
         strain = matpoint[gp]->getStrainTensor();
+        plstrain = matpoint[gp]->getPlasticStrainTensor();
 
         //Write strain
         outputVector(ii++) = strain.cval(1, 1);
@@ -3293,6 +3295,14 @@ int TwentySevenNodeBrick::commitState ()
         outputVector(ii++) = strain.cval(1, 2);
         outputVector(ii++) = strain.cval(1, 3);
         outputVector(ii++) = strain.cval(2, 3);
+
+        //Write strain
+        outputVector(ii++) = plstrain.cval(1, 1);
+        outputVector(ii++) = plstrain.cval(2, 2);
+        outputVector(ii++) = plstrain.cval(3, 3);
+        outputVector(ii++) = plstrain.cval(1, 2);
+        outputVector(ii++) = plstrain.cval(1, 3);
+        outputVector(ii++) = plstrain.cval(2, 3);
 
 
         //Write stress

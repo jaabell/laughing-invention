@@ -35,9 +35,9 @@
 #ifndef EIGHTNODEBRICK_H
 #define EIGHTNODEBRICK_H
 
-// Output is 6 components of strain and 6 of stress per gauss point
+// Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point
 #define EightNodeBrick_NUMBER_OF_GAUSSPOINTS 8
-#define EightNodeBrick_OUTPUT_SIZE EightNodeBrick_NUMBER_OF_GAUSSPOINTS*(6*2)
+#define EightNodeBrick_OUTPUT_SIZE EightNodeBrick_NUMBER_OF_GAUSSPOINTS*(6*3)
 
 #ifndef _bool_h
 #include "bool.h"

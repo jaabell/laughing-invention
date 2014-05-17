@@ -84,7 +84,7 @@ EightNodeBrick_u_p_U::EightNodeBrick_u_p_U(int element_number,
     ks(kks),
     kf(kkf),
     Q(0),
-    Ki(0)
+    Ki(0), gauss_points(8, 3), outputVector(EightNodeBrick_U_P_U_OUTPUT_SIZE)
 {
     // permeability
     perm(0) = permb_x;
@@ -140,7 +140,7 @@ EightNodeBrick_u_p_U::EightNodeBrick_u_p_U(int element_number,
 EightNodeBrick_u_p_U::EightNodeBrick_u_p_U ()
     : Element(0, ELE_TAG_EightNodeBrick_u_p_U ),
       connectedExternalNodes(Num_Nodes), perm(Num_Dim),
-      poro(0.0), alpha(1.0), rho_s(0.0), rho_f(0.0), ks(0.0), kf(0.0), Q(0), Ki(0)
+      poro(0.0), alpha(1.0), rho_s(0.0), rho_f(0.0), ks(0.0), kf(0.0), Q(0), Ki(0), gauss_points(8, 3), outputVector(EightNodeBrick_U_P_U_OUTPUT_SIZE)
 {
     theMaterial = 0;
 
@@ -252,6 +252,48 @@ int EightNodeBrick_u_p_U::commitState (void)
         retVal += theMaterial[i]->commitState();
     }
 
+
+    //Forming output
+    stresstensor stress;
+    straintensor strain;
+    straintensor plstrain;
+    int ii = 0;
+    for (int gp = 0; gp < 8; gp++)
+    {
+        stress = theMaterial[gp]->getStressTensor();
+        strain = theMaterial[gp]->getStrainTensor();
+        plstrain = theMaterial[gp]->getPlasticStrainTensor();
+
+        //Write strain
+        outputVector(ii++) = strain.cval(1, 1);
+        outputVector(ii++) = strain.cval(2, 2);
+        outputVector(ii++) = strain.cval(3, 3);
+        outputVector(ii++) = strain.cval(1, 2);
+        outputVector(ii++) = strain.cval(1, 3);
+        outputVector(ii++) = strain.cval(2, 3);
+
+        //Write strain
+        outputVector(ii++) = plstrain.cval(1, 1);
+        outputVector(ii++) = plstrain.cval(2, 2);
+        outputVector(ii++) = plstrain.cval(3, 3);
+        outputVector(ii++) = plstrain.cval(1, 2);
+        outputVector(ii++) = plstrain.cval(1, 3);
+        outputVector(ii++) = plstrain.cval(2, 3);
+
+        //Write stress
+        outputVector(ii++) = stress.cval(1, 1);
+        outputVector(ii++) = stress.cval(2, 2);
+        outputVector(ii++) = stress.cval(3, 3);
+        outputVector(ii++) = stress.cval(1, 2);
+        outputVector(ii++) = stress.cval(1, 3);
+        outputVector(ii++) = stress.cval(2, 3);
+
+        //Pore pressure at gauss points
+        double x1 = gauss_points(gp, 0);
+        double x2 = gauss_points(gp, 1);
+        double x3 = gauss_points(gp, 2);
+        outputVector(ii++) = getPorePressure(x1, x2, x3);
+    }
     return retVal;
 }
 
@@ -641,629 +683,6 @@ int EightNodeBrick_u_p_U::displaySelf (Renderer &theViewer, int displayMode, flo
     // Not implemented yet
     return 0;
 }
-
-//=============================================================================
-// Response* EightNodeBrick_u_p_U::setResponse(const char** argv, int argc, Information& eleInfo)
-// {
-//     if ( (strcmp(argv[0], "stresses") == 0) || (strcmp(argv[0], "stress") == 0) )
-//     {
-//         return new ElementResponse(this, 1, Vector(Num_TotalGaussPts * 6) );
-//     }
-
-//     else if (strcmp(argv[0], "gausspoint") == 0 || strcmp(argv[0], "GaussPoint") == 0)
-//     {
-//         return new ElementResponse(this, 2, Vector(Num_TotalGaussPts * Num_Dim) );
-//     }
-
-//     else if (strcmp(argv[0], "pq") == 0 || strcmp(argv[0], "PQ") == 0)
-//     {
-//         return new ElementResponse(this, 3, Vector(Num_TotalGaussPts * 2) );
-//     }
-
-//     //start changes-Mahdi-Jan07
-//     else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
-//     {
-//         return new ElementResponse(this, 4, Vector(Num_TotalGaussPts * 6) );
-//     }
-//     //end changes-Mahdi-Jan07
-
-
-//     //=============================================================
-//     // Nima Tafazzoli (Nov. 2012)
-//     else if ( (strcmp(argv[0], "ku") == 0) )
-//     {
-//         return new ElementResponse(this, 5, Vector(Num_ElemDof) );
-//     }
-
-
-//     else if ( (strcmp(argv[0], "NegativeG1p") == 0) )
-//     {
-//         return new ElementResponse(this, 6, Vector(Num_ElemDof) );
-//     }
-
-
-//     else if ( (strcmp(argv[0], "C1udot") == 0) )
-//     {
-//         return new ElementResponse(this, 7, Vector(Num_ElemDof) );
-//     }
-
-
-//     else if ( (strcmp(argv[0], "NegativeC2Udot") == 0) )
-//     {
-//         return new ElementResponse(this, 8, Vector(Num_ElemDof) );
-//     }
-
-
-//     else if ( (strcmp(argv[0], "Msudotdot") == 0) )
-//     {
-//         return new ElementResponse(this, 9, Vector(Num_ElemDof) );
-//     }
-
-
-
-//     else
-//     {
-//         return 0;
-//     }
-// }
-
-// //=============================================================================
-// int EightNodeBrick_u_p_U::getResponse(int responseID, Information& eleInfo)
-// {
-
-//     if (responseID == 1)
-//     {
-//         static Vector stresses(Num_TotalGaussPts * 6);
-//         stresstensor sigma;
-//         int cnt = 0;
-//         int i;
-
-//         for (i = 0; i < Num_TotalGaussPts; i++)
-//         {
-//             sigma = theMaterial[i]->getStressTensor();
-//             stresses(cnt++) = sigma.cval(1, 1); //xx
-//             stresses(cnt++) = sigma.cval(2, 2); //yy
-//             stresses(cnt++) = sigma.cval(3, 3); //zz
-//             stresses(cnt++) = sigma.cval(2, 3); //yz
-//             stresses(cnt++) = sigma.cval(3, 1); //zx
-//             stresses(cnt++) = sigma.cval(1, 2); //xy
-//         }
-
-//         return eleInfo.setVector(stresses);
-//     }
-
-//     else if (responseID == 2)
-//     {
-//         static Vector Gpts(Num_TotalGaussPts * Num_Dim);
-//         tensor GCoord;
-//         int cnt = 0;
-//         int i, j;
-//         GCoord = getGaussPts();
-
-//         for (i = 0; i < Num_TotalGaussPts; i++)
-//         {
-//             for (j = 0; j < Num_Dim; j++)
-//             {
-//                 Gpts(cnt++) = GCoord.cval(i + 1, j + 1);
-//             }
-//         }
-
-//         return eleInfo.setVector(Gpts);
-//     }
-
-//     else if (responseID == 3)
-//     {
-//         static Vector Gpts(Num_TotalGaussPts * 2);
-//         stresstensor sigma;
-//         int i;
-
-//         for (i = 0; i < Num_TotalGaussPts; i++)
-//         {
-//             sigma = theMaterial[i]->getStressTensor();
-//             Gpts(i * 2   ) = sigma.p_hydrostatic();
-//             Gpts(i * 2 + 1) = sigma.q_deviatoric();
-//         }
-
-//         return eleInfo.setVector(Gpts);
-//     }
-
-
-
-//     //start changes-Mahdi-Jan07
-//     else if (responseID == 4)
-//     {
-//         static Vector strains(Num_TotalGaussPts * 6);
-//         //    static Vector strainVector(6);
-//         straintensor epsilon;
-//         int cnt = 0;
-//         int i;
-
-//         for (i = 0; i < Num_TotalGaussPts; i++)
-//         {
-//             //        strainVector  = theMaterial[i]->getStrain();
-//             //        strains(cnt++) = strainVector(0);  //xx
-//             //        strains(cnt++) = strainVector(1);  //yy
-//             //        strains(cnt++) = strainVector(2);  //zz
-//             //        strains(cnt++) = strainVector(3);  //yz
-//             //        strains(cnt++) = strainVector(4);  //zx
-//             //        strains(cnt++) = strainVector(5);  //xy
-//             epsilon = theMaterial[i]->getStrainTensor();
-//             strains(cnt++) = epsilon.cval(1, 1); //xx
-//             strains(cnt++) = epsilon.cval(2, 2); //yy
-//             strains(cnt++) = epsilon.cval(3, 3); //zz
-//             strains(cnt++) = epsilon.cval(2, 3); //yz
-//             strains(cnt++) = epsilon.cval(3, 1); //zx
-//             strains(cnt++) = epsilon.cval(1, 2); //xy
-//         }
-
-//         return eleInfo.setVector(strains);
-//     }
-//     //end changes-Mahdi-Jan07
-
-
-
-//====================================================================
-// Nima Tafazzoli (Nov. 2012)
-
-
-//   else if (responseID == 5)
-//   {
-//
-//     static Vector ku(Num_ElemDof);
-//     ku.Zero();
-//
-//     static Matrix K(Num_ElemDof,Num_ElemDof);
-//     K.Zero();
-//
-//
-//     static Vector u(Num_ElemDof);
-//     u.Zero();
-//
-//     for (int i=0; i<Num_Nodes; i++)
-//     {
-//       const Vector &disp = theNodes[i]->getTrialDisp();
-//
-//
-//       if ( disp.Size() != Num_Dof )
-//       {
-//         cerr.flush() << "EightNode_Brick_u_p_U::getResponse(): displacement vector sizes are incompatable \n";
-//         exit(-1);
-//       }
-//       for (int j=0; j<3; j++)
-//       {
-//         u(i*Num_Dof +j) = disp(j);
-//       }
-//     }
-//
-//
-//
-//
-//     tensor tG = getStiffnessTensorG12();
-//
-//     //G1 and G1^T, Note *(alpha-poro) here!
-//     for (int i=0 ; i<Num_Nodes; i++ )
-//     {
-//       for (int j=0; j<Num_Nodes; j++ )
-//       {
-//         for(int m=0; m<Num_Dim; m++)
-//  {
-//             K(i*Num_Dof+m, j*Num_Dof+3) = -tG.cval(i+1, m+1, j+1) *(alpha-poro);
-//             K(j*Num_Dof+3, i*Num_Dof+m) = -tG.cval(i+1, m+1, j+1) *(alpha-poro);
-//         }
-//       }
-//     }
-//
-//
-//     //G2 and G2^T, Note *poro here!
-//     for (int i=0 ; i<Num_Nodes; i++ )
-//     {
-//       for (int j=0; j<Num_Nodes; j++ )
-//       {
-//         for(int m=0; m<Num_Dim; m++) {
-//             K(i*Num_Dof+m+4, j*Num_Dof+3) = -tG.cval(i+1, m+1, j+1) *poro;
-//             K(j*Num_Dof+3, i*Num_Dof+m+4) = -tG.cval(i+1, m+1, j+1) *poro;
-//         }
-//       }
-//     }
-//
-//
-//     //P
-//     if (ks == 0.0 || kf == 0.0)
-//     {
-//        cerr<<" Error, EightNodeBrick_u_p_U::getStiffnessTensorP -- solid and/or fluid bulk modulus is zero\n";
-//        exit(-1);
-//     }
-//
-//     double  oneOverQ = poro/kf + (alpha-poro)/ks;
-//
-//
-//     tensor tP = getMassTensorMsf();
-//
-//     for (int i=0 ; i<Num_Nodes; i++ )
-//     {
-//       for (int j=0; j<Num_Nodes; j++ )
-//       {
-//         K(i*Num_Dof+3, j*Num_Dof+3) = tP.cval(i+1, j+1) * (-oneOverQ);
-//       }
-//     }
-//
-//
-//     tensor tKep = getStiffnessTensorKep();
-//
-//
-//     // + Kep
-//     for (int i=0 ; i<Num_Nodes; i++)
-//     {
-//       for (int j=0; j<Num_Nodes; j++)
-//       {
-//         for(int m=0; m<Num_Dim; m++)
-//         {
-//           for(int n=0; n<Num_Dim; n++)
-//              K(i*Num_Dof+m, j*Num_Dof+n) = tKep.cval(i+1, m+1, n+1, j+1);
-//         }
-//       }
-//     }
-//
-//
-//
-//     ku.addMatrixVector(1.0, K, u, 1.0);
-//
-//     return eleInfo.setVector(ku);
-//
-//   }
-
-
-
-// else if (responseID == 5)
-// {
-//     static Vector ku(Num_ElemDof);
-//     ku.Zero();
-
-//     static Matrix K(Num_ElemDof, Num_ElemDof);
-//     K.Zero();
-
-
-//     static Vector u(Num_ElemDof);
-//     u.Zero();
-
-//     for (int i = 0; i < Num_Nodes; i++)
-//     {
-//         const Vector &disp = theNodes[i]->getTrialDisp();
-
-
-//         if ( disp.Size() != Num_Dof )
-//         {
-//             cerr.flush() << "EightNode_Brick_u_p_U::getResponse(): displacement vector sizes are incompatable \n";
-//             exit(-1);
-//         }
-
-//         for (int j = 0; j < Num_Dof; j++)
-//         {
-//             u(i * Num_Dof + j) = disp(j);
-//         }
-//     }
-
-
-
-//     tensor tKep = getStiffnessTensorKep();
-
-
-//     // + Kep
-//     for (int i = 0 ; i < Num_Nodes; i++)
-//     {
-//         for (int j = 0; j < Num_Nodes; j++)
-//         {
-//             for (int m = 0; m < Num_Dim; m++)
-//             {
-//                 for (int n = 0; n < Num_Dim; n++)
-//                 {
-//                     K(i * Num_Dof + m, j * Num_Dof + n) = tKep.cval(i + 1, m + 1, n + 1, j + 1);
-//                 }
-//             }
-//         }
-//     }
-
-
-
-//     ku.addMatrixVector(1.0, K, u, 1.0);
-
-//     return eleInfo.setVector(ku);
-
-
-// }
-
-
-
-// else if (responseID == 6)
-// {
-
-//     static Vector G1p(Num_ElemDof);
-//     G1p.Zero();
-
-//     static Matrix G1(Num_ElemDof, Num_ElemDof);
-//     G1.Zero();
-
-
-//     static Vector p(Num_ElemDof);
-//     p.Zero();
-
-//     for (int i = 0; i < Num_Nodes; i++)
-//     {
-//         const Vector &disp = theNodes[i]->getTrialDisp();
-
-
-//         if ( disp.Size() != Num_Dof )
-//         {
-//             cerr.flush() << "EightNode_Brick_u_p_U::getResponse(): displacement vector sizes are incompatable \n";
-//             exit(-1);
-//         }
-
-//         //       for (int j=0; j<Num_Dof; j++)
-//         //       {
-//         p(i * Num_Dof + 3) = disp(3);
-//         //       }
-//     }
-
-
-
-//     tensor tG = getStiffnessTensorG12();
-
-//     //G1 and G1^T, Note *(alpha-poro) here!
-//     for (int i = 0 ; i < Num_Nodes; i++ )
-//     {
-//         for (int j = 0; j < Num_Nodes; j++ )
-//         {
-//             for (int m = 0; m < Num_Dim; m++)
-//             {
-//                 G1(i * Num_Dof + m, j * Num_Dof + 3) = -tG.cval(i + 1, m + 1, j + 1) * (alpha - poro);
-//                 //             G1(j*Num_Dof+3, i*Num_Dof+m) = -tG.cval(i+1, m+1, j+1) *(alpha-poro);
-//             }
-//         }
-//     }
-
-
-//     //      cerr << "\nP:"  << p;
-//     //      cerr << "New Step:" << "\n";
-//     //      cerr << "G1:" << G1 << "\n";
-
-
-
-//     G1p.addMatrixVector(1.0, G1, p, 1.0);
-
-//     //      cerr << "\nG1p:" << G1p;
-
-
-//     return eleInfo.setVector(G1p);
-
-// }
-
-
-
-
-// else if (responseID == 7)
-// {
-
-
-//     static Vector udot(Num_ElemDof);
-//     udot.Zero();
-
-//     static Vector C1udot(Num_ElemDof);
-//     C1udot.Zero();
-
-//     static Matrix C1(Num_ElemDof, Num_ElemDof);
-//     C1.Zero();
-
-
-//     int i, j, m, n;
-
-//     // + C*v
-//     for (i = 0; i < Num_Nodes; i++)
-//     {
-//         const Vector &vel = theNodes[i]->getTrialVel();
-
-//         if ( vel.Size() != Num_Dof )
-//         {
-//             cerr << "EightNode_Brick_u_p_U::getResistingForceIncInertia matrix and vector sizes are incompatable \n";
-//             exit(-1);
-//         }
-
-//         for (int j = 0; j < Num_Dof; j++)
-//         {
-//             udot(i * Num_Dof + j) = vel(j);
-//         }
-//     }
-
-
-
-//     tensor tC = getDampTensorC123();
-
-
-
-//     double Ctemp = 0.0;
-
-
-
-//     for ( i = 0 ; i < Num_Nodes; i++ )
-//     {
-//         for ( j = 0; j < Num_Nodes; j++ )
-//         {
-//             for ( m = 0; m < Num_Dim; m++)
-//             {
-//                 for ( n = 0; n < Num_Dim; n++)
-//                 {
-//                     Ctemp = tC.cval(i + 1, m + 1, n + 1, j + 1) * (poro * poro);
-
-//                     // C1
-//                     C1(i * Num_Dof + m, j * Num_Dof + n) = Ctemp;
-
-//                 }
-//             }
-//         }
-//     }
-
-
-
-//     C1udot.addMatrixVector(1.0, C1, udot, 1.0);
-
-//     return eleInfo.setVector(C1udot);
-
-// }
-
-
-
-// else if (responseID == 8)
-// {
-
-
-//     static Vector Udot(Num_ElemDof);
-//     Udot.Zero();
-
-//     static Vector C2Udot(Num_ElemDof);
-//     C2Udot.Zero();
-
-//     static Matrix C2(Num_ElemDof, Num_ElemDof);
-//     C2.Zero();
-
-
-//     int i, j, m, n;
-
-//     // + C*v
-//     for (i = 0; i < Num_Nodes; i++)
-//     {
-//         const Vector &vel = theNodes[i]->getTrialVel();
-
-//         if ( vel.Size() != Num_Dof )
-//         {
-//             cerr << "EightNode_Brick_u_p_U::getResistingForceIncInertia matrix and vector sizes are incompatable \n";
-//             exit(-1);
-//         }
-
-//         for (int j = 0; j < Num_Dof; j++)
-//         {
-//             Udot(i * Num_Dof + j) = vel(j);
-//         }
-//     }
-
-
-
-//     tensor tC = getDampTensorC123();
-
-
-
-//     double Ctemp = 0.0;
-
-
-
-//     for ( i = 0 ; i < Num_Nodes; i++ )
-//     {
-//         for ( j = 0; j < Num_Nodes; j++ )
-//         {
-//             for ( m = 0; m < Num_Dim; m++)
-//             {
-//                 for ( n = 0; n < Num_Dim; n++)
-//                 {
-//                     Ctemp = tC.cval(i + 1, m + 1, n + 1, j + 1) * (poro * poro);
-
-
-//                     //C2 and C2^T
-//                     C2(i * Num_Dof + m, j * Num_Dof + n + 4) = - Ctemp;
-//                     C2(j * Num_Dof + n + 4, i * Num_Dof + m) = - Ctemp;
-//                 }
-//             }
-//         }
-//     }
-
-
-
-//     C2Udot.addMatrixVector(1.0, C2, Udot, 1.0);
-
-//     return eleInfo.setVector(C2Udot);
-
-// }
-
-
-
-// else if (responseID == 9)
-// {
-
-
-//     static Vector udotdot(Num_ElemDof);
-//     udotdot.Zero();
-
-//     static Vector Msudotdot(Num_ElemDof);
-//     Msudotdot.Zero();
-
-//     static Matrix Ms(Num_ElemDof, Num_ElemDof);
-//     Ms.Zero();
-
-
-
-
-//     // + M*a
-//     int i, j;
-
-//     for (i = 0; i < Num_Nodes; i++)
-//     {
-//         const Vector &acc = theNodes[i]->getTrialAccel();
-
-//         if ( acc.Size() != Num_Dof )
-//         {
-//             cerr << "EightNode_Brick_u_p_U::getResistingForceIncInertia matrix and vector sizes are incompatable \n";
-//             exit(-1);
-//         }
-
-//         for (int j = 0; j < Num_Dof; j++)
-//         {
-//             udotdot(i * Num_Dof + j) = acc(j);
-//         }
-//     }
-
-
-
-//     tensor tM = getMassTensorMsf();
-
-//     double Mtemp1 = 0.0;
-
-//     for ( i = 0 ; i < Num_Nodes; i++ )
-//     {
-//         for ( j = 0; j < Num_Nodes; j++ )
-//         {
-
-//             //Ms, Note *(1.0-poro)*rho_s here!
-//             Mtemp1 = tM.cval(i + 1, j + 1) * (1.0 - poro) * rho_s;
-
-//             Ms(i * Num_Dof + 0, j * Num_Dof + 0) = Mtemp1;
-//             Ms(i * Num_Dof + 1, j * Num_Dof + 1) = Mtemp1;
-//             Ms(i * Num_Dof + 2, j * Num_Dof + 2) = Mtemp1;
-
-
-//         }
-//     }
-
-
-//     //      cerr << "New Step:" << "\n";
-//     //      cerr << "udotdot:" << udotdot << "\n";
-//     //      cerr << "Ms:" << Ms << "\n";
-
-//     Msudotdot.addMatrixVector(1.0, Ms, udotdot, 1.0);
-
-
-//     return eleInfo.setVector(Msudotdot);
-
-
-// }
-
-
-
-// //====================================================================
-
-
-
-// else
-// {
-//     return (-1);
-// }
-// }
 
 
 //=============================================================================
@@ -2098,7 +1517,7 @@ tensor EightNodeBrick_u_p_U::getGaussPts(void)
     int i, j, where;
 
     int GP_c_r, GP_c_s, GP_c_t;
-
+    int gp = 0;
     for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
@@ -2122,6 +1541,10 @@ tensor EightNodeBrick_u_p_U::getGaussPts(void)
                         Gs.val(where + 1, j + 1) += shp.cval(i + 1) * T_Crds(j);
                     }
                 }
+                gauss_points(gp, 0) = Gs.val(where + 1,  1);
+                gauss_points(gp, 1) = Gs.val(where + 1,  2);
+                gauss_points(gp, 2) = Gs.val(where + 1,  3);
+                gp++;
             }
         }
     }
@@ -2179,6 +1602,31 @@ EightNodeBrick_u_p_U::getStress(void)
     return stresses;
 
 }
+
+
+
+
+Matrix &EightNodeBrick_u_p_U::getGaussCoordinates(void)
+{
+    return gauss_points;
+}
+
+
+
+int EightNodeBrick_u_p_U::getOutputSize() const
+{
+    return EightNodeBrick_U_P_U_OUTPUT_SIZE;
+}
+
+
+
+const Vector &EightNodeBrick_u_p_U::getOutput() const
+{
+
+
+    return outputVector;
+}
+
 
 
 

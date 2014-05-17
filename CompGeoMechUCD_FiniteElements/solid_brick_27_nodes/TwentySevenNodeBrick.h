@@ -29,9 +29,9 @@
 #define TWENTYSEVENNODEBRICK_H
 
 
-// Output is 6 components of strain and 6 of stress per gauss point
+// Output is 6 components of strain, 6 comps of plastic strain, and 6 of stress per gauss point
 #define TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS 27
-#define TwentySevenNodeBrick_OUTPUT_SIZE TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS*(6*2)
+#define TwentySevenNodeBrick_OUTPUT_SIZE TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS*(6*3)
 
 
 #ifndef _bool_h
