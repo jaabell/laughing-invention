@@ -104,6 +104,10 @@ class ContactElement_3DOF_6DOF: public Element
 
         // Nima Tafazzoli added to return the Mass matrix (Feb. 2010)
         //   Matrix returnMass(void);
+        std::string getElementName() const
+        {
+            return "ContactElement_3DOF_6DOF";
+        };
 
     protected:
 
