@@ -68,7 +68,7 @@ Truss::Truss(int tag,
       theMaterial(0), connectedExternalNodes(2),
       numDOF(0), theLoad(0),
       theMatrix(0), theVector(0),
-      L(0.0), A(a), rho(r)
+      L(0.0), A(a), rho(r), outputVector(Truss_OUTPUT_SIZE)
 {
     // get a copy of the material and check we obtained a valid copy
     theMaterial = theMat.getCopy();
@@ -109,7 +109,7 @@ Truss::Truss()
       theMaterial(0), connectedExternalNodes(2),
       numDOF(0), theLoad(0),
       theMatrix(0), theVector(0),
-      L(0.0), A(0.0), rho(0.0)
+      L(0.0), A(0.0), rho(0.0), outputVector(Truss_OUTPUT_SIZE)
 {
     // ensure the connectedExternalNode ID is of correct size
     if (connectedExternalNodes.Size() != 2)
@@ -991,3 +991,12 @@ Truss::getForce(void)
 
 }
 
+int Truss::getOutputSize() const
+{
+    return Truss_OUTPUT_SIZE;
+}
+
+const Vector &Truss::getOutput() const
+{
+    return outputVector;
+}

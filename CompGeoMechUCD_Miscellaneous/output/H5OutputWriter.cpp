@@ -511,11 +511,18 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
                                     block,
                                     data);
 
-
     //Write index to outputs
     // dims[0]      = max_element_tag;
     // offset[0]    = tag ;
-    data = &pos_elements_outputs;
+    int pos_no_output = -1;
+    if (length_of_output > 0)
+    {
+        data = &pos_elements_outputs;
+    }
+    else
+    {
+        data = &pos_no_output;
+    }
     writeVariableLengthIntegerArray(id_index_to_elements_output,
                                     datarank,
                                     dims,
@@ -1007,76 +1014,78 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
     //  ********************************************************************************************
     //  ********************************************************************************************
     //  ********************************************************************************************
-
-    if (create_elementOutput_arrays)
+    if (length_element_output > 0) // If there is nothing to output, there is nothing to output
     {
-        int rank = 2;
-        hsize_t dims[2];
-        hsize_t maxdims[2];
-        dims[0] = (hsize_t) length_element_output;
-        dims[1] = 1;
-        maxdims[0] = (hsize_t)  length_element_output;
-        maxdims[1] = H5S_UNLIMITED;
+        if (create_elementOutput_arrays)
+        {
+            int rank = 2;
+            hsize_t dims[2];
+            hsize_t maxdims[2];
+            dims[0] = (hsize_t) length_element_output;
+            dims[1] = 1;
+            maxdims[0] = (hsize_t)  length_element_output;
+            maxdims[1] = H5S_UNLIMITED;
 
-        id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+            id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
 
-        create_elementOutput_arrays = false;
+            create_elementOutput_arrays = false;
 
+        }
+
+        int pos, noutputs;
+
+        // Read NOUTPUTS from HDF5 file
+        int datarank         = 1;
+        hsize_t data_dims[1] = {1};
+        hsize_t offset[2]    = {(hsize_t) elementTag , 0};
+        hsize_t stride[2]    = {1, 0};
+        hsize_t count[2]     = {1, 0};
+        hsize_t block[2]     = {1, 0};
+
+        hsize_t id_dataspace = H5Dget_space(id_elements_noutputs);
+        hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+        status = H5Sselect_hyperslab(
+                     id_dataspace,          // Id of the parent dataspace
+                     H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                     offset,                // start of selection
+                     stride,                // stride in each dimension, NULL  is select everything
+                     count ,                // how many blocks to select in each direction
+                     block                  // little block selected per selection
+                 );
+
+        HDF5_CHECK_ERROR;
+
+        H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
+        H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+
+
+        //Write data
+        hsize_t dims[2]      =  { (hsize_t)  length_element_output, (hsize_t)  current_time_step};
+        data_dims[0] = (hsize_t) noutputs;
+
+        offset[0]    = (hsize_t) pos;
+        offset[1]    = (hsize_t) current_time_step - 1;
+        stride[0]    = 1;
+        stride[1]    = 1;
+        count[0]     = (hsize_t) noutputs;
+        count[1]     = 1;
+        block[0]     = 1;
+        block[1]     = 1;
+        double *data = output.theData;
+        writeVariableLengthDoubleArray(id_elements_output,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       data);
+
+        H5Sclose(id_dataspace);
+        H5Sclose(id_memspace);
+        H5OUTPUTWRITER_COUNT_OBJS;
     }
-
-    int pos, noutputs;
-
-    // Read NOUTPUTS from HDF5 file
-    int datarank         = 1;
-    hsize_t data_dims[1] = {1};
-    hsize_t offset[2]    = {(hsize_t) elementTag , 0};
-    hsize_t stride[2]    = {1, 0};
-    hsize_t count[2]     = {1, 0};
-    hsize_t block[2]     = {1, 0};
-
-    hsize_t id_dataspace = H5Dget_space(id_elements_noutputs);
-    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
-    status = H5Sselect_hyperslab(
-                 id_dataspace,          // Id of the parent dataspace
-                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
-                 offset,                // start of selection
-                 stride,                // stride in each dimension, NULL  is select everything
-                 count ,                // how many blocks to select in each direction
-                 block                  // little block selected per selection
-             );
-
-    HDF5_CHECK_ERROR;
-
-    H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
-    H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
-
-
-    //Write data
-    hsize_t dims[2]      =  { (hsize_t)  length_element_output, (hsize_t)  current_time_step};
-    data_dims[0] = (hsize_t) noutputs;
-
-    offset[0]    = (hsize_t) pos;
-    offset[1]    = (hsize_t) current_time_step - 1;
-    stride[0]    = 1;
-    stride[1]    = 1;
-    count[0]     = (hsize_t) noutputs;
-    count[1]     = 1;
-    block[0]     = 1;
-    block[1]     = 1;
-    double *data = output.theData;
-    writeVariableLengthDoubleArray(id_elements_output,
-                                   datarank,
-                                   dims,
-                                   data_dims,
-                                   offset,
-                                   stride,
-                                   count,
-                                   block,
-                                   data);
-
-    H5Sclose(id_dataspace);
-    H5Sclose(id_memspace);
-    H5OUTPUTWRITER_COUNT_OBJS;
     return 0;
     //  ********************************************************************************************
     //  **************************** SEE NOTE ******************************************************

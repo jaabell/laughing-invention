@@ -22,6 +22,7 @@
 //
 // DATE:
 // UPDATE HISTORY:    Some changes made by Babak Kamrani On October 2013
+//                    Lock option added by Babak Kamrani on 4/12/14
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -36,7 +37,15 @@
 #include <stdlib.h>
 #include <string.h>
 // #include <ElementResponse.h>
-
+#include <fstream>
+using std::ifstream;
+using namespace std;
+//#ifdef _BABAK_DEBUG
+#include <mpi.h>
+#include <stdio.h>
+#include <string.h>
+#include <sstream>
+#include <fstream>
 
 const int ContactElement_Nonlinear_3DOF_3DOF::numberNodes = 2 ;
 Matrix  ContactElement_Nonlinear_3DOF_3DOF::stiff(3 * numberNodes, 3 * numberNodes);
@@ -70,7 +79,7 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
       total_normal_relative_displ_n(0), total_normal_relative_displ_np1(0), incr_normal_relative_displ_np1(0),
       total_shear_relative_displ_n(2), total_shear_relative_displ_np1(2), incr_shear_relative_displ_np1(2),
       plastic_shear_relative_displ_n(2), plastic_shear_relative_displ_np1(2), incr_plastic_shear_relative_displ_np1(2),
-      yield_criteria(0), n_trial_np1(2), resid(3 * numberNodes)
+      yield_criteria(0), n_trial_np1(2), resid(3 * numberNodes), is_locked(0), outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
 {
 
     /// ensure the connectedExternalNode ID is of correct size & set values
@@ -150,6 +159,103 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
 }
 
 
+//*********************************************************************
+//  Constructor for defining the contact element with lock option:
+
+ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
+        int Nd1, int Nd2,
+        double Knormal_factor,
+        double Ktangential,
+        double frictionRatio,
+        double maximum_gap,
+        double x_local_1, double x_local_2, double x_local_3,
+        int lock_flag)
+    : Element(tag, ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF),
+      connectedExternalNodes(numberNodes),
+      N(3 * numberNodes), T1(3 * numberNodes), T2(3 * numberNodes),
+      normalforce_n(0), normalforce_np1(0), normalforce_increment_np1(0),
+      shearforce_n(2), shearforce_np1(2), shearforce_trial_np1(2), shearforce_increment_np1(2),
+      global_gap_np1(3), local_gap_np1(3),
+      total_normal_relative_displ_n(0), total_normal_relative_displ_np1(0), incr_normal_relative_displ_np1(0),
+      total_shear_relative_displ_n(2), total_shear_relative_displ_np1(2), incr_shear_relative_displ_np1(2),
+      plastic_shear_relative_displ_n(2), plastic_shear_relative_displ_np1(2), incr_plastic_shear_relative_displ_np1(2),
+      yield_criteria(0), n_trial_np1(2), resid(3 * numberNodes),
+      is_locked(lock_flag), outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
+{
+
+    /// ensure the connectedExternalNode ID is of correct size & set values
+    if (connectedExternalNodes.Size() != 2)
+    {
+        cerr << "FATAL ZeroLength::setUp - failed to create an ID of correct size\n";
+    }
+    connectedExternalNodes(0) = Nd1;
+    connectedExternalNodes(1) = Nd2;
+
+    /// assign Kn_factor, Kt, fs, Gap_max
+    Kn_factor = Knormal_factor ;          // [kN] [Force =  Kn_factor*delta_un/(Gap_max - delta_un)]
+    fs = frictionRatio;                   // [-]
+    Gap_max = maximum_gap;
+
+    Kn = Kn_factor / Gap_max;
+    //   Kt = Ktangential;
+
+    ///Initialized print flags
+    print_option = 1;
+    numb_contact_element = 4;
+
+
+    // initialized contact flag and sliding flag to be zero
+    ContactFlag = 0;
+    SlidingFlag = 0;
+
+    // vector components in global coordinates defining local x-axis of the element
+    //   Vector x_local(3);   //Out by Babak and moved to the prototype 11/26/13
+    x_local(0) = x_local_1;
+    x_local(1) = x_local_2;
+    x_local(2) = x_local_3;
+
+
+
+
+    normalforce_n = 0.0;
+    normalforce_np1 = 0.0;
+    normalforce_increment_np1 = 0.0;
+    //   yield_criteria = 0.0;
+    total_normal_relative_displ_n = 0.0;
+    total_normal_relative_displ_np1 = 0.0;
+    incr_normal_relative_displ_np1 = 0.0;
+
+
+    for (int i = 0; i < 2; i++)
+    {
+        shearforce_n(i) = 0.0;
+        shearforce_np1(i) = 0.0;
+        shearforce_trial_np1(i) = 0.0;
+        shearforce_increment_np1(i) = 0.0;
+        total_shear_relative_displ_n(i) = 0.0;
+        total_shear_relative_displ_np1(i) = 0.0;
+        incr_shear_relative_displ_np1(i) = 0.0;
+        plastic_shear_relative_displ_n(i) = 0.0;
+        plastic_shear_relative_displ_np1(i) = 0.0;
+        incr_plastic_shear_relative_displ_np1(i) = 0.0;
+        n_trial_np1(i) = 0.0;
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        global_gap_np1(i) = 0.0;
+        local_gap_np1(i) = 0.0;
+    }
+
+
+    // defining the contact plane based on the local x axis
+    definecontact = ContactPlane(x_local);
+    if (definecontact != 0)
+    {
+        cerr << "\nProblem in Contact Plane ...";
+    }
+
+}
 //null constructor
 ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(void)
     : Element(0, ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF),
@@ -161,7 +267,7 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(void)
       total_normal_relative_displ_n(0), total_normal_relative_displ_np1(0), incr_normal_relative_displ_np1(0),
       total_shear_relative_displ_n(2), total_shear_relative_displ_np1(2), incr_shear_relative_displ_np1(2),
       plastic_shear_relative_displ_n(2), plastic_shear_relative_displ_np1(2), incr_plastic_shear_relative_displ_np1(2),
-      yield_criteria(0), n_trial_np1(2), resid(3 * numberNodes)
+      yield_criteria(0), n_trial_np1(2), resid(3 * numberNodes), is_locked(0), outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
 {
 
     // ensure the connectedExternalNode ID is of correct size
@@ -780,7 +886,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
     stiff.Zero( ) ;
 
 
-    if (ContactFlag == 1) // in contact
+  if ((ContactFlag == 1) || (is_locked == 1)) // in contact or locked 
     {
 
         stick_or_slide();
@@ -881,7 +987,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getResistingForce()
 
         for (i = 0; i < 6; i++)
         {
-            resid(i) = 0.0;
+            resid(i) = 0.0;   // Not exactly zero....
         }
     }
 
@@ -1389,3 +1495,12 @@ ContactElement_Nonlinear_3DOF_3DOF::CheckMesh(ofstream &checkmesh_file)
 }
 
 
+int ContactElement_Nonlinear_3DOF_3DOF::getOutputSize() const
+{
+    return ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE;
+}
+
+const Vector &ContactElement_Nonlinear_3DOF_3DOF::getOutput() const
+{
+    return outputVector;
+}

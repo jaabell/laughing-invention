@@ -36,6 +36,9 @@
 #ifndef ContactElement_Nonlinear_3DOF_3DOF_h
 #define ContactElement_Nonlinear_3DOF_3DOF_h
 
+// Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point
+#define ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE 0
+
 #include <Element.h>
 #include <Matrix.h>
 #include <Vector.h>
@@ -59,6 +62,13 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
                                            double maximum_gap,
                                            double x_local_1, double x_local_2, double x_local_3);
 
+// Constructor for the element with lock option
+  ContactElement_Nonlinear_3DOF_3DOF(int tag,
+		      int Nd1, int Nd2,
+		      double Kn_factor, double Kt, double fRatio,
+		      double maximum_gap,
+		      double x_local_1, double x_local_2, double x_local_3
+                      ,int lock_flag);
 
         // Null constructor
         ContactElement_Nonlinear_3DOF_3DOF();
@@ -110,6 +120,10 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         {
             return "ContactElement_Nonlinear_3DOF_3DOF";
         }
+
+        //Jose Added for output
+        int getOutputSize() const;
+        const Vector &getOutput() const;
     protected:
 
     private:
@@ -133,6 +147,7 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         static Vector y_local;
         static Vector z_local;
 
+  int is_locked; //Added by Babak 04/12/14
         // creating the normalized local vectors
         static Vector x_local_normalized;
         static Vector y_local_normalized;
@@ -208,6 +223,9 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         Vector resid;   // force residual vector
         static Vector localresid;   // local force residual vector
         static Matrix zeroMatrix;
+
+
+        Vector outputVector;
 
 };
 

@@ -745,7 +745,7 @@ CMD_add
     }
     //!=========================================================================================================
     //!
-    //!FEIDOC add load # <.> to node # <.> type [path_series] [FORCETYPE] = <force or moment> series_file = "STRING";
+    //!FEIDOC add load # <.> to node # <.> type [path_time_series] [FORCETYPE] = <force or moment> series_file = "STRING";
     | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_PATH_TIME_SERIES
             FORCE '=' exp
             series_file '=' STRING
@@ -778,7 +778,7 @@ CMD_add
     }
     //!=========================================================================================================
     //!
-    //!FEIDOC add load # <.> to node # <.> type [path_time_series] [FORCETYPE] = <force or moment> time_step = <time> series_file = "STRING";
+    //!FEIDOC add load # <.> to node # <.> type [path_series] [FORCETYPE] = <force or moment> time_step = <time> series_file = "STRING";
     | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_PATH_SERIES
                 FORCE '=' exp
                 time_step '=' exp

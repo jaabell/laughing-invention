@@ -26,6 +26,9 @@
 #ifndef Truss_h
 #define Truss_h
 
+#define Truss_OUTPUT_SIZE 0
+
+
 // File: ~/element/truss/Truss.h
 //
 // Written: fmk
@@ -100,9 +103,9 @@ class Truss : public Element
             return "Truss";
         }
 
-        // Nima Tafazzoli added to return the Mass matrix (Feb. 2010)
-        //    Matrix returnMass(void);
-
+        //Jose Added for output
+        int getOutputSize() const;
+        const Vector &getOutput() const;
     protected:
 
     private:
@@ -131,6 +134,8 @@ class Truss : public Element
         static Matrix trussM12;  // class wide matrix for 12*12
         static Vector trussV6;   // class wide Vector for size 6
         static Vector trussV12;  // class wide Vector for size 12
+
+        Vector outputVector;
 };
 
 #endif
