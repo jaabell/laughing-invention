@@ -305,6 +305,11 @@ Truss::commitState()
     }
 
     retVal = theMaterial->commitState();
+
+    outputVector(0) = theMaterial->getStrain() * L;
+    outputVector(1) = theMaterial->getStress() * A;
+
+
     return retVal;
 }
 

@@ -26,7 +26,7 @@
 #ifndef Truss_h
 #define Truss_h
 
-#define Truss_OUTPUT_SIZE 0
+#define Truss_OUTPUT_SIZE 2
 
 
 // File: ~/element/truss/Truss.h

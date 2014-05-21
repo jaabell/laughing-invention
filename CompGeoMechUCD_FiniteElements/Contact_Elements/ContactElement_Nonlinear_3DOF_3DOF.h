@@ -68,7 +68,7 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
                                            double Kn_factor, double Kt, double fRatio,
                                            double maximum_gap,
                                            double x_local_1, double x_local_2, double x_local_3
-                                           , int lock_flag);
+                                           , int lock_flag = 0);
 
         // Null constructor
         ContactElement_Nonlinear_3DOF_3DOF();

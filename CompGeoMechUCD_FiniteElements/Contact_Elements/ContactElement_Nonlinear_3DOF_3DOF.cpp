@@ -100,8 +100,8 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
     //   Kt = Ktangential;
 
     ///Initialized print flags
-    print_option = 1;
-    numb_contact_element = 4;
+    print_option = 0;
+    // numb_contact_element = 4;
 
 
     // initialized contact flag and sliding flag to be zero
@@ -452,11 +452,11 @@ ContactElement_Nonlinear_3DOF_3DOF::commitState()
 
     // Output
 
-    outputVector(0) = plastic_shear_relative_displ_np1(0);
-    outputVector(1) = total_shear_relative_displ_np1(0);
-    outputVector(2) = total_normal_relative_displ_np1;
-    outputVector(3) = normalforce_np1;
-    outputVector(4) = shearforce_np1(0);
+    outputVector(0) = plastic_shear_relative_displ_n(0);
+    outputVector(1) = total_shear_relative_displ_n(0);
+    outputVector(2) = total_normal_relative_displ_n;
+    outputVector(3) = normalforce_n;
+    outputVector(4) = shearforce_n(0);
 
 
 
@@ -546,21 +546,21 @@ int ContactElement_Nonlinear_3DOF_3DOF::if_nodes_are_in_contact_or_not(void)
     if (gap <= Gap_max)
     {
         // contact occur
-        //        if(print_option == 1)
-        //        {
-        cerr << "\nNodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " are in Contact ...";
-        //   cerr<< "gap " << gap << endln;
-        //        }
+        if (print_option == 1)
+        {
+            cerr << "\nNodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " are in Contact ...";
+            cerr << "gap " << gap << endln;
+        }
 
         return 1;
     }
     else
     {
-        //  if(print_option == 1)
-        //  {
-        cerr << "\nNodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " are NOT in Contact ...";
-        //    cerr<< "gap " << gap << endln;
-        //  }
+        if (print_option == 1)
+        {
+            cerr << "\nNodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " are NOT in Contact ...";
+            cerr << "gap " << gap << endln;
+        }
 
 
         return 0;
@@ -715,8 +715,8 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
     //    if(print_option == 1)
     //    {
     //      cerr<< "incr_normal_relative_displ_np1 = " << incr_normal_relative_displ_np1 << endln;
-    cerr << "incr_shear_relative_displ_np1(0) = " << incr_shear_relative_displ_np1(0) << endln;
-    cerr << "incr_shear_relative_displ_np1(1) = " << incr_shear_relative_displ_np1(1) << endln;
+    // cerr << "incr_shear_relative_displ_np1(0) = " << incr_shear_relative_displ_np1(0) << endln;
+    // cerr << "incr_shear_relative_displ_np1(1) = " << incr_shear_relative_displ_np1(1) << endln;
     //      cerr<< "normalforce_n = " << normalforce_n << endln;
     //      cerr<< "normalforce_np1 = " << normalforce_np1 << endln;
     //    }
@@ -756,11 +756,11 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
 
 
 
-    cerr << "normalforce_np1 = " << fabs(normalforce_np1) << endln;
-    cerr << "shearforce_trial_np1(0) = " << shearforce_trial_np1(0) << endln;
-    cerr << "shearforce_trial_np1(1) = " << shearforce_trial_np1(1) << endln;
-    cerr << "shear_force_trial_np1_norm = " << shear_force_trial_np1_norm << endln;
-    cerr << "yield_criteria = " << yield_criteria << endln;
+    // cerr << "normalforce_np1 = " << fabs(normalforce_np1) << endln;
+    // cerr << "shearforce_trial_np1(0) = " << shearforce_trial_np1(0) << endln;
+    // cerr << "shearforce_trial_np1(1) = " << shearforce_trial_np1(1) << endln;
+    // cerr << "shear_force_trial_np1_norm = " << shear_force_trial_np1_norm << endln;
+    // cerr << "yield_criteria = " << yield_criteria << endln;
 
 
 
@@ -835,7 +835,7 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
         }
 
 
-        cerr << "Sticking ..." << endln;
+        // cerr << "Sticking ..." << endln;
 
         if (print_option == 1)
         {
