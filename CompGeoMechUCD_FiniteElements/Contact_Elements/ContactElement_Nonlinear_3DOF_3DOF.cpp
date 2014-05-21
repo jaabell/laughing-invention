@@ -450,6 +450,16 @@ ContactElement_Nonlinear_3DOF_3DOF::commitState()
     shearforce_np1.Zero();
 
 
+    // Output
+
+    outputVector(0) = plastic_shear_relative_displ_np1;
+    outputVector(1) = total_shear_relative_displ_np1;
+    outputVector(2) = total_normal_relative_displ_np1;
+    outputVector(3) = normalforce_np1;
+    outputVector(4) = shearforce_np1;
+
+
+
 
     return 0;
 }
@@ -886,7 +896,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
     stiff.Zero( ) ;
 
 
-  if ((ContactFlag == 1) || (is_locked == 1)) // in contact or locked 
+    if ((ContactFlag == 1) || (is_locked == 1)) // in contact or locked
     {
 
         stick_or_slide();

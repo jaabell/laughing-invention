@@ -310,6 +310,13 @@ ContactElement_3DOF_3DOF::commitState()
         }
     }
 
+    // Output
+
+    outputVector(0) = shear_relative_displacement;
+    outputVector(1) = normalforce;
+    outputVector(2) = shearforce_committed(1);
+    outputVector(3) = shearforce_committed(2);
+
     //   else if (SlidingFlag == 0)
     //      {
     //        for (int i=0; i<2; i++)  stickPt(i) = 0;
