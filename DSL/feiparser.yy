@@ -1526,8 +1526,9 @@ CMD_define
         // Usually different DSLs have different arguments, but in this
         // case all three take no arguments, which makes this approach easier.
 
-        int (*f)();         // function poiner to the algorithm DSL
+        int (*f)() = NULL;         // function poiner to the algorithm DSL
         string fname;       // name of the DSL called to report
+
 
         args.clear(); signature.clear();
         if((*$3).compare("With_no_convergence_check") == 0 || (*$3).compare("with_no_convergence_check") == 0)
@@ -1535,20 +1536,30 @@ CMD_define
             f = &define_algorithm_with_no_convergence_check_for_analysis;
             fname = "define_algorithm_with_no_convergence_check_for_analysis";
         }
-        if((*$3).compare("Modified_Newton") == 0 || (*$3).compare("modified_newton") == 0)
+        else if((*$3).compare("Modified_Newton") == 0 || (*$3).compare("modified_newton") == 0)
         {
             f = &define_algorithm_modifiednewton_for_analysis;
             fname = "define_algorithm_modifiednewton_for_analysis";
         }
-        if((*$3).compare("Newton") == 0 || (*$3).compare("newton") == 0)
+        else if((*$3).compare("Newton") == 0 || (*$3).compare("newton") == 0)
         {
             f = &define_algorithm_newton_for_analysis;
             fname = "define_algorithm_newton_for_analysis";
         }
+        else
+        {
+            cerr << "Algorithm " << *$3 << " not recognized.\n\n";
+        }
 
-        $$ = new FeiDslCaller0<>(f,args, signature, fname);
-
-
+        if(f == NULL)
+        {
+            $$ = new Empty();
+        }
+        else
+        {
+            $$ = new FeiDslCaller0<>(f,args, signature, fname);
+        }
+        
         nodes.push($$);
     }
     //!=========================================================================================================

@@ -41,7 +41,7 @@
 using std::ifstream;
 using namespace std;
 //#ifdef _BABAK_DEBUG
-#include <mpi.h>
+// #include <mpi.h>
 #include <stdio.h>
 #include <string.h>
 #include <sstream>
@@ -452,11 +452,11 @@ ContactElement_Nonlinear_3DOF_3DOF::commitState()
 
     // Output
 
-    outputVector(0) = plastic_shear_relative_displ_np1;
-    outputVector(1) = total_shear_relative_displ_np1;
+    outputVector(0) = plastic_shear_relative_displ_np1(0);
+    outputVector(1) = total_shear_relative_displ_np1(0);
     outputVector(2) = total_normal_relative_displ_np1;
     outputVector(3) = normalforce_np1;
-    outputVector(4) = shearforce_np1;
+    outputVector(4) = shearforce_np1(0);
 
 
 

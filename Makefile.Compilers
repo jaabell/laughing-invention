@@ -8,7 +8,8 @@ DEBUG_MODE = NO_DEBUG
 PROGRAMMING_MODE = SEQUENTIAL
 #PROGRAMMING_MODE = PARALLEL
 
-
+LTO_FLAGS = 
+# LTO_FLAGS = -flto
 
 #  ==========================================
 #  Check if these variables are set
@@ -68,7 +69,7 @@ else ifeq ($(Compiler), PARALLEL)
 endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
-	C++FLAGS        = -flto -Wall \
+	C++FLAGS        = $(LTO_FLAGS) -Wall \
 										-O2 \
 										-finline \
 										-finline-functions \
@@ -92,7 +93,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-march=native
 										# -std=c++11 \
 	# C++FLAGS        =   -Wall \
-	CFLAGS          = -flto -O2 \
+	CFLAGS          = $(LTO_FLAGS) -O2 \
 										-D_LINUX \
 										-D_UNIX \
 										-D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84
@@ -100,7 +101,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 	# CFLAGS          =  -O2 \
 
 	FFLAGS          = -O2 $(MORE_FFLAGS)
-	LINKFLAGS       = -O2 -flto $(MORE_LINKFLAGS)
+	LINKFLAGS       = -O2 $(LTO_FLAGS) $(MORE_LINKFLAGS)
 	#LINKFLAGS       = -O $(MORE_LINKFLAGS)
 
 else
