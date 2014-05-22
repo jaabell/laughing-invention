@@ -37,7 +37,7 @@
 #define ContactElement_Nonlinear_3DOF_3DOF_h
 
 // Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point
-#define ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE 5
+#define ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE 7
 
 #include <Element.h>
 #include <Matrix.h>
@@ -86,6 +86,8 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         int commitState(void);
         int revertToLastCommit(void);
         int revertToStart(void);
+        int update(void);
+
         void zeroLoad(void);
         int addLoad(ElementalLoad *theLoad, double loadFactor);
         int addInertiaLoadToUnbalance(const Vector &accel);
@@ -124,37 +126,27 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         //Jose Added for output
         int getOutputSize() const;
         const Vector &getOutput() const;
+
+        double getNormalTangentStiffness(u)
+        {
+            double tmp = Gap_max - u;
+            return u / (tmp * tmp) + 1 / (-u + Gap_max);
+        }
     protected:
 
     private:
-
-        ID  connectedExternalNodes;   // contains the tags of the end nodes
-        static const int  numberNodes  ;
-        Node *nodePointers[2];   // node pointer
-
+        ID  connectedExternalNodes;     // contains the tags of the end nodes
+        Node *nodePointers[2];          // node pointer
+        int print_option;
+        int numDOF;                     // number of dof of the contact element
 
         // parameters
-        double Kn_factor;     // normal factor for penalty
-        //double Kt_factor;     // tangential factor for penalty
-        double Gap_max;       // "fictitious" thickness of the contact element
-        //double Kt_factor;   // tangential factor for penalty (Kt = Kt_factor*Kn)
-        double fs;          // friction ratio
-        double Kn;            // Kn penalty
-        //   double Kn_max;         // max value of Kn penalty
-        double Kt;            // Kt penalty
-
-        static Vector x_local; //Added by Babak 11/22/13
-        static Vector y_local;
-        static Vector z_local;
-
-        int is_locked; //Added by Babak 04/12/14
-        // creating the normalized local vectors
-        static Vector x_local_normalized;
-        static Vector y_local_normalized;
-        static Vector z_local_normalized;
-        static Matrix transformation;  // transformation matrix for orientation
-
-
+        double Kn_factor;               // normal factor for penalty
+        double Gap_max;                 // "fictitious" thickness of the contact element
+        double fs;                      // friction ratio
+        double Kn;                      // Kn penalty
+        double Kt;                      // Kt penalty
+        int is_locked;                  // Bool, determines if element is locked Added by Babak 04/12/14
 
 
         // contact forces
@@ -165,18 +157,14 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         Vector shearforce_np1;
         Vector shearforce_trial_np1;
         Vector shearforce_increment_np1;
-
-
         Vector n_trial_np1;
 
         // relative displacement (total and plastic)
-        Vector global_gap_np1;
-        Vector local_gap_np1;
-
-
         double total_normal_relative_displ_n;
         double total_normal_relative_displ_np1;
         double incr_normal_relative_displ_np1;
+        Vector global_gap_np1;
+        Vector local_gap_np1;
         Vector total_shear_relative_displ_n;
         Vector total_shear_relative_displ_np1;
         Vector incr_shear_relative_displ_np1;
@@ -184,27 +172,7 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         Vector plastic_shear_relative_displ_np1;
         Vector incr_plastic_shear_relative_displ_np1;
 
-
-        // yield_criteria
         double yield_criteria;
-
-
-
-
-
-
-
-
-        // print option
-        int print_option;
-        int jjj;
-        int numb_contact_element;
-
-
-
-
-
-
 
 
         // Normal and Tangental Vectors for Elemental Nodes, (6*1)
@@ -213,19 +181,24 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         Vector T2;
         int ContactFlag;    // 0: not in contact; 1: in contact
         int SlidingFlag;    //  0: Stick; 1: Slide
-        int numDOF;         // number of dof of the contact element
-        int definecontact;
         double shear_force_trial_np1_norm;
         double shearforce_np1_norm;
 
-        static Matrix stiff;   // stiffness matrix
-        //   static Vector resid;   // force residual vector
         Vector resid;   // force residual vector
+        Vector outputVector;
+
+        // Static data (shared across all contact elements)
+        static Matrix stiff;   // stiffness matrix
         static Vector localresid;   // local force residual vector
         static Matrix zeroMatrix;
-
-
-        Vector outputVector;
+        static Vector x_local; //Added by Babak 11/22/13
+        static Vector y_local;
+        static Vector z_local;
+        static Vector x_local_normalized;
+        static Vector y_local_normalized;
+        static Vector z_local_normalized;
+        static Matrix transformation;  // transformation matrix for orientation
+        static const int  numberNodes  ;
 
 };
 

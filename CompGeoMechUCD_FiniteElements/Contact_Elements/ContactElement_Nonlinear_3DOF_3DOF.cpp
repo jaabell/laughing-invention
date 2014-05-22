@@ -72,15 +72,15 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
         double x_local_1, double x_local_2, double x_local_3)
     : Element(tag, ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF),
       connectedExternalNodes(numberNodes),
-      N(3 * numberNodes), T1(3 * numberNodes), T2(3 * numberNodes),
-      normalforce_n(0), normalforce_np1(0), normalforce_increment_np1(0),
       shearforce_n(2), shearforce_np1(2), shearforce_trial_np1(2), shearforce_increment_np1(2),
-      global_gap_np1(3), local_gap_np1(3),
-      total_normal_relative_displ_n(0), total_normal_relative_displ_np1(0), incr_normal_relative_displ_np1(0),
+      n_trial_np1(2), global_gap_np1(3), local_gap_np1(3),
       total_shear_relative_displ_n(2), total_shear_relative_displ_np1(2), incr_shear_relative_displ_np1(2),
       plastic_shear_relative_displ_n(2), plastic_shear_relative_displ_np1(2), incr_plastic_shear_relative_displ_np1(2),
-      yield_criteria(0), n_trial_np1(2), resid(3 * numberNodes), is_locked(0), outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
+      N(3 * numberNodes), T1(3 * numberNodes), T2(3 * numberNodes), resid(3 * numberNodes),
+      outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
 {
+
+    is_locked = 0;
 
     /// ensure the connectedExternalNode ID is of correct size & set values
     if (connectedExternalNodes.Size() != 2)
@@ -92,16 +92,15 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
     connectedExternalNodes(1) = Nd2;
 
     /// assign Kn_factor, Kt, fs, Gap_max
-    Kn_factor = Knormal_factor ;          // [kN] [Force =  Kn_factor*delta_un/(Gap_max - delta_un)]
-    fs = frictionRatio;                   // [-]
-    Gap_max = maximum_gap;
-
-    Kn = Kn_factor / Gap_max;
-    //   Kt = Ktangential;
+    Kn_factor = Knormal_factor ;          // [kN] [Force = Kn_factor*delta_un/(Gap_max - delta_un)]
+    fs        = frictionRatio;                   // [-]
+    Gap_max   = maximum_gap;
+    Kn        = Kn_factor / Gap_max;
+    // Kt        = Ktangential;
+    Kt = Kn;
 
     ///Initialized print flags
     print_option = 0;
-    // numb_contact_element = 4;
 
 
     // initialized contact flag and sliding flag to be zero
@@ -120,41 +119,29 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
     normalforce_n = 0.0;
     normalforce_np1 = 0.0;
     normalforce_increment_np1 = 0.0;
-    //   yield_criteria = 0.0;
     total_normal_relative_displ_n = 0.0;
     total_normal_relative_displ_np1 = 0.0;
     incr_normal_relative_displ_np1 = 0.0;
+    yield_criteria = 0.0;
 
 
-    for (int i = 0; i < 2; i++)
-    {
-        shearforce_n(i) = 0.0;
-        shearforce_np1(i) = 0.0;
-        shearforce_trial_np1(i) = 0.0;
-        shearforce_increment_np1(i) = 0.0;
-        total_shear_relative_displ_n(i) = 0.0;
-        total_shear_relative_displ_np1(i) = 0.0;
-        incr_shear_relative_displ_np1(i) = 0.0;
-        plastic_shear_relative_displ_n(i) = 0.0;
-        plastic_shear_relative_displ_np1(i) = 0.0;
-        incr_plastic_shear_relative_displ_np1(i) = 0.0;
-        n_trial_np1(i) = 0.0;
-    }
-
-    for (int i = 0; i < 3; i++)
-    {
-        global_gap_np1(i) = 0.0;
-        local_gap_np1(i) = 0.0;
-    }
-
+    shearforce_n.Zero();
+    shearforce_np1.Zero();
+    shearforce_trial_np1.Zero();
+    shearforce_increment_np1.Zero();
+    total_shear_relative_displ_n.Zero();
+    total_shear_relative_displ_np1.Zero();
+    incr_shear_relative_displ_np1.Zero();
+    plastic_shear_relative_displ_n.Zero();
+    plastic_shear_relative_displ_np1.Zero();
+    incr_plastic_shear_relative_displ_np1.Zero();
+    n_trial_np1.Zero();
+    global_gap_np1.Zero();
+    local_gap_np1.Zero();
 
     // defining the contact plane based on the local x axis
-    definecontact = ContactPlane(x_local);
+    ContactPlane(x_local);
 
-    if (definecontact != 0)
-    {
-        cerr << "\nProblem in Contact Plane ...";
-    }
 
 }
 
@@ -172,16 +159,15 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
         int lock_flag)
     : Element(tag, ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF),
       connectedExternalNodes(numberNodes),
-      N(3 * numberNodes), T1(3 * numberNodes), T2(3 * numberNodes),
-      normalforce_n(0), normalforce_np1(0), normalforce_increment_np1(0),
       shearforce_n(2), shearforce_np1(2), shearforce_trial_np1(2), shearforce_increment_np1(2),
-      global_gap_np1(3), local_gap_np1(3),
-      total_normal_relative_displ_n(0), total_normal_relative_displ_np1(0), incr_normal_relative_displ_np1(0),
+      n_trial_np1(2), global_gap_np1(3), local_gap_np1(3),
       total_shear_relative_displ_n(2), total_shear_relative_displ_np1(2), incr_shear_relative_displ_np1(2),
       plastic_shear_relative_displ_n(2), plastic_shear_relative_displ_np1(2), incr_plastic_shear_relative_displ_np1(2),
-      yield_criteria(0), n_trial_np1(2), resid(3 * numberNodes),
-      is_locked(lock_flag), outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
+      N(3 * numberNodes), T1(3 * numberNodes), T2(3 * numberNodes), resid(3 * numberNodes),
+      outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
 {
+
+    is_locked = lock_flag;
 
     /// ensure the connectedExternalNode ID is of correct size & set values
     if (connectedExternalNodes.Size() != 2)
@@ -197,11 +183,10 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
     Gap_max = maximum_gap;
 
     Kn = Kn_factor / Gap_max;
-    //   Kt = Ktangential;
+    Kt = Ktangential;
 
     ///Initialized print flags
     print_option = 1;
-    numb_contact_element = 4;
 
 
     // initialized contact flag and sliding flag to be zero
@@ -214,60 +199,46 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
     x_local(1) = x_local_2;
     x_local(2) = x_local_3;
 
-
-
-
     normalforce_n = 0.0;
     normalforce_np1 = 0.0;
     normalforce_increment_np1 = 0.0;
-    //   yield_criteria = 0.0;
+    yield_criteria = 0.0;
     total_normal_relative_displ_n = 0.0;
     total_normal_relative_displ_np1 = 0.0;
     incr_normal_relative_displ_np1 = 0.0;
 
 
-    for (int i = 0; i < 2; i++)
-    {
-        shearforce_n(i) = 0.0;
-        shearforce_np1(i) = 0.0;
-        shearforce_trial_np1(i) = 0.0;
-        shearforce_increment_np1(i) = 0.0;
-        total_shear_relative_displ_n(i) = 0.0;
-        total_shear_relative_displ_np1(i) = 0.0;
-        incr_shear_relative_displ_np1(i) = 0.0;
-        plastic_shear_relative_displ_n(i) = 0.0;
-        plastic_shear_relative_displ_np1(i) = 0.0;
-        incr_plastic_shear_relative_displ_np1(i) = 0.0;
-        n_trial_np1(i) = 0.0;
-    }
+    shearforce_n.Zero();
+    shearforce_np1.Zero();
+    shearforce_trial_np1.Zero();
+    shearforce_increment_np1.Zero();
+    total_shear_relative_displ_n.Zero();
+    total_shear_relative_displ_np1.Zero();
+    incr_shear_relative_displ_np1.Zero();
+    plastic_shear_relative_displ_n.Zero();
+    plastic_shear_relative_displ_np1.Zero();
+    incr_plastic_shear_relative_displ_np1.Zero();
+    n_trial_np1.Zero();
 
-    for (int i = 0; i < 3; i++)
-    {
-        global_gap_np1(i) = 0.0;
-        local_gap_np1(i) = 0.0;
-    }
+    global_gap_np1.Zero();
+    local_gap_np1.Zero();
 
 
     // defining the contact plane based on the local x axis
-    definecontact = ContactPlane(x_local);
-    if (definecontact != 0)
-    {
-        cerr << "\nProblem in Contact Plane ...";
-    }
+    ContactPlane(x_local);
+
 
 }
 //null constructor
 ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(void)
     : Element(0, ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF),
       connectedExternalNodes(numberNodes),
-      N(3 * numberNodes), T1(3 * numberNodes), T2(3 * numberNodes),
-      normalforce_n(0), normalforce_np1(0), normalforce_increment_np1(0),
       shearforce_n(2), shearforce_np1(2), shearforce_trial_np1(2), shearforce_increment_np1(2),
-      global_gap_np1(3), local_gap_np1(3),
-      total_normal_relative_displ_n(0), total_normal_relative_displ_np1(0), incr_normal_relative_displ_np1(0),
+      n_trial_np1(2), global_gap_np1(3), local_gap_np1(3),
       total_shear_relative_displ_n(2), total_shear_relative_displ_np1(2), incr_shear_relative_displ_np1(2),
       plastic_shear_relative_displ_n(2), plastic_shear_relative_displ_np1(2), incr_plastic_shear_relative_displ_np1(2),
-      yield_criteria(0), n_trial_np1(2), resid(3 * numberNodes), is_locked(0), outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
+      N(3 * numberNodes), T1(3 * numberNodes), T2(3 * numberNodes), resid(3 * numberNodes),
+      outputVector(ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE)
 {
 
     // ensure the connectedExternalNode ID is of correct size
@@ -292,39 +263,26 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(void)
     normalforce_n = 0.0;
     normalforce_np1 = 0.0;
     normalforce_increment_np1 = 0.0;
-    //   yield_criteria = 0.0;
+    yield_criteria = 0.0;
     total_normal_relative_displ_n = 0.0;
     total_normal_relative_displ_np1 = 0.0;
     incr_normal_relative_displ_np1 = 0.0;
 
+    shearforce_n.Zero();
+    shearforce_np1.Zero();
+    shearforce_trial_np1.Zero();
+    shearforce_increment_np1.Zero();
+    total_shear_relative_displ_n.Zero();
+    total_shear_relative_displ_np1.Zero();
+    incr_shear_relative_displ_np1.Zero();
+    plastic_shear_relative_displ_n.Zero();
+    plastic_shear_relative_displ_np1.Zero();
+    incr_plastic_shear_relative_displ_np1.Zero();
+    n_trial_np1.Zero();
 
-    for (int i = 0; i < 2; i++)
-    {
-        shearforce_n(i) = 0.0;
-        shearforce_np1(i) = 0.0;
-        shearforce_trial_np1(i) = 0.0;
-        shearforce_increment_np1(i) = 0.0;
-        total_shear_relative_displ_n(i) = 0.0;
-        total_shear_relative_displ_np1(i) = 0.0;
-        incr_shear_relative_displ_np1(i) = 0.0;
-        plastic_shear_relative_displ_n(i) = 0.0;
-        plastic_shear_relative_displ_np1(i) = 0.0;
-        incr_plastic_shear_relative_displ_np1(i) = 0.0;
-        n_trial_np1(i) = 0.0;
-    }
+    global_gap_np1.Zero();
+    local_gap_np1.Zero();
 
-    for (int i = 0; i < 3; i++)
-    {
-        global_gap_np1(i) = 0.0;
-        local_gap_np1(i) = 0.0;
-    }
-
-
-    // defining the contact plane based on the local x axis
-    //   definecontact = ContactPlane(x_local);
-    //   if (definecontact != 0)
-    //       cerr << "\nProblem in Contact Plane ...";
-    //------
 
 }
 
@@ -437,26 +395,30 @@ ContactElement_Nonlinear_3DOF_3DOF::commitState()
 {
     // update total and plastic diplacements
     plastic_shear_relative_displ_n = plastic_shear_relative_displ_np1;
-    plastic_shear_relative_displ_np1.Zero();
     total_shear_relative_displ_n = total_shear_relative_displ_np1;
-    total_shear_relative_displ_np1.Zero();
     total_normal_relative_displ_n = total_normal_relative_displ_np1;
-    total_normal_relative_displ_np1 = 0.0;
 
     // update forces
     normalforce_n = normalforce_np1;
-    normalforce_np1 = 0.0;
     shearforce_n = shearforce_np1;
+
+    //Set next diplacements = 0
     shearforce_np1.Zero();
+    plastic_shear_relative_displ_np1.Zero();
+    total_shear_relative_displ_np1.Zero();
+    normalforce_np1 = 0.0;
+    total_normal_relative_displ_np1 = 0.0;
 
 
     // Output
 
-    outputVector(0) = plastic_shear_relative_displ_n(0);
+    outputVector(0) = total_normal_relative_displ_n;
     outputVector(1) = total_shear_relative_displ_n(0);
-    outputVector(2) = total_normal_relative_displ_n;
+    outputVector(2) = total_shear_relative_displ_n(1);
     outputVector(3) = normalforce_n;
     outputVector(4) = shearforce_n(0);
+    outputVector(5) = shearforce_n(1);
+    outputVector(6) = SlidingFlag;
 
 
 
@@ -645,11 +607,8 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
 
     // Compute increment of relative displacement
     incr_normal_relative_displ_np1 = total_normal_relative_displ_np1 - total_normal_relative_displ_n;
+    incr_shear_relative_displ_np1  = total_shear_relative_displ_np1  - total_shear_relative_displ_n;
 
-    for (i = 0; i < 2; i++)
-    {
-        incr_shear_relative_displ_np1(i) = total_shear_relative_displ_np1(i) - total_shear_relative_displ_n(i);
-    }
 
 
     //Compute Kn at (n+1)/2
@@ -673,7 +632,7 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
 
     Kn_np1 = Kn_factor * Gap_max / ((Gap_max - delta_u_np1) * (Gap_max - delta_u_np1));
 
-    Kn_n = Kn_factor * Gap_max / ((Gap_max - delta_u_n) * (Gap_max - delta_u_np1));
+    Kn_n   = Kn_factor * Gap_max / ((Gap_max - delta_u_n) * (Gap_max - delta_u_n));
 
 
     if (print_option == 1)
@@ -686,111 +645,55 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
 
 
     Kn = 0.5 * (Kn_np1 + Kn_n);
-    //    }
-
-
-    Kt = Kn;
-
-    if (print_option == 1)
-    {
-        cout << "Kn = " << Kn << endl;
-    }
-
-
-    if (print_option == 1)
-    {
-        cerr << "stick or slide " << endln;
-        cerr << "Kn [kN/m] = " << Kn << endln;
-        cerr << "Kt [kN/m] = " << Kt << endln;
-    }
-
-
-
 
     // Compute normal force
     normalforce_increment_np1 = Kn * incr_normal_relative_displ_np1;
-    normalforce_np1 = normalforce_n + normalforce_increment_np1;
-
-
-    //    if(print_option == 1)
-    //    {
-    //      cerr<< "incr_normal_relative_displ_np1 = " << incr_normal_relative_displ_np1 << endln;
-    // cerr << "incr_shear_relative_displ_np1(0) = " << incr_shear_relative_displ_np1(0) << endln;
-    // cerr << "incr_shear_relative_displ_np1(1) = " << incr_shear_relative_displ_np1(1) << endln;
-    //      cerr<< "normalforce_n = " << normalforce_n << endln;
-    //      cerr<< "normalforce_np1 = " << normalforce_np1 << endln;
-    //    }
+    normalforce_np1           = normalforce_n + normalforce_increment_np1;
 
 
 
     // Compute trial shear force
-    for (i = 0; i < 2; i++)
-    {
-        shearforce_increment_np1(i) = Kt * incr_shear_relative_displ_np1(i);    //Kt: tangential penalty
-    }
 
-    for (i = 0; i < 2; i++)
-    {
-        shearforce_trial_np1(i) = shearforce_n(i) + shearforce_increment_np1(i);
-    }
+    shearforce_increment_np1 = Kt * incr_shear_relative_displ_np1;    //Kt: tangential penalty
+    shearforce_trial_np1 = shearforce_n + shearforce_increment_np1;
+
 
 
     // Compute shearforce_trial_np1 norm and n_trial_np1
     shear_force_trial_np1_norm = shearforce_trial_np1.Norm();
 
-    for (i = 0; i < 2; i++)
+    if (shear_force_trial_np1_norm == 0.0)
     {
-        n_trial_np1(i) = shearforce_trial_np1(i) / shear_force_trial_np1_norm;
-
-        if (shear_force_trial_np1_norm == 0.0)
-        {
-            n_trial_np1(i) = 0;
-        }
+        n_trial_np1.Zero();
+    }
+    else
+    {
+        n_trial_np1 = shearforce_trial_np1 / shear_force_trial_np1_norm;
     }
 
+    cout << "s = " << shear_force_trial_np1_norm << endl;
 
     // Check if trial state is inside or outside the yield surface
-    yield_criteria = 0.0; // initialization
-    lamda = 0.0;          // initialization
     yield_criteria = shear_force_trial_np1_norm - fs * fabs(normalforce_np1);
-
-
-
-    // cerr << "normalforce_np1 = " << fabs(normalforce_np1) << endln;
-    // cerr << "shearforce_trial_np1(0) = " << shearforce_trial_np1(0) << endln;
-    // cerr << "shearforce_trial_np1(1) = " << shearforce_trial_np1(1) << endln;
-    // cerr << "shear_force_trial_np1_norm = " << shear_force_trial_np1_norm << endln;
-    // cerr << "yield_criteria = " << yield_criteria << endln;
-
 
 
     // Trial state is outside the yield surface
     // Compute correct force state and plastic displacement
-    if (yield_criteria > tol)
+    if (yield_criteria > tol)  //Sliding case
     {
-        lamda = 1 / Kt * (shear_force_trial_np1_norm - fs * fabs(normalforce_np1) - tol);
+        lamda                                 = 1 / Kt * (shear_force_trial_np1_norm - fs * fabs(normalforce_np1) - tol);
 
-        for (i = 0; i < 2; i++)
-        {
-            //shearforce_np1(i) = shearforce_trial_np1(i) - lamda*Kt*n_trial_np1(i);
-            shearforce_np1(i) = fs * fabs(normalforce_np1) * n_trial_np1(i);
-            //fs*abs(normalforce_np1)*force_angle(i) + tol;
-            incr_plastic_shear_relative_displ_np1(i) = lamda * n_trial_np1(i);
-            plastic_shear_relative_displ_np1(i) =  plastic_shear_relative_displ_n(i) + incr_plastic_shear_relative_displ_np1(i);
-        }
+        shearforce_np1                        = fs * fabs(normalforce_np1) * n_trial_np1;
+        incr_plastic_shear_relative_displ_np1 = lamda * n_trial_np1;
+        plastic_shear_relative_displ_np1      = plastic_shear_relative_displ_n + incr_plastic_shear_relative_displ_np1;
 
-        shearforce_np1_norm = shearforce_np1.Norm();
-        yield_criteria = shearforce_np1_norm - fs * fabs(normalforce_np1);
-
-
-
-        cerr << "Sliding ..." << endln;
+        shearforce_np1_norm                   = shearforce_np1.Norm();
+        yield_criteria                        = shearforce_np1_norm - fs * fabs(normalforce_np1);
 
 
 
         if (print_option == 1)
         {
-            // slide
             cerr << "Sliding ..." << endln;
 
             cerr << "incr_normal_relative_displ_np1 = " << incr_normal_relative_displ_np1 << endln;
@@ -816,26 +719,17 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
         }
 
         SlidingFlag = 1;
-
-        //     return 1;
-
     }
-    else
+    else  // Sticking case
     {
-        // stick
+        lamda = 0.0; // no plastic deformation
 
-        for (i = 0; i < 2; i++)
-        {
-            lamda = 0.0; // no plastic deformation
-            shearforce_np1(i) = shearforce_trial_np1(i) - lamda * Kt * n_trial_np1(i);
-            incr_plastic_shear_relative_displ_np1(i) = lamda * n_trial_np1(i);
-            plastic_shear_relative_displ_np1(i) =  plastic_shear_relative_displ_n(i) + incr_plastic_shear_relative_displ_np1(i);
-            shearforce_np1_norm = shearforce_np1.Norm();
-            yield_criteria = shearforce_np1_norm - fs * fabs(normalforce_np1);
-        }
+        shearforce_np1                        = shearforce_trial_np1 - lamda * Kt * n_trial_np1;
+        incr_plastic_shear_relative_displ_np1 = lamda * n_trial_np1;
+        plastic_shear_relative_displ_np1      = plastic_shear_relative_displ_n + incr_plastic_shear_relative_displ_np1;
 
-
-        // cerr << "Sticking ..." << endln;
+        shearforce_np1_norm                   = shearforce_np1.Norm();
+        yield_criteria                        = shearforce_np1_norm - fs * fabs(normalforce_np1);
 
         if (print_option == 1)
         {
@@ -862,18 +756,10 @@ int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
             cerr << "\n " << endln;
         }
 
-
         SlidingFlag = 0;
-
-        //     return 0;
-
     }
 
-
-    //    cerr << "ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide: If it reaches here something is wrong!" << endln;
-
     return SlidingFlag;
-
 }
 
 
@@ -884,12 +770,6 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
 {
 
 
-    if (print_option == 1)
-    {
-        cerr << "\n  "  << endln;
-        cerr << "\nSTIFFNESS MATRIX  "  << endln;
-    }
-
 
     ContactFlag = if_nodes_are_in_contact_or_not();
     int i , j;
@@ -899,46 +779,33 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
     if ((ContactFlag == 1) || (is_locked == 1)) // in contact or locked
     {
 
-        stick_or_slide();
+        // stick_or_slide();
 
-
-        for (i = 0; i < 6; i++)
+        if (SlidingFlag == 1)  //Kt ==== 0
         {
-            for (j = 0; j < 6; j++)
+            for (i = 0; i < 6; i++)
             {
-                stiff(i, j) = Kn * (N(i) * N(j)) + Kt * (T1(i) * T1(j) + T2(i) * T2(j));
+                for (j = 0; j < 6; j++)
+                {
+                    stiff(i, j) = Kn * (N(i) * N(j));// + Kt * (T1(i) * T1(j) + T2(i) * T2(j));
+                }
             }
         }
-
-
+        else
+        {
+            for (i = 0; i < 6; i++)
+            {
+                for (j = 0; j < 6; j++)
+                {
+                    stiff(i, j) = Kn * (N(i) * N(j)) + Kt * (T1(i) * T1(j) + T2(i) * T2(j));
+                }
+            }
+        }
     }
 
     else if (ContactFlag == 0)  // not in contact
     {
-        for (i = 0; i < 6; i++)
-        {
-            for (j = 0; j < 6; j++)
-            {
-                stiff(i, j) = 0.0;
-            }
-        }
-    }
-
-
-
-    if (print_option == 1)
-    {
-
-        for (int i = 0; i < 6; i++)
-        {
-            for (int j = 0; j < 6; j++)
-            {
-                cout << "K(" << i + 1 << "," << j + 1 << "):" << stiff(i, j) << "   ";
-            }
-
-            cout << endl;
-        }
-
+        stiff.Zero();
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -972,7 +839,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getResistingForce()
 
     if (ContactFlag == 1) // in contact
     {
-        stick_or_slide();
+        // stick_or_slide();
 
 
         for (i = 0; i < 6; i++)
@@ -1018,7 +885,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getLocalResistingForce()
 
     if (ContactFlag == 1) // contacted
     {
-        stick_or_slide();
+        // stick_or_slide();
 
 
         for (i = 0; i < 6; i++)
@@ -1243,14 +1110,6 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactPlane(const Vector &x_local)
     N(5)   =  -x_local_normalized(2) ;
 
 
-    //  cerr<< "N(0) = " << N(0) << endln;
-    //  cerr<< "N(1) = " << N(1) << endln;
-    //  cerr<< "N(2) = " << N(2) << endln;
-    //  cerr<< "N(3) = " << N(3) << endln;
-    //  cerr<< "N(4) = " << N(4) << endln;
-    //  cerr<< "N(5) = " << N(5) << endln;
-
-
 
     T1(0)  =   y_local_normalized(0) ;
     T1(1)  =   y_local_normalized(1) ;
@@ -1258,13 +1117,6 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactPlane(const Vector &x_local)
     T1(3)  =  -y_local_normalized(0) ;
     T1(4)  =  -y_local_normalized(1) ;
     T1(5)  =  -y_local_normalized(2) ;
-
-    //  cerr<< "T1(0) = " << T1(0) << endln;
-    //  cerr<< "T1(1) = " << T1(1) << endln;
-    //  cerr<< "T1(2) = " << T1(2) << endln;
-    //  cerr<< "T1(3) = " << T1(3) << endln;
-    //  cerr<< "T1(4) = " << T1(4) << endln;
-    //  cerr<< "T1(5) = " << T1(5) << endln;
 
 
 
@@ -1274,14 +1126,6 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactPlane(const Vector &x_local)
     T2(3)  =  -z_local_normalized(0) ;
     T2(4)  =  -z_local_normalized(1) ;
     T2(5)  =  -z_local_normalized(2) ;
-
-    //  cerr<< "T2(0) = " << T2(0) << endln;
-    //  cerr<< "T2(1) = " << T2(1) << endln;
-    //  cerr<< "T2(2) = " << T2(2) << endln;
-    //  cerr<< "T2(3) = " << T2(3) << endln;
-    //  cerr<< "T2(4) = " << T2(4) << endln;
-    //  cerr<< "T2(5) = " << T2(5) << endln;
-
 
 
     // create transformation matrix of the element
@@ -1311,7 +1155,7 @@ ContactElement_Nonlinear_3DOF_3DOF::sendSelf(int commitTag, Channel &theChannel)
     idData(2) = connectedExternalNodes(1);
     idData(3) = ContactFlag;
     idData(4) = SlidingFlag;
-    idData(5) = definecontact;
+    idData(5) = 0;
 
     res = theChannel.sendID(dataTag, commitTag, idData);
 
@@ -1416,7 +1260,7 @@ ContactElement_Nonlinear_3DOF_3DOF::recvSelf(int commitTag, Channel &theChannel,
     connectedExternalNodes(1) = idData(2);
     ContactFlag = idData(3);
     SlidingFlag = idData(4);
-    definecontact = idData(5);
+    // definecontact = idData(5);
 
     static Vector VectorData(44);
     res = theChannel.recvVector(this->getDbTag(), commitTag, VectorData);
@@ -1488,12 +1332,7 @@ ContactElement_Nonlinear_3DOF_3DOF::recvSelf(int commitTag, Channel &theChannel,
     incr_plastic_shear_relative_displ_np1(1) = VectorData(43 );
 
     // defining the contact plane based on the local x axis
-    definecontact = ContactPlane(x_local);
-
-    if (definecontact != 0)
-    {
-        cerr << "\nProblem in Contact Plane ...";
-    }
+    ContactPlane(x_local);
 
     return res;
 }
@@ -1513,4 +1352,10 @@ int ContactElement_Nonlinear_3DOF_3DOF::getOutputSize() const
 const Vector &ContactElement_Nonlinear_3DOF_3DOF::getOutput() const
 {
     return outputVector;
+}
+
+int ContactElement_Nonlinear_3DOF_3DOF::update(void)
+{
+    stick_or_slide();
+    return 0;
 }
