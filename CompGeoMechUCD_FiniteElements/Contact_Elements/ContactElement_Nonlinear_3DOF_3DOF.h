@@ -99,7 +99,6 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         const Matrix &getDamp(void);
         const Matrix &getMass(void);
         const Vector &getResistingForce(void);
-        const Vector &getLocalResistingForce(void);
         const Vector &getResistingForceIncInertia(void);
 
 
@@ -113,8 +112,8 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
 
         // defining the contact plane, node connectivity, sticking or sliding
         int ContactPlane(const Vector &);
-        int if_nodes_are_in_contact_or_not(void);
-        int stick_or_slide(void);
+        int nodes_are_in_contact(void);
+        // int stick_or_slide(void);
 
         int CheckMesh(ofstream &);
 
@@ -127,17 +126,12 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         int getOutputSize() const;
         const Vector &getOutput() const;
 
-        double getNormalTangentStiffness(u)
-        {
-            double tmp = Gap_max - u;
-            return u / (tmp * tmp) + 1 / (-u + Gap_max);
-        }
+
     protected:
 
     private:
         ID  connectedExternalNodes;     // contains the tags of the end nodes
         Node *nodePointers[2];          // node pointer
-        int print_option;
         int numDOF;                     // number of dof of the contact element
 
         // parameters
@@ -146,6 +140,8 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         double fs;                      // friction ratio
         double Kn;                      // Kn penalty
         double Kt;                      // Kt penalty
+        double Kn_locked;               // Use input stiffness if locked
+        double Kt_locked;               // Use input stiffness if locked
         int is_locked;                  // Bool, determines if element is locked Added by Babak 04/12/14
 
 

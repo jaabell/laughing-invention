@@ -95,13 +95,11 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
     Kn_factor = Knormal_factor ;          // [kN] [Force = Kn_factor*delta_un/(Gap_max - delta_un)]
     fs        = frictionRatio;                   // [-]
     Gap_max   = maximum_gap;
-    Kn        = Kn_factor / Gap_max;
-    // Kt        = Ktangential;
-    Kt = Kn;
 
-    ///Initialized print flags
-    print_option = 0;
-
+    Kn        = Kn_factor;    // Used to be    Kn_factor / Gap_max;
+    Kt        = Ktangential;
+    Kn_locked = Kn_factor;
+    Kt_locked = Ktangential;
 
     // initialized contact flag and sliding flag to be zero
     ContactFlag = 0;
@@ -182,11 +180,11 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(int tag,
     fs = frictionRatio;                   // [-]
     Gap_max = maximum_gap;
 
-    Kn = Kn_factor / Gap_max;
-    Kt = Ktangential;
+    Kn        = Kn_factor;    // Used to be    Kn_factor / Gap_max;
+    Kt        = Ktangential;
+    Kn_locked = Kn_factor;
+    Kt_locked = Ktangential;
 
-    ///Initialized print flags
-    print_option = 1;
 
 
     // initialized contact flag and sliding flag to be zero
@@ -252,8 +250,6 @@ ContactElement_Nonlinear_3DOF_3DOF::ContactElement_Nonlinear_3DOF_3DOF(void)
         nodePointers[j] = 0;
     }
 
-    // print option
-    print_option = 1;
 
 
     shearforce_n(0) = 0.0;
@@ -393,6 +389,7 @@ ContactElement_Nonlinear_3DOF_3DOF::setDomain(Domain *theDomain)
 int
 ContactElement_Nonlinear_3DOF_3DOF::commitState()
 {
+    cout << "commitState()\n\n";
     // update total and plastic diplacements
     plastic_shear_relative_displ_n = plastic_shear_relative_displ_np1;
     total_shear_relative_displ_n = total_shear_relative_displ_np1;
@@ -477,9 +474,9 @@ ContactElement_Nonlinear_3DOF_3DOF::addInertiaLoadToUnbalance(const Vector &acce
 
 
 
-int ContactElement_Nonlinear_3DOF_3DOF::if_nodes_are_in_contact_or_not(void)
+int ContactElement_Nonlinear_3DOF_3DOF::nodes_are_in_contact(void)
 {
-
+    // cout << "if_nodes_are_in_contact_or_not\n\n";
     double gap;
 
 
@@ -497,33 +494,18 @@ int ContactElement_Nonlinear_3DOF_3DOF::if_nodes_are_in_contact_or_not(void)
 
     local_gap_np1 = transformation * global_gap_np1;
 
-    gap = Gap_max + local_gap_np1(0);
-
-    if (print_option == 1)
-    {
-        cerr << "Gap between nodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " is " << gap << " over " << Gap_max << endln;
-    }
+    gap = local_gap_np1(0);
 
 
-    if (gap <= Gap_max)
+    if (gap <= 0)
     {
         // contact occur
-        if (print_option == 1)
-        {
-            cerr << "\nNodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " are in Contact ...";
-            cerr << "gap " << gap << endln;
-        }
+
 
         return 1;
     }
     else
     {
-        if (print_option == 1)
-        {
-            cerr << "\nNodes " << connectedExternalNodes(0) << " and " << connectedExternalNodes(1) << " are NOT in Contact ...";
-            cerr << "gap " << gap << endln;
-        }
-
 
         return 0;
     }
@@ -535,282 +517,20 @@ int ContactElement_Nonlinear_3DOF_3DOF::if_nodes_are_in_contact_or_not(void)
 
 
 
-int ContactElement_Nonlinear_3DOF_3DOF::stick_or_slide(void)
-{
-
-    Vector DispTrialSlave(3); // trial disp for slave node
-    Vector DispTrialMaster(3); // trial disp for master node
-
-
-    int i;
-    double lamda;
-    double tol;
-
-
-    tol = 0.0;
-    //    tol = 1.0e-10;
-
-
-
-    DispTrialSlave = nodePointers[0]->getTrialDisp();
-    DispTrialMaster = nodePointers[1]->getTrialDisp();
-
-
-    double DispTrial[6];
-
-    DispTrial[0] = DispTrialMaster(0);
-    DispTrial[1] = DispTrialMaster(1);
-    DispTrial[2] = DispTrialMaster(2);
-    DispTrial[3] = DispTrialSlave(0);
-    DispTrial[4] = DispTrialSlave(1);
-    DispTrial[5] = DispTrialSlave(2);
-
-    if (print_option == 1)
-    {
-        cerr << "\n "  << endln;
-        cerr << "DispTrial[0]= " << DispTrial[0] << endln;
-        cerr << "DispTrial[1]= " << DispTrial[1] << endln;
-        cerr << "DispTrial[2]= " << DispTrial[2] << endln;
-        cerr << "DispTrial[3]= " << DispTrial[3] << endln;
-        cerr << "DispTrial[4]= " << DispTrial[4] << endln;
-        cerr << "DispTrial[5]= " << DispTrial[5] << endln;
-        cerr << "\n "  << endln;
-    }
-
-    //set zero normal and shear displacements at time (n+1)
-    incr_normal_relative_displ_np1 = 0.0;
-    total_normal_relative_displ_np1 = 0.0;
-    incr_shear_relative_displ_np1.Zero();
-    total_shear_relative_displ_np1.Zero();
-
-    //set zero normal and shear plastic displacements at time (n+1)
-    incr_plastic_shear_relative_displ_np1.Zero();
-    plastic_shear_relative_displ_np1.Zero();
-
-
-    //set zero normal, shear and trial forces at time (n+1)
-    normalforce_increment_np1 = 0.0;
-    normalforce_np1 = 0.0;
-    shearforce_increment_np1.Zero();
-    shearforce_trial_np1.Zero();
-    shearforce_np1.Zero();
-
-
-    //compute total relative displacement at time (n+1)
-    for (i = 0; i < 6; i++)
-    {
-        total_normal_relative_displ_np1 += N(i) * DispTrial[i];
-        total_shear_relative_displ_np1(0) += T1(i) * DispTrial[i];
-        total_shear_relative_displ_np1(1) += T2(i) * DispTrial[i];
-    }
-
-
-    // Compute increment of relative displacement
-    incr_normal_relative_displ_np1 = total_normal_relative_displ_np1 - total_normal_relative_displ_n;
-    incr_shear_relative_displ_np1  = total_shear_relative_displ_np1  - total_shear_relative_displ_n;
-
-
-
-    //Compute Kn at (n+1)/2
-
-    if (print_option == 1)
-    {
-        cout << "total_normal_relative_displ_np1 = " << fabs(total_normal_relative_displ_np1) << endl;
-    }
-
-
-    //    if(fabs(total_normal_relative_displ_np1) <= 0.9*Gap_max)
-    //    {
-
-
-    double delta_u_np1;
-    double delta_u_n;
-    double Kn_np1;
-    double Kn_n;
-    delta_u_np1 = - total_normal_relative_displ_np1;
-    delta_u_n = - total_normal_relative_displ_n;
-
-    Kn_np1 = Kn_factor * Gap_max / ((Gap_max - delta_u_np1) * (Gap_max - delta_u_np1));
-
-    Kn_n   = Kn_factor * Gap_max / ((Gap_max - delta_u_n) * (Gap_max - delta_u_n));
-
-
-    if (print_option == 1)
-    {
-        cout << "delta_u_np1 = " << delta_u_np1 << endl;
-        cout << "Gap_max = " << Gap_max << endl;
-        cout << "Kn_np1 = " << Kn_np1 << endl;
-        cout << "Kn_n = " << Kn_n << endl;
-    }
-
-
-    Kn = 0.5 * (Kn_np1 + Kn_n);
-
-    // Compute normal force
-    normalforce_increment_np1 = Kn * incr_normal_relative_displ_np1;
-    normalforce_np1           = normalforce_n + normalforce_increment_np1;
-
-
-
-    // Compute trial shear force
-
-    shearforce_increment_np1 = Kt * incr_shear_relative_displ_np1;    //Kt: tangential penalty
-    shearforce_trial_np1 = shearforce_n + shearforce_increment_np1;
-
-
-
-    // Compute shearforce_trial_np1 norm and n_trial_np1
-    shear_force_trial_np1_norm = shearforce_trial_np1.Norm();
-
-    if (shear_force_trial_np1_norm == 0.0)
-    {
-        n_trial_np1.Zero();
-    }
-    else
-    {
-        n_trial_np1 = shearforce_trial_np1 / shear_force_trial_np1_norm;
-    }
-
-    cout << "s = " << shear_force_trial_np1_norm << endl;
-
-    // Check if trial state is inside or outside the yield surface
-    yield_criteria = shear_force_trial_np1_norm - fs * fabs(normalforce_np1);
-
-
-    // Trial state is outside the yield surface
-    // Compute correct force state and plastic displacement
-    if (yield_criteria > tol)  //Sliding case
-    {
-        lamda                                 = 1 / Kt * (shear_force_trial_np1_norm - fs * fabs(normalforce_np1) - tol);
-
-        shearforce_np1                        = fs * fabs(normalforce_np1) * n_trial_np1;
-        incr_plastic_shear_relative_displ_np1 = lamda * n_trial_np1;
-        plastic_shear_relative_displ_np1      = plastic_shear_relative_displ_n + incr_plastic_shear_relative_displ_np1;
-
-        shearforce_np1_norm                   = shearforce_np1.Norm();
-        yield_criteria                        = shearforce_np1_norm - fs * fabs(normalforce_np1);
-
-
-
-        if (print_option == 1)
-        {
-            cerr << "Sliding ..." << endln;
-
-            cerr << "incr_normal_relative_displ_np1 = " << incr_normal_relative_displ_np1 << endln;
-            cerr << "incr_shear_relative_displ_np1(0) = " << incr_shear_relative_displ_np1(0) << endln;
-            cerr << "incr_shear_relative_displ_np1(1) = " << incr_shear_relative_displ_np1(1) << endln;
-            cerr << "normalforce_n = " << normalforce_n << endln;
-            cerr << "normalforce_np1 = " << normalforce_np1 << endln;
-            cerr << "shearforce_n(0) = " << shearforce_n(0) << endln;
-            cerr << "shearforce_n(1) = " << shearforce_n(1) << endln;
-            cerr << "shearforce_trial_np1(0) = " << shearforce_trial_np1(0) << endln;
-            cerr << "shearforce_trial_np1(1) = " << shearforce_trial_np1(1) << endln;
-            cerr << "shearforce_np1(0) = " << shearforce_np1(0) << endln;
-            cerr << "shearforce_np1(1) = " << shearforce_np1(1) << endln;
-            cerr << "n_trial_np1(0) = " << n_trial_np1(0) << endln;
-            cerr << "n_trial_np1(1) = " << n_trial_np1(1) << endln;
-            cerr << "yield_criteria = " << yield_criteria << endln;
-            cerr << "lamda = " << lamda << endln;
-            cerr << "incr_plastic_shear_relative_displ_np1(0) = " << incr_plastic_shear_relative_displ_np1(0) << endln;
-            cerr << "incr_plastic_shear_relative_displ_np1(1) = " << incr_plastic_shear_relative_displ_np1(1) << endln;
-            cerr << "plastic_shear_relative_displ_np1(0) = " << plastic_shear_relative_displ_np1(0) << endln;
-            cerr << "plastic_shear_relative_displ_np1(1) = " << plastic_shear_relative_displ_np1(1) << endln;
-            cerr << "\n " << endln;
-        }
-
-        SlidingFlag = 1;
-    }
-    else  // Sticking case
-    {
-        lamda = 0.0; // no plastic deformation
-
-        shearforce_np1                        = shearforce_trial_np1 - lamda * Kt * n_trial_np1;
-        incr_plastic_shear_relative_displ_np1 = lamda * n_trial_np1;
-        plastic_shear_relative_displ_np1      = plastic_shear_relative_displ_n + incr_plastic_shear_relative_displ_np1;
-
-        shearforce_np1_norm                   = shearforce_np1.Norm();
-        yield_criteria                        = shearforce_np1_norm - fs * fabs(normalforce_np1);
-
-        if (print_option == 1)
-        {
-            cerr << "Sticking ..." << endln;
-            cerr << "incr_normal_relative_displ_np1 = " << incr_normal_relative_displ_np1 << endln;
-            cerr << "incr_shear_relative_displ_np1(0) = " << incr_shear_relative_displ_np1(0) << endln;
-            cerr << "incr_shear_relative_displ_np1(1) = " << incr_shear_relative_displ_np1(1) << endln;
-            cerr << "normalforce_n = " << normalforce_n << endln;
-            cerr << "normalforce_np1 = " << normalforce_np1 << endln;
-            cerr << "shearforce_n(0) = " << shearforce_n(0) << endln;
-            cerr << "shearforce_n(1) = " << shearforce_n(1) << endln;
-            cerr << "shearforce_trial_np1(0) = " << shearforce_trial_np1(0) << endln;
-            cerr << "shearforce_trial_np1(1) = " << shearforce_trial_np1(1) << endln;
-            cerr << "shearforce_np1(0) = " << shearforce_np1(0) << endln;
-            cerr << "shearforce_np1(1) = " << shearforce_np1(1) << endln;
-            cerr << "n_trial_np1(0) = " << n_trial_np1(0) << endln;
-            cerr << "n_trial_np1(1) = " << n_trial_np1(1) << endln;
-            cerr << "yield_criteria = " << yield_criteria << endln;
-            cerr << "lamda = " << lamda << endln;
-            cerr << "incr_plastic_shear_relative_displ_np1(0) = " << incr_plastic_shear_relative_displ_np1(0) << endln;
-            cerr << "incr_plastic_shear_relative_displ_np1(1) = " << incr_plastic_shear_relative_displ_np1(1) << endln;
-            cerr << "plastic_shear_relative_displ_np1(0) = " << plastic_shear_relative_displ_np1(0) << endln;
-            cerr << "plastic_shear_relative_displ_np1(1) = " << plastic_shear_relative_displ_np1(1) << endln;
-            cerr << "\n " << endln;
-        }
-
-        SlidingFlag = 0;
-    }
-
-    return SlidingFlag;
-}
-
-
-
-
 const Matrix &
 ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
 {
-
-
-
-    ContactFlag = if_nodes_are_in_contact_or_not();
     int i , j;
     stiff.Zero( ) ;
 
-
-    if ((ContactFlag == 1) || (is_locked == 1)) // in contact or locked
+    for (i = 0; i < 6; i++)
     {
-
-        // stick_or_slide();
-
-        if (SlidingFlag == 1)  //Kt ==== 0
+        for (j = 0; j < 6; j++)
         {
-            for (i = 0; i < 6; i++)
-            {
-                for (j = 0; j < 6; j++)
-                {
-                    stiff(i, j) = Kn * (N(i) * N(j));// + Kt * (T1(i) * T1(j) + T2(i) * T2(j));
-                }
-            }
-        }
-        else
-        {
-            for (i = 0; i < 6; i++)
-            {
-                for (j = 0; j < 6; j++)
-                {
-                    stiff(i, j) = Kn * (N(i) * N(j)) + Kt * (T1(i) * T1(j) + T2(i) * T2(j));
-                }
-            }
+            stiff(i, j) = Kn * (N(i) * N(j)) + Kt * (T1(i) * T1(j) + T2(i) * T2(j));
         }
     }
-
-    else if (ContactFlag == 0)  // not in contact
-    {
-        stiff.Zero();
-    }
-
-    ///////////////////////////////////////////////////////////////////////
-
-
+    // cout << stiff << endl;
     return stiff ;
 }
 
@@ -820,7 +540,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
 const Matrix &
 ContactElement_Nonlinear_3DOF_3DOF::getInitialStiff(void)
 {
-
+    update();
     getTangentStiff();
 
     return stiff ;
@@ -831,88 +551,18 @@ ContactElement_Nonlinear_3DOF_3DOF::getInitialStiff(void)
 const Vector &
 ContactElement_Nonlinear_3DOF_3DOF::getResistingForce()
 {
-
-    ContactFlag = if_nodes_are_in_contact_or_not();
-
     int i;
     resid.Zero( ) ;
 
-    if (ContactFlag == 1) // in contact
+    for (i = 0; i < 6; i++)
     {
-        // stick_or_slide();
-
-
-        for (i = 0; i < 6; i++)
-        {
-            resid(i) = (-normalforce_np1) * N(i) + shearforce_np1(0) * T1(i) + shearforce_np1(1) * T2(i);
-        }
-
-
-        if (print_option == 1)
-        {
-            for (i = 0; i < 6; i++)
-            {
-                cerr << "resid(i) = " << resid(i);
-            }
-
-            cerr << endl;
-        }
-
+        resid(i) = (-normalforce_np1) * N(i) + shearforce_np1(0) * T1(i) + shearforce_np1(1) * T2(i);
     }
-    else if (ContactFlag == 0)    // not in contact
-    {
-
-        for (i = 0; i < 6; i++)
-        {
-            resid(i) = 0.0;   // Not exactly zero....
-        }
-    }
-
+    // cout << "normalforce_np1 = " << normalforce_np1 << endl;
+    // cout << resid << endl;
 
     return resid ;
 }
-
-
-
-
-const Vector &
-ContactElement_Nonlinear_3DOF_3DOF::getLocalResistingForce()
-{
-    ContactFlag = if_nodes_are_in_contact_or_not();
-
-    int i;
-    resid.Zero( ) ;
-
-    if (ContactFlag == 1) // contacted
-    {
-        // stick_or_slide();
-
-
-        for (i = 0; i < 6; i++)
-        {
-            localresid(0) = -normalforce_np1;
-            localresid(1) = -shearforce_np1(0);
-            localresid(2) =  shearforce_np1(1);
-            localresid(3) =  normalforce_np1;
-            localresid(4) =  shearforce_np1(0);
-            localresid(5) = -shearforce_np1(1);
-        }
-
-
-    }
-    else if (ContactFlag == 0)  // not contacted
-    {
-
-        for (i = 0; i < 6; i++)
-        {
-            localresid(i) = 0.0;
-        }
-    }
-
-
-    return localresid;
-}
-
 
 
 
@@ -943,112 +593,6 @@ ContactElement_Nonlinear_3DOF_3DOF::Print(ostream &s, int flag)
 
 
 
-
-// Response*
-// ContactElement_Nonlinear_3DOF_3DOF::setResponse(const char** argv, int argc, Information& eleInformation)
-// {
-//     if (strcmp(argv[0], "force") == 0 || strcmp(argv[0], "forces") == 0)
-//     {
-//         return new ElementResponse(this, 1, resid);
-//     }
-
-//     // tangent stiffness matrix
-//     else if (strcmp(argv[0], "stiff") == 0 || strcmp(argv[0], "stiffness") == 0)
-//     {
-//         return new ElementResponse(this, 2, stiff);
-//     }
-
-//     if (strcmp(argv[0], "localforce") == 0 || strcmp(argv[0], "localforces") == 0)
-//     {
-//         return new ElementResponse(this, 3, localresid);
-//     }
-
-//     if (strcmp(argv[0], "nodaldisplacement") == 0 || strcmp(argv[0], "nodesdisp") == 0)
-//     {
-//         return new ElementResponse(this, 4, Vector(3 * 2) );
-//     }
-
-//     if (strcmp(argv[0], "contactsituation") == 0 || strcmp(argv[0], "contactsituation") == 0)
-//     {
-//         return new ElementResponse(this, 5, Vector(2) );
-//     }
-
-//     if (strcmp(argv[0], "relativedisplacement") == 0 || strcmp(argv[0], "reldisp") == 0)
-//     {
-//         return new ElementResponse(this, 6, Vector(3) );
-//     }
-
-//     else
-//     {
-//         return 0;
-//     }
-// }
-
-
-// int
-// ContactElement_Nonlinear_3DOF_3DOF::getResponse(int responseID, Information& eleInfo)
-// {
-//     if (responseID == 1)
-//     {
-//         return eleInfo.setVector(resid);
-//     }
-
-//     else if (responseID == 2)
-//     {
-//         return eleInfo.setMatrix(stiff);
-//     }
-
-//     else if (responseID == 3)
-//     {
-//         return eleInfo.setVector(localresid);
-//     }
-
-//     else if (responseID == 4)
-//     {
-//         static Vector nodaldisplacements(3 * 2);
-//         Vector slaveNode_displacement(3);
-//         Vector masterNode_displacement(3);
-
-//         slaveNode_displacement  = nodePointers[0]->getTrialDisp();
-//         masterNode_displacement = nodePointers[1]->getTrialDisp();
-
-
-//         for (int i = 0; i < 6; i++)
-//         {
-//             nodaldisplacements(0) = slaveNode_displacement(0);
-//             nodaldisplacements(1) = slaveNode_displacement(1);
-//             nodaldisplacements(2) = slaveNode_displacement(2);
-//             nodaldisplacements(3) = masterNode_displacement(0);
-//             nodaldisplacements(4) = masterNode_displacement(1);
-//             nodaldisplacements(5) = masterNode_displacement(2);
-//         }
-
-//         return eleInfo.setVector(nodaldisplacements);
-//     }
-//     else if (responseID == 5)
-//     {
-//         static Vector contactsituation(2);
-//         contactsituation(0) = ContactFlag;
-//         contactsituation(1) = SlidingFlag;
-
-//         return eleInfo.setVector(contactsituation);
-//     }
-
-//     else if (responseID == 6)
-//     {
-//         static Vector RelativeDisplacement(3);
-//         RelativeDisplacement(0) = normalforce_np1   / Kn;
-//         RelativeDisplacement(1) = shearforce_np1(0) / Kt;
-//         RelativeDisplacement(2) = shearforce_np1(1) / Kt;
-
-//         return eleInfo.setVector(RelativeDisplacement);
-//     }
-
-//     else
-//     {
-//         return -1;
-//     }
-// }
 
 
 
@@ -1356,6 +900,160 @@ const Vector &ContactElement_Nonlinear_3DOF_3DOF::getOutput() const
 
 int ContactElement_Nonlinear_3DOF_3DOF::update(void)
 {
-    stick_or_slide();
+    int i;
+
+    // cout << "update\n\n";
+    Vector DispTrialI(3); // trial disp for slave node
+    Vector DispTrialJ(3); // trial disp for master node
+
+    DispTrialI = nodePointers[0]->getTrialDisp();
+    DispTrialJ = nodePointers[1]->getTrialDisp();
+
+
+    double DispTrial[6];
+
+    DispTrial[0] = DispTrialI(0);
+    DispTrial[1] = DispTrialI(1);
+    DispTrial[2] = DispTrialI(2);
+    DispTrial[3] = DispTrialJ(0);
+    DispTrial[4] = DispTrialJ(1);
+    DispTrial[5] = DispTrialJ(2);
+
+
+    //set zero normal and shear displacements at time (n+1)
+    incr_normal_relative_displ_np1 = 0.0;
+    total_normal_relative_displ_np1 = 0.0;
+    incr_shear_relative_displ_np1.Zero();
+    total_shear_relative_displ_np1.Zero();
+
+    //set zero normal and shear plastic displacements at time (n+1)
+    incr_plastic_shear_relative_displ_np1.Zero();
+    plastic_shear_relative_displ_np1.Zero();
+
+
+    //set zero normal, shear and trial forces at time (n+1)
+    normalforce_increment_np1 = 0.0;
+    normalforce_np1 = 0.0;
+    shearforce_increment_np1.Zero();
+    shearforce_trial_np1.Zero();
+    shearforce_np1.Zero();
+
+
+
+
+    //compute total relative displacement at time (n+1)
+    for (i = 0; i < 6; i++)
+    {
+        total_normal_relative_displ_np1 += N(i) * DispTrial[i];
+        total_shear_relative_displ_np1(0) += T1(i) * DispTrial[i];
+        total_shear_relative_displ_np1(1) += T2(i) * DispTrial[i];
+    }
+
+
+    // Compute increment of relative displacement
+    incr_normal_relative_displ_np1 = total_normal_relative_displ_np1 - total_normal_relative_displ_n;
+    incr_shear_relative_displ_np1  = total_shear_relative_displ_np1  - total_shear_relative_displ_n;
+
+
+    // is_locked = 1;
+    if (is_locked == 1) //Element is locked
+    {
+        Kn = Kn_locked;
+        Kt = Kt_locked;
+        normalforce_np1 = Kn * -total_normal_relative_displ_np1;
+        shearforce_np1(0) = Kt * total_shear_relative_displ_np1(0);
+        shearforce_np1(1) = Kt * total_shear_relative_displ_np1(1);
+    }
+    else   // Element is unlocked
+    {
+
+        if (nodes_are_in_contact())
+        {
+            double lamda;
+            double tol = 0;
+            double delta_u_np1;
+            double delta_u_n;
+            double Kn_np1;
+            double Kn_n;
+
+            //Compute Kn at (n+1)/2
+            // delta_u_np1 = - total_normal_relative_displ_np1;// / Gap_max;
+            // delta_u_n = - total_normal_relative_displ_n;// / Gap_max;
+
+            // cout << "Kn = " << Kn;
+            Kn_np1 = 2 * Kn_factor * total_normal_relative_displ_np1;;
+            Kn_n   = 2 * Kn_factor  * total_normal_relative_displ_n;
+            // Kn = 0.5 * (Kn_np1 + Kn_n);
+            Kn = Kn_np1;
+            // Kn = Kn_n;
+            // cout << "Kn = " << Kn << "\n";
+
+
+            // Compute normal force
+            // normalforce_increment_np1 = Kn * incr_normal_relative_displ_np1;
+            // normalforce_np1           = normalforce_n + normalforce_increment_np1;
+            normalforce_np1 = -Kn_factor * total_normal_relative_displ_np1 * total_normal_relative_displ_np1;
+            // cout << "normalforce_np1 = " << normalforce_np1 << "\n";
+
+
+            // Compute trial shear force
+
+            shearforce_increment_np1  = Kt * (incr_shear_relative_displ_np1 );  //Kt: tangential penalty
+            shearforce_trial_np1      = shearforce_n + shearforce_increment_np1;
+
+            shear_force_trial_np1_norm = shearforce_trial_np1.Norm();
+
+            // Check yielding in shear
+
+            if (shear_force_trial_np1_norm == 0.0)
+            {
+                n_trial_np1.Zero();
+            }
+            else
+            {
+                n_trial_np1 = shearforce_trial_np1 / shear_force_trial_np1_norm;
+            }
+
+            yield_criteria = shear_force_trial_np1_norm - fs * fabs(normalforce_np1);  //Nice and simple
+            cout << "shearforce_trial_np1 = " << shearforce_trial_np1 <<
+                 "   normalforce_np1 = " << normalforce_np1 << endl;
+
+            if (yield_criteria > tol)  //Sliding case
+            {
+                lamda                                 = 1 / Kt * (shear_force_trial_np1_norm - fs * fabs(normalforce_np1) - tol);
+
+                shearforce_np1                        = fs * fabs(normalforce_np1) * n_trial_np1;
+                cout << "  > shearforce_trial_np1 = " << shearforce_trial_np1 << endl;
+
+                incr_plastic_shear_relative_displ_np1 = lamda * n_trial_np1;
+                plastic_shear_relative_displ_np1      = plastic_shear_relative_displ_n + incr_plastic_shear_relative_displ_np1;
+
+                Kt = 0;
+
+                SlidingFlag = 1;
+            }
+            else  // Sticking case
+            {
+                lamda = 0.0; // no plastic deformation
+
+                shearforce_np1                        = shearforce_trial_np1;
+                incr_plastic_shear_relative_displ_np1.Zero();
+                plastic_shear_relative_displ_np1      = plastic_shear_relative_displ_n;
+
+                Kt = Kt_locked;
+
+                SlidingFlag = 0;
+            }
+            cout << " --- > shearforce_np1 = " << shearforce_np1 << endl;
+
+        }
+        else //Nodes are not in contact
+        {
+            Kn = 0;
+            Kt = 0;
+            shearforce_np1.Zero();
+            normalforce_np1 = 0;
+        }
+    }
     return 0;
 }
