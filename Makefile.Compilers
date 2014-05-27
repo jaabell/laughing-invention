@@ -11,6 +11,24 @@ PROGRAMMING_MODE = SEQUENTIAL
 LTO_FLAGS = 
 # LTO_FLAGS = -flto
 
+INLINING_OPTS = -finline \
+				-Winline \
+				-finline-functions \
+				-fkeep-inline-functions \
+				-fdefault-inline 
+
+
+# INLINING_OPTS = -finline \
+# 				-Winline \
+# 				-finline-functions \
+# 				-finline-limit=10000 \
+# 				-ftemplate-depth=100000 \
+# 				--param inline-unit-growth=10000 \
+# 				--param large-function-growth=10000 \
+# 				-fkeep-inline-functions \
+# 				-fdefault-inline
+
+
 #  ==========================================
 #  Check if these variables are set
 #  ==========================================
@@ -71,15 +89,7 @@ endif
 ifeq ($(DEBUG_MODE), NO_DEBUG)
 	C++FLAGS        = $(LTO_FLAGS) -Wall \
 										-O2 \
-										-finline \
-										-finline-functions \
-										-finline-limit=10000 \
-										-Winline \
-										-ftemplate-depth=100000 \
-										--param inline-unit-growth=10000 \
-										--param large-function-growth=10000 \
-										-fkeep-inline-functions \
-										-fdefault-inline \
+										$(INLINING_OPTS) \
 										-ffloat-store \
 										-ffast-math \
 										-funroll-loops \
@@ -92,17 +102,14 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-Wno-write-strings \
 										-march=native
 										# -std=c++11 \
-	# C++FLAGS        =   -Wall \
 	CFLAGS          = $(LTO_FLAGS) -O2 \
 										-D_LINUX \
 										-D_UNIX \
 										-D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84
 										-march=native $(MORE_CFLAGS)
-	# CFLAGS          =  -O2 \
 
 	FFLAGS          = -O2 $(MORE_FFLAGS)
 	LINKFLAGS       = -O2 $(LTO_FLAGS) $(MORE_LINKFLAGS)
-	#LINKFLAGS       = -O $(MORE_LINKFLAGS)
 
 else
 	C++FLAGS        = -Wall \

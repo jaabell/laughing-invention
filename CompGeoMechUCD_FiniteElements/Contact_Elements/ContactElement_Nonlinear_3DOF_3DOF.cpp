@@ -389,7 +389,7 @@ ContactElement_Nonlinear_3DOF_3DOF::setDomain(Domain *theDomain)
 int
 ContactElement_Nonlinear_3DOF_3DOF::commitState()
 {
-    cout << "commitState()\n\n";
+    // cout << "commitState()\n\n";
     // update total and plastic diplacements
     plastic_shear_relative_displ_n = plastic_shear_relative_displ_np1;
     total_shear_relative_displ_n = total_shear_relative_displ_np1;
@@ -1015,15 +1015,15 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
             }
 
             yield_criteria = shear_force_trial_np1_norm - fs * fabs(normalforce_np1);  //Nice and simple
-            cout << "shearforce_trial_np1 = " << shearforce_trial_np1 <<
-                 "   normalforce_np1 = " << normalforce_np1 << endl;
+            // cout << "shearforce_trial_np1 = " << shearforce_trial_np1 <<
+            //      "   normalforce_np1 = " << normalforce_np1 << endl;
 
             if (yield_criteria > tol)  //Sliding case
             {
                 lamda                                 = 1 / Kt * (shear_force_trial_np1_norm - fs * fabs(normalforce_np1) - tol);
 
                 shearforce_np1                        = fs * fabs(normalforce_np1) * n_trial_np1;
-                cout << "  > shearforce_trial_np1 = " << shearforce_trial_np1 << endl;
+                // cout << "  > shearforce_trial_np1 = " << shearforce_trial_np1 << endl;
 
                 incr_plastic_shear_relative_displ_np1 = lamda * n_trial_np1;
                 plastic_shear_relative_displ_np1      = plastic_shear_relative_displ_n + incr_plastic_shear_relative_displ_np1;
@@ -1044,7 +1044,7 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
 
                 SlidingFlag = 0;
             }
-            cout << " --- > shearforce_np1 = " << shearforce_np1 << endl;
+            // cout << " --- > shearforce_np1 = " << shearforce_np1 << endl;
 
         }
         else //Nodes are not in contact
