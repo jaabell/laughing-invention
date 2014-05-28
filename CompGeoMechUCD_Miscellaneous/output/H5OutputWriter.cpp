@@ -88,6 +88,7 @@ void H5OutputWriter::finalize()
         time(&current);
         char *timestring;
         timestring = ctime(&current);
+        timestring[strlen(timestring) - 1] = '\0';
         write_string(id_file, "Date_and_Time_End", timestring);
 
 
@@ -227,6 +228,7 @@ void H5OutputWriter::initialize(std::string filename_in,
         time(&current);
         char *timestring;
         timestring = ctime(&current);
+        timestring[strlen(timestring) - 1] = '\0';
         write_string(id_file, "Date_and_Time_Start", timestring);
 
 
