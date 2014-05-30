@@ -3955,7 +3955,7 @@ ADD_element:
     }
     //!=========================================================================================================
     //!
-    //!FEIDOC add element # <.> type [contact] with nodes (<.>, <.>) normal_stiffness = <F/L^2> tangential_stiffness = <F/L^2> friction_ratio = <.> maximum_gap = <L> contact_plane_vector = (<.>, <.>, <.> );
+    //!FEIDOC add element # <.> type [contact] with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> friction_ratio = <.> maximum_gap = <L> contact_plane_vector = (<.>, <.>, <.> );
     | TEXTNUMBER exp TYPE contact WITH NODES
         '(' exp ',' exp ')'
         normal_stiffness '=' exp
