@@ -17,11 +17,11 @@
 // RETURN:
 // VERSION:
 // LANGUAGE:          C++
-// TARGET OS:         
+// TARGET OS:
 // PROGRAMMER:        Nima Tafazzoli, Boris Jeremic
-//                
+//
 // DATE:              January 2010
-// UPDATE HISTORY:    
+// UPDATE HISTORY:
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -46,7 +46,7 @@
 //! - inputnodesfixity: name of the input file which has the fixities of nodes
 
 //! Format of input file:
-//! - First arguments should be Fix (for fixing just one specified dof) or Fixall (for fixing all dofs of a 
+//! - First arguments should be Fix (for fixing just one specified dof) or Fixall (for fixing all dofs of a
 //! specified node).
 //! In case of "Fix" it should be followed by the node number and dof to be fixed and in case of "Fixall",
 //! it should be followed by the node number.
@@ -54,56 +54,56 @@
 
 int add_support_from_file_to_nodes(const char *);
 int add_support_from_file_to_nodes(const char *inputnodesfixity)
-  {
-
-  const char *nodesfixityfromfile = inputnodesfixity;
-  
-  ifstream inputfixity;
-  
-  if(! inputfixity)
-    {
-      cerr << "Error: (add_support_from_file_to_nodes) Can not open " << inputnodesfixity << "!" << endl;
-      return -1;
-    }  
-
-  inputfixity.open(nodesfixityfromfile , ios::in);
-
-  string typeoffixity;
-
-while (!inputfixity.eof())
 {
 
-   inputfixity >> typeoffixity;
+    const char *nodesfixityfromfile = inputnodesfixity;
 
+    ifstream inputfixity;
 
-  if (typeoffixity.compare("Fix") == 0)
+    if (! inputfixity)
     {
-     int NodeNumber;
-     int dof_number;
+        cerr << "Error: (add_support_from_file_to_nodes) Can not open " << inputnodesfixity << "!" << endl;
+        return -1;
+    }
 
-     inputfixity >> NodeNumber >> dof_number;
+    inputfixity.open(nodesfixityfromfile , ios::in);
 
-     add_to_node_support(NodeNumber, dof_number);
-     }
+    string typeoffixity;
 
-  else if (typeoffixity.compare("Fixall") == 0)
+    while (!inputfixity.eof())
     {
-       int NodeNumber;
-     
-       inputfixity >> NodeNumber;
 
-       add_support_to_all_dofs_of_node(NodeNumber);
+        inputfixity >> typeoffixity;
+
+
+        if (typeoffixity.compare("Fix") == 0)
+        {
+            int NodeNumber;
+            int dof_number;
+
+            inputfixity >> NodeNumber >> dof_number;
+
+            add_support_to_node(NodeNumber, dof_number);
+        }
+
+        else if (typeoffixity.compare("Fixall") == 0)
+        {
+            int NodeNumber;
+
+            inputfixity >> NodeNumber;
+
+            add_support_to_all_dofs_of_node(NodeNumber);
+
+        }
+
 
     }
- 
 
-}
+    inputfixity.close();
 
- inputfixity.close();
- 
- return 0;
- 
-  };
+    return 0;
+
+};
 
 
 
