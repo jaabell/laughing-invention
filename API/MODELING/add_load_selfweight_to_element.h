@@ -108,5 +108,3 @@ int add_load_selfweight_to_element(int SelfWeightNumber,
 
     return 0;
 };
-
-

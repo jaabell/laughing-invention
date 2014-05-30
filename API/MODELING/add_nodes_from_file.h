@@ -17,11 +17,11 @@
 // RETURN:
 // VERSION:
 // LANGUAGE:          C++
-// TARGET OS:
+// TARGET OS:         
 // PROGRAMMER:        Nima Tafazzoli, Boris Jeremic
-//
+//                
 // DATE:              January 2010
-// UPDATE HISTORY:
+// UPDATE HISTORY:    
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -46,42 +46,41 @@
 //! - inputnodesfile: name of the input file which has the nodal information
 
 //! Format of input file:
-//! It is the same as the inputs for creating the nodes. First argument should be
+//! It is the same as the inputs for creating the nodes. First argument should be 
 //! the node number following by number of dofs, x_coordinate, y_coordinate, z_coordinate
-//! Do not put any blank line at the end of the input file.
 
+void add_nodes_from_file(const char *, int);
+void add_nodes_from_file(const char *inputnodesfile, int ndof)
+  {
 
-int add_nodes_from_file(string inputnodesfile, int ndof)
-{
-
-    int NodeTag;
-    double x_coordinate;
-    double y_coordinate;
-    double z_coordinate;
-
-    const char* nodesfromfile = inputnodesfile.c_str();
-
-    ifstream inputnodes;
-
-    if(! inputnodes)
+  int NodeTag;
+  double x_coordinate;
+  double y_coordinate;
+  double z_coordinate;
+  
+  const char *nodesfromfile = inputnodesfile;
+  
+  ifstream inputnodes;
+  
+  if(! inputnodes)
     {
-        cerr << "Error: (add_nodes_from_file) Can not open " << inputnodesfile << "!" << endl;
-        return -1;
-    }
+      cerr << "Error: (add_nodes_from_file) Can not open " << inputnodesfile << "!" << endl;
+      abort();
+    }  
+  
+  inputnodes.open(nodesfromfile , ios::in);
 
-    inputnodes.open(nodesfromfile , ios::in);
 
+  while (inputnodes >> NodeTag >> x_coordinate >> y_coordinate >> z_coordinate)
+  {
+   add_node(NodeTag, ndof, x_coordinate, y_coordinate, z_coordinate);
+   if (NodeTag == 32622)
+     cout << "biiiib\n";
+  }
 
-    while (inputnodes >> NodeTag >> x_coordinate >> y_coordinate >> z_coordinate)
-    {
-        add_node(NodeTag, ndof, x_coordinate, y_coordinate, z_coordinate);
-    }
-
-    inputnodes.close();
-
-    return 0;
-
-};
+  inputnodes.close();
+ 
+  };
 
 
 

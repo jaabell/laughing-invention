@@ -17,11 +17,11 @@
 // RETURN:
 // VERSION:
 // LANGUAGE:          C++
-// TARGET OS:
+// TARGET OS:         
 // PROGRAMMER:        Babak KAmrani, Boris Jeremic
-//
+//                
 // DATE:              May 2013
-// UPDATE HISTORY:
+// UPDATE HISTORY:    
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -55,72 +55,72 @@
 
 int add_elements_from_GIDfile_27node_brick_elastic(string, int, int);
 int add_elements_from_GIDfile_27node_brick_elastic(string inputelementsfile, int MaterialNumber, int AccelerationFieldNumber)
+  {
+
+  const char *inputfromfile = inputelementsfile.c_str();
+  
+  ifstream inputelements;
+  
+  if(! inputelements)
+    {
+      cerr << "Error: (add_elements_from_GIDfile_27node_brick_elastic) Can not open " << inputelementsfile << "!" << endl;
+      return -1;
+    }  
+
+  inputelements.open(inputfromfile , ios::in);
+
+
+while (!inputelements.eof())
 {
 
-    const char* inputfromfile = inputelementsfile.c_str();
-
-    ifstream inputelements;
-
-    if(! inputelements)
-    {
-        cerr << "Error: (add_elements_from_GIDfile_27node_brick_elastic) Can not open " << inputelementsfile << "!" << endl;
-        return -1;
-    }
-
-    inputelements.open(inputfromfile , ios::in);
-
-
-    while (!inputelements.eof())
-    {
-
-        int ElementNumber;
-        int node_numb_1;
-        int node_numb_2;
-        int node_numb_3;
-        int node_numb_4;
-        int node_numb_5;
-        int node_numb_6;
-        int node_numb_7;
-        int node_numb_8;
-        int node_numb_9;
-        int node_numb_10;
-        int node_numb_11;
-        int node_numb_12;
-        int node_numb_13;
-        int node_numb_14;
-        int node_numb_15;
-        int node_numb_16;
-        int node_numb_17;
-        int node_numb_18;
-        int node_numb_19;
-        int node_numb_20;
-        int node_numb_21;
-        int node_numb_22;
-        int node_numb_23;
-        int node_numb_24;
-        int node_numb_25;
-        int node_numb_26;
-        int node_numb_27;
+       int ElementNumber;
+       int node_numb_1;
+       int node_numb_2;
+       int node_numb_3;
+       int node_numb_4;
+       int node_numb_5; 
+       int node_numb_6;
+       int node_numb_7;
+       int node_numb_8;
+       int node_numb_9;
+       int node_numb_10;
+       int node_numb_11;
+       int node_numb_12;
+       int node_numb_13;
+       int node_numb_14;
+       int node_numb_15;
+       int node_numb_16;
+       int node_numb_17;
+       int node_numb_18;
+       int node_numb_19;
+       int node_numb_20;
+       int node_numb_21;
+       int node_numb_22;
+       int node_numb_23;
+       int node_numb_24;
+       int node_numb_25;
+       int node_numb_26;
+       int node_numb_27;
 
 
-        inputelements >> ElementNumber >> node_numb_1 >> node_numb_2 >> node_numb_6 >> node_numb_5 >>
-                      node_numb_4 >> node_numb_3 >> node_numb_7 >> node_numb_8 >> node_numb_9 >> node_numb_18 >> node_numb_13
-                      >> node_numb_17 >> node_numb_12 >> node_numb_10 >> node_numb_14 >> node_numb_16 >> node_numb_11 >> node_numb_19
-                      >> node_numb_15 >> node_numb_20 >> node_numb_22 >> node_numb_26 >> node_numb_23 >> node_numb_27 >> node_numb_25
-                      >> node_numb_24 >> node_numb_21;
+       inputelements >> ElementNumber >> node_numb_1 >> node_numb_2 >> node_numb_6 >> node_numb_5 >>
+       node_numb_4 >> node_numb_3 >> node_numb_7 >> node_numb_8 >> node_numb_9 >> node_numb_18 >> node_numb_13
+        >> node_numb_17 >> node_numb_12 >> node_numb_10 >> node_numb_14 >> node_numb_16 >> node_numb_11 >> node_numb_19
+         >> node_numb_15 >> node_numb_20 >> node_numb_22 >> node_numb_26 >> node_numb_23 >> node_numb_27 >> node_numb_25
+          >> node_numb_24 >> node_numb_21;
 
-        add_element_brick_27node_elastic(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6,
-                                         node_numb_7, node_numb_8, node_numb_9, node_numb_10, node_numb_11, node_numb_12, node_numb_13,
-                                         node_numb_14, node_numb_15, node_numb_16, node_numb_17, node_numb_18, node_numb_19, node_numb_20,
-                                         node_numb_21, node_numb_22, node_numb_23, node_numb_24, node_numb_25, node_numb_26, node_numb_27,
-                                         MaterialNumber, AccelerationFieldNumber);
+       add_element_brick_27node_elastic(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6,
+			       node_numb_7, node_numb_8, node_numb_9, node_numb_10, node_numb_11, node_numb_12, node_numb_13,
+			        node_numb_14, node_numb_15, node_numb_16, node_numb_17, node_numb_18, node_numb_19, node_numb_20,
+			        node_numb_21, node_numb_22, node_numb_23, node_numb_24, node_numb_25, node_numb_26, node_numb_27,
+			        MaterialNumber);
 
-    }
+}
 
-    inputelements.close();
-
-    return 0;
-};
+ inputelements.close();
+ 
+  return 0; 
+  };
 
 
 

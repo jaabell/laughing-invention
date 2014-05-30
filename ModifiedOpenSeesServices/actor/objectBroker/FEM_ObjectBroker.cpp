@@ -507,8 +507,8 @@ FEM_ObjectBroker::getNewElement(int classTag)
 {
     switch (classTag)
     {
-        case ELE_TAG_EightNodeBrick:            //Guanzhou added //temp out by babak
-            return new EightNodeBrick();//temp out by babak
+//         case ELE_TAG_EightNodeBrick:            //Guanzhou added //temp out by babak
+//             return new EightNodeBrick();//temp out by babak
 
         case ELE_TAG_TwentySevenNodeBrick:          //Babak added on 10/18/2012
             return new TwentySevenNodeBrick();
@@ -528,14 +528,14 @@ FEM_ObjectBroker::getNewElement(int classTag)
         case ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam:          //Babak added on 5/8/2013
             return new rank_one_deficient_elastic_pinned_fixed_beam();
 
-        case ELE_TAG_EightNodeBrickElastic:
-            return new EightNodeBrickElastic();
+//         case ELE_TAG_EightNodeBrickElastic:
+//             return new EightNodeBrickElastic();
 
         case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
             return new PenaltyElement();
 
-        case ELE_TAG_PenaltyElementApplyDisplacement:           //Babak added on 6/25/13
-            return new PenaltyElementApplyDisplacement();
+//         case ELE_TAG_PenaltyElementApplyDisplacement:           //Babak added on 6/25/13
+//             return new PenaltyElementApplyDisplacement();
 
         case ELE_TAG_ContactElement_3DOF_3DOF:          //Babak added on 11/05/13
             return new ContactElement_3DOF_3DOF();
@@ -673,8 +673,8 @@ FEM_ObjectBroker::getNewBeamIntegration(int classTag)
 {
     switch (classTag)
     {
-        case BEAM_INTEGRATION_TAG_Lobatto:
-            return new LobattoBeamIntegration();
+//         case BEAM_INTEGRATION_TAG_Lobatto:
+//             return new LobattoBeamIntegration();
 
             //out by babak on Oct 2012:
             //--------

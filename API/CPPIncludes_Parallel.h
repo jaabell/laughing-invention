@@ -64,10 +64,10 @@
 
 // got from Nima on 06/26/2012:
 #include "../ModifiedOpenSeesServices/domain/pattern/Linear_Force_TimeHistory.h"
-#include "../ModifiedOpenSeesServices/domain/pattern/SineWave_Force_TimeHistory.h"
-#include "../ModifiedOpenSeesServices/domain/pattern/Ricker1st_Force_TimeHistory.h"
-#include "../ModifiedOpenSeesServices/domain/pattern/Ricker2nd_Force_TimeHistory.h"
-#include "../ModifiedOpenSeesServices/domain/pattern/Ormsby_Force_TimeHistory.h"
+//#include "../ModifiedOpenSeesServices/domain/pattern/SineWave_Force_TimeHistory.h"
+//#include "../ModifiedOpenSeesServices/domain/pattern/Ricker1st_Force_TimeHistory.h"
+//#include "../ModifiedOpenSeesServices/domain/pattern/Ricker2nd_Force_TimeHistory.h"
+//#include "../ModifiedOpenSeesServices/domain/pattern/Ormsby_Force_TimeHistory.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/PathSeries_Force_TimeHistory.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/PathSeries_Disp_TimeHistory_Penalty.h"
 
@@ -358,7 +358,7 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 // #include "add_material_NDMaterial_druckerprager_isotropic_hardening.h"
 // #include "add_material_NDMaterial_dafalias_manzari.h"
 // #include "add_material_NDMaterial_sanisand.h"
-#include "add_material_NDMaterial_linear_elastic_isotropic_3d.h"
+#include "./MODELING/add_material_NDMaterial_linear_elastic_isotropic_3d.h"
 #include "./MODELING/add_constitutive_model_NDMaterial_linear_elastic_isotropic_3d.h"
 // #include "add_material_NDMaterial_linear_elastic_crossanisotropic.h"
 //#include "vonMisesPP.h"
@@ -390,7 +390,7 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 
 
 #include "../CompGeoMechUCD_FiniteElements/solid_brick_8_nodes/EightNodeBrick.h"
-#include "../CompGeoMechUCD_FiniteElements/EightNodeBrickElastic/EightNodeBrickElastic.h"
+//#include "../CompGeoMechUCD_FiniteElements/EightNodeBrickElastic/EightNodeBrickElastic.h"
 #include "../CompGeoMechUCD_FiniteElements/coupled_u-p-U_brick_8_nodes/EightNodeBrick_u_p_U.h"
 #include "../CompGeoMechUCD_FiniteElements/coupled_u-p_brick_8_nodes/EightNode_Brick_u_p.h"
 #include "../CompGeoMechUCD_FiniteElements/coupled_u-p_large_deformation_brick_8_nodes/EightNode_LDBrick_u_p.h"
@@ -402,8 +402,8 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 #include "../CompGeoMechUCD_FiniteElements/solid_brick_large_deformation_total_Lagrangian_20_nodes/TotalLagrangianFD20NodeBrick.h"
 #include "../CompGeoMechUCD_FiniteElements/elastic_beam/ElasticBeam.h"
 #include "../CompGeoMechUCD_FiniteElements/rank_one_deficient_elastic_pinned_fixed_beam/rank_one_deficient_elastic_pinned_fixed_beam.h" //Babak (May 2013)
-#include "../CompGeoMechUCD_FiniteElements/shell_andes_3_nodes/ThreeNodeAndesShell.h"  // Jose Abell added July 22 2012
-#include "../CompGeoMechUCD_FiniteElements/shell_andes_3_nodes/FourNodeAndesShell.h"  // Jose Abell added July 22 2012
+#include "../CompGeoMechUCD_FiniteElements/shell_andes/ThreeNodeAndesShell.h"  // Jose Abell added July 22 2012
+#include "../CompGeoMechUCD_FiniteElements/shell_andes/FourNodeAndesShell.h"  // Jose Abell added July 22 2012
 #include "../CompGeoMechUCD_FiniteElements/penalty_element/PenaltyElement.h"  // Babak added June 2013
 #include "../CompGeoMechUCD_FiniteElements/penalty_element_apply_displacement/PenaltyElementApplyDisplacement.h"  // Babak added June 2013
 
@@ -411,7 +411,7 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 // DSLs
 //#include "./MODELING/add_acceleration_field.h"
 //#include "./MODELING/add_element_brick_8node_Parallel.h"
-#include "./MODELING/add_element_brick_8node_elastic.h"
+//#include "./MODELING/add_element_brick_8node_elastic.h"
 
 
 // #include "add_element_brick_8node_up.h"
@@ -430,10 +430,10 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 #include "../ModifiedOpenSeesServices/domain/pattern/LoadPattern.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/LoadPatternIter.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/LinearSeries.h"
-#include "../ModifiedOpenSeesServices/domain/pattern/TrigSeries.h"
+// #include "../ModifiedOpenSeesServices/domain/pattern/TrigSeries.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/PathSeries.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/ConstantSeries.h"
-#include "../ModifiedOpenSeesServices/domain/pattern/RectangularSeries.h"
+//#include "../ModifiedOpenSeesServices/domain/pattern/RectangularSeries.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/PathTimeSeries.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/PathSeries.h"
 #include "../ModifiedOpenSeesServices/domain/node/NodalLoad.h"
@@ -448,18 +448,18 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 #include "../ModifiedOpenSeesServices/domain/groundMotion/GroundMotionRecord.h"
 #include "../ModifiedOpenSeesServices/domain/load/ElementalLoadIter.h"
 #include "../ModifiedOpenSeesServices/element/ElementalLoad.h"
-#include "../ModifiedOpenSeesServices/domain/load/BrickSelfWeight.h"
+//#include "../ModifiedOpenSeesServices/domain/load/BrickSelfWeight.h"
 #include "../ModifiedOpenSeesServices/domain/load/ElementSelfWeight.h"
 
 // DSLs
 //#include "add_selfweight_to_brick_element.h"
-#include "./MODELING/add_to_node_load.h"
+#include "./MODELING/add_load.h"
 //#include "add_constant_load_pattern.h"
-#include "./MODELING/add_load_linear_pattern.h"
-#include "./MODELING/add_sinusoidal_load_pattern.h"
+//#include "./MODELING/add_load_linear_pattern.h"
+//#include "./MODELING/add_sinusoidal_load_pattern.h"
 // #include "add_path_series_load_pattern.h"
 // #include "add_ground_motion_for_dynamic_analysis.h"
-#include "./MODELING/add_sine_wave_for_uniform_excitation.h"
+// #include "./MODELING/add_sine_wave_for_uniform_excitation.h"
 // #include "add_sine_wave_for_dynamic_analysis.h"
 // #include "add_multiple_support_excitation_pattern.h"
 // #include "add_imposed_motion_for_multisupport_dynamic_analysis.h"
@@ -473,14 +473,14 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 
 //got from Nima on 06/26/2012:
 #include "./MODELING/add_force_time_history_linear.h"
-#include "./MODELING/add_force_time_history_sine_wave.h"
-#include "./MODELING/add_force_time_history_ricker1st_wavelet.h"
-#include "./MODELING/add_force_time_history_ricker2nd_wavelet.h"
-#include "./MODELING/add_force_time_history_ormsby_wavelet.h"
+// #include "./MODELING//*add_force_time_history_sine_wave.h"
+//#include "./MODELING/add_force_time_history_ricker1st_wavelet.h"
+//#include "./MODELING/add_force_time_history_ricker2nd_wavelet.h"
+//#include "./MODELING/add_force_time_history_ormsby_wavelet.h"
 #include "./MODELING/add_force_time_history_path_series.h"
 // #include "./MODELING/add_acceleration_field.h"
-#include "./MODELING/add_to_node_support.h"
-#include "./MODELING/add_support_to_nodes_from_file.h"
+//#include "./MODELING/add_to_node_support.h"
+//#include "./MODELING/add_support_to_nodes_from_file.h"
 #include "./MODELING/add_support_to_node.h"
 //#include "./MODELING/add_elements_8node_brick_from_file.h"
 #include "./MODELING/add_support_to_all_dofs_of_node.h"
@@ -508,7 +508,7 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 //#include "../ModifiedOpenSeesServices/element/integration/NewtonCotesBeamIntegration.h"
 
 // beams and trusses
-#include "../ModifiedOpenSeesServices/coordTransformation/LinearCrdTransf3d.h"
+//#include "../ModifiedOpenSeesServices/coordTransformation/LinearCrdTransf3d.h"
 //#include "../ModifiedOpenSeesServices/element/dispBeamColumn/DispBeamColumn3d.h"
 //#include "../ModifiedOpenSeesServices/element/dispBeamColumn/DispBeamColumn2d.h"
 //#include "../ModifiedOpenSeesServices/element/truss/Truss.h"
@@ -547,17 +547,17 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 // #include "add_reinforcing_bars_circle_to_section.h"
 // #include "add_reinforcing_bars_layer_to_section.h"
 #include "./MODELING/add_element_beam_elastic.h"  // Nima Tafazzoli (Dec. 2012)
-#include "./MODELING/add_element_beam_rank_one_deficient_elastic_pinned_fixed_beam.h" //Babak (May 2013)
+//#include "./MODELING/add_element_beam_rank_one_deficient_elastic_pinned_fixed_beam.h" //Babak (May 2013)
 #include "./MODELING/add_element_shell_andes_4node.h" // Babak Kamrani (Dec 2012)
-#include "./MODELING/add_elements_from_file_shell_andes_4node.h" //Babak Kamrani (Jan 2012)
-#include "./MODELING/add_elements_from_file_shell_andes_4node_density_Specified.h"
+//#include "./MODELING/add_elements_from_file_shell_andes_4node.h" //Babak Kamrani (Jan 2012)
+//#include "./MODELING/add_elements_from_file_shell_andes_4node_density_Specified.h"
 #include "./MODELING/add_element_shell_andes_3node.h"//Babak Kamrani (Feb 2013)
-#include "./MODELING/add_elements_from_file_shell_andes_3node.h" //Babak Kamrani (Feb 2013)
+//#include "./MODELING/add_elements_from_file_shell_andes_3node.h" //Babak Kamrani (Feb 2013)
 #include "./MODELING/add_element_penalty.h" //Babak Kamrani (June 2013)
-#include "./MODELING/add_elements_from_file_penalty.h" //Babak Kamrani (June 2013)
+//#include "./MODELING/add_elements_from_file_penalty.h" //Babak Kamrani (June 2013)
 #include "./MODELING/add_penalty_displacement_time_history_path_series.h"//Babak Kamrani (June 2013)
 #include "./MODELING/add_element_penalty_for_applying_generalized_displacement.h" //Babak Kamrani (June 2013)
-#include "./MODELING/add_elements_from_file_penalty_for_applying_generalized_displacement.h"//Babak Kamrani (June 2013)
+//#include "./MODELING/add_elements_from_file_penalty_for_applying_generalized_displacement.h"//Babak Kamrani (June 2013)
 #include "./MODELING/add_elements_from_file_beam_rank_one_deficient_elastic_pinned_fixed_beam.h" //Babak Kamrani (June 2013)
 
 
@@ -588,7 +588,7 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 // #include "return_node_displacement.h"
 // #include "return_nodal_displacements_of_element.h"
 
-#include "define_output_of_node_to_screen.h"
+// #include "define_output_of_node_to_screen.h"
 // #include "define_output_of_element_to_screen.h"
 //#include "define_output_of_node_to_file.h"
 /*#include "define_output_of_all_nodes_to_file.h"*/
@@ -600,32 +600,32 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 //#include "return_pseudo_time.h"
 //#include "return_node_numbers_of_the_element.h"
 
-#include "define_algorithm_bfgs_for_analysis.h"
-#include "define_algorithm_linear_for_analysis.h"
-#include "define_algorithm_with_no_convergence_check_for_analysis.h"
-#include "define_algorithm_krylovnewton_for_analysis.h"
+// #include "define_algorithm_bfgs_for_analysis.h"
+#include "./SIMULATION/define_algorithm_linear_for_analysis.h"
+//#include "define_algorithm_with_no_convergence_check_for_analysis.h"
+//#include "define_algorithm_krylovnewton_for_analysis.h"
 #include "./SIMULATION/define_algorithm_newton_for_analysis.h"
-#include "define_algorithm_modifiednewton_for_analysis.h"
+//#include "define_algorithm_modifiednewton_for_analysis.h"
 
-#include "define_convergence_test_energyincrement_for_analysis.h"
+// #include "define_convergence_test_energyincrement_for_analysis.h"
 #include "./SIMULATION/define_convergence_test_normdisplacementincrement_for_analysis.h"
-#include "define_convergence_test_normunbalance_for_analysis.h"
+//#include "define_convergence_test_normunbalance_for_analysis.h"
 
 //#include "define_constraint_handler_lagrange_for_analysis.h"
-#include "./MODELING/define_constraint_handler_penalty_for_analysis.h"
+//#include "./MODELING/define_constraint_handler_penalty_for_analysis.h"
 #include "./MODELING/define_constraint_handler_plain_for_analysis.h"
-#include "./MODELING/define_constraint_handler_transformation_for_analysis.h"
+//#include "./MODELING/define_constraint_handler_transformation_for_analysis.h"
 
 #include "./SIMULATION/define_integrator_loadcontrol_for_static_analysis.h"
 #include "./SIMULATION/define_static_solution_advancement_integrator_load_control.h"
 #include "./SIMULATION/define_static_solution_advancement_integrator_displacement_control.h"
-#include "define_parallel_integrator_displacementcontrol_for_static_analysis.h"
-#include "define_integrator_newmark_for_dynamic_analysis.h"
-#include "define_dynamic_solution_advancement_integrator_newmark.h"
-#include "define_integrator_hht_for_dynamic_analysis.h"
+//#include "define_parallel_integrator_displacementcontrol_for_static_analysis.h"
+//#include "define_integrator_newmark_for_dynamic_analysis.h"
+//#include "define_dynamic_solution_advancement_integrator_newmark.h"
+// #include "define_integrator_hht_for_dynamic_analysis.h"
 
-#include "define_parallel_numberer_rcm_for_analysis.h"
-#include "define_parallel_numberer_plain_for_analysis.h"
+//#include "define_parallel_numberer_rcm_for_analysis.h"
+#include "./SIMULATION/define_parallel_numberer_plain_for_analysis.h"
 #include"./SIMULATION/define_numberer_plain_for_analysis.h"
 
 // #include "define_solver_umfpack_for_analysis.h"
@@ -665,7 +665,7 @@ LoadPattern* DRM_LOAD_PATTERN = 0 ; //Pornter to DRM Load pattern to be availabl
 //#include "add_rayleigh_damping_current_stiffness.h"
 #include "./MODELING/add_damping_rayleigh.h"
 #include "./MODELING/add_damping_to_element.h"
-#include "./MODELING/add_raileigh_damping_to_element_from_file.h"
+// #include "./MODELING/add_raileigh_damping_to_element_from_file.h"
 
 
 
@@ -699,9 +699,9 @@ MachineBroker*     OPS_MACHINE;
 #include "./SIMULATION/define_solver_parallel_for_analysis.h"
 #include "./MODELING/parallel_start_new_stage.h"
 
-#include "parallel_analyze_static_multistep.h"
-#include "./SIMULATION/analyze_static_multistep.h"
-#include "./SIMULATION/analyze_transient_multistep.h"
+#include "./MODELING/parallel_analyze_static_multistep.h"
+// #include "./SIMULATION/analyze_static_multistep.h"
+// #include "./SIMULATION/analyze_transient_multistep.h"
 #include "./SIMULATION/simulate_using_transient_multistep.h"
 
 

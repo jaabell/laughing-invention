@@ -17,11 +17,11 @@
 // RETURN:
 // VERSION:
 // LANGUAGE:          C++
-// TARGET OS:
+// TARGET OS:         
 // PROGRAMMER:        Nima Tafazzoli, Boris Jeremic
-//
+//                
 // DATE:              October 2009
-// UPDATE HISTORY:
+// UPDATE HISTORY:    
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -52,15 +52,15 @@
 
 void define_integrator_loadcontrol_for_static_analysis(double);
 void define_integrator_loadcontrol_for_static_analysis(double loadstep)
-{
+  {
     theStaticIntegrator  = new LoadControl(loadstep, 1, loadstep, loadstep);
-
+    
     if (theStaticIntegrator == NULL)
     {
-        cerr << "Error: (define_integrator_loadcontrol_for_static_analysis) memory for theStaticIntegrator can not be allocated!" << endl;
-        abort();
+      cerr << "Error: (define_integrator_loadcontrol_for_static_analysis) memory for theStaticIntegrator can not be allocated!" << endl;
+      abort();
     }
-
-};
+    
+  };
 
 
