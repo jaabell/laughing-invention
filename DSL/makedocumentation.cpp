@@ -6,15 +6,15 @@
 #include <algorithm>
 #include <cctype>
 
-#include <../boost/boost/foreach.hpp>
-#include <../boost/boost/tokenizer.hpp>
+#include <boost/foreach.hpp>
+#include <boost/tokenizer.hpp>
 
 using namespace std;
 using namespace boost;
 
 struct compare_strings_class
 {
-    bool operator() (const string& a, const string& b) const
+    bool operator() (const string &a, const string &b) const
     {
         string alower(a);
         string blower(b);
@@ -29,7 +29,7 @@ struct compare_strings_class
 };
 typedef std::set<string, compare_strings_class> lowerstring ;
 
-void write_latex_highlighting(string filename, lowerstring const& keywords, lowerstring const& keywords2);
+void write_latex_highlighting(string filename, lowerstring const &keywords, lowerstring const &keywords2);
 void write_geany_autocomplete(string filename, lowerstring commands);
 
 int main()
@@ -157,7 +157,7 @@ int main()
                 // Check if the word is not a keyword
                 int ok = 1;
 
-                for(iter = notkeywords.begin(); iter != notkeywords.end(); iter++)
+                for (iter = notkeywords.begin(); iter != notkeywords.end(); iter++)
                 {
                     found  = thisWord.find(*iter);
 
@@ -245,7 +245,7 @@ int main()
 //  morecomment=[l]{#},
 //  morestring=[b]",
 //}
-void write_latex_highlighting(string filename, lowerstring const& keywords, lowerstring const& keywords2)
+void write_latex_highlighting(string filename, lowerstring const &keywords, lowerstring const &keywords2)
 {
     ofstream texfile(filename.c_str());
 
@@ -262,7 +262,7 @@ void write_latex_highlighting(string filename, lowerstring const& keywords, lowe
         //Actually write the keywords
         unsigned int i = 1;
 
-        for(lowerstring::const_iterator iter = keywords.begin(); iter != keywords.end(); iter++)
+        for (lowerstring::const_iterator iter = keywords.begin(); iter != keywords.end(); iter++)
         {
             texfile << *iter;
 
@@ -278,7 +278,7 @@ void write_latex_highlighting(string filename, lowerstring const& keywords, lowe
         texfile << "morekeywords={[2] ";
         i = 1;
 
-        for(lowerstring::const_iterator iter = keywords2.begin(); iter != keywords2.end(); iter++)
+        for (lowerstring::const_iterator iter = keywords2.begin(); iter != keywords2.end(); iter++)
         {
             texfile << *iter;
 
@@ -317,7 +317,7 @@ void write_geany_autocomplete(string filename, lowerstring commands)
         cout << filename << endl;
         geany_tags << "# format=pipe" << endl;
 
-        for(lowerstring::const_iterator iter = commands.begin();
+        for (lowerstring::const_iterator iter = commands.begin();
                 iter != commands.end();
                 iter++)
         {
