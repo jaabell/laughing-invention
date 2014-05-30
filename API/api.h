@@ -64,38 +64,40 @@
 #include "MODELING/add_element_contact_3dof_to_3dof.h"
 #include "MODELING/add_element_contact_nonlinear_3dof_to_7dof.h"
 #include "MODELING/add_element_contact_nonlinear_3dof_to_3dof.h"
-#include "MODELING/add_element_brick_8node.h"
-#include "MODELING/add_element_brick_8node_variable_number_of_gauss_points.h"
-#include "MODELING/add_element_brick_8node_elastic.h"
-#include "MODELING/add_element_brick_8node_up.h"
-#include "MODELING/add_element_brick_8node_upU.h"
-#include "MODELING/add_element_brick_20node.h"
-#include "MODELING/add_element_brick_20node_elastic.h"
-#include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"
-#include "MODELING/add_element_brick_20node_upU.h"
+// #include "MODELING/add_element_brick_8node.h"
+// #include "MODELING/add_element_brick_8node_variable_number_of_gauss_points.h"
+// #include "MODELING/add_element_brick_8node_elastic.h"
+// #include "MODELING/add_element_brick_8node_up.h"
+// #include "MODELING/add_element_brick_8node_upU.h"
+// #include "MODELING/add_element_brick_20node.h"
+// #include "MODELING/add_element_brick_20node_elastic.h"
+// #include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"
+// #include "MODELING/add_element_brick_20node_upU.h"
 #include "MODELING/add_element_brick_27node.h"
 #include "MODELING/add_element_brick_27node_elastic.h"
-#include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"
-#include "MODELING/add_element_brick_variable_node_8_to_27.h"
-#include "MODELING/add_element_brick_8node_ltensor.h"
-#include "MODELING/add_element_brick_27node_ltensor.h"
-#include "MODELING/add_element_beam_elastic_lumped_mass.h"
-#include "MODELING/add_element_beam_elastic.h"  // Nima Tafazzoli (Dec. 2012)
+//#include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"
+// #include "MODELING/add_element_brick_variable_node_8_to_27.h"
+// #include "MODELING/add_element_brick_8node_ltensor.h"
+// #include "MODELING/add_element_brick_27node_ltensor.h"
+// #include "MODELING/add_element_beam_elastic_lumped_mass.h"
+// #include "MODELING/add_element_beam_elastic.h"  // Nima Tafazzoli (Dec. 2012)
 #include "MODELING/add_element_rank_one_deficient_elastic_pinned_fixed_beam.h"  // Nima Tafazzoli (Dec. 2012)
-#include "MODELING/add_element_truss.h"
-#include "MODELING/add_element_beam_displacement_based.h"
+// #include "MODELING/add_element_truss.h"
+// #include "MODELING/add_element_beam_displacement_based.h"
 #include "MODELING/add_element_penalty.h"
-#include "MODELING/add_element_penalty_for_applying_generalized_displacement.h"
-#include "MODELING/add_element_shell_MITC4.h"     // Jose Added July 3 2012
-#include "MODELING/add_element_shell_NewMITC4.h"     // Jose Added July 12 2012
-#include "MODELING/add_element_shell_andes_3node.h"     // Jose Added July 22 2012
-#include "MODELING/add_element_shell_andes_4node.h"     // Jose Added Sept 20 2012
+//#include "MODELING/add_element_penalty_for_applying_generalized_displacement.h"
+//#include "MODELING/add_element_shell_MITC4.h"     // Jose Added July 3 2012
+//#include "MODELING/add_element_shell_NewMITC4.h"     // Jose Added July 12 2012
+//#include "MODELING/add_element_shell_andes_3node.h"     // Jose Added July 22 2012
+//#include "MODELING/add_element_shell_andes_4node.h"     // Jose Added Sept 20 2012
+#include "MODELING/add_elements_from_GIDfile_27node_brick_elastic.h" //Added by Babak 5/29/14
 
 
 // Materials
 //--------------------------------------------------------------------------------------------------
 // NDarray based
 #include "MODELING/add_constitutive_model_NDMaterial_camclay.h"
+#include "MODELING/add_material_NDMaterial_linear_elastic_isotropic_3d.h"
 #include "MODELING/add_constitutive_model_NDMaterial_vonmises_perfectly_plastic.h"
 #include "MODELING/add_constitutive_model_NDMaterial_vonmises_kinematic_hardening.h"
 #include "MODELING/add_constitutive_model_NDMaterial_vonmises_linear_kinematic_hardening.h"
@@ -118,10 +120,10 @@
 #include "MODELING/add_constitutive_model_NDMaterial_pisano.h"
 
 // LTensor Based
-#include "MODELING/add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic.h"
-#include "MODELING/add_constitutive_model_NDMaterialLT_pisano.h"
-#include "MODELING/add_constitutive_model_NDMaterialLT_New_Pisano.h"
-#include "MODELING/add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d.h"
+// #include "MODELING/add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic.h"
+// #include "MODELING/add_constitutive_model_NDMaterialLT_pisano.h"
+// #include "MODELING/add_constitutive_model_NDMaterialLT_New_Pisano.h"
+// #include "MODELING/add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d.h"
 
 // Uniaxial
 #include "MODELING/add_constitutive_model_uniaxial_elastic.h"
@@ -137,7 +139,6 @@
 #include "MODELING/add_damping_caughey4th.h"
 #include "MODELING/add_damping_to_element.h"
 #include "MODELING/add_damping_to_node.h"
-
 
 // Remove commands
 //--------------------------------------------------------------------------------------------------
@@ -168,9 +169,9 @@
 
 //Model query
 //--------------------------------------------------------------------------------------------------
-#include "MODELING/get_nodal_coordinate.h"
+// #include "MODELING/get_nodal_coordinate.h"
 //#include "MODELING/obtain_pseudo_time.h"
-#include "MODELING/query_domain.h"
+// #include "MODELING/query_domain.h"
 
 // Output control
 //--------------------------------------------------------------------------------------------------
@@ -238,7 +239,7 @@
 
 // To add stuff from files (Deprecated)
 //--------------------------------------------------------------------------------------------------
-// #include "MODELING/add_nodes_from_file.h"
+#include "MODELING/add_nodes_from_file.h"
 // #include "MODELING/add_elements_from_file.h"
 // #include "MODELING/add_elements_from_file_8node_brick.h"
 // #include "MODELING/add_elements_from_file_8node_brick_elastic.h"
@@ -270,3 +271,15 @@
 #include "Constitutive_Driver/simulate_constitutive_testing_for_undrained_triaxial_stress_control.h"
 #include "Constitutive_Driver/simulate_constitutive_testing_for_undrained_simple_shear.h"
 #include "Constitutive_Driver/simulate_constitutive_testing_for_undrained_triaxial.h"
+
+
+// Adding some by Babak 5/29/14:
+//---------------------------------------------------------------------------------------------------
+#include "MODELING/define_constraint_handler_plain_for_analysis.h"
+#include "SIMULATION/define_integrator_loadcontrol_for_static_analysis.h"
+#include "SIMULATION/define_algorithm_linear_for_analysis.h"
+#include "SIMULATION/define_parallel_numberer_plain_for_analysis.h"
+#include "SIMULATION/parallel_analyze_static_multistep.h"
+#include "MODELING/add_to_node_support.h"
+#include "MODELING/add_support_from_file_to_nodes.h" //Babak added 5/29/14
+

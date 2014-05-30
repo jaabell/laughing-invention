@@ -270,7 +270,6 @@ PARALLEL_MACHINE_LIBS = -lm \
       -lquadmath \
       -ldl \
       -lz \
-      -lhwloc \
       -lgcc_s \
       -lpthread 
       # -lboost
