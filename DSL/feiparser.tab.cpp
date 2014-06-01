@@ -1737,8 +1737,9 @@ namespace yy {
         // Usually different DSLs have different arguments, but in this
         // case all three take no arguments, which makes this approach easier.
 
-        int (*f)();         // function poiner to the algorithm DSL
+        int (*f)() = NULL;         // function poiner to the algorithm DSL
         string fname;       // name of the DSL called to report
+
 
         args.clear(); signature.clear();
         if((*(yysemantic_stack_[(3) - (3)].ident)).compare("With_no_convergence_check") == 0 || (*(yysemantic_stack_[(3) - (3)].ident)).compare("with_no_convergence_check") == 0)
@@ -1746,20 +1747,30 @@ namespace yy {
             f = &define_algorithm_with_no_convergence_check_for_analysis;
             fname = "define_algorithm_with_no_convergence_check_for_analysis";
         }
-        if((*(yysemantic_stack_[(3) - (3)].ident)).compare("Modified_Newton") == 0 || (*(yysemantic_stack_[(3) - (3)].ident)).compare("modified_newton") == 0)
+        else if((*(yysemantic_stack_[(3) - (3)].ident)).compare("Modified_Newton") == 0 || (*(yysemantic_stack_[(3) - (3)].ident)).compare("modified_newton") == 0)
         {
             f = &define_algorithm_modifiednewton_for_analysis;
             fname = "define_algorithm_modifiednewton_for_analysis";
         }
-        if((*(yysemantic_stack_[(3) - (3)].ident)).compare("Newton") == 0 || (*(yysemantic_stack_[(3) - (3)].ident)).compare("newton") == 0)
+        else if((*(yysemantic_stack_[(3) - (3)].ident)).compare("Newton") == 0 || (*(yysemantic_stack_[(3) - (3)].ident)).compare("newton") == 0)
         {
             f = &define_algorithm_newton_for_analysis;
             fname = "define_algorithm_newton_for_analysis";
         }
+        else
+        {
+            cerr << "Algorithm " << *(yysemantic_stack_[(3) - (3)].ident) << " not recognized.\n\n";
+        }
 
-        (yyval.exp) = new FeiDslCaller0<>(f,args, signature, fname);
-
-
+        if(f == NULL)
+        {
+            (yyval.exp) = new Empty();
+        }
+        else
+        {
+            (yyval.exp) = new FeiDslCaller0<>(f,args, signature, fname);
+        }
+        
         nodes.push((yyval.exp));
     }
     break;
@@ -1767,7 +1778,7 @@ namespace yy {
   case 61:
 
 /* Line 690 of lalr1.cc  */
-#line 1558 "feiparser.yy"
+#line 1569 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -1806,7 +1817,7 @@ namespace yy {
   case 62:
 
 /* Line 690 of lalr1.cc  */
-#line 1595 "feiparser.yy"
+#line 1606 "feiparser.yy"
     {
         int (*f)() = &define_solver_umfpack_for_analysis;         // function poiner to the algorithm DSL
         string fname;       // name of the DSL called to report
@@ -1837,7 +1848,7 @@ namespace yy {
   case 63:
 
 /* Line 690 of lalr1.cc  */
-#line 1624 "feiparser.yy"
+#line 1635 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(10) - (7)].exp)); signature.push_back(this_signature("gamma", &isAdimensional));
@@ -1853,7 +1864,7 @@ namespace yy {
   case 64:
 
 /* Line 690 of lalr1.cc  */
-#line 1638 "feiparser.yy"
+#line 1649 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(7) - (7)].exp)); signature.push_back(this_signature("alpha", &isAdimensional));
@@ -1868,7 +1879,7 @@ namespace yy {
   case 65:
 
 /* Line 690 of lalr1.cc  */
-#line 1651 "feiparser.yy"
+#line 1662 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -1891,7 +1902,7 @@ namespace yy {
   case 66:
 
 /* Line 690 of lalr1.cc  */
-#line 1678 "feiparser.yy"
+#line 1689 "feiparser.yy"
     {
         args.clear(); signature.clear();
         //cout << "  --> Starting new model named " << *$3 << endl;
@@ -1931,7 +1942,7 @@ namespace yy {
   case 67:
 
 /* Line 690 of lalr1.cc  */
-#line 1716 "feiparser.yy"
+#line 1727 "feiparser.yy"
     {
         Quantity returnQuantity;
         string temp = *(yysemantic_stack_[(4) - (4)].ident);
@@ -1961,7 +1972,7 @@ namespace yy {
   case 68:
 
 /* Line 690 of lalr1.cc  */
-#line 1744 "feiparser.yy"
+#line 1755 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(6) - (2)].exp)); signature.push_back(this_signature("nsteps", &isAdimensional));
@@ -1976,7 +1987,7 @@ namespace yy {
   case 69:
 
 /* Line 690 of lalr1.cc  */
-#line 1757 "feiparser.yy"
+#line 1768 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(9) - (9)].exp)); signature.push_back(this_signature("time_step", &isTime));
@@ -1994,7 +2005,7 @@ namespace yy {
   case 70:
 
 /* Line 690 of lalr1.cc  */
-#line 1777 "feiparser.yy"
+#line 1788 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2015,7 +2026,7 @@ namespace yy {
   case 71:
 
 /* Line 690 of lalr1.cc  */
-#line 1796 "feiparser.yy"
+#line 1807 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(7) - (7)].exp)); signature.push_back
@@ -2031,7 +2042,7 @@ namespace yy {
   case 72:
 
 /* Line 690 of lalr1.cc  */
-#line 1813 "feiparser.yy"
+#line 1824 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2054,7 +2065,7 @@ namespace yy {
   case 73:
 
 /* Line 690 of lalr1.cc  */
-#line 1837 "feiparser.yy"
+#line 1848 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2077,7 +2088,7 @@ namespace yy {
   case 74:
 
 /* Line 690 of lalr1.cc  */
-#line 1861 "feiparser.yy"
+#line 1872 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2100,7 +2111,7 @@ namespace yy {
   case 75:
 
 /* Line 690 of lalr1.cc  */
-#line 1885 "feiparser.yy"
+#line 1896 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2123,7 +2134,7 @@ namespace yy {
   case 76:
 
 /* Line 690 of lalr1.cc  */
-#line 1909 "feiparser.yy"
+#line 1920 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2146,7 +2157,7 @@ namespace yy {
   case 77:
 
 /* Line 690 of lalr1.cc  */
-#line 1935 "feiparser.yy"
+#line 1946 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2161,7 +2172,7 @@ namespace yy {
   case 78:
 
 /* Line 690 of lalr1.cc  */
-#line 1948 "feiparser.yy"
+#line 1959 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2176,7 +2187,7 @@ namespace yy {
   case 79:
 
 /* Line 690 of lalr1.cc  */
-#line 1961 "feiparser.yy"
+#line 1972 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2192,7 +2203,7 @@ namespace yy {
   case 80:
 
 /* Line 690 of lalr1.cc  */
-#line 1975 "feiparser.yy"
+#line 1986 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2206,7 +2217,7 @@ namespace yy {
   case 81:
 
 /* Line 690 of lalr1.cc  */
-#line 1987 "feiparser.yy"
+#line 1998 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(6) - (6)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2220,7 +2231,7 @@ namespace yy {
   case 82:
 
 /* Line 690 of lalr1.cc  */
-#line 2011 "feiparser.yy"
+#line 2022 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(14) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2237,7 +2248,7 @@ namespace yy {
   case 83:
 
 /* Line 690 of lalr1.cc  */
-#line 2036 "feiparser.yy"
+#line 2047 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2263,7 +2274,7 @@ namespace yy {
   case 84:
 
 /* Line 690 of lalr1.cc  */
-#line 2068 "feiparser.yy"
+#line 2079 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(29) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2286,7 +2297,7 @@ namespace yy {
   case 85:
 
 /* Line 690 of lalr1.cc  */
-#line 2097 "feiparser.yy"
+#line 2108 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(29) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2309,7 +2320,7 @@ namespace yy {
   case 86:
 
 /* Line 690 of lalr1.cc  */
-#line 2129 "feiparser.yy"
+#line 2140 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(38) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2334,7 +2345,7 @@ namespace yy {
   case 87:
 
 /* Line 690 of lalr1.cc  */
-#line 2161 "feiparser.yy"
+#line 2172 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(32) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2358,7 +2369,7 @@ namespace yy {
   case 88:
 
 /* Line 690 of lalr1.cc  */
-#line 2195 "feiparser.yy"
+#line 2206 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(41) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2385,7 +2396,7 @@ namespace yy {
   case 89:
 
 /* Line 690 of lalr1.cc  */
-#line 2231 "feiparser.yy"
+#line 2242 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(38) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2411,7 +2422,7 @@ namespace yy {
   case 90:
 
 /* Line 690 of lalr1.cc  */
-#line 2265 "feiparser.yy"
+#line 2276 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(35) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2436,7 +2447,7 @@ namespace yy {
   case 91:
 
 /* Line 690 of lalr1.cc  */
-#line 2297 "feiparser.yy"
+#line 2308 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(32) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2460,7 +2471,7 @@ namespace yy {
   case 92:
 
 /* Line 690 of lalr1.cc  */
-#line 2349 "feiparser.yy"
+#line 2360 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(95) - (3)].exp));  signature.push_back(this_signature("number",                    &isAdimensional));
@@ -2515,7 +2526,7 @@ namespace yy {
   case 93:
 
 /* Line 690 of lalr1.cc  */
-#line 2416 "feiparser.yy"
+#line 2427 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2550,7 +2561,7 @@ namespace yy {
   case 94:
 
 /* Line 690 of lalr1.cc  */
-#line 2461 "feiparser.yy"
+#line 2472 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2581,7 +2592,7 @@ namespace yy {
   case 95:
 
 /* Line 690 of lalr1.cc  */
-#line 2515 "feiparser.yy"
+#line 2526 "feiparser.yy"
     {
 
         args.clear(); signature.clear();
@@ -2632,7 +2643,7 @@ namespace yy {
   case 96:
 
 /* Line 690 of lalr1.cc  */
-#line 2575 "feiparser.yy"
+#line 2586 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2663,7 +2674,7 @@ namespace yy {
   case 97:
 
 /* Line 690 of lalr1.cc  */
-#line 2613 "feiparser.yy"
+#line 2624 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2691,7 +2702,7 @@ namespace yy {
   case 98:
 
 /* Line 690 of lalr1.cc  */
-#line 2651 "feiparser.yy"
+#line 2662 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2724,7 +2735,7 @@ namespace yy {
   case 99:
 
 /* Line 690 of lalr1.cc  */
-#line 2692 "feiparser.yy"
+#line 2703 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2754,7 +2765,7 @@ namespace yy {
   case 100:
 
 /* Line 690 of lalr1.cc  */
-#line 2731 "feiparser.yy"
+#line 2742 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2784,7 +2795,7 @@ namespace yy {
   case 101:
 
 /* Line 690 of lalr1.cc  */
-#line 2767 "feiparser.yy"
+#line 2778 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2811,7 +2822,7 @@ namespace yy {
   case 102:
 
 /* Line 690 of lalr1.cc  */
-#line 2798 "feiparser.yy"
+#line 2809 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2832,7 +2843,7 @@ namespace yy {
   case 103:
 
 /* Line 690 of lalr1.cc  */
-#line 2817 "feiparser.yy"
+#line 2828 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2849,7 +2860,7 @@ namespace yy {
   case 104:
 
 /* Line 690 of lalr1.cc  */
-#line 2839 "feiparser.yy"
+#line 2850 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2873,7 +2884,7 @@ namespace yy {
   case 105:
 
 /* Line 690 of lalr1.cc  */
-#line 2871 "feiparser.yy"
+#line 2882 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2900,7 +2911,7 @@ namespace yy {
   case 106:
 
 /* Line 690 of lalr1.cc  */
-#line 2903 "feiparser.yy"
+#line 2914 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2924,7 +2935,7 @@ namespace yy {
   case 107:
 
 /* Line 690 of lalr1.cc  */
-#line 2935 "feiparser.yy"
+#line 2946 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2954,7 +2965,7 @@ namespace yy {
   case 108:
 
 /* Line 690 of lalr1.cc  */
-#line 2973 "feiparser.yy"
+#line 2984 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -2984,7 +2995,7 @@ namespace yy {
   case 109:
 
 /* Line 690 of lalr1.cc  */
-#line 3001 "feiparser.yy"
+#line 3012 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(14) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -3002,7 +3013,7 @@ namespace yy {
   case 110:
 
 /* Line 690 of lalr1.cc  */
-#line 3026 "feiparser.yy"
+#line 3037 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -3030,7 +3041,7 @@ namespace yy {
   case 111:
 
 /* Line 690 of lalr1.cc  */
-#line 3064 "feiparser.yy"
+#line 3075 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(27) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3055,7 +3066,7 @@ namespace yy {
   case 112:
 
 /* Line 690 of lalr1.cc  */
-#line 3090 "feiparser.yy"
+#line 3101 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(27) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3079,7 +3090,7 @@ namespace yy {
   case 113:
 
 /* Line 690 of lalr1.cc  */
-#line 3115 "feiparser.yy"
+#line 3126 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(27) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3103,7 +3114,7 @@ namespace yy {
   case 114:
 
 /* Line 690 of lalr1.cc  */
-#line 3139 "feiparser.yy"
+#line 3150 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(33) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3130,7 +3141,7 @@ namespace yy {
   case 115:
 
 /* Line 690 of lalr1.cc  */
-#line 3168 "feiparser.yy"
+#line 3179 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(65) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3175,7 +3186,7 @@ namespace yy {
   case 116:
 
 /* Line 690 of lalr1.cc  */
-#line 3215 "feiparser.yy"
+#line 3226 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(65) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3220,7 +3231,7 @@ namespace yy {
   case 117:
 
 /* Line 690 of lalr1.cc  */
-#line 3262 "feiparser.yy"
+#line 3273 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(71) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3266,7 +3277,7 @@ namespace yy {
   case 118:
 
 /* Line 690 of lalr1.cc  */
-#line 3311 "feiparser.yy"
+#line 3322 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(65) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3311,7 +3322,7 @@ namespace yy {
   case 119:
 
 /* Line 690 of lalr1.cc  */
-#line 3358 "feiparser.yy"
+#line 3369 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(71) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3359,7 +3370,7 @@ namespace yy {
   case 120:
 
 /* Line 690 of lalr1.cc  */
-#line 3409 "feiparser.yy"
+#line 3420 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(51) - (2)].exp));  signature.push_back(this_signature("number", &isAdimensional));
@@ -3397,7 +3408,7 @@ namespace yy {
   case 121:
 
 /* Line 690 of lalr1.cc  */
-#line 3449 "feiparser.yy"
+#line 3460 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(57) - (2)].exp));  signature.push_back(this_signature("number", &isAdimensional));
@@ -3436,7 +3447,7 @@ namespace yy {
   case 122:
 
 /* Line 690 of lalr1.cc  */
-#line 3491 "feiparser.yy"
+#line 3502 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(51) - (2)].exp));  signature.push_back(this_signature("number", &isAdimensional));
@@ -3474,7 +3485,7 @@ namespace yy {
   case 123:
 
 /* Line 690 of lalr1.cc  */
-#line 3539 "feiparser.yy"
+#line 3550 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(54) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3511,7 +3522,7 @@ namespace yy {
   case 124:
 
 /* Line 690 of lalr1.cc  */
-#line 3579 "feiparser.yy"
+#line 3590 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(54) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3546,7 +3557,7 @@ namespace yy {
   case 125:
 
 /* Line 690 of lalr1.cc  */
-#line 3618 "feiparser.yy"
+#line 3629 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(78) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3596,7 +3607,7 @@ namespace yy {
   case 126:
 
 /* Line 690 of lalr1.cc  */
-#line 3677 "feiparser.yy"
+#line 3688 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(59) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3651,7 +3662,7 @@ namespace yy {
   case 127:
 
 /* Line 690 of lalr1.cc  */
-#line 3741 "feiparser.yy"
+#line 3752 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(59) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3706,7 +3717,7 @@ namespace yy {
   case 128:
 
 /* Line 690 of lalr1.cc  */
-#line 3802 "feiparser.yy"
+#line 3813 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -3753,7 +3764,7 @@ namespace yy {
   case 129:
 
 /* Line 690 of lalr1.cc  */
-#line 3849 "feiparser.yy"
+#line 3860 "feiparser.yy"
     {
 
         args.clear(); signature.clear();
@@ -3777,7 +3788,7 @@ namespace yy {
   case 130:
 
 /* Line 690 of lalr1.cc  */
-#line 3873 "feiparser.yy"
+#line 3884 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -3803,7 +3814,7 @@ namespace yy {
   case 131:
 
 /* Line 690 of lalr1.cc  */
-#line 3908 "feiparser.yy"
+#line 3919 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(59) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3846,7 +3857,7 @@ namespace yy {
   case 132:
 
 /* Line 690 of lalr1.cc  */
-#line 3955 "feiparser.yy"
+#line 3966 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -3877,7 +3888,7 @@ namespace yy {
   case 133:
 
 /* Line 690 of lalr1.cc  */
-#line 3987 "feiparser.yy"
+#line 3998 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(22) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3902,7 +3913,7 @@ namespace yy {
   case 134:
 
 /* Line 690 of lalr1.cc  */
-#line 4013 "feiparser.yy"
+#line 4024 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(22) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3927,7 +3938,7 @@ namespace yy {
   case 135:
 
 /* Line 690 of lalr1.cc  */
-#line 4039 "feiparser.yy"
+#line 4050 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(20) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3950,7 +3961,7 @@ namespace yy {
   case 136:
 
 /* Line 690 of lalr1.cc  */
-#line 4063 "feiparser.yy"
+#line 4074 "feiparser.yy"
     {
         args.clear(); signature.clear();
         args.push_back((yysemantic_stack_[(22) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3974,7 +3985,7 @@ namespace yy {
   case 137:
 
 /* Line 690 of lalr1.cc  */
-#line 4089 "feiparser.yy"
+#line 4100 "feiparser.yy"
     {
         args.clear(); signature.clear();
 
@@ -3995,7 +4006,7 @@ namespace yy {
   case 138:
 
 /* Line 690 of lalr1.cc  */
-#line 4277 "feiparser.yy"
+#line 4288 "feiparser.yy"
     {
         if ((yysemantic_stack_[(1) - (1)].exp)) // Null pointer safety
         {
@@ -4042,7 +4053,7 @@ namespace yy {
   case 139:
 
 /* Line 690 of lalr1.cc  */
-#line 4319 "feiparser.yy"
+#line 4330 "feiparser.yy"
     {
         if ((yysemantic_stack_[(2) - (2)].exp)) // Null pointer safety
         {
@@ -4089,7 +4100,7 @@ namespace yy {
   case 140:
 
 /* Line 690 of lalr1.cc  */
-#line 4361 "feiparser.yy"
+#line 4372 "feiparser.yy"
     {
         clear_stack ();
 
@@ -4106,7 +4117,7 @@ namespace yy {
   case 141:
 
 /* Line 690 of lalr1.cc  */
-#line 4376 "feiparser.yy"
+#line 4387 "feiparser.yy"
     {   /*  Just a reminder...
         ">"  = 1
         "<"  = 2
@@ -4156,7 +4167,7 @@ namespace yy {
   case 142:
 
 /* Line 690 of lalr1.cc  */
-#line 4421 "feiparser.yy"
+#line 4432 "feiparser.yy"
     {
         (yyval.exp) = new Plus ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
         nodes.pop ();  //  The children are handled by Plus so we
@@ -4168,7 +4179,7 @@ namespace yy {
   case 143:
 
 /* Line 690 of lalr1.cc  */
-#line 4428 "feiparser.yy"
+#line 4439 "feiparser.yy"
     {
         (yyval.exp) = new Minus ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
         nodes.pop ();  //  The children are handled by Plus so we
@@ -4180,7 +4191,7 @@ namespace yy {
   case 144:
 
 /* Line 690 of lalr1.cc  */
-#line 4435 "feiparser.yy"
+#line 4446 "feiparser.yy"
     {
         (yyval.exp) = new Times ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
         nodes.pop ();  // The same as above.
@@ -4192,7 +4203,7 @@ namespace yy {
   case 145:
 
 /* Line 690 of lalr1.cc  */
-#line 4442 "feiparser.yy"
+#line 4453 "feiparser.yy"
     {
         (yyval.exp) = new Divide ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
         nodes.pop ();  // The same as above.
@@ -4204,7 +4215,7 @@ namespace yy {
   case 146:
 
 /* Line 690 of lalr1.cc  */
-#line 4449 "feiparser.yy"
+#line 4460 "feiparser.yy"
     {
         (yyval.exp) = new Modulo ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
         nodes.pop ();  // The same as above.
@@ -4216,7 +4227,7 @@ namespace yy {
   case 147:
 
 /* Line 690 of lalr1.cc  */
-#line 4456 "feiparser.yy"
+#line 4467 "feiparser.yy"
     {
         (yyval.exp) = new Pow ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
         nodes.pop ();  // The same as above.
@@ -4228,7 +4239,7 @@ namespace yy {
   case 148:
 
 /* Line 690 of lalr1.cc  */
-#line 4463 "feiparser.yy"
+#line 4474 "feiparser.yy"
     {
         (yyval.exp) = new LogicalNot ((yysemantic_stack_[(2) - (2)].exp));
         nodes.pop ();  // The same as above.
@@ -4239,7 +4250,7 @@ namespace yy {
   case 149:
 
 /* Line 690 of lalr1.cc  */
-#line 4469 "feiparser.yy"
+#line 4480 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
         (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Plus (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
@@ -4251,7 +4262,7 @@ namespace yy {
   case 150:
 
 /* Line 690 of lalr1.cc  */
-#line 4476 "feiparser.yy"
+#line 4487 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
         (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Minus (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
@@ -4264,7 +4275,7 @@ namespace yy {
   case 151:
 
 /* Line 690 of lalr1.cc  */
-#line 4484 "feiparser.yy"
+#line 4495 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
         (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Times (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
@@ -4277,7 +4288,7 @@ namespace yy {
   case 152:
 
 /* Line 690 of lalr1.cc  */
-#line 4492 "feiparser.yy"
+#line 4503 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
         (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Divide (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
@@ -4290,7 +4301,7 @@ namespace yy {
   case 153:
 
 /* Line 690 of lalr1.cc  */
-#line 4500 "feiparser.yy"
+#line 4511 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
         (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Modulo (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
@@ -4303,7 +4314,7 @@ namespace yy {
   case 154:
 
 /* Line 690 of lalr1.cc  */
-#line 4508 "feiparser.yy"
+#line 4519 "feiparser.yy"
     {
         Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
         (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Pow (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
@@ -4316,7 +4327,7 @@ namespace yy {
   case 155:
 
 /* Line 690 of lalr1.cc  */
-#line 4516 "feiparser.yy"
+#line 4527 "feiparser.yy"
     {
         (yyval.exp) = (yysemantic_stack_[(3) - (2)].exp);
     }
@@ -4325,7 +4336,7 @@ namespace yy {
   case 156:
 
 /* Line 690 of lalr1.cc  */
-#line 4520 "feiparser.yy"
+#line 4531 "feiparser.yy"
     {
         (yyval.exp) = new Minus (new Number(0.0, (yysemantic_stack_[(2) - (2)].exp) -> value().Getunit() ), (yysemantic_stack_[(2) - (2)].exp));
         nodes.pop ();
@@ -4336,7 +4347,7 @@ namespace yy {
   case 157:
 
 /* Line 690 of lalr1.cc  */
-#line 4526 "feiparser.yy"
+#line 4537 "feiparser.yy"
     {
         (yyval.exp) = new Number (*(yysemantic_stack_[(1) - (1)].value));
         nodes.push ((yyval.exp));
@@ -4346,7 +4357,7 @@ namespace yy {
   case 158:
 
 /* Line 690 of lalr1.cc  */
-#line 4531 "feiparser.yy"
+#line 4542 "feiparser.yy"
     {
 
         (yyval.exp) = new VariableReference(*(yysemantic_stack_[(1) - (1)].ident),global_variables);
@@ -4357,7 +4368,7 @@ namespace yy {
   case 159:
 
 /* Line 690 of lalr1.cc  */
-#line 4537 "feiparser.yy"
+#line 4548 "feiparser.yy"
     {
         (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), (yysemantic_stack_[(3) - (3)].exp), global_variables, locked_global_variables);
         nodes.pop();
@@ -4368,7 +4379,7 @@ namespace yy {
   case 160:
 
 /* Line 690 of lalr1.cc  */
-#line 4543 "feiparser.yy"
+#line 4554 "feiparser.yy"
     {
         (yyval.exp) = new ConvertUnits(*(yysemantic_stack_[(3) - (1)].ident), *(yysemantic_stack_[(3) - (3)].ident), global_variables);
 
@@ -4379,7 +4390,7 @@ namespace yy {
   case 161:
 
 /* Line 690 of lalr1.cc  */
-#line 4549 "feiparser.yy"
+#line 4560 "feiparser.yy"
     {
         (yyval.exp) = new FeiMath(*(yysemantic_stack_[(4) - (1)].ident), (yysemantic_stack_[(4) - (3)].exp));
         nodes.pop();
@@ -4390,7 +4401,7 @@ namespace yy {
   case 162:
 
 /* Line 690 of lalr1.cc  */
-#line 4555 "feiparser.yy"
+#line 4566 "feiparser.yy"
     {
         (yyval.exp) = new UnitTypeTest(*(yysemantic_stack_[(4) - (1)].ident), (yysemantic_stack_[(4) - (3)].exp));
         nodes.pop();
@@ -4401,7 +4412,7 @@ namespace yy {
   case 163:
 
 /* Line 690 of lalr1.cc  */
-#line 4561 "feiparser.yy"
+#line 4572 "feiparser.yy"
     {
         string temp = *(yysemantic_stack_[(1) - (1)].ident);
         temp.erase(0, 1);                               //remove quotes
@@ -4414,7 +4425,7 @@ namespace yy {
   case 164:
 
 /* Line 690 of lalr1.cc  */
-#line 4569 "feiparser.yy"
+#line 4580 "feiparser.yy"
     {
         args.clear(); signature.clear();
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_nodes, args, signature, "query_domain_number_of_nodes");
@@ -4425,7 +4436,7 @@ namespace yy {
   case 165:
 
 /* Line 690 of lalr1.cc  */
-#line 4575 "feiparser.yy"
+#line 4586 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_elements, args, signature, "query_domain_number_of_elements");
         nodes.push((yyval.exp));
@@ -4435,7 +4446,7 @@ namespace yy {
   case 166:
 
 /* Line 690 of lalr1.cc  */
-#line 4580 "feiparser.yy"
+#line 4591 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<double>(&query_domain_current_time, args, signature, "query_domain_current_time");
         nodes.push((yyval.exp));
@@ -4445,7 +4456,7 @@ namespace yy {
   case 167:
 
 /* Line 690 of lalr1.cc  */
-#line 4585 "feiparser.yy"
+#line 4596 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_sp_constraints, args, signature, "query_domain_number_of_sp_constraints");
         nodes.push((yyval.exp));
@@ -4455,7 +4466,7 @@ namespace yy {
   case 168:
 
 /* Line 690 of lalr1.cc  */
-#line 4590 "feiparser.yy"
+#line 4601 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_mp_constraints, args, signature, "query_domain_number_of_mp_constraints");
         nodes.push((yyval.exp));
@@ -4465,7 +4476,7 @@ namespace yy {
   case 169:
 
 /* Line 690 of lalr1.cc  */
-#line 4595 "feiparser.yy"
+#line 4606 "feiparser.yy"
     {
         (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_loads, args, signature, "query_domain_number_of_loads");
         nodes.push((yyval.exp));
@@ -4475,7 +4486,7 @@ namespace yy {
   case 170:
 
 /* Line 690 of lalr1.cc  */
-#line 4603 "feiparser.yy"
+#line 4614 "feiparser.yy"
     {
         args.clear();
         signature.clear();
@@ -4508,7 +4519,7 @@ namespace yy {
   case 171:
 
 /* Line 690 of lalr1.cc  */
-#line 4634 "feiparser.yy"
+#line 4645 "feiparser.yy"
     {
         (yyval.exp) = new Empty();
         nodes.push((yyval.exp));
@@ -4518,7 +4529,7 @@ namespace yy {
   case 172:
 
 /* Line 690 of lalr1.cc  */
-#line 4639 "feiparser.yy"
+#line 4650 "feiparser.yy"
     {
         (yyval.exp) = (yysemantic_stack_[(2) - (1)].exp);
     }
@@ -4527,7 +4538,7 @@ namespace yy {
   case 173:
 
 /* Line 690 of lalr1.cc  */
-#line 4643 "feiparser.yy"
+#line 4654 "feiparser.yy"
     {
         (yyval.exp) = (yysemantic_stack_[(2) - (1)].exp);
         args.clear();
@@ -4538,7 +4549,7 @@ namespace yy {
   case 174:
 
 /* Line 690 of lalr1.cc  */
-#line 4652 "feiparser.yy"
+#line 4663 "feiparser.yy"
     {
         Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(3) - (2)].exp));
         if (!ptr_comp) // Check whether ptr_comp is a valid Comparison* pointer
@@ -4562,7 +4573,7 @@ namespace yy {
   case 175:
 
 /* Line 690 of lalr1.cc  */
-#line 4674 "feiparser.yy"
+#line 4685 "feiparser.yy"
     {
         Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(5) - (2)].exp));
         if (!ptr_comp) // Check whether ptr_comp is a valid Comparison* pointer
@@ -4589,7 +4600,7 @@ namespace yy {
   case 176:
 
 /* Line 690 of lalr1.cc  */
-#line 4699 "feiparser.yy"
+#line 4710 "feiparser.yy"
     {
         Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(3) - (2)].exp));
         if (!ptr_comp)  // Check whether ptr_comp is a valid Comparison* pointer
@@ -4614,7 +4625,7 @@ namespace yy {
   case 177:
 
 /* Line 690 of lalr1.cc  */
-#line 4719 "feiparser.yy"
+#line 4730 "feiparser.yy"
     {
         if (FLAG_generate_cpp_output == 1)
         {
@@ -4633,7 +4644,7 @@ namespace yy {
   case 178:
 
 /* Line 690 of lalr1.cc  */
-#line 4733 "feiparser.yy"
+#line 4744 "feiparser.yy"
     {
         args.clear(); signature.clear();
         if (FLAG_generate_cpp_output == 1)
@@ -4649,7 +4660,7 @@ namespace yy {
   case 179:
 
 /* Line 690 of lalr1.cc  */
-#line 4744 "feiparser.yy"
+#line 4755 "feiparser.yy"
     {
         (yyval.exp) = new Empty();
         nodes.pop();
@@ -4660,7 +4671,7 @@ namespace yy {
   case 180:
 
 /* Line 690 of lalr1.cc  */
-#line 4754 "feiparser.yy"
+#line 4765 "feiparser.yy"
     {
         // empty statement generates an  empty expression
         (yyval.exp) = new Empty();
@@ -4671,7 +4682,7 @@ namespace yy {
   case 181:
 
 /* Line 690 of lalr1.cc  */
-#line 4760 "feiparser.yy"
+#line 4771 "feiparser.yy"
     {
         // Used to initialize a list of statements (compound statement)
         (yyval.exp) = (yysemantic_stack_[(3) - (2)].exp);
@@ -4681,7 +4692,7 @@ namespace yy {
   case 182:
 
 /* Line 690 of lalr1.cc  */
-#line 4768 "feiparser.yy"
+#line 4779 "feiparser.yy"
     {
         (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp);
     }
@@ -4690,7 +4701,7 @@ namespace yy {
   case 183:
 
 /* Line 690 of lalr1.cc  */
-#line 4772 "feiparser.yy"
+#line 4783 "feiparser.yy"
     {
         if ((yysemantic_stack_[(2) - (2)].exp) == NULL)
             (yyval.exp) = (yysemantic_stack_[(2) - (1)].exp);
@@ -4707,7 +4718,7 @@ namespace yy {
 
 
 /* Line 690 of lalr1.cc  */
-#line 4711 "feiparser.tab.cc"
+#line 4722 "feiparser.tab.cc"
 	default:
           break;
       }
@@ -8519,19 +8530,19 @@ namespace yy {
      782,   818,   833,   848,   900,   949,   971,   998,  1023,  1041,
     1060,  1079,  1095,  1111,  1129,  1150,  1187,  1233,  1281,  1325,
     1341,  1371,  1411,  1425,  1447,  1476,  1480,  1489,  1498,  1507,
-    1520,  1557,  1594,  1623,  1637,  1650,  1677,  1715,  1743,  1756,
-    1772,  1795,  1809,  1833,  1857,  1881,  1905,  1934,  1947,  1960,
-    1974,  1986,  2007,  2025,  2059,  2088,  2117,  2151,  2182,  2219,
-    2254,  2287,  2318,  2401,  2448,  2489,  2563,  2603,  2638,  2681,
-    2720,  2758,  2791,  2816,  2831,  2860,  2895,  2924,  2962,  2997,
-    3016,  3060,  3086,  3111,  3136,  3163,  3210,  3257,  3306,  3353,
-    3404,  3444,  3486,  3526,  3573,  3611,  3665,  3729,  3793,  3846,
-    3870,  3896,  3948,  3983,  4009,  4035,  4059,  4084,  4276,  4318,
-    4360,  4375,  4420,  4427,  4434,  4441,  4448,  4455,  4462,  4468,
-    4475,  4483,  4491,  4499,  4507,  4515,  4519,  4525,  4530,  4536,
-    4542,  4548,  4554,  4560,  4568,  4574,  4579,  4584,  4589,  4594,
-    4602,  4633,  4638,  4642,  4651,  4673,  4698,  4718,  4732,  4743,
-    4753,  4759,  4767,  4771
+    1520,  1568,  1605,  1634,  1648,  1661,  1688,  1726,  1754,  1767,
+    1783,  1806,  1820,  1844,  1868,  1892,  1916,  1945,  1958,  1971,
+    1985,  1997,  2018,  2036,  2070,  2099,  2128,  2162,  2193,  2230,
+    2265,  2298,  2329,  2412,  2459,  2500,  2574,  2614,  2649,  2692,
+    2731,  2769,  2802,  2827,  2842,  2871,  2906,  2935,  2973,  3008,
+    3027,  3071,  3097,  3122,  3147,  3174,  3221,  3268,  3317,  3364,
+    3415,  3455,  3497,  3537,  3584,  3622,  3676,  3740,  3804,  3857,
+    3881,  3907,  3959,  3994,  4020,  4046,  4070,  4095,  4287,  4329,
+    4371,  4386,  4431,  4438,  4445,  4452,  4459,  4466,  4473,  4479,
+    4486,  4494,  4502,  4510,  4518,  4526,  4530,  4536,  4541,  4547,
+    4553,  4559,  4565,  4571,  4579,  4585,  4590,  4595,  4600,  4605,
+    4613,  4644,  4649,  4653,  4662,  4684,  4709,  4729,  4743,  4754,
+    4764,  4770,  4778,  4782
   };
 
   // Print the state stack on the debug stream.
@@ -8659,11 +8670,11 @@ namespace yy {
 } // yy
 
 /* Line 1136 of lalr1.cc  */
-#line 8663 "feiparser.tab.cc"
+#line 8674 "feiparser.tab.cc"
 
 
 /* Line 1138 of lalr1.cc  */
-#line 4799 "feiparser.yy"
+#line 4810 "feiparser.yy"
 
 
 // Deletes all the nodes that were allocated

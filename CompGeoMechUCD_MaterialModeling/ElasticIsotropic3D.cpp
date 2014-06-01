@@ -21,6 +21,7 @@
 //#
 //# DATE:              10Oct2000
 //# UPDATE HISTORY:    22Nov2002 small fixes
+//# 			5/31/14 : Send Self and ReceiveSelf is reimplemented by Babak
 //#
 //#
 //===============================================================================
@@ -322,6 +323,7 @@ void ElasticIsotropic3D::setInitElasticStiffness(void)
 
 
 //Guanzhou added for PDD
+//Reimplemented by Babak 5/31/14
 int
 ElasticIsotropic3D::sendSelf (int commitTag, Channel& theChannel)
 {
@@ -340,51 +342,11 @@ ElasticIsotropic3D::sendSelf (int commitTag, Channel& theChannel)
         return -1;
     }
 
-
-    //  if (theChannel.sendVector(dataTag, commitTag, sigma) < 0) {
-    //    cerr << "ElasticIsotropicMaterial::sendSelf -- could not send Stress Vector\n";
-    //    return -1;
-    //  }
-
-    //     cerr << "sigma_send: " << sigma;
-
-    if (theChannel.sendMatrix(dataTag, commitTag, D) < 0)
-    {
-        cerr << "ElasticIsotropicMaterial::sendSelf -- could not send Elastic Constant Vector\n";
-        return -1;
-    }
-
-    //      cerr << "D_send: " << D;
-
-    //  if (theChannel.sendVector(dataTag, commitTag, epsilon) < 0) {
-    //      cerr << "ElasticIsotropicMaterial::sendSelf -- could not send strain Vector\n";
-    //      return -1;
-    //  }
-
-    //     cerr << "epsilon_send: " << epsilon;
-
-
-    //  if (theChannel.sendnDarray(dataTag,commitTag, Stress) < 0) {
-    //    cerr << "ElasticIsotropicMaterial::sendSelf -- could not send Stress Tensor\n";
-    //    return -1;
-    //  }
-
-    //  Stress.print("stress", "stress_send");
-
-    if (theChannel.sendnDarray(dataTag, commitTag, Dt) < 0)
-    {
-        cerr << "ElasticIsotropicMaterial::sendSelf -- could not send Elastic Constant Tensor\n";
-        return -1;
-    }
-
-    //  if (theChannel.sendnDarray(dataTag,commitTag, Strain) < 0) {
-    //    cerr << "ElasticIsotropicMaterial::sendSelf -- could not send Strain Tensor\n";
-    //    return -1;
-    //  }
-
     return 0;
 }
 
+
+//Reimplemented by Babak 5/31/14
 int
 ElasticIsotropic3D::recvSelf (int commitTag, Channel& theChannel,
                               FEM_ObjectBroker& theBroker)
@@ -394,7 +356,7 @@ ElasticIsotropic3D::recvSelf (int commitTag, Channel& theChannel,
 
     if (theChannel.recvVector(dataTag, commitTag, data) < 0)
     {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Vector\n";
+        cerr << "WARNING -- ElasticIsotropicMaterial::recvSelf -- could not recv Vector\n";
         E = 0;
         this->setTag(0);
         return -1;
@@ -404,49 +366,12 @@ ElasticIsotropic3D::recvSelf (int commitTag, Channel& theChannel,
     E = data(1);
     v = data(2);
     rho = data(3);
-
-    //  if (theChannel.recvVector(dataTag, commitTag, sigma) < 0) {
-    //    cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Stress Vector\n";
-    //    return -1;
-    //  }
-
-    //     cerr << "sigma_recv: " << sigma;
-
-    //  if (theChannel.recvMatrix(dataTag, commitTag, D) < 0) {
-    //      cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Elastic Constant Vector\n";
-    //  return -1;
-    //  }
-
-
-    //  if (theChannel.recvVector(dataTag, commitTag, epsilon) < 0) {
-    //      cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv strain Vector\n";
-    //      return -1;
-    //  }
-
-    //     cerr << "epsilon_recv: " << epsilon;
-
-    //  if (theChannel.recvnDarray(dataTag,commitTag, Stress) < 0) {
-    //    cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Stress Tensor\n";
-    //    return -1;
-    //  }
-
-    //  Stress.print("stress", "stress_recv");
-
-
-    if (theChannel.recvnDarray(dataTag, commitTag, Dt) < 0)
-    {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Elastic Constant Tensor\n";
-        return -1;
-    }
-
-    //  if (theChannel.recvnDarray(dataTag,commitTag, Strain) < 0) {
-    //    cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Strain Tensor\n";
-    //    return -1;
-    //  }
-
+    
+    setInitElasticStiffness();
     return 0;
 
 }
+
 
 int  //Guanzhou added
 ElasticIsotropic3D::getObjectSize()

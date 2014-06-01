@@ -64,32 +64,32 @@
 #include "MODELING/add_element_contact_3dof_to_3dof.h"
 #include "MODELING/add_element_contact_nonlinear_3dof_to_7dof.h"
 #include "MODELING/add_element_contact_nonlinear_3dof_to_3dof.h"
-// #include "MODELING/add_element_brick_8node.h"
-// #include "MODELING/add_element_brick_8node_variable_number_of_gauss_points.h"
-// #include "MODELING/add_element_brick_8node_elastic.h"
-// #include "MODELING/add_element_brick_8node_up.h"
-// #include "MODELING/add_element_brick_8node_upU.h"
-// #include "MODELING/add_element_brick_20node.h"
-// #include "MODELING/add_element_brick_20node_elastic.h"
-// #include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"
-// #include "MODELING/add_element_brick_20node_upU.h"
+#include "MODELING/add_element_brick_8node.h"
+#include "MODELING/add_element_brick_8node_variable_number_of_gauss_points.h"
+#include "MODELING/add_element_brick_8node_elastic.h"
+#include "MODELING/add_element_brick_8node_up.h"
+#include "MODELING/add_element_brick_8node_upU.h"
+#include "MODELING/add_element_brick_20node.h"
+#include "MODELING/add_element_brick_20node_elastic.h"
+#include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"
+#include "MODELING/add_element_brick_20node_upU.h"
 #include "MODELING/add_element_brick_27node.h"
 #include "MODELING/add_element_brick_27node_elastic.h"
-//#include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"
-// #include "MODELING/add_element_brick_variable_node_8_to_27.h"
-// #include "MODELING/add_element_brick_8node_ltensor.h"
-// #include "MODELING/add_element_brick_27node_ltensor.h"
-// #include "MODELING/add_element_beam_elastic_lumped_mass.h"
-// #include "MODELING/add_element_beam_elastic.h"  // Nima Tafazzoli (Dec. 2012)
+#include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"
+ #include "MODELING/add_element_brick_variable_node_8_to_27.h"
+ #include "MODELING/add_element_brick_8node_ltensor.h"
+ #include "MODELING/add_element_brick_27node_ltensor.h"
+ #include "MODELING/add_element_beam_elastic_lumped_mass.h"
+ #include "MODELING/add_element_beam_elastic.h"  // Nima Tafazzoli (Dec. 2012)
 #include "MODELING/add_element_rank_one_deficient_elastic_pinned_fixed_beam.h"  // Nima Tafazzoli (Dec. 2012)
-// #include "MODELING/add_element_truss.h"
-// #include "MODELING/add_element_beam_displacement_based.h"
+#include "MODELING/add_element_truss.h"
+#include "MODELING/add_element_beam_displacement_based.h"
 #include "MODELING/add_element_penalty.h"
-//#include "MODELING/add_element_penalty_for_applying_generalized_displacement.h"
-//#include "MODELING/add_element_shell_MITC4.h"     // Jose Added July 3 2012
-//#include "MODELING/add_element_shell_NewMITC4.h"     // Jose Added July 12 2012
-//#include "MODELING/add_element_shell_andes_3node.h"     // Jose Added July 22 2012
-//#include "MODELING/add_element_shell_andes_4node.h"     // Jose Added Sept 20 2012
+#include "MODELING/add_element_penalty_for_applying_generalized_displacement.h"
+#include "MODELING/add_element_shell_MITC4.h"     // Jose Added July 3 2012
+#include "MODELING/add_element_shell_NewMITC4.h"     // Jose Added July 12 2012
+#include "MODELING/add_element_shell_andes_3node.h"     // Jose Added July 22 2012
+#include "MODELING/add_element_shell_andes_4node.h"     // Jose Added Sept 20 2012
 #include "MODELING/add_elements_from_GIDfile_27node_brick_elastic.h" //Added by Babak 5/29/14
 
 
@@ -120,10 +120,10 @@
 #include "MODELING/add_constitutive_model_NDMaterial_pisano.h"
 
 // LTensor Based
-// #include "MODELING/add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic.h"
-// #include "MODELING/add_constitutive_model_NDMaterialLT_pisano.h"
-// #include "MODELING/add_constitutive_model_NDMaterialLT_New_Pisano.h"
-// #include "MODELING/add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d.h"
+ #include "MODELING/add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic.h"
+ #include "MODELING/add_constitutive_model_NDMaterialLT_pisano.h"
+ #include "MODELING/add_constitutive_model_NDMaterialLT_New_Pisano.h"
+ #include "MODELING/add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d.h"
 
 // Uniaxial
 #include "MODELING/add_constitutive_model_uniaxial_elastic.h"
@@ -169,9 +169,9 @@
 
 //Model query
 //--------------------------------------------------------------------------------------------------
-// #include "MODELING/get_nodal_coordinate.h"
-//#include "MODELING/obtain_pseudo_time.h"
-// #include "MODELING/query_domain.h"
+#include "MODELING/get_nodal_coordinate.h"
+#include "MODELING/obtain_pseudo_time.h"
+#include "MODELING/query_domain.h"
 
 // Output control
 //--------------------------------------------------------------------------------------------------

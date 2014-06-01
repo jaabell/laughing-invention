@@ -6250,11 +6250,11 @@ int main (int argc, char**argv)
    } 
    else  // Or if it is a slave node
    {
-    	OPS_OBJECT_BROKER = &theBroker;
-    	OPS_MACHINE = &theMachine;
-    	OPS_PARALLEL_PROCESSING = np;
-    	OPS_NUM_SUBDOMAINS = np - 1;
-    	OPS_PARTITIONED	= false;
+        OPS_OBJECT_BROKER       = &theBroker;
+        OPS_MACHINE             = &theMachine;
+        OPS_PARALLEL_PROCESSING = np;
+        OPS_NUM_SUBDOMAINS      = np - 1;
+        OPS_PARTITIONED         = false;
 
     	exitflag = start_parser(argc, argv);
     }

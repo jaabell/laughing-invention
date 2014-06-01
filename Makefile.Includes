@@ -237,7 +237,6 @@ PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.3-p7/externalpackages/SuperLU
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libsuperlu_4.3.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libsuperlu_dist_3.1.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libspai.a \
-      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libHYPRE.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libscalapack.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libPLAPACK.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libflapack.a \
@@ -247,6 +246,7 @@ PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.3-p7/externalpackages/SuperLU
       $(ESSI_DEPEND_DIR)/parmetis-4.0.2_install/lib/libparmetis.a \
       $(ESSI_DEPEND_DIR)/metis-4.0.2_install/lib/libmetis.a \
       $(ESSI_DEPEND_DIR)/hdf5_parallel/lib/libhdf5.a 
+      
 
 
 SEQUENTIAL_MACHINE_LIBS =  -L/usr/lib64 \
@@ -271,7 +271,8 @@ PARALLEL_MACHINE_LIBS = -lm \
       -ldl \
       -lz \
       -lgcc_s \
-      -lpthread 
+      -lpthread \
+      -lmpi_cxx
       # -lboost
 
 # -L$(FEIBASEDIR)/lib \
