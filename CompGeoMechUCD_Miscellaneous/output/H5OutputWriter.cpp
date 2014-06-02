@@ -21,7 +21,8 @@
 // DESIGNER:          Jose Abell, Boris Jeremic
 // PROGRAMMER:        Jose Abell
 // DATE:              Mon 05 May 2014 10:09:35 AM PDT
-// UPDATE HISTORY:
+// UPDATE HISTORY:	Some changes made by Babak 5/31/14 to make it work with parallel ... 
+//			
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -32,6 +33,14 @@
 #include <H5OutputWriter.h>
 #include <hdf5.h>
 #include <time.h>
+
+
+//Added By Babak 5/31/14
+//------------------------
+#ifdef _PARALLEL_PROCESSING
+  #include <mpi.h>
+#endif
+//------------------------
 
 
 H5OutputWriter::H5OutputWriter():
@@ -155,7 +164,27 @@ void H5OutputWriter::initialize(std::string filename_in,
     create_nodeReactionForces_arrays     = true;
     create_elementMeshData_arrays        = true;
     create_elementOutput_arrays          = true;
+    
+    
+    
 
+    
+    
+//Added By Babak 5/31/14
+//------------------------
+#ifdef _PARALLEL_PROCESSING
+    int numProcesses, processID;
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+	
+    
+    hid_t file_access_plist   = H5Pcreate(H5P_FILE_ACCESS);
+    H5Pset_fapl_mpio(file_access_plist, MPI_COMM_WORLD, MPI_INFO_NULL);
+    
+    id_file = H5Fcreate(file_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, file_access_plist);
+    H5Pclose(file_access_plist);
+//------------------------    
+#else
 
     //================================================================================
     //Create the file, overwriting it if it exists
@@ -170,7 +199,7 @@ void H5OutputWriter::initialize(std::string filename_in,
     // status = H5Pset_sieve_buf_size( file_access_plist, H5OUTPUTWRITER_SIEVE_BUFFER_SIZE );
     // HDF5_CHECK_ERROR;
     id_file = H5Fcreate(file_name.c_str(), flags , file_creation_plist, file_access_plist);
-
+#endif
     if (id_file > 0)
     {
         file_is_open = true;
@@ -1162,12 +1191,37 @@ int H5OutputWriter::write_string(hid_t here, std::string name, std::string conte
                                 H5P_DEFAULT,
                                 H5P_DEFAULT,
                                 H5P_DEFAULT);
-    status = H5Dwrite(id_data_string,
+    
+//Added By Babak 5/31/14
+//------------------------
+    #ifdef _PARALLEL_PROCESSING
+          hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+          H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_COLLECTIVE);
+	  
+	  status = H5Dwrite(id_data_string,
+                      id_type_string,
+                      H5S_ALL,
+                      H5S_ALL,
+                      file_access_plist,
+                      contents.c_str());
+    #else
+	  
+	  status = H5Dwrite(id_data_string,
                       id_type_string,
                       H5S_ALL,
                       H5S_ALL,
                       H5P_DEFAULT,
                       contents.c_str());
+    #endif
+//------------------------
+   
+    
+//     status = H5Dwrite(id_data_string,
+//                       id_type_string,
+//                       H5S_ALL,
+//                       H5S_ALL,
+//                       H5P_DEFAULT,
+//                       contents.c_str());
 
     H5Sclose(id_dataspace_string);
     H5Dclose(id_data_string);
@@ -1502,15 +1556,43 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
                  block                  // little block selected per selection
              );
     HDF5_CHECK_ERROR;
-
-    //Write data!
-    status = H5Dwrite(
+    
+    
+    
+    
+//Added By Babak 5/31/14
+//------------------------
+    #ifdef _PARALLEL_PROCESSING
+          hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+          H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_COLLECTIVE);
+	  
+	  status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_DOUBLE,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 file_access_plist,           // Form of writing
+                 data                   // The actual data
+    #else
+	  
+	   status = H5Dwrite(
                  id_array,              // Dataset to write to
                  H5T_NATIVE_DOUBLE,     // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
                  H5P_DEFAULT,           // Form of writing
                  data                   // The actual data
+    #endif
+//------------------------
+
+    //Write data!
+//     status = H5Dwrite(
+//                  id_array,              // Dataset to write to
+//                  H5T_NATIVE_DOUBLE,     // Format of data in memory
+//                  id_memspace,           // Description of data in memory
+//                  id_dataspace,          // Description of data in storage (including selection)
+//                  H5P_DEFAULT,           // Form of writing
+//                  data                   // The actual data
              );
     HDF5_CHECK_ERROR;
 
@@ -1550,15 +1632,48 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
                  block                  // little block selected per selection
              );
     HDF5_CHECK_ERROR;
-
-    //Write data!
-    status = H5Dwrite(
+    
+    
+    
+    
+    //Added By Babak 5/31/14
+//------------------------
+    #ifdef _PARALLEL_PROCESSING
+          hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+          H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_COLLECTIVE);
+	  
+	      //Write data!
+	  status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_INT,        // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 file_access_plist,           // Form of writing
+                 data                   // The actual data
+                 
+                 
+      #else
+      
+          //Write data!
+	   status = H5Dwrite(
                  id_array,              // Dataset to write to
                  H5T_NATIVE_INT,        // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
                  H5P_DEFAULT,           // Form of writing
                  data                   // The actual data
+	  
+      #endif
+//------------------------
+
+    //Write data!
+//     status = H5Dwrite(
+//                  id_array,              // Dataset to write to
+//                  H5T_NATIVE_INT,        // Format of data in memory
+//                  id_memspace,           // Description of data in memory
+//                  id_dataspace,          // Description of data in storage (including selection)
+//                  H5P_DEFAULT,           // Form of writing
+//                  data                   // The actual data
              );
     HDF5_CHECK_ERROR;
 
@@ -1614,8 +1729,27 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
 
     const char *dat = data.c_str();
     char *thedata[1] = {(char *)dat};
+    
+    
+    
+    
+    //Added By Babak 5/31/14
+//------------------------
+    #ifdef _PARALLEL_PROCESSING
+          hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+          H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_COLLECTIVE);
+	  
+	  status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 type,                  // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 file_access_plist,           // Form of writing
+                 thedata// The actual data
+             );
 
-    status = H5Dwrite(
+    #else
+	  status = H5Dwrite(
                  id_array,              // Dataset to write to
                  type,                  // Format of data in memory
                  id_memspace,           // Description of data in memory
@@ -1623,6 +1757,17 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
                  H5P_DEFAULT,           // Form of writing
                  thedata// The actual data
              );
+    #endif
+//------------------------
+
+//     status = H5Dwrite(
+//                  id_array,              // Dataset to write to
+//                  type,                  // Format of data in memory
+//                  id_memspace,           // Description of data in memory
+//                  id_dataspace,          // Description of data in storage (including selection)
+//                  H5P_DEFAULT,           // Form of writing
+//                  thedata// The actual data
+//              );
 
 
     // cout << "done! \n\n";
@@ -1664,8 +1809,25 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
              );
     HDF5_CHECK_ERROR;
 
-    //Write data!
-    status = H5Dwrite(
+    
+    
+    //Added By Babak 5/31/14
+//------------------------
+    #ifdef _PARALLEL_PROCESSING
+          hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+          H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_COLLECTIVE);
+	  
+	  status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_DOUBLE,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 file_access_plist,           // Form of writing
+                 data                   // The actual data
+             );
+    #else
+	  
+	  status = H5Dwrite(
                  id_array,              // Dataset to write to
                  H5T_NATIVE_DOUBLE,     // Format of data in memory
                  id_memspace,           // Description of data in memory
@@ -1673,6 +1835,17 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
                  H5P_DEFAULT,           // Form of writing
                  data                   // The actual data
              );
+    #endif
+//------------------------
+    //Write data!
+//     status = H5Dwrite(
+//                  id_array,              // Dataset to write to
+//                  H5T_NATIVE_DOUBLE,     // Format of data in memory
+//                  id_memspace,           // Description of data in memory
+//                  id_dataspace,          // Description of data in storage (including selection)
+//                  H5P_DEFAULT,           // Form of writing
+//                  data                   // The actual data
+//              );
     HDF5_CHECK_ERROR;
 
     //Close stuff
@@ -1711,8 +1884,24 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
              );
     HDF5_CHECK_ERROR;
 
-    //Write data!
-    status = H5Dwrite(
+    
+    //Added By Babak 5/31/14
+//------------------------
+    #ifdef _PARALLEL_PROCESSING
+          hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+          H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_COLLECTIVE);
+	  
+	  status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_INT,        // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 file_access_plist,           // Form of writing
+                 data                   // The actual data
+             );
+    #else
+	  
+	  status = H5Dwrite(
                  id_array,              // Dataset to write to
                  H5T_NATIVE_INT,        // Format of data in memory
                  id_memspace,           // Description of data in memory
@@ -1720,6 +1909,19 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
                  H5P_DEFAULT,           // Form of writing
                  data                   // The actual data
              );
+    #endif
+//------------------------
+    
+    
+    //Write data!
+//     status = H5Dwrite(
+//                  id_array,              // Dataset to write to
+//                  H5T_NATIVE_INT,        // Format of data in memory
+//                  id_memspace,           // Description of data in memory
+//                  id_dataspace,          // Description of data in storage (including selection)
+//                  H5P_DEFAULT,           // Form of writing
+//                  data                   // The actual data
+//              );
     HDF5_CHECK_ERROR;
 
     //Close stuff
