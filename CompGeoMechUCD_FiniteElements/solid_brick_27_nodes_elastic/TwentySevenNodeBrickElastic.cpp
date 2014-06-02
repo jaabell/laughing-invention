@@ -237,6 +237,64 @@ TwentySevenNodeBrickElastic::TwentySevenNodeBrickElastic (): Element(0, ELE_TAG_
 
     Kinitial = new Matrix(81, 81);
     Mass = new Matrix(81, 81);
+    
+    
+       //Babak added on 15/15/2012
+//-----------------   
+    integration_order = FixedOrder; 
+
+    int total_number_of_Gauss_points = integration_order*integration_order*integration_order;
+
+
+    if ( total_number_of_Gauss_points != 0 )
+      {
+         matpoint  = new MatPoint3D * [total_number_of_Gauss_points];
+      }
+    else
+      {
+        matpoint  = 0;
+      }
+    ////////////////////////////////////////////////////////////////////
+    short where = 0;
+
+    for( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+      {
+        double r = get_Gauss_p_c( integration_order, GP_c_r );
+        double rw = get_Gauss_p_w( integration_order, GP_c_r );
+
+        for( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+          {
+            double s = get_Gauss_p_c( integration_order, GP_c_s );
+            double sw = get_Gauss_p_w( integration_order, GP_c_s );
+
+            for( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+              {
+                double t = get_Gauss_p_c( integration_order, GP_c_t );
+                double tw = get_Gauss_p_w( integration_order, GP_c_t );
+
+                where =
+                ((GP_c_r-1)*integration_order+GP_c_s-1)*integration_order+GP_c_t-1;
+
+
+
+                  matpoint[where] = new MatPoint3D(GP_c_r,
+                                                 GP_c_s,
+                                                 GP_c_t,
+                                                 r, s, t,
+                                                 rw, sw, tw,
+                                               //InitEPS,
+                                                      mmodel);
+
+              }
+          }
+      }
+      nodes_in_brick = 27;
+//----------------- 
+    
+    
+    
+    
+    
 
 }
 
@@ -5233,15 +5291,166 @@ const Vector &TwentySevenNodeBrickElastic::getResistingForceIncInertia ()
 //=============================================================================
 int TwentySevenNodeBrickElastic::sendSelf (int commitTag, Channel &theChannel)
 {
-    // Not implemtented yet
-    return 0;
+  
+  int dataTag = this->getDbTag();
+  int matDbTag;
+  static ID idData(30);
+  idData(29) = this->getTag();
+
+  idData(0) = (matpoint[0]->matmodel)->getClassTag();
+  
+  for (int i = 0; i<27; i++) 
+  {
+  	matDbTag = (matpoint[i]->matmodel)->getDbTag();
+	if ( matDbTag == 0 ) 
+	{
+		matDbTag = theChannel.getDbTag();
+		if ( matDbTag != 0 )
+		{
+			(matpoint[i]->matmodel)->setDbTag(matDbTag);	
+		}
+	}
+  }
+
+  idData(1) = matDbTag;
+ 
+  idData(2)  = connectedExternalNodes(0);
+  idData(3)  = connectedExternalNodes(1);
+  idData(4)  = connectedExternalNodes(2);
+  idData(5)  = connectedExternalNodes(3);
+  idData(6)  = connectedExternalNodes(4);
+  idData(7)  = connectedExternalNodes(5);
+  idData(8)  = connectedExternalNodes(6);
+  idData(9)  = connectedExternalNodes(7);
+  idData(10) = connectedExternalNodes(8);
+  idData(11) = connectedExternalNodes(9);
+  idData(12) = connectedExternalNodes(10);
+  idData(13) = connectedExternalNodes(11);
+  idData(14) = connectedExternalNodes(12);
+  idData(15) = connectedExternalNodes(13);
+  idData(16) = connectedExternalNodes(14);
+  idData(17) = connectedExternalNodes(15);
+  idData(18) = connectedExternalNodes(16);
+  idData(19) = connectedExternalNodes(17);
+  idData(20) = connectedExternalNodes(18);
+  idData(21) = connectedExternalNodes(19);
+  idData(22) = connectedExternalNodes(20);
+  idData(23) = connectedExternalNodes(21);
+  idData(24) = connectedExternalNodes(22);
+  idData(25) = connectedExternalNodes(23);
+  idData(26) = connectedExternalNodes(24);
+  idData(27) = connectedExternalNodes(25);
+  idData(28) = connectedExternalNodes(26);
+
+
+  if (theChannel.sendID(dataTag, commitTag, idData) < 0) 
+  {
+    	std::cerr << "WARNING TwentySevenNodeBrickElastic::sendSelf() - " << this->getTag() << " failed to send ID\n";
+    	return -1;
+  }
+  for (int i = 0; i < 27; i++) 
+  {
+    if ((matpoint[i]->matmodel)->sendSelf(commitTag, theChannel) < 0) 
+    {
+      	std::cerr << "WARNING TwentySevenNodeBrickElastic::sendSelf() - " << this->getTag() << " failed to send material models\n";
+      	return -1;
+    }
+  }
+
+  return 0;
 }
+
 
 //=============================================================================
 int TwentySevenNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
-    // Not implemtented yet
-    return 0;
+  int dataTag = this->getDbTag();
+
+  static ID idData(30);
+  if (theChannel.recvID(dataTag, commitTag, idData) < 0) 
+  {
+    std::cerr << "WARNING TwentySevenNodeBrickElastic::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+    return -1;
+  }
+
+  this->setTag(idData(29));
+
+  connectedExternalNodes(0)  = idData(2);
+  connectedExternalNodes(1)  = idData(3);
+  connectedExternalNodes(2)  = idData(4);
+  connectedExternalNodes(3)  = idData(5);
+  connectedExternalNodes(4)  = idData(6);
+  connectedExternalNodes(5)  = idData(7);
+  connectedExternalNodes(6)  = idData(8);
+  connectedExternalNodes(7)  = idData(9);
+  connectedExternalNodes(8)  = idData(10);
+  connectedExternalNodes(9)  = idData(11);
+  connectedExternalNodes(10) = idData(12);
+  connectedExternalNodes(11) = idData(13);
+  connectedExternalNodes(12) = idData(14);
+  connectedExternalNodes(13) = idData(15);
+  connectedExternalNodes(14) = idData(16);
+  connectedExternalNodes(15) = idData(17);
+  connectedExternalNodes(16) = idData(18);
+  connectedExternalNodes(17) = idData(19);
+  connectedExternalNodes(18) = idData(20);
+  connectedExternalNodes(19) = idData(21);
+  connectedExternalNodes(20) = idData(22);
+  connectedExternalNodes(21) = idData(23);
+  connectedExternalNodes(22) = idData(24);
+  connectedExternalNodes(23) = idData(25);
+  connectedExternalNodes(24) = idData(26);
+  connectedExternalNodes(25) = idData(27);
+  connectedExternalNodes(26) = idData(28);
+  
+  int matClassTag = idData(0);
+  int matDbTag = idData(1);  
+  
+  if (matpoint[0]->matmodel == 0) 
+  {
+    	for (int i = 0; i < 27; i++) 
+	{
+      		NDMaterial *ndmat = theBroker.getNewNDMaterial(matClassTag);
+      		if (ndmat == 0) 
+		{
+        		std::cerr << "TwentySevenNodeBrickElastic::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+        		return -1;
+      		}
+      		ndmat->setDbTag(matDbTag);
+      		if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0) 
+		{
+			std::cerr << "TwentySevenNodeBrickElastic::recvSelf() - material " << i << "failed to recv itself\n";
+       			return -1;
+		} 
+      		matpoint[i]->matmodel = ndmat;
+
+    	}
+   }
+    else 
+    {
+    	for (int i = 0; i < 27; i++) 
+	{
+      		NDMaterial *ndmat = theBroker.getNewNDMaterial(matClassTag);;
+      		if ((matpoint[i]->matmodel)->getClassTag() != matClassTag) 
+		{
+        		delete matpoint[i]->matmodel;
+        		if (ndmat ==  0) 
+			{
+          			std::cerr << "TwentySevenNodeBrickElastic::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+          			return -1;
+        		}
+      			ndmat->setDbTag(matDbTag);
+      		}
+     		if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0) 
+		{
+			std::cerr << "TwentySevenNodeBrickElastic::recvSelf() - material " << i << "failed to recv itself\n";
+       			return -1;
+		} 
+      		matpoint[i]->matmodel = ndmat;
+
+    	}
+  }
+  return 0;
 }
 
 
