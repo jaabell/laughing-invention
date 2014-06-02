@@ -2592,6 +2592,11 @@ Domain::commit( void )
     Element *elePtr;
     ElementIter &theElemIter = this->getElements();
 
+# ifndef _PARALLEL_PROCESSING
+    // NOTE: This is done in PartitionedDomain::partition in the case of parallel processing.
+    //
+    //This outputs the mesh information to the HDF5 writer. This is important because it builds the
+    // arrays of indexes into node output data and element output data.
     if (output_is_enabled)
     {
         // theHDF5_Channel.setTime(currentTime);/
@@ -2622,6 +2627,8 @@ Domain::commit( void )
         }
         have_written_static_mesh_data = true;
     }
+
+#endif
 
     this->calculateNodalReactions(0);
     theNodIter->reset();

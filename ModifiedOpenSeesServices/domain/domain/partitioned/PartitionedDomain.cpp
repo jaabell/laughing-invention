@@ -1288,6 +1288,51 @@ PartitionedDomain::setPartitioner(DomainPartitioner *thePartitioner)
 int
 PartitionedDomain::partition(int numPartitions)
 {
+    //Jose and Babak added for HDF5 output
+    //
+    // NOTE: This is done in Domain::Commit in the case of sequential processing.
+    //
+    //This outputs the mesh information to the HDF5 writer. This is important because it builds the
+    // arrays of indexes into node output data and element output data.
+
+    Node *nodePtr;
+    NodeIter &theNodeIter = this->getNodes();
+    Element *elePtr;
+    ElementIter &theElemIter = this->getElements();
+
+
+    if (output_is_enabled)
+    {
+        // theHDF5_Channel.setTime(currentTime);/
+        theOutputWriter.setTime(currentTime);
+
+        //Write out static mesh data once!
+        if (!have_written_static_mesh_data)
+        {
+            //Write Node Mesh data!
+            theOutputWriter.writeNumberOfNodes(this->getNumNodes());
+            while ( ( nodePtr = theNodeIter() ) != 0 )
+            {
+                theOutputWriter.writeNodeMeshData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
+            }
+
+            //Write Element Mesh data!
+            theOutputWriter.writeNumberOfElements(this->getNumElements());
+            while ( ( elePtr = theElemIter() ) != 0 )
+            {
+                int materialtag = 0;
+                theOutputWriter.writeElementMeshData(elePtr->getTag() ,
+                                                     elePtr->getElementName(),
+                                                     elePtr->getExternalNodes(),
+                                                     materialtag ,
+                                                     elePtr->getGaussCoordinates(),
+                                                     elePtr->getOutputSize());
+            }
+        }
+        have_written_static_mesh_data = true;
+    }
+
+
     // need to create element graph before create new subdomains
     // DO NOT REMOVE THIS LINE __ EVEN IF COMPILER WARNING ABOUT UNUSED VARIABLE
     Graph *theEleGraph = this->getElementGraph();
@@ -1321,33 +1366,7 @@ PartitionedDomain::partition(int numPartitions)
         return -1;
     }
 
-    //
-    // add recorder objects
-    //
 
-    // do the same for all the subdomains
-    // if (theSubdomains != 0)
-    // {
-    //     ArrayOfTaggedObjectsIter theSubsIter(*theSubdomains);
-    //     TaggedObject *theObject;
-
-    //     while ((theObject = theSubsIter()) != 0)
-    //     {
-    //         Subdomain *theSub = (Subdomain *)theObject;
-
-    //         for (int i = 0; i < numRecorders; i++)
-    //         {
-    //             int res = theSub->addRecorder(*theRecorders[i]);
-
-    //             if (res < 0)
-    //             {
-    //                 cerr << "PartitionedDomain::revertToLastCommit(void)";
-    //                 cerr << " - failed in Subdomain::revertToLastCommit()\n";
-    //                 return res;
-    //             }
-    //         }
-    //     }
-    // }
 
     return 0;
 

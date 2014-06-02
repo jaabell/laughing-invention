@@ -353,6 +353,7 @@ class Domain
 
         virtual int calculateNodalReactions(int flag);
 
+        HDF5_Channel theHDF5_Channel;
 
     protected:
         virtual int buildEleGraph(Graph *theEleGraph);
@@ -362,7 +363,6 @@ class Domain
         //int numRecorders;
 
 
-        HDF5_Channel theHDF5_Channel;
         H5OutputWriter theOutputWriter;
 
         // Nima Tafazzoli, Nov. 2012
@@ -370,8 +370,12 @@ class Domain
         int numDatabases;
 
 
-    private:
+        bool output_is_enabled;
+        bool have_written_static_mesh_data;
+
         double currentTime;               // current pseudo time
+
+    private:
         double committedTime;             // the committed pseudo time
         double dT;                        // difference between committed and current time
         int    currentGeoTag;             // an integer used to mark if domain has changed
@@ -435,8 +439,6 @@ class Domain
 
         int lastChannel;
 
-        bool output_is_enabled;
-        bool have_written_static_mesh_data;
 };
 
 #endif

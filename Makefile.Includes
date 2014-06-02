@@ -240,6 +240,7 @@ PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.3-p7/externalpackages/SuperLU
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libscalapack.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libPLAPACK.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libflapack.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libHYPRE.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libspooles.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libfblas.a \
       $(ESSI_DEPEND_DIR)/petsc-3.3-p7/arch-linux2-c-opt/lib/libblacs.a \
