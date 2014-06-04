@@ -17,11 +17,11 @@
 // RETURN:
 // VERSION:
 // LANGUAGE:          C++
-// TARGET OS:         
+// TARGET OS:
 // PROGRAMMER:        Babak Kamrani, Boris Jeremic
-//                
+//
 // DATE:              September 2010
-// UPDATE HISTORY:    
+// UPDATE HISTORY:
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -51,13 +51,18 @@
 
 int define_parallel_numberer_plain_for_analysis();
 int define_parallel_numberer_plain_for_analysis()
-  {
-     //PlainNumberer   *plainnumberer  = new ParallelNumberer();
-     theNumberer = new ParallelNumberer(); 
-     
-         if (theNumberer == NULL)
+{
+#ifdef _PARALLEL_PROCESSING
+    //PlainNumberer   *plainnumberer  = new ParallelNumberer();
+    theNumberer = new ParallelNumberer();
+
+    if (theNumberer == NULL)
     {
-      cerr << "Error: (define_parallel_numberer_plain_for_analysis) memory for theNumberer  can not be allocated!" << endl;
-      abort();
+        cerr << "Error: (define_parallel_numberer_plain_for_analysis) memory for theNumberer  can not be allocated!" << endl;
+        abort();
     }
-  };
+#else
+    cerr << "Error: (define_parallel_numberer_plain_for_analysis) Not available in sequential mode." << endl;
+    abort();
+#endif
+};

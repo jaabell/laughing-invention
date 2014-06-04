@@ -17,9 +17,9 @@
 // RETURN:
 // VERSION:
 // LANGUAGE:          C++
-// TARGET OS:         
+// TARGET OS:
 // PROGRAMMER:        Babak Kamrani, Boris Jeremic
-//                
+//
 // DATE:              June 2010
 // UPDATE HISTORY:    October (API)
 //
@@ -50,144 +50,151 @@
 
 int parallel_analyze_static_multistep(int);
 int parallel_analyze_static_multistep(int numSteps)
- 
-    
+
+
 
 {
-   int result = 0;
-  cout<<"\nParallel Static Analysis!\n";
-  
-  if (theAnalysisModel == 0) 
-             theAnalysisModel = new AnalysisModel();
-  
-  theStaticAnalysis = new StaticAnalysis(theDomain,
-                                                *theHandler,
-                                                *theNumberer,
-                                                *theAnalysisModel,
-                                                *theAlgorithm,
-                                                *theSOE,
-                                                *theStaticIntegrator,
-                                                theConvergenceTest);
-  
-  
-  
-  
-  if (OPS_PARTITIONED == true && OPS_NUM_SUBDOMAINS > 1) 
-  {
-       DomainDecompositionAnalysis *theSubAnalysis;
-       SubdomainIter &theSubdomains = theDomain.getSubdomains();
-       Subdomain *theSub =0;
-       // create the appropriate domain decomposition analysis
-       while ((theSub = theSubdomains()) != 0) 
+#ifdef _PARALLEL_PROCESSING
+
+    int result = 0;
+    cout << "\nParallel Static Analysis!\n";
+
+    if (theAnalysisModel == 0)
     {
-          theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
-                                                                  *theHandler,
-                                                                  *theNumberer,
-                                                                  *theAnalysisModel,
-                                                                  *theAlgorithm,
-                                                                  *theSOE,
-                                                                  *theStaticIntegrator,
-                                                                  theConvergenceTest,
-                                                                  false);
-           
-         
-         
-         theSub->setDomainDecompAnalysis(*theSubAnalysis);
-         //      delete theSubAnalysis;
+        theAnalysisModel = new AnalysisModel();
     }
-  }
 
-   if (OPS_PARTITIONED == false && OPS_NUM_SUBDOMAINS > 1) 
-   {
-	  if (OPS_theChannels != 0)
-	  delete [] OPS_theChannels;
+    theStaticAnalysis = new StaticAnalysis(theDomain,
+                                           *theHandler,
+                                           *theNumberer,
+                                           *theAnalysisModel,
+                                           *theAlgorithm,
+                                           *theSOE,
+                                           *theStaticIntegrator,
+                                           theConvergenceTest);
 
-	  OPS_theChannels = new Channel *[OPS_NUM_SUBDOMAINS];
 
-	  // create some subdomains
-	  for (int i=1; i<=OPS_NUM_SUBDOMAINS; i++) 
-	  {
-	      ShadowSubdomain *theSubdomain = new ShadowSubdomain(i, *OPS_MACHINE, *OPS_OBJECT_BROKER);
-	      theDomain.addSubdomain(theSubdomain);
-	      OPS_theChannels[i-1] = theSubdomain->getChannelPtr();
-	  }
 
-	  // create a partitioner & partition the domain
-	  if (OPS_DOMAIN_PARTITIONER == 0) 
-	  {
-	      #ifdef _PDD //Guanzhou added
-		  OPS_GRAPH_PARTITIONER  = new ParMetis;
-	      #else
-		  OPS_GRAPH_PARTITIONER  = new Metis;
-	      #endif      
-	      OPS_DOMAIN_PARTITIONER = new DomainPartitioner(*OPS_GRAPH_PARTITIONER);
-	      theDomain.setPartitioner(OPS_DOMAIN_PARTITIONER);
-	  }
 
-	  # ifdef _TIMING
-	      double start_time = MPI_Wtime();
-	  # endif
-	      
-	  theDomain.partition(OPS_NUM_SUBDOMAINS);
+    if (OPS_PARTITIONED == true && OPS_NUM_SUBDOMAINS > 1)
+    {
+        DomainDecompositionAnalysis *theSubAnalysis;
+        SubdomainIter &theSubdomains = theDomain.getSubdomains();
+        Subdomain *theSub = 0;
+        // create the appropriate domain decomposition analysis
+        while ((theSub = theSubdomains()) != 0)
+        {
+            theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
+                    *theHandler,
+                    *theNumberer,
+                    *theAnalysisModel,
+                    *theAlgorithm,
+                    *theSOE,
+                    *theStaticIntegrator,
+                    theConvergenceTest,
+                    false);
 
-	  # ifdef _TIMING
-	      double end_time = MPI_Wtime();
-//	      timingfile << "Timing used by partitioning: " << end_time-start_time << endl;
-	  # endif 
-  
-	  OPS_PARTITIONED = true;
-  
-	} //Guanzhou separated here
-	
-	
-	for (int i=1; i<=numSteps; i++) 
-	{
 
-  
-	    if ( OPS_REDEFINE_ANALYSIS == true ) 
-	    {
-		DomainDecompositionAnalysis *theSubAnalysis;
-		SubdomainIter &theSubdomains = theDomain.getSubdomains();
-		Subdomain *theSub=0;
-    
-		while ((theSub = theSubdomains()) != 0) 
-		{
-      
-	      // create the appropriate domain decomposition analysis
-     
-		theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
-							       *theHandler,
-							       *theNumberer,
-							       *theAnalysisModel,
-							       *theAlgorithm,
-							       *theSOE,
-							       *theStaticIntegrator,
-							       theConvergenceTest,
-							       false);
 
-             
-		theSub->setDomainDecompAnalysis(*theSubAnalysis);
-		}
-		OPS_REDEFINE_ANALYSIS = false;
-	    }
-	    
-	    double start_time = MPI_Wtime();
-	    
-	    int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
-	    result = theStaticAnalysis->analyze(numIncr);
-	    double end_time = MPI_Wtime();
-	    cout<<"\nAnalysis step " <<i<<" finished!\n";
+            theSub->setDomainDecompAnalysis(*theSubAnalysis);
+            //      delete theSubAnalysis;
+        }
+    }
 
-	}
+    if (OPS_PARTITIONED == false && OPS_NUM_SUBDOMAINS > 1)
+    {
+        if (OPS_theChannels != 0)
+        {
+            delete [] OPS_theChannels;
+        }
 
-// 	if (theStaticAnalysis != 0) 
-// 	{
-// 	    theStaticAnalysis->clearAll();
-// 	    delete theStaticAnalysis;
-// 	}
+        OPS_theChannels = new Channel *[OPS_NUM_SUBDOMAINS];
 
-	 
-	 
+        // create some subdomains
+        for (int i = 1; i <= OPS_NUM_SUBDOMAINS; i++)
+        {
+            ShadowSubdomain *theSubdomain = new ShadowSubdomain(i, *OPS_MACHINE, *OPS_OBJECT_BROKER);
+            theDomain.addSubdomain(theSubdomain);
+            OPS_theChannels[i - 1] = theSubdomain->getChannelPtr();
+        }
+
+        // create a partitioner & partition the domain
+        if (OPS_DOMAIN_PARTITIONER == 0)
+        {
+#ifdef _PDD //Guanzhou added
+            OPS_GRAPH_PARTITIONER  = new ParMetis;
+#else
+            OPS_GRAPH_PARTITIONER  = new Metis;
+#endif
+            OPS_DOMAIN_PARTITIONER = new DomainPartitioner(*OPS_GRAPH_PARTITIONER);
+            theDomain.setPartitioner(OPS_DOMAIN_PARTITIONER);
+        }
+
+# ifdef _TIMING
+        double start_time = MPI_Wtime();
+# endif
+
+        theDomain.partition(OPS_NUM_SUBDOMAINS);
+
+# ifdef _TIMING
+        double end_time = MPI_Wtime();
+        //        timingfile << "Timing used by partitioning: " << end_time-start_time << endl;
+# endif
+
+        OPS_PARTITIONED = true;
+
+    } //Guanzhou separated here
+
+
+    for (int i = 1; i <= numSteps; i++)
+    {
+
+
+        if ( OPS_REDEFINE_ANALYSIS == true )
+        {
+            DomainDecompositionAnalysis *theSubAnalysis;
+            SubdomainIter &theSubdomains = theDomain.getSubdomains();
+            Subdomain *theSub = 0;
+
+            while ((theSub = theSubdomains()) != 0)
+            {
+
+                // create the appropriate domain decomposition analysis
+
+                theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
+                        *theHandler,
+                        *theNumberer,
+                        *theAnalysisModel,
+                        *theAlgorithm,
+                        *theSOE,
+                        *theStaticIntegrator,
+                        theConvergenceTest,
+                        false);
+
+
+                theSub->setDomainDecompAnalysis(*theSubAnalysis);
+            }
+            OPS_REDEFINE_ANALYSIS = false;
+        }
+
+        double start_time = MPI_Wtime();
+
+        int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
+        result = theStaticAnalysis->analyze(numIncr);
+        double end_time = MPI_Wtime();
+        cout << "\nAnalysis step " << i << " finished!\n";
+
+    }
+
+    //  if (theStaticAnalysis != 0)
+    //  {
+    //      theStaticAnalysis->clearAll();
+    //      delete theStaticAnalysis;
+    //  }
+#else
+    cerr << "parallel_analyze_static_multistep() : Error. Not available in sequential mode.\n\n";
+    abort();
+#endif
 
 }
 

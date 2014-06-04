@@ -1133,6 +1133,11 @@ void signalHandler(int signum)
 
 int main (int argc, char**argv)
 {
+
+    int debugWait = 1;
+    while(debugWait);
+
+
     signal(SIGINT, signalHandler);
     signal(SIGABRT, signalHandler);
     signal(SIGSEGV, signalHandler);

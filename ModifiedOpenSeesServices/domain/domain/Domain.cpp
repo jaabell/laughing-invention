@@ -2592,7 +2592,7 @@ Domain::commit( void )
     Element *elePtr;
     ElementIter &theElemIter = this->getElements();
 
-# ifndef _PARALLEL_PROCESSING
+#ifdef _PARALLEL_PROCESSING
     // NOTE: This is done in PartitionedDomain::partition in the case of parallel processing.
     //
     //This outputs the mesh information to the HDF5 writer. This is important because it builds the
