@@ -39,6 +39,9 @@
 // Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point
 #define ContactElement_Nonlinear_3DOF_3DOF_OUTPUT_SIZE 7
 
+
+#define ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP 0.1 / 1000
+
 #include <Element.h>
 #include <Matrix.h>
 #include <Vector.h>

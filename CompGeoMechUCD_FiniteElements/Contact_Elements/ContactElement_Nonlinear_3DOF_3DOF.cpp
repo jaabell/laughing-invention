@@ -499,9 +499,6 @@ int ContactElement_Nonlinear_3DOF_3DOF::nodes_are_in_contact(void)
 
     if (gap <= 0)
     {
-        // contact occur
-
-
         return 1;
     }
     else
@@ -971,29 +968,23 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
         {
             double lamda;
             double tol = 0;
-            double delta_u_np1;
-            double delta_u_n;
             double Kn_np1;
             double Kn_n;
 
             //Compute Kn at (n+1)/2
-            // delta_u_np1 = - total_normal_relative_displ_np1;// / Gap_max;
-            // delta_u_n = - total_normal_relative_displ_n;// / Gap_max;
-
-            // cout << "Kn = " << Kn;
             Kn_np1 = 2 * Kn_factor * total_normal_relative_displ_np1;;
             Kn_n   = 2 * Kn_factor  * total_normal_relative_displ_n;
             // Kn = 0.5 * (Kn_np1 + Kn_n);
             Kn = Kn_np1;
-            // Kn = Kn_n;
-            // cout << "Kn = " << Kn << "\n";
+
+            if (total_normal_relative_displ_n < ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP) // Are in contact but stiffness is too low
+            {
+                Kn = 2 * Kn_factor  * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;
+            }
 
 
             // Compute normal force
-            // normalforce_increment_np1 = Kn * incr_normal_relative_displ_np1;
-            // normalforce_np1           = normalforce_n + normalforce_increment_np1;
             normalforce_np1 = -Kn_factor * total_normal_relative_displ_np1 * total_normal_relative_displ_np1;
-            // cout << "normalforce_np1 = " << normalforce_np1 << "\n";
 
 
             // Compute trial shear force
