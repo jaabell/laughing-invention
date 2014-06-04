@@ -3743,9 +3743,8 @@ void TwentySevenNodeBrickElastic::setDomain (Domain *theDomain)
         }
 
         this->DomainComponent::setDomain(theDomain);
+        computeGaussPoint();
     }
-
-    computeGaussPoint();
 }
 
 //=============================================================================

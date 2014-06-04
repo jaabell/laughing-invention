@@ -232,7 +232,7 @@ void EightNodeBrick_u_p_U::setDomain (Domain *theDomain)
     }
 
     this->DomainComponent::setDomain(theDomain);
-
+    tensor gp = getGaussPts();
 }
 
 //======================================================================
@@ -258,41 +258,51 @@ int EightNodeBrick_u_p_U::commitState (void)
     straintensor strain;
     straintensor plstrain;
     int ii = 0;
-    for (int gp = 0; gp < 8; gp++)
+    int gp = 0;
+    for ( short GP_c_r = 1 ; GP_c_r <= Num_IntegrationPts ; GP_c_r++ )
     {
-        stress = theMaterial[gp]->getStressTensor();
-        strain = theMaterial[gp]->getStrainTensor();
-        plstrain = theMaterial[gp]->getPlasticStrainTensor();
+        for ( short GP_c_s = 1 ; GP_c_s <= Num_IntegrationPts ; GP_c_s++ )
+        {
+            for ( short GP_c_t = 1 ; GP_c_t <= Num_IntegrationPts ; GP_c_t++ )
+            {
+                // i = ((GP_c_r - 1) * Num_IntegrationPts + GP_c_s - 1) * Num_IntegrationPts + GP_c_t - 1;
 
-        //Write strain
-        outputVector(ii++) = strain.cval(1, 1);
-        outputVector(ii++) = strain.cval(2, 2);
-        outputVector(ii++) = strain.cval(3, 3);
-        outputVector(ii++) = strain.cval(1, 2);
-        outputVector(ii++) = strain.cval(1, 3);
-        outputVector(ii++) = strain.cval(2, 3);
+                stress = theMaterial[gp]->getStressTensor();
+                strain = theMaterial[gp]->getStrainTensor();
+                plstrain = theMaterial[gp]->getPlasticStrainTensor();
 
-        //Write strain
-        outputVector(ii++) = plstrain.cval(1, 1);
-        outputVector(ii++) = plstrain.cval(2, 2);
-        outputVector(ii++) = plstrain.cval(3, 3);
-        outputVector(ii++) = plstrain.cval(1, 2);
-        outputVector(ii++) = plstrain.cval(1, 3);
-        outputVector(ii++) = plstrain.cval(2, 3);
+                //Write strain
+                outputVector(ii++) = strain.cval(1, 1);
+                outputVector(ii++) = strain.cval(2, 2);
+                outputVector(ii++) = strain.cval(3, 3);
+                outputVector(ii++) = strain.cval(1, 2);
+                outputVector(ii++) = strain.cval(1, 3);
+                outputVector(ii++) = strain.cval(2, 3);
 
-        //Write stress
-        outputVector(ii++) = stress.cval(1, 1);
-        outputVector(ii++) = stress.cval(2, 2);
-        outputVector(ii++) = stress.cval(3, 3);
-        outputVector(ii++) = stress.cval(1, 2);
-        outputVector(ii++) = stress.cval(1, 3);
-        outputVector(ii++) = stress.cval(2, 3);
+                //Write strain
+                outputVector(ii++) = plstrain.cval(1, 1);
+                outputVector(ii++) = plstrain.cval(2, 2);
+                outputVector(ii++) = plstrain.cval(3, 3);
+                outputVector(ii++) = plstrain.cval(1, 2);
+                outputVector(ii++) = plstrain.cval(1, 3);
+                outputVector(ii++) = plstrain.cval(2, 3);
 
-        //Pore pressure at gauss points
-        double x1 = gauss_points(gp, 0);
-        double x2 = gauss_points(gp, 1);
-        double x3 = gauss_points(gp, 2);
-        outputVector(ii++) = getPorePressure(x1, x2, x3);
+                //Write stress
+                outputVector(ii++) = stress.cval(1, 1);
+                outputVector(ii++) = stress.cval(2, 2);
+                outputVector(ii++) = stress.cval(3, 3);
+                outputVector(ii++) = stress.cval(1, 2);
+                outputVector(ii++) = stress.cval(1, 3);
+                outputVector(ii++) = stress.cval(2, 3);
+
+                //Pore pressure at gauss points
+                double x1 = pts[GP_c_r];
+                double x2 = pts[GP_c_s];
+                double x3 = pts[GP_c_t];
+                outputVector(ii++) = getPorePressure(x1, x2, x3);
+                gp++;
+            }
+        }
     }
     return retVal;
 }
@@ -1431,12 +1441,12 @@ tensor EightNodeBrick_u_p_U::getNodesDisp(void)
 double EightNodeBrick_u_p_U::getPorePressure(double x1, double x2, double x3)
 {
     double pp = 0.0;
-    int i;
+    tensor h = shapeFunction(x1, x2, x3);
 
-    for (i = 0; i < Num_Nodes; i++)
+    for (int node = 0; node < Num_Nodes; node++)
     {
-        const Vector &T_disp = theNodes[i]->getTrialDisp();
-        pp += shapeFunction(x1, x2, x3).cval(i + 1) * T_disp(3);
+        const Vector &T_disp = theNodes[node]->getTrialDisp();
+        pp += h.cval(node + 1) * T_disp(3);
     }
 
     return pp;
