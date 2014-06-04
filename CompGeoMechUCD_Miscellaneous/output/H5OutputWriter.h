@@ -204,6 +204,8 @@ class H5OutputWriter: public OutputWriter
                                               hsize_t *block,
                                               int *data);
 
+        void writeMesh(void);
+
 
 
 
@@ -290,6 +292,26 @@ class H5OutputWriter: public OutputWriter
         int pos_elements_outputs;
         int pos_elements_gausscoords;
         int pos_elements_connectivity;
+
+        //Temporary mesh arrays
+
+        //For nodes
+        ID Number_of_DOFs;
+        Vector Coordinates;
+        ID Index_to_Coordinates;
+        ID Index_to_Generalized_Displacements;
+
+        //For Elements
+        ID Number_of_Nodes;
+        ID Connectivity;
+        ID Index_to_Connectivity;
+        ID Number_of_Output_Fields;
+        ID Index_to_Outputs;
+        ID Number_of_Gauss_Points;
+        Vector Gauss_Point_Coordinates;
+        ID Index_to_Gauss_Point_Coordinates;
+        std::vector<std::string> Element_types;
+        ID Material_tags;
 
 };
 
