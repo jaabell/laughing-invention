@@ -199,6 +199,10 @@ class ContactElement_Nonlinear_3DOF_3DOF: public Element
         static Matrix transformation;  // transformation matrix for orientation
         static const int  numberNodes  ;
 
+#ifdef _DEBUG_CONTACT
+        static bool printed_header;
+#endif
+
 };
 
 #endif

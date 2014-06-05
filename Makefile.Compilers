@@ -2,8 +2,8 @@ Compiler = GNU
 #Compiler = CLANG
 #Compiler = PARALLEL
 
-#DEBUG_MODE = DEBUG
-DEBUG_MODE = NO_DEBUG
+DEBUG_MODE = DEBUG
+#DEBUG_MODE = NO_DEBUG
 
 PROGRAMMING_MODE = SEQUENTIAL
 #PROGRAMMING_MODE = PARALLEL
@@ -116,6 +116,7 @@ else
 										-g \
 										-pg \
 										-D_G3DEBUG \
+										-D_DEBUG_CONTACT \
 										-D_LINUX \
 										-D_UNIX \
 										 $(PROGRAMMING_FLAG) \
