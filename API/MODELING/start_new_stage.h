@@ -146,11 +146,14 @@ int start_new_stage(string CurrentStageName)
     //                           ModelName,
     //                           StageName,
     //                           numSteps);
+
+#ifndef _PARALLEL_PROCESSING
     int numSteps = 1;
     theDomain.setOutputWriter(filename,
                               ModelName,
                               StageName,
                               numSteps);
+#endif
 
 
 

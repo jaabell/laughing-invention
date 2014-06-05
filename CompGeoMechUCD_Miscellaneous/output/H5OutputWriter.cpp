@@ -326,6 +326,18 @@ int H5OutputWriter::writeNumberOfElements(unsigned int numberOfElements_ )
 
 int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int ndofs )
 {
+    int ntags = Number_of_DOFs.Size();
+    int addzeros = tag - ntags;
+
+    //Extend arrays
+    for (int i = 0; i < addzeros; i++)
+    {
+        Number_of_DOFs[ntags + i] = -1;
+        Index_to_Generalized_Displacements[ntags + i] = -1;
+        Index_to_Coordinates[ntags + i] = -1;
+    }
+
+
     //Form Number_of_DOFs
     Number_of_DOFs[tag] = ndofs;
 
@@ -340,20 +352,7 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
     Index_to_Coordinates[tag] = ncoordinates;
 
     //Form Index_to_Generalized_Displacements
-    int ntags = Index_to_Generalized_Displacements.Size();
-    int addzeros = tag - ntags;
-    for (int i = 0; i < addzeros; i++)
-    {
-        Index_to_Generalized_Displacements[ntags + i] = -1;
-    }
-    if (ntags == 0)
-    {
-        Index_to_Generalized_Displacements[tag] = 0;
-    }
-    else
-    {
-        Index_to_Generalized_Displacements[tag] = Index_to_Generalized_Displacements(ntags - 1) + ndofs;
-    }
+    Index_to_Generalized_Displacements[tag] = Index_to_Generalized_Displacements(ntags - 1) + ndofs;
 
     return 0;
 }
@@ -471,8 +470,8 @@ void H5OutputWriter::writeMesh()
     {
         Coordinates.resize(count);
     }
-    int_buffer = Coordinates.data;
-    MPI_Bcast(int_buffer, count, MPI_DOUBLE,   root, MPI_COMM_WORLD);
+    double_buffer = Coordinates.theData;
+    MPI_Bcast(double_buffer, count, MPI_DOUBLE,   root, MPI_COMM_WORLD);
 
 
     //ID Index_to_Coordinates;
@@ -571,8 +570,8 @@ void H5OutputWriter::writeMesh()
     {
         Gauss_Point_Coordinates.resize(count);
     }
-    int_buffer = Gauss_Point_Coordinates.data;
-    MPI_Bcast(int_buffer, count, MPI_DOUBLE,   root, MPI_COMM_WORLD);
+    double_buffer = Gauss_Point_Coordinates.theData;
+    MPI_Bcast(double_buffer, count, MPI_DOUBLE,   root, MPI_COMM_WORLD);
 
 
     //ID Index_to_Gauss_Point_Coordinates;
@@ -587,14 +586,14 @@ void H5OutputWriter::writeMesh()
 
 
     //std::vector<std::string> Element_types;
-    count = Index_to_Generalized_Displacements.Size();
-    MPI_Bcast(&count, 1, MPI_INT,   root, MPI_COMM_WORLD);
-    if (processID != 0)
-    {
-        Index_to_Generalized_Displacements.resize(count);
-    }
-    int_buffer = Index_to_Generalized_Displacements.data;
-    MPI_Bcast(int_buffer, count, MPI_INT,   root, MPI_COMM_WORLD);
+    // count = Index_to_Generalized_Displacements.Size();
+    // MPI_Bcast(&count, 1, MPI_INT,   root, MPI_COMM_WORLD);
+    // if (processID != 0)
+    // {
+    //     Index_to_Generalized_Displacements.resize(count);
+    // }
+    // int_buffer = Index_to_Generalized_Displacements.data;
+    // MPI_Bcast(int_buffer, count, MPI_INT,   root, MPI_COMM_WORLD);
 
 
     //ID Material_tags;
@@ -606,6 +605,58 @@ void H5OutputWriter::writeMesh()
     }
     int_buffer = Material_tags.data;
     MPI_Bcast(int_buffer, count, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+
+
+
+    // =============================================================================================
+    // Send the filenames and model names to initialize H5OutputWriter on other processes
+    // =============================================================================================
+    char *char_buffer;
+    int nsteps_tmp;
+    string file_name_tmp, model_name_tmp, model_name_tmp;
+
+    // model_name
+    strcpy(char_buffer, model_name.c_str());
+    count = model_name.size();
+    MPI_Bcast(char_buffer, count, MPI_CHAR,   root, MPI_COMM_WORLD);
+    model_name = model_name_tmp;
+
+    // file_name
+    strcpy(char_buffer, file_name.c_str());//char_buffer = file_name.c_str();
+    count = file_name.size();
+    MPI_Bcast(char_buffer, count, MPI_CHAR,   root, MPI_COMM_WORLD);
+    file_name = file_name_tmp;
+
+
+    // stage_name;
+    strcpy(char_buffer, stage_name.c_str());//char_buffer = stage_name.c_str();
+    count = stage_name.size();
+    MPI_Bcast(char_buffer, count, MPI_CHAR,   root, MPI_COMM_WORLD);
+    stage_name = stage_name_tmp;
+
+    // previous_stage_name;
+    char_buffer = previous_stage_name.c_str();
+    count = previous_stage_name.size();
+    MPI_Bcast(char_buffer, count, MPI_CHAR,   root, MPI_COMM_WORLD);
+    previous_stage_name = previous_stage_name_tmp;
+
+
+    // nsteps;
+    //char_buffer = previous_stage_name.c_str();
+    //count = previous_stage_name.size();
+    MPI_Bcast(&nsteps, 1, MPI_CHAR,   root, MPI_COMM_WORLD);
+    // previous_stage_name = previous_stage_name_tmp;
+
+
+    //Initialize the process
+    if (processID != 0)
+    {
+        this->initialize(file_name, model_name, stage_name, nsteps);
+    }
+
+
 
 
 #endif
@@ -629,7 +680,7 @@ void H5OutputWriter::writeMesh()
         coords[0] = Coordinates(pos_coords);
         coords[1] = Coordinates(pos_coords + 1);
         coords[2] = Coordinates(pos_coords + 2);
-        if (true)//create_nodeMeshData_arrays)
+        if (create_nodeMeshData_arrays)//create_nodeMeshData_arrays)
         {
 
             int rank = 1;
@@ -745,7 +796,7 @@ void H5OutputWriter::writeMesh()
 
     for (int tag = 0; tag < Number_of_Nodes.Size(); tag++)
     {
-        if (true)//create_elementMeshData_arrays)
+        if (create_elementMeshData_arrays)//create_elementMeshData_arrays)
         {
             int rank = 1;
             hsize_t dims[2];
@@ -766,6 +817,7 @@ void H5OutputWriter::writeMesh()
 
             create_elementMeshData_arrays = false;
         }
+
 
         //Update tag
         if (tag > max_element_tag - 1)
@@ -897,12 +949,22 @@ void H5OutputWriter::writeMesh()
         //Write material tags
         // dims[0]      = max_element_tag;
         // offset[0]    = tag ;
+#ifdef _PARALLEL_PROCESSING
+        if (processID == 0)
+        {
+            std::string type = Element_types[tag];
+            writeVariableLengthStringArray(id_elements_type,
+                                           tag,
+                                           type.size(),
+                                           type);
+        }
+#else
         std::string type = Element_types[tag];
         writeVariableLengthStringArray(id_elements_type,
                                        tag,
                                        type.size(),
                                        type);
-
+#endif
 
 
         //Write index to gauss coordinates (if any)
