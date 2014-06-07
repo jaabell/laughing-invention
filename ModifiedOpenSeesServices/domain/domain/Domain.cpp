@@ -132,7 +132,7 @@ Domain::Domain()
     commitTag( 0 ),
     theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
     number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-    output_is_enabled(true)
+    output_is_enabled(true), have_written_static_mesh_data(false)
 {
 
     // init the arrays for storing the domain components
@@ -220,7 +220,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
       number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true)
+      output_is_enabled(true), have_written_static_mesh_data(false)
 {
     // init the arrays for storing the domain components
     theElements = new ArrayOfTaggedObjects( numElements );
@@ -325,7 +325,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
       number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true)
+      output_is_enabled(true), have_written_static_mesh_data(false)
 {
     // init the iters
     theEleIter = new SingleDomEleIter( theElements );
@@ -386,7 +386,7 @@ Domain::Domain( TaggedObjectStorage &theStorage )
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
       number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true)
+      output_is_enabled(true), have_written_static_mesh_data(false)
 {
     // init the arrays for storing the domain components
     theStorage.clearAll(); // clear the storage just in case populated
@@ -2592,7 +2592,21 @@ Domain::commit( void )
     Element *elePtr;
     ElementIter &theElemIter = this->getElements();
 
-#ifndef _PARALLEL_PROCESSING
+#ifdef _PARALLEL_PROCESSING
+    if (output_is_enabled)
+    {
+        // theHDF5_Channel.setTime(currentTime);/
+        theOutputWriter.syncWriters();
+        theOutputWriter.setTime(currentTime);
+
+        //Write out static mesh data once!
+        if (!have_written_static_mesh_data)
+        {
+            theOutputWriter.writeMesh();
+            have_written_static_mesh_data = true;
+        }
+    }
+#else
     // NOTE: This is done in PartitionedDomain::partition in the case of parallel processing.
     //
     //This outputs the mesh information to the HDF5 writer. This is important because it builds the
@@ -2624,15 +2638,14 @@ Domain::commit( void )
                                                      elePtr->getGaussCoordinates(),
                                                      elePtr->getOutputSize());
             }
+            theOutputWriter.writeMesh();
+            have_written_static_mesh_data = true;
         }
-        have_written_static_mesh_data = true;
     }
-
 #endif
 
-    theOutputWriter.writeMesh();
 
-    this->calculateNodalReactions(0);
+    // this->calculateNodalReactions(0);
     theNodIter->reset();
 
     theNodeIter = this->getNodes();

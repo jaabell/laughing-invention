@@ -44,6 +44,7 @@
         std::cerr << "H5OutputWriter::send##() -> still in definition mode. Element or node must end definition mode by calling endElementDescription() or endNodeDescription() before exiting! " << endl;  \
         return -1; \
     }
+#define H5OUTPUTWRITER_MAX_STRING_SIZE 1024
 
 //Comment to untoggle
 // #define _DEBUG_H5OUTPUTWRITER 1
@@ -205,7 +206,7 @@ class H5OutputWriter: public OutputWriter
                                               int *data);
 
         void writeMesh(void);
-
+        void syncWriters(); //Used in parallel
 
 
 

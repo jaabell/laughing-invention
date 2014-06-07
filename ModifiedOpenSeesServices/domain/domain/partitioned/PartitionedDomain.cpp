@@ -71,7 +71,7 @@ using namespace std;
 PartitionedDomain::PartitionedDomain()
     : Domain(),
       theSubdomains(0), theDomainPartitioner(0),
-      theSubdomainIter(0), mySubdomainGraph(0)
+      theSubdomainIter(0), mySubdomainGraph(0), have_populated_static_mesh_data(false)
 {
     elements = new ArrayOfTaggedObjects(1024);
     theSubdomains = new ArrayOfTaggedObjects(32);
@@ -98,7 +98,7 @@ PartitionedDomain::PartitionedDomain()
 PartitionedDomain::PartitionedDomain(DomainPartitioner &thePartitioner)
     : Domain(),
       theSubdomains(0), theDomainPartitioner(&thePartitioner),
-      theSubdomainIter(0), mySubdomainGraph(0)
+      theSubdomainIter(0), mySubdomainGraph(0), have_populated_static_mesh_data(false)
 {
     elements = new ArrayOfTaggedObjects(1024);
     theSubdomains = new ArrayOfTaggedObjects(32);
@@ -135,7 +135,7 @@ PartitionedDomain::PartitionedDomain(int numNodes, int numElements,
              numofSectionRepresents,
              nummultipleexcitation, numBodyForces, numDamping),
     theSubdomains(0), theDomainPartitioner(&thePartitioner),
-    theSubdomainIter(0), mySubdomainGraph(0)
+    theSubdomainIter(0), mySubdomainGraph(0), have_populated_static_mesh_data(false)
 {
     elements = new ArrayOfTaggedObjects(numElements);
     theSubdomains = new ArrayOfTaggedObjects(numSubdomains);
@@ -1304,10 +1304,10 @@ PartitionedDomain::partition(int numPartitions)
     if (output_is_enabled)
     {
         // theHDF5_Channel.setTime(currentTime);/
-        theOutputWriter.setTime(currentTime);
+        // theOutputWriter.setTime(currentTime);
 
         //Write out static mesh data once!
-        if (!have_written_static_mesh_data)
+        if (!have_populated_static_mesh_data)
         {
             //Write Node Mesh data!
             theOutputWriter.writeNumberOfNodes(this->getNumNodes());
@@ -1329,7 +1329,7 @@ PartitionedDomain::partition(int numPartitions)
                                                      elePtr->getOutputSize());
             }
         }
-        have_written_static_mesh_data = true;
+        have_populated_static_mesh_data = true;
     }
 
 

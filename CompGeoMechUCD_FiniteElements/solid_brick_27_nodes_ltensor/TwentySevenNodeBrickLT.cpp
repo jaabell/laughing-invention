@@ -681,7 +681,7 @@ const DTensor4 &TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
     double det_of_Jacobian = 0.0;
     double weight = 0.0;
 
-    static DTensor2 incremental_strain(3, 3, 0.0);
+    // static DTensor2 incremental_strain(3, 3, 0.0);
     static DTensor2 dh_drst( 27, 3, 0.0 );
     static DTensor2 dhGlobal( 27, 3, 0.0 );
     static DTensor2 Jacobian(3, 3, 0.0);

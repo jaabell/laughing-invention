@@ -157,6 +157,8 @@ class PartitionedDomain: public Domain
         int *Element_Node_Number_List; // store the number of each element's node added by babak at 2/25/13 Element_Node_Number_List(eleTag) = Number of nodes for the element  # EleTag-1
         int numberofDomainElements;   // store the number elements added by babak at 2/25/13
 
+        bool have_populated_static_mesh_data;
+
 };
 
 #endif
