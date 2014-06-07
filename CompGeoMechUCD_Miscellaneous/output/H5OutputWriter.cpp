@@ -33,8 +33,6 @@
 #include <H5OutputWriter.h>
 #include <hdf5.h>
 #include <time.h>
-#include <boost/mpi.hpp>
-#include <boost/serialization/string.hpp>
 
 //Added By Babak 5/31/14
 //------------------------
@@ -115,19 +113,6 @@ void H5OutputWriter::initialize(std::string filename_in,
                                 int nsteps)
 {
 
-    //Check if this is a new file!
-    if (file_is_open)
-    {
-        finalize();
-        previous_stage_name  = stage_name;
-    }
-    else
-    {
-        previous_stage_name = "none";
-    }
-
-    //Initialize datamembers
-    file_is_open = false;
 
     file_name = "";
     model_name = "";
@@ -168,110 +153,6 @@ void H5OutputWriter::initialize(std::string filename_in,
 
 
 
-
-
-
-    //Added By Babak 5/31/14
-    //------------------------
-#ifdef _PARALLEL_PROCESSING
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-
-    hid_t file_access_plist   = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpio(file_access_plist, MPI_COMM_WORLD, MPI_INFO_NULL);
-
-    id_file = H5Fcreate(file_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, file_access_plist);
-    H5Pclose(file_access_plist);
-    //------------------------
-#else
-
-    //================================================================================
-    //Create the file, overwriting it if it exists
-    //================================================================================
-    unsigned flags = H5F_ACC_TRUNC;  // Truncate file (ie. if file exists overwrite it)
-    hid_t file_creation_plist = H5Pcreate(H5P_FILE_CREATE);
-    hid_t file_access_plist = H5Pcreate(H5P_FILE_ACCESS);
-    // status = H5Pset_meta_block_size(file_access_plist, H5OUTPUTWRITER_META_BLOCK_SIZE);
-    // HDF5_CHECK_ERROR;
-    // status =  H5Pset_cache(file_access_plist, 0, H5OUTPUTWRITER_CHUNK_NSLOTS, H5OUTPUTWRITER_CHUNK_NBYTES, 0 );
-    // HDF5_CHECK_ERROR;
-    // status = H5Pset_sieve_buf_size( file_access_plist, H5OUTPUTWRITER_SIEVE_BUFFER_SIZE );
-    // HDF5_CHECK_ERROR;
-    id_file = H5Fcreate(file_name.c_str(), flags , file_creation_plist, file_access_plist);
-#endif
-    if (id_file > 0)
-    {
-        file_is_open = true;
-
-
-        //================================================================================
-        //Setup the global property lists
-        //================================================================================
-        // group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);
-        // status = H5Pset_link_creation_order(group_creation_plist, H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED);
-        // HDF5_CHECK_ERROR;
-
-
-
-        //================================================================================
-        // Create basic structure of the file
-        //================================================================================
-        //Create the model name, stage name and previous stage fields
-        write_string(id_file, "Model_Name", model_name);
-        write_string(id_file, "Stage_Name", stage_name);
-        write_string(id_file, "Previous_Stage", previous_stage_name);
-
-
-        //Create the group to store the model
-        id_model_group = create_group(id_file, "Model");
-
-
-        //Create elements and nodes groups
-        id_elements_group = create_group(id_model_group, "Elements");
-        id_nodes_group    = create_group(id_model_group, "Nodes");
-
-        //================================================================================
-        // Create time array
-        //================================================================================
-
-        hsize_t dims[1], maxdims[1];
-        int rank = 1;
-        dims[0] = number_of_time_steps;
-        maxdims[0] = H5S_UNLIMITED;
-        id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
-
-
-        //================================================================================
-        // Domain metadata
-        //================================================================================
-        rank = 1;
-        dims[0] = 1;
-        maxdims[0] = 1;
-        id_number_of_elements   = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Elements", " ");
-        id_number_of_nodes      = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Nodes", " ");
-        id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
-
-        //Write time of creation
-        time_t current;
-        time(&current);
-        char *timestring;
-        timestring = ctime(&current);
-        timestring[strlen(timestring) - 1] = '\0';
-        write_string(id_file, "Date_and_Time_Start", timestring);
-
-
-        createVariableLengthStringArray(id_file, "Analysis_Options", " ")
-
-
-        H5OUTPUTWRITER_COUNT_OBJS;
-        // cout << "subgroupname" << subgroupname << endl;
-    }
-    else  //Could not open file
-    {
-        cerr << "H5OutputWriter::initialize() -> could not open file: " << file_name << "!\n\n";
-    }
 }
 
 
@@ -694,6 +575,129 @@ void H5OutputWriter::syncWriters()
 
 void H5OutputWriter::writeMesh()
 {
+    // =============================================================================================
+    //   Open HDF5 file for writing and create basic structure
+    // =============================================================================================
+
+
+
+
+    //Check if this is a new file!
+    if (file_is_open)
+    {
+        finalize();
+        previous_stage_name  = stage_name;
+    }
+    else
+    {
+        previous_stage_name = "none";
+    }
+
+    //Initialize datamembers
+    file_is_open = false;
+
+
+    //Added By Babak 5/31/14
+    //------------------------
+#ifdef _PARALLEL_PROCESSING
+    int numProcesses, processID;
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
+
+    hid_t file_access_plist   = H5Pcreate(H5P_FILE_ACCESS);
+    H5Pset_fapl_mpio(file_access_plist, MPI_COMM_WORLD, MPI_INFO_NULL);
+
+    id_file = H5Fcreate(file_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, file_access_plist);
+    H5Pclose(file_access_plist);
+    //------------------------
+#else
+
+    //================================================================================
+    //Create the file, overwriting it if it exists
+    //================================================================================
+    unsigned flags = H5F_ACC_TRUNC;  // Truncate file (ie. if file exists overwrite it)
+    hid_t file_creation_plist = H5Pcreate(H5P_FILE_CREATE);
+    hid_t file_access_plist = H5Pcreate(H5P_FILE_ACCESS);
+    // status = H5Pset_meta_block_size(file_access_plist, H5OUTPUTWRITER_META_BLOCK_SIZE);
+    // HDF5_CHECK_ERROR;
+    // status =  H5Pset_cache(file_access_plist, 0, H5OUTPUTWRITER_CHUNK_NSLOTS, H5OUTPUTWRITER_CHUNK_NBYTES, 0 );
+    // HDF5_CHECK_ERROR;
+    // status = H5Pset_sieve_buf_size( file_access_plist, H5OUTPUTWRITER_SIEVE_BUFFER_SIZE );
+    // HDF5_CHECK_ERROR;
+    id_file = H5Fcreate(file_name.c_str(), flags , file_creation_plist, file_access_plist);
+#endif
+    if (id_file > 0)
+    {
+        file_is_open = true;
+
+
+        //================================================================================
+        //Setup the global property lists
+        //================================================================================
+        // group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);
+        // status = H5Pset_link_creation_order(group_creation_plist, H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED);
+        // HDF5_CHECK_ERROR;
+
+
+
+        //================================================================================
+        // Create basic structure of the file
+        //================================================================================
+        //Create the model name, stage name and previous stage fields
+        write_string(id_file, "Model_Name", model_name);
+        write_string(id_file, "Stage_Name", stage_name);
+        write_string(id_file, "Previous_Stage", previous_stage_name);
+
+
+        //Create the group to store the model
+        id_model_group = create_group(id_file, "Model");
+
+
+        //Create elements and nodes groups
+        id_elements_group = create_group(id_model_group, "Elements");
+        id_nodes_group    = create_group(id_model_group, "Nodes");
+
+        //================================================================================
+        // Create time array
+        //================================================================================
+
+        hsize_t dims[1], maxdims[1];
+        int rank = 1;
+        dims[0] = number_of_time_steps;
+        maxdims[0] = H5S_UNLIMITED;
+        id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
+
+
+        //================================================================================
+        // Domain metadata
+        //================================================================================
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = 1;
+        id_number_of_elements   = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Elements", " ");
+        id_number_of_nodes      = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Nodes", " ");
+        id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
+
+        //Write time of creation
+        time_t current;
+        time(&current);
+        char *timestring;
+        timestring = ctime(&current);
+        timestring[strlen(timestring) - 1] = '\0';
+        write_string(id_file, "Date_and_Time_Start", timestring);
+
+
+        createVariableLengthStringArray(id_file, "Analysis_Options", " ")
+
+
+        H5OUTPUTWRITER_COUNT_OBJS;
+        // cout << "subgroupname" << subgroupname << endl;
+    }
+    else  //Could not open file
+    {
+        cerr << "H5OutputWriter::writeMesh() -> could not open file: " << file_name << "!\n\n";
+    }
 
 
     // =============================================================================================
@@ -722,8 +726,8 @@ void H5OutputWriter::writeMesh()
     id_index_to_nodes_outputs     = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
 
 #ifdef _PARALLEL_PROCESSING
-    int processID;
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+    // int processID;
+    // MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
     if (processID == 0)
     {
