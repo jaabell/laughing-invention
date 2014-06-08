@@ -232,11 +232,11 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
     Number_of_DOFs[tag] = ndofs;
 
     //Form Coordinates
-    int ncoordinates = Coordinates.Size();
-    Coordinates.resize(ncoordinates + 3);
-    Coordinates[ncoordinates] = coords(0);
-    Coordinates[ncoordinates + 1] = coords(1);
-    Coordinates[ncoordinates + 2] = coords(2);
+    // int ncoordinates = Coordinates.Size();
+    Coordinates.resize(pos_nodes_coordinates + 3);
+    Coordinates[pos_nodes_coordinates] = coords(0);
+    Coordinates[pos_nodes_coordinates + 1] = coords(1);
+    Coordinates[pos_nodes_coordinates + 2] = coords(2);
 
     //For Index_to_Coordinates
     Index_to_Coordinates[tag] = pos_nodes_coordinates;
@@ -264,12 +264,14 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     //Extend arrays
     for (int i = 0; i < addzeros; i++)
     {
-        Number_of_Nodes[ntags + i] = -1;
-        Index_to_Connectivity[ntags + i] = -1;
-        Index_to_Outputs[ntags + i] = -1;
-        Number_of_Gauss_Points[ntags + i] = -1;
-        Material_tags[ntags + i] = -1;
+        Number_of_Nodes[ntags + i]                  = -1;
+        Index_to_Connectivity[ntags + i]            = -1;
+        Index_to_Outputs[ntags + i]                 = -1;
+        Number_of_Gauss_Points[ntags + i]           = -1;
+        Index_to_Gauss_Point_Coordinates[ntags + i] = -1;
+        Material_tags[ntags + i]                    = -1;
         Element_types.push_back(" not defined ");
+        Number_of_Output_Fields[ntags + i]          = -1;
     }
 
     // Writing Number_of_Nodes;

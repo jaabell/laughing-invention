@@ -189,6 +189,29 @@ Vector::resize(int newSize)
     // otherwise if newSize is gretaer than oldSize free old space and get new space
     else if (newSize > sz)
     {
+        // create new memory
+        double *newData = new double[newSize];
+
+        if (newData == 0)
+        {
+            sz = 0;
+            fromFree = 0;
+            std::cerr << "Vector::resize() - out of memory for size " << newSize << endln;
+            sz = 0;
+            return -2;
+        }
+
+        // copy the old
+        for (int i = 0; i < sz; i++)
+        {
+            newData[i] = theData[i];
+        }
+
+        // zero the new
+        for (int j = sz; j < newSize; j++)
+        {
+            newData[j] = 0;
+        }
 
         // delete the old array
         if (sz != 0 && fromFree == 0)
@@ -196,20 +219,7 @@ Vector::resize(int newSize)
             delete [] theData;
         }
 
-        sz = 0;
-        fromFree = 0;
-
-        // create new memory
-        // theData = (double *)malloc(newSize*sizeof(double));
-        theData = new double[newSize];
-
-        if (theData == 0)
-        {
-            std::cerr << "Vector::resize() - out of memory for size " << newSize << endln;
-            sz = 0;
-            return -2;
-        }
-
+        theData = newData;
         sz = newSize;
     }
 
