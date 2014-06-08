@@ -54,7 +54,33 @@ H5OutputWriter::H5OutputWriter():
     model_name(""),
     stage_name("")
 {
+    current_time                         = 0.0;
+    current_time_step                    = 0;
+    number_of_nodes                      = 0;
+    number_of_elements                   = 0;
+    max_node_tag                         = 0;
+    max_element_tag                      = 0;
 
+    length_nodes_displacements_output    = 0;
+    length_nodes_velocities_output       = 0;
+    length_nodes_accelerations_output    = 0;
+    length_nodes_reaction_forcess_output = 0;
+    length_element_output                = 0;
+    pos_nodes_outputs                    = 0;
+    pos_nodes_coordinates                = 0;
+    pos_elements_outputs                 = 0;
+    pos_elements_gausscoords             = 0;
+    pos_elements_connectivity            = 0;
+
+    current_time = 0.0;
+
+    create_nodeMeshData_arrays           = true;
+    create_nodeDisplacements_arrays      = true;
+    create_nodeVelocities_arrays         = true;
+    create_nodeAccelerations_arrays      = true;
+    create_nodeReactionForces_arrays     = true;
+    create_elementMeshData_arrays        = true;
+    create_elementOutput_arrays          = true;
 }
 
 
@@ -73,6 +99,33 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
     model_name(""),
     stage_name("")
 {
+    current_time                         = 0.0;
+    current_time_step                    = 0;
+    number_of_nodes                      = 0;
+    number_of_elements                   = 0;
+    max_node_tag                         = 0;
+    max_element_tag                      = 0;
+
+    length_nodes_displacements_output    = 0;
+    length_nodes_velocities_output       = 0;
+    length_nodes_accelerations_output    = 0;
+    length_nodes_reaction_forcess_output = 0;
+    length_element_output                = 0;
+    pos_nodes_outputs                    = 0;
+    pos_nodes_coordinates                = 0;
+    pos_elements_outputs                 = 0;
+    pos_elements_gausscoords             = 0;
+    pos_elements_connectivity            = 0;
+
+    current_time = 0.0;
+
+    create_nodeMeshData_arrays           = true;
+    create_nodeDisplacements_arrays      = true;
+    create_nodeVelocities_arrays         = true;
+    create_nodeAccelerations_arrays      = true;
+    create_nodeReactionForces_arrays     = true;
+    create_elementMeshData_arrays        = true;
+    create_elementOutput_arrays          = true;
     initialize(filename_in,
                model_name_in,
                stage_name_in,
@@ -122,35 +175,7 @@ void H5OutputWriter::initialize(std::string filename_in,
     stage_name += stage_name_in;
 
 
-    current_time                         = 0.0;
-    current_time_step                    = 0;
-    number_of_nodes                      = 0;
-    number_of_elements                   = 0;
     number_of_time_steps                 = nsteps;
-    max_node_tag                         = 0;
-    max_element_tag                      = 0;
-
-    length_nodes_displacements_output    = 0;
-    length_nodes_velocities_output       = 0;
-    length_nodes_accelerations_output    = 0;
-    length_nodes_reaction_forcess_output = 0;
-    length_element_output                = 0;
-    pos_nodes_outputs                    = 0;
-    pos_nodes_coordinates                = 0;
-    pos_elements_outputs                 = 0;
-    pos_elements_gausscoords             = 0;
-    pos_elements_connectivity            = 0;
-
-    current_time = 0.0;
-
-    create_nodeMeshData_arrays           = true;
-    create_nodeDisplacements_arrays      = true;
-    create_nodeVelocities_arrays         = true;
-    create_nodeAccelerations_arrays      = true;
-    create_nodeReactionForces_arrays     = true;
-    create_elementMeshData_arrays        = true;
-    create_elementOutput_arrays          = true;
-
 
 
 }
@@ -174,16 +199,7 @@ void H5OutputWriter::initialize(std::string filename_in,
 int H5OutputWriter::writeNumberOfNodes(unsigned int number_of_nodes_in )
 {
     number_of_nodes = number_of_nodes_in;
-    hsize_t rank        = 1;
-    hsize_t dims[1]     = {1};
-    hsize_t datadims[1] = {1};
-    hsize_t offset[1]   = {0};
-    hsize_t stride[1]   = {1};
-    hsize_t count[1]    = {1};
-    hsize_t block[1]    = {1};
 
-    writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, datadims, offset, stride, count, block,
-                                    &number_of_nodes);
 
     return 0;
 }
@@ -191,16 +207,8 @@ int H5OutputWriter::writeNumberOfNodes(unsigned int number_of_nodes_in )
 int H5OutputWriter::writeNumberOfElements(unsigned int numberOfElements_ )
 {
     number_of_elements = numberOfElements_;
-    hsize_t rank        = 1;
-    hsize_t dims[1]     = {1};
-    hsize_t datadims[1] = {1};
-    hsize_t offset[1]   = {0};
-    hsize_t stride[1]   = {1};
-    hsize_t count[1]    = {1};
-    hsize_t block[1]    = {1};
 
-    writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, datadims, offset, stride, count, block,
-                                    &number_of_elements);
+
 
     return 0;
 }
@@ -517,36 +525,44 @@ void H5OutputWriter::syncWriters()
 
     // model_name
     length_send  = model_name.size() + 1;
+    MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     if (processID == 0)
     {
         strcpy(char_buffer, model_name.c_str());
+        char_buffer[length_send - 1] = '\0';
     }
     MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
     model_name = std::string(char_buffer);
 
     // file_name
     length_send  = file_name.size() + 1;
+    MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     if (processID == 0)
     {
         strcpy(char_buffer, file_name.c_str());
+        char_buffer[length_send - 1] = '\0';
     }
     MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
     file_name = std::string(char_buffer);
 
     // stage_name;
     length_send  = stage_name.size() + 1;
+    MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     if (processID == 0)
     {
         strcpy(char_buffer, stage_name.c_str());
+        char_buffer[length_send - 1] = '\0';
     }
     MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
     stage_name = std::string(char_buffer);
 
     // previous_stage_name;
     length_send  = previous_stage_name.size() + 1;
+    MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     if (processID == 0)
     {
         strcpy(char_buffer, previous_stage_name.c_str());
+        char_buffer[length_send - 1] = '\0';
     }
     MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
     previous_stage_name = std::string(char_buffer);
@@ -563,6 +579,10 @@ void H5OutputWriter::syncWriters()
     MPI_Bcast(&length_nodes_accelerations_output    , 1 , MPI_INT , root , MPI_COMM_WORLD);
     MPI_Bcast(&length_nodes_reaction_forcess_output , 1 , MPI_INT , root , MPI_COMM_WORLD);
     MPI_Bcast(&length_element_output                , 1 , MPI_INT , root , MPI_COMM_WORLD);
+    MPI_Bcast(&number_of_nodes                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
+    MPI_Bcast(&number_of_elements                   , 1 , MPI_INT , root , MPI_COMM_WORLD);
+
+
 
 
 
@@ -669,6 +689,8 @@ void H5OutputWriter::writeMesh()
         id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
 
 
+
+
         //================================================================================
         // Domain metadata
         //================================================================================
@@ -725,76 +747,100 @@ void H5OutputWriter::writeMesh()
     id_index_to_nodes_coordinates = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
     id_index_to_nodes_outputs     = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
 
-#ifdef _PARALLEL_PROCESSING
-    // int processID;
-    // MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+    // #ifdef _PARALLEL_PROCESSING
+    //     // int processID;
+    //     // MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
-    if (processID == 0)
-    {
-        //
-#endif
-        // Write a vector with the number of DOFS for node at a given tag
-        dims[0]      = (hsize_t) Number_of_DOFs.Size();
-        data_dims[0] = (hsize_t) Number_of_DOFs.Size();
-        offset[0]    = 0;
-        stride[0]    = 1;
-        count[0]     = dims[0];
-        block[0]     = 1;
-        int_data_buffer = Number_of_DOFs.data;
-        writeVariableLengthIntegerArray(id_nodes_ndofs,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
+    //     if (processID == 0)
+    //     {
+    //         //
+    // #endif
+    // Write a vector with the number of DOFS for node at a given tag
+    dims[0]      = (hsize_t) Number_of_DOFs.Size();
+    data_dims[0] = (hsize_t) Number_of_DOFs.Size();
+    offset[0]    = 0;
+    stride[0]    = 1;
+    count[0]     = dims[0];
+    block[0]     = 1;
+    int_data_buffer = Number_of_DOFs.data;
+    writeVariableLengthIntegerArray(id_nodes_ndofs,
+                                    datarank,
+                                    dims,
+                                    data_dims,
+                                    offset,
+                                    stride,
+                                    count,
+                                    block,
+                                    int_data_buffer);
 
-        dims[0]      = (hsize_t) Coordinates.Size();
-        data_dims[0] = (hsize_t) Coordinates.Size();
-        count[0]     = dims[0];
-        double_data_buffer = Coordinates.theData;
-        writeVariableLengthDoubleArray(id_nodes_coordinates,
-                                       datarank,
-                                       dims,
-                                       data_dims,
-                                       offset,
-                                       stride,
-                                       count,
-                                       block,
-                                       double_data_buffer);
+    dims[0]      = (hsize_t) Coordinates.Size();
+    data_dims[0] = (hsize_t) Coordinates.Size();
+    count[0]     = dims[0];
+    double_data_buffer = Coordinates.theData;
+    writeVariableLengthDoubleArray(id_nodes_coordinates,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   double_data_buffer);
 
-        dims[0]      = (hsize_t) Index_to_Coordinates.Size();
-        data_dims[0] = (hsize_t) Index_to_Coordinates.Size();
-        count[0]     = dims[0];
-        int_data_buffer = Index_to_Coordinates.data;
-        writeVariableLengthIntegerArray(id_index_to_nodes_coordinates,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
+    dims[0]      = (hsize_t) Index_to_Coordinates.Size();
+    data_dims[0] = (hsize_t) Index_to_Coordinates.Size();
+    count[0]     = dims[0];
+    int_data_buffer = Index_to_Coordinates.data;
+    writeVariableLengthIntegerArray(id_index_to_nodes_coordinates,
+                                    datarank,
+                                    dims,
+                                    data_dims,
+                                    offset,
+                                    stride,
+                                    count,
+                                    block,
+                                    int_data_buffer);
 
-        dims[0]      = (hsize_t) Index_to_Generalized_Displacements.Size();
-        data_dims[0] = (hsize_t) Index_to_Generalized_Displacements.Size();
-        count[0]     = dims[0];
-        int_data_buffer = Index_to_Generalized_Displacements.data;
-        writeVariableLengthIntegerArray(id_index_to_nodes_outputs,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-#ifdef _PARALLEL_PROCESSING
-    }
-#endif
+    dims[0]      = (hsize_t) Index_to_Generalized_Displacements.Size();
+    data_dims[0] = (hsize_t) Index_to_Generalized_Displacements.Size();
+    count[0]     = dims[0];
+    int_data_buffer = Index_to_Generalized_Displacements.data;
+    writeVariableLengthIntegerArray(id_index_to_nodes_outputs,
+                                    datarank,
+                                    dims,
+                                    data_dims,
+                                    offset,
+                                    stride,
+                                    count,
+                                    block,
+                                    int_data_buffer);
+
+
+
+
+    //================================================================================
+    // Create number of elements and nodes
+    //================================================================================
+
+    rank        = 1;
+    dims[0]     = 1;
+    data_dims[0] = 1;
+    offset[0]   = 0;
+    stride[0]   = 1;
+    count[0]    = 1;
+    block[0]    = 1;
+
+    writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, data_dims, offset, stride, count, block,
+                                    &number_of_nodes);
+
+    writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, data_dims, offset, stride, count, block,
+                                    &number_of_elements);
+
+
+
+    // #ifdef _PARALLEL_PROCESSING
+    //     }
+    // #endif
     H5OUTPUTWRITER_COUNT_OBJS;
 
     // =============================================================================================
@@ -914,15 +960,16 @@ void H5OutputWriter::writeMesh()
                                     int_data_buffer);
 
 
-    //Write material tags
-    for (int tag = 0; tag < (int) Element_types.size(); tag++)
-    {
-        std::string type = Element_types[tag];
-        writeVariableLengthStringArray(id_elements_type,
-                                       tag,
-                                       type.size(),
-                                       type);
-    }
+    // TODO: Bring back element types
+    // //Write material tags
+    // for (int tag = 0; tag < (int) Element_types.size(); tag++)
+    // {
+    //     std::string type = Element_types[tag];
+    //     writeVariableLengthStringArray(id_elements_type,
+    //                                    tag,
+    //                                    type.size(),
+    //                                    type);
+    // }
 
 
     //Write index to gauss coordinates (if any)
@@ -970,6 +1017,41 @@ void H5OutputWriter::writeMesh()
                                    block,
                                    double_data_buffer);
     H5OUTPUTWRITER_COUNT_OBJS;
+
+
+
+
+
+
+    // =============================================================================================
+    //   CREATE OUTPUT ARRAYS!
+    // =============================================================================================
+
+    {
+        int rank = 2;
+        hsize_t dims[2];
+        hsize_t maxdims[2];
+        dims[0] = (hsize_t) length_nodes_displacements_output;
+        dims[1] = 1;
+        maxdims[0] = (hsize_t)  length_nodes_displacements_output;
+        maxdims[1] = H5S_UNLIMITED;
+
+        id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+    }
+
+    {
+        int rank = 2;
+        hsize_t dims[2];
+        hsize_t maxdims[2];
+        dims[0] = (hsize_t) length_element_output;
+        dims[1] = 1;
+        maxdims[0] = (hsize_t)  length_element_output;
+        maxdims[1] = H5S_UNLIMITED;
+
+        id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+
+    }//    create_elementOutput_arrays = false;
+
 }
 
 
@@ -996,21 +1078,21 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
     //  ********************************************************************************************
     //  ********************************************************************************************
 
-    if (create_nodeDisplacements_arrays)
-    {
-        int rank = 2;
-        hsize_t dims[2];
-        hsize_t maxdims[2];
-        dims[0] = (hsize_t) length_nodes_displacements_output;
-        dims[1] = 1;
-        maxdims[0] = (hsize_t)  length_nodes_displacements_output;
-        maxdims[1] = H5S_UNLIMITED;
+    // if (create_nodeDisplacements_arrays)
+    // {
+    //     int rank = 2;
+    //     hsize_t dims[2];
+    //     hsize_t maxdims[2];
+    //     dims[0] = (hsize_t) length_nodes_displacements_output;
+    //     dims[1] = 1;
+    //     maxdims[0] = (hsize_t)  length_nodes_displacements_output;
+    //     maxdims[1] = H5S_UNLIMITED;
 
-        id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+    //     id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
 
-        create_nodeDisplacements_arrays = false;
+    //     create_nodeDisplacements_arrays = false;
 
-    }
+    // }
 
     int pos, ndofs;
 
@@ -1084,21 +1166,21 @@ int H5OutputWriter::writeVelocities(     int nodeTag, const Vector &velocities)
     //  ********************************************************************************************
     //  ********************************************************************************************
 
-    if (create_nodeVelocities_arrays)
-    {
-        int rank = 2;
-        hsize_t dims[2];
-        hsize_t maxdims[2];
-        dims[0] = (hsize_t) length_nodes_velocities_output;
-        dims[1] = 1;
-        maxdims[0] = (hsize_t)  length_nodes_velocities_output;
-        maxdims[1] = H5S_UNLIMITED;
+    // if (create_nodeVelocities_arrays)
+    // {
+    //     int rank = 2;
+    //     hsize_t dims[2];
+    //     hsize_t maxdims[2];
+    //     dims[0] = (hsize_t) length_nodes_velocities_output;
+    //     dims[1] = 1;
+    //     maxdims[0] = (hsize_t)  length_nodes_velocities_output;
+    //     maxdims[1] = H5S_UNLIMITED;
 
-        id_nodes_velocities = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Velocities", " ");
+    //     id_nodes_velocities = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Velocities", " ");
 
-        create_nodeVelocities_arrays = false;
+    //     create_nodeVelocities_arrays = false;
 
-    }
+    // }
 
     int pos, ndofs;
 
@@ -1172,21 +1254,21 @@ int H5OutputWriter::writeAccelerations(  int nodeTag, const Vector &acceleration
     //  ********************************************************************************************
     //  ********************************************************************************************
 
-    if (create_nodeAccelerations_arrays)
-    {
-        int rank = 2;
-        hsize_t dims[2];
-        hsize_t maxdims[2];
-        dims[0] = (hsize_t) length_nodes_accelerations_output;
-        dims[1] = 1;
-        maxdims[0] = (hsize_t)  length_nodes_accelerations_output;
-        maxdims[1] = H5S_UNLIMITED;
+    // if (create_nodeAccelerations_arrays)
+    // {
+    //     int rank = 2;
+    //     hsize_t dims[2];
+    //     hsize_t maxdims[2];
+    //     dims[0] = (hsize_t) length_nodes_accelerations_output;
+    //     dims[1] = 1;
+    //     maxdims[0] = (hsize_t)  length_nodes_accelerations_output;
+    //     maxdims[1] = H5S_UNLIMITED;
 
-        id_nodes_accelerations = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Accelerations", " ");
+    //     id_nodes_accelerations = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Accelerations", " ");
 
-        create_nodeAccelerations_arrays = false;
+    //     create_nodeAccelerations_arrays = false;
 
-    }
+    // }
 
     int pos, ndofs;
 
@@ -1259,21 +1341,21 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
     //  ********************************************************************************************
     //  ********************************************************************************************
 
-    if (create_nodeReactionForces_arrays)
-    {
-        int rank = 2;
-        hsize_t dims[2];
-        hsize_t maxdims[2];
-        dims[0] = (hsize_t) length_nodes_reaction_forcess_output;
-        dims[1] = 1;
-        maxdims[0] = (hsize_t)  length_nodes_reaction_forcess_output;
-        maxdims[1] = H5S_UNLIMITED;
+    // if (create_nodeReactionForces_arrays)
+    // {
+    //     int rank = 2;
+    //     hsize_t dims[2];
+    //     hsize_t maxdims[2];
+    //     dims[0] = (hsize_t) length_nodes_reaction_forcess_output;
+    //     dims[1] = 1;
+    //     maxdims[0] = (hsize_t)  length_nodes_reaction_forcess_output;
+    //     maxdims[1] = H5S_UNLIMITED;
 
-        id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Reactions", " ");
+    //     id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Reactions", " ");
 
-        create_nodeReactionForces_arrays = false;
+    //     create_nodeReactionForces_arrays = false;
 
-    }
+    // }
 
     int pos, ndofs;
 
@@ -1350,21 +1432,21 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
     //  ********************************************************************************************
     if (length_element_output > 0) // If there is nothing to output, there is nothing to output
     {
-        if (create_elementOutput_arrays)
-        {
-            int rank = 2;
-            hsize_t dims[2];
-            hsize_t maxdims[2];
-            dims[0] = (hsize_t) length_element_output;
-            dims[1] = 1;
-            maxdims[0] = (hsize_t)  length_element_output;
-            maxdims[1] = H5S_UNLIMITED;
+        // if (create_elementOutput_arrays)
+        // {
+        //     int rank = 2;
+        //     hsize_t dims[2];
+        //     hsize_t maxdims[2];
+        //     dims[0] = (hsize_t) length_element_output;
+        //     dims[1] = 1;
+        //     maxdims[0] = (hsize_t)  length_element_output;
+        //     maxdims[1] = H5S_UNLIMITED;
 
-            id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+        //     id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
 
-            create_elementOutput_arrays = false;
+        //     create_elementOutput_arrays = false;
 
-        }
+        // }
 
         int pos, noutputs;
 
@@ -1467,6 +1549,22 @@ int H5OutputWriter::setTime(double t)
 
     current_time_step++;
     H5OUTPUTWRITER_COUNT_OBJS;
+
+
+    //Extend objects
+    hsize_t dims_new[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
+
+    status =  H5Dset_extent( id_nodes_displacements, dims_new );
+    // status =  H5Dset_extent( id_nodes_velocities, dims_new );
+    // status =  H5Dset_extent( id_nodes_accelerations, dims_new );
+    // status =  H5Dset_extent( id_nodes_reaction_forces, dims_new );
+
+    dims_new[0] = length_element_output;
+    dims_new[1] = current_time_step;
+
+    status =  H5Dset_extent( id_elements_output, dims_new );
+
+
     return 0;
 }
 

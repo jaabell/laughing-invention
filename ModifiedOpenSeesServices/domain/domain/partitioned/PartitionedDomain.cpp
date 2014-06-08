@@ -195,6 +195,7 @@ PartitionedDomain::clearAll(void)
 
     elements->clearAll();
     theSubdomains->clearAll();
+    this->Domain::theOutputWriter.finalize();
 }
 
 

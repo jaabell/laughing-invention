@@ -1473,7 +1473,9 @@ Domain::clearAll( void )
     dbMPs = 0;
     dbLPs = 0;
 
+#ifndef _PARALLEL_PROCESSING //Done in PartitionedDomain::clearAll for parallel case
     theOutputWriter.finalize();
+#endif
 }
 
 
@@ -2596,15 +2598,15 @@ Domain::commit( void )
     if (output_is_enabled)
     {
         // theHDF5_Channel.setTime(currentTime);/
-        theOutputWriter.syncWriters();
-        theOutputWriter.setTime(currentTime);
 
         //Write out static mesh data once!
         if (!have_written_static_mesh_data)
         {
+            theOutputWriter.syncWriters();
             theOutputWriter.writeMesh();
             have_written_static_mesh_data = true;
         }
+        theOutputWriter.setTime(currentTime);
     }
 #else
     // NOTE: This is done in PartitionedDomain::partition in the case of parallel processing.
@@ -2614,7 +2616,6 @@ Domain::commit( void )
     if (output_is_enabled)
     {
         // theHDF5_Channel.setTime(currentTime);/
-        theOutputWriter.setTime(currentTime);
 
         //Write out static mesh data once!
         if (!have_written_static_mesh_data)
@@ -2641,6 +2642,7 @@ Domain::commit( void )
             theOutputWriter.writeMesh();
             have_written_static_mesh_data = true;
         }
+        theOutputWriter.setTime(currentTime);
     }
 #endif
 
@@ -2680,34 +2682,51 @@ Domain::commit( void )
 #endif
 
 
-        //Jose Added for node output
-        if (output_is_enabled)
+#ifdef _PARALLEL_PROCESSING
+        if (processID != 0)  //Master process does not write any output!
         {
-            // nodePtr->describeSelf(0, theHDF5_Channel);
-            // nodePtr->sendSelf(0, theHDF5_Channel);
+#endif
+            //Jose Added for node output
+            if (output_is_enabled)
+            {
+                // nodePtr->describeSelf(0, theHDF5_Channel);
+                // nodePtr->sendSelf(0, theHDF5_Channel);
 
-            theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-            // theOutputWriter.writeVelocities(nodePtr->getTag(), nodePtr->getTrialVel());
-            // theOutputWriter.writeAccelerations(nodePtr->getTag(), nodePtr->getTrialAccel());
-            // theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
+                theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
+                // theOutputWriter.writeVelocities(nodePtr->getTag(), nodePtr->getTrialVel());
+                // theOutputWriter.writeAccelerations(nodePtr->getTag(), nodePtr->getTrialAccel());
+                // theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
+            }
+#ifdef _PARALLEL_PROCESSING
         }
+#endif
+
+
 
     }
-
-    theElemIter = this->getElements();
-    while ( ( elePtr = theElemIter() ) != 0 )
+#ifdef _PARALLEL_PROCESSING
+    int numProcesses, processID;
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+    if (processID != 0)  //Master process does not write any output!
     {
-        elePtr->commitState();
-        //Jose Added for element output
-        if (output_is_enabled)
+#endif
+        theElemIter = this->getElements();
+        while ( ( elePtr = theElemIter() ) != 0 )
         {
-            // elePtr->describeSelf(0, theHDF5_Channel);
-            // elePtr->sendSelf(0, theHDF5_Channel);
-            theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
+            elePtr->commitState();
+            //Jose Added for element output
+            if (output_is_enabled)
+            {
+                // elePtr->describeSelf(0, theHDF5_Channel);
+                // elePtr->sendSelf(0, theHDF5_Channel);
+                theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
+            }
         }
+
+#ifdef _PARALLEL_PROCESSING
     }
-
-
+#endif
 
 
     // theHDF5_Channel.done(); // This frees memory, and optimizes the HDF5 run.. it is not essential, but increases performance
