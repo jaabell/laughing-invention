@@ -537,7 +537,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
 const Matrix &
 ContactElement_Nonlinear_3DOF_3DOF::getInitialStiff(void)
 {
-    update();
+    update(::);
     getTangentStiff();
 
     return stiff ;
@@ -972,19 +972,19 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
             double Kn_n;
 
             //Compute Kn at (n+1)/2
-            Kn_np1 = 2 * Kn_factor * total_normal_relative_displ_np1;;
-            Kn_n   = 2 * Kn_factor  * total_normal_relative_displ_n;
+            Kn_np1 = 2 * Kn_factor * total_normal_relative_displ_np1 + Kn_factor * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;  //  We now add F = A u^2 + B u,  where B = A * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP
+            // Kn_n   = 2 * Kn_factor  * total_normal_relative_displ_n + Kn_factor * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;
             // Kn = 0.5 * (Kn_np1 + Kn_n);
             Kn = Kn_np1;
 
-            if (total_normal_relative_displ_n < ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP) // Are in contact but stiffness is too low
-            {
-                Kn = 2 * Kn_factor  * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;
-            }
+            // if (total_normal_relative_displ_n < ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP) // Are in contact but stiffness is too low
+            // {
+            //     Kn = 2 * Kn_factor  * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;
+            // }
 
 
             // Compute normal force
-            normalforce_np1 = -Kn_factor * total_normal_relative_displ_np1 * total_normal_relative_displ_np1;
+            normalforce_np1 = -Kn_factor * total_normal_relative_displ_np1 * total_normal_relative_displ_np1 -  Kn_factor * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP * total_normal_relative_displ_np1;
 
 
             // Compute trial shear force

@@ -60,32 +60,32 @@ int simulate_using_static_multistep(int numSteps)
     }
     if (theAnalysisModel == NULL)
     {
-        cerr << "Error: (analyze_static_multistep) memory for analysis model can not be allocated!" << endl;
+        cerr << "Error: (simulate_using_static_multistep) memory for analysis model can not be allocated!" << endl;
         return -1;
     }
     if (theHandler == NULL)
     {
-        cerr << "Error: (analyze_static_multistep) The Constraint Handler is not set." << endl;
+        cerr << "Error: (simulate_using_static_multistep) The Constraint Handler is not set." << endl;
         return -1;
     }
     if (theNumberer == NULL)
     {
-        cerr << "Error: (analyze_static_multistep) The Numberer is not set." << endl;
+        cerr << "Error: (simulate_using_static_multistep) The Numberer is not set." << endl;
         return -1;
     }
     if (theAlgorithm == NULL)
     {
-        cerr << "Error: (analyze_static_multistep) The Algorithm is not set/" << endl;
+        cerr << "Error: (simulate_using_static_multistep) The Algorithm is not set/" << endl;
         return -1;
     }
     if (theSOE == NULL)
     {
-        cerr << "Error: (analyze_static_multistep) The SOE is not set." << endl;
+        cerr << "Error: (simulate_using_static_multistep) The SOE is not set." << endl;
         return -1;
     }
     if (theStaticIntegrator == NULL)
     {
-        cerr << "Error: (analyze_static_multistep) The Static Integrator is not set." << endl;
+        cerr << "Error: (simulate_using_static_multistep) The Static Integrator is not set." << endl;
         return -1;
     }
 
@@ -101,7 +101,7 @@ int simulate_using_static_multistep(int numSteps)
 
     if (theStaticAnalysis == NULL)
     {
-        cerr << "Error: (analyze_static_multistep) memory for theStaticAnalysis can not be allocated!" << endl;
+        cerr << "Error: (simulate_using_static_multistep) memory for theStaticAnalysis can not be allocated!" << endl;
         return -1;
     }
 
@@ -118,7 +118,6 @@ int simulate_using_static_multistep(int numSteps)
         DomainDecompositionAnalysis *theSubAnalysis;
         SubdomainIter &theSubdomains = theDomain.getSubdomains();
         Subdomain *theSub = 0;
-
         // create the appropriate domain decomposition analysis
         while ((theSub = theSubdomains()) != 0)
         {
@@ -132,7 +131,10 @@ int simulate_using_static_multistep(int numSteps)
                     theConvergenceTest,
                     false);
 
+
+
             theSub->setDomainDecompAnalysis(*theSubAnalysis);
+            //      delete theSubAnalysis;
         }
     }
 
@@ -156,7 +158,7 @@ int simulate_using_static_multistep(int numSteps)
         // create a partitioner & partition the domain
         if (OPS_DOMAIN_PARTITIONER == 0)
         {
-#ifdef _PDD
+#ifdef _PDD //Guanzhou added
             OPS_GRAPH_PARTITIONER  = new ParMetis;
 #else
             OPS_GRAPH_PARTITIONER  = new Metis;
@@ -173,11 +175,12 @@ int simulate_using_static_multistep(int numSteps)
 
 # ifdef _TIMING
         double end_time = MPI_Wtime();
+        //        timingfile << "Timing used by partitioning: " << end_time-start_time << endl;
 # endif
 
         OPS_PARTITIONED = true;
 
-    }
+    } //Guanzhou separated here
 
 
     for (int i = 1; i <= numSteps; i++)
@@ -194,6 +197,7 @@ int simulate_using_static_multistep(int numSteps)
             {
 
                 // create the appropriate domain decomposition analysis
+
                 theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
                         *theHandler,
                         *theNumberer,
@@ -207,7 +211,6 @@ int simulate_using_static_multistep(int numSteps)
 
                 theSub->setDomainDecompAnalysis(*theSubAnalysis);
             }
-
             OPS_REDEFINE_ANALYSIS = false;
         }
 
@@ -220,12 +223,11 @@ int simulate_using_static_multistep(int numSteps)
 
     }
 
-    // Out by J.Abell. --> Is done when wipe_model() is invoked.
-    // if (theStaticAnalysis != 0)
-    // {
-    //     theStaticAnalysis->clearAll();
-    //     delete theStaticAnalysis;
-    // }
+    //  if (theStaticAnalysis != 0)
+    //  {
+    //      theStaticAnalysis->clearAll();
+    //      delete theStaticAnalysis;
+    //  }
 
 
     //=====================================================================================
