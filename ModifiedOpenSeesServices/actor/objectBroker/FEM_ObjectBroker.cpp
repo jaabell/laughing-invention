@@ -448,10 +448,10 @@ FEM_ObjectBroker::getPtrNewPartitionedModelBuilder(Subdomain &theSubdomain,
 {
     switch (classTag)
     {
-            /*
-            case PartitionedModelBuilder_TAGS_PartitionedQuick2dFrameModel:
-                 return new PartitionedQuick2dFrame(theSubdomain);
-                 */
+        /*
+        case PartitionedModelBuilder_TAGS_PartitionedQuick2dFrameModel:
+             return new PartitionedQuick2dFrame(theSubdomain);
+             */
 
         default:
             cerr << "FEM_ObjectBroker::getPtrNewPartitionedModelBuilder - ";
@@ -507,8 +507,8 @@ FEM_ObjectBroker::getNewElement(int classTag)
 {
     switch (classTag)
     {
-//         case ELE_TAG_EightNodeBrick:            //Guanzhou added //temp out by babak
-//             return new EightNodeBrick();//temp out by babak
+        case ELE_TAG_EightNodeBrick:            //Guanzhou added //temp out by babak
+            return new EightNodeBrick();//temp out by babak
 
         case ELE_TAG_TwentySevenNodeBrick:          //Babak added on 10/18/2012
             return new TwentySevenNodeBrick();
@@ -528,14 +528,14 @@ FEM_ObjectBroker::getNewElement(int classTag)
         case ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam:          //Babak added on 5/8/2013
             return new rank_one_deficient_elastic_pinned_fixed_beam();
 
-//         case ELE_TAG_EightNodeBrickElastic:
-//             return new EightNodeBrickElastic();
+        case ELE_TAG_EightNodeBrickElastic:
+            return new EightNodeBrickElastic();
 
         case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
             return new PenaltyElement();
 
-//         case ELE_TAG_PenaltyElementApplyDisplacement:           //Babak added on 6/25/13
-//             return new PenaltyElementApplyDisplacement();
+        //         case ELE_TAG_PenaltyElementApplyDisplacement:           //Babak added on 6/25/13
+        //             return new PenaltyElementApplyDisplacement();
 
         case ELE_TAG_ContactElement_3DOF_3DOF:          //Babak added on 11/05/13
             return new ContactElement_3DOF_3DOF();
@@ -586,8 +586,8 @@ FEM_ObjectBroker::getNewMP(int classTag)
         case CNSTRNT_TAG_MP_Constraint:
             return new MP_Constraint( 0 , classTag);
 
-            //      case CNSTRNT_TAG_MP_Joint2D:            // Arash //out by babak oct 2012
-            //       return new MP_Joint2D();           // Arash //out by babak oct 2012
+        //      case CNSTRNT_TAG_MP_Joint2D:            // Arash //out by babak oct 2012
+        //       return new MP_Joint2D();           // Arash //out by babak oct 2012
 
         default:
             cerr << "FEM_ObjectBroker::getNewMP - ";
@@ -673,32 +673,32 @@ FEM_ObjectBroker::getNewBeamIntegration(int classTag)
 {
     switch (classTag)
     {
-//         case BEAM_INTEGRATION_TAG_Lobatto:
-//             return new LobattoBeamIntegration();
+        //         case BEAM_INTEGRATION_TAG_Lobatto:
+        //             return new LobattoBeamIntegration();
 
-            //out by babak on Oct 2012:
-            //--------
-            //     case BEAM_INTEGRATION_TAG_Lobatto:
-            //       return new LobattoBeamIntegration();
-            //
-            //     case BEAM_INTEGRATION_TAG_HingeMidpoint2d:
-            //       return new HingeMidpointBeamIntegration2d();
-            //
-            //     case BEAM_INTEGRATION_TAG_HingeRadau2d:
-            //       return new HingeRadauBeamIntegration2d();
-            //
-            //     case BEAM_INTEGRATION_TAG_HingeRadauTwo2d:
-            //       return new HingeRadauTwoBeamIntegration2d();
-            //
-            //     case BEAM_INTEGRATION_TAG_HingeMidpoint3d:
-            //       return new HingeMidpointBeamIntegration3d();
-            //
-            //     case BEAM_INTEGRATION_TAG_HingeRadau3d:
-            //       return new HingeRadauBeamIntegration3d();
-            //
-            //     case BEAM_INTEGRATION_TAG_HingeRadauTwo3d:
-            //       return new HingeRadauTwoBeamIntegration3d()
-            //-----------
+        //out by babak on Oct 2012:
+        //--------
+        //     case BEAM_INTEGRATION_TAG_Lobatto:
+        //       return new LobattoBeamIntegration();
+        //
+        //     case BEAM_INTEGRATION_TAG_HingeMidpoint2d:
+        //       return new HingeMidpointBeamIntegration2d();
+        //
+        //     case BEAM_INTEGRATION_TAG_HingeRadau2d:
+        //       return new HingeRadauBeamIntegration2d();
+        //
+        //     case BEAM_INTEGRATION_TAG_HingeRadauTwo2d:
+        //       return new HingeRadauTwoBeamIntegration2d();
+        //
+        //     case BEAM_INTEGRATION_TAG_HingeMidpoint3d:
+        //       return new HingeMidpointBeamIntegration3d();
+        //
+        //     case BEAM_INTEGRATION_TAG_HingeRadau3d:
+        //       return new HingeRadauBeamIntegration3d();
+        //
+        //     case BEAM_INTEGRATION_TAG_HingeRadauTwo3d:
+        //       return new HingeRadauTwoBeamIntegration3d()
+        //-----------
 
         default:
             cerr << "FEM_ObjectBroker::getBeamIntegration - ";
@@ -723,8 +723,8 @@ FEM_ObjectBroker::getNewUniaxialMaterial(int classTag)
         case MAT_TAG_ParallelMaterial:
             return new ParallelMaterial();
 
-            //  case MAT_TAG_Concrete01:        out by B. Kamrani for debugging purposes
-            //       return new Concrete01();       out by B. Kamrani for debugging purposes
+        //  case MAT_TAG_Concrete01:        out by B. Kamrani for debugging purposes
+        //       return new Concrete01();       out by B. Kamrani for debugging purposes
 
         case MAT_TAG_Steel01:
             return new Steel01();
@@ -732,22 +732,22 @@ FEM_ObjectBroker::getNewUniaxialMaterial(int classTag)
         case MAT_TAG_Hardening:
             return new HardeningMaterial();
 
-            //// Boris Jeremic took out 20Mar2008
-            //  //PY springs: RWBoulanger and BJeremic
-            //  case MAT_TAG_PySimple1:
-            //      return new PySimple1();
-            //
-            //  case MAT_TAG_PyLiq1:
-            //      return new PyLiq1();
-            //
-            //  case MAT_TAG_TzSimple1:
-            //      return new TzSimple1();
-            //
-            //  case MAT_TAG_TzLiq1:
-            //      return new TzLiq1();
-            //
-            //  case MAT_TAG_QzSimple1:
-            //      return new QzSimple1();
+        //// Boris Jeremic took out 20Mar2008
+        //  //PY springs: RWBoulanger and BJeremic
+        //  case MAT_TAG_PySimple1:
+        //      return new PySimple1();
+        //
+        //  case MAT_TAG_PyLiq1:
+        //      return new PyLiq1();
+        //
+        //  case MAT_TAG_TzSimple1:
+        //      return new TzSimple1();
+        //
+        //  case MAT_TAG_TzLiq1:
+        //      return new TzLiq1();
+        //
+        //  case MAT_TAG_QzSimple1:
+        //      return new QzSimple1();
 
 
         case MAT_TAG_Hysteretic:
@@ -771,35 +771,35 @@ FEM_ObjectBroker::getNewUniaxialMaterial(int classTag)
         case MAT_TAG_ENTMaterial:
             return new ENTMaterial();
 
-            //  case MAT_TAG_FedeasBond1:
-            //      return new FedeasBond1Material();
-            //
-            //  case MAT_TAG_FedeasBond2:
-            //      return new FedeasBond2Material();
-            //
-            //  case MAT_TAG_FedeasConcrete1:
-            //      return new FedeasConcr1Material();
-            //
-            //  case MAT_TAG_FedeasConcrete2:
-            //      return new FedeasConcr2Material();
-            //
-            //  case MAT_TAG_FedeasConcrete3:
-            //      return new FedeasConcr3Material();
-            //
-            //  case MAT_TAG_FedeasHardening:
-            //      return new FedeasHardeningMaterial();
-            //
-            //  case MAT_TAG_FedeasHysteretic1:
-            //      return new FedeasHyster1Material();
-            //
-            //  case MAT_TAG_FedeasHysteretic2:
-            //      return new FedeasHyster2Material();
-            //
-            //  case MAT_TAG_FedeasSteel1:
-            //      return new FedeasSteel1Material();
-            //
-            //  case MAT_TAG_FedeasSteel2:
-            //      return new FedeasSteel2Material();
+        //  case MAT_TAG_FedeasBond1:
+        //      return new FedeasBond1Material();
+        //
+        //  case MAT_TAG_FedeasBond2:
+        //      return new FedeasBond2Material();
+        //
+        //  case MAT_TAG_FedeasConcrete1:
+        //      return new FedeasConcr1Material();
+        //
+        //  case MAT_TAG_FedeasConcrete2:
+        //      return new FedeasConcr2Material();
+        //
+        //  case MAT_TAG_FedeasConcrete3:
+        //      return new FedeasConcr3Material();
+        //
+        //  case MAT_TAG_FedeasHardening:
+        //      return new FedeasHardeningMaterial();
+        //
+        //  case MAT_TAG_FedeasHysteretic1:
+        //      return new FedeasHyster1Material();
+        //
+        //  case MAT_TAG_FedeasHysteretic2:
+        //      return new FedeasHyster2Material();
+        //
+        //  case MAT_TAG_FedeasSteel1:
+        //      return new FedeasSteel1Material();
+        //
+        //  case MAT_TAG_FedeasSteel2:
+        //      return new FedeasSteel2Material();
 
         //// Boris Jeremic took out 21Mar2008
         //  case MAT_TAG_DrainBilinear:
@@ -838,14 +838,14 @@ FEM_ObjectBroker::getNewSection(int classTag)
         case SEC_TAG_Generic1d:
             return new GenericSection1d();
 
-            //case SEC_TAG_GenericNd:
-            //return new GenericSectionNd();
+        //case SEC_TAG_GenericNd:
+        //return new GenericSectionNd();
 
         case SEC_TAG_Aggregator:
             return new SectionAggregator();
 
-            //case SEC_TAG_Fiber:
-            //return new FiberSection();
+        //case SEC_TAG_Fiber:
+        //return new FiberSection();
 
 
         case SEC_TAG_FiberSection3d:
@@ -879,34 +879,34 @@ FEM_ObjectBroker::getNewNDMaterial(int classTag)
     {
 
 
-            //   case ND_TAG_ElasticIsotropicAxiSymm:
-            //     return new ElasticIsotropicAxiSymm();
+        //   case ND_TAG_ElasticIsotropicAxiSymm:
+        //     return new ElasticIsotropicAxiSymm();
 
-            //  case ND_TAG_ElasticIsotropicPlateFiber:
-            //    return new ElasticIsotropicPlateFiber();
+        //  case ND_TAG_ElasticIsotropicPlateFiber:
+        //    return new ElasticIsotropicPlateFiber();
 
         case ND_TAG_ElasticIsotropic3D:
             return new ElasticIsotropic3D();
 
 
-            //   case ND_TAG_PlaneStressMaterial:
-            //     return new PlaneStressMaterial();
+        //   case ND_TAG_PlaneStressMaterial:
+        //     return new PlaneStressMaterial();
 
-            //  case ND_TAG_PlateFiberMaterial:
-            //    return new PlateFiberMaterial();
+        //  case ND_TAG_PlateFiberMaterial:
+        //    return new PlateFiberMaterial();
 
-            // Boris Jeremic took out 20mar2008
-            //  case ND_TAG_FluidSolidPorousMaterial:
-            //    return new FluidSolidPorousMaterial();
-            //
-            //  case ND_TAG_PressureDependMultiYield:
-            //    return new PressureDependMultiYield();
-            //
-            //  case ND_TAG_PressureIndependMultiYield:
-            //    return new PressureIndependMultiYield();
+        // Boris Jeremic took out 20mar2008
+        //  case ND_TAG_FluidSolidPorousMaterial:
+        //    return new FluidSolidPorousMaterial();
+        //
+        //  case ND_TAG_PressureDependMultiYield:
+        //    return new PressureDependMultiYield();
+        //
+        //  case ND_TAG_PressureIndependMultiYield:
+        //    return new PressureIndependMultiYield();
 
-            //Guanzhou case ND_TAG_FeapMaterial03:
-            //Guanzhou   return new FeapMaterial03();
+        //Guanzhou case ND_TAG_FeapMaterial03:
+        //Guanzhou   return new FeapMaterial03();
 
         //Guanzhou added
         case ND_TAG_Template3Dep:
@@ -921,9 +921,9 @@ FEM_ObjectBroker::getNewNDMaterial(int classTag)
             return new NewTemplate3Dep();
             break;
 
-            //   case ND_TAG_PressureDependentElastic3D:
-            //return new PressureDependentElastic3D();
-            //      break;
+        //   case ND_TAG_PressureDependentElastic3D:
+        //return new PressureDependentElastic3D();
+        //      break;
 
         default:
             cerr << "FEM_ObjectBroker::getNewNDMaterial - ";
@@ -1192,7 +1192,7 @@ FEM_ObjectBroker::getNewLoadPattern(int classTag)
         case  PATTERN_TAG_Linear_Disp_TimeHistory_Penalty:
             return new Linear_Disp_TimeHistory_Penalty();
 
-            //##################################################################################
+        //##################################################################################
 
 
 
@@ -1741,91 +1741,91 @@ FEM_ObjectBroker::getNewLinearSOE(int classTagSOE,
 
 #endif
 
-            //Guanzhou#ifdef _PARALLEL_PROCESSING
-            //Guanzhou      case LinSOE_TAGS_DistributedBandGenLinSOE:
-            //Guanzhou
-            //Guanzhou    if (classTagSolver == SOLVER_TAGS_BandGenLinLapackSolver) {
-            //Guanzhou        theGenBandSolver = new BandGenLinLapackSolver();
-            //Guanzhou        theSOE = new DistributedBandGenLinSOE(*theGenBandSolver);
-            //Guanzhou        lastLinearSolver = theGenBandSolver;
-            //Guanzhou        return theSOE;
-            //Guanzhou    } else {
-            //Guanzhou        cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-            //Guanzhou        cerr << " - no DistributedBandGenLinSolver type exists for class tag ";
-            //Guanzhou        cerr << classTagSolver << endln;
-            //Guanzhou        return 0;
-            //Guanzhou    }
-            //Guanzhou
-            //Guanzhou        case LinSOE_TAGS_DistributedBandSPDLinSOE:
-            //Guanzhou
-            //Guanzhou    //Guanzhou if (classTagSolver == SOLVER_TAGS_BandSPDLinLapackSolver) {
-            //Guanzhou    //Guanzhou     theBandSPDSolver = new BandSPDLinLapackSolver();
-            //Guanzhou    //Guanzhou     theSOE = new DistributedBandSPDLinSOE(*theBandSPDSolver);
-            //Guanzhou    //Guanzhou     lastLinearSolver = theBandSPDSolver;
-            //Guanzhou    //Guanzhou     return theSOE;
-            //Guanzhou    //Guanzhou } else {
-            //Guanzhou    //Guanzhou     cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-            //Guanzhou    //Guanzhou     cerr << " - no DistributedBandSPDLinSolver type exists for class tag ";
-            //Guanzhou    //Guanzhou     cerr << classTagSolver << endln;
-            //Guanzhou    //Guanzhou     return 0;
-            //Guanzhou    //Guanzhou }
-            //Guanzhou
-            //Guanzhou
-            //Guanzhou  case LinSOE_TAGS_DistributedProfileSPDLinSOE:
-            //Guanzhou
-            //Guanzhou    if (classTagSolver == SOLVER_TAGS_ProfileSPDLinDirectSolver) {
-            //Guanzhou        theProfileSPDSolver = new ProfileSPDLinDirectSolver();
-            //Guanzhou        theSOE = new DistributedProfileSPDLinSOE(*theProfileSPDSolver);
-            //Guanzhou        lastLinearSolver = theProfileSPDSolver;
-            //Guanzhou        return theSOE;
-            //Guanzhou    } else if (classTagSolver == SOLVER_TAGS_ProfileSPDLinSubstrSolver) {
-            //Guanzhou        theProfileSPDSolver = new ProfileSPDLinSubstrSolver();
-            //Guanzhou        theSOE = new DistributedProfileSPDLinSOE(*theProfileSPDSolver);
-            //Guanzhou        lastLinearSolver = theProfileSPDSolver;
-            //Guanzhou        return 0;
-            //Guanzhou    }
-            //Guanzhou    else {
-            //Guanzhou        cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-            //Guanzhou        cerr << " - no ProfileSPD_LinSolver type exists for class tag ";
-            //Guanzhou        cerr << classTagSolver << endln;
-            //Guanzhou        return 0;
-            //Guanzhou    }
+        //Guanzhou#ifdef _PARALLEL_PROCESSING
+        //Guanzhou      case LinSOE_TAGS_DistributedBandGenLinSOE:
+        //Guanzhou
+        //Guanzhou    if (classTagSolver == SOLVER_TAGS_BandGenLinLapackSolver) {
+        //Guanzhou        theGenBandSolver = new BandGenLinLapackSolver();
+        //Guanzhou        theSOE = new DistributedBandGenLinSOE(*theGenBandSolver);
+        //Guanzhou        lastLinearSolver = theGenBandSolver;
+        //Guanzhou        return theSOE;
+        //Guanzhou    } else {
+        //Guanzhou        cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+        //Guanzhou        cerr << " - no DistributedBandGenLinSolver type exists for class tag ";
+        //Guanzhou        cerr << classTagSolver << endln;
+        //Guanzhou        return 0;
+        //Guanzhou    }
+        //Guanzhou
+        //Guanzhou        case LinSOE_TAGS_DistributedBandSPDLinSOE:
+        //Guanzhou
+        //Guanzhou    //Guanzhou if (classTagSolver == SOLVER_TAGS_BandSPDLinLapackSolver) {
+        //Guanzhou    //Guanzhou     theBandSPDSolver = new BandSPDLinLapackSolver();
+        //Guanzhou    //Guanzhou     theSOE = new DistributedBandSPDLinSOE(*theBandSPDSolver);
+        //Guanzhou    //Guanzhou     lastLinearSolver = theBandSPDSolver;
+        //Guanzhou    //Guanzhou     return theSOE;
+        //Guanzhou    //Guanzhou } else {
+        //Guanzhou    //Guanzhou     cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+        //Guanzhou    //Guanzhou     cerr << " - no DistributedBandSPDLinSolver type exists for class tag ";
+        //Guanzhou    //Guanzhou     cerr << classTagSolver << endln;
+        //Guanzhou    //Guanzhou     return 0;
+        //Guanzhou    //Guanzhou }
+        //Guanzhou
+        //Guanzhou
+        //Guanzhou  case LinSOE_TAGS_DistributedProfileSPDLinSOE:
+        //Guanzhou
+        //Guanzhou    if (classTagSolver == SOLVER_TAGS_ProfileSPDLinDirectSolver) {
+        //Guanzhou        theProfileSPDSolver = new ProfileSPDLinDirectSolver();
+        //Guanzhou        theSOE = new DistributedProfileSPDLinSOE(*theProfileSPDSolver);
+        //Guanzhou        lastLinearSolver = theProfileSPDSolver;
+        //Guanzhou        return theSOE;
+        //Guanzhou    } else if (classTagSolver == SOLVER_TAGS_ProfileSPDLinSubstrSolver) {
+        //Guanzhou        theProfileSPDSolver = new ProfileSPDLinSubstrSolver();
+        //Guanzhou        theSOE = new DistributedProfileSPDLinSOE(*theProfileSPDSolver);
+        //Guanzhou        lastLinearSolver = theProfileSPDSolver;
+        //Guanzhou        return 0;
+        //Guanzhou    }
+        //Guanzhou    else {
+        //Guanzhou        cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+        //Guanzhou        cerr << " - no ProfileSPD_LinSolver type exists for class tag ";
+        //Guanzhou        cerr << classTagSolver << endln;
+        //Guanzhou        return 0;
+        //Guanzhou    }
 
 
-            /*case LinSOE_TAGS_DistributedSparseGenColLinSOE:
-              if (classTagSolver == SOLVER_TAGS_SuperLU) {
-                  theSparseGenLinSolver = new SuperLU();
-                  theSOE = new DistributedSparseGenColLinSOE(*theSparseGenLinSolver);
-                  lastLinearSolver = theSparseGenLinSolver;
-                  return theSOE;
-              } else if (classTagSolver == SOLVER_TAGS_DistributedSuperLU) {
-                  theDistributedSparseGenLinSolver = new DistributedSuperLU();
-                  theSOE = new DistributedSparseGenColLinSOE(*theDistributedSparseGenLinSolver);
-                  lastLinearSolver = theSparseGenLinSolver;
-                  return theSOE;
-              } else {
-                  cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-                  cerr << " - no DistributedSparseGenLinSolverSolver type exists for class tag ";
-                  cerr << classTagSolver << endln;
-                  return 0;
-              }*/
-            //Guanzhou
-            //Guanzhou#else
-            //Guanzhou  case LinSOE_TAGS_SparseGenColLinSOE:
-            //Guanzhou
-            //Guanzhou    if (classTagSolver == SOLVER_TAGS_SuperLU) {
-            //Guanzhou        theSparseGenLinSolver = new SuperLU();
-            //Guanzhou        theSOE = new SparseGenColLinSOE(*theSparseGenLinSolver);
-            //Guanzhou        lastLinearSolver = theSparseGenLinSolver;
-            //Guanzhou        return theSOE;
-            //Guanzhou    } else {
-            //Guanzhou        cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-            //Guanzhou        cerr << " - no SparseGenLinSolverSolver type exists for class tag ";
-            //Guanzhou        cerr << classTagSolver << endln;
-            //Guanzhou        return 0;
-            //Guanzhou    }
-            //Guanzhou
-            //Guanzhou#endif
+        /*case LinSOE_TAGS_DistributedSparseGenColLinSOE:
+          if (classTagSolver == SOLVER_TAGS_SuperLU) {
+              theSparseGenLinSolver = new SuperLU();
+              theSOE = new DistributedSparseGenColLinSOE(*theSparseGenLinSolver);
+              lastLinearSolver = theSparseGenLinSolver;
+              return theSOE;
+          } else if (classTagSolver == SOLVER_TAGS_DistributedSuperLU) {
+              theDistributedSparseGenLinSolver = new DistributedSuperLU();
+              theSOE = new DistributedSparseGenColLinSOE(*theDistributedSparseGenLinSolver);
+              lastLinearSolver = theSparseGenLinSolver;
+              return theSOE;
+          } else {
+              cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+              cerr << " - no DistributedSparseGenLinSolverSolver type exists for class tag ";
+              cerr << classTagSolver << endln;
+              return 0;
+          }*/
+        //Guanzhou
+        //Guanzhou#else
+        //Guanzhou  case LinSOE_TAGS_SparseGenColLinSOE:
+        //Guanzhou
+        //Guanzhou    if (classTagSolver == SOLVER_TAGS_SuperLU) {
+        //Guanzhou        theSparseGenLinSolver = new SuperLU();
+        //Guanzhou        theSOE = new SparseGenColLinSOE(*theSparseGenLinSolver);
+        //Guanzhou        lastLinearSolver = theSparseGenLinSolver;
+        //Guanzhou        return theSOE;
+        //Guanzhou    } else {
+        //Guanzhou        cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+        //Guanzhou        cerr << " - no SparseGenLinSolverSolver type exists for class tag ";
+        //Guanzhou        cerr << classTagSolver << endln;
+        //Guanzhou        return 0;
+        //Guanzhou    }
+        //Guanzhou
+        //Guanzhou#endif
 
         default:
             cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
@@ -1854,21 +1854,21 @@ FEM_ObjectBroker::getPtrNewDDLinearSOE(int classTagSOE,
 
     switch (classTagSOE)
     {
-            //Guanzhou      case LinSOE_TAGS_ProfileSPDLinSOE:
-            //Guanzhou
-            //Guanzhou  if (classTagDDSolver == SOLVER_TAGS_ProfileSPDLinSubstrSolver) {
-            //Guanzhou      theProfileSPDSolver = new ProfileSPDLinSubstrSolver();
-            //Guanzhou      LinearSOE *theSOE = new ProfileSPDLinSOE(*theProfileSPDSolver);
-            //Guanzhou      lastDomainSolver = theProfileSPDSolver;
-            //Guanzhou      return theSOE;
-            //Guanzhou  }
-            //Guanzhou  else {
-            //Guanzhou      cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-            //Guanzhou      cerr << " - no ProfileSPD Domain Solver type exists for class tag ";
-            //Guanzhou      cerr << classTagDDSolver << endln;
-            //Guanzhou      return 0;
-            //Guanzhou  }
-            //Guanzhou
+        //Guanzhou      case LinSOE_TAGS_ProfileSPDLinSOE:
+        //Guanzhou
+        //Guanzhou  if (classTagDDSolver == SOLVER_TAGS_ProfileSPDLinSubstrSolver) {
+        //Guanzhou      theProfileSPDSolver = new ProfileSPDLinSubstrSolver();
+        //Guanzhou      LinearSOE *theSOE = new ProfileSPDLinSOE(*theProfileSPDSolver);
+        //Guanzhou      lastDomainSolver = theProfileSPDSolver;
+        //Guanzhou      return theSOE;
+        //Guanzhou  }
+        //Guanzhou  else {
+        //Guanzhou      cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+        //Guanzhou      cerr << " - no ProfileSPD Domain Solver type exists for class tag ";
+        //Guanzhou      cerr << classTagDDSolver << endln;
+        //Guanzhou      return 0;
+        //Guanzhou  }
+        //Guanzhou
 
         default:
             cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
@@ -1926,8 +1926,8 @@ FEM_ObjectBroker::getYieldSurfacePtr(int clsTag)
         case YS_TAG_CAMYieldSurface:
             return new CAMYieldSurface(1.2);
 
-            //      case YS_TAG_DPYieldSurface01:
-            //              return new DPYieldSurface01(1.0);
+        //      case YS_TAG_DPYieldSurface01:
+        //              return new DPYieldSurface01(1.0);
 
         case YS_TAG_DPYieldSurface:
             return new DPYieldSurface();
@@ -1938,8 +1938,8 @@ FEM_ObjectBroker::getYieldSurfacePtr(int clsTag)
         case YS_TAG_RMC01YieldSurface:
             return new RMC01YieldSurface();
 
-            //      case YS_TAG_TriFCYieldSurface:
-            //              return new TriFCYieldSurface(1.0,1.0,1.0,1.0);
+        //      case YS_TAG_TriFCYieldSurface:
+        //              return new TriFCYieldSurface(1.0,1.0,1.0,1.0);
 
         case YS_TAG_VMYieldSurface:
             return new VMYieldSurface();
@@ -1965,8 +1965,8 @@ FEM_ObjectBroker::getPotentialSurfacePtr(int clsTag)
         case PS_TAG_DPPotentialSurface:
             return new DPPotentialSurface(0.2);
 
-            //    case PS_TAG_MDPotentialSurface01:
-            //              return new MDPotentialSurface01(1.0);
+        //    case PS_TAG_MDPotentialSurface01:
+        //              return new MDPotentialSurface01(1.0);
 
         case PS_TAG_MDPotentialSurface:
             return new MDPotentialSurface();
@@ -2029,8 +2029,8 @@ FEM_ObjectBroker::getEL_T(int clsTag)
             return new EvolutionLaw_NL_Eij(0.0, 0.0);
 
 
-            //case ELT_TAG_NL_EijMD:
-            //          return new EvolutionLaw_NL_EijMD();
+        //case ELT_TAG_NL_EijMD:
+        //          return new EvolutionLaw_NL_EijMD();
 
 
         default:

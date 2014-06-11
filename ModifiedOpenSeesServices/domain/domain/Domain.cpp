@@ -2586,6 +2586,7 @@ Domain::setDampingFactorsforNode( int NodeTag, int DampingTag )
 int
 Domain::commit( void )
 {
+
     //
     // first invoke commit on all nodes and elements in the domain
     //

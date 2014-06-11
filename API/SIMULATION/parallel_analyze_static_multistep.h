@@ -75,7 +75,7 @@ int parallel_analyze_static_multistep(int numSteps)
 
 
 
-
+    cout << "#\n#          nelems = " << theDomain.getNumElements() << "\n#\n";
     if (OPS_PARTITIONED == true && OPS_NUM_SUBDOMAINS > 1)
     {
         DomainDecompositionAnalysis *theSubAnalysis;
@@ -100,7 +100,7 @@ int parallel_analyze_static_multistep(int numSteps)
             //      delete theSubAnalysis;
         }
     }
-
+    // cout << "#\n#          nelems = " << theDomain.getNumElements() << "\n#\n";
     if (OPS_PARTITIONED == false && OPS_NUM_SUBDOMAINS > 1)
     {
         if (OPS_theChannels != 0)
@@ -109,15 +109,16 @@ int parallel_analyze_static_multistep(int numSteps)
         }
 
         OPS_theChannels = new Channel *[OPS_NUM_SUBDOMAINS];
-
+        cout << "#\n# 1         nelems = " << theDomain.getNumElements() << "\n#\n";
         // create some subdomains
         for (int i = 1; i <= OPS_NUM_SUBDOMAINS; i++)
         {
             ShadowSubdomain *theSubdomain = new ShadowSubdomain(i, *OPS_MACHINE, *OPS_OBJECT_BROKER);
             theDomain.addSubdomain(theSubdomain);
             OPS_theChannels[i - 1] = theSubdomain->getChannelPtr();
+            cout << "#\n#  i         nelems = " << theDomain.getNumElements() << "\n#\n";
         }
-
+        cout << "#\n# 2         nelems = " << theDomain.getNumElements() << "\n#\n";
         // create a partitioner & partition the domain
         if (OPS_DOMAIN_PARTITIONER == 0)
         {
@@ -128,6 +129,7 @@ int parallel_analyze_static_multistep(int numSteps)
 #endif
             OPS_DOMAIN_PARTITIONER = new DomainPartitioner(*OPS_GRAPH_PARTITIONER);
             theDomain.setPartitioner(OPS_DOMAIN_PARTITIONER);
+            // cout << "#\n#          nelems = " << theDomain.getNumElements() << "\n#\n";
         }
 
 # ifdef _TIMING
@@ -149,7 +151,7 @@ int parallel_analyze_static_multistep(int numSteps)
     for (int i = 1; i <= numSteps; i++)
     {
 
-
+        // cout << "#\n#          nelems = " << theDomain.getNumElements() << "\n#\n";
         if ( OPS_REDEFINE_ANALYSIS == true )
         {
             DomainDecompositionAnalysis *theSubAnalysis;
@@ -177,10 +179,13 @@ int parallel_analyze_static_multistep(int numSteps)
             OPS_REDEFINE_ANALYSIS = false;
         }
 
+        // cout << "#\n#          nelems = " << theDomain.getNumElements() << "\n#\n";
         double start_time = MPI_Wtime();
 
         int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
         result = theStaticAnalysis->analyze(numIncr);
+
+        // cout << "#\n#          nelems = " << theDomain.getNumElements() << "\n#\n";
         double end_time = MPI_Wtime();
         cout << "\nAnalysis step " << i << " finished!\n";
 

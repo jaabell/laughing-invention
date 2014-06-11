@@ -1183,7 +1183,7 @@ CMD_add
     }
     //!=========================================================================================================
     //!
-    //!FEIDOC add domain reduction method loading time_step = <time> scale_factor = <.> number_of_steps = <.> number_of_drm_nodes = <.> number_of_drm_elements = <.> x_max = <length> x_min = <length> y_max = <length> y_min = <length> z_max = <length> z_min = <length> element_file = "filename" nodes_file = "filename" displacement_file = "filename" acceleration_file = "filename";
+    //!FEIDOC add domain reduction method loading # <.> time_step = <time> scale_factor = <.> number_of_steps = <.> number_of_drm_nodes = <.> number_of_drm_elements = <.> x_max = <length> x_min = <length> y_max = <length> y_min = <length> z_max = <length> z_min = <length> element_file = "filename" nodes_file = "filename" displacement_file = "filename" acceleration_file = "filename";
     | ADD DRM LOADING TEXTNUMBER exp
                       time_step '=' exp
                       scale_factor '=' exp
@@ -3005,6 +3005,9 @@ ADD_material
         for(int ii = 1;ii <=11; ii++) nodes.pop();
         nodes.push($$);
     }
+    //!=========================================================================================================
+    //!
+    //!FEIDOC add material # <.> type [linear_elastic_isotropic_3d_LT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.>;
     | MATERIAL TEXTNUMBER exp TYPE linear_elastic_isotropic_3d_LT
         mass_density '=' exp
         elastic_modulus '=' exp

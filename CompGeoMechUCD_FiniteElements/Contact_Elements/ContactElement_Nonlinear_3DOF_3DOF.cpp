@@ -60,6 +60,10 @@ Vector ContactElement_Nonlinear_3DOF_3DOF::y_local_normalized(3);
 Vector ContactElement_Nonlinear_3DOF_3DOF::z_local_normalized(3);
 Matrix ContactElement_Nonlinear_3DOF_3DOF::transformation(3, 3);
 
+#ifdef _DEBUG_CONTACT
+bool ContactElement_Nonlinear_3DOF_3DOF::printed_header(false);
+#endif
+
 //*********************************************************************
 //  Constructor for defining the contact element
 
@@ -417,8 +421,10 @@ ContactElement_Nonlinear_3DOF_3DOF::commitState()
     outputVector(5) = shearforce_n(1);
     outputVector(6) = SlidingFlag;
 
-
-
+#ifdef _DEBUG_CONTACT
+    //                12345678901234567890
+    ContactElement_Nonlinear_3DOF_3DOF::printed_header = false;
+#endif
 
     return 0;
 }
@@ -537,7 +543,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
 const Matrix &
 ContactElement_Nonlinear_3DOF_3DOF::getInitialStiff(void)
 {
-    update(::);
+    update();
     getTangentStiff();
 
     return stiff ;
@@ -969,7 +975,7 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
             double lamda;
             double tol = 0;
             double Kn_np1;
-            double Kn_n;
+            // double Kn_n;
 
             //Compute Kn at (n+1)/2
             Kn_np1 = 2 * Kn_factor * total_normal_relative_displ_np1 + Kn_factor * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;  //  We now add F = A u^2 + B u,  where B = A * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP
@@ -985,6 +991,7 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
 
             // Compute normal force
             normalforce_np1 = -Kn_factor * total_normal_relative_displ_np1 * total_normal_relative_displ_np1 -  Kn_factor * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP * total_normal_relative_displ_np1;
+
 
 
             // Compute trial shear force
@@ -1046,5 +1053,65 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
             normalforce_np1 = 0;
         }
     }
+
+
+
+#ifdef _DEBUG_CONTACT
+    //                12345678901234567890
+    if (!ContactElement_Nonlinear_3DOF_3DOF::printed_header)
+    {
+        cout << endl <<
+             setw(12) << "Element Tag " << " | " <<
+             setw(12) << "DispTrial[0]" << " | " <<
+             setw(12) << "DispTrial[1]" << " | " <<
+             setw(12) << "DispTrial[2]" << " | " <<
+             setw(12) << "DispTrial[3]" << " | " <<
+             setw(12) << "DispTrial[4]" << " | " <<
+             setw(12) << "DispTrial[5]" << " | " <<
+             setw(12) << "Axial Disp  " << " | " <<
+             setw(12) << "Shear Disp 1" << " | " <<
+             setw(12) << "Shear Disp 2" << " | " <<
+             setw(12) << "is locked   " << " | " <<
+             setw(12) << "Normal  n   " << " | " <<
+             setw(12) << "Shear 1 n   " << " | " <<
+             setw(12) << "Shear 2 n   " << " | " <<
+             setw(12) << "Normal  n+1 " << " | " <<
+             setw(12) << "Shear 1 n+1 " << " | " <<
+             setw(12) << "Shear 2 n+1 " << " | " <<
+             setw(12) << "yield criter" << " | " <<
+             setw(12) << "sliding flag" << " | " <<
+             setw(12) << "Kn          " << " | " <<
+             setw(12) << "Kt          " << endl;
+    }
+    cout <<
+         setw(12) << this->getTag() << " | " <<
+         setw(12) << DispTrial[0] << " | " <<
+         setw(12) << DispTrial[1] << " | " <<
+         setw(12) << DispTrial[2] << " | " <<
+         setw(12) << DispTrial[3] << " | " <<
+         setw(12) << DispTrial[4] << " | " <<
+         setw(12) << DispTrial[5] << " | " <<
+         setw(12) << total_normal_relative_displ_np1 << " | " <<
+         setw(12) << incr_shear_relative_displ_np1(0) << " | " <<
+         setw(12) << incr_shear_relative_displ_np1(1) << " | " <<
+         setw(12) << is_locked << " | " <<
+         setw(12) << normalforce_n << " | " <<
+         setw(12) << shearforce_n(0) << " | " <<
+         setw(12) << shearforce_n(1) << " | " <<
+         setw(12) << normalforce_np1 << " | " <<
+         setw(12) << shearforce_trial_np1(0) << " | " <<
+         setw(12) << shearforce_trial_np1(1) << " | " <<
+         setw(12) << yield_criteria << " | " <<
+         setw(12) << SlidingFlag << " | " <<
+         setw(12) << Kn << " | " <<
+         setw(12) << Kt << endl;//" | " <<
+
+    ContactElement_Nonlinear_3DOF_3DOF::printed_header = true;
+#endif
+
+
+
+
+
     return 0;
 }

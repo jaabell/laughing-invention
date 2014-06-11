@@ -262,7 +262,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     int addzeros = tag - ntags;
 
     //Extend arrays
-    for (int i = 0; i < addzeros; i++)
+    for (int i = 0; i <= addzeros; i++)
     {
         Number_of_Nodes[ntags + i]                  = -1;
         Index_to_Connectivity[ntags + i]            = -1;
@@ -273,6 +273,14 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
         Element_types.push_back(" not defined ");
         Number_of_Output_Fields[ntags + i]          = -1;
     }
+
+    //Check if the element has already been added!!
+    if (Number_of_Nodes[tag] > 0 || Index_to_Connectivity[tag] >= 0 || Index_to_Outputs[tag] >= 0)
+    {
+        cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " already defined in HDF5 database! Something is wrong"
+             << endl;
+    }
+
 
     // Writing Number_of_Nodes;
     nnodes =  connectivity.Size();
@@ -716,6 +724,338 @@ void H5OutputWriter::writeMesh()
 
 
         H5OUTPUTWRITER_COUNT_OBJS;
+
+
+        // =============================================================================================
+        //   Write node mesh data
+        // =============================================================================================
+
+
+        rank = 1;
+        int datarank         = 1;
+        int *int_data_buffer = 0;
+        double *double_data_buffer = 0;
+        //hsize_t dims[1];
+        //hsize_t maxdims[1];
+        hsize_t data_dims[1];
+        hsize_t offset[1];
+        hsize_t stride[1];
+        hsize_t count[1];
+        hsize_t block[1];
+
+        //Create arrays
+        dims[0] = 1;
+        maxdims[0] = H5S_UNLIMITED;
+        id_nodes_ndofs                = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Number_of_DOFs"                     , " ");
+        id_nodes_coordinates          = createVariableLengthDoubleArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ");
+        id_index_to_nodes_coordinates = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
+        id_index_to_nodes_outputs     = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
+
+        // #ifdef _PARALLEL_PROCESSING
+        //     // int processID;
+        //     // MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
+        //     if (processID == 0)
+        //     {
+        //         //
+        // #endif
+        // Write a vector with the number of DOFS for node at a given tag
+        dims[0]      = (hsize_t) Number_of_DOFs.Size();
+        data_dims[0] = (hsize_t) Number_of_DOFs.Size();
+        offset[0]    = 0;
+        stride[0]    = 1;
+        count[0]     = dims[0];
+        block[0]     = 1;
+        int_data_buffer = Number_of_DOFs.data;
+        writeVariableLengthIntegerArray(id_nodes_ndofs,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+        dims[0]      = (hsize_t) Coordinates.Size();
+        data_dims[0] = (hsize_t) Coordinates.Size();
+        count[0]     = dims[0];
+        double_data_buffer = Coordinates.theData;
+        writeVariableLengthDoubleArray(id_nodes_coordinates,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       double_data_buffer);
+
+        dims[0]      = (hsize_t) Index_to_Coordinates.Size();
+        data_dims[0] = (hsize_t) Index_to_Coordinates.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Coordinates.data;
+        writeVariableLengthIntegerArray(id_index_to_nodes_coordinates,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+        dims[0]      = (hsize_t) Index_to_Generalized_Displacements.Size();
+        data_dims[0] = (hsize_t) Index_to_Generalized_Displacements.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Generalized_Displacements.data;
+        writeVariableLengthIntegerArray(id_index_to_nodes_outputs,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+
+
+
+        //================================================================================
+        // Create number of elements and nodes
+        //================================================================================
+
+        rank        = 1;
+        dims[0]     = 1;
+        data_dims[0] = 1;
+        offset[0]   = 0;
+        stride[0]   = 1;
+        count[0]    = 1;
+        block[0]    = 1;
+
+        writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, data_dims, offset, stride, count, block,
+                                        &number_of_nodes);
+
+        writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, data_dims, offset, stride, count, block,
+                                        &number_of_elements);
+
+
+
+        // #ifdef _PARALLEL_PROCESSING
+        //     }
+        // #endif
+        H5OUTPUTWRITER_COUNT_OBJS;
+
+        // =============================================================================================
+        //   Write element mesh data
+        // =============================================================================================
+
+
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = H5S_UNLIMITED;
+
+        id_elements_nnodes                = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Nodes", " ");
+        id_elements_connectivity          = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Connectivity", " ");
+        id_index_to_elements_connectivity = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Connectivity", " ");
+        id_elements_noutputs              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Output_Fields", " ");
+        id_index_to_elements_output       = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
+        id_elements_ngauss                = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
+        id_elements_gausscoords           = createVariableLengthDoubleArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
+        id_index_to_elements_gausscoords  = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
+        id_elements_type                  = createVariableLengthStringArray (id_elements_group,  "Element_types", " ");
+        id_elements_materialtag           = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
+
+        // Write a vector with the number of nodes at a given elements tag
+        datarank     = 1;
+        dims[0]      = (hsize_t) Number_of_Nodes.Size();
+        data_dims[0] = (hsize_t) Number_of_Nodes.Size();
+        offset[0]    = 0;
+        stride[0]    = 1;
+        count[0]     = dims[0];
+        block[0]     = 1;
+        int_data_buffer = Number_of_Nodes.data;
+        writeVariableLengthIntegerArray(id_elements_nnodes,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+
+        //Write index to connectivity
+        dims[0]      = (hsize_t) Index_to_Connectivity.Size();
+        data_dims[0] = (hsize_t) Index_to_Connectivity.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Connectivity.data;
+        writeVariableLengthIntegerArray(id_index_to_elements_connectivity,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+
+        //Write element connectivity
+        dims[0]      = (hsize_t) Connectivity.Size();
+        data_dims[0] = (hsize_t) Connectivity.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Connectivity.data;
+        writeVariableLengthIntegerArray(id_elements_connectivity,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+        //Write index to number of outputs
+        dims[0]      = (hsize_t) Number_of_Output_Fields.Size();
+        data_dims[0] = (hsize_t) Number_of_Output_Fields.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Number_of_Output_Fields.data;
+        writeVariableLengthIntegerArray(id_elements_noutputs,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+        //Write index to outputs
+        dims[0]      = (hsize_t) Index_to_Outputs.Size();
+        data_dims[0] = (hsize_t) Index_to_Outputs.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Outputs.data;
+        writeVariableLengthIntegerArray(id_index_to_elements_output,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+        //Write material tags
+        dims[0]      = (hsize_t) Material_tags.Size();
+        data_dims[0] = (hsize_t) Material_tags.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Material_tags.data;
+        writeVariableLengthIntegerArray(id_elements_materialtag,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+
+        // TODO: Bring back element types
+        // //Write material tags
+        // for (int tag = 0; tag < (int) Element_types.size(); tag++)
+        // {
+        //     std::string type = Element_types[tag];
+        //     writeVariableLengthStringArray(id_elements_type,
+        //                                    tag,
+        //                                    type.size(),
+        //                                    type);
+        // }
+
+
+        //Write index to gauss coordinates (if any)
+        dims[0]      = (hsize_t) Number_of_Gauss_Points.Size();
+        data_dims[0] = (hsize_t) Number_of_Gauss_Points.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Number_of_Gauss_Points.data;
+        writeVariableLengthIntegerArray(id_elements_ngauss,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+
+        dims[0]      = (hsize_t) Index_to_Gauss_Point_Coordinates.Size();
+        data_dims[0] = (hsize_t) Index_to_Gauss_Point_Coordinates.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Gauss_Point_Coordinates.data;
+        writeVariableLengthIntegerArray(id_index_to_elements_gausscoords,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+        //Write gauss coordinate values
+        dims[0]      = (hsize_t) Gauss_Point_Coordinates.Size();
+        data_dims[0] = (hsize_t) Gauss_Point_Coordinates.Size();
+        count[0]     = dims[0];
+        double_data_buffer = Gauss_Point_Coordinates.theData;
+        writeVariableLengthDoubleArray(id_elements_gausscoords,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       double_data_buffer);
+        H5OUTPUTWRITER_COUNT_OBJS;
+
+
+
+
+
+
+        // =============================================================================================
+        //   CREATE OUTPUT ARRAYS!
+        // =============================================================================================
+
+        {
+            int rank = 2;
+            hsize_t dims[2];
+            hsize_t maxdims[2];
+            dims[0] = (hsize_t) length_nodes_displacements_output;
+            dims[1] = 1;
+            maxdims[0] = (hsize_t)  length_nodes_displacements_output;
+            maxdims[1] = H5S_UNLIMITED;
+
+            id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+        }
+
+        {
+            int rank = 2;
+            hsize_t dims[2];
+            hsize_t maxdims[2];
+            dims[0] = (hsize_t) length_element_output;
+            dims[1] = 1;
+            maxdims[0] = (hsize_t)  length_element_output;
+            maxdims[1] = H5S_UNLIMITED;
+
+            id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+
+        }//    create_elementOutput_arrays = false;
+
         // cout << "subgroupname" << subgroupname << endl;
     }
     else  //Could not open file
@@ -723,336 +1063,6 @@ void H5OutputWriter::writeMesh()
         cerr << "H5OutputWriter::writeMesh() -> could not open file: " << file_name << "!\n\n";
     }
 
-
-    // =============================================================================================
-    //   Write node mesh data
-    // =============================================================================================
-
-
-    int rank = 1;
-    int datarank         = 1;
-    int *int_data_buffer = 0;
-    double *double_data_buffer = 0;
-    hsize_t dims[1];
-    hsize_t maxdims[1];
-    hsize_t data_dims[1];
-    hsize_t offset[1];
-    hsize_t stride[1];
-    hsize_t count[1];
-    hsize_t block[1];
-
-    //Create arrays
-    dims[0] = 1;
-    maxdims[0] = H5S_UNLIMITED;
-    id_nodes_ndofs                = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Number_of_DOFs"                     , " ");
-    id_nodes_coordinates          = createVariableLengthDoubleArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ");
-    id_index_to_nodes_coordinates = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
-    id_index_to_nodes_outputs     = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
-
-    // #ifdef _PARALLEL_PROCESSING
-    //     // int processID;
-    //     // MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-    //     if (processID == 0)
-    //     {
-    //         //
-    // #endif
-    // Write a vector with the number of DOFS for node at a given tag
-    dims[0]      = (hsize_t) Number_of_DOFs.Size();
-    data_dims[0] = (hsize_t) Number_of_DOFs.Size();
-    offset[0]    = 0;
-    stride[0]    = 1;
-    count[0]     = dims[0];
-    block[0]     = 1;
-    int_data_buffer = Number_of_DOFs.data;
-    writeVariableLengthIntegerArray(id_nodes_ndofs,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-    dims[0]      = (hsize_t) Coordinates.Size();
-    data_dims[0] = (hsize_t) Coordinates.Size();
-    count[0]     = dims[0];
-    double_data_buffer = Coordinates.theData;
-    writeVariableLengthDoubleArray(id_nodes_coordinates,
-                                   datarank,
-                                   dims,
-                                   data_dims,
-                                   offset,
-                                   stride,
-                                   count,
-                                   block,
-                                   double_data_buffer);
-
-    dims[0]      = (hsize_t) Index_to_Coordinates.Size();
-    data_dims[0] = (hsize_t) Index_to_Coordinates.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Index_to_Coordinates.data;
-    writeVariableLengthIntegerArray(id_index_to_nodes_coordinates,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-    dims[0]      = (hsize_t) Index_to_Generalized_Displacements.Size();
-    data_dims[0] = (hsize_t) Index_to_Generalized_Displacements.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Index_to_Generalized_Displacements.data;
-    writeVariableLengthIntegerArray(id_index_to_nodes_outputs,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-
-
-
-    //================================================================================
-    // Create number of elements and nodes
-    //================================================================================
-
-    rank        = 1;
-    dims[0]     = 1;
-    data_dims[0] = 1;
-    offset[0]   = 0;
-    stride[0]   = 1;
-    count[0]    = 1;
-    block[0]    = 1;
-
-    writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, data_dims, offset, stride, count, block,
-                                    &number_of_nodes);
-
-    writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, data_dims, offset, stride, count, block,
-                                    &number_of_elements);
-
-
-
-    // #ifdef _PARALLEL_PROCESSING
-    //     }
-    // #endif
-    H5OUTPUTWRITER_COUNT_OBJS;
-
-    // =============================================================================================
-    //   Write element mesh data
-    // =============================================================================================
-
-
-    rank = 1;
-    dims[0] = 1;
-    maxdims[0] = H5S_UNLIMITED;
-
-    id_elements_nnodes                = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Nodes", " ");
-    id_elements_connectivity          = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Connectivity", " ");
-    id_index_to_elements_connectivity = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Connectivity", " ");
-    id_elements_noutputs              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Output_Fields", " ");
-    id_index_to_elements_output       = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
-    id_elements_ngauss                = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
-    id_elements_gausscoords           = createVariableLengthDoubleArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
-    id_index_to_elements_gausscoords  = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
-    id_elements_type                  = createVariableLengthStringArray (id_elements_group,  "Element_types", " ");
-    id_elements_materialtag           = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
-
-    // Write a vector with the number of nodes at a given elements tag
-    datarank     = 1;
-    dims[0]      = (hsize_t) Number_of_Nodes.Size();
-    data_dims[0] = (hsize_t) Number_of_Nodes.Size();
-    offset[0]    = 0;
-    stride[0]    = 1;
-    count[0]     = dims[0];
-    block[0]     = 1;
-    int_data_buffer = Number_of_Nodes.data;
-    writeVariableLengthIntegerArray(id_elements_nnodes,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-
-    //Write index to connectivity
-    dims[0]      = (hsize_t) Index_to_Connectivity.Size();
-    data_dims[0] = (hsize_t) Index_to_Connectivity.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Index_to_Connectivity.data;
-    writeVariableLengthIntegerArray(id_index_to_elements_connectivity,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-
-    //Write element connectivity
-    dims[0]      = (hsize_t) Connectivity.Size();
-    data_dims[0] = (hsize_t) Connectivity.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Connectivity.data;
-    writeVariableLengthIntegerArray(id_elements_connectivity,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-    //Write index to number of outputs
-    dims[0]      = (hsize_t) Number_of_Output_Fields.Size();
-    data_dims[0] = (hsize_t) Number_of_Output_Fields.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Number_of_Output_Fields.data;
-    writeVariableLengthIntegerArray(id_elements_noutputs,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-    //Write index to outputs
-    dims[0]      = (hsize_t) Index_to_Outputs.Size();
-    data_dims[0] = (hsize_t) Index_to_Outputs.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Index_to_Outputs.data;
-    writeVariableLengthIntegerArray(id_index_to_elements_output,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-    //Write material tags
-    dims[0]      = (hsize_t) Material_tags.Size();
-    data_dims[0] = (hsize_t) Material_tags.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Material_tags.data;
-    writeVariableLengthIntegerArray(id_elements_materialtag,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-
-    // TODO: Bring back element types
-    // //Write material tags
-    // for (int tag = 0; tag < (int) Element_types.size(); tag++)
-    // {
-    //     std::string type = Element_types[tag];
-    //     writeVariableLengthStringArray(id_elements_type,
-    //                                    tag,
-    //                                    type.size(),
-    //                                    type);
-    // }
-
-
-    //Write index to gauss coordinates (if any)
-    dims[0]      = (hsize_t) Number_of_Gauss_Points.Size();
-    data_dims[0] = (hsize_t) Number_of_Gauss_Points.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Number_of_Gauss_Points.data;
-    writeVariableLengthIntegerArray(id_elements_ngauss,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-
-    dims[0]      = (hsize_t) Index_to_Gauss_Point_Coordinates.Size();
-    data_dims[0] = (hsize_t) Index_to_Gauss_Point_Coordinates.Size();
-    count[0]     = dims[0];
-    int_data_buffer = Index_to_Gauss_Point_Coordinates.data;
-    writeVariableLengthIntegerArray(id_index_to_elements_gausscoords,
-                                    datarank,
-                                    dims,
-                                    data_dims,
-                                    offset,
-                                    stride,
-                                    count,
-                                    block,
-                                    int_data_buffer);
-
-    //Write gauss coordinate values
-    dims[0]      = (hsize_t) Gauss_Point_Coordinates.Size();
-    data_dims[0] = (hsize_t) Gauss_Point_Coordinates.Size();
-    count[0]     = dims[0];
-    double_data_buffer = Gauss_Point_Coordinates.theData;
-    writeVariableLengthDoubleArray(id_elements_gausscoords,
-                                   datarank,
-                                   dims,
-                                   data_dims,
-                                   offset,
-                                   stride,
-                                   count,
-                                   block,
-                                   double_data_buffer);
-    H5OUTPUTWRITER_COUNT_OBJS;
-
-
-
-
-
-
-    // =============================================================================================
-    //   CREATE OUTPUT ARRAYS!
-    // =============================================================================================
-
-    {
-        int rank = 2;
-        hsize_t dims[2];
-        hsize_t maxdims[2];
-        dims[0] = (hsize_t) length_nodes_displacements_output;
-        dims[1] = 1;
-        maxdims[0] = (hsize_t)  length_nodes_displacements_output;
-        maxdims[1] = H5S_UNLIMITED;
-
-        id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
-    }
-
-    {
-        int rank = 2;
-        hsize_t dims[2];
-        hsize_t maxdims[2];
-        dims[0] = (hsize_t) length_element_output;
-        dims[1] = 1;
-        maxdims[0] = (hsize_t)  length_element_output;
-        maxdims[1] = H5S_UNLIMITED;
-
-        id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
-
-    }//    create_elementOutput_arrays = false;
 
 }
 

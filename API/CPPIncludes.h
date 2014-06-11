@@ -398,20 +398,20 @@ static ParallelNumberer *theParallelNumberer = new ParallelNumberer();
 PartitionedDomain theDomain;
 
 
-int OPS_PARALLEL_PROCESSING = 0;
-int OPS_NUM_SUBDOMAINS      = 0;
-bool OPS_PARTITIONED        = false;
-bool OPS_REDEFINE_ANALYSIS = true;
+int OPS_PARALLEL_PROCESSING               = 0;
+int OPS_NUM_SUBDOMAINS                    = 0;
+bool OPS_PARTITIONED                      = false;
+bool OPS_REDEFINE_ANALYSIS                = true;
 DomainPartitioner *OPS_DOMAIN_PARTITIONER = 0;
-GraphPartitioner  *OPS_GRAPH_PARTITIONER = 0;
-LoadBalancer      *OPS_BALANCER = 0;
+GraphPartitioner  *OPS_GRAPH_PARTITIONER  = 0;
+LoadBalancer      *OPS_BALANCER           = 0;
 FEM_ObjectBroker  *OPS_OBJECT_BROKER;
 MachineBroker     *OPS_MACHINE;
-static bool builtModel = false;
-static char *resDataPtr = 0;
-static int resDataSize = 0;
-static Timer *theTimer = 0;
-Element      *ops_TheActiveElement = 0;
+static bool builtModel                    = false;
+static char *resDataPtr                   = 0;
+static int resDataSize                    = 0;
+static Timer *theTimer                    = 0;
+Element      *ops_TheActiveElement        = 0;
 
 
 #else // If not _PARALLEL_PROCESSING

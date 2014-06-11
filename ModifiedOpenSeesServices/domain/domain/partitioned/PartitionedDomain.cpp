@@ -1321,13 +1321,22 @@ PartitionedDomain::partition(int numPartitions)
             theOutputWriter.writeNumberOfElements(this->getNumElements());
             while ( ( elePtr = theElemIter() ) != 0 )
             {
-                int materialtag = 0;
-                theOutputWriter.writeElementMeshData(elePtr->getTag() ,
-                                                     elePtr->getElementName(),
-                                                     elePtr->getExternalNodes(),
-                                                     materialtag ,
-                                                     elePtr->getGaussCoordinates(),
-                                                     elePtr->getOutputSize());
+                int eleTag           = elePtr->getTag();
+                std::string eleName  = elePtr->getElementName();
+                ID eleConnectivity   = elePtr->getExternalNodes();
+                int eleMaterialTag   = 0;       // To be implemented somehow
+                Matrix eleGaussCoord = elePtr->getGaussCoordinates();
+                int eleOutputSize    = elePtr->getOutputSize();
+                if ( eleName.compare("Element") != 0  )  // If the type of the element is the base class, then dont add it!
+                {
+                    theOutputWriter.writeElementMeshData( eleTag,
+                                                          eleName,
+                                                          eleConnectivity,
+                                                          eleMaterialTag ,
+                                                          eleGaussCoord,
+                                                          eleOutputSize);
+                }
+                ;
             }
         }
         have_populated_static_mesh_data = true;

@@ -145,7 +145,7 @@ class Element : public DomainComponent
 
         virtual std::string getElementName() const
         {
-            return "Base Class Element";
+            return "Element";
         }
         // virtual void setDomain(Domain *myDomain);
         using DomainComponent::setDomain;
