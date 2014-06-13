@@ -4173,6 +4173,9 @@ const Vector &EightNodeBrickElastic::getResistingForce ()
     //P = P - Q;
     P.addVector(1.0, Q, -1.0);
 
+
+    // cout << P;
+
     //cerr << "P-Q" << P;
     //if (this->getTag() == 6 || this->getTag() == 70 || this->getTag() == 71)
     //  cerr << "ELEMENT: " << this->getTag() << " FOrces: " << P;
@@ -4256,6 +4259,8 @@ const Vector &EightNodeBrickElastic::getResistingForceIncInertia ()
             P += this->getRayleighDampingForces();
         }
     }
+
+    // cout << P;
 
     return P;
 

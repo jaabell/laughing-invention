@@ -2737,7 +2737,7 @@ const Vector &EightNodeBrick::getResistingForce()
     //P = P - Q;
     P.addVector(1.0, Q, -1.0);
 
-
+    // cout << P;
 
     return P;
 }
@@ -2816,7 +2816,7 @@ const Vector &EightNodeBrick::getResistingForceIncInertia ()
         }
     }
 
-
+    // cout << P;
     //     cerr << P;
 
     return P;

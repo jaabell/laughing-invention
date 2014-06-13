@@ -1981,7 +1981,7 @@ const Matrix &TwentySevenNodeBrickLT::getMass ()
         {
             for ( int jj = 1 ; jj <= 81 ; jj++ )
             {
-                M( ii - 1 , jj - 1 ) = Mm( ii, jj );
+                M( ii - 1 , jj - 1 ) = Mm( ii - 1 , jj - 1 );
             }
 
         }
