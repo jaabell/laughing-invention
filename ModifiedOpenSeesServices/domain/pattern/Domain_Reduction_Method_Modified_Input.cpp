@@ -60,7 +60,7 @@ using std::ifstream;
 using namespace std;
 
 #ifdef _BABAK_DEBUG
-extern LoadPattern* DRM_LOAD_PATTERN ;
+extern LoadPattern *DRM_LOAD_PATTERN ;
 #endif
 Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input()
     : LoadPattern(0, PATTERN_TAG_Domain_Reduction_Method_Modified_Input),
@@ -76,10 +76,10 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input()
 }
 
 Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input(int tag,
-        const char* PBEfName,
-        const char* PBNfName,
-        const char* DispfName,
-        const char* AccefName,
+        const char *PBEfName,
+        const char *PBNfName,
+        const char *DispfName,
+        const char *AccefName,
         double theTimeIncr,
         double theFactor,
         int timeSteps,
@@ -95,15 +95,15 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input(i
                   PATTERN_TAG_Domain_Reduction_Method_Modified_Input),
     PBTimeIncr(theTimeIncr),
     cFactor(theFactor),
-    thetimeSteps(timeSteps),
-    number_of_DRM_elements(Number_of_DRM_Elements),
-    number_of_DRM_nodes(Number_of_DRM_Nodes),
     xPlus(xplus),
     xMinus(xminus),
     yPlus(yplus),
     yMinus(yminus),
     zPlus(zplus),
     zMinus(zminus),
+    number_of_DRM_elements(Number_of_DRM_Elements),
+    number_of_DRM_nodes(Number_of_DRM_Nodes),
+    thetimeSteps(timeSteps),
     DRMElementsFile(strdup(PBEfName)),
     DRMNodesFile(strdup(PBNfName)),
     DRMDisplacementsFile(strdup(DispfName)),
@@ -259,7 +259,7 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input(i
     // Beginning of Input displacement data
     //--------------------------------------
 
-    int num_nodes;
+    // int num_nodes;
     numDataPoints = 0;
     theFileDIS.open(DRMDisplacementsFile);
 
@@ -523,7 +523,7 @@ Domain_Reduction_Method_Modified_Input::~Domain_Reduction_Method_Modified_Input(
 
 
 void
-Domain_Reduction_Method_Modified_Input::setDomain(Domain* theDomain)
+Domain_Reduction_Method_Modified_Input::setDomain(Domain *theDomain)
 {
     this->LoadPattern::setDomain(theDomain);
 
@@ -534,10 +534,10 @@ Domain_Reduction_Method_Modified_Input::setDomain(Domain* theDomain)
         this->CompPBLoads();    //have to compute the load before send them over!
     }
 
-    # ifdef _BABAK_DEBUG
+# ifdef _BABAK_DEBUG
     cerr << "BABAK@Domain_Reduction_Method_Modified_Input::CompPBLoads() BoundaryNodes are:   " << ((*BoundaryNodes)(0)) << "before coming back to setDomain\n" ;
 
-    #endif
+#endif
     // // now we go through and set all the node velocities to be vel0
     // if (vel0 != 0.0) {
     //   NodeIter &theNodes = theDomain->getNodes();
@@ -562,7 +562,7 @@ void
 Domain_Reduction_Method_Modified_Input::applyLoad(double time)
 {
 
-    Domain* theDomain = this->getDomain();
+    Domain *theDomain = this->getDomain();
 
     if (theDomain == 0)
     {
@@ -585,13 +585,13 @@ Domain_Reduction_Method_Modified_Input::applyLoad(double time)
     }
 
     //Apply loads on each boundary bowl nodes
-    Node* theNode;
-    Vector* load;
+    Node *theNode;
+    Vector *load;
     int i;
 
     for (i = 0; i < numBnodes; i++)
     {
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( !theDomain->hasInternalNode((*BoundaryNodes)[i]) &&
                 (theDomain->Domain::getNode( (*BoundaryNodes)[i] ) == 0) )
@@ -599,7 +599,7 @@ Domain_Reduction_Method_Modified_Input::applyLoad(double time)
             continue;
         }
 
-        # endif
+# endif
         theNode = theDomain->getNode( (*BoundaryNodes)[i] );
 
         if ( theNode == 0 )
@@ -617,7 +617,7 @@ Domain_Reduction_Method_Modified_Input::applyLoad(double time)
     //Apply loads on each exterior bowl nodes
     for (i = 0; i < numEnodes; i++)
     {
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( !theDomain->hasInternalNode((*ExteriorNodes)[i]) &&
                 (theDomain->Domain::getNode( (*ExteriorNodes)[i] ) == 0) )
@@ -625,7 +625,7 @@ Domain_Reduction_Method_Modified_Input::applyLoad(double time)
             continue;
         }
 
-        # endif
+# endif
         theNode = theDomain->getNode( (*ExteriorNodes)[i] );
 
         if ( theNode == 0 )
@@ -640,7 +640,7 @@ Domain_Reduction_Method_Modified_Input::applyLoad(double time)
 }
 
 int
-Domain_Reduction_Method_Modified_Input::sendSelf(int commitTag, Channel& theChannel)
+Domain_Reduction_Method_Modified_Input::sendSelf(int commitTag, Channel &theChannel)
 {
     //Guanzhou implemented for parallel analysis
     //if ( !LoadComputed )
@@ -650,10 +650,10 @@ Domain_Reduction_Method_Modified_Input::sendSelf(int commitTag, Channel& theChan
     //     if ( !LoadComputed )
     //      this->CompPBLoads(); //have to compute the load before send them over!
 
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     cerr << "DomaiPartitioner::partition--BEFORE theSubdomain->addLoadPattern(newLoadPattern) -- DRM INFORMATION:\n";
     //DRM_LOAD_PATTERN->Print(cerr);
-    #endif
+#endif
     static ID idData(7);
 
     int dataTag = this->getDbTag();
@@ -737,8 +737,8 @@ Domain_Reduction_Method_Modified_Input::sendSelf(int commitTag, Channel& theChan
 }
 
 int
-Domain_Reduction_Method_Modified_Input::recvSelf(int commitTag, Channel& theChannel,
-        FEM_ObjectBroker& theBroker)
+Domain_Reduction_Method_Modified_Input::recvSelf(int commitTag, Channel &theChannel,
+        FEM_ObjectBroker &theBroker)
 {
     //Guanzhou implemented for parallel processing
     int dataTag = this->getDbTag();
@@ -1050,7 +1050,7 @@ Domain_Reduction_Method_Modified_Input::recvSelf(int commitTag, Channel &theChan
 ***************************************************************************************** */
 
 void
-Domain_Reduction_Method_Modified_Input::Print(ostream& s, int flag)
+Domain_Reduction_Method_Modified_Input::Print(ostream &s, int flag)
 {
     s << "Domain_Reduction_Method_Modified_Input " << this->getTag() << endln;
     s << "thetimeSteps " << thetimeSteps << endln;
@@ -1064,7 +1064,7 @@ Domain_Reduction_Method_Modified_Input::Print(ostream& s, int flag)
 
 
 // method to obtain a blank copy of the LoadPattern
-LoadPattern*
+LoadPattern *
 Domain_Reduction_Method_Modified_Input::getCopy(void)
 {
 
@@ -1072,7 +1072,7 @@ Domain_Reduction_Method_Modified_Input::getCopy(void)
 
     cout.flush() << "getcopy DRM" << endl;
 
-    Domain_Reduction_Method_Modified_Input* theCopy = new Domain_Reduction_Method_Modified_Input(this->getTag(),
+    Domain_Reduction_Method_Modified_Input *theCopy = new Domain_Reduction_Method_Modified_Input(this->getTag(),
             DRMElementsFile,
             DRMNodesFile,
             DRMDisplacementsFile,
@@ -1159,15 +1159,16 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
 
     init = clock();
 
-    Domain* theDomain = this->getDomain();
+    Domain *theDomain = this->getDomain();
 
     //Assume all the plastic bowl elements have the same number of nodes
-    Element* theElement = theDomain->getElement( (*PBowlElements)(0) );
+    // Also the same number of DOFS
+    Element *theElement = theDomain->getElement( (*PBowlElements)(0) );
     int NIE = theElement->getNumExternalNodes();
 
     int max_bnode = PBowlElements->Size() * NIE;
-    ID* Bowl_node = new ID(max_bnode);
-    ID* Bound_node = new ID(max_bnode);
+    ID *Bowl_node = new ID(max_bnode);
+    ID *Bound_node = new ID(max_bnode);
     ID NidesinFirstEle = theElement->getExternalNodes();
 
     //   int i, j, k, bi;
@@ -1184,7 +1185,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
     int Bowl_elem_nb = PBowlElements->Size();
     ID Temp;
 
-    # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
     if ( theElement != NULL )
     {
@@ -1192,7 +1193,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         theElement = NULL;
     }
 
-    # endif
+# endif
 
     for ( i = 1; i < Bowl_elem_nb; i++)
     {
@@ -1220,7 +1221,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         } //end of for (j=0...)
 
 
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theElement != NULL )
         {
@@ -1228,7 +1229,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
             theElement = NULL;
         }
 
-        # endif
+# endif
     }
 
     //--Joey------------------------------------------------
@@ -1261,12 +1262,12 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
 
     for (i = 0; i < no_bnode; i++)
     {
-        # ifdef _PARALLEL_PROCESSING
-        Node* theNode = theDomain->getOutsideNode( (*Bowl_node)(i) );
-        # else
-        Node* theNode = theDomain->getNode( (*Bowl_node)(i) );
-        # endif
-        const Vector& coor = theNode->getCrds();
+# ifdef _PARALLEL_PROCESSING
+        Node *theNode = theDomain->getOutsideNode( (*Bowl_node)(i) );
+# else
+        Node *theNode = theDomain->getNode( (*Bowl_node)(i) );
+# endif
+        const Vector &coor = theNode->getCrds();
 
         //right face
         if (      (coor(0) == xPlus)  && (coor(1) >= yMinus) && (coor(1) <= yPlus) && (coor(2) >= zMinus) && (coor(2) <= zPlus) )
@@ -1305,7 +1306,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
             no_boundarynodes++;
         }
 
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theDomain->Domain::getNode( (*Bowl_node)(i) )  == NULL )
         {
@@ -1313,7 +1314,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
             theNode = NULL;
         }
 
-        # endif
+# endif
     }
 
     //Adding all boundary nodes on the plastic bowl
@@ -1416,18 +1417,18 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
     cerr << "Computing the equivalent(effective) forces for all plastic bowl nodes" << endln;
     int cols = Udd->noRows();
     //Matrix to hold the computed effective nodal forces for all plastic bowl DOFs at each time step
-    Matrix* F = new Matrix(cols, thetimeSteps);
+    Matrix *F = new Matrix(cols, thetimeSteps);
 
     //Assume all plastic bowl nodes have the same number of DOFs
-    # ifdef _PARALLEL_PROCESSING
-    Node* theNode = theDomain->getOutsideNode((*BoundaryNodes)(0));
-    # else
-    Node* theNode = theDomain->getNode((*BoundaryNodes)(0));
-    # endif
+# ifdef _PARALLEL_PROCESSING
+    Node *theNode = theDomain->getOutsideNode((*BoundaryNodes)(0));
+# else
+    Node *theNode = theDomain->getNode((*BoundaryNodes)(0));
+# endif
 
     int NDOF = theNode->getNumberDOF();
 
-    # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
     if ( theDomain->Domain::getNode( (*BoundaryNodes)(0) )  == NULL )
     {
@@ -1435,14 +1436,14 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         theNode = NULL;
     }
 
-    # endif
+# endif
 
-    Vector* Fm = new Vector(NIE * NDOF);
-    Vector* Fk  = new Vector(NIE * NDOF);
+    Vector *Fm = new Vector(NIE * NDOF);
+    Vector *Fk  = new Vector(NIE * NDOF);
     //Matrix *Ke= new Matrix(NIE*NDOF,NIE*NDOF);
     //Matrix *Me= new Matrix(NIE*NDOF,NIE*NDOF);
-    Vector* u_e = new Vector(NIE * NDOF);
-    Vector* udd_e = new Vector(NIE * NDOF);
+    Vector *u_e = new Vector(NIE * NDOF);
+    Vector *udd_e = new Vector(NIE * NDOF);
 
     init = clock();
 
@@ -1457,7 +1458,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
     final = clock() - init;
     cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): time spent for initialization is ..." << (double)final / ((double)CLOCKS_PER_SEC) << " seconds \n";
 
-    Element* theBowlElements;
+    Element *theBowlElements;
 
     for (int i = 0; i < Bowl_elem_nb; i++)
     {
@@ -1470,11 +1471,11 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         // get the Brick;
         theBowlElements = theDomain->getElement( (*PBowlElements)(i) );
 
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
         theBowlElements->setDomain(theDomain);
-        # endif
+# endif
 
-        const ID& nd = theBowlElements->getExternalNodes();
+        const ID &nd = theBowlElements->getExternalNodes();
 
         Matrix Me = theBowlElements ->getMass();
         Matrix Ke = theBowlElements ->getTangentStiff();
@@ -1484,8 +1485,8 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         //-------------------------------------------------------------------------
 
         //Find out the boundary and exterior nodes in this element
-        ID* B_node = new ID(NIE);  //array to store the indices of all boundary nodes
-        ID* E_node = new ID(NIE);  //array to store the indices of all exterior nodes
+        ID *B_node = new ID(NIE);  //array to store the indices of all boundary nodes
+        ID *E_node = new ID(NIE);  //array to store the indices of all exterior nodes
         int nB = 0, nE = 0;
         bool bdnode;
 
@@ -1652,7 +1653,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
                     mid_index = max_index;
                 }
 
-                if ( (min_index == max_index) )
+                if ( min_index == max_index )
                 {
                     std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): can not find the node # " << nd(j) << " in the DRM nodes list\n";
                     exit(1);
@@ -1778,7 +1779,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
                     mid_index = max_index;
                 }
 
-                if ( (min_index == max_index) )
+                if ( min_index == max_index )
                 {
                     std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): can not find the node # " << nd(k) << " in the DRM nodes list\n";
                     exit(1);
@@ -1805,12 +1806,12 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): time spent for calculating the forces for element # " << i <<  " is " << (double)final / ((double)CLOCKS_PER_SEC) << " seconds \n";
 
 
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theBowlElements != NULL )
         {
             const int num = theBowlElements->getNumExternalNodes();
-            Node** nodes = theBowlElements->getNodePtrs();
+            Node **nodes = theBowlElements->getNodePtrs();
 
             for (int i = 0; i < num; i++)
             {
@@ -1828,7 +1829,7 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
             theBowlElements = NULL;
         }
 
-        # endif
+# endif
 
         final = clock() - init;
         cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): time spent for calculating the forces for element # " << i <<  " is " << (double)final / ((double)CLOCKS_PER_SEC) << " seconds \n";
@@ -1844,16 +1845,17 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         cerr << " a Matrix of size: " <<  PBowlLoads->noRows() << " * " << PBowlLoads->noCols() << endln;
     }
 
-
-
-    //   for (int rr=0; rr<cols; rr++)
-    //   {
-    //      for (int cc=0; cc<thetimeSteps; cc++)
-    //         {
-    //           cout << (*PBowlLoads)(rr,cc) << "  ";
-    //         }
-    //         cout << endl;
-    //   }
+    // std::string loadsfilename(DRMDisplacementsFile);
+    // loadsfilename += "loadsfile.txt";
+    // fstream loadsfile(loadsfilename.c_str(), ios::out);
+    // for (int rr = 0; rr < cols; rr++)
+    // {
+    //     for (int cc = 0; cc < thetimeSteps; cc++)
+    //     {
+    //         loadsfile << (*PBowlLoads)(rr, cc) << "  ";
+    //     }
+    //     loadsfile << endl;
+    // }
 
 
 
@@ -1883,20 +1885,20 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         delete U;
     }
 
-    # ifdef _BABAK_DEBUG
+# ifdef _BABAK_DEBUG
     //  cerr << "BABAK@Domain_Reduction_Method_Modified_Input::CompPBLoads() BoundaryNodes are:   " << ((*BoundaryNodes)(0)) << "before coming back to setDomain\n" ;
 
-    #endif
+#endif
 }
 
 
-Vector*
+Vector *
 Domain_Reduction_Method_Modified_Input::getNodalLoad(int nodeTag, double time)
 {
     //Vector *dummy = new Vector(0);
     //Get the node
-    Domain* theDomain = this->getDomain();
-    Node* theNode = theDomain->getNode(nodeTag);
+    Domain *theDomain = this->getDomain();
+    Node *theNode = theDomain->getNode(nodeTag);
 
     if (theNode == 0)
     {
@@ -1909,7 +1911,7 @@ Domain_Reduction_Method_Modified_Input::getNodalLoad(int nodeTag, double time)
 
     //Create the nodal load vector accoding to the DOFs the node has
     int numDOF = theNode->getNumberDOF();
-    Vector* nodalLoad = new Vector(numDOF);
+    Vector *nodalLoad = new Vector(numDOF);
 
 
     //Get the nodal loads associated to the nodeTag
