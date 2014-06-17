@@ -681,7 +681,7 @@ const DTensor4 &TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
     double det_of_Jacobian = 0.0;
     double weight = 0.0;
 
-    static DTensor2 incremental_strain(3, 3, 0.0);
+    // static DTensor2 incremental_strain(3, 3, 0.0);
     static DTensor2 dh_drst( 27, 3, 0.0 );
     static DTensor2 dhGlobal( 27, 3, 0.0 );
     static DTensor2 Jacobian(3, 3, 0.0);
@@ -1981,7 +1981,7 @@ const Matrix &TwentySevenNodeBrickLT::getMass ()
         {
             for ( int jj = 1 ; jj <= 81 ; jj++ )
             {
-                M( ii - 1 , jj - 1 ) = Mm( ii, jj );
+                M( ii - 1 , jj - 1 ) = Mm( ii - 1 , jj - 1 );
             }
 
         }

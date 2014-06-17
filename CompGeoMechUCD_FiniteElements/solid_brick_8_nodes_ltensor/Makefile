@@ -6,8 +6,8 @@ include ../../Makefile.Compilers
 
 
 ################### TARGETS ########################
-all: EightNodeBrickLT.o   
-	$(AR) $(ARFLAGS) ../../lib/libsolid_brick_8_nodes_ltensor.a  EightNodeBrickLT.o  
+all: TwentySevenNodeBrickLT.o   
+	$(AR) $(ARFLAGS) ../../lib/libsolid_brick_27_nodes_ltensor.a  TwentySevenNodeBrickLT.o  
 
 
 clean:
@@ -15,6 +15,6 @@ clean:
 
 cleanall:
 	$(RM) $(RMFLAGS)  *.o *.bak
-	$(RM) $(RMFLAGS)  ../../lib/libsolid_brick_8_nodes_ltensor.a
+	$(RM) $(RMFLAGS)  ../../lib/libsolid_brick_27_nodes_ltensor.a
 
 

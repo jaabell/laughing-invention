@@ -546,13 +546,13 @@ const DTensor2 &EightNodeBrickLT::nodal_forces( void ) const
         dh = dh_drst_at( r, s, t );
 
         // Jacobian tensor ( matrix )
-        //Jacobian = Jacobian_3D( dh );
+        Jacobian = Jacobian_3D( dh );
 
         // Inverse of Jacobian tensor ( matrix )
         JacobianINV = Jacobian_3Dinv( dh );
 
         // determinant of Jacobian tensor ( matrix )
-        det_of_Jacobian  = 1.0 / JacobianINV.compute_Determinant();
+        det_of_Jacobian  = Jacobian.compute_Determinant();
 
         // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
         dhGlobal(i, k) = dh(i, j) * JacobianINV(k, j);
@@ -561,7 +561,7 @@ const DTensor2 &EightNodeBrickLT::nodal_forces( void ) const
         weight = w_r * w_s * w_t * det_of_Jacobian;
         stress_at_GP = material_array[gp]->getStressTensor();
 
-        nodal_forces(i, j) += weight * (dhGlobal( i, k ) * stress_at_GP( j, k ) );
+        nodal_forces(i, j) = nodal_forces(i, j) + weight * (dhGlobal( i, k ) * stress_at_GP( j, k ) );
 
     }
 
@@ -1005,7 +1005,7 @@ const Matrix &EightNodeBrickLT::getMass ()
         {
             for ( int jj = 1 ; jj <= 24 ; jj++ )
             {
-                M( ii - 1 , jj - 1 ) = Mm( ii, jj );
+                M( ii - 1 , jj - 1 ) = Mm( ii - 1, jj - 1 );
             }
 
         }
@@ -1333,6 +1333,8 @@ const Vector &EightNodeBrickLT::getResistingForce()
 
     P.addVector( 1.0, Q, -1.0 );
 
+    // cout << P;
+
     return P;
 }
 
@@ -1408,6 +1410,8 @@ const Vector &EightNodeBrickLT::getResistingForceIncInertia ()
             P += this->getRayleighDampingForces();
         }
     }
+
+    // cout << P;
 
     return P;
 

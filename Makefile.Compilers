@@ -2,31 +2,31 @@ Compiler = GNU
 #Compiler = CLANG
 #Compiler = PARALLEL
 
-DEBUG_MODE = DEBUG
-#DEBUG_MODE = NO_DEBUG
+#DEBUG_MODE = DEBUG
+DEBUG_MODE = NO_DEBUG
 
 PROGRAMMING_MODE = SEQUENTIAL
 #PROGRAMMING_MODE = PARALLEL
 
-LTO_FLAGS = 
-# LTO_FLAGS = -flto
+#LTO_FLAGS = 
+LTO_FLAGS = -flto
+
+#INLINING_OPTS = -finline \
+#				-Winline \
+#				-finline-functions \
+#				-fkeep-inline-functions \
+#				-fdefault-inline 
+
 
 INLINING_OPTS = -finline \
 				-Winline \
 				-finline-functions \
+				-finline-limit=10000 \
+				-ftemplate-depth=100000 \
+				--param inline-unit-growth=10000 \
+				--param large-function-growth=10000 \
 				-fkeep-inline-functions \
-				-fdefault-inline 
-
-
-# INLINING_OPTS = -finline \
-# 				-Winline \
-# 				-finline-functions \
-# 				-finline-limit=10000 \
-# 				-ftemplate-depth=100000 \
-# 				--param inline-unit-growth=10000 \
-# 				--param large-function-growth=10000 \
-# 				-fkeep-inline-functions \
-# 				-fdefault-inline
+				-fdefault-inline
 
 
 #  ==========================================
@@ -91,7 +91,6 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-O2 \
 										$(INLINING_OPTS) \
 										-ffloat-store \
-										-ffast-math \
 										-funroll-loops \
 										-std=c++0x \
 										-D_LINUX \
