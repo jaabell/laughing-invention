@@ -533,17 +533,7 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
             stiff(i, j) = Kn * (N(i) * N(j)) + Kt * (T1(i) * T1(j) + T2(i) * T2(j));
         }
     }
-    
-    
-    cerr << "ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff -- element number: " << this->getTag() << endl;
-    for (i = 0; i < 6; i++)
-    {
-        for (j = 0; j < 6; j++)
-        {
-            cout << setw(12) << stiff(i, j) ;
-        }
-        cout<<"\n";
-    }
+    // cout << stiff << endl;
     return stiff ;
 }
 
@@ -1025,6 +1015,7 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
             yield_criteria = shear_force_trial_np1_norm - fs * fabs(normalforce_np1);  //Nice and simple
             // cout << "shearforce_trial_np1 = " << shearforce_trial_np1 <<
             //      "   normalforce_np1 = " << normalforce_np1 << endl;
+
 	    //Babak and Boris put >= because when the normal force is zero at the 1st step, it should slide ... June 14, 2014-
             if (yield_criteria >= tol)  //Sliding case
             {
