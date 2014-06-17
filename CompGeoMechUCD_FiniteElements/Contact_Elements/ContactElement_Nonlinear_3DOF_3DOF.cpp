@@ -533,7 +533,17 @@ ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff(void)
             stiff(i, j) = Kn * (N(i) * N(j)) + Kt * (T1(i) * T1(j) + T2(i) * T2(j));
         }
     }
-    // cout << stiff << endl;
+    
+    
+    cerr << "ContactElement_Nonlinear_3DOF_3DOF::getTangentStiff -- element number: " << this->getTag() << endl;
+    for (i = 0; i < 6; i++)
+    {
+        for (j = 0; j < 6; j++)
+        {
+            cout << setw(12) << stiff(i, j) ;
+        }
+        cout<<"\n";
+    }
     return stiff ;
 }
 
@@ -975,22 +985,23 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
             double lamda;
             double tol = 0;
             double Kn_np1;
-            double Kn_n;
+            // double Kn_n;
 
             //Compute Kn at (n+1)/2
-            Kn_np1 = 2 * Kn_factor * total_normal_relative_displ_np1;;
-            Kn_n   = 2 * Kn_factor  * total_normal_relative_displ_n;
+            Kn_np1 = 2 * Kn_factor * total_normal_relative_displ_np1 + Kn_factor * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;  //  We now add F = A u^2 + B u,  where B = A * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP
+            // Kn_n   = 2 * Kn_factor  * total_normal_relative_displ_n + Kn_factor * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;
             // Kn = 0.5 * (Kn_np1 + Kn_n);
             Kn = Kn_np1;
 
-            if (total_normal_relative_displ_n < ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP) // Are in contact but stiffness is too low
-            {
-                Kn = 2 * Kn_factor  * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;
-            }
+            // if (total_normal_relative_displ_n < ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP) // Are in contact but stiffness is too low
+            // {
+            //     Kn = 2 * Kn_factor  * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP;
+            // }
 
 
             // Compute normal force
-            normalforce_np1 = -Kn_factor * total_normal_relative_displ_np1 * total_normal_relative_displ_np1;
+            normalforce_np1 = -Kn_factor * total_normal_relative_displ_np1 * total_normal_relative_displ_np1 -  Kn_factor * ContactElement_Nonlinear_3DOF_3DOF_TOL_ZEROGAP * total_normal_relative_displ_np1;
+
 
 
             // Compute trial shear force
@@ -1014,8 +1025,8 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
             yield_criteria = shear_force_trial_np1_norm - fs * fabs(normalforce_np1);  //Nice and simple
             // cout << "shearforce_trial_np1 = " << shearforce_trial_np1 <<
             //      "   normalforce_np1 = " << normalforce_np1 << endl;
-
-            if (yield_criteria > tol)  //Sliding case
+	    //Babak and Boris put >= because when the normal force is zero at the 1st step, it should slide ... June 14, 2014-
+            if (yield_criteria >= tol)  //Sliding case
             {
                 lamda                                 = 1 / Kt * (shear_force_trial_np1_norm - fs * fabs(normalforce_np1) - tol);
 
