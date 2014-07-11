@@ -541,6 +541,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     //---------------------------------------------------------------------------------------------
 
     double norm_nij_dev;
+
+    // NOTE: Not consistent with article! Eqn. 10
     nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) - p_incr_prev * alpha(i, j); // and then normalization
     norm_nij_dev = sqrt(nij_dev(i, j) * nij_dev(i, j));
 
@@ -694,6 +696,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     I2(1, 1) = 1;
 
     I2(2, 2) = 1;
+
+    // NOTE: Problem with the stiffness indexig...... ask Gregor
 
     Stiffness(p, q, i, j) =  nij_dev(i, j) * nij_dev(p, q) * (-4.0 * G * G / den) +
                              I2(i, j)      * nij_dev(p, q) * (2.0 * G * K * D / den) +

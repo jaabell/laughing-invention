@@ -412,7 +412,7 @@ static char *resDataPtr                   = 0;
 static int resDataSize                    = 0;
 static Timer *theTimer                    = 0;
 Element      *ops_TheActiveElement        = 0;
-
+MPI_MachineBroker *theMachineBroker = 0;
 
 #else // If not _PARALLEL_PROCESSING
 Domain theDomain;
