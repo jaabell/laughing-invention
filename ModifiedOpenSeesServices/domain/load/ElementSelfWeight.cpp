@@ -37,7 +37,7 @@ using namespace std;
 
 // Vector ElementSelfWeight::data(3);
 
-ElementSelfWeight::ElementSelfWeight(int tag, const ID& theElementTags, const Vector& accelerationfield)
+ElementSelfWeight::ElementSelfWeight(int tag, const ID &theElementTags, const Vector &accelerationfield)
     : ElementalLoad(tag, LOAD_TAG_ElementSelfWeight, theElementTags), data(3)
 {
     data(0) = accelerationfield(0);
@@ -56,8 +56,8 @@ ElementSelfWeight::~ElementSelfWeight()
 
 }
 
-const Vector&
-ElementSelfWeight::getData(int& type, double loadFactor)
+const Vector &
+ElementSelfWeight::getData(int &type, double loadFactor)
 {
     type = LOAD_TAG_ElementSelfWeight;
 
@@ -65,11 +65,11 @@ ElementSelfWeight::getData(int& type, double loadFactor)
 }
 
 int
-ElementSelfWeight::sendSelf(int commitTag, Channel& theChannel)
+ElementSelfWeight::sendSelf(int commitTag, Channel &theChannel)
 {
     int dbTag = this->getDbTag();
     int myTag = this->getTag();
-    const ID& theElements = this->getElementTags();
+    const ID &theElements = this->getElementTags();
 
     static ID idData(2);
     idData(0) = theElements.Size();
@@ -91,11 +91,19 @@ ElementSelfWeight::sendSelf(int commitTag, Channel& theChannel)
         return result;
     }
 
+    result = theChannel.sendVector(dbTag, commitTag, data);
+    if (result < 0)
+    {
+        cerr << "ElementSelfWeight::sendSelf() - failed to data (value of self weight acceleration field.)\n";
+        return result;
+    }
+
+
     return 0;
 }
 
 int
-ElementSelfWeight::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
+ElementSelfWeight::recvSelf(int commitTag, Channel &theChannel,  FEM_ObjectBroker &theBroker)
 {
     int dbTag = this->getDbTag();
     static ID idData(2);
@@ -110,7 +118,7 @@ ElementSelfWeight::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroke
 
     int numEle = idData(0);
     int myTag = idData(1);
-    ID* NewTags = new ID(numEle);
+    ID *NewTags = new ID(numEle);
 
     result = theChannel.recvID(dbTag, commitTag, *NewTags);
 
@@ -120,6 +128,18 @@ ElementSelfWeight::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroke
         return result;
     }
 
+    // Vector *newdata;
+    result = theChannel.recvVector(dbTag, commitTag, data);
+
+    if (result < 0)
+    {
+        cerr << "ElementSelfWeight::recvSelf() - failed to recv data (value of self weight acceleration field.)\n";
+        return result;
+    }
+
+    // data = *newdata;
+
+
     this->setTag(myTag);
     this->setElementTags(*NewTags);
     delete NewTags;
@@ -128,7 +148,7 @@ ElementSelfWeight::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroke
 }
 
 void
-ElementSelfWeight::Print(ostream& s, int flag)
+ElementSelfWeight::Print(ostream &s, int flag)
 {
     s << "ElementSelfWeight...";
     s << "  elements acted on: " << this->getElementTags();
