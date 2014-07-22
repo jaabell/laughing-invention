@@ -1,40 +1,38 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+// A Bison parser, made by GNU Bison 3.0.2.
 
-/* Skeleton implementation for Bison LALR(1) parsers in C++
-   
-      Copyright (C) 2002-2011 Free Software Foundation, Inc.
-   
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+// Skeleton implementation for Bison LALR(1) parsers in C++
 
-/* As a special exception, you may create a larger work that contains
-   part or all of the Bison parser skeleton and distribute that work
-   under terms of your choice, so long as that work isn't itself a
-   parser generator using the skeleton or a modified version thereof
-   as a parser skeleton.  Alternatively, if you modify or redistribute
-   the parser skeleton itself, you may (at your option) remove this
-   special exception, which will cause the skeleton and the resulting
-   Bison output files to be licensed under the GNU General Public
-   License without this special exception.
-   
-   This special exception was added by the Free Software Foundation in
-   version 2.2 of Bison.  */
+// Copyright (C) 2002-2013 Free Software Foundation, Inc.
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// As a special exception, you may create a larger work that contains
+// part or all of the Bison parser skeleton and distribute that work
+// under terms of your choice, so long as that work isn't itself a
+// parser generator using the skeleton or a modified version thereof
+// as a parser skeleton.  Alternatively, if you modify or redistribute
+// the parser skeleton itself, you may (at your option) remove this
+// special exception, which will cause the skeleton and the resulting
+// Bison output files to be licensed under the GNU General Public
+// License without this special exception.
+
+// This special exception was added by the Free Software Foundation in
+// version 2.2 of Bison.
 
 
-/* First part of user declarations.  */
-
-/* Line 293 of lalr1.cc  */
-#line 11 "feiparser.yy"
+// First part of user declarations.
+#line 11 "feiparser.yy" // lalr1.cc:399
 
     // Basic
     #include <iostream>
@@ -130,29 +128,31 @@
     //    CommandSuggestion cmd_advisor;
 
 
+#line 132 "feiparser.tab.cc" // lalr1.cc:399
 
-/* Line 293 of lalr1.cc  */
-#line 136 "feiparser.tab.cc"
-
+# ifndef YY_NULLPTR
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULLPTR nullptr
+#  else
+#   define YY_NULLPTR 0
+#  endif
+# endif
 
 #include "feiparser.tab.hh"
 
-/* User implementation prologue.  */
-
-/* Line 299 of lalr1.cc  */
-#line 239 "feiparser.yy"
+// User implementation prologue.
+#line 239 "feiparser.yy" // lalr1.cc:407
 
 extern int yylex(yy::feiparser::semantic_type *yylval,
                  yy::feiparser::location_type *yylloc);
 
+#line 150 "feiparser.tab.cc" // lalr1.cc:407
 
-/* Line 299 of lalr1.cc  */
-#line 151 "feiparser.tab.cc"
 
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
-#   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
+#   include <libintl.h> // FIXME: INFRINGES ON USER NAME SPACE.
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
 #  endif
 # endif
@@ -161,79 +161,78 @@ extern int yylex(yy::feiparser::semantic_type *yylval,
 # endif
 #endif
 
+#define YYRHSLOC(Rhs, K) ((Rhs)[K].location)
 /* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
    If N is 0, then set CURRENT to the empty location which ends
    the previous symbol: RHS[0] (always defined).  */
 
-#define YYRHSLOC(Rhs, K) ((Rhs)[K])
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)                               \
- do                                                                    \
-   if (N)                                                              \
-     {                                                                 \
-       (Current).begin = YYRHSLOC (Rhs, 1).begin;                      \
-       (Current).end   = YYRHSLOC (Rhs, N).end;                        \
-     }                                                                 \
-   else                                                                \
-     {                                                                 \
-       (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;        \
-     }                                                                 \
- while (false)
-#endif
+# ifndef YYLLOC_DEFAULT
+#  define YYLLOC_DEFAULT(Current, Rhs, N)                               \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).begin  = YYRHSLOC (Rhs, 1).begin;                   \
+          (Current).end    = YYRHSLOC (Rhs, N).end;                     \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
+        }                                                               \
+    while (/*CONSTCOND*/ false)
+# endif
 
-/* Suppress unused-variable warnings by "using" E.  */
-#define YYUSE(e) ((void) (e))
 
-/* Enable debugging if requested.  */
+// Suppress unused-variable warnings by "using" E.
+#define YYUSE(E) ((void) (E))
+
+// Enable debugging if requested.
 #if YYDEBUG
 
-/* A pseudo ostream that takes yydebug_ into account.  */
+// A pseudo ostream that takes yydebug_ into account.
 # define YYCDEBUG if (yydebug_) (*yycdebug_)
 
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)	\
-do {							\
-  if (yydebug_)						\
-    {							\
-      *yycdebug_ << Title << ' ';			\
-      yy_symbol_print_ ((Type), (Value), (Location));	\
-      *yycdebug_ << std::endl;				\
-    }							\
-} while (false)
+# define YY_SYMBOL_PRINT(Title, Symbol)         \
+  do {                                          \
+    if (yydebug_)                               \
+    {                                           \
+      *yycdebug_ << Title << ' ';               \
+      yy_print_ (*yycdebug_, Symbol);           \
+      *yycdebug_ << std::endl;                  \
+    }                                           \
+  } while (false)
 
-# define YY_REDUCE_PRINT(Rule)		\
-do {					\
-  if (yydebug_)				\
-    yy_reduce_print_ (Rule);		\
-} while (false)
+# define YY_REDUCE_PRINT(Rule)          \
+  do {                                  \
+    if (yydebug_)                       \
+      yy_reduce_print_ (Rule);          \
+  } while (false)
 
-# define YY_STACK_PRINT()		\
-do {					\
-  if (yydebug_)				\
-    yystack_print_ ();			\
-} while (false)
+# define YY_STACK_PRINT()               \
+  do {                                  \
+    if (yydebug_)                       \
+      yystack_print_ ();                \
+  } while (false)
 
-#else /* !YYDEBUG */
+#else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
-# define YY_REDUCE_PRINT(Rule)
-# define YY_STACK_PRINT()
+# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE(Symbol)
+# define YY_REDUCE_PRINT(Rule)           static_cast<void>(0)
+# define YY_STACK_PRINT()                static_cast<void>(0)
 
-#endif /* !YYDEBUG */
+#endif // !YYDEBUG
 
-#define yyerrok		(yyerrstatus_ = 0)
-#define yyclearin	(yychar = yyempty_)
+#define yyerrok         (yyerrstatus_ = 0)
+#define yyclearin       (yyempty = true)
 
-#define YYACCEPT	goto yyacceptlab
-#define YYABORT		goto yyabortlab
-#define YYERROR		goto yyerrorlab
+#define YYACCEPT        goto yyacceptlab
+#define YYABORT         goto yyabortlab
+#define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 
 namespace yy {
-
-/* Line 382 of lalr1.cc  */
-#line 237 "feiparser.tab.cc"
+#line 236 "feiparser.tab.cc" // lalr1.cc:474
 
   /// Build a parser object.
   feiparser::feiparser ()
@@ -241,68 +240,213 @@ namespace yy {
      :yydebug_ (false),
       yycdebug_ (&std::cerr)
 #endif
+  {}
+
+  feiparser::~feiparser ()
+  {}
+
+
+  /*---------------.
+  | Symbol types.  |
+  `---------------*/
+
+  inline
+  feiparser::syntax_error::syntax_error (const location_type& l, const std::string& m)
+    : std::runtime_error (m)
+    , location (l)
+  {}
+
+  // basic_symbol.
+  template <typename Base>
+  inline
+  feiparser::basic_symbol<Base>::basic_symbol ()
+    : value ()
+  {}
+
+  template <typename Base>
+  inline
+  feiparser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
+    : Base (other)
+    , value ()
+    , location (other.location)
+  {
+    value = other.value;
+  }
+
+
+  template <typename Base>
+  inline
+  feiparser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+
+  /// Constructor for valueless symbols.
+  template <typename Base>
+  inline
+  feiparser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
+    : Base (t)
+    , value ()
+    , location (l)
+  {}
+
+  template <typename Base>
+  inline
+  feiparser::basic_symbol<Base>::~basic_symbol ()
   {
   }
 
-  feiparser::~feiparser ()
+  template <typename Base>
+  inline
+  void
+  feiparser::basic_symbol<Base>::move (basic_symbol& s)
   {
+    super_type::move(s);
+    value = s.value;
+    location = s.location;
+  }
+
+  // by_type.
+  inline
+  feiparser::by_type::by_type ()
+     : type (empty)
+  {}
+
+  inline
+  feiparser::by_type::by_type (const by_type& other)
+    : type (other.type)
+  {}
+
+  inline
+  feiparser::by_type::by_type (token_type t)
+    : type (yytranslate_ (t))
+  {}
+
+  inline
+  void
+  feiparser::by_type::move (by_type& that)
+  {
+    type = that.type;
+    that.type = empty;
+  }
+
+  inline
+  int
+  feiparser::by_type::type_get () const
+  {
+    return type;
+  }
+
+
+  // by_state.
+  inline
+  feiparser::by_state::by_state ()
+    : state (empty)
+  {}
+
+  inline
+  feiparser::by_state::by_state (const by_state& other)
+    : state (other.state)
+  {}
+
+  inline
+  void
+  feiparser::by_state::move (by_state& that)
+  {
+    state = that.state;
+    that.state = empty;
+  }
+
+  inline
+  feiparser::by_state::by_state (state_type s)
+    : state (s)
+  {}
+
+  inline
+  feiparser::symbol_number_type
+  feiparser::by_state::type_get () const
+  {
+    return state == empty ? 0 : yystos_[state];
+  }
+
+  inline
+  feiparser::stack_symbol_type::stack_symbol_type ()
+  {}
+
+
+  inline
+  feiparser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
+    : super_type (s, that.location)
+  {
+    value = that.value;
+    // that is emptied.
+    that.type = empty;
+  }
+
+  inline
+  feiparser::stack_symbol_type&
+  feiparser::stack_symbol_type::operator= (const stack_symbol_type& that)
+  {
+    state = that.state;
+    value = that.value;
+    location = that.location;
+    return *this;
+  }
+
+
+  template <typename Base>
+  inline
+  void
+  feiparser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
+  {
+    if (yymsg)
+      YY_SYMBOL_PRINT (yymsg, yysym);
+
+    // User destructor.
+    YYUSE (yysym.type_get ());
   }
 
 #if YYDEBUG
-  /*--------------------------------.
-  | Print this symbol on YYOUTPUT.  |
-  `--------------------------------*/
-
-  inline void
-  feiparser::yy_symbol_value_print_ (int yytype,
-			   const semantic_type* yyvaluep, const location_type* yylocationp)
-  {
-    YYUSE (yylocationp);
-    YYUSE (yyvaluep);
-    switch (yytype)
-      {
-         default:
-	  break;
-      }
-  }
-
-
+  template <typename Base>
   void
-  feiparser::yy_symbol_print_ (int yytype,
-			   const semantic_type* yyvaluep, const location_type* yylocationp)
+  feiparser::yy_print_ (std::ostream& yyo,
+                                     const basic_symbol<Base>& yysym) const
   {
-    *yycdebug_ << (yytype < yyntokens_ ? "token" : "nterm")
-	       << ' ' << yytname_[yytype] << " ("
-	       << *yylocationp << ": ";
-    yy_symbol_value_print_ (yytype, yyvaluep, yylocationp);
-    *yycdebug_ << ')';
+    std::ostream& yyoutput = yyo;
+    YYUSE (yyoutput);
+    symbol_number_type yytype = yysym.type_get ();
+    yyo << (yytype < yyntokens_ ? "token" : "nterm")
+        << ' ' << yytname_[yytype] << " ("
+        << yysym.location << ": ";
+    YYUSE (yytype);
+    yyo << ')';
   }
 #endif
 
+  inline
   void
-  feiparser::yydestruct_ (const char* yymsg,
-			   int yytype, semantic_type* yyvaluep, location_type* yylocationp)
+  feiparser::yypush_ (const char* m, state_type s, symbol_type& sym)
   {
-    YYUSE (yylocationp);
-    YYUSE (yymsg);
-    YYUSE (yyvaluep);
-
-    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
-
-    switch (yytype)
-      {
-  
-	default:
-	  break;
-      }
+    stack_symbol_type t (s, sym);
+    yypush_ (m, t);
   }
 
+  inline
+  void
+  feiparser::yypush_ (const char* m, stack_symbol_type& s)
+  {
+    if (m)
+      YY_SYMBOL_PRINT (m, s);
+    yystack_.push (s);
+  }
+
+  inline
   void
   feiparser::yypop_ (unsigned int n)
   {
-    yystate_stack_.pop (n);
-    yysemantic_stack_.pop (n);
-    yylocation_stack_.pop (n);
+    yystack_.pop (n);
   }
 
 #if YYDEBUG
@@ -330,7 +474,17 @@ namespace yy {
   {
     yydebug_ = l;
   }
-#endif
+#endif // YYDEBUG
+
+  inline feiparser::state_type
+  feiparser::yy_lr_goto_state_ (state_type yystate, int yysym)
+  {
+    int yyr = yypgoto_[yysym - yyntokens_] + yystate;
+    if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
+      return yytable_[yyr];
+    else
+      return yydefgoto_[yysym - yyntokens_];
+  }
 
   inline bool
   feiparser::yy_pact_value_is_default_ (int yyvalue)
@@ -347,134 +501,116 @@ namespace yy {
   int
   feiparser::parse ()
   {
-    /// Lookahead and lookahead in internal form.
-    int yychar = yyempty_;
-    int yytoken = 0;
+    /// Whether yyla contains a lookahead.
+    bool yyempty = true;
 
-    /* State.  */
+    // State.
     int yyn;
+    /// Length of the RHS of the rule being reduced.
     int yylen = 0;
-    int yystate = 0;
 
-    /* Error handling.  */
+    // Error handling.
     int yynerrs_ = 0;
     int yyerrstatus_ = 0;
 
-    /// Semantic value of the lookahead.
-    semantic_type yylval;
-    /// Location of the lookahead.
-    location_type yylloc;
+    /// The lookahead symbol.
+    symbol_type yyla;
+
     /// The locations where the error started and ended.
-    location_type yyerror_range[3];
+    stack_symbol_type yyerror_range[3];
 
-    /// $$.
-    semantic_type yyval;
-    /// @$.
-    location_type yyloc;
-
+    /// The return value of parse ().
     int yyresult;
 
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
+    try
+      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
-    /* User initialization code.  */
-    
-/* Line 565 of lalr1.cc  */
-#line 244 "feiparser.yy"
+    // User initialization code.
+    #line 244 "feiparser.yy" // lalr1.cc:725
 {
-    yylloc.begin.filename = yylloc.end.filename = new std::string(curfilename);
+    yyla.location.begin.filename = yyla.location.end.filename = new std::string(curfilename);
 }
 
-/* Line 565 of lalr1.cc  */
-#line 390 "feiparser.tab.cc"
+#line 539 "feiparser.tab.cc" // lalr1.cc:725
 
-    /* Initialize the stacks.  The initial state will be pushed in
+    /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
-    yystate_stack_ = state_stack_type (0);
-    yysemantic_stack_ = semantic_stack_type (0);
-    yylocation_stack_ = location_stack_type (0);
-    yysemantic_stack_.push (yylval);
-    yylocation_stack_.push (yylloc);
+    yystack_.clear ();
+    yypush_ (YY_NULLPTR, 0, yyla);
 
-    /* New state.  */
+    // A new symbol was pushed on the stack.
   yynewstate:
-    yystate_stack_.push (yystate);
-    YYCDEBUG << "Entering state " << yystate << std::endl;
+    YYCDEBUG << "Entering state " << yystack_[0].state << std::endl;
 
-    /* Accept?  */
-    if (yystate == yyfinal_)
+    // Accept?
+    if (yystack_[0].state == yyfinal_)
       goto yyacceptlab;
 
     goto yybackup;
 
-    /* Backup.  */
+    // Backup.
   yybackup:
 
-    /* Try to take a decision without lookahead.  */
-    yyn = yypact_[yystate];
+    // Try to take a decision without lookahead.
+    yyn = yypact_[yystack_[0].state];
     if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
-    /* Read a lookahead token.  */
-    if (yychar == yyempty_)
+    // Read a lookahead token.
+    if (yyempty)
       {
-	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, &yylloc);
+        YYCDEBUG << "Reading a token: ";
+        try
+          {
+            yyla.type = yytranslate_ (yylex (&yyla.value, &yyla.location));
+          }
+        catch (const syntax_error& yyexc)
+          {
+            error (yyexc);
+            goto yyerrlab1;
+          }
+        yyempty = false;
       }
+    YY_SYMBOL_PRINT ("Next token is", yyla);
 
-
-    /* Convert token to internal form.  */
-    if (yychar <= yyeof_)
-      {
-	yychar = yytoken = yyeof_;
-	YYCDEBUG << "Now at end of input." << std::endl;
-      }
-    else
-      {
-	yytoken = yytranslate_ (yychar);
-	YY_SYMBOL_PRINT ("Next token is", yytoken, &yylval, &yylloc);
-      }
-
-    /* If the proper action on seeing token YYTOKEN is to reduce or to
-       detect an error, take that action.  */
-    yyn += yytoken;
-    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yytoken)
+    /* If the proper action on seeing token YYLA.TYPE is to reduce or
+       to detect an error, take that action.  */
+    yyn += yyla.type_get ();
+    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.type_get ())
       goto yydefault;
 
-    /* Reduce or error.  */
+    // Reduce or error.
     yyn = yytable_[yyn];
     if (yyn <= 0)
       {
-	if (yy_table_value_is_error_ (yyn))
-	  goto yyerrlab;
-	yyn = -yyn;
-	goto yyreduce;
+        if (yy_table_value_is_error_ (yyn))
+          goto yyerrlab;
+        yyn = -yyn;
+        goto yyreduce;
       }
 
-    /* Shift the lookahead token.  */
-    YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
+    // Discard the token being shifted.
+    yyempty = true;
 
-    /* Discard the token being shifted.  */
-    yychar = yyempty_;
-
-    yysemantic_stack_.push (yylval);
-    yylocation_stack_.push (yylloc);
-
-    /* Count tokens shifted since error; after three, turn off error
-       status.  */
+    // Count tokens shifted since error; after three, turn off error status.
     if (yyerrstatus_)
       --yyerrstatus_;
 
-    yystate = yyn;
+    // Shift the lookahead token.
+    yypush_ ("Shifting", yyn, yyla);
     goto yynewstate;
 
   /*-----------------------------------------------------------.
   | yydefault -- do the default action for the current state.  |
   `-----------------------------------------------------------*/
   yydefault:
-    yyn = yydefact_[yystate];
+    yyn = yydefact_[yystack_[0].state];
     if (yyn == 0)
       goto yyerrlab;
     goto yyreduce;
@@ -484,190 +620,181 @@ namespace yy {
   `-----------------------------*/
   yyreduce:
     yylen = yyr2_[yyn];
-    /* If YYLEN is nonzero, implement the default value of the action:
-       `$$ = $1'.  Otherwise, use the top of the stack.
-
-       Otherwise, the following line sets YYVAL to garbage.
-       This behavior is undocumented and Bison
-       users should not rely upon it.  */
-    if (yylen)
-      yyval = yysemantic_stack_[yylen - 1];
-    else
-      yyval = yysemantic_stack_[0];
-
     {
-      slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
-      YYLLOC_DEFAULT (yyloc, slice, yylen);
-    }
-    YY_REDUCE_PRINT (yyn);
-    switch (yyn)
+      stack_symbol_type yylhs;
+      yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
+      /* If YYLEN is nonzero, implement the default value of the
+         action: '$$ = $1'.  Otherwise, use the top of the stack.
+
+         Otherwise, the following line sets YYLHS.VALUE to garbage.
+         This behavior is undocumented and Bison users should not rely
+         upon it.  */
+      if (yylen)
+        yylhs.value = yystack_[yylen - 1].value;
+      else
+        yylhs.value = yystack_[0].value;
+
+      // Compute the default @$.
       {
-	  case 2:
+        slice<stack_symbol_type, stack_type> slice (yystack_, yylen);
+        YYLLOC_DEFAULT (yylhs.location, slice, yylen);
+      }
 
-/* Line 690 of lalr1.cc  */
-#line 265 "feiparser.yy"
-    {
-        if ( (yysemantic_stack_[(2) - (2)].exp) != 0 ) // ... and deliver us from the null pointer
+      // Perform the reduction.
+      YY_REDUCE_PRINT (yyn);
+      try
         {
-            (yyval.exp) = new DslPrint((yysemantic_stack_[(2) - (2)].exp));
+          switch (yyn)
+            {
+  case 2:
+#line 265 "feiparser.yy" // lalr1.cc:847
+    {
+        if ( (yystack_[0].value.exp) != 0 ) // ... and deliver us from the null pointer
+        {
+            (yylhs.value.exp) = new DslPrint((yystack_[0].value.exp));
         } else {
-            (yyval.exp) = new Empty();
+            (yylhs.value.exp) = new Empty();
         }
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 662 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 3:
-
-/* Line 690 of lalr1.cc  */
-#line 279 "feiparser.yy"
+#line 279 "feiparser.yy" // lalr1.cc:847
     {
         //theDomain.Print(cerr);
         cerr << "Not currently working. Should be implemented as API function and used here." << endl;
-        (yyval.exp) = new Empty();
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new Empty();
+        nodes.push((yylhs.value.exp));
     }
+#line 673 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 4:
-
-/* Line 690 of lalr1.cc  */
-#line 289 "feiparser.yy"
+#line 289 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<int>(&output_of_element_to_screen, args, signature, "output_of_element_to_screen");
+        (yylhs.value.exp) = new FeiDslCaller1<int>(&output_of_element_to_screen, args, signature, "output_of_element_to_screen");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 687 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 5:
-
-/* Line 690 of lalr1.cc  */
-#line 312 "feiparser.yy"
+#line 312 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<int>(&output_of_node_to_screen, args, signature, "output_of_node_to_screen");
+        (yylhs.value.exp) = new FeiDslCaller1<int>(&output_of_node_to_screen, args, signature, "output_of_node_to_screen");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 701 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 6:
-
-/* Line 690 of lalr1.cc  */
-#line 325 "feiparser.yy"
+#line 325 "feiparser.yy" // lalr1.cc:847
     {
         cerr << "Not currently working. Should be implemented a API function and used here." << endl;
         //theDomain.getNDMaterial( $4->value().Getvalue() ) -> Print(cerr,0);
-        (yyval.exp) = new Empty();
+        (yylhs.value.exp) = new Empty();
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 713 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 7:
-
-/* Line 690 of lalr1.cc  */
-#line 336 "feiparser.yy"
+#line 336 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(3) - (3)].exp)); signature.push_back(this_signature("filename", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("filename", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<string>(&check_mesh, args, signature,"check_mesh");
+        (yylhs.value.exp) = new FeiDslCaller1<string>(&check_mesh, args, signature,"check_mesh");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
         }
+#line 727 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 8:
-
-/* Line 690 of lalr1.cc  */
-#line 424 "feiparser.yy"
+#line 424 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new DslWhos(global_variables, locked_global_variables);
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new DslWhos(global_variables, locked_global_variables);
+        nodes.push((yylhs.value.exp));
     }
+#line 736 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 9:
-
-/* Line 690 of lalr1.cc  */
-#line 432 "feiparser.yy"
+#line 432 "feiparser.yy" // lalr1.cc:847
     {
         cout << "\n Please refer to ESSI Notes for available syntax and examples. \n\n" << endl;
-        (yyval.exp) = new Empty();
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new Empty();
+        nodes.push((yylhs.value.exp));
     }
+#line 746 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 10:
-
-/* Line 690 of lalr1.cc  */
-#line 437 "feiparser.yy"
-    {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
+#line 437 "feiparser.yy" // lalr1.cc:847
+    {   (yylhs.value.exp) = (yystack_[0].value.exp); }
+#line 752 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 11:
-
-/* Line 690 of lalr1.cc  */
-#line 438 "feiparser.yy"
-    {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
+#line 438 "feiparser.yy" // lalr1.cc:847
+    {   (yylhs.value.exp) = (yystack_[0].value.exp); }
+#line 758 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 12:
-
-/* Line 690 of lalr1.cc  */
-#line 439 "feiparser.yy"
-    {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
+#line 439 "feiparser.yy" // lalr1.cc:847
+    {   (yylhs.value.exp) = (yystack_[0].value.exp); }
+#line 764 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 13:
-
-/* Line 690 of lalr1.cc  */
-#line 440 "feiparser.yy"
-    {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
+#line 440 "feiparser.yy" // lalr1.cc:847
+    {   (yylhs.value.exp) = (yystack_[0].value.exp); }
+#line 770 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 14:
-
-/* Line 690 of lalr1.cc  */
-#line 441 "feiparser.yy"
-    {   (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp); }
+#line 441 "feiparser.yy" // lalr1.cc:847
+    {   (yylhs.value.exp) = (yystack_[0].value.exp); }
+#line 776 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 15:
-
-/* Line 690 of lalr1.cc  */
-#line 445 "feiparser.yy"
+#line 445 "feiparser.yy" // lalr1.cc:847
     {
                                     cout << "    *** Commands will now be execued. " << endl << endl;
                                     recovery_mode = 0;
                                     prompt = thePrompt;
-                                    (yyval.exp) = new Empty();
-                                    nodes.push((yyval.exp));
+                                    (yylhs.value.exp) = new Empty();
+                                    nodes.push((yylhs.value.exp));
                                 }
+#line 788 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 16:
-
-/* Line 690 of lalr1.cc  */
-#line 455 "feiparser.yy"
-    {  (yyval.exp) = new DslParseError("add", yylineno); nodes.push((yyval.exp)); }
+#line 455 "feiparser.yy" // lalr1.cc:847
+    {  (yylhs.value.exp) = new DslParseError("add", yylineno); nodes.push((yylhs.value.exp)); }
+#line 794 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 17:
-
-/* Line 690 of lalr1.cc  */
-#line 460 "feiparser.yy"
+#line 460 "feiparser.yy" // lalr1.cc:847
     {
 
         //Always clear the args and signature vectors ... errors ensue if not... like segfaults
@@ -678,11 +805,11 @@ namespace yy {
         // The only reason to not use exp type tokens is to parse strings in which case
         // one matches a STRING token and creates an Expression* by using FeiString (which
         // inherits from Expression) to hold the string.
-        args.push_back((yysemantic_stack_[(15) - (4)].exp));     //Number
-        args.push_back((yysemantic_stack_[(15) - (14)].exp));    //ndofs
-        args.push_back((yysemantic_stack_[(15) - (7)].exp));     //x
-        args.push_back((yysemantic_stack_[(15) - (9)].exp));     //y
-        args.push_back((yysemantic_stack_[(15) - (11)].exp));    //z
+        args.push_back((yystack_[11].value.exp));     //Number
+        args.push_back((yystack_[1].value.exp));    //ndofs
+        args.push_back((yystack_[8].value.exp));     //x
+        args.push_back((yystack_[6].value.exp));     //y
+        args.push_back((yystack_[4].value.exp));    //z
 
         // Create the command signature for input verification
         signature.push_back(this_signature("number", &isAdimensional));
@@ -692,7 +819,7 @@ namespace yy {
         signature.push_back(this_signature("z", &isLength));
 
         // Create the DSL caller node.
-        (yyval.exp) = new FeiDslCaller5<int, int, double, double, double>(&add_node, args, signature, "add_node");
+        (yylhs.value.exp) = new FeiDslCaller5<int, int, double, double, double>(&add_node, args, signature, "add_node");
 
         // Remove the parsed exps from the nodes (free up the memory)
         // There must be as many 'pop's as there are 'exp's.
@@ -703,293 +830,281 @@ namespace yy {
         nodes.pop();
 
         // Then add the new caller to the nodes!
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 836 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 18:
-
-/* Line 690 of lalr1.cc  */
-#line 497 "feiparser.yy"
-    { (yyval.exp) = (yysemantic_stack_[(2) - (2)].exp);}
+#line 497 "feiparser.yy" // lalr1.cc:847
+    { (yylhs.value.exp) = (yystack_[0].value.exp);}
+#line 842 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 19:
-
-/* Line 690 of lalr1.cc  */
-#line 502 "feiparser.yy"
+#line 502 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(13) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(13) - (7)].exp)); signature.push_back(this_signature("ax", &isAcceleration));
-        args.push_back((yysemantic_stack_[(13) - (10)].exp)); signature.push_back(this_signature("ay", &isAcceleration));
-        args.push_back((yysemantic_stack_[(13) - (13)].exp)); signature.push_back(this_signature("az", &isAcceleration));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("ax", &isAcceleration));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("ay", &isAcceleration));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("az", &isAcceleration));
 
-        (yyval.exp) = new FeiDslCaller4<int, double, double, double>(&add_acceleration_field, args, signature, "add_acceleration_field");
+        (yylhs.value.exp) = new FeiDslCaller4<int, double, double, double>(&add_acceleration_field, args, signature, "add_acceleration_field");
 
         for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 4 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 859 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 20:
-
-/* Line 690 of lalr1.cc  */
-#line 514 "feiparser.yy"
-    { (yyval.exp) = (yysemantic_stack_[(3) - (3)].exp); }
+#line 514 "feiparser.yy" // lalr1.cc:847
+    { (yylhs.value.exp) = (yystack_[0].value.exp); }
+#line 865 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 21:
-
-/* Line 690 of lalr1.cc  */
-#line 520 "feiparser.yy"
+#line 520 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(14) - (4)].exp));    signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (8)].exp));    signature.push_back(this_signature("to_element", &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (14)].exp));   signature.push_back(this_signature("accelerationfieldnumber", &isAdimensional));
+        args.push_back((yystack_[10].value.exp));    signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[6].value.exp));    signature.push_back(this_signature("to_element", &isAdimensional));
+        args.push_back((yystack_[0].value.exp));   signature.push_back(this_signature("accelerationfieldnumber", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller3<int, int, int>(&add_load_selfweight_to_element, args, signature, "add_load_selfweight_to_element");
+        (yylhs.value.exp) = new FeiDslCaller3<int, int, int>(&add_load_selfweight_to_element, args, signature, "add_load_selfweight_to_element");
 
         for(int ii = 1;ii <=3; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 883 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 22:
-
-/* Line 690 of lalr1.cc  */
-#line 539 "feiparser.yy"
+#line 539 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(24) - (4)].exp));        signature.push_back(this_signature("number",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(24) - (8)].exp));        signature.push_back(this_signature("to_element", &isAdimensional));
-        args.push_back((yysemantic_stack_[(24) - (14)].exp));       signature.push_back(this_signature("node1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(24) - (16)].exp));       signature.push_back(this_signature("node2",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(24) - (18)].exp));       signature.push_back(this_signature("node3",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(24) - (20)].exp));       signature.push_back(this_signature("node4",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(24) - (24)].exp));       signature.push_back(this_signature("magnitude",  &isPressure));
+        args.push_back((yystack_[20].value.exp));        signature.push_back(this_signature("number",     &isAdimensional));
+        args.push_back((yystack_[16].value.exp));        signature.push_back(this_signature("to_element", &isAdimensional));
+        args.push_back((yystack_[10].value.exp));       signature.push_back(this_signature("node1",      &isAdimensional));
+        args.push_back((yystack_[8].value.exp));       signature.push_back(this_signature("node2",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp));       signature.push_back(this_signature("node3",      &isAdimensional));
+        args.push_back((yystack_[4].value.exp));       signature.push_back(this_signature("node4",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp));       signature.push_back(this_signature("magnitude",  &isPressure));
 
 
-        (yyval.exp) = new FeiDslCaller7<int, int,
+        (yylhs.value.exp) = new FeiDslCaller7<int, int,
                                int, int, int, int,
                                double>(&add_load_constant_normal_pressure_to_8node_brick_surface, args, signature, "add_load_constant_normal_pressure_to_8node_brick_surface");
 
         for(int ii = 1;ii <=7; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 908 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 23:
-
-/* Line 690 of lalr1.cc  */
-#line 565 "feiparser.yy"
+#line 565 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(32) - (4)].exp));        signature.push_back(this_signature("number",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (8)].exp));        signature.push_back(this_signature("to_element", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (14)].exp));       signature.push_back(this_signature("node1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (16)].exp));       signature.push_back(this_signature("node2",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (18)].exp));       signature.push_back(this_signature("node3",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (20)].exp));       signature.push_back(this_signature("node4",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (25)].exp));       signature.push_back(this_signature("magnitude1", &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (27)].exp));       signature.push_back(this_signature("magnitude2", &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (29)].exp));       signature.push_back(this_signature("magnitude3", &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (31)].exp));       signature.push_back(this_signature("magnitude4", &isPressure));
+        args.push_back((yystack_[28].value.exp));        signature.push_back(this_signature("number",     &isAdimensional));
+        args.push_back((yystack_[24].value.exp));        signature.push_back(this_signature("to_element", &isAdimensional));
+        args.push_back((yystack_[18].value.exp));       signature.push_back(this_signature("node1",      &isAdimensional));
+        args.push_back((yystack_[16].value.exp));       signature.push_back(this_signature("node2",      &isAdimensional));
+        args.push_back((yystack_[14].value.exp));       signature.push_back(this_signature("node3",      &isAdimensional));
+        args.push_back((yystack_[12].value.exp));       signature.push_back(this_signature("node4",      &isAdimensional));
+        args.push_back((yystack_[7].value.exp));       signature.push_back(this_signature("magnitude1", &isPressure));
+        args.push_back((yystack_[5].value.exp));       signature.push_back(this_signature("magnitude2", &isPressure));
+        args.push_back((yystack_[3].value.exp));       signature.push_back(this_signature("magnitude3", &isPressure));
+        args.push_back((yystack_[1].value.exp));       signature.push_back(this_signature("magnitude4", &isPressure));
 
 
-        (yyval.exp) = new FeiDslCaller10<int, int,
+        (yylhs.value.exp) = new FeiDslCaller10<int, int,
                                 int, int, int, int,
                                 double, double, double, double>(&add_load_different_normal_pressure_to_8node_brick_surface, args, signature, "add_load_different_normal_pressure_to_8node_brick_surface");
 
         for(int ii = 1;ii <=10; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 936 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 24:
-
-/* Line 690 of lalr1.cc  */
-#line 594 "feiparser.yy"
+#line 594 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(32) - (4)].exp));        signature.push_back(this_signature("number",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (8)].exp));        signature.push_back(this_signature("to_element", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (14)].exp));       signature.push_back(this_signature("node1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (16)].exp));       signature.push_back(this_signature("node2",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (18)].exp));       signature.push_back(this_signature("node3",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (20)].exp));       signature.push_back(this_signature("node4",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (22)].exp));       signature.push_back(this_signature("node5",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (24)].exp));       signature.push_back(this_signature("node6",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (26)].exp));       signature.push_back(this_signature("node7",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (28)].exp));       signature.push_back(this_signature("node8",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (32)].exp));       signature.push_back(this_signature("magnitude",  &isPressure));
+        args.push_back((yystack_[28].value.exp));        signature.push_back(this_signature("number",     &isAdimensional));
+        args.push_back((yystack_[24].value.exp));        signature.push_back(this_signature("to_element", &isAdimensional));
+        args.push_back((yystack_[18].value.exp));       signature.push_back(this_signature("node1",      &isAdimensional));
+        args.push_back((yystack_[16].value.exp));       signature.push_back(this_signature("node2",      &isAdimensional));
+        args.push_back((yystack_[14].value.exp));       signature.push_back(this_signature("node3",      &isAdimensional));
+        args.push_back((yystack_[12].value.exp));       signature.push_back(this_signature("node4",      &isAdimensional));
+        args.push_back((yystack_[10].value.exp));       signature.push_back(this_signature("node5",      &isAdimensional));
+        args.push_back((yystack_[8].value.exp));       signature.push_back(this_signature("node6",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp));       signature.push_back(this_signature("node7",      &isAdimensional));
+        args.push_back((yystack_[4].value.exp));       signature.push_back(this_signature("node8",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp));       signature.push_back(this_signature("magnitude",  &isPressure));
 
 
-        (yyval.exp) = new FeiDslCaller11<int, int,
+        (yylhs.value.exp) = new FeiDslCaller11<int, int,
                                 int, int, int, int, int, int, int, int,
                                 double>(&add_load_constant_normal_pressure_to_20node_brick_surface, args, signature, "add_load_constant_normal_pressure_to_20node_brick_surface");
 
         for(int ii = 1;ii <=11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 965 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 25:
-
-/* Line 690 of lalr1.cc  */
-#line 624 "feiparser.yy"
+#line 624 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(48) - (4)].exp));        signature.push_back(this_signature("number",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (8)].exp));        signature.push_back(this_signature("to_element",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (14)].exp));       signature.push_back(this_signature("node1",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (16)].exp));       signature.push_back(this_signature("node2",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (18)].exp));       signature.push_back(this_signature("node3",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (20)].exp));       signature.push_back(this_signature("node4",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (22)].exp));       signature.push_back(this_signature("node5",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (24)].exp));       signature.push_back(this_signature("node6",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (26)].exp));       signature.push_back(this_signature("node7",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (28)].exp));       signature.push_back(this_signature("node8",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (33)].exp));       signature.push_back(this_signature("magnitude1",  &isPressure));
-        args.push_back((yysemantic_stack_[(48) - (35)].exp));       signature.push_back(this_signature("magnitude2",  &isPressure));
-        args.push_back((yysemantic_stack_[(48) - (37)].exp));       signature.push_back(this_signature("magnitude3",  &isPressure));
-        args.push_back((yysemantic_stack_[(48) - (39)].exp));       signature.push_back(this_signature("magnitude4",  &isPressure));
-        args.push_back((yysemantic_stack_[(48) - (41)].exp));       signature.push_back(this_signature("magnitude5",  &isPressure));
-        args.push_back((yysemantic_stack_[(48) - (43)].exp));       signature.push_back(this_signature("magnitude6",  &isPressure));
-        args.push_back((yysemantic_stack_[(48) - (45)].exp));       signature.push_back(this_signature("magnitude7",  &isPressure));
-        args.push_back((yysemantic_stack_[(48) - (47)].exp));       signature.push_back(this_signature("magnitude8",  &isPressure));
+        args.push_back((yystack_[44].value.exp));        signature.push_back(this_signature("number",      &isAdimensional));
+        args.push_back((yystack_[40].value.exp));        signature.push_back(this_signature("to_element",  &isAdimensional));
+        args.push_back((yystack_[34].value.exp));       signature.push_back(this_signature("node1",       &isAdimensional));
+        args.push_back((yystack_[32].value.exp));       signature.push_back(this_signature("node2",       &isAdimensional));
+        args.push_back((yystack_[30].value.exp));       signature.push_back(this_signature("node3",       &isAdimensional));
+        args.push_back((yystack_[28].value.exp));       signature.push_back(this_signature("node4",       &isAdimensional));
+        args.push_back((yystack_[26].value.exp));       signature.push_back(this_signature("node5",       &isAdimensional));
+        args.push_back((yystack_[24].value.exp));       signature.push_back(this_signature("node6",       &isAdimensional));
+        args.push_back((yystack_[22].value.exp));       signature.push_back(this_signature("node7",       &isAdimensional));
+        args.push_back((yystack_[20].value.exp));       signature.push_back(this_signature("node8",       &isAdimensional));
+        args.push_back((yystack_[15].value.exp));       signature.push_back(this_signature("magnitude1",  &isPressure));
+        args.push_back((yystack_[13].value.exp));       signature.push_back(this_signature("magnitude2",  &isPressure));
+        args.push_back((yystack_[11].value.exp));       signature.push_back(this_signature("magnitude3",  &isPressure));
+        args.push_back((yystack_[9].value.exp));       signature.push_back(this_signature("magnitude4",  &isPressure));
+        args.push_back((yystack_[7].value.exp));       signature.push_back(this_signature("magnitude5",  &isPressure));
+        args.push_back((yystack_[5].value.exp));       signature.push_back(this_signature("magnitude6",  &isPressure));
+        args.push_back((yystack_[3].value.exp));       signature.push_back(this_signature("magnitude7",  &isPressure));
+        args.push_back((yystack_[1].value.exp));       signature.push_back(this_signature("magnitude8",  &isPressure));
 
 
-        (yyval.exp) = new FeiDslCaller18<int, int,
+        (yylhs.value.exp) = new FeiDslCaller18<int, int,
                                 int, int, int, int, int, int, int, int,
                                 double, double, double, double, double, double, double, double>(&add_load_different_normal_pressure_to_20node_brick_surface, args, signature, "add_load_different_normal_pressure_to_20node_brick_surface");
 
         for(int ii = 1;ii <=18; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1001 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 26:
-
-/* Line 690 of lalr1.cc  */
-#line 661 "feiparser.yy"
+#line 661 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(34) - (4)].exp));        signature.push_back(this_signature("number",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (8)].exp));        signature.push_back(this_signature("to_element", &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (14)].exp));       signature.push_back(this_signature("node1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (16)].exp));       signature.push_back(this_signature("node2",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (18)].exp));       signature.push_back(this_signature("node3",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (20)].exp));       signature.push_back(this_signature("node4",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (22)].exp));       signature.push_back(this_signature("node5",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (24)].exp));       signature.push_back(this_signature("node6",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (26)].exp));       signature.push_back(this_signature("node7",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (28)].exp));       signature.push_back(this_signature("node8",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (30)].exp));       signature.push_back(this_signature("node9",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(34) - (34)].exp));       signature.push_back(this_signature("magnitude",  &isPressure));
+        args.push_back((yystack_[30].value.exp));        signature.push_back(this_signature("number",     &isAdimensional));
+        args.push_back((yystack_[26].value.exp));        signature.push_back(this_signature("to_element", &isAdimensional));
+        args.push_back((yystack_[20].value.exp));       signature.push_back(this_signature("node1",      &isAdimensional));
+        args.push_back((yystack_[18].value.exp));       signature.push_back(this_signature("node2",      &isAdimensional));
+        args.push_back((yystack_[16].value.exp));       signature.push_back(this_signature("node3",      &isAdimensional));
+        args.push_back((yystack_[14].value.exp));       signature.push_back(this_signature("node4",      &isAdimensional));
+        args.push_back((yystack_[12].value.exp));       signature.push_back(this_signature("node5",      &isAdimensional));
+        args.push_back((yystack_[10].value.exp));       signature.push_back(this_signature("node6",      &isAdimensional));
+        args.push_back((yystack_[8].value.exp));       signature.push_back(this_signature("node7",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp));       signature.push_back(this_signature("node8",      &isAdimensional));
+        args.push_back((yystack_[4].value.exp));       signature.push_back(this_signature("node9",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp));       signature.push_back(this_signature("magnitude",  &isPressure));
 
 
-        (yyval.exp) = new FeiDslCaller12<int, int,
+        (yylhs.value.exp) = new FeiDslCaller12<int, int,
                                 int, int, int, int, int, int, int, int, int,
                                 double>(&add_load_constant_normal_pressure_to_27node_brick_surface, args, signature, "add_load_constant_normal_pressure_to_27node_brick_surface");
 
         for(int ii = 1;ii <=12; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1031 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 27:
-
-/* Line 690 of lalr1.cc  */
-#line 692 "feiparser.yy"
+#line 692 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(52) - (4)].exp));        signature.push_back(this_signature("number",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (8)].exp));        signature.push_back(this_signature("to_element",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (14)].exp));       signature.push_back(this_signature("node1",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (16)].exp));       signature.push_back(this_signature("node2",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (18)].exp));       signature.push_back(this_signature("node3",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (20)].exp));       signature.push_back(this_signature("node4",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (22)].exp));       signature.push_back(this_signature("node5",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (24)].exp));       signature.push_back(this_signature("node6",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (26)].exp));       signature.push_back(this_signature("node7",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (28)].exp));       signature.push_back(this_signature("node8",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (30)].exp));       signature.push_back(this_signature("node9",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(52) - (35)].exp));       signature.push_back(this_signature("magnitude1",  &isPressure));
-        args.push_back((yysemantic_stack_[(52) - (37)].exp));       signature.push_back(this_signature("magnitude2",  &isPressure));
-        args.push_back((yysemantic_stack_[(52) - (39)].exp));       signature.push_back(this_signature("magnitude3",  &isPressure));
-        args.push_back((yysemantic_stack_[(52) - (41)].exp));       signature.push_back(this_signature("magnitude4",  &isPressure));
-        args.push_back((yysemantic_stack_[(52) - (43)].exp));       signature.push_back(this_signature("magnitude5",  &isPressure));
-        args.push_back((yysemantic_stack_[(52) - (45)].exp));       signature.push_back(this_signature("magnitude6",  &isPressure));
-        args.push_back((yysemantic_stack_[(52) - (47)].exp));       signature.push_back(this_signature("magnitude7",  &isPressure));
-        args.push_back((yysemantic_stack_[(52) - (49)].exp));       signature.push_back(this_signature("magnitude8",  &isPressure));
-        args.push_back((yysemantic_stack_[(52) - (51)].exp));       signature.push_back(this_signature("magnitude9",  &isPressure));
+        args.push_back((yystack_[48].value.exp));        signature.push_back(this_signature("number",      &isAdimensional));
+        args.push_back((yystack_[44].value.exp));        signature.push_back(this_signature("to_element",  &isAdimensional));
+        args.push_back((yystack_[38].value.exp));       signature.push_back(this_signature("node1",       &isAdimensional));
+        args.push_back((yystack_[36].value.exp));       signature.push_back(this_signature("node2",       &isAdimensional));
+        args.push_back((yystack_[34].value.exp));       signature.push_back(this_signature("node3",       &isAdimensional));
+        args.push_back((yystack_[32].value.exp));       signature.push_back(this_signature("node4",       &isAdimensional));
+        args.push_back((yystack_[30].value.exp));       signature.push_back(this_signature("node5",       &isAdimensional));
+        args.push_back((yystack_[28].value.exp));       signature.push_back(this_signature("node6",       &isAdimensional));
+        args.push_back((yystack_[26].value.exp));       signature.push_back(this_signature("node7",       &isAdimensional));
+        args.push_back((yystack_[24].value.exp));       signature.push_back(this_signature("node8",       &isAdimensional));
+        args.push_back((yystack_[22].value.exp));       signature.push_back(this_signature("node9",       &isAdimensional));
+        args.push_back((yystack_[17].value.exp));       signature.push_back(this_signature("magnitude1",  &isPressure));
+        args.push_back((yystack_[15].value.exp));       signature.push_back(this_signature("magnitude2",  &isPressure));
+        args.push_back((yystack_[13].value.exp));       signature.push_back(this_signature("magnitude3",  &isPressure));
+        args.push_back((yystack_[11].value.exp));       signature.push_back(this_signature("magnitude4",  &isPressure));
+        args.push_back((yystack_[9].value.exp));       signature.push_back(this_signature("magnitude5",  &isPressure));
+        args.push_back((yystack_[7].value.exp));       signature.push_back(this_signature("magnitude6",  &isPressure));
+        args.push_back((yystack_[5].value.exp));       signature.push_back(this_signature("magnitude7",  &isPressure));
+        args.push_back((yystack_[3].value.exp));       signature.push_back(this_signature("magnitude8",  &isPressure));
+        args.push_back((yystack_[1].value.exp));       signature.push_back(this_signature("magnitude9",  &isPressure));
 
 
-        (yyval.exp) = new FeiDslCaller20<int, int,
+        (yylhs.value.exp) = new FeiDslCaller20<int, int,
                                 int, int, int, int, int, int, int, int, int,
                                 double, double, double, double, double,
                                 double, double, double, double>(&add_load_different_normal_pressure_to_27node_brick_surface, args, signature, "add_load_different_normal_pressure_to_27node_brick_surface");
 
         for(int ii = 1;ii <=20; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1070 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 28:
-
-/* Line 690 of lalr1.cc  */
-#line 730 "feiparser.yy"
+#line 730 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        Expression* dof_number                         = force2number(*(yysemantic_stack_[(13) - (11)].ident));
-        UnitCheckerFunctionPointerType function_ptr    = force2signature(*(yysemantic_stack_[(13) - (11)].ident));
+        Expression* dof_number                         = force2number(*(yystack_[2].value.ident));
+        UnitCheckerFunctionPointerType function_ptr    = force2signature(*(yystack_[2].value.ident));
 
-        args.push_back((yysemantic_stack_[(13) - (4)].exp));         signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(13) - (8)].exp));         signature.push_back(this_signature("to_node", &isAdimensional));
+        args.push_back((yystack_[9].value.exp));         signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[5].value.exp));         signature.push_back(this_signature("to_node", &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
-        args.push_back((yysemantic_stack_[(13) - (13)].exp));        signature.push_back(this_signature(*(yysemantic_stack_[(13) - (11)].ident), function_ptr));
+        args.push_back((yystack_[0].value.exp));        signature.push_back(this_signature(*(yystack_[2].value.ident), function_ptr));
 
-        (yyval.exp) = new FeiDslCaller4<int, int, int, double>(&add_force_time_history_linear, args, signature, "add_force_time_history_linear");
+        (yylhs.value.exp) = new FeiDslCaller4<int, int, int, double>(&add_force_time_history_linear, args, signature, "add_force_time_history_linear");
 
         for(int ii = 1;ii <=3; ii++) nodes.pop(); //pop 5 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1091 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 29:
-
-/* Line 690 of lalr1.cc  */
-#line 752 "feiparser.yy"
+#line 752 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        Expression* dof_number                         = force2number(*(yysemantic_stack_[(16) - (11)].ident));
-        UnitCheckerFunctionPointerType function_ptr    = force2signature(*(yysemantic_stack_[(16) - (11)].ident));
+        Expression* dof_number                         = force2number(*(yystack_[5].value.ident));
+        UnitCheckerFunctionPointerType function_ptr    = force2signature(*(yystack_[5].value.ident));
 
-        args.push_back((yysemantic_stack_[(16) - (4)].exp));         signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(16) - (8)].exp));         signature.push_back(this_signature("to_node", &isAdimensional));
+        args.push_back((yystack_[12].value.exp));         signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[8].value.exp));         signature.push_back(this_signature("to_node", &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
-        args.push_back((yysemantic_stack_[(16) - (13)].exp));        signature.push_back(this_signature(*(yysemantic_stack_[(16) - (11)].ident), function_ptr));
+        args.push_back((yystack_[3].value.exp));        signature.push_back(this_signature(*(yystack_[5].value.ident), function_ptr));
 
         //Get the string from the parsed string
-        string modelname = *(yysemantic_stack_[(16) - (16)].ident);
+        string modelname = *(yystack_[0].value.ident);
         //Remove quotes
         modelname.erase(0, 1);
         modelname.erase(modelname.length()-1, modelname.length());
@@ -999,31 +1114,30 @@ namespace yy {
         signature.push_back(this_signature("series_file", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller5<int, int, int, double, string>(&add_force_time_history_path_time_series, args, signature, "add_force_time_history_path_time_series");
+        (yylhs.value.exp) = new FeiDslCaller5<int, int, int, double, string>(&add_force_time_history_path_time_series, args, signature, "add_force_time_history_path_time_series");
 
         for(int ii = 1;ii <=3; ii++) nodes.pop(); //pop 5 exps
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
     }
+#line 1123 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 30:
-
-/* Line 690 of lalr1.cc  */
-#line 786 "feiparser.yy"
+#line 786 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        Expression* dof_number                         = force2number(*(yysemantic_stack_[(19) - (11)].ident));
-        UnitCheckerFunctionPointerType function_ptr    = force2signature(*(yysemantic_stack_[(19) - (11)].ident));
+        Expression* dof_number                         = force2number(*(yystack_[8].value.ident));
+        UnitCheckerFunctionPointerType function_ptr    = force2signature(*(yystack_[8].value.ident));
 
-        args.push_back((yysemantic_stack_[(19) - (4)].exp));         signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(19) - (8)].exp));         signature.push_back(this_signature("to_node", &isAdimensional));
+        args.push_back((yystack_[15].value.exp));         signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[11].value.exp));         signature.push_back(this_signature("to_node", &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
-        args.push_back((yysemantic_stack_[(19) - (16)].exp));        signature.push_back(this_signature("time_step", &isTime));
-        args.push_back((yysemantic_stack_[(19) - (13)].exp));        signature.push_back(this_signature(*(yysemantic_stack_[(19) - (11)].ident), function_ptr));
+        args.push_back((yystack_[3].value.exp));        signature.push_back(this_signature("time_step", &isTime));
+        args.push_back((yystack_[6].value.exp));        signature.push_back(this_signature(*(yystack_[8].value.ident), function_ptr));
 
         //Get the string from the parsed string
-        string modelname = *(yysemantic_stack_[(19) - (19)].ident);
+        string modelname = *(yystack_[0].value.ident);
         //Remove quotes
         modelname.erase(0, 1);
         modelname.erase(modelname.length()-1, modelname.length());
@@ -1034,362 +1148,347 @@ namespace yy {
 
 
 
-        (yyval.exp) = new FeiDslCaller6<int, int, int, double, double, string>(&add_force_time_history_path_series, args, signature, "add_force_time_history_path_series");
+        (yylhs.value.exp) = new FeiDslCaller6<int, int, int, double, double, string>(&add_force_time_history_path_series, args, signature, "add_force_time_history_path_series");
 
         for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 5 exps
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
     }
+#line 1157 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 31:
-
-/* Line 690 of lalr1.cc  */
-#line 819 "feiparser.yy"
+#line 819 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(10) - (4)].exp));         signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(10) - (8)].exp));         signature.push_back(this_signature("to_node", &isAdimensional));
+        args.push_back((yystack_[6].value.exp));         signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[2].value.exp));         signature.push_back(this_signature("to_node", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller2<int, int>(&add_load_to_node_from_reaction, args, signature, "add_load_to_node_from_reaction");
+        (yylhs.value.exp) = new FeiDslCaller2<int, int>(&add_load_to_node_from_reaction, args, signature, "add_load_to_node_from_reaction");
 
         for(int ii = 1;ii <=2; ii++) nodes.pop(); //pop 2 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1173 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 32:
-
-/* Line 690 of lalr1.cc  */
-#line 834 "feiparser.yy"
+#line 834 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(10) - (4)].exp));         signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[6].value.exp));         signature.push_back(this_signature("number", &isAdimensional));
         args.push_back(new Number(-1, unitless));         signature.push_back(this_signature("to_node", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller2<int, int>(&add_load_to_node_from_reaction, args, signature, "add_load_to_node_from_reaction");
+        (yylhs.value.exp) = new FeiDslCaller2<int, int>(&add_load_to_node_from_reaction, args, signature, "add_load_to_node_from_reaction");
 
         nodes.pop(); //pop 1 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1189 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 33:
-
-/* Line 690 of lalr1.cc  */
-#line 856 "feiparser.yy"
+#line 856 "feiparser.yy" // lalr1.cc:847
     {
 
         args.clear(); signature.clear();
 
         // Required units are deduced from the passed dof.
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(31) - (10)].ident));
+        Expression* dof_number = dof2number(*(yystack_[21].value.ident));
 
-        args.push_back((yysemantic_stack_[(31) - (4)].exp)); signature.push_back(this_signature("number",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(31) - (8)].exp)); signature.push_back(this_signature("node",    &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("number",    &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node",    &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(31) - (13)].exp)); signature.push_back(this_signature("time_step",    &isTime));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("time_step",    &isTime));
 
-        args.push_back((yysemantic_stack_[(31) - (16)].exp)); signature.push_back(this_signature("displacement_scale_unit",    &isLength));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("displacement_scale_unit",    &isLength));
 
 
         //Add displacements file.
-        args.push_back( (yysemantic_stack_[(31) - (19)].exp));                                          // Add to arguments of call signature
+        args.push_back( (yystack_[12].value.exp));                                          // Add to arguments of call signature
         signature.push_back(this_signature("displacement_file", &isAdimensional));                            // Specify signature
 
 
-        args.push_back((yysemantic_stack_[(31) - (22)].exp)); signature.push_back(this_signature("velocity_scale_unit",    &isVelocity));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("velocity_scale_unit",    &isVelocity));
 
         //Add velocities file.
-        args.push_back( (yysemantic_stack_[(31) - (25)].exp));                                          // Add to arguments of call signature
+        args.push_back( (yystack_[6].value.exp));                                          // Add to arguments of call signature
         signature.push_back(this_signature("velocity_file", &isAdimensional));                            // Specify signature
 
 
-        args.push_back((yysemantic_stack_[(31) - (28)].exp)); signature.push_back(this_signature("acceleration_scale_unit",    &isAcceleration));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("acceleration_scale_unit",    &isAcceleration));
 
         //Add accelerations file.
-        args.push_back( (yysemantic_stack_[(31) - (31)].exp));                                          // Add to arguments of call signature
+        args.push_back( (yystack_[0].value.exp));                                          // Add to arguments of call signature
         signature.push_back(this_signature("acceleration_file", &isAdimensional));                            // Specify signature
 
         // Generate one command
-       (yyval.exp) = new FeiDslCaller10<int, int, int, double,
+       (yylhs.value.exp) = new FeiDslCaller10<int, int, int, double,
                               double, string, double, string, double, string>(&add_imposed_motion, args,signature, "add_imposed_motion");
 
 
         for(int i = 1; i <= 9; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1235 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 34:
-
-/* Line 690 of lalr1.cc  */
-#line 907 "feiparser.yy"
+#line 907 "feiparser.yy" // lalr1.cc:847
     {
 
         args.clear(); signature.clear();
 
         // Required units are deduced from the passed dof.
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(28) - (10)].ident));
+        Expression* dof_number = dof2number(*(yystack_[18].value.ident));
 
-        args.push_back((yysemantic_stack_[(28) - (4)].exp)); signature.push_back(this_signature("number",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(28) - (8)].exp)); signature.push_back(this_signature("node",    &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("number",    &isAdimensional));
+        args.push_back((yystack_[20].value.exp)); signature.push_back(this_signature("node",    &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof",    &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(28) - (13)].exp)); signature.push_back(this_signature("displacement_scale_unit",    &isLength));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("displacement_scale_unit",    &isLength));
 
 
         //Add displacements file.
-        args.push_back( (yysemantic_stack_[(28) - (16)].exp));                                          // Add to arguments of call signature
+        args.push_back( (yystack_[12].value.exp));                                          // Add to arguments of call signature
         signature.push_back(this_signature("displacement_file", &isAdimensional));                            // Specify signature
 
-        args.push_back((yysemantic_stack_[(28) - (19)].exp)); signature.push_back(this_signature("velocity_scale_unit",    &isVelocity));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("velocity_scale_unit",    &isVelocity));
 
         //Add velocities file.
-        args.push_back( (yysemantic_stack_[(28) - (22)].exp));                                          // Add to arguments of call signature
+        args.push_back( (yystack_[6].value.exp));                                          // Add to arguments of call signature
         signature.push_back(this_signature("velocity_file", &isAdimensional));                            // Specify signature
 
 
-        args.push_back((yysemantic_stack_[(28) - (25)].exp)); signature.push_back(this_signature("acceleration_scale_unit",    &isAcceleration));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("acceleration_scale_unit",    &isAcceleration));
 
         //Add accelerations file.
-        args.push_back( (yysemantic_stack_[(28) - (28)].exp));                                          // Add to arguments of call signature
+        args.push_back( (yystack_[0].value.exp));                                          // Add to arguments of call signature
         signature.push_back(this_signature("acceleration_file", &isAdimensional));                            // Specify signature
 
         // Generate one command
-       (yyval.exp) = new FeiDslCaller9<int, int, int,
+       (yylhs.value.exp) = new FeiDslCaller9<int, int, int,
                               double, string, double, string, double, string>(&add_imposed_motion, args,signature, "add_imposed_motion");
 
 
         for(int i = 1; i <= 8; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1279 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 35:
-
-/* Line 690 of lalr1.cc  */
-#line 950 "feiparser.yy"
+#line 950 "feiparser.yy" // lalr1.cc:847
     {
 
         args.clear(); signature.clear();
 
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(13) - (9)].ident));
+        Expression* dof_number = dof2number(*(yystack_[4].value.ident));
 
-        args.push_back((yysemantic_stack_[(13) - (4)].exp)); signature.push_back(this_signature("number",        &isAdimensional));
-        args.push_back((yysemantic_stack_[(13) - (8)].exp)); signature.push_back(this_signature("node",          &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number",        &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node",          &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(13) - (11)].exp)); signature.push_back(this_signature(*(yysemantic_stack_[(13) - (9)].ident),   &isLength));
+        args.push_back((yystack_[2].value.exp)); signature.push_back(this_signature(*(yystack_[4].value.ident),   &isLength));
 
 
-       (yyval.exp) = new FeiDslCaller4<int, int, int, double>(&add_penalty_displacement_time_history_linear, args,signature, "add_penalty_displacement_time_history_linear");
+       (yylhs.value.exp) = new FeiDslCaller4<int, int, int, double>(&add_penalty_displacement_time_history_linear, args,signature, "add_penalty_displacement_time_history_linear");
 
 
         for(int i = 1; i <= 3; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1302 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 36:
-
-/* Line 690 of lalr1.cc  */
-#line 975 "feiparser.yy"
+#line 975 "feiparser.yy" // lalr1.cc:847
     {
 
         args.clear(); signature.clear();
 
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(21) - (10)].ident));
+        Expression* dof_number = dof2number(*(yystack_[11].value.ident));
 
-        args.push_back((yysemantic_stack_[(21) - (4)].exp)); signature.push_back(this_signature("number",        &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (8)].exp)); signature.push_back(this_signature("node",          &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("number",        &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node",          &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (15)].exp)); signature.push_back(this_signature("time_step",   &isTime));
-        args.push_back((yysemantic_stack_[(21) - (18)].exp)); signature.push_back(this_signature("scale_factor",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (21)].exp)); signature.push_back(this_signature("series_file",   &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("time_step",   &isTime));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("scale_factor",   &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("series_file",   &isAdimensional));
 
 
-       (yyval.exp) = new FeiDslCaller6<int, int, int, double, double, string>(&add_penalty_displacement_time_history_path_series, args,signature, "add_penalty_displacement_time_history_path_series");
+       (yylhs.value.exp) = new FeiDslCaller6<int, int, int, double, double, string>(&add_penalty_displacement_time_history_path_series, args,signature, "add_penalty_displacement_time_history_path_series");
 
 
         for(int i = 1; i <= 5; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1327 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 37:
-
-/* Line 690 of lalr1.cc  */
-#line 1001 "feiparser.yy"
+#line 1001 "feiparser.yy" // lalr1.cc:847
     {
 
         args.clear(); signature.clear();
 
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(18) - (10)].ident));
+        Expression* dof_number = dof2number(*(yystack_[8].value.ident));
 
-        args.push_back((yysemantic_stack_[(18) - (4)].exp)); signature.push_back(this_signature("number",        &isAdimensional));
-        args.push_back((yysemantic_stack_[(18) - (8)].exp)); signature.push_back(this_signature("node",          &isAdimensional));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("number",        &isAdimensional));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("node",          &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(18) - (15)].exp)); signature.push_back(this_signature("scale_factor",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(18) - (18)].exp)); signature.push_back(this_signature("series_file",   &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("scale_factor",   &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("series_file",   &isAdimensional));
 
 
-       (yyval.exp) = new FeiDslCaller5<int, int, int, double, string>(&add_penalty_displacement_time_history_path_time_series, args,signature, "add_penalty_displacement_time_history_path_time_series");
+       (yylhs.value.exp) = new FeiDslCaller5<int, int, int, double, string>(&add_penalty_displacement_time_history_path_time_series, args,signature, "add_penalty_displacement_time_history_path_time_series");
 
 
         for(int i = 1; i <= 4; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1351 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 38:
-
-/* Line 690 of lalr1.cc  */
-#line 1024 "feiparser.yy"
+#line 1024 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(16) - (4)].exp)); signature.push_back(this_signature("number",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(16) - (10)].exp)); signature.push_back(this_signature("a0",    &isFrequency));
-        args.push_back((yysemantic_stack_[(16) - (13)].exp)); signature.push_back(this_signature("a1",    &isTime));
-        args.push_back(new FeiString(*(yysemantic_stack_[(16) - (16)].ident))); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("number",    &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a0",    &isFrequency));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a1",    &isTime));
+        args.push_back(new FeiString(*(yystack_[0].value.ident))); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller4<int,double,double,string>(&add_damping_rayleigh, args, signature, "add_damping_rayleigh");
+        (yylhs.value.exp) = new FeiDslCaller4<int,double,double,string>(&add_damping_rayleigh, args, signature, "add_damping_rayleigh");
 
         for(int i = 1; i <= 3; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1369 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 39:
-
-/* Line 690 of lalr1.cc  */
-#line 1042 "feiparser.yy"
+#line 1042 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(19) - (4)].exp)); signature.push_back(this_signature("number",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(19) - (10)].exp)); signature.push_back(this_signature("a0",      &isTime));
-        args.push_back((yysemantic_stack_[(19) - (13)].exp)); signature.push_back(this_signature("a1",      &isFrequency));
-        args.push_back((yysemantic_stack_[(19) - (16)].exp)); signature.push_back(this_signature("a2",      &isAdimensional));
-        args.push_back(new FeiString(*(yysemantic_stack_[(19) - (19)].ident))); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("number",   &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("a0",      &isTime));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a1",      &isFrequency));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a2",      &isAdimensional));
+        args.push_back(new FeiString(*(yystack_[0].value.ident))); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller5<int,double,double,double,string>(&add_damping_caughey3rd, args, signature, "add_damping_caughey3rd");
+        (yylhs.value.exp) = new FeiDslCaller5<int,double,double,double,string>(&add_damping_caughey3rd, args, signature, "add_damping_caughey3rd");
 
         for(int i = 1; i <= 4; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1388 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 40:
-
-/* Line 690 of lalr1.cc  */
-#line 1061 "feiparser.yy"
+#line 1061 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(22) - (4)].exp)); signature.push_back(this_signature("number",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (10)].exp)); signature.push_back(this_signature("a0",      &isTime));
-        args.push_back((yysemantic_stack_[(22) - (13)].exp)); signature.push_back(this_signature("a1",      &isFrequency));
-        args.push_back((yysemantic_stack_[(22) - (16)].exp)); signature.push_back(this_signature("a2",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (19)].exp)); signature.push_back(this_signature("a3",      &isAdimensional));
-        args.push_back(new FeiString(*(yysemantic_stack_[(22) - (22)].ident))); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("number",   &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("a0",      &isTime));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("a1",      &isFrequency));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a2",      &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a3",      &isAdimensional));
+        args.push_back(new FeiString(*(yystack_[0].value.ident))); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller6<int,double,double,double,double,string>(&add_damping_caughey4th, args, signature, "add_damping_caughey4th");
+        (yylhs.value.exp) = new FeiDslCaller6<int,double,double,double,double,string>(&add_damping_caughey4th, args, signature, "add_damping_caughey4th");
 
         for(int i = 1; i <= 5; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1408 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 41:
-
-/* Line 690 of lalr1.cc  */
-#line 1080 "feiparser.yy"
+#line 1080 "feiparser.yy" // lalr1.cc:847
     {
         //add_damping_to_element(int elementNumber, int dampingNumber)
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(8) - (8)].exp)); signature.push_back(this_signature("element_number",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(8) - (4)].exp)); signature.push_back(this_signature("damping_number",    &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("element_number",    &isAdimensional));
+        args.push_back((yystack_[4].value.exp)); signature.push_back(this_signature("damping_number",    &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller2<int,int>(&add_damping_to_element, args, signature, "add_damping_to_element");
+        (yylhs.value.exp) = new FeiDslCaller2<int,int>(&add_damping_to_element, args, signature, "add_damping_to_element");
 
         for(int i = 1; i <= 2; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1425 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 42:
-
-/* Line 690 of lalr1.cc  */
-#line 1096 "feiparser.yy"
+#line 1096 "feiparser.yy" // lalr1.cc:847
     {
         //add_damping_to_node(int nodeNumber, int dampingNumber)
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(8) - (8)].exp)); signature.push_back(this_signature("node_number",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(8) - (4)].exp)); signature.push_back(this_signature("damping_number",    &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("node_number",    &isAdimensional));
+        args.push_back((yystack_[4].value.exp)); signature.push_back(this_signature("damping_number",    &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller2<int,int>(&add_damping_to_node, args, signature, "add_damping_to_node");
+        (yylhs.value.exp) = new FeiDslCaller2<int,int>(&add_damping_to_node, args, signature, "add_damping_to_node");
 
         for(int i = 1; i <= 2; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1442 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 43:
-
-/* Line 690 of lalr1.cc  */
-#line 1112 "feiparser.yy"
+#line 1112 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(15) - (6)].exp)); signature.push_back(this_signature("number",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(15) - (9)].exp)); signature.push_back(this_signature("mx",    &isMass));
-        args.push_back((yysemantic_stack_[(15) - (12)].exp)); signature.push_back(this_signature("my",    &isMass));
-        args.push_back((yysemantic_stack_[(15) - (15)].exp)); signature.push_back(this_signature("mz",    &isMass));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number",    &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("mx",    &isMass));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("my",    &isMass));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("mz",    &isMass));
 
         //add_mass_to_node(int, double, double, double, double, double, double, double);
-        (yyval.exp) = new FeiDslCaller4<int,double,double,double>(&add_mass_to_node, args, signature, "add_mass_to_node");
+        (yylhs.value.exp) = new FeiDslCaller4<int,double,double,double>(&add_mass_to_node, args, signature, "add_mass_to_node");
 
         for(int i = 1; i <= 4; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1461 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 44:
-
-/* Line 690 of lalr1.cc  */
-#line 1130 "feiparser.yy"
+#line 1130 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(24) - (6)].exp)); signature.push_back(this_signature("number",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(24) - (9)].exp)); signature.push_back(this_signature("mx",    &isMass));
-        args.push_back((yysemantic_stack_[(24) - (12)].exp)); signature.push_back(this_signature("my",    &isMass));
-        args.push_back((yysemantic_stack_[(24) - (15)].exp)); signature.push_back(this_signature("mz",    &isMass));
-        args.push_back((yysemantic_stack_[(24) - (18)].exp)); signature.push_back(this_signature("Imx",    &isMassMomentOfInertia));
-        args.push_back((yysemantic_stack_[(24) - (21)].exp)); signature.push_back(this_signature("Imy",    &isMassMomentOfInertia));
-        args.push_back((yysemantic_stack_[(24) - (24)].exp)); signature.push_back(this_signature("Imz",    &isMassMomentOfInertia));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("number",    &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("mx",    &isMass));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("my",    &isMass));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("mz",    &isMass));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("Imx",    &isMassMomentOfInertia));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("Imy",    &isMassMomentOfInertia));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("Imz",    &isMassMomentOfInertia));
 
         //add_mass_to_node(int, double, double, double, double, double, double, double);
-        (yyval.exp) = new FeiDslCaller7<int,double,double,double,double,double,double>(&add_mass_to_node, args, signature, "add_mass_to_node");
+        (yylhs.value.exp) = new FeiDslCaller7<int,double,double,double,double,double,double>(&add_mass_to_node, args, signature, "add_mass_to_node");
 
         for(int i = 1; i <= 7; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1483 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 45:
-
-/* Line 690 of lalr1.cc  */
-#line 1151 "feiparser.yy"
+#line 1151 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(15) - (8)].exp)); signature.push_back(this_signature("master",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(15) - (13)].exp)); signature.push_back(this_signature("slave",           &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("master",           &isAdimensional));
+        args.push_back((yystack_[2].value.exp)); signature.push_back(this_signature("slave",           &isAdimensional));
 
         int dofnum = 1;
         for (dofchain_holder_it = dofchain_holder.begin();
@@ -1401,166 +1500,160 @@ namespace yy {
 
         //add_equaldof_to_two_nodes(int, int, int);
         if (dofchain_holder.size() == 1)
-            (yyval.exp) = new FeiDslCaller3<int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
+            (yylhs.value.exp) = new FeiDslCaller3<int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
         else if (dofchain_holder.size() == 2)
-            (yyval.exp) = new FeiDslCaller4<int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
+            (yylhs.value.exp) = new FeiDslCaller4<int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
         else if (dofchain_holder.size() == 3)
-            (yyval.exp) = new FeiDslCaller5<int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
+            (yylhs.value.exp) = new FeiDslCaller5<int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
         else if (dofchain_holder.size() == 4)
-            (yyval.exp) = new FeiDslCaller6<int, int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
+            (yylhs.value.exp) = new FeiDslCaller6<int, int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
         else if (dofchain_holder.size() == 5)
-            (yyval.exp) = new FeiDslCaller7<int, int, int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
+            (yylhs.value.exp) = new FeiDslCaller7<int, int, int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
         else if (dofchain_holder.size() == 6)
-            (yyval.exp) = new FeiDslCaller8<int, int, int, int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
+            (yylhs.value.exp) = new FeiDslCaller8<int, int, int, int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
         else if (dofchain_holder.size() == 7)
-            (yyval.exp) = new FeiDslCaller9<int, int, int, int, int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
+            (yylhs.value.exp) = new FeiDslCaller9<int, int, int, int, int, int, int, int, int>(&add_equaldof_to_two_nodes, args, signature, "add_equaldof_to_two_nodes");
 
         for(int i = 1; i <= 2; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1521 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 46:
-
-/* Line 690 of lalr1.cc  */
-#line 1203 "feiparser.yy"
+#line 1203 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(50) - (5)].exp)); signature.push_back(this_signature("pattern_number",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(50) - (8)].exp)); signature.push_back(this_signature("time_step",           &isTime));
-        args.push_back((yysemantic_stack_[(50) - (11)].exp)); signature.push_back(this_signature("scale_factor",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(50) - (14)].exp)); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(50) - (17)].exp)); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(50) - (20)].exp)); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(50) - (23)].exp)); signature.push_back(this_signature("x_max",           &isLength));
-        args.push_back((yysemantic_stack_[(50) - (26)].exp)); signature.push_back(this_signature("x_min",           &isLength));
-        args.push_back((yysemantic_stack_[(50) - (29)].exp)); signature.push_back(this_signature("y_max",           &isLength));
-        args.push_back((yysemantic_stack_[(50) - (32)].exp)); signature.push_back(this_signature("y_min",           &isLength));
-        args.push_back((yysemantic_stack_[(50) - (35)].exp)); signature.push_back(this_signature("z_max",           &isLength));
-        args.push_back((yysemantic_stack_[(50) - (38)].exp)); signature.push_back(this_signature("z_min",           &isLength));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("pattern_number",           &isAdimensional));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("time_step",           &isTime));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("scale_factor",           &isAdimensional));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("x_max",           &isLength));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("x_min",           &isLength));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("y_max",           &isLength));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("y_min",           &isLength));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("z_max",           &isLength));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("z_min",           &isLength));
 
 
-        args.push_back((yysemantic_stack_[(50) - (41)].exp)); signature.push_back(this_signature("element_file",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(50) - (44)].exp)); signature.push_back(this_signature("nodes_file",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(50) - (47)].exp)); signature.push_back(this_signature("displacement_file",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(50) - (50)].exp)); signature.push_back(this_signature("acceleration_file",           &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("element_file",           &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("nodes_file",           &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("displacement_file",           &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("acceleration_file",           &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller16<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string, string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
+        (yylhs.value.exp) = new FeiDslCaller16<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string, string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
 
         for(int i = 1; i <= 16; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1553 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 47:
-
-/* Line 690 of lalr1.cc  */
-#line 1250 "feiparser.yy"
+#line 1250 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(54) - (6)].exp)); signature.push_back(this_signature("pattern_number",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (9)].exp)); signature.push_back(this_signature("time_step",           &isTime));
-        args.push_back((yysemantic_stack_[(54) - (12)].exp)); signature.push_back(this_signature("scale_factor",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (15)].exp)); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (18)].exp)); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (21)].exp)); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (24)].exp)); signature.push_back(this_signature("x_max",           &isLength));
-        args.push_back((yysemantic_stack_[(54) - (27)].exp)); signature.push_back(this_signature("x_min",           &isLength));
-        args.push_back((yysemantic_stack_[(54) - (30)].exp)); signature.push_back(this_signature("y_max",           &isLength));
-        args.push_back((yysemantic_stack_[(54) - (33)].exp)); signature.push_back(this_signature("y_min",           &isLength));
-        args.push_back((yysemantic_stack_[(54) - (36)].exp)); signature.push_back(this_signature("z_max",           &isLength));
-        args.push_back((yysemantic_stack_[(54) - (39)].exp)); signature.push_back(this_signature("z_min",           &isLength));
+        args.push_back((yystack_[48].value.exp)); signature.push_back(this_signature("pattern_number",           &isAdimensional));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("time_step",           &isTime));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("scale_factor",           &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("x_max",           &isLength));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("x_min",           &isLength));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("y_max",           &isLength));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("y_min",           &isLength));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("z_max",           &isLength));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("z_min",           &isLength));
 
 
-        args.push_back((yysemantic_stack_[(54) - (42)].exp)); signature.push_back(this_signature("element_file",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (45)].exp)); signature.push_back(this_signature("nodes_file",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (48)].exp)); signature.push_back(this_signature("displacement_file",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (51)].exp)); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (54)].exp)); signature.push_back(this_signature("force_file",         &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("element_file",       &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("nodes_file",         &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("displacement_file",  &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("force_file",         &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller17<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string, string, string>(&add_load_pattern_domain_reduction_method_save_forces, args, signature, "add_load_pattern_domain_reduction_method_save_forces");
+        (yylhs.value.exp) = new FeiDslCaller17<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string, string, string>(&add_load_pattern_domain_reduction_method_save_forces, args, signature, "add_load_pattern_domain_reduction_method_save_forces");
 
         for(int i = 1; i <= 17; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1586 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 48:
-
-/* Line 690 of lalr1.cc  */
-#line 1296 "feiparser.yy"
+#line 1296 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(48) - (6)].exp)); signature.push_back(this_signature("pattern_number",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (9)].exp)); signature.push_back(this_signature("time_step",           &isTime));
-        args.push_back((yysemantic_stack_[(48) - (12)].exp)); signature.push_back(this_signature("scale_factor",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (15)].exp)); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (18)].exp)); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (21)].exp)); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (24)].exp)); signature.push_back(this_signature("x_max",           &isLength));
-        args.push_back((yysemantic_stack_[(48) - (27)].exp)); signature.push_back(this_signature("x_min",           &isLength));
-        args.push_back((yysemantic_stack_[(48) - (30)].exp)); signature.push_back(this_signature("y_max",           &isLength));
-        args.push_back((yysemantic_stack_[(48) - (33)].exp)); signature.push_back(this_signature("y_min",           &isLength));
-        args.push_back((yysemantic_stack_[(48) - (36)].exp)); signature.push_back(this_signature("z_max",           &isLength));
-        args.push_back((yysemantic_stack_[(48) - (39)].exp)); signature.push_back(this_signature("z_min",           &isLength));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("pattern_number",           &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("time_step",           &isTime));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("scale_factor",           &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("x_max",           &isLength));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("x_min",           &isLength));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("y_max",           &isLength));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("y_min",           &isLength));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("z_max",           &isLength));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("z_min",           &isLength));
 
 
-        args.push_back((yysemantic_stack_[(48) - (42)].exp)); signature.push_back(this_signature("element_file",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (45)].exp)); signature.push_back(this_signature("nodes_file",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(48) - (48)].exp)); signature.push_back(this_signature("force_file",           &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("element_file",           &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("nodes_file",           &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("force_file",           &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller15<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string>(&add_load_pattern_domain_reduction_method_restore_forces, args, signature, "add_load_pattern_domain_reduction_method_restore_forces");
+        (yylhs.value.exp) = new FeiDslCaller15<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string>(&add_load_pattern_domain_reduction_method_restore_forces, args, signature, "add_load_pattern_domain_reduction_method_restore_forces");
 
         for(int i = 1; i <= 15; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1617 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 49:
-
-/* Line 690 of lalr1.cc  */
-#line 1326 "feiparser.yy"
+#line 1326 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(13) - (4)].exp)); signature.push_back(this_signature("section_number",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(13) - (13)].exp)); signature.push_back(this_signature("material_number",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(13) - (9)].exp)); signature.push_back(this_signature("thickness",           &isLength));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("section_number",           &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material_number",           &isAdimensional));
+        args.push_back((yystack_[4].value.exp)); signature.push_back(this_signature("thickness",           &isLength));
 
-        (yyval.exp) = new FeiDslCaller3<int, int, double>(&add_section_membrane_plate_fiber_to_shell, args, signature, "add_section_membrane_plate_fiber_to_shell");
+        (yylhs.value.exp) = new FeiDslCaller3<int, int, double>(&add_section_membrane_plate_fiber_to_shell, args, signature, "add_section_membrane_plate_fiber_to_shell");
 
         for(int i = 1; i <= 3; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1634 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 50:
-
-/* Line 690 of lalr1.cc  */
-#line 1346 "feiparser.yy"
+#line 1346 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(18) - (4)].exp)); signature.push_back(this_signature("section_number",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(18) - (9)].exp)); signature.push_back(this_signature("elastic_modulus",    &isPressure));
-        args.push_back((yysemantic_stack_[(18) - (12)].exp)); signature.push_back(this_signature("poisson_ratio",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(18) - (15)].exp)); signature.push_back(this_signature("thickness",           &isLength));
-        args.push_back((yysemantic_stack_[(18) - (18)].exp)); signature.push_back(this_signature("mass_density",        &isDensity));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("section_number",      &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("elastic_modulus",    &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("poisson_ratio",       &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("thickness",           &isLength));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("mass_density",        &isDensity));
 
-        (yyval.exp) = new FeiDslCaller5<int, double, double, double, double>(&add_section_elastic_membrane_plate_to_shell, args, signature, "add_section_elastic_membrane_plate_to_shell");
+        (yylhs.value.exp) = new FeiDslCaller5<int, double, double, double, double>(&add_section_elastic_membrane_plate_to_shell, args, signature, "add_section_elastic_membrane_plate_to_shell");
 
         for(int i = 1; i <= 5; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1653 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 51:
-
-/* Line 690 of lalr1.cc  */
-#line 1372 "feiparser.yy"
+#line 1372 "feiparser.yy" // lalr1.cc:847
     {
         // This implementation is a bit uncommon. The need arises due to the unknown
         // number of fixed dofs the user will specify. Also since the add_support_to_node
@@ -1580,7 +1673,7 @@ namespace yy {
             //Since we're creating one command for each element in dofchain, clear the args and signature.
             args.clear(); signature.clear();
 
-            args.push_back((yysemantic_stack_[(6) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+            args.push_back((yystack_[2].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
             args.push_back(*dofchain_holder_it); signature.push_back(this_signature("dof", &isAdimensional));
 
             // Generate one command
@@ -1593,56 +1686,53 @@ namespace yy {
                 command_list = new ExpressionList(cmd, command_list);
             count++;
         }
-        (yyval.exp) = command_list;
+        (yylhs.value.exp) = command_list;
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1694 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 52:
-
-/* Line 690 of lalr1.cc  */
-#line 1412 "feiparser.yy"
+#line 1412 "feiparser.yy" // lalr1.cc:847
     {
         args.clear();           signature.clear();
-        args.push_back((yysemantic_stack_[(6) - (4)].exp));     signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[2].value.exp));     signature.push_back(this_signature("number", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<int>(&add_support_to_all_dofs_of_node,args,signature, "add_support_to_all_dofs_of_node");
+        (yylhs.value.exp) = new FeiDslCaller1<int>(&add_support_to_all_dofs_of_node,args,signature, "add_support_to_all_dofs_of_node");
 
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1709 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 53:
-
-/* Line 690 of lalr1.cc  */
-#line 1426 "feiparser.yy"
+#line 1426 "feiparser.yy" // lalr1.cc:847
     {
         args.clear();           signature.clear();
 
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(14) - (10)].ident));
-        UnitCheckerFunctionPointerType function_ptr = dof2signature(*(yysemantic_stack_[(14) - (10)].ident));
+        Expression* dof_number = dof2number(*(yystack_[4].value.ident));
+        UnitCheckerFunctionPointerType function_ptr = dof2signature(*(yystack_[4].value.ident));
 
 
-        args.push_back((yysemantic_stack_[(14) - (8)].exp)); signature.push_back(this_signature("node", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("node", &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (14)].exp)); signature.push_back(this_signature("constraint_value", function_ptr));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("constraint_value", function_ptr));
 
 
-        (yyval.exp) = new FeiDslCaller3<int, int, double>(&add_single_point_constraint_to_node,args,signature, "add_single_point_constraint_to_node");
+        (yylhs.value.exp) = new FeiDslCaller3<int, int, double>(&add_single_point_constraint_to_node,args,signature, "add_single_point_constraint_to_node");
 
 
         for(int ii = 1;ii <=2; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1732 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 54:
-
-/* Line 690 of lalr1.cc  */
-#line 1448 "feiparser.yy"
+#line 1448 "feiparser.yy" // lalr1.cc:847
     {
                 Expression* cmd;
         Expression* command_list = 0;
@@ -1652,7 +1742,7 @@ namespace yy {
             dofchain_holder_it++)
         {
             args.clear(); signature.clear();
-            args.push_back((yysemantic_stack_[(6) - (4)].exp));                     signature.push_back(this_signature("number", &isAdimensional));
+            args.push_back((yystack_[2].value.exp));                     signature.push_back(this_signature("number", &isAdimensional));
             args.push_back(*dofchain_holder_it);    signature.push_back(this_signature("dof", &isAdimensional));
 
             cmd = new FeiDslCaller2<int, int>(&remove_support_from_node, args,signature ,"remove_support_from_node");
@@ -1663,72 +1753,66 @@ namespace yy {
                 command_list = new ExpressionList(cmd, command_list);
             count++;
         }
-        (yyval.exp) = command_list;
+        (yylhs.value.exp) = command_list;
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1761 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 55:
-
-/* Line 690 of lalr1.cc  */
-#line 1476 "feiparser.yy"
+#line 1476 "feiparser.yy" // lalr1.cc:847
     {
                             dofchain_holder.clear();
-                            dofchain_holder.push_back(dof2number(*(yysemantic_stack_[(1) - (1)].ident)));
+                            dofchain_holder.push_back(dof2number(*(yystack_[0].value.ident)));
                         }
+#line 1770 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 56:
-
-/* Line 690 of lalr1.cc  */
-#line 1480 "feiparser.yy"
+#line 1480 "feiparser.yy" // lalr1.cc:847
     {
-                            dofchain_holder.push_back(dof2number(*(yysemantic_stack_[(2) - (1)].ident)));
+                            dofchain_holder.push_back(dof2number(*(yystack_[1].value.ident)));
                         }
+#line 1778 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 57:
-
-/* Line 690 of lalr1.cc  */
-#line 1490 "feiparser.yy"
+#line 1490 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        (yyval.exp) = new FeiDslCaller0<>(&enable_output,args,signature,"enable_output");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<>(&enable_output,args,signature,"enable_output");
+        nodes.push((yylhs.value.exp));
     }
+#line 1788 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 58:
-
-/* Line 690 of lalr1.cc  */
-#line 1499 "feiparser.yy"
+#line 1499 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        (yyval.exp) = new FeiDslCaller0<>(&disable_output,args,signature,"disable_output");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<>(&disable_output,args,signature,"disable_output");
+        nodes.push((yylhs.value.exp));
     }
+#line 1798 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 59:
-
-/* Line 690 of lalr1.cc  */
-#line 1508 "feiparser.yy"
+#line 1508 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(5) - (5)].exp)); signature.push_back(this_signature("factor", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("factor", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<double>(&define_static_solution_advancement_integrator_load_control,args,signature,"define_static_solution_advancement_integrator_load_control");
+        (yylhs.value.exp) = new FeiDslCaller1<double>(&define_static_solution_advancement_integrator_load_control,args,signature,"define_static_solution_advancement_integrator_load_control");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1812 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 60:
-
-/* Line 690 of lalr1.cc  */
-#line 1521 "feiparser.yy"
+#line 1521 "feiparser.yy" // lalr1.cc:847
     {
         // This case is a bit different. ALGNAME contains a string to
         // indicate which algorithm to choose. Instead of having different
@@ -1742,43 +1826,42 @@ namespace yy {
 
 
         args.clear(); signature.clear();
-        if((*(yysemantic_stack_[(3) - (3)].ident)).compare("With_no_convergence_check") == 0 || (*(yysemantic_stack_[(3) - (3)].ident)).compare("with_no_convergence_check") == 0)
+        if((*(yystack_[0].value.ident)).compare("With_no_convergence_check") == 0 || (*(yystack_[0].value.ident)).compare("with_no_convergence_check") == 0)
         {
             f = &define_algorithm_with_no_convergence_check_for_analysis;
             fname = "define_algorithm_with_no_convergence_check_for_analysis";
         }
-        else if((*(yysemantic_stack_[(3) - (3)].ident)).compare("Modified_Newton") == 0 || (*(yysemantic_stack_[(3) - (3)].ident)).compare("modified_newton") == 0)
+        else if((*(yystack_[0].value.ident)).compare("Modified_Newton") == 0 || (*(yystack_[0].value.ident)).compare("modified_newton") == 0)
         {
             f = &define_algorithm_modifiednewton_for_analysis;
             fname = "define_algorithm_modifiednewton_for_analysis";
         }
-        else if((*(yysemantic_stack_[(3) - (3)].ident)).compare("Newton") == 0 || (*(yysemantic_stack_[(3) - (3)].ident)).compare("newton") == 0)
+        else if((*(yystack_[0].value.ident)).compare("Newton") == 0 || (*(yystack_[0].value.ident)).compare("newton") == 0)
         {
             f = &define_algorithm_newton_for_analysis;
             fname = "define_algorithm_newton_for_analysis";
         }
         else
         {
-            cerr << "Algorithm " << *(yysemantic_stack_[(3) - (3)].ident) << " not recognized.\n\n";
+            cerr << "Algorithm " << *(yystack_[0].value.ident) << " not recognized.\n\n";
         }
 
         if(f == NULL)
         {
-            (yyval.exp) = new Empty();
+            (yylhs.value.exp) = new Empty();
         }
         else
         {
-            (yyval.exp) = new FeiDslCaller0<>(f,args, signature, fname);
+            (yylhs.value.exp) = new FeiDslCaller0<>(f,args, signature, fname);
         }
         
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1861 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 61:
-
-/* Line 690 of lalr1.cc  */
-#line 1569 "feiparser.yy"
+#line 1569 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
@@ -1786,123 +1869,118 @@ namespace yy {
         string fname;       // name of the DSL called to report
 
         args.clear(); signature.clear();
-        if((yysemantic_stack_[(12) - (3)].ident)->compare("Norm_Displacement_Increment") == 0)
+        if((yystack_[9].value.ident)->compare("Norm_Displacement_Increment") == 0)
         {
             f = &define_convergence_test_normdisplacementincrement_for_analysis;
             fname = "define_convergence_test_normdisplacementincrement_for_analysis";
-            args.push_back((yysemantic_stack_[(12) - (6)].exp)); signature.push_back(this_signature("tolerance", &isLength));
+            args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isLength));
         }
-        if((yysemantic_stack_[(12) - (3)].ident)->compare("Energy_Increment") == 0)
+        if((yystack_[9].value.ident)->compare("Energy_Increment") == 0)
         {
             f = &define_convergence_test_energyincrement_for_analysis;
             fname = "define_convergence_test_energyincrement_for_analysis";
-            args.push_back((yysemantic_stack_[(12) - (6)].exp)); signature.push_back(this_signature("tolerance", &isEnergy));
+            args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isEnergy));
         }
-        if((yysemantic_stack_[(12) - (3)].ident)->compare("Norm_Unbalance") == 0)
+        if((yystack_[9].value.ident)->compare("Norm_Unbalance") == 0)
         {
             f = &define_convergence_test_normunbalance_for_analysis;
             fname = "define_convergence_test_normunbalance_for_analysis";
-            args.push_back((yysemantic_stack_[(12) - (6)].exp)); signature.push_back(this_signature("tolerance", &isForce));
+            args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isForce));
         }
-        args.push_back((yysemantic_stack_[(12) - (9)].exp)); signature.push_back(this_signature("maximum_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(12) - (12)].exp)); signature.push_back(this_signature("verbose_level", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("maximum_iterations", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("verbose_level", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller3<double, int, int> (f, args, signature, fname);
+        (yylhs.value.exp) = new FeiDslCaller3<double, int, int> (f, args, signature, fname);
 
         for(int ii = 1;ii <=3; ii++) nodes.pop(); //pop 3 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1899 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 62:
-
-/* Line 690 of lalr1.cc  */
-#line 1606 "feiparser.yy"
+#line 1606 "feiparser.yy" // lalr1.cc:847
     {
         int (*f)() = &define_solver_umfpack_for_analysis;         // function poiner to the algorithm DSL
         string fname;       // name of the DSL called to report
 
         args.clear(); signature.clear();
-        if((yysemantic_stack_[(3) - (3)].ident)->compare("ProfileSPD") == 0 || (yysemantic_stack_[(3) - (3)].ident)->compare("profilespd") == 0)
+        if((yystack_[0].value.ident)->compare("ProfileSPD") == 0 || (yystack_[0].value.ident)->compare("profilespd") == 0)
         {
             f = &define_solver_profilespd_for_analysis;
             fname = "define_solver_profilespd_for_analysis";
         }
-        if((yysemantic_stack_[(3) - (3)].ident)->compare("UMFPack") == 0 || (yysemantic_stack_[(3) - (3)].ident)->compare("umfpack") == 0)
+        if((yystack_[0].value.ident)->compare("UMFPack") == 0 || (yystack_[0].value.ident)->compare("umfpack") == 0)
         {
             f = &define_solver_umfpack_for_analysis;
             fname = "define_solver_umfpack_for_analysis";
         }
-        if((yysemantic_stack_[(3) - (3)].ident)->compare("parallel") == 0)
+        if((yystack_[0].value.ident)->compare("parallel") == 0)
         {
              f = &define_solver_parallel_for_analysis; 
              fname = "define_solver_parallel_for_analysis"; 
         }
 
-        (yyval.exp) = new FeiDslCaller0<>(f, args, signature, fname);
+        (yylhs.value.exp) = new FeiDslCaller0<>(f, args, signature, fname);
 
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1929 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 63:
-
-/* Line 690 of lalr1.cc  */
-#line 1635 "feiparser.yy"
+#line 1635 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(10) - (7)].exp)); signature.push_back(this_signature("gamma", &isAdimensional));
-        args.push_back((yysemantic_stack_[(10) - (10)].exp)); signature.push_back(this_signature("beta", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("gamma", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("beta", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller2<double,double>(&define_dynamic_solution_advancement_integrator_newmark, args, signature, "define_dynamic_solution_advancement_integrator_newmark");
+        (yylhs.value.exp) = new FeiDslCaller2<double,double>(&define_dynamic_solution_advancement_integrator_newmark, args, signature, "define_dynamic_solution_advancement_integrator_newmark");
 
         for(int ii = 1;ii <=2; ii++) nodes.pop(); //pop 2 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1944 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 64:
-
-/* Line 690 of lalr1.cc  */
-#line 1649 "feiparser.yy"
+#line 1649 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(7) - (7)].exp)); signature.push_back(this_signature("alpha", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("alpha", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<double>(&define_dynamic_solution_advancement_integrator_hilber_hughes_taylor, args, signature, "define_dynamic_solution_advancement_integrator_hilber_hughes_taylor");
+        (yylhs.value.exp) = new FeiDslCaller1<double>(&define_dynamic_solution_advancement_integrator_hilber_hughes_taylor, args, signature, "define_dynamic_solution_advancement_integrator_hilber_hughes_taylor");
 
         nodes.pop(); //pop 2 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1958 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 65:
-
-/* Line 690 of lalr1.cc  */
-#line 1662 "feiparser.yy"
+#line 1662 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(11) - (9)].ident));
+        Expression* dof_number = dof2number(*(yystack_[2].value.ident));
 
 
-        args.push_back((yysemantic_stack_[(11) - (7)].exp)); signature.push_back(this_signature("node",         &isAdimensional));
+        args.push_back((yystack_[4].value.exp)); signature.push_back(this_signature("node",         &isAdimensional));
         args.push_back(dof_number); signature.push_back(this_signature("dof",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(11) - (11)].exp)); signature.push_back(this_signature("increment",   &isLength));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("increment",   &isLength));
 
-        (yyval.exp) = new FeiDslCaller3<int, int, double>(&define_static_solution_advancement_integrator_displacement_control, args, signature, "define_static_solution_advancement_integrator_displacement_control");
+        (yylhs.value.exp) = new FeiDslCaller3<int, int, double>(&define_static_solution_advancement_integrator_displacement_control, args, signature, "define_static_solution_advancement_integrator_displacement_control");
 
 
 
         for(int ii = 1;ii <=2; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 1980 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 66:
-
-/* Line 690 of lalr1.cc  */
-#line 1689 "feiparser.yy"
+#line 1689 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
         //cout << "  --> Starting new model named " << *$3 << endl;
@@ -1910,7 +1988,7 @@ namespace yy {
         //$$ = new ExpressionList(new Empty(), $$);
 
         //Get the string from the parsed string
-        string modelname = *(yysemantic_stack_[(3) - (3)].ident);
+        string modelname = *(yystack_[0].value.ident);
         //Remove quotes
         modelname.erase(0, 1);
         modelname.erase(modelname.length()-1, modelname.length());
@@ -1920,14 +1998,14 @@ namespace yy {
         signature.push_back(this_signature("name", &isAdimensional));
 
         //Push into the expression list
-        (yyval.exp) = new FeiDslCaller1<string>(&define_model_name, args, signature, "define_model_name");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller1<string>(&define_model_name, args, signature, "define_model_name");
+        nodes.push((yylhs.value.exp));
 
         // Define output file name with the string
         // Remove quotes
         if (out_cpp_filename.length() == 0)
         {
-            string newfilename = *(yysemantic_stack_[(3) - (3)].ident);
+            string newfilename = *(yystack_[0].value.ident);
             newfilename.erase(0, 1);
             newfilename.erase(newfilename.length()-1, newfilename.length());
 
@@ -1937,15 +2015,14 @@ namespace yy {
 
 
     }
+#line 2019 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 67:
-
-/* Line 690 of lalr1.cc  */
-#line 1727 "feiparser.yy"
+#line 1727 "feiparser.yy" // lalr1.cc:847
     {
         Quantity returnQuantity;
-        string temp = *(yysemantic_stack_[(4) - (4)].ident);
+        string temp = *(yystack_[0].value.ident);
         temp.erase(0, 1);
         temp.erase(temp.length()-1, temp.length());
 
@@ -1963,555 +2040,530 @@ namespace yy {
         args.push_back( new FeiString(temp));
         signature.push_back(this_signature("name", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<string>(&start_new_stage, args, signature,"start_new_stage");
+        (yylhs.value.exp) = new FeiDslCaller1<string>(&start_new_stage, args, signature,"start_new_stage");
 
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2048 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 68:
-
-/* Line 690 of lalr1.cc  */
-#line 1755 "feiparser.yy"
+#line 1755 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(6) - (2)].exp)); signature.push_back(this_signature("nsteps", &isAdimensional));
+        args.push_back((yystack_[4].value.exp)); signature.push_back(this_signature("nsteps", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<int>(&simulate_using_static_multistep, args, signature, "simulate_using_static_multistep");
+        (yylhs.value.exp) = new FeiDslCaller1<int>(&simulate_using_static_multistep, args, signature, "simulate_using_static_multistep");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2062 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 69:
-
-/* Line 690 of lalr1.cc  */
-#line 1768 "feiparser.yy"
+#line 1768 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(9) - (9)].exp)); signature.push_back(this_signature("time_step", &isTime));
-        args.push_back((yysemantic_stack_[(9) - (2)].exp)); signature.push_back(this_signature("nsteps", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("time_step", &isTime));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("nsteps", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller2<double, int>(&simulate_using_transient_multistep, args, signature, "simulate_using_transient_multistep");
+        (yylhs.value.exp) = new FeiDslCaller2<double, int>(&simulate_using_transient_multistep, args, signature, "simulate_using_transient_multistep");
 
         nodes.pop();
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2079 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 70:
-
-/* Line 690 of lalr1.cc  */
-#line 1788 "feiparser.yy"
+#line 1788 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(18) - (9)].exp)); signature.push_back(this_signature("time_step", &isTime));
-        args.push_back((yysemantic_stack_[(18) - (2)].exp)); signature.push_back(this_signature("nsteps", &isAdimensional));
-        args.push_back((yysemantic_stack_[(18) - (12)].exp)); signature.push_back(this_signature("minimum_time_step", &isTime));
-        args.push_back((yysemantic_stack_[(18) - (15)].exp)); signature.push_back(this_signature("maximum_time_step", &isTime));
-        args.push_back((yysemantic_stack_[(18) - (18)].exp)); signature.push_back(this_signature("number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("time_step", &isTime));
+        args.push_back((yystack_[16].value.exp)); signature.push_back(this_signature("nsteps", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("minimum_time_step", &isTime));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("maximum_time_step", &isTime));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number_of_iterations", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller5<double, int, double, double, int>(&simulate_using_transient_variable_multistep, args, signature, "simulate_using_transient_variable_multistep");
+        (yylhs.value.exp) = new FeiDslCaller5<double, int, double, double, int>(&simulate_using_transient_variable_multistep, args, signature, "simulate_using_transient_variable_multistep");
 
         for(int ii = 1;ii <=5; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2099 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 71:
-
-/* Line 690 of lalr1.cc  */
-#line 1807 "feiparser.yy"
+#line 1807 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(7) - (7)].exp)); signature.push_back
+        args.push_back((yystack_[0].value.exp)); signature.push_back
         (this_signature("number_of_modes", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<int>(&simulate_using_eigen_analysis, args, signature, "simulate_using_eigen_analysis");
+        (yylhs.value.exp) = new FeiDslCaller1<int>(&simulate_using_eigen_analysis, args, signature, "simulate_using_eigen_analysis");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2114 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 72:
-
-/* Line 690 of lalr1.cc  */
-#line 1824 "feiparser.yy"
+#line 1824 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(22) - (16)].exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (19)].exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (22)].exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (13)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_constant_p_triaxial, args, signature, "simulate_constitutive_testing_for_constant_p_triaxial");
+        (yylhs.value.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_constant_p_triaxial, args, signature, "simulate_constitutive_testing_for_constant_p_triaxial");
 
 
         for(int ii = 1;ii <=4; ii++) nodes.pop();
 
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2136 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 73:
-
-/* Line 690 of lalr1.cc  */
-#line 1848 "feiparser.yy"
+#line 1848 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(20) - (14)].exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (17)].exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (20)].exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (11)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_drained_triaxial, args, signature, "simulate_constitutive_testing_for_drained_triaxial");
+        (yylhs.value.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_drained_triaxial, args, signature, "simulate_constitutive_testing_for_drained_triaxial");
 
 
         for(int ii = 1;ii <=4; ii++) nodes.pop();
 
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2158 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 74:
-
-/* Line 690 of lalr1.cc  */
-#line 1872 "feiparser.yy"
+#line 1872 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(20) - (14)].exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (17)].exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (20)].exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (11)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_undrained_triaxial_stress_control, args, signature, "simulate_constitutive_testing_for_undrained_triaxial_stress_control");
+        (yylhs.value.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_undrained_triaxial_stress_control, args, signature, "simulate_constitutive_testing_for_undrained_triaxial_stress_control");
 
 
         for(int ii = 1;ii <=4; ii++) nodes.pop();
 
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2180 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 75:
-
-/* Line 690 of lalr1.cc  */
-#line 1896 "feiparser.yy"
+#line 1896 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(21) - (15)].exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (18)].exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (21)].exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (12)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_undrained_simple_shear, args, signature, "simulate_constitutive_testing_for_undrained_simple_shear");
+        (yylhs.value.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_undrained_simple_shear, args, signature, "simulate_constitutive_testing_for_undrained_simple_shear");
 
 
         for(int ii = 1;ii <=4; ii++) nodes.pop();
 
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2202 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 76:
-
-/* Line 690 of lalr1.cc  */
-#line 1920 "feiparser.yy"
+#line 1920 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(20) - (14)].exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (17)].exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (20)].exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (11)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("strain_increment_size", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("maximum_strain", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number_of_times_reaching_maximum_strain", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_undrained_triaxial, args, signature, "simulate_constitutive_testing_for_undrained_triaxial");
+        (yylhs.value.exp) = new FeiDslCaller4<double, double, int, int>(&simulate_constitutive_testing_for_undrained_triaxial, args, signature, "simulate_constitutive_testing_for_undrained_triaxial");
 
 
         for(int ii = 1;ii <=4; ii++) nodes.pop();
 
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2224 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 77:
-
-/* Line 690 of lalr1.cc  */
-#line 1946 "feiparser.yy"
+#line 1946 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<int>(&remove_element, args, signature, "remove_element");
+        (yylhs.value.exp) = new FeiDslCaller1<int>(&remove_element, args, signature, "remove_element");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2238 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 78:
-
-/* Line 690 of lalr1.cc  */
-#line 1959 "feiparser.yy"
+#line 1959 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<int>(&remove_node, args, signature, "remove_node");
+        (yylhs.value.exp) = new FeiDslCaller1<int>(&remove_node, args, signature, "remove_node");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2252 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 79:
-
-/* Line 690 of lalr1.cc  */
-#line 1972 "feiparser.yy"
+#line 1972 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller1<int>(&remove_load, args, signature, "remove_load");
+        (yylhs.value.exp) = new FeiDslCaller1<int>(&remove_load, args, signature, "remove_load");
 
         //pop 1
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2267 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 80:
-
-/* Line 690 of lalr1.cc  */
-#line 1986 "feiparser.yy"
+#line 1986 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(4) - (4)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-             (yyval.exp) = new FeiDslCaller1<int>(&remove_load, args, signature, "remove_load");
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+             (yylhs.value.exp) = new FeiDslCaller1<int>(&remove_load, args, signature, "remove_load");
              //pop 1
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2280 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 81:
-
-/* Line 690 of lalr1.cc  */
-#line 1998 "feiparser.yy"
+#line 1998 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(6) - (6)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-             (yyval.exp) = new FeiDslCaller1<int>(&remove_equaldof_from_node, args, signature, "remove_equaldof_from_node");
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+             (yylhs.value.exp) = new FeiDslCaller1<int>(&remove_equaldof_from_node, args, signature, "remove_equaldof_from_node");
 
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2293 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 82:
-
-/* Line 690 of lalr1.cc  */
-#line 2022 "feiparser.yy"
+#line 2022 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(14) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(14) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
 
-        (yyval.exp) = new FeiDslCaller4<int, double, double, double>(&add_constitutive_model_NDMaterial_linear_elastic_isotropic_3d, args, signature, "add_constitutive_model_NDMaterial_linear_elastic_isotropic_3d");
+        (yylhs.value.exp) = new FeiDslCaller4<int, double, double, double>(&add_constitutive_model_NDMaterial_linear_elastic_isotropic_3d, args, signature, "add_constitutive_model_NDMaterial_linear_elastic_isotropic_3d");
         for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 4 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2309 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 83:
-
-/* Line 690 of lalr1.cc  */
-#line 2047 "feiparser.yy"
+#line 2047 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(35) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (23)].exp)); signature.push_back(this_signature("algoritm",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(35) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (20)].exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (26)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (29)].exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (32)].exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (35)].exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",            &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller11<int, int, double, double, double, double, double, int, int, double, double>(&add_constitutive_model_NDMaterial_vonmises_perfectly_plastic, args, signature, "add_constitutive_model_NDMaterial_vonmises_perfectly_plastic");
+        (yylhs.value.exp) = new FeiDslCaller11<int, int, double, double, double, double, double, int, int, double, double>(&add_constitutive_model_NDMaterial_vonmises_perfectly_plastic, args, signature, "add_constitutive_model_NDMaterial_vonmises_perfectly_plastic");
 
         for(int ii = 1;ii <=11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2334 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 84:
-
-/* Line 690 of lalr1.cc  */
-#line 2079 "feiparser.yy"
+#line 2079 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(29) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(29) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(29) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(29) - (20)].exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-        args.push_back((yysemantic_stack_[(29) - (23)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (26)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (29)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[26].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller9<int, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_perfectly_plastic, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_perfectly_plastic");
+        (yylhs.value.exp) = new FeiDslCaller9<int, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_perfectly_plastic, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_perfectly_plastic");
 
         for(int ii = 1;ii <=9; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2356 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 85:
-
-/* Line 690 of lalr1.cc  */
-#line 2108 "feiparser.yy"
+#line 2108 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(29) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(29) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(29) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(29) - (20)].exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-        args.push_back((yysemantic_stack_[(29) - (23)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (26)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (29)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[26].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller9<int, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic, args, signature, "add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic");
+        (yylhs.value.exp) = new FeiDslCaller9<int, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic, args, signature, "add_constitutive_model_NDMaterialLT_vonmises_perfectly_plastic");
 
         for(int ii = 1;ii <=9; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2378 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 86:
-
-/* Line 690 of lalr1.cc  */
-#line 2140 "feiparser.yy"
+#line 2140 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(38) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (26)].exp)); signature.push_back(this_signature("algoritm",          &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(38) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(38) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(38) - (20)].exp)); signature.push_back(this_signature("isotropic_hardening_rate",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (23)].exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
-        args.push_back((yysemantic_stack_[(38) - (29)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (32)].exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (35)].exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (38)].exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",          &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",       &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller12<int, int, double, double, double, double, double, double, int, int, double, double>(&add_constitutive_model_NDMaterial_vonmises_isotropic_hardening, args, signature, "add_constitutive_model_NDMaterial_vonmises_isotropic_hardening");
+        (yylhs.value.exp) = new FeiDslCaller12<int, int, double, double, double, double, double, double, int, int, double, double>(&add_constitutive_model_NDMaterial_vonmises_isotropic_hardening, args, signature, "add_constitutive_model_NDMaterial_vonmises_isotropic_hardening");
         for(int ii = 1;ii <=12; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2402 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 87:
-
-/* Line 690 of lalr1.cc  */
-#line 2172 "feiparser.yy"
+#line 2172 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(32) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(32) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (20)].exp)); signature.push_back(this_signature("isotropic_hardening_rate", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (23)].exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (26)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (29)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (32)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller10<int, double, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_isotropic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_isotropic_hardening");
+        (yylhs.value.exp) = new FeiDslCaller10<int, double, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_isotropic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_isotropic_hardening");
         for(int ii = 1;ii <=10; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2425 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 88:
-
-/* Line 690 of lalr1.cc  */
-#line 2206 "feiparser.yy"
+#line 2206 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(41) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (29)].exp)); signature.push_back(this_signature("algoritm",          &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(41) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(41) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(41) - (20)].exp)); signature.push_back(this_signature("armstrong_frederick_ha",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (23)].exp)); signature.push_back(this_signature("armstrong_frederick_cr",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (26)].exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
-        args.push_back((yysemantic_stack_[(41) - (32)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (35)].exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (38)].exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (41)].exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
+        args.push_back((yystack_[38].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",          &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("armstrong_frederick_ha",       &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("armstrong_frederick_cr",       &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller13<int, int, double, double, double, double, double, double, double, int, int, double, double>(&add_constitutive_model_NDMaterial_vonmises_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_vonmises_kinematic_hardening");
+        (yylhs.value.exp) = new FeiDslCaller13<int, int, double, double, double, double, double, double, double, int, int, double, double>(&add_constitutive_model_NDMaterial_vonmises_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_vonmises_kinematic_hardening");
         for(int ii = 1;ii <=13; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2451 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 89:
-
-/* Line 690 of lalr1.cc  */
-#line 2242 "feiparser.yy"
+#line 2242 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(38) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (26)].exp)); signature.push_back(this_signature("algoritm",          &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(38) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(38) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(38) - (20)].exp)); signature.push_back(this_signature("kinematic_hardening_rate",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (23)].exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
-        args.push_back((yysemantic_stack_[(38) - (29)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (32)].exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (35)].exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (38)].exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",          &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("kinematic_hardening_rate",       &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller12<int, int, double, double, double, double, double, double, int, int, double, double>(&add_constitutive_model_NDMaterial_vonmises_linear_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_vonmises_linear_kinematic_hardening");
+        (yylhs.value.exp) = new FeiDslCaller12<int, int, double, double, double, double, double, double, int, int, double, double>(&add_constitutive_model_NDMaterial_vonmises_linear_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_vonmises_linear_kinematic_hardening");
         for(int ii = 1;ii <=12; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2476 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 90:
-
-/* Line 690 of lalr1.cc  */
-#line 2276 "feiparser.yy"
+#line 2276 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(35) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(35) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (20)].exp)); signature.push_back(this_signature("armstrong_frederick_ha",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (23)].exp)); signature.push_back(this_signature("armstrong_frederick_cr",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (26)].exp)); signature.push_back(this_signature("initial_confining_stress",   &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (29)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (32)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (35)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("armstrong_frederick_ha",   &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("armstrong_frederick_cr",   &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress",   &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller11<int, double, double, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_kinematic_hardening");
+        (yylhs.value.exp) = new FeiDslCaller11<int, double, double, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_kinematic_hardening");
         for(int ii = 1;ii <=11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2500 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 91:
-
-/* Line 690 of lalr1.cc  */
-#line 2308 "feiparser.yy"
+#line 2308 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(32) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
-        args.push_back((yysemantic_stack_[(32) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (17)].exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (20)].exp)); signature.push_back(this_signature("kinematic_hardening_rate",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (23)].exp)); signature.push_back(this_signature("initial_confining_stress",   &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (26)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (29)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (32)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("kinematic_hardening_rate",   &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress",   &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller10<int, double, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_linear_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_linear_kinematic_hardening");
+        (yylhs.value.exp) = new FeiDslCaller10<int, double, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_linear_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_linear_kinematic_hardening");
         for(int ii = 1;ii <=10; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2523 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 92:
-
-/* Line 690 of lalr1.cc  */
-#line 2360 "feiparser.yy"
+#line 2360 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(95) - (3)].exp));  signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (83)].exp)); signature.push_back(this_signature("algoritm",                 &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (8)].exp));  signature.push_back(this_signature("mass_density",              &isDensity));
-        args.push_back((yysemantic_stack_[(95) - (11)].exp)); signature.push_back(this_signature("initial_void_ratio",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (14)].exp)); signature.push_back(this_signature("initial_shear_modulus",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (17)].exp)); signature.push_back(this_signature("initial_bulk_modulus",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (20)].exp)); signature.push_back(this_signature("sanisand2008_Pat",             &isPressure));
-        args.push_back((yysemantic_stack_[(95) - (23)].exp)); signature.push_back(this_signature("sanisand2008_k_c",             &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (26)].exp)); signature.push_back(this_signature("sanisand2008_alpha_cc",        &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (29)].exp)); signature.push_back(this_signature("sanisand2008_c",               &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (32)].exp)); signature.push_back(this_signature("sanisand2008_xi",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (35)].exp)); signature.push_back(this_signature("sanisand2008_lambda",          &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (38)].exp)); signature.push_back(this_signature("sanisand2008_ec_ref",          &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (41)].exp)); signature.push_back(this_signature("sanisand2008_m",               &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (44)].exp)); signature.push_back(this_signature("sanisand2008_h0",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (47)].exp)); signature.push_back(this_signature("sanisand2008_ch",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (50)].exp)); signature.push_back(this_signature("sanisand2008_nb",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (53)].exp)); signature.push_back(this_signature("sanisand2008_A0",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (56)].exp)); signature.push_back(this_signature("sanisand2008_nd",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (59)].exp)); signature.push_back(this_signature("sanisand2008_p_r",             &isPressure));
-        args.push_back((yysemantic_stack_[(95) - (62)].exp)); signature.push_back(this_signature("sanisand2008_rho_c",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (65)].exp)); signature.push_back(this_signature("sanisand2008_theta_c",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (68)].exp)); signature.push_back(this_signature("sanisand2008_X",               &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (71)].exp)); signature.push_back(this_signature("sanisand2008_z_max",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (74)].exp)); signature.push_back(this_signature("sanisand2008_cz",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (77)].exp)); signature.push_back(this_signature("sanisand2008_p0",              &isPressure));
-        args.push_back((yysemantic_stack_[(95) - (80)].exp)); signature.push_back(this_signature("sanisand2008_p_in",             &isPressure));
-        args.push_back((yysemantic_stack_[(95) - (86)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (89)].exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (92)].exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(95) - (95)].exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
+        args.push_back((yystack_[92].value.exp));  signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",                 &isAdimensional));
+        args.push_back((yystack_[87].value.exp));  signature.push_back(this_signature("mass_density",              &isDensity));
+        args.push_back((yystack_[84].value.exp)); signature.push_back(this_signature("initial_void_ratio",       &isAdimensional));
+        args.push_back((yystack_[81].value.exp)); signature.push_back(this_signature("initial_shear_modulus",    &isAdimensional));
+        args.push_back((yystack_[78].value.exp)); signature.push_back(this_signature("initial_bulk_modulus",     &isAdimensional));
+        args.push_back((yystack_[75].value.exp)); signature.push_back(this_signature("sanisand2008_Pat",             &isPressure));
+        args.push_back((yystack_[72].value.exp)); signature.push_back(this_signature("sanisand2008_k_c",             &isAdimensional));
+        args.push_back((yystack_[69].value.exp)); signature.push_back(this_signature("sanisand2008_alpha_cc",        &isAdimensional));
+        args.push_back((yystack_[66].value.exp)); signature.push_back(this_signature("sanisand2008_c",               &isAdimensional));
+        args.push_back((yystack_[63].value.exp)); signature.push_back(this_signature("sanisand2008_xi",              &isAdimensional));
+        args.push_back((yystack_[60].value.exp)); signature.push_back(this_signature("sanisand2008_lambda",          &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("sanisand2008_ec_ref",          &isAdimensional));
+        args.push_back((yystack_[54].value.exp)); signature.push_back(this_signature("sanisand2008_m",               &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("sanisand2008_h0",              &isAdimensional));
+        args.push_back((yystack_[48].value.exp)); signature.push_back(this_signature("sanisand2008_ch",              &isAdimensional));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("sanisand2008_nb",              &isAdimensional));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("sanisand2008_A0",              &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("sanisand2008_nd",              &isAdimensional));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("sanisand2008_p_r",             &isPressure));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("sanisand2008_rho_c",           &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("sanisand2008_theta_c",         &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("sanisand2008_X",               &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("sanisand2008_z_max",           &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("sanisand2008_cz",              &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("sanisand2008_p0",              &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("sanisand2008_p_in",             &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
 
 
 /*         cout << "\n\n\n ******************************************** \n\n" ; */
 /*         cout << "WARNING ON SANISAND2008!!! Names of parameters are not definitive! Also the unit checking is not correct! :)"; */
 /*         cout << "\n\n\n ******************************************** \n\n" ; */
 
-        (yyval.exp) = new FeiDslCaller31<int, int,
+        (yylhs.value.exp) = new FeiDslCaller31<int, int,
                                 double, double, double, double, double,
                                 double, double, double, double, double,
                                 double, double, double, double, double,
@@ -2519,116 +2571,113 @@ namespace yy {
                                 double, double, double, double, double,
                                 int, int, double, double>(&add_constitutive_model_NDMaterial_sanisand_2008, args, signature, "add_constitutive_model_NDMaterial_sanisand_2008");
         for(int ii = 1;ii <= 31; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2577 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 93:
-
-/* Line 690 of lalr1.cc  */
-#line 2427 "feiparser.yy"
+#line 2427 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(47) - (3)].exp));  signature.push_back(this_signature("number",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (35)].exp)); signature.push_back(this_signature("algoritm",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (8)].exp));  signature.push_back(this_signature("mass_density",                 &isDensity));
-        args.push_back((yysemantic_stack_[(47) - (11)].exp)); signature.push_back(this_signature("reference_void_ratio",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (14)].exp)); signature.push_back(this_signature("critical_stress_ratio_M",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (17)].exp)); signature.push_back(this_signature("lambda",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (20)].exp)); signature.push_back(this_signature("kappa",                        &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (23)].exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (26)].exp)); signature.push_back(this_signature("minimum_bulk_modulus",         &isPressure));
-        args.push_back((yysemantic_stack_[(47) - (29)].exp)); signature.push_back(this_signature("pressure_reference_p0",        &isPressure));
-        args.push_back((yysemantic_stack_[(47) - (32)].exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
-        args.push_back((yysemantic_stack_[(47) - (38)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (41)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (44)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(47) - (47)].exp)); signature.push_back(this_signature("tolerance_2",     &isAdimensional));
+        args.push_back((yystack_[44].value.exp));  signature.push_back(this_signature("number",                       &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",                     &isAdimensional));
+        args.push_back((yystack_[39].value.exp));  signature.push_back(this_signature("mass_density",                 &isDensity));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("reference_void_ratio",         &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("critical_stress_ratio_M",      &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("lambda",                       &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("kappa",                        &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("minimum_bulk_modulus",         &isPressure));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("pressure_reference_p0",        &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",     &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller15<int, int,
+        (yylhs.value.exp) = new FeiDslCaller15<int, int,
                                 double, double, double,
                                 double, double, double,
                                 double, double, double,
                                 int, int, double, double>(&add_constitutive_model_NDMaterial_camclay, args, signature, "add_constitutive_model_NDMaterial_camclay");
 
         for(int ii = 1;ii <=15; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2611 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 94:
-
-/* Line 690 of lalr1.cc  */
-#line 2472 "feiparser.yy"
+#line 2472 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(41) - (3)].exp));  signature.push_back(this_signature("number",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (8)].exp));  signature.push_back(this_signature("mass_density",                 &isDensity));
-        args.push_back((yysemantic_stack_[(41) - (11)].exp)); signature.push_back(this_signature("reference_void_ratio",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (14)].exp)); signature.push_back(this_signature("critical_stress_ratio_M",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (17)].exp)); signature.push_back(this_signature("lambda",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (20)].exp)); signature.push_back(this_signature("kappa",                        &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (23)].exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (26)].exp)); signature.push_back(this_signature("minimum_bulk_modulus",         &isPressure));
-        args.push_back((yysemantic_stack_[(41) - (29)].exp)); signature.push_back(this_signature("pressure_reference_p0",        &isPressure));
-        args.push_back((yysemantic_stack_[(41) - (32)].exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
-        args.push_back((yysemantic_stack_[(41) - (35)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (38)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (41)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[38].value.exp));  signature.push_back(this_signature("number",                       &isAdimensional));
+        args.push_back((yystack_[33].value.exp));  signature.push_back(this_signature("mass_density",                 &isDensity));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("reference_void_ratio",         &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("critical_stress_ratio_M",      &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("lambda",                       &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("kappa",                        &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("minimum_bulk_modulus",         &isPressure));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("pressure_reference_p0",        &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller13<int,
+        (yylhs.value.exp) = new FeiDslCaller13<int,
                                double, double, double,
                                double, double, double, double,
                                double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_camclay, args, signature, "add_constitutive_model_NDMaterial_accelerated_camclay");
         for(int ii = 1;ii <=13; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2641 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 95:
-
-/* Line 690 of lalr1.cc  */
-#line 2526 "feiparser.yy"
+#line 2526 "feiparser.yy" // lalr1.cc:847
     {
 
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(80) - (3)].exp)); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (68)].exp)); signature.push_back(this_signature("algoritm",                 &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (8)].exp)); signature.push_back(this_signature("mass_density",              &isDensity));
-        args.push_back((yysemantic_stack_[(80) - (11)].exp)); signature.push_back(this_signature("e0",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (14)].exp)); signature.push_back(this_signature("sanisand2004_G0",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (17)].exp)); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (20)].exp)); signature.push_back(this_signature("sanisand2004_Pat",                   &isPressure));
-        args.push_back((yysemantic_stack_[(80) - (23)].exp)); signature.push_back(this_signature("sanisand2004_p_cut",                 &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (26)].exp)); signature.push_back(this_signature("sanisand2004_Mc",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (29)].exp)); signature.push_back(this_signature("sanisand2004_c",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (32)].exp)); signature.push_back(this_signature("sanisand2004_lambda_c",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (35)].exp)); signature.push_back(this_signature("sanisand2004_xi",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (38)].exp)); signature.push_back(this_signature("sanisand2004_ec_ref",                &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (41)].exp)); signature.push_back(this_signature("sanisand2004_m",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (44)].exp)); signature.push_back(this_signature("sanisand2004_h0",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (47)].exp)); signature.push_back(this_signature("sanisand2004_ch",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (50)].exp)); signature.push_back(this_signature("sanisand2004_nb",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (53)].exp)); signature.push_back(this_signature("sanisand2004_A0",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (56)].exp)); signature.push_back(this_signature("sanisand2004_nd",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (59)].exp)); signature.push_back(this_signature("sanisand2004_z_max",                 &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (62)].exp)); signature.push_back(this_signature("sanisand2004_cz",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (65)].exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-        args.push_back((yysemantic_stack_[(80) - (71)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (74)].exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (77)].exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(80) - (80)].exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
+        args.push_back((yystack_[77].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",                 &isAdimensional));
+        args.push_back((yystack_[72].value.exp)); signature.push_back(this_signature("mass_density",              &isDensity));
+        args.push_back((yystack_[69].value.exp)); signature.push_back(this_signature("e0",       &isAdimensional));
+        args.push_back((yystack_[66].value.exp)); signature.push_back(this_signature("sanisand2004_G0",    &isAdimensional));
+        args.push_back((yystack_[63].value.exp)); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
+        args.push_back((yystack_[60].value.exp)); signature.push_back(this_signature("sanisand2004_Pat",                   &isPressure));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("sanisand2004_p_cut",                 &isAdimensional));
+        args.push_back((yystack_[54].value.exp)); signature.push_back(this_signature("sanisand2004_Mc",                    &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("sanisand2004_c",                     &isAdimensional));
+        args.push_back((yystack_[48].value.exp)); signature.push_back(this_signature("sanisand2004_lambda_c",              &isAdimensional));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("sanisand2004_xi",                    &isAdimensional));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("sanisand2004_ec_ref",                &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("sanisand2004_m",                     &isAdimensional));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("sanisand2004_h0",                    &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("sanisand2004_ch",                    &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("sanisand2004_nb",                    &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("sanisand2004_A0",                    &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("sanisand2004_nd",                    &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("sanisand2004_z_max",                 &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("sanisand2004_cz",                    &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1",      &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
 
 /*         cout << "\n\n\n ******************************************** \n\n" ; */
 /*         cout << "WARNING ON Dafalias-Manzari!!! Names of parameters are not definitive! Also the unit checking is not correct! :)"; */
 /*         cout << "\n\n\n ******************************************** \n\n" ; */
 
-        (yyval.exp) = new FeiDslCaller26<int, int,
+        (yylhs.value.exp) = new FeiDslCaller26<int, int,
                                 double, double, double, double, double,
                                 double, double, double, double, double,
                                 double, double, double, double, double,
@@ -2636,1003 +2685,972 @@ namespace yy {
                                 int, int, double, double>(&add_constitutive_model_NDMaterial_sanisand_2004, args, signature, "add_constitutive_model_NDMaterial_sanisand_2004");
 
         for(int ii = 1;ii <= 26; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2691 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 96:
-
-/* Line 690 of lalr1.cc  */
-#line 2586 "feiparser.yy"
+#line 2586 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(38) - (3)].exp)); signature.push_back(this_signature("number",                         &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (26)].exp)); signature.push_back(this_signature("algoritm",                      &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (8)].exp)); signature.push_back(this_signature("mass_density",                   &isDensity));
-        args.push_back((yysemantic_stack_[(38) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",               &isPressure));
-        args.push_back((yysemantic_stack_[(38) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",                 &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (17)].exp)); signature.push_back(this_signature("druckerprager_angle",           &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (20)].exp)); signature.push_back(this_signature("isotropic_hardening_rate",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (23)].exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
-        args.push_back((yysemantic_stack_[(38) - (29)].exp)); signature.push_back(this_signature("number_of_subincrements",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (32)].exp)); signature.push_back(this_signature("maximum_number_of_iterations",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (35)].exp)); signature.push_back(this_signature("tolerance_1",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(38) - (38)].exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("number",                         &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",                      &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("mass_density",                   &isDensity));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("elastic_modulus",               &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("poisson_ratio",                 &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("druckerprager_angle",           &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",      &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",       &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",  &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1",  &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",      &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller12<int, int,
+        (yylhs.value.exp) = new FeiDslCaller12<int, int,
                                 double, double, double,
                                 double, double, double,
                                 int, int, double, double>(&add_constitutive_model_NDMaterial_druckerprager_isotropic_hardening, args, signature, "add_constitutive_model_NDMaterial_druckerprager_isotropic_hardening");
 
         for(int ii = 1;ii <= 12; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2721 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 97:
-
-/* Line 690 of lalr1.cc  */
-#line 2624 "feiparser.yy"
+#line 2624 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(32) - (3)].exp)); signature.push_back(this_signature("number",                        &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (8)].exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
-        args.push_back((yysemantic_stack_[(32) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (17)].exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (20)].exp)); signature.push_back(this_signature("isotropic_hardening_rate",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (23)].exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (26)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (29)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (32)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("number",                        &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",     &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller10<int, double,
+        (yylhs.value.exp) = new FeiDslCaller10<int, double,
                                 double, double, double,
                                 double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_druckerprager_isotropic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_druckerprager_isotropic_hardening");
 
         for(int ii = 1;ii <= 10; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2748 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 98:
-
-/* Line 690 of lalr1.cc  */
-#line 2662 "feiparser.yy"
+#line 2662 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(41) - (3)].exp)); signature.push_back(this_signature("number",                        &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (29)].exp)); signature.push_back(this_signature("algoritm",                     &isAdimensional));
+        args.push_back((yystack_[38].value.exp)); signature.push_back(this_signature("number",                        &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",                     &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(41) - (8)].exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
-        args.push_back((yysemantic_stack_[(41) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
-        args.push_back((yysemantic_stack_[(41) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (17)].exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (20)].exp)); signature.push_back(this_signature("armstrong_frederick_ha",       &isAdimensional));  //units?
-        args.push_back((yysemantic_stack_[(41) - (23)].exp)); signature.push_back(this_signature("armstrong_frederick_cr",       &isAdimensional));  //units?
-        args.push_back((yysemantic_stack_[(41) - (26)].exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
-        args.push_back((yysemantic_stack_[(41) - (32)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (35)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (38)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(41) - (41)].exp)); signature.push_back(this_signature("tolerance_2",     &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("armstrong_frederick_ha",       &isAdimensional));  //units?
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("armstrong_frederick_cr",       &isAdimensional));  //units?
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",     &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller13<int, int,
+        (yylhs.value.exp) = new FeiDslCaller13<int, int,
                                 double, double, double,
                                 double, double, double, double,
                                 int, int, double, double>(&add_constitutive_model_NDMaterial_druckerprager_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_druckerprager_kinematic_hardening");
 
         for(int ii = 1;ii <= 13; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2780 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 99:
-
-/* Line 690 of lalr1.cc  */
-#line 2703 "feiparser.yy"
+#line 2703 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(35) - (3)].exp)); signature.push_back(this_signature("number",                        &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (8)].exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
-        args.push_back((yysemantic_stack_[(35) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (17)].exp)); signature.push_back(this_signature("druckerprager_angle",          &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (20)].exp)); signature.push_back(this_signature("armstrong_frederick_ha",       &isAdimensional));  //units?
-        args.push_back((yysemantic_stack_[(35) - (23)].exp)); signature.push_back(this_signature("armstrong_frederick_cr",       &isAdimensional));  //units?
-        args.push_back((yysemantic_stack_[(35) - (26)].exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (29)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (32)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (35)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("number",                        &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("druckerprager_angle",          &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("armstrong_frederick_ha",       &isAdimensional));  //units?
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("armstrong_frederick_cr",       &isAdimensional));  //units?
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller11<int, double,
+        (yylhs.value.exp) = new FeiDslCaller11<int, double,
                                 double, double, double,
                                 double, double, double,
                                 int, double, double>(&add_constitutive_model_NDMaterial_accelerated_druckerprager_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_druckerprager_kinematic_hardening");
 
         for(int ii = 1;ii <= 11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2809 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 100:
-
-/* Line 690 of lalr1.cc  */
-#line 2742 "feiparser.yy"
+#line 2742 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(35) - (3)].exp)); signature.push_back(this_signature("number",                        &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (23)].exp)); signature.push_back(this_signature("algoritm",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (8)].exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
-        args.push_back((yysemantic_stack_[(35) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (17)].exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (20)].exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (26)].exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (29)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (32)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (35)].exp)); signature.push_back(this_signature("tolerance_2",     &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("number",                        &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("algoritm",                     &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2",     &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller11<int, int,
+        (yylhs.value.exp) = new FeiDslCaller11<int, int,
                                 double, double, double,
                                 double, double,
                                 int, int, double, double>(&add_constitutive_model_NDMaterial_druckerprager_perfectly_plastic, args, signature, "add_constitutive_model_NDMaterial_druckerprager_perfectly_plastic");
 
         for(int ii = 1;ii <= 11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2838 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 101:
-
-/* Line 690 of lalr1.cc  */
-#line 2778 "feiparser.yy"
+#line 2778 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(29) - (3)].exp)); signature.push_back(this_signature("number",                        &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (8)].exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
-        args.push_back((yysemantic_stack_[(29) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
-        args.push_back((yysemantic_stack_[(29) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (17)].exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (20)].exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
-        args.push_back((yysemantic_stack_[(29) - (23)].exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (26)].exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(29) - (29)].exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
+        args.push_back((yystack_[26].value.exp)); signature.push_back(this_signature("number",                        &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tolerance_2", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller9<int,
+        (yylhs.value.exp) = new FeiDslCaller9<int,
                                 double, double,
                                 double, double, double,
                                 int, double, double>(&add_constitutive_model_NDMaterial_accelerated_druckerprager_perfectly_plastic, args, signature, "add_constitutive_model_NDMaterial_accelerated_druckerprager_perfectly_plastic");
         for(int ii = 1;ii <= 9; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2864 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 102:
-
-/* Line 690 of lalr1.cc  */
-#line 2809 "feiparser.yy"
+#line 2809 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(23) - (3)].exp));  signature.push_back(this_signature("number",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(23) - (11)].exp)); signature.push_back(this_signature("elastic_modulus_horizontal",   &isPressure));
-        args.push_back((yysemantic_stack_[(23) - (14)].exp)); signature.push_back(this_signature("elastic_modulus_vertical",     &isPressure));
-        args.push_back((yysemantic_stack_[(23) - (17)].exp)); signature.push_back(this_signature("poisson_ratio_h_v",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(23) - (20)].exp)); signature.push_back(this_signature("poisson_ratio_h_h",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(23) - (23)].exp)); signature.push_back(this_signature("shear_modulus_h_v",            &isPressure));
-        args.push_back((yysemantic_stack_[(23) - (8)].exp));  signature.push_back(this_signature("mass_density",                 &isDensity));
+        args.push_back((yystack_[20].value.exp));  signature.push_back(this_signature("number",                       &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("elastic_modulus_horizontal",   &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("elastic_modulus_vertical",     &isPressure));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("poisson_ratio_h_v",            &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("poisson_ratio_h_h",            &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("shear_modulus_h_v",            &isPressure));
+        args.push_back((yystack_[15].value.exp));  signature.push_back(this_signature("mass_density",                 &isDensity));
 
-        (yyval.exp) = new FeiDslCaller7<int, double, double, double, double, double, double>(&add_constitutive_model_NDMaterial_linear_elastic_crossanisotropic, args, signature, "add_constitutive_model_NDMaterial_linear_elastic_crossanisotropic");
+        (yylhs.value.exp) = new FeiDslCaller7<int, double, double, double, double, double, double>(&add_constitutive_model_NDMaterial_linear_elastic_crossanisotropic, args, signature, "add_constitutive_model_NDMaterial_linear_elastic_crossanisotropic");
         for(int ii = 1;ii <=7; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2884 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 103:
-
-/* Line 690 of lalr1.cc  */
-#line 2828 "feiparser.yy"
+#line 2828 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(11) - (3)].exp)); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(11) - (8)].exp)); signature.push_back(this_signature("elastic_modulus",           &isPressure));
-        args.push_back((yysemantic_stack_[(11) - (11)].exp)); signature.push_back(this_signature("viscolestic_modulus",      &isThisUnit< 1, -1,-1>));
-        (yyval.exp) = new FeiDslCaller3<int, double, double>(&add_constitutive_model_uniaxial_elastic, args, signature, "add_constitutive_model_uniaxial_elastic");
+        args.push_back((yystack_[8].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("elastic_modulus",           &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("viscolestic_modulus",      &isThisUnit< 1, -1,-1>));
+        (yylhs.value.exp) = new FeiDslCaller3<int, double, double>(&add_constitutive_model_uniaxial_elastic, args, signature, "add_constitutive_model_uniaxial_elastic");
 
         for(int ii = 1;ii <= 2; ii++) nodes.pop(); //pop 2 exps
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
     }
+#line 2900 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 104:
-
-/* Line 690 of lalr1.cc  */
-#line 2850 "feiparser.yy"
+#line 2850 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(26) - (3)].exp)); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (8)].exp)); signature.push_back(this_signature("yield_strength",            &isPressure));
-        args.push_back((yysemantic_stack_[(26) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",          &isPressure));
-        args.push_back((yysemantic_stack_[(26) - (14)].exp)); signature.push_back(this_signature("strain_hardening_ratio",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (17)].exp)); signature.push_back(this_signature("a1",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (20)].exp)); signature.push_back(this_signature("a2",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (23)].exp)); signature.push_back(this_signature("a3",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (26)].exp)); signature.push_back(this_signature("a4",                       &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("yield_strength",            &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("elastic_modulus",          &isPressure));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("strain_hardening_ratio",   &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("a1",                       &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a2",                       &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a3",                       &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("a4",                       &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller8<int, double, double, double, double, double, double, double>(&add_constitutive_model_uniaxial_steel01, args, signature, "add_constitutive_model_uniaxial_steel01");
+        (yylhs.value.exp) = new FeiDslCaller8<int, double, double, double, double, double, double, double>(&add_constitutive_model_uniaxial_steel01, args, signature, "add_constitutive_model_uniaxial_steel01");
         for(int ii = 1;ii <=8; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
       }
+#line 2923 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 105:
-
-/* Line 690 of lalr1.cc  */
-#line 2882 "feiparser.yy"
+#line 2882 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(35) - (3)].exp)); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (8)].exp)); signature.push_back(this_signature("yield_strength",            &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",          &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (14)].exp)); signature.push_back(this_signature("strain_hardening_ratio",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (17)].exp)); signature.push_back(this_signature("R0",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (20)].exp)); signature.push_back(this_signature("cR1",                      &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (23)].exp)); signature.push_back(this_signature("cR2",                      &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (26)].exp)); signature.push_back(this_signature("a1",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (29)].exp)); signature.push_back(this_signature("a2",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (32)].exp)); signature.push_back(this_signature("a3",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (35)].exp)); signature.push_back(this_signature("a4",                       &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("yield_strength",            &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("elastic_modulus",          &isPressure));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("strain_hardening_ratio",   &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("R0",                       &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("cR1",                      &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("cR2",                      &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("a1",                       &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a2",                       &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a3",                       &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("a4",                       &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller11<int, double, double, double, double, double, double, double, double, double, double>(&add_constitutive_model_uniaxial_steel02, args, signature, "add_constitutive_model_uniaxial_steel02");
+        (yylhs.value.exp) = new FeiDslCaller11<int, double, double, double, double, double, double, double, double, double, double>(&add_constitutive_model_uniaxial_steel02, args, signature, "add_constitutive_model_uniaxial_steel02");
         for(int ii = 1;ii <=11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2949 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 106:
-
-/* Line 690 of lalr1.cc  */
-#line 2914 "feiparser.yy"
+#line 2914 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        args.push_back((yysemantic_stack_[(26) - (3)].exp)); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (8)].exp)); signature.push_back(this_signature("compressive_strength",            &isPressure));
-        args.push_back((yysemantic_stack_[(26) - (11)].exp)); signature.push_back(this_signature("strain_at_compressive_strength",          &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (14)].exp)); signature.push_back(this_signature("crushing_strength",   &isPressure));
-        args.push_back((yysemantic_stack_[(26) - (17)].exp)); signature.push_back(this_signature("strain_at_crushing_strength",                       &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (20)].exp)); signature.push_back(this_signature("lambda",                      &isAdimensional));
-        args.push_back((yysemantic_stack_[(26) - (23)].exp)); signature.push_back(this_signature("tensile_strength",                      &isPressure));
-        args.push_back((yysemantic_stack_[(26) - (26)].exp)); signature.push_back(this_signature("tension_softening_stiffness",                       &isPressure));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("compressive_strength",            &isPressure));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("strain_at_compressive_strength",          &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("crushing_strength",   &isPressure));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("strain_at_crushing_strength",                       &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("lambda",                      &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tensile_strength",                      &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("tension_softening_stiffness",                       &isPressure));
 
 
-        (yyval.exp) = new FeiDslCaller8<int, double, double, double, double, double, double, double>(&add_constitutive_model_uniaxial_concrete02, args, signature, "add_constitutive_model_uniaxial_concrete02");
+        (yylhs.value.exp) = new FeiDslCaller8<int, double, double, double, double, double, double, double>(&add_constitutive_model_uniaxial_concrete02, args, signature, "add_constitutive_model_uniaxial_concrete02");
         for(int ii = 1;ii <=8; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 2972 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 107:
-
-/* Line 690 of lalr1.cc  */
-#line 2946 "feiparser.yy"
+#line 2946 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(35) - (3)].exp)); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (8)].exp)); signature.push_back(this_signature("elastic_modulus",           &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (11)].exp)); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (14)].exp)); signature.push_back(this_signature("M_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (17)].exp)); signature.push_back(this_signature("kd_in",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (20)].exp)); signature.push_back(this_signature("xi_in",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (23)].exp)); signature.push_back(this_signature("h_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (26)].exp)); signature.push_back(this_signature("m_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (29)].exp)); signature.push_back(this_signature("mass_density",             &isDensity));
-        args.push_back((yysemantic_stack_[(35) - (32)].exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (35)].exp)); signature.push_back(this_signature("beta_min",                 &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("elastic_modulus",           &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("M_in",                     &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("kd_in",                    &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("xi_in",                    &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("h_in",                     &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("m_in",                     &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("mass_density",             &isDensity));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("beta_min",                 &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller11<int,
+        (yylhs.value.exp) = new FeiDslCaller11<int,
                                 double, double, double,
                                 double, double, double,
                                 double, double, double,
                                 double>(&add_constitutive_model_NDMaterial_pisano, args, signature, "add_constitutive_model_NDMaterial_pisano");
 
         for(int ii = 1;ii <=11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3001 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 108:
-
-/* Line 690 of lalr1.cc  */
-#line 2984 "feiparser.yy"
+#line 2984 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(35) - (3)].exp)); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (8)].exp)); signature.push_back(this_signature("elastic_modulus",           &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (11)].exp)); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (14)].exp)); signature.push_back(this_signature("M_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (17)].exp)); signature.push_back(this_signature("kd_in",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (20)].exp)); signature.push_back(this_signature("xi_in",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (23)].exp)); signature.push_back(this_signature("h_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (26)].exp)); signature.push_back(this_signature("m_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(35) - (29)].exp)); signature.push_back(this_signature("mass_density",             &isDensity));
-        args.push_back((yysemantic_stack_[(35) - (32)].exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-        args.push_back((yysemantic_stack_[(35) - (35)].exp)); signature.push_back(this_signature("beta_min",                 &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("elastic_modulus",           &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("M_in",                     &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("kd_in",                    &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("xi_in",                    &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("h_in",                     &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("m_in",                     &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("mass_density",             &isDensity));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("beta_min",                 &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller11<int,
+        (yylhs.value.exp) = new FeiDslCaller11<int,
                                 double, double, double,
                                 double, double, double,
                                 double, double, double,
                                 double>(&add_constitutive_model_NDMaterialLT_pisano, args, signature, "add_constitutive_model_NDMaterialLT_pisano");
 
         for(int ii = 1;ii <=11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3030 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 109:
-
-/* Line 690 of lalr1.cc  */
-#line 3012 "feiparser.yy"
+#line 3015 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(14) - (3)].exp)); signature.push_back(this_signature("number",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (11)].exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
-        args.push_back((yysemantic_stack_[(14) - (14)].exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (8)].exp)); signature.push_back(this_signature("mass_density",      &isDensity));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("mass_density",      &isDensity));
 
-        (yyval.exp) = new FeiDslCaller4<int, double, double, double>(&add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d, args,
+        (yylhs.value.exp) = new FeiDslCaller4<int, double, double, double>(&add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d, args,
             signature,"add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d");
         for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 4 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3047 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 110:
-
-/* Line 690 of lalr1.cc  */
-#line 3037 "feiparser.yy"
+#line 3040 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(32) - (3)].exp)); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (8)].exp)); signature.push_back(this_signature("elastic_modulus",           &isPressure));
-        args.push_back((yysemantic_stack_[(32) - (11)].exp)); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (14)].exp)); signature.push_back(this_signature("M_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (17)].exp)); signature.push_back(this_signature("kd_in",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (20)].exp)); signature.push_back(this_signature("xi_in",                    &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (23)].exp)); signature.push_back(this_signature("h_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (26)].exp)); signature.push_back(this_signature("m_in",                     &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (29)].exp)); signature.push_back(this_signature("mass_density",             &isDensity));
-        args.push_back((yysemantic_stack_[(32) - (32)].exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("elastic_modulus",           &isPressure));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("M_in",                     &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("kd_in",                    &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("xi_in",                    &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("h_in",                     &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("m_in",                     &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("mass_density",             &isDensity));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
 
-        (yyval.exp) = new FeiDslCaller10<int,
+        (yylhs.value.exp) = new FeiDslCaller10<int,
                                 double, double, double,
                                 double, double, double,
                                 double, double, double>(&add_constitutive_model_NDMaterialLT_New_Pisano, args, signature, "add_constitutive_model_NDMaterialLT_New_Pisano");
 
         for(int ii = 1;ii <=10; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3074 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 111:
-
-/* Line 690 of lalr1.cc  */
-#line 3075 "feiparser.yy"
+#line 3078 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(27) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (27)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node, args, signature, "add_element_brick_8node");
+        (yylhs.value.exp) = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node, args, signature, "add_element_brick_8node");
 
 
         for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 11 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3098 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 112:
-
-/* Line 690 of lalr1.cc  */
-#line 3101 "feiparser.yy"
+#line 3104 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(27) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (27)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_ltensor, args, signature, "add_element_brick_8node_ltensor");
+        (yylhs.value.exp) = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_ltensor, args, signature, "add_element_brick_8node_ltensor");
 
         for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 10 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3121 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 113:
-
-/* Line 690 of lalr1.cc  */
-#line 3126 "feiparser.yy"
+#line 3129 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(27) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(27) - (27)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_elastic, args, signature, "add_element_brick_8node_elastic");
+        (yylhs.value.exp) = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_elastic, args, signature, "add_element_brick_8node_elastic");
 
         for(int ii = 1;ii <=10; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3144 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 114:
-
-/* Line 690 of lalr1.cc  */
-#line 3150 "feiparser.yy"
+#line 3153 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(33) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (6)].exp)); signature.push_back(this_signature("noGPs", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (14)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (16)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (18)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (20)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (22)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (24)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (26)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (28)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(33) - (33)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("noGPs", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller11<int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller11<int,int,int,int,
                                 int,int,int,int,
                                 int,int,int>(&add_element_brick_8node_variable_number_of_gauss_points, args, signature, "add_element_brick_8node_variable_number_of_gauss_points");
 
         for(int ii = 1;ii <=11; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3170 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 115:
-
-/* Line 690 of lalr1.cc  */
-#line 3179 "feiparser.yy"
+#line 3182 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(65) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (24)].exp)); signature.push_back(this_signature("node9", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (26)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (28)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (30)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (32)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (34)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (36)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (38)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (40)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (42)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (44)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (46)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (48)].exp)); signature.push_back(this_signature("node21", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (50)].exp)); signature.push_back(this_signature("node22", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (52)].exp)); signature.push_back(this_signature("node23", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (54)].exp)); signature.push_back(this_signature("node24", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (56)].exp)); signature.push_back(this_signature("node25", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (58)].exp)); signature.push_back(this_signature("node26", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (60)].exp)); signature.push_back(this_signature("node27", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (65)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[63].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[55].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[53].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[49].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[47].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[43].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node9", &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[37].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node21", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node22", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node23", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node24", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node25", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node26", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node27", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int>(&add_element_brick_27node, args, signature, "add_element_brick_27node");
 
         for(int ii = 1;ii <=29; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3214 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 116:
-
-/* Line 690 of lalr1.cc  */
-#line 3226 "feiparser.yy"
+#line 3229 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(65) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (24)].exp)); signature.push_back(this_signature("node9", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (26)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (28)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (30)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (32)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (34)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (36)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (38)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (40)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (42)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (44)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (46)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (48)].exp)); signature.push_back(this_signature("node21", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (50)].exp)); signature.push_back(this_signature("node22", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (52)].exp)); signature.push_back(this_signature("node23", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (54)].exp)); signature.push_back(this_signature("node24", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (56)].exp)); signature.push_back(this_signature("node25", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (58)].exp)); signature.push_back(this_signature("node26", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (60)].exp)); signature.push_back(this_signature("node27", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (65)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[63].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[55].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[53].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[49].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[47].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[43].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node9", &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[37].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node21", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node22", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node23", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node24", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node25", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node26", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node27", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int>(&add_element_brick_27node_ltensor, args, signature, "add_element_brick_27node_ltensor");
 
         for(int ii = 1;ii <=29; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3258 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 117:
-
-/* Line 690 of lalr1.cc  */
-#line 3273 "feiparser.yy"
+#line 3276 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(71) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (6)].exp)); signature.push_back(this_signature("noGP", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (14)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (16)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (18)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (20)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (22)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (24)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (26)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (28)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (30)].exp)); signature.push_back(this_signature("node9", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (32)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (34)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (36)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (38)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (40)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (42)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (44)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (46)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (48)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (50)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (52)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (54)].exp)); signature.push_back(this_signature("node21", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (56)].exp)); signature.push_back(this_signature("node22", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (58)].exp)); signature.push_back(this_signature("node23", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (60)].exp)); signature.push_back(this_signature("node24", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (62)].exp)); signature.push_back(this_signature("node25", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (64)].exp)); signature.push_back(this_signature("node26", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (66)].exp)); signature.push_back(this_signature("node27", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (71)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[69].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[65].value.exp)); signature.push_back(this_signature("noGP", &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[55].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[53].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[49].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[47].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[43].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node9", &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[37].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node21", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node22", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node23", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node24", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node25", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node26", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node27", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller30<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller30<int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int>(&add_element_brick_27node_variable_number_of_gauss_points, args, signature, "add_element_brick_27node_variable_number_of_gauss_points");
 
         for(int ii = 1;ii <=30; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3303 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 118:
-
-/* Line 690 of lalr1.cc  */
-#line 3322 "feiparser.yy"
+#line 3325 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(65) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (24)].exp)); signature.push_back(this_signature("node9", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (26)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (28)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (30)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (32)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (34)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (36)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (38)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (40)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (42)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (44)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (46)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (48)].exp)); signature.push_back(this_signature("node21", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (50)].exp)); signature.push_back(this_signature("node22", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (52)].exp)); signature.push_back(this_signature("node23", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (54)].exp)); signature.push_back(this_signature("node24", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (56)].exp)); signature.push_back(this_signature("node25", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (58)].exp)); signature.push_back(this_signature("node26", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (60)].exp)); signature.push_back(this_signature("node27", &isAdimensional));
-        args.push_back((yysemantic_stack_[(65) - (65)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[63].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[55].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[53].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[49].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[47].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[43].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node9", &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[37].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node21", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node22", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node23", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node24", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node25", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node26", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node27", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int>(&add_element_brick_27node_elastic, args, signature, "add_element_brick_27node_elastic");
 
         for(int ii = 1;ii <=29; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3347 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 119:
-
-/* Line 690 of lalr1.cc  */
-#line 3369 "feiparser.yy"
+#line 3372 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(71) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (6)].exp)); signature.push_back(this_signature("noGP",   &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (14)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (16)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (18)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (20)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (22)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (24)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (26)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (28)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (30)].exp)); signature.push_back(this_signature("node9", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (32)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (34)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (36)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (38)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (40)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (42)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (44)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (46)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (48)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (50)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (52)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (54)].exp)); signature.push_back(this_signature("node21", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (56)].exp)); signature.push_back(this_signature("node22", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (58)].exp)); signature.push_back(this_signature("node23", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (60)].exp)); signature.push_back(this_signature("node24", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (62)].exp)); signature.push_back(this_signature("node25", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (64)].exp)); signature.push_back(this_signature("node26", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (66)].exp)); signature.push_back(this_signature("node27", &isAdimensional));
-        args.push_back((yysemantic_stack_[(71) - (71)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[69].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[65].value.exp)); signature.push_back(this_signature("noGP",   &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[55].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[53].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[49].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[47].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[43].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node9", &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[37].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node21", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node22", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node23", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node24", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node25", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node26", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node27", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller30<int,int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller30<int,int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,
                                 int>(&add_element_brick_variable_node_8_to_27, args, signature, "add_element_brick_variable_node_8_to_27");
 
 
         for(int ii = 1;ii <=30; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3394 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 120:
-
-/* Line 690 of lalr1.cc  */
-#line 3420 "feiparser.yy"
+#line 3423 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(51) - (2)].exp));  signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (8)].exp));  signature.push_back(this_signature("node1",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (10)].exp)); signature.push_back(this_signature("node2",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (12)].exp)); signature.push_back(this_signature("node3",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (14)].exp)); signature.push_back(this_signature("node4",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (16)].exp)); signature.push_back(this_signature("node5",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (18)].exp)); signature.push_back(this_signature("node6",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (20)].exp)); signature.push_back(this_signature("node7",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (22)].exp)); signature.push_back(this_signature("node8",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (24)].exp)); signature.push_back(this_signature("node9",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (26)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (28)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (30)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (32)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (34)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (36)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (38)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (40)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (42)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (44)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (46)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (51)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[49].value.exp));  signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[43].value.exp));  signature.push_back(this_signature("node1",  &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node2",  &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("node3",  &isAdimensional));
+        args.push_back((yystack_[37].value.exp)); signature.push_back(this_signature("node4",  &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("node5",  &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("node6",  &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("node7",  &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("node8",  &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("node9",  &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int,int>(&add_element_brick_20node, args, signature, "add_element_brick_20node");
 
         for(int ii = 1;ii <=22; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3431 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 121:
-
-/* Line 690 of lalr1.cc  */
-#line 3460 "feiparser.yy"
+#line 3463 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(57) - (2)].exp));  signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (6)].exp));  signature.push_back(this_signature("noGP", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (14)].exp));  signature.push_back(this_signature("node1",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (16)].exp)); signature.push_back(this_signature("node2",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (18)].exp)); signature.push_back(this_signature("node3",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (20)].exp)); signature.push_back(this_signature("node4",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (22)].exp)); signature.push_back(this_signature("node5",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (24)].exp)); signature.push_back(this_signature("node6",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (26)].exp)); signature.push_back(this_signature("node7",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (28)].exp)); signature.push_back(this_signature("node8",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (30)].exp)); signature.push_back(this_signature("node9",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (32)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (34)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (36)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (38)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (40)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (42)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (44)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (46)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (48)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (50)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (52)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
-        args.push_back((yysemantic_stack_[(57) - (57)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[55].value.exp));  signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[51].value.exp));  signature.push_back(this_signature("noGP", &isAdimensional));
+        args.push_back((yystack_[43].value.exp));  signature.push_back(this_signature("node1",  &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node2",  &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("node3",  &isAdimensional));
+        args.push_back((yystack_[37].value.exp)); signature.push_back(this_signature("node4",  &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("node5",  &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("node6",  &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("node7",  &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("node8",  &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("node9",  &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller23<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller23<int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int,int,int>(&add_element_brick_20node_variable_number_of_gauss_points, args, signature, "add_element_brick_20node_variable_number_of_gauss_points");
 
         for(int ii = 1;ii <=23; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3469 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 122:
-
-/* Line 690 of lalr1.cc  */
-#line 3502 "feiparser.yy"
+#line 3505 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(51) - (2)].exp));  signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (8)].exp));  signature.push_back(this_signature("node1",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (10)].exp)); signature.push_back(this_signature("node2",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (12)].exp)); signature.push_back(this_signature("node3",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (14)].exp)); signature.push_back(this_signature("node4",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (16)].exp)); signature.push_back(this_signature("node5",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (18)].exp)); signature.push_back(this_signature("node6",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (20)].exp)); signature.push_back(this_signature("node7",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (22)].exp)); signature.push_back(this_signature("node8",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (24)].exp)); signature.push_back(this_signature("node9",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (26)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (28)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (30)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (32)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (34)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (36)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (38)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (40)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (42)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (44)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (46)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (51)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[49].value.exp));  signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[43].value.exp));  signature.push_back(this_signature("node1",  &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node2",  &isAdimensional));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("node3",  &isAdimensional));
+        args.push_back((yystack_[37].value.exp)); signature.push_back(this_signature("node4",  &isAdimensional));
+        args.push_back((yystack_[35].value.exp)); signature.push_back(this_signature("node5",  &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("node6",  &isAdimensional));
+        args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("node7",  &isAdimensional));
+        args.push_back((yystack_[29].value.exp)); signature.push_back(this_signature("node8",  &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("node9",  &isAdimensional));
+        args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[17].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[7].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int,int>(&add_element_brick_20node_elastic, args, signature, "add_element_brick_20node_elastic");
 
         for(int ii = 1;ii <=22; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3506 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 123:
-
-/* Line 690 of lalr1.cc  */
-#line 3550 "feiparser.yy"
+#line 3553 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(54) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (27)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[52].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[46].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[44].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[40].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[38].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[34].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(54) - (30)].exp)); signature.push_back(this_signature("porosity", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (33)].exp)); signature.push_back(this_signature("alpha", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (36)].exp)); signature.push_back(this_signature("rho_s", &isDensity));
-        args.push_back((yysemantic_stack_[(54) - (39)].exp)); signature.push_back(this_signature("rho_f", &isDensity));
-        args.push_back((yysemantic_stack_[(54) - (42)].exp)); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));  //L^3*T/M
-        args.push_back((yysemantic_stack_[(54) - (45)].exp)); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
-        args.push_back((yysemantic_stack_[(54) - (48)].exp)); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
-        args.push_back((yysemantic_stack_[(54) - (51)].exp)); signature.push_back(this_signature("K_s", &isPressure));
-        args.push_back((yysemantic_stack_[(54) - (54)].exp)); signature.push_back(this_signature("K_f", &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("porosity", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("alpha", &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("rho_s", &isDensity));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("rho_f", &isDensity));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));  //L^3*T/M
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("K_s", &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("K_f", &isPressure));
 
-        (yyval.exp) = new FeiDslCaller19<int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller19<int,int,int,int,int,int,
                                 int,int,int,int,
                                 double,double,double,double,
                                 double,double,double,double,double>(&add_element_brick_8node_upU, args, signature, "add_element_brick_8node_upU");
 
         for(int ii = 1;ii <=19; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3542 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 124:
-
-/* Line 690 of lalr1.cc  */
-#line 3590 "feiparser.yy"
+#line 3593 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(54) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (27)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[52].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[46].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[44].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[40].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[38].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[34].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(54) - (30)].exp)); signature.push_back(this_signature("porosity", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (33)].exp)); signature.push_back(this_signature("alpha", &isAdimensional));
-        args.push_back((yysemantic_stack_[(54) - (36)].exp)); signature.push_back(this_signature("rho_s", &isDensity));
-        args.push_back((yysemantic_stack_[(54) - (39)].exp)); signature.push_back(this_signature("rho_f", &isDensity));
-        args.push_back((yysemantic_stack_[(54) - (42)].exp)); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
-        args.push_back((yysemantic_stack_[(54) - (45)].exp)); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
-        args.push_back((yysemantic_stack_[(54) - (48)].exp)); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
-        args.push_back((yysemantic_stack_[(54) - (51)].exp)); signature.push_back(this_signature("K_s", &isPressure));
-        args.push_back((yysemantic_stack_[(54) - (54)].exp)); signature.push_back(this_signature("K_f", &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("porosity", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("alpha", &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("rho_s", &isDensity));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("rho_f", &isDensity));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("K_s", &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("K_f", &isPressure));
 
-        (yyval.exp) = new FeiDslCaller19<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller19<int,int,int,int,int,int,int,int,int,int,
                                 double,double,double,double,double,double,double,double,double>(&add_element_brick_8node_up, args, signature, "add_element_brick_8node_up");
 
         for(int ii = 1;ii <=19; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3576 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 125:
-
-/* Line 690 of lalr1.cc  */
-#line 3629 "feiparser.yy"
+#line 3632 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(78) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (16)].exp)); signature.push_back(this_signature("node5", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (18)].exp)); signature.push_back(this_signature("node6", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (20)].exp)); signature.push_back(this_signature("node7", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (22)].exp)); signature.push_back(this_signature("node8", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (24)].exp)); signature.push_back(this_signature("node9",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (26)].exp)); signature.push_back(this_signature("node10", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (28)].exp)); signature.push_back(this_signature("node11", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (30)].exp)); signature.push_back(this_signature("node12", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (32)].exp)); signature.push_back(this_signature("node13", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (34)].exp)); signature.push_back(this_signature("node14", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (36)].exp)); signature.push_back(this_signature("node15", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (38)].exp)); signature.push_back(this_signature("node16", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (40)].exp)); signature.push_back(this_signature("node17", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (42)].exp)); signature.push_back(this_signature("node18", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (44)].exp)); signature.push_back(this_signature("node19", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (46)].exp)); signature.push_back(this_signature("node20", &isAdimensional));
+        args.push_back((yystack_[76].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[70].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[68].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[66].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[64].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[62].value.exp)); signature.push_back(this_signature("node5", &isAdimensional));
+        args.push_back((yystack_[60].value.exp)); signature.push_back(this_signature("node6", &isAdimensional));
+        args.push_back((yystack_[58].value.exp)); signature.push_back(this_signature("node7", &isAdimensional));
+        args.push_back((yystack_[56].value.exp)); signature.push_back(this_signature("node8", &isAdimensional));
+        args.push_back((yystack_[54].value.exp)); signature.push_back(this_signature("node9",  &isAdimensional));
+        args.push_back((yystack_[52].value.exp)); signature.push_back(this_signature("node10", &isAdimensional));
+        args.push_back((yystack_[50].value.exp)); signature.push_back(this_signature("node11", &isAdimensional));
+        args.push_back((yystack_[48].value.exp)); signature.push_back(this_signature("node12", &isAdimensional));
+        args.push_back((yystack_[46].value.exp)); signature.push_back(this_signature("node13", &isAdimensional));
+        args.push_back((yystack_[44].value.exp)); signature.push_back(this_signature("node14", &isAdimensional));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("node15", &isAdimensional));
+        args.push_back((yystack_[40].value.exp)); signature.push_back(this_signature("node16", &isAdimensional));
+        args.push_back((yystack_[38].value.exp)); signature.push_back(this_signature("node17", &isAdimensional));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("node18", &isAdimensional));
+        args.push_back((yystack_[34].value.exp)); signature.push_back(this_signature("node19", &isAdimensional));
+        args.push_back((yystack_[32].value.exp)); signature.push_back(this_signature("node20", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(78) - (51)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(78) - (54)].exp)); signature.push_back(this_signature("porosity", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (57)].exp)); signature.push_back(this_signature("alpha", &isAdimensional));
-        args.push_back((yysemantic_stack_[(78) - (60)].exp)); signature.push_back(this_signature("rho_s", &isDensity));
-        args.push_back((yysemantic_stack_[(78) - (63)].exp)); signature.push_back(this_signature("rho_f", &isDensity));
-        args.push_back((yysemantic_stack_[(78) - (66)].exp)); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
-        args.push_back((yysemantic_stack_[(78) - (69)].exp)); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
-        args.push_back((yysemantic_stack_[(78) - (72)].exp)); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
-        args.push_back((yysemantic_stack_[(78) - (75)].exp)); signature.push_back(this_signature("K_s", &isPressure));
-        args.push_back((yysemantic_stack_[(78) - (78)].exp)); signature.push_back(this_signature("K_f", &isPressure));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("porosity", &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("alpha", &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("rho_s", &isDensity));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("rho_f", &isDensity));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("K_s", &isPressure));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("K_f", &isPressure));
 
-        (yyval.exp) = new FeiDslCaller31<int,int,int,int,int,int,int,int,int,int,
+        (yylhs.value.exp) = new FeiDslCaller31<int,int,int,int,int,int,int,int,int,int,
                                 int,int,int,int,int,int,int,int,int,int,
                                 int, int,
                                 double,double,double,double,double,double,double,double,double>(&add_element_brick_20node_upU, args, signature, "add_element_brick_20node_upU");
 
         for(int ii = 1;ii <=31; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3625 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 126:
-
-/* Line 690 of lalr1.cc  */
-#line 3688 "feiparser.yy"
+#line 3691 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(59) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(59) - (14)].exp)); signature.push_back(this_signature("cross_section", &isArea));
-        args.push_back((yysemantic_stack_[(59) - (17)].exp)); signature.push_back(this_signature("elastic_modulus", &isPressure));
-        args.push_back((yysemantic_stack_[(59) - (20)].exp)); signature.push_back(this_signature("shear_modulus", &isPressure));
-        args.push_back((yysemantic_stack_[(59) - (23)].exp)); signature.push_back(this_signature("torsion_Jx", &isAreaMomentOfInertia));
-        args.push_back((yysemantic_stack_[(59) - (26)].exp)); signature.push_back(this_signature("bending_Iy", &isAreaMomentOfInertia));
-        args.push_back((yysemantic_stack_[(59) - (29)].exp)); signature.push_back(this_signature("bending_Iz", &isAreaMomentOfInertia));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("cross_section", &isArea));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("elastic_modulus", &isPressure));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("shear_modulus", &isPressure));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("torsion_Jx", &isAreaMomentOfInertia));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("bending_Iy", &isAreaMomentOfInertia));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("bending_Iz", &isAreaMomentOfInertia));
 
-        args.push_back((yysemantic_stack_[(59) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[49].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(59) - (32)].exp)); signature.push_back(this_signature("mass_density", &isDensity));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("mass_density", &isDensity));
 
-        args.push_back((yysemantic_stack_[(59) - (36)].exp)); signature.push_back(this_signature("vecxzPlane_X",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (38)].exp)); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (40)].exp)); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (45)].exp)); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (47)].exp)); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (49)].exp)); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (54)].exp)); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (56)].exp)); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (58)].exp)); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("vecxzPlane_X",     &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
+        args.push_back((yystack_[1].value.exp)); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
         //
         //int add_element_beam_elastic_3d(int ElementNumber,
         //                 double A,
@@ -3647,7 +3665,7 @@ namespace yy {
         //                 double vecxzPlane_X, double vecxzPlane_Y, double vecxzPlane_Z,
         //                 double jntOffsetI_X, double jntOffsetI_Y, double jntOffsetI_Z,
         //                 double jntOffsetJ_X, double jntOffsetJ_Y, double jntOffsetJ_Z)
-        (yyval.exp) = new FeiDslCaller19<int,
+        (yylhs.value.exp) = new FeiDslCaller19<int,
                                 double, double, double, double, double, double,
                                 int, int, double,
                                 double, double, double,
@@ -3655,39 +3673,38 @@ namespace yy {
                                 double, double, double>(&add_element_beam_elastic, args, signature, "add_element_beam_elastic");
 
         for(int ii = 1;ii <=19; ii++) nodes.pop(); //pop        19 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3679 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 127:
-
-/* Line 690 of lalr1.cc  */
-#line 3752 "feiparser.yy"
+#line 3755 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(59) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(59) - (14)].exp)); signature.push_back(this_signature("cross_section", &isArea));
-        args.push_back((yysemantic_stack_[(59) - (17)].exp)); signature.push_back(this_signature("elastic_modulus", &isPressure));
-        args.push_back((yysemantic_stack_[(59) - (20)].exp)); signature.push_back(this_signature("shear_modulus", &isPressure));
-        args.push_back((yysemantic_stack_[(59) - (23)].exp)); signature.push_back(this_signature("torsion_Jx", &isAreaMomentOfInertia));
-        args.push_back((yysemantic_stack_[(59) - (26)].exp)); signature.push_back(this_signature("bending_Iy", &isAreaMomentOfInertia));
-        args.push_back((yysemantic_stack_[(59) - (29)].exp)); signature.push_back(this_signature("bending_Iz", &isAreaMomentOfInertia));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("cross_section", &isArea));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("elastic_modulus", &isPressure));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("shear_modulus", &isPressure));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("torsion_Jx", &isAreaMomentOfInertia));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("bending_Iy", &isAreaMomentOfInertia));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("bending_Iz", &isAreaMomentOfInertia));
 
-        args.push_back((yysemantic_stack_[(59) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[49].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(59) - (32)].exp)); signature.push_back(this_signature("mass_density", &isDensity));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("mass_density", &isDensity));
 
-        args.push_back((yysemantic_stack_[(59) - (36)].exp)); signature.push_back(this_signature("vecxzPlane_X",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (38)].exp)); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (40)].exp)); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (45)].exp)); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (47)].exp)); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (49)].exp)); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (54)].exp)); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (56)].exp)); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (58)].exp)); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("vecxzPlane_X",     &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
+        args.push_back((yystack_[1].value.exp)); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
         //
         //int add_element_beam_elastic_3d(int ElementNumber,
         //                 double A,
@@ -3702,7 +3719,7 @@ namespace yy {
         //                 double vecxzPlane_X, double vecxzPlane_Y, double vecxzPlane_Z,
         //                 double jntOffsetI_X, double jntOffsetI_Y, double jntOffsetI_Z,
         //                 double jntOffsetJ_X, double jntOffsetJ_Y, double jntOffsetJ_Z)
-        (yyval.exp) = new FeiDslCaller19<int,
+        (yylhs.value.exp) = new FeiDslCaller19<int,
                                 double, double, double, double, double, double,
                                 int, int, double,
                                 double, double, double,
@@ -3710,23 +3727,22 @@ namespace yy {
                                 double, double, double>(&add_element_beam_elastic_lumped_mass, args, signature, "beam_elastic_lumped_mass");
 
         for(int ii = 1;ii <=19; ii++) nodes.pop(); //pop 19 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3733 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 128:
-
-/* Line 690 of lalr1.cc  */
-#line 3813 "feiparser.yy"
+#line 3816 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(51) - (2)].exp));  signature.push_back(this_signature("number",                        &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (8)].exp));  signature.push_back(this_signature("node1",                         &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (10)].exp)); signature.push_back(this_signature("node2",                         &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (13)].exp)); signature.push_back(this_signature("number_of_integration_points",  &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (18)].exp)); signature.push_back(this_signature("SectionNumber",                 &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (21)].exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
+        args.push_back((yystack_[49].value.exp));  signature.push_back(this_signature("number",                        &isAdimensional));
+        args.push_back((yystack_[43].value.exp));  signature.push_back(this_signature("node1",                         &isAdimensional));
+        args.push_back((yystack_[41].value.exp)); signature.push_back(this_signature("node2",                         &isAdimensional));
+        args.push_back((yystack_[38].value.exp)); signature.push_back(this_signature("number_of_integration_points",  &isAdimensional));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("SectionNumber",                 &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("mass_density",                  &isDensity));
 
 
 
@@ -3738,110 +3754,107 @@ namespace yy {
         signature.push_back(this_signature("IntegrationRule", &isAdimensional));*/
 
 
-        args.push_back((yysemantic_stack_[(51) - (24)].exp)); signature.push_back(this_signature("IntegrationRule",               &isAdimensional));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("IntegrationRule",               &isAdimensional));
 
 
-        args.push_back((yysemantic_stack_[(51) - (28)].exp)); signature.push_back(this_signature("vecxzPlane_X",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (30)].exp)); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (32)].exp)); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(51) - (37)].exp)); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
-        args.push_back((yysemantic_stack_[(51) - (39)].exp)); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
-        args.push_back((yysemantic_stack_[(51) - (41)].exp)); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
-        args.push_back((yysemantic_stack_[(51) - (46)].exp)); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
-        args.push_back((yysemantic_stack_[(51) - (48)].exp)); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
-        args.push_back((yysemantic_stack_[(51) - (50)].exp)); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("vecxzPlane_X",    &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
+        args.push_back((yystack_[1].value.exp)); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
 
-        (yyval.exp) = new FeiDslCaller16<int, int, int, int, int, double, string,
+        (yylhs.value.exp) = new FeiDslCaller16<int, int, int, int, int, double, string,
                                 double, double, double,
                                 double, double, double,
                                 double, double, double>(&add_element_beam_displacement_based, args, signature, "add_element_beam_displacement_based");
 
         for(int ii = 1;ii <=16; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3779 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 129:
-
-/* Line 690 of lalr1.cc  */
-#line 3860 "feiparser.yy"
+#line 3863 "feiparser.yy" // lalr1.cc:847
     {
 
         args.clear(); signature.clear();
 
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(14) - (14)].ident));
-        UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*(yysemantic_stack_[(14) - (14)].ident));
+        Expression* dof_number = dof2number(*(yystack_[0].value.ident));
+        UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*(yystack_[0].value.ident));
 
-        args.push_back((yysemantic_stack_[(14) - (2)].exp)); signature.push_back(this_signature("number",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (8)].exp)); signature.push_back(this_signature("node",        &isAdimensional));
-        args.push_back((yysemantic_stack_[(14) - (12)].exp)); signature.push_back(this_signature("stiffness",  function_ptr));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("number",      &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("node",        &isAdimensional));
+        args.push_back((yystack_[2].value.exp)); signature.push_back(this_signature("stiffness",  function_ptr));
         args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller4<int, int, double, int>(&add_element_penalty_for_applying_generalized_displacement, args, signature, "add_element_penalty_for_applying_generalized_displacement");
+        (yylhs.value.exp) = new FeiDslCaller4<int, int, double, int>(&add_element_penalty_for_applying_generalized_displacement, args, signature, "add_element_penalty_for_applying_generalized_displacement");
 
         for(int ii = 1;ii <=3; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3802 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 130:
-
-/* Line 690 of lalr1.cc  */
-#line 3884 "feiparser.yy"
+#line 3887 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
 
-        Expression* dof_number = dof2number(*(yysemantic_stack_[(16) - (16)].ident));
-        UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*(yysemantic_stack_[(16) - (16)].ident));
+        Expression* dof_number = dof2number(*(yystack_[0].value.ident));
+        UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*(yystack_[0].value.ident));
 
 
-        args.push_back((yysemantic_stack_[(16) - (2)].exp));  signature.push_back(this_signature("number",      &isAdimensional));
-        args.push_back((yysemantic_stack_[(16) - (8)].exp));  signature.push_back(this_signature("node1",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(16) - (10)].exp)); signature.push_back(this_signature("node2",       &isAdimensional));
-        args.push_back((yysemantic_stack_[(16) - (14)].exp)); signature.push_back(this_signature("stiffness",    function_ptr));
+        args.push_back((yystack_[14].value.exp));  signature.push_back(this_signature("number",      &isAdimensional));
+        args.push_back((yystack_[8].value.exp));  signature.push_back(this_signature("node1",       &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("node2",       &isAdimensional));
+        args.push_back((yystack_[2].value.exp)); signature.push_back(this_signature("stiffness",    function_ptr));
         args.push_back(dof_number); signature.push_back(this_signature("dof",  isAdimensional));
 
-         (yyval.exp) = new FeiDslCaller5<int, int, int, double, int>(&add_element_penalty, args, signature, "add_element_penalty");
+         (yylhs.value.exp) = new FeiDslCaller5<int, int, int, double, int>(&add_element_penalty, args, signature, "add_element_penalty");
 
 
         for(int i = 1; i <= 4; i++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3827 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 131:
-
-/* Line 690 of lalr1.cc  */
-#line 3919 "feiparser.yy"
+#line 3922 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(59) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(59) - (14)].exp)); signature.push_back(this_signature("cross_section", &isArea));
-        args.push_back((yysemantic_stack_[(59) - (17)].exp)); signature.push_back(this_signature("elastic_modulus", &isPressure));
-        args.push_back((yysemantic_stack_[(59) - (20)].exp)); signature.push_back(this_signature("shear_modulus", &isPressure));
-        args.push_back((yysemantic_stack_[(59) - (23)].exp)); signature.push_back(this_signature("torsion_Jx", &isAreaMomentOfInertia));
-        args.push_back((yysemantic_stack_[(59) - (26)].exp)); signature.push_back(this_signature("bending_Iy", &isAreaMomentOfInertia));
-        args.push_back((yysemantic_stack_[(59) - (29)].exp)); signature.push_back(this_signature("bending_Iz", &isAreaMomentOfInertia));
+        args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("cross_section", &isArea));
+        args.push_back((yystack_[42].value.exp)); signature.push_back(this_signature("elastic_modulus", &isPressure));
+        args.push_back((yystack_[39].value.exp)); signature.push_back(this_signature("shear_modulus", &isPressure));
+        args.push_back((yystack_[36].value.exp)); signature.push_back(this_signature("torsion_Jx", &isAreaMomentOfInertia));
+        args.push_back((yystack_[33].value.exp)); signature.push_back(this_signature("bending_Iy", &isAreaMomentOfInertia));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("bending_Iz", &isAreaMomentOfInertia));
 
-        args.push_back((yysemantic_stack_[(59) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[51].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[49].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(59) - (32)].exp)); signature.push_back(this_signature("mass_density", &isDensity));
+        args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("mass_density", &isDensity));
 
-        args.push_back((yysemantic_stack_[(59) - (36)].exp)); signature.push_back(this_signature("vecxzPlane_X",     &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (38)].exp)); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (40)].exp)); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
-        args.push_back((yysemantic_stack_[(59) - (45)].exp)); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (47)].exp)); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (49)].exp)); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (54)].exp)); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (56)].exp)); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
-        args.push_back((yysemantic_stack_[(59) - (58)].exp)); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
+        args.push_back((yystack_[23].value.exp)); signature.push_back(this_signature("vecxzPlane_X",     &isAdimensional));
+        args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
+        args.push_back((yystack_[1].value.exp)); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
 
-        (yyval.exp) = new FeiDslCaller19<int,
+        (yylhs.value.exp) = new FeiDslCaller19<int,
                                 double, double, double, double, double, double,
                                 int, int, double,
                                 double, double, double,
@@ -3850,170 +3863,163 @@ namespace yy {
 
 
         for(int ii = 1;ii <=19; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3869 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 132:
-
-/* Line 690 of lalr1.cc  */
-#line 3966 "feiparser.yy"
+#line 3969 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(32) - (2)].exp)); signature.push_back(this_signature("number",                  &isAdimensional));
+        args.push_back((yystack_[30].value.exp)); signature.push_back(this_signature("number",                  &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(32) - (8)].exp)); signature.push_back(this_signature("node1",                   &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (10)].exp)); signature.push_back(this_signature("node2",                  &isAdimensional));
+        args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("node1",                   &isAdimensional));
+        args.push_back((yystack_[22].value.exp)); signature.push_back(this_signature("node2",                  &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(32) - (14)].exp)); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
-        args.push_back((yysemantic_stack_[(32) - (17)].exp)); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
-        args.push_back((yysemantic_stack_[(32) - (20)].exp)); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (23)].exp)); signature.push_back(this_signature("maximum_gap",            &isLength));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
+        args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
+        args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("maximum_gap",            &isLength));
 
-        args.push_back((yysemantic_stack_[(32) - (27)].exp)); signature.push_back(this_signature("x_local_1",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (29)].exp)); signature.push_back(this_signature("x_local_2",              &isAdimensional));
-        args.push_back((yysemantic_stack_[(32) - (31)].exp)); signature.push_back(this_signature("x_local_3",              &isAdimensional));
+        args.push_back((yystack_[5].value.exp)); signature.push_back(this_signature("x_local_1",              &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("x_local_2",              &isAdimensional));
+        args.push_back((yystack_[1].value.exp)); signature.push_back(this_signature("x_local_3",              &isAdimensional));
 
 
-        (yyval.exp) = new FeiDslCaller10<int, int, int,
+        (yylhs.value.exp) = new FeiDslCaller10<int, int, int,
                                double, double, double,
                                double, double, double, double>(&add_element_contact_nonlinear_3dof_to_3dof, args, signature, "add_element_contact_nonlinear_3dof_to_3dof");
 
         for(int ii = 1;ii <=9; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3899 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 133:
-
-/* Line 690 of lalr1.cc  */
-#line 3998 "feiparser.yy"
+#line 4001 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(22) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[20].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(22) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[8].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(22) - (22)].exp)); signature.push_back(this_signature("thickness", &isLength));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("thickness", &isLength));
 
-        args.push_back((yysemantic_stack_[(22) - (19)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller7<int, int, int, int, int,
+        (yylhs.value.exp) = new FeiDslCaller7<int, int, int, int, int,
                                double, int>(&add_element_shell_MITC4, args, signature, "add_element_shell_MITC4");
 
         for(int ii = 1;ii <=7; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3923 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 134:
-
-/* Line 690 of lalr1.cc  */
-#line 4024 "feiparser.yy"
+#line 4027 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(22) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[20].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(22) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[8].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(22) - (22)].exp)); signature.push_back(this_signature("thickness", &isLength));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("thickness", &isLength));
 
-        args.push_back((yysemantic_stack_[(22) - (19)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller7<int, int, int, int, int,
+        (yylhs.value.exp) = new FeiDslCaller7<int, int, int, int, int,
                                double, int>(&add_element_shell_NewMITC4, args, signature, "add_element_shell_NewMITC4");
 
         for(int ii = 1;ii <=7; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3947 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 135:
-
-/* Line 690 of lalr1.cc  */
-#line 4050 "feiparser.yy"
+#line 4053 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(20) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(20) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(20) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[8].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(20) - (20)].exp)); signature.push_back(this_signature("thickness", &isLength));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("thickness", &isLength));
 
-        args.push_back((yysemantic_stack_[(20) - (17)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller6<int, int, int, int, double, int>(&add_element_shell_andes_3node, args, signature, "add_element_shell_andes_3node");
+        (yylhs.value.exp) = new FeiDslCaller6<int, int, int, int, double, int>(&add_element_shell_andes_3node, args, signature, "add_element_shell_andes_3node");
 
         for(int ii = 1;ii <=6; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3969 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 136:
-
-/* Line 690 of lalr1.cc  */
-#line 4074 "feiparser.yy"
+#line 4077 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        args.push_back((yysemantic_stack_[(22) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[20].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(22) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (12)].exp)); signature.push_back(this_signature("node3", &isAdimensional));
-        args.push_back((yysemantic_stack_[(22) - (14)].exp)); signature.push_back(this_signature("node4", &isAdimensional));
+        args.push_back((yystack_[14].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[10].value.exp)); signature.push_back(this_signature("node3", &isAdimensional));
+        args.push_back((yystack_[8].value.exp)); signature.push_back(this_signature("node4", &isAdimensional));
 
-        args.push_back((yysemantic_stack_[(22) - (22)].exp)); signature.push_back(this_signature("thickness", &isLength));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("thickness", &isLength));
 
-        args.push_back((yysemantic_stack_[(22) - (19)].exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
 
-        (yyval.exp) = new FeiDslCaller7<int, int, int, int, int, double, int>(&add_element_shell_andes_4node, args, signature, "add_element_shell_andes_4node");
+        (yylhs.value.exp) = new FeiDslCaller7<int, int, int, int, int, double, int>(&add_element_shell_andes_4node, args, signature, "add_element_shell_andes_4node");
 
         for(int ii = 1;ii <=7; ii++) nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 3992 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 137:
-
-/* Line 690 of lalr1.cc  */
-#line 4100 "feiparser.yy"
+#line 4103 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
 
-        args.push_back((yysemantic_stack_[(21) - (2)].exp)); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (8)].exp)); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (10)].exp)); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (15)].exp)); signature.push_back(this_signature("material", &isAdimensional));
-        args.push_back((yysemantic_stack_[(21) - (18)].exp)); signature.push_back(this_signature("cross_section", &isArea));
-        args.push_back((yysemantic_stack_[(21) - (21)].exp)); signature.push_back(this_signature("mass_density", &isDensity));
+        args.push_back((yystack_[19].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back((yystack_[13].value.exp)); signature.push_back(this_signature("node1", &isAdimensional));
+        args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("node2", &isAdimensional));
+        args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("material", &isAdimensional));
+        args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("cross_section", &isArea));
+        args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("mass_density", &isDensity));
 
-        (yyval.exp) = new FeiDslCaller6<int, int, int, int, double, double>(&add_element_truss, args, signature, "add_element_truss");
+        (yylhs.value.exp) = new FeiDslCaller6<int, int, int, int, double, double>(&add_element_truss, args, signature, "add_element_truss");
 
         for(int ii = 1;ii <=6; ii++) nodes.pop(); //pop 6 exps
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 4012 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 138:
-
-/* Line 690 of lalr1.cc  */
-#line 4288 "feiparser.yy"
+#line 4291 "feiparser.yy" // lalr1.cc:847
     {
-        if ((yysemantic_stack_[(1) - (1)].exp)) // Null pointer safety
+        if ((yystack_[0].value.exp)) // Null pointer safety
         {
             /* Check if the statement is a DslAction in which case we may
             want to report the error code.
             */
-            DslAction *actionpointer = dynamic_cast<DslAction*>((yysemantic_stack_[(1) - (1)].exp));
+            DslAction *actionpointer = dynamic_cast<DslAction*>((yystack_[0].value.exp));
             if (actionpointer != 0)
             {
                 try
@@ -4030,7 +4036,7 @@ namespace yy {
             {
                 try
                 {
-                    (yysemantic_stack_[(1) - (1)].exp)->value();   /* this evaluates the AST */
+                    (yystack_[0].value.exp)->value();   /* this evaluates the AST */
                 }
                 catch (exception& e)
                 {
@@ -4046,21 +4052,20 @@ namespace yy {
         {
             cout << prompt;
         }
-        (yyval.errcode) = 0;
+        (yylhs.value.errcode) = 0;
     }
+#line 4058 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 139:
-
-/* Line 690 of lalr1.cc  */
-#line 4330 "feiparser.yy"
+#line 4333 "feiparser.yy" // lalr1.cc:847
     {
-        if ((yysemantic_stack_[(2) - (2)].exp)) // Null pointer safety
+        if ((yystack_[0].value.exp)) // Null pointer safety
         {
             /* Check if the statement is a DslAction in which case we may
             want to report the error code.
             */
-            DslAction *actionpointer = dynamic_cast<DslAction*>((yysemantic_stack_[(2) - (2)].exp));
+            DslAction *actionpointer = dynamic_cast<DslAction*>((yystack_[0].value.exp));
             if (actionpointer != 0)
             {
                 try
@@ -4078,7 +4083,7 @@ namespace yy {
             {  // If Statement is just an expression evaluate it.
                 try
                 {
-                    (yysemantic_stack_[(2) - (2)].exp)->value();   /* this evaluates the AST */
+                    (yystack_[0].value.exp)->value();   /* this evaluates the AST */
                 }
                 catch (exception& e)
                 {
@@ -4093,14 +4098,13 @@ namespace yy {
         {
             cout << prompt;
         }
-        (yyval.errcode) = 0;
+        (yylhs.value.errcode) = 0;
     }
+#line 4104 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 140:
-
-/* Line 690 of lalr1.cc  */
-#line 4372 "feiparser.yy"
+#line 4375 "feiparser.yy" // lalr1.cc:847
     {
         clear_stack ();
 
@@ -4110,14 +4114,13 @@ namespace yy {
             error_behavior();
         }
 
-        (yyval.errcode) = 0;
+        (yylhs.value.errcode) = 0;
     }
+#line 4120 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 141:
-
-/* Line 690 of lalr1.cc  */
-#line 4387 "feiparser.yy"
+#line 4390 "feiparser.yy" // lalr1.cc:847
     {   /*  Just a reminder...
         ">"  = 1
         "<"  = 2
@@ -4128,523 +4131,486 @@ namespace yy {
         "&" = 7
         "|" = 8
         */
-        switch ((yysemantic_stack_[(3) - (2)].fn))
+        switch ((yystack_[1].value.fn))
         {
             case 1: // >
-                (yyval.exp) = new GreaterThan((yysemantic_stack_[(3) - (1)].exp),(yysemantic_stack_[(3) - (3)].exp));
+                (yylhs.value.exp) = new GreaterThan((yystack_[2].value.exp),(yystack_[0].value.exp));
                 break;
             case 2: // <
-                (yyval.exp) = new LessThan((yysemantic_stack_[(3) - (1)].exp),(yysemantic_stack_[(3) - (3)].exp));
+                (yylhs.value.exp) = new LessThan((yystack_[2].value.exp),(yystack_[0].value.exp));
                 break;
             case 3: // <>
-                (yyval.exp) = new NotEqualTo((yysemantic_stack_[(3) - (1)].exp),(yysemantic_stack_[(3) - (3)].exp));
+                (yylhs.value.exp) = new NotEqualTo((yystack_[2].value.exp),(yystack_[0].value.exp));
                 break;
             case 4: // ==
-                (yyval.exp) = new EqualTo((yysemantic_stack_[(3) - (1)].exp),(yysemantic_stack_[(3) - (3)].exp));
+                (yylhs.value.exp) = new EqualTo((yystack_[2].value.exp),(yystack_[0].value.exp));
                 break;
             case 5: // >=
-                (yyval.exp) = new GreaterThanOrEqualTo((yysemantic_stack_[(3) - (1)].exp),(yysemantic_stack_[(3) - (3)].exp));
+                (yylhs.value.exp) = new GreaterThanOrEqualTo((yystack_[2].value.exp),(yystack_[0].value.exp));
                 break;
             case 6: // <=
-                (yyval.exp) = new LessThanOrEqualTo((yysemantic_stack_[(3) - (1)].exp),(yysemantic_stack_[(3) - (3)].exp));
+                (yylhs.value.exp) = new LessThanOrEqualTo((yystack_[2].value.exp),(yystack_[0].value.exp));
                 break;
             case 7: // &
-                (yyval.exp) = new LogicalAnd((yysemantic_stack_[(3) - (1)].exp),(yysemantic_stack_[(3) - (3)].exp));
+                (yylhs.value.exp) = new LogicalAnd((yystack_[2].value.exp),(yystack_[0].value.exp));
                 break;
             case 8: // |
-                (yyval.exp) = new LogicalOr((yysemantic_stack_[(3) - (1)].exp),(yysemantic_stack_[(3) - (3)].exp));
+                (yylhs.value.exp) = new LogicalOr((yystack_[2].value.exp),(yystack_[0].value.exp));
                 break;
             default:
-                (yyval.exp) = new Empty() ;
+                (yylhs.value.exp) = new Empty() ;
                 cout << "Comparison operator not defined!" << endl;
         }
         nodes.pop();
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 4169 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 142:
-
-/* Line 690 of lalr1.cc  */
-#line 4432 "feiparser.yy"
+#line 4435 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Plus ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
+        (yylhs.value.exp) = new Plus ((yystack_[2].value.exp), (yystack_[0].value.exp));
         nodes.pop ();  //  The children are handled by Plus so we
         nodes.pop ();  // take them of the allocated nodes stack.
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4180 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 143:
-
-/* Line 690 of lalr1.cc  */
-#line 4439 "feiparser.yy"
+#line 4442 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Minus ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
+        (yylhs.value.exp) = new Minus ((yystack_[2].value.exp), (yystack_[0].value.exp));
         nodes.pop ();  //  The children are handled by Plus so we
         nodes.pop ();  // take them of the allocated nodes stack.
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4191 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 144:
-
-/* Line 690 of lalr1.cc  */
-#line 4446 "feiparser.yy"
+#line 4449 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Times ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
+        (yylhs.value.exp) = new Times ((yystack_[2].value.exp), (yystack_[0].value.exp));
         nodes.pop ();  // The same as above.
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4202 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 145:
-
-/* Line 690 of lalr1.cc  */
-#line 4453 "feiparser.yy"
+#line 4456 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Divide ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
+        (yylhs.value.exp) = new Divide ((yystack_[2].value.exp), (yystack_[0].value.exp));
         nodes.pop ();  // The same as above.
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4213 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 146:
-
-/* Line 690 of lalr1.cc  */
-#line 4460 "feiparser.yy"
+#line 4463 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Modulo ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
+        (yylhs.value.exp) = new Modulo ((yystack_[2].value.exp), (yystack_[0].value.exp));
         nodes.pop ();  // The same as above.
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4224 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 147:
-
-/* Line 690 of lalr1.cc  */
-#line 4467 "feiparser.yy"
+#line 4470 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Pow ((yysemantic_stack_[(3) - (1)].exp), (yysemantic_stack_[(3) - (3)].exp));
+        (yylhs.value.exp) = new Pow ((yystack_[2].value.exp), (yystack_[0].value.exp));
         nodes.pop ();  // The same as above.
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4235 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 148:
-
-/* Line 690 of lalr1.cc  */
-#line 4474 "feiparser.yy"
+#line 4477 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new LogicalNot ((yysemantic_stack_[(2) - (2)].exp));
+        (yylhs.value.exp) = new LogicalNot ((yystack_[0].value.exp));
         nodes.pop ();  // The same as above.
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4245 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 149:
-
-/* Line 690 of lalr1.cc  */
-#line 4480 "feiparser.yy"
+#line 4483 "feiparser.yy" // lalr1.cc:847
     {
-        Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
-        (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Plus (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
+        Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
+        (yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Plus (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4256 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 150:
-
-/* Line 690 of lalr1.cc  */
-#line 4487 "feiparser.yy"
+#line 4490 "feiparser.yy" // lalr1.cc:847
     {
-        Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
-        (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Minus (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
+        Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
+        (yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Minus (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
         nodes.pop ();
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4268 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 151:
-
-/* Line 690 of lalr1.cc  */
-#line 4495 "feiparser.yy"
+#line 4498 "feiparser.yy" // lalr1.cc:847
     {
-        Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
-        (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Times (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
+        Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
+        (yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Times (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
         nodes.pop ();  // The same as above.
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4280 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 152:
-
-/* Line 690 of lalr1.cc  */
-#line 4503 "feiparser.yy"
+#line 4506 "feiparser.yy" // lalr1.cc:847
     {
-        Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
-        (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Divide (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
+        Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
+        (yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Divide (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
         nodes.pop ();  // The same as above.
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4292 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 153:
-
-/* Line 690 of lalr1.cc  */
-#line 4511 "feiparser.yy"
+#line 4514 "feiparser.yy" // lalr1.cc:847
     {
-        Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
-        (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Modulo (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
+        Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
+        (yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Modulo (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
         nodes.pop ();  // The same as above.
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4304 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 154:
-
-/* Line 690 of lalr1.cc  */
-#line 4519 "feiparser.yy"
+#line 4522 "feiparser.yy" // lalr1.cc:847
     {
-        Expression* varref = new VariableReference(*(yysemantic_stack_[(3) - (1)].ident), global_variables);
-        (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), new Pow (varref, (yysemantic_stack_[(3) - (3)].exp)), global_variables, locked_global_variables);
+        Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
+        (yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Pow (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
         nodes.pop ();  // The same as above.
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4316 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 155:
-
-/* Line 690 of lalr1.cc  */
-#line 4527 "feiparser.yy"
+#line 4530 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = (yysemantic_stack_[(3) - (2)].exp);
+        (yylhs.value.exp) = (yystack_[1].value.exp);
     }
+#line 4324 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 156:
-
-/* Line 690 of lalr1.cc  */
-#line 4531 "feiparser.yy"
+#line 4534 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Minus (new Number(0.0, (yysemantic_stack_[(2) - (2)].exp) -> value().Getunit() ), (yysemantic_stack_[(2) - (2)].exp));
+        (yylhs.value.exp) = new Minus (new Number(0.0, (yystack_[0].value.exp) -> value().Getunit() ), (yystack_[0].value.exp));
         nodes.pop ();
-        nodes.push ((yyval.exp));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4334 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 157:
-
-/* Line 690 of lalr1.cc  */
-#line 4537 "feiparser.yy"
+#line 4540 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Number (*(yysemantic_stack_[(1) - (1)].value));
-        nodes.push ((yyval.exp));
+        (yylhs.value.exp) = new Number (*(yystack_[0].value.value));
+        nodes.push ((yylhs.value.exp));
     }
+#line 4343 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 158:
-
-/* Line 690 of lalr1.cc  */
-#line 4542 "feiparser.yy"
+#line 4545 "feiparser.yy" // lalr1.cc:847
     {
 
-        (yyval.exp) = new VariableReference(*(yysemantic_stack_[(1) - (1)].ident),global_variables);
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new VariableReference(*(yystack_[0].value.ident),global_variables);
+        nodes.push((yylhs.value.exp));
     }
+#line 4353 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 159:
-
-/* Line 690 of lalr1.cc  */
-#line 4548 "feiparser.yy"
+#line 4551 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Assign(*(yysemantic_stack_[(3) - (1)].ident), (yysemantic_stack_[(3) - (3)].exp), global_variables, locked_global_variables);
+        (yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), (yystack_[0].value.exp), global_variables, locked_global_variables);
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 4363 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 160:
-
-/* Line 690 of lalr1.cc  */
-#line 4554 "feiparser.yy"
+#line 4557 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new ConvertUnits(*(yysemantic_stack_[(3) - (1)].ident), *(yysemantic_stack_[(3) - (3)].ident), global_variables);
+        (yylhs.value.exp) = new ConvertUnits(*(yystack_[2].value.ident), *(yystack_[0].value.ident), global_variables);
 
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 4373 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 161:
-
-/* Line 690 of lalr1.cc  */
-#line 4560 "feiparser.yy"
+#line 4563 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new FeiMath(*(yysemantic_stack_[(4) - (1)].ident), (yysemantic_stack_[(4) - (3)].exp));
+        (yylhs.value.exp) = new FeiMath(*(yystack_[3].value.ident), (yystack_[1].value.exp));
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 4383 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 162:
-
-/* Line 690 of lalr1.cc  */
-#line 4566 "feiparser.yy"
+#line 4569 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new UnitTypeTest(*(yysemantic_stack_[(4) - (1)].ident), (yysemantic_stack_[(4) - (3)].exp));
+        (yylhs.value.exp) = new UnitTypeTest(*(yystack_[3].value.ident), (yystack_[1].value.exp));
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 4393 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 163:
-
-/* Line 690 of lalr1.cc  */
-#line 4572 "feiparser.yy"
+#line 4575 "feiparser.yy" // lalr1.cc:847
     {
-        string temp = *(yysemantic_stack_[(1) - (1)].ident);
+        string temp = *(yystack_[0].value.ident);
         temp.erase(0, 1);                               //remove quotes
         temp.erase(temp.length()-1, temp.length());     //remove quotes
-        (yyval.exp) = new FeiString(temp);
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiString(temp);
+        nodes.push((yylhs.value.exp));
     }
+#line 4405 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 164:
-
-/* Line 690 of lalr1.cc  */
-#line 4580 "feiparser.yy"
+#line 4583 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
-        (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_nodes, args, signature, "query_domain_number_of_nodes");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_nodes, args, signature, "query_domain_number_of_nodes");
+        nodes.push((yylhs.value.exp));
     }
+#line 4415 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 165:
-
-/* Line 690 of lalr1.cc  */
-#line 4586 "feiparser.yy"
+#line 4589 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_elements, args, signature, "query_domain_number_of_elements");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_elements, args, signature, "query_domain_number_of_elements");
+        nodes.push((yylhs.value.exp));
     }
+#line 4424 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 166:
-
-/* Line 690 of lalr1.cc  */
-#line 4591 "feiparser.yy"
+#line 4594 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new FeiDslCaller0<double>(&query_domain_current_time, args, signature, "query_domain_current_time");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<double>(&query_domain_current_time, args, signature, "query_domain_current_time");
+        nodes.push((yylhs.value.exp));
     }
+#line 4433 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 167:
-
-/* Line 690 of lalr1.cc  */
-#line 4596 "feiparser.yy"
+#line 4599 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_sp_constraints, args, signature, "query_domain_number_of_sp_constraints");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_sp_constraints, args, signature, "query_domain_number_of_sp_constraints");
+        nodes.push((yylhs.value.exp));
     }
+#line 4442 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 168:
-
-/* Line 690 of lalr1.cc  */
-#line 4601 "feiparser.yy"
+#line 4604 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_mp_constraints, args, signature, "query_domain_number_of_mp_constraints");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_mp_constraints, args, signature, "query_domain_number_of_mp_constraints");
+        nodes.push((yylhs.value.exp));
     }
+#line 4451 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 169:
-
-/* Line 690 of lalr1.cc  */
-#line 4606 "feiparser.yy"
+#line 4609 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new FeiDslCaller0<>(&query_domain_number_of_loads, args, signature, "query_domain_number_of_loads");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_loads, args, signature, "query_domain_number_of_loads");
+        nodes.push((yylhs.value.exp));
     }
+#line 4460 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 170:
-
-/* Line 690 of lalr1.cc  */
-#line 4614 "feiparser.yy"
+#line 4617 "feiparser.yy" // lalr1.cc:847
     {
         args.clear();
         signature.clear();
 
         Expression* which_coordinate;
-        which_coordinate = dof2number(*(yysemantic_stack_[(6) - (6)].ident));
+        which_coordinate = dof2number(*(yystack_[0].value.ident));
         if (which_coordinate->value() == -100)
         {
             string msg = "Unknown node data field request -> ";
-            msg += *(yysemantic_stack_[(6) - (6)].ident);
+            msg += *(yystack_[0].value.ident);
             throw RunTimeException( msg);
-            (yyval.exp) = new Empty();
+            (yylhs.value.exp) = new Empty();
         }
         else
         {
             nodes.push(which_coordinate);
 
-            args.push_back((yysemantic_stack_[(6) - (3)].exp)); signature.push_back(this_signature("node_number", &isAdimensional));
+            args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("node_number", &isAdimensional));
             args.push_back(which_coordinate); signature.push_back(this_signature("coordinate", &isAdimensional));
 
-            (yyval.exp) = new FeiDslCaller2<int,int,Quantity>(&get_nodal_coordinate,args,signature,"get_nodal_coordinate");
+            (yylhs.value.exp) = new FeiDslCaller2<int,int,Quantity>(&get_nodal_coordinate,args,signature,"get_nodal_coordinate");
         }
 
         nodes.pop();
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 4492 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 171:
-
-/* Line 690 of lalr1.cc  */
-#line 4645 "feiparser.yy"
+#line 4648 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Empty();
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new Empty();
+        nodes.push((yylhs.value.exp));
     }
+#line 4501 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 172:
-
-/* Line 690 of lalr1.cc  */
-#line 4650 "feiparser.yy"
+#line 4653 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = (yysemantic_stack_[(2) - (1)].exp);
+        (yylhs.value.exp) = (yystack_[1].value.exp);
     }
+#line 4509 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 173:
-
-/* Line 690 of lalr1.cc  */
-#line 4654 "feiparser.yy"
+#line 4657 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = (yysemantic_stack_[(2) - (1)].exp);
+        (yylhs.value.exp) = (yystack_[1].value.exp);
         args.clear();
         signature.clear();
     }
+#line 4519 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 174:
-
-/* Line 690 of lalr1.cc  */
-#line 4663 "feiparser.yy"
+#line 4666 "feiparser.yy" // lalr1.cc:847
     {
-        Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(3) - (2)].exp));
+        Comparison* ptr_comp = dynamic_cast<Comparison*>((yystack_[1].value.exp));
         if (!ptr_comp) // Check whether ptr_comp is a valid Comparison* pointer
         {
             cout << "If statement requieres a comparison." << endl;
-            (yyval.exp) = new Empty();
+            (yylhs.value.exp) = new Empty();
             nodes.pop();
             nodes.pop();
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
         }
         else
         {
-            (yyval.exp) = new IfStatement(ptr_comp, (yysemantic_stack_[(3) - (3)].exp), NULL);
+            (yylhs.value.exp) = new IfStatement(ptr_comp, (yystack_[0].value.exp), NULL);
             nodes.pop();
             nodes.pop();
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
         }
     }
+#line 4542 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 175:
-
-/* Line 690 of lalr1.cc  */
-#line 4685 "feiparser.yy"
+#line 4688 "feiparser.yy" // lalr1.cc:847
     {
-        Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(5) - (2)].exp));
+        Comparison* ptr_comp = dynamic_cast<Comparison*>((yystack_[3].value.exp));
         if (!ptr_comp) // Check whether ptr_comp is a valid Comparison* pointer
         {
             cout << "If statement requires a comparison." << endl;
-            (yyval.exp) = new Empty();
+            (yylhs.value.exp) = new Empty();
             nodes.pop();
             nodes.pop();
             nodes.pop();
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
 
         }
         else
         {
-            (yyval.exp) = new IfStatement(ptr_comp, (yysemantic_stack_[(5) - (3)].exp), (yysemantic_stack_[(5) - (5)].exp));
+            (yylhs.value.exp) = new IfStatement(ptr_comp, (yystack_[2].value.exp), (yystack_[0].value.exp));
             nodes.pop();
             nodes.pop();
             nodes.pop();
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
         }
     }
+#line 4568 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 176:
-
-/* Line 690 of lalr1.cc  */
-#line 4710 "feiparser.yy"
+#line 4713 "feiparser.yy" // lalr1.cc:847
     {
-        Comparison* ptr_comp = dynamic_cast<Comparison*>((yysemantic_stack_[(3) - (2)].exp));
+        Comparison* ptr_comp = dynamic_cast<Comparison*>((yystack_[1].value.exp));
         if (!ptr_comp)  // Check whether ptr_comp is a valid Comparison* pointer
         {
             cout << "While statement requires a comparison." << endl;
-            (yyval.exp) = new Empty();
+            (yylhs.value.exp) = new Empty();
             nodes.pop();
             nodes.pop();
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
 
         }
         else
         {
-            (yyval.exp) = new WhileStatement(ptr_comp, (yysemantic_stack_[(3) - (3)].exp));
+            (yylhs.value.exp) = new WhileStatement(ptr_comp, (yystack_[0].value.exp));
             nodes.pop();
             nodes.pop();
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
         }
     }
+#line 4592 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 177:
-
-/* Line 690 of lalr1.cc  */
-#line 4730 "feiparser.yy"
+#line 4733 "feiparser.yy" // lalr1.cc:847
     {
         if (FLAG_generate_cpp_output == 1)
         {
             *FeiDslCallerBase::cppfile << "}" << endl;
         }
-        if((yysemantic_stack_[(1) - (1)].ident)->compare("quit") == 0) cout << "quit: \n/kwit/ \nverb \n   1. leave (a place), usually permanently. \n " << endl ;
-        if((yysemantic_stack_[(1) - (1)].ident)->compare("exit") == 0) cout << "All exits are marked by the \"exit\" word..."<< endl ;
-        if((yysemantic_stack_[(1) - (1)].ident)->compare("bye") == 0) cout << "How polite! Bye, have a nice day!" << endl ;
+        if((yystack_[0].value.ident)->compare("quit") == 0) cout << "quit: \n/kwit/ \nverb \n   1. leave (a place), usually permanently. \n " << endl ;
+        if((yystack_[0].value.ident)->compare("exit") == 0) cout << "All exits are marked by the \"exit\" word..."<< endl ;
+        if((yystack_[0].value.ident)->compare("bye") == 0) cout << "How polite! Bye, have a nice day!" << endl ;
 
         wipe_model();
 
         exit(0);
     }
+#line 4610 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 178:
-
-/* Line 690 of lalr1.cc  */
-#line 4744 "feiparser.yy"
+#line 4747 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
         if (FLAG_generate_cpp_output == 1)
@@ -4652,144 +4618,116 @@ namespace yy {
             *FeiDslCallerBase::cppfile << "}" << endl;
         }
 
-        (yyval.exp) = new FeiDslCaller0<>(&wipe_model, args, signature, "wipe_model");
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new FeiDslCaller0<>(&wipe_model, args, signature, "wipe_model");
+        nodes.push((yylhs.value.exp));
     }
+#line 4625 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 179:
-
-/* Line 690 of lalr1.cc  */
-#line 4755 "feiparser.yy"
+#line 4758 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = new Empty();
+        (yylhs.value.exp) = new Empty();
         nodes.pop();
-        nodes.push((yyval.exp));
+        nodes.push((yylhs.value.exp));
     }
+#line 4635 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 180:
-
-/* Line 690 of lalr1.cc  */
-#line 4765 "feiparser.yy"
+#line 4768 "feiparser.yy" // lalr1.cc:847
     {
         // empty statement generates an  empty expression
-        (yyval.exp) = new Empty();
-        nodes.push((yyval.exp));
+        (yylhs.value.exp) = new Empty();
+        nodes.push((yylhs.value.exp));
     }
+#line 4645 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 181:
-
-/* Line 690 of lalr1.cc  */
-#line 4771 "feiparser.yy"
+#line 4774 "feiparser.yy" // lalr1.cc:847
     {
         // Used to initialize a list of statements (compound statement)
-        (yyval.exp) = (yysemantic_stack_[(3) - (2)].exp);
+        (yylhs.value.exp) = (yystack_[1].value.exp);
     }
+#line 4654 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 182:
-
-/* Line 690 of lalr1.cc  */
-#line 4779 "feiparser.yy"
+#line 4782 "feiparser.yy" // lalr1.cc:847
     {
-        (yyval.exp) = (yysemantic_stack_[(1) - (1)].exp);
+        (yylhs.value.exp) = (yystack_[0].value.exp);
     }
+#line 4662 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 183:
-
-/* Line 690 of lalr1.cc  */
-#line 4783 "feiparser.yy"
+#line 4786 "feiparser.yy" // lalr1.cc:847
     {
-        if ((yysemantic_stack_[(2) - (2)].exp) == NULL)
-            (yyval.exp) = (yysemantic_stack_[(2) - (1)].exp);
+        if ((yystack_[0].value.exp) == NULL)
+            (yylhs.value.exp) = (yystack_[1].value.exp);
         else
         {
-            (yyval.exp) = new ExpressionList((yysemantic_stack_[(2) - (1)].exp), (yysemantic_stack_[(2) - (2)].exp));
+            (yylhs.value.exp) = new ExpressionList((yystack_[1].value.exp), (yystack_[0].value.exp));
             nodes.pop();
             nodes.pop();
-            nodes.push((yyval.exp));
+            nodes.push((yylhs.value.exp));
         }
     }
+#line 4678 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
 
+#line 4682 "feiparser.tab.cc" // lalr1.cc:847
+            default:
+              break;
+            }
+        }
+      catch (const syntax_error& yyexc)
+        {
+          error (yyexc);
+          YYERROR;
+        }
+      YY_SYMBOL_PRINT ("-> $$ =", yylhs);
+      yypop_ (yylen);
+      yylen = 0;
+      YY_STACK_PRINT ();
 
-/* Line 690 of lalr1.cc  */
-#line 4722 "feiparser.tab.cc"
-	default:
-          break;
-      }
-    /* User semantic actions sometimes alter yychar, and that requires
-       that yytoken be updated with the new translation.  We take the
-       approach of translating immediately before every use of yytoken.
-       One alternative is translating here after every semantic action,
-       but that translation would be missed if the semantic action
-       invokes YYABORT, YYACCEPT, or YYERROR immediately after altering
-       yychar.  In the case of YYABORT or YYACCEPT, an incorrect
-       destructor might then be invoked immediately.  In the case of
-       YYERROR, subsequent parser actions might lead to an incorrect
-       destructor call or verbose syntax error message before the
-       lookahead is translated.  */
-    YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
-
-    yypop_ (yylen);
-    yylen = 0;
-    YY_STACK_PRINT ();
-
-    yysemantic_stack_.push (yyval);
-    yylocation_stack_.push (yyloc);
-
-    /* Shift the result of the reduction.  */
-    yyn = yyr1_[yyn];
-    yystate = yypgoto_[yyn - yyntokens_] + yystate_stack_[0];
-    if (0 <= yystate && yystate <= yylast_
-	&& yycheck_[yystate] == yystate_stack_[0])
-      yystate = yytable_[yystate];
-    else
-      yystate = yydefgoto_[yyn - yyntokens_];
+      // Shift the result of the reduction.
+      yypush_ (YY_NULLPTR, yylhs);
+    }
     goto yynewstate;
 
-  /*------------------------------------.
-  | yyerrlab -- here on detecting error |
-  `------------------------------------*/
+  /*--------------------------------------.
+  | yyerrlab -- here on detecting error.  |
+  `--------------------------------------*/
   yyerrlab:
-    /* Make sure we have latest lookahead translation.  See comments at
-       user semantic actions for why this is necessary.  */
-    yytoken = yytranslate_ (yychar);
-
-    /* If not already recovering from an error, report this error.  */
+    // If not already recovering from an error, report this error.
     if (!yyerrstatus_)
       {
-	++yynerrs_;
-	if (yychar == yyempty_)
-	  yytoken = yyempty_;
-	error (yylloc, yysyntax_error_ (yystate, yytoken));
+        ++yynerrs_;
+        error (yyla.location, yysyntax_error_ (yystack_[0].state,
+                                           yyempty ? yyempty_ : yyla.type_get ()));
       }
 
-    yyerror_range[1] = yylloc;
+
+    yyerror_range[1].location = yyla.location;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
+        /* If just tried and failed to reuse lookahead token after an
+           error, discard it.  */
 
-	if (yychar <= yyeof_)
-	  {
-	  /* Return failure if at end of input.  */
-	  if (yychar == yyeof_)
-	    YYABORT;
-	  }
-	else
-	  {
-	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-	    yychar = yyempty_;
-	  }
+        // Return failure if at end of input.
+        if (yyla.type_get () == yyeof_)
+          YYABORT;
+        else if (!yyempty)
+          {
+            yy_destroy_ ("Error: discarding", yyla);
+            yyempty = true;
+          }
       }
 
-    /* Else will try to reuse lookahead token after shifting the error
-       token.  */
+    // Else will try to reuse lookahead token after shifting the error token.
     goto yyerrlab1;
 
 
@@ -4803,119 +4741,125 @@ namespace yy {
        code.  */
     if (false)
       goto yyerrorlab;
-
-    yyerror_range[1] = yylocation_stack_[yylen - 1];
-    /* Do not reclaim the symbols of the rule which action triggered
+    yyerror_range[1].location = yystack_[yylen - 1].location;
+    /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
     yylen = 0;
-    yystate = yystate_stack_[0];
     goto yyerrlab1;
 
   /*-------------------------------------------------------------.
   | yyerrlab1 -- common code for both syntax error and YYERROR.  |
   `-------------------------------------------------------------*/
   yyerrlab1:
-    yyerrstatus_ = 3;	/* Each real token shifted decrements this.  */
+    yyerrstatus_ = 3;   // Each real token shifted decrements this.
+    {
+      stack_symbol_type error_token;
+      for (;;)
+        {
+          yyn = yypact_[yystack_[0].state];
+          if (!yy_pact_value_is_default_ (yyn))
+            {
+              yyn += yyterror_;
+              if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
+                {
+                  yyn = yytable_[yyn];
+                  if (0 < yyn)
+                    break;
+                }
+            }
 
-    for (;;)
-      {
-	yyn = yypact_[yystate];
-	if (!yy_pact_value_is_default_ (yyn))
-	{
-	  yyn += yyterror_;
-	  if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
-	    {
-	      yyn = yytable_[yyn];
-	      if (0 < yyn)
-		break;
-	    }
-	}
+          // Pop the current state because it cannot handle the error token.
+          if (yystack_.size () == 1)
+            YYABORT;
 
-	/* Pop the current state because it cannot handle the error token.  */
-	if (yystate_stack_.height () == 1)
-	YYABORT;
+          yyerror_range[1].location = yystack_[0].location;
+          yy_destroy_ ("Error: popping", yystack_[0]);
+          yypop_ ();
+          YY_STACK_PRINT ();
+        }
 
-	yyerror_range[1] = yylocation_stack_[0];
-	yydestruct_ ("Error: popping",
-		     yystos_[yystate],
-		     &yysemantic_stack_[0], &yylocation_stack_[0]);
-	yypop_ ();
-	yystate = yystate_stack_[0];
-	YY_STACK_PRINT ();
-      }
+      yyerror_range[2].location = yyla.location;
+      YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
-    yyerror_range[2] = yylloc;
-    // Using YYLLOC is tempting, but would change the location of
-    // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
-    yysemantic_stack_.push (yylval);
-    yylocation_stack_.push (yyloc);
-
-    /* Shift the error token.  */
-    YY_SYMBOL_PRINT ("Shifting", yystos_[yyn],
-		     &yysemantic_stack_[0], &yylocation_stack_[0]);
-
-    yystate = yyn;
+      // Shift the error token.
+      error_token.state = yyn;
+      yypush_ ("Shifting", error_token);
+    }
     goto yynewstate;
 
-    /* Accept.  */
+    // Accept.
   yyacceptlab:
     yyresult = 0;
     goto yyreturn;
 
-    /* Abort.  */
+    // Abort.
   yyabortlab:
     yyresult = 1;
     goto yyreturn;
 
   yyreturn:
-    if (yychar != yyempty_)
-      {
-        /* Make sure we have latest lookahead translation.  See comments
-           at user semantic actions for why this is necessary.  */
-        yytoken = yytranslate_ (yychar);
-        yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval,
-                     &yylloc);
-      }
+    if (!yyempty)
+      yy_destroy_ ("Cleanup: discarding lookahead", yyla);
 
-    /* Do not reclaim the symbols of the rule which action triggered
+    /* Do not reclaim the symbols of the rule whose action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (yystate_stack_.height () != 1)
+    while (1 < yystack_.size ())
       {
-	yydestruct_ ("Cleanup: popping",
-		   yystos_[yystate_stack_[0]],
-		   &yysemantic_stack_[0],
-		   &yylocation_stack_[0]);
-	yypop_ ();
+        yy_destroy_ ("Cleanup: popping", yystack_[0]);
+        yypop_ ();
       }
 
     return yyresult;
   }
+    catch (...)
+      {
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
+        // Do not try to display the values of the reclaimed symbols,
+        // as their printer might throw an exception.
+        if (!yyempty)
+          yy_destroy_ (YY_NULLPTR, yyla);
+
+        while (1 < yystack_.size ())
+          {
+            yy_destroy_ (YY_NULLPTR, yystack_[0]);
+            yypop_ ();
+          }
+        throw;
+      }
+  }
+
+  void
+  feiparser::error (const syntax_error& yyexc)
+  {
+    error (yyexc.location, yyexc.what());
+  }
 
   // Generate an error message.
   std::string
-  feiparser::yysyntax_error_ (int, int)
+  feiparser::yysyntax_error_ (state_type, symbol_number_type) const
   {
     return YY_("syntax error");
   }
 
 
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
   const short int feiparser::yypact_ninf_ = -389;
+
+  const signed char feiparser::yytable_ninf_ = -1;
+
   const short int
   feiparser::yypact_[] =
   {
-       246,  -389,   368,  -389,  -389,  -388,  -372,   551,   551,  -389,
-    -389,    36,  -389,  -389,  -389,  -389,  -389,  -389,   551,   551,
-      27,  -389,  -389,     1,    30,  -389,  5804,  -315,    46,    63,
-     177,    92,   348,     5,  -265,  -262,   551,  -389,  -261,  -389,
-    -389,  -389,  -389,  -389,   152,    34,  -389,   144,   551,   551,
+     246,  -389,  1229,  -389,  -389,  -388,  -372,   551,   551,  -389,
+    -389,    49,  -389,  -389,  -389,  -389,  -389,  -389,   551,   551,
+      27,  -389,  -389,   -12,    16,  -389,  5804,  -330,    43,    46,
+     177,    92,   348,    -1,  -265,  -262,   551,  -389,  -261,  -389,
+    -389,  -389,  -389,  -389,   152,    36,  -389,   144,   551,   551,
      551,   551,   551,   551,   551,   551,   551,   -19,   -19,  -389,
      110,   110,  -101,    53,    68,  -389, 10378,   551,   179,    84,
-      85,    87,    88,    93,    96,  -182,    91,   108,   109,   111,
+      85,    86,    88,    93,    96,  -182,    91,   108,   109,   111,
       52,   129,  -389,   551,   132,   147,   154,   155,   157,   159,
     -128,   146,   190,   189,   188,   -56,   184,   186,   113, 10035,
      163,  -389,  -389,   174,  -389,  -389,  -389,   551,   551,   551,
@@ -4923,79 +4867,79 @@ namespace yy {
    10378, 10378, 10378,   378,   393,  2846,   270,  -389,   551,   551,
      551, 10378,  -389,   551,   551,  -389,   551,   551,   551,   551,
      180,   -54,   551,   551,   551,   222,   231,    51,   551,   551,
-     551,   551,   551,   551,   233,   166,  -389,   -52,  -389,   191,
-     204,   202,   240,   -85,   217,   317,  -389,   182,   182,    76,
-      76,   -33,   110,   282,  -389,  -389,  -389,  2927,   -79,   -72,
+     551,   551,   551,   551,   232,   166,  -389,   -52,  -389,   191,
+     204,   202,   240,   -46,   217,   317,  -389,   182,   182,    57,
+      57,   -33,   110,   282,  -389,  -389,  -389,  2927,   -79,   -72,
    10378, 10378, 10378, 10180,  9976,  9987, 10092, 10104,  9967,   -57,
      226,   227,   551,  9996, 10113,  5921,   228,   229,   -63, 10136,
    10145, 10378, 10378, 10378, 10378,   234,   551,   304,   136,    -6,
      289,   251,   187,   185,  -124,     2,  -389,  -389,  -389,  -389,
-     -46, 10291, 10207,    65,   301,    80,  -304,   305,   551,   551,
-   10228,   -93,   303,   333,   313,   551,   365,   -35,   261,   551,
+     -41, 10291, 10207,    25,   296,    80,  -248,   305,   551,   551,
+   10228,   -93,   303,   333,   313,   551,   365,   -25,   261,   551,
    10378,   551,   338,   339,   268,   340,   168,   214,   -21,   220,
-     323,   327,   328,   551,   -69,   -66,   307,   315,   -64,   316,
-     318,   331,   321,   322,   330,   334,   335,   343,   344,   346,
-     347,   350,   380,   387,   388,   392,   395,   396,   143,   170,
-     236,   239,   241,   243,   244,   245,   248,   249,   255,   259,
-     279,   285,   286,   287,   288,   294,   297,   298,    77,   250,
-     175,   224,   312,   306,   320,   324,   329,   463,   481,   486,
-     488,   489,   493,   504,   511,   509, 10237, 10247,   590,   390,
-     367,   527,   551,   529,  2559,  -389,  -389,   261,  -389,  -389,
-   10378,  5888,   551,   551,   551,   551,   474,   465,   466,   470,
-     473,  -389,   552,   553,   207,   551,   534,   551,   544,   545,
-     556,   551,   558,   559,   561,   551,   565,   566,   568,   572,
-     573,   575,   621,   577,   581,   585,   631,   632,   634,   635,
-     645,   647,   652,   726,   727,   728,   731,   732,   733,   734,
-     735,   738,   739,   740,   741,   742,   751,   752,   754,   755,
-     756,   757,   765,   766,   768,   769,   770,   772,   780,   781,
-     790,   536,   551,   551,   551,   551,   436,   446,   454,   551,
-     793,   794,   551,   798,   799,   551,  5912,   551,   806,  -389,
-     807, 10378,  5879, 10054, 10378,   670,   736,   737,   743,   672,
-     813,   816,   551,  8514,   456,  8523,   457,   458,   459,  8532,
-     460,   462,   464,  8541,   468,   472,   475,   476,   477,   478,
-     480,   485,   495,   496,   498,   499,   506,   507,   515,   516,
+     310,   311,   314,   551,   -69,   -66,   287,   290,   -64,   291,
+     297,   301,   298,   302,   307,   315,   316,   318,   319,   321,
+     322,   330,   331,   334,   343,   344,   346,   347,   140,   143,
+     172,   219,   235,   236,   239,   241,   243,   244,   245,   248,
+     249,   255,   259,   279,   285,   286,   288,   294,    77,   225,
+     124,   162,   230,   306,   233,   250,   312,   398,   445,   447,
+     455,   456,   466,   482,   484,   483, 10237, 10247,   558,   359,
+     329,   489,   551,   490,  2559,  -389,  -389,   261,  -389,  -389,
+   10378,  5888,   551,   551,   551,   551,   452,   434,   442,   451,
+     461,  -389,   529,   539,   207,   551,   524,   551,   525,   527,
+     528,   551,   532,   533,   534,   551,   535,   544,   545,   556,
+     559,   561,   593,   565,   566,   568,   572,   573,   575,   577,
+     581,   585,   636,   642,   652,   709,   710,   712,   723,   725,
+     726,   727,   728,   731,   732,   733,   734,   735,   738,   739,
+     740,   741,   742,   751,   752,   754,   755,   756,   757,   765,
+     766,   536,   551,   551,   551,   551,   376,   431,   432,   551,
+     770,   772,   551,   780,   781,   551,  5912,   551,   790,  -389,
+     791, 10378,  5879, 10054, 10378,   635,   719,   720,   724,   643,
+     799,   806,   551,  8514,   444,  8523,   448,   449,   453,  8532,
+     454,   457,   458,  8541,   459,   460,   462,   464,   468,   472,
+     475,   476,   477,   478,   480,   485,   486,   495,   496,   498,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
-     551,   551,   551,   551,   551,   551,   551,   551,   551,   763,
-   10005, 10017, 10063, 10378, 10378,   881,   882,   892, 10167,   551,
-     551,  9926,   551,   551, 10045,   895,   574,   551,   551,   896,
-     809,   761,   874,   875,   879,   832,   551,   551,   624,   771,
-     551,   784,   551,   551,   551,   785,   551,   551,   551,   786,
+     551,   551,   551,   551,   551,   551,   551,   551,   551,   722,
+   10005, 10017, 10063, 10378, 10378,   810,   813,   819, 10167,   551,
+     551,  9926,   551,   551, 10045,   869,   574,   551,   551,   870,
+     786,   745,   855,   856,   858,   808,   551,   551,   624,   750,
+     551,   753,   551,   551,   551,   759,   551,   551,   551,   760,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
      551,   551,   551,   551,   551,   551,  7627,  7636,  7646,  7657,
     7668,  7683,  7692,  7701,  7710,  6408,  6240,  6250,  6421,  7723,
     7732,  7744,  7753,  7768,  7778,  6751,  6163,  7614,  7787,  7796,
-    7359,  7809,  7370,  7379,  7820,   828,   -29,    25,   849,   551,
-     551,   551,   576,  9935,  9944,   932, 10127,  7392,   933,   894,
-     551,   897,  1601,  5903,   551,   887,   908,   898,   910,   911,
-     962, 10378, 10208,   551,   858,  1295,   866,  1455,  1848,  1983,
-     868,  2002,  2064,  2078,   878,  2102,  2113,  2164,  2175,  2184,
+    7359,  7809,  7370,  7379,  7820,   801,   -61,    34,   821,   551,
+     551,   551,   543,  9935,  9944,   913, 10127,  7392,   923,   830,
+     551,   849,  1601,  5903,   551,   837,   853,   859,   860,   897,
+     905, 10378, 10208,   551,   787,  1295,   827,  1455,  1848,  1983,
+     829,  2002,  2064,  2078,   832,  2102,  2113,  2164,  2175,  2184,
     2216,   406,  2230,  2275,  2303,  2339,  2351,  2382,  2391,  2428,
-    2482,  1006,  1023,  1031,  1032,  1034,  1035,  1043,  1049,  1059,
-    1069,  1070,  1072,  1073,  1074,  1075,  1076,  1077,  1085,  1086,
-    1088,  1096,  1097,  1105,  1106,  1108,  1116,  1117,  1119,  1120,
-    -389,   957,   973,   983,  -389,  1047,  1055,   -73,  5779,  5788,
-    5797,  1103,  1125,  1126,   551,  1104,  1128,   551,  1044,  2284,
-    1102,  1132,  1133, 10378,   551,  1111,   551,   551,   551,  1087,
-    1159,   450,   965,   551,   966,   551,   551,   551,   995,   551,
-     551,   551,   997,   551,   551,   551,   551,   551,   551,  1007,
+    2482,   982,   983,   984,   985,  1002,  1006,  1010,  1012,  1022,
+    1023,  1031,  1032,  1034,  1035,  1043,  1049,  1059,  1069,  1070,
+    1072,  1073,  1074,  1075,  1076,  1077,  1085,  1086,  1088,  1096,
+    -389,   957,   973,  1018,  -389,   988,  1038,   -73,  5779,  5788,
+    5797,  1087,  1106,  1116,   551,  1094,  1119,   551,  1039,  2284,
+    1091,  1121,  1122, 10378,   551,  1101,   551,   551,   551,  1053,
+    1127,   450,   931,   551,   933,   551,   551,   551,   934,   551,
+     551,   551,   935,   551,   551,   551,   551,   551,   551,   944,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
-     551,   551,   551,   551,   551,   551,   551,   551,  1195,  1197,
-    1200,  1166,  1129,  1206,  1208,  1211,  1212,  1213,  1141,   551,
-     551,  9839,  1142,   551, 10026,    38,  1217,  1071,   551,   551,
-   10378,  1146,  9334,  9343,  9352,   551,   551,  1150,  1151,  2572,
-    1153,  2600,  2627,  2679,  1154,  2867,  2876,  2948,  1160,  2957,
-    2970,   564,   615,   713,   744,  1222,   758,  2983,  2992,  3001,
+     551,   551,   551,   551,   551,   551,   551,   551,  1134,  1159,
+    1160,  1123,  1114,  1163,  1194,  1195,  1196,  1197,  1132,   551,
+     551,  9839,  1133,   551, 10026,    29,  1200,  1060,   551,   551,
+   10378,  1135,  9334,  9343,  9352,   551,   551,  1141,  1142,  2572,
+    1143,  2600,  2627,  2679,  1144,  2867,  2876,  2948,  1153,  2957,
+    2970,   564,   615,   713,   744,  1224,   758,  2983,  2992,  3001,
     3010,   773,   851,  3019,  3028,  7401,  7412,  7423,  7434,  7448,
     7457,  7466,  7475,  7488,  6439,  6216,  6231,  6399,  7497,  7509,
     7518,  7533,  7542,  7552,  6741,  6154, 10378,  6172,  6181,  6084,
-    7561,  6093,  6102,  7575,   551,   551,   551,  1156,   869,   551,
-     551,   551,   551,   551,   551,  9848,  9863,  1233,   551,  7956,
-    1144,  1182,  1145,   551,   889,  1024, 10378,   551,  1247,  1248,
+    7561,  6093,  6102,  7575,   551,   551,   551,  1157,   872,   551,
+     551,   551,   551,   551,   551,  9848,  9863,  1232,   551,  7956,
+    1155,  1172,  1145,   551,   886,  1024, 10378,   551,  1247,  1248,
     1249,  9361, 10218,   551,  1179,   551,  1180,   551,   551,   551,
-    1183,   551,   551,   551,  1184,   551,   551,  1190,  1081,  1082,
+    1182,   551,   551,   551,  1183,   551,   551,  1192,  1081,  1082,
     1080,   551,  1090,   551,   551,   551,   551,  1193,  1083,   551,
      551,  1270,  1274,  1275,  1277,  1278,  1279,  1281,  1302,  1313,
     1314,  1322,  1323,  1325,  1326,  1327,  1329,  1330,  1331,  1332,
@@ -5003,12 +4947,12 @@ namespace yy {
    10256,  9384,   551,   551,  9917,  9494,  5752,  5715,  5725,   783,
     1372,  1400,   551, 10378,  1402,  -389,  1406,  1409, 10378,   551,
     1410,  9370,   551,   551,   551,  1411,  1412, 10155,  1068,  3043,
-    1079,  3052,  3061,  3070,  1092,  3079,  3088,  3097,  1099,  3106,
-    3115,   551,  1432,  1434,  1435, 10074,  1439,  3124,  3133,   862,
-    3142,  1417,  1441,  3151,  3160,   551,   551,   551,   551,   551,
+    1071,  3052,  3061,  3070,  1079,  3079,  3088,  3097,  1092,  3106,
+    3115,   551,  1432,  1435,  1439, 10074,  1440,  3124,  3133,   862,
+    3142,  1418,  1450,  3151,  3160,   551,   551,   551,   551,   551,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
-     551,   551,   551,  1450,  1451, 10378,  3169,  1453,  1466,  1469,
+     551,   551,   551,  1451,  1453, 10378,  3169,  1462,  1466,  1469,
     1470,  1471,   261,   551,   551,  9812,   551,   551,   551, 10378,
      551,  1472,  9286,  9298,  9307,   551,   551,  -389,   551,   551,
      551,   551,   551,   551,   551,   551,   551,   551,   551,   551,
@@ -5016,11 +4960,11 @@ namespace yy {
      551,  1413,   551,   551,   551, 10378,  7261,  7273,  7282,  7297,
     7306,  7315,  7325,  7339,  6669,  5843,  5852,  7585,  7187,  7198,
     7212,  7228,  7237,  7252,  6778,  6136,  5806,  1974,  6057,  7348,
-    6066,  6075, 10378,   551,  1512,   551,   551,   551,  1155,   551,
-     551,  -389,  9821,  9830,  1483,  7860,  9953,  9393,  1520,   551,
-    1487,  1489,  1499,  9316, 10189,  3178,  3187,  3196,  3217,  3232,
-    3241,  3250,  3259,  3268,  3277,  3296,  3305,  3314,  1433,  7829,
-    7839,  1015,  -389,  7848,   871,   885,  1468,   906,   551,  8081,
+    6066,  6075, 10378,   551,  1512,   551,   551,   551,  1150,   551,
+     551,  -389,  9821,  9830,  1487,  7860,  9953,  9393,  1520,   551,
+    1488,  1489,  1499,  9316, 10189,  3178,  3187,  3196,  3217,  3232,
+    3241,  3250,  3259,  3268,  3277,  3296,  3305,  3314,  1417,  7829,
+    7839,  1015,  -389,  7848,   871,   885,  1484,   906,   551,  8081,
     3323,  3334,  1508,  1518,  1527,  1528,  1530,  1531,  1532,  1533,
     1534,  1536,  1537,  1551,  1552,  1553,  1554,  1558,  1559,  1589,
     1591,  1592,  1595,  1597,  1598,  1599,  1600,  1608,  9402,  -389,
@@ -5196,13 +5140,10 @@ namespace yy {
     8944,  2759,   551,  8761,  2760,   551, 10378
   };
 
-  /* YYDEFACT[S] -- default reduction number in state S.  Performed when
-     YYTABLE doesn't specify something else to do.  Zero means the
-     default is an error.  */
   const unsigned char
   feiparser::yydefact_[] =
   {
-         0,   140,   158,   157,   163,     0,     0,     0,     0,    15,
+       0,   140,   158,   157,   163,     0,     0,     0,     0,    15,
      177,     0,   164,   165,   166,   167,   168,   169,     0,     0,
        0,     9,     8,     0,     0,   178,    16,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,   171,     0,    10,
@@ -5490,49 +5431,43 @@ namespace yy {
        0,     0,     0,     0,     0,     0,    92
   };
 
-  /* YYPGOTO[NTERM-NUM].  */
   const short int
   feiparser::yypgoto_[] =
   {
-      -389,  -389,  -389,  -389,  -236,  -389,  -389,  -389,  -389,  -389,
+    -389,  -389,  -389,  -389,  -236,  -389,  -389,  -389,  -389,  -389,
     -389,    -7,     6,   -55,  2618
   };
 
-  /* YYDEFGOTO[NTERM-NUM].  */
   const short int
   feiparser::yydefgoto_[] =
   {
-        -1,    38,    39,    40,   328,    41,    42,    43,    82,   135,
+      -1,    38,    39,    40,   328,    41,    42,    43,    82,   135,
       44,    45,   177,   126,   178
   };
 
-  /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule which
-     number is the opposite.  If YYTABLE_NINF_, syntax error.  */
-  const signed char feiparser::yytable_ninf_ = -1;
   const short int
   feiparser::yytable_[] =
   {
-        57,    58,   329,   127,   128,   112,    46,    55,   113,   190,
+      57,    58,   329,   127,   128,   112,    46,    55,   113,   190,
      191,    60,    61,    66,   107,   108,   109,   110,   111,   112,
      753,   345,   113,    56,   347,    99,   351,   159,   160,   103,
-       2,     3,     4,   346,     5,     6,   348,   248,   352,    59,
+       2,     3,     4,   346,     5,     6,   348,   248,   352,    67,
      249,   116,   117,   118,   119,   120,   121,   122,   123,   124,
-     106,   192,    67,    12,    13,    14,    15,    16,    17,   754,
-     131,    18,   312,   313,   314,   326,    19,   107,   108,   109,
-     110,   111,   112,   327,   212,   113,   147,   213,   214,    68,
-      62,    63,    64,    83,   107,   108,   109,   110,   111,   112,
-     250,   419,   113,   251,   661,   662,   663,   252,   664,    84,
+     106,   192,    59,    12,    13,    14,    15,    16,    17,   754,
+     131,    18,   661,   662,   663,    68,   664,    19,    83,   107,
+     108,   109,   110,   111,   112,   326,   147,   113,   307,   308,
+      62,    63,    64,   327,   107,   108,   109,   110,   111,   112,
+     250,   419,   113,   251,   111,   112,    84,   252,   113,    85,
      167,   168,   169,   170,   171,   172,   173,   107,   108,   109,
-     110,   111,   112,   111,   112,   113,    85,   113,   307,   308,
-     100,   180,   181,   182,   219,   101,   183,   184,   102,   185,
+     110,   111,   112,   212,   100,   113,   213,   214,   312,   313,
+     314,   180,   181,   182,   219,   101,   183,   184,   102,   185,
      186,   187,   188,   310,   311,   193,   194,   195,   319,   320,
      104,   199,   200,   201,   202,   203,   204,   115,    91,   338,
-     339,   113,   105,   665,   666,     2,     3,     4,   129,     5,
-       6,     7,   851,   852,     8,  1628,  1629,     9,    92,    10,
+     339,   113,   105,   851,   852,     2,     3,     4,   129,     5,
+       6,     7,   665,   666,     8,  1628,  1629,     9,    92,    10,
       93,    11,    94,   130,    95,  2035,  2036,    96,    12,    13,
       14,    15,    16,    17,   132,   230,    18,  2123,  2124,   133,
-     134,    19,   136,   137,    20,    21,    22,    23,   138,   240,
+     134,   136,    19,   137,    20,    21,    22,    23,   138,   240,
       24,   139,    25,   140,    26,    27,   141,   107,   108,   109,
      110,   111,   112,   142,   143,   113,   144,   109,   110,   111,
      112,   316,   317,   113,    28,    29,    30,    31,   324,   145,
@@ -5541,108 +5476,108 @@ namespace yy {
        3,     4,   149,     5,     6,     7,    33,   154,     8,   150,
      151,     9,   152,    10,   153,    11,   155,   156,   157,   158,
      161,   163,    12,    13,    14,    15,    16,    17,   162,   165,
-      18,   179,   189,   196,   197,    19,   205,   206,    20,    21,
+      18,   179,   189,   196,   197,   205,    19,   206,    20,    21,
       22,    23,   210,   208,    24,   207,    25,    83,    26,    27,
      107,   108,   109,   110,   111,   112,   209,   215,   113,   107,
      108,   109,   110,   111,   112,   416,   211,   113,    28,    29,
       30,    31,   216,    -1,   218,   421,   422,   423,   424,   227,
      125,   228,   229,    32,   235,   234,   241,   236,   433,   239,
-     435,   242,   244,   243,   439,   245,   247,   246,   443,   253,
-      33,     2,     3,     4,   309,     5,     6,   321,   315,   107,
+     435,   242,   244,   243,   439,   245,   247,   246,   443,   309,
+      33,     2,     3,     4,   253,     5,     6,   321,   315,   107,
      108,   109,   110,   111,   112,   322,   323,   113,   325,   327,
      332,   333,   335,   334,    12,    13,    14,    15,    16,    17,
-      65,   336,    18,   125,   337,   340,    47,    19,    48,    49,
-      50,    51,    52,    53,   490,   491,   492,   493,   494,   341,
-      54,    27,   498,   342,   343,   501,   372,   392,   504,   349,
-     506,   107,   108,   109,   110,   111,   112,   350,   353,   113,
-     354,   355,    36,   356,   357,   518,   107,   108,   109,   110,
-     111,   112,   358,   373,   113,   114,   359,   360,    97,   107,
-     108,   109,   110,   111,   112,   361,   362,   113,   363,   364,
-     198,  1562,   365,   546,   547,   548,   549,   550,   551,   552,
+      65,   336,    18,   125,   337,   340,   341,   342,    19,   349,
+     343,   355,   350,   353,   490,   491,   492,   493,   494,   354,
+     356,    27,   498,   372,   357,   501,   373,   392,   504,   358,
+     506,   107,   108,   109,   110,   111,   112,   359,   360,   113,
+     361,   362,    36,   363,   364,   518,   107,   108,   109,   110,
+     111,   112,   365,   366,   113,   374,   367,   114,    97,   107,
+     108,   109,   110,   111,   112,   368,   369,   113,   370,   371,
+     198,  1562,   394,   546,   547,   548,   549,   550,   551,   552,
      553,   554,   555,   556,   557,   558,   559,   560,   561,   562,
      563,   564,   565,   566,   567,   568,   569,   570,   571,   572,
-     573,   574,   366,   107,   108,   109,   110,   111,   112,   367,
-     368,   113,   583,   584,   369,   586,   587,   370,   371,   374,
-     592,   593,   375,   394,   376,    98,   377,   378,   379,   601,
-     602,   380,   381,   605,   393,   607,   608,   609,   382,   611,
-     612,   613,   383,   615,   616,   617,   618,   619,   620,   621,
+     573,   574,   375,   107,   108,   109,   110,   111,   112,   393,
+     395,   113,   583,   584,   396,   586,   587,   398,   376,   377,
+     592,   593,   378,   401,   379,    98,   380,   381,   382,   601,
+     602,   383,   384,   605,   399,   607,   608,   609,   385,   611,
+     612,   613,   386,   615,   616,   617,   618,   619,   620,   621,
      622,   623,   624,   625,   626,   627,   628,   629,   630,     2,
-       3,     4,   384,     5,     6,    34,    35,    36,   385,   386,
-     387,   388,   395,    37,     2,     3,     4,   389,     5,     6,
-     390,   391,    12,    13,    14,    15,    16,    17,   401,   397,
-      18,   166,   668,   669,   670,    19,   396,    12,    13,    14,
-      15,    16,    17,   679,   398,    18,   402,   683,   399,    27,
-      19,   403,   400,   404,   405,   406,   691,   107,   108,   109,
-     110,   111,   112,   432,    27,   113,   407,   107,   108,   109,
-     110,   111,   112,   408,   409,   113,   107,   108,   109,   110,
-     111,   112,   412,   413,   113,   107,   108,   109,   110,   111,
-     112,   414,   415,   113,   417,   425,   489,   426,   427,    34,
-      35,    36,   428,   429,   434,   430,   431,    37,   107,   108,
-     109,   110,   111,   112,   436,   437,   113,   107,   108,   109,
-     110,   111,   112,  1504,  1505,   113,   438,   761,   440,   441,
-     764,   442,  1943,  1944,   450,   444,   445,   770,   446,   772,
-     773,   774,   447,   448,   460,   449,   779,   451,   781,   782,
-     783,   452,   785,   786,   787,   453,   789,   790,   791,   792,
+       3,     4,   387,     5,     6,    34,    35,    36,   388,   389,
+     402,   390,   403,    37,     2,     3,     4,   391,     5,     6,
+     404,   405,    12,    13,    14,    15,    16,    17,   406,   397,
+      18,   166,   668,   669,   670,   400,    19,    12,    13,    14,
+      15,    16,    17,   679,   407,    18,   408,   683,   409,    27,
+     412,    19,   413,   414,   415,   417,   691,   107,   108,   109,
+     110,   111,   112,   432,    27,   113,   426,   107,   108,   109,
+     110,   111,   112,   425,   427,   113,   107,   108,   109,   110,
+     111,   112,   430,   428,   113,   107,   108,   109,   110,   111,
+     112,   429,   431,   113,   434,   436,   489,   437,   438,    34,
+      35,    36,   440,   441,   442,   444,   450,    37,   107,   108,
+     109,   110,   111,   112,   445,   446,   113,   107,   108,   109,
+     110,   111,   112,  1504,  1505,   113,   447,   761,   460,   448,
+     764,   449,  1943,  1944,   461,   451,   452,   770,   453,   772,
+     773,   774,   454,   455,   462,   456,   779,   457,   781,   782,
+     783,   458,   785,   786,   787,   459,   789,   790,   791,   792,
      793,   794,  1367,   796,   797,   798,   799,   800,   801,   802,
      803,   804,   805,   806,   807,   808,   809,   810,   811,   812,
      813,   814,   815,   816,   817,   818,   819,   820,   821,   822,
      823,   824,   825,   826,   827,   828,   829,   830,   831,   832,
-     833,   454,   455,    36,   456,   457,   107,   108,   109,   110,
-     111,   112,   845,   846,   113,   458,   849,   459,   461,   462,
-     463,   855,   856,   464,   465,   466,   467,   468,   861,   862,
-     469,   470,   471,   472,   473,   174,  1091,   107,   108,   109,
-     110,   111,   112,   474,   475,   113,   476,   477,   478,   479,
-     175,   107,   108,   109,   110,   111,   112,   480,   481,   113,
-     482,   483,   484,   709,   485,   495,   107,   108,   109,   110,
-     111,   112,   486,   487,   113,   496,   107,   108,   109,   110,
-     111,   112,   488,   497,   113,   499,   500,   919,   920,   921,
-     502,   503,   924,   925,   926,   927,   928,   929,   507,   508,
-     511,   933,   512,   513,   515,   516,   938,   777,   517,   514,
-     941,   520,   522,   523,   524,   526,   947,   527,   949,   528,
-     951,   952,   953,   530,   955,   956,   957,   531,   959,   960,
-     532,   533,   534,   535,   965,   536,   967,   968,   969,   970,
-     537,   575,   973,   974,   107,   108,   109,   110,   111,   112,
-     538,   539,   113,   540,   541,   107,   108,   109,   110,   111,
-     112,   542,   543,   113,   107,   108,   109,   110,   111,   112,
-     544,   545,   113,   579,   580,  1005,  1006,   595,   107,   108,
-     109,   110,   111,   112,   581,  1015,   113,   590,   594,   597,
-     598,    36,  1019,   596,   599,  1022,  1023,  1024,   600,   107,
-     108,   109,   110,   111,   112,   604,    36,   113,   107,   108,
-     109,   110,   111,   112,  1041,   660,   113,   667,   606,   610,
-     614,   877,   591,   671,   674,   677,  1733,  1575,  1055,  1056,
+     833,   463,   464,    36,   465,   495,   107,   108,   109,   110,
+     111,   112,   845,   846,   113,   466,   849,   467,   468,   469,
+     470,   855,   856,   471,   472,   473,   474,   475,   861,   862,
+     476,   477,   478,   479,   480,   174,  1091,   107,   108,   109,
+     110,   111,   112,   481,   482,   113,   483,   484,   485,   486,
+     175,   107,   108,   109,   110,   111,   112,   487,   488,   113,
+     496,   497,   499,   709,   500,   511,   107,   108,   109,   110,
+     111,   112,   502,   503,   113,   515,   107,   108,   109,   110,
+     111,   112,   507,   508,   113,   512,   513,   919,   920,   921,
+     514,   516,   924,   925,   926,   927,   928,   929,   517,   520,
+     575,   933,   579,   522,   523,   580,   938,   777,   524,   526,
+     941,   581,   527,   528,   530,   531,   947,   532,   949,   533,
+     951,   952,   953,   534,   955,   956,   957,   535,   959,   960,
+     536,   537,   538,   539,   965,   540,   967,   968,   969,   970,
+     541,   542,   973,   974,   107,   108,   109,   110,   111,   112,
+     543,   544,   113,   545,   595,   107,   108,   109,   110,   111,
+     112,   590,   594,   113,   107,   108,   109,   110,   111,   112,
+     597,   598,   113,   599,   600,  1005,  1006,   596,   107,   108,
+     109,   110,   111,   112,   604,  1015,   113,   606,   660,   667,
+     671,    36,  1019,   610,   614,  1022,  1023,  1024,   678,   107,
+     108,   109,   110,   111,   112,   674,    36,   113,   107,   108,
+     109,   110,   111,   112,  1041,   677,   113,   680,   684,   685,
+     689,   877,   591,   692,   686,   687,  1733,  1575,  1055,  1056,
     1057,  1058,  1059,  1060,  1061,  1062,  1063,  1064,  1065,  1066,
     1067,  1068,  1069,  1070,  1071,  1072,  1073,  1074,  1075,  1076,
     1077,  1078,  1079,  1080,  1081,  1082,   107,   108,   109,   110,
-     111,   112,   678,   686,   113,   680,  1092,  1093,   684,  1095,
-    1096,  1097,   878,  1098,   685,   687,   688,   689,  1103,  1104,
+     111,   112,   688,   694,   113,   698,  1092,  1093,   702,  1095,
+    1096,  1097,   878,  1098,   719,   720,   721,   722,  1103,  1104,
      603,  1105,  1106,  1107,  1108,  1109,  1110,  1111,  1112,  1113,
-    1114,  1115,  1116,  1117,   692,  1119,  1120,  1121,   719,  1123,
-    1124,  1125,   694,  1127,   698,  1129,  1130,  1131,   107,   108,
-     109,   110,   111,   112,   702,   720,   113,   107,   108,   109,
-     110,   111,   112,   721,   722,   113,   723,   724,   748,   107,
-     108,   109,   110,   111,   112,   725,  1158,   113,  1160,  1161,
-    1162,   726,  1164,  1165,   749,   107,   108,   109,   110,   111,
-     112,   727,  1173,   113,   750,   107,   108,   109,   110,   111,
-     112,   728,   729,   113,   730,   731,   732,   733,   734,   735,
-     879,   107,   108,   109,   110,   111,   112,   736,   737,   113,
-     738,  1201,   107,   108,   109,   110,   111,   112,   739,   740,
-     113,   107,   108,   109,   110,   111,   112,   741,   742,   113,
-     743,   880,   107,   108,   109,   110,   111,   112,   744,   745,
-     113,   746,   747,   751,   752,   882,   758,   759,   760,   762,
-     763,  1239,   765,   767,   768,   769,   771,  1245,  1246,  1247,
+    1114,  1115,  1116,  1117,   723,  1119,  1120,  1121,   724,  1123,
+    1124,  1125,   725,  1127,   726,  1129,  1130,  1131,   107,   108,
+     109,   110,   111,   112,   727,   728,   113,   107,   108,   109,
+     110,   111,   112,   729,   730,   113,   731,   732,   748,   107,
+     108,   109,   110,   111,   112,   733,  1158,   113,  1160,  1161,
+    1162,   734,  1164,  1165,   749,   107,   108,   109,   110,   111,
+     112,   735,  1173,   113,   751,   107,   108,   109,   110,   111,
+     112,   736,   737,   113,   738,   739,   740,   741,   742,   743,
+     879,   107,   108,   109,   110,   111,   112,   744,   745,   113,
+     746,  1201,   107,   108,   109,   110,   111,   112,   747,   750,
+     113,   107,   108,   109,   110,   111,   112,   752,   759,   113,
+     758,   880,   107,   108,   109,   110,   111,   112,   760,   762,
+     113,   763,   767,   768,   769,   882,   771,   765,   775,   776,
+     778,  1239,   780,   784,   788,   795,   834,  1245,  1246,  1247,
      887,  1012,  1250,  1251,  1252,  1253,  1254,  1255,  1256,  1257,
     1258,  1259,  1260,  1261,  1262,   107,   108,   109,   110,   111,
-     112,   776,   775,   113,   778,   780,  1274,  1275,  1276,  1277,
+     112,   835,   836,   113,   837,   839,  1274,  1275,  1276,  1277,
     1278,  1279,  1280,  1281,  1282,  1283,  1284,  1285,  1286,  1287,
     1288,  1289,  1290,  1291,  1292,  1293,  1294,  1295,  1296,  1297,
-    1298,  1299,  1300,  1301,   784,  1303,   788,   834,   795,   835,
-    1308,  1309,   836,  1311,  1312,  1313,  1314,   837,   839,   838,
-     840,  1319,  1320,   841,   842,   843,   844,   848,   888,   853,
-     854,   857,   863,   864,   881,   866,   870,  1335,  1336,  1049,
-    1337,   922,   874,  1340,   923,   932,  1343,   935,  1197,   107,
-     108,   109,   110,   111,   112,   936,   937,   113,   939,   942,
+    1298,  1299,  1300,  1301,   838,  1303,   840,   841,   842,   843,
+    1308,  1309,   853,  1311,  1312,  1313,  1314,   844,   848,   854,
+     857,  1319,  1320,   863,   864,   866,   870,    47,   888,    48,
+      49,    50,    51,    52,    53,   874,   881,  1335,  1336,  1049,
+    1337,    54,   922,  1340,   932,   936,  1343,   923,  1197,   107,
+     108,   109,   110,   111,   112,   939,   937,   113,   935,   942,
      943,   944,  1198,   107,   108,   109,   110,   111,   112,   948,
-     950,   113,   961,   954,   958,   962,   963,  1374,  1375,   971,
+     950,   113,   954,   958,   961,   962,   963,  1374,  1375,   971,
     1377,   964,   975,  1200,   966,   972,   976,   977,  1383,   978,
      979,   980,  1695,   981,  1388,  1389,  1390,  1391,  1392,  1393,
     1394,  1395,  1396,  1397,  1398,  1399,  1400,  1401,   107,   108,
@@ -5659,14 +5594,14 @@ namespace yy {
     1502,  1503,  1014,  1703,  1016,  1382,  1509,  1510,  1017,  1512,
     1513,  1018,  1020,  1025,  1026,  1515,  1516,  1517,  1518,  1519,
     1520,  1521,  1522,  1523,  1524,  1525,  1526,  1527,  1528,  1705,
-    1530,  1531,  1532,  1028,  1042,  1535,  1043,  1044,  1538,  1539,
-    1540,  1046,  1051,  1052,  1030,  1712,   107,   108,   109,   110,
-     111,   112,  1083,  1084,   113,  1086,  1997,  1034,   107,   108,
-     109,   110,   111,   112,  1038,  2034,   113,  1567,  1087,  1569,
+    1530,  1531,  1532,  1028,  1042,  1535,  1030,  1043,  1538,  1539,
+    1540,  1044,  1046,  1051,  1034,  1712,   107,   108,   109,   110,
+     111,   112,  1052,  1083,   113,  1084,  1997,  1038,   107,   108,
+     109,   110,   111,   112,  1086,  2034,   113,  1567,  1087,  1569,
     1570,  1088,  1089,  1090,  1099,  1122,  2082,  1576,   107,   108,
-     109,   110,   111,   112,  1126,  1168,   113,  1159,  1128,  1174,
-    1163,  1175,  1590,  1199,   107,   108,   109,   110,   111,   112,
-    1597,  1176,   113,   107,   108,   109,   110,   111,   112,  1192,
+     109,   110,   111,   112,  1126,  1163,   113,  1159,  1128,  1168,
+    1174,  1175,  1590,  1192,   107,   108,   109,   110,   111,   112,
+    1597,  1176,   113,   107,   108,   109,   110,   111,   112,  1199,
     1205,   113,  1263,   107,   108,   109,   110,   111,   112,  2144,
     1206,   113,  1266,   107,   108,   109,   110,   111,   112,  1207,
     1208,   113,  1209,  1210,  1211,  1212,  1213,  1634,  1214,  1215,
@@ -5801,7 +5736,7 @@ namespace yy {
        3,     4,     0,     5,     6,     7,     0,     0,     8,     0,
        0,     9,     0,    10,     0,    11,     0,     0,     0,     0,
        0,     0,    12,    13,    14,    15,    16,    17,   718,     0,
-      18,     0,     0,     0,     0,    19,     0,     0,    20,    21,
+      18,     0,     0,     0,     0,     0,    19,     0,    20,    21,
       22,    23,     0,     0,    24,     0,    25,     0,    26,    27,
      107,   108,   109,   110,   111,   112,     0,     0,   113,   107,
      108,   109,   110,   111,   112,     0,     0,   113,    28,    29,
@@ -5809,7 +5744,7 @@ namespace yy {
        2,     3,     4,    32,     5,     6,     7,     0,   418,     8,
        0,     0,     9,     0,    10,     0,    11,     0,     0,     0,
       33,     0,     0,    12,    13,    14,    15,    16,    17,     0,
-       0,    18,     0,     0,     0,     0,    19,     0,   865,    20,
+       0,    18,     0,     0,     0,     0,     0,    19,   865,    20,
       21,    22,    23,     0,     0,    24,     0,    25,     0,    26,
       27,   107,   108,   109,   110,   111,   112,     0,     0,   113,
      107,   108,   109,   110,   111,   112,   867,     0,   113,    28,
@@ -6565,30 +6500,29 @@ namespace yy {
      273,   274,   275,   276,   277
   };
 
-  /* YYCHECK.  */
   const short int
   feiparser::yycheck_[] =
   {
-         7,     8,   238,    58,   105,    38,     0,   395,    41,    63,
+       7,     8,   238,    58,   105,    38,     0,   395,    41,    63,
       64,    18,    19,    20,    33,    34,    35,    36,    37,    38,
       93,    90,    41,   395,    90,    32,    90,    83,    84,    36,
-       3,     4,     5,   102,     7,     8,   102,   161,   102,     3,
+       3,     4,     5,   102,     7,     8,   102,   161,   102,    51,
      164,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      44,   105,    51,    26,    27,    28,    29,    30,    31,   132,
-      67,    34,   366,   367,   368,   100,    39,    33,    34,    35,
-      36,    37,    38,   108,   159,    41,    83,   162,   163,    49,
-      53,    54,    55,   398,    33,    34,    35,    36,    37,    38,
-      88,   327,    41,    91,   123,   124,   125,    95,   127,    53,
+      44,   105,     3,    26,    27,    28,    29,    30,    31,   132,
+      67,    34,   123,   124,   125,    49,   127,    40,   398,    33,
+      34,    35,    36,    37,    38,   100,    83,    41,    53,    54,
+      53,    54,    55,   108,    33,    34,    35,    36,    37,    38,
+      88,   327,    41,    91,    37,    38,    53,    95,    41,    53,
      107,   108,   109,   110,   111,   112,   113,    33,    34,    35,
-      36,    37,    38,    37,    38,    41,    53,    41,    53,    54,
-     115,   128,   129,   130,   179,   390,   133,   134,   390,   136,
+      36,    37,    38,   159,   115,    41,   162,   163,   366,   367,
+     368,   128,   129,   130,   179,   390,   133,   134,   390,   136,
      137,   138,   139,    53,    54,   142,   143,   144,   231,   232,
      401,   148,   149,   150,   151,   152,   153,     3,    56,   170,
-     171,    41,     0,   128,   129,     3,     4,     5,   105,     7,
-       8,     9,   124,   125,    12,   152,   153,    15,    76,    17,
+     171,    41,     0,   124,   125,     3,     4,     5,   105,     7,
+       8,     9,   128,   129,    12,   152,   153,    15,    76,    17,
       78,    19,    80,   105,    82,   152,   153,    85,    26,    27,
       28,    29,    30,    31,     5,   192,    34,   152,   153,   105,
-     105,    39,   105,   105,    42,    43,    44,    45,   105,   206,
+     105,   105,    40,   105,    42,    43,    44,    45,   105,   206,
       48,   105,    50,   385,    52,    53,   115,    33,    34,    35,
       36,    37,    38,   105,   105,    41,   105,    35,    36,    37,
       38,   228,   229,    41,    72,    73,    74,    75,   235,   177,
@@ -6597,108 +6531,108 @@ namespace yy {
        4,     5,   105,     7,     8,     9,   104,   385,    12,   105,
      105,    15,   105,    17,   105,    19,   120,    77,    79,    81,
       86,   158,    26,    27,    28,    29,    30,    31,    92,   116,
-      34,    11,   102,    61,    53,    39,    53,   121,    42,    43,
+      34,    11,   102,    61,    53,    53,    40,   121,    42,    43,
       44,    45,    90,   102,    48,   347,    50,   398,    52,    53,
       33,    34,    35,    36,    37,    38,   102,    90,    41,    33,
       34,    35,    36,    37,    38,   322,    76,    41,    72,    73,
       74,    75,     5,    41,   403,   332,   333,   334,   335,   386,
      402,   105,   105,    87,   105,   107,    32,   400,   345,   105,
-     347,   205,    53,   349,   351,    94,   161,   160,   355,   395,
-     104,     3,     4,     5,    53,     7,     8,    54,    53,    33,
+     347,   205,    53,   349,   351,    94,   161,   160,   355,    53,
+     104,     3,     4,     5,   395,     7,     8,    54,    53,    33,
       34,    35,    36,    37,    38,    32,    53,    41,     3,   108,
       32,    32,    32,   105,    26,    27,    28,    29,    30,    31,
-     353,   213,    34,   402,   170,   165,    18,    39,    20,    21,
-      22,    23,    24,    25,   401,   402,   403,   404,   405,    76,
-      32,    53,   409,    76,    76,   412,   263,   330,   415,   102,
+     353,   213,    34,   402,   170,   165,    76,    76,    40,   102,
+      76,    90,   102,   102,   401,   402,   403,   404,   405,   102,
+     102,    53,   409,   263,   102,   412,   263,   330,   415,   102,
      417,    33,    34,    35,    36,    37,    38,   102,   102,    41,
-     102,    90,   395,   102,   102,   432,    33,    34,    35,    36,
-      37,    38,   102,   263,    41,   401,   102,   102,    90,    33,
+     102,   102,   395,   102,   102,   432,    33,    34,    35,    36,
+      37,    38,   102,   102,    41,   263,   102,   401,    90,    33,
       34,    35,    36,    37,    38,   102,   102,    41,   102,   102,
-     399,   377,   102,   460,   461,   462,   463,   464,   465,   466,
+     399,   377,   328,   460,   461,   462,   463,   464,   465,   466,
      467,   468,   469,   470,   471,   472,   473,   474,   475,   476,
      477,   478,   479,   480,   481,   482,   483,   484,   485,   486,
-     487,   488,   102,    33,    34,    35,    36,    37,    38,   102,
-     102,    41,   499,   500,   102,   502,   503,   102,   102,   263,
-     507,   508,   263,   328,   263,   157,   263,   263,   263,   516,
+     487,   488,   263,    33,    34,    35,    36,    37,    38,   264,
+     328,    41,   499,   500,   264,   502,   503,   264,   263,   263,
+     507,   508,   263,   105,   263,   157,   263,   263,   263,   516,
      517,   263,   263,   520,   264,   522,   523,   524,   263,   526,
      527,   528,   263,   530,   531,   532,   533,   534,   535,   536,
      537,   538,   539,   540,   541,   542,   543,   544,   545,     3,
        4,     5,   263,     7,     8,   393,   394,   395,   263,   263,
-     263,   263,   328,   401,     3,     4,     5,   263,     7,     8,
-     263,   263,    26,    27,    28,    29,    30,    31,   105,   263,
-      34,   397,   579,   580,   581,    39,   264,    26,    27,    28,
-      29,    30,    31,   590,   264,    34,   105,   594,   264,    53,
-      39,   105,   263,   105,   105,   102,   603,    33,    34,    35,
-      36,    37,    38,   396,    53,    41,   102,    33,    34,    35,
-      36,    37,    38,   102,   105,    41,    33,    34,    35,    36,
-      37,    38,    32,   233,    41,    33,    34,    35,    36,    37,
-      38,   264,   105,    41,   105,   161,   100,   172,   172,   393,
-     394,   395,   172,   170,   110,    93,    93,   401,    33,    34,
+     105,   263,   105,   401,     3,     4,     5,   263,     7,     8,
+     105,   105,    26,    27,    28,    29,    30,    31,   102,   263,
+      34,   397,   579,   580,   581,   263,    40,    26,    27,    28,
+      29,    30,    31,   590,   102,    34,   102,   594,   105,    53,
+      32,    40,   233,   264,   105,   105,   603,    33,    34,    35,
+      36,    37,    38,   396,    53,    41,   172,    33,    34,    35,
+      36,    37,    38,   161,   172,    41,    33,    34,    35,    36,
+      37,    38,    93,   172,    41,    33,    34,    35,    36,    37,
+      38,   170,    93,    41,   110,   110,   100,   110,   110,   393,
+     394,   395,   110,   110,   110,   110,    53,   401,    33,    34,
       35,    36,    37,    38,   110,   110,    41,    33,    34,    35,
-      36,    37,    38,   396,   397,    41,   110,   674,   110,   110,
-     677,   110,   396,   397,    53,   110,   110,   684,   110,   686,
+      36,    37,    38,   396,   397,    41,   110,   674,    32,   110,
+     677,   110,   396,   397,    32,   110,   110,   684,   110,   686,
      687,   688,   110,   110,    32,   110,   693,   110,   695,   696,
      697,   110,   699,   700,   701,   110,   703,   704,   705,   706,
      707,   708,   376,   710,   711,   712,   713,   714,   715,   716,
      717,   718,   719,   720,   721,   722,   723,   724,   725,   726,
      727,   728,   729,   730,   731,   732,   733,   734,   735,   736,
      737,   738,   739,   740,   741,   742,   743,   744,   745,   746,
-     747,   110,   110,   395,   110,   110,    33,    34,    35,    36,
-      37,    38,   759,   760,    41,   110,   763,   110,    32,    32,
+     747,    32,    32,   395,    32,   369,    33,    34,    35,    36,
+      37,    38,   759,   760,    41,    32,   763,    32,    32,    32,
       32,   768,   769,    32,    32,    32,    32,    32,   775,   776,
       32,    32,    32,    32,    32,   397,  1012,    33,    34,    35,
       36,    37,    38,    32,    32,    41,    32,    32,    32,    32,
      397,    33,    34,    35,    36,    37,    38,    32,    32,    41,
-      32,    32,    32,   397,    32,   369,    33,    34,    35,    36,
-      37,    38,    32,    32,    41,   369,    33,    34,    35,    36,
-      37,    38,    32,   369,    41,    32,    32,   834,   835,   836,
-      32,    32,   839,   840,   841,   842,   843,   844,    32,    32,
-     170,   848,   106,   106,   172,    32,   853,   397,    32,   106,
-     857,   395,   395,   395,   395,   395,   863,   395,   865,   395,
+     369,   369,    32,   397,    32,   170,    33,    34,    35,    36,
+      37,    38,    32,    32,    41,   172,    33,    34,    35,    36,
+      37,    38,    32,    32,    41,   106,   106,   834,   835,   836,
+     106,    32,   839,   840,   841,   842,   843,   844,    32,   395,
+     118,   848,    32,   395,   395,    32,   853,   397,   395,   395,
+     857,    32,   395,   395,   395,   395,   863,   395,   865,   395,
      867,   868,   869,   395,   871,   872,   873,   395,   875,   876,
      395,   395,   395,   395,   881,   395,   883,   884,   885,   886,
-     395,   118,   889,   890,    33,    34,    35,    36,    37,    38,
-     395,   395,    41,   395,   395,    33,    34,    35,    36,    37,
-      38,   395,   395,    41,    33,    34,    35,    36,    37,    38,
-     395,   395,    41,    32,    32,   922,   923,   108,    33,    34,
-      35,    36,    37,    38,    32,   932,    41,    32,    32,    55,
-      55,   395,   939,   172,    55,   942,   943,   944,   106,    33,
-      34,    35,    36,    37,    38,   174,   395,    41,    33,    34,
-      35,    36,    37,    38,   961,   127,    41,   108,   174,   174,
-     174,   397,   388,   387,    32,    32,   374,   384,   975,   976,
+     395,   395,   889,   890,    33,    34,    35,    36,    37,    38,
+     395,   395,    41,   395,   108,    33,    34,    35,    36,    37,
+      38,    32,    32,    41,    33,    34,    35,    36,    37,    38,
+      55,    55,    41,    55,   106,   922,   923,   172,    33,    34,
+      35,    36,    37,    38,   174,   932,    41,   174,   127,   108,
+     387,   395,   939,   174,   174,   942,   943,   944,   108,    33,
+      34,    35,    36,    37,    38,    32,   395,    41,    33,    34,
+      35,    36,    37,    38,   961,    32,    41,   108,   121,   106,
+      55,   397,   388,   176,   105,   105,   374,   384,   975,   976,
      977,   978,   979,   980,   981,   982,   983,   984,   985,   986,
      987,   988,   989,   990,   991,   992,   993,   994,   995,   996,
      997,   998,   999,  1000,  1001,  1002,    33,    34,    35,    36,
-      37,    38,   108,   105,    41,   108,  1013,  1014,   121,  1016,
-    1017,  1018,   397,  1020,   106,   105,   105,    55,  1025,  1026,
+      37,    38,   105,   176,    41,   176,  1013,  1014,   176,  1016,
+    1017,  1018,   397,  1020,    32,    32,    32,    32,  1025,  1026,
      396,  1028,  1029,  1030,  1031,  1032,  1033,  1034,  1035,  1036,
-    1037,  1038,  1039,  1040,   176,  1042,  1043,  1044,    32,  1046,
-    1047,  1048,   176,  1050,   176,  1052,  1053,  1054,    33,    34,
-      35,    36,    37,    38,   176,    32,    41,    33,    34,    35,
+    1037,  1038,  1039,  1040,    32,  1042,  1043,  1044,    32,  1046,
+    1047,  1048,    32,  1050,    32,  1052,  1053,  1054,    33,    34,
+      35,    36,    37,    38,    32,    32,    41,    33,    34,    35,
       36,    37,    38,    32,    32,    41,    32,    32,   111,    33,
       34,    35,    36,    37,    38,    32,  1083,    41,  1085,  1086,
     1087,    32,  1089,  1090,   111,    33,    34,    35,    36,    37,
-      38,    32,  1099,    41,   111,    33,    34,    35,    36,    37,
+      38,    32,  1099,    41,   106,    33,    34,    35,    36,    37,
       38,    32,    32,    41,    32,    32,    32,    32,    32,    32,
      397,    33,    34,    35,    36,    37,    38,    32,    32,    41,
-      32,  1128,    33,    34,    35,    36,    37,    38,    32,    32,
-      41,    33,    34,    35,    36,    37,    38,    32,    32,    41,
-      32,   397,    33,    34,    35,    36,    37,    38,    32,    32,
-      41,    32,    32,   106,    99,   397,    53,    32,    32,    55,
-      32,  1168,   118,    61,    32,    32,    55,  1174,  1175,  1176,
+      32,  1128,    33,    34,    35,    36,    37,    38,    32,   111,
+      41,    33,    34,    35,    36,    37,    38,    99,    32,    41,
+      53,   397,    33,    34,    35,    36,    37,    38,    32,    55,
+      41,    32,    61,    32,    32,   397,    55,   118,   105,    32,
+     229,  1168,   229,   229,   229,   221,    32,  1174,  1175,  1176,
      397,   388,  1179,  1180,  1181,  1182,  1183,  1184,  1185,  1186,
     1187,  1188,  1189,  1190,  1191,    33,    34,    35,    36,    37,
-      38,    32,   105,    41,   229,   229,  1203,  1204,  1205,  1206,
+      38,    32,    32,    41,    71,    32,  1203,  1204,  1205,  1206,
     1207,  1208,  1209,  1210,  1211,  1212,  1213,  1214,  1215,  1216,
     1217,  1218,  1219,  1220,  1221,  1222,  1223,  1224,  1225,  1226,
-    1227,  1228,  1229,  1230,   229,  1232,   229,    32,   221,    32,
-    1237,  1238,    32,  1240,  1241,  1242,  1243,    71,    32,   110,
-      32,  1248,  1249,    32,    32,    32,   105,   105,   397,    32,
-     179,   105,   102,   102,    32,   102,   102,  1264,  1265,   397,
-    1267,   105,   102,  1270,   395,    32,  1273,   123,   397,    33,
-      34,    35,    36,    37,    38,    93,   131,    41,   389,    32,
+    1227,  1228,  1229,  1230,   110,  1232,    32,    32,    32,    32,
+    1237,  1238,    32,  1240,  1241,  1242,  1243,   105,   105,   179,
+     105,  1248,  1249,   102,   102,   102,   102,    18,   397,    20,
+      21,    22,    23,    24,    25,   102,    32,  1264,  1265,   397,
+    1267,    32,   105,  1270,    32,    93,  1273,   395,   397,    33,
+      34,    35,    36,    37,    38,   389,   131,    41,   123,    32,
       32,    32,   397,    33,    34,    35,    36,    37,    38,   110,
-     110,    41,   102,   110,   110,   214,   214,  1304,  1305,   106,
+     110,    41,   110,   110,   102,   214,   214,  1304,  1305,   106,
     1307,   221,    32,   397,   214,   222,    32,    32,  1315,    32,
       32,    32,   397,    32,  1321,  1322,  1323,  1324,  1325,  1326,
     1327,  1328,  1329,  1330,  1331,  1332,  1333,  1334,    33,    34,
@@ -6715,14 +6649,14 @@ namespace yy {
     1437,  1438,    32,   397,    32,   383,  1443,  1444,    32,  1446,
     1447,    32,    32,    32,    32,  1452,  1453,  1454,  1455,  1456,
     1457,  1458,  1459,  1460,  1461,  1462,  1463,  1464,  1465,   397,
-    1467,  1468,  1469,   395,    32,  1472,    32,    32,  1475,  1476,
-    1477,    32,    55,    32,   395,   397,    33,    34,    35,    36,
+    1467,  1468,  1469,   395,    32,  1472,   395,    32,  1475,  1476,
+    1477,    32,    32,    55,   395,   397,    33,    34,    35,    36,
       37,    38,    32,    32,    41,    32,   397,   395,    33,    34,
-      35,    36,    37,    38,   395,   397,    41,  1504,    32,  1506,
+      35,    36,    37,    38,    32,   397,    41,  1504,    32,  1506,
     1507,    32,    32,    32,    32,   108,   397,  1514,    33,    34,
-      35,    36,    37,    38,   106,    32,    41,     5,   105,    32,
-     365,    32,  1529,    55,    33,    34,    35,    36,    37,    38,
-    1537,    32,    41,    33,    34,    35,    36,    37,    38,   106,
+      35,    36,    37,    38,   106,   365,    41,     5,   105,    32,
+      32,    32,  1529,   106,    33,    34,    35,    36,    37,    38,
+    1537,    32,    41,    33,    34,    35,    36,    37,    38,    55,
       32,    41,    65,    33,    34,    35,    36,    37,    38,   397,
       32,    41,   108,    33,    34,    35,    36,    37,    38,    32,
       32,    41,    32,    32,    32,    32,    32,  1574,    32,    32,
@@ -6857,7 +6791,7 @@ namespace yy {
        4,     5,    -1,     7,     8,     9,    -1,    -1,    12,    -1,
       -1,    15,    -1,    17,    -1,    19,    -1,    -1,    -1,    -1,
       -1,    -1,    26,    27,    28,    29,    30,    31,   396,    -1,
-      34,    -1,    -1,    -1,    -1,    39,    -1,    -1,    42,    43,
+      34,    -1,    -1,    -1,    -1,    -1,    40,    -1,    42,    43,
       44,    45,    -1,    -1,    48,    -1,    50,    -1,    52,    53,
       33,    34,    35,    36,    37,    38,    -1,    -1,    41,    33,
       34,    35,    36,    37,    38,    -1,    -1,    41,    72,    73,
@@ -6865,7 +6799,7 @@ namespace yy {
        3,     4,     5,    87,     7,     8,     9,    -1,   379,    12,
       -1,    -1,    15,    -1,    17,    -1,    19,    -1,    -1,    -1,
      104,    -1,    -1,    26,    27,    28,    29,    30,    31,    -1,
-      -1,    34,    -1,    -1,    -1,    -1,    39,    -1,   396,    42,
+      -1,    34,    -1,    -1,    -1,    -1,    -1,    40,   396,    42,
       43,    44,    45,    -1,    -1,    48,    -1,    50,    -1,    52,
       53,    33,    34,    35,    36,    37,    38,    -1,    -1,    41,
       33,    34,    35,    36,    37,    38,   396,    -1,    41,    72,
@@ -7621,13 +7555,11 @@ namespace yy {
      199,   200,   201,   202,   203
   };
 
-  /* STOS_[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
   const unsigned short int
   feiparser::yystos_[] =
   {
-         0,     1,     3,     4,     5,     7,     8,     9,    12,    15,
-      17,    19,    26,    27,    28,    29,    30,    31,    34,    39,
+       0,     1,     3,     4,     5,     7,     8,     9,    12,    15,
+      17,    19,    26,    27,    28,    29,    30,    31,    34,    40,
       42,    43,    44,    45,    48,    50,    52,    53,    72,    73,
       74,    75,    87,   104,   393,   394,   395,   401,   405,   406,
      407,   409,   410,   411,   414,   415,   416,    18,    20,    21,
@@ -7914,61 +7846,10 @@ namespace yy {
      415,   168,    32,   415,   169,    32,   415
   };
 
-#if YYDEBUG
-  /* TOKEN_NUMBER_[YYLEX-NUM] -- Internal symbol number corresponding
-     to YYLEX-NUM.  */
-  const unsigned short int
-  feiparser::yytoken_number_[] =
-  {
-         0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,    61,    43,    45,    42,    47,    37,    94,    33,
-     287,   288,   289,   290,   291,   292,   293,   294,   295,   296,
-     297,   298,   299,   300,   301,   302,   303,   304,   305,   306,
-     307,   308,   309,   310,   311,   312,   313,   314,   315,   316,
-     317,   318,   319,   320,   321,   322,   323,   324,   325,   326,
-     327,   328,   329,   330,   331,   332,   333,   334,   335,   336,
-     337,   338,   339,   340,   341,   342,   343,   344,   345,   346,
-     347,   348,   349,   350,   351,   352,   353,   354,   355,   356,
-     357,   358,   359,   360,   361,   362,   363,   364,   365,   366,
-     367,   368,   369,   370,   371,   372,   373,   374,   375,   376,
-     377,   378,   379,   380,   381,   382,   383,   384,   385,   386,
-     387,   388,   389,   390,   391,   392,   393,   394,   395,   396,
-     397,   398,   399,   400,   401,   402,   403,   404,   405,   406,
-     407,   408,   409,   410,   411,   412,   413,   414,   415,   416,
-     417,   418,   419,   420,   421,   422,   423,   424,   425,   426,
-     427,   428,   429,   430,   431,   432,   433,   434,   435,   436,
-     437,   438,   439,   440,   441,   442,   443,   444,   445,   446,
-     447,   448,   449,   450,   451,   452,   453,   454,   455,   456,
-     457,   458,   459,   460,   461,   462,   463,   464,   465,   466,
-     467,   468,   469,   470,   471,   472,   473,   474,   475,   476,
-     477,   478,   479,   480,   481,   482,   483,   484,   485,   486,
-     487,   488,   489,   490,   491,   492,   493,   494,   495,   496,
-     497,   498,   499,   500,   501,   502,   503,   504,   505,   506,
-     507,   508,   509,   510,   511,   512,   513,   514,   515,   516,
-     517,   518,   519,   520,   521,   522,   523,   524,   525,   526,
-     527,   528,   529,   530,   531,   532,   533,   534,   535,   536,
-     537,   538,   539,   540,   541,   542,   543,   544,   545,   546,
-     547,   548,   549,   550,   551,   552,   553,   554,   555,   556,
-     557,   558,   559,   560,   561,   562,   563,   564,   565,   566,
-     567,   568,   569,   570,   571,   572,   573,   574,   575,   576,
-     577,   578,   579,   580,   581,   582,   583,   584,   585,   586,
-     587,   588,   589,   590,   591,   592,   593,   594,   595,   596,
-     597,   598,   599,   600,   601,   602,   603,   604,   605,   606,
-     607,   608,   609,   610,   611,   612,   613,   614,   615,   616,
-     617,   618,   619,   620,   621,   622,   623,   624,   625,   626,
-     627,   628,   629,   630,   631,   632,   633,   634,   635,   636,
-     637,   638,   639,   640,   641,    40,    44,    41,    91,    93,
-      46,    59,   123,   125
-  };
-#endif
-
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
   const unsigned short int
   feiparser::yyr1_[] =
   {
-         0,   404,   405,   405,   405,   405,   405,   405,   405,   405,
+       0,   404,   405,   405,   405,   405,   405,   405,   405,   405,
      405,   405,   405,   405,   405,   405,   406,   406,   406,   406,
      406,   406,   406,   406,   406,   406,   406,   406,   406,   406,
      406,   406,   406,   406,   406,   406,   406,   406,   406,   406,
@@ -7989,11 +7870,10 @@ namespace yy {
      417,   417,   418,   418
   };
 
-  /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
   const unsigned char
   feiparser::yyr2_[] =
   {
-         0,     2,     2,     2,     4,     4,     4,     3,     1,     1,
+       0,     2,     2,     2,     4,     4,     4,     3,     1,     1,
        1,     1,     1,     1,     1,     1,     1,    15,     2,    13,
        3,    14,    24,    32,    32,    48,    34,    52,    13,    16,
       19,    10,    10,    31,    28,    13,    21,    18,    16,    19,
@@ -8014,20 +7894,21 @@ namespace yy {
        2,     3,     1,     2
   };
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
-  /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
-     First, the terminals, then, starting at \a yyntokens_, nonterminals.  */
+
+#if YYDEBUG
+  // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
+  // First, the terminals, then, starting at \a yyntokens_, nonterminals.
   const char*
   const feiparser::yytname_[] =
   {
-    "$end", "error", "$undefined", "IDENT", "NUMBER", "STRING", "EOL",
+  "$end", "error", "$undefined", "IDENT", "NUMBER", "STRING", "EOL",
   "ISUNITTYPE", "FUNCTION", "IF", "THEN", "ELSE", "WHILE", "DO", "LET",
   "EXITSAFEMODE", "CONTINUE", "BYE", "IN", "REQUIRE", "PLUSEQUAL",
   "MINUSEQUAL", "TIMESEQUAL", "DIVIDEEQUAL", "MODULUSEQUAL", "POWEQUAL",
   "NUMBER_OF_NODES", "NUMBER_OF_ELEMENTS", "CURRENT_TIME",
   "NUMBER_OF_SP_CONSTRAINTS", "NUMBER_OF_MP_CONSTRAINTS",
   "NUMBER_OF_LOADS", "'='", "'+'", "'-'", "'*'", "'/'", "'%'", "'^'",
-  "'!'", "UMINUS", "CMP", "CMD_print", "CMD_help", "CMD_whos", "CMD_check",
+  "UMINUS", "'!'", "CMP", "CMD_print", "CMD_help", "CMD_whos", "CMD_check",
   "CMD_save", "CMD_restore", "MODEL", "NAME", "RESTART", "MESH", "ADD",
   "NODE", "ELEMENT", "MATERIAL", "LOAD", "TIMEHISTORY", "IMPOSEDMOTION",
   "DAMPING", "DAMPINGTYPE", "CONSTRAINT", "DRM", "SAVEFORCES",
@@ -8126,405 +8007,14 @@ namespace yy {
   "BINARY", "TEXT", "ENABLE", "DISABLE", "'('", "','", "')'", "'['", "']'",
   "'.'", "';'", "'{'", "'}'", "$accept", "dsl", "CMD_add", "CMD_fix",
   "dofchain", "CMD_define", "CMD_misc", "CMD_remove", "ADD_material",
-  "ADD_element", "prompt", "exp", "stmt", "cpd_stmt", "list", 0
-  };
-#endif
-
-#if YYDEBUG
-  /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
-  const feiparser::rhs_number_type
-  feiparser::yyrhs_[] =
-  {
-       414,     0,    -1,    42,   415,    -1,    42,   353,    -1,    42,
-      54,   105,   415,    -1,    42,    53,   105,   415,    -1,    42,
-      55,   105,   415,    -1,    45,    51,   415,    -1,    44,    -1,
-      43,    -1,   406,    -1,   410,    -1,   407,    -1,   409,    -1,
-     411,    -1,    15,    -1,    52,    -1,    52,    53,   105,   415,
-      99,   395,   415,   396,   415,   396,   415,   397,   102,   415,
-     103,    -1,    52,   412,    -1,    52,    71,   105,   415,   342,
-      32,   415,   343,    32,   415,   344,    32,   415,    -1,    52,
-      54,   413,    -1,    52,    56,   105,   415,   107,    54,   105,
-     415,   118,   128,   106,    71,   105,   415,    -1,    52,    56,
-     105,   415,   107,    54,   105,   415,   118,   129,    99,   110,
-     395,   415,   396,   415,   396,   415,   396,   415,   397,   102,
-     153,   415,    -1,    52,    56,   105,   415,   107,    54,   105,
-     415,   118,   129,    99,   110,   395,   415,   396,   415,   396,
-     415,   396,   415,   397,   102,   152,   395,   415,   396,   415,
-     396,   415,   396,   415,   397,    -1,    52,    56,   105,   415,
-     107,    54,   105,   415,   118,   129,    99,   110,   395,   415,
-     396,   415,   396,   415,   396,   415,   396,   415,   396,   415,
-     396,   415,   396,   415,   397,   102,   153,   415,    -1,    52,
-      56,   105,   415,   107,    54,   105,   415,   118,   129,    99,
-     110,   395,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   397,   102,   152,
-     395,   415,   396,   415,   396,   415,   396,   415,   396,   415,
-     396,   415,   396,   415,   396,   415,   397,    -1,    52,    56,
-     105,   415,   107,    54,   105,   415,   118,   129,    99,   110,
-     395,   415,   396,   415,   396,   415,   396,   415,   396,   415,
-     396,   415,   396,   415,   396,   415,   396,   415,   397,   102,
-     153,   415,    -1,    52,    56,   105,   415,   107,    54,   105,
-     415,   118,   129,    99,   110,   395,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   397,   102,   152,   395,   415,   396,   415,
-     396,   415,   396,   415,   396,   415,   396,   415,   396,   415,
-     396,   415,   396,   415,   397,    -1,    52,    56,   105,   415,
-     107,    53,   105,   415,   118,   123,   111,    32,   415,    -1,
-      52,    56,   105,   415,   107,    53,   105,   415,   118,   125,
-     111,    32,   415,   150,    32,     5,    -1,    52,    56,   105,
-     415,   107,    53,   105,   415,   118,   124,   111,    32,   415,
-      93,    32,   415,   150,    32,     5,    -1,    52,    56,   105,
-     415,   107,    53,   105,   415,   118,   127,    -1,    52,    56,
-     105,   415,   107,    53,   105,   100,   118,   127,    -1,    52,
-      58,   105,   415,   107,    53,   105,   415,   113,   108,    93,
-      32,   415,   132,    32,   415,   146,    32,   415,   133,    32,
-     415,   148,    32,   415,   134,    32,   415,   147,    32,   415,
-      -1,    52,    58,   105,   415,   107,    53,   105,   415,   113,
-     108,   132,    32,   415,   146,    32,   415,   133,    32,   415,
-     148,    32,   415,   134,    32,   415,   147,    32,   415,    -1,
-      52,    67,   105,   415,   107,    54,   105,   415,   108,    32,
-     415,   118,   123,    -1,    52,    67,   105,   415,   107,    54,
-     105,   415,   113,   108,   118,   124,    93,    32,   415,   131,
-      32,   415,   150,    32,   415,    -1,    52,    67,   105,   415,
-     107,    54,   105,   415,   113,   108,   118,   125,   131,    32,
-     415,   150,    32,   415,    -1,    52,    59,   105,   415,   118,
-     366,   102,   369,    32,   415,   370,    32,   415,   371,    32,
-     365,    -1,    52,    59,   105,   415,   118,   367,   102,   369,
-      32,   415,   370,    32,   415,   372,    32,   415,   371,    32,
-     365,    -1,    52,    59,   105,   415,   118,   368,   102,   369,
-      32,   415,   370,    32,   415,   372,    32,   415,   373,    32,
-     415,   371,    32,   365,    -1,    52,    59,   105,   415,   107,
-      54,   105,   415,    -1,    52,    59,   105,   415,   107,    53,
-     105,   415,    -1,    52,   378,   107,    53,   105,   415,   379,
-      32,   415,   380,    32,   415,   381,    32,   415,    -1,    52,
-     378,   107,    53,   105,   415,   379,    32,   415,   380,    32,
-     415,   381,    32,   415,   382,    32,   415,   383,    32,   415,
-     384,    32,   415,    -1,    52,    61,   385,   102,   386,    53,
-     105,   415,   101,   387,    53,   105,   415,   388,   408,    -1,
-      52,    62,   115,   105,   415,    93,    32,   415,   131,    32,
-     415,   135,    32,   415,   136,    32,   415,   137,    32,   415,
-     138,    32,   415,   139,    32,   415,   140,    32,   415,   141,
-      32,   415,   142,    32,   415,   143,    32,   415,   144,    32,
-     415,   145,    32,   415,   146,    32,   415,   147,    32,   415,
-      -1,    52,    62,   115,    63,   105,   415,    93,    32,   415,
-     131,    32,   415,   135,    32,   415,   136,    32,   415,   137,
-      32,   415,   138,    32,   415,   139,    32,   415,   140,    32,
-     415,   141,    32,   415,   142,    32,   415,   143,    32,   415,
-     144,    32,   415,   145,    32,   415,   146,    32,   415,   147,
-      32,   415,   149,    32,   415,    -1,    52,    62,   115,    64,
-     105,   415,    93,    32,   415,   131,    32,   415,   135,    32,
-     415,   136,    32,   415,   137,    32,   415,   138,    32,   415,
-     139,    32,   415,   140,    32,   415,   141,    32,   415,   142,
-      32,   415,   143,    32,   415,   144,    32,   415,   145,    32,
-     415,   149,    32,   415,    -1,    52,    65,   105,   415,   118,
-     231,   233,    32,   415,   106,    55,   105,   415,    -1,    52,
-      65,   105,   415,   118,   232,   264,    32,   415,   266,    32,
-     415,   233,    32,   415,   263,    32,   415,    -1,    72,    53,
-     105,   415,   103,   408,    -1,    72,    53,   105,   415,   103,
-     100,    -1,    52,   178,   177,    61,   107,    53,   105,   415,
-     388,   108,    61,   179,   389,   415,    -1,    73,    53,   105,
-     415,   103,   408,    -1,   108,    -1,   108,   408,    -1,   393,
-     390,    -1,   394,   390,    -1,    75,    56,   120,   121,   415,
-      -1,    75,    76,    77,    -1,    75,    78,    79,   347,    32,
-     415,   346,    32,   415,   345,    32,   415,    -1,    75,    80,
-      81,    -1,    75,    82,    84,   102,   349,    32,   415,   348,
-      32,   415,    -1,    75,    82,    83,   102,   205,    32,   415,
-      -1,    75,    85,    86,    90,    53,   105,   415,   113,   108,
-     121,   415,    -1,    48,    49,     5,    -1,   104,   115,   116,
-       5,    -1,    87,   415,   117,    90,    88,    76,    -1,    87,
-     415,   117,    90,    91,    76,    93,    32,   415,    -1,    87,
-     415,   117,    90,    95,    76,    93,    32,   415,    97,    32,
-     415,    96,    32,   415,    98,    32,   415,    -1,    87,    90,
-      92,    76,    94,    32,   415,    -1,    87,   157,   158,   159,
-     160,   213,   161,   170,   172,   106,    55,   105,   415,   154,
-      32,   415,   155,    32,   415,   156,    32,   415,    -1,    87,
-     157,   158,   162,   161,   170,   172,   106,    55,   105,   415,
-     154,    32,   415,   155,    32,   415,   156,    32,   415,    -1,
-      87,   157,   158,   163,   161,   171,   172,   106,    55,   105,
-     415,   154,    32,   415,   155,    32,   415,   156,    32,   415,
-      -1,    87,   157,   158,   163,   164,   165,   170,   172,   106,
-      55,   105,   415,   154,    32,   415,   155,    32,   415,   156,
-      32,   415,    -1,    87,   157,   158,   163,   161,   170,   172,
-     106,    55,   105,   415,   154,    32,   415,   155,    32,   415,
-     156,    32,   415,    -1,    74,    54,   105,   415,    -1,    74,
-      53,   105,   415,    -1,    74,    58,   105,   415,    -1,    74,
-      56,   105,   415,    -1,    74,    61,   385,    53,   105,   415,
-      -1,    55,   105,   415,   118,   234,   263,    32,   415,   264,
-      32,   415,   266,    32,   415,    -1,    55,   105,   415,   118,
-     235,   263,    32,   415,   264,    32,   415,   266,    32,   415,
-     267,    32,   415,   271,    32,   415,    76,    32,   415,   166,
-      32,   415,   167,    32,   415,   168,    32,   415,   169,    32,
-     415,    -1,    55,   105,   415,   118,   240,   263,    32,   415,
-     264,    32,   415,   266,    32,   415,   267,    32,   415,   271,
-      32,   415,   167,    32,   415,   168,    32,   415,   169,    32,
-     415,    -1,    55,   105,   415,   118,   259,   263,    32,   415,
-     264,    32,   415,   266,    32,   415,   267,    32,   415,   271,
-      32,   415,   167,    32,   415,   168,    32,   415,   169,    32,
-     415,    -1,    55,   105,   415,   118,   236,   263,    32,   415,
-     264,    32,   415,   266,    32,   415,   267,    32,   415,   272,
-      32,   415,   271,    32,   415,    76,    32,   415,   166,    32,
-     415,   167,    32,   415,   168,    32,   415,   169,    32,   415,
-      -1,    55,   105,   415,   118,   241,   263,    32,   415,   264,
-      32,   415,   266,    32,   415,   267,    32,   415,   272,    32,
-     415,   271,    32,   415,   167,    32,   415,   168,    32,   415,
-     169,    32,   415,    -1,    55,   105,   415,   118,   239,   263,
-      32,   415,   264,    32,   415,   266,    32,   415,   267,    32,
-     415,   269,    32,   415,   270,    32,   415,   271,    32,   415,
-      76,    32,   415,   166,    32,   415,   167,    32,   415,   168,
-      32,   415,   169,    32,   415,    -1,    55,   105,   415,   118,
-     237,   263,    32,   415,   264,    32,   415,   266,    32,   415,
-     267,    32,   415,   273,    32,   415,   271,    32,   415,    76,
-      32,   415,   166,    32,   415,   167,    32,   415,   168,    32,
-     415,   169,    32,   415,    -1,    55,   105,   415,   118,   242,
-     263,    32,   415,   264,    32,   415,   266,    32,   415,   267,
-      32,   415,   269,    32,   415,   270,    32,   415,   271,    32,
-     415,   167,    32,   415,   168,    32,   415,   169,    32,   415,
-      -1,    55,   105,   415,   118,   238,   263,    32,   415,   264,
-      32,   415,   266,    32,   415,   267,    32,   415,   273,    32,
-     415,   271,    32,   415,   167,    32,   415,   168,    32,   415,
-     169,    32,   415,    -1,    55,   105,   415,   118,   243,   263,
-      32,   415,   308,    32,   415,   305,    32,   415,   285,    32,
-     415,   283,    32,   415,   284,    32,   415,   286,    32,   415,
-     287,    32,   415,   288,    32,   415,   289,    32,   415,   290,
-      32,   415,   291,    32,   415,   292,    32,   415,   293,    32,
-     415,   294,    32,   415,   295,    32,   415,   296,    32,   415,
-     297,    32,   415,   298,    32,   415,   299,    32,   415,   300,
-      32,   415,   301,    32,   415,   302,    32,   415,   303,    32,
-     415,   304,    32,   415,    76,    32,   415,   166,    32,   415,
-     167,    32,   415,   168,    32,   415,   169,    32,   415,    -1,
-      55,   105,   415,   118,   244,   263,    32,   415,   324,    32,
-     415,   325,    32,   415,   351,    32,   415,   350,    32,   415,
-     266,    32,   415,   326,    32,   415,   279,    32,   415,   271,
-      32,   415,    76,    32,   415,   166,    32,   415,   167,    32,
-     415,   168,    32,   415,   169,    32,   415,    -1,    55,   105,
-     415,   118,   245,   263,    32,   415,   324,    32,   415,   325,
-      32,   415,   351,    32,   415,   350,    32,   415,   266,    32,
-     415,   326,    32,   415,   279,    32,   415,   271,    32,   415,
-     167,    32,   415,   168,    32,   415,   169,    32,   415,    -1,
-      55,   105,   415,   118,   246,   263,    32,   415,   308,    32,
-     415,   309,    32,   415,   266,    32,   415,   307,    32,   415,
-     310,    32,   415,   311,    32,   415,   312,    32,   415,   313,
-      32,   415,   314,    32,   415,   315,    32,   415,   316,    32,
-     415,   317,    32,   415,   318,    32,   415,   319,    32,   415,
-     320,    32,   415,   321,    32,   415,   322,    32,   415,   323,
-      32,   415,   271,    32,   415,    76,    32,   415,   166,    32,
-     415,   167,    32,   415,   168,    32,   415,   169,    32,   415,
-      -1,    55,   105,   415,   118,   247,   263,    32,   415,   264,
-      32,   415,   266,    32,   415,   268,    32,   415,   272,    32,
-     415,   271,    32,   415,    76,    32,   415,   166,    32,   415,
-     167,    32,   415,   168,    32,   415,   169,    32,   415,    -1,
-      55,   105,   415,   118,   248,   263,    32,   415,   264,    32,
-     415,   266,    32,   415,   268,    32,   415,   272,    32,   415,
-     271,    32,   415,   167,    32,   415,   168,    32,   415,   169,
-      32,   415,    -1,    55,   105,   415,   118,   249,   263,    32,
-     415,   264,    32,   415,   266,    32,   415,   268,    32,   415,
-     269,    32,   415,   270,    32,   415,   271,    32,   415,    76,
-      32,   415,   166,    32,   415,   167,    32,   415,   168,    32,
-     415,   169,    32,   415,    -1,    55,   105,   415,   118,   250,
-     263,    32,   415,   264,    32,   415,   266,    32,   415,   268,
-      32,   415,   269,    32,   415,   270,    32,   415,   271,    32,
-     415,   167,    32,   415,   168,    32,   415,   169,    32,   415,
-      -1,    55,   105,   415,   118,   251,   263,    32,   415,   264,
-      32,   415,   266,    32,   415,   268,    32,   415,   271,    32,
-     415,    76,    32,   415,   166,    32,   415,   167,    32,   415,
-     168,    32,   415,   169,    32,   415,    -1,    55,   105,   415,
-     118,   252,   263,    32,   415,   264,    32,   415,   266,    32,
-     415,   268,    32,   415,   271,    32,   415,   167,    32,   415,
-     168,    32,   415,   169,    32,   415,    -1,    55,   105,   415,
-     118,   253,   263,    32,   415,   277,    32,   415,   278,    32,
-     415,   274,    32,   415,   275,    32,   415,   276,    32,   415,
-      -1,    55,   105,   415,   118,   255,   264,    32,   415,   265,
-      32,   415,    -1,    55,   105,   415,   118,   256,   328,    32,
-     415,   264,    32,   415,   329,    32,   415,   370,    32,   415,
-     372,    32,   415,   373,    32,   415,   374,    32,   415,    -1,
-      55,   105,   415,   118,   257,   328,    32,   415,   264,    32,
-     415,   329,    32,   415,   375,    32,   415,   376,    32,   415,
-     377,    32,   415,   370,    32,   415,   372,    32,   415,   373,
-      32,   415,   374,    32,   415,    -1,    55,   105,   415,   118,
-     254,   330,    32,   415,   331,    32,   415,   332,    32,   415,
-     333,    32,   415,   351,    32,   415,   334,    32,   415,   335,
-      32,   415,    -1,    55,   105,   415,   118,   258,   264,    32,
-     415,   266,    32,   415,   336,    32,   415,   337,    32,   415,
-     338,    32,   415,   339,    32,   415,   340,    32,   415,   263,
-      32,   415,   271,    32,   415,   341,    32,   415,    -1,    55,
-     105,   415,   118,   260,   264,    32,   415,   266,    32,   415,
-     336,    32,   415,   337,    32,   415,   338,    32,   415,   339,
-      32,   415,   340,    32,   415,   263,    32,   415,   271,    32,
-     415,   341,    32,   415,    -1,    55,   105,   415,   118,   262,
-     263,    32,   415,   264,    32,   415,   266,    32,   415,    -1,
-      55,   105,   415,   118,   261,   264,    32,   415,   266,    32,
-     415,   336,    32,   415,   337,    32,   415,   338,    32,   415,
-     339,    32,   415,   340,    32,   415,   263,    32,   415,   271,
-      32,   415,    -1,   105,   415,   118,   180,   102,   110,   395,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   397,   106,    55,   105,   415,
-      -1,   105,   415,   118,   202,   102,   110,   395,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   397,   106,    55,   105,   415,    -1,   105,
-     415,   118,   188,   102,   110,   395,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   397,   106,    55,   105,   415,    -1,   105,   415,   118,
-     180,    90,   415,   175,   174,   176,   229,   102,   110,   395,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   397,   106,    55,   105,   415,
-      -1,   105,   415,   118,   181,   102,   110,   395,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   397,   106,    55,   105,   415,    -1,   105,   415,   118,
-     203,   102,   110,   395,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   397,   106,    55,
-     105,   415,    -1,   105,   415,   118,   181,    90,   415,   175,
-     174,   176,   229,   102,   110,   395,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   397,
-     106,    55,   105,   415,    -1,   105,   415,   118,   189,   102,
-     110,   395,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   397,   106,    55,   105,   415,
-      -1,   105,   415,   118,   187,    90,   415,   175,   174,   176,
-     229,   102,   110,   395,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   397,   106,    55,
-     105,   415,    -1,   105,   415,   118,   184,   102,   110,   395,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   397,
-     106,    55,   105,   415,    -1,   105,   415,   118,   184,    90,
-     415,   175,   174,   176,   229,   102,   110,   395,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   397,   106,    55,
-     105,   415,    -1,   105,   415,   118,   185,   102,   110,   395,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   397,
-     106,    55,   105,   415,    -1,   105,   415,   118,   182,   102,
-     110,   395,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   397,   106,    55,
-     105,   415,   204,    32,   415,   205,    32,   415,   206,    32,
-     415,   207,    32,   415,   208,    32,   415,   209,    32,   415,
-     210,    32,   415,   211,    32,   415,   212,    32,   415,    -1,
-     105,   415,   118,   186,   102,   110,   395,   415,   396,   415,
-     396,   415,   396,   415,   396,   415,   396,   415,   396,   415,
-     396,   415,   397,   106,    55,   105,   415,   204,    32,   415,
-     205,    32,   415,   206,    32,   415,   207,    32,   415,   208,
-      32,   415,   209,    32,   415,   210,    32,   415,   211,    32,
-     415,   212,    32,   415,    -1,   105,   415,   118,   183,   102,
-     110,   395,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   396,   415,   396,   415,   396,   415,   396,   415,   396,
-     415,   397,   106,    55,   105,   415,   204,    32,   415,   205,
-      32,   415,   206,    32,   415,   207,    32,   415,   208,    32,
-     415,   209,    32,   415,   210,    32,   415,   211,    32,   415,
-     212,    32,   415,    -1,   105,   415,   118,   191,   102,   110,
-     395,   415,   396,   415,   397,   214,    32,   415,   264,    32,
-     415,   215,    32,   415,   216,    32,   415,   218,    32,   415,
-     217,    32,   415,   263,    32,   415,   226,    32,   395,   415,
-     396,   415,   396,   415,   397,   227,    32,   395,   415,   396,
-     415,   396,   415,   397,   228,    32,   395,   415,   396,   415,
-     396,   415,   397,    -1,   105,   415,   118,   192,   102,   110,
-     395,   415,   396,   415,   397,   214,    32,   415,   264,    32,
-     415,   215,    32,   415,   216,    32,   415,   218,    32,   415,
-     217,    32,   415,   263,    32,   415,   226,    32,   395,   415,
-     396,   415,   396,   415,   397,   227,    32,   395,   415,   396,
-     415,   396,   415,   397,   228,    32,   395,   415,   396,   415,
-     396,   415,   397,    -1,   105,   415,   118,   190,   102,   110,
-     395,   415,   396,   415,   397,   102,   415,   112,   106,    65,
-     105,   415,   263,    32,   415,   219,    32,   415,   226,    32,
-     395,   415,   396,   415,   396,   415,   397,   227,    32,   395,
-     415,   396,   415,   396,   415,   397,   228,    32,   395,   415,
-     396,   415,   396,   415,   397,    -1,   105,   415,   118,   194,
-     102,    53,   395,   415,   397,   221,    32,   415,   113,   108,
-      -1,   105,   415,   118,   193,   102,   110,   395,   415,   396,
-     415,   397,   221,    32,   415,   388,   108,    -1,   105,   415,
-     118,   195,   102,   110,   395,   415,   396,   415,   397,   214,
-      32,   415,   264,    32,   415,   215,    32,   415,   216,    32,
-     415,   218,    32,   415,   217,    32,   415,   263,    32,   415,
-     226,    32,   395,   415,   396,   415,   396,   415,   397,   227,
-      32,   395,   415,   396,   415,   396,   415,   397,   228,    32,
-     395,   415,   396,   415,   396,   415,   397,    -1,   105,   415,
-     118,   201,   102,   110,   395,   415,   396,   415,   397,   222,
-      32,   415,   223,    32,   415,   224,    32,   415,   225,    32,
-     415,   230,    32,   395,   415,   396,   415,   396,   415,   397,
-      -1,   105,   415,   118,   196,   102,   110,   395,   415,   396,
-     415,   396,   415,   396,   415,   397,   106,    55,   105,   415,
-     233,    32,   415,    -1,   105,   415,   118,   197,   102,   110,
-     395,   415,   396,   415,   396,   415,   396,   415,   397,   106,
-      55,   105,   415,   233,    32,   415,    -1,   105,   415,   118,
-     198,   102,   110,   395,   415,   396,   415,   396,   415,   397,
-     106,    55,   105,   415,   233,    32,   415,    -1,   105,   415,
-     118,   199,   102,   110,   395,   415,   396,   415,   396,   415,
-     396,   415,   397,   106,    55,   105,   415,   233,    32,   415,
-      -1,   105,   415,   118,   200,   102,   110,   395,   415,   396,
-     415,   397,   106,    55,   105,   415,   214,    32,   415,   263,
-      32,   415,    -1,   416,    -1,   414,   416,    -1,     1,    -1,
-     415,    41,   415,    -1,   415,    33,   415,    -1,   415,    34,
-     415,    -1,   415,    35,   415,    -1,   415,    36,   415,    -1,
-     415,    37,   415,    -1,   415,    38,   415,    -1,    39,   415,
-      -1,     3,    20,   415,    -1,     3,    21,   415,    -1,     3,
-      22,   415,    -1,     3,    23,   415,    -1,     3,    24,   415,
-      -1,     3,    25,   415,    -1,   395,   415,   397,    -1,    34,
-     415,    -1,     4,    -1,     3,    -1,     3,    32,   415,    -1,
-       3,    18,     3,    -1,     8,   395,   415,   397,    -1,     7,
-     395,   415,   397,    -1,     5,    -1,    26,    -1,    27,    -1,
-      28,    -1,    29,    -1,    30,    -1,    31,    -1,    53,   398,
-     415,   399,   400,     3,    -1,   401,    -1,   415,   401,    -1,
-     405,   401,    -1,     9,   415,   417,    -1,     9,   415,   417,
-      11,   417,    -1,    12,   415,   417,    -1,    17,    -1,    50,
-      -1,    19,     3,    -1,   402,   403,    -1,   402,   418,   403,
-      -1,   416,    -1,   416,   418,    -1
+  "ADD_element", "prompt", "exp", "stmt", "cpd_stmt", "list", YY_NULLPTR
   };
 
-  /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
-     YYRHS.  */
-  const unsigned short int
-  feiparser::yyprhs_[] =
-  {
-         0,     0,     3,     6,     9,    14,    19,    24,    28,    30,
-      32,    34,    36,    38,    40,    42,    44,    46,    62,    65,
-      79,    83,    98,   123,   156,   189,   238,   273,   326,   340,
-     357,   377,   388,   399,   431,   460,   474,   496,   515,   532,
-     552,   575,   584,   593,   609,   634,   650,   701,   756,   805,
-     819,   838,   845,   852,   867,   874,   876,   879,   882,   885,
-     891,   895,   908,   912,   923,   931,   943,   947,   952,   959,
-     969,   988,   996,  1019,  1040,  1061,  1083,  1104,  1109,  1114,
-    1119,  1124,  1131,  1146,  1182,  1212,  1242,  1281,  1314,  1356,
-    1395,  1431,  1464,  1560,  1608,  1650,  1731,  1770,  1803,  1845,
-    1881,  1917,  1947,  1971,  1983,  2010,  2046,  2073,  2109,  2145,
-    2160,  2193,  2221,  2249,  2277,  2311,  2377,  2443,  2515,  2581,
-    2653,  2705,  2763,  2815,  2870,  2925,  3004,  3064,  3124,  3176,
-    3191,  3208,  3268,  3301,  3324,  3347,  3368,  3391,  3413,  3415,
-    3418,  3420,  3424,  3428,  3432,  3436,  3440,  3444,  3448,  3451,
-    3455,  3459,  3463,  3467,  3471,  3475,  3479,  3482,  3484,  3486,
-    3490,  3494,  3499,  3504,  3506,  3508,  3510,  3512,  3514,  3516,
-    3518,  3525,  3527,  3530,  3533,  3537,  3543,  3547,  3549,  3551,
-    3554,  3557,  3561,  3563
-  };
 
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned short int
   feiparser::yyrline_[] =
   {
-         0,   264,   264,   278,   288,   311,   324,   335,   423,   431,
+       0,   264,   264,   278,   288,   311,   324,   335,   423,   431,
      437,   438,   439,   440,   441,   445,   455,   459,   497,   501,
      514,   518,   536,   562,   591,   621,   658,   689,   729,   749,
      782,   818,   833,   848,   900,   949,   971,   998,  1023,  1041,
@@ -8534,15 +8024,15 @@ namespace yy {
     1783,  1806,  1820,  1844,  1868,  1892,  1916,  1945,  1958,  1971,
     1985,  1997,  2018,  2036,  2070,  2099,  2128,  2162,  2193,  2230,
     2265,  2298,  2329,  2412,  2459,  2500,  2574,  2614,  2649,  2692,
-    2731,  2769,  2802,  2827,  2842,  2871,  2906,  2935,  2973,  3008,
-    3027,  3071,  3097,  3122,  3147,  3174,  3221,  3268,  3317,  3364,
-    3415,  3455,  3497,  3537,  3584,  3622,  3676,  3740,  3804,  3857,
-    3881,  3907,  3959,  3994,  4020,  4046,  4070,  4095,  4287,  4329,
-    4371,  4386,  4431,  4438,  4445,  4452,  4459,  4466,  4473,  4479,
-    4486,  4494,  4502,  4510,  4518,  4526,  4530,  4536,  4541,  4547,
-    4553,  4559,  4565,  4571,  4579,  4585,  4590,  4595,  4600,  4605,
-    4613,  4644,  4649,  4653,  4662,  4684,  4709,  4729,  4743,  4754,
-    4764,  4770,  4778,  4782
+    2731,  2769,  2802,  2827,  2842,  2871,  2906,  2935,  2973,  3011,
+    3030,  3074,  3100,  3125,  3150,  3177,  3224,  3271,  3320,  3367,
+    3418,  3458,  3500,  3540,  3587,  3625,  3679,  3743,  3807,  3860,
+    3884,  3910,  3962,  3997,  4023,  4049,  4073,  4098,  4290,  4332,
+    4374,  4389,  4434,  4441,  4448,  4455,  4462,  4469,  4476,  4482,
+    4489,  4497,  4505,  4513,  4521,  4529,  4533,  4539,  4544,  4550,
+    4556,  4562,  4568,  4574,  4582,  4588,  4593,  4598,  4603,  4608,
+    4616,  4647,  4652,  4656,  4665,  4687,  4712,  4732,  4746,  4757,
+    4767,  4773,  4781,  4785
   };
 
   // Print the state stack on the debug stream.
@@ -8550,9 +8040,11 @@ namespace yy {
   feiparser::yystack_print_ ()
   {
     *yycdebug_ << "Stack now";
-    for (state_stack_type::const_iterator i = yystate_stack_.begin ();
-	 i != yystate_stack_.end (); ++i)
-      *yycdebug_ << ' ' << *i;
+    for (stack_type::const_iterator
+           i = yystack_.begin (),
+           i_end = yystack_.end ();
+         i != i_end; ++i)
+      *yycdebug_ << ' ' << i->state;
     *yycdebug_ << std::endl;
   }
 
@@ -8562,19 +8054,18 @@ namespace yy {
   {
     unsigned int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
-    /* Print the symbols being reduced, and their result.  */
+    // Print the symbols being reduced, and their result.
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-	       << " (line " << yylno << "):" << std::endl;
-    /* The symbols being reduced.  */
+               << " (line " << yylno << "):" << std::endl;
+    // The symbols being reduced.
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
-		       yyrhs_[yyprhs_[yyrule] + yyi],
-		       &(yysemantic_stack_[(yynrhs) - (yyi + 1)]),
-		       &(yylocation_stack_[(yynrhs) - (yyi + 1)]));
+                       yystack_[(yynrhs) - (yyi + 1)]);
   }
 #endif // YYDEBUG
 
-  /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
+  // Symbol number corresponding to token number t.
+  inline
   feiparser::token_number_type
   feiparser::yytranslate_ (int t)
   {
@@ -8582,10 +8073,10 @@ namespace yy {
     const token_number_type
     translate_table[] =
     {
-           0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    39,     2,     2,     2,    37,     2,     2,
+       2,     2,     2,    40,     2,     2,     2,    37,     2,     2,
      395,   397,    35,    33,   396,    34,   400,    36,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,   401,
        2,    32,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -8610,7 +8101,7 @@ namespace yy {
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    40,    41,    42,
+      25,    26,    27,    28,    29,    30,    31,    39,    41,    42,
       43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
       53,    54,    55,    56,    57,    58,    59,    60,    61,    62,
       63,    64,    65,    66,    67,    68,    69,    70,    71,    72,
@@ -8648,33 +8139,21 @@ namespace yy {
      383,   384,   385,   386,   387,   388,   389,   390,   391,   392,
      393,   394
     };
-    if ((unsigned int) t <= yyuser_token_number_max_)
+    const unsigned int user_token_number_max_ = 641;
+    const token_number_type undef_token_ = 2;
+
+    if (static_cast<int>(t) <= yyeof_)
+      return yyeof_;
+    else if (static_cast<unsigned int> (t) <= user_token_number_max_)
       return translate_table[t];
     else
-      return yyundef_token_;
+      return undef_token_;
   }
-
-  const int feiparser::yyeof_ = 0;
-  const int feiparser::yylast_ = 10494;
-  const int feiparser::yynnts_ = 15;
-  const int feiparser::yyempty_ = -2;
-  const int feiparser::yyfinal_ = 105;
-  const int feiparser::yyterror_ = 1;
-  const int feiparser::yyerrcode_ = 256;
-  const int feiparser::yyntokens_ = 404;
-
-  const unsigned int feiparser::yyuser_token_number_max_ = 641;
-  const feiparser::token_number_type feiparser::yyundef_token_ = 2;
 
 
 } // yy
-
-/* Line 1136 of lalr1.cc  */
-#line 8674 "feiparser.tab.cc"
-
-
-/* Line 1138 of lalr1.cc  */
-#line 4810 "feiparser.yy"
+#line 8156 "feiparser.tab.cc" // lalr1.cc:1155
+#line 4813 "feiparser.yy" // lalr1.cc:1156
 
 
 // Deletes all the nodes that were allocated
@@ -8904,7 +8383,6 @@ void set_outcppfile_name(string newfilename)
 
 
 // That's all folks.
-
 
 
 
