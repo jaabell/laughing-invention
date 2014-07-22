@@ -1016,7 +1016,8 @@ int ContactElement_Nonlinear_3DOF_3DOF::update(void)
             // cout << "shearforce_trial_np1 = " << shearforce_trial_np1 <<
             //      "   normalforce_np1 = " << normalforce_np1 << endl;
 
-            if (yield_criteria > tol)  //Sliding case
+	    //Babak and Boris put >= because when the normal force is zero at the 1st step, it should slide ... June 14, 2014-
+            if (yield_criteria >= tol)  //Sliding case
             {
                 lamda                                 = 1 / Kt * (shear_force_trial_np1_norm - fs * fabs(normalforce_np1) - tol);
 
