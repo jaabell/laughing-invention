@@ -99,7 +99,10 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-DBrzi_nDarray_val \
 										-std=c++0x \
 										-Wno-write-strings \
-										-march=native
+										-static \
+										-static-libgcc \
+										-static-libstdc++ \
+										-march=native 
 										# -std=c++11 \
 	CFLAGS          = $(LTO_FLAGS) -O2 \
 										-D_LINUX \
