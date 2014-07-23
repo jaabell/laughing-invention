@@ -494,6 +494,28 @@ CMD_add
         // Then add the new caller to the nodes!
         nodes.push($$);
     }
+    //!=========================================================================================================
+    //!
+    //!FEIDOC add nodes from file "string"  with <.> dofs;
+    | ADD NODES FROM FILE exp with exp dofs
+    {
+        args.clear();
+        signature.clear();
+
+        args.push_back($5);   //File name
+        args.push_back($7);   //Numbdofs
+
+        // Create the command signature for input verification
+        signature.push_back(this_signature("filename", &isAdimensional));
+
+        // Create the DSL caller node.
+        //add_nodes_from_file(std::string inputnodesfile, int ndof)
+        $$ = new FeiDslCaller2<std::string, int>(&add_nodes_from_file, args, signature, "add_nodes_from_file");
+        nodes.pop();
+        nodes.pop();
+
+        nodes.push($$);
+    }
     | ADD ADD_material          { $$ = $2;} // Look in ADD_material rule to see the material commands
     //!=========================================================================================================
     //!
@@ -512,6 +534,26 @@ CMD_add
         nodes.push($$);
     }
     | ADD ELEMENT ADD_element   { $$ = $3; }
+    //!=========================================================================================================
+    //!
+    //!FEIDOC add elements from file "string"
+    | ADD ELEMENTS FROM FILE exp
+    {
+        args.clear();
+        signature.clear();
+
+        args.push_back($5);   //File name
+
+        // Create the command signature for input verification
+        signature.push_back(this_signature("filename", &isAdimensional));
+
+        // Create the DSL caller node.
+        //add_nodes_from_file(std::string inputnodesfile, int ndof)
+        $$ = new FeiDslCaller1<std::string>(&add_elements_from_file, args, signature, "add_elements_from_file");
+        nodes.pop();
+
+        nodes.push($$);
+    }
     //!=========================================================================================================
     //!
     //!FEIDOC add load # <.> to element # <.> type self_weight use acceleration field # <.>;
@@ -1203,12 +1245,12 @@ CMD_add
     {
         args.clear(); signature.clear();
 
-        args.push_back($5); signature.push_back(this_signature("pattern_number",           &isAdimensional));
-        args.push_back($8); signature.push_back(this_signature("time_step",           &isTime));
-        args.push_back($11); signature.push_back(this_signature("scale_factor",           &isAdimensional));
-        args.push_back($14); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
-        args.push_back($17); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
-        args.push_back($20); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
+        args.push_back($5); signature.push_back(this_signature("pattern_number",        &isAdimensional));
+        args.push_back($8); signature.push_back(this_signature("time_step",            &isTime));
+        args.push_back($11); signature.push_back(this_signature("scale_factor",         &isAdimensional));
+        args.push_back($14); signature.push_back(this_signature("number_of_steps",       &isAdimensional));
+        args.push_back($17); signature.push_back(this_signature("number_of_drm_nodes",     &isAdimensional));
+        args.push_back($20); signature.push_back(this_signature("number_of_drm_elements",   &isAdimensional));
         args.push_back($23); signature.push_back(this_signature("x_max",           &isLength));
         args.push_back($26); signature.push_back(this_signature("x_min",           &isLength));
         args.push_back($29); signature.push_back(this_signature("y_max",           &isLength));
@@ -1217,12 +1259,18 @@ CMD_add
         args.push_back($38); signature.push_back(this_signature("z_min",           &isLength));
 
 
-        args.push_back($41); signature.push_back(this_signature("element_file",           &isAdimensional));
-        args.push_back($44); signature.push_back(this_signature("nodes_file",           &isAdimensional));
-        args.push_back($47); signature.push_back(this_signature("displacement_file",           &isAdimensional));
-        args.push_back($50); signature.push_back(this_signature("acceleration_file",           &isAdimensional));
+        args.push_back($41); signature.push_back(this_signature("element_file",       &isAdimensional));
+        args.push_back($44); signature.push_back(this_signature("nodes_file",         &isAdimensional));
+        args.push_back($47); signature.push_back(this_signature("displacement_file",  &isAdimensional));
+        args.push_back($50); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
 
-        $$ = new FeiDslCaller16<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string, string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
+        $$ = new FeiDslCaller16<int, 
+                                double, double, 
+                                int, int, int, 
+                                double, double, double, 
+                                double, double, double, 
+                                string, string, 
+                                string, string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
 
         for(int i = 1; i <= 16; i++) nodes.pop();
         nodes.push($$);

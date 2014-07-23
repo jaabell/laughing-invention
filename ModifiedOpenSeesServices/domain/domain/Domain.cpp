@@ -5309,6 +5309,10 @@ int Domain::CheckMesh( const char *check_mesh_file )
     checkmesh_file.close();
 
 
+
+    this->commit();
+
+
     return 0;
 
 }

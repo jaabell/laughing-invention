@@ -50,7 +50,7 @@
 //! the node number following by number of dofs, x_coordinate, y_coordinate, z_coordinate
 
 void add_nodes_from_file(const char *, int);
-void add_nodes_from_file(const char *inputnodesfile, int ndof)
+void add_nodes_from_file(std::string inputnodesfile, int ndof)
 {
 
     int NodeTag;
@@ -58,7 +58,7 @@ void add_nodes_from_file(const char *inputnodesfile, int ndof)
     double y_coordinate;
     double z_coordinate;
 
-    const char *nodesfromfile = inputnodesfile;
+    const char *nodesfromfile = inputnodesfile.c_str();
 
     ifstream inputnodes;
 
@@ -67,21 +67,22 @@ void add_nodes_from_file(const char *inputnodesfile, int ndof)
         cerr << "Error: (add_nodes_from_file) Can not open " << inputnodesfile << "!" << endl;
         abort();
     }
+    else
+    {
+        cout << "       Adding " << ndof << "-DOF nodes from file " << inputnodesfile << " \n";
+    }
 
     inputnodes.open(nodesfromfile , ios::in);
 
-
+    int count = 0s;
     while (inputnodes >> NodeTag >> x_coordinate >> y_coordinate >> z_coordinate)
     {
         add_node(NodeTag, ndof, x_coordinate, y_coordinate, z_coordinate);
-        if (NodeTag == 32622)
-        {
-            cout << "biiiib\n";
-        }
+        count += 1;
     }
+    cout << "       Finished! Added " << count << "nodes. \n";
 
     inputnodes.close();
-
 };
 
 

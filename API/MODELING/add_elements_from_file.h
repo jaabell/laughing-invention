@@ -58,20 +58,26 @@
 int add_elements_from_file(string inputelementsfile)
 {
 
-    const char* inputfromfile = inputelementsfile.c_str();
+    const char *inputfromfile = inputelementsfile.c_str();
 
     ifstream inputelements;
 
-    if(! inputelements)
+    if (! inputelements)
     {
         cerr << "Error: (add_elements_from_file) Can not open " << inputelementsfile << "!" << endl;
         return -1;
     }
+    else
+    {
+        cout << "       Adding elements from file " << inputelementsfile << " \n";
+    }
+
 
     inputelements.open(inputfromfile , ios::in);
 
     string typeofelement;
 
+    int count = 0;
     while (!inputelements.eof())
     {
 
@@ -105,13 +111,12 @@ int add_elements_from_file(string inputelementsfile)
             int node_numb_7;
             int node_numb_8;
             int MaterialNumber;
-            int AccelerationFieldNumber;
 
 
             inputelements >> ElementNumber >> node_numb_1 >> node_numb_2 >> node_numb_3 >> node_numb_4 >>
-                          node_numb_5 >> node_numb_6 >> node_numb_7 >> node_numb_8 >> MaterialNumber >> AccelerationFieldNumber;
+                          node_numb_5 >> node_numb_6 >> node_numb_7 >> node_numb_8 >> MaterialNumber ;
 
-            add_element_brick_8node(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, MaterialNumber, AccelerationFieldNumber);
+            add_element_brick_8node(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, MaterialNumber);
 
         }
 
@@ -127,7 +132,6 @@ int add_elements_from_file(string inputelementsfile)
             int node_numb_7;
             int node_numb_8;
             int MaterialNumber;
-            int AccelerationFieldNumber;
             double porosity;
             double alpha;
             double rho_s;
@@ -141,7 +145,7 @@ int add_elements_from_file(string inputelementsfile)
 
             inputelements >> ElementNumber >> node_numb_1 >> node_numb_2 >> node_numb_3 >>
                           node_numb_4 >> node_numb_5 >> node_numb_6 >> node_numb_7 >> node_numb_8 >>
-                          MaterialNumber >> AccelerationFieldNumber >> porosity >> alpha >> rho_s >>
+                          MaterialNumber >> porosity >> alpha >> rho_s >>
                           rho_f >> k_x >> k_y >> k_z >> K_s >> K_f;
 
             add_element_brick_8node_upU(ElementNumber,
@@ -154,7 +158,6 @@ int add_elements_from_file(string inputelementsfile)
                                         node_numb_7,
                                         node_numb_8,
                                         MaterialNumber,
-                                        AccelerationFieldNumber,
                                         porosity,
                                         alpha,
                                         rho_s,
@@ -190,14 +193,13 @@ int add_elements_from_file(string inputelementsfile)
             int node_numb_19;
             int node_numb_20;
             int MaterialNumber;
-            int AccelerationFieldNumber;
 
 
             inputelements >> ElementNumber >> node_numb_1 >> node_numb_2 >> node_numb_3 >>
                           node_numb_4 >> node_numb_5 >> node_numb_6 >> node_numb_7 >> node_numb_8 >>
                           node_numb_9 >> node_numb_10 >> node_numb_11 >> node_numb_12 >> node_numb_13 >>
                           node_numb_14 >> node_numb_15 >> node_numb_16 >> node_numb_17 >> node_numb_18 >>
-                          node_numb_19 >> node_numb_20 >> MaterialNumber >> AccelerationFieldNumber;
+                          node_numb_19 >> node_numb_20 >> MaterialNumber;
 
             add_element_brick_20node(ElementNumber,
                                      node_numb_1,
@@ -220,8 +222,7 @@ int add_elements_from_file(string inputelementsfile)
                                      node_numb_18,
                                      node_numb_19,
                                      node_numb_20,
-                                     MaterialNumber,
-                                     AccelerationFieldNumber);
+                                     MaterialNumber);
         }
 
         else if (typeofelement.compare("TwentyNodeBrickupU") == 0)
@@ -248,7 +249,6 @@ int add_elements_from_file(string inputelementsfile)
             int node_numb_19;
             int node_numb_20;
             int MaterialNumber;
-            double AccelerationFieldNumber;
             double porosity;
             double alpha;
             double rho_s;
@@ -264,7 +264,7 @@ int add_elements_from_file(string inputelementsfile)
                           node_numb_4 >> node_numb_5 >> node_numb_6 >> node_numb_7 >> node_numb_8 >>
                           node_numb_9 >> node_numb_10 >> node_numb_11 >> node_numb_12 >> node_numb_13 >>
                           node_numb_14 >> node_numb_15 >> node_numb_16 >> node_numb_17 >> node_numb_18 >>
-                          node_numb_19 >> node_numb_20 >> MaterialNumber >> AccelerationFieldNumber >> porosity >>
+                          node_numb_19 >> node_numb_20 >> MaterialNumber >> porosity >>
                           alpha >> rho_s >> rho_f >> k_x >> k_y >> k_z >> K_s >> K_f;
 
             add_element_brick_20node_upU(ElementNumber,
@@ -289,7 +289,6 @@ int add_elements_from_file(string inputelementsfile)
                                          node_numb_19,
                                          node_numb_20,
                                          MaterialNumber,
-                                         AccelerationFieldNumber,
                                          porosity,
                                          alpha,
                                          rho_s,
@@ -332,7 +331,6 @@ int add_elements_from_file(string inputelementsfile)
             int node_numb_26;
             int node_numb_27;
             int MaterialNumber;
-            int AccelerationFieldNumber;
 
 
             inputelements >> ElementNumber >> node_numb_1 >> node_numb_2 >> node_numb_3 >>
@@ -402,7 +400,7 @@ int add_elements_from_file(string inputelementsfile)
                           jntOffsetJ_X >> jntOffsetJ_Y >> jntOffsetJ_Z;
 
 
-            const char* integrationrulechar = integrationrule.c_str(); // get const char * representation
+            const char *integrationrulechar = integrationrule.c_str(); // get const char * representation
 
             add_element_beam_displacement_based_3d(ElementNumber,
                                                    iNode,
@@ -542,8 +540,10 @@ int add_elements_from_file(string inputelementsfile)
                                              x_local_2,
                                              x_local_3);
         }
-
+        count += 1;
     }
+
+    cout << "       Finished! Added " << count << "elements. \n";
 
     inputelements.close();
 
