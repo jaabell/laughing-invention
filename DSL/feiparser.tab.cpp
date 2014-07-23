@@ -4655,7 +4655,7 @@ namespace yy {
 
         wipe_model();
 
-        exit(0);
+        //exit(0);
     }
 #line 4661 "feiparser.tab.cc" // lalr1.cc:847
     break;

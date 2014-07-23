@@ -51,9 +51,9 @@ int wipe_model()
 
     theDomain.clearAll();
 
-#ifdef _PARALLEL_PROCESSING
-    theMachine.shutdown();
-#endif
+    // #ifdef _PARALLEL_PROCESSING
+    //     theMachineBroker->shutdown();
+    // #endif
 
 
     if (theStaticAnalysis != 0)

@@ -4790,7 +4790,7 @@ stmt
 
         wipe_model();
 
-        exit(0);
+        //exit(0);
     }
     | RESTART
     {
