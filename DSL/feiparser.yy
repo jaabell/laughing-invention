@@ -88,6 +88,7 @@
     //Command line options flags
     extern int FLAG_interactive_mode;
     extern int FLAG_generate_cpp_output;
+    extern int FLAG_dry_run;
     extern int FLAG_execute_apis;
     extern int FLAG_inclusion_mode;
     extern int FLAG_binary_output;
@@ -146,14 +147,14 @@
 %token CMD_print CMD_help CMD_whos CMD_check CMD_save CMD_restore
 
 %token MODEL NAME RESTART MESH
-%token ADD NODE ELEMENT MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION DAMPING DAMPINGTYPE CONSTRAINT DRM SAVEFORCES RESTOREFORCES SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE
+%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION DAMPING DAMPINGTYPE CONSTRAINT DRM SAVEFORCES RESTOREFORCES SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE
 %token ELEMENTNAME MATERIALNAME
 %token ACCELERATION_FIELD
 %token FIX FREE REMOVE
 %token DEFINE ALGORITHM ALGNAME CONVERGENCE_TEST TESTNAME SOLVER SOLVERNAME
 %token DYNAMICINTEGRATOR DYNAMICINTEGRATOR_HHT DYNAMICINTEGRATOR_NEWMARK STATICINTEGRATOR STATICINTEGRATOR_DISPLACEMENT
 %token SIMULATE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations
-%token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE
+%token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM
 %token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT
 %token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
 %token self_weight surface load_value
@@ -497,7 +498,7 @@ CMD_add
     //!=========================================================================================================
     //!
     //!FEIDOC add nodes from file "string"  with <.> dofs;
-    | ADD NODES FROM FILE exp with exp dofs
+    | ADD NODES FROM FILE exp WITH exp TEXTDOFS
     {
         args.clear();
         signature.clear();
@@ -510,7 +511,7 @@ CMD_add
 
         // Create the DSL caller node.
         //add_nodes_from_file(std::string inputnodesfile, int ndof)
-        $$ = new FeiDslCaller2<std::string, int>(&add_nodes_from_file, args, signature, "add_nodes_from_file");
+        $$ = new FeiDslCaller2<string, int>(&add_nodes_from_file, args, signature, "add_nodes_from_file");
         nodes.pop();
         nodes.pop();
 
@@ -5058,7 +5059,22 @@ void set_outcppfile_name(string newfilename)
     }
 }
 
-
+void set_dry_run_mode(int flag)
+{
+    if( flag <= 0)
+    {
+        FeiDslCallerBase::dry_run = false;
+    }
+    else
+    {
+        FeiDslCallerBase::dry_run = true;
+        cout << "\n\n\n";
+        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+        cout << "!! NOTE: DRY RUN. No actual calls to ESSI API are being made. !!\n";
+        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+        cout << "\n\n\n";
+    }
+}
 
 
 

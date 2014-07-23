@@ -88,12 +88,13 @@
     char initial[] = "STDIN";
 
     //Command line options flags
-    int FLAG_interactive_mode = 1;
+    int FLAG_interactive_mode    = 1;
     int FLAG_generate_cpp_output = 0;
-    int FLAG_execute_apis = 1;
-    int FLAG_inclusion_mode = 0;
-    int FLAG_run_file = 0;
-    int FLAG_binary_output = 0;
+    int FLAG_dry_run             = 0;
+    int FLAG_execute_apis        = 1;
+    int FLAG_inclusion_mode      = 0;
+    int FLAG_run_file            = 0;
+    int FLAG_binary_output       = 0;
 
     /* EXTERNS - All defined in feiparser.yy */
     extern const string thePrompt;
@@ -105,6 +106,7 @@
     extern void set_model_name(char* cstring);
     extern void set_outcppfile_name(string newfilename);
     extern void wipe_model();
+    extern void set_dry_run_mode(int);
 
 
 %}
@@ -276,6 +278,7 @@ EXP	([Ee][-+]?[0-9]+)
  /* Things which can be added (nouns). May be several phrases */
 "node"                              {return token::NODE;}
 "element"                           {return token::ELEMENT;}
+"elements"                           {return token::ELEMENTS;}
 "material"                          {return token::MATERIAL;}
 "load"                              {return token::LOAD;}
 "acceleration field"                {return token::ACCELERATION_FIELD;}
@@ -704,6 +707,8 @@ EXP	([Ee][-+]?[0-9]+)
 "domain"                            {return token::DOMAIN_;}
 "dof"                               {return token::dof;}
 "response"                          {return token::RESPONSE;}
+"file"                              {return token::FILE;}
+"from"                              {return token::FROM;}
 
  /* Greek */
 "alpha"                             {return token::alpha;}
@@ -954,6 +959,7 @@ void print_usage()
          "  -h --help                : Print this message. \n"
          "  -n --no-interactive      : Disable interactive mode. \n"
          "  -s --set-variable        : Set a variable from the command line. \n"
+         "  -d --dry-run             : Do not execute ESSI API calls. Just parse. \n"
          "  -m --model-name [NAME]   : Set the model name from the command line. \n"
          "  -b --binary-output       : The output generated will be in binary instead of plain text. \n"
          " \n\n"
@@ -991,6 +997,7 @@ int start_parser(int argc, char**argv)
             {"no-interactive",   no_argument,       0, 'n'},
             {"set-variable",     required_argument, 0, 's'},
             {"no-cpp-output",    no_argument,       0, 'x'},
+            {"dry-run",          no_argument,       0, 'd'},
             {0, 0, 0, 0}
         };
 
@@ -998,7 +1005,7 @@ int start_parser(int argc, char**argv)
         int option_index = 0;
 
         //This is the command line option parser
-        c = getopt_long(argc, argv, "cf:hns:xm:", long_options, &option_index);
+        c = getopt_long(argc, argv, "cf:hns:xm:d", long_options, &option_index);
 
         /* Detect the end of the options. */
         if (c == -1)
@@ -1028,6 +1035,10 @@ int start_parser(int argc, char**argv)
                 break;
             case 'x': // -x --no-cpp-output: disable cpp output (default)
                 FLAG_generate_cpp_output = 0;
+                break;
+            case 'd': // -d --dry-run: do not call API... just make parser call and produce cpp output if so enabled
+                FLAG_dry_run = 1;
+                set_dry_run_mode(FLAG_dry_run);
                 break;
             case 'm': // -m --model-name: Set model name from the command line
                 set_model_name(optarg);

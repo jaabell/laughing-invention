@@ -339,7 +339,7 @@ int add_elements_from_file(string inputelementsfile)
                           node_numb_14 >> node_numb_15 >> node_numb_16 >> node_numb_17 >> node_numb_18 >>
                           node_numb_19 >> node_numb_20 >> node_numb_21 >> node_numb_22 >> node_numb_23 >>
                           node_numb_24 >> node_numb_25 >> node_numb_26 >> node_numb_27 >>
-                          MaterialNumber >> AccelerationFieldNumber;
+                          MaterialNumber;
 
             add_element_brick_27node(ElementNumber,
                                      node_numb_1,
@@ -369,50 +369,49 @@ int add_elements_from_file(string inputelementsfile)
                                      node_numb_25,
                                      node_numb_26,
                                      node_numb_27,
-                                     MaterialNumber,
-                                     AccelerationFieldNumber);
+                                     MaterialNumber);
 
         }
 
-        else if (typeofelement.compare("DisplacementBeam") == 0)
-        {
-            int ElementNumber;
-            int iNode;
-            int jNode;
-            int numberofintegrationpoints;
-            int SectionNumber;
-            double rho;
-            string integrationrule;
-            double vecxzPlane_X;
-            double vecxzPlane_Y;
-            double vecxzPlane_Z;
-            double jntOffsetI_X;
-            double jntOffsetI_Y;
-            double jntOffsetI_Z;
-            double jntOffsetJ_X;
-            double jntOffsetJ_Y;
-            double jntOffsetJ_Z;
+        // else if (typeofelement.compare("DisplacementBeam") == 0)
+        // {
+        //     int ElementNumber;
+        //     int iNode;
+        //     int jNode;
+        //     int numberofintegrationpoints;
+        //     int SectionNumber;
+        //     double rho;
+        //     string integrationrule;
+        //     double vecxzPlane_X;
+        //     double vecxzPlane_Y;
+        //     double vecxzPlane_Z;
+        //     double jntOffsetI_X;
+        //     double jntOffsetI_Y;
+        //     double jntOffsetI_Z;
+        //     double jntOffsetJ_X;
+        //     double jntOffsetJ_Y;
+        //     double jntOffsetJ_Z;
 
-            inputelements >> ElementNumber >> iNode >> jNode >>
-                          numberofintegrationpoints >> SectionNumber >> rho >> integrationrule >>
-                          vecxzPlane_X >> vecxzPlane_Y >> vecxzPlane_Z >>
-                          jntOffsetI_X >> jntOffsetI_Y >> jntOffsetI_Z >>
-                          jntOffsetJ_X >> jntOffsetJ_Y >> jntOffsetJ_Z;
+        //     inputelements >> ElementNumber >> iNode >> jNode >>
+        //                   numberofintegrationpoints >> SectionNumber >> rho >> integrationrule >>
+        //                   vecxzPlane_X >> vecxzPlane_Y >> vecxzPlane_Z >>
+        //                   jntOffsetI_X >> jntOffsetI_Y >> jntOffsetI_Z >>
+        //                   jntOffsetJ_X >> jntOffsetJ_Y >> jntOffsetJ_Z;
 
 
-            const char *integrationrulechar = integrationrule.c_str(); // get const char * representation
+        //     const char *integrationrulechar = integrationrule.c_str(); // get const char * representation
 
-            add_element_beam_displacement_based_3d(ElementNumber,
-                                                   iNode,
-                                                   jNode,
-                                                   numberofintegrationpoints,
-                                                   SectionNumber,
-                                                   rho,
-                                                   integrationrulechar,
-                                                   vecxzPlane_X, vecxzPlane_Y, vecxzPlane_Z,
-                                                   jntOffsetI_X, jntOffsetI_Y, jntOffsetI_Z,
-                                                   jntOffsetJ_X, jntOffsetJ_Y, jntOffsetJ_Z);
-        }
+        //     add_element_beam_displacement_based_3d(ElementNumber,
+        //                                            iNode,
+        //                                            jNode,
+        //                                            numberofintegrationpoints,
+        //                                            SectionNumber,
+        //                                            rho,
+        //                                            integrationrulechar,
+        //                                            vecxzPlane_X, vecxzPlane_Y, vecxzPlane_Z,
+        //                                            jntOffsetI_X, jntOffsetI_Y, jntOffsetI_Z,
+        //                                            jntOffsetJ_X, jntOffsetJ_Y, jntOffsetJ_Z);
+        // }
 
         else if (typeofelement.compare("ElasticBeamLumpedMass") == 0)
         {
@@ -485,60 +484,64 @@ int add_elements_from_file(string inputelementsfile)
                                              x_local_3);
         }
 
-        else if (typeofelement.compare("Contact3DOF6DOF") == 0)
+        //     else if (typeofelement.compare("Contact3DOF6DOF") == 0)
+        //     {
+        //         int ElementNumber;
+        //         int iNode;
+        //         int jNode;
+        //         double Knormal;
+        //         double Ktangent;
+        //         double frictionRatio;
+        //         double cohession;
+        //         double x_local_1;
+        //         double x_local_2;
+        //         double x_local_3;
+
+        //         inputelements >> ElementNumber >> iNode >> jNode >> Knormal >>
+        //                       Ktangent >> frictionRatio >> cohession >> x_local_1 >> x_local_2 >> x_local_3;
+
+        //         add_element_contact_3dof_to_6dof(ElementNumber,
+        //                                          iNode,
+        //                                          jNode,
+        //                                          Knormal,
+        //                                          Ktangent,
+        //                                          frictionRatio,
+        //                                          cohession,
+        //                                          x_local_1,
+        //                                          x_local_2,
+        //                                          x_local_3);
+        //     }
+
+        //     else if (typeofelement.compare("Contact3DOF6DOF") == 0)
+        //     {
+        //         int ElementNumber;
+        //         int iNode;
+        //         int jNode;
+        //         double Knormal;
+        //         double Ktangent;
+        //         double frictionRatio;
+        //         double cohession;
+        //         double x_local_1;
+        //         double x_local_2;
+        //         double x_local_3;
+
+        //         inputelements >> ElementNumber >> iNode >> jNode >> Knormal >>
+        //                       Ktangent >> frictionRatio >> cohession >> x_local_1 >> x_local_2 >> x_local_3;
+
+        //         add_element_contact_6dof_to_6dof(ElementNumber,
+        //                                          iNode,
+        //                                          jNode,
+        //                                          Knormal,
+        //                                          Ktangent,
+        //                                          frictionRatio,
+        //                                          cohession,
+        //                                          x_local_1,
+        //                                          x_local_2,
+        //                                          x_local_3);
+        // }
+        else
         {
-            int ElementNumber;
-            int iNode;
-            int jNode;
-            double Knormal;
-            double Ktangent;
-            double frictionRatio;
-            double cohession;
-            double x_local_1;
-            double x_local_2;
-            double x_local_3;
-
-            inputelements >> ElementNumber >> iNode >> jNode >> Knormal >>
-                          Ktangent >> frictionRatio >> cohession >> x_local_1 >> x_local_2 >> x_local_3;
-
-            add_element_contact_3dof_to_6dof(ElementNumber,
-                                             iNode,
-                                             jNode,
-                                             Knormal,
-                                             Ktangent,
-                                             frictionRatio,
-                                             cohession,
-                                             x_local_1,
-                                             x_local_2,
-                                             x_local_3);
-        }
-
-        else if (typeofelement.compare("Contact3DOF6DOF") == 0)
-        {
-            int ElementNumber;
-            int iNode;
-            int jNode;
-            double Knormal;
-            double Ktangent;
-            double frictionRatio;
-            double cohession;
-            double x_local_1;
-            double x_local_2;
-            double x_local_3;
-
-            inputelements >> ElementNumber >> iNode >> jNode >> Knormal >>
-                          Ktangent >> frictionRatio >> cohession >> x_local_1 >> x_local_2 >> x_local_3;
-
-            add_element_contact_6dof_to_6dof(ElementNumber,
-                                             iNode,
-                                             jNode,
-                                             Knormal,
-                                             Ktangent,
-                                             frictionRatio,
-                                             cohession,
-                                             x_local_1,
-                                             x_local_2,
-                                             x_local_3);
+            cout << "Error: (add_elements_from_file) Element type " << typeofelement << " not known!\n" ;
         }
         count += 1;
     }

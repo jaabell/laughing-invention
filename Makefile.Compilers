@@ -8,25 +8,25 @@ DEBUG_MODE = NO_DEBUG
 PROGRAMMING_MODE = SEQUENTIAL
 #PROGRAMMING_MODE = PARALLEL
 
-#LTO_FLAGS = 
-LTO_FLAGS = -flto
-
-#INLINING_OPTS = -finline \
-#				-Winline \
-#				-finline-functions \
-#				-fkeep-inline-functions \
-#				-fdefault-inline 
-
+LTO_FLAGS = 
+#LTO_FLAGS = -flto
 
 INLINING_OPTS = -finline \
 				-Winline \
 				-finline-functions \
-				-finline-limit=10000 \
-				-ftemplate-depth=100000 \
-				--param inline-unit-growth=10000 \
-				--param large-function-growth=10000 \
 				-fkeep-inline-functions \
-				-fdefault-inline
+				-fdefault-inline 
+
+
+# INLINING_OPTS = -finline \
+# 				-Winline \
+# 				-finline-functions \
+# 				-finline-limit=10000 \
+# 				-ftemplate-depth=100000 \
+# 				--param inline-unit-growth=10000 \
+# 				--param large-function-growth=10000 \
+# 				-fkeep-inline-functions \
+# 				-fdefault-inline
 
 
 #  ==========================================

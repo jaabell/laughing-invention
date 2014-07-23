@@ -49,8 +49,7 @@
 //! It is the same as the inputs for creating the nodes. First argument should be
 //! the node number following by number of dofs, x_coordinate, y_coordinate, z_coordinate
 
-void add_nodes_from_file(const char *, int);
-void add_nodes_from_file(std::string inputnodesfile, int ndof)
+int add_nodes_from_file(std::string inputnodesfile, int ndof)
 {
 
     int NodeTag;
@@ -74,7 +73,7 @@ void add_nodes_from_file(std::string inputnodesfile, int ndof)
 
     inputnodes.open(nodesfromfile , ios::in);
 
-    int count = 0s;
+    int count = 0;
     while (inputnodes >> NodeTag >> x_coordinate >> y_coordinate >> z_coordinate)
     {
         add_node(NodeTag, ndof, x_coordinate, y_coordinate, z_coordinate);
@@ -83,6 +82,9 @@ void add_nodes_from_file(std::string inputnodesfile, int ndof)
     cout << "       Finished! Added " << count << "nodes. \n";
 
     inputnodes.close();
+
+
+    return 0;
 };
 
 

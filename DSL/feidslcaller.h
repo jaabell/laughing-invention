@@ -76,55 +76,60 @@ typename boost::enable_if_c<boost::is_same<std::string, T>::value, T>::type getT
 class FeiDslCallerBase : public DslAction
 {
     protected:
-    ArgumentType args;
-    SignatureType signature;
+        ArgumentType args;
+        SignatureType signature;
 
     public:
-    static fstream *cppfile;
-    FeiDslCallerBase(ArgumentType a, SignatureType s, string name) :
-    DslAction(), args(a), signature(s)
-    {
-        setDslActionName(name);
-    }
-
-    virtual Quantity value ()
-    {
-        if (cppfile != NULL)
+        static bool dry_run;
+        static fstream *cppfile;
+        FeiDslCallerBase(ArgumentType a, SignatureType s, string name) :
+            DslAction(), args(a), signature(s)
         {
-          *cppfile << "   " << dslActionName << "(" ;
-          ArgumentType::iterator it = args.begin();
-          size_t i = 1;
-          for (; it != args.end(); it++)
-          {
-              Expression *e = (*it);
-              FeiString *ptr = dynamic_cast<FeiString *>(e);
-              if ( ptr != 0) // Is a FEISTRING
-              {
-                  *cppfile << "\"" << ptr -> Getstring() << "\"";
-              }
-              else // Is not a FEISTRING
-              {
-                  *cppfile << e->value(). Getvalue();
-              }
-              if (i < args.size())
-              {
-                  *cppfile << ", ";
-              }
-              i++;
-          }
-          *cppfile << ");" << endl;
+            setDslActionName(name);
         }
 
+        virtual Quantity value ()
+        {
+            if (cppfile != NULL)
+            {
+                *cppfile << "   " << dslActionName << "(" ;
+                ArgumentType::iterator it = args.begin();
+                size_t i = 1;
+                for (; it != args.end(); it++)
+                {
+                    Expression *e = (*it);
+                    FeiString *ptr = dynamic_cast<FeiString *>(e);
+                    if ( ptr != 0) // Is a FEISTRING
+                    {
+                        *cppfile << "\"" << ptr -> Getstring() << "\"";
+                    }
+                    else // Is not a FEISTRING
+                    {
+                        *cppfile << e->value(). Getvalue();
+                    }
+                    if (i < args.size())
+                    {
+                        *cppfile << ", ";
+                    }
+                    i++;
+                }
+                *cppfile << ");" << endl;
+            }
 
-          execute();
-          return returnValue;
-    }
+
+            if (!dry_run)
+            {
+                execute();
+            }
+            return returnValue;
+        }
 
         virtual void execute() = 0;
         virtual Expression *clone () = 0;
 };
 
 fstream *FeiDslCallerBase::cppfile = 0;
+bool FeiDslCallerBase::dry_run = false;
 
 
 // Derived Classes
@@ -176,9 +181,9 @@ class FeiDslCaller1 : public FeiDslCallerBase
             setReturnValue(Quantity(retval));
         }
         virtual Expression *clone ()
-            {
-               return new FeiDslCaller1(*this);
-            }
+        {
+            return new FeiDslCaller1(*this);
+        }
 
     private:
         ReturnType (*dslFunctionPointer)(T1);
@@ -198,9 +203,9 @@ class FeiDslCaller2 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -208,7 +213,7 @@ class FeiDslCaller2 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -238,11 +243,11 @@ class FeiDslCaller3 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -250,7 +255,7 @@ class FeiDslCaller3 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -280,13 +285,13 @@ class FeiDslCaller4 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -294,7 +299,7 @@ class FeiDslCaller4 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -324,15 +329,15 @@ class FeiDslCaller5 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -340,7 +345,7 @@ class FeiDslCaller5 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -370,17 +375,17 @@ class FeiDslCaller6 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -388,7 +393,7 @@ class FeiDslCaller6 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -418,19 +423,19 @@ class FeiDslCaller7 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -438,7 +443,7 @@ class FeiDslCaller7 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -468,21 +473,21 @@ class FeiDslCaller8 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -490,7 +495,7 @@ class FeiDslCaller8 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -520,23 +525,23 @@ class FeiDslCaller9 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -544,7 +549,7 @@ class FeiDslCaller9 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -574,25 +579,25 @@ class FeiDslCaller10 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -600,7 +605,7 @@ class FeiDslCaller10 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -630,27 +635,27 @@ class FeiDslCaller11 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -658,7 +663,7 @@ class FeiDslCaller11 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -688,29 +693,29 @@ class FeiDslCaller12 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -718,7 +723,7 @@ class FeiDslCaller12 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -748,31 +753,31 @@ class FeiDslCaller13 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -780,7 +785,7 @@ class FeiDslCaller13 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -810,33 +815,33 @@ class FeiDslCaller14 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -844,7 +849,7 @@ class FeiDslCaller14 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -874,35 +879,35 @@ class FeiDslCaller15 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -910,7 +915,7 @@ class FeiDslCaller15 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -940,37 +945,37 @@ class FeiDslCaller16 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -978,7 +983,7 @@ class FeiDslCaller16 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1008,39 +1013,39 @@ class FeiDslCaller17 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1048,7 +1053,7 @@ class FeiDslCaller17 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1078,41 +1083,41 @@ class FeiDslCaller18 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1120,7 +1125,7 @@ class FeiDslCaller18 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1150,43 +1155,43 @@ class FeiDslCaller19 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1194,7 +1199,7 @@ class FeiDslCaller19 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1224,45 +1229,45 @@ class FeiDslCaller20 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1270,7 +1275,7 @@ class FeiDslCaller20 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1300,47 +1305,47 @@ class FeiDslCaller21 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1348,7 +1353,7 @@ class FeiDslCaller21 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1378,49 +1383,49 @@ class FeiDslCaller22 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1428,7 +1433,7 @@ class FeiDslCaller22 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1458,51 +1463,51 @@ class FeiDslCaller23 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1510,7 +1515,7 @@ class FeiDslCaller23 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1540,53 +1545,53 @@ class FeiDslCaller24 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1594,7 +1599,7 @@ class FeiDslCaller24 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1624,55 +1629,55 @@ class FeiDslCaller25 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1680,7 +1685,7 @@ class FeiDslCaller25 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1710,57 +1715,57 @@ class FeiDslCaller26 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
             T26 arg26 = getTheArgument<T26>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1768,7 +1773,7 @@ class FeiDslCaller26 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1798,59 +1803,59 @@ class FeiDslCaller27 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
             T26 arg26 = getTheArgument<T26>(it);
- it++;
+            it++;
             T27 arg27 = getTheArgument<T27>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1858,7 +1863,7 @@ class FeiDslCaller27 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1888,61 +1893,61 @@ class FeiDslCaller28 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
             T26 arg26 = getTheArgument<T26>(it);
- it++;
+            it++;
             T27 arg27 = getTheArgument<T27>(it);
- it++;
+            it++;
             T28 arg28 = getTheArgument<T28>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -1950,7 +1955,7 @@ class FeiDslCaller28 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -1980,63 +1985,63 @@ class FeiDslCaller29 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
             T26 arg26 = getTheArgument<T26>(it);
- it++;
+            it++;
             T27 arg27 = getTheArgument<T27>(it);
- it++;
+            it++;
             T28 arg28 = getTheArgument<T28>(it);
- it++;
+            it++;
             T29 arg29 = getTheArgument<T29>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -2044,7 +2049,7 @@ class FeiDslCaller29 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -2074,65 +2079,65 @@ class FeiDslCaller30 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
             T26 arg26 = getTheArgument<T26>(it);
- it++;
+            it++;
             T27 arg27 = getTheArgument<T27>(it);
- it++;
+            it++;
             T28 arg28 = getTheArgument<T28>(it);
- it++;
+            it++;
             T29 arg29 = getTheArgument<T29>(it);
- it++;
+            it++;
             T30 arg30 = getTheArgument<T30>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -2140,7 +2145,7 @@ class FeiDslCaller30 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -2170,67 +2175,67 @@ class FeiDslCaller31 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
             T26 arg26 = getTheArgument<T26>(it);
- it++;
+            it++;
             T27 arg27 = getTheArgument<T27>(it);
- it++;
+            it++;
             T28 arg28 = getTheArgument<T28>(it);
- it++;
+            it++;
             T29 arg29 = getTheArgument<T29>(it);
- it++;
+            it++;
             T30 arg30 = getTheArgument<T30>(it);
- it++;
+            it++;
             T31 arg31 = getTheArgument<T31>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -2238,7 +2243,7 @@ class FeiDslCaller31 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -2268,69 +2273,69 @@ class FeiDslCaller32 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
             T26 arg26 = getTheArgument<T26>(it);
- it++;
+            it++;
             T27 arg27 = getTheArgument<T27>(it);
- it++;
+            it++;
             T28 arg28 = getTheArgument<T28>(it);
- it++;
+            it++;
             T29 arg29 = getTheArgument<T29>(it);
- it++;
+            it++;
             T30 arg30 = getTheArgument<T30>(it);
- it++;
+            it++;
             T31 arg31 = getTheArgument<T31>(it);
- it++;
+            it++;
             T32 arg32 = getTheArgument<T32>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -2338,7 +2343,7 @@ class FeiDslCaller32 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");
@@ -2368,71 +2373,71 @@ class FeiDslCaller33 : public FeiDslCallerBase
         {
             ArgumentIterator it = args.begin();
             T1 arg1 = getTheArgument<T1>(it);
- it++;
+            it++;
             T2 arg2 = getTheArgument<T2>(it);
- it++;
+            it++;
             T3 arg3 = getTheArgument<T3>(it);
- it++;
+            it++;
             T4 arg4 = getTheArgument<T4>(it);
- it++;
+            it++;
             T5 arg5 = getTheArgument<T5>(it);
- it++;
+            it++;
             T6 arg6 = getTheArgument<T6>(it);
- it++;
+            it++;
             T7 arg7 = getTheArgument<T7>(it);
- it++;
+            it++;
             T8 arg8 = getTheArgument<T8>(it);
- it++;
+            it++;
             T9 arg9 = getTheArgument<T9>(it);
- it++;
+            it++;
             T10 arg10 = getTheArgument<T10>(it);
- it++;
+            it++;
             T11 arg11 = getTheArgument<T11>(it);
- it++;
+            it++;
             T12 arg12 = getTheArgument<T12>(it);
- it++;
+            it++;
             T13 arg13 = getTheArgument<T13>(it);
- it++;
+            it++;
             T14 arg14 = getTheArgument<T14>(it);
- it++;
+            it++;
             T15 arg15 = getTheArgument<T15>(it);
- it++;
+            it++;
             T16 arg16 = getTheArgument<T16>(it);
- it++;
+            it++;
             T17 arg17 = getTheArgument<T17>(it);
- it++;
+            it++;
             T18 arg18 = getTheArgument<T18>(it);
- it++;
+            it++;
             T19 arg19 = getTheArgument<T19>(it);
- it++;
+            it++;
             T20 arg20 = getTheArgument<T20>(it);
- it++;
+            it++;
             T21 arg21 = getTheArgument<T21>(it);
- it++;
+            it++;
             T22 arg22 = getTheArgument<T22>(it);
- it++;
+            it++;
             T23 arg23 = getTheArgument<T23>(it);
- it++;
+            it++;
             T24 arg24 = getTheArgument<T24>(it);
- it++;
+            it++;
             T25 arg25 = getTheArgument<T25>(it);
- it++;
+            it++;
             T26 arg26 = getTheArgument<T26>(it);
- it++;
+            it++;
             T27 arg27 = getTheArgument<T27>(it);
- it++;
+            it++;
             T28 arg28 = getTheArgument<T28>(it);
- it++;
+            it++;
             T29 arg29 = getTheArgument<T29>(it);
- it++;
+            it++;
             T30 arg30 = getTheArgument<T30>(it);
- it++;
+            it++;
             T31 arg31 = getTheArgument<T31>(it);
- it++;
+            it++;
             T32 arg32 = getTheArgument<T32>(it);
- it++;
+            it++;
             T33 arg33 = getTheArgument<T33>(it);
- it++;
+            it++;
 
             ReturnType retval;
             if (argcheck(args, signature) == 1)
@@ -2440,7 +2445,7 @@ class FeiDslCaller33 : public FeiDslCallerBase
                 retval = (*dslFunctionPointer)(arg1,  arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30, arg31, arg32, arg33);
             }
             else
-            
+
             {
                 retval = -1;
                 throw RunTimeException(" Argument error.");

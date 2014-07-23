@@ -239,7 +239,7 @@
 // To add stuff from files (Deprecated)
 //--------------------------------------------------------------------------------------------------
 #include "MODELING/add_nodes_from_file.h"
-// #include "MODELING/add_elements_from_file.h"
+#include "MODELING/add_elements_from_file.h"
 // #include "MODELING/add_elements_from_file_8node_brick.h"
 // #include "MODELING/add_elements_from_file_8node_brick_elastic.h"
 // #include "MODELING/add_elements_from_file_27node_brick.h"
