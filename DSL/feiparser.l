@@ -186,12 +186,13 @@ EXP	([Ee][-+]?[0-9]+)
 "isDensity"                 {yylval->ident = new string(yytext); return token::ISUNITTYPE;}
 
  /* Auto-variables (keywords)  */
-"NUMBER_OF_NODES"          {return token::NUMBER_OF_NODES;}
-"NUMBER_OF_ELEMENTS"       {return token::NUMBER_OF_ELEMENTS;}
+"NUMBER_OF_NODES"           {return token::NUMBER_OF_NODES;}
+"NUMBER_OF_ELEMENTS"        {return token::NUMBER_OF_ELEMENTS;}
 "CURRENT_TIME"              {return token::CURRENT_TIME;}
 "NUMBER_OF_SP_CONSTRAINTS"  {return token::NUMBER_OF_SP_CONSTRAINTS;}
 "NUMBER_OF_MP_CONSTRAINTS"  {return token::NUMBER_OF_MP_CONSTRAINTS;}
 "NUMBER_OF_LOADS"           {return token::NUMBER_OF_LOADS;}
+"IS_PARALLEL"               {return token::IS_PARALLEL;}
 
  /* Flow control keywords */
 "if"                        { return token::IF; }
@@ -1091,12 +1092,13 @@ int start_parser(int argc, char**argv)
         prompt = "";
     }
 
-
+#ifdef _PARALLEL_PROCESSING
     //Kill other processes in case of dry run... parallel is not needed.
     if(FLAG_dry_run)
     {
         theMachineBroker->shutdown();
     }
+#endif
 
     // Parse flag
     int exitflag = -1;
@@ -1189,11 +1191,12 @@ int main (int argc, char**argv)
     //this got moved to the wipe_model() API call...... 
     theDomain.clearAll();
     theMachine.shutdown();
+
+    cout << "Process # " << rank << " ended with exitflag = " << exitflag << endl;
 #else
     exitflag = start_parser(argc, argv);
 #endif
 
-    cout << "Process # " << rank << " ended with exitflag = " << exitflag << endl;
 
     return exitflag;
 }

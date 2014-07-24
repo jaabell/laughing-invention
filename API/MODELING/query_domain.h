@@ -25,6 +25,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+int query_domain_is_parallel()
+{
+#ifdef  _PARALLEL_PROCESSING
+    return true;
+#else
+    return false;
+#endif
+}
+
 
 int query_domain_number_of_nodes()
 {
