@@ -6286,8 +6286,8 @@ int main (int argc, char**argv)
     }
 
     //this got moved to the wipe_model() API call...... 
-    //theDomain.clearAll();
-    //theMachine.shutdown();
+    theDomain.clearAll();
+    theMachine.shutdown();
 #else
     exitflag = start_parser(argc, argv);
 #endif

@@ -407,10 +407,10 @@ GraphPartitioner  *OPS_GRAPH_PARTITIONER  = 0;
 LoadBalancer      *OPS_BALANCER           = 0;
 FEM_ObjectBroker  *OPS_OBJECT_BROKER;
 MachineBroker     *OPS_MACHINE;
-static bool builtModel                    = false;
-static char *resDataPtr                   = 0;
-static int resDataSize                    = 0;
-static Timer *theTimer                    = 0;
+// static bool builtModel                    = false;
+// static char *resDataPtr                   = 0;
+// static int resDataSize                    = 0;
+// static Timer *theTimer                    = 0;
 Element      *ops_TheActiveElement        = 0;
 MPI_MachineBroker *theMachineBroker = 0;
 

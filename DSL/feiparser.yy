@@ -4790,7 +4790,11 @@ stmt
 
         wipe_model();
 
+        $$ = new Empty();
+        nodes.push($$);
+
         //exit(0);
+        return(0);
     }
     | RESTART
     {

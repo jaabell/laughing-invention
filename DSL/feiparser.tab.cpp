@@ -4655,13 +4655,17 @@ namespace yy {
 
         wipe_model();
 
+        (yylhs.value.exp) = new Empty();
+        nodes.push((yylhs.value.exp));
+
         //exit(0);
+        return(0);
     }
-#line 4661 "feiparser.tab.cc" // lalr1.cc:847
+#line 4665 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 180:
-#line 4796 "feiparser.yy" // lalr1.cc:847
+#line 4800 "feiparser.yy" // lalr1.cc:847
     {
         args.clear(); signature.clear();
         if (FLAG_generate_cpp_output == 1)
@@ -4672,48 +4676,48 @@ namespace yy {
         (yylhs.value.exp) = new FeiDslCaller0<>(&wipe_model, args, signature, "wipe_model");
         nodes.push((yylhs.value.exp));
     }
-#line 4676 "feiparser.tab.cc" // lalr1.cc:847
+#line 4680 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 181:
-#line 4807 "feiparser.yy" // lalr1.cc:847
+#line 4811 "feiparser.yy" // lalr1.cc:847
     {
         (yylhs.value.exp) = new Empty();
         nodes.pop();
         nodes.push((yylhs.value.exp));
     }
-#line 4686 "feiparser.tab.cc" // lalr1.cc:847
+#line 4690 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 182:
-#line 4817 "feiparser.yy" // lalr1.cc:847
+#line 4821 "feiparser.yy" // lalr1.cc:847
     {
         // empty statement generates an  empty expression
         (yylhs.value.exp) = new Empty();
         nodes.push((yylhs.value.exp));
     }
-#line 4696 "feiparser.tab.cc" // lalr1.cc:847
+#line 4700 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 183:
-#line 4823 "feiparser.yy" // lalr1.cc:847
+#line 4827 "feiparser.yy" // lalr1.cc:847
     {
         // Used to initialize a list of statements (compound statement)
         (yylhs.value.exp) = (yystack_[1].value.exp);
     }
-#line 4705 "feiparser.tab.cc" // lalr1.cc:847
+#line 4709 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 184:
-#line 4831 "feiparser.yy" // lalr1.cc:847
+#line 4835 "feiparser.yy" // lalr1.cc:847
     {
         (yylhs.value.exp) = (yystack_[0].value.exp);
     }
-#line 4713 "feiparser.tab.cc" // lalr1.cc:847
+#line 4717 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 185:
-#line 4835 "feiparser.yy" // lalr1.cc:847
+#line 4839 "feiparser.yy" // lalr1.cc:847
     {
         if ((yystack_[0].value.exp) == NULL)
             (yylhs.value.exp) = (yystack_[1].value.exp);
@@ -4725,11 +4729,11 @@ namespace yy {
             nodes.push((yylhs.value.exp));
         }
     }
-#line 4729 "feiparser.tab.cc" // lalr1.cc:847
+#line 4733 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
 
-#line 4733 "feiparser.tab.cc" // lalr1.cc:847
+#line 4737 "feiparser.tab.cc" // lalr1.cc:847
             default:
               break;
             }
@@ -8089,7 +8093,7 @@ namespace yy {
     4525,  4531,  4538,  4546,  4554,  4562,  4570,  4578,  4582,  4588,
     4593,  4599,  4605,  4611,  4617,  4623,  4631,  4637,  4642,  4647,
     4652,  4657,  4665,  4696,  4701,  4705,  4714,  4736,  4761,  4781,
-    4795,  4806,  4816,  4822,  4830,  4834
+    4799,  4810,  4820,  4826,  4834,  4838
   };
 
   // Print the state stack on the debug stream.
@@ -8209,8 +8213,8 @@ namespace yy {
 
 
 } // yy
-#line 8213 "feiparser.tab.cc" // lalr1.cc:1155
-#line 4862 "feiparser.yy" // lalr1.cc:1156
+#line 8217 "feiparser.tab.cc" // lalr1.cc:1155
+#line 4866 "feiparser.yy" // lalr1.cc:1156
 
 
 // Deletes all the nodes that were allocated

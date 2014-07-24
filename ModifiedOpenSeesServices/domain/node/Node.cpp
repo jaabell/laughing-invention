@@ -1894,6 +1894,11 @@ Node::recvSelf(int cTag, Channel &theChannel,
     }
 
 
+    sizedMatrix = new Matrix(numberDOF, numberDOF);
+
+    penalty_load = new Vector(numberDOF);
+
+
     return 0;
 }
 

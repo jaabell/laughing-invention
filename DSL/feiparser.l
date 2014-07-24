@@ -973,6 +973,26 @@ void print_usage()
 
 
 
+
+
+#ifdef _PARALLEL_PROCESSING
+  #include "../ModifiedOpenSeesServices/domain/domain/partitioned/PartitionedDomain.h"
+  #include "../ModifiedOpenSeesServices/graph/partitioner/GraphPartitioner.h"
+  #include <../ModifiedOpenSeesServices/actor/objectBroker/FEM_ObjectBroker.h>
+  #include <../ModifiedOpenSeesServices/actor/machineBroker/MachineBroker.h>
+  #include <../ModifiedOpenSeesServices/actor/machineBroker/MPI_MachineBroker.h>
+
+  extern PartitionedDomain theDomain;
+  extern int OPS_PARALLEL_PROCESSING;
+  extern int OPS_NUM_SUBDOMAINS;
+  extern bool OPS_PARTITIONED;
+  extern FEM_ObjectBroker *OPS_OBJECT_BROKER;
+  extern MachineBroker  *OPS_MACHINE;
+  extern GraphPartitioner  *OPS_GRAPH_PARTITIONER;
+  static MPI_MachineBroker *theMachineBroker = 0;
+#endif
+
+
 int start_parser(int argc, char**argv)
 {
     //Welcome message
@@ -1064,13 +1084,18 @@ int start_parser(int argc, char**argv)
         newstdin();
     }
 
-
-
     if (FLAG_run_file)
     {
         newfile(filename_from_command_line);
         set_outcppfile_name(string(filename_from_command_line));
         prompt = "";
+    }
+
+
+    //Kill other processes in case of dry run... parallel is not needed.
+    if(FLAG_dry_run)
+    {
+        theMachineBroker->shutdown();
     }
 
     // Parse flag
@@ -1088,24 +1113,6 @@ int start_parser(int argc, char**argv)
 }
 
 
-
-
-#ifdef _PARALLEL_PROCESSING
-  #include "../ModifiedOpenSeesServices/domain/domain/partitioned/PartitionedDomain.h"
-  #include "../ModifiedOpenSeesServices/graph/partitioner/GraphPartitioner.h"
-  #include <../ModifiedOpenSeesServices/actor/objectBroker/FEM_ObjectBroker.h>
-  #include <../ModifiedOpenSeesServices/actor/machineBroker/MachineBroker.h>
-  #include <../ModifiedOpenSeesServices/actor/machineBroker/MPI_MachineBroker.h>
-
-  extern PartitionedDomain theDomain;
-  extern int OPS_PARALLEL_PROCESSING;
-  extern int OPS_NUM_SUBDOMAINS;
-  extern bool OPS_PARTITIONED;
-  extern FEM_ObjectBroker *OPS_OBJECT_BROKER;
-  extern MachineBroker  *OPS_MACHINE;
-  extern GraphPartitioner  *OPS_GRAPH_PARTITIONER;
-  static MPI_MachineBroker *theMachineBroker = 0;
-#endif
 
 
 /*  SIGNAL HANDLING  */
@@ -1166,7 +1173,7 @@ int main (int argc, char**argv)
 
    if (rank != 0) //If this is the main machine
    {
-	   theMachine.runActors();
+        exitflag = theMachine.runActors();
    } 
    else  // Or if it is a slave node
    {
@@ -1180,11 +1187,14 @@ int main (int argc, char**argv)
     }
 
     //this got moved to the wipe_model() API call...... 
-    //theDomain.clearAll();
-    //theMachine.shutdown();
+    theDomain.clearAll();
+    theMachine.shutdown();
 #else
     exitflag = start_parser(argc, argv);
 #endif
+
+    cout << "Process # " << rank << " ended with exitflag = " << exitflag << endl;
+
     return exitflag;
 }
   

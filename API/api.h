@@ -279,7 +279,7 @@
 // #include "SIMULATION/define_algorithm_linear_for_analysis.h"
 // #include "SIMULATION/define_algorithm_with_no_convergence_check_for_analysis.h"
 #include "SIMULATION/define_parallel_numberer_plain_for_analysis.h"
-#include "SIMULATION/parallel_analyze_static_multistep.h"
+// #include "SIMULATION/parallel_analyze_static_multistep.h"
 // #include "MODELING/add_to_node_support.h"
 // #include "MODELING/add_support_to_node.h"
 #include "MODELING/add_support_from_file_to_nodes.h" //Babak added 5/29/14

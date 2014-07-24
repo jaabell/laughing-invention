@@ -118,6 +118,7 @@ int simulate_using_static_multistep(int numSteps)
         DomainDecompositionAnalysis *theSubAnalysis;
         SubdomainIter &theSubdomains = theDomain.getSubdomains();
         Subdomain *theSub = 0;
+
         // create the appropriate domain decomposition analysis
         while ((theSub = theSubdomains()) != 0)
         {
@@ -131,10 +132,7 @@ int simulate_using_static_multistep(int numSteps)
                     theConvergenceTest,
                     false);
 
-
-
             theSub->setDomainDecompAnalysis(*theSubAnalysis);
-            //      delete theSubAnalysis;
         }
     }
 
@@ -158,29 +156,16 @@ int simulate_using_static_multistep(int numSteps)
         // create a partitioner & partition the domain
         if (OPS_DOMAIN_PARTITIONER == 0)
         {
-#ifdef _PDD //Guanzhou added
+
             OPS_GRAPH_PARTITIONER  = new ParMetis;
-#else
-            OPS_GRAPH_PARTITIONER  = new Metis;
-#endif
             OPS_DOMAIN_PARTITIONER = new DomainPartitioner(*OPS_GRAPH_PARTITIONER);
             theDomain.setPartitioner(OPS_DOMAIN_PARTITIONER);
         }
-
-# ifdef _TIMING
-        double start_time = MPI_Wtime();
-# endif
-
         theDomain.partition(OPS_NUM_SUBDOMAINS);
-
-# ifdef _TIMING
-        double end_time = MPI_Wtime();
-        //        timingfile << "Timing used by partitioning: " << end_time-start_time << endl;
-# endif
 
         OPS_PARTITIONED = true;
 
-    } //Guanzhou separated here
+    }
 
 
     for (int i = 1; i <= numSteps; i++)
@@ -214,11 +199,11 @@ int simulate_using_static_multistep(int numSteps)
             OPS_REDEFINE_ANALYSIS = false;
         }
 
-        double start_time = MPI_Wtime();
+        // double start_time = MPI_Wtime();
 
         int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
         result = theStaticAnalysis->analyze(numIncr);
-        double end_time = MPI_Wtime();
+        // double end_time = MPI_Wtime();
         cout << "\nAnalysis step " << i << " finished!\n";
 
     }

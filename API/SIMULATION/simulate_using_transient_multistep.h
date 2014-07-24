@@ -63,13 +63,7 @@
 int simulate_using_transient_multistep(double dT,
                                        int numSteps)
 {
-
-    //output_of_elements_and_nodes();
-
-
-    //***************************************************************************************************************
-
-
+    int result = 0;
 
     if (theAnalysisModel == 0)
     {
@@ -142,10 +136,107 @@ int simulate_using_transient_multistep(double dT,
     }
 
 
+
+    //=====================================================================================
+    // Parallel Dynamic Analysis
+    //=====================================================================================
+#ifdef _PARALLEL_PROCESSING // Parallel processing
+
+
+    if (OPS_PARTITIONED == true && OPS_NUM_SUBDOMAINS > 1)
+    {
+        DomainDecompositionAnalysis *theSubAnalysis;
+        SubdomainIter &theSubdomains = theDomain.getSubdomains();
+        Subdomain *theSub = 0;
+        // create the appropriate domain decomposition analysis
+        while ((theSub = theSubdomains()) != 0)
+        {
+            theSubAnalysis = new TransientDomainDecompositionAnalysis(*theSub,
+                    *theHandler,
+                    *theNumberer,
+                    *theAnalysisModel,
+                    *theAlgorithm,
+                    *theSOE,
+                    *theTransientIntegrator,
+                    theConvergenceTest,
+                    false);
+
+            theSub->setDomainDecompAnalysis(*theSubAnalysis);
+        }
+    }
+
+
+    if (OPS_PARTITIONED == false && OPS_NUM_SUBDOMAINS > 1)
+    {
+        if (OPS_theChannels != 0)
+        {
+            delete [] OPS_theChannels;
+        }
+
+        OPS_theChannels = new Channel *[OPS_NUM_SUBDOMAINS];
+
+        // create some subdomains
+        for (int i = 1; i <= OPS_NUM_SUBDOMAINS; i++)
+        {
+            ShadowSubdomain *theSubdomain = new ShadowSubdomain(i, *OPS_MACHINE, *OPS_OBJECT_BROKER);
+            theDomain.addSubdomain(theSubdomain);
+            OPS_theChannels[i - 1] = theSubdomain->getChannelPtr();
+        }
+
+        // create a partitioner & partition the domain
+        if (OPS_DOMAIN_PARTITIONER == 0)
+        {
+            OPS_GRAPH_PARTITIONER  = new ParMetis;
+            OPS_DOMAIN_PARTITIONER = new DomainPartitioner(*OPS_GRAPH_PARTITIONER);
+            theDomain.setPartitioner(OPS_DOMAIN_PARTITIONER);
+        }
+        theDomain.partition(OPS_NUM_SUBDOMAINS);
+        OPS_PARTITIONED = true;
+    }
+
+
+    for (int i = 1; i <= numSteps; i++)
+    {
+        if ( OPS_REDEFINE_ANALYSIS == true )
+        {
+            DomainDecompositionAnalysis *theSubAnalysis;
+            SubdomainIter &theSubdomains = theDomain.getSubdomains();
+            Subdomain *theSub = 0;
+
+            while ((theSub = theSubdomains()) != 0)
+            {
+
+                // create the appropriate domain decomposition analysis
+
+                theSubAnalysis = new TransientDomainDecompositionAnalysis(*theSub,
+                        *theHandler,
+                        *theNumberer,
+                        *theAnalysisModel,
+                        *theAlgorithm,
+                        *theSOE,
+                        *theTransientIntegrator,
+                        theConvergenceTest,
+                        false);
+
+                theSub->setDomainDecompAnalysis(*theSubAnalysis);
+            }
+            OPS_REDEFINE_ANALYSIS = false;
+        }
+
+        int numIncr = 1;
+        result = theTransientAnalysis->analyze(numIncr, dT);
+
+        cout << "\nAnalysis step " << i << " finished!\n";
+    }
+
+    //=====================================================================================
+    // Sequential Dynamic Analysis
+    //=====================================================================================
+#else // Analysis is sequential
+
     theTransientAnalysis->analyze(numSteps, dT);
-
-    //remove_output_of_elements_and_nodes();
-
+#endif
+    //=====================================================================================
 
     return 0;
 
