@@ -60,9 +60,9 @@
     { H5Oclose(id_current_object); }
 
 //These optimize access to HDF5 file (tuninng knobs)
-#define H5OUTPUTWRITER_CHUNK_NSLOTS 1009                        // Good if it is a prime number 101 1009  10007 (http://primes.utm.edu/lists/small/100000.txt)
+#define H5OUTPUTWRITER_CHUNK_NSLOTS 101                        // Good if it is a prime number 101 1009  10007 (http://primes.utm.edu/lists/small/100000.txt)
 #define H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK 10        // 
-#define H5OUTPUTWRITER_CHUNK_TIMEDIM 100                        // Size of chunks in time dimension
+#define H5OUTPUTWRITER_CHUNK_TIMEDIM 10                        // Size of chunks in time dimension
 #define H5OUTPUTWRITER_META_BLOCK_SIZE 2048*16                 // Not used
 #define H5OUTPUTWRITER_SIEVE_BUFFER_SIZE 1024*1024             // Not used because of chunking
 #define H5OUTPUTWRITER_PREEMPTION_POLICY 0.75

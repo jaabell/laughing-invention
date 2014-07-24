@@ -102,30 +102,15 @@ int start_new_stage(string CurrentStageName)
     theEigenSOE                          = 0;
 
     //Set numberer and check that it is correctly set
-    //Babak Added 2/20/14:
-    //-------------
 #ifdef _PARALLEL_PROCESSING
-    //     theNumberer = new DOF_Numberer(*theParallelNumberer);
-    {
-        //PlainNumberer   *plainnumberer  = new ParallelNumberer();
-        theNumberer = new ParallelNumberer();
-
-        if (theNumberer == NULL)
-        {
-            cerr << "Error: (start_new_stage) memory for theNumberer  can not be allocated!" << endl;
-            abort();
-        }
-    };
+    theNumberer = new ParallelNumberer();
 #else
-
-    //-------------------
-
     theNumberer = new DOF_Numberer(*theRCM);
 #endif
 
     if (theNumberer == NULL)
     {
-        cerr << "Error: (start_new_stage) theNumberer!" << endl;
+        cerr << "Error: (start_new_stage) theNumberer was not correctly set!" << endl;
         return -1;
     }
 
@@ -133,10 +118,9 @@ int start_new_stage(string CurrentStageName)
     theHandler = new PlainHandler();
     if (theHandler == NULL)
     {
-        cerr << "Error: (start_new_stage) theHandler!" << endl;
+        cerr << "Error: (start_new_stage) theHandler was not correctly set!!" << endl;
         return -1;
     }
-
 
 
     string filename("");
