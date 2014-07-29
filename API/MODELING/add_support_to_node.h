@@ -63,8 +63,8 @@ int add_support_to_node(int NodeNumber,
 {
 
     int currentSpTag = 0;
-    SP_ConstraintIter &theSPs = theDomain.getSPs();
-    SP_Constraint *theSP;
+    // SP_ConstraintIter &theSPs = theDomain.getSPs();
+    // SP_Constraint *theSP;
 
     // while ((theSP = theSPs()) != 0)
     // {

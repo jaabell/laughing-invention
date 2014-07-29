@@ -38,8 +38,15 @@ using std::ifstream;
 
 PathTimeSeries_Force_TimeHistory::PathTimeSeries_Force_TimeHistory()
     : LoadPattern(0, PATTERN_TAG_PathTimeSeries_Force_TimeHistory),
-      thePath(0), time(0), currentTimeLoc(0), pathTimeIncr(0),
-      cFactor(0.0), isConstant(0), loadValue(0)
+      thePath(0),
+      time(0),
+      currentTimeLoc(0),
+      cFactor(0.0),
+      pathTimeIncr(0),
+      nodeTag(0),
+      dof(0),
+      loadValue(0),
+      isConstant(0)
 {
     // does nothing
 }
@@ -49,14 +56,17 @@ PathTimeSeries_Force_TimeHistory::PathTimeSeries_Force_TimeHistory(int tag,
         int NodeNumber,
         int dof_to_be_shaken,
         double theFactor,
-        const char* fileName)
+        const char *fileName)
     : LoadPattern(tag, PATTERN_TAG_PathTimeSeries_Force_TimeHistory),
+      thePath(0),
+      time(0),
+      currentTimeLoc(0),
+      cFactor(theFactor),
+      pathTimeIncr(0),
       nodeTag(NodeNumber),
       dof(dof_to_be_shaken),
-      thePath(0), time(0),
-      currentTimeLoc(0),
-      pathTimeIncr(0),
-      cFactor(theFactor), isConstant(0), loadValue(0)
+      loadValue(0),
+      isConstant(0)
 {
 
 
@@ -149,6 +159,37 @@ PathTimeSeries_Force_TimeHistory::PathTimeSeries_Force_TimeHistory(int tag,
 
 
 
+PathTimeSeries_Force_TimeHistory::PathTimeSeries_Force_TimeHistory(int tag,
+        int NodeNumber,
+        int dof_to_be_shaken,
+        double theTimeIncr,
+        double theFactor,
+        int currentTimeLoc_,
+        int isConstant_,
+        double loadValue_,
+        Vector *thePath_,
+        Vector *time_)
+    : LoadPattern(tag, PATTERN_TAG_PathTimeSeries_Force_TimeHistory),
+      thePath(0),
+      time(0),
+      currentTimeLoc(currentTimeLoc_),
+      cFactor(theFactor),
+      pathTimeIncr(theTimeIncr),
+      nodeTag(NodeNumber),
+      dof(dof_to_be_shaken),
+      loadValue(loadValue_),
+      isConstant(isConstant_)
+{
+    thePath = new Vector(*thePath_);
+    time = new Vector(*time_);
+
+}
+
+
+
+
+
+
 PathTimeSeries_Force_TimeHistory::~PathTimeSeries_Force_TimeHistory()
 {
     // does nothing
@@ -156,7 +197,7 @@ PathTimeSeries_Force_TimeHistory::~PathTimeSeries_Force_TimeHistory()
 
 
 void
-PathTimeSeries_Force_TimeHistory::setDomain(Domain* theDomain)
+PathTimeSeries_Force_TimeHistory::setDomain(Domain *theDomain)
 {
 
     this->LoadPattern::setDomain(theDomain);
@@ -263,7 +304,7 @@ void
 PathTimeSeries_Force_TimeHistory::applyLoad(double time)
 {
 
-    Domain* theDomain = this->getDomain();
+    Domain *theDomain = this->getDomain();
 
     if (theDomain == 0)
     {
@@ -271,7 +312,7 @@ PathTimeSeries_Force_TimeHistory::applyLoad(double time)
     }
 
 
-    Node* theNode;
+    Node *theNode;
 
     theNode = theDomain->getNode(nodeTag);
 
@@ -283,7 +324,7 @@ PathTimeSeries_Force_TimeHistory::applyLoad(double time)
 
     //Create the nodal load vector accoding to the DOFs the node has
     int numDOF = theNode->getNumberDOF();
-    Vector* nodalLoad = new Vector(numDOF);
+    Vector *nodalLoad = new Vector(numDOF);
 
 
 
@@ -307,24 +348,106 @@ PathTimeSeries_Force_TimeHistory::applyLoad(double time)
 
 
 int
-PathTimeSeries_Force_TimeHistory::sendSelf(int commitTag, Channel& theChannel)
+PathTimeSeries_Force_TimeHistory::sendSelf(int commitTag, Channel &theChannel)
 {
-    // to be completed later
+    static ID IDdata(4);
+    IDdata(0) = currentTimeLoc;
+    IDdata(1) = nodeTag;
+    IDdata(2) = dof;
+    IDdata(3) = isConstant;
+
+    int res = theChannel.sendID(0, commitTag, IDdata);
+    if (res < 0)
+    {
+        cerr << "PathTimeSeries_Force_TimeHistory::sendSelf() - channel failed to send IDdata\n";
+        return res;
+    }
+
+    static Vector Vectordata(3);
+    Vectordata(0) = cFactor;
+    Vectordata(1) = pathTimeIncr;
+    Vectordata(2) = loadValue;
+    res = theChannel.sendVector(0, commitTag, Vectordata);
+    if (res < 0)
+    {
+        cerr << "PathTimeSeries_Force_TimeHistory::sendSelf() - channel failed to send Vectordata\n";
+        return res;
+    }
+
+    res = theChannel.sendVector(0, commitTag, *thePath);
+    if (res < 0)
+    {
+        cerr << "PathTimeSeries_Force_TimeHistory::sendSelf() - channel failed to send thePath vector\n";
+        return res;
+    }
+
+
+    res = theChannel.sendVector(0, commitTag, *time);
+    if (res < 0)
+    {
+        cerr << "PathTimeSeries_Force_TimeHistory::sendSelf() - channel failed to send time vector\n";
+        return res;
+    }
+
+
+
+
     return 0;
 }
 
 
 int
-PathTimeSeries_Force_TimeHistory::recvSelf(int commitTag, Channel& theChannel,
-        FEM_ObjectBroker& theBroker)
+PathTimeSeries_Force_TimeHistory::recvSelf(int commitTag, Channel &theChannel,
+        FEM_ObjectBroker &theBroker)
 {
-    // to be completed later
+    static ID IDdata(4);
+    int res = theChannel.recvID(0, commitTag, IDdata);
+    if (res < 0)
+    {
+        cerr << "PathTimeSeries_Force_TimeHistory::recvSelf() - channel failed to receive IDdata\n";
+        return res;
+    }
+
+    currentTimeLoc = IDdata(0);
+    nodeTag        = IDdata(1);
+    dof            = IDdata(2);
+    isConstant     = IDdata(3);
+
+    static Vector Vectordata(3);
+    res = theChannel.recvVector(0, commitTag, Vectordata);
+    if (res < 0)
+    {
+        cerr << "PathTimeSeries_Force_TimeHistory::recvSelf() - channel failed to receive Vectordata\n";
+        return res;
+    }
+
+    cFactor      = Vectordata(0);
+    pathTimeIncr = Vectordata(1);
+    loadValue    = Vectordata(2);
+
+
+    res = theChannel.recvVector(0, commitTag, *thePath);
+    if (res < 0)
+    {
+        cerr << "PathTimeSeries_Force_TimeHistory::recvSelf() - channel failed to receive thePath vector\n";
+        return res;
+    }
+
+
+    res = theChannel.recvVector(0, commitTag, *time);
+    if (res < 0)
+    {
+        cerr << "PathTimeSeries_Force_TimeHistory::recvSelf() - channel failed to receive time vector\n";
+        return res;
+    }
+
+
     return 0;
 }
 
 
 void
-PathTimeSeries_Force_TimeHistory::Print(ostream& s, int flag)
+PathTimeSeries_Force_TimeHistory::Print(ostream &s, int flag)
 {
     s << "PathTimeSeries_Force_TimeHistory " << this->getTag() << endln;
 
@@ -333,12 +456,23 @@ PathTimeSeries_Force_TimeHistory::Print(ostream& s, int flag)
 
 
 // method to obtain a blank copy of the LoadPattern
-LoadPattern*
+LoadPattern *
 PathTimeSeries_Force_TimeHistory::getCopy(void)
 {
 
-    cerr << "PathTimeSeries_Force_TimeHistory::getCopy() - not yet implemented\n";
-    return 0;
+    // cerr << "PathTimeSeries_Force_TimeHistory::getCopy() - not yet implemented\n";
+    LoadPattern *theCopy = new PathTimeSeries_Force_TimeHistory(this->getTag(),
+            nodeTag,
+            dof,
+            pathTimeIncr,
+            cFactor,
+            currentTimeLoc,
+            isConstant,
+            loadValue,
+            thePath,
+            time);
+
+    return theCopy;
 }
 
 

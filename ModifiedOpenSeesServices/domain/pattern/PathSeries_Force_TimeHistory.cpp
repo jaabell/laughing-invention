@@ -589,7 +589,6 @@ PathSeries_Force_TimeHistory::getCopy(void)
             time);
 
     return theCopy;
-    return 0;
 }
 
 
