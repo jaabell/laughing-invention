@@ -63,20 +63,21 @@ int add_support_to_node(int NodeNumber,
 {
 
     int currentSpTag = 0;
-    SP_ConstraintIter& theSPs = theDomain.getSPs();
-    SP_Constraint* theSP;
+    SP_ConstraintIter &theSPs = theDomain.getSPs();
+    SP_Constraint *theSP;
 
-    while ((theSP = theSPs()) != 0)
-    {
-        int spTag = theSP->getTag();
+    // while ((theSP = theSPs()) != 0)
+    // {
+    //     int spTag = theSP->getTag();
 
-        if (spTag >= currentSpTag)
-        {
-            currentSpTag = spTag + 1;
-        }
-    }
+    //     if (spTag >= currentSpTag)
+    //     {
+    //         currentSpTag = spTag + 1;
+    //     }
+    // }
+    currentSpTag = theDomain.getMaxSPsTag() + 1;
 
-    SP_Constraint* sp  = 0;
+    SP_Constraint *sp  = 0;
     sp = new SP_Constraint(currentSpTag, NodeNumber,
                            dof_number - 1, // for SP dofs start from 0, for us from 1
                            0.0);  // DOF_value
@@ -88,7 +89,7 @@ int add_support_to_node(int NodeNumber,
     }
 
 
-    if( theDomain.addSP_Constraint(sp) == false )
+    if ( theDomain.addSP_Constraint(sp) == false )
     {
         cerr << "Error: (add_support_to_node) SP_Constraint could not be added to the domain " << endl;
         return -1;

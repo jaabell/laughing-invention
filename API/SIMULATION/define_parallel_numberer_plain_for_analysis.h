@@ -65,4 +65,6 @@ int define_parallel_numberer_plain_for_analysis()
     cerr << "Error: (define_parallel_numberer_plain_for_analysis) Not available in sequential mode." << endl;
     abort();
 #endif
+
+    return 0;
 };

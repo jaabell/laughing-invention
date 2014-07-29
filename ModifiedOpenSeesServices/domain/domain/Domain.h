@@ -332,6 +332,21 @@ class Domain
 
 
 
+        virtual int getMaxElementsTag();
+        virtual int getMaxNodesTag();
+        virtual int getMaxUniaxialMaterialsTag();
+        virtual int getMaxNDMaterialsTag();
+        virtual int getMaxNDMaterialsLTTag();
+        virtual int getMaxSectionsTag();
+        virtual int getMaxSectionRepresentsTag();
+        virtual int getMaxMultipleSupportsTag();
+        virtual int getMaxAccelerationFieldsTag();
+        virtual int getMaxDampingsTag();
+        virtual int getMaxSPsTag();
+        virtual int getMaxMPsTag();
+        virtual int getMaxLoadPatternsTag();
+
+
 # ifdef _PDD //Guanzhou added
         virtual bool recvNode(Node *theNod);
 # endif
@@ -438,6 +453,22 @@ class Domain
         int number_of_line_elements;
 
         int lastChannel;
+
+    public:
+        //max tags
+        int maxElementsTag;
+        int maxNodesTag;
+        int maxUniaxialMaterialsTag;
+        int maxNDMaterialsTag;
+        int maxNDMaterialsLTTag;
+        int maxSectionsTag;
+        int maxSectionRepresentsTag;
+        int maxMultipleSupportsTag;
+        int maxAccelerationFieldsTag;
+        int maxDampingsTag;
+        int maxSPsTag;
+        int maxMPsTag;
+        int maxLoadPatternsTag;
 
 };
 

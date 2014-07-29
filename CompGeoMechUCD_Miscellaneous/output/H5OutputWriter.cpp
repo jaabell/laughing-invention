@@ -182,23 +182,6 @@ void H5OutputWriter::initialize(std::string filename_in,
 
     current_time                         = 0.0;
     current_time_step                    = 0;
-    number_of_nodes                      = 0;
-    number_of_elements                   = 0;
-    max_node_tag                         = 0;
-    max_element_tag                      = 0;
-
-    length_nodes_displacements_output    = 0;
-    length_nodes_velocities_output       = 0;
-    length_nodes_accelerations_output    = 0;
-    length_nodes_reaction_forcess_output = 0;
-    length_element_output                = 0;
-    pos_nodes_outputs                    = 0;
-    pos_nodes_coordinates                = 0;
-    pos_elements_outputs                 = 0;
-    pos_elements_gausscoords             = 0;
-    pos_elements_connectivity            = 0;
-
-    current_time = 0.0;
 
     create_nodeMeshData_arrays           = true;
     create_nodeDisplacements_arrays      = true;
@@ -209,26 +192,6 @@ void H5OutputWriter::initialize(std::string filename_in,
     create_elementOutput_arrays          = true;
 
     number_of_time_steps                 = nsteps;
-
-
-    //For nodes
-    Number_of_DOFs.resize(1);
-    Coordinates.resize(1);
-    Index_to_Coordinates.resize(1);
-    Index_to_Generalized_Displacements.resize(1);
-
-    //For Elements
-    Number_of_Nodes.resize(1);
-    Connectivity.resize(1);
-    Index_to_Connectivity.resize(1);
-    Number_of_Output_Fields.resize(1);
-    Index_to_Outputs.resize(1);
-    Number_of_Gauss_Points.resize(1);
-    Gauss_Point_Coordinates.resize(1);
-    Index_to_Gauss_Point_Coordinates.resize(1);
-    Material_tags.resize(1);
-
-    Element_types.clear();
 
 }
 
@@ -644,12 +607,11 @@ void H5OutputWriter::syncWriters()
     MPI_Bcast(&number_of_nodes                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
     MPI_Bcast(&number_of_elements                   , 1 , MPI_INT , root , MPI_COMM_WORLD);
 
-
-
-
-
-    this->initialize(file_name, model_name, stage_name, number_of_time_steps);
-
+    //The slave processes must be initialized after all this stuff is transmitted.
+    if (processID != 0)
+    {
+        this->initialize(file_name, model_name, stage_name, number_of_time_steps);
+    }
 
 #endif
 }

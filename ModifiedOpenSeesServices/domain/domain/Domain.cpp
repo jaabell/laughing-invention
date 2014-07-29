@@ -204,6 +204,19 @@ Domain::Domain()
     theBounds( 4 ) = 0;
     theBounds( 5 ) = 0;
 
+    maxElementsTag = 0;
+    maxNodesTag = 0;
+    maxUniaxialMaterialsTag = 0;
+    maxNDMaterialsTag = 0;
+    maxSectionsTag = 0;
+    maxSectionRepresentsTag = 0;
+    maxMultipleSupportsTag = 0;
+    maxAccelerationFieldsTag = 0;
+    maxDampingsTag = 0;
+    maxSPsTag = 0;
+    maxMPsTag = 0;
+    maxLoadPatternsTag = 0;
+
 }
 
 
@@ -744,6 +757,12 @@ Domain::addElement( Element *element )
 
     //==============================================================
 
+    if (eleTag > maxElementsTag)
+    {
+        maxElementsTag = eleTag;
+    }
+
+
     return result;
 }
 
@@ -906,6 +925,11 @@ Domain::addNode( Node *node )
         cerr << "Domain::addNode - node with tag " << nodTag << "could not be added to container\n";
     }
 
+    if ( nodTag > maxNodesTag)
+    {
+        maxNodesTag = nodTag;
+    }
+
     return result;
 }
 
@@ -938,6 +962,11 @@ Domain::addUniaxialMaterial( UniaxialMaterial &theMaterial )
     {
         cerr << "Domain::addUniaxialMaterial - material with tag " << materialTag << "could not be added to container\n";
         return -1;
+    }
+
+    if ( materialTag > maxUniaxialMaterialsTag)
+    {
+        maxUniaxialMaterialsTag = materialTag;
     }
 }
 // *****************************************************************************************
@@ -972,6 +1001,12 @@ Domain::addNDMaterial( NDMaterial &theMaterial )
         cerr << "Domain::NDMaterial - material with tag " << materialTag << "could not be added to container\n";
         return -1;
     }
+
+    if (materialTag > maxNDMaterialsTag)
+    {
+        maxNDMaterialsTag = materialTag;
+    }
+
 }
 
 // *****************************************************************************************
@@ -1005,6 +1040,11 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
         cerr << "Domain::NDMaterialLT - material with tag " << materialTag << "could not be added to container\n";
         return -1;  // end Jose Abell addition
     }// end Jose Abell addition
+
+    if (materialTag > maxNDMaterialsLTTag)
+    {
+        maxNDMaterialsLTTag = materialTag;
+    }
 }// end Jose Abell addition
 
 // *****************************************************************************************
@@ -1016,6 +1056,12 @@ Domain::addMultipleSupport( MultiSupportPattern &theMultiSupportPattern )
 {
 
     bool result = theMultipleSupports->addComponent( &theMultiSupportPattern );
+
+    int tag = theMultiSupportPattern.getTag();
+    if (tag > maxMultipleSupportsTag)
+    {
+        maxMultipleSupportsTag = tag;
+    }
 
     if ( result == true )
     {
@@ -1037,6 +1083,12 @@ Domain::addSection( SectionForceDeformation &theSection )
 {
     bool result = theSections->addComponent( &theSection );
 
+    int tag = theSection.getTag();
+    if (tag > maxSectionsTag)
+    {
+        maxSectionsTag = tag;
+    }
+
     if ( result == true )
     {
         return 0;
@@ -1055,6 +1107,11 @@ int
 Domain::addSectionRepres( SectionRepres &theSectionRepres )
 {
     bool result = theSectionRepresents->addComponent( &theSectionRepres );
+    int tag = theSectionRepres.getTag();
+    if (tag > maxSectionRepresentsTag)
+    {
+        maxSectionRepresentsTag = tag;
+    }
 
     if ( result == true )
     {
@@ -1077,6 +1134,11 @@ int
 Domain::addAccelerationField( AccelerationField *theAccelerationField )
 {
     bool result = theAccelerationFields->addComponent( theAccelerationField );
+    int tag = theAccelerationField->getTag();
+    if (tag > maxAccelerationFieldsTag)
+    {
+        maxAccelerationFieldsTag = tag;
+    }
 
     if ( result == true )
     {
@@ -1095,6 +1157,11 @@ int
 Domain::addDamping( Damping *theDamping )
 {
     bool result = theDampings->addComponent( theDamping );
+    int tag = theDamping->getTag();
+    if (tag > maxDampingsTag)
+    {
+        maxDampingsTag = tag;
+    }
 
     if ( result == true )
     {
@@ -1138,6 +1205,12 @@ Domain::addSP_Constraint( SP_Constraint *spConstraint )
     spConstraint->setDomain( this );
     this->domainChange();
 
+    if (tag > maxSPsTag)
+    {
+        maxSPsTag = tag;
+    }
+
+
     return true;
 }
 
@@ -1172,6 +1245,8 @@ Domain::addMP_Constraint( MP_Constraint *mpConstraint )
         return false;
     }
 
+
+
     // MISSING CODE
 #endif
 
@@ -1197,6 +1272,11 @@ Domain::addMP_Constraint( MP_Constraint *mpConstraint )
     else
         cerr << "Domain::addMP_Constraint - cannot add constraint with tag" <<
              tag << "to the container\n";
+
+    if (tag > maxMPsTag)
+    {
+        maxMPsTag = tag;
+    }
 
     return result;
 }
@@ -1227,6 +1307,12 @@ Domain::addLoadPattern( LoadPattern *load )
     else
         cerr << "Domain::addLoadPattern - cannot add LoadPattern with tag" <<
              tag << "to the container\n";
+
+    if (tag > maxLoadPatternsTag)
+    {
+        maxLoadPatternsTag = tag;
+    }
+
 
     return result;
 }
@@ -1283,6 +1369,13 @@ Domain::addSP_Constraint( SP_Constraint *spConstraint, int pattern )
 
     spConstraint->setDomain( this );
     this->domainChange();
+
+    int tag = spConstraint->getTag();
+    if (tag > maxSPsTag)
+    {
+        maxSPsTag = tag;
+    }
+
 
     return true;
 }
@@ -3699,7 +3792,7 @@ Domain::sendSelf( int cTag, Channel &theChannel )
     numMPs = theMPs->getNumComponents();
     numLPs = theLoadPatterns->getNumComponents();
 
-    ID domainData( 11 );
+    ID domainData( 11 + 12 );  //jose added the maxtags
     domainData( 0 ) = currentGeoTag;
 
     domainData( 1 ) = numNod;
@@ -3725,6 +3818,22 @@ Domain::sendSelf( int cTag, Channel &theChannel )
     domainData( 8 ) = dbSPs;
     domainData( 9 ) = dbMPs;
     domainData( 10 ) = dbLPs;
+    domainData( 11 ) = maxElementsTag;
+    domainData( 12 ) = maxNodesTag;
+    domainData( 13 ) = maxUniaxialMaterialsTag;
+    domainData( 14 ) = maxNDMaterialsTag;
+    domainData( 15 ) = maxSectionsTag;
+    domainData( 16 ) = maxSectionRepresentsTag;
+    domainData( 17 ) = maxMultipleSupportsTag;
+    domainData( 18 ) = maxAccelerationFieldsTag;
+    domainData( 19 ) = maxDampingsTag;
+    domainData( 20 ) = maxSPsTag;
+    domainData( 21 ) = maxMPsTag;
+    domainData( 22 ) = maxLoadPatternsTag;
+
+
+
+
 
     if ( theChannel.sendID( theDbTag, commitTag, domainData ) < 0 )
     {
@@ -4017,6 +4126,8 @@ Domain::sendSelf( int cTag, Channel &theChannel )
 
     // if get here we were successfull
     return commitTag;
+
+
 }
 
 
@@ -4338,6 +4449,7 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
         lastGeoSendTag = currentGeoTag;
         hasDomainChangedFlag = false;
 
+
     }
     else
     {
@@ -4409,6 +4521,22 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
     // now set the domains lastGeoSendTag and currentDomainChangedFlag
     lastGeoSendTag = currentGeoTag;
+
+
+    //Max tags (jose added)
+    maxElementsTag           = domainData( 11 );
+    maxNodesTag              = domainData( 12 );
+    maxUniaxialMaterialsTag  = domainData( 13 );
+    maxNDMaterialsTag        = domainData( 14 );
+    maxSectionsTag           = domainData( 15 );
+    maxSectionRepresentsTag  = domainData( 16 );
+    maxMultipleSupportsTag   = domainData( 17 );
+    maxAccelerationFieldsTag = domainData( 18 );
+    maxDampingsTag           = domainData( 19 );
+    maxSPsTag                = domainData( 20 );
+    maxMPsTag                = domainData( 21 );
+    maxLoadPatternsTag       = domainData( 22 );
+
 
     // if get here we were successfull
     return 0;
@@ -5845,3 +5973,70 @@ int Domain::enableOutput(bool is_output_enabled_)
 }
 
 
+
+
+
+int  Domain::getMaxElementsTag()
+{
+    return maxElementsTag;
+}
+
+int  Domain::getMaxNodesTag()
+{
+    return maxNodesTag;
+}
+
+int  Domain::getMaxUniaxialMaterialsTag()
+{
+    return maxUniaxialMaterialsTag;
+}
+
+int  Domain::getMaxNDMaterialsTag()
+{
+    return maxNDMaterialsTag;
+}
+
+int  Domain::getMaxNDMaterialsLTTag()
+{
+    return maxNDMaterialsLTTag;
+}
+
+int  Domain::getMaxSectionsTag()
+{
+    return maxSectionsTag;
+}
+
+int  Domain::getMaxSectionRepresentsTag()
+{
+    return maxSectionRepresentsTag;
+}
+
+int  Domain::getMaxMultipleSupportsTag()
+{
+    return maxMultipleSupportsTag;
+}
+
+int  Domain::getMaxAccelerationFieldsTag()
+{
+    return maxAccelerationFieldsTag;
+}
+
+int  Domain::getMaxDampingsTag()
+{
+    return maxDampingsTag;
+}
+
+int  Domain::getMaxSPsTag()
+{
+    return maxSPsTag;
+}
+
+int  Domain::getMaxMPsTag()
+{
+    return maxMPsTag;
+}
+
+int  Domain::getMaxLoadPatternsTag()
+{
+    return maxLoadPatternsTag;
+}

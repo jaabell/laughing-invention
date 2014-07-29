@@ -238,6 +238,6 @@ int simulate_using_transient_multistep(double dT,
 #endif
     //=====================================================================================
 
-    return 0;
+    return result;
 
 };

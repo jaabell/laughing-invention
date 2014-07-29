@@ -49,29 +49,43 @@ class PathSeries_Force_TimeHistory : public LoadPattern
                                      int NodeNumber,
                                      int dof_to_be_shaken,
                                      double theFactor,
-                                     const char* fileName);
+                                     const char *fileName);
 
         PathSeries_Force_TimeHistory(int tag,
                                      int NodeNumber,
                                      int dof_to_be_shaken,
                                      double theTimeIncr,
                                      double theFactor,
-                                     const char* fileName);
+                                     const char *fileName);
+
+        PathSeries_Force_TimeHistory(int tag,
+                                     int NodeNumber,
+                                     int dof_to_be_shaken,
+                                     double theTimeIncr,
+                                     double theFactor,
+                                     int currentTimeLoc_,
+                                     int isConstant_,
+                                     double loadValue_,
+                                     Vector *thePath_,
+                                     Vector *time_);
+
+
+
 
         ~PathSeries_Force_TimeHistory();
 
-        void setDomain(Domain* theDomain);
+        void setDomain(Domain *theDomain);
         double getFactor(double pseudoTime);
         void applyLoad(double time);
-        void Print(ostream& s, int flag = 0);
+        void Print(ostream &s, int flag = 0);
         void setLoadConstant(void);
 
         // methods for o/p
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
         //  method to obtain a blank copy of the LoadPattern
-        LoadPattern* getCopy(void);
+        LoadPattern *getCopy(void);
 
 
     protected:
@@ -80,8 +94,8 @@ class PathSeries_Force_TimeHistory : public LoadPattern
     private:
 
 
-        Vector* thePath;      // vector containg the data points
-        Vector* time;         // vector containg the time values of data points
+        Vector *thePath;      // vector containg the data points
+        Vector *time;         // vector containg the time values of data points
         int currentTimeLoc;   // current location in time
         double cFactor;       // additional factor on the returned load factor
         double pathTimeIncr;  // specifies the time increment used in load path vector

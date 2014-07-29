@@ -78,7 +78,22 @@ int add_load_to_node_from_reaction(int LoadNumber, int NodeNumber)
     }
     else
     {
+#ifdef _PARALLEL_PROCESING
+        node = theDomain.getOutsideNode(NodeNumber);
+        if (node == NULL)
+        {
+            cerr << "Error: (add_load) Node with tag " << NodeNumber << " not found" << endl;
+            return -1;
+        }
+#else
         node = theDomain.getNode(NodeNumber);
+        if (node == NULL)
+        {
+            cerr << "Error: (add_load) Node with tag " << NodeNumber << " not found" << endl;
+            return -1;
+        }
+#endif
+
         const Vector &reactions = node->getReaction();
 
         theLoad = new NodalLoad(LoadNumber, NodeNumber, reactions);
@@ -94,6 +109,7 @@ int add_load_to_node_from_reaction(int LoadNumber, int NodeNumber)
             cerr << "Error: (add_load) Nodal load could not be added to the domain " << endl;
             return -1;
         }
+
     }
     return 0;
 }
