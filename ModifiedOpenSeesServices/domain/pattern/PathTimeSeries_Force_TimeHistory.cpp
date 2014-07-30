@@ -350,12 +350,13 @@ PathTimeSeries_Force_TimeHistory::applyLoad(double time)
 int
 PathTimeSeries_Force_TimeHistory::sendSelf(int commitTag, Channel &theChannel)
 {
-    static ID IDdata(5);
+    static ID IDdata(6);
     IDdata(0) = currentTimeLoc;
     IDdata(1) = nodeTag;
     IDdata(2) = dof;
     IDdata(3) = isConstant;
     IDdata(4) = thePath->Size();
+    IDdata(5) = this->getTag();
 
     int res = theChannel.sendID(0, commitTag, IDdata);
     if (res < 0)
@@ -401,7 +402,7 @@ int
 PathTimeSeries_Force_TimeHistory::recvSelf(int commitTag, Channel &theChannel,
         FEM_ObjectBroker &theBroker)
 {
-    static ID IDdata(5);
+    static ID IDdata(6);
     int res = theChannel.recvID(0, commitTag, IDdata);
     if (res < 0)
     {
@@ -414,6 +415,8 @@ PathTimeSeries_Force_TimeHistory::recvSelf(int commitTag, Channel &theChannel,
     dof            = IDdata(2);
     isConstant     = IDdata(3);
     int size       = IDdata(4);
+    int tag        = IDdata(5);
+    this->setTag(tag);
 
     thePath = new Vector(size);
     time = new Vector(size);

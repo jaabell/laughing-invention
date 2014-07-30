@@ -76,39 +76,13 @@ TwentySevenNodeBrick::TwentySevenNodeBrick(int element_number,
       gauss_points(TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS, 3),
       outputVector(TwentySevenNodeBrick_OUTPUT_SIZE)
 {
-    //elem_numb = element_number;
 
-    //================================================================
-    // added by Nima Tafazzoli (October 2010)
-    // replacing the input density with the one defined in material
     rho = Globalmmodel->getRho();
-    //================================================================
-    // getting the body forces from domain instead of input argument
-    // for element
-    //     bf = bodyforce->getBodyForceVector();
-    //================================================================
-
-    //     damptag = theDamping->return_tag();
-    //     damp_a0 = theDamping->return_a0();
-    //     damp_a1 = theDamping->return_a1();
-    //     damp_a2 = theDamping->return_a2();
-    //     damp_a3 = theDamping->return_a3();
-    //     stiffness_type = theDamping->return_stiffnesstype();
-    //     damping_type = theDamping->return_dampingtype();
-
-
     determinant_of_Jacobian = 0.0;
 
-    //integration_order = r_int_order;
-    //integration_order = s_int_order;
-    //integration_order = t_int_order;
     integration_order = FixedOrder; // Gauss-Legendre integration order
 
-    //Not needed. Right now we have one NDMaterial for each material point
-    //mmodel = Globalmmodel->getCopy( type ); // One global mat model
-
     int total_number_of_Gauss_points = integration_order * integration_order * integration_order;
-
 
     if ( total_number_of_Gauss_points != 0 )
     {
@@ -119,7 +93,6 @@ TwentySevenNodeBrick::TwentySevenNodeBrick(int element_number,
         matpoint  = 0;
     }
 
-    ////////////////////////////////////////////////////////////////////
     short where = 0;
 
     for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
@@ -142,32 +115,12 @@ TwentySevenNodeBrick::TwentySevenNodeBrick(int element_number,
                 where =
                     ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
 
-                //DB::printf("\n\nBefore Initialization **************** where = %d \n",where);
-                //DB::printf("GP_c_r = %d,  GP_c_s = %d,  GP_c_t = %d\n",
-                //DB            GP_c_r,GP_c_s,GP_c_t);
-                //DB
-                //DBGPstress[where].reportshort("stress within before Initialization");
-                //DBGPstrain[where].reportshort("strain within before Initialization");
-                //DB
-                //DB// I suspect that [] should be overloaded so that compiler knows which
-                //DB// material model is returning a pointer and fot the purpose
-                //DB//matpoint[where].report("mmodel within before Initialization");
-                //DB//matpoint[where].report("mmodel within before Initialization"); // operator[] overloaded
-                //DB(matpoint)->operator[](where).report("mmodel within before Initialization"); // operator[] overloaded
-                //DB                                                               // for NDMaterial and
-                //DB                                                               // derived types!
-
                 matpoint[where] = new MatPoint3D(GP_c_r,
                                                  GP_c_s,
                                                  GP_c_t,
                                                  r, s, t,
                                                  rw, sw, tw,
-                                                 //InitEPS,
                                                  Globalmmodel);
-                //NMD);
-                //&( GPstress[where] ), //&( GPiterative_stress[where] ), //IN_q_ast_iterative[where] ,//&( GPstrain[where] ),  //&( GPtangent_E[where] ),
-                //&( (matpoint)->operator[](where) )
-                // ugly syntax but it works! Still don't know what's wrong   // with the old style matpoint[where]
             }
         }
     }
@@ -4834,6 +4787,35 @@ int TwentySevenNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_Obje
 
     int matClassTag = idData(0);
     int matDbTag = idData(1);
+
+
+
+
+
+    determinant_of_Jacobian = 0.0;
+
+    //integration_order = r_int_order;
+    //integration_order = s_int_order;
+    //integration_order = t_int_order;
+    integration_order = FixedOrder; // Gauss-Legendre integration order
+
+    //Not needed. Right now we have one NDMaterial for each material point
+    //mmodel = Globalmmodel->getCopy( type ); // One global mat model
+
+    int total_number_of_Gauss_points = integration_order * integration_order * integration_order;
+
+
+    if ( total_number_of_Gauss_points != 0 )
+    {
+        matpoint  = new MatPoint3D * [total_number_of_Gauss_points];
+        matpoint->matmodel = 0;
+    }
+    else
+    {
+        matpoint  = 0;
+    }
+
+
 
     if (matpoint[0]->matmodel == 0)
     {
