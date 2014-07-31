@@ -29,10 +29,14 @@
 #define TWENTYSEVENNODEBRICK_H
 
 
-// Output is 6 components of strain, 6 comps of plastic strain, and 6 of stress per gauss point
 #define TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS 27
-#define TwentySevenNodeBrick_OUTPUT_SIZE TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS*(6*3)
+#define TwentySevenNodeBrick_IntegrationOrder 3
+#define TwentySevenNodeBrick_NumberOfNodes 27
+#define TwentySevenNodeBrick_NumberOfGaussPoints 27
+#define TwentySevenNodeBrick_NumberOfDOFS 81
 
+// Output is 6 components of strain, 6 comps of plastic strain, and 6 of stress per gauss point
+#define TwentySevenNodeBrick_OUTPUT_SIZE TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS*(6*3)
 
 #ifndef _bool_h
 #include "bool.h"
@@ -72,7 +76,6 @@
 #include <Information.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
-// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 #include <Damping.h>
 
@@ -104,17 +107,11 @@ class TwentySevenNodeBrick: public Element
         int getNumDOF ();
         void setDomain(Domain *theDomain);
 
-        // public methods to set the state of the element
         int commitState ();
         int revertToLastCommit ();
         int revertToStart ();
-
-        // update, Guanzhou added Apr. 2004 to update incremental strain in the domain
         int update(void);
 
-        // public methods to obtain stiffness, mass, damping and residual information
-        // We haven't build the following functions.
-        // All the value of K M Dmp and F are nothing.
         const Matrix &getTangentStiff ();
         const Matrix &getInitialStiff();
         const Matrix &getMass ();
@@ -124,28 +121,16 @@ class TwentySevenNodeBrick: public Element
 
         void zeroLoad ();
         int addLoad(ElementalLoad *theLoad, double loadFactor);
-        //int addLoad(const Vector &addP);
         int addInertiaLoadToUnbalance(const Vector &accel);
         const Vector  FormEquiBodyForce(const Vector &data);
         const Vector &getResistingForce ();
         const Vector &getResistingForceIncInertia ();
 
-        // public methods for element output
         int sendSelf (int commitTag, Channel &theChannel);
         int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
                       &theBroker);
-        //    int displaySelf (Renderer &theViewer, int displayMode, float fact);
         void Print(ostream &s, int flag = 0);
-        //    Do nothing with void Print (ostream &s, int flag =0);
-        //    use Brick3D report.  08/16/00
-        // Response* setResponse (const char** argv, int argc, Information& eleInformation);
-        // int getResponse (int responseID, Information& eleInformation);
 
-        // Nima Tafazzoli added to return the Mass matrix (Feb. 2010)
-        //     Matrix returnMass(void);
-
-
-        // Nima Tafazzoli added for surface load (July 2012)
         Vector &Direction_Weight(double Xi , double Eta,
                                  Vector coord1, Vector coord2, Vector coord3, Vector coord4,
                                  Vector coord5, Vector coord6, Vector coord7, Vector coord8,
@@ -156,24 +141,11 @@ class TwentySevenNodeBrick: public Element
         const  Vector &getSurfaceForce(double loadFactor, const Vector &data);
 
         int getObjectSize();
-
-        // Nima Tafazzoli added (Sep. 2012)
         int CheckMesh(ofstream &);
 
-
-        //     int getDampingTag(void);
-        //     double getDamping_a0(void);
-        //     double getDamping_a1(void);
-        //     double getDamping_a2(void);
-        //     double getDamping_a3(void);
-        //     string getDamping_stiffnesstype(void);
-        //     string getDamping_type(void);
-        //Jose Added for output
         Matrix &getGaussCoordinates(void);
         virtual int getOutputSize() const;
         virtual const Vector &getOutput() const;
-
-
 
         std::string getElementName() const
         {
@@ -181,80 +153,7 @@ class TwentySevenNodeBrick: public Element
         }
 
 
-
-    protected:
-
-    private:
-        // private attributes - a copy for each object of the class
-
-        //NDMaterial * **theMaterial; // pointer to the ND material objects
-
-        int numDOF;          // Number of element DOF
-        ID  connectedExternalNodes; // Tags of quad nodes
-
-        Matrix *Ki;
-        Node *theNodes[27];
-
-        static Matrix K;    // Element stiffness Matrix
-        static Matrix C;    // Element damping matrix
-        static Matrix M;    // Element mass matrix
-        static Vector P;    // Element resisting force vector
-        Vector Q;           // Applied nodal loads
-        Vector bf;
-
-        // double thickness;  // Element thickness
-        double rho;    // Mass per unit volume DO WE GET THIS ONE OUT!!!
-        //    double pressure;  // Normal surface traction (pressure) over entire element
-        int    order;    // Order of the quadrature rule
-
-        //Matrix J;    // Jacobian of transformation
-        //Matrix L;    // Inverse of J
-        //Matrix B;    // Strain interpolation matrix
-
-
-        // Nima Tafazzoli (Nov. 2010)
-        //     int damptag;
-        //     double damp_a0;
-        //     double damp_a1;
-        //     double damp_a2;
-        //     double damp_a3;
-        //     string stiffness_type;
-        //     string damping_type;
-
-
-        // Nima Tafazzoli added for surface load (June 2012)
-        static Vector ShapeFunctionValues_in_function;
-        static Vector J_vector_in_function;
-        static double SurfaceLoadValues_in_function;
-
-
-
-    private:
-
-        double determinant_of_Jacobian;
-        int nodes_in_brick;      // number of nodes ( 27 now Guanzhou)
-
-        NDMaterial *mmodel;      // pointer to GLOBAL material models
-
-        int integration_order; // Gauss-Legendre integration order
-
-
-        static const int  Num_TotalGaussPts;
-
-        // Now I want 3D array of Material points!
-        // MatPoint3D[r_integration_order][s_integration_order][t_integration_order]
-        // 3D array of Material points
-        MatPoint3D **matpoint;   // pointer to array of Material Points
-
-        // this is LM array. This array holds DOFs for this element
-        //int  LM[60]; // for 20noded x 3 = 60
-
-        Matrix gauss_points;
-        Vector outputVector;
-    public:
-
         void incremental_Update(void);
-        //void iterative_Update(void);
 
         tensor H_3D(double r1, double r2, double r3);
         tensor interp_poli_at(double r, double s, double t);
@@ -280,15 +179,9 @@ class TwentySevenNodeBrick: public Element
         tensor stiffness_matrix(const tensor &K);
         tensor mass_matrix(const tensor &M);
 
-
         int  get_global_number_of_node(int local_node_number);
         int  get_Brick_Number(void);
 
-
-        //int * get_LM(void);
-        //void set_LM(Node * node); // commented out temporarily 09-27-2000 Zhaohui
-
-        //these two files are originally in fe.h
         double get_Gauss_p_c(short order, short point_numb);
         double get_Gauss_p_w(short order, short point_numb);
 
@@ -314,14 +207,40 @@ class TwentySevenNodeBrick: public Element
         void reportTensorF(FILE *);
         Vector getWeightofGP(void);
 
-
-        // Setting initial E according to the initial pressure
-        //void setInitE(void);
-        //void reportStressTensorF(FILE *);
-
-        // Nima Tafazzoli (Jan. 2013)
         Vector *getStress(void);
 
+
+    private:
+
+        int numDOF;          // Number of element DOF
+        ID  connectedExternalNodes; // Tags of quad nodes
+
+        Matrix *Ki;
+        Node *theNodes[27];
+
+        static Matrix K;    // Element stiffness Matrix
+        static Matrix C;    // Element damping matrix
+        static Matrix M;    // Element mass matrix
+        static Vector P;    // Element resisting force vector
+        Vector Q;           // Applied nodal loads
+        Vector bf;
+
+        double rho;    // Mass per unit volume DO WE GET THIS ONE OUT!!!
+        int    order;    // Order of the quadrature rule
+
+        static Vector ShapeFunctionValues_in_function;
+        static Vector J_vector_in_function;
+        static double SurfaceLoadValues_in_function;
+
+        double determinant_of_Jacobian;
+
+        NDMaterial *mmodel;      // pointer to GLOBAL material models
+
+
+        MatPoint3D **matpoint;   // pointer to array of Material Points
+
+        Matrix gauss_points;
+        Vector outputVector;
 };
 
 

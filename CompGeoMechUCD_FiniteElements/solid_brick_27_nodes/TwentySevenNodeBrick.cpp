@@ -33,28 +33,23 @@
 #include <Matrix.h>
 #include <Vector.h>
 #include <ID.h>
-//#include <Renderer.h>
 #include <Domain.h>
 #include <string.h>
 #include <Information.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
-// #include <ElementResponse.h>
 
 #include <TwentySevenNodeBrick.h>
 #include <ElementalLoad.h>
-#define FixedOrder 3
-
 
 Matrix TwentySevenNodeBrick::K(81, 81);
 Matrix TwentySevenNodeBrick::C(81, 81);
 Matrix TwentySevenNodeBrick::M(81, 81);
 Vector TwentySevenNodeBrick::P(81);
 
-const int TwentySevenNodeBrick::Num_TotalGaussPts = FixedOrder * FixedOrder * FixedOrder; //Nima added for recording the Strain (02-21-2011)
-Vector TwentySevenNodeBrick::ShapeFunctionValues_in_function(9); // Nima added for surface load (July 2012)
-Vector TwentySevenNodeBrick::J_vector_in_function(3); // Nima added for surface load (July 2012)
-double TwentySevenNodeBrick::SurfaceLoadValues_in_function; // Nima added for surface load (July 2012)
+Vector TwentySevenNodeBrick::ShapeFunctionValues_in_function(9);
+Vector TwentySevenNodeBrick::J_vector_in_function(3);
+double TwentySevenNodeBrick::SurfaceLoadValues_in_function;
 
 
 //====================================================================
@@ -72,7 +67,11 @@ TwentySevenNodeBrick::TwentySevenNodeBrick(int element_number,
         NDMaterial *Globalmmodel)
 
     : Element(element_number, ELE_TAG_TwentySevenNodeBrick ),
-      connectedExternalNodes(27), Ki(0), Q(81), bf(3), rho(0.0),
+      connectedExternalNodes(27),
+      Ki(0),
+      Q(81),
+      bf(3),
+      rho(0.0),
       gauss_points(TwentySevenNodeBrick_NUMBER_OF_GAUSSPOINTS, 3),
       outputVector(TwentySevenNodeBrick_OUTPUT_SIZE)
 {
@@ -80,40 +79,28 @@ TwentySevenNodeBrick::TwentySevenNodeBrick(int element_number,
     rho = Globalmmodel->getRho();
     determinant_of_Jacobian = 0.0;
 
-    integration_order = FixedOrder; // Gauss-Legendre integration order
-
-    int total_number_of_Gauss_points = integration_order * integration_order * integration_order;
-
-    if ( total_number_of_Gauss_points != 0 )
-    {
-        matpoint  = new MatPoint3D * [total_number_of_Gauss_points];
-    }
-    else
-    {
-        matpoint  = 0;
-    }
+    matpoint  = 0;
 
     short where = 0;
-
-    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    for ( short GP_c_r = 1 ; GP_c_r <= 3 ; GP_c_r++ )
     {
-        double r = get_Gauss_p_c( integration_order, GP_c_r );
-        double rw = get_Gauss_p_w( integration_order, GP_c_r );
+        double r = get_Gauss_p_c( 3, GP_c_r );
+        double rw = get_Gauss_p_w( 3, GP_c_r );
 
-        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        for ( short GP_c_s = 1 ; GP_c_s <= 3 ; GP_c_s++ )
         {
-            double s = get_Gauss_p_c( integration_order, GP_c_s );
-            double sw = get_Gauss_p_w( integration_order, GP_c_s );
+            double s = get_Gauss_p_c( 3, GP_c_s );
+            double sw = get_Gauss_p_w( 3, GP_c_s );
 
-            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            for ( short GP_c_t = 1 ; GP_c_t <= 3 ; GP_c_t++ )
             {
-                double t = get_Gauss_p_c( integration_order, GP_c_t );
-                double tw = get_Gauss_p_w( integration_order, GP_c_t );
+                double t = get_Gauss_p_c( 3, GP_c_t );
+                double tw = get_Gauss_p_w( 3, GP_c_t );
 
                 // this short routine is supposed to calculate position of
                 // Gauss point from 3D array of short's
                 where =
-                    ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+                    ((GP_c_r - 1) * 3 + GP_c_s - 1) * 3 + GP_c_t - 1;
 
                 matpoint[where] = new MatPoint3D(GP_c_r,
                                                  GP_c_s,
@@ -163,7 +150,7 @@ TwentySevenNodeBrick::TwentySevenNodeBrick(int element_number,
         theNodes[i] = 0;
     }
 
-    nodes_in_brick = 27;
+    27 = 27;
 
 }
 
@@ -220,20 +207,11 @@ TwentySevenNodeBrick::~TwentySevenNodeBrick ()
 void TwentySevenNodeBrick::incremental_Update()
 {
     double r  = 0.0;
-    // double rw = 0.0;
     double s  = 0.0;
-    // double sw = 0.0;
     double t  = 0.0;
-    // double tw = 0.0;
-
-    short where = 0;
-    //,,,,,    double weight = 0.0;
-
-    //double this_one_PP = (matpoint)->operator[](where).IS_Perfect_Plastic();
 
     int dh_dim[] = {27, 3};
     tensor dh(2, dh_dim, 0.0);
-
 
     static int disp_dim[] = {27, 3};
     tensor incremental_displacements(2, disp_dim, 0.0);
@@ -246,66 +224,47 @@ void TwentySevenNodeBrick::incremental_Update()
 
     incremental_displacements = incr_disp();
 
+    short where = 0;
     for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
         r = get_Gauss_p_c( integration_order, GP_c_r );
 
-        //--        rw = get_Gauss_p_w( integration_order, GP_c_r );
         for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
         {
             s = get_Gauss_p_c( integration_order, GP_c_s );
 
-            //--            sw = get_Gauss_p_w( integration_order, GP_c_s );
             for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
             {
                 t = get_Gauss_p_c( integration_order, GP_c_t );
-                //--                tw = get_Gauss_p_w( integration_order, GP_c_t );
-                // this short routine is supposed to calculate position of
-                // Gauss point from 3D array of short's
+
                 where =
                     ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
-                // derivatives of local coordiantes with respect to local coordiantes
                 dh = dh_drst_at(r, s, t);
+
                 // Jacobian tensor ( matrix )
                 Jacobian = Jacobian_3D(dh);
                 //....                Jacobian.print("J");
                 // Inverse of Jacobian tensor ( matrix )
                 JacobianINV = Jacobian_3Dinv(dh);
-                //....                JacobianINV.print("JINV");
-                // determinant of Jacobian tensor ( matrix )
-                //--                det_of_Jacobian  = Jacobian.determinant();
-                //....  ::printf("determinant of Jacobian is %f\n",Jacobian_determinant );
-                // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                //dhGlobal = dh("ij") * JacobianINV("jk"); // Zhaohui 09-02-2001
+
                 dhGlobal = dh("ij") * JacobianINV("kj");
-                //....                dhGlobal.print("dh","dhGlobal");
-                //weight
-                //                weight = rw * sw * tw * det_of_Jacobian;
-                //::::::   ::printf("\n\nIN THE STIFFNESS TENSOR INTEGRATOR ----**************** where = %d \n", where);
-                //::::::   ::printf(" void TwentySevenNodeBrick::incremental_Update()\n");
-                //::::::   ::printf(" GP_c_r = %d,  GP_c_s = %d,  GP_c_t = %d    --->>>  where = %d \n",
-                //::::::                      GP_c_r,GP_c_s,GP_c_t,where);
-                //::::::   ::printf("WEIGHT = %f", weight);
-                //::::::   ::printf("determinant of Jacobian = %f", determinant_of_Jacobian);
-                //::::::   matpoint[where].report("Gauss Point\n");
+
+
                 // incremental straines at this Gauss point
                 // now in Update we know the incremental displacements so let's find
                 // the incremental strain
                 incremental_strain =
                     (dhGlobal("ib") * incremental_displacements("ia")).symmetrize11();
                 incremental_strain.null_indices();
-                //incremental_strain.reportshort("\n incremental_strain tensor at GAUSS point\n");
 
                 // here comes the final_stress calculation actually on only needs to copy stresses
                 // from the iterative data . . .
-                //(GPstress+where)->reportshortpqtheta("\n stress START GAUSS \n");
+
 
                 if ( ! ( (matpoint[where]->matmodel)->setTrialStrainIncr( incremental_strain)) )
                 {
                     cerr << "TwentySevenNodeBrick::incremental_Update (tag: " << this->getTag() << "), not converged\n";
                 }
-
-                //matpoint[where].setEPS( mmodel->getEPS() );
             }
         }
     }
@@ -315,12 +274,6 @@ void TwentySevenNodeBrick::incremental_Update()
 
 //#############################################################################
 //#############################################################################
-
-// Nima Tafazzoli (Nov. 2011)
-// (Change in the order of the shape functions to be consistent with the
-// other elements
-// Shape functions are from Grummitt and Baker (1999), Theoretical and
-// applied mechanics, 32, 189-201
 
 
 tensor TwentySevenNodeBrick::H_3D(double r1, double r2, double r3)
@@ -492,9 +445,6 @@ tensor TwentySevenNodeBrick::H_3D(double r1, double r2, double r3)
     return H;
 }
 
-
-// Nima Tafazzoli (Nov. 2011)
-//***************************************************************
 tensor TwentySevenNodeBrick::dh_drst_at(double r1, double r2, double r3)
 {
 
@@ -669,21 +619,7 @@ TwentySevenNodeBrick &TwentySevenNodeBrick::operator[](int subscript)
     return ( *(this + subscript) );
 }
 
-//Finite_Element & TwentySevenNodeBrick::operator[](short subscript)
-//  {
-//    return ( *(this+subscript) );
-//  }
 
-//Finite_Element & TwentySevenNodeBrick::operator[](unsigned subscript)
-//  {
-//    return ( *(this+subscript) );
-//  }
-
-
-////#############################################################################
-////#############################################################################
-////#############################################################################
-////#############################################################################
 tensor TwentySevenNodeBrick::getStiffnessTensor(void)
 {
     int K_dim[] = {27, 3, 3, 27};
@@ -706,7 +642,6 @@ tensor TwentySevenNodeBrick::getStiffnessTensor(void)
     int dh_dim[] = {27, 3};
     tensor dh(2, dh_dim, 0.0);
 
-    //    tensor Constitutive( 4, def_dim_4, 0.0);
     tensor Constitutive;
 
     double det_of_Jacobian = 0.0;
@@ -715,7 +650,6 @@ tensor TwentySevenNodeBrick::getStiffnessTensor(void)
     tensor incremental_displacements(2, disp_dim, 0.0); // \Delta u
 
     straintensor incremental_strain;
-    //    straintensor total_strain_at_GP;
 
     tensor Jacobian;
     tensor JacobianINV;
@@ -740,151 +674,32 @@ tensor TwentySevenNodeBrick::getStiffnessTensor(void)
                 // Gauss point from 3D array of short's
                 where =
                     ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
                 // derivatives of local coordinates with respect to local coordinates
                 dh = dh_drst_at(r, s, t);
-                //     dh.print("dh");
                 // Jacobian tensor ( matrix )
                 Jacobian = Jacobian_3D(dh);
+
                 // Inverse of Jacobian tensor ( matrix )
                 JacobianINV = Jacobian_3Dinv(dh);
-                //JacobianINVtemp = Jacobian.inverse();
-                // determinant of Jacobian tensor ( matrix )
+
                 det_of_Jacobian  = Jacobian.determinant();
 
-                //      cout << "Det of Jabobian is: " << det_of_Jacobian << endl;
 
-                // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-                ////////!!!!!!! dhGlobal = dh("ij") * JacobianINV("jk");  //big bug found here Zhaohui 09-02-2001
                 dhGlobal = dh("ij") * JacobianINV("kj");
-                //        ::fprintf(stdout," # %d \n\n\n\n\n\n\n\n", El_count);
-                //                   dhGlobal.print("dhGlobal");
-                //weight
+
                 weight = rw * sw * tw * det_of_Jacobian;
-                //::::::
-                //      cout << "weight: " << weight << endl;
-                //printf("\n\nIN THE STIFFNESS TENSOR INTEGRATOR ----**************** where = %d \n", where);
-                //printf("  Stifness_Tensor \n");
-                //printf("                    GP_c_r = %d,  GP_c_s = %d,  GP_c_t = %d\n",
-                //                            GP_c_r,GP_c_s,GP_c_t);
-                //printf("WEIGHT = %f", weight);
-                //Jacobian.print("J");
-                //JacobianINV.print("JINV");
-                //JacobianINVtemp.print("JINVtemp");
-                //tensor I = JacobianINV("ij")*Jacobian("jk");
-                //I.print("I");
-
-                //printf("determinant of Jacobian = %.6e", det_of_Jacobian);
-                //matpoint[where].report("Gauss Point\n");
-
-                // incremental straines at this Gauss point
-                //GPstress[where].reportshortpqtheta("\n stress at GAUSS point in stiffness_tensor1\n");
-
-                //09-02-2001 Zhaohui
-                //              incremental_strain =
-                //     (dhGlobal("ib")*incremental_displacements("ia")).symmetrize11();
-
-                //incremental_strain.null_indices();
-                //incremental_strain.report("\n incremental_strain tensor at GAUSS point\n");
-
-                // incremental_strain.reportshort("\n incremental_strain tensor at GAUSS point\n");
-                //----   GPstress[where].reportshortpqtheta("\n stress at GAUSS point in stiffness_tensor2\n");
-                // intialize total strain with the strain at this Gauss point before
-                // adding this increments strains!
-                //                total_strain_at_GP.Initialize(*(GPstrain+where));
-                //total_strain_at_GP.reportshort("\n total_strain tensor at GAUSS point BEFORE\n");
-                // this is the addition of incremental strains to the previous strain state at
-                // this Gauss point
-                //                total_strain_at_GP = total_strain_at_GP + incremental_strain;
-                //total_strain_at_GP.reportshort("\n total_strain tensor at GAUSS point AFTER\n");
-                //..   dakle ovde posalji strain_increment jer se stari stress cuva u okviru svake
-                //..   Gauss tacke a samo saljes strain_increment koji ce da se prenese
-                //..   u integracionu rutinu pa ce ta da vrati krajnji napon i onda moze da
-                //..   se pravi ConstitutiveStiffnessTensor.
-                // here comes the final_stress calculation
-                // this final stress after integration is used ONLY to obtain Constitutive tensor
-                // at this Gauss point.
-
-                //final_stress_after_integration =
-                //    (matpoint)->operator[](where).FinalStress(*(GPstress+where),
-                //                                 incremental_strain,
-                //                                 (matpoint)->operator[](where),
-                //                                 number_of_subincrements,
-                //                                 this_one_PP);
-                //final_stress_after_integration.reportshortpqtheta("\n final_stress_after_integration in stiffness_tensor5\n");
-
-                //----   GPstress[where].reportshortpqtheta("\n stress at GAUSS point in stiffness_tensor3\n");
-                //final_stress_after_integration.reportshortpqtheta("\n final_stress_after_integration GAUSS \n");
-                //----   GPstress[where].reportshortpqtheta("\n stress at GAUSS point in stiffness_tensor4\n");
-
-                // this final stress after integration is used ONLY to obtain Constitutive tensor
-                // at this Gauss point AND to set up the iterative_stress that is used in calculting
-                // internal forces during iterations!!
-
-                //GPiterative_stress[where].Initialize(final_stress_after_integration);
-                //GPiterative_stress[where].reportshortpqtheta("\n iterative_stress at GAUSS point in stiffness_tensor5\n");
-
-
-                // Stress state at Gauss point will be updated ( in the
-                // sense of updating stresses ( integrating them ) ) in function Update (...) ! ! ! ! !
-                // calculate the constitutive tensor
-                //......         Constitutive =  GPtangent_E[where];
-
-                //Constitutive =  (matpoint)->operator[](where).ConstitutiveTensor(final_stress_after_integration,
-                //                                         *(GPstress+where),
-                //                                          incremental_strain,
-                //                                          (matpoint)->operator[](where),
-                //                                          this_one_PP);
-                //Constitutive.print("C","\n\n C tensor \n");
-
-                //EPState *tmp_eps = (matpoint[where]).getEPS();
-                //NDMaterial *tmp_ndm = (matpoint[where]).getNDMat();
 
                 Constitutive = (matpoint[where]->matmodel)->getTangentTensor();
-                //Constitutive.print("C","\n\n C tensor \n");
 
-                //    matpoint[where].setEPS( mmodel->getEPS() );
-                //}
-                //else if ( tmp_ndm ) { //Elastic case
-                //    (matpoint[where].p_matmodel)->setTrialStrainIncr( incremental_strain );
-                //    Constitutive = (matpoint[where].p_matmodel)->getTangentTensor();
-                //}
-                //else {
-                //   g3ErrorHandler->fatal("TwentySevenNodeBrick::incremental_Update (tag: %d), could not getTangentTensor", this->getTag());
-                //   exit(1);
-                //}
-
-                //printf("Constitutive.trace = %12.6e\n", Constitutive.trace());
-                //Kmat = this->stiffness_matrix(Constitutive);
-                //printf("Constitutive tensor max:= %10.3e\n", Kmat.mmax());
-
-                //----   GPstress[where].reportshortpqtheta("\n stress at GAUSS point in stiffness_tensor5\n");
-                // this is update of constitutive tensor at this Gauss point
-                //GPtangent_E[where].Initialize(Constitutive);
-                //....GPtangent_E[where].print(" tangent E at GAUSS point");
-
-                //GPstress[where].reportshortpqtheta("\n stress at GAUSS point in stiffness_tensor6\n");
-
-                //K = K + temp2;
 
                 Kkt = dhGlobal("ib") * Constitutive("abcd");
                 Kk = Kk + Kkt("aicd") * dhGlobal("jd") * weight;
-
-                //Kk = Kk + dhGlobal("ib")*Constitutive("abcd")*dhGlobal("jd")*weight;
-                //....K.print("K","\n\n K tensor \n");
-
-                //Kmat = this->stiffness_matrix(Kk);
-                //printf("K tensor max= %10.3e\n", Kmat.mmax());
-
-                //convert constitutive and K to matrix and find min and max and print!
-
-
 
             }
         }
     }
 
-    //     Kk.print("K","\n\n K tensor \n");
-    //K = Kk;
     return Kk;
 }
 
@@ -896,7 +711,6 @@ void TwentySevenNodeBrick::set_strain_stress_tensor(FILE *fp, double *u)
     int dh_dim[] = {27, 3};
     tensor dh(2, dh_dim, 0.0);
 
-    //    tensor Constitutive( 4, def_dim_4, 0.0);
     tensor Constitutive;
     double r  = 0.0;
     double s  = 0.0;
@@ -2380,7 +2194,7 @@ void TwentySevenNodeBrick::report(char *msg)
 
     ::printf("\n Element Number = %d\n", this->getTag() );
     ::printf("\n Number of nodes in a TwentySevenNodebrick = %d\n",
-             nodes_in_brick);
+             27);
     ::printf("\n Determinant of Jacobian (! ==0 before comp.) = %f\n",
              determinant_of_Jacobian);
 
@@ -2494,14 +2308,14 @@ void TwentySevenNodeBrick::reportshort(char *msg)
 
     ::printf("\n Element Number = %d\n", this->getTag() );
     ::printf("\n Number of nodes in a TwentySevenNodeBrick = %d\n",
-             nodes_in_brick);
+             27);
     ::printf("\n Determinant of Jacobian (! ==0 before comp.) = %f\n",
              determinant_of_Jacobian);
 
     ::printf("Node numbers \n");
     ::printf(".....1.....2.....3.....4.....5.....6.....7.....8.....9.....0.....1.....2\n");
 
-    for ( int i = 0 ; i < nodes_in_brick ; i++ )
+    for ( int i = 0 ; i < 27 ; i++ )
         //::printf("%6d",G_N_numbs[i]);
     {
         ::printf( "%6d", connectedExternalNodes(i) );
@@ -2532,7 +2346,7 @@ void TwentySevenNodeBrick::reportPAK(char *msg)
 
     ::printf("%10d   ",  this->getTag());
 
-    for ( int i = 0 ; i < nodes_in_brick ; i++ )
+    for ( int i = 0 ; i < 27 ; i++ )
     {
         ::printf( "%6d", connectedExternalNodes(i) );
     }
@@ -2752,7 +2566,7 @@ void TwentySevenNodeBrick::computeGaussPoint(void)
                 H = H_3D(r, s, t);
                 //H.print("H");
 
-                for (int encount = 1 ; encount <= nodes_in_brick; encount++ )
+                for (int encount = 1 ; encount <= 27; encount++ )
                     //         for (int encount=0 ; encount <= 7 ; encount++ )
                 {
                     //  matpointCoord.val(1,where+1) =+NodalCoord.val(1,where+1) * H.val(encount*3-2,1);
@@ -2965,7 +2779,7 @@ void TwentySevenNodeBrick::reportTensorF(FILE *fp)
 
                 H = H_3D(r, s, t);
 
-                for (int encount = 1 ; encount <= nodes_in_brick ; encount++ )
+                for (int encount = 1 ; encount <= 27 ; encount++ )
                     //         for (int encount=0 ; encount <= 7 ; encount++ )
                 {
                     //  matpointCoord.val(1,where+1) =+NodalCoord.val(1,where+1) * H.val(encount*3-2,1);
@@ -3002,7 +2816,7 @@ void TwentySevenNodeBrick::reportTensorF(FILE *fp)
 //=============================================================================
 int TwentySevenNodeBrick::getNumExternalNodes () const
 {
-    return nodes_in_brick;
+    return 27;
 }
 
 
@@ -3021,7 +2835,7 @@ TwentySevenNodeBrick::getNodePtrs(void)
 //=============================================================================
 int TwentySevenNodeBrick::getNumDOF ()
 {
-    return 3 * nodes_in_brick;
+    return 3 * 27;
 }
 
 //=============================================================================
@@ -3329,9 +3143,9 @@ const Matrix &TwentySevenNodeBrick::getTangentStiff ()
     int Ki = 0;
     int Kj = 0;
 
-    for ( int i = 1 ; i <= nodes_in_brick ; i++ )
+    for ( int i = 1 ; i <= 27 ; i++ )
     {
-        for ( int j = 1 ; j <= nodes_in_brick ; j++ )
+        for ( int j = 1 ; j <= 27 ; j++ )
         {
             for ( int k = 1 ; k <= 3 ; k++ )
             {
@@ -3370,11 +3184,11 @@ const Matrix &TwentySevenNodeBrick::getConsMass ()
     //double diag_mass = 0.0;
     double column_mass;
 
-    for ( int i = 1 ; i <= nodes_in_brick * 3 ; i++ )
+    for ( int i = 1 ; i <= 27 * 3 ; i++ )
     {
         column_mass = 0.0;
 
-        for ( int j = 1 ; j <= nodes_in_brick * 3 ; j++ )
+        for ( int j = 1 ; j <= 27 * 3 ; j++ )
         {
 
             //M( i-1 , j-1 ) = masstensor.cval(i,j);
@@ -3410,10 +3224,10 @@ const Matrix &TwentySevenNodeBrick::getMass ()
     //double diag_mass = 0.0;
     //double column_mass;
 
-    for ( int i = 1 ; i <= nodes_in_brick * 3 ; i++ )
+    for ( int i = 1 ; i <= 27 * 3 ; i++ )
     {
         //column_mass = 0.0;
-        for ( int j = 1 ; j <= nodes_in_brick * 3 ; j++ )
+        for ( int j = 1 ; j <= 27 * 3 ; j++ )
         {
             M( i - 1 , j - 1 ) = masstensor.cval(i, j);
 
@@ -4296,7 +4110,7 @@ int TwentySevenNodeBrick::addInertiaLoadToUnbalance(const Vector &accel)
 
     //cerr << " addInerti... column_mass " << column_mass << endln;
 
-    //for (int i = 0; i < nodes_in_brick*3; i++)
+    //for (int i = 0; i < 27*3; i++)
     //    Q(i) += -M(i,i)*ra(i);
     Q.addMatrixVector(1.0, M, ra, -1.0);
 
@@ -4473,7 +4287,7 @@ const Vector &TwentySevenNodeBrick::getResistingForce ()
     nodalforces = nodal_forces();
 
     //converting nodalforce tensor to vector
-    for (int i = 0; i < nodes_in_brick; i++)
+    for (int i = 0; i < 27; i++)
         for (int j = 0; j < 3; j++)
         {
             P(i * 3 + j) = nodalforces.cval(i + 1, j + 1);
@@ -4808,17 +4622,13 @@ int TwentySevenNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_Obje
     if ( total_number_of_Gauss_points != 0 )
     {
         matpoint  = new MatPoint3D * [total_number_of_Gauss_points];
-        for (int i = 0; i < 27; i++)
-        {
-            matpoint[i] = 0;
-        }
     }
     else
     {
         matpoint  = 0;
     }
 
-  short where = 0;
+    short where = 0;
 
     for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
     {
