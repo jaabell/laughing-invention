@@ -4808,14 +4808,47 @@ int TwentySevenNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_Obje
     if ( total_number_of_Gauss_points != 0 )
     {
         matpoint  = new MatPoint3D * [total_number_of_Gauss_points];
-        matpoint->matmodel = 0;
+        for (int i = 0; i < 27; i++)
+        {
+            matpoint[i] = 0;
+        }
     }
     else
     {
         matpoint  = 0;
     }
 
+  short where = 0;
 
+    for ( short GP_c_r = 1 ; GP_c_r <= integration_order ; GP_c_r++ )
+    {
+        double r = get_Gauss_p_c( integration_order, GP_c_r );
+        double rw = get_Gauss_p_w( integration_order, GP_c_r );
+
+        for ( short GP_c_s = 1 ; GP_c_s <= integration_order ; GP_c_s++ )
+        {
+            double s = get_Gauss_p_c( integration_order, GP_c_s );
+            double sw = get_Gauss_p_w( integration_order, GP_c_s );
+
+            for ( short GP_c_t = 1 ; GP_c_t <= integration_order ; GP_c_t++ )
+            {
+                double t = get_Gauss_p_c( integration_order, GP_c_t );
+                double tw = get_Gauss_p_w( integration_order, GP_c_t );
+
+                where =
+                    ((GP_c_r - 1) * integration_order + GP_c_s - 1) * integration_order + GP_c_t - 1;
+
+                matpoint[where] = new MatPoint3D(GP_c_r,
+                                                 GP_c_s,
+                                                 GP_c_t,
+                                                 r, s, t,
+                                                 rw, sw, tw,
+
+                                                 mmodel); //Guanzhou changed to point to global material model!
+
+            }
+        }
+    }
 
     if (matpoint[0]->matmodel == 0)
     {
