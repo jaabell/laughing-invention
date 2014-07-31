@@ -197,14 +197,7 @@ class TwentySevenNodeBrick: public Element
         // updates Material point stresses and strains from given displacements
         tensor update_stress_strain(tensor &disp);
 
-        void report(char *);
-        void reportshort(char *);
-        void reportPAK(char *);
-        void reportpqtheta(int);
-        //void reportLM(char *);
         void computeGaussPoint(void);
-        void reportCIPIC(char *);
-        void reportTensorF(FILE *);
         Vector getWeightofGP(void);
 
         Vector *getStress(void);

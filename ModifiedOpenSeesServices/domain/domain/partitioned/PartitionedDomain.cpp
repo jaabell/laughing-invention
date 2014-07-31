@@ -279,16 +279,6 @@ PartitionedDomain::addElement(Element *elePtr)
 bool
 PartitionedDomain::addNode(Node *nodePtr)
 {
-#ifdef _DEBUG
-
-    if (check == true)
-    {
-        // check its not in this or any of the subdomains
-
-        // MISSING CODE
-    }
-
-#endif
     return (this->Domain::addNode(nodePtr));
 }
 
