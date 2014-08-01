@@ -410,9 +410,8 @@ DomainPartitioner::partition(int numParts)
     {
         int retained = mpPtr->getNodeRetained();
         int constrained = mpPtr->getNodeConstrained();
-
-
         int count = ParCount[retained];
+
         bool added = false;
         for (int k = 0; k < count; k++)
         {
@@ -543,7 +542,7 @@ DomainPartitioner::partition(int numParts)
                     {
                         cerr << "DomainPartitioner::partition() - failed to add Nodal Load\n";
                     }
-                    cerr << "DomainPartitioner - sending load " << *theNodalLoad;
+                    cout << "DomainPartitioner - sending load " << *theNodalLoad;
                 }
             }
         }
@@ -571,7 +570,7 @@ DomainPartitioner::partition(int numParts)
             }
         }
 
-        cout << "DomainPartitioner::partition - finished sending SPs in load pattern!\n";
+        cout << "DomainPartitioner::partition - finished sending SPs and load pattern!\n";
 
     }
 
