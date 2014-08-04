@@ -105,7 +105,7 @@ PetscSolver::solve(void)
 
 
     int size = theSOE->size;
-    cerr << "PetscSolver::solve:   --Size of the SOE is: " << size << endln; //added by babak kamrani for debugging purposes
+    // cerr << "PetscSolver::solve:   --Size of the SOE is: " << size << endln; //added by babak kamrani for debugging purposes
 
 
     int factored = theSOE->isFactored;
@@ -116,10 +116,10 @@ PetscSolver::solve(void)
     int ierr;
 
     //MatSetType(theSOE->A, matType);
-    std::cerr << "BABAK@PetscSolver::solve MatAssemblyBegin ... \n";
+    // std::cerr << "BABAK@PetscSolver::solve MatAssemblyBegin ... \n";
     ierr = MatAssemblyBegin(theSOE->A, MAT_FINAL_ASSEMBLY);
     CHKERRQ(ierr);
-    std::cerr << "BABAK@PetscSolver::solve MatAssemblyEnd ... \n";
+    // std::cerr << "BABAK@PetscSolver::solve MatAssemblyEnd ... \n";
 
     ierr = MatAssemblyEnd(theSOE->A, MAT_FINAL_ASSEMBLY);
     CHKERRQ(ierr);
@@ -208,10 +208,6 @@ PetscSolver::solve(void)
     {
         Vector *vectX = theSOE->vectX;
         Vector *vectB = theSOE->vectB;
-
-#ifdef _BABAK_DEBUG
-        cerr << "PetscSolver::solve() -- PID# " << processID << "VectB: " << theSOE->vectB << "\n";
-#endif
 
         // zero X
         vectX->Zero();
@@ -335,10 +331,10 @@ PetscSolver::solve(void)
     //GZ # ifdef _PARALLEL_RPOCESSING //Guanzhou added
     double end_time = MPI_Wtime();
 
-    if ( processID == 0 )
-    {
-        cerr << "Timing used by solving: " << end_time - start_time << endln;
-    }
+    // if ( processID == 0 )
+    // {
+    //     cerr << "Timing used by solving: " << end_time - start_time << endln;
+    // }
 
     //GZ # endif
     //GZ # endif
@@ -411,11 +407,6 @@ PetscSolver::solve(void)
     ierr = KSPDestroy(&ksp);
     CHKERRQ(ierr);
 
-    //added by Babak Kamrani for debugging purposes 04/09/2012:
-    //   cerr<< "BBBB" <<theSOE->getB();
-    //   cerr<< "XXXX" <<theSOE->getX();
-    //cerr<< "AAAA" <<theSOE->getA();
-    //////////////////////////////////////////////////////////
 
     return ierr;
 
@@ -593,42 +584,6 @@ PetscSolver::setSize()
 
     KSPCreate(PETSC_COMM_WORLD, &ksp);
 
-    //GZ out   /*
-    //GZ out    *  Set operators. NOTE: matrix that defines the linear system
-    //GZ out    *  also serves as the preconditioning matrix.
-    //GZ out    */
-    //GZ out
-    //GZ out   //GZ added to use ICC from BlockSolve95
-    //GZ out   Mat P;
-    //GZ out   MatCreate(PETSC_COMM_WORLD,&P);
-    //GZ out   MatDuplicate(theSOE->A,MAT_COPY_VALUES,&P);
-    //GZ out   MatSetType(P, MATMPIROWBS);
-    //GZ out   MatSetFromOptions(P);
-    //GZ out   //KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
-    //GZ out   KSPSetOperators(ksp, theSOE->A, P, DIFFERENT_NONZERO_PATTERN);
-    //GZ out
-    //GZ out   /*
-    //GZ out    *  Set solution scheme & tolerances
-    //GZ out    */
-    //GZ out
-    //GZ out   int ierr;
-    //GZ out   ierr = KSPSetType(ksp, method); CHKERRQ(ierr);
-    //GZ out   ierr = KSPSetTolerances(ksp, rTol, aTol, dTol, maxIts);
-    //GZ out
-    //GZ out   /*
-    //GZ out    *  Set preconditioning scheme
-    //GZ out    */
-    //GZ out
-    //GZ out   KSPGetPC(ksp, &pc);
-    //GZ out   ierr = PCSetType(pc,  preconditioner); CHKERRQ(ierr);
-    //GZ out
-    //GZ out   /*
-    //GZ out    *  Finally mark so that uses last solution as initial guess in each solution
-    //GZ out    *    NOTE: maybe change this as another user supplied option
-    //GZ out    */
-    //GZ out
-    //GZ out   //   ierr = KSPSetInitialGuessNonzero(ksp, PETSC_TRUE); CHKERRQ(ierr);
-    //GZ out   return ierr;
 }
 
 

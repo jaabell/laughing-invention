@@ -49,7 +49,7 @@ using namespace std;
 
 #ifdef _BABAK_DEBUG
 #include <LoadPattern.h>
-extern LoadPattern* DRM_LOAD_PATTERN ;
+extern LoadPattern *DRM_LOAD_PATTERN ;
 #endif
 
 MPI_Channel::MPI_Channel(int other)
@@ -74,24 +74,26 @@ MPI_Channel::setUpConnection(void)
 }
 
 
-ChannelAddress*
+ChannelAddress *
 MPI_Channel::getLastSendersAddress(void)
 {
-    cerr << "MPI_Channel::getLastSendersAddress(void) - ";
-    cerr << " this should not be called - need MPI-2.0 to use\n";
+    // cerr << "MPI_Channel::getLastSendersAddress(void) - ";
+    // cerr << " this should not be called - need MPI-2.0 to use\n";
+
+    // Not really used apparently
 
     return 0;
 }
 
 
 int
-MPI_Channel::setNextAddress(const ChannelAddress& theAddress)
+MPI_Channel::setNextAddress(const ChannelAddress &theAddress)
 {
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress.getType() == MPI_TYPE)
     {
-        theMPI_ChannelAddress = (MPI_ChannelAddress*)(&theAddress);
+        theMPI_ChannelAddress = (MPI_ChannelAddress *)(&theAddress);
         otherTag = theMPI_ChannelAddress->otherTag;
         otherComm = theMPI_ChannelAddress->otherComm;
     }
@@ -110,17 +112,17 @@ MPI_Channel::setNextAddress(const ChannelAddress& theAddress)
 
 int
 MPI_Channel::sendObj(int commitTag,
-                     MovableObject& theObject,
-                     ChannelAddress* theAddress)
+                     MovableObject &theObject,
+                     ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -133,27 +135,27 @@ MPI_Channel::sendObj(int commitTag,
         }
     }
 
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     //  cerr << "MPI_Channel::sendObj BEFORE theObject.sendSelf(commitTag, *this) -- DRM INFORMATION:\n" ;
     //    DRM_LOAD_PATTERN->Print(cerr);
-    #endif
+#endif
     return theObject.sendSelf(commitTag, *this);
 }
 
 int
 MPI_Channel::recvObj(int commitTag,
-                     MovableObject& theObject,
-                     FEM_ObjectBroker& theBroker,
-                     ChannelAddress* theAddress)
+                     MovableObject &theObject,
+                     FEM_ObjectBroker &theBroker,
+                     ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -174,16 +176,16 @@ MPI_Channel::recvObj(int commitTag,
 //  Method to receive a message, also sets other_Addr to that of sender
 
 int
-MPI_Channel::recvMsg(int dbTag, int commitTag, Message& msg, ChannelAddress* theAddress)
+MPI_Channel::recvMsg(int dbTag, int commitTag, Message &msg, ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -199,12 +201,12 @@ MPI_Channel::recvMsg(int dbTag, int commitTag, Message& msg, ChannelAddress* the
     // if o.k. get a ponter to the data in the message and
     // place the incoming data there
     int nleft, nread;
-    char* gMsg;
+    char *gMsg;
     gMsg = msg.data;
     nleft = msg.length;
 
     MPI_Status status;
-    MPI_Recv((void*)gMsg, nleft, MPI_CHAR, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
+    MPI_Recv((void *)gMsg, nleft, MPI_CHAR, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
     int count = 0;
     MPI_Get_count(&status, MPI_CHAR, &count);
 
@@ -225,16 +227,16 @@ MPI_Channel::recvMsg(int dbTag, int commitTag, Message& msg, ChannelAddress* the
 //  Method to send a message to an address given by other_Addr.
 
 int
-MPI_Channel::sendMsg(int dbTag, int commitTag, const Message& msg, ChannelAddress* theAddress)
+MPI_Channel::sendMsg(int dbTag, int commitTag, const Message &msg, ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -250,26 +252,26 @@ MPI_Channel::sendMsg(int dbTag, int commitTag, const Message& msg, ChannelAddres
     // if o.k. get a ponter to the data in the message and
     // place the incoming data there
     int nwrite, nleft;
-    char* gMsg;
+    char *gMsg;
     gMsg = msg.data;
     nleft = msg.length;
 
-    MPI_Send((void*)gMsg, nleft, MPI_CHAR, otherTag, GLOBAL_MSG_TAG, otherComm);
+    MPI_Send((void *)gMsg, nleft, MPI_CHAR, otherTag, GLOBAL_MSG_TAG, otherComm);
     return 0;
 }
 
 int
-MPI_Channel::recvMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddress* theAddress)
+MPI_Channel::recvMatrix(int dbTag, int commitTag, Matrix &theMatrix, ChannelAddress *theAddress)
 
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -285,12 +287,12 @@ MPI_Channel::recvMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddr
     // if o.k. get a ponter to the data in the Matrix and
     // place the incoming data there
     int nleft, nread;
-    double* data = theMatrix.data;
-    char* gMsg = (char*)data;;
+    double *data = theMatrix.data;
+    char *gMsg = (char *)data;;
     nleft =  theMatrix.dataSize;
 
     MPI_Status status;
-    MPI_Recv((void*)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG,
+    MPI_Recv((void *)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG,
              otherComm, &status);
     int count = 0;
     MPI_Get_count(&status, MPI_DOUBLE, &count);
@@ -312,16 +314,16 @@ MPI_Channel::recvMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddr
 //  Method to send a Matrix to an address given by other_Addr.
 
 int
-MPI_Channel::sendMatrix(int dbTag, int commitTag, const Matrix& theMatrix, ChannelAddress* theAddress)
+MPI_Channel::sendMatrix(int dbTag, int commitTag, const Matrix &theMatrix, ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -337,11 +339,11 @@ MPI_Channel::sendMatrix(int dbTag, int commitTag, const Matrix& theMatrix, Chann
     // if o.k. get a ponter to the data in the Matrix and
     // place the incoming data there
     int nwrite, nleft;
-    double* data = theMatrix.data;
-    char* gMsg = (char*)data;
+    double *data = theMatrix.data;
+    char *gMsg = (char *)data;
     nleft =  theMatrix.dataSize;
 
-    MPI_Send((void*)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm);
+    MPI_Send((void *)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm);
 
     return 0;
 }
@@ -354,17 +356,17 @@ MPI_Channel::sendMatrix(int dbTag, int commitTag, const Matrix& theMatrix, Chann
 
 
 int
-MPI_Channel::recvVector(int dbTag, int commitTag, Vector& theVector, ChannelAddress* theAddress)
+MPI_Channel::recvVector(int dbTag, int commitTag, Vector &theVector, ChannelAddress *theAddress)
 
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -380,12 +382,12 @@ MPI_Channel::recvVector(int dbTag, int commitTag, Vector& theVector, ChannelAddr
     // if o.k. get a ponter to the data in the Vector and
     // place the incoming data there
     int nleft, nread;
-    double* data = theVector.theData;
-    char* gMsg = (char*)data;;
+    double *data = theVector.theData;
+    char *gMsg = (char *)data;;
     nleft =  theVector.sz;
 
     MPI_Status status;
-    MPI_Recv((void*)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
+    MPI_Recv((void *)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
     int count = 0;
     MPI_Get_count(&status, MPI_DOUBLE, &count);
 
@@ -408,16 +410,16 @@ MPI_Channel::recvVector(int dbTag, int commitTag, Vector& theVector, ChannelAddr
 //  Method to send a Vector to an address given by other_Addr.
 
 int
-MPI_Channel::sendVector(int dbTag, int commitTag, const Vector& theVector, ChannelAddress* theAddress)
+MPI_Channel::sendVector(int dbTag, int commitTag, const Vector &theVector, ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -433,11 +435,11 @@ MPI_Channel::sendVector(int dbTag, int commitTag, const Vector& theVector, Chann
     // if o.k. get a ponter to the data in the Vector and
     // place the incoming data there
     int nwrite, nleft;
-    double* data = theVector.theData;
-    char* gMsg = (char*)data;
+    double *data = theVector.theData;
+    char *gMsg = (char *)data;
     nleft =  theVector.sz;
 
-    MPI_Send((void*)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm);
+    MPI_Send((void *)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm);
 
     return 0;
 }
@@ -446,10 +448,10 @@ MPI_Channel::sendVector(int dbTag, int commitTag, const Vector& theVector, Chann
 
 
 int
-MPI_Channel::recvID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddress)
+MPI_Channel::recvID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress)
 {
 
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
 
     if (theID(1) == 7001)
     {
@@ -458,15 +460,15 @@ MPI_Channel::recvID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddr
 
     }
 
-    #endif
+#endif
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -482,12 +484,12 @@ MPI_Channel::recvID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddr
     // if o.k. get a ponter to the data in the ID and
     // place the incoming data there
     int nleft, nread;
-    int* data = theID.data;
-    char* gMsg = (char*)data;;
+    int *data = theID.data;
+    char *gMsg = (char *)data;;
     nleft =  theID.sz;
 
     MPI_Status status;
-    MPI_Recv((void*)gMsg, nleft, MPI_INT, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
+    MPI_Recv((void *)gMsg, nleft, MPI_INT, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
     int count = 0;
     MPI_Get_count(&status, MPI_INT, &count);
 
@@ -512,7 +514,7 @@ MPI_Channel::recvID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddr
 //  Method to send a ID to an address given by other_Addr.
 
 int
-MPI_Channel::sendID(int dbTag, int commitTag, const ID& theID, ChannelAddress* theAddress)
+MPI_Channel::sendID(int dbTag, int commitTag, const ID &theID, ChannelAddress *theAddress)
 {
     //     #ifdef _BABAK_DEBUG
     //     if (theID(1) == 7001)
@@ -521,13 +523,13 @@ MPI_Channel::sendID(int dbTag, int commitTag, const ID& theID, ChannelAddress* t
     //     }
     //     #endif
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -543,11 +545,11 @@ MPI_Channel::sendID(int dbTag, int commitTag, const ID& theID, ChannelAddress* t
     // if o.k. get a ponter to the data in the ID and
     // place the incoming data there
     int nwrite, nleft;
-    int* data = theID.data;
-    char* gMsg = (char*)data;
+    int *data = theID.data;
+    char *gMsg = (char *)data;
     nleft =  theID.sz;
 
-    MPI_Send((void*)gMsg, nleft, MPI_INT, otherTag, GLOBAL_MSG_TAG, otherComm);
+    MPI_Send((void *)gMsg, nleft, MPI_INT, otherTag, GLOBAL_MSG_TAG, otherComm);
 
     // int rank;
     // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -558,16 +560,16 @@ MPI_Channel::sendID(int dbTag, int commitTag, const ID& theID, ChannelAddress* t
 
 //Guanzhou added
 int
-MPI_Channel::sendnDarray(int dbTag, int commitTag, const nDarray& theNDarray, ChannelAddress* theAddress)
+MPI_Channel::sendnDarray(int dbTag, int commitTag, const nDarray &theNDarray, ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -580,12 +582,12 @@ MPI_Channel::sendnDarray(int dbTag, int commitTag, const nDarray& theNDarray, Ch
         }
     }
 
-    double* data = (theNDarray.pc_nDarray_rep)->pd_nDdata;
-    char* gmsg = (char*)data;
-    int* dim =  (theNDarray.pc_nDarray_rep)->dim;
+    double *data = (theNDarray.pc_nDarray_rep)->pd_nDdata;
+    char *gmsg = (char *)data;
+    int *dim =  (theNDarray.pc_nDarray_rep)->dim;
     int rank =  (theNDarray.pc_nDarray_rep)->nDarray_rank;
     int elem =   (theNDarray.pc_nDarray_rep)->total_numb;
-    MPI_Send((void*)gmsg, elem, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm);
+    MPI_Send((void *)gmsg, elem, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm);
     //    gmsg = (char*)dim;
     //    MPI_Send((void *)gmsg, rank, MPI_INT, otherTag, 0, otherComm);
 
@@ -594,16 +596,16 @@ MPI_Channel::sendnDarray(int dbTag, int commitTag, const nDarray& theNDarray, Ch
 
 //Guanzhou added
 int
-MPI_Channel::recvnDarray(int dbTag, int commitTag, nDarray& theNDarray, ChannelAddress* theAddress)
+MPI_Channel::recvnDarray(int dbTag, int commitTag, nDarray &theNDarray, ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
-    MPI_ChannelAddress* theMPI_ChannelAddress = 0;
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
     if (theAddress != 0)
     {
         if (theAddress->getType() == MPI_TYPE)
         {
-            theMPI_ChannelAddress = (MPI_ChannelAddress*)theAddress;
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
             otherTag = theMPI_ChannelAddress->otherTag;
             otherComm = theMPI_ChannelAddress->otherComm;
         }
@@ -616,14 +618,14 @@ MPI_Channel::recvnDarray(int dbTag, int commitTag, nDarray& theNDarray, ChannelA
         }
     }
 
-    double* data = (theNDarray.pc_nDarray_rep)->pd_nDdata;
-    char* gmsg = (char*)data;
+    double *data = (theNDarray.pc_nDarray_rep)->pd_nDdata;
+    char *gmsg = (char *)data;
     //     int *dim =  (theNDarray.pc_nDarray_rep)->dim;
     //     int rank =  (theNDarray.pc_nDarray_rep)->nDarray_rank;
     int elem =   (theNDarray.pc_nDarray_rep)->total_numb;
 
     MPI_Status status;
-    MPI_Recv((void*)gmsg, elem, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
+    MPI_Recv((void *)gmsg, elem, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
     int count = 0;
     MPI_Get_count(&status, MPI_DOUBLE, &count);
 
@@ -658,12 +660,12 @@ MPI_Channel::getPortNumber(void) const
 }
 */
 
-char*
+char *
 MPI_Channel::addToProgram(void)
 {
     cerr << "MPI_Channel::addToProgram(void) - ";
     cerr << " this should not be called - need MPI-2.0\n";
-    char* newStuff = (char*)malloc(10 * sizeof(char));
+    char *newStuff = (char *)malloc(10 * sizeof(char));
 
     for (int i = 0; i < 10; i++)
     {

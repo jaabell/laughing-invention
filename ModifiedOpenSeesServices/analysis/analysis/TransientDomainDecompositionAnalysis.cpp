@@ -66,7 +66,7 @@
 using namespace std;
 
 
-TransientDomainDecompositionAnalysis::TransientDomainDecompositionAnalysis(Subdomain& the_Domain)
+TransientDomainDecompositionAnalysis::TransientDomainDecompositionAnalysis(Subdomain &the_Domain)
     : DomainDecompositionAnalysis(ANALYSIS_TAGS_TransientDomainDecompositionAnalysis, the_Domain),
       theConstraintHandler(0),
       theDOF_Numberer(0),
@@ -80,14 +80,14 @@ TransientDomainDecompositionAnalysis::TransientDomainDecompositionAnalysis(Subdo
 
 }
 
-TransientDomainDecompositionAnalysis::TransientDomainDecompositionAnalysis(Subdomain& the_Domain,
-        ConstraintHandler& theHandler,
-        DOF_Numberer& theNumberer,
-        AnalysisModel& theModel,
-        EquiSolnAlgo& theSolnAlgo,
-        LinearSOE& theLinSOE,
-        TransientIntegrator& theTransientIntegrator,
-        ConvergenceTest* theConvergenceTest,
+TransientDomainDecompositionAnalysis::TransientDomainDecompositionAnalysis(Subdomain &the_Domain,
+        ConstraintHandler &theHandler,
+        DOF_Numberer &theNumberer,
+        AnalysisModel &theModel,
+        EquiSolnAlgo &theSolnAlgo,
+        LinearSOE &theLinSOE,
+        TransientIntegrator &theTransientIntegrator,
+        ConvergenceTest *theConvergenceTest,
         bool setLinks)
     : DomainDecompositionAnalysis(ANALYSIS_TAGS_TransientDomainDecompositionAnalysis, the_Domain),
       theConstraintHandler(&theHandler),
@@ -181,7 +181,7 @@ int
 TransientDomainDecompositionAnalysis::analyze(double dT)
 {
     int result = 0;
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
 
     // check for change in Domain since last step. As a change can
     // occur in a commit() in a domaindecomp with load balancing
@@ -202,7 +202,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
 
     //Babak Added for Debugging Purposes:
     //----
-    std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- I \n";
+    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- I \n";
     //----
 
     // result = theAnalysisModel->newStepDomain();
@@ -218,7 +218,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
 
     //Babak Added for Debugging Purposes:
     //----
-    std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- II \n ";
+    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- II \n ";
     //----
 
     result = theIntegrator->newStep(dT);
@@ -235,7 +235,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
 
     //Babak Added for Debugging Purposes:
     //----
-    std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- III \n";
+    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- III \n";
     //----
 
     result = theAlgorithm->solveCurrentStep();
@@ -253,7 +253,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
 
     //Babak Added for Debugging Purposes:
     //----
-    std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- IV \n";
+    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- IV \n";
     //----
 
     result = theIntegrator->commit();
@@ -272,7 +272,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
 
     //Babak Added for Debugging Purposes:
     //----
-    std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- V \n";
+    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- V \n";
     //----
     return 0;
 }
@@ -281,7 +281,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
 int
 TransientDomainDecompositionAnalysis::initialize(void)
 {
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
 
     // check if domain has undergone change
     int stamp = the_Domain->hasDomainChanged();
@@ -313,15 +313,15 @@ TransientDomainDecompositionAnalysis::initialize(void)
 int
 TransientDomainDecompositionAnalysis::domainChanged(void)
 {
-    #ifdef _PARALLEL_PROCESSING
+#ifdef _PARALLEL_PROCESSING
     int rank, size;
     MPI_Comm_rank (MPI_COMM_WORLD, &rank);
     MPI_Comm_size (MPI_COMM_WORLD, &size);
     clock_t init, final;
-    #endif
+#endif
     //Guanzhou
     cerr << "TransientDomainDecompositionAnalysis::domainChanged(void)\n";
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
     int stamp = the_Domain->hasDomainChanged();
     domainStamp = stamp;
 
@@ -346,10 +346,10 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
     // we now invoke number() on the numberer which causes
     // equation numbers to be assigned to all the DOFs in the
     // AnalysisModel.
-    #ifdef _BDEBUG
+#ifdef _BDEBUG
     init = clock();
 
-    #endif
+#endif
 
     result = theDOF_Numberer->numberDOF();
 
@@ -360,36 +360,36 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
         return -2;
     }
 
-    #ifdef _BDEBUG
+#ifdef _BDEBUG
     final = clock() - init;
     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- III  PID #" << rank << "\n";
     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) ---  PID #" << rank << "  TIME ELAPSED II --- III (theDOF_Numberer->numberDOF()) is " << (double)final / ((double)CLOCKS_PER_SEC) << "sec.\n";
-    #endif
+#endif
 
 
 
-    #ifdef _BDEBUG
+#ifdef _BDEBUG
     init = clock();
 
-    #endif
+#endif
     // we invoke setSize() on the LinearSOE which
     // causes that object to determine its size
     //Graph &theGraph = theAnalysisModel->getDOFGraph(); //Out by Babak 6/4/13
     int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-    #ifdef _BDEBUG
+#ifdef _BDEBUG
     final = clock() - init;
     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- IV  PID #" << rank << "\n";
     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) ---  PID #" << rank << "  TIME ELAPSED III --- IV (theAnalysisModel->getDOFGraph() ) is " << (double)final / ((double)CLOCKS_PER_SEC) << "sec.\n";
     //exit(EXIT_SUCCESS);
-    #endif
+#endif
 
 
 
 
-    #ifdef _BDEBUG
+#ifdef _BDEBUG
     init = clock();
     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- I PID #" << rank << "\n";
-    #endif
+#endif
     result = theSOE->setSize(MaxDOFtag);
 
     if (result < 0)
@@ -403,9 +403,9 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
 
     // finally we invoke domainChanged on the Integrator and Algorithm
     // objects .. informing them that the model has changed
-    #ifdef _BDEBUG
+#ifdef _BDEBUG
     init = clock();
-    #endif
+#endif
 
     result = theIntegrator->domainChanged();
 
@@ -418,9 +418,9 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
 
     //cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- VI  PID #" << rank << "\n";
 
-    #ifdef _BDEBUG
+#ifdef _BDEBUG
     init = clock();
-    #endif
+#endif
     result = theAlgorithm->domainChanged();
 
     if (result < 0)
@@ -474,13 +474,13 @@ TransientDomainDecompositionAnalysis::formResidual(void)
     return 0;
 }
 int
-TransientDomainDecompositionAnalysis::formTangVectProduct(Vector& force)
+TransientDomainDecompositionAnalysis::formTangVectProduct(Vector &force)
 {
     cerr << "TransientDomainDecompositionAnalysis::formTangVectProduct() - should never be called\n";
     return 0;
 }
 
-const Matrix&
+const Matrix &
 TransientDomainDecompositionAnalysis::getTangent(void)
 {
     static Matrix errMatrix;
@@ -488,7 +488,7 @@ TransientDomainDecompositionAnalysis::getTangent(void)
     return errMatrix;
 }
 
-const Vector&
+const Vector &
 TransientDomainDecompositionAnalysis::getResidual(void)
 {
     static Vector errVector;
@@ -496,7 +496,7 @@ TransientDomainDecompositionAnalysis::getResidual(void)
     return errVector;
 }
 
-const Vector&
+const Vector &
 TransientDomainDecompositionAnalysis::getTangVectProduct(void)
 {
     static Vector errVector;
@@ -505,7 +505,7 @@ TransientDomainDecompositionAnalysis::getTangVectProduct(void)
 }
 
 int
-TransientDomainDecompositionAnalysis::sendSelf(int commitTag, Channel& theChannel)
+TransientDomainDecompositionAnalysis::sendSelf(int commitTag, Channel &theChannel)
 {
 
     // receive the data identifyng the objects in the aggregation
@@ -518,7 +518,7 @@ TransientDomainDecompositionAnalysis::sendSelf(int commitTag, Channel& theChanne
         return -1;
     }
 
-    LinearSOESolver* theSolver = theSOE->getSolver();
+    LinearSOESolver *theSolver = theSOE->getSolver();
 
     data(0) = theConstraintHandler->getClassTag();
     data(1) = theDOF_Numberer->getClassTag();
@@ -596,11 +596,11 @@ TransientDomainDecompositionAnalysis::sendSelf(int commitTag, Channel& theChanne
     return 0;
 }
 int
-TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel& theChannel,
-        FEM_ObjectBroker& theBroker)
+TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChannel,
+        FEM_ObjectBroker &theBroker)
 {
 
-    Domain* the_Domain = this->getSubdomainPtr();
+    Domain *the_Domain = this->getSubdomainPtr();
 
     // receive the data identifyng the objects in the aggregation
     static ID data(8);
@@ -704,7 +704,7 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel& theChanne
     }
 
     theSOE->recvSelf(commitTag, theChannel, theBroker);
-    LinearSOESolver* theSolver = theSOE->getSolver();
+    LinearSOESolver *theSolver = theSOE->getSolver();
     theSolver->recvSelf(commitTag, theChannel, theBroker);
     theSOE->setAnalysisModel(*theAnalysisModel);
 
@@ -767,7 +767,7 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel& theChanne
 
 
 int
-TransientDomainDecompositionAnalysis::setAlgorithm(EquiSolnAlgo& theNewAlgorithm)
+TransientDomainDecompositionAnalysis::setAlgorithm(EquiSolnAlgo &theNewAlgorithm)
 {
     // invoke the destructor on the old one
     if (theAlgorithm != 0)
@@ -795,7 +795,7 @@ TransientDomainDecompositionAnalysis::setAlgorithm(EquiSolnAlgo& theNewAlgorithm
 }
 
 int
-TransientDomainDecompositionAnalysis::setIntegrator(IncrementalIntegrator& theNewIntegrator)
+TransientDomainDecompositionAnalysis::setIntegrator(IncrementalIntegrator &theNewIntegrator)
 {
     // invoke the destructor on the old one
     if (theIntegrator != 0)
@@ -804,9 +804,9 @@ TransientDomainDecompositionAnalysis::setIntegrator(IncrementalIntegrator& theNe
     }
 
     // set the links needed by the other objects in the aggregation
-    Domain* the_Domain = this->getDomainPtr();
+    Domain *the_Domain = this->getDomainPtr();
 
-    theIntegrator = (TransientIntegrator*)(&theNewIntegrator);
+    theIntegrator = (TransientIntegrator *)(&theNewIntegrator);
 
     if (theIntegrator != 0 && theConstraintHandler != 0 && theAlgorithm != 0 && theAnalysisModel != 0 && theSOE != 0)
     {
@@ -823,7 +823,7 @@ TransientDomainDecompositionAnalysis::setIntegrator(IncrementalIntegrator& theNe
 
 
 int
-TransientDomainDecompositionAnalysis::setLinearSOE(LinearSOE& theNewSOE)
+TransientDomainDecompositionAnalysis::setLinearSOE(LinearSOE &theNewSOE)
 {
     // invoke the destructor on the old one
     if (theSOE != 0)
@@ -847,7 +847,7 @@ TransientDomainDecompositionAnalysis::setLinearSOE(LinearSOE& theNewSOE)
 }
 
 int
-TransientDomainDecompositionAnalysis::setConvergenceTest(ConvergenceTest& theConvergenceTest)
+TransientDomainDecompositionAnalysis::setConvergenceTest(ConvergenceTest &theConvergenceTest)
 {
     // invoke the destructor on the old one
     if (theTest != 0)

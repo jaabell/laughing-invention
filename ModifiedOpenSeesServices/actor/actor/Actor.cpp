@@ -43,8 +43,8 @@
 //  constructor to init the list.
 
 
-Actor::Actor(Channel& theChan,
-             FEM_ObjectBroker& myBroker,
+Actor::Actor(Channel &theChan,
+             FEM_ObjectBroker &myBroker,
              int numActorMethods)
     : theBroker(&myBroker), theChannel(&theChan),
       numMethods(0), maxNumMethods(numActorMethods), actorMethods(0),
@@ -96,7 +96,7 @@ Actor::addMethod(int tag, int (*fp)())
     }
 
     // check no other with the same tag exists
-    ActorMethod* methodPtr;
+    ActorMethod *methodPtr;
 
     for (int i = 0; i < numMethods; i++)
     {
@@ -109,7 +109,7 @@ Actor::addMethod(int tag, int (*fp)())
     }
 
     // add the new method
-    ActorMethod* newMethod = new ActorMethod;
+    ActorMethod *newMethod = new ActorMethod;
 
     if (newMethod == 0)
     {
@@ -150,7 +150,7 @@ Actor::getMethod()
 int
 Actor::processMethod(int tag)
 {
-    ActorMethod* current = 0;
+    ActorMethod *current = 0;
 
     for (int i = 0; i < numMethods; i++)
         if (actorMethods[i]->tag == tag)
@@ -169,8 +169,8 @@ Actor::processMethod(int tag)
 
 
 int
-Actor::sendObject(MovableObject& theObject,
-                  ChannelAddress* theAddress )
+Actor::sendObject(MovableObject &theObject,
+                  ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -183,8 +183,8 @@ Actor::sendObject(MovableObject& theObject,
 }
 
 int
-Actor::recvObject(MovableObject& theObject,
-                  ChannelAddress* theAddress )
+Actor::recvObject(MovableObject &theObject,
+                  ChannelAddress *theAddress )
 {
     if (theAddress == 0)
         return theChannel->recvObj(commitTag, theObject, *theBroker,
@@ -197,7 +197,7 @@ Actor::recvObject(MovableObject& theObject,
 
 
 int
-Actor::recvMessage(Message& theMessage, ChannelAddress* theAddress )
+Actor::recvMessage(Message &theMessage, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -210,7 +210,7 @@ Actor::recvMessage(Message& theMessage, ChannelAddress* theAddress )
 }
 
 int
-Actor::sendMessage(const Message& theMessage, ChannelAddress* theAddress )
+Actor::sendMessage(const Message &theMessage, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -225,7 +225,7 @@ Actor::sendMessage(const Message& theMessage, ChannelAddress* theAddress )
 
 
 int
-Actor::sendMatrix(const Matrix& theMatrix, ChannelAddress* theAddress )
+Actor::sendMatrix(const Matrix &theMatrix, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -238,7 +238,7 @@ Actor::sendMatrix(const Matrix& theMatrix, ChannelAddress* theAddress )
 }
 
 int
-Actor::recvMatrix(Matrix& theMatrix, ChannelAddress* theAddress )
+Actor::recvMatrix(Matrix &theMatrix, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -251,7 +251,7 @@ Actor::recvMatrix(Matrix& theMatrix, ChannelAddress* theAddress )
 }
 
 int
-Actor::sendVector(const Vector& theVector, ChannelAddress* theAddress )
+Actor::sendVector(const Vector &theVector, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -264,7 +264,7 @@ Actor::sendVector(const Vector& theVector, ChannelAddress* theAddress )
 }
 
 int
-Actor::recvVector(Vector& theVector, ChannelAddress* theAddress )
+Actor::recvVector(Vector &theVector, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -277,7 +277,7 @@ Actor::recvVector(Vector& theVector, ChannelAddress* theAddress )
 }
 
 int
-Actor::sendID(const ID& theID, ChannelAddress* theAddress )
+Actor::sendID(const ID &theID, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -290,32 +290,32 @@ Actor::sendID(const ID& theID, ChannelAddress* theAddress )
 }
 
 int
-Actor::recvID(ID& theID, ChannelAddress* theAddress )
+Actor::recvID(ID &theID, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
 
-        #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
 
         if (theID(1) == 7001)
         {
             cerr << "Babak@ Actor::recvID(ID &theID, ChannelAddress *theAddress ) - theAddress =0... theID " << theID << "\n";
         }
 
-        #endif
+#endif
         return theChannel->recvID(0, commitTag, theID, theRemoteShadowsAddress);
     }
     else
     {
 
-        #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
 
         if (theID(1) == 7001)
         {
             cerr << "Babak@ Actor::recvID(ID &theID, ChannelAddress *theAddress ) ... theID " << theID << "\n";
         }
 
-        #endif
+#endif
         return theChannel->recvID(0, commitTag, theID, theAddress);
     }
 }
@@ -328,13 +328,13 @@ Actor::setCommitTag(int tag)
 }
 
 
-Channel*
+Channel *
 Actor::getChannelPtr(void) const
 {
     return theChannel;
 }
 
-FEM_ObjectBroker*
+FEM_ObjectBroker *
 Actor::getObjectBrokerPtr(void) const
 {
     return theBroker;
@@ -342,7 +342,7 @@ Actor::getObjectBrokerPtr(void) const
 
 
 
-ChannelAddress*
+ChannelAddress *
 Actor::getShadowsAddressPtr(void) const
 {
     return theRemoteShadowsAddress;

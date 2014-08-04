@@ -2754,25 +2754,6 @@ Domain::commit( void )
         int numProcesses, processID;
         MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
         MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-        const Vector &NodeDisp = nodePtr->getDisp();
-
-        std::stringstream Nodes_outfile;
-        Nodes_outfile << "NODES_DISP_PID#" << processID << ".out";
-        ofstream file;
-        file.open(Nodes_outfile.str().c_str(), ios::out | ios::app);
-
-
-        if (nodePtr->getNumberDOF() == 6)
-        {
-            file <<  processID << " " << committedTime << " " << nodePtr->getTag() << " " << NodeDisp(0) << " " << NodeDisp(1) << " " << NodeDisp(2) << " " << NodeDisp(3) << " " << NodeDisp(4) << " " << NodeDisp(5) << "\n";
-        }
-        else
-        {
-            file <<  processID << " " << committedTime << " " << nodePtr->getTag() << " " << NodeDisp(0) << " " << NodeDisp(1) << " " << NodeDisp(2) << "\n";
-        }
-
-        file.close();
 #endif
 
 

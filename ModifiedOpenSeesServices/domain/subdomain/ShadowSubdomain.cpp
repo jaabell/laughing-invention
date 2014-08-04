@@ -171,7 +171,7 @@ ShadowSubdomain::~ShadowSubdomain()
     // send a message to the remote actor telling it to shut sown
     msgData(0) = ShadowActorSubdomain_DIE;
     this->sendID(msgData);
-    cerr << "ShadowSubdomain::~ShadowSubdomain() DONE\n";
+    // cerr << "ShadowSubdomain::~ShadowSubdomain() DONE\n";
 }
 
 
