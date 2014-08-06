@@ -58,6 +58,15 @@ class DomainComponent: public TaggedObject, public MovableObject
         virtual void setDomain(Domain *myDomain);
         virtual Domain *getDomain(void) const;
         virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
+        virtual bool operator==(const DomainComponent &rhs) const
+        {
+            return
+                (myDomain == rhs.myDomain)
+                && (TaggedObject::operator==(rhs))
+                && (this->getClassTag() == rhs.getClassTag())
+                && (this->getDbTag() == rhs.getDbTag());
+            ;
+        }
 
     protected:
         DomainComponent(int tag, int classTag);

@@ -49,21 +49,25 @@ class TaggedObject
         virtual ~TaggedObject();
 
         inline int getTag(void) const;
+        virtual int getObjectSize()
 
-        // virtual void Print(ostream& s, int flag = 0) = 0;
-        // friend ostream& operator<<(ostream& s, TaggedObject& m);
+        {
+            cerr << "TaggedObject::getObjectSize(). Derived class must provide overload for this funtion. \n";
+            return 1;
+        };
 
-        virtual void Print(ostream &s, int flag = 0) = 0;
+        virtual bool operator==(const TaggedObject &rhs) const
+        {
+            // cerr << "TaggedObject::operator==(). Derived class must provide overload for this funtion. \n";
+
+            return
+                theTag == rhs.theTag
+                ;
+        }
+
         friend ostream &operator<<(ostream &s, TaggedObject &m);
 
-        //Guanzhou added
-# ifdef _PDD
-        virtual int getObjectSize()
-        {
-            return 1;
-        }; //subclasses override!!!
-# endif
-
+        virtual void Print(ostream &s, int flag = 0) = 0;
     protected:
         void setTag(int newTag);  // CAUTION: this is a dangerous method to call
 
