@@ -37,7 +37,7 @@
 using namespace std;
 
 
-MPI_MachineBroker::MPI_MachineBroker(FEM_ObjectBroker* theBroker, int argc, char** argv)
+MPI_MachineBroker::MPI_MachineBroker(FEM_ObjectBroker *theBroker, int argc, char **argv)
     : MachineBroker(theBroker)
 {
     MPI_Init(&argc, &argv);
@@ -85,7 +85,7 @@ MPI_MachineBroker::getNP(void)
 
 
 
-Channel*
+Channel *
 MPI_MachineBroker::getMyChannel(void)
 {
     return theChannels[0];
@@ -93,7 +93,7 @@ MPI_MachineBroker::getMyChannel(void)
 
 
 
-Channel*
+Channel *
 MPI_MachineBroker::getRemoteProcess(void)
 {
     if (rank != 0)
@@ -118,7 +118,7 @@ MPI_MachineBroker::getRemoteProcess(void)
 
 int
 MPI_MachineBroker::freeProcess
-(Channel* theChannel)
+(Channel *theChannel)
 {
     for (int i = 0; i < size; i++)
         if (i != rank)

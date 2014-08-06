@@ -218,8 +218,10 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
     for (int i = 0; i < numSteps; i++)
     {
 
-
-        cout.flush() << "\r TransientAnalysis: Step Number is : " << i + 1 << " out of " << numSteps;
+        if (numSteps > 1)
+        {
+            cout.flush() << "\r TransientAnalysis: Step Number is : " << i + 1 << " out of " << numSteps;
+        }
 
 
         if (theAnalysisModel->newStepDomain(dT) < 0)

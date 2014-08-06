@@ -63,63 +63,76 @@
 int simulate_using_transient_multistep(double dT,
                                        int numSteps)
 {
+#ifdef _PARALLEL_PROCESSING // Parallel processing
+    cout << "\n";
+    cout << "Starting parallel transient multistep analysis\n";
+    cout << "====================================================================================================\n";
+#else
+    cout << "\n";
+    cout << "Starting sequential transient multistep analysis\n";
+    cout << "====================================================================================================\n";
+#endif
+
     int result = 0;
 
-    if (theAnalysisModel == 0)
-    {
-        theAnalysisModel = new AnalysisModel();
-    }
-
-
+    cout << "Creating analysis model........................................................................";
     if (theAnalysisModel == NULL)
     {
-        cerr << "Error: (analyze_transient_multistep) memory for analysismodel can not be allocated!" << endl;
+
+        theAnalysisModel = new AnalysisModel();
+    }
+    if (theAnalysisModel == NULL)
+    {
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
 
-
-
+    cout << "Checking constraint handler....................................................................";
     if (theHandler == NULL)
     {
-        cerr << "Error: (analyze_transient_multistep) theHandler!" << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
 
-
+    cout << "Checking numberer..............................................................................";
     if (theNumberer == NULL)
     {
-        cerr << "Error: (analyze_transient_multistep) theNumberer!" << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
 
 
-
+    cout << "Checking analysis algorithm....................................................................";
     if (theAlgorithm == NULL)
     {
-        cerr << "Error: (analyze_transient_multistep) theAlgorithm!" << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
 
-
+    cout << "Checking system of equation handler............................................................";
     if (theSOE == NULL)
     {
-        cerr << "Error: (analyze_transient_multistep) theSOE!" << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
 
-
+    cout << "Checking transient integration handler.........................................................";
     if (theTransientIntegrator == NULL)
     {
-        cerr << "Error: (analyze_transient_multistep) theTransientIntegrator!" << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
 
 
 
-    //     cout<<"\nTransient Analysis!\n";
 
-
-
+    cout << "Setting up the DirectIntegrationAnalysis.......................................................";
     theTransientAnalysis = new DirectIntegrationAnalysis(theDomain,
             *theHandler,
             *theNumberer,
@@ -131,9 +144,10 @@ int simulate_using_transient_multistep(double dT,
 
     if (theTransientAnalysis == NULL)
     {
-        cerr << "Error: (analyze_transient_multistep) memory for theTransientAnalysis can not be allocated!" << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Done!\n";
 
 
 
@@ -142,7 +156,7 @@ int simulate_using_transient_multistep(double dT,
     //=====================================================================================
 #ifdef _PARALLEL_PROCESSING // Parallel processing
 
-
+    cout << "Setting domain decomposition analysis..........................................................";
     if (OPS_PARTITIONED == true && OPS_NUM_SUBDOMAINS > 1)
     {
         DomainDecompositionAnalysis *theSubAnalysis;
@@ -161,13 +175,23 @@ int simulate_using_transient_multistep(double dT,
                     theConvergenceTest,
                     false);
 
+            if (theSubAnalysis == NULL)
+            {
+                cout << "Fail!\n";
+                return -1;
+            }
+
             theSub->setDomainDecompAnalysis(*theSubAnalysis);
         }
     }
+    cout << "Done!\n";
 
 
     if (OPS_PARTITIONED == false && OPS_NUM_SUBDOMAINS > 1)
     {
+        cout << "Creating subdomains............................................................................";
+        cout << "\n";
+
         if (OPS_theChannels != 0)
         {
             delete [] OPS_theChannels;
@@ -181,8 +205,14 @@ int simulate_using_transient_multistep(double dT,
             ShadowSubdomain *theSubdomain = new ShadowSubdomain(i, *OPS_MACHINE, *OPS_OBJECT_BROKER);
             theDomain.addSubdomain(theSubdomain);
             OPS_theChannels[i - 1] = theSubdomain->getChannelPtr();
+            cout << "  Subdomain # " << i << " created. \n";
         }
+        cout << "...............................................................................................";
+        cout << "Done!\n";
 
+
+
+        cout << "Partitioning domain into subdomains............................................................";
         // create a partitioner & partition the domain
         if (OPS_DOMAIN_PARTITIONER == 0)
         {
@@ -192,8 +222,12 @@ int simulate_using_transient_multistep(double dT,
         }
         theDomain.partition(OPS_NUM_SUBDOMAINS);
         OPS_PARTITIONED = true;
+        cout << "Done!\n";
     }
 
+
+    cout << "\n\n\n";
+    cout << "> Analysis Start -----------------------------------------------------------------------------";
 
     for (int i = 1; i <= numSteps; i++)
     {
@@ -223,21 +257,31 @@ int simulate_using_transient_multistep(double dT,
             OPS_REDEFINE_ANALYSIS = false;
         }
 
-        int numIncr = 1;
-        result = theTransientAnalysis->analyze(numIncr, dT);
+        result = theTransientAnalysis->analyze(1, dT);
 
-        cout << "\nAnalysis step " << i << " finished!\n";
+        cout << "\nAnalysis step # " << i  << " of " << numSteps << " finished!\n";
     }
+    cout << "> Analysis End -------------------------------------------------------------------------------";
+
+
+
 
     //=====================================================================================
     // Sequential Dynamic Analysis
     //=====================================================================================
-#else // Analysis is sequential
+#else
+    // Analysis is sequential
+    cout << "\n\n\n";
+    cout << "> Analysis Start -----------------------------------------------------------------------------";
+    for (int i = 1; i <= numSteps; i++)
+    {
+        theTransientAnalysis->analyze(1, dT);
+        cout << "\nAnalysis step # " << i  << " of " << numSteps << " finished!\n";
+    }
+    cout << "> Analysis End -------------------------------------------------------------------------------";
 
-    theTransientAnalysis->analyze(numSteps, dT);
 #endif
     //=====================================================================================
 
     return result;
-
 };
