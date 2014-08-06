@@ -12,11 +12,11 @@ LTO_FLAGS =
 #LTO_FLAGS = -flto
 
 INLINING_OPTS = -finline \
-				-Winline \
 				-finline-functions \
 				-fkeep-inline-functions \
 				-fdefault-inline 
 
+				# -Winline \
 
 # INLINING_OPTS = -finline \
 # 				-Winline \

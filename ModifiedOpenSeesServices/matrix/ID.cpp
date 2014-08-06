@@ -335,29 +335,6 @@ ID::operator[](int x)
     // otherwise we go get more space
     if (x >= arraySize)
     {
-        //out by Babak Kamrani and replaced with following on September 2012:
-        /*int newArraySize = arraySize * 2;
-        if (newArraySize < x)
-          newArraySize = x;
-        //    int *newData = (int *)malloc(newArraySize*sizeof(int));
-        int *newData = new int[newArraySize];
-        if (newData != 0) {
-          // copy the old
-          for (int i=0; i<sz; i++)
-        newData[i] = data[i];
-          // zero the new
-          for (int j=sz; j<arraySize; j++)
-        newData[j] = 0;
-
-          sz = x+1;
-          // release the memory held by the old
-          //      free((void *)data);
-          delete [] data;
-          data = newData;
-          arraySize = newArraySize;
-
-          return newData[x];
-        */
         int newArraySize = x + 1 ;
         int *newData = new int[newArraySize];
 
@@ -556,5 +533,18 @@ istream &operator>>(istream &s, ID &V)
 */
 
 
-
-
+bool ID::operator==(const ID &rhs) const
+{
+    if (!(sz == rhs.sz))
+    {
+        return false;
+    }
+    for (int i = 0; i < sz; i++)
+    {
+        if (! (data[i] == rhs.data[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}

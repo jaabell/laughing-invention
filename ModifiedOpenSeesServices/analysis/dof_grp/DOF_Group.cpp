@@ -51,15 +51,15 @@ using namespace std;
 // static variables initialisation
 Matrix DOF_Group::errMatrix(1, 1);
 Vector DOF_Group::errVect(1);
-Matrix** DOF_Group::theMatrices; // array of pointers to class wide matrices
-Vector** DOF_Group::theVectors;  // array of pointers to class widde vectors
+Matrix **DOF_Group::theMatrices; // array of pointers to class wide matrices
+Vector **DOF_Group::theVectors;  // array of pointers to class widde vectors
 int DOF_Group::numDOFs(0);           // number of objects
 
 
 //  DOF_Group(Node *);
 //  construictor that take the corresponding model node.
 
-DOF_Group::DOF_Group(int tag, Node* node)
+DOF_Group::DOF_Group(int tag, Node *node)
     : TaggedObject(tag),
       unbalance(0), tangent(0), myNode(node),
       myID(node->getNumberDOF()),
@@ -319,12 +319,12 @@ DOF_Group::setID(int index, int value)
     if ((index >= 0) && (index < numDOF))
     {
         myID(index) = value;
-        #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
         int numProcesses, processID;
         MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
         MPI_Comm_rank(MPI_COMM_WORLD, &processID);
         cerr << "BABAK @ DOF_Group::setID(int index, int value):--PID # " << processID << "  myID set to #" << myID(index) << "   and the Index is" << index << "\n";
-        #endif
+#endif
     }
     else
     {
@@ -337,10 +337,10 @@ DOF_Group::setID(int index, int value)
 //  Method to set the ID to be same as that given.
 
 void
-DOF_Group::setID(const ID& copy)
+DOF_Group::setID(const ID &copy)
 {
     myID = copy;
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     int numProcesses, processID;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
@@ -348,17 +348,17 @@ DOF_Group::setID(const ID& copy)
 
     cerr << "BABAK @ DOF_Group::setID:--PID # " << processID << "  myID set to #" << myID << "\n";
 
-    #endif
+#endif
 }
 
 
 // const ID &getID(void) const;
 //  Method to return the current ID.
 
-const ID&
+const ID &
 DOF_Group::getID(void) const
 {
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     int numProcesses, processID;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
@@ -366,7 +366,7 @@ DOF_Group::getID(void) const
 
     cerr << "BABAK @ DOF_Group::getID:--PID # " << processID << "  myID is #" << myID << "\n";
 
-    #endif
+#endif
     return myID;
 }
 
@@ -428,8 +428,8 @@ DOF_Group::getNumConstrainedDOF(void) const
 
 
 
-const Matrix&
-DOF_Group::getTangent(Integrator* theIntegrator)
+const Matrix &
+DOF_Group::getTangent(Integrator *theIntegrator)
 {
     if (theIntegrator != 0)
     {
@@ -492,8 +492,8 @@ DOF_Group::zeroUnbalance(void)
 }
 
 
-const Vector&
-DOF_Group::getUnbalance(Integrator* theIntegrator)
+const Vector &
+DOF_Group::getUnbalance(Integrator *theIntegrator)
 {
     if (theIntegrator != 0)
     {
@@ -545,7 +545,7 @@ DOF_Group::addPIncInertiaToUnbalance(double fact)
 
 
 void
-DOF_Group::addM_Force(const Vector& Udotdot, double fact)
+DOF_Group::addM_Force(const Vector &Udotdot, double fact)
 {
     if (myNode == 0)
     {
@@ -584,16 +584,16 @@ DOF_Group::addM_Force(const Vector& Udotdot, double fact)
 
 
 
-const Vector&
-DOF_Group::getTangForce(const Vector& Udotdot, double fact)
+const Vector &
+DOF_Group::getTangForce(const Vector &Udotdot, double fact)
 {
     cerr << "DOF_Group::getTangForce() - not yet implemented";
     return *unbalance;
 }
 
 
-const Vector&
-DOF_Group::getM_Force(const Vector& Udotdot, double fact)
+const Vector &
+DOF_Group::getM_Force(const Vector &Udotdot, double fact)
 {
     if (myNode == 0)
     {
@@ -630,8 +630,8 @@ DOF_Group::getM_Force(const Vector& Udotdot, double fact)
 
 
 
-const Vector&
-DOF_Group::getC_Force(const Vector& Udotdot, double fact)
+const Vector &
+DOF_Group::getC_Force(const Vector &Udotdot, double fact)
 {
     if (myNode == 0)
     {
@@ -667,7 +667,7 @@ DOF_Group::getC_Force(const Vector& Udotdot, double fact)
 }
 
 
-const Vector&
+const Vector &
 DOF_Group::getCommittedDisp(void)
 {
     if (myNode == 0)
@@ -681,7 +681,7 @@ DOF_Group::getCommittedDisp(void)
 }
 
 
-const Vector&
+const Vector &
 DOF_Group::getCommittedVel(void)
 {
     if (myNode == 0)
@@ -695,7 +695,7 @@ DOF_Group::getCommittedVel(void)
 }
 
 
-const Vector&
+const Vector &
 DOF_Group::getCommittedAccel(void)
 {
     if (myNode == 0)
@@ -713,7 +713,7 @@ DOF_Group::getCommittedAccel(void)
 //  values in u, components identified by myID;
 
 void
-DOF_Group::setNodeDisp(const Vector& u)
+DOF_Group::setNodeDisp(const Vector &u)
 {
     if (myNode == 0)
     {
@@ -721,7 +721,7 @@ DOF_Group::setNodeDisp(const Vector& u)
         return;
     }
 
-    Vector& disp = *unbalance;
+    Vector &disp = *unbalance;
     disp = myNode->getTrialDisp();
     int i;
 
@@ -745,7 +745,7 @@ DOF_Group::setNodeDisp(const Vector& u)
 //  values in udot, components identified by myID;
 
 void
-DOF_Group::setNodeVel(const Vector& udot)
+DOF_Group::setNodeVel(const Vector &udot)
 {
 
     if (myNode == 0)
@@ -754,7 +754,7 @@ DOF_Group::setNodeVel(const Vector& udot)
         return;
     }
 
-    Vector& vel = *unbalance;
+    Vector &vel = *unbalance;
     vel = myNode->getTrialVel();
     int i;
 
@@ -780,7 +780,7 @@ DOF_Group::setNodeVel(const Vector& udot)
 //  values in udotdot, components identified by myID;
 
 void
-DOF_Group::setNodeAccel(const Vector& udotdot)
+DOF_Group::setNodeAccel(const Vector &udotdot)
 {
 
     if (myNode == 0)
@@ -789,7 +789,7 @@ DOF_Group::setNodeAccel(const Vector& udotdot)
         return;
     }
 
-    Vector& accel = *unbalance;;
+    Vector &accel = *unbalance;;
     accel = myNode->getTrialAccel();
     int i;
 
@@ -813,7 +813,7 @@ DOF_Group::setNodeAccel(const Vector& udotdot)
 //  values in u, components identified by myID;
 
 void
-DOF_Group::incrNodeDisp(const Vector& u)
+DOF_Group::incrNodeDisp(const Vector &u)
 {
     if (myNode == 0)
     {
@@ -821,7 +821,7 @@ DOF_Group::incrNodeDisp(const Vector& u)
         exit(-1);
     }
 
-    Vector& disp = *unbalance;;
+    Vector &disp = *unbalance;;
 
     if (disp.Size() == 0)
     {
@@ -855,7 +855,7 @@ DOF_Group::incrNodeDisp(const Vector& u)
 //  values in udot, components identified by myID;
 
 void
-DOF_Group::incrNodeVel(const Vector& udot)
+DOF_Group::incrNodeVel(const Vector &udot)
 {
 
     if (myNode == 0)
@@ -864,7 +864,7 @@ DOF_Group::incrNodeVel(const Vector& udot)
         exit(-1);
     }
 
-    Vector& vel = *unbalance;
+    Vector &vel = *unbalance;
     int i;
 
     // get vel for my dof out of vector udot
@@ -892,7 +892,7 @@ DOF_Group::incrNodeVel(const Vector& udot)
 //  values in udotdot, components identified by myID;
 
 void
-DOF_Group::incrNodeAccel(const Vector& udotdot)
+DOF_Group::incrNodeAccel(const Vector &udotdot)
 {
 
     if (myNode == 0)
@@ -901,7 +901,7 @@ DOF_Group::incrNodeAccel(const Vector& udotdot)
         exit(-1);
     }
 
-    Vector& accel = *unbalance;
+    Vector &accel = *unbalance;
     int i;
 
     // get disp for the unconstrained dof
@@ -925,7 +925,7 @@ DOF_Group::incrNodeAccel(const Vector& udotdot)
 
 
 void
-DOF_Group::setEigenvector(int mode, const Vector& theVector)
+DOF_Group::setEigenvector(int mode, const Vector &theVector)
 {
 
     if (myNode == 0)
@@ -934,7 +934,7 @@ DOF_Group::setEigenvector(int mode, const Vector& theVector)
         exit(-1);
     }
 
-    Vector& eigenvector = *unbalance;
+    Vector &eigenvector = *unbalance;
     int i;
 
     // get disp for the unconstrained dof
@@ -956,7 +956,7 @@ DOF_Group::setEigenvector(int mode, const Vector& theVector)
 }
 
 
-Matrix*
+Matrix *
 DOF_Group::getT(void)
 {
     return 0;
@@ -965,7 +965,7 @@ DOF_Group::getT(void)
 
 
 void
-DOF_Group::addLocalM_Force(const Vector& accel, double fact)
+DOF_Group::addLocalM_Force(const Vector &accel, double fact)
 {
     if (myNode != 0)
     {
@@ -992,3 +992,41 @@ DOF_Group::resetNodePtr(void)
 }
 
 
+// NOTE THE MACRO!
+#define SAFE_COMPARE_POINTERS(p,q) if (!(p == NULL) && !( q == NULL) ) \
+    { \
+        if (!(*p == *q)) \
+        { \
+            return false; \
+        } \
+    }
+
+bool
+DOF_Group::operator==(const DOF_Group &rhs) const
+{
+
+    // unbalance
+    SAFE_COMPARE_POINTERS(unbalance, rhs.unbalance);
+    SAFE_COMPARE_POINTERS(tangent, rhs.tangent);
+    SAFE_COMPARE_POINTERS(myNode, rhs.myNode);
+
+    if (!(myID == rhs.myID))
+    {
+        return false;
+    }
+    if (numDOF != rhs.numDOF)
+    {
+        return false;
+    }
+
+    // is not important to compare these!!!
+    //  static variables - single copy for all objects of the class
+    //  static Matrix errMatrix;
+    //  static Vector errVect;
+    //  static Matrix **theMatrices; // array of pointers to class wide matrices
+    //  static Vector **theVectors;  // array of pointers to class widde vectors
+    // static int numDOFs;           // number of objects
+
+    //If we got here, the objects must be equal
+    return true;
+}

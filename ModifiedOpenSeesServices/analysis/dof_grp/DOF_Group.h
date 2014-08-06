@@ -52,13 +52,13 @@ class Integrator;
 class DOF_Group: public TaggedObject
 {
     public:
-        DOF_Group(int tag, Node* myNode);
+        DOF_Group(int tag, Node *myNode);
         DOF_Group(int tag, int ndof);
         virtual ~DOF_Group();
 
         virtual void setID(int dof, int value);
-        virtual void setID(const ID& values);
-        virtual const ID& getID(void) const;
+        virtual void setID(const ID &values);
+        virtual const ID &getID(void) const;
         virtual int doneID(void);
 
         virtual int getNodeTag(void) const;
@@ -67,41 +67,41 @@ class DOF_Group: public TaggedObject
         virtual int getNumConstrainedDOF(void) const;
 
         // methods to form the tangent
-        virtual const Matrix& getTangent(Integrator* theIntegrator);
+        virtual const Matrix &getTangent(Integrator *theIntegrator);
         virtual void  zeroTangent(void);
         virtual void  addMtoTang(double fact = 1.0);
         virtual void  addCtoTang(double fact = 1.0);
 
         // methods to form the unbalance
-        virtual const Vector& getUnbalance(Integrator* theIntegrator);
+        virtual const Vector &getUnbalance(Integrator *theIntegrator);
         virtual void  zeroUnbalance(void);
         virtual void  addPtoUnbalance(double fact = 1.0);
         virtual void  addPIncInertiaToUnbalance(double fact = 1.0);
-        virtual void  addM_Force(const Vector& Udotdot, double fact = 1.0);
+        virtual void  addM_Force(const Vector &Udotdot, double fact = 1.0);
 
-        virtual const Vector& getTangForce(const Vector& x, double fact = 1.0);
-        virtual const Vector& getC_Force(const Vector& x, double fact = 1.0);
-        virtual const Vector& getM_Force(const Vector& x, double fact = 1.0);
+        virtual const Vector &getTangForce(const Vector &x, double fact = 1.0);
+        virtual const Vector &getC_Force(const Vector &x, double fact = 1.0);
+        virtual const Vector &getM_Force(const Vector &x, double fact = 1.0);
 
         // methods to obtain committed responses from the nodes
-        virtual const Vector& getCommittedDisp(void);
-        virtual const Vector& getCommittedVel(void);
-        virtual const Vector& getCommittedAccel(void);
+        virtual const Vector &getCommittedDisp(void);
+        virtual const Vector &getCommittedVel(void);
+        virtual const Vector &getCommittedAccel(void);
 
         // methods to update the trial response at the nodes
-        virtual void setNodeDisp(const Vector& u);
-        virtual void setNodeVel(const Vector& udot);
-        virtual void setNodeAccel(const Vector& udotdot);
+        virtual void setNodeDisp(const Vector &u);
+        virtual void setNodeVel(const Vector &udot);
+        virtual void setNodeAccel(const Vector &udotdot);
 
-        virtual void incrNodeDisp(const Vector& u);
-        virtual void incrNodeVel(const Vector& udot);
-        virtual void incrNodeAccel(const Vector& udotdot);
+        virtual void incrNodeDisp(const Vector &u);
+        virtual void incrNodeVel(const Vector &udot);
+        virtual void incrNodeAccel(const Vector &udotdot);
 
         // methods to set the eigen vectors
-        virtual void setEigenvector(int mode, const Vector& eigenvalue);
+        virtual void setEigenvector(int mode, const Vector &eigenvalue);
 
         // method added for TransformationDOF_Groups
-        virtual Matrix* getT(void);
+        virtual Matrix *getT(void);
         virtual void unSetMyNode(void)
         {
             myNode = 0;
@@ -109,19 +109,21 @@ class DOF_Group: public TaggedObject
 
 
 
-        virtual void  Print(ostream&, int = 0)
+        virtual void  Print(ostream &, int = 0)
         {
             return;
         };
         virtual void resetNodePtr(void);
 
+        virtual bool operator==(const DOF_Group &rhs) const;
+
     protected:
-        void  addLocalM_Force(const Vector& Udotdot, double fact = 1.0);
+        void  addLocalM_Force(const Vector &Udotdot, double fact = 1.0);
 
         // protected variables - a copy for each object of the class
-        Vector* unbalance;
-        Matrix* tangent;
-        Node* myNode;
+        Vector *unbalance;
+        Matrix *tangent;
+        Node *myNode;
 
     private:
         // private variables - a copy for each object of the class
@@ -131,8 +133,8 @@ class DOF_Group: public TaggedObject
         // static variables - single copy for all objects of the class
         static Matrix errMatrix;
         static Vector errVect;
-        static Matrix** theMatrices; // array of pointers to class wide matrices
-        static Vector** theVectors;  // array of pointers to class widde vectors
+        static Matrix **theMatrices; // array of pointers to class wide matrices
+        static Vector **theVectors;  // array of pointers to class widde vectors
         static int numDOFs;           // number of objects
 };
 

@@ -1123,6 +1123,26 @@ Vector &Vector::operator/=(double fact)
     return *this;
 }
 
+// bool operator==(const Vector &V)
+//  The == tests whether *this vector is the same as the other one
+bool Vector::operator==(const Vector &V) const
+{
+    if (!(sz == V.sz))
+    {
+        return false;
+    }
+
+    for (int i = 0; i < sz; i++)
+    {
+        if (!(theData[i] == V.theData[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
 
 
 

@@ -123,6 +123,8 @@ class Matrix
         Matrix &operator+=(const Matrix &M);
         Matrix &operator-=(const Matrix &M);
 
+        bool operator==(const Matrix &M) const;
+
         // methods to read/write to/from the matrix
         void Output(ostream &s) const;
         //    void Input(istream &s);

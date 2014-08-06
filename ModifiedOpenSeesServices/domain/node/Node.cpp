@@ -68,8 +68,8 @@ Node::Node(int theClassTag)
       Crd(0), commitDisp(0), commitVel(0), commitAccel(0),
       trialDisp(0), trialVel(0), trialAccel(0), unbalLoad(0), incrDisp(0),
       incrDeltaDisp(0),
-      disp(0), vel(0), accel(0), dbTag1(0), dbTag2(0), dbTag3(0), dbTag4(0),
-      R(0), mass(0), sizedMatrix(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), reaction(0),
+      disp(0), vel(0), accel(0),
+      R(0), mass(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), sizedMatrix(0), reaction(0),
       penalty_load(0)
 {
     // for FEM_ObjectBroker, recvSelf() must be invoked on object
@@ -83,8 +83,8 @@ Node::Node(int tag, int theClassTag)
       Crd(0), commitDisp(0), commitVel(0), commitAccel(0),
       trialDisp(0), trialVel(0), trialAccel(0), unbalLoad(0), incrDisp(0),
       incrDeltaDisp(0),
-      disp(0), vel(0), accel(0), dbTag1(0), dbTag2(0), dbTag3(0), dbTag4(0),
-      R(0), mass(0), sizedMatrix(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), reaction(0),
+      disp(0), vel(0), accel(0),
+      R(0), mass(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), sizedMatrix(0), reaction(0),
       penalty_load(0)
 {
     // for subclasses - they must implement all the methods with
@@ -101,8 +101,8 @@ Node::Node(int tag, int ndof, double Crd1, double Crd2, double Crd3)
       Crd(0), commitDisp(0), commitVel(0), commitAccel(0),
       trialDisp(0), trialVel(0), trialAccel(0), unbalLoad(0), incrDisp(0),
       incrDeltaDisp(0),
-      disp(0), vel(0), accel(0), dbTag1(0), dbTag2(0), dbTag3(0), dbTag4(0),
-      R(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), reaction(0),
+      disp(0), vel(0), accel(0),
+      R(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), sizedMatrix(0), reaction(0),
       penalty_load(0)
 {
 
@@ -119,62 +119,6 @@ Node::Node(int tag, int ndof, double Crd1, double Crd2, double Crd3)
     sizedMatrix = new Matrix(numberDOF, numberDOF);
 
 
-    // NOTE: (Nima) sizedMatrix is created with appropriate size
-    // in constructor instead of the following!
-
-    //   index = -1;
-    //   if (numMatrices != 0)
-    //   {
-    //     for (int i=0; i<numMatrices; i++)
-    //     {
-    //       if (theMatrices[i]->noRows() == ndof)
-    //       {
-    //  index = i;
-    //  i = numMatrices;
-    //       }
-    //     }
-    //   }
-    //   if (index == -1)
-    //   {
-    //     Matrix **nextMatrices = new Matrix *[numMatrices+1];
-    //     if (nextMatrices == 0)
-    //     {
-    //       cerr << "Node::Node - out of memory\n";
-    //       exit(-1);
-    //     }
-    //
-    //     for (int j=0; j<numMatrices; j++)
-    //     {
-    //       nextMatrices[j] = theMatrices[j];
-    //     }
-    //
-    //
-    //     Matrix *theMatrix = new Matrix(ndof, ndof);
-    //
-    //     if (theMatrix == 0)
-    //     {
-    //       cerr << "Node::Node - out of memory\n";
-    //       exit(-1);
-    //     }
-    //
-    //     nextMatrices[numMatrices] = theMatrix;
-    //
-    //     if (numMatrices != 0)
-    //     {
-    //       delete [] theMatrices;
-    //     }
-    //
-    //     index = numMatrices;
-    //     numMatrices++;
-    //     theMatrices = nextMatrices;
-    //
-    //     nextMatrices = 0;
-    //     delete [] nextMatrices;
-    //   }
-
-
-    //***********************************************************
-    // NOTE: Nima Tafazzoli
     // should be added to the sendseld/recvself functions later
     penalty_load = new Vector(numberDOF);
 
@@ -192,8 +136,8 @@ Node::Node(const Node &otherNode, bool copyMass)
       Crd(0), commitDisp(0), commitVel(0), commitAccel(0),
       trialDisp(0), trialVel(0), trialAccel(0), unbalLoad(0), incrDisp(0),
       incrDeltaDisp(0),
-      disp(0), vel(0), accel(0), dbTag1(0), dbTag2(0), dbTag3(0), dbTag4(0),
-      R(0), mass(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), reaction(0)
+      disp(0), vel(0), accel(0),
+      R(0), mass(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), sizedMatrix(0), reaction(0)
 {
 
 
@@ -283,53 +227,9 @@ Node::Node(const Node &otherNode, bool copyMass)
         }
     }
 
-    //Guanzhou added
-    //GZ if ( otherNode.theDOF_GroupPtr != 0 ) {
-    //GZ  theDOF_GroupPtr = new DOF_Group(otherNode.theDOF_GroupPtr->getTag(), this);
-    //GZ  if ( theDOF_GroupPtr == 0) {
-    //GZ          cerr << " FATAL Node::Node(node *) - ran out of memory for theDOF_GroupPtr\n";
-    //GZ          exit(-1);
-    //GZ  }
-    //GZ  ID newID(otherNode.theDOF_GroupPtr->getID());
-    //GZ  theDOF_GroupPtr->setID(newID);
-    //GZ }
-
-
-    //   index = -1;
-    //   if (numMatrices != 0) {
-    //     for (int i=0; i<numMatrices; i++)
-    //       if (theMatrices[i]->noRows() == numberDOF) {
-    //  index = i;
-    //  i = numMatrices;
-    //       }
-    //   }
-    //   if (index == -1) {
-    //     Matrix **nextMatrices = new Matrix *[numMatrices+1];
-    //     if (nextMatrices == 0) {
-    //       cerr << "Element::getTheMatrix - out of memory\n";
-    //       exit(-1);
-    //     }
-    //     for (int j=0; j<numMatrices; j++)
-    //       nextMatrices[j] = theMatrices[j];
-    //     Matrix *theMatrix = new Matrix(numberDOF, numberDOF);
-    //     if (theMatrix == 0) {
-    //       cerr << "Element::getTheMatrix - out of memory\n";
-    //       exit(-1);
-    //     }
-    //     nextMatrices[numMatrices] = theMatrix;
-    //     if (numMatrices != 0)
-    //       delete [] theMatrices;
-    //     index = numMatrices;
-    //     numMatrices++;
-    //     theMatrices = nextMatrices;
-    //   }
-
 
 }
 
-
-// ~Node():
-//  destructor
 
 Node::~Node()
 {
@@ -1047,10 +947,6 @@ Node::commitState()
             disp[i + 2 * numberDOF] = 0.0;
             disp[i + 3 * numberDOF] = 0.0;
         }
-
-        //cerr << "Node::commitState - Node " << this->getTag() << endln;
-        //cerr << *commitDisp << endln;
-        //cerr << *trialDisp << endln;
     }
 
     // check vel exists, if does set commit = trial
@@ -1554,7 +1450,7 @@ Node::sendSelf(int cTag, Channel &theChannel)
 
     if (commitDisp != 0)
     {
-        res = theChannel.sendVector(dbTag1, cTag, *commitDisp);
+        res = theChannel.sendVector(dataTag, cTag, *commitDisp);
 
         if (res < 0)
         {
@@ -1563,19 +1459,9 @@ Node::sendSelf(int cTag, Channel &theChannel)
         }
     }
 
-    //GZ if (disp != 0) {
-    //GZ    Vector dispData(disp, 4*numberDOF);
-    //GZ
-    //GZ    res = theChannel.sendVector(dbTag1, cTag, dispData);
-    //GZ    if (res < 0) {
-    //GZ      cerr << " Node::sendSelf() - failed to send Disp data\n";
-    //GZ      return res;
-    //GZ    }
-    //GZ }
-
     if (commitVel != 0)
     {
-        res = theChannel.sendVector(dbTag2, cTag, *commitVel);
+        res = theChannel.sendVector(dataTag, cTag, *commitVel);
 
         if (res < 0)
         {
@@ -1586,7 +1472,7 @@ Node::sendSelf(int cTag, Channel &theChannel)
 
     if (commitAccel != 0)
     {
-        res = theChannel.sendVector(dbTag3, cTag, *commitAccel);
+        res = theChannel.sendVector(dataTag, cTag, *commitAccel);
 
         if (res < 0)
         {
@@ -1619,7 +1505,7 @@ Node::sendSelf(int cTag, Channel &theChannel)
 
     if (unbalLoad  != 0)
     {
-        res = theChannel.sendVector(dbTag4, cTag, *unbalLoad);
+        res = theChannel.sendVector(dataTag, cTag, *unbalLoad);
 
         if (res < 0)
         {
@@ -1676,10 +1562,6 @@ Node::recvSelf(int cTag, Channel &theChannel,
     int numberCrd = data(7);
 
     penalty_load = new Vector(numberDOF); //Added by Babak 6/25/13
-    dbTag1 = data(8);
-    dbTag2 = data(9);
-    dbTag3 = data(10);
-    dbTag4 = data(11);
 
 
     // create a Vector to hold coordinates IF one needed
@@ -1710,7 +1592,7 @@ Node::recvSelf(int cTag, Channel &theChannel,
         }
 
         // recv the committed disp
-        if (theChannel.recvVector(dbTag1, cTag, *commitDisp) < 0)
+        if (theChannel.recvVector(dataTag, cTag, *commitDisp) < 0)
         {
             cerr << "Node::recvSelf - failed to receive Disp data\n";
             return res;
@@ -1722,16 +1604,6 @@ Node::recvSelf(int cTag, Channel &theChannel,
             disp[i] = disp[i + numberDOF];    // set trial equal commited
         }
 
-        //GZ // create the disp vectors if node is a total blank
-        //GZ if (disp == 0)
-        //GZ  this->createDisp();
-        //GZ
-        //GZ // recv the committed disp
-        //GZ Vector dispData(disp, 4*numberDOF);
-        //GZ if (theChannel.recvVector(dbTag1, cTag, dispData) < 0) {
-        //GZ  cerr << "Node::recvSelf - failed to receive Disp data\n";
-        //GZ  return res;
-        //GZ }
 
     }
     else if (commitDisp != 0)
@@ -1751,7 +1623,7 @@ Node::recvSelf(int cTag, Channel &theChannel,
         }
 
         // recv the committed vel
-        if (theChannel.recvVector(dbTag2, cTag, *commitVel) < 0)
+        if (theChannel.recvVector(dataTag, cTag, *commitVel) < 0)
         {
             cerr << "Node::recvSelf - failed to receive Velocity data\n";
             return -3;
@@ -1773,7 +1645,7 @@ Node::recvSelf(int cTag, Channel &theChannel,
         }
 
         // recv the committed accel
-        if (theChannel.recvVector(dbTag3, cTag, *commitAccel) < 0)
+        if (theChannel.recvVector(dataTag, cTag, *commitAccel) < 0)
         {
             cerr << "Node::recvSelf - failed to receive Acceleration data\n";
             return -4;
@@ -1846,7 +1718,7 @@ Node::recvSelf(int cTag, Channel &theChannel,
             }
         }
 
-        if (theChannel.recvVector(dbTag4, cTag, *unbalLoad) < 0)
+        if (theChannel.recvVector(dataTag, cTag, *unbalLoad) < 0)
         {
             cerr << "Node::recvSelf() - failed to receive Load data\n";
             return res;
@@ -1957,38 +1829,6 @@ Node::Print(ostream &s, int flag)
         //s << this->getTag() << "  " << *trialDisp << "\n";
     }
 }
-
-// int
-// Node::displaySelf(Renderer &theRenderer, int displayMode, float fact)
-// {
-//
-//   if (displayMode == 0)
-//     return 0;
-//
-//   const Vector &theDisp = this->getDisp();
-//   static Vector position(3);
-//
-//   for (int i=0; i<3; i++)
-//     if (i <Crd->Size())
-//       position(i) = (*Crd)(i) + theDisp(i)*fact;
-//     else
-//       position(i) = 0.0;
-//
-//   if (displayMode == -1) {
-//     // draw a text string containing tag
-//     static char theText[20];
-//     sprintf(theText,"%d",this->getTag());
-//     return theRenderer.drawText(position, theText, strlen(theText));
-//
-//   } else if (displayMode > 0) {
-//     // draw a point - pixel size equals displayMode tag
-//     return theRenderer.drawPoint(position, 0.0, displayMode);
-//   }
-//
-//
-//   return 0;
-// }
-
 
 // createDisp(), createVel() and createAccel():
 // private methods to create the arrays to hold the disp, vel and acceleration
@@ -2304,7 +2144,58 @@ Node::CheckMesh(ofstream &checkmesh_file)
     return 0;
 }
 
+// NOTE THE MACRO!
+#define SAFE_COMPARE_POINTERS(p,q) if (!(p == NULL) && !( q == NULL) ) \
+    { \
+        if (!(*p == *q)) \
+        { \
+            return false; \
+        } \
+    }
 
+bool
+Node::operator==(const Node &rhs) const
+{
+    if (numberDOF != rhs.numberDOF)
+    {
+        return false;
+    }
+
+    // NOTE THE MACRO! SAFE_COMPARE_POINTERS
+    SAFE_COMPARE_POINTERS(theDOF_GroupPtr      , rhs.theDOF_GroupPtr);
+
+    SAFE_COMPARE_POINTERS(Crd                  , rhs.Crd);
+    SAFE_COMPARE_POINTERS(commitDisp           , rhs.commitDisp);
+    SAFE_COMPARE_POINTERS(commitVel            , rhs.commitVel);
+    SAFE_COMPARE_POINTERS(commitAccel          , rhs.commitAccel);
+    SAFE_COMPARE_POINTERS(trialDisp            , rhs.trialDisp);
+    SAFE_COMPARE_POINTERS(trialVel             , rhs.trialVel);
+    SAFE_COMPARE_POINTERS(trialAccel           , rhs.trialAccel);
+
+    SAFE_COMPARE_POINTERS(unbalLoad            , rhs.unbalLoad);
+    SAFE_COMPARE_POINTERS(incrDisp             , rhs.incrDisp);
+    SAFE_COMPARE_POINTERS(incrDeltaDisp        , rhs.incrDeltaDisp);
+
+    SAFE_COMPARE_POINTERS(disp                 , rhs.disp);
+    SAFE_COMPARE_POINTERS(vel                  , rhs.vel);
+    SAFE_COMPARE_POINTERS(accel                , rhs.accel);
+
+    SAFE_COMPARE_POINTERS(R                    , rhs.R);
+    SAFE_COMPARE_POINTERS(mass                 , rhs.mass);
+    SAFE_COMPARE_POINTERS(unbalLoadWithInertia , rhs.unbalLoadWithInertia);
+
+    if ( a0 != rhs.a0)
+    {
+        return false;
+    }
+
+    SAFE_COMPARE_POINTERS(theEigenvectors      , rhs.theEigenvectors);
+    SAFE_COMPARE_POINTERS(sizedMatrix          , rhs.sizedMatrix);
+    SAFE_COMPARE_POINTERS(reaction             , rhs.reaction);
+    SAFE_COMPARE_POINTERS(penalty_load         , rhs.penalty_load);
+
+    return true;
+}
 
 
 

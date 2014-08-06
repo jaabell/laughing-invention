@@ -73,6 +73,8 @@ class ID
         int &operator[](int);
 
         ID &operator=(const ID  &V);
+        bool operator==(const ID &rhs) const;
+
 
         int getLocation(int value) const;
         int removeValue(int value);

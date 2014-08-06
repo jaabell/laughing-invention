@@ -663,7 +663,7 @@ Matrix::Invert(Matrix &theInverse) const
 {
 
     int n = numRows;
-    int nrhs = theInverse.numCols;
+    // int nrhs = theInverse.numCols;
 
 #ifdef _G3DEBUG
 
@@ -730,7 +730,7 @@ Matrix::Invert(Matrix &theInverse) const
     }
 
     int ldA = n;
-    int ldB = n;
+    // int ldB = n;
     int info;
     double *Wptr = matrixWork;
     double *Aptr = theInverse.data;
@@ -1223,7 +1223,7 @@ Matrix::operator=(const Tensor &V)
 
     int dim = V.dim(1);
 
-    if (dim != V.dim(2) != V.dim(3) != V.dim(4))
+    if (dim != (V.dim(2) != (V.dim(3) != V.dim(4))))
     {
         std::cerr << "Matrix::operator=() - tensor must have square dimensions\n";
         return *this;
@@ -1695,6 +1695,29 @@ Matrix::operator-=(const Matrix &M)
 
     return *this;
 }
+
+
+// bool operator==(const Matrix &M)
+//  The == tests whether *this vector is the same as the other one
+bool Matrix::operator==(const Matrix &M) const
+{
+    if (!(dataSize == M.dataSize))
+    {
+        return false;
+    }
+
+    double *dataPtr = data;
+    double *otherData = M.data;
+    for (int i = 0; i < dataSize; i++)
+    {
+        if (!(*dataPtr++ == *otherData++))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 
 //

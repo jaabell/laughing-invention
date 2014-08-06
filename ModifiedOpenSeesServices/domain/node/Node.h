@@ -152,7 +152,11 @@ class Node : public DomainComponent
         virtual const Vector &getReaction();
         virtual int   addReactionForce(const Vector &, double factor);
         virtual int   resetReactionForce(int flag);
-        //     virtual const Vector *getResponse(NodeResponseType);
+
+
+        virtual bool operator==(const Node &rhs) const;
+
+
 
     private:
         // priavte methods used to create the Vector objects
@@ -171,10 +175,8 @@ class Node : public DomainComponent
         Vector *incrDisp;
         Vector *incrDeltaDisp;
 
-        double *disp, *vel, *accel; // double arrays holding the displ,
-        // vel and accel values
+        double *disp, *vel, *accel; // double arrays holding the displ, vel and accel values
 
-        int dbTag1, dbTag2, dbTag3, dbTag4; // needed for database
         Matrix *R;                          // nodal participation matrix
         Matrix *mass;                       // pointer to mass matrix
         Vector *unbalLoadWithInertia;
@@ -182,11 +184,6 @@ class Node : public DomainComponent
 
         Matrix *theEigenvectors;
         Matrix *sizedMatrix;
-
-
-        //     static Matrix **theMatrices;
-        //     static int numMatrices;
-        //     int index;
 
         Vector *reaction;
 

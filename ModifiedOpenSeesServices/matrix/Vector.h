@@ -105,6 +105,8 @@ class Vector
         double operator^(const Vector &V) const;
         Vector operator/(const Matrix &M) const;
 
+        bool operator==(const Vector &V) const;
+
         // methods added by Remo
         int  Assemble(const Vector &V, int init_row, double fact = 1.0);
         int  Extract (const Vector &V, int init_row, double fact = 1.0);
