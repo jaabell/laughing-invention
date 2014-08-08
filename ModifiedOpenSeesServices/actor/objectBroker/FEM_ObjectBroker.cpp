@@ -49,237 +49,140 @@
 #include <SimpleNumberer.h>
 
 
-// uniaxial material model header files
-#include <ElasticMaterial.h>
-#include <ElasticPPMaterial.h>
-#include <ParallelMaterial.h>
-#include <Concrete01.h>
-#include <Steel01.h>
-#include <HardeningMaterial.h>
-#include <HystereticMaterial.h>
+//Materials (find ../../material -name "*.h" yields this list)
+#include <UniaxialMaterial.h>
+#include <Concrete04.h>
 #include <EPPGapMaterial.h>
-#include <ViscousMaterial.h>
-#include <PathIndependentMaterial.h>
+#include <Steel02.h>
 #include <SeriesMaterial.h>
-#include <CableMaterial.h>
-#include <ENTMaterial.h>
+#include <HardeningMaterial.h>
+#include <ElasticPPMaterial.h>
+#include <HystereticMaterial.h>
+#include <Concrete02.h>
+// #include <Pinching4Material.h>
+#include <Steel03.h>
 #include <MinMaxMaterial.h>
-
-// Sections
-#include <ElasticSection3d.h>
-#include <GenericSection1d.h>
-#include <SectionAggregator.h>
+#include <ENTMaterial.h>
+#include <FatigueMaterial.h>
+#include <ElasticMaterial.h>
+//#include <ThreePointCurve.h>
+//#include <AxialCurve.h>
+// #include <LimitCurve.h>
+// #include <ShearCurve.h>
+// #include <LimitStateMaterial.h>
+#include <DrainMaterial.h>
+#include <Concrete01.h>
+#include <ViscousMaterial.h>
+#include <Steel01.h>
+#include <BarSlipMaterial.h>
+#include <PathIndependentMaterial.h>
+#include <CableMaterial.h>
+#include <ReinforcingSteel.h>
+#include <BoucWenMaterial.h>
+#include <NewUniaxialMaterial.h>
+#include <ParallelMaterial.h>
 #include <FiberSection3d.h>
-#include <ElasticPlateSection.h>
+#include <FiberSection.h>
+#include <FiberSectionGJ.h>
+#include <Isolator2spring.h>
+#include <ElasticShearSection3d.h>
+#include <GenericSection1d.h>
 #include <ElasticMembranePlateSection.h>
+#include <ElasticSection3d.h>
+#include <ElasticPlateSection.h>
+#include <SectionForceDeformation.h>
+#include <SectionAggregator.h>
+#include <GenericSectionNd.h>
+// #include <MatrixUtil.h>
 #include <MembranePlateFiberSection.h>
+// #include <YS_Section2D02.h>
+// #include <YS_Section2D01.h>
 #include <Bidirectional.h>
-
-// NDMaterials
-#include <ElasticIsotropic3D.h>
-#include <PlaneStressMaterial.h>
-#include <Template3Dep.h>
-#include <NewTemplate3Dep.h>
-#include <MaterialParameter.h>
-#include <ElasticState.h>
-#include <elnp_Elastic.h>
-#include <PressureDependent_Elastic.h>
-#include <DM04_Elastic.h>
-#include <Isotropic_Elastic.h>
-
-#include <YieldFunction.h>
-#include <VM_YF.h>
-#include <DP_YF.h>
-#include <CC_YF.h>
-#include <DM04_YF.h>
-
-#include <PlasticFlow.h>
-#include <VM_PF.h>
-#include <DP_PF.h>
-#include <CC_PF.h>
-#include <DM04_PF.h>
-
-#include <ScalarEvolution.h>
-#include <Linear_Eeq.h>
-#include <CC_Ev.h>
-
-#include <TensorEvolution.h>
-#include <Linear_Eij.h>
-#include <AF_Eij.h>
-#include <DM04_alpha_Eij.h>
-#include <DM04_z_Eij.h>
-
-//#include <PressureDependentElastic3D.h>
-//YieldSurface includes
-#include <YS.h>
-#include <CAM_YS.h>
-#include <DP_YS01.h>
-#include <DP_YS.h>
-#include <MD_YS.h>
-#include <RMC01_YS.h>
-#include <VM_YS.h>
-#include <Tri_a_fail_crit_YS.h>
-//Potential Surface include
-#include <PS.h>
-#include <CAM_PS.h>
-#include <DP_PS.h>
-#include <MD_PS01.h>
-#include <MD_PS.h>
-#include <RMC01_PS.h>
-#include <VM_PS.h>
-//EvolutionLaw includes
-#include <EL_S.h>
-#include <EL_T.h>
-#include <EL_LEeq.h>
-#include <EL_NLEeq.h>
-#include <EL_NLEp.h>
-#include <EL_LEij.h>
-#include <EL_NLEij.h>
-#include <EL_NLEijMD.h>
-
-// Boris Jeremic took out 20Mar2008
-//#include <FluidSolidPorousMaterial.h>
-//#include <PressureDependMultiYield.h>
-//#include <PressureIndependMultiYield.h>
-//
-// Fibers
+#include <Fiber.h>
 #include <UniaxialFiber3d.h>
-// element header files
+#include <CircReinfLayer.h>
+#include <StraightReinfLayer.h>
+#include <ReinfLayer.h>
+#include <QuadPatch.h>
+#include <CircPatch.h>
+#include <Patch.h>
+#include <SectionRepres.h>
+#include <FiberSectionRepr.h>
+#include <Cell.h>
+#include <QuadCell.h>
+#include <ReinfBar.h>
+#include <ElasticIsotropic3D.h>
+#include <NDMaterial.h>
+#include <PlaneStressMaterial.h>
+#include <BeamFiberMaterial.h>
+#include <ElasticIsotropicBeamFiber.h>
+#include <ElasticIsotropicMaterial.h>
+#include <PressureDependentElastic3D.h>
+#include <ElasticIsotropicPlateFiber.h>
+#include <ElasticCrossAnisotropic.h>
+#include <BardetConstraint.h>
+#include <ElasticIsotropicAxiSymm.h>
+#include <FeapMaterial.h>
+#include <PlateFiberMaterial.h>
+#include <NullPlasticMaterial.h>
+#include <PlasticHardeningMaterial.h>
+#include <MultiLinearKp.h>
+#include <ExponReducing.h>
+#include <PlasticHardening2D.h>
+#include <BoundingSurface2D.h>
+#include <Kinematic2D01.h>
+#include <BkStressLimSurface2D.h>
+#include <CombinedIsoKin2D01.h>
+#include <PeakOriented2D02.h>
+#include <YS_Evolution.h>
+#include <Kinematic2D02.h>
+#include <YS_Evolution2D.h>
+#include <Isotropic2D01.h>
+#include <NullEvolution.h>
+#include <CombinedIsoKin2D02.h>
+#include <PeakOriented2D01.h>
+#include <ElTawil2DUnSym.h>
+#include <YieldSurface_BC2D.h>
+#include <YieldSurface_BC.h>
+#include <Orbison2D.h>
+#include <NullYS2D.h>
+
+#include "../../../CompGeoMechUCD_MaterialModeling/CompGeoMechUCD_MaterialModeling.h"
+
+
+//Within MOSS
 #include <Element.h>
-// #include <beam3d01.h>
-// #include <beam3d02.h>
+#include <UniaxialFiber3d.h>
 #include <Truss.h>
 #include <TrussSection.h>
 #include <CorotTruss.h>
 #include <CorotTrussSection.h>
 #include <ZeroLength.h>
 #include <ZeroLengthSection.h>
-//#include <ZeroLengthND.h>
-// #include <FourNodeQuad.h>
-// #include <EnhancedQuad.h>
-// #include <NineNodeMixedQuad.h>
-// #include <ConstantPressureVolumeQuad.h>
 #include <ElasticBeamLumpedMass.h>
 #include <ElasticBeam.h>
 #include <BeamWithHinges3d.h>
-// #include <NLBeamColumn3d.h>
-// #include <ForceBeamColumn3d.h>
-
 #include <DispBeamColumn3d.h>
 #include <ShellMITC4.h>
 #include <ElementSelfWeight.h>
-
-//Contents of CompGeoMechUCD_FiniteElements (Jose Abell, Fri 31 Jan 2014 02:41:19 PM PST)
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_8_nodes/EightNodeBrick.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_8_nodes_variable_number_of_gauss_points/EightNodeBrickVariableGP.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_8_nodes_elastic/EightNodeBrickElastic.h>
-#include <../../../CompGeoMechUCD_FiniteElements/coupled_u-p-U_brick_8_nodes/EightNodeBrick_u_p_U.h>
-#include <../../../CompGeoMechUCD_FiniteElements/coupled_u-p_brick_8_nodes/EightNode_Brick_u_p.h>
-#include <../../../CompGeoMechUCD_FiniteElements/coupled_u-p_large_deformation_brick_8_nodes/EightNode_LDBrick_u_p.h>
-#include <../../../CompGeoMechUCD_FiniteElements/coupled_u-p-U_brick_20_nodes/TwentyNodeBrick_u_p_U.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_20_nodes/TwentyNodeBrick.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_20_nodes_elastic/TwentyNodeBrickElastic.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_20_nodes_variable_number_of_gauss_points/TwentyNodeBrickVariableGP.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_27_nodes_variable_number_of_gauss_points/TwentySevenNodeBrickVariableGP.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_27_nodes/TwentySevenNodeBrick.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_27_nodes_elastic/TwentySevenNodeBrickElastic.h>
-#include <../../../CompGeoMechUCD_FiniteElements/penalty_element_apply_displacement/PenaltyElementApplyDisplacement.h>
-#include <../../../CompGeoMechUCD_FiniteElements/penalty_element/PenaltyElement.h>
-#include <../../../CompGeoMechUCD_FiniteElements/shell_andes/ThreeNodeAndesShell.h>
-#include <../../../CompGeoMechUCD_FiniteElements/shell_andes/FourNodeAndesShell.h>
-#include <../../../CompGeoMechUCD_FiniteElements/elastic_beam/ElasticBeam.h>
-#include <../../../CompGeoMechUCD_FiniteElements/rank_one_deficient_elastic_pinned_fixed_beam/rank_one_deficient_elastic_pinned_fixed_beam.h>
-#include <../../../CompGeoMechUCD_FiniteElements/solid_brick_variable_nodes_8_to_27/VariableNodeBrick.h>
-#include "../../../CompGeoMechUCD_FiniteElements/Contact_Elements/ContactElement_3DOF_3DOF.h"
-#include "../../../CompGeoMechUCD_FiniteElements/Contact_Elements/ContactElement_Nonlinear_3DOF_7DOF.h"
-#include "../../../CompGeoMechUCD_FiniteElements/Contact_Elements/ContactElement_Nonlinear_3DOF_3DOF.h"
-#include "../../../CompGeoMechUCD_FiniteElements/solid_brick_large_deformation_total_Lagrangian_8_nodes/TotalLagrangianFD8NodeBrick.h"
-#include "../../../CompGeoMechUCD_FiniteElements/solid_brick_large_deformation_total_Lagrangian_20_nodes/TotalLagrangianFD20NodeBrick.h"
-#include "../../../CompGeoMechUCD_FiniteElements/solid_brick_8_nodes_ltensor/EightNodeBrickLT.h"
-
-// UCD CompGeoMech Material Modeling
-//#ifdef UCD_Materials
-#include "../../../CompGeoMechUCD_MaterialModeling/NDMaterial.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/NewTemplate3Dep.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/MaterialParameter.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/ElasticState.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/ElasticIsotropic3D.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/Isotropic_Elastic.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/elnp_Elastic.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/DM04_Elastic.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/ElasticCrossAnisotropic.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/YieldFunction.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/PlasticFlow.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/ScalarEvolution.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/Linear_Eeq.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/TensorEvolution.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/Linear_Eij.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/AF_Eij.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/ElasticState.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/Isotropic_Elastic.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/elnp_Elastic.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/DP_YF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/VM_YF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/RMC_YF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/CC_YF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/DM04_YF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/DP_PF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/VM_PF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/RMC_PF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/CC_PF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/DM04_PF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/Linear_Eeq.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/CC_Ev.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/Linear_Eij.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/AF_Eij.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/DM04_alpha_Eij.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/DM04_z_Eij.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/SANISAND_p0_bar.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/SANISAND_alpha_Eij.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/SANISAND_PF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/SANISAND_YF.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/SANISAND_Elastic.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep/SANISAND_z_Eij.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/NDMaterialLT.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/NDMaterialLT.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/vonMisesPPLT.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/PisanoLT.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/LTensor_Based/NewPisanoLT.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/ConstitutiveMaterialParameter.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/vonMisesPP.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/vonMisesIH.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/vonMisesKH.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/vonMisesLinearKH.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/DruckerPragerPP.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/DruckerPragerIH.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/DruckerPragerKH.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/CamClay.h"
-#include "../../../CompGeoMechUCD_MaterialModeling/Accelerated3Dep/Pisano_model.h"
-
-
-
-
-
-
-#include <PathSeries_Disp_TimeHistory_Penalty.h>
-
 #include <HingeMidpointBeamIntegration3d.h>
 #include <HingeRadauBeamIntegration3d.h>
 #include <HingeRadauTwoBeamIntegration3d.h>
 #include <LobattoBeamIntegration.h>
 
-// node header files
+
+
+//Contents of CompGeoMechUCD_FiniteElements (Jose Abell, Fri 31 Jan 2014 02:41:19 PM PST)
+#include "../../../CompGeoMechUCD_FiniteElements/CompGeoMechUCD_FiniteElements.h"
+
+
+//MOSS
 #include <Node.h>
+#include <PathSeries_Disp_TimeHistory_Penalty.h>
 
 
-//#include <DataOutputStreamHandler.h>
-//#include <DataOutputFileHandler.h>
-//#include <DataOutputDatabaseHandler.h>
 
-// #include <NodeRecorder.h>
-// #include <ElementRecorder.h>
-// #include <EnvelopeNodeRecorder.h>
-// #include <EnvelopeElementRecorder.h>
+
 
 // Constraints
 #include <MP_Constraint.h>
@@ -338,8 +241,6 @@
 #include <DomainSolver.h>
 
 
-
-
 #ifdef _PARALLEL_PROCESSING
 #include <DistributedDisplacementControl.h>
 #include <PetscSOE.h>
@@ -389,10 +290,6 @@
 // time series integrators
 #include <TrapezoidalTimeSeriesIntegrator.h>
 
-
-#ifdef _PARALLEL_PROCESSING
-
-#endif
 
 
 

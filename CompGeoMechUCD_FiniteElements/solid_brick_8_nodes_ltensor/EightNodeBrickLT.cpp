@@ -1517,10 +1517,10 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
 {
     cerr << "EightNodeBrickLT::recvSelf -- Not yet implemented!" << endl;
     return -1;
-    /*
+
     if ( !initialized )
     {
-    populate();
+        populate();
     }
 
     int dataTag = this->getDbTag();
@@ -1529,8 +1529,8 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
 
     if ( theChannel.recvID( dataTag, commitTag, idData ) < 0 )
     {
-    cerr << "WARNING EightNodeBrickLT::recvSelf() - failed to receive ID\n";
-    return -1;
+        cerr << "WARNING EightNodeBrickLT::recvSelf() - failed to receive ID\n";
+        return -1;
     }
 
     this->setTag( idData( 25 ) );
@@ -1550,77 +1550,77 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
 
     if ( material_array[0] == 0 )
     {
-    for ( int i = 0; i < 8; i++ )
-    {
+        for ( int i = 0; i < 8; i++ )
+        {
 
-    matClassTag = idData( i );
-    matDbTag    = idData( i + 8 );
+            matClassTag = idData( i );
+            matDbTag    = idData( i + 8 );
 
 
-    // Allocate new material with the sent class tag
-    NDMaterialLT *ndmat = theBroker.getNewNDMaterial( matClassTag );
-    if ( ndmat == 0 )
-    {
-    cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
-    return -1;
-    }
-    // Now receive materials into the newly allocated space
-    ndmat->setDbTag( matDbTag );
-    if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
-    {
-    cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
-    return -1;
-    }
+            // Allocate new material with the sent class tag
+            NDMaterialLT *ndmat = theBroker.getNewNDMaterial( matClassTag );
+            if ( ndmat == 0 )
+            {
+                cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                return -1;
+            }
+            // Now receive materials into the newly allocated space
+            ndmat->setDbTag( matDbTag );
+            if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            {
+                cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
+                return -1;
+            }
 
-    material_array[i] = ndmat;
-    }
+            material_array[i] = ndmat;
+        }
     }
     // materials exist , ensure materials of correct type and recvSelf on them
     else
     {
-    for ( int i = 0; i < 8; i++ )
-    {
+        for ( int i = 0; i < 8; i++ )
+        {
 
-    matClassTag = idData( i );
-    matDbTag    = idData( i + 8 );
+            matClassTag = idData( i );
+            matDbTag    = idData( i + 8 );
+
+            static Vector matProp( 4 );
+            if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
+            {
+                cerr << "EightNodeBrickLT::recvSelf() - failed to recv rho!\n";
+                return -1;
+            }
+
+            NDMaterial *ndmat = theBroker.getNewNDMaterial( matClassTag );;
+            // Check that material is of the right type; if not,
+            // delete it and create a new one of the right type
+            if ( ( material_array[i]->matmodel )->getClassTag() != matClassTag )
+            {
+                delete material_array[i];
+                if ( ndmat ==  0 )
+                {
+                    cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                    return -1;
+                }
+
+                ndmat->setDbTag( matDbTag );
+            }
+            // Receive the material
+            if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            {
+                cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
+                return -1;
+            }
+
+            material_array[i] = ndmat;
+        }
+    }
 
     static Vector matProp( 4 );
     if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
     {
-    cerr << "EightNodeBrickLT::recvSelf() - failed to recv rho!\n";
-    return -1;
-    }
-
-    NDMaterial *ndmat = theBroker.getNewNDMaterial( matClassTag );;
-    // Check that material is of the right type; if not,
-    // delete it and create a new one of the right type
-    if ( ( material_array[i]->matmodel )->getClassTag() != matClassTag )
-    {
-    delete material_array[i];
-    if ( ndmat ==  0 )
-    {
-    cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
-    return -1;
-    }
-
-    ndmat->setDbTag( matDbTag );
-    }
-    // Receive the material
-    if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
-    {
-    cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
-    return -1;
-    }
-
-    material_array[i] = ndmat;
-    }
-    }
-
-    static Vector matProp( 4 );
-    if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
-    {
-    cerr << "EightNodeBrickLT::recvSelf() - failed to recv rho!\n";
-    return -1;
+        cerr << "EightNodeBrickLT::recvSelf() - failed to recv rho!\n";
+        return -1;
     }
 
     rho = matProp( 0 );
@@ -1628,7 +1628,7 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
     bf( 1 ) = matProp( 2 );
     bf( 2 ) = matProp( 3 );
     return 0;
-    */
+
 }
 
 

@@ -71,6 +71,7 @@ class BeamIntegration;
 class UniaxialMaterial;
 class SectionForceDeformation;
 class NDMaterial;
+class NDMaterialLT;
 class Fiber;
 
 //Guanzhou added for parallel Template3D
@@ -123,6 +124,7 @@ class FEM_ObjectBroker
         virtual UniaxialMaterial  *getNewUniaxialMaterial(int classTag);
         virtual SectionForceDeformation  *getNewSection(int classTag);
         virtual NDMaterial *getNewNDMaterial(int classTag);
+        virtual NDMaterialLT *getNewNDMaterialLT(int classTag);
         virtual Fiber *getNewFiber(int classTag);
 
         virtual ConvergenceTest *getNewConvergenceTest(int classTag);
