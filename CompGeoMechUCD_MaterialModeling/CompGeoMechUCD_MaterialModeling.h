@@ -82,6 +82,7 @@
 #include "./NewTemplate3Dep/SANISAND_YF.h"
 #include "./NewTemplate3Dep/SANISAND_Elastic.h"
 #include "./NewTemplate3Dep/SANISAND_z_Eij.h"
+#include "./NewTemplate3Dep/PressureDependent_Elastic.h"
 
 
 //LTensor based material models
