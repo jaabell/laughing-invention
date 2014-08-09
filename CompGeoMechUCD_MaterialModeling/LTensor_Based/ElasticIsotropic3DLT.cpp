@@ -67,6 +67,27 @@ ElasticIsotropic3DLT::ElasticIsotropic3DLT( int tag,
 }
 
 
+//================================================================================
+ElasticIsotropic3DLT::ElasticIsotropic3DLT( )
+    : NDMaterialLT( 0, ND_TAG_ElasticIsotropic3DLT ),
+      TrialStrain( 3, 3, 0.0 ),
+      TrialStress( 3, 3, 0.0 ),
+      ElasticStateStrain( 3, 3, 0.0 ),
+      ElasticStateStress( 3, 3, 0.0 ),
+      CommitStress( 3, 3, 0.0 ),
+      CommitStrain( 3, 3, 0.0 ),
+      E( 0 ),
+      v( 0 ),
+      rho( 0 ),
+      Ee(3, 3, 3, 3, 0.0)
+{
+
+
+    revertToStart();
+}
+
+
+
 // Destructor
 //================================================================================
 ElasticIsotropic3DLT::~ElasticIsotropic3DLT()

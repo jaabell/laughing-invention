@@ -181,7 +181,6 @@ class EightNodeBrickLT: public Element
 
         ID  connectedExternalNodes;
 
-        DTensor2 pl_stn[8];
         DTensor2 stress[8];
         Matrix *Ki;
 

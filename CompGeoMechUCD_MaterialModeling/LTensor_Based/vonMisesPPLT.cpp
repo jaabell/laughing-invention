@@ -80,6 +80,32 @@ vonMisesPPLT::vonMisesPPLT( int tag,
 }
 
 
+vonMisesPPLT::vonMisesPPLT(  )
+    : NDMaterialLT( 0, ND_TAG_vonMisesPPLT ),
+      TrialStrain( 3, 3, 0.0 ),
+      TrialStress( 3, 3, 0.0 ),
+      TrialPlastic_Strain( 3, 3, 0.0 ),
+      ElasticStateStrain( 3, 3, 0.0 ),
+      ElasticStateStress( 3, 3, 0.0 ),
+      CommitStress( 3, 3, 0.0 ),
+      CommitStrain( 3, 3, 0.0 ),
+      CommitPlastic_Strain( 3, 3, 0.0 ),
+      Stiffness( 3, 3, 3, 3, 0.0 ),
+      E( 0 ),
+      v( 0 ),
+      k( 0 ),
+      rho( 0 ),
+      initialconfiningstress( 0 ),
+      TOLERANCE1( 0 ), TOLERANCE2( 0 ),
+      ISMAX( 0 ),
+      Ee(3, 3, 3, 3, 0.0)
+{
+
+}
+
+
+
+
 // Destructor
 //================================================================================
 vonMisesPPLT::~vonMisesPPLT()
@@ -88,7 +114,7 @@ vonMisesPPLT::~vonMisesPPLT()
 }
 
 //================================================================================
-int vonMisesPPLT::setTrialStrain( const DTensor2& v )
+int vonMisesPPLT::setTrialStrain( const DTensor2 &v )
 {
     DTensor2 result( 3, 3, 0.0 );
     result( i, j ) = v( i, j ) - TrialStrain( i, j );
@@ -97,7 +123,7 @@ int vonMisesPPLT::setTrialStrain( const DTensor2& v )
 }
 
 //================================================================================
-int vonMisesPPLT::setTrialStrainIncr( const DTensor2& strain_increment )
+int vonMisesPPLT::setTrialStrainIncr( const DTensor2 &strain_increment )
 {
     Explicit( strain_increment );
 
@@ -106,26 +132,26 @@ int vonMisesPPLT::setTrialStrainIncr( const DTensor2& strain_increment )
 
 
 //================================================================================
-const DTensor4& vonMisesPPLT::getTangentTensor( void )
+const DTensor4 &vonMisesPPLT::getTangentTensor( void )
 {
     return Stiffness;
 }
 
 //================================================================================
-const DTensor2&  vonMisesPPLT::getStressTensor( void )
+const DTensor2  &vonMisesPPLT::getStressTensor( void )
 {
     return TrialStress;
 }
 
 
 //================================================================================
-const DTensor2& vonMisesPPLT::getStrainTensor( void )
+const DTensor2 &vonMisesPPLT::getStrainTensor( void )
 {
     return TrialStrain;
 }
 
 //================================================================================
-const DTensor2& vonMisesPPLT::getPlasticStrainTensor( void )
+const DTensor2 &vonMisesPPLT::getPlasticStrainTensor( void )
 {
     return TrialPlastic_Strain;
 }
@@ -193,9 +219,9 @@ int vonMisesPPLT::revertToStart( void )
 }
 
 //================================================================================
-NDMaterialLT* vonMisesPPLT::getCopy( void )
+NDMaterialLT *vonMisesPPLT::getCopy( void )
 {
-    NDMaterialLT* tmp = new vonMisesPPLT( this->getTag(),
+    NDMaterialLT *tmp = new vonMisesPPLT( this->getTag(),
                                           this->getE(),
                                           this->getv(),
                                           this->getk(),
@@ -210,11 +236,11 @@ NDMaterialLT* vonMisesPPLT::getCopy( void )
 
 
 //================================================================================
-NDMaterialLT* vonMisesPPLT::getCopy( const char* code )
+NDMaterialLT *vonMisesPPLT::getCopy( const char *code )
 {
     if ( strcmp( code, "ThreeDimensional" ) == 0 )
     {
-        vonMisesPPLT* tmp = new vonMisesPPLT( this->getTag(),
+        vonMisesPPLT *tmp = new vonMisesPPLT( this->getTag(),
                                               this->getE(),
                                               this->getv(),
                                               this->getk(),
@@ -236,24 +262,24 @@ NDMaterialLT* vonMisesPPLT::getCopy( const char* code )
 }
 
 //================================================================================
-const char* vonMisesPPLT::getType( void ) const
+const char *vonMisesPPLT::getType( void ) const
 {
     return "ThreeDimensional";
 }
 
 //================================================================================
-int vonMisesPPLT::sendSelf( int commitTag, Channel& theChannel )
+int vonMisesPPLT::sendSelf( int commitTag, Channel &theChannel )
 {
     return 0;
 }
 
-int vonMisesPPLT::recvSelf( int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker )
+int vonMisesPPLT::recvSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
     return 0;
 }
 
 //================================================================================
-void vonMisesPPLT::Print( ostream& s, int flag )
+void vonMisesPPLT::Print( ostream &s, int flag )
 {
     s << ( *this );
 }
@@ -290,7 +316,7 @@ double vonMisesPPLT::getInitialConfiningStress( void )
 
 
 //================================================================================
-double vonMisesPPLT::YieldFunctionValue( const DTensor2& Stre ) const
+double vonMisesPPLT::YieldFunctionValue( const DTensor2 &Stre ) const
 {
 
     // f2 = [(sij-aij)*(sij-aij)]^0.5 - sqrt(2.0/3)*k
@@ -312,7 +338,7 @@ double vonMisesPPLT::YieldFunctionValue( const DTensor2& Stre ) const
 }
 
 //================================================================================
-int vonMisesPPLT::Explicit( const DTensor2& strain_incr )
+int vonMisesPPLT::Explicit( const DTensor2 &strain_incr )
 {
 
     int err = 0;
@@ -491,8 +517,8 @@ int vonMisesPPLT::Explicit( const DTensor2& strain_incr )
 // Trying to find intersection point according to M. Crisfield's book
 // "Non-linear Finite Element Analysis of Solids and Structures "  Chp 6.6.1 pp168.
 //================================================================================
-DTensor2 vonMisesPPLT::yield_surface_cross( const DTensor2& start_stress,
-        const DTensor2& end_stress, double a )
+DTensor2 vonMisesPPLT::yield_surface_cross( const DTensor2 &start_stress,
+        const DTensor2 &end_stress, double a )
 {
     DTensor2 delta_stress( 3, 3, 0 );
     delta_stress( i, j ) = end_stress( i, j ) - start_stress( i, j );
@@ -504,8 +530,8 @@ DTensor2 vonMisesPPLT::yield_surface_cross( const DTensor2& start_stress,
 
 // Routine used by yield_surface_cross to find the DTensor2 at cross point
 //================================================================================
-double vonMisesPPLT::zbrentstress( const DTensor2& start_stress,
-                                   const DTensor2& end_stress,
+double vonMisesPPLT::zbrentstress( const DTensor2 &start_stress,
+                                   const DTensor2 &end_stress,
                                    double x1, double x2, double tol ) const
 {
     double EPS = d_macheps();

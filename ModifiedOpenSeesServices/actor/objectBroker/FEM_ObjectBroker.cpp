@@ -746,6 +746,40 @@ FEM_ObjectBroker::getNewNDMaterial(int classTag)
     }
 }
 
+
+NDMaterialLT *
+FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
+{
+    switch (classTag)
+    {
+        case ND_TAG_ElasticIsotropic3DLT :
+            return new ElasticIsotropic3DLT();
+            break;
+
+        case ND_TAG_vonMisesPPLT :
+            return new vonMisesPPLT();
+            break;
+
+        case ND_TAG_PisanoLT :
+            return new PisanoLT();
+            break;
+
+        case ND_TAG_NewPisanoLT :
+            return new NewPisanoLT();
+            break;
+
+
+        default:
+            cerr << "FEM_ObjectBroker::getNewNDMaterialLT - ";
+            cerr << " - no NDMaterialLT type exists for class tag ";
+            cerr << classTag << endln;
+            return 0;
+    }
+}
+
+
+
+
 //Guanzhou added for NewTemplate3Dep
 MaterialParameter *
 FEM_ObjectBroker::getNewMaterialParameterPtr(void)
