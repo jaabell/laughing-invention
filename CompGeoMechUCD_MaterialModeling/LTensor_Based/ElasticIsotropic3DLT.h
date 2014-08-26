@@ -128,9 +128,7 @@ class ElasticIsotropic3DLT : public NDMaterialLT
 
         static const  DTensor2 ZeroStrain;
         static const  DTensor2 ZeroStress;
-        double TOLERANCE1;
-        double TOLERANCE2;
-        int ISMAX;
+
         DTensor4 Ee;
 
         Index < 'i' > i;

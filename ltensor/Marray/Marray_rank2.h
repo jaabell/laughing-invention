@@ -403,7 +403,7 @@ public:
 		(*this)(1,1) =	cos(theta);
 		(*this)(0,1) =	-sin(theta);
 		(*this)(2,2)= 1.0;
-		return *this;
+	return *this;
 	}
 
 

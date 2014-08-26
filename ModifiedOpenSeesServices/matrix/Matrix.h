@@ -65,6 +65,7 @@ class Matrix
 
         // utility methods
         int setData(double *newData, int nRows, int nCols);
+        const double *getData() const;
         inline int noRows() const;
         inline int noCols() const;
         void Zero(void);
@@ -224,6 +225,13 @@ Matrix::operator()(int row, int col) const
 #endif
     return data[col * numRows + row];
 }
+
+
+inline const double *Matrix::getData() const
+{
+    return data;
+}
+
 
 #endif
 
