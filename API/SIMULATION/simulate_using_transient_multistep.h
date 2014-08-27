@@ -259,7 +259,7 @@ int simulate_using_transient_multistep(double dT,
 
         result = theTransientAnalysis->analyze(1, dT);
 
-        cout << "\nAnalysis step # " << i  << " of " << numSteps << " finished!\n";
+        cout << "Analysis step # " << i  << " of " << numSteps << "\n";
     }
     cout << "> Analysis End -------------------------------------------------------------------------------";
 
@@ -278,7 +278,7 @@ int simulate_using_transient_multistep(double dT,
         theTransientAnalysis->analyze(1, dT);
         cout << "\nAnalysis step # " << i  << " of " << numSteps << " finished!\n";
     }
-    cout << "> Analysis End -------------------------------------------------------------------------------";
+    cout << "> Analysis End -------------------------------------------------------------------------------\n";
 
 #endif
     //=====================================================================================
