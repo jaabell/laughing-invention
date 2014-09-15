@@ -37,7 +37,9 @@ int add_constitutive_model_NDMaterialLT_New_Pisano(int tag,
         double h_in,
         double m_in,
         double rho_in,
-        double initialconfiningstress_in)
+        double initialconfiningstress_in,
+        double n_in,
+        double a_in)
 {
     NDMaterialLT *theMaterial = 0;
     theMaterial = new NewPisanoLT( tag,
@@ -49,7 +51,9 @@ int add_constitutive_model_NDMaterialLT_New_Pisano(int tag,
                                    h_in,
                                    m_in,
                                    rho_in,
-                                   initialconfiningstress_in);
+                                   initialconfiningstress_in,
+                                   n_in,
+                                   a_in);
 
     if (theMaterial == NULL)
     {

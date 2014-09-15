@@ -65,6 +65,10 @@ These documents all mirror published works in indexed journals.
 #define FourNodeAndesShell_H
 
 
+// Output is 6 components of internal forces (p11 p22 p12 m11 m22 m12)
+#define FourNodeAndesShell_NUMBER_OF_GAUSSPOINTS 1
+#define FourNodeAndesShell_OUTPUT_SIZE FourNodeAndesShell_NUMBER_OF_GAUSSPOINTS*(6*1)
+
 #ifndef _bool_h
 #include "bool.h"
 #endif
@@ -175,6 +179,12 @@ class FourNodeAndesShell: public Element
             return "FourNodeAndesShell";
         }
 
+        //Jose Added for output
+        Matrix &getGaussCoordinates(void);
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
+
 
     private:
 
@@ -213,6 +223,8 @@ class FourNodeAndesShell: public Element
         bool is_stiffness_calculated;
         bool is_mass_calculated;
 
+        Matrix gauss_points;
+        Vector outputVector;
 };
 
 

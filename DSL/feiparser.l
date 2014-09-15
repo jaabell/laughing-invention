@@ -513,6 +513,9 @@ EXP	([Ee][-+]?[0-9]+)
 "h_in"                              {return token::h_in;}
 "m_in"                              {return token::m_in;}
 "beta_min"                          {return token::beta_min;}
+"n_in"                              {return token::n_in;}
+"a_in"                              {return token::a_in;}
+"elastic_modulus_1atm"              {return token::elastic_modulus_1atm;}
 
  /* Load options */
 "Fx"                                |

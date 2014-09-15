@@ -48,6 +48,9 @@ const  DTensor2 NewPisanoLT::ZeroStress(3, 3, 0.0);
 const double NewPisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::epsilon()); // used to check the variable nullity
 const double NewPisanoLT::beta_min = 1e-16;
 const double NewPisanoLT::beta_max = 1e+16;
+const double NewPisanoLT::eplcum_cr = 1e-6;  // Should be always between 1e-5 and 1e-6 (cfr. Mojtaba E-Kan, Hossein A. Taiebat, On implementation of bounding surface plasticity models with no overshooting effect in solving boundary value problems, Computers and Geotechnics, Volume 55, January 2014, Pages 103-116, ISSN 0266-352X, http://dx.doi.org/10.1016/j.compgeo.2013.08.006.(http://www.sciencedirect.com/science/article/pii/S0266352X13001213))
+const double NewPisanoLT::patm = 1.013e5;   // 1 Atmosphere of pressure [Pa]
+
 DTensor4 NewPisanoLT::Ee(3, 3, 3, 3, 0.0);
 
 
@@ -55,7 +58,7 @@ DTensor4 NewPisanoLT::Ee(3, 3, 3, 3, 0.0);
 // Constructors & Destructors
 //================================================================================
 NewPisanoLT::NewPisanoLT(int tag,
-                         double E_in,
+                         double E0_in,
                          double v_in,
                          double M_in,
                          double kd_in,
@@ -63,8 +66,20 @@ NewPisanoLT::NewPisanoLT(int tag,
                          double h_in,
                          double m_in,
                          double rho_in,
-                         double initialconfiningstress_in)
+                         double initialconfiningstress_in,
+                         double n_in,
+                         double a_in)
     : NDMaterialLT(tag, ND_TAG_NewPisanoLT),
+      E0(E0_in),
+      v(v_in), M(M_in),
+      kd(kd_in),
+      xi(xi_in),
+      h(h_in), m(m_in),
+      rho(rho_in),
+      initialconfiningstress(initialconfiningstress_in),
+      n(n_in),
+      a(a_in),
+      strainplcum(3, 3, 0.0),
       TrialStrain( 3, 3, 0.0 ),
       TrialStress( 3, 3, 0.0 ),
       TrialPlastic_Strain( 3, 3, 0.0 ),
@@ -75,16 +90,11 @@ NewPisanoLT::NewPisanoLT(int tag,
       CommitPlastic_Strain( 3, 3, 0.0 ),
       alpha( 3, 3, 0.0 ),
       alpha0( 3, 3, 0.0 ),
+      alpha0mem( 3, 3, 0.0 ),
+      strainpl0( 3, 3, 0.0 ),
       Stress_n_minus_2( 3, 3, 0.0 ),
       nij_dev( 3, 3, 0.0 ),
-      Stiffness( 3, 3, 3, 3, 0.0 ),
-      E(E_in),
-      v(v_in), M(M_in),
-      kd(kd_in),
-      xi(xi_in),
-      h(h_in), m(m_in),
-      rho(rho_in),
-      initialconfiningstress(initialconfiningstress_in)
+      Stiffness( 3, 3, 3, 3, 0.0 )
 {
     DTensor2 initialStress(3, 3, 0.0);
     DTensor2 zeroT(3, 3, 0.0);
@@ -92,8 +102,8 @@ NewPisanoLT::NewPisanoLT(int tag,
     initialStress(0, 0) = -initialconfiningstress;
     initialStress(1, 1) = -initialconfiningstress;
     initialStress(2, 2) = -initialconfiningstress;
+
 #ifdef DEBUG_PISANO
-    //DEBUG
     LTensorDisplay::print(initialStress, "initialStress");
 #endif
 
@@ -101,15 +111,11 @@ NewPisanoLT::NewPisanoLT(int tag,
     ElasticStateStress = DTensor2(initialStress);
     TrialPlastic_Strain(i, j) = 0 * initialStress(i, j);
 
-    Stress_n_minus_2 = DTensor2(initialStress); //FP
+    Stress_n_minus_2 = DTensor2(initialStress);
 
-    // need to initialize here both alpha and alpha0 tensors
+    beta = beta_max;
 
-    beta  = M * sqrt(2.0 / 3.0); //FP: this is ok initialization when alpha is initially nil. Otherwise, consistent evaluation needed
-
-
-    // FIXME: Hard-coded n_ij deviatoric!!!! FP: no general rule for this, because it comes from stress increment - which is initially not given!!!
-    nij_dev(0, 0) = 0.0; //FP
+    nij_dev(0, 0) = 0.0;
     nij_dev(1, 1) = 0.0;
     nij_dev(2, 2) = 0.0;
     nij_dev(0, 1) = 0.0;
@@ -208,8 +214,8 @@ int NewPisanoLT::revertToStart(void)
 
     TrialStress = CommitStress;
     TrialStrain = CommitStrain;
-    // TrialPlastic_Strain = ZeroStrain;
 
+    double E = getE();
     double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
     double mu = E / ( 2 * ( 1 + v ) );
 
@@ -246,7 +252,7 @@ int NewPisanoLT::revertToStart(void)
 NDMaterialLT *NewPisanoLT::getCopy(void)
 {
     NDMaterialLT *tmp = new NewPisanoLT(this->getTag(),
-                                        this->getE(),
+                                        this->getE0(),
                                         this->getv(),
                                         this->getM(),
                                         this->getkd(),
@@ -254,7 +260,9 @@ NDMaterialLT *NewPisanoLT::getCopy(void)
                                         this->geth(),
                                         this->getm(),
                                         this->getRho(),
-                                        this->getInitialConfiningStress());
+                                        this->getInitialConfiningStress(),
+                                        this->getn(),
+                                        this->geta());
     return tmp;
 }
 
@@ -263,7 +271,7 @@ NDMaterialLT *NewPisanoLT::getCopy(const char *code)
     if (strcmp(code, "ThreeDimensional") == 0)
     {
         NewPisanoLT *tmp = new NewPisanoLT( this->getTag(),
-                                            this->getE(),
+                                            this->getE0(),
                                             this->getv(),
                                             this->getM(),
                                             this->getkd(),
@@ -271,7 +279,9 @@ NDMaterialLT *NewPisanoLT::getCopy(const char *code)
                                             this->geth(),
                                             this->getm(),
                                             this->getRho(),
-                                            this->getInitialConfiningStress());
+                                            this->getInitialConfiningStress(),
+                                            this->getn(),
+                                            this->geta());
         return tmp;
     }
     else
@@ -314,43 +324,43 @@ int NewPisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 
 int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 {
-    Matrix a(3, 3);
+    Matrix aux(3, 3);
 
     //1 . Sending strain
-    a.setData(TrialStrain.data, 3, 3);
-    theChannel.sendMatrix(0, 0, a);
+    aux.setData(TrialStrain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
 
     //2. Sending stress
-    a.setData(TrialStress.data, 3, 3);
-    theChannel.sendMatrix(0, 0, a);
+    aux.setData(TrialStress.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
 
     //3. Sending plastic_strain
-    a.setData(TrialPlastic_Strain.data, 3, 3);
-    theChannel.sendMatrix(0, 0, a);
+    aux.setData(TrialPlastic_Strain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
 
     //4. Sending alpha
-    a.setData(alpha.data, 3, 3);
-    theChannel.sendMatrix(0, 0, a);
+    aux.setData(alpha.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
 
     //5. Sending alpha0
-    a.setData(alpha0.data, 3, 3);
-    theChannel.sendMatrix(0, 0, a);
+    aux.setData(alpha0.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
 
     //6. Sending stress_n_minus_2
-    a.setData(Stress_n_minus_2.data, 3, 3);
-    theChannel.sendMatrix(0, 0, a);
+    aux.setData(Stress_n_minus_2.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
 
     //7. Sending nij_dev
-    a.setData(nij_dev.data, 3, 3);
-    theChannel.sendMatrix(0, 0, a);
+    aux.setData(nij_dev.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
 
 
     //8. Sending model_parameters
-    Vector model_parameters(10);
+    Vector model_parameters(12);
     //model_parameters(0) = beta0; // not needed anymore
     //model_parameters(2) = beta_min;  // this is not parameter
     model_parameters(0) = beta;  // this is not parameter
-    model_parameters(1) = E;
+    model_parameters(1) = E0;
     model_parameters(2) = v;
     model_parameters(3) = M;
     model_parameters(4) = kd;
@@ -359,6 +369,8 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
     model_parameters(7) = m;
     model_parameters(8) = rho;
     model_parameters(9) = initialconfiningstress;
+    model_parameters(10) = n;
+    model_parameters(11) = a;
 
     theChannel.sendVector(0, 0, model_parameters);
 
@@ -383,9 +395,9 @@ void NewPisanoLT::Print(ostream &s, int flag)
 //================================================================================
 //   Getters!
 //================================================================================
-double NewPisanoLT::getE()
+double NewPisanoLT::getE0()
 {
-    return E;
+    return E0;
 }
 
 double NewPisanoLT::getv()
@@ -439,6 +451,16 @@ double NewPisanoLT::getInitialConfiningStress(void)
     return initialconfiningstress;
 }
 
+double NewPisanoLT::getn(void)
+{
+    return n;
+}
+
+double NewPisanoLT::geta(void)
+{
+    return a;
+}
+
 DTensor2 &NewPisanoLT::getInternalTensor(void)
 {
     return alpha;
@@ -473,6 +495,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     double incr_strain_dev_nijdev = 0.0;    //
     double alpha_nijdev           = 0.0;    //
     double ep_stress_p            = 0.0;    //
+    double eplcum_cr              = 0.0;    // overshooting parameter
+    double strainplcum_vol        = 0.0;
 
     DTensor2 mij(3, 3, 0.0);                // Unit vector normal to potential surface
     DTensor2 incr_strain(3, 3, 0.0);        //
@@ -490,7 +514,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     DTensor2 alphad_alpha(3, 3, 0.0);       //
     DTensor2 ep_stress_dev(3, 3, 0.0);      // Deviatoric elastoplastic stress
     DTensor2 I2(3, 3, 0.0);                 // I2 is the identity matrix
-
+    DTensor2 strainplcum_dev(3, 3, 0.0);
     DTensor4 Ep(3, 3, 3, 3, 0.0);           // Elastoplastic tangent modulus tensor
 
     Index < 'p' > p;                        // Extra index for LTensor computations
@@ -500,6 +524,12 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // Get initial state
     //---------------------------------------------------------------------------------------------
 
+    //CHECK THIS!!!
+    // strainplcum: new internal variable, to be set at zero
+    // strainpl0: new internal variable, to be set at zero
+
+    eplcum_cr = 1e-6;
+
     start_stress  = getStressTensor();
     start_strain  = getStrainTensor();
     start_Pstrain = getPlasticStrainTensor();
@@ -508,6 +538,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     ElasticStateStrain = start_strain;
 
     incr_strain = strain_incr;
+    double E = getE();
 
     G = E / (2.0 * (1.0 + v));
     K = E / (3.0 * (1.0 - 2.0 * v));
@@ -527,6 +558,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     pressure_ratio = fabs(p_incr_prev / pp);
 
 
+
+
     //---------------------------------------------------------------------------------------------
     // Some healthy checkups
     //---------------------------------------------------------------------------------------------
@@ -542,7 +575,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     double norm_nij_dev;
 
-    // NOTE: Not consistent with article! Eqn. 10
+    // NOTE: Not consistent with article! Eqn. 10 FP: it is consistent, it can be demonstrated that the same nij_dev results!!!
     nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) - p_incr_prev * alpha(i, j); // and then normalization
     norm_nij_dev = sqrt(nij_dev(i, j) * nij_dev(i, j));
 
@@ -563,9 +596,26 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     if (unload_prod <= 0.0)
     {
-        //cout << "negative!!!" << endl;
-        // beta0 = beta; // stress tensor at last load reversal : not needed now
-        alpha0(i, j) = alpha(i, j); // back-stress tensor at last load reversal
+        //cout << "unloading condition fulfilled" << endl;
+
+        // overshooting remediation
+        double eplcum;
+
+        strainplcum.compute_deviatoric_tensor(strainplcum_dev, strainplcum_vol); //check declaration!
+        eplcum = sqrt((0.6666666) * strainplcum_dev(i, j) * strainplcum_dev(i, j));
+
+
+        if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
+        {
+            alpha0mem(i, j) = alpha0(i, j);
+            alpha0(i, j)    = alpha(i, j);
+        }
+        else // the previous projection center is reset
+        {
+            alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
+        }
+
+        strainpl0(i, j) = TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
     }
 
 
@@ -587,6 +637,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     //---------------------------------------------------------------------------------------------
     // beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
     beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
+    // beta = get_distance_coeff_lode(start_stress); // this should be able to read alpha and alpha0
 
 #ifdef DEBUG_PISANO
     //DEBUG
@@ -607,17 +658,9 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     ///// D (dilatancy coefficient)
     alpha_d(i, j) = nij_dev(i, j) * (kd * sqrt(2.0 / 3.0));
-
-    // alphad_alpha(i, j) = alpha_d(i, j) - alpha(i, j);
-
-    // alpha_norm = sqrt (alpha(i, j) * alpha(i, j));
-
-    // xi_var = xi * (1.0 - 1.0 * alpha_norm / (M * sqrt(2.0 / 3.0)));
-
-    // D =  (alphad_alpha(i, j) * nij_dev(i, j)) * xi_var;
-
-    // it is just:
     D = xi * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
+
+    // D = get_dilatancy();
 
     ///// mij (risulting direction)
     mij = nij_dev;
@@ -664,11 +707,13 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     TrialStrain(i, j)         += incr_strain(i, j);
     TrialPlastic_Strain(i, j) = start_Pstrain(i, j);
     TrialPlastic_Strain(i, j) += incr_Pstrain(i, j);
+    // for overshooting remediation
+    strainplcum(i, j) = TrialPlastic_Strain(i, j) - strainpl0(i, j);
 
     ep_stress.compute_deviatoric_tensor(ep_stress_dev, ep_stress_p);
     ep_stress_p = -ep_stress_p;
 
-    // this avoids weird alpha values...it is difficulta to find a general rule the checking factor..tests needed
+    // this avoids weird alpha values...it is difficult to find a general rule for the checking factor..tests needed
     // stress rapporto -> stress ratio
     if (ep_stress_p > 1000 * check_for_zero)   // FIXME: the 1000 factor is arbitrary
     {
@@ -697,7 +742,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     I2(2, 2) = 1;
 
-    // NOTE: Problem with the stiffness indexig...... ask Gregor
+    // NOTE: Problem with the stiffness indexig...... ask Gregor FP: WHY????
 
     Stiffness(p, q, i, j) =  nij_dev(i, j) * nij_dev(p, q) * (-4.0 * G * G / den) +
                              I2(i, j)      * nij_dev(p, q) * (2.0 * G * K * D / den) +
@@ -737,6 +782,10 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
     return err;
 }
+
+
+
+
 
 // Probably should be inlined
 double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
@@ -809,6 +858,229 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 }
 
 
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
+{
+    // A NEW SOIL PARAMETER n NEEDS TO BE DEFINED FOR THE DEVIATORIC SECTION!!!
+
+    double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));
+
+    if (nij_dev_norm > 1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
+    {
+        double sinphi;
+        double beta_secdev;
+        double arg;
+        double lode_step;
+        double R;
+        double M_lode;
+
+        sinphi       = 3.0 * M / (6.0 + M);
+        arg          = (3.0 + sinphi) / (3.0 - sinphi);
+        beta_secdev  = (pow(arg, -1.0 / n) - 1.0) / (pow(arg, -1.0 / n) + 1.0);
+        lode_step    = M_PI / 300.0; // lode angle step increment
+
+        for (double lode = -M_PI / 6.0; lode <= M_PI / 6.0; lode += lode_step ) // loop over the Lode angle
+        {
+            R = pow(((1 - beta_secdev * sin(3.0 * lode)) / (1 - beta_secdev)), n);
+            M_lode = M * R; // shear strength at a given (assumed) lode angle
+
+            //coefficients 2nd order equation
+            double a;
+            double b;
+            double c;
+            double Delta_equation;
+
+            //// a
+
+            a = (alpha(i, j) - alpha0(i, j)) * (alpha(i, j) - alpha0(i, j));
+
+            //// b
+
+            b = 2 * alpha(i, j) * (alpha(i, j) - alpha0(i, j));
+
+            //// c
+
+            c = alpha(i, j) * alpha(i, j) - (0.6666666666666666666666666666666666666) * M_lode * M_lode;
+
+            //// solution
+
+            if ( a > check_for_zero)
+            {
+                Delta_equation = b * b - 4.0 * a * c;
+
+                if (Delta_equation < 0.0)
+                {
+                    beta = beta_min;
+
+                    //  cout << "negative Delta in the distance coefficient equation" <<alpha_norm << "e" << alpha_nijdev << endl;
+                }
+                else
+                {
+                    beta  = (-b + sqrt(Delta_equation)) / (2.0 * a); // distance coefficient
+
+                    DTensor2 alphab(3, 3, 0.0);
+                    double   lode_alphab;
+
+                    alphab(i, j) = alpha(i, j) + beta * (alpha(i, j) - alpha0(i, j)); // bounding back stress
+
+                    lode_alphab = get_lode_angle(alphab); //CHECK THIS
+
+                    if (fabs(lode_alphab - lode) < lode_step)
+                    {
+                        break; // gets out of the lode angle loop
+                    };
+
+
+                };
+
+                if (beta < beta_min)
+                {
+                    //   cout << "negative distance coefficient" << endl;
+                    beta = beta_min;
+                };
+            }
+            else  // a is close to zero
+            {
+                beta = beta_max;
+            }
+
+
+        }
+
+
+    }
+    else
+    {
+        // cout << "Norm of nij_dev is nil. Might be non-deviatoric loading step... or something is wrong. Ask Pisano." << endl;
+
+    };
+
+    return beta;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+double NewPisanoLT::get_dilatancy()
+{
+    // I am using here input values: kd,xi,n,ndev,alpha
+
+    DTensor2 alphad(3, 3, 0.0);
+
+    double sinphid;
+    double arg;
+    double R;
+    double D;
+    double kd_lode;
+    double lode;
+    double beta_secdev;
+
+    sinphid      = 3.0 * kd / (6.0 + kd);
+    arg          = (3.0 + sinphid) / (3.0 - sinphid);
+    beta_secdev  = (pow(arg, -1.0 / n) - 1.0) / (pow(arg, -1.0 / n) + 1.0);
+
+
+    double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));
+
+    if (nij_dev_norm > 1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
+    {
+        lode    = get_lode_angle(nij_dev);
+
+        R       = pow(((1 - beta_secdev * sin(3.0 * lode)) / (1 - beta_secdev)), n);
+        kd_lode = kd * R; // shear strength at a given (assumed) lode angle
+
+    }
+    else
+    {
+
+        kd_lode = kd;
+
+    };
+
+    alphad(i, j) = (sqrt(2.0 / 3.0) * kd_lode) * nij_dev(i, j);
+
+    D = xi * (nij_dev(i, j) * (alpha(i, j) - alphad(i, j)));
+
+    return D;
+}
+
+
+//Sign function from http://stackoverflow.com/questions/1903954/is-there-a-standard-sign-function-signum-sgn-in-c-c
+int sgn(double val)
+{
+    return (double(0) < val) - (val < double(0));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a stress state
+{
+    //The input tensor s must be deviatoric
+
+    if (abs(s(i, i)) > check_for_zero )
+    {
+        cerr << "NewPisanoLT::lode   Warning! Lode angle is being computed with a non-deviatoric tensor s.\n\n";
+    }
+
+    double J2;
+    double J3;
+    double arg;
+
+
+
+    J2 = 0.5 * (s(i, j) * s(i, j));
+
+    J3 = 0.3333333 * s.compute_Determinant(); // I need the determinant of the deviatoric stress tensor!!!
+
+    if (J2 > check_for_zero)
+    {
+        arg = -(3.0 * 1.7321 / 2.0) * (sgn(J3) * fabs((pow(J3, 0.333333333333)))) / sqrt(J2); // check this!
+    }
+    else
+    {
+        arg = 0.0; // this is for hydrostastic stress states
+    };
+
+    if (arg > 1.0)
+    {
+        arg = 1.0;
+    }
+    else if (arg < -1.0)
+    {
+        arg = -1.0;
+    }
+    else
+    {
+        // this would be empty, do we need this?
+    };
+
+    //Return the lode angle
+    return 0.3333333 * asin(arg);
+}
+
+double NewPisanoLT::getE()
+{
+    double p = -CommitStress(i, i) / 3.0;
+    if (p > patm / 2)
+    {
+        return E0 * pow(p / patm, a);
+    }
+    else
+    {
+        return E0 * pow(0.5, a);
+    }
+}
 
 
 #endif

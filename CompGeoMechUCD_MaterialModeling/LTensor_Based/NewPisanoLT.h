@@ -54,7 +54,7 @@ class NewPisanoLT : public NDMaterialLT
     public:
 
         NewPisanoLT( int tag,
-                     double E_in,  // Young modulus
+                     double E0_in,  // Young modulus
                      double v_in,  // Poisson's ratio
                      double M_in,  // strength parameter
                      double kd_in, // flow rule parameter
@@ -62,7 +62,9 @@ class NewPisanoLT : public NDMaterialLT
                      double h_in,  // hardening parameter
                      double m_in,  // hardening parameter
                      double rho_in,
-                     double initialconfiningstress_in);
+                     double initialconfiningstress_in,
+                     double n_in,
+                     double a_in);
 
         NewPisanoLT(void);
 
@@ -85,7 +87,7 @@ class NewPisanoLT : public NDMaterialLT
         virtual const DTensor2 &getStrainTensor( void );    // Used
         virtual const DTensor2 &getPlasticStrainTensor( void ); // Not used
 
-        double getE();
+        double getE0();
         double getv();
         double getM();
         double getkd();
@@ -96,6 +98,10 @@ class NewPisanoLT : public NDMaterialLT
         double getbeta_min();
         DTensor2  &getInternalTensor();
         double getInitialConfiningStress();
+        double getn();
+        double geta();
+
+        double getE();
 
         int commitState(void);
         int revertToLastCommit(void);
@@ -112,30 +118,41 @@ class NewPisanoLT : public NDMaterialLT
 
         void Print(ostream &s, int flag = 0);
 
-        // const DTensor2 &getTangent (void);
-
-
     private:
 
 
         int Explicit(const DTensor2 &strain_incr);
 
-
-        //  double zbrentstress(const stresstensor& start_stress,
-        //                      const stresstensor& end_stress,
-        //                      double x1, double x2, double tol) const;
-
         double get_distance_coeff(DTensor2 &start_stress);
+        double get_distance_coeff_lode(DTensor2 &start_stress);
+        double get_dilatancy();
+        double get_lode_angle(DTensor2   s); // computes the Lode angle of a stress state
+
 
 
 
 
     private:
+        //Model parameters
+        double beta;                // Scalar distance coefficient as internal variable
+        double E0;                  // Young's modulus at p = patm
+        double v;                   // Modulus of poisson
+        double M;                   // Critical stress ratio in triax compression
+        double kd;                  // Dilatancy parameter (controls the transition from dilative to compactive behavior)
+        double xi;                  // Dilatancy parameter(controls the ammount of volumetric plastic strain developed)
+        double h;                   // Hardening parameter
+        double m;                   // Hardening parameter
+        double rho;                 //
+        double initialconfiningstress;
+        double n;                   // Controls shape of boundary surface in deviatoric plane (n=-0.229 matches Mohr-Coulomb deviatoric section)
+        double a;                   // Exponent for pressure dependent elastic moduli
+
+        //Internal variables
+        DTensor2 strainplcum;         //Cumulated plastic strain upon stress reversal (for overshooting)
 
         DTensor2 TrialStrain;
         DTensor2 TrialStress;
         DTensor2 TrialPlastic_Strain;
-
 
         DTensor2 ElasticStateStrain;
         DTensor2 ElasticStateStress;
@@ -145,30 +162,28 @@ class NewPisanoLT : public NDMaterialLT
         DTensor2 CommitPlastic_Strain;
 
         DTensor2 alpha;             // back stress ratio tensor
-        DTensor2 alpha0;             // back stress ratio tensor
+        DTensor2 alpha0;            // back stress ratio tensor
+        DTensor2 alpha0mem;         // back stress ratio tensor at last previous stress reversal
+        DTensor2 strainpl0;         // Plastic strain at stress reversal (for overshooting)
         DTensor2 Stress_n_minus_2;  // Stress tensor at step n-2
         DTensor2 nij_dev;           // direction of deviatoric plastic strain increment(unit tensor)
+
+
+        //Fourth order stiffness
         DTensor4 Stiffness;
 
-        double beta;                // scalar distance coefficient as internal variable
-        double E;
-        double v;
-        double M;
-        double kd;
-        double xi;
-        double h;
-        double m;
-        double rho;
-        double initialconfiningstress;
-
+        //Global constants
         const static double beta_min;
         const static double beta_max;
+        const static double eplcum_cr;           // Critical cumulated plastic strain upon stress reversal (for overshooting)
+        const static double patm;                // In basic SI units (Pa = kg / s^-2 / m)
 
         static const  DTensor2 ZeroStrain;
         static const  DTensor2 ZeroStress;
         static const double check_for_zero;
         static DTensor4 Ee;
 
+        //Global indexes for LTensor
         Index < 'i' > i;
         Index < 'j' > j;
 };

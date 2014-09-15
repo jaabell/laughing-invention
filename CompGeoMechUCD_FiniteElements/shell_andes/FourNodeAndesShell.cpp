@@ -102,7 +102,9 @@ FourNodeAndesShell::FourNodeAndesShell()
     K(24, 24), M(24, 24),
     P(24), Q(24), internal_forces(6), bf(3),  thickness(0.0), x0(3), T_lg(3, 3),
     is_stiffness_calculated(false),
-    is_mass_calculated(false)
+    is_mass_calculated(false),
+    gauss_points(1, 3),
+    outputVector(FourNodeAndesShell_OUTPUT_SIZE)
 {
     // zero node pointers
     for (int i = 0; i < 4; i++)
@@ -140,7 +142,9 @@ FourNodeAndesShell::FourNodeAndesShell(int element_number,
     K(24, 24), M(24, 24),
     P(24), Q(24), internal_forces(6), bf(3), thickness(t), x0(3), T_lg(3, 3),
     is_stiffness_calculated(false),
-    is_mass_calculated(false)
+    is_mass_calculated(false),
+    gauss_points(1, 3),
+    outputVector(FourNodeAndesShell_OUTPUT_SIZE)
 {
     // Set connected external node IDs
     connectedExternalNodes(0) = node_numb_1;
@@ -362,6 +366,8 @@ void FourNodeAndesShell::setDomain(Domain *theDomain)
 
 int FourNodeAndesShell::commitState ()
 {
+    compute_internal_forces();  //writes output vector too!
+
     return 0;
 }
 
@@ -1008,8 +1014,39 @@ void FourNodeAndesShell::compute_internal_forces()
     internal_forces(2) = 0.0;    // p12 TODO:implement this
     internal_forces(3) = m(0);   // m11
     internal_forces(4) = m(1);   // m22
-    internal_forces(5) = m(2);   //m12
+    internal_forces(5) = m(2);   // m12
+
+    outputVector = internal_forces;
 }
+
+
+
+
+Matrix &FourNodeAndesShell::getGaussCoordinates(void)
+{
+    gauss_points(0, 0) = x0(0);
+    gauss_points(0, 1) = x0(1);
+    gauss_points(0, 2) = x0(2);
+    return gauss_points;
+}
+
+
+
+int FourNodeAndesShell::getOutputSize() const
+{
+    return FourNodeAndesShell_OUTPUT_SIZE;
+}
+
+
+
+const Vector &FourNodeAndesShell::getOutput() const
+{
+    return outputVector;
+}
+
+
+
+
 
 #endif
 

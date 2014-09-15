@@ -200,7 +200,7 @@
 %token sanisand2004_Pat e0 sanisand2004_G0 sanisand2004_p_cut sanisand2004_Mc sanisand2004_c sanisand2004_lambda_c sanisand2004_xi sanisand2004_ec_ref sanisand2004_m sanisand2004_h0 sanisand2004_ch sanisand2004_nb sanisand2004_A0 sanisand2004_nd sanisand2004_z_max sanisand2004_cz
 %token reference_void_ratio critical_stress_ratio_M minimum_bulk_modulus initial_mean_pressure yield_strength strain_hardening_ratio compressive_strength strain_at_compressive_strength
 %token crushing_strength strain_at_crushing_strength tensile_strength tension_softening_stiffness
-%token M_in kd_in xi_in h_in m_in beta_min
+%token M_in kd_in xi_in h_in m_in beta_min n_in a_in elastic_modulus_1atm
 
 
 
@@ -3077,7 +3077,7 @@ ADD_material
     //!
     //!FEIDOC add material # <.> type [New_PisanoLT] elastic_modulus = <F/L^2> poisson_ratio = <.> M_in = <F/L^2> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> mass_density = <M/L^2> initial_confining_stress = <F/L^2> beta_min = <.>;
     | MATERIAL TEXTNUMBER exp TYPE New_PisanoLT
-                        elastic_modulus '=' exp
+                        elastic_modulus_1atm '=' exp
                         poisson_ratio '=' exp
                         M_in '=' exp
                         kd_in '=' exp
@@ -3086,26 +3086,31 @@ ADD_material
                         m_in '=' exp
                         mass_density '=' exp
                         initial_confining_stress '=' exp
+                        n_in '=' exp
+                        a_in '=' exp
       {
         args.clear(); signature.clear();
 
-        args.push_back($3); signature.push_back(this_signature("number",                    &isAdimensional));
-        args.push_back($8); signature.push_back(this_signature("elastic_modulus",           &isPressure));
-        args.push_back($11); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
-        args.push_back($14); signature.push_back(this_signature("M_in",                     &isAdimensional));
-        args.push_back($17); signature.push_back(this_signature("kd_in",                    &isAdimensional));
-        args.push_back($20); signature.push_back(this_signature("xi_in",                    &isAdimensional));
-        args.push_back($23); signature.push_back(this_signature("h_in",                     &isAdimensional));
-        args.push_back($26); signature.push_back(this_signature("m_in",                     &isAdimensional));
-        args.push_back($29); signature.push_back(this_signature("mass_density",             &isDensity));
-        args.push_back($32); signature.push_back(this_signature("initial_confining_stress", &isPressure));
+        args.push_back($3); signature.push_back(this_signature("number"                    , &isAdimensional));
+        args.push_back($8); signature.push_back(this_signature("elastic_modulus_1atm"      , &isPressure));
+        args.push_back($11); signature.push_back(this_signature("poisson_ratio"            , &isAdimensional));
+        args.push_back($14); signature.push_back(this_signature("M_in"                     , &isAdimensional));
+        args.push_back($17); signature.push_back(this_signature("kd_in"                    , &isAdimensional));
+        args.push_back($20); signature.push_back(this_signature("xi_in"                    , &isAdimensional));
+        args.push_back($23); signature.push_back(this_signature("h_in"                     , &isAdimensional));
+        args.push_back($26); signature.push_back(this_signature("m_in"                     , &isAdimensional));
+        args.push_back($29); signature.push_back(this_signature("mass_density"             , &isDensity));
+        args.push_back($32); signature.push_back(this_signature("initial_confining_stress" , &isPressure));
+        args.push_back($35); signature.push_back(this_signature("n_in"                     , &isAdimensional));
+        args.push_back($38); signature.push_back(this_signature("a_in"                     , &isAdimensional));
 
-        $$ = new FeiDslCaller10<int,
+        $$ = new FeiDslCaller12<int,
                                 double, double, double,
                                 double, double, double,
-                                double, double, double>(&add_constitutive_model_NDMaterialLT_New_Pisano, args, signature, "add_constitutive_model_NDMaterialLT_New_Pisano");
+                                double, double, double,
+                                double, double>(&add_constitutive_model_NDMaterialLT_New_Pisano, args, signature, "add_constitutive_model_NDMaterialLT_New_Pisano");
 
-        for(int ii = 1;ii <=10; ii++) nodes.pop();
+        for(int ii = 1;ii <=12; ii++) nodes.pop();
         nodes.push($$);
     }
     ;
