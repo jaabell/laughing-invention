@@ -182,6 +182,11 @@ void H5OutputWriter::initialize(std::string filename_in,
 
     current_time                         = 0.0;
     current_time_step                    = 0;
+    pos_nodes_outputs                    = 0;
+    pos_nodes_coordinates                = 0;
+    pos_elements_outputs                 = 0;
+    pos_elements_gausscoords             = 0;
+    pos_elements_connectivity            = 0;
 
     create_nodeMeshData_arrays           = true;
     create_nodeDisplacements_arrays      = true;
@@ -264,7 +269,6 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
     length_nodes_velocities_output       = pos_nodes_outputs;
     length_nodes_displacements_output    = pos_nodes_outputs;
     length_nodes_reaction_forcess_output = pos_nodes_outputs;
-
 
     return 0;
 }
