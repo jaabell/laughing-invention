@@ -200,7 +200,7 @@
 %token sanisand2004_Pat e0 sanisand2004_G0 sanisand2004_p_cut sanisand2004_Mc sanisand2004_c sanisand2004_lambda_c sanisand2004_xi sanisand2004_ec_ref sanisand2004_m sanisand2004_h0 sanisand2004_ch sanisand2004_nb sanisand2004_A0 sanisand2004_nd sanisand2004_z_max sanisand2004_cz
 %token reference_void_ratio critical_stress_ratio_M minimum_bulk_modulus initial_mean_pressure yield_strength strain_hardening_ratio compressive_strength strain_at_compressive_strength
 %token crushing_strength strain_at_crushing_strength tensile_strength tension_softening_stiffness
-%token M_in kd_in xi_in h_in m_in beta_min n_in a_in elastic_modulus_1atm
+%token M_in kd_in xi_in h_in m_in beta_min n_in a_in elastic_modulus_1atm eplcum_cr_in
 
 
 
@@ -3088,6 +3088,7 @@ ADD_material
                         initial_confining_stress '=' exp
                         n_in '=' exp
                         a_in '=' exp
+                        eplcum_cr_in '=' exp
       {
         args.clear(); signature.clear();
 
@@ -3103,12 +3104,13 @@ ADD_material
         args.push_back($32); signature.push_back(this_signature("initial_confining_stress" , &isPressure));
         args.push_back($35); signature.push_back(this_signature("n_in"                     , &isAdimensional));
         args.push_back($38); signature.push_back(this_signature("a_in"                     , &isAdimensional));
+        args.push_back($41); signature.push_back(this_signature("eplcum_cr_in"             , &isAdimensional));
 
-        $$ = new FeiDslCaller12<int,
+        $$ = new FeiDslCaller13<int,
                                 double, double, double,
                                 double, double, double,
                                 double, double, double,
-                                double, double>(&add_constitutive_model_NDMaterialLT_New_Pisano, args, signature, "add_constitutive_model_NDMaterialLT_New_Pisano");
+                                double, double, double>(&add_constitutive_model_NDMaterialLT_New_Pisano, args, signature, "add_constitutive_model_NDMaterialLT_New_Pisano");
 
         for(int ii = 1;ii <=12; ii++) nodes.pop();
         nodes.push($$);

@@ -64,7 +64,8 @@ class NewPisanoLT : public NDMaterialLT
                      double rho_in,
                      double initialconfiningstress_in,
                      double n_in,
-                     double a_in);
+                     double a_in,
+                     double eplcum_cr_in);
 
         NewPisanoLT(void);
 
@@ -100,6 +101,7 @@ class NewPisanoLT : public NDMaterialLT
         double getInitialConfiningStress();
         double getn();
         double geta();
+        double geteplcum_cr();
 
         double getE();
 
@@ -146,8 +148,10 @@ class NewPisanoLT : public NDMaterialLT
         double initialconfiningstress;
         double n;                   // Controls shape of boundary surface in deviatoric plane (n=-0.229 matches Mohr-Coulomb deviatoric section)
         double a;                   // Exponent for pressure dependent elastic moduli
+        double eplcum_cr;           // Critical cumulated plastic strain upon stress reversal (for overshooting) // Should be always between 1e-5 and 1e-6 (cfr. Mojtaba E-Kan, Hossein A. Taiebat, On implementation of bounding surface plasticity models with no overshooting effect in solving boundary value problems, Computers and Geotechnics, Volume 55, January 2014, Pages 103-116, ISSN 0266-352X, http://dx.doi.org/10.1016/j.compgeo.2013.08.006.(http://www.sciencedirect.com/science/article/pii/S0266352X13001213))
 
         //Internal variables
+        double eplcum;
         DTensor2 strainplcum;         //Cumulated plastic strain upon stress reversal (for overshooting)
 
         DTensor2 TrialStrain;
@@ -175,7 +179,6 @@ class NewPisanoLT : public NDMaterialLT
         //Global constants
         const static double beta_min;
         const static double beta_max;
-        const static double eplcum_cr;           // Critical cumulated plastic strain upon stress reversal (for overshooting)
         const static double patm;                // In basic SI units (Pa = kg / s^-2 / m)
 
         static const  DTensor2 ZeroStrain;

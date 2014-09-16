@@ -516,6 +516,7 @@ EXP	([Ee][-+]?[0-9]+)
 "n_in"                              {return token::n_in;}
 "a_in"                              {return token::a_in;}
 "elastic_modulus_1atm"              {return token::elastic_modulus_1atm;}
+"eplcum_cr_in"                      {return token::eplcum_cr_in;}
 
  /* Load options */
 "Fx"                                |

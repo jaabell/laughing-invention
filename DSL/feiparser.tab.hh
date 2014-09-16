@@ -489,59 +489,60 @@ namespace yy {
         n_in = 593,
         a_in = 594,
         elastic_modulus_1atm = 595,
-        ax = 596,
-        ay = 597,
-        az = 598,
-        verbose_level = 599,
-        maximum_iterations = 600,
-        tolerance = 601,
-        beta = 602,
-        gamma = 603,
-        kappa = 604,
-        lambda = 605,
-        delta = 606,
-        DOMAIN_ = 607,
-        startTime = 608,
-        endTime = 609,
-        Period = 610,
-        Phase = 611,
-        Amplitude = 612,
-        frequency = 613,
-        MaxTime = 614,
-        frequency1 = 615,
-        frequency2 = 616,
-        frequency3 = 617,
-        frequency4 = 618,
-        stiffness_to_use_opt = 619,
-        DAMPING_RAYLEIGH = 620,
-        DAMPING_CAUGHEY3 = 621,
-        DAMPING_CAUGHEY4 = 622,
-        a0 = 623,
-        a1 = 624,
-        stiffness_to_use = 625,
-        a2 = 626,
-        a3 = 627,
-        a4 = 628,
-        R0 = 629,
-        cR1 = 630,
-        cR2 = 631,
-        MASS = 632,
-        mx = 633,
-        my = 634,
-        mz = 635,
-        Imx = 636,
-        Imy = 637,
-        Imz = 638,
-        equaldof = 639,
-        master = 640,
-        slave = 641,
-        dof_to_constrain = 642,
-        of = 643,
-        OUTPUT = 644,
-        BINARY = 645,
-        TEXT = 646,
-        ENABLE = 647,
-        DISABLE = 648
+        eplcum_cr_in = 596,
+        ax = 597,
+        ay = 598,
+        az = 599,
+        verbose_level = 600,
+        maximum_iterations = 601,
+        tolerance = 602,
+        beta = 603,
+        gamma = 604,
+        kappa = 605,
+        lambda = 606,
+        delta = 607,
+        DOMAIN_ = 608,
+        startTime = 609,
+        endTime = 610,
+        Period = 611,
+        Phase = 612,
+        Amplitude = 613,
+        frequency = 614,
+        MaxTime = 615,
+        frequency1 = 616,
+        frequency2 = 617,
+        frequency3 = 618,
+        frequency4 = 619,
+        stiffness_to_use_opt = 620,
+        DAMPING_RAYLEIGH = 621,
+        DAMPING_CAUGHEY3 = 622,
+        DAMPING_CAUGHEY4 = 623,
+        a0 = 624,
+        a1 = 625,
+        stiffness_to_use = 626,
+        a2 = 627,
+        a3 = 628,
+        a4 = 629,
+        R0 = 630,
+        cR1 = 631,
+        cR2 = 632,
+        MASS = 633,
+        mx = 634,
+        my = 635,
+        mz = 636,
+        Imx = 637,
+        Imy = 638,
+        Imz = 639,
+        equaldof = 640,
+        master = 641,
+        slave = 642,
+        dof_to_constrain = 643,
+        of = 644,
+        OUTPUT = 645,
+        BINARY = 646,
+        TEXT = 647,
+        ENABLE = 648,
+        DISABLE = 649
       };
     };
 
@@ -829,13 +830,13 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 10605,     ///< Last index in yytable_.
+      yylast_ = 10709,     ///< Last index in yytable_.
       yynnts_ = 15,  ///< Number of nonterminal symbols.
       yyempty_ = -2,
       yyfinal_ = 108, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 411  ///< Number of tokens.
+      yyntokens_ = 412  ///< Number of tokens.
     };
 
 
@@ -844,7 +845,7 @@ namespace yy {
 
 
 } // yy
-#line 848 "feiparser.tab.hh" // lalr1.cc:372
+#line 849 "feiparser.tab.hh" // lalr1.cc:372
 
 
 
