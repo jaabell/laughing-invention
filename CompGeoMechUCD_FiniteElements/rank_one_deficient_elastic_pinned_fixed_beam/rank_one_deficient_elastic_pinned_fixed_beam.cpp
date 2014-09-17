@@ -44,7 +44,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
       nodeIOffset(0), nodeJOffset(0), Mass(9, 9), Stiffness(9, 9),
       builtK(0), builtM(0), R(3, 3), P(9), Q(9), q(6),
       connectedExternalNodes(2), L(0),
-      nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false),
+      outputVector(rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE)
 {
 
     // set node pointers to NULL
@@ -69,7 +70,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
     : Element(tag, ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam),
       A(a), E(e), G(g), Jx(jx), Iy(iy), Iz(iz), rho(r), sectionTag(sectTag), nodeIOffset(0), nodeJOffset(0),
       Mass(9, 9), Stiffness(9, 9), builtK(0), builtM(0), R(3, 3), P(9),
-      Q(9), q(6), connectedExternalNodes(2), L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      Q(9), q(6), connectedExternalNodes(2), L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false),
+      outputVector(rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE)
 {
     connectedExternalNodes(0) = Nd1;
     connectedExternalNodes(1) = Nd2;
@@ -119,7 +121,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
     : Element(tag, ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam),
       nodeIOffset(0), nodeJOffset(0), Mass(9, 9), Stiffness(9, 9), builtK(0), builtM(0), R(3, 3), P(9),
       Q(9), q(6), connectedExternalNodes(2), L(0),
-      nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false),
+      outputVector(rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE)
 {
     if (section != 0)
     {
@@ -297,6 +300,8 @@ rank_one_deficient_elastic_pinned_fixed_beam::commitState()
     {
         cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::commitState () - failed in base class";
     }
+
+    outputVector = *getForce();
 
     return retVal;
 }
@@ -1170,6 +1175,24 @@ rank_one_deficient_elastic_pinned_fixed_beam::getForce(void)
 
 
     return elementForces;
+}
+
+
+// Matrix &rank_one_deficient_elastic_pinned_fixed_beam::getGaussCoordinates(void)
+// {
+//     return gauss_points;
+// }
+
+int rank_one_deficient_elastic_pinned_fixed_beam::getOutputSize() const
+{
+    return rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE;
+}
+
+
+
+const Vector &rank_one_deficient_elastic_pinned_fixed_beam::getOutput() const
+{
+    return outputVector;
 }
 
 
