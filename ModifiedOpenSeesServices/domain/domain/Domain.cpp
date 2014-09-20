@@ -2943,9 +2943,6 @@ Domain::update( void )
             ok += theEle->update();
         }
 
-#ifdef _BABAK_DEBUG
-        //cerr << " Weight is : " << vertexPtr->getWeight() << endl;
-#endif
     }
 
 # else

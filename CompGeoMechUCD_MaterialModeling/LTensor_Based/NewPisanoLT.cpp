@@ -223,6 +223,8 @@ int NewPisanoLT::commitState(void)
     CommitStrain = TrialStrain;
     CommitPlastic_Strain = TrialPlastic_Strain;
 
+    // cout << "CommitPlastic_Strain(0,2) = " << CommitPlastic_Strain(0, 2) << "\n";
+
     return 0;
 }
 
@@ -612,7 +614,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     double norm_nij_dev;
 
     // NOTE: Not consistent with article! Eqn. 10 FP: it is consistent, it can be demonstrated that the same nij_dev results!!!
-    nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) - p_incr_prev * alpha(i, j); // and then normalization
+    nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) - 0 * p_incr_prev * alpha(i, j); // and then normalization
     norm_nij_dev = sqrt(nij_dev(i, j) * nij_dev(i, j));
 
     if (norm_nij_dev > check_for_zero)
@@ -819,15 +821,6 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 #ifdef DEBUG_PISANO
     LTensorDisplay::print(Stiffness, "Stiffness", "\n\n\n", 1);
 #endif
-
-    // #ifdef DEBUG_PISANO
-    //     cout << endl << endl << "unload_prod = " << unload_prod <<
-    //          "  nij(1,3) = " <<  nij_dev(0, 2) <<
-    //          "  alpha(1,3) = " <<  alpha(0, 2) <<
-    //          "  alpha0(1,3) = " <<  alpha0(0, 2) <<
-    //          "  beta = " <<  beta << endl;
-    // #endif
-
 
     return err;
 }
@@ -1061,7 +1054,7 @@ double NewPisanoLT::get_dilatancy()
 
     alphad(i, j) = (sqrt(2.0 / 3.0) * kd_lode) * nij_dev(i, j);
 
-    D = xi * (nij_dev(i, j) * (alpha(i, j) - alphad(i, j)));
+    D = xi * (nij_dev(i, j) * (alphad(i, j) - alpha(i, j)));
 
 #ifdef DEBUG_PISANO
     cout << "lode = " << lode << endl;

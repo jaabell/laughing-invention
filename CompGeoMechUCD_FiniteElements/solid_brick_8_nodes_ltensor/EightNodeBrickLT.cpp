@@ -268,80 +268,11 @@ const DTensor2 &EightNodeBrickLT::dh_drst_at( double r1, double r2, double r3 ) 
 
 
 
-////#############################################################################
-const DTensor4 &EightNodeBrickLT::getStiffnessTensor( void ) const
-{
-    double r  = 0.0;
-    double w_r = 0.0;
-    double s  = 0.0;
-    double w_s = 0.0;
-    double t  = 0.0;
-    double w_t = 0.0;
-    double det_of_Jacobian = 0.0;
-    double weight = 0.0;
-
-    static DTensor2 incremental_strain(3, 3, 0.0);
-    static DTensor2 dh_drst( 8, 3, 0.0 );
-    static DTensor2 dhGlobal( 8, 3, 0.0 );
-    static DTensor2 Jacobian(3, 3, 0.0);
-    static DTensor2 JacobianINV(3, 3, 0.0);
-
-    static DTensor4 E_elpl(3, 3, 3, 3, 0.0);
-    static DTensor4 Kk( 8, 3, 3, 8, 0.0);
-    static DTensor4 Kkt( 8, 3, 3, 8, 0.0);
-
-    static Index < 'a' > a;
-    static Index < 'b' > b;
-    static Index < 'c' > c;
-    static Index < 'd' > d;
-
-    //Set the stiffness tensor to zero (its static!)
-    // Using STL-like iterators to linearly transverse the array
-
-    for ( DTensor4::literator it = Kk.begin(); it != Kk.end(); it++) // Sucky syntax... 'it' is a DTensor4 iterator | *it is the current value of the iterator | it++ advances the current position of the iterator | learn to use the C++ STL
-    {
-        *it = 0.0;
-    }
-
-    for ( short gp = 0; gp < 8; gp++ )
-    {
-        r = gp_coords(gp, 0);
-        s = gp_coords(gp, 1);
-        t = gp_coords(gp, 2);
-        w_r = gp_weight(gp);
-        w_s = gp_weight(gp);
-        w_t = gp_weight(gp);
-
-        // derivatives of local coordinates with respect to local coordinates
-        dh_drst = dh_drst_at( r, s, t );
-        Jacobian = Jacobian_3D( dh_drst );
-        JacobianINV = Jacobian.Inv();
-        det_of_Jacobian  = Jacobian.compute_Determinant();
-
-        // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-        dhGlobal(i, k) = dh_drst( i, j ) * JacobianINV( k, j );
-        weight = w_r * w_s * w_t * det_of_Jacobian;
-        E_elpl = material_array[gp]->getTangentTensor();
-
-
-        //LTensorDisplay::print(E_elpl,"a","Hi there!",1);
-
-        // This is the actual integration
-        // FIXME: This can be more efficient if these lines are merged into one (discard the temporary KKt tensor)
-        Kkt(i, a, c, j) = dhGlobal(i, b) * E_elpl(a, b, c, d) * dhGlobal(j, d) * weight;
-        Kk(i, a, c, j) = Kk(i, a, c, j) + Kkt(i, a, c, j);
-    }
-
-    // LTensorDisplay::print(Kk,"Kk","\n\n K tensor \n",1);
-    return Kk;
-}
-
-
 
 ////#############################################################################
 const DTensor2 &EightNodeBrickLT::Jacobian_3D( const DTensor2 &dh ) const
 {
-    static const DTensor2 &N_C = Nodal_Coordinates();
+    const DTensor2 &N_C = Nodal_Coordinates();
     static DTensor2 Jacobian_3D_(3, 3, 0.0);
     Jacobian_3D_(j, k) = dh(i, j) * N_C(i, k);
     return Jacobian_3D_;
@@ -350,7 +281,7 @@ const DTensor2 &EightNodeBrickLT::Jacobian_3D( const DTensor2 &dh ) const
 //#############################################################################
 const DTensor2  &EightNodeBrickLT::Jacobian_3Dinv( const DTensor2 &dh ) const
 {
-    static const DTensor2 &N_C = Nodal_Coordinates();
+    const DTensor2 &N_C = Nodal_Coordinates();
     DTensor2 Jacobian_3D_(3, 3, 0.0);
     static DTensor2 Jacobian_3D_inv(3, 3, 0.0);
 
@@ -520,11 +451,11 @@ const DTensor2 &EightNodeBrickLT::nodal_forces( void ) const
     double weight = 0.0;
 
     static DTensor2 nodal_forces( 8, 3, 0.0 );
-    static DTensor2 dh( 8, 3 , 0.0 );
-    static DTensor2 stress_at_GP( 3, 3, 0.0 );
-    static DTensor2 Jacobian( 3, 3, 0.0 );
-    static DTensor2 JacobianINV( 3, 3, 0.0 );
-    static DTensor2 dhGlobal( 8, 3 , 0.0 );
+    DTensor2 dh( 8, 3 , 0.0 );
+    DTensor2 stress_at_GP( 3, 3, 0.0 );
+    DTensor2 Jacobian( 3, 3, 0.0 );
+    DTensor2 JacobianINV( 3, 3, 0.0 );
+    DTensor2 dhGlobal( 8, 3 , 0.0 );
 
     //Set nodal_forces to zero (it is only done once since it's a static varible)
     for (DTensor2::literator it = nodal_forces.begin(); it != nodal_forces.end(); it++)
@@ -903,7 +834,68 @@ int EightNodeBrickLT::revertToStart ()
 const Matrix &EightNodeBrickLT::getTangentStiff()
 {
     DTensor4 stifftensor(8, 3, 3, 8, 0.0);
-    stifftensor = getStiffnessTensor();
+
+
+
+
+    double r  = 0.0;
+    double w_r = 0.0;
+    double s  = 0.0;
+    double w_s = 0.0;
+    double t  = 0.0;
+    double w_t = 0.0;
+    double det_of_Jacobian = 0.0;
+    double weight = 0.0;
+
+    DTensor2 incremental_strain(3, 3, 0.0);
+    DTensor2 dh_drst( 8, 3, 0.0 );
+    DTensor2 dhGlobal( 8, 3, 0.0 );
+    DTensor2 Jacobian(3, 3, 0.0);
+    DTensor2 JacobianINV(3, 3, 0.0);
+
+    DTensor4 E_elpl(3, 3, 3, 3, 0.0);
+    // DTensor4 Kk( 8, 3, 3, 8, 0.0);
+    DTensor4 Kkt( 8, 3, 3, 8, 0.0);
+
+    Index < 'a' > a;
+    Index < 'b' > b;
+    Index < 'c' > c;
+    Index < 'd' > d;
+
+    //Set the stiffness tensor to zero (its static!)
+    // Using STL-like iterators to linearly transverse the array
+
+    for ( short gp = 0; gp < 8; gp++ )
+    {
+        r = gp_coords(gp, 0);
+        s = gp_coords(gp, 1);
+        t = gp_coords(gp, 2);
+        w_r = gp_weight(gp);
+        w_s = gp_weight(gp);
+        w_t = gp_weight(gp);
+
+        // derivatives of local coordinates with respect to local coordinates
+        dh_drst         = dh_drst_at( r, s, t );
+        Jacobian        = Jacobian_3D( dh_drst );
+        JacobianINV     = Jacobian.Inv();
+        det_of_Jacobian = Jacobian.compute_Determinant();
+
+        // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
+        dhGlobal(i, k)  = dh_drst( i, j ) * JacobianINV( k, j );
+        weight          = w_r * w_s * w_t * det_of_Jacobian;
+        E_elpl          = material_array[gp]->getTangentTensor();
+
+
+        //LTensorDisplay::print(E_elpl,"a","Hi there!",1);
+
+        // This is the actual integration
+        // FIXME: This can be more efficient if these lines are merged into one (discard the temporary KKt tensor)
+        Kkt(i, a, c, j) = dhGlobal(i, b) * E_elpl(a, b, c, d) * dhGlobal(j, d) * weight;
+        stifftensor(i, a, c, j) = stifftensor(i, a, c, j) + Kkt(i, a, c, j);
+    }
+
+
+
 
     int Ki = 0;
     int Kj = 0;
@@ -919,21 +911,6 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
                     Ki = kk + 3 * ( ii - 1 );
                     Kj = ll + 3 * ( jj - 1 );
                     K( Ki - 1 , Kj - 1 ) = stifftensor( ii - 1, kk - 1, ll - 1, jj - 1 );
-                    //if (Ki == Kj && K( Ki - 1 , Kj - 1 ) <= 0 )
-                    // {
-                    //     cout <<
-                    //     "K( " <<
-                    //     ii - 1 << "," <<
-                    //     kk - 1 << "," <<
-                    //     ll - 1 << "," <<
-                    //     jj - 1 << "," <<
-                    //     ") = " <<
-                    //     "K( " <<
-                    //     Ki - 1 << "," <<
-                    //     Kj - 1 <<
-                    //     ") = " <<
-                    //     K( Ki - 1 , Kj - 1 ) << endl;
-                    // }
                 }
             }
         }
@@ -941,6 +918,19 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
 
     return K;
 }
+
+
+
+////#############################################################################
+const DTensor4 &EightNodeBrickLT::getStiffnessTensor( void ) const
+{
+
+    static DTensor4 Kk(8, 3, 3, 8, 0.0);
+
+    // LTensorDisplay::print(Kk,"Kk","\n\n K tensor \n",1);
+    return Kk;
+}
+
 
 //=============================================================================
 const Matrix &EightNodeBrickLT::getInitialStiff ()
@@ -1266,7 +1256,7 @@ int EightNodeBrickLT::addInertiaLoadToUnbalance( const Vector &accel )
         return -1;
     }
 
-    static Vector ra( 24 );
+    Vector ra( 24 );
 
     ra( 0 ) =  Raccel1( 0 );
     ra( 1 ) =  Raccel1( 1 );
@@ -1364,7 +1354,7 @@ const Vector &EightNodeBrickLT::getResistingForceIncInertia ()
         const Vector &accel7 = theNodes[6]->getTrialAccel();
         const Vector &accel8 = theNodes[7]->getTrialAccel();
 
-        static Vector a( 24 ); // originally 8
+        Vector a( 24 ); // originally 8
 
         a( 0 ) =  accel1( 0 );
         a( 1 ) =  accel1( 1 );
@@ -1451,7 +1441,7 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     }
 
 
-    static ID idData( 5 );
+    ID idData( 5 );
 
     idData( 0 ) = this->getTag();
     idData( 1 ) = numDOF;
@@ -1466,7 +1456,7 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     }
 
     // send double data
-    static Vector floatData(4);
+    Vector floatData(4);
     floatData(0) = Volume;
     floatData(1) = e_p;
     floatData(2) = determinant_of_Jacobian;
@@ -1542,7 +1532,7 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
         populate();
     }
 
-    static ID idData( 5 );
+    ID idData( 5 );
 
     if ( theChannel.recvID( 0, commitTag, idData ) < 0 )
     {
@@ -1556,7 +1546,7 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
     order = idData(3);
 
 
-    static Vector floatData(4);
+    Vector floatData(4);
     if ( theChannel.recvVector( 0, commitTag, floatData ) < 0 )
     {
         cerr << "WARNING EightNodeBrickLT::recvSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";

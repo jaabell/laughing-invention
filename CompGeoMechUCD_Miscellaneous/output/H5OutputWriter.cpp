@@ -72,8 +72,6 @@ H5OutputWriter::H5OutputWriter():
     pos_elements_gausscoords             = 0;
     pos_elements_connectivity            = 0;
 
-    current_time = 0.0;
-
     create_nodeMeshData_arrays           = true;
     create_nodeDisplacements_arrays      = true;
     create_nodeVelocities_arrays         = true;
@@ -182,6 +180,16 @@ void H5OutputWriter::initialize(std::string filename_in,
 
     current_time                         = 0.0;
     current_time_step                    = 0;
+    number_of_nodes                      = 0;
+    number_of_elements                   = 0;
+    max_node_tag                         = 0;
+    max_element_tag                      = 0;
+
+    length_nodes_displacements_output    = 0;
+    length_nodes_velocities_output       = 0;
+    length_nodes_accelerations_output    = 0;
+    length_nodes_reaction_forcess_output = 0;
+    length_element_output                = 0;
     pos_nodes_outputs                    = 0;
     pos_nodes_coordinates                = 0;
     pos_elements_outputs                 = 0;
