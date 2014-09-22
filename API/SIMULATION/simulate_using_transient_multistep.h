@@ -273,11 +273,11 @@ int simulate_using_transient_multistep(double dT,
     // Analysis is sequential
     cout << "\n\n\n";
     cout << "> Analysis Start -----------------------------------------------------------------------------";
-    for (int i = 1; i <= numSteps; i++)
-    {
-        theTransientAnalysis->analyze(1, dT);
-        cout << "\nAnalysis step # " << i  << " of " << numSteps << " finished!\n";
-    }
+    // for (int i = 1; i <= numSteps; i++)
+    // {
+    theTransientAnalysis->analyze(numSteps, dT);
+    // cout << "\nAnalysis step # " << i  << " of " << numSteps << " finished!\n";
+    // }
     cout << "> Analysis End -------------------------------------------------------------------------------\n";
 
 #endif
