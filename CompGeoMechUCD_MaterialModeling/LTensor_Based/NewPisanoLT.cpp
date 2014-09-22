@@ -50,7 +50,7 @@ const double NewPisanoLT::beta_min = 1e-16;
 const double NewPisanoLT::beta_max = 1e+16;
 const double NewPisanoLT::patm = 1.013e5;   // 1 Atmosphere of pressure [Pa]
 
-DTensor4 NewPisanoLT::Ee(3, 3, 3, 3, 0.0);
+// DTensor4 NewPisanoLT::Ee(3, 3, 3, 3, 0.0);
 
 
 //================================================================================
@@ -96,8 +96,10 @@ NewPisanoLT::NewPisanoLT(int tag,
       strainpl0( 3, 3, 0.0 ),
       Stress_n_minus_2( 3, 3, 0.0 ),
       nij_dev( 3, 3, 0.0 ),
-      Stiffness( 3, 3, 3, 3, 0.0 )
+      Stiffness( 3, 3, 3, 3, 0.0 ),
+      Ee(3, 3, 3, 3, 0.0)
 {
+
     DTensor2 initialStress(3, 3, 0.0);
     DTensor2 zeroT(3, 3, 0.0);
 
@@ -159,13 +161,16 @@ NewPisanoLT::NewPisanoLT()
       strainpl0( 3, 3, 0.0 ),
       Stress_n_minus_2( 3, 3, 0.0 ),
       nij_dev( 3, 3, 0.0 ),
-      Stiffness( 3, 3, 3, 3, 0.0 )
+      Stiffness( 3, 3, 3, 3, 0.0 ),
+      Ee(3, 3, 3, 3, 0.0)
 {
+
     // this->revertToStart();
 }
 
 NewPisanoLT::~NewPisanoLT()
 {
+
 
 }
 
@@ -174,6 +179,7 @@ NewPisanoLT::~NewPisanoLT()
 //================================================================================
 int NewPisanoLT::setTrialStrain(const DTensor2 &v)
 {
+
     DTensor2 result( 3, 3, 0.0 );
     result( i, j ) = v( i, j ) - TrialStrain( i, j );
 
@@ -190,12 +196,14 @@ int NewPisanoLT::setTrialStrainIncr
 
 const DTensor4 &NewPisanoLT::getTangentTensor(void)
 {
+
     return this->Stiffness;
 }
 
 
 const DTensor2  &NewPisanoLT::getStressTensor(void)
 {
+
     return this->TrialStress;
 }
 
@@ -203,12 +211,14 @@ const DTensor2  &NewPisanoLT::getStressTensor(void)
 
 const DTensor2 &NewPisanoLT::getStrainTensor(void)
 {
+
     return this->TrialStrain;
 }
 
 
 const DTensor2 &NewPisanoLT::getPlasticStrainTensor(void)
 {
+
     return this->TrialPlastic_Strain;
 }
 
@@ -233,6 +243,7 @@ int NewPisanoLT::commitState(void)
 
 int NewPisanoLT::revertToLastCommit(void)
 {
+
     TrialStress = CommitStress;
     TrialStrain = CommitStrain;
     TrialPlastic_Strain = CommitPlastic_Strain;
@@ -242,7 +253,7 @@ int NewPisanoLT::revertToLastCommit(void)
 
 int NewPisanoLT::revertToStart(void)
 {
-    cout << "NewPisanoLT::revertToStart\n";
+
     CommitStress = ElasticStateStress;
     CommitStrain = ElasticStateStrain;
     CommitPlastic_Strain = ZeroStrain;
@@ -286,6 +297,7 @@ int NewPisanoLT::revertToStart(void)
 //================================================================================
 NDMaterialLT *NewPisanoLT::getCopy(void)
 {
+
     NDMaterialLT *tmp = new NewPisanoLT(this->getTag(),
                                         this->getE0(),
                                         this->getv(),
@@ -304,6 +316,7 @@ NDMaterialLT *NewPisanoLT::getCopy(void)
 
 NDMaterialLT *NewPisanoLT::getCopy(const char *code)
 {
+
     if (strcmp(code, "ThreeDimensional") == 0)
     {
         NewPisanoLT *tmp = new NewPisanoLT( this->getTag(),
@@ -335,6 +348,7 @@ NDMaterialLT *NewPisanoLT::getCopy(const char *code)
 //================================================================================
 const char *NewPisanoLT::getType(void) const
 {
+
     return "ThreeDimensional";
 }
 
@@ -434,77 +448,91 @@ void NewPisanoLT::Print(ostream &s, int flag)
 //================================================================================
 double NewPisanoLT::getE0()
 {
+
     return E0;
 }
 
 double NewPisanoLT::getv()
 {
+
     return v;
 }
 
 
 double NewPisanoLT::getM()
 {
+
     return M;
 }
 
 
 double NewPisanoLT::getkd()
 {
+
     return kd;
 }
 
 
 double NewPisanoLT::getxi()
 {
+
     return xi;
 }
 
 
 double NewPisanoLT::geth()
 {
+
     return h;
 }
 
 
 double NewPisanoLT::getm()
 {
+
     return m;
 }
 
 
 double NewPisanoLT::getRho(void)
 {
+
     return rho;
 }
 
 double NewPisanoLT::getbeta_min(void)
 {
+
     return beta_min;
 }
 
 double NewPisanoLT::getInitialConfiningStress(void)
 {
+
     return initialconfiningstress;
 }
 
 double NewPisanoLT::getn(void)
 {
+
     return n;
 }
 
 double NewPisanoLT::geta(void)
 {
+
     return a;
 }
 
 double NewPisanoLT::geteplcum_cr(void)
 {
+
     return eplcum_cr;
 }
 
 DTensor2 &NewPisanoLT::getInternalTensor(void)
 {
+
     return alpha;
 }
 
@@ -514,9 +542,7 @@ DTensor2 &NewPisanoLT::getInternalTensor(void)
 
 int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 {
-#ifdef DEBUG_PISANO
-    cout << endl << endl << "NewPisanoLT::Explicit()" << endl;
-#endif
+
     //=============================================================================================
     // Some local definitions
     //=============================================================================================
@@ -615,9 +641,10 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     //---------------------------------------------------------------------------------------------
 
     double norm_nij_dev;
+    // double sign;
 
-    // NOTE: Not consistent with article! Eqn. 10 FP: it is consistent, it can be demonstrated that the same nij_dev results!!!
-    nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) -  p_incr_prev * alpha(i, j); // and then normalization
+    // // NOTE: Not consistent with article! Eqn. 10 FP: it is consistent, it can be demonstrated that the same nij_dev results!!!
+    nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) -  0 * p_incr_prev * alpha(i, j); // and then normalization
     norm_nij_dev = sqrt(nij_dev(i, j) * nij_dev(i, j));
 
     if (norm_nij_dev > check_for_zero)
@@ -629,6 +656,19 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
         nij_dev(i, j) = incr_strain_dev(i, j) ;
     }
 
+    // if (fabs(incr_strain_dev(0, 2)) > check_for_zero)
+    // {
+    //     sign = incr_strain_dev(0, 2) / fabs(incr_strain_dev(0, 2));
+    // }
+    // else
+    // {
+    //     sign = 1.0;
+    // }
+
+    // nij_dev(0, 2) = sign * 0.7071;
+    // nij_dev(2, 0) = sign * 0.7071;
+
+
     //---------------------------------------------------------------------------------------------
     // Check for unloading!!!
     //---------------------------------------------------------------------------------------------
@@ -638,15 +678,15 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     if (unload_prod <= 0.0)
     {
 
-        if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
-        {
-            alpha0mem(i, j) = alpha0(i, j);
-            alpha0(i, j)    = alpha(i, j);
-        }
-        else // the previous projection center is reset
-        {
-            alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
-        }
+        //   if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
+        //   {
+        //       alpha0mem(i, j) = alpha0(i, j);
+        alpha0(i, j)    = alpha(i, j);
+        // }
+        //  else // the previous projection center is reset
+        // {
+        //     alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
+        //   }
 
         strainpl0(i, j) = TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
 #ifdef DEBUG_PISANO
@@ -751,26 +791,6 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     ep_stress(i, j)    = start_stress(i, j) + incr_stress(i, j);
 
 
-    // if (incr_Pstrain(0, 2) > 0.04)
-    // {
-    //     cout << "!!!\n";
-    //     cout << "H = " << H << endl;
-    //     cout << "num = " << num << endl;
-    //     cout << "den = " << den << endl;
-    //     cout << "pp = " << pp << endl;
-    //     cout << "D = " << D << endl;
-    //     cout << "mij = " << mij << endl;
-    //     cout << "Delta_lambda = " << Delta_lambda << endl;
-    //     LTensorDisplay::print(incr_strain, "incr_strain");
-    //     //DEBUG
-    //     LTensorDisplay::print(incr_strain_dev, "incr_strain_dev");
-    //     //DEBUG
-    //     LTensorDisplay::print(nij_dev, "nij_dev");
-    //     //DEBUG
-    //     LTensorDisplay::print(alpha, "alpha");
-    //     //DEBUG
-    //     LTensorDisplay::print(alpha0, "alpha0");
-    // }
 
 
     // Update all variables
@@ -860,6 +880,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 // Probably should be inlined
 double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 {
+
     double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));
 
     if (nij_dev_norm > 1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
@@ -894,7 +915,7 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 
             if (Delta_equation < 0.0)
             {
-                beta = beta_min;
+                //beta = beta_min;
 
                 //             cout << "negative Delta in the distance coefficient equation" <<alpha_norm << "e" << alpha_nijdev << endl;
             }
@@ -937,6 +958,7 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 ///////////////////////////////////////////////////////////////////////////////
 double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
 {
+
     // A NEW SOIL PARAMETER n NEEDS TO BE DEFINED FOR THE DEVIATORIC SECTION!!!
 
     double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));
@@ -1046,6 +1068,7 @@ double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
 
 double NewPisanoLT::get_dilatancy()
 {
+
     // I am using here input values: kd,xi,n,ndev,alpha
 
     DTensor2 alphad(3, 3, 0.0);
@@ -1104,6 +1127,7 @@ int sgn(double val)
 ///////////////////////////////////////////////////////////////////////////////
 double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a stress state
 {
+
     //The input tensor s must be deviatoric
 
     if (abs(s(i, i)) > check_for_zero )
@@ -1149,6 +1173,7 @@ double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a
 
 double NewPisanoLT::getE()
 {
+
     if (a == 0)
     {
         return E0;

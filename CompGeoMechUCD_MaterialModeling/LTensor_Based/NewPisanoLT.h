@@ -184,7 +184,7 @@ class NewPisanoLT : public NDMaterialLT
         static const  DTensor2 ZeroStrain;
         static const  DTensor2 ZeroStress;
         static const double check_for_zero;
-        static DTensor4 Ee;
+        DTensor4 Ee;
 
         //Global indexes for LTensor
         Index < 'i' > i;
