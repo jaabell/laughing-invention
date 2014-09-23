@@ -49,6 +49,8 @@ const double NewPisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::ep
 const double NewPisanoLT::beta_min = 1e-16;
 const double NewPisanoLT::beta_max = 1e+16;
 const double NewPisanoLT::patm = 1.013e5;   // 1 Atmosphere of pressure [Pa]
+DTensor2 NewPisanoLT::kronecker_delta(3, 3, 0.0);                 // kronecker_delta is the identity matrix
+
 
 // DTensor4 NewPisanoLT::Ee(3, 3, 3, 3, 0.0);
 
@@ -129,6 +131,12 @@ NewPisanoLT::NewPisanoLT(int tag,
     nij_dev(1, 2) = 0.0;
     nij_dev(2, 1) = 0.0;
 
+    
+    //Initialize identity matrix
+    kronecker_delta(0, 0) = 1;
+    kronecker_delta(1, 1) = 1;
+    kronecker_delta(2, 2) = 1;
+
     this->revertToStart();
 }
 
@@ -164,7 +172,11 @@ NewPisanoLT::NewPisanoLT()
       Stiffness( 3, 3, 3, 3, 0.0 ),
       Ee(3, 3, 3, 3, 0.0)
 {
-
+    
+    //Initialize identity matrix
+    kronecker_delta(0, 0) = 1;
+    kronecker_delta(1, 1) = 1;
+    kronecker_delta(2, 2) = 1;
     // this->revertToStart();
 }
 
@@ -580,12 +592,15 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     DTensor2 alpha_d(3, 3, 0.0);            //
     DTensor2 alphad_alpha(3, 3, 0.0);       //
     DTensor2 ep_stress_dev(3, 3, 0.0);      // Deviatoric elastoplastic stress
-    DTensor2 I2(3, 3, 0.0);                 // I2 is the identity matrix
     DTensor2 strainplcum_dev(3, 3, 0.0);
+    DTensor2 alpha_trial(3, 3, 0.0);
     DTensor4 Ep(3, 3, 3, 3, 0.0);           // Elastoplastic tangent modulus tensor
 
     Index < 'p' > p;                        // Extra index for LTensor computations
     Index < 'q' > q;                        // Extra index for LTensor computations
+
+
+
 
     //---------------------------------------------------------------------------------------------
     // Get initial state
@@ -811,12 +826,25 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     ep_stress.compute_deviatoric_tensor(ep_stress_dev, ep_stress_p);
     ep_stress_p = -ep_stress_p;
 
+    alpha_trial(i,j) = ep_stress_dev(i,j) / ep_stress_p;
+    double violation = (1.5) * alpha_trial(i, j) * alpha_trial(i, j) - M * M;
+    double reduction = 1.0;
+    if(violation > 0)
+    {
+        //reduction       = M^2 / (1.5 * alpha_trial(i, j) * alpha_trial(i, j) )
+        reduction         = PISANO_FACTOR * sqrt( 2*M*M/(2*violation + 3*M*M));
+        ep_stress(i,j)    = reduction * ep_stress_dev(i,j) - ep_stress_p*kronecker_delta(i,j);
+        TrialStress(i, j) = ep_stress(i, j);
+    }
+
     // this avoids weird alpha values...it is difficult to find a general rule for the checking factor..tests needed
     // stress rapporto -> stress ratio
     if (ep_stress_p > 1000 * check_for_zero)   // FIXME: the 1000 factor is arbitrary
     {
-        alpha(i, j) = ep_stress_dev(i, j);
+        alpha(i, j) = reduction*ep_stress_dev(i, j);
         alpha /= ep_stress_p;
+        alpha_nijdev = alpha(i, j) * nij_dev(i, j);                          // scalar product alphaij:nij_dev
+        den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
     }
     else
     {
@@ -834,19 +862,13 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // To obtain Eep, at the last step
 
 
-    //Initialize identity matrix
-    I2(0, 0) = 1;
-
-    I2(1, 1) = 1;
-
-    I2(2, 2) = 1;
 
     // NOTE: Problem with the stiffness indexig...... ask Gregor FP: WHY????
 
     Stiffness(p, q, i, j) =  nij_dev(i, j) * nij_dev(p, q) * (-4.0 * G * G / den) +
-                             I2(i, j)      * nij_dev(p, q) * (2.0 * G * K * D / den) +
-                             nij_dev(i, j) * I2(p, q)      * (-2.0 * G * K * alpha_nijdev / den) +
-                             I2(i, j)      * I2(p, q)      * (K - (2.0 / 3.0) * G + K * K * D * alpha_nijdev / den);
+                             kronecker_delta(i, j)      * nij_dev(p, q) * (2.0 * G * K * D / den) +
+                             nij_dev(i, j) * kronecker_delta(p, q)      * (-2.0 * G * K * alpha_nijdev / den) +
+                             kronecker_delta(i, j)      * kronecker_delta(p, q)      * (K - (2.0 / 3.0) * G + K * K * D * alpha_nijdev / den);
 
     Stiffness(0, 0, 0, 0) = Stiffness(0, 0, 0, 0) + (2.0 * G);
 
@@ -869,6 +891,12 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 #ifdef DEBUG_PISANO
     LTensorDisplay::print(Stiffness, "Stiffness", "\n\n\n", 1);
 #endif
+
+    // // violation = (1.5) * alpha_trial(i, j) * alpha_trial(i, j) - M * M;
+    // if(violation > 0)
+    // {
+    //   cerr << "NewPisanoLT::Explicit() ::  VIOLATION!! (3 / 2) * alpha(i, j) * alpha(i, j) - M_in * M_in = " << violation << " > 0" << endl;
+    // }
 
     return err;
 }
@@ -915,20 +943,14 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 
             if (Delta_equation < 0.0)
             {
-                //beta = beta_min;
-
-                //             cout << "negative Delta in the distance coefficient equation" <<alpha_norm << "e" << alpha_nijdev << endl;
+                Delta_equation = 0;
             }
-            else
-            {
-                beta = (-b + sqrt(Delta_equation)) / (2.0 * a);
-            };
-
-
+            
+            beta = (-b + sqrt(Delta_equation)) / (2.0 * a);
+            
 
             if (beta < beta_min)
             {
-                //        cout << "negative distance coefficient" << endl;
                 beta = beta_min;
             };
         }
@@ -1188,6 +1210,46 @@ double NewPisanoLT::getE()
         return E0 * pow(0.5, a);
     }
 }
+
+
+
+
+double   NewPisanoLT::get_eplcum() const
+{
+  return eplcum;
+}
+DTensor2 NewPisanoLT::get_strainplcum() const
+{
+  return strainplcum;
+}
+DTensor2 NewPisanoLT::get_alpha() const
+{
+  return alpha;
+}
+DTensor2 NewPisanoLT::get_alpha0() const
+{
+  return alpha0;
+}
+DTensor2 NewPisanoLT::get_alpha0mem() const
+{
+  return alpha0mem;
+}
+DTensor2 NewPisanoLT::get_strainpl0() const
+{
+  return strainpl0;
+}
+DTensor2 NewPisanoLT::get_Stress_n_minus_2() const
+{
+  return Stress_n_minus_2;
+}
+DTensor2 NewPisanoLT::get_nij_dev() const
+{
+  return nij_dev;
+}
+
+
+
+
 
 
 #endif

@@ -302,12 +302,26 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     }
 
     //Check if the element has already been added!!
-    if (Number_of_Nodes[tag] > 0 || Index_to_Connectivity[tag] >= 0 || Index_to_Outputs[tag] >= 0)
+    // if (Number_of_Nodes[tag] > 0 || Index_to_Connectivity[tag] >= 0 || Index_to_Outputs[tag] >= 0)
+    // {
+    //     cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " already defined in HDF5 database! Something is wrong"
+    //          << endl;
+    // }
+
+    if (Number_of_Nodes[tag] > 0 && nnodes != Number_of_Nodes[tag])
     {
-        cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " already defined in HDF5 database! Something is wrong"
-             << endl;
+        cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " number of nodes changed in database."  << endl;
     }
 
+    if (Index_to_Connectivity[tag] > 0 && pos_elements_connectivity != Index_to_Connectivity[tag])
+    {
+        cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " index to connectivity changed in database."  << endl;
+    }
+
+    if (Index_to_Outputs[tag] > 0 && pos_elements_outputs != Index_to_Outputs[tag])
+    {
+        cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " index to output changed in database."  << endl;
+    }
 
     // Writing Number_of_Nodes;
     nnodes =  connectivity.Size();

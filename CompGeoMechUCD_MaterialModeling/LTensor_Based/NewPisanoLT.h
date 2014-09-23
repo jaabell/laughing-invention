@@ -45,6 +45,9 @@
 #include <Channel.h>
 
 
+#define PISANO_FACTOR 0.9
+
+
 using namespace std;
 
 
@@ -120,6 +123,19 @@ class NewPisanoLT : public NDMaterialLT
 
         void Print(ostream &s, int flag = 0);
 
+
+        //To check internal variables (not part of ESSI interface)
+
+        double   get_eplcum() const;
+        DTensor2 get_strainplcum() const;
+        DTensor2 get_alpha() const;
+        DTensor2 get_alpha0() const;
+        DTensor2 get_alpha0mem() const;
+        DTensor2 get_strainpl0() const;
+        DTensor2 get_Stress_n_minus_2() const;
+        DTensor2 get_nij_dev() const;
+
+
     private:
 
 
@@ -185,6 +201,8 @@ class NewPisanoLT : public NDMaterialLT
         static const  DTensor2 ZeroStress;
         static const double check_for_zero;
         DTensor4 Ee;
+
+        static DTensor2 kronecker_delta;
 
         //Global indexes for LTensor
         Index < 'i' > i;
