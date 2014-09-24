@@ -308,6 +308,11 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     //          << endl;
     // }
 
+    // Writing Number_of_Nodes;
+    nnodes =  connectivity.Size();
+    Number_of_Nodes[tag] = nnodes;
+
+
     if (Number_of_Nodes[tag] > 0 && nnodes != Number_of_Nodes[tag])
     {
         cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " number of nodes changed in database."  << endl;
@@ -322,10 +327,6 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     {
         cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " index to output changed in database."  << endl;
     }
-
-    // Writing Number_of_Nodes;
-    nnodes =  connectivity.Size();
-    Number_of_Nodes[tag] = nnodes;
 
     // Writing Connectivity;
     // int pos_connect = Connectivity.Size();
