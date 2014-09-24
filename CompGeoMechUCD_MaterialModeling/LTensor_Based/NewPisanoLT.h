@@ -91,6 +91,13 @@ class NewPisanoLT : public NDMaterialLT
         virtual const DTensor2 &getStrainTensor( void );    // Used
         virtual const DTensor2 &getPlasticStrainTensor( void ); // Not used
 
+        const DTensor2  &getCommittedStressTensor(void);
+
+        const DTensor2 &getCommittedStrainTensor(void);
+
+        const DTensor2 &getCommittedPlasticStrainTensor(void);
+
+
         double getE0();
         double getv();
         double getM();
