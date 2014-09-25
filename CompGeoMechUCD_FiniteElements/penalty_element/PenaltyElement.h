@@ -116,6 +116,10 @@ class PenaltyElement : public Element
             return "PenaltyElement";
         }
 
+        // Matrix &getGaussCoordinates(void);
+        virtual int getOutputSize() const;
+        virtual const Vector &getOutput() const;
+
     private:
 
 
@@ -133,6 +137,8 @@ class PenaltyElement : public Element
 
         Vector tempZeroVector;
         Matrix tempZeroMatrix;
+
+        Vector outputVector;
 
 };
 

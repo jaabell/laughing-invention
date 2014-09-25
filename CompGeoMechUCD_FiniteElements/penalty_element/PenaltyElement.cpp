@@ -31,7 +31,7 @@
 PenaltyElement::PenaltyElement(int tag, int node1, int node2, double Penalty_Stiffness, int dof_in)
     : Element(tag, ELE_TAG_PenaltyElement),
       connectedExternalNodes(2), numDOF(0), dof(dof_in), penaltystiffness(Penalty_Stiffness),
-      tempZeroVector(3), tempZeroMatrix(3, 3)
+      tempZeroVector(3), tempZeroMatrix(3, 3), outputVector(0)
 {
     if (connectedExternalNodes.Size() != 2)
     {
@@ -54,7 +54,7 @@ PenaltyElement::PenaltyElement()
     : Element(0, ELE_TAG_PenaltyElement),
       connectedExternalNodes(2),
       numDOF(0), dof(0), penaltystiffness(0),
-      tempZeroVector(3), tempZeroMatrix(3, 3)
+      tempZeroVector(3), tempZeroMatrix(3, 3), outputVector(0)
 {
 
 
@@ -220,9 +220,30 @@ PenaltyElement::getMass(void)
 const Vector &
 PenaltyElement::getResistingForce()
 {
-    //    tempZeroVector = new Vector(numDOF);
-    //    tempZeroVector.Zero();
-    return tempZeroVector;
+    static Vector P(numDOF);
+
+    Vector displacement1 = theNodes[0]->getTrialDisp();
+    Vector displacement2 = theNodes[1]->getTrialDisp();
+
+    Vector displacement(numDOF);
+    // cout << "numDOF = " << numDOF << endl;
+    int d;
+    int node1_numDOF = displacement1.Size();
+    for (d = 0; d < node1_numDOF; d++)
+    {
+        displacement(d)  = displacement1(d);
+    }
+    for (; d < numDOF; d++)
+    {
+        displacement(d)  = displacement2(d - node1_numDOF);
+    }
+
+    P.Zero();
+    P.addMatrixVector(1.0, *Stiffness, displacement, 1.0);
+    // cout << "P = " << P << endl;
+    // P.addVector(1.0, Q, -1.0);
+
+    return P;
 }
 
 
@@ -235,8 +256,30 @@ PenaltyElement::zeroLoad(void)
 const Vector &
 PenaltyElement::getResistingForceIncInertia()
 {
-    //    tempZeroVector.Zero();
-    return tempZeroVector;
+    static Vector P(numDOF);
+
+    Vector displacement1 = theNodes[0]->getTrialDisp();
+    Vector displacement2 = theNodes[1]->getTrialDisp();
+
+    Vector displacement(numDOF);
+    // cout << "numDOF = " << numDOF << endl;
+    int d;
+    int node1_numDOF = displacement1.Size();
+    for (d = 0; d < node1_numDOF; d++)
+    {
+        displacement(d)  = displacement1(d);
+    }
+    for (; d < numDOF; d++)
+    {
+        displacement(d)  = displacement2(d - node1_numDOF);
+    }
+
+    P.Zero();
+    P.addMatrixVector(1.0, *Stiffness, displacement, 1.0);
+    // cout << "P = " << P << endl;
+    // P.addVector(1.0, Q, -1.0);
+
+    return P;
 }
 
 
@@ -308,6 +351,17 @@ PenaltyElement::Print(ostream &s, int flag)
     s << " type: PenaltyElement Nodes: " << connectedExternalNodes(0) << "   " << connectedExternalNodes(1);
 }
 
+
+// Matrix &getGaussCoordinates(void);
+int PenaltyElement::getOutputSize() const
+{
+    return 0;
+}
+
+const Vector &PenaltyElement::getOutput() const
+{
+    return outputVector;
+}
 
 // Response*
 // PenaltyElement::setResponse(const char** argv, int argc, Information& eleInfo)

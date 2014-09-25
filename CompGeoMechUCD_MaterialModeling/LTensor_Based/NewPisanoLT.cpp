@@ -115,7 +115,7 @@ NewPisanoLT::NewPisanoLT(int tag,
 
 
     ElasticStateStress = DTensor2(initialStress);
-    TrialPlastic_Strain(i, j) = 0 * initialStress(i, j);
+    TrialPlastic_Strain(i, j) = ZeroStrain(i, j);
 
     Stress_n_minus_2 = DTensor2(initialStress);
 
@@ -138,6 +138,21 @@ NewPisanoLT::NewPisanoLT(int tag,
     kronecker_delta(2, 2) = 1;
 
     this->revertToStart();
+
+
+    cout << "beta = " << beta << endl;
+    cout << "E0 = " << E0 << endl;
+    cout << "v = " << v << endl;
+    cout << "M = " << M << endl;
+    cout << "kd = " << kd << endl;
+    cout << "xi = " << xi << endl;
+    cout << "h = " << h << endl;
+    cout << "m = " << m << endl;
+    cout << "rho = " << rho << endl;
+    cout << "initialconfiningstress = " << initialconfiningstress << endl;
+    cout << "n = " << n << endl;
+    cout << "a = " << a << endl;
+    cout << "eplcum_cr = " << eplcum_cr << endl;
 }
 
 
@@ -629,12 +644,6 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // Get initial state
     //---------------------------------------------------------------------------------------------
 
-    //CHECK THIS!!!
-    // strainplcum: new internal variable, to be set at zero
-    // strainpl0: new internal variable, to be set at zero
-
-    // eplcum_cr = 1e-6;
-
     start_stress  = getCommittedStressTensor();
     start_strain  = getCommittedStrainTensor();
     start_Pstrain = getCommittedPlasticStrainTensor();
@@ -642,7 +651,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // ElasticStateStress = start_stress;
     // ElasticStateStrain = start_strain;
 
-    double norm_incr_strain = sqrt(incr_strain(i, j) * incr_strain(i, j));
+    //double norm_incr_strain = sqrt(incr_strain(i, j) * incr_strain(i, j));
 
     incr_strain(i, j) = strain_incr(i, j); //Its seems superficial to have incr_strain and stress_incr, but the reason is that strain_incr is "const" and member function "compute_deviatoric_tensor" does not work with const tensors... which is wrong but it is what we have........ LTensor's fault :( -J.Abell
 
@@ -652,7 +661,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     K = E / (3.0 * (1.0 - 2.0 * v));
 
     start_stress.compute_deviatoric_tensor(s, pp);
-    pp = -pp;
+    pp = -start_stress(i, i) / 3;
     incr_strain.compute_deviatoric_tensor(incr_strain_dev, incr_strain_vol);    // NOTE: Check this might not be needed : about recomputing incr_strain_vol
 
     // incr_strain_vol = incr_strain(i, i); // isn't this redundant? It was! :) Jose
@@ -673,7 +682,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     //---------------------------------------------------------------------------------------------
     // Some healthy checkups
     //---------------------------------------------------------------------------------------------
-    if ( (pressure_ratio < 1.0e-3) || (fabs(pp) < 1.0) ) // this avoids the influence of very small pressure fluctuations on nij_dev
+    if ( (pressure_ratio < 1.0e-3) || (fabs(pp) < 1000) ) // this avoids the influence of very small pressure fluctuations on nij_dev
     {
         p_incr_prev = 0.0;
     }
@@ -721,17 +730,19 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     if (unload_prod <= 0.0)
     {
 
-        //   if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
-        //   {
-        //       alpha0mem(i, j) = alpha0(i, j);
-        alpha0(i, j)    = alpha(i, j);
-        // }
-        //  else // the previous projection center is reset
-        // {
-        //     alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
-        //   }
+        if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
+        {
+            alpha0mem(i, j) = alpha0(i, j);
+            alpha0(i, j)    = alpha(i, j);
+        }
+        else // the previous projection center is reset
+        {
+            alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
+        }
 
-        strainpl0(i, j) = TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+        // strainpl0(i, j) =  start_Pstrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+        strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+
 #ifdef DEBUG_PISANO
         LTensorDisplay::print(alpha, "alpha");
         LTensorDisplay::print(alpha0, "alpha0");
@@ -758,8 +769,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // Compute distance coeff
     //---------------------------------------------------------------------------------------------
     // beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
-    beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
-    // beta = get_distance_coeff_lode(start_stress); // this should be able to read alpha and alpha0
+    // beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
+    beta = get_distance_coeff_lode(start_stress); // this should be able to read alpha and alpha0
 
 #ifdef DEBUG_PISANO
     //DEBUG
@@ -771,7 +782,14 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // Compute plastic modulus (H)
     //---------------------------------------------------------------------------------------------
 
-    H = pp * h * (pow(beta, m));
+    if (m == 1.0)
+    {
+        H = pp * h * beta;
+    }
+    else
+    {
+        H = pp * h * (pow(beta, m));
+    }
 
 
     //---------------------------------------------------------------------------------------------
@@ -843,7 +861,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     TrialPlastic_Strain(i, j) = start_Pstrain(i, j);
     TrialPlastic_Strain(i, j) += incr_Pstrain(i, j);
     // for overshooting remediation
-    strainplcum(i, j) = TrialPlastic_Strain(i, j) - strainpl0(i, j);
+    // strainplcum(i, j) = TrialPlastic_Strain(i, j) - strainpl0(i, j);
+    strainplcum(i, j) += incr_Pstrain(i, j);
 
     // overshooting remediation
 
@@ -852,36 +871,39 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
 
     ep_stress.compute_deviatoric_tensor(ep_stress_dev, ep_stress_p);
-    ep_stress_p = -ep_stress_p;
+    ep_stress_p = -ep_stress(i, i) / 3;
 
-    alpha_trial(i, j) = ep_stress_dev(i, j) / ep_stress_p;
-    double violation = (1.5) * alpha_trial(i, j) * alpha_trial(i, j) - M * M;
-    double reduction = 1.0;
-    if (violation > 0)
-    {
-        //reduction       = M^2 / (1.5 * alpha_trial(i, j) * alpha_trial(i, j) )
-        reduction         = PISANO_FACTOR * sqrt( 2 * M * M / (2 * violation + 3 * M * M));
-        ep_stress(i, j)    = reduction * ep_stress_dev(i, j) - ep_stress_p * kronecker_delta(i, j);
-        TrialStress(i, j) = ep_stress(i, j);
-    }
+    //alpha_trial(i, j) = ep_stress_dev(i, j) / ep_stress_p;
+    //double violation = (1.5) * alpha_trial(i, j) * alpha_trial(i, j) - M * M;
+    //double reduction = 1.0;
+    //if (violation > 0)
+    //{
+    //reduction       = M^2 / (1.5 * alpha_trial(i, j) * alpha_trial(i, j) )
+    //   reduction         = PISANO_FACTOR * sqrt( 2 * M * M / (2 * violation + 3 * M * M));
+    //   ep_stress(i, j)    = reduction * ep_stress_dev(i, j) - ep_stress_p * kronecker_delta(i, j);
+    //   TrialStress(i, j) = ep_stress(i, j);
+    //}
 
     // this avoids weird alpha values...it is difficult to find a general rule for the checking factor..tests needed
     // stress rapporto -> stress ratio
+
     if (ep_stress_p > 1000 * check_for_zero)   // FIXME: the 1000 factor is arbitrary
     {
-        alpha(i, j) = reduction * ep_stress_dev(i, j);
+        //alpha(i, j) = reduction * ep_stress_dev(i, j);
+        alpha(i, j) = ep_stress_dev(i, j);
         alpha /= ep_stress_p;
-        alpha_nijdev = alpha(i, j) * nij_dev(i, j);                          // scalar product alphaij:nij_dev
-        den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
+        //    alpha_nijdev = alpha(i, j) * nij_dev(i, j);                          // scalar product alphaij:nij_dev
+        //    den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
     }
     else
     {
+        alpha(i, j) = ZeroStress(i, j);
         // cout << ""
         //Set all values in alpha to zero
-        for (DTensor2::literator it = alpha.begin(); it != alpha.end(); it++ )
-        {
-            *it = 0.0;
-        }
+        // for (DTensor2::literator it = alpha.begin(); it != alpha.end(); it++ )
+        // {
+        //     *it = 0.0;
+        // }
     };
 
     //---------------------------------------------------------------------------------------------
@@ -992,10 +1014,13 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 
             if (Delta_equation < 0.0)
             {
-                Delta_equation = 0;
+                beta = beta_max;
+            }
+            else
+            {
+                beta = (-b + sqrt(Delta_equation)) / (2.0 * a);
             }
 
-            beta = (-b + sqrt(Delta_equation)) / (2.0 * a);
 
 
             if (beta < beta_min)

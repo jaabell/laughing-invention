@@ -213,7 +213,7 @@ Newmark::newStep(double deltaT)
     }
 
     // get a pointer to the AnalysisModel
-    AnalysisModel* theModel = this->getAnalysisModelPtr();
+    AnalysisModel *theModel = this->getAnalysisModelPtr();
 
     if (displ == true)
     {
@@ -305,7 +305,7 @@ Newmark::revertToLastStep()
 
 
 int
-Newmark::formEleTangent(FE_Element* theEle)
+Newmark::formEleTangent(FE_Element *theEle)
 {
     if (determiningMass == true)
     {
@@ -332,7 +332,7 @@ Newmark::formEleTangent(FE_Element* theEle)
 
 
 int
-Newmark::formNodTangent(DOF_Group* theDof)
+Newmark::formNodTangent(DOF_Group *theDof)
 {
     if (determiningMass == true)
     {
@@ -343,7 +343,7 @@ Newmark::formNodTangent(DOF_Group* theDof)
     theDof->addMtoTang(c3);
     theDof->addCtoTang(c2);
 
-    return(0);
+    return (0);
 }
 
 
@@ -351,9 +351,9 @@ Newmark::formNodTangent(DOF_Group* theDof)
 int
 Newmark::domainChanged()
 {
-    AnalysisModel* myModel = this->getAnalysisModelPtr();
-    LinearSOE* theLinSOE = this->getLinearSOEPtr();
-    const Vector& x = theLinSOE->getX();
+    AnalysisModel *myModel = this->getAnalysisModelPtr();
+    LinearSOE *theLinSOE = this->getLinearSOEPtr();
+    const Vector &x = theLinSOE->getX();
     int size = x.Size();
 
     // Nima Tafazzoli removed (March 2010)
@@ -459,17 +459,17 @@ Newmark::domainChanged()
     // now go through and populate U, Udot and Udotdot by iterating through
     // the DOF_Groups and getting the last committed velocity and accel
 
-    DOF_GrpIter& theDOFs = myModel->getDOFs();
-    DOF_Group* dofPtr;
+    DOF_GrpIter &theDOFs = myModel->getDOFs();
+    DOF_Group *dofPtr;
 
     while ((dofPtr = theDOFs()) != 0)
     {
-        const ID& id = dofPtr->getID();
+        const ID &id = dofPtr->getID();
         int idSize = id.Size();
 
 
         int i;
-        const Vector& disp = dofPtr->getCommittedDisp();
+        const Vector &disp = dofPtr->getCommittedDisp();
 
         for (i = 0; i < idSize; i++)
         {
@@ -481,7 +481,7 @@ Newmark::domainChanged()
             }
         }
 
-        const Vector& vel = dofPtr->getCommittedVel();
+        const Vector &vel = dofPtr->getCommittedVel();
 
         for (i = 0; i < idSize; i++)
         {
@@ -493,7 +493,7 @@ Newmark::domainChanged()
             }
         }
 
-        const Vector& accel = dofPtr->getCommittedAccel();
+        const Vector &accel = dofPtr->getCommittedAccel();
 
         for (i = 0; i < idSize; i++)
         {
@@ -522,9 +522,9 @@ Newmark::domainChanged()
 
 
 int
-Newmark::update(const Vector& deltaU)
+Newmark::update(const Vector &deltaU)
 {
-    AnalysisModel* theModel = this->getAnalysisModelPtr();
+    AnalysisModel *theModel = this->getAnalysisModelPtr();
 
     if (theModel == 0)
     {
@@ -574,7 +574,7 @@ Newmark::update(const Vector& deltaU)
 }
 
 int
-Newmark::sendSelf(int cTag, Channel& theChannel)
+Newmark::sendSelf(int cTag, Channel &theChannel)
 {
     //    Vector data(8);
     Vector data(3);
@@ -608,7 +608,7 @@ Newmark::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-Newmark::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+Newmark::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     //    Vector data(8);
     Vector data(3);
@@ -643,9 +643,9 @@ Newmark::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 }
 
 void
-Newmark::Print(ostream& s, int flag)
+Newmark::Print(ostream &s, int flag)
 {
-    AnalysisModel* theModel = this->getAnalysisModelPtr();
+    AnalysisModel *theModel = this->getAnalysisModelPtr();
 
     if (theModel != 0)
     {

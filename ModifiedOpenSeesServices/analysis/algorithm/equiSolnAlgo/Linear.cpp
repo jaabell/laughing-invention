@@ -73,9 +73,9 @@ Linear::solveCurrentStep(void)
     // set up some pointers and check they are valid
     // NOTE this could be taken away if we set Ptrs as protecetd in superclass
 
-    AnalysisModel* theAnalysisModel = this->getAnalysisModelPtr();
-    LinearSOE*  theSOE = this->getLinearSOEptr();
-    IncrementalIntegrator*  theIncIntegrator = this->getIncrementalIntegratorPtr();
+    AnalysisModel *theAnalysisModel = this->getAnalysisModelPtr();
+    LinearSOE  *theSOE = this->getLinearSOEptr();
+    IncrementalIntegrator  *theIncIntegrator = this->getIncrementalIntegratorPtr();
 
     if ((theAnalysisModel == 0) || (theIncIntegrator == 0 ) || (theSOE == 0))
     {
@@ -105,7 +105,7 @@ Linear::solveCurrentStep(void)
         return -3;
     }
 
-    const Vector& deltaU = theSOE->getX();
+    const Vector &deltaU = theSOE->getX();
 
     if (theIncIntegrator->update(deltaU) < 0)
     {
@@ -118,13 +118,13 @@ Linear::solveCurrentStep(void)
 }
 
 int
-Linear::setConvergenceTest(ConvergenceTest* theNewTest)
+Linear::setConvergenceTest(ConvergenceTest *theNewTest)
 {
     // Linear Algorithm dooes not need a convergence test
     return 0;
 }
 
-ConvergenceTest*
+ConvergenceTest *
 Linear::getConvergenceTest(void)
 {
     // Linear Algorithm dooes not have a convergence test
@@ -132,20 +132,20 @@ Linear::getConvergenceTest(void)
 }
 
 int
-Linear::sendSelf(int cTag, Channel& theChannel)
+Linear::sendSelf(int cTag, Channel &theChannel)
 {
     return 0;
 }
 
 int
-Linear::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+Linear::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }
 
 
 void
-Linear::Print(ostream& s, int flag)
+Linear::Print(ostream &s, int flag)
 {
     s << "\t Linear algorithm";
 }
