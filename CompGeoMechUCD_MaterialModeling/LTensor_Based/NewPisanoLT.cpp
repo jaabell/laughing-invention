@@ -663,8 +663,7 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     start_stress.compute_deviatoric_tensor(s, pp);
     pp = -start_stress(i, i) / 3;
     incr_strain.compute_deviatoric_tensor(incr_strain_dev, incr_strain_vol);    // NOTE: Check this might not be needed : about recomputing incr_strain_vol
-
-    // incr_strain_vol = incr_strain(i, i); // isn't this redundant? It was! :) Jose
+    incr_strain_vol = incr_strain(i, i); // isn't this redundant? It was! :) Jose
 
 
     // LTensorDisplay::print(incr_strain,"a","Hi there!",1);
@@ -769,8 +768,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     // Compute distance coeff
     //---------------------------------------------------------------------------------------------
     // beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
-    // beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
-    beta = get_distance_coeff_lode(start_stress); // this should be able to read alpha and alpha0
+    beta = get_distance_coeff(start_stress); // this should be able to read alpha and alpha0
+    // beta = get_distance_coeff_lode(start_stress); // this should be able to read alpha and alpha0
 
 #ifdef DEBUG_PISANO
     //DEBUG
