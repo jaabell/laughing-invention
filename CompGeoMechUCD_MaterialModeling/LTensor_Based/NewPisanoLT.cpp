@@ -1015,7 +1015,12 @@ double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
                         cout << "lode   = " << lode << endl;
                         cout << "M_lode = " << M_lode << endl;
                         cout << "lode_alphab = " << lode_alphab << endl;
+                        cout << "alphab(0,0) = " << alphab(0, 0) << endl;
+                        cout << "alphab(1,1) = " << alphab(1, 1) << endl;
+                        cout << "alphab(2,2) = " << alphab(2, 2) << endl;
+                        cout << "alphab(0,1) = " << alphab(0, 1) << endl;
                         cout << "alphab(0,2) = " << alphab(0, 2) << endl;
+                        cout << "alphab(1,2) = " << alphab(1, 2) << endl;
 
 
                         break; // gets out of the lode angle loop
@@ -1135,14 +1140,14 @@ double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a
              (
                  s(0, 2) * s(1, 1) * s(2, 0) +
                  s(1, 2) * s(2, 1) * s(0, 0) +
-                 s(2, 2) * s(0, 1) * s(1, 0) +
+                 s(2, 2) * s(0, 1) * s(1, 0)
              )
          ) / 3;
     //s.compute_Determinant(); // I need the determinant of the deviatoric stress tensor!!!
 
     if (J2 > check_for_zero)
     {
-        arg = -(3 * sqrt(3)) / 2 * (sgn(J3) * fabs(cbrt(J3)) ) / sqrt(J2); // check this!
+        arg = -2.598076211353316 * cbrt(J3) / sqrt(J2); // check this!
     }
     else
     {
@@ -1151,8 +1156,8 @@ double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a
 
     if (arg > 1.0)
     {
+        // cout << "arg = " << arg  << endl;
         arg = 1.0;
-        cout << "arg = " << arg  << endl;
     }
     else if (arg < -1.0)
     {
