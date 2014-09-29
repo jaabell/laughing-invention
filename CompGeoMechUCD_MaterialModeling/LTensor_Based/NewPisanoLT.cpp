@@ -193,7 +193,6 @@ NewPisanoLT::~NewPisanoLT()
 //================================================================================
 int NewPisanoLT::setTrialStrain(const DTensor2 &v)
 {
-
     DTensor2 result( 3, 3, 0.0 );
     TrialStrain(i, j) = v(i, j);
     result( i, j ) = v( i, j ) - CommitStrain( i, j );
@@ -270,9 +269,6 @@ int NewPisanoLT::commitState(void)
     CommitStrain = TrialStrain;
     CommitPlastic_Strain = TrialPlastic_Strain;
 
-    // cout << endl << endl << "NewPisanoLT::commitState()" << endl;
-
-    // cout << "CommitPlastic_Strain(0,2) = " << CommitPlastic_Strain(0, 2) << "\n";
 
     return 0;
 }
@@ -579,7 +575,6 @@ DTensor2 &NewPisanoLT::getInternalTensor(void)
 
 int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 {
-
     //=============================================================================================
     // Some local definitions
     //=============================================================================================

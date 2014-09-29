@@ -61,6 +61,7 @@ all:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_variable_number_of_gauss_points; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_variable_number_of_gauss_points; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes_variable_number_of_gauss_points; $(MAKE);
+	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/nonlinear_shear_beam; $(MAKE);
 #	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p_large_deformation_brick_8_nodes; $(MAKE);
 #	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_large_deformation_total_Lagrangian_20_nodes; $(MAKE);
 
@@ -91,6 +92,7 @@ clean:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_variable_number_of_gauss_points; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_variable_number_of_gauss_points; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes_variable_number_of_gauss_points; $(MAKE) clean;
+	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/nonlinear_shear_beam; $(MAKE) clean;
 
 
 cleanall:
@@ -115,5 +117,6 @@ cleanall:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_variable_number_of_gauss_points; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_variable_number_of_gauss_points; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes_variable_number_of_gauss_points; $(MAKE) cleanall;
+	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/nonlinear_shear_beam; $(MAKE) cleanall;
 
 
