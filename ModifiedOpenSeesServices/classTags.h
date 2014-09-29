@@ -367,7 +367,7 @@
 // LTensor Elements
 #define ELE_TAG_EightNodeBrickLT   8001
 #define ELE_TAG_TwentySevenNodeBrickLT   8002
-
+#define ELE_TAG_ShearBeamLT 8003
 
 
 
