@@ -140,19 +140,6 @@ NewPisanoLT::NewPisanoLT(int tag,
     this->revertToStart();
 
 
-    cout << "beta = " << beta << endl;
-    cout << "E0 = " << E0 << endl;
-    cout << "v = " << v << endl;
-    cout << "M = " << M << endl;
-    cout << "kd = " << kd << endl;
-    cout << "xi = " << xi << endl;
-    cout << "h = " << h << endl;
-    cout << "m = " << m << endl;
-    cout << "rho = " << rho << endl;
-    cout << "initialconfiningstress = " << initialconfiningstress << endl;
-    cout << "n = " << n << endl;
-    cout << "a = " << a << endl;
-    cout << "eplcum_cr = " << eplcum_cr << endl;
 }
 
 
@@ -1012,15 +999,15 @@ double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
 
                     if (fabs(lode_alphab - lode) < lode_step)
                     {
-                        cout << "lode   = " << lode << endl;
-                        cout << "M_lode = " << M_lode << endl;
-                        cout << "lode_alphab = " << lode_alphab << endl;
-                        cout << "alphab(0,0) = " << alphab(0, 0) << endl;
-                        cout << "alphab(1,1) = " << alphab(1, 1) << endl;
-                        cout << "alphab(2,2) = " << alphab(2, 2) << endl;
-                        cout << "alphab(0,1) = " << alphab(0, 1) << endl;
-                        cout << "alphab(0,2) = " << alphab(0, 2) << endl;
-                        cout << "alphab(1,2) = " << alphab(1, 2) << endl;
+                        // cout << "lode   = " << lode << endl;
+                        // cout << "M_lode = " << M_lode << endl;
+                        // cout << "lode_alphab = " << lode_alphab << endl;
+                        // cout << "alphab(0,0) = " << alphab(0, 0) << endl;
+                        // cout << "alphab(1,1) = " << alphab(1, 1) << endl;
+                        // cout << "alphab(2,2) = " << alphab(2, 2) << endl;
+                        // cout << "alphab(0,1) = " << alphab(0, 1) << endl;
+                        // cout << "alphab(0,2) = " << alphab(0, 2) << endl;
+                        // cout << "alphab(1,2) = " << alphab(1, 2) << endl;
 
 
                         break; // gets out of the lode angle loop
@@ -1114,10 +1101,11 @@ int sgn(double val)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
 double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a stress state
 {
 
-    //The input tensor s must be deviatoric
+    //The input tensor s must be deviatoric (symmetric, nil trace)
 
     if (abs(s(i, i)) > check_for_zero )
     {
@@ -1142,12 +1130,13 @@ double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a
                  s(1, 2) * s(2, 1) * s(0, 0) +
                  s(2, 2) * s(0, 1) * s(1, 0)
              )
-         ) / 3;
+         ) ;/// 3;
     //s.compute_Determinant(); // I need the determinant of the deviatoric stress tensor!!!
 
     if (J2 > check_for_zero)
     {
-        arg = -2.598076211353316 * cbrt(J3) / sqrt(J2); // check this!
+        // arg = -2.598076211353316 * cbrt(J3) / sqrt(J2); // esta era la ueada!!!
+        arg = -2.598076211353316 * J3 / sqrt(J2 * J2 * J2);
     }
     else
     {
@@ -1171,6 +1160,8 @@ double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a
     //Return the lode angle
     return 0.3333333 * asin(arg);
 }
+
+
 
 double NewPisanoLT::getE()
 {
