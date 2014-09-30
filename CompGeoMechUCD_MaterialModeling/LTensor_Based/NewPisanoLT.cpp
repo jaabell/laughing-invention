@@ -92,10 +92,12 @@ NewPisanoLT::NewPisanoLT(int tag,
       CommitStress( 3, 3, 0.0 ),
       CommitStrain( 3, 3, 0.0 ),
       CommitPlastic_Strain( 3, 3, 0.0 ),
+      CommitAlpha0mem( 3, 3, 0.0 ),
+      CommitAlpha0( 3, 3, 0.0 ),
+      CommitStrainplcum( 3, 3, 0.0 ),
       alpha( 3, 3, 0.0 ),
       alpha0( 3, 3, 0.0 ),
       alpha0mem( 3, 3, 0.0 ),
-      strainpl0( 3, 3, 0.0 ),
       Stress_n_minus_2( 3, 3, 0.0 ),
       nij_dev( 3, 3, 0.0 ),
       Stiffness( 3, 3, 3, 3, 0.0 ),
@@ -165,10 +167,12 @@ NewPisanoLT::NewPisanoLT()
       CommitStress( 3, 3, 0.0 ),
       CommitStrain( 3, 3, 0.0 ),
       CommitPlastic_Strain( 3, 3, 0.0 ),
+      CommitAlpha0mem( 3, 3, 0.0 ),
+      CommitAlpha0( 3, 3, 0.0 ),
+      CommitStrainplcum( 3, 3, 0.0 ),
       alpha( 3, 3, 0.0 ),
       alpha0( 3, 3, 0.0 ),
       alpha0mem( 3, 3, 0.0 ),
-      strainpl0( 3, 3, 0.0 ),
       Stress_n_minus_2( 3, 3, 0.0 ),
       nij_dev( 3, 3, 0.0 ),
       Stiffness( 3, 3, 3, 3, 0.0 ),
@@ -264,11 +268,13 @@ const DTensor2 &NewPisanoLT::getCommittedPlasticStrainTensor(void)
 //================================================================================
 int NewPisanoLT::commitState(void)
 {
-    Stress_n_minus_2 = CommitStress; // before updating the CommitStress, we keep track of the previous one
-    CommitStress = TrialStress;
-    CommitStrain = TrialStrain;
+    Stress_n_minus_2     = CommitStress; // before updating the CommitStress, we keep track of the previous one
+    CommitStress         = TrialStress;
+    CommitStrain         = TrialStrain;
     CommitPlastic_Strain = TrialPlastic_Strain;
-
+    CommitAlpha0mem      = alpha0mem;
+    CommitAlpha0         = alpha0;
+    CommitStrainplcum    = strainplcum;
 
     return 0;
 }
@@ -627,6 +633,11 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     start_stress  = getCommittedStressTensor();
     start_strain  = getCommittedStrainTensor();
     start_Pstrain = getCommittedPlasticStrainTensor();
+    alpha0mem(i, j)   = CommitAlpha0mem(i, j);
+    alpha0(i, j)      = CommitAlpha0(i, j);
+    strainplcum(i, j) = CommitStrainplcum(i, j);
+
+
 
     incr_strain(i, j) = strain_incr(i, j); //Its seems superficial to have incr_strain and stress_incr, but the reason is that strain_incr is "const" and member function "compute_deviatoric_tensor" does not work with const tensors... which is wrong but it is what we have........ LTensor's fault :( -J.Abell
 
@@ -693,6 +704,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     //---------------------------------------------------------------------------------------------
 
     unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
+
+
 
     if (unload_prod <= 0.0)
     {
@@ -1199,10 +1212,7 @@ DTensor2 NewPisanoLT::get_alpha0mem() const
 {
     return alpha0mem;
 }
-DTensor2 NewPisanoLT::get_strainpl0() const
-{
-    return strainpl0;
-}
+
 DTensor2 NewPisanoLT::get_Stress_n_minus_2() const
 {
     return Stress_n_minus_2;
