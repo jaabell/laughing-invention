@@ -321,7 +321,6 @@ EXP	([Ee][-+]?[0-9]+)
 "penalty_for_applying_generalized_displacement" {return token::penalty_for_applying_generalized_displacement;}
 "contact"                           {return token::contact;}
 "variable_node_brick_8_to_27"       {return token::variable_node_brick_8_to_27;}
-"ShearBeamLT"                       {return token::ShearBeamLT;}
 
 
  /* Element options */

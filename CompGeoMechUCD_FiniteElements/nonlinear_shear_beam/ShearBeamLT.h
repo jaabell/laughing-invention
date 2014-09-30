@@ -61,8 +61,8 @@ class ShearBeamLT: public Element
 
     public:
         ShearBeamLT( int element_number,
-                     int node_numb_1, int node_numb_2,
-                     double area,
+                     int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
+                     int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
                      NDMaterialLT *Globalmmodel);
 
         ShearBeamLT ();
@@ -117,7 +117,7 @@ class ShearBeamLT: public Element
         double SurfaceLoadValues( double Xi , double Eta, Vector Pressure );
         const Vector &getBodyForce( double loadFactor, const Vector &data );
         const Vector &getSurfaceForce( double loadFactor, const Vector &data );
-        // double returnPressure(void);
+        double returnPressure(void);
 
 
         // ===================================================================================================================
@@ -147,7 +147,7 @@ class ShearBeamLT: public Element
     private:
         // bool initialized;
         bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
-        double Area;
+        double A;
         double length;
         double rho;
 
@@ -156,7 +156,7 @@ class ShearBeamLT: public Element
         DTensor2 stress[1];
         Matrix *Ki;
 
-        Node *theNodes[2];
+        Node *theNodes[1];
         NDMaterialLT *mmodel;
         NDMaterialLT *material_array[1];
 

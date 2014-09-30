@@ -175,7 +175,7 @@
 %token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
 %token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based beam_elastic beam_elastic_lumped_mass penalty penalty_for_applying_generalized_displacement beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact
-%token EightNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT
+%token EightNodeBrickLT TwentySevenNodeBrickLT
 
 // Element options tokens
 %token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule number_of_integration_points stiffness normal_stiffness tangential_stiffness
@@ -3173,25 +3173,6 @@ ADD_element:
         $$ = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_ltensor, args, signature, "add_element_brick_8node_ltensor");
 
         for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 10 exps
-        nodes.push($$);
-    }    
-    //!=========================================================================================================
-    //!
-    //!FEIDOC add element # <.> type [ShearBeamLT] with nodes (<.>, <.>) cross_section = <l^2> use material # <.>;
-    | TEXTNUMBER exp TYPE ShearBeamLT WITH NODES
-        '(' exp ',' exp  ')' cross_section '=' exp
-            USE MATERIAL TEXTNUMBER exp
-    {
-        args.clear(); signature.clear();
-        args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
-        args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
-        args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
-        args.push_back($14); signature.push_back(this_signature("cross_section", &isArea));
-        args.push_back($18); signature.push_back(this_signature("material", &isAdimensional));
-
-        $$ = new FeiDslCaller5<int,int,int,double,int>(&add_element_shear_beam_ltensor, args, signature, "add_element_shear_beam_ltensor");
-
-        for(int ii = 1;ii <=5; ii++) nodes.pop(); //pop 5 exps
         nodes.push($$);
     }
     //!=========================================================================================================

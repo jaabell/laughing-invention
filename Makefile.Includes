@@ -135,7 +135,6 @@ ESSI_INCLUDES  = -I$(FEIBASEDIR)/ModifiedOpenSeesServices/matrix \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_8_nodes \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_8_nodes_ltensor \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_8_nodes_elastic \
-            -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/nonlinear_shear_beam \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_8_nodes_variable_number_of_gauss_points \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_20_nodes_variable_number_of_gauss_points \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_27_nodes_variable_number_of_gauss_points \
@@ -176,7 +175,6 @@ ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
       $(FEIBASEDIR)/lib/libsolid_brick_8_nodes_variable_gp.a \
       $(FEIBASEDIR)/lib/libsolid_brick_20_nodes_variable_gp.a \
       $(FEIBASEDIR)/lib/libsolid_brick_27_nodes_variable_gp.a \
-      $(FEIBASEDIR)/lib/libnonlinear_shear_beam.a \
       $(FEIBASEDIR)/lib/libcoupled_u-p-U_brick_8_nodes.a \
       $(FEIBASEDIR)/lib/libcoupled_u-p_brick_8_nodes.a \
       $(FEIBASEDIR)/lib/libcoupled_u-p-U_brick_20_nodes.a \

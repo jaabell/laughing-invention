@@ -79,7 +79,6 @@
 #include "MODELING/add_element_brick_variable_node_8_to_27.h"
 #include "MODELING/add_element_brick_8node_ltensor.h"
 #include "MODELING/add_element_brick_27node_ltensor.h"
-#include "MODELING/add_element_shear_beam_ltensor.h"
 #include "MODELING/add_element_beam_elastic_lumped_mass.h"
 #include "MODELING/add_element_beam_elastic.h"  // Nima Tafazzoli (Dec. 2012)
 #include "MODELING/add_element_rank_one_deficient_elastic_pinned_fixed_beam.h"  // Nima Tafazzoli (Dec. 2012)

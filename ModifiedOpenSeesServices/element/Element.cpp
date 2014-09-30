@@ -939,11 +939,11 @@ Element::printSomeInformation(void)
 }
 
 
-// int Element::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
-// {
-//     cerr << "Element::describeSelf -> Subclass responsability" << endl;
-//     return -1;
-//}
+int Element::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+{
+    cerr << "Element::describeSelf -> Subclass responsability" << endl;
+    return -1;
+}
 
 int Element::sendSelf(int commitTag, Channel &theChannel)
 {
