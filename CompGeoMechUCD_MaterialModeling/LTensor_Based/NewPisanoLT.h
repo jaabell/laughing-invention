@@ -138,6 +138,7 @@ class NewPisanoLT : public NDMaterialLT
         DTensor2 get_alpha() const;
         DTensor2 get_alpha0() const;
         DTensor2 get_alpha0mem() const;
+        DTensor2 get_strainpl0() const;
         DTensor2 get_Stress_n_minus_2() const;
         DTensor2 get_nij_dev() const;
 
@@ -186,13 +187,11 @@ class NewPisanoLT : public NDMaterialLT
         DTensor2 CommitStress;
         DTensor2 CommitStrain;
         DTensor2 CommitPlastic_Strain;
-        DTensor2 CommitAlpha0mem;
-        DTensor2 CommitAlpha0;
-        DTensor2 CommitStrainplcum;
 
         DTensor2 alpha;             // back stress ratio tensor
         DTensor2 alpha0;            // back stress ratio tensor
         DTensor2 alpha0mem;         // back stress ratio tensor at last previous stress reversal
+        DTensor2 strainpl0;         // Plastic strain at stress reversal (for overshooting)
         DTensor2 Stress_n_minus_2;  // Stress tensor at step n-2
         DTensor2 nij_dev;           // direction of deviatoric plastic strain increment(unit tensor)
 
