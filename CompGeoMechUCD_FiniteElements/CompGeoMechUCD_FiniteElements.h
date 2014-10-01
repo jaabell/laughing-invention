@@ -43,11 +43,12 @@
 #include "./solid_brick_27_nodes_elastic/TwentySevenNodeBrickElastic.h"
 #include "./penalty_element_apply_displacement/PenaltyElementApplyDisplacement.h"
 #include "./penalty_element/PenaltyElement.h"
-#include "./shell_andes/ThreeNodeAndesShell.h"  // Jose Abell added July 22 2012
-#include "./shell_andes/FourNodeAndesShell.h"  // Jose Abell added July 22 2012
+#include "./shell_andes/ThreeNodeAndesShell.h"
+#include "./shell_andes/FourNodeAndesShell.h"
 #include "./elastic_beam/ElasticBeam.h"
 #include "./rank_one_deficient_elastic_pinned_fixed_beam/rank_one_deficient_elastic_pinned_fixed_beam.h"
 #include "./solid_brick_variable_nodes_8_to_27/VariableNodeBrick.h"
+#include "./nonlinear_shear_beam/ShearBeamLT.h"
 
 #include "./solid_brick_large_deformation_total_Lagrangian_8_nodes/TotalLagrangianFD8NodeBrick.h"
 #include "./solid_brick_large_deformation_total_Lagrangian_20_nodes/TotalLagrangianFD20NodeBrick.h"

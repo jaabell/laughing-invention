@@ -44,7 +44,7 @@ Matrix ShearBeamLT::M( 6, 6);
 Vector ShearBeamLT::P( 6 );
 
 ShearBeamLT::ShearBeamLT( int element_number,
-                          int node_numb_1, int node_numb_2
+                          int node_numb_1, int node_numb_2, double area,
                           NDMaterialLT *Globalmmodel)
 
     : Element( element_number, ELE_TAG_ShearBeamLT ),
@@ -54,7 +54,7 @@ ShearBeamLT::ShearBeamLT( int element_number,
 
     rho = Globalmmodel->getRho();
     mmodel = Globalmmodel;
-    initialized = false;
+    Area = area;
 
     material_array[0] = mmodel->getCopy();
 
@@ -67,7 +67,6 @@ ShearBeamLT::ShearBeamLT( int element_number,
 
     is_mass_computed = false;
 
-    computeGaussPoint();
 }
 
 
@@ -113,6 +112,8 @@ ShearBeamLT::~ShearBeamLT ()
 //Compute gauss point coordinates
 void ShearBeamLT::computeGaussPoint()
 {
+
+
     const Vector &nd1Crds = theNodes[0]->getCrds();
     const Vector &nd2Crds = theNodes[1]->getCrds();
 
@@ -302,67 +303,30 @@ int ShearBeamLT::revertToStart ()
 const Matrix &ShearBeamLT::getTangentStiff()
 {
     DTensor4 stifftensor(2, 3, 3, 2, 0.0);
-
-
-
-
-    double r  = 0.0;
-    double w_r = 0.0;
-    double s  = 0.0;
-    double w_s = 0.0;
-    double t  = 0.0;
-    double w_t = 0.0;
-    double det_of_Jacobian = 0.0;
-    double weight = 0.0;
-
-    DTensor2 dh_drst( 2, 3, 0.0 );
-    DTensor2 dhGlobal( 2, 3, 0.0 );
-    DTensor2 Jacobian(3, 3, 0.0);
-    DTensor2 JacobianINV(3, 3, 0.0);
-
-    DTensor4 E_elpl(3, 3, 3, 3, 0.0);
-    // DTensor4 Kk( 8, 3, 3, 8, 0.0);
+    DTensor4 E_elpl(2, 3, 3, 2, 0.0);
     DTensor4 Kkt( 2, 3, 3, 2, 0.0);
+    DTensor2 dhGlobal( 2, 3, 0.0 );
 
+    dhGlobal(0, 2) = -1 / length;
+    dhGlobal(1, 2) = 1 / length;
+
+    E_elpl          = material_array[0]->getTangentTensor();
+
+
+    // This is the actual integration
+    // FIXME: This can be more efficient! note that 2/3rds of dhGlobal are zero
     Index < 'a' > a;
     Index < 'b' > b;
     Index < 'c' > c;
     Index < 'd' > d;
-
-    r = gp_coords(gp, 0);
-    s = gp_coords(gp, 1);
-    t = gp_coords(gp, 2);
-    w_r = gp_weight(gp);
-    w_s = gp_weight(gp);
-    w_t = gp_weight(gp);
-
-    // derivatives of local coordinates with respect to local coordinates
-    dh_drst         = dh_drst_at( r, s, t );
-    Jacobian        = Jacobian_3D( dh_drst );
-    JacobianINV     = Jacobian.Inv();
-    det_of_Jacobian = Jacobian.compute_Determinant();
-
-    // Derivatives of local coordinates multiplied with inverse of Jacobian (see Bathe p-202)
-    dhGlobal(i, k)  = dh_drst( i, j ) * JacobianINV( k, j );
-    weight          = w_r * w_s * w_t * det_of_Jacobian;
-    E_elpl          = material_array[gp]->getTangentTensor();
-
-
-    // This is the actual integration
-    // FIXME: This can be more efficient if these lines are merged into one (discard the temporary KKt tensor)
-    Kkt(i, a, c, j) = dhGlobal(i, b) * E_elpl(a, b, c, d) * dhGlobal(j, d) * weight;
-    stifftensor(i, a, c, j) = stifftensor(i, a, c, j) + Kkt(i, a, c, j);
-
-
-
-
+    stifftensor(i, a, c, j) = dhGlobal(i, b) * E_elpl(a, b, c, d) * dhGlobal(j, d) * length * Area;
 
     int Ki = 0;
     int Kj = 0;
 
-    for ( int ii = 1 ; ii <= 8 ; ii++ )
+    for ( int ii = 1 ; ii <= 2 ; ii++ )
     {
-        for ( int jj = 1 ; jj <= 8 ; jj++ )
+        for ( int jj = 1 ; jj <= 2 ; jj++ )
         {
             for ( int kk = 1 ; kk <= 3 ; kk++ )
             {
@@ -380,16 +344,6 @@ const Matrix &ShearBeamLT::getTangentStiff()
 }
 
 
-
-////#############################################################################
-const DTensor4 &ShearBeamLT::getStiffnessTensor( void ) const
-{
-
-    static DTensor4 Kk(2, 3, 3, 2, 0.0);
-
-    // LTensorDisplay::print(Kk,"Kk","\n\n K tensor \n",1);
-    return Kk;
-}
 
 
 //=============================================================================
@@ -415,11 +369,10 @@ const Matrix &ShearBeamLT::getInitialStiff ()
 
 const Matrix &ShearBeamLT::getMass ()
 {
-
     if (not is_mass_computed)
     {
         //Consistent mass matrix
-        double m = rho * A * l;
+        double m = rho * Area * length;
         M( 0 , 0 ) = m / 2;
         M( 1 , 1 ) = m / 2;
         M( 2 , 2 ) = m / 2;
@@ -444,7 +397,7 @@ const Matrix &ShearBeamLT::getMass ()
 void ShearBeamLT::zeroLoad( void )
 {
     Q.Zero();
-    P.Zero();
+    // P.Zero();
 }
 
 
@@ -576,15 +529,27 @@ const Vector ShearBeamLT::FormEquiBodyForce( void )
 //=============================================================================
 const Vector &ShearBeamLT::getResistingForce()
 {
-    P.Zero();
+    //P.Zero();
 
     DTensor2 stress = material_array[0]->getStressTensor();
-    P(0) = stress(0, 2) * A;
-    P(1) = stress(1, 2) * A;
-    P(1) = stress(2, 2) * A;
-    P(3) = -P(0);
-    P(4) = -P(1);
-    P(5) = -P(2);
+
+
+    DTensor2 dhGlobal( 2, 3, 0.0 );
+
+    dhGlobal(0, 2) = -1 / length;
+    dhGlobal(1, 2) = 1 / length;
+
+    DTensor2 nodal_forces( 2, 3, 0.0 );
+    nodal_forces(i, j) = Area * length * (dhGlobal( i, k ) * stress( j, k ) );
+
+    for ( int i = 0; i < 2; i++ )
+        for ( int j = 0; j < 3; j++ )
+        {
+            P( i * 3 + j ) = nodal_forces( i, j );
+        }
+
+    P.addVector( 1.0, Q, -1.0 );
+
 
     return P;
 }
@@ -867,24 +832,24 @@ void ShearBeamLT::Print( ostream &s, int flag )
 int ShearBeamLT::update( void )
 {
 
-    DTensor2 trial_disp( 8, 3, 0.0  );
+    DTensor2 trial_disp( 2, 3, 0.0  );
     DTensor2 trial_strain(3, 3, 0.0);
+    DTensor2 dhGlobal( 2, 3, 0.0 );
 
-    double ux1, uy1, uz1;
-    double ux2, uy2, uz2;
     const Vector &TotDis1 = theNodes[0]->getTrialDisp();
     const Vector &TotDis2 = theNodes[1]->getTrialDisp();
 
-    trial_strain(0, 0) = 0;
-    trial_strain(1, 1) = 0;
-    trial_strain(2, 2) = (TotDis2(2) - TotDis1(2)) / length;
-    trial_strain(0, 1) = 0;
-    trial_strain(0, 2) = (TotDis2(0) - TotDis1(0)) / length;
-    trial_strain(1, 2) = (TotDis2(1) - TotDis1(1)) / length;
+    trial_disp(0, 0) = TotDis1(0);
+    trial_disp(0, 1) = TotDis1(1);
+    trial_disp(0, 2) = TotDis1(2);
+    trial_disp(1, 0) = TotDis2(0);
+    trial_disp(1, 1) = TotDis2(1);
+    trial_disp(1, 2) = TotDis2(2);
 
-    trial_strain(1, 0) = trial_strain(0, 1);
-    trial_strain(2, 0) = trial_strain(0, 2);
-    trial_strain(2, 1) = trial_strain(1, 2);
+    dhGlobal(0, 2) = -1 / length;
+    dhGlobal(1, 2) = 1 / length;
+
+    trial_strain(i, j) = (dhGlobal(k, i) * trial_disp(k, j) + dhGlobal(k, j) * trial_disp(k, i)) / 2;
 
     if ( ( material_array[0]->setTrialStrain( trial_strain ) ) )
     {
@@ -914,7 +879,7 @@ ShearBeamLT::getStress( void )
     DTensor2 stress;//(3,3,0.0);
     Vector *stresses = new Vector( 6 );   // FIXME: Who deallocates this guy???
 
-    stress = material_array[gp]->getStressTensor();
+    stress = material_array[0]->getStressTensor();
     ( *stresses )( 0 ) = stress( 0, 0 );
     ( *stresses )( 1 ) = stress( 1, 1 );
     ( *stresses )( 2 ) = stress( 2, 2 );
