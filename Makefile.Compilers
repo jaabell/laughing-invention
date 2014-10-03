@@ -9,7 +9,7 @@ PROGRAMMING_MODE = SEQUENTIAL
 #PROGRAMMING_MODE = PARALLEL
 
 LTO_FLAGS = 
-#LTO_FLAGS = -flto
+# LTO_FLAGS = -flto
 
 INLINING_OPTS = -finline \
 				-finline-functions \

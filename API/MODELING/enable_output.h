@@ -35,3 +35,13 @@ int disable_output()
 {
     return theDomain.enableOutput(false);
 }
+
+int enable_element_output()
+{
+    return theDomain.enableElementOutput(true);
+}
+
+int disable_element_output()
+{
+    return theDomain.enableElementOutput(false);
+}

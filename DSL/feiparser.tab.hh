@@ -831,10 +831,10 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 10723,     ///< Last index in yytable_.
+      yylast_ = 10696,     ///< Last index in yytable_.
       yynnts_ = 15,  ///< Number of nonterminal symbols.
       yyempty_ = -2,
-      yyfinal_ = 108, ///< Termination state number.
+      yyfinal_ = 110, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
       yyntokens_ = 413  ///< Number of tokens.

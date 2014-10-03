@@ -311,6 +311,7 @@ class Domain
                                     int nsteps);
 
         virtual int enableOutput(bool is_output_enabled);
+        virtual int enableElementOutput(bool is_element_output_enabled);
 
         //=======================================================================================
         // Nima Tafazzoli added for saving results using mySQL, November 2012
@@ -386,6 +387,7 @@ class Domain
 
 
         bool output_is_enabled;
+        bool element_output_is_enabled;
         bool have_written_static_mesh_data;
 
         double currentTime;               // current pseudo time

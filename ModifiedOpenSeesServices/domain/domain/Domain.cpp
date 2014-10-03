@@ -132,7 +132,7 @@ Domain::Domain()
     commitTag( 0 ),
     theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
     number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-    output_is_enabled(true), have_written_static_mesh_data(false)
+    output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false)
 {
 
     // init the arrays for storing the domain components
@@ -233,7 +233,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
       number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true), have_written_static_mesh_data(false)
+      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false)
 {
     // init the arrays for storing the domain components
     theElements = new ArrayOfTaggedObjects( numElements );
@@ -338,7 +338,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
       number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true), have_written_static_mesh_data(false)
+      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false)
 {
     // init the iters
     theEleIter = new SingleDomEleIter( theElements );
@@ -399,7 +399,7 @@ Domain::Domain( TaggedObjectStorage &theStorage )
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
       number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true), have_written_static_mesh_data(false)
+      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false)
 {
     // init the arrays for storing the domain components
     theStorage.clearAll(); // clear the storage just in case populated
@@ -2791,7 +2791,7 @@ Domain::commit( void )
         {
             elePtr->commitState();
             //Jose Added for element output
-            if (output_is_enabled)
+            if (output_is_enabled && element_output_is_enabled)
             {
                 // elePtr->describeSelf(0, theHDF5_Channel);
                 // elePtr->sendSelf(0, theHDF5_Channel);
@@ -5946,6 +5946,14 @@ Domain::saveLineElementForces( int stepNumber, Channel &theChannel )
 int Domain::enableOutput(bool is_output_enabled_)
 {
     output_is_enabled =  is_output_enabled_;
+    have_written_static_mesh_data = false;
+    return 0;
+}
+
+
+int Domain::enableElementOutput(bool is_element_output_is_enabled)
+{
+    element_output_is_enabled =  is_element_output_is_enabled;
     have_written_static_mesh_data = false;
     return 0;
 }

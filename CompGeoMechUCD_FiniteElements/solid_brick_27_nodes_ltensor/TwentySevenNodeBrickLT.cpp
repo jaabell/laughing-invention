@@ -688,7 +688,7 @@ const DTensor4 &TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
     DTensor2 JacobianINV(3, 3, 0.0);
 
     DTensor4 Constitutive(3, 3, 3, 3, 0.0);
-    DTensor4 Kk( 27, 3, 3, 27, 0.0);
+    static DTensor4 Kk( 27, 3, 3, 27, 0.0);
     DTensor4 Kkt( 27, 3, 3, 27, 0.0);
 
     Index < 'a' > a;

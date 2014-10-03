@@ -1534,7 +1534,7 @@ dofchain
 CMD_define
     //!=========================================================================================================
     //!
-    //!FEIDOC define output to binary;
+    //!FEIDOC enable output;
     : ENABLE OUTPUT 
     {
         args.clear(); signature.clear();
@@ -1543,13 +1543,29 @@ CMD_define
     }
     //!=========================================================================================================
     //!
-    //!FEIDOC define output to binary;
+    //!FEIDOC disable output;
     | DISABLE OUTPUT 
     {
         args.clear(); signature.clear();
         $$ = new FeiDslCaller0<>(&disable_output,args,signature,"disable_output");
         nodes.push($$);
     }
+    | ENABLE ELEMENT OUTPUT 
+    {
+        args.clear(); signature.clear();
+        $$ = new FeiDslCaller0<>(&enable_element_output,args,signature,"enable_element_output");
+        nodes.push($$);
+    }
+    //!=========================================================================================================
+    //!
+    //!FEIDOC disable output;
+    | DISABLE  ELEMENT OUTPUT 
+    {
+        args.clear(); signature.clear();
+        $$ = new FeiDslCaller0<>(&disable_element_output,args,signature,"disable_element_output");
+        nodes.push($$);
+    }
+
     ////!=========================================================================================================
     ////!
     ////!FEIDOC define load factor increment <.>;
