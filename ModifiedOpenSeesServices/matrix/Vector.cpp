@@ -182,7 +182,7 @@ Vector::resize(int newSize)
     // first check that newSize is valid
     if (newSize <= 0)
     {
-        std::cerr << "Vector::resize) - size specified " << newSize << " <= 0\n";
+        std::cerr << "Vector::resize() - size specified " << newSize << " <= 0\n";
         return -1;
     }
 

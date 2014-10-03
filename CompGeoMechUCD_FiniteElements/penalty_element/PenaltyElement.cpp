@@ -182,10 +182,10 @@ PenaltyElement::getTangentStiff(void)
 {
     int node1_numDOF = theNodes[0]->getNumberDOF();
 
-    (*Stiffness)(dof - 1, dof - 1)                           =  penaltystiffness;
-    (*Stiffness)(dof - 1 + node1_numDOF, dof - 1 + node1_numDOF) =  penaltystiffness;
-    (*Stiffness)(dof - 1, dof - 1 + node1_numDOF)              = -penaltystiffness;
-    (*Stiffness)(dof - 1 + node1_numDOF, dof - 1)              = -penaltystiffness;
+    (*Stiffness)(dof - 1, dof - 1)                               = penaltystiffness;
+    (*Stiffness)(dof - 1 + node1_numDOF, dof - 1 + node1_numDOF) = penaltystiffness;
+    (*Stiffness)(dof - 1, dof - 1 + node1_numDOF)                = -penaltystiffness;
+    (*Stiffness)(dof - 1 + node1_numDOF, dof - 1)                = -penaltystiffness;
 
     return *Stiffness;
 }

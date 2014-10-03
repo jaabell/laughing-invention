@@ -90,7 +90,7 @@ int start_new_stage(string CurrentStageName)
     //Set all these pointers to null! (They will have to be set by user.)
     theAnalysisModel                     = 0;
     theAlgorithm                         = 0;
-    theHandler                 = 0;
+    theHandler                           = 0;
     theNumberer                          = 0;
     theSOE                               = 0;
     theStaticIntegrator                  = 0;

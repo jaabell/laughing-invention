@@ -373,12 +373,12 @@ const Matrix &ShearBeamLT::getMass ()
     {
         //Consistent mass matrix
         double m = rho * Area * length;
-        M( 0 , 0 ) = m / 2;
-        M( 1 , 1 ) = m / 2;
-        M( 2 , 2 ) = m / 2;
-        M( 3 , 3 ) = m / 2;
-        M( 4 , 4 ) = m / 2;
-        M( 5 , 5 ) = m / 2;
+        M( 0 , 0 ) = m / 3;
+        M( 1 , 1 ) = m / 3;
+        M( 2 , 2 ) = m / 3;
+        M( 3 , 3 ) = m / 3;
+        M( 4 , 4 ) = m / 3;
+        M( 5 , 5 ) = m / 3;
 
         M(0, 3) = m / 6;
         M(3, 0) = m / 6;

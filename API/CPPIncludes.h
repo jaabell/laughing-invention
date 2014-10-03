@@ -362,19 +362,19 @@ ErrorHandler *g3ErrorHandler = 0;
 double        ops_Dt         = 0.0;
 
 // Pointers to components
-static AnalysisModel *theAnalysisModel                                                 = 0;
-static EquiSolnAlgo *theAlgorithm                                                      = 0;
-static ConstraintHandler *theHandler                                         = 0;
-static DOF_Numberer *theNumberer                                                       = 0;
-static LinearSOE *theSOE                                                               = 0;
-static StaticAnalysis *theStaticAnalysis                                               = 0;
-static DirectIntegrationAnalysis *theTransientAnalysis                                 = 0;
+static AnalysisModel                              *theAnalysisModel                     = 0;
+static EquiSolnAlgo                               *theAlgorithm                         = 0;
+static ConstraintHandler                          *theHandler                           = 0;
+static DOF_Numberer                               *theNumberer                          = 0;
+static LinearSOE                                  *theSOE                               = 0;
+static StaticAnalysis                             *theStaticAnalysis                    = 0;
+static DirectIntegrationAnalysis                  *theTransientAnalysis                 = 0;
 static VariableTimeStepDirectIntegrationAnalysis *theVariableTimeStepTransientAnalysis = 0;
-static StaticIntegrator *theStaticIntegrator                                           = 0;
-static TransientIntegrator *theTransientIntegrator                                     = 0;
-static ConvergenceTest *theConvergenceTest                                             = 0;
-static EigenSOE *theEigenSOE                                                           = 0;
-static RCM  *theRCM = new RCM();  // Not used in parallel
+static StaticIntegrator                           *theStaticIntegrator                  = 0;
+static TransientIntegrator                        *theTransientIntegrator               = 0;
+static ConvergenceTest                            *theConvergenceTest                   = 0;
+static EigenSOE                                   *theEigenSOE                          = 0;
+static RCM                                        *theRCM                               = new RCM();  // Not used in parallel
 
 
 // Store names of model and stages
@@ -403,22 +403,17 @@ int OPS_NUM_SUBDOMAINS                    = 0;
 bool OPS_PARTITIONED                      = false;
 bool OPS_REDEFINE_ANALYSIS                = true;
 DomainPartitioner *OPS_DOMAIN_PARTITIONER = 0;
-GraphPartitioner  *OPS_GRAPH_PARTITIONER  = 0;
-LoadBalancer      *OPS_BALANCER           = 0;
-FEM_ObjectBroker  *OPS_OBJECT_BROKER;
-MachineBroker     *OPS_MACHINE;
-// static bool builtModel                    = false;
-// static char *resDataPtr                   = 0;
-// static int resDataSize                    = 0;
-// static Timer *theTimer                    = 0;
-Element      *ops_TheActiveElement        = 0;
-MPI_MachineBroker *theMachineBroker = 0;
+GraphPartitioner   *OPS_GRAPH_PARTITIONER  = 0;
+LoadBalancer       *OPS_BALANCER           = 0;
+FEM_ObjectBroker   *OPS_OBJECT_BROKER;
+MachineBroker      *OPS_MACHINE;
+Element            *ops_TheActiveElement   = 0;
+MPI_MachineBroker *theMachineBroker       = 0;
 
 #else // If not _PARALLEL_PROCESSING
+
 Domain theDomain;
 
-
-// endif _PARALLEL_PROCESSING
 #endif
 
 

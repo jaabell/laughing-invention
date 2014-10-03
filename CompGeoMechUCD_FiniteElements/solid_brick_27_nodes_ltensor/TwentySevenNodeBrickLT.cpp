@@ -682,19 +682,19 @@ const DTensor4 &TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
     double weight = 0.0;
 
     // static DTensor2 incremental_strain(3, 3, 0.0);
-    static DTensor2 dh_drst( 27, 3, 0.0 );
-    static DTensor2 dhGlobal( 27, 3, 0.0 );
-    static DTensor2 Jacobian(3, 3, 0.0);
-    static DTensor2 JacobianINV(3, 3, 0.0);
+    DTensor2 dh_drst( 27, 3, 0.0 );
+    DTensor2 dhGlobal( 27, 3, 0.0 );
+    DTensor2 Jacobian(3, 3, 0.0);
+    DTensor2 JacobianINV(3, 3, 0.0);
 
-    static DTensor4 Constitutive(3, 3, 3, 3, 0.0);
-    static DTensor4 Kk( 27, 3, 3, 27, 0.0);
-    static DTensor4 Kkt( 27, 3, 3, 27, 0.0);
+    DTensor4 Constitutive(3, 3, 3, 3, 0.0);
+    DTensor4 Kk( 27, 3, 3, 27, 0.0);
+    DTensor4 Kkt( 27, 3, 3, 27, 0.0);
 
-    static Index < 'a' > a;
-    static Index < 'b' > b;
-    static Index < 'c' > c;
-    static Index < 'd' > d;
+    Index < 'a' > a;
+    Index < 'b' > b;
+    Index < 'c' > c;
+    Index < 'd' > d;
 
     //Set the stiffness tensor to zero (its static!)
     // Using STL-like iterators to linearly transverse the array
@@ -742,7 +742,7 @@ const DTensor4 &TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
 ////#############################################################################
 const DTensor2 &TwentySevenNodeBrickLT::Jacobian_3D( const DTensor2 &dh ) const
 {
-    static const DTensor2 &N_C = Nodal_Coordinates();
+    const DTensor2 &N_C = Nodal_Coordinates();
     static DTensor2 Jacobian_3D_(3, 3, 0.0);
     Jacobian_3D_(j, k) = dh(i, j) * N_C(i, k);
     return Jacobian_3D_;
@@ -751,7 +751,7 @@ const DTensor2 &TwentySevenNodeBrickLT::Jacobian_3D( const DTensor2 &dh ) const
 //#############################################################################
 const DTensor2  &TwentySevenNodeBrickLT::Jacobian_3Dinv( const DTensor2 &dh ) const
 {
-    static const DTensor2 &N_C = Nodal_Coordinates();
+    const DTensor2 &N_C = Nodal_Coordinates();
     DTensor2 Jacobian_3D_(3, 3, 0.0);
     static DTensor2 Jacobian_3D_inv(3, 3, 0.0);
 
@@ -1175,11 +1175,11 @@ const DTensor2 &TwentySevenNodeBrickLT::nodal_forces( void ) const
     double weight = 0.0;
 
     static DTensor2 nodal_forces( 27, 3, 0.0 );
-    static DTensor2 dh( 27, 3 , 0.0 );
-    static DTensor2 stress_at_GP( 3, 3, 0.0 );
-    static DTensor2 Jacobian( 3, 3, 0.0 );
-    static DTensor2 JacobianINV( 3, 3, 0.0 );
-    static DTensor2 dhGlobal( 27, 3 , 0.0 );
+    DTensor2 dh( 27, 3 , 0.0 );
+    DTensor2 stress_at_GP( 3, 3, 0.0 );
+    DTensor2 Jacobian( 3, 3, 0.0 );
+    DTensor2 JacobianINV( 3, 3, 0.0 );
+    DTensor2 dhGlobal( 27, 3 , 0.0 );
 
     //Set nodal_forces to zero (it is only done once since it's a static varible)
     for (DTensor2::literator it = nodal_forces.begin(); it != nodal_forces.end(); it++)
