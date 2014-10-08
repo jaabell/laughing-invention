@@ -973,3 +973,24 @@ Matrix &Element::getGaussCoordinates(void)
     // cerr << "Element::getGaussCoordinates() -- Subclass responsability.\n\n";
     return zero_gauss_coordinates;
 }
+
+int Element::getNumberOfBoundaryNodes() const
+{
+    if (numberOfBoundaryNodes < 0)
+    {
+        cerr << "Element::getNumberOfBoundaryNodes() const -- Subclass must set non-negative number of boundary nodes. \n\n";
+    }
+    return numberOfBoundaryNodes;
+}
+
+void  Element::setNumberOfBoundaryNodes(int n)
+{
+    if (n < 0)
+    {
+        cerr << "Element::getNumberOfBoundaryNodes() const -- Subclass must set non-negative number of boundary nodes. \n\n";
+    }
+    else
+    {
+        numberOfBoundaryNodes = n;
+    }
+}

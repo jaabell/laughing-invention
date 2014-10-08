@@ -46,6 +46,8 @@ PenaltyElement::PenaltyElement(int tag, int node1, int node2, double Penalty_Sti
     theNodes[1] = 0;
     tempZeroMatrix.Zero();
     tempZeroVector.Zero();
+
+    this->setNumberOfBoundaryNodes(1);
 }
 
 
@@ -68,6 +70,8 @@ PenaltyElement::PenaltyElement()
     theNodes[1] = 0;
     tempZeroMatrix.Zero();
     tempZeroVector.Zero();
+
+    this->setNumberOfBoundaryNodes(1);
 }
 
 

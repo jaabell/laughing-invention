@@ -90,7 +90,7 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
         theNodes[i] = 0;
     }
 
-
+    this->setNumberOfBoundaryNodes(4);
 }
 
 void EightNodeBrickLT::populate()
@@ -154,6 +154,8 @@ EightNodeBrickLT::EightNodeBrickLT(): Element( 0, ELE_TAG_EightNodeBrickLT ),
     {
         theNodes[i] = 0;
     }
+
+    this->setNumberOfBoundaryNodes(4);
 
 }
 

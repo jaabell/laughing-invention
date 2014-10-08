@@ -150,6 +150,10 @@ class Element : public DomainComponent
         // virtual void setDomain(Domain *myDomain);
         using DomainComponent::setDomain;
 
+        //These are for building graph (J.Abell, 2014)
+        int getNumberOfBoundaryNodes() const;
+        int setNumberOfBoundaryNodes(int n) ;
+
 
 
     protected:
@@ -173,6 +177,8 @@ class Element : public DomainComponent
         Vector *SizedVector1;
         Vector *SizedVector2;
         int index_sized_matrix_vector;
+
+        int numberOfBoundaryNodes;
 
         static Matrix zero_gauss_coordinates;
 
