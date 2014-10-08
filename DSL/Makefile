@@ -22,10 +22,12 @@ document:
 # 	./generate_command_patterns
 
 essi:  $(OBJS)
-	$(LINKER) $(LINKFLAGS) \
-	$(OBJS) \
-	$(LIBS) \
-	-o ../bin/$@
+	@$(ECHO) Linking ESSI.
+	@$(LINKER) $(LINKFLAGS) $(OBJS) $(LIBS) -o ../bin/$@
+	@$(ECHO) 
+	@$(ECHO) Done!
+	@$(ECHO) 
+	@$(ECHO) 
 
 
 ###########################################################################

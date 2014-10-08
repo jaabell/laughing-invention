@@ -28,6 +28,8 @@ INLINING_OPTS = -finline \
 # 				-fkeep-inline-functions \
 # 				-fdefault-inline
 
+LOGFILE = "essi_compilation.log"
+
 
 #  ==========================================
 #  Check if these variables are set
@@ -166,8 +168,8 @@ SHELL           = /bin/sh
 
 
 %.o : %.cpp 
-	@$(ECHO) Making $@ from $< $@ with $(CC++) $(C++FLAGS) $(INCLUDES) -c $<
-	$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $<
+	@$(ECHO)  $@
+	@$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $<
 
 
 %.o : %.C 
