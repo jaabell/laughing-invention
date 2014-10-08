@@ -1496,8 +1496,24 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
     while ((tagdObjPtr = theEles()) != 0)
     {
         elePtr = (Element *)tagdObjPtr;
-
-        if ( elePtr->getClassTag() == ELE_TAG_EightNodeBrick)
+        int eleClassTag = elePtr->getClassTag();
+        if ( eleClassTag == ELE_TAG_EightNodeBrick
+                || eleClassTag == ELE_TAG_EightNodeBrick
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrick
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrickElastic
+                || eleClassTag == ELE_TAG_ElasticBeam
+                || eleClassTag == ELE_TAG_FourNodeAndesShell
+                || eleClassTag == ELE_TAG_EightNodeBrickElastic
+                || eleClassTag == ELE_TAG_ThreeNodeAndesShell
+                || eleClassTag == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam
+                || eleClassTag == ELE_TAG_PenaltyElement
+                || eleClassTag == ELE_TAG_PenaltyElementApplyDisplacement
+                || eleClassTag == ELE_TAG_ContactElement_3DOF_3DOF
+                || eleClassTag == ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF
+                || eleClassTag == ELE_TAG_Truss
+                || eleClassTag == ELE_TAG_EightNodeBrickLT
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrickLT
+           )
         {
             //Guanzhou added
             if (tagdObjPtr->getTag() > maxEleNum)
@@ -1505,174 +1521,6 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 maxEleNum = tagdObjPtr->getTag();
             }
         }
-
-        //Babak added on October 17 2012d
-        //--
-        if ( elePtr->getClassTag() == ELE_TAG_TwentySevenNodeBrick)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        //---
-        //Babak added on Nov 17 2012d
-        //--
-        if ( elePtr->getClassTag() == ELE_TAG_TwentySevenNodeBrickElastic)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        //----
-
-        //Babak added on Dec 12 2012
-        //--
-        if ( elePtr->getClassTag() == ELE_TAG_ElasticBeam)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        //----
-
-        //Babak added on Dec 28 2012
-        //--
-        if ( elePtr->getClassTag() == ELE_TAG_FourNodeAndesShell)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        //----
-
-        //Babak added on Jan 18 2013
-        //-----
-        if ( elePtr->getClassTag() == ELE_TAG_EightNodeBrickElastic)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        //----
-
-        //Babak added on Feb 11 2013
-        //--
-        if ( elePtr->getClassTag() == ELE_TAG_ThreeNodeAndesShell)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        //----
-
-        //Babak added on May 9 2013
-        //--
-        if ( elePtr->getClassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        //----
-
-        //Babak added on June 12 2013
-        //--
-        if ( elePtr->getClassTag() == ELE_TAG_PenaltyElement)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        if ( elePtr->getClassTag() == ELE_TAG_PenaltyElementApplyDisplacement)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-
-        //----
-
-
-
-        //Babak added on November 5 2013
-        //--
-        if ( elePtr->getClassTag() == ELE_TAG_ContactElement_3DOF_3DOF)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-        //--
-
-        //Babak added on November 25 2013
-        //--
-
-        if ( elePtr->getClassTag() == ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-
-        //----
-
-
-        //Babak added on January 22 2013
-        //--
-
-        if ( elePtr->getClassTag() == ELE_TAG_Truss)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-
-        //----
-
-
-        if ( elePtr->getClassTag() == ELE_TAG_EightNodeBrickLT)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-
-
-        if ( elePtr->getClassTag() == ELE_TAG_TwentySevenNodeBrickLT)
-        {
-            if (tagdObjPtr->getTag() > maxEleNum)
-            {
-                maxEleNum = tagdObjPtr->getTag();
-            }
-        }
-
-
     }
 
 
@@ -1841,26 +1689,26 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
     {
 
         elePtr = (Element *)tagdObjPtr;
-
-        //if ( elePtr->getClassTag() != ELE_TAG_EightNodeBrick) continue;//Guanzhou added //out by Babak on November 17 , 2012
-        bool condition = elePtr->getClassTag() != ELE_TAG_EightNodeBrick && elePtr->getClassTag() != ELE_TAG_TwentySevenNodeBrick && elePtr->getClassTag() != ELE_TAG_TwentySevenNodeBrickElastic //Added the elastic on 11/18/12
-                         && elePtr->getClassTag() != ELE_TAG_ElasticBeam        //Added by Babak to consider the Beam Element in the Graph 12/12/12
-                         && elePtr->getClassTag() != ELE_TAG_FourNodeAndesShell     //Added by Babak to include the Beam Element in the Graph 12/28/12
-                         && elePtr->getClassTag() != ELE_TAG_EightNodeBrickElastic ;    //Added by Babak to include the Elastic Eight Node Brick in the Graph 1/18/13
-
-        if ( elePtr->getClassTag() != ELE_TAG_EightNodeBrick && elePtr->getClassTag() != ELE_TAG_TwentySevenNodeBrick && elePtr->getClassTag() != ELE_TAG_TwentySevenNodeBrickElastic  //Babak added on October 17 2012d //Added the elastic on 11/18/12
-                && elePtr->getClassTag() != ELE_TAG_ElasticBeam           //Added by Babak to consider the Beam Element in the Graph 12/12/12
-                && elePtr->getClassTag() != ELE_TAG_EightNodeBrickElastic             //Added by Babak to include the Elastic Eight Node Brick in the Graph 1/18/13
-                && elePtr->getClassTag() != ELE_TAG_ThreeNodeAndesShell       //Added by Babak to consider the Three Node Andes Shell in the Graph 2/11/13
-                && elePtr->getClassTag() != ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam      //Added by Babak to consider the ank_one_deficient_elastic_pinned_fixed_beaml in the Graph 5/9/13
-                && elePtr->getClassTag() != ELE_TAG_PenaltyElement            //Babak added on June 12 2013
-                && elePtr->getClassTag() != ELE_TAG_PenaltyElementApplyDisplacement   //Babak added on June 12 2013
-                && elePtr->getClassTag() != ELE_TAG_ContactElement_3DOF_3DOF  //Babak added on November 5 2013
-                && elePtr->getClassTag() != ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF    //Babak added on November 25 2013
-                && elePtr->getClassTag() != ELE_TAG_Truss                 //Babak added on January  22 2013
-                && elePtr->getClassTag() != ELE_TAG_FourNodeAndesShell )
+        int eleClassTag = elePtr->getClassTag();
+        if ( eleClassTag != ELE_TAG_EightNodeBrick
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrick
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickElastic                  // Babak added on October 17 2012d                                                                 // Added the elastic on 11/18/12
+                && eleClassTag != ELE_TAG_ElasticBeam                                  // Added by Babak to consider the Beam Element in the Graph 12/12/12
+                && eleClassTag != ELE_TAG_EightNodeBrickElastic                        // Added by Babak to include the Elastic Eight Node Brick in the Graph 1/18/13
+                && eleClassTag != ELE_TAG_ThreeNodeAndesShell                          // Added by Babak to consider the Three Node Andes Shell in the Graph 2/11/13
+                && eleClassTag != ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam // Added by Babak to consider the ank_one_deficient_elastic_pinned_fixed_beaml in the Graph 5/9/13
+                && eleClassTag != ELE_TAG_PenaltyElement                               // Babak added on June 12 2013
+                && eleClassTag != ELE_TAG_PenaltyElementApplyDisplacement              // Babak added on June 12 2013
+                && eleClassTag != ELE_TAG_ContactElement_3DOF_3DOF                     // Babak added on November 5 2013
+                && eleClassTag != ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF           // Babak added on November 25 2013
+                && eleClassTag != ELE_TAG_Truss                                        // Babak added on January  22 2013
+                && eleClassTag != ELE_TAG_FourNodeAndesShell )
         {
             continue;    //Added by Babak to include the Beam Element in the Graph 12/28/12
+        }
+        else
+        {
+            cerr << "PartitionedDomain::buildEleGraph() -- Unknown element class tag = " << eleClassTag << "\n";
         }
 
         int eleTag = elePtr->getTag();
