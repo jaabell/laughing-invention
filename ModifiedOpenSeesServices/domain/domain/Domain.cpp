@@ -3386,12 +3386,16 @@ Domain::buildEleGraph( Graph *theEleGraph )
         theElementTagVertices[j] = -1;
     }
 
-    cerr << "Domain::buildEleGraph numVertex maxEleNum " << numVertex << " " << maxEleNum << endln;
+    cout << "Building element graph............\n";
+    cout << "     numVertex = " << numVertex << "\n";
+    cout << "     maxEleNum = " << maxEleNum << "\n\n";
+
+
     // now create the vertices with a reference equal to the element number.
     // and a tag which ranges from 0 through numVertex-1
 
     ElementIter &eleIter2 = this->getElements();
-    int count = START_VERTEX_NUM;
+    int count = START_VERTEX_NUM;  // 0. Defined in Vertex.h
 
     while ( ( elePtr = eleIter2() ) != 0 )
     {

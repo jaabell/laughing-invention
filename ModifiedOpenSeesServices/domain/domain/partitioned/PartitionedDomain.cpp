@@ -262,7 +262,7 @@ PartitionedDomain::addElement(Element *elePtr)
         //Added by babak 2/25/13
         //----
         //expanding the allocation of the memory for the Element_Node_Number_List
-        int *temp = new int[numberofDomainElements + 1];
+        int *temp = new int[max(numberofDomainElements, eleTag) + 1];
         std::copy(Element_Node_Number_List, Element_Node_Number_List + numberofDomainElements, temp);
         delete [] Element_Node_Number_List;
         temp[eleTag - 1] = elePtr->getNumExternalNodes();
