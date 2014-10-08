@@ -152,7 +152,7 @@ class Element : public DomainComponent
 
         //These are for building graph (J.Abell, 2014)
         int getNumberOfBoundaryNodes() const;
-        int setNumberOfBoundaryNodes(int n) ;
+        void setNumberOfBoundaryNodes(int n) ;
 
 
 

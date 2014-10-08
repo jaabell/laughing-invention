@@ -58,8 +58,8 @@ Matrix Element::zero_gauss_coordinates(0, 0);
 
 Element::Element(int tag, int cTag)
     : DomainComponent(tag, cTag), a0(0.0),
-      a1(0.0), a2(0.0), a3(0.0), classTag(cTag),
-      Kc(0), SizedMatrix(0), index_sized_matrix_vector(0), SizedVector1(0), SizedVector2(0)
+      a1(0.0), a2(0.0), a3(0.0), Kc(0), classTag(cTag),
+      SizedMatrix(0), SizedVector1(0), SizedVector2(0),  index_sized_matrix_vector(0)
       //   , nodeIndex(-1), index(0)
 {
     // Nima added July 2011

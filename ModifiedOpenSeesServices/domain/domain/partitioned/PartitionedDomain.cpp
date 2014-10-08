@@ -1707,17 +1707,19 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
 
         if ( elePtr->getClassTag() != ELE_TAG_EightNodeBrick
                 && elePtr->getClassTag() != ELE_TAG_TwentySevenNodeBrick
-                && elePtr->getClassTag() != ELE_TAG_TwentySevenNodeBrickElastic   //Babak added on November 16 2012d
-                && elePtr->getClassTag() != ELE_TAG_ElasticBeam                   //Added by Babak to consider the Elastic Beam Element in the Graph 12/12/12
-                && elePtr->getClassTag() != ELE_TAG_EightNodeBrickElastic     //Added by Babak to consider the Elastic eigh node Brick in the Graph 1/18/13
-                && elePtr->getClassTag() != ELE_TAG_ThreeNodeAndesShell       //Added by Babak to consider the Three Node Andes Shell in the Graph 2/11/13
-                && elePtr->getClassTag() != ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam      //Added by Babak to consider the ank_one_deficient_elastic_pinned_fixed_beaml in the Graph 5/9/13
-                && elePtr->getClassTag() != ELE_TAG_PenaltyElement            //Babak added on June 12 2013
-                && elePtr->getClassTag() != ELE_TAG_PenaltyElementApplyDisplacement   //Babak added on June 12 2013
-                && elePtr->getClassTag() != ELE_TAG_ContactElement_3DOF_3DOF  //Babak added on November 5 2013
-                && elePtr->getClassTag() != ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF    //Babak added on November 25 2013
-                && elePtr->getClassTag() != ELE_TAG_Truss                 //Babak added on January  22 2013
-                && elePtr->getClassTag() != ELE_TAG_FourNodeAndesShell)
+                && elePtr->getClassTag() != ELE_TAG_TwentySevenNodeBrickElastic                  // Babak added on November 16 2012d
+                && elePtr->getClassTag() != ELE_TAG_ElasticBeam                                  // Added by Babak to consider the Elastic Beam Element in the Graph 12/12/12
+                && elePtr->getClassTag() != ELE_TAG_EightNodeBrickElastic                        // Added by Babak to consider the Elastic eigh node Brick in the Graph 1/18/13
+                && elePtr->getClassTag() != ELE_TAG_ThreeNodeAndesShell                          // Added by Babak to consider the Three Node Andes Shell in the Graph 2/11/13
+                && elePtr->getClassTag() != ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam // Added by Babak to consider the ank_one_deficient_elastic_pinned_fixed_beaml in the Graph 5/9/13
+                && elePtr->getClassTag() != ELE_TAG_PenaltyElement                               // Babak added on June 12 2013
+                && elePtr->getClassTag() != ELE_TAG_PenaltyElementApplyDisplacement              // Babak added on June 12 2013
+                && elePtr->getClassTag() != ELE_TAG_ContactElement_3DOF_3DOF                     // Babak added on November 5 2013
+                && elePtr->getClassTag() != ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF           // Babak added on November 25 2013
+                && elePtr->getClassTag() != ELE_TAG_Truss                                        // Babak added on January  22 2013
+                && elePtr->getClassTag() != ELE_TAG_FourNodeAndesShell                           // Babak added sometime
+                && elePtr->getClassTag() != ELE_TAG_EightNodeBrickLT                             // Jose Added Oct 2014
+           )
         {
             continue;    //Added by Babak Kamrani to include the 4NodeAndesShell in the element graph 12/28/12
         }

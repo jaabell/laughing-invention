@@ -1437,6 +1437,7 @@ int EightNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 
 int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 {
+    cout << "EightNodeBrickLT::sendSelf() tag = " << this->getTag() << "\n";
     if ( !initialized )
     {
         populate();
@@ -1528,6 +1529,7 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 
 int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
+    cout << "EightNodeBrickLT::recvSelf() tag = " << this->getTag() << "\n";
 
     if ( !initialized )
     {
