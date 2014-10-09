@@ -419,18 +419,17 @@ FEM_ObjectBroker::getNewElement(int classTag)
         case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
             return new PenaltyElement();
 
-        //         case ELE_TAG_PenaltyElementApplyDisplacement:           //Babak added on 6/25/13
-        //             return new PenaltyElementApplyDisplacement();
-
         case ELE_TAG_ContactElement_3DOF_3DOF:          //Babak added on 11/05/13
             return new ContactElement_3DOF_3DOF();
 
         case ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF:            //Babak added on 11/25/13
             return new ContactElement_Nonlinear_3DOF_3DOF();
 
+        case ELE_TAG_EightNodeBrickLT:            //Jose added on Oct 9, 2014
+            return new EightNodeBrickLT();
 
-            break;
-
+        case ELE_TAG_TwentySevenNodeBrickLT:            //Jose added on Oct 9, 2014
+            return new TwentySevenNodeBrickLT();
 
 
             break;

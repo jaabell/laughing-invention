@@ -1523,7 +1523,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
         }
         else
         {
-            cerr << "PartitionedDomain::buildEleGraph() -- (2) Unknown element classTag = " << eleClassTag << " \n";
+            cerr << "PartitionedDomain::buildEleGraph() -- (1) Unknown element classTag = " << eleClassTag << " \n";
         }
     }
 
@@ -1574,11 +1574,8 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                             // Jose Added Oct 2014
            )
         {
+            cerr << "PartitionedDomain::buildEleGraph() -- (2) Unknown element classTag = " << eleClassTag << " \n";
             continue;    //Added by Babak Kamrani to include the 4NodeAndesShell in the element graph 12/28/12
-        }
-        else
-        {
-            cerr << "PartitionedDomain::buildEleGraph() -- (3) Unknown element classTag = " << eleClassTag << " \n";
         }
 
         int ElementTag = tagdObjPtr->getTag();
@@ -1716,12 +1713,10 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT
            )
         {
+            cerr << "PartitionedDomain::buildEleGraph() -- (3) Unknown element class tag = " << eleClassTag << "\n";
             continue;    //Added by Babak to include the Beam Element in the Graph 12/28/12
         }
-        else
-        {
-            cerr << "PartitionedDomain::buildEleGraph() -- (1) Unknown element class tag = " << eleClassTag << "\n";
-        }
+
 
         int eleTag = elePtr->getTag();
 
