@@ -16,7 +16,6 @@ INLINING_OPTS = -finline \
 				-fkeep-inline-functions \
 				-fdefault-inline 
 
-				# -Winline \
 
 # INLINING_OPTS = -finline \
 # 				-Winline \
@@ -47,9 +46,12 @@ $(error PROGRAMMING_MODE is not set)
 endif
 
 # Show the values of the variables
-$(info Compiler = $(Compiler))
-$(info DEBUG_MODE = $(DEBUG_MODE))
-$(info PROGRAMMING_MODE = $(PROGRAMMING_MODE))
+# $(info Compiler = $(Compiler))
+# $(info DEBUG_MODE = $(DEBUG_MODE))
+$(info )
+$(info )
+$(info =========================================================================================)
+$(info =========================================================================================)
 
 
 ifeq ($(PROGRAMMING_MODE), PARALLEL)
@@ -134,7 +136,7 @@ else
 										-D_UNIX -D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84 \
 										$(MORE_CFLAGS)
 	FFLAGS          = -march=native -funroll-loops -O3 $(MORE_FFLAGS)
-	LINKFLAGS       = -g -pg -v $(MORE_LINKFLAGS)
+	LINKFLAGS       = -g -pg $(MORE_LINKFLAGS)
 endif
 
 
@@ -168,7 +170,7 @@ SHELL           = /bin/sh
 
 
 %.o : %.cpp 
-	@$(ECHO)  $@
+	@$(ECHO) Compiling $@
 	@$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $<
 
 

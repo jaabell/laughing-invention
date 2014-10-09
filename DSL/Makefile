@@ -6,7 +6,8 @@ OBJS = feiparser.lex.o feiparser.tab.o argcheck.o feiexceptions.o
 # command_suggestion.o
 
 %.o : %.cpp
-	$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $< -o $@
+	@$(ECHO) Compiling $@
+	@$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $< -o $@
 
 #  all:  makedocumentation document feiparser 
 all: essi 
@@ -22,6 +23,7 @@ document:
 # 	./generate_command_patterns
 
 essi:  $(OBJS)
+	@$(ECHO) 
 	@$(ECHO) Linking ESSI.
 	@$(LINKER) $(LINKFLAGS) $(OBJS) $(LIBS) -o ../bin/$@
 	@$(ECHO) 
