@@ -99,7 +99,6 @@ class EightNodeBrickLT: public Element
         int getObjectSize();
 
         //Used in parallel and in saving model
-        int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         int sendSelf ( int commitTag, Channel &theChannel );
         int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
                        &theBroker );
@@ -160,14 +159,11 @@ class EightNodeBrickLT: public Element
 
         Vector *getStress( void );
 
-    private:
-        void populate();
 
         // ===================================================================================================================
         // Data members
         // ===================================================================================================================
     private:
-        bool initialized;
         bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
 
         int numDOF;

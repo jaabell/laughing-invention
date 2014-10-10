@@ -408,42 +408,10 @@ int NewPisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
 
 int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 {
-    Matrix aux(3, 3);
 
-    //1 . Sending strain
-    aux.setData(TrialStrain.data, 3, 3);
-    theChannel.sendMatrix(0, 0, aux);
-
-    //2. Sending stress
-    aux.setData(TrialStress.data, 3, 3);
-    theChannel.sendMatrix(0, 0, aux);
-
-    //3. Sending plastic_strain
-    aux.setData(TrialPlastic_Strain.data, 3, 3);
-    theChannel.sendMatrix(0, 0, aux);
-
-    //4. Sending alpha
-    aux.setData(alpha.data, 3, 3);
-    theChannel.sendMatrix(0, 0, aux);
-
-    //5. Sending alpha0
-    aux.setData(alpha0.data, 3, 3);
-    theChannel.sendMatrix(0, 0, aux);
-
-    //6. Sending stress_n_minus_2
-    aux.setData(Stress_n_minus_2.data, 3, 3);
-    theChannel.sendMatrix(0, 0, aux);
-
-    //7. Sending nij_dev
-    aux.setData(nij_dev.data, 3, 3);
-    theChannel.sendMatrix(0, 0, aux);
-
-
-    //8. Sending model_parameters
-    Vector model_parameters(12);
-    //model_parameters(0) = beta0; // not needed anymore
-    //model_parameters(2) = beta_min;  // this is not parameter
-    model_parameters(0) = beta;  // this is not parameter
+    // Sending model_parameters (double data)
+    Vector model_parameters(14);
+    model_parameters(0) = beta;
     model_parameters(1) = E0;
     model_parameters(2) = v;
     model_parameters(3) = M;
@@ -455,8 +423,66 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
     model_parameters(9) = initialconfiningstress;
     model_parameters(10) = n;
     model_parameters(11) = a;
+    model_parameters(12) = eplcum_cr;
+    model_parameters(13) = eplcum;
 
     theChannel.sendVector(0, 0, model_parameters);
+
+
+    //Tensor data
+
+    Matrix aux(3, 3);
+    // 1. Sending strainplcum
+    aux.setData(strainplcum.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 1. Sending    strainplcum
+    aux.setData(strainplcum.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 2. Sending TrialStrain
+    aux.setData(TrialStrain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 3. Sending TrialStress
+    aux.setData(TrialStress.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 4. Sending TrialPlastic_Strain
+    aux.setData(TrialPlastic_Strain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 5. Sending ElasticStateStrain
+    aux.setData(ElasticStateStrain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 6. Sending ElasticStateStress
+    aux.setData(ElasticStateStress.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 7. Sending CommitStress
+    aux.setData(CommitStress.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 8. Sending CommitStrain
+    aux.setData(CommitStrain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 9. Sending CommitPlastic_Strain
+    aux.setData(CommitPlastic_Strain.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 10. Sending alpha
+    aux.setData(alpha.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 11. Sending alpha0
+    aux.setData(alpha0.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 12. Sending alpha0mem
+    aux.setData(alpha0mem.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 13. Sending strainpl0
+    aux.setData(strainpl0.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 14. Sending Stress_n_minus_2
+    aux.setData(Stress_n_minus_2.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+    // 15. Sending nij_dev
+    aux.setData(nij_dev.data, 3, 3);
+    theChannel.sendMatrix(0, 0, aux);
+
+
+
 
     return 0;
 }
@@ -464,6 +490,278 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 
 int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
+    Vector model_parameters(14);
+
+    // Receive model_parameters (double data)
+
+
+    if ( theChannel.recvVector( 0, commitTag, model_parameters ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive model_parameters\n";
+        return -1;
+    }
+
+    beta                   = model_parameters(0);
+    E0                     = model_parameters(1);
+    v                      = model_parameters(2);
+    M                      = model_parameters(3);
+    kd                     = model_parameters(4);
+    xi                     = model_parameters(5);
+    h                      = model_parameters(6);
+    m                      = model_parameters(7);
+    rho                    = model_parameters(8);
+    initialconfiningstress = model_parameters(9);
+    n                      = model_parameters(10);
+    a                      = model_parameters(11);
+    eplcum_cr              = model_parameters(12);
+    eplcum                 = model_parameters(13);
+
+    //Receive tensor data
+    Matrix aux(3, 3);
+
+
+    // 1. Receiving strainplcum
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive strainplcum\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            strainplcum(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 2. Receiving strainplcum
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive strainplcum\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            strainplcum(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 3. Receiving TrialStrain
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive TrialStrain\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            TrialStrain(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 4. Receiving TrialStress
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive TrialStress\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            TrialStress(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 5. Receiving TrialPlastic_Strain
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive TrialPlastic_Strain\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            TrialPlastic_Strain(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 6. Receiving ElasticStateStrain
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive ElasticStateStrain\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            ElasticStateStrain(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 7. Receiving ElasticStateStress
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive ElasticStateStress\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            ElasticStateStress(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 8. Receiving CommitStress
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive CommitStress\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            CommitStress(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 9. Receiving CommitStrain
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive CommitStrain\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            CommitStrain(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 10. Receiving CommitPlastic_Strain
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive CommitPlastic_Strain\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            CommitPlastic_Strain(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 11. Receiving alpha
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive alpha\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            alpha(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 12. Receiving alpha0
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive alpha0\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            alpha0(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 13. Receiving alpha0mem
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive alpha0mem\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            alpha0mem(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 14. Receiving strainpl0
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive strainpl0\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            strainpl0(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 15. Receiving Stress_n_minus_2
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive Stress_n_minus_2\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            Stress_n_minus_2(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+    // 16. Receiving nij_dev
+    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive nij_dev\n";
+        return -1;
+    }
+    for (int ii = 0; ii < 3; ii++)
+    {
+        for (int jj = 0; jj < 3; jj++)
+        {
+            nij_dev(ii, jj) = aux(ii, jj);
+        }
+    }
+
+
+
+
     return 0;
 }
 

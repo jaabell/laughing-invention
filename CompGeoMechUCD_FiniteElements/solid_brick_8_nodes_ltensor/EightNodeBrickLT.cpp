@@ -66,45 +66,21 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
     rho = Globalmmodel->getRho();
     determinant_of_Jacobian = 0.0;
     mmodel = Globalmmodel;
-    initialized = false;
-
-# ifndef _PARALLEL_PROCESSING
-    populate();
-# endif
-
-    connectedExternalNodes( 0 ) = node_numb_1;
-    connectedExternalNodes( 1 ) = node_numb_2;
-    connectedExternalNodes( 2 ) = node_numb_3;
-    connectedExternalNodes( 3 ) = node_numb_4;
-
-    connectedExternalNodes( 4 ) = node_numb_5;
-    connectedExternalNodes( 5 ) = node_numb_6;
-    connectedExternalNodes( 6 ) = node_numb_7;
-    connectedExternalNodes( 7 ) = node_numb_8;
-
-    nodes_in_brick = 8;
 
 
-    for ( int i = 0; i < 8; i++ )
-    {
-        theNodes[i] = 0;
-    }
 
-    this->setNumberOfBoundaryNodes(4);
-}
-
-void EightNodeBrickLT::populate()
-{
     // Generate 8 NDMaterialLT for use at each Gauss point.
     for (int k = 0; k < 8; k++)
     {
         material_array[k] = mmodel->getCopy();
     }
 
-    //This gets done for all the elements every time send    // LTensor does not provide for initializer lists, so cant do static const
-    // which would be slightly more efficient.
-    short where = 0;
+    //GP coordinates and weights. ====================================================
+    // This initializes class wide members gp_coords and gp_weights .
+    // Since LTensor does not provide initializer lists, this is the only way to
+    // do this.
 
+    short where = 0;
     for ( short ii = 0 ; ii < 2 ; ii++ )
     {
         for ( short jj = 0 ; jj < 2 ; jj++ )
@@ -127,11 +103,33 @@ void EightNodeBrickLT::populate()
     gp_weight(5) = 1.0;
     gp_weight(6) = 1.0;
     gp_weight(7) = 1.0;
+    // =============================================================================
 
-    initialized = true;
+
     is_mass_computed = false;
 
+    connectedExternalNodes( 0 ) = node_numb_1;
+    connectedExternalNodes( 1 ) = node_numb_2;
+    connectedExternalNodes( 2 ) = node_numb_3;
+    connectedExternalNodes( 3 ) = node_numb_4;
+
+    connectedExternalNodes( 4 ) = node_numb_5;
+    connectedExternalNodes( 5 ) = node_numb_6;
+    connectedExternalNodes( 6 ) = node_numb_7;
+    connectedExternalNodes( 7 ) = node_numb_8;
+
+    nodes_in_brick = 8;
+
+
+    for ( int i = 0; i < 8; i++ )
+    {
+        theNodes[i] = 0;
+    }
+
+    this->setNumberOfBoundaryNodes(4);
+
 }
+
 
 
 
@@ -140,12 +138,38 @@ void EightNodeBrickLT::populate()
 EightNodeBrickLT::EightNodeBrickLT(): Element( 0, ELE_TAG_EightNodeBrickLT ),
     rho( 0.0 ), connectedExternalNodes( 8 ) , Ki( 0 ), mmodel( 0 ), Q( 24 ), bf(3),  gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
 {
-    initialized = false;
     is_mass_computed = false;
 
-# ifndef _PARALLEL_PROCESSING
-    populate();
-# endif
+    //GP coordinates and weights. ====================================================
+    // This initializes class wide members gp_coords and gp_weights .
+    // Since LTensor does not provide initializer lists, this is the only way to
+    // do this.
+    short where = 0;
+    for ( short ii = 0 ; ii < 2 ; ii++ )
+    {
+        for ( short jj = 0 ; jj < 2 ; jj++ )
+        {
+            for ( short kk = 0 ; kk < 2 ; kk++ )
+            {
+                gp_coords(where, 0) = (ii == 0) ? -0.577350269189626 : 0.577350269189626;
+                gp_coords(where, 1) = (jj == 0) ? -0.577350269189626 : 0.577350269189626;
+                gp_coords(where, 2) = (kk == 0) ? -0.577350269189626 : 0.577350269189626;
+                where ++;
+            }
+        }
+    }
+
+    gp_weight(0) = 1.0;
+    gp_weight(1) = 1.0;
+    gp_weight(2) = 1.0;
+    gp_weight(3) = 1.0;
+    gp_weight(4) = 1.0;
+    gp_weight(5) = 1.0;
+    gp_weight(6) = 1.0;
+    gp_weight(7) = 1.0;
+    // =============================================================================
+
+    is_mass_computed = false;
 
     nodes_in_brick = 8;
 
@@ -1410,39 +1434,11 @@ const Vector &EightNodeBrickLT::getResistingForceIncInertia ()
 }
 
 
-int EightNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
-{
-    theHDF5_Channel.beginElementDescription("EightNodeBrickLT", this->getTag());
-    theHDF5_Channel.addField("tag"             , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-    theHDF5_Channel.addField("connected_nodes" , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-
-    // 8node brick asks its material objects to describe themselves
-    for ( int i = 0; i < 8; i++ )
-    {
-        if ( material_array[i]->describeSelf( commitTag, theHDF5_Channel ) < 0 )
-        {
-            cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send material models\n";
-            return -1;
-        }
-    }
-    theHDF5_Channel.addField("material_properties", ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-    theHDF5_Channel.addField("gauss_points"       , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-    theHDF5_Channel.addField("volume"             , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-    theHDF5_Channel.endElementDescription();
-
-    return 0;
-}
-
 
 
 int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 {
-    cout << "EightNodeBrickLT::sendSelf() tag = " << this->getTag() << "\n";
-    if ( !initialized )
-    {
-        populate();
-    }
-
+    // cout << "EightNodeBrickLT::sendSelf() tag = " << this->getTag() << "\n";
 
     ID idData( 5 );
 
@@ -1523,18 +1519,14 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 
 
 
+
     return 0;
 
 }
 
 int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
-    cout << "EightNodeBrickLT::recvSelf() tag = " << this->getTag() << "\n";
-
-    if ( !initialized )
-    {
-        populate();
-    }
+    // cout << "EightNodeBrickLT::recvSelf() tag = " << this->getTag() << "\n";
 
     ID idData( 5 );
 
@@ -1548,6 +1540,13 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
     numDOF = idData(1);
     nodes_in_brick = idData(2);
     order = idData(3);
+    int matClassTag = idData( 4 );
+
+
+    // cout << "EightNodeBrickLT::recvSelf() numDOF           = " << numDOF << "\n";
+    // cout << "EightNodeBrickLT::recvSelf() nodes_in_brick   = " << nodes_in_brick << "\n";
+    // cout << "EightNodeBrickLT::recvSelf() order            = " << order << "\n";
+    // cout << "EightNodeBrickLT::recvSelf() materialclasstag = " << idData(4) << "\n";
 
 
     Vector floatData(4);
@@ -1561,6 +1560,11 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
     determinant_of_Jacobian = floatData(2) ;
     rho                     = floatData(3) ;
 
+    // cout << "EightNodeBrickLT::recvSelf() Volume                  = " << Volume << "\n";
+    // cout << "EightNodeBrickLT::recvSelf() e_p                     = " << e_p << "\n";
+    // cout << "EightNodeBrickLT::recvSelf() determinant_of_Jacobian = " << determinant_of_Jacobian << "\n";
+    // cout << "EightNodeBrickLT::recvSelf() rho                     = " << rho << "\n";
+
 
     // Recieve the nodes
 
@@ -1570,10 +1574,10 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
         return -1;
     }
 
+    cout << "EightNodeBrickLT::recvSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
 
     if ( material_array[0] == 0 )
     {
-        int matClassTag = idData( 4 );
         for ( int i = 0; i < 8; i++ )
         {
 
@@ -1581,8 +1585,12 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
             NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
             if ( ndmat == 0 )
             {
-                cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << endln;
+                cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
                 return -1;
+            }
+            else
+            {
+                cerr << "EightNodeBrickLT::recvSelf() - Got a valid pointer to material with class tag " << matClassTag << "\n";
             }
 
             // Now receive materials into the newly allocated space
@@ -1624,6 +1632,8 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
         return -1;
     }
 
+
+
     return 0;
 
 }
@@ -1631,19 +1641,18 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
 
 int EightNodeBrickLT::getObjectSize()
 {
-    cerr << "EightNodeBrickLT::getObjectSize() -- Not yet implemented" << endl;
+    //cerr << "EightNodeBrickLT::getObjectSize() -- Not yet implemented" << endl;
 
-    return 0;
-    /*
-    int size = 0;
-    size += 11 * sizeof( int );
-    size += 4 * sizeof( double );
-    for( int i = 0; i < 8; i++ )
+    int size = sizeof(*this);
+    for ( int i = 0; i < 8; i++ )
     {
-    size += material_array[i]->getObjectSize();
+        size += material_array[i]->getObjectSize();
     }
+
+    cout << "EightNodeBrickLT::getObjectSize() - tag = " << this->getTag()
+         << "  size = " << size << "\n";
+
     return size;
-    */
 }
 
 //=============================================================================

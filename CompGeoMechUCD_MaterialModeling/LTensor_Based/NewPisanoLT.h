@@ -175,6 +175,7 @@ class NewPisanoLT : public NDMaterialLT
 
         //Internal variables
         double eplcum;
+
         DTensor2 strainplcum;         //Cumulated plastic strain upon stress reversal (for overshooting)
 
         DTensor2 TrialStrain;

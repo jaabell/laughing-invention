@@ -93,7 +93,7 @@ class NDMaterialLT : public Material
         // virtual int getResponse (int responseID, Information &matInformation);
         virtual int getObjectSize()
         {
-            return 1;
+            return sizeof(*this);
         };
         virtual int CheckMesh(ofstream &);
         virtual void setVolume(double vol);
