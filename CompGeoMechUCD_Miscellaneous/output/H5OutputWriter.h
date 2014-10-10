@@ -37,7 +37,15 @@
 #define H5OutputWriter_H
 
 
-#define HDF5_CHECK_ERROR  {if(status < 0){cout << "status = " << status << endl; }}//return(-1);}}
+// #define HDF5_CHECK_ERROR  {if(status < 0){cout << "status = " << status << endl; }}//return(-1);}}
+inline void hdf5_check_error(herr_t status)
+{
+    if (status < 0)
+    {
+        cout << "status = " << status << endl;
+    }
+}
+
 #define H5OUTPUTWRITER_RANDOMSTRNG_LEN 16
 #define H5OUTPUTWRITER_CHECK_DEFINITION_MODE if (inElementDefinitionMode | inNodeDefinitionMode) \
     { \

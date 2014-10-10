@@ -481,6 +481,32 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
     aux.setData(nij_dev.data, 3, 3);
     theChannel.sendMatrix(0, 0, aux);
 
+    //Send the stiffness tensors
+
+    // here we unwrap the stiffness tensors into a vector of 81 components to be sent to remotes
+    // remotes (recvSelf) will have to re-wrap
+    Vector aux_stifftensor(81);
+    int comp = 0;
+    for (int ii = 0; ii < 3; ii++)
+        for (int jj = 0; jj < 3; jj++)
+            for (int kk = 0; kk < 3; kk++)
+                for (int ll = 0; ll < 3; ll++)
+                {
+                    aux_stifftensor(comp++) = Stiffness(ii, jj, kk, ll);
+                }
+    theChannel.sendVector(0, 0, aux_stifftensor);
+
+    // Ee
+    comp = 0;
+    for (int ii = 0; ii < 3; ii++)
+        for (int jj = 0; jj < 3; jj++)
+            for (int kk = 0; kk < 3; kk++)
+                for (int ll = 0; ll < 3; ll++)
+                {
+                    aux_stifftensor(comp++) = Ee(ii, jj, kk, ll);
+                }
+    theChannel.sendVector(0, 0, aux_stifftensor);
+
 
 
 
@@ -759,6 +785,36 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
         }
     }
 
+
+    //Receive the stiffness tensors (through a vector and wrap it)
+    Vector aux_stifftensor(81);
+    if ( theChannel.recvVector( 0, commitTag, aux_stifftensor ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive Stiffness\n";
+        return -1;
+    }
+    int comp = 0;
+    for (int ii = 0; ii < 3; ii++)
+        for (int jj = 0; jj < 3; jj++)
+            for (int kk = 0; kk < 3; kk++)
+                for (int ll = 0; ll < 3; ll++)
+                {
+                    Stiffness(ii, jj, kk, ll) = aux_stifftensor(comp++);
+                }
+
+    if ( theChannel.recvVector( 0, commitTag, aux_stifftensor ) < 0 )
+    {
+        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive Stiffness\n";
+        return -1;
+    }
+    comp = 0;
+    for (int ii = 0; ii < 3; ii++)
+        for (int jj = 0; jj < 3; jj++)
+            for (int kk = 0; kk < 3; kk++)
+                for (int ll = 0; ll < 3; ll++)
+                {
+                    Ee(ii, jj, kk, ll) = aux_stifftensor(comp++);
+                }
 
 
 

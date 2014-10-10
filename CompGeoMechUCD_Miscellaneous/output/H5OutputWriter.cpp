@@ -190,6 +190,7 @@ void H5OutputWriter::initialize(std::string filename_in,
     length_nodes_accelerations_output    = 0;
     length_nodes_reaction_forcess_output = 0;
     length_element_output                = 0;
+
     pos_nodes_outputs                    = 0;
     pos_nodes_coordinates                = 0;
     pos_elements_outputs                 = 0;
@@ -379,6 +380,12 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 void H5OutputWriter::syncWriters()
 {
 #ifdef _PARALLEL_PROCESSING
+    // This function is VERY important.
+    // Output writers are instantiated in every processor (within domain, or childs of domain)
+    // and must contain the SAME information about the sizes of the involved arrays, because
+    // creation of arrays in HDF5 is a collective call, i.e. all processors participate
+    // in it using the same information.
+    //
     // We need to send the mesh information to all processes before creating arrays
 
     int root = 0;
@@ -633,11 +640,42 @@ void H5OutputWriter::syncWriters()
     MPI_Bcast(&length_element_output                , 1 , MPI_INT , root , MPI_COMM_WORLD);
     MPI_Bcast(&number_of_nodes                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
     MPI_Bcast(&number_of_elements                   , 1 , MPI_INT , root , MPI_COMM_WORLD);
+    MPI_Bcast(&max_node_tag                         , 1 , MPI_INT , root , MPI_COMM_WORLD);
+    MPI_Bcast(&max_element_tag                        , 1 , MPI_INT , root , MPI_COMM_WORLD);
 
     //The slave processes must be initialized after all this stuff is transmitted.
     if (processID != 0)
     {
-        this->initialize(file_name, model_name, stage_name, number_of_time_steps);
+        // this->initialize(file_name, model_name, stage_name, number_of_time_steps);
+        // if (previous_stage_name.compare("!!none") == 0)
+        // {
+        //     cout << "changing previous_stage_name from " << previous_stage_name << " to " << stage_name
+        //          << endl;
+        //     previous_stage_name = stage_name;
+        // }
+        // file_name = "";
+        // model_name = "";
+        // stage_name = "";
+        // file_name += filename_in;
+        // model_name += model_name_in;
+        // stage_name += stage_name_in;
+
+        current_time                         = 0.0;
+        current_time_step                    = 0;
+
+        pos_nodes_outputs                    = 0;
+        pos_nodes_coordinates                = 0;
+        pos_elements_outputs                 = 0;
+        pos_elements_gausscoords             = 0;
+        pos_elements_connectivity            = 0;
+
+        create_nodeMeshData_arrays           = true;
+        create_nodeDisplacements_arrays      = true;
+        create_nodeVelocities_arrays         = true;
+        create_nodeAccelerations_arrays      = true;
+        create_nodeReactionForces_arrays     = true;
+        create_elementMeshData_arrays        = true;
+        create_elementOutput_arrays          = true;
     }
 
 #endif
@@ -691,11 +729,11 @@ void H5OutputWriter::writeMesh()
     hid_t file_creation_plist = H5Pcreate(H5P_FILE_CREATE);
     hid_t file_access_plist = H5Pcreate(H5P_FILE_ACCESS);
     // status = H5Pset_meta_block_size(file_access_plist, H5OUTPUTWRITER_META_BLOCK_SIZE);
-    // HDF5_CHECK_ERROR;
+    // hdf5_check_error(status);
     // status =  H5Pset_cache(file_access_plist, 0, H5OUTPUTWRITER_CHUNK_NSLOTS, H5OUTPUTWRITER_CHUNK_NBYTES, 0 );
-    // HDF5_CHECK_ERROR;
+    // hdf5_check_error(status);
     // status = H5Pset_sieve_buf_size( file_access_plist, H5OUTPUTWRITER_SIEVE_BUFFER_SIZE );
-    // HDF5_CHECK_ERROR;
+    // hdf5_check_error(status);
     id_file = H5Fcreate(file_name.c_str(), flags , file_creation_plist, file_access_plist);
 #endif
     if (id_file > 0)
@@ -708,7 +746,7 @@ void H5OutputWriter::writeMesh()
         //================================================================================
         // group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);
         // status = H5Pset_link_creation_order(group_creation_plist, H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED);
-        // HDF5_CHECK_ERROR;
+        // hdf5_check_error(status);
 
 
 
@@ -1168,7 +1206,7 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
                  block                  // little block selected per selection
              );
 
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
     H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
@@ -1256,7 +1294,7 @@ int H5OutputWriter::writeVelocities(     int nodeTag, const Vector &velocities)
                  block                  // little block selected per selection
              );
 
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
     H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
@@ -1344,7 +1382,7 @@ int H5OutputWriter::writeAccelerations(  int nodeTag, const Vector &acceleration
                  block                  // little block selected per selection
              );
 
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
     H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
@@ -1431,7 +1469,7 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
                  block                  // little block selected per selection
              );
 
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
     H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
@@ -1522,7 +1560,7 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
                      block                  // little block selected per selection
                  );
 
-        HDF5_CHECK_ERROR;
+        hdf5_check_error(status);
 
         H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
         H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
@@ -1635,7 +1673,7 @@ int H5OutputWriter::write_string(hid_t here, std::string name, std::string conte
 
     id_type_string = H5Tcopy(H5T_C_S1);
     status = H5Tset_size(id_type_string, contents.size());
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
     dims_string[0] = 1;//contents.size();
     id_dataspace_string = H5Screate_simple(1, dims_string, NULL);
     id_data_string = H5Dcreate2(here,
@@ -1680,7 +1718,7 @@ int H5OutputWriter::write_string(hid_t here, std::string name, std::string conte
     H5Sclose(id_dataspace_string);
     H5Dclose(id_data_string);
 
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     return 0;
 }
@@ -1784,7 +1822,7 @@ hid_t H5OutputWriter::createVariableLengthStringArray(hid_t here,
     //Use unlimited string type
     hid_t type = H5Tcopy(H5T_C_S1);
     status = H5Tset_size(type, H5T_VARIABLE);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Setup the creation property list
     dataset_creation_plist = H5Pcreate(H5P_DATASET_CREATE);
@@ -1800,9 +1838,9 @@ hid_t H5OutputWriter::createVariableLengthStringArray(hid_t here,
     // cout << "nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK = " << nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK << "\n\n\n";
 
     status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
     status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
 
     // Create the dataset
@@ -1862,13 +1900,13 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
     // cout << "nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK = " << nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK << "\n\n\n";
 
     status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
     status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
     status = H5Pset_chunk_cache(dataset_access_plist, H5OUTPUTWRITER_CHUNK_NSLOTS, nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK, H5OUTPUTWRITER_PREEMPTION_POLICY );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
     status = H5Pset_fill_value(dataset_creation_plist, type, fill_value_ptr);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
     if (type == H5T_NATIVE_INT)
     {
         status = H5Pset_fill_time(dataset_creation_plist, H5D_FILL_TIME_ALLOC);// H5D_FILL_TIME_NEVER);
@@ -1877,9 +1915,9 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
     {
         status = H5Pset_fill_time(dataset_creation_plist, H5D_FILL_TIME_NEVER);
     }
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
     // status = H5Pset_deflate (dataset_creation_plist, 6);
-    // HDF5_CHECK_ERROR;
+    // hdf5_check_error(status);
 
 
 
@@ -1919,7 +1957,7 @@ hid_t H5OutputWriter::createConstantLengthDoubleArray(hid_t here,
 
 
     status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_DOUBLE, &fill_value);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
 
     //Create the data description both for data in file and in memory
@@ -1958,7 +1996,7 @@ hid_t H5OutputWriter::createConstantLengthIntegerArray(hid_t here,
 
 
     status = H5Pset_fill_value(dataset_creation_plist, H5T_NATIVE_INT, &fill_value);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
 
     //Create the data description both for data in file and in memory
@@ -1994,7 +2032,7 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 {
     // Extend it if necesary!
     status =  H5Dset_extent( id_array, dims );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Get pointer to the dataspace and create the memory space
     hsize_t id_dataspace = H5Dget_space(id_array);
@@ -2009,7 +2047,7 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
                  count ,                // how many blocks to select in each direction
                  block                  // little block selected per selection
              );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
 
 
@@ -2050,7 +2088,7 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
     //                  H5P_DEFAULT,           // Form of writing
     //                  data                   // The actual data
 
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Close stuff
     H5Sclose(id_dataspace);
@@ -2072,7 +2110,7 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
 {
     // Extend it if necesary!
     status =  H5Dset_extent( id_array, dims );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Get pointer to the dataspace and create the memory space
     hsize_t id_dataspace = H5Dget_space(id_array);
@@ -2087,7 +2125,7 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
                  count ,                // how many blocks to select in each direction
                  block                  // little block selected per selection
              );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
 
 
@@ -2133,7 +2171,7 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
     //                  id_dataspace,          // Description of data in storage (including selection)
     //                  H5P_DEFAULT,           // Form of writing
     //                  data                   // The actual data
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Close stuff
     H5Sclose(id_dataspace);
@@ -2161,7 +2199,7 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
 
     // Extend it if necesary!
     status =  H5Dset_extent( id_array, dims );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Get pointer to the dataspace and create the memory space
     hsize_t id_dataspace = H5Dget_space(id_array);
@@ -2176,13 +2214,13 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
                  count ,                // how many blocks to select in each direction
                  block                  // little block selected per selection
              );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Write data!
 
     hid_t type = H5Tcopy(H5T_C_S1);
     status = H5Tset_size(type, H5T_VARIABLE);
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
 
     const char *dat = data.c_str();
@@ -2230,7 +2268,7 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
 
     // cout << "done! \n\n";
 
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Close stuff
     H5Sclose(id_dataspace);
@@ -2265,7 +2303,7 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
                  count ,                // how many blocks to select in each direction
                  block                  // little block selected per selection
              );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
 
 
@@ -2304,7 +2342,7 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
     //                  H5P_DEFAULT,           // Form of writing
     //                  data                   // The actual data
     //              );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Close stuff
     H5Sclose(id_dataspace);
@@ -2340,7 +2378,7 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
                  count ,                // how many blocks to select in each direction
                  block                  // little block selected per selection
              );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
 
     //Added By Babak 5/31/14
@@ -2380,7 +2418,7 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
     //                  H5P_DEFAULT,           // Form of writing
     //                  data                   // The actual data
     //              );
-    HDF5_CHECK_ERROR;
+    hdf5_check_error(status);
 
     //Close stuff
     H5Sclose(id_dataspace);

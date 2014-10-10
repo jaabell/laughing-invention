@@ -1574,7 +1574,7 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
         return -1;
     }
 
-    cout << "EightNodeBrickLT::recvSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
+    // cout << "EightNodeBrickLT::recvSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
 
     if ( material_array[0] == 0 )
     {
@@ -1587,10 +1587,6 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
             {
                 cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
                 return -1;
-            }
-            else
-            {
-                cerr << "EightNodeBrickLT::recvSelf() - Got a valid pointer to material with class tag " << matClassTag << "\n";
             }
 
             // Now receive materials into the newly allocated space
