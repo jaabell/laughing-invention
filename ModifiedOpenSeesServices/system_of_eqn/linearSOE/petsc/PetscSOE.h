@@ -56,15 +56,15 @@ class PetscSOE : public LinearSOE
         int getNumEqn(void) const;
         //     int setSize(Graph &theGraph); //Out by Babak Babak 06/04/13
         int setSize(int MaxDOFtag); //Added by Babak 06/04/13
-        int setEigenSize(Graph& theGraph); //Added by Babak to add mass Matrices ... 1/15/13
+        int setEigenSize(Graph &theGraph); //Added by Babak to add mass Matrices ... 1/15/13
 
 
-        int addA(const Matrix&, const ID&, double fact = 1.0);
-        int addB(const Vector&, const ID&, double fact = 1.0);
-        int addM(const Matrix&, const ID&, double fact = 1.0);   //Added by Babak to add mass Matrices ... 1/14/13
-        int addK(const Matrix&, const ID&, double fact = 1.0);   //Added by Babak to add stiffness Matrices ... 1/15/13
+        int addA(const Matrix &, const ID &, double fact = 1.0);
+        int addB(const Vector &, const ID &, double fact = 1.0);
+        int addM(const Matrix &, const ID &, double fact = 1.0); //Added by Babak to add mass Matrices ... 1/14/13
+        int addK(const Matrix &, const ID &, double fact = 1.0); //Added by Babak to add stiffness Matrices ... 1/15/13
 
-        int setB(const Vector&, double fact = 1.0);
+        int setB(const Vector &, double fact = 1.0);
 
         void zeroA(void);
         void zeroB(void);
@@ -80,9 +80,9 @@ class PetscSOE : public LinearSOE
 
         int setSolver(PetscSolver &newSolver);
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
-                     FEM_ObjectBroker& theBroker);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int recvSelf(int commitTag, Channel &theChannel,
+                     FEM_ObjectBroker &theBroker);
 
         //Addec by Babak Kamrani for dumping B vector (RHS) in a file on 03/30/2012:
         void DumpB(void );

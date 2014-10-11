@@ -718,9 +718,6 @@ PartitionedDomain::getElement(int tag)
     if (res != 0)
     {
         result = (Element *)res;
-# ifdef _BABAK_DEBUG
-        cerr << "PartitionedDomain::getElement  -- returned element tag is :" << result->getTag() << "\n";
-#endif
         return result;
     }
 

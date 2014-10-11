@@ -74,6 +74,7 @@ PetscSOE::getNumEqn(void) const
 
 PetscSOE::~PetscSOE()
 {
+    cout << "PetscSOE::~PetscSOE()\n";
     if (theChannels != 0)
     {
         delete [] theChannels;

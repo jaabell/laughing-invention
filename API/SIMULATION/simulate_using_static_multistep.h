@@ -52,42 +52,70 @@ int simulate_using_static_multistep(int numSteps)
 {
     int result = 0;
 
+#ifdef _PARALLEL_PROCESSING // Parallel processing
+    cout << "\n";
+    cout << "Starting parallel static multistep analysis\n";
+    cout << "====================================================================================================\n";
+#else
+    cout << "\n";
+    cout << "Starting sequential static multistep analysis\n";
+    cout << "====================================================================================================\n";
+#endif
 
-    // Check that all the analysis pointers are set
-    if (theAnalysisModel == 0)
+
+    cout << "Creating analysis model........................................................................";
+    if (theAnalysisModel == NULL)
     {
+
         theAnalysisModel = new AnalysisModel();
     }
     if (theAnalysisModel == NULL)
     {
-        cerr << "Error: (simulate_using_static_multistep) memory for analysis model can not be allocated!" << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
+
+    cout << "Checking constraint handler....................................................................";
     if (theHandler == NULL)
     {
-        cerr << "Error: (simulate_using_static_multistep) The Constraint Handler is not set." << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
+
+    cout << "Checking numberer..............................................................................";
     if (theNumberer == NULL)
     {
-        cerr << "Error: (simulate_using_static_multistep) The Numberer is not set." << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
+
+
+    cout << "Checking analysis algorithm....................................................................";
     if (theAlgorithm == NULL)
     {
-        cerr << "Error: (simulate_using_static_multistep) The Algorithm is not set/" << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
+
+    cout << "Checking system of equation handler............................................................";
     if (theSOE == NULL)
     {
-        cerr << "Error: (simulate_using_static_multistep) The SOE is not set." << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
+
+    cout << "Checking transient integration handler.........................................................";
     if (theStaticIntegrator == NULL)
     {
-        cerr << "Error: (simulate_using_static_multistep) The Static Integrator is not set." << endl;
+        cout << "Fail!\n";
         return -1;
     }
+    cout << "Pass!\n";
 
 
     theStaticAnalysis = new StaticAnalysis(theDomain,
