@@ -103,10 +103,6 @@ class EightNodeBrickLT: public Element
         int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
                        &theBroker );
 
-        //For recorders
-        // Response *setResponse ( const char **argv, int argc, Information &eleInformation );
-        // int getResponse ( int responseID, Information &eleInformation );
-
         //General reporting of element status
         void Print( ostream &s, int flag = 0 );
 
@@ -121,7 +117,6 @@ class EightNodeBrickLT: public Element
         double SurfaceLoadValues( double Xi , double Eta, Vector Pressure );
         const Vector &getBodyForce( double loadFactor, const Vector &data );
         const Vector &getSurfaceForce( double loadFactor, const Vector &data );
-        double returnPressure(void);
 
 
         // ===================================================================================================================

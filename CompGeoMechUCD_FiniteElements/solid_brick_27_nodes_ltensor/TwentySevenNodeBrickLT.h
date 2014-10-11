@@ -107,14 +107,9 @@ class TwentySevenNodeBrickLT: public Element
         int getObjectSize();
 
         //Used in parallel and in saving model
-        int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         int sendSelf ( int commitTag, Channel &theChannel );
         int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
                        &theBroker );
-
-        //For recorders
-        // Response *setResponse ( const char **argv, int argc, Information &eleInformation );
-        // int getResponse ( int responseID, Information &eleInformation );
 
         //General reporting of element status
         void Print( ostream &s, int flag = 0 );
@@ -155,10 +150,6 @@ class TwentySevenNodeBrickLT: public Element
         const DTensor2 &incr_disp( void ) const;
         const DTensor2 &total_disp( void ) const ;
         const DTensor2 &nodal_forces( void ) const;
-        //DTensor2 iterative_nodal_forces( void );
-        //DTensor2 nodal_forces_from_stress( DTensor2 & );
-        //DTensor2 linearized_nodal_forces( void );
-        //DTensor2 update_stress_strain( DTensor2 & disp );
 
         Vector *getStress( void );
 

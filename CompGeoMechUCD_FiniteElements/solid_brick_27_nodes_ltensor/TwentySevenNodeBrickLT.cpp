@@ -77,65 +77,16 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
     mmodel = Globalmmodel;
     initialized = false;
 
-# ifndef _PARALLEL_PROCESSING
-    populate();
-# endif
-
-    connectedExternalNodes( 0 ) = node_numb_1;
-    connectedExternalNodes( 1 ) = node_numb_2;
-    connectedExternalNodes( 2 ) = node_numb_3;
-    connectedExternalNodes( 3 ) = node_numb_4;
-
-    connectedExternalNodes( 4 ) = node_numb_5;
-    connectedExternalNodes( 5 ) = node_numb_6;
-    connectedExternalNodes( 6 ) = node_numb_7;
-    connectedExternalNodes( 7 ) = node_numb_8;
-
-    connectedExternalNodes( 8) = node_numb_9;
-    connectedExternalNodes( 9) = node_numb_10;
-    connectedExternalNodes(10) = node_numb_11;
-    connectedExternalNodes(11) = node_numb_12;
-
-    connectedExternalNodes(12) = node_numb_13;
-    connectedExternalNodes(13) = node_numb_14;
-    connectedExternalNodes(14) = node_numb_15;
-    connectedExternalNodes(15) = node_numb_16;
-
-    connectedExternalNodes(16) = node_numb_17;
-    connectedExternalNodes(17) = node_numb_18;
-    connectedExternalNodes(18) = node_numb_19;
-    connectedExternalNodes(19) = node_numb_20;
-
-    connectedExternalNodes(20) = node_numb_21;
-    connectedExternalNodes(21) = node_numb_22;
-    connectedExternalNodes(22) = node_numb_23;
-    connectedExternalNodes(23) = node_numb_24;
-    connectedExternalNodes(24) = node_numb_25;
-    connectedExternalNodes(25) = node_numb_26;
-    connectedExternalNodes(26) = node_numb_27;
-
-    nodes_in_brick = 27;
-
-
-    for ( int i = 0; i < 27; i++ )
-    {
-        theNodes[i] = 0;
-    }
-
-
-}
-
-void TwentySevenNodeBrickLT::populate()
-{
     // Generate 27 NDMaterialLT for use at each Gauss point.
     for (int k = 0; k < 27; k++)
     {
         material_array[k] = mmodel->getCopy();
     }
 
-    //This gets done for all the elements every time :/
-    // LTensor does not provide for initializer lists, so cant do static const
-    // which would be slightly more efficient.
+    //GP coordinates and weights. ====================================================
+    // This initializes class wide members gp_coords and gp_weights .
+    // Since LTensor does not provide initializer lists, this is the only way to
+    // do this.
     short where = 0;
 
     for ( short ii = 0 ; ii < 3 ; ii++ )
@@ -239,11 +190,55 @@ void TwentySevenNodeBrickLT::populate()
             }
         }
     }
+    // =============================================================================
 
-    initialized = true;
+
     is_mass_computed = false;
-}
 
+    connectedExternalNodes( 0 ) = node_numb_1;
+    connectedExternalNodes( 1 ) = node_numb_2;
+    connectedExternalNodes( 2 ) = node_numb_3;
+    connectedExternalNodes( 3 ) = node_numb_4;
+
+    connectedExternalNodes( 4 ) = node_numb_5;
+    connectedExternalNodes( 5 ) = node_numb_6;
+    connectedExternalNodes( 6 ) = node_numb_7;
+    connectedExternalNodes( 7 ) = node_numb_8;
+
+    connectedExternalNodes( 8) = node_numb_9;
+    connectedExternalNodes( 9) = node_numb_10;
+    connectedExternalNodes(10) = node_numb_11;
+    connectedExternalNodes(11) = node_numb_12;
+
+    connectedExternalNodes(12) = node_numb_13;
+    connectedExternalNodes(13) = node_numb_14;
+    connectedExternalNodes(14) = node_numb_15;
+    connectedExternalNodes(15) = node_numb_16;
+
+    connectedExternalNodes(16) = node_numb_17;
+    connectedExternalNodes(17) = node_numb_18;
+    connectedExternalNodes(18) = node_numb_19;
+    connectedExternalNodes(19) = node_numb_20;
+
+    connectedExternalNodes(20) = node_numb_21;
+    connectedExternalNodes(21) = node_numb_22;
+    connectedExternalNodes(22) = node_numb_23;
+    connectedExternalNodes(23) = node_numb_24;
+    connectedExternalNodes(24) = node_numb_25;
+    connectedExternalNodes(25) = node_numb_26;
+    connectedExternalNodes(26) = node_numb_27;
+
+    nodes_in_brick = 27;
+
+
+    for ( int i = 0; i < 27; i++ )
+    {
+        theNodes[i] = 0;
+    }
+
+    this->setNumberOfBoundaryNodes(9);
+
+}
 
 
 
@@ -251,12 +246,119 @@ void TwentySevenNodeBrickLT::populate()
 TwentySevenNodeBrickLT::TwentySevenNodeBrickLT(): Element( 0, ELE_TAG_TwentySevenNodeBrickLT ),
     rho( 0.0 ), connectedExternalNodes( 27 ) , Ki( 0 ), mmodel( 0 ), Q( 81 ), bf(3), gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
 {
-    initialized = false;
-    is_mass_computed = false;
 
-# ifndef _PARALLEL_PROCESSING
-    populate();
-# endif
+
+    //GP coordinates and weights. ====================================================
+    // This initializes class wide members gp_coords and gp_weights .
+    // Since LTensor does not provide initializer lists, this is the only way to
+    // do this.
+    short where = 0;
+
+    for ( short ii = 0 ; ii < 3 ; ii++ )
+    {
+        for ( short jj = 0 ; jj < 3 ; jj++ )
+        {
+            for ( short kk = 0 ; kk < 3 ; kk++ )
+            {
+                if (ii == 0)
+                {
+                    gp_coords(where, 0) = -0.774596669241483;
+                }
+                else if (ii == 1)
+                {
+                    gp_coords(where, 0) = 0.0;
+                }
+                else
+                {
+                    gp_coords(where, 0) = 0.774596669241483;
+                }
+
+                if (jj == 0)
+                {
+                    gp_coords(where, 1) = -0.774596669241483;
+                }
+                else if (jj == 1)
+                {
+                    gp_coords(where, 1) = 0.0;
+                }
+                else
+                {
+                    gp_coords(where, 1) = 0.774596669241483;
+                }
+
+                if (kk == 0)
+                {
+                    gp_coords(where, 2) = -0.774596669241483;
+                }
+                else if (kk == 1)
+                {
+                    gp_coords(where, 2) = 0.0;
+                }
+                else
+                {
+                    gp_coords(where, 2) = 0.774596669241483;
+                }
+
+                where ++;
+            }
+        }
+    }
+
+    where = 0;
+
+    for ( short ii = 0 ; ii < 3 ; ii++ )
+    {
+        for ( short jj = 0 ; jj < 3 ; jj++ )
+        {
+            for ( short kk = 0 ; kk < 3 ; kk++ )
+            {
+                if (ii == 0)
+                {
+                    gp_weight(where, 0) = 0.555555555555556;
+                }
+                else if (ii == 1)
+                {
+                    gp_weight(where, 0) = 0.888888888888889;
+                }
+                else
+                {
+                    gp_weight(where, 0) = 0.555555555555556;
+                }
+
+                if (jj == 0)
+                {
+                    gp_weight(where, 1) = 0.555555555555556;
+                }
+                else if (jj == 1)
+                {
+                    gp_weight(where, 1) = 0.888888888888889;
+                }
+                else
+                {
+                    gp_weight(where, 1) = 0.555555555555556;
+                }
+
+                if (kk == 0)
+                {
+                    gp_weight(where, 2) = 0.555555555555556;
+                }
+                else if (kk == 1)
+                {
+                    gp_weight(where, 2) = 0.888888888888889;
+                }
+                else
+                {
+                    gp_weight(where, 2) = 0.555555555555556;
+                }
+
+                where ++;
+            }
+        }
+    }
+    // =============================================================================
+
+
+    is_mass_computed = false;
 
     nodes_in_brick = 27;
 
@@ -265,6 +367,7 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT(): Element( 0, ELE_TAG_TwentySeve
     {
         theNodes[i] = 0;
     }
+    this->setNumberOfBoundaryNodes(9);
 
 }
 
@@ -2271,18 +2374,13 @@ int TwentySevenNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
 
     if ( type == LOAD_TAG_ElementSelfWeight )
     {
-
         Vector Fbody = this->getBodyForce( loadFactor , data);
-
         Q.addVector( 1.0, Fbody, 1.0 );
-
     }
     else if ( type == LOAD_TAG_BrickSurfaceLoad )
     {
         Vector Fsurface = this->getSurfaceForce( loadFactor, data );
-
         Q.addVector( 1.0, Fsurface, 1.0 );
-
     }
     else
     {
@@ -2715,61 +2813,51 @@ const Vector &TwentySevenNodeBrickLT::getResistingForceIncInertia ()
 
 
 
-int TwentySevenNodeBrickLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
-{
-    theHDF5_Channel.beginElementDescription("TwentySevenNodeBrickLT", this->getTag());
-    theHDF5_Channel.addField("tag"             , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-    theHDF5_Channel.addField("connected_nodes" , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-
-    // 8node brick asks its material objects to describe themselves
-    for ( int i = 0; i < 8; i++ )
-    {
-        if ( material_array[i]->describeSelf( commitTag, theHDF5_Channel ) < 0 )
-        {
-            cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send material models\n";
-            return -1;
-        }
-    }
-    theHDF5_Channel.addField("material_properties"  , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-    theHDF5_Channel.addField("gauss_points"         , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-    theHDF5_Channel.addField("volume"               , ESSI_OUTPUT_TIME_INDEPENDENT, ESSI_OUTPUT_LEVEL_BASIC);
-    theHDF5_Channel.endElementDescription();
-
-    return 0;
-}
-
-
-
-
 
 int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 {
-    if ( !initialized )
-    {
-        populate();
-    }
+    //Copied from EightNodeBrickLT (with modifications)    ID idData( 5 );
 
-    int dataTag = this->getDbTag();
+    ID idData( 5 );
 
-    // int matDbTag;
-    static ID idData( 1 );
+
     idData( 0 ) = this->getTag();
+    idData( 1 ) = numDOF;
+    idData( 2 ) = nodes_in_brick;
+    idData( 3 ) = order;
+    idData( 4 ) = material_array[0]->getClassTag();
 
-    if ( theChannel.sendID( dataTag, commitTag, idData ) < 0 )
+    if ( theChannel.sendID( 0, commitTag, idData ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID idData\n";
         return -1;
     }
+
+    // send double data
+    Vector floatData(4);
+    floatData(0) = Volume;
+    floatData(1) = e_p;
+    floatData(2) = determinant_of_Jacobian;
+    floatData(3) = rho;
+
+    if ( theChannel.sendVector( 0, commitTag, floatData ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
 
     // Send the nodes
 
-    if ( theChannel.sendID( dataTag, commitTag, connectedExternalNodes ) < 0 )
+    if ( theChannel.sendID( 0, commitTag, connectedExternalNodes ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID\n";
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID connectedExternalNodes\n";
         return -1;
     }
 
-    // Finally, 8node brick asks its material objects to send themselves
+
+    // material objects send themselves
+
     for ( int i = 0; i < 27; i++ )
     {
         if ( material_array[i]->sendSelf( commitTag, theChannel ) < 0 )
@@ -2779,172 +2867,164 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
         }
     }
 
-    static Vector matProp( 4 );
-    matProp( 0 ) = rho;
 
-    //FIXME: may need to be saved as acceleration field
-    matProp( 1 ) = bf( 0 );
-    matProp( 2 ) = bf( 1 );
-    matProp( 3 ) = bf( 2 );
-
-    if ( theChannel.sendVector( dataTag, commitTag, matProp ) < 0 )
+    //Send Q
+    if ( theChannel.sendVector( 0, commitTag, Q ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Material Property\n";
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Q\n";
         return -1;
     }
 
-    if ( theChannel.sendMatrix( dataTag, commitTag, gauss_points ) < 0 )
+    //Send bf
+    if ( theChannel.sendVector( 0, commitTag, bf ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its bf\n";
+        return -1;
+    }
+
+    //Send the gauss points
+    if ( theChannel.sendMatrix( 0, commitTag, gauss_points ) < 0 )
     {
         cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss point coordinates\n";
         return -1;
     }
 
-    static Vector vol(1);
-    vol(0) = Volume;
-
-    if ( theChannel.sendVector( dataTag, commitTag, vol ) < 0 )
+    //Send outputVector
+    if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its volume\n";
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
         return -1;
     }
+
+
 
     return 0;
 }
 
 int TwentySevenNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
-    cerr << "TwentySevenNodeBrickLT::recvSelf -- Not yet implemented!" << endl;
-    return -1;
-    /*
-        if ( !initialized )
+    //Copied from EightNodeBrickLT (with modifications)    // cout << "TwentySevenNodeBrickLT::recvSelf() tag = " << this->getTag() << "\n";
+
+    ID idData( 5 );
+
+    if ( theChannel.recvID( 0, commitTag, idData ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::recvSelf() - failed to receive ID\n";
+        return -1;
+    }
+
+    this->setTag( idData( 0 ) );
+    numDOF = idData(1);
+    nodes_in_brick = idData(2);
+    order = idData(3);
+    int matClassTag = idData( 4 );
+
+
+    // cout << "TwentySevenNodeBrickLT::recvSelf() numDOF           = " << numDOF << "\n";
+    // cout << "TwentySevenNodeBrickLT::recvSelf() nodes_in_brick   = " << nodes_in_brick << "\n";
+    // cout << "TwentySevenNodeBrickLT::recvSelf() order            = " << order << "\n";
+    // cout << "TwentySevenNodeBrickLT::recvSelf() materialclasstag = " << idData(4) << "\n";
+
+
+    Vector floatData(4);
+    if ( theChannel.recvVector( 0, commitTag, floatData ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::recvSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        return -1;
+    }
+    Volume                  = floatData(0) ;
+    e_p                     = floatData(1) ;
+    determinant_of_Jacobian = floatData(2) ;
+    rho                     = floatData(3) ;
+
+    // cout << "TwentySevenNodeBrickLT::recvSelf() Volume                  = " << Volume << "\n";
+    // cout << "TwentySevenNodeBrickLT::recvSelf() e_p                     = " << e_p << "\n";
+    // cout << "TwentySevenNodeBrickLT::recvSelf() determinant_of_Jacobian = " << determinant_of_Jacobian << "\n";
+    // cout << "TwentySevenNodeBrickLT::recvSelf() rho                     = " << rho << "\n";
+
+
+    // Recieve the nodes
+
+    if ( theChannel.recvID( 0, commitTag, connectedExternalNodes ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::recvSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
+        return -1;
+    }
+
+    // cout << "TwentySevenNodeBrickLT::recvSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
+
+    if ( material_array[0] == 0 )
+    {
+        for ( int i = 0; i < 27; i++ )
         {
-            populate();
-        }
 
-        int dataTag = this->getDbTag();
-
-        static ID idData( 26 );
-
-        if ( theChannel.recvID( dataTag, commitTag, idData ) < 0 )
-        {
-            cerr << "WARNING TwentySevenNodeBrickLT::recvSelf() - failed to receive ID\n";
-            return -1;
-        }
-
-        this->setTag( idData( 25 ) );
-
-        connectedExternalNodes( 0 ) = idData( 17 );
-        connectedExternalNodes( 1 ) = idData( 18 );
-        connectedExternalNodes( 2 ) = idData( 19 );
-        connectedExternalNodes( 3 ) = idData( 20 );
-        connectedExternalNodes( 4 ) = idData( 21 );
-        connectedExternalNodes( 5 ) = idData( 22 );
-        connectedExternalNodes( 6 ) = idData( 23 );
-        connectedExternalNodes( 7 ) = idData( 24 );
-
-        int matClassTag;
-        int matDbTag;
-
-
-        if ( material_array[0] == 0 )
-        {
-            for ( int i = 0; i < 27; i++ )
+            // Allocate new material with the sent class tag
+            NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
+            if ( ndmat == 0 )
             {
-
-                matClassTag = idData( i );
-                matDbTag    = idData( i + 8 );
-
-
-                // Allocate new material with the sent class tag
-                NDMaterialLT *ndmat = theBroker.getNewNDMaterial( matClassTag );
-                if ( ndmat == 0 )
-                {
-                    cerr << "TwentySevenNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
-                    return -1;
-                }
-                // Now receive materials into the newly allocated space
-                ndmat->setDbTag( matDbTag );
-                if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "TwentySevenNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
-                    return -1;
-                }
-
-                material_array[i] = ndmat;
+                cerr << "TwentySevenNodeBrickLT::recvSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
+                return -1;
             }
-        }
-        // materials exist , ensure materials of correct type and recvSelf on them
-        else
-        {
-            for ( int i = 0; i < 27; i++ )
+
+            // Now receive materials into the newly allocated space
+            if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-
-                matClassTag = idData( i );
-                matDbTag    = idData( i + 8 );
-
-                static Vector matProp( 4 );
-                if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
-                {
-                    cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv rho!\n";
-                    return -1;
-                }
-
-                NDMaterial *ndmat = theBroker.getNewNDMaterial( matClassTag );;
-                // Check that material is of the right type; if not,
-                // delete it and create a new one of the right type
-                if ( ( material_array[i]->matmodel )->getClassTag() != matClassTag )
-                {
-                    delete material_array[i];
-                    if ( ndmat ==  0 )
-                    {
-                        cerr << "TwentySevenNodeBrickLT::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
-                        return -1;
-                    }
-
-                    ndmat->setDbTag( matDbTag );
-                }
-                // Receive the material
-                if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "TwentySevenNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
-                    return -1;
-                }
-
-                material_array[i] = ndmat;
+                cerr << "TwentySevenNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
+                return -1;
             }
-        }
 
-        static Vector matProp( 4 );
-        if ( theChannel.recvVector( dataTag, commitTag, matProp ) < 0 )
-        {
-            cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv rho!\n";
-            return -1;
+            material_array[i] = ndmat;
         }
+    }
 
-        rho = matProp( 0 );
-        bf( 0 ) = matProp( 1 );
-        bf( 1 ) = matProp( 2 );
-        bf( 2 ) = matProp( 3 );
-        return 0;
-    */
+    // Q
+    if ( theChannel.recvVector( 0, commitTag, Q ) < 0 )
+    {
+        cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv Q!\n";
+        return -1;
+    }
+
+    // bf
+    if ( theChannel.recvVector( 0, commitTag, bf ) < 0 )
+    {
+        cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv bf!\n";
+        return -1;
+    }
+
+    // gauss_points
+    if ( theChannel.recvMatrix( 0, commitTag, gauss_points ) < 0 )
+    {
+        cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv gauss_points!\n";
+        return -1;
+    }
+
+    // outputVector
+    if ( theChannel.recvVector( 0, commitTag, outputVector ) < 0 )
+    {
+        cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv outputVector!\n";
+        return -1;
+    }
+
+
+
+    return 0;
 }
 
 
 int TwentySevenNodeBrickLT::getObjectSize()
 {
-    cerr << "TwentySevenNodeBrickLT::getObjectSize() -- Not yet implemented" << endl;
+    //Copied from EightNodeBrickLT (with modifications)
 
-    return 0;
-    /*
-        int size = 0;
-        size += 11 * sizeof( int );
-        size += 4 * sizeof( double );
-        for( int i = 0; i < 27; i++ )
-        {
-            size += material_array[i]->getObjectSize();
-        }
-        return size;
-        */
+    int size = sizeof(*this);
+    for ( int i = 0; i < 27; i++ )
+    {
+        size += material_array[i]->getObjectSize();
+    }
+
+    cout << "EightNodeBrickLT::getObjectSize() - tag = " << this->getTag()
+         << "  size = " << size << "\n";
+
+    return size;
 }
 
 //=============================================================================
@@ -3094,12 +3174,7 @@ int TwentySevenNodeBrickLT::update( void )
         }
     }
 
-    //cout << "dhGlobal" <<dhGlobal << endl;
-    //cout <<   "JacobianINV" <<JacobianINV << endl;
-    //cout << "JacobianINV" <<JacobianINV << endl;
-    //cout << "dh" << dh << endl;
-    //cout << material_array[1]->getStrainTensor() << endl;
-    //cout << "disp: " <<trial_disp << endl;
+
     return 0;
 }
 

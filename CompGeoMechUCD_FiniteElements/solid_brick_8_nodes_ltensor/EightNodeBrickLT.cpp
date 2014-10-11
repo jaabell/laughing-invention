@@ -1229,11 +1229,8 @@ int EightNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
 
     if ( type == LOAD_TAG_ElementSelfWeight )
     {
-        // cout << "data = " << data << endl;
         Vector Fbody = this->getBodyForce( loadFactor, data );
         Q.addVector( 1.0, Fbody, 1.0 );
-        // cout << "Fbody = " << Fbody << endl;
-
     }
     else if ( type == LOAD_TAG_BrickSurfaceLoad )
     {
@@ -1637,7 +1634,6 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
 
 int EightNodeBrickLT::getObjectSize()
 {
-    //cerr << "EightNodeBrickLT::getObjectSize() -- Not yet implemented" << endl;
 
     int size = sizeof(*this);
     for ( int i = 0; i < 8; i++ )
@@ -1931,10 +1927,7 @@ EightNodeBrickLT::getStress( void )
     return stresses;
 }
 
-double EightNodeBrickLT::returnPressure(void)
-{
-    return 0;
-}
+
 
 
 Matrix &EightNodeBrickLT::getGaussCoordinates(void)
