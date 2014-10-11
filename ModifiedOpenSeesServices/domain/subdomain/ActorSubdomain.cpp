@@ -117,21 +117,21 @@ ActorSubdomain::run(void)
         int theType, theOtherType, tag, dbTag, loadPatternTag;
         Element *theEle;
         Node *theNod;
-        //, *tmpNode;
-        SP_Constraint *theSP;
-        MP_Constraint *theMP;
-        LoadPattern *theLoadPattern;
-        NodalLoad *theNodalLoad;
-        ElementalLoad *theElementalLoad;
+        //,                         * tmpNode;
+        SP_Constraint                *theSP;
+        MP_Constraint                *theMP;
+        LoadPattern                  *theLoadPattern;
+        NodalLoad                    *theNodalLoad;
+        ElementalLoad                *theElementalLoad;
         DomainDecompositionAnalysis *theDDAnalysis;
-        const Matrix *theMatrix;
-        const Vector *theVector;
-        // PartitionedModelBuilder *theBuilder;
-        IncrementalIntegrator *theIntegrator;
-        EquiSolnAlgo *theAlgorithm;
-        LinearSOE *theSOE;
-        LinearSOESolver *theSolver;
-        ConvergenceTest *theTest;
+        const Matrix                 *theMatrix;
+        const Vector                 *theVector;
+        // PartitionedModelBuilder  * theBuilder;
+        IncrementalIntegrator        *theIntegrator;
+        EquiSolnAlgo                 *theAlgorithm;
+        LinearSOE                    *theSOE;
+        LinearSOESolver              *theSolver;
+        ConvergenceTest              *theTest;
         // Recorder *theRecorder;
         bool res;
         DOF_Group *pDOF_Group;
@@ -154,17 +154,17 @@ ActorSubdomain::run(void)
 
                 break;
 
-                // case ShadowActorSubdomain_buildSubdomain:
-                //     theType = msgData(1);
-                //     tag = msgData(3); // subdomain tag
-                //     this->setTag(tag);
-                //     tag = msgData(2); // numSubdomains
-                //     // theBuilder = theBroker->getPtrNewPartitionedModelBuilder(*this,
-                //     // theType);
-                //     this->recvObject(*theBuilder);
-                //     this->buildSubdomain(tag, *theBuilder);
+            // case ShadowActorSubdomain_buildSubdomain:
+            //     theType = msgData(1);
+            //     tag = msgData(3); // subdomain tag
+            //     this->setTag(tag);
+            //     tag = msgData(2); // numSubdomains
+            //     // theBuilder = theBroker->getPtrNewPartitionedModelBuilder(*this,
+            //     // theType);
+            //     this->recvObject(*theBuilder);
+            //     this->buildSubdomain(tag, *theBuilder);
 
-                //     break;
+            //     break;
 
             case ShadowActorSubdomain_getRemoteData:
                 theID = &(this->getExternalNodes());
@@ -1062,44 +1062,44 @@ ActorSubdomain::run(void)
 
                 break;
 
-                // case ShadowActorSubdomain_swapNodeFromInternalToExternal:
-                //     theNod = this->removeNode(msgData(1));
+            // case ShadowActorSubdomain_swapNodeFromInternalToExternal:
+            //     theNod = this->removeNode(msgData(1));
 
-                //     if ( this->getNode(theNod->getTag()) != 0)
-                //     {
-                //         cerr << "ActorSubdomain::run() - swapNodeFromInternalToExternal failed to remove node "
-                //              << theNod->getTag() << "\n";
-                //         exit(1);
-                //     }
+            //     if ( this->getNode(theNod->getTag()) != 0)
+            //     {
+            //         cerr << "ActorSubdomain::run() - swapNodeFromInternalToExternal failed to remove node "
+            //              << theNod->getTag() << "\n";
+            //         exit(1);
+            //     }
 
-                //     pDOF_Group = theNod->getDOF_GroupPtr();
+            //     pDOF_Group = theNod->getDOF_GroupPtr();
 
-                //     if (pDOF_Group != 0)
-                //     {
-                //         pDOF_Group->unSetMyNode();
-                //     }
+            //     if (pDOF_Group != 0)
+            //     {
+            //         pDOF_Group->unSetMyNode();
+            //     }
 
-                //     this->addExternalNode(theNod);
+            //     this->addExternalNode(theNod);
 
-                //     //tmpNode =
-                //     //this->Subdomain::addExternalNode(theNod);
+            //     //tmpNode =
+            //     //this->Subdomain::addExternalNode(theNod);
 
-                //     if ( this->getNode(theNod->getTag()) == 0)
-                //     {
-                //         cerr << "ActorSubdomain::run() - swapNodeFromInternalToExternal failed to add external node "
-                //              << theNod->getTag() << "\n";
-                //         exit(1);
-                //     }
+            //     if ( this->getNode(theNod->getTag()) == 0)
+            //     {
+            //         cerr << "ActorSubdomain::run() - swapNodeFromInternalToExternal failed to add external node "
+            //              << theNod->getTag() << "\n";
+            //         exit(1);
+            //     }
 
-                //     //delete theNod;
+            //     //delete theNod;
 
-                //     //send it back to master!
-                //     msgData(1) = theNod->getClassTag();
-                //     msgData(2) = theNod->getDbTag();
-                //     this->sendID(msgData);
-                //     this->sendObject(*theNod);
-                //     //delete theNod;
-                //     break;
+            //     //send it back to master!
+            //     msgData(1) = theNod->getClassTag();
+            //     msgData(2) = theNod->getDbTag();
+            //     this->sendID(msgData);
+            //     this->sendObject(*theNod);
+            //     //delete theNod;
+            //     break;
 
             case ShadowActorSubdomain_exportInternalNode:
                 exportInternalNode(msgData(1), msgData(2));
