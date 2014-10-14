@@ -112,29 +112,31 @@ Linear_Force_TimeHistory::applyLoad(double time)
     if (theNode == 0)
     {
         cerr << "Linear_Force_TimeHistory - no nodes associtated to the nodeTag " << nodeTag << "\n";
-        exit(1);
+        // exit(1);
     }
-
-    //Create the nodal load vector accoding to the DOFs the node has
-    int numDOF = theNode->getNumberDOF();
-    Vector *nodalLoad = new Vector(numDOF);
-
-
-
-    for (int i = 0; i < numDOF; i++)
+    else
     {
-        if ( i == (dof - 1) )
-        {
-            (*nodalLoad)(i) = getFactor(time);
-        }
-        else
-        {
-            (*nodalLoad)(i) = 0;
-        }
-    }
+        //Create the nodal load vector accoding to the DOFs the node has
+        int numDOF = theNode->getNumberDOF();
+        Vector *nodalLoad = new Vector(numDOF);
 
-    theNode->addUnbalancedLoad(*nodalLoad);
-    delete nodalLoad;
+
+
+        for (int i = 0; i < numDOF; i++)
+        {
+            if ( i == (dof - 1) )
+            {
+                (*nodalLoad)(i) = getFactor(time);
+            }
+            else
+            {
+                (*nodalLoad)(i) = 0;
+            }
+        }
+
+        theNode->addUnbalancedLoad(*nodalLoad);
+        delete nodalLoad;
+    }
 
 }
 

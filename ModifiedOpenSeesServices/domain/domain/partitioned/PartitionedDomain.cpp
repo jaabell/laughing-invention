@@ -1283,7 +1283,7 @@ PartitionedDomain::partition(int numPartitions)
     //This outputs the mesh information to the HDF5 writer. This is important because it builds the
     // arrays of indexes into node output data and element output data.
 
-    cout << "PartitionedDomain::partition(" << numPartitions << "); \n";
+    cout << "\n\nPartitionedDomain::partition(" << numPartitions << "); \n";
 
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();

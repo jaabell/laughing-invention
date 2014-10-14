@@ -223,7 +223,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             cout.flush() << "\r TransientAnalysis: Step Number is : " << i + 1 << " out of " << numSteps;
         }
 
-
+        cout << "       theAnalysisModel->newStepDomain(dT)\n";//Jdebug
         if (theAnalysisModel->newStepDomain(dT) < 0)
         {
             cerr << "DirectIntegrationAnalysis::analyze() - the AnalysisModel failed";
@@ -239,6 +239,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         {
             domainStamp = stamp;
 
+            cout << "       this->domainChanged() \n";//Jdebug
             if (this->domainChanged() < 0)
             {
                 cerr << "DirectIntegrationAnalysis::analyze() - domainChanged() failed\n";
@@ -246,6 +247,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             }
         }
 
+
+        cout << "       theIntegrator->newStep(dT) \n";//Jdebug
         if (theIntegrator->newStep(dT) < 0)
         {
             cerr << "DirectIntegrationAnalysis::analyze() - the Integrator failed";
@@ -254,6 +257,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             return -2;
         }
 
+        cout << "       theAlgorithm->solveCurrentStep() \n";//Jdebug
         result = theAlgorithm->solveCurrentStep();
 
         if (result < 0)
@@ -267,6 +271,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
 
 
+        cout << "       theIntegrator->commit() \n";  //Jdebug
         result = theIntegrator->commit();
 
         if (result < 0)

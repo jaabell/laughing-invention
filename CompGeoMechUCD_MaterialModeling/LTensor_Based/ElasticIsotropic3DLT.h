@@ -97,7 +97,6 @@ class ElasticIsotropic3DLT : public NDMaterialLT
 
         const char *getType( void ) const; // probably not needed
 
-        int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         int sendSelf( int commitTag, Channel &theChannel );
         int recvSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker );
 

@@ -190,6 +190,8 @@ DomainPartitioner::partition(int numParts)
 
     }
 
+    cout << "    Creating Element Graph\n";
+
     // we get the ele graph from the domain and partition it
 
     theElementGraph = new Graph(*(myDomain->getElementGraph()));
@@ -202,7 +204,9 @@ DomainPartitioner::partition(int numParts)
         cerr << "element graph\n";
         return -10 + theError;
     }
+    cout << "       Done! Creating Element Graph\n";
 
+    cout << "    Partitioning Domain\n";
     // we create empty graphs for the numParts subdomains,
     // in the graphs we place the vertices for the elements on the boundaries
 
@@ -242,16 +246,12 @@ DomainPartitioner::partition(int numParts)
     // we now create an ID which will contain information
     // about which partition the node is located in
 
-    cout << "DomainPartitioner::partition - start allocating memory!\n maxNodeTag = " << maxNodeTag << "\n\n";
-
     if ( nodePartition != NULL )
     {
         delete [] nodePartition;
     }
     nodePartition = NULL;
     nodePartition = new int[(maxNodeTag + 1) * 8];  //Note:  why *8 here? -JAbell
-
-    cout << "DomainPartitioner::partition - finished allocating memory for nodepartition!\n";
 
     if ( ParCount != NULL )
     {
@@ -260,7 +260,6 @@ DomainPartitioner::partition(int numParts)
     ParCount = NULL;
     ParCount = new int[maxNodeTag + 1];
 
-    cout << "DomainPartitioner::partition - finished allocating memory for partition count!\n";
 
     if (nodePartition == 0 || ParCount == 0)
     {
@@ -442,6 +441,7 @@ DomainPartitioner::partition(int numParts)
         }
     }
 
+    cout << "       Done! Partitioning\n";
 
     // now we go through the load patterns and move NodalLoads and MP_Constraints
     // 1) make sure each subdomain has a copy of the partitioneddomains load patterns.
@@ -452,7 +452,17 @@ DomainPartitioner::partition(int numParts)
     // we now add the nodes, by iterating through the nodes and for
     // each node determining if it is an internal or external node
     // to each subdomain
+    cout << "    Sending Nodes.\n";
     NodeIter &theNodes2 = myDomain->getNodes();
+
+    //Some counters of components for reporting
+    int nodesOnEachPart[numParts + 1];
+    for (int ipart = 0; ipart < numParts + 1; ipart++)
+    {
+        nodesOnEachPart[ipart] = 0;
+    }
+    int numExternalNodes = 0;
+    int numTotalNodes = 0;
     while ((nodePtr = theNodes2()) != 0)
     {
         int nodeTag = nodePtr->getTag();
@@ -471,8 +481,8 @@ DomainPartitioner::partition(int numParts)
                 Subdomain *theSubdomain = myDomain->getSubdomainPtr(par);
                 nodePtr = myDomain->Domain::removeNode(nodePtr->getTag());
                 theSubdomain->addNode(nodePtr);
+                nodesOnEachPart[par]++;
             }
-
         }
         else
         {
@@ -490,9 +500,21 @@ DomainPartitioner::partition(int numParts)
                     continue;
                 }
                 theSubdomain->addExternalNode(nodePtr);
+                numExternalNodes++;
             }
         }
+        numTotalNodes++;
     }
+    cout << "       Total Number of Nodes          = " << numTotalNodes << "\n";
+    for (int ipart = 0; ipart < numParts + 1 ; ipart++)
+    {
+        cout << "       Nodes on Partition " << ipart <<  "          = " << nodesOnEachPart[ipart] << "\n";
+    }
+    cout << "       Total Number of External Nodes = " << numExternalNodes << "\n";
+
+    cout << "    Done Sending Nodes.\n";
+
+
 
     //Guanzhou moved codes here after the Subdomain->addExternalNode, which does numDOF increment
     LoadPatternIter &theLoadPatterns = myDomain->getLoadPatterns();
@@ -500,6 +522,7 @@ DomainPartitioner::partition(int numParts)
     while ((theLoadPattern = theLoadPatterns()) != 0)
     {
         int loadPatternTag = theLoadPattern->getTag();
+        cout << "   Sending Load Pattern with tag " << loadPatternTag << "\n";
 
         // check that each subdomain has a loadPattern with a similar tag and class tag
         //add LoadPattern to all subdomains
@@ -512,7 +535,7 @@ DomainPartitioner::partition(int numParts)
                 LoadPattern *newLoadPattern = theLoadPattern->getCopy();
                 if (newLoadPattern == 0)
                 {
-                    cerr << "DomaiPartitioner::partition - out of memory creating LoadPatterns\n";
+                    cerr << "DomainPartitioner::partition - out of memory creating LoadPatterns\n";
                     return -1;
                 }
 
@@ -523,6 +546,7 @@ DomainPartitioner::partition(int numParts)
 
         NodalLoadIter &theNodalLoads = theLoadPattern->getNodalLoads();
         NodalLoad *theNodalLoad;
+        int number_of_nodal_loads = 0;
         while ((theNodalLoad = theNodalLoads()) != 0)
         {
             int loadedNodeTag = theNodalLoad->getNodeTag();
@@ -542,15 +566,17 @@ DomainPartitioner::partition(int numParts)
                     {
                         cerr << "DomainPartitioner::partition() - failed to add Nodal Load\n";
                     }
-                    cout << "DomainPartitioner - sending load " << *theNodalLoad;
+                    // cout << "   Sending load " << *theNodalLoad;
                 }
             }
+            number_of_nodal_loads++;
         }
 
-        cout << "DomainPartitioner::partition - finished sending loads!\n";
+        cout << "   Sent " << number_of_nodal_loads << " nodal loads!\n";
 
         SP_ConstraintIter &theSPs = theLoadPattern->getSPs();
         SP_Constraint *spPtr;
+        int number_of_sps = 0;
         while ((spPtr = theSPs()) != 0)
         {
             int constrainedNodeTag = spPtr->getNodeTag();
@@ -568,14 +594,22 @@ DomainPartitioner::partition(int numParts)
                     theSubdomain->addSP_Constraint(spPtr, loadPatternTag);
                 }
             }
+            number_of_sps++;
         }
 
-        cout << "DomainPartitioner::partition - finished sending SPs and load pattern!\n";
+        cout << "   Sent " << number_of_sps << " SP constraints!\n";
 
     }
 
+    cout << "   Sending Elements!\n";
     // we now move the elements and any elemental Loads in the loadPatterns
     VertexIter &theVertices = theElementGraph->getVertices();
+    int elementsOnEachPart[numParts];
+    for (int ipart = 0; ipart < numParts + 1; ipart++)
+    {
+        elementsOnEachPart[ipart] = 0;
+    }
+    int numTotalElements = 0;
     while ((vertexPtr = theVertices()) != 0)
     {
         // move the element
@@ -585,6 +619,7 @@ DomainPartitioner::partition(int numParts)
         Element *elePtr = myDomain->removeElement(eleTag);
 
         Subdomain *theSubdomain = myDomain->getSubdomainPtr(partition);
+        elementsOnEachPart[partition]++;
 
         theSubdomain->addElement(elePtr);
 
@@ -610,17 +645,32 @@ DomainPartitioner::partition(int numParts)
             }
         }
         /********************* ELEMENT LOADS ****************************/
+
+        numTotalElements++;
+    }
+    cout << "       Total Number of Elements          = " << numTotalElements << "\n";
+    for (int ipart = 0; ipart < numParts + 1 ; ipart++)
+    {
+        cout << "       Elements on Partition " << ipart <<  "          = " << elementsOnEachPart[ipart] << "\n";
     }
 
 
     // add the single point constraints, only added if for an internal node in a subdomain
 
-    cout << "DomainPartitioner::partition - finished sending elements!\n";
+    cout << "   Done sending elements!\n";
 
 
+    cout << "   Sending Single Point (SP) constraints!\n";
     //Guanzhou changed below
     SP_ConstraintIter &theSPs = myDomain->getSPs();
     SP_Constraint *spPtr;
+    int numTotalSPs = 0;
+    int spsOnEachPart[numParts + 1];
+    for (int ipart = 0; ipart < numParts + 1; ipart++)
+    {
+        spsOnEachPart[ipart] = 0;
+    }
+
     while ((spPtr = theSPs()) != 0)
     {
         int constrainedNodeTag = spPtr->getNodeTag();
@@ -637,6 +687,7 @@ DomainPartitioner::partition(int numParts)
                 Subdomain *theSubdomain = myDomain->getSubdomainPtr(par);
                 myDomain->removeSP_Constraint(spPtr->getTag());
                 theSubdomain->addSP_Constraint(spPtr);
+                spsOnEachPart[par]++;
             }
         }
         else
@@ -649,19 +700,23 @@ DomainPartitioner::partition(int numParts)
                 if ( par != 0 )
                 {
                     theSubdomain = myDomain->getSubdomainPtr(par);
+                    theSubdomain->addSP_Constraint(spPtr);
+                    spsOnEachPart[par]++;
                 }
-                else
-                {
-                    continue;
-                }
-                theSubdomain->addSP_Constraint(spPtr);
             }
         }
+
+        numTotalSPs++;
     }
+    cout << "       Total Number of SP constraints = " << numTotalSPs << "\n";
+    for (int ipart = 0; ipart < numParts + 1 ; ipart++)
+    {
+        cout << "       SP constraints on Partition " << ipart <<  "          = " << spsOnEachPart[ipart] << "\n";
+    }
+    cout << "   Done sending Single Point constraints!\n";
 
-    cout << "DomainPartitioner::partition - finished sending Single Point constraints!\n";
 
-
+    cout << "   Updating subdomains!\n";
     // now we go through all the subdomains and tell them to update
     // their analysis for the new layouts
     SubdomainIter &theSubDomains = myDomain->getSubdomains();
@@ -671,13 +726,11 @@ DomainPartitioner::partition(int numParts)
         //theSubDomain->resetRecorders();
         theSubDomain->domainChange();
     }
-    cout << "DomainPartitioner::partition - finished updating subdomains!\n";
+    cout << "   Done updating subdomains!\n";
 
 
     myDomain->domainChange();
 
-
-    cout << "DomainPartitioner::partition - finished data distribution!\n";
     partitionFlag = true;
 
     return 0;
@@ -732,7 +785,7 @@ DomainPartitioner::getNumPartitions(void) const
 int
 DomainPartitioner::repartition(int numParts)
 {
-    double start_time = MPI_Wtime();
+    // double start_time = MPI_Wtime();
     // first we ensure the partitioned domain has numpart subdomains
     // with tags 1 through numparts
     Subdomain **subdomainPtrs = new Subdomain * [numParts];
@@ -940,7 +993,7 @@ DomainPartitioner::repartition(int numParts)
     for (int i = 0; i < numChangedNodes; i++)
     {
         int nodeTag = (*ChangedNodeList)(i);
-        int dof;
+        int dof = -1;
         const int count = newParCount[nodeTag];
 
         if (count == 1)
@@ -1292,7 +1345,7 @@ DomainPartitioner::repartition(int numParts)
     ParCount = newParCount;
     newParCount = NULL;
 
-    double end_time = MPI_Wtime();
+    // double end_time = MPI_Wtime();
 
 
     return 0;

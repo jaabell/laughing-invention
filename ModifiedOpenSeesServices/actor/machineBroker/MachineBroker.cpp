@@ -39,7 +39,7 @@
 using namespace std;
 
 
-MachineBroker::MachineBroker(FEM_ObjectBroker* theBroker)
+MachineBroker::MachineBroker(FEM_ObjectBroker *theBroker)
     : theObjectBroker(theBroker), actorChannels(0), numActorChannels(0), numActiveChannels(0), activeChannels(0)
 {
 
@@ -65,7 +65,7 @@ MachineBroker::shutdown(void)
     {
         ID idData(1);
         idData(0) = 0;
-        Channel* theChannel = actorChannels[i];
+        Channel *theChannel = actorChannels[i];
 
         if (theChannel->sendID(0, 0, idData) < 0)
         {
@@ -100,10 +100,10 @@ MachineBroker::shutdown(void)
 int
 MachineBroker::runActors(void)
 {
-    Channel* theChannel = this->getMyChannel();
+    Channel *theChannel = this->getMyChannel();
     ID idData(1);
     int done = 0;
-    cerr << "MachineBroker::runActors()\n";
+    // cerr << "MachineBroker::runActors()\n";
 
     // loop until recv kill signal
     while (done == 0)
@@ -114,7 +114,7 @@ MachineBroker::runActors(void)
         }
 
         int actorType = idData(0);
-        cerr << "MachineBroker::runActors() - actorType: " << actorType << endln;;
+        cout << "    Spawning new actor domain - actorType: " << actorType << endln;;
 
         // switch on data type
         if (idData(0) == 0)
@@ -130,7 +130,7 @@ MachineBroker::runActors(void)
         {
 
             // create an actor of approriate type
-            Actor* theActor = theObjectBroker->getNewActor(actorType, theChannel);
+            Actor *theActor = theObjectBroker->getNewActor(actorType, theChannel);
 
             if (theActor == 0)
             {
@@ -159,13 +159,13 @@ MachineBroker::runActors(void)
         }
     }
 
-    cerr << "MachineBroker::runActors() - DONE " << endln;
+    cout << "Actor DONE! " << endln;
 
     return 0;
 }
 
 
-Channel*
+Channel *
 MachineBroker::startActor(int actorType, int compDemand)
 {
     if (compDemand != 0)
@@ -173,7 +173,7 @@ MachineBroker::startActor(int actorType, int compDemand)
         cerr << "MachineBroker::startActor() - does not take computational demand variable into account\n";
     }
 
-    Channel* theChannel = 0;
+    Channel *theChannel = 0;
 
     // check if have an available machine broker running runActors() and waiting to start an actor running
     if (numActiveChannels < numActorChannels)
@@ -203,8 +203,8 @@ MachineBroker::startActor(int actorType, int compDemand)
             return 0;
         }
 
-        Channel** nextChannels = new Channel *[numActorChannels + 1];
-        ID* nextChannelID = new ID(numActorChannels + 1);
+        Channel **nextChannels = new Channel *[numActorChannels + 1];
+        ID *nextChannelID = new ID(numActorChannels + 1);
 
         for (int i = 0; i < numActorChannels; i++)
         {
@@ -259,7 +259,7 @@ MachineBroker::startActor(int actorType, int compDemand)
 
 
 int
-MachineBroker::finishedWithActor(Channel* theChannel)
+MachineBroker::finishedWithActor(Channel *theChannel)
 {
     // send the termination notice to all machineBrokers running actorProcesses
     for (int i = 0; i < numActorChannels; i++)

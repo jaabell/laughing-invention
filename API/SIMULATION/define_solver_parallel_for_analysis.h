@@ -53,11 +53,23 @@ int define_solver_parallel_for_analysis()
 {
 
 #ifdef _PARALLEL_PROCESSING
+    KSPType method        = "cg";           //Conjugate gradient
+    PCType preconditioner = "jacobi";
+    double rTol           = 1.0e-7;
+    double aTol           = 1.0e-50;
+    double dTol           = 10000;
+    int maxIts            = 10000;
+    MatType mat           = "mpiaij";
 
-    PetscSolver *theSolver = new PetscSolver( "cg", "jacobi", 1.0e-7, 1.0e-50, 10000,  10000, "mpiaij");
-    //    PetscSolver *theSolver = new PetscSolver( method, preconditioner);
+    PetscSolver *theSolver = new PetscSolver(method,
+            preconditioner,
+            rTol,
+            aTol,
+            dTol,
+            maxIts,
+            mat);
 
-    theSOE = new PetscSOE(*theSolver, "mpiaij");
+    theSOE = new PetscSOE(*theSolver, mat);
 
 
     if (theStaticAnalysis != 0 || theTransientAnalysis != 0)
@@ -74,7 +86,6 @@ int define_solver_parallel_for_analysis()
     return 0;
 
 #else
-
     cerr << "define_solver_parallel_for_analysis() : ERROR - Parallel solver not available in sequential mode." << endl;
     return -1;
 #endif

@@ -59,8 +59,8 @@ using namespace std;
 PetscSOE::PetscSOE(PetscSolver &theSOESolver, MatType matType, int bs)
     : LinearSOE(theSOESolver, LinSOE_TAGS_PetscSOE),
       isFactored(0), size(0), processID(0), numProcesses(0), B(0), X(0),
-      indices(0), vectX(0), vectB(0), A(0), x(0), b(0), blockSize(bs),
-      numChannels(0), theChannels(0), localCol(0), mType(matType), M(0) //M(0)Added by Babak to add mass Matrices ... 1/14/13
+      indices(0), vectX(0), vectB(0), A(0), M(0),  x(0), b(0), blockSize(bs),
+      numChannels(0), theChannels(0),  localCol(0), mType(matType)
 {
     theSOESolver.setLinearSOE(*this);
     init_done = false;//GZ added
@@ -271,13 +271,11 @@ PetscSOE::setSize(int MaxDOFtag)
     if (vectX != 0)
     {
         delete vectX;
-        vectX == NULL;    //Added by Babak on 5/31/13
     }
 
     if (vectB != 0)
     {
         delete vectB;
-        vectB == NULL;     //Added by Babak on 5/31/13
     }
 
     vectX = new Vector(X, size);
@@ -990,83 +988,84 @@ PetscSOE::setSolver(PetscSolver &newSolver)
 int
 PetscSOE::sendSelf(int cTag, Channel &theChannel)
 {
-    processID = 0;
-    int sendID = 0;
+    //The following statement makes the if condition below always true
+    // processID = 0;
+    // int sendID;// = 0;
 
     // if P0 check if already sent. If already sent use old processID; if not allocate a new process
     // id for remote part of object, enlarge channel * to hold a channel * for this remote object.
 
     // if not P0, send current processID
 
-    if (processID == 0)
-    {
+    // if (processID == 0)
+    // {
 
-        // check if already using this object
-        bool found = false;
+    // check if already using this object
+    bool found = false;
 
-        for (int i = 0; i < numChannels; i++)
-            if (theChannels[i] == &theChannel)
-            {
-                sendID = i + 1;
-                found = true;
-            }
-
-        // if new object, enlarge Channel pointers to hold new channel * & allocate new ID
-        if (found == false)
+    for (int i = 0; i < numChannels; i++)
+        if (theChannels[i] == &theChannel)
         {
-            int nextNumChannels = numChannels + 1;
-            Channel **nextChannels = new Channel *[nextNumChannels];
-
-            if (nextNumChannels == 0)
-            {
-                cerr << "DistributedBandGenLinSOE::sendSelf() - failed to allocate channel array of size: " <<
-                     nextNumChannels << endln;
-                return -1;
-            }
-
-            for (int i = 0; i < numChannels; i++)
-            {
-                nextChannels[i] = theChannels[i];
-            }
-
-            nextChannels[numChannels] = &theChannel;
-            numChannels = nextNumChannels;
-
-            if (theChannels != 0)
-            {
-                delete [] theChannels;
-            }
-
-            theChannels = nextChannels;
-
-            if (localCol != 0)
-            {
-                delete [] localCol;
-            }
-
-            localCol = new ID *[numChannels];
-
-            if (localCol == 0)
-            {
-                cerr << "DistributedBandGenLinSOE::sendSelf() - failed to allocate id array of size: " <<
-                     nextNumChannels << endln;
-                return -1;
-            }
-
-            for (int i = 0; i < numChannels; i++)
-            {
-                localCol[i] = 0;
-            }
-
-            // allocate new processID for remote object
-            sendID = numChannels;
+            // sendID = i + 1;
+            found = true;
         }
 
-    }
-    else
+    // if new object, enlarge Channel pointers to hold new channel * & allocate new ID
+    if (found == false)
     {
-        sendID = processID;
+        int nextNumChannels = numChannels + 1;
+        Channel **nextChannels = new Channel *[nextNumChannels];
+
+        if (nextNumChannels == 0)
+        {
+            cerr << "DistributedBandGenLinSOE::sendSelf() - failed to allocate channel array of size: " <<
+                 nextNumChannels << endln;
+            return -1;
+        }
+
+        for (int i = 0; i < numChannels; i++)
+        {
+            nextChannels[i] = theChannels[i];
+        }
+
+        nextChannels[numChannels] = &theChannel;
+        numChannels = nextNumChannels;
+
+        if (theChannels != 0)
+        {
+            delete [] theChannels;
+        }
+
+        theChannels = nextChannels;
+
+        if (localCol != 0)
+        {
+            delete [] localCol;
+        }
+
+        localCol = new ID *[numChannels];
+
+        if (localCol == 0)
+        {
+            cerr << "DistributedBandGenLinSOE::sendSelf() - failed to allocate id array of size: " <<
+                 nextNumChannels << endln;
+            return -1;
+        }
+
+        for (int i = 0; i < numChannels; i++)
+        {
+            localCol[i] = 0;
+        }
+
+        // allocate new processID for remote object
+        // sendID = numChannels;
     }
+
+    // }
+    // else
+    // {
+    //     sendID = processID;
+    // }
 
     return 0;
 }
@@ -1126,8 +1125,7 @@ PetscSOE::DumpB()
     //     char fname[5];
     //     std::string s =std::to_string(processID);
     char buffer [33];
-    int temp;
-    temp = sprintf(buffer, "B_PID# %d .txt", processID);
+    sprintf(buffer, "B_PID# %d .txt", processID);
 
     //     itoa (processID,buffer,10);
 

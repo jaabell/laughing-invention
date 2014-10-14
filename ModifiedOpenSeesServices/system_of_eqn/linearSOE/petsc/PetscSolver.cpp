@@ -108,7 +108,7 @@ PetscSolver::solve(void)
     // cerr << "PetscSolver::solve:   --Size of the SOE is: " << size << endln; //added by babak kamrani for debugging purposes
 
 
-    int factored = theSOE->isFactored;
+    // int factored = theSOE->isFactored;
 
     int numProcesses = theSOE->numProcesses;
     int processID = theSOE->processID;
@@ -190,6 +190,7 @@ PetscSolver::solve(void)
 
 
 
+
     //----- to test spooles -----------------
     KSPSetType(ksp, KSPPREONLY);
     KSPGetPC(ksp, &pc);
@@ -254,31 +255,16 @@ PetscSolver::solve(void)
     // solve and mark as having been solved
     //
 
-    //GZ added
-    //KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
-    //KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD);
-    //MatView(theSOE->A, PETSC_VIEWER_STDOUT_WORLD);
-    //VecView(theSOE->b, PETSC_VIEWER_STDOUT_WORLD);
-
-    //GZ # ifdef _TIMING
-    //GZ # ifdef _PARALLEL_PROCESSING //Guanzhou added
-    double start_time = MPI_Wtime();
-    //GZ # endif
-    //GZ # endif
-    //Added By Babak KAmrani 04/03/2012:
-
-    //  theSOE->DumpB();
-    //
+    // double start_time = MPI_Wtime();
 
     ierr = KSPSolve(ksp, theSOE->b, theSOE->x);
     CHKERRQ(ierr);
+    theSOE->isFactored = 1;
 
     //Added by Babak Kamrani at 01/24/2012
     //The following lines will dump all nodes displacement data in a file :
     //----------------------------------------------
-    // KSPView(ksp,PETSC_VIEWER_STDOUT_WORLD);
-
-#ifdef _BABAK_DEBUG
+    KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD);
 
     cout << "PetscSolver::solve() -- PID#    " << processID << "     writing right hand side in RHS.txt file ... " << endl;
     PetscViewer    viewer_RHS;
@@ -287,60 +273,13 @@ PetscSolver::solve(void)
 
 
 
-
-
-
-
-    //      if (g_Step_Number == 1)
-    //      {
-    //
-    // //     std::ostringstream Out;
-    // //
-    // //     Out << "Disp_Step#" << g_Step_Number<< ".txt";
-    // //     std::string Outputfilename = Out.str();
-    //       //char Outputfilename[20];
-    //       //strcpy (Outputfilename,"X_Step");
-    //       //strncat (Outputfilename, ::g_Step_Number, 6);
-    //     //puts (Outputfilename);
-
-    //
-    //
-    //
-    //
-
-
     cout << "PetscSolver::solve() -- PID#    " << processID << " writing results ... " << endl;
     PetscViewer    viewer_x;
     PetscViewerASCIIOpen(PETSC_COMM_WORLD, "X.txt", &viewer_x);
     VecView(theSOE->x, viewer_x);
-    //
-
-    //      }
-
-#endif
-
-
     ////////////////////////////////////////
 
 
-
-    //-----------------------
-    //VecView(theSOE->x, PETSC_VIEWER_STDOUT_WORLD);
-
-    //GZ # ifdef _TIMING
-    //GZ # ifdef _PARALLEL_RPOCESSING //Guanzhou added
-    double end_time = MPI_Wtime();
-
-    // if ( processID == 0 )
-    // {
-    //     cerr << "Timing used by solving: " << end_time - start_time << endln;
-    // }
-
-    //GZ # endif
-    //GZ # endif
-
-
-    theSOE->isFactored = 1;
 
     //
     // if parallel, we must form the total X: each processor has startRow through endRow-1
@@ -398,10 +337,6 @@ PetscSolver::solve(void)
             //------------------------------------------------------------------------
         }
     }
-
-
-
-
 
 
     ierr = KSPDestroy(&ksp);
@@ -584,6 +519,8 @@ PetscSolver::setSize()
 
     KSPCreate(PETSC_COMM_WORLD, &ksp);
 
+
+    return 0;
 }
 
 
