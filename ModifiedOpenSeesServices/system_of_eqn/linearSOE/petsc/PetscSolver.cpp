@@ -261,23 +261,28 @@ PetscSolver::solve(void)
     CHKERRQ(ierr);
     theSOE->isFactored = 1;
 
-    //The following lines will dump all nodes displacement data in a file :
+    //PETSc Diagnostics
     //----------------------------------------------
-    cout << "PetscSolver::solve()  ---------  Begin PetSC diagnostics\n";
-    KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD);
+    // cout << "PetscSolver::solve()  ---------  Begin PetSC diagnostics\n";
+    // KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD);
 
-    // cout << "PetscSolver::solve() -- PID#    " << processID << "     writing right hand side in RHS.txt file ... " << endl;
-    PetscViewer    viewer_RHS;
-    PetscViewerASCIIOpen(PETSC_COMM_WORLD, "RHS.txt", &viewer_RHS);
-    VecView(theSOE->b, viewer_RHS);
-
+    // PetscViewer    viewer_A;
+    // PetscViewerASCIIOpen(PETSC_COMM_WORLD, "A.txt", &viewer_A);
+    // MatView(theSOE->A, viewer_A);
 
 
-    // cout << "PetscSolver::solve() -- PID#    " << processID << " writing results ... " << endl;
-    PetscViewer    viewer_x;
-    PetscViewerASCIIOpen(PETSC_COMM_WORLD, "X.txt", &viewer_x);
-    VecView(theSOE->x, viewer_x);
-    cout << "PetscSolver::solve()  ---------  End PetSC diagnostics\n";
+    // // cout << "PetscSolver::solve() -- PID#    " << processID << "     writing right hand side in RHS.txt file ... " << endl;
+    // PetscViewer    viewer_RHS;
+    // PetscViewerASCIIOpen(PETSC_COMM_WORLD, "RHS.txt", &viewer_RHS);
+    // VecView(theSOE->b, viewer_RHS);
+
+
+
+    // // cout << "PetscSolver::solve() -- PID#    " << processID << " writing results ... " << endl;
+    // PetscViewer    viewer_x;
+    // PetscViewerASCIIOpen(PETSC_COMM_WORLD, "X.txt", &viewer_x);
+    // VecView(theSOE->x, viewer_x);
+    // cout << "PetscSolver::solve()  ---------  End PetSC diagnostics\n";
     ////////////////////////////////////////
 
 

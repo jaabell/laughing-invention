@@ -336,6 +336,32 @@ int ElasticIsotropic3DLT::recvSelf( int commitTag, Channel &theChannel, FEM_Obje
         }
 
 
+    double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
+    double mu = E / ( 2 * ( 1 + v ) );
+
+    Ee( 0, 0, 0, 0 ) = lambda + 2 * mu;
+    Ee( 0, 0, 1, 1 ) = lambda;
+    Ee( 0, 0, 2, 2 ) = lambda;
+    Ee( 0, 1, 0, 1 ) = mu;
+    Ee( 0, 1, 1, 0 ) = mu;
+    Ee( 0, 2, 0, 2 ) = mu;
+    Ee( 0, 2, 2, 0 ) = mu;
+    Ee( 1, 0, 0, 1 ) = mu;
+    Ee( 1, 0, 1, 0 ) = mu;
+    Ee( 1, 1, 0, 0 ) = lambda;
+    Ee( 1, 1, 1, 1 ) = lambda + 2 * mu;
+    Ee( 1, 1, 2, 2 ) = lambda;
+    Ee( 1, 2, 1, 2 ) = mu;
+    Ee( 1, 2, 2, 1 ) = mu;
+    Ee( 2, 0, 0, 2 ) = mu;
+    Ee( 2, 0, 2, 0 ) = mu;
+    Ee( 2, 1, 1, 2 ) = mu;
+    Ee( 2, 1, 2, 1 ) = mu;
+    Ee( 2, 2, 0, 0 ) = lambda;
+    Ee( 2, 2, 1, 1 ) = lambda;
+    Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
+
+
     return 0;
 }
 
