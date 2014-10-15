@@ -131,21 +131,36 @@ PenaltyElement::setDomain(Domain *theDomain)
         return;
     }
 
+    theNodes[0] = theDomain->getNode( connectedExternalNodes(0) );
+# ifdef _PARALLEL_PROCESSING
 
-    theNodes[0] = theDomain->getNode(connectedExternalNodes(0));
-    theNodes[1] = theDomain->getNode(connectedExternalNodes(1));
+    if ( theNodes[0] == 0 )
+    {
+        theNodes[0] = theDomain->getOutsideNode( connectedExternalNodes(0) );
+    }
+
+# endif
+    theNodes[1] = theDomain->getNode( connectedExternalNodes(1) );
+# ifdef _PARALLEL_PROCESSING
+
+    if ( theNodes[1] == 0 )
+    {
+        theNodes[1] = theDomain->getOutsideNode( connectedExternalNodes(1) );
+    }
+
+# endif
 
 
     if (theNodes[0] == 0 || theNodes[1] == 0)
     {
-        cerr << "PenaltyElement::setDomain() - PenaltyElement" << this->getTag() << " node does not exist in the model\n";
+        cerr << "PenaltyElement::setDomain() - PenaltyElement " << this->getTag() << " node does not exist in the model\n";
         exit(-1);
     }
 
 
     if ( (dof > theNodes[0]->getNumberDOF()) || (dof > theNodes[1]->getNumberDOF()) )
     {
-        cerr << "PenaltyElement::setDomain() - PenaltyElement" << this->getTag() << " defined dof is appropriates for either of the nodes!\n";
+        cerr << "PenaltyElement::setDomain() - PenaltyElement " << this->getTag() << " defined dof is appropriates for either of the nodes!\n";
         exit(-1);
     }
 
@@ -291,29 +306,31 @@ PenaltyElement::getResistingForceIncInertia()
 int
 PenaltyElement::sendSelf(int commitTag, Channel &theChannel)
 {
+    ID intData(5);
+    Vector doubleData(1);
 
-    //Iimplemented by Babak Kamrani on 6/12/13
-    //-----------
-    int res = 0;
-    static Vector data(6);
+    intData(0) = this->getTag();
+    intData(1) = numDOF;
+    intData(2) = dof;
+    intData(3) = connectedExternalNodes(0);
+    intData(4) = connectedExternalNodes(1);
 
-    data(0) = (double)numDOF;
-    data(1) = (double)dof;
-    data(2) = penaltystiffness;
-    data(3) = (double)connectedExternalNodes(0);
-    data(4) = (double)connectedExternalNodes(1);
-    data(5)  = this->getTag();
 
-    res += theChannel.sendVector(this->getDbTag(), commitTag, data);
-
-    if (res < 0)
+    if (theChannel.sendID(this->getDbTag(), commitTag, intData) < 0)
     {
-        cerr << "PenaltyElement::sendSelf -- could not send data Vector\n";
-        return res;
+        cerr << "PenaltyElement::sendSelf -- could not send intData Vector\n";
+        return -1;
     }
 
-    return res;
-    //-----------
+
+    doubleData(0) = penaltystiffness;
+    if (theChannel.sendVector(this->getDbTag(), commitTag, doubleData) < 0)
+    {
+        cerr << "PenaltyElement::sendSelf -- could not send doubleData Vector\n";
+        return -1;
+    }
+
+    return 0;
 }
 
 
@@ -321,28 +338,29 @@ PenaltyElement::sendSelf(int commitTag, Channel &theChannel)
 int
 PenaltyElement::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
-    //Iimplemented by Babak Kamrani on 6/12/13
-    //-------------------
-    int res = 0;
-    static Vector data(6);
+    ID intData(5);
+    Vector doubleData(1);
 
-    numDOF = (int)data(0);
-    dof    = (int)data(1);
-    penaltystiffness = data(2);
-    connectedExternalNodes(0) = (int)data(3);
-    connectedExternalNodes(1) = (int)data(4);
-    this->setTag((int)data(5));
-
-    res += theChannel.recvVector(this->getDbTag(), commitTag, data);
-
-    if (res < 0)
+    if (theChannel.recvID(this->getDbTag(), commitTag, intData) < 0)
     {
-        cerr << "PenaltyElement::recvSelf -- could not receive data Vector\n";
-        return res;
+        cerr << "PenaltyElement::recvSelf -- could not receive doubleData Vector\n";
+        return -1;
     }
 
-    return res;
-    //-------------------
+    this->setTag(intData(0));
+    numDOF                    = intData(1);
+    dof                       = intData(2);
+    connectedExternalNodes(0) = intData(3);
+    connectedExternalNodes(1) = intData(4);
+
+    if (theChannel.recvVector(this->getDbTag(), commitTag, doubleData) < 0)
+    {
+        cerr << "PenaltyElement::recvSelf -- could not receive doubleData Vector\n";
+        return -1;
+    }
+    penaltystiffness = doubleData(0);
+
+    return 0;
 
 }
 

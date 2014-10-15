@@ -131,7 +131,6 @@ class PenaltyElement : public Element
 
 
 
-        int direction;
         Node *theNodes[2];
         double penaltystiffness;
 
