@@ -500,8 +500,9 @@ DomainPartitioner::partition(int numParts)
                     continue;
                 }
                 theSubdomain->addExternalNode(nodePtr);
-                numExternalNodes++;
+                // nodesOnEachPart[par]++;
             }
+            numExternalNodes++;
         }
         numTotalNodes++;
     }
@@ -732,6 +733,11 @@ DomainPartitioner::partition(int numParts)
     myDomain->domainChange();
 
     partitionFlag = true;
+
+
+
+
+
 
     return 0;
 }
