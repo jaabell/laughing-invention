@@ -335,7 +335,7 @@ DomainPartitioner::partition(int numParts)
     ele_nodes = new int [total_nodes_Num];
     if ( ele_nodes == NULL)
     {
-        cerr << "DomainPartitioner::partition() - can notallocate memory for ele_nodes\n";
+        cerr << "DomainPartitioner::partition() - can not allocate memory for ele_nodes\n";
     }
 
 
@@ -514,6 +514,14 @@ DomainPartitioner::partition(int numParts)
     cout << "       Total Number of External Nodes = " << numExternalNodes << "\n";
 
     cout << "    Done Sending Nodes.\n";
+
+    ofstream parcountfile("parcount.dat", ios::out);
+    for (int index = 0; index < maxNodeTag; index++)
+    {
+        parcountfile << ParCount[index] << "\n";
+    }
+
+    parcountfile.close();
 
 
 
