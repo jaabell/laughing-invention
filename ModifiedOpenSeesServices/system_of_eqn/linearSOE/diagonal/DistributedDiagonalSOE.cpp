@@ -147,7 +147,7 @@ DistributedDiagonalSOE::setSize(Graph& theGraph)
         //
 
         Channel* theChannel = theChannels[0];
-        theChannel->recvID(0, 0, otherSize);
+        theChannel->receiveID(0, 0, otherSize);
         numProcesses = otherSize(0);
 
         // send local
@@ -162,13 +162,13 @@ DistributedDiagonalSOE::setSize(Graph& theGraph)
         for (int i = 0; i < numProcesses - 1; i++)
         {
             // receive remote & check for shared DOFs
-            theChannel->recvID(0, 0, otherSize);
+            theChannel->receiveID(0, 0, otherSize);
             int numOther = otherSize(0);
 
             if (numOther != 0)
             {
                 otherDOFS.resize(numOther);
-                theChannel->recvID(0, 0, otherDOFS);
+                theChannel->receiveID(0, 0, otherDOFS);
 
                 for (int j = 0; j < numOther; j++)
                 {
@@ -192,13 +192,13 @@ DistributedDiagonalSOE::setSize(Graph& theGraph)
         }
 
         // recv all shared DOFs
-        theChannel->recvID(0, 0, otherSize);
+        theChannel->receiveID(0, 0, otherSize);
         int numShared = otherSize(0);
 
         if (numShared != 0)
         {
             myDOFsShared.resize(numShared);
-            theChannel->recvID(0, 0, myDOFsShared);
+            theChannel->receiveID(0, 0, myDOFsShared);
         }
 
     }
@@ -233,13 +233,13 @@ DistributedDiagonalSOE::setSize(Graph& theGraph)
 
             // receive remote & check for shared DOFs
 
-            theChannel->recvID(0, 0, otherSize);
+            theChannel->receiveID(0, 0, otherSize);
             int numOther = otherSize(0);
 
             if (numOther != 0)
             {
                 otherDOFS.resize(numOther);
-                theChannel->recvID(0, 0, otherDOFS);
+                theChannel->receiveID(0, 0, otherDOFS);
             }
 
             // need to send to all others
@@ -274,13 +274,13 @@ DistributedDiagonalSOE::setSize(Graph& theGraph)
         for (int j = 0; j < numChannels; j++)
         {
             Channel* theChannel = theChannels[j];
-            theChannel->recvID(0, 0, otherSize);
+            theChannel->receiveID(0, 0, otherSize);
             int numOther = otherSize(0);
 
             if (numOther != 0)
             {
                 otherDOFS.resize(numOther);
-                theChannel->recvID(0, 0, otherDOFS);
+                theChannel->receiveID(0, 0, otherDOFS);
             }
 
             // need to merge with mine
@@ -829,15 +829,15 @@ DistributedDiagonalSOE::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-DistributedDiagonalSOE::recvSelf(int cTag, Channel& theChannel,
+DistributedDiagonalSOE::receiveSelf(int cTag, Channel& theChannel,
                                  FEM_ObjectBroker& theBroker)
 {
     ID idData(1);
-    int res = theChannel.recvID(0, cTag, idData);
+    int res = theChannel.receiveID(0, cTag, idData);
 
     if (res < 0)
     {
-        cerr << "WARNING DistributedProfileSPDLinSOE::recvSelf() - failed to send data\n";
+        cerr << "WARNING DistributedProfileSPDLinSOE::receiveSelf() - failed to send data\n";
         return -1;
     }
 

@@ -450,7 +450,7 @@ int FiniteDeformationEP3D::sendSelf(int commitTag, Channel& theChannel)
 
 
 //----------------------------------------------------------------------
-int FiniteDeformationEP3D::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int FiniteDeformationEP3D::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     // Not yet implemented
     return 0;

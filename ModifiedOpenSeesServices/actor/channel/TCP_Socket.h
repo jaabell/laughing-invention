@@ -63,7 +63,7 @@ class TCP_Socket : public Channel
         int sendObj(int commitTag,
                     MovableObject& theObject,
                     ChannelAddress* theAddress = 0);
-        int recvObj(int commitTag,
+        int receiveObj(int commitTag,
                     MovableObject& theObject,
                     FEM_ObjectBroker& theBroker,
                     ChannelAddress* theAddress = 0);
@@ -71,27 +71,27 @@ class TCP_Socket : public Channel
         int sendMsg(int dbTag, int commitTag,
                     const Message&,
                     ChannelAddress* theAddress = 0);
-        int recvMsg(int dbTag, int commitTag,
+        int receiveMsg(int dbTag, int commitTag,
                     Message&,
                     ChannelAddress* theAddress = 0);
 
         int sendMatrix(int dbTag, int commitTag,
                        const Matrix& theMatrix,
                        ChannelAddress* theAddress = 0);
-        int recvMatrix(int dbTag, int commitTag,
+        int receiveMatrix(int dbTag, int commitTag,
                        Matrix& theMatrix,
                        ChannelAddress* theAddress = 0);
 
         int sendVector(int dbTag, int commitTag,
                        const Vector& theVector, ChannelAddress* theAddress = 0);
-        int recvVector(int dbTag, int commitTag,
+        int receiveVector(int dbTag, int commitTag,
                        Vector& theVector,
                        ChannelAddress* theAddress = 0);
 
         int sendID(int dbTag, int commitTag,
                    const ID& theID,
                    ChannelAddress* theAddress = 0);
-        int recvID(int dbTag, int commitTag,
+        int receiveID(int dbTag, int commitTag,
                    ID& theID,
                    ChannelAddress* theAddress = 0);
 

@@ -53,7 +53,7 @@ ElementalLoad::ElementalLoad(int tag, int cTag)
 }
 
 // provided for the FEM_Object broker; the tag and elementTag need
-// to be supplied in recvSelf();
+// to be supplied in receiveSelf();
 ElementalLoad::ElementalLoad(int cTag)
     : Load(0, cTag), theElementTags(0), theElements(0), numElements(0)
 {

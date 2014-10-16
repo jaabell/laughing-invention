@@ -1804,14 +1804,14 @@ int EPState::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added
-int EPState::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int EPState::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
     static ID idData(5);
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv ID\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv ID\n";
         return -1;
     }
 
@@ -1833,9 +1833,9 @@ int EPState::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theB
 
     static Vector EPSData(15);
 
-    if (theChannel.recvVector(dataTag, commitTag, EPSData) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, EPSData) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv Vector EPSData\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv Vector EPSData\n";
         return -1;
     }
     else
@@ -1857,107 +1857,107 @@ int EPState::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theB
         Delta_lambda = EPSData(14);
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, CurrentStress) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, CurrentStress) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray CurrentStress\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray CurrentStress\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, CurrentStrain) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, CurrentStrain) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray CurrentStrain\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray CurrentStrain\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, ElasticStrain) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, ElasticStrain) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray ElasticStrain\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray ElasticStrain\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, PlasticStrain) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, PlasticStrain) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray PlasticStrain\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray PlasticStrain\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, dElasticStrain) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, dElasticStrain) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray dElasticStrain\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray dElasticStrain\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, dPlasticStrain) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, dPlasticStrain) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray dPlasticStrain\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray dPlasticStrain\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Stress_commit) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Stress_commit) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray Stress_commit\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray Stress_commit\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Strain_commit) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Strain_commit) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray Strain_commit\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray Strain_commit\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, ElasticStrain_commit) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, ElasticStrain_commit) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray ElasticStrain_commit\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray ElasticStrain_commit\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Stress_init) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Stress_init) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray Stress_init\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray Stress_init\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Strain_init) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Strain_init) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray Strain_init\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray Strain_init\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Eep) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Eep) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray Eep\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray Eep\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Eep_commit) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Eep_commit) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray Eep_commit\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray Eep_commit\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Eep_init) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Eep_init) < 0)
     {
-        cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray Eep_init\n";
+        cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray Eep_init\n";
         return -1;
     }
 
     for(int i = 0; i < 4; i++)
     {
-        if (theChannel.recvnDarray(dataTag, commitTag, TensorVar[i]) < 0)
+        if (theChannel.receivenDarray(dataTag, commitTag, TensorVar[i]) < 0)
         {
-            cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray TensorVar\n";
+            cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray TensorVar\n";
             return -1;
         }
 
-        if (theChannel.recvnDarray(dataTag, commitTag, TensorVar_commit[i]) < 0)
+        if (theChannel.receivenDarray(dataTag, commitTag, TensorVar_commit[i]) < 0)
         {
-            cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray TensorVar_commit\n";
+            cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray TensorVar_commit\n";
             return -1;
         }
 
-        if (theChannel.recvnDarray(dataTag, commitTag, TensorVar_init[i]) < 0)
+        if (theChannel.receivenDarray(dataTag, commitTag, TensorVar_init[i]) < 0)
         {
-            cerr << "WARNING EPState::recvSelf() - " << this->getTag() << " failed to recv nDarray TensorVar_init\n";
+            cerr << "WARNING EPState::receiveSelf() - " << this->getTag() << " failed to recv nDarray TensorVar_init\n";
             return -1;
         }
     }

@@ -144,7 +144,7 @@ TrapezoidalTimeSeriesIntegrator::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-TrapezoidalTimeSeriesIntegrator::recvSelf(int commitTag, Channel& theChannel,
+TrapezoidalTimeSeriesIntegrator::receiveSelf(int commitTag, Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {
     return 0;

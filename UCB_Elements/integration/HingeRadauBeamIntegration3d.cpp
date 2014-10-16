@@ -415,16 +415,16 @@ HingeRadauBeamIntegration3d::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-HingeRadauBeamIntegration3d::recvSelf(int cTag, Channel& theChannel,
+HingeRadauBeamIntegration3d::receiveSelf(int cTag, Channel& theChannel,
                                       FEM_ObjectBroker& theBroker)
 {
     static Vector data(8);
 
     int dbTag = this->getDbTag();
 
-    if (theChannel.recvVector(dbTag, cTag, data) < 0)
+    if (theChannel.receiveVector(dbTag, cTag, data) < 0)
     {
-        std::cerr << "HingeRadauBeamIntegration3d::recvSelf() - failed to receive Vector data\n";
+        std::cerr << "HingeRadauBeamIntegration3d::receiveSelf() - failed to receive Vector data\n";
         return -1;
     }
 

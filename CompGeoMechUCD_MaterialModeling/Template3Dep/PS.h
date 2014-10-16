@@ -69,7 +69,7 @@ class PotentialSurface : public MovableObject
         {
             return 0;
         };
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
         {
             return 0;
         };

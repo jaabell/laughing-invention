@@ -119,7 +119,7 @@ ImposedMotionSP1::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ImposedMotionSP1::recvSelf(int cTag, Channel& theChannel,
+ImposedMotionSP1::receiveSelf(int cTag, Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
     return -1;

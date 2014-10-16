@@ -570,10 +570,10 @@ FEM_ObjectBroker::getNewUniaxialMaterial(int classTag)
     switch (classTag)
     {
         case MAT_TAG_ElasticMaterial:
-            return new ElasticMaterial(); // values set in recvSelf
+            return new ElasticMaterial(); // values set in receiveSelf
 
         case MAT_TAG_ElasticPPMaterial:
-            return new ElasticPPMaterial(); // values set in recvSelf
+            return new ElasticPPMaterial(); // values set in receiveSelf
 
         case MAT_TAG_ParallelMaterial:
             return new ParallelMaterial();
@@ -1360,16 +1360,16 @@ FEM_ObjectBroker::getNewStaticIntegrator(int classTag)
     switch (classTag)
     {
         case INTEGRATOR_TAGS_LoadControl:
-            return new LoadControl(1.0, 1, 1.0, .10); // must recvSelf
+            return new LoadControl(1.0, 1, 1.0, .10); // must receiveSelf
 
 #ifdef _PARALLEL_PROCESSING
 
         case INTEGRATOR_TAGS_DistributedDisplacementControl:
-            return new DistributedDisplacementControl(); // must recvSelf
+            return new DistributedDisplacementControl(); // must receiveSelf
 #endif
 
         case INTEGRATOR_TAGS_ArcLength:
-            return new ArcLength(1.0);      // must recvSelf
+            return new ArcLength(1.0);      // must receiveSelf
 
 
         default:
@@ -1407,11 +1407,11 @@ FEM_ObjectBroker::getNewIncrementalIntegrator(int classTag)
     switch (classTag)
     {
         case INTEGRATOR_TAGS_LoadControl:
-            return new LoadControl(1.0, 1, 1.0, 1.0); // must recvSelf
+            return new LoadControl(1.0, 1, 1.0, 1.0); // must receiveSelf
 
 
         case INTEGRATOR_TAGS_ArcLength:
-            return new ArcLength(1.0);      // must recvSelf
+            return new ArcLength(1.0);      // must receiveSelf
 
 
         case INTEGRATOR_TAGS_Newmark:
@@ -1420,7 +1420,7 @@ FEM_ObjectBroker::getNewIncrementalIntegrator(int classTag)
 #ifdef _PARALLEL_PROCESSING
 
         case INTEGRATOR_TAGS_DistributedDisplacementControl:
-            return new DistributedDisplacementControl(); // must recvSelf
+            return new DistributedDisplacementControl(); // must receiveSelf
 #endif
 
         default:

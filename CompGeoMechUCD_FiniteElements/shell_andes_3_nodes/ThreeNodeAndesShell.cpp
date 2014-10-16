@@ -482,7 +482,7 @@ int ThreeNodeAndesShell::sendSelf (int commitTag, Channel& theChannel)
     return 0;
 }
 
-int ThreeNodeAndesShell::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int ThreeNodeAndesShell::receiveSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

@@ -276,7 +276,7 @@ TCP_SocketNoDelay::setNextAddress(const ChannelAddress& theAddress)
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvMsg() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveMsg() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
@@ -331,7 +331,7 @@ TCP_SocketNoDelay::sendObj(MovableObject& theObject,
 }
 
 int
-TCP_SocketNoDelay::recvObj(MovableObject& theObject,
+TCP_SocketNoDelay::receiveObj(MovableObject& theObject,
                            FEM_ObjectBroker& theBroker,
                            ChannelAddress* theAddress)
 {
@@ -356,13 +356,13 @@ TCP_SocketNoDelay::recvObj(MovableObject& theObject,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvMsg() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveMsg() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
     }
 
-    return theObject.recvSelf(*this, theBroker);
+    return theObject.receiveSelf(*this, theBroker);
 }
 
 
@@ -370,7 +370,7 @@ TCP_SocketNoDelay::recvObj(MovableObject& theObject,
 //  Method to receive a message, also sets other_Addr to that of sender
 
 int
-TCP_SocketNoDelay::recvMsg(Message& msg, ChannelAddress* theAddress)
+TCP_SocketNoDelay::receiveMsg(Message& msg, ChannelAddress* theAddress)
 {
     // first check address is the only address a TCP_SocketNoDelay can send to
     SocketAddress* theSocketAddress = 0;
@@ -393,7 +393,7 @@ TCP_SocketNoDelay::recvMsg(Message& msg, ChannelAddress* theAddress)
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvMsg() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveMsg() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
@@ -444,7 +444,7 @@ TCP_SocketNoDelay::sendMsg(const Message& msg, ChannelAddress* theAddress)
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvMsg() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveMsg() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
@@ -471,7 +471,7 @@ TCP_SocketNoDelay::sendMsg(const Message& msg, ChannelAddress* theAddress)
 
 
 int
-TCP_SocketNoDelay::recvMatrix(Matrix& theMatrix, ChannelAddress* theAddress)
+TCP_SocketNoDelay::receiveMatrix(Matrix& theMatrix, ChannelAddress* theAddress)
 
 {
     // first check address is the only address a TCP_SocketNoDelay can send to
@@ -495,7 +495,7 @@ TCP_SocketNoDelay::recvMatrix(Matrix& theMatrix, ChannelAddress* theAddress)
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvMatrix() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveMatrix() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
@@ -548,7 +548,7 @@ TCP_SocketNoDelay::sendMatrix(const Matrix& theMatrix, ChannelAddress* theAddres
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvMatrix() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveMatrix() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
@@ -580,7 +580,7 @@ TCP_SocketNoDelay::sendMatrix(const Matrix& theMatrix, ChannelAddress* theAddres
 
 
 int
-TCP_SocketNoDelay::recvVector(Vector& theVector, ChannelAddress* theAddress)
+TCP_SocketNoDelay::receiveVector(Vector& theVector, ChannelAddress* theAddress)
 
 {
     // first check address is the only address a TCP_SocketNoDelay can send to
@@ -604,7 +604,7 @@ TCP_SocketNoDelay::recvVector(Vector& theVector, ChannelAddress* theAddress)
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvVector() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveVector() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
@@ -655,7 +655,7 @@ TCP_SocketNoDelay::sendVector(const Vector& theVector, ChannelAddress* theAddres
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvVector() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveVector() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
@@ -682,7 +682,7 @@ TCP_SocketNoDelay::sendVector(const Vector& theVector, ChannelAddress* theAddres
 
 
 int
-TCP_SocketNoDelay::recvID(ID& theID, ChannelAddress* theAddress)
+TCP_SocketNoDelay::receiveID(ID& theID, ChannelAddress* theAddress)
 
 {
     // first check address is the only address a TCP_SocketNoDelay can send to
@@ -706,7 +706,7 @@ TCP_SocketNoDelay::recvID(ID& theID, ChannelAddress* theAddress)
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvID() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveID() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }
@@ -757,7 +757,7 @@ TCP_SocketNoDelay::sendID(const ID& theID, ChannelAddress* theAddress)
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_SocketNoDelay::recvID() - a TCP_SocketNoDelay ";
+            cerr << "TCP_SocketNoDelay::receiveID() - a TCP_SocketNoDelay ";
             cerr << "can only communicate with one other TCP_SocketNoDelay\n";
             return -1;
         }

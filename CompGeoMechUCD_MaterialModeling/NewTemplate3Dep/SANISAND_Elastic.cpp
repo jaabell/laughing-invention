@@ -206,16 +206,16 @@ int SANISAND_Elastic::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int SANISAND_Elastic::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int SANISAND_Elastic::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(5);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "SANISAND_Elastic::recvSelf -- failed to recv ID\n";
+        cerr << "SANISAND_Elastic::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 
@@ -225,15 +225,15 @@ int SANISAND_Elastic::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBro
     k_c_index = idData(3);
     e0_index = idData(4);
 
-    if (theChannel.recvnDarray(dataTag, commitTag, this->Stress) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, this->Stress) < 0)
     {
-        cerr << "SANISAND_Elastic::recvSelf() -  failed to recv nDarray Stress\n";
+        cerr << "SANISAND_Elastic::receiveSelf() -  failed to recv nDarray Stress\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, this->Strain) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, this->Strain) < 0)
     {
-        cerr << "SANISAND_Elastic::recvSelf() -  failed to recv nDarray Strain\n";
+        cerr << "SANISAND_Elastic::receiveSelf() -  failed to recv nDarray Strain\n";
         return -1;
     }
 

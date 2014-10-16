@@ -68,7 +68,7 @@ class EvolutionLaw_NL_Eij : public EvolutionLaw_T
 
         //Guanzhou added for PDD
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
         int getObjectSize();
 
         void print();

@@ -461,7 +461,7 @@ SymArpackSolver::sendSelf(int cTAg, Channel& theChannel)
 }
 
 int
-SymArpackSolver::recvSelf(int cTag,
+SymArpackSolver::receiveSelf(int cTag,
                           Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     // nothing to do

@@ -235,7 +235,7 @@ int DruckerPragerPP::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //================================================================================
-int DruckerPragerPP::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int DruckerPragerPP::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

@@ -728,7 +728,7 @@ int FourNodeAndesShell::sendSelf (int commitTag, Channel &theChannel)
     return 0;
 }
 
-int FourNodeAndesShell::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int FourNodeAndesShell::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 //Implemented by Babak Kamrani on 12/27/12:
 {
     int dataTag = this->getDbTag();
@@ -737,9 +737,9 @@ int FourNodeAndesShell::recvSelf (int commitTag, Channel &theChannel, FEM_Object
 
     static ID idData(8);
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        std::cerr << "WARNIN FourNodeAndesShell::recvSelf() - " << this->getTag() << " failed to receive IdData\n";
+        std::cerr << "WARNIN FourNodeAndesShell::receiveSelf() - " << this->getTag() << " failed to receive IdData\n";
         return -1;
     }
 
@@ -762,7 +762,7 @@ int FourNodeAndesShell::recvSelf (int commitTag, Channel &theChannel, FEM_Object
 
     if (theMaterial == 0)
     {
-        std::cerr << "WARNING FourNodeAndesShell::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+        std::cerr << "WARNING FourNodeAndesShell::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
         return -1;
     }
 
@@ -770,17 +770,17 @@ int FourNodeAndesShell::recvSelf (int commitTag, Channel &theChannel, FEM_Object
 
     (*theMaterial)->setDbTag(matDbTag);
 
-    if ((*theMaterial)->recvSelf(commitTag, theChannel, theBroker) < 0)
+    if ((*theMaterial)->receiveSelf(commitTag, theChannel, theBroker) < 0)
     {
-        cerr << "FourNodeAndesShell::recvSelf() - material failed to recv itself\n";
+        cerr << "FourNodeAndesShell::receiveSelf() - material failed to recv itself\n";
         return -1;
     }
 
     static Vector matProp(5);
 
-    if ( theChannel.recvVector(dataTag, commitTag, matProp) < 0 )
+    if ( theChannel.receiveVector(dataTag, commitTag, matProp) < 0 )
     {
-        std::cerr << "WARNING FourNodeAndesShell::recvSelf() - failed to recv matProb!\n";
+        std::cerr << "WARNING FourNodeAndesShell::receiveSelf() - failed to recv matProb!\n";
         return -1;
     }
 
@@ -794,7 +794,7 @@ int FourNodeAndesShell::recvSelf (int commitTag, Channel &theChannel, FEM_Object
     if (t == 0.0)
 
     {
-        std::cerr << "FourNodeAndesShell::recvSelf() -- Element Number #" << element_number << "   Element thickness is zero ... \n";
+        std::cerr << "FourNodeAndesShell::receiveSelf() -- Element Number #" << element_number << "   Element thickness is zero ... \n";
         abort();
     }
 

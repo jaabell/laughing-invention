@@ -51,7 +51,7 @@ class DiagonalDirectSolver : public DiagonalSolver
         virtual int setDiagonalSOE(DiagonalSOE& theSOE);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     protected:
         double minDiagTol;

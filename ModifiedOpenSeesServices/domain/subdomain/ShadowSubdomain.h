@@ -150,7 +150,7 @@ class ShadowSubdomain: public Shadow, public Subdomain
         virtual int newStep(double deltaT);
 
         virtual int sendSelf(int commitTag, Channel &theChannel);
-        virtual int recvSelf(int commitTag, Channel &theChannel,
+        virtual int receiveSelf(int commitTag, Channel &theChannel,
                              FEM_ObjectBroker &theBroker);
 
         virtual double getCost(void);

@@ -65,7 +65,7 @@ class DistributedDiagonalSOE : public LinearSOE
         int setDiagonalSolver(DistributedDiagonalSolver& newSolver);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
         int setChannels(int nChannels, Channel** theC);
 
         int setAnalysisModel(AnalysisModel& theModel);

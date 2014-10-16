@@ -64,7 +64,7 @@ class BoucWenMaterial : public UniaxialMaterial
         int revertToStart(void);
         UniaxialMaterial* getCopy(void);
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
         void Print(ostream& s, int flag = 0);
 

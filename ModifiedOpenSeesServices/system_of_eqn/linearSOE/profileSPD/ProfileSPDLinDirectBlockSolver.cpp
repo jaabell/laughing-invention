@@ -472,7 +472,7 @@ ProfileSPDLinDirectBlockSolver::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-ProfileSPDLinDirectBlockSolver::recvSelf(int cTag,
+ProfileSPDLinDirectBlockSolver::receiveSelf(int cTag,
         Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {

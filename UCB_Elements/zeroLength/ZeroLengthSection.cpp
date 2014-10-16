@@ -410,7 +410,7 @@ ZeroLengthSection::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ZeroLengthSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ZeroLengthSection::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
@@ -421,19 +421,19 @@ ZeroLengthSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
 
     static ID idData(8);
 
-    res += theChannel.recvID(dataTag, commitTag, idData);
+    res += theChannel.receiveID(dataTag, commitTag, idData);
 
     if (res < 0)
     {
-        std::cerr << "ZeroLengthSection::recvSelf -- failed to receive ID data\n";
+        std::cerr << "ZeroLengthSection::receiveSelf -- failed to receive ID data\n";
         return res;
     }
 
-    res += theChannel.recvMatrix(dataTag, commitTag, transformation);
+    res += theChannel.receiveMatrix(dataTag, commitTag, transformation);
 
     if (res < 0)
     {
-        std::cerr << "ZeroLengthSection::recvSelf -- failed to receive transformation Matrix\n";
+        std::cerr << "ZeroLengthSection::receiveSelf -- failed to receive transformation Matrix\n";
         return res;
     }
 
@@ -459,7 +459,7 @@ ZeroLengthSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
 
         if (A == 0)
         {
-            std::cerr << "ZeroLengthSection::recvSelf -- failed to allocate transformation Matrix\n";
+            std::cerr << "ZeroLengthSection::receiveSelf -- failed to allocate transformation Matrix\n";
             exit(-1);
         }
 
@@ -473,7 +473,7 @@ ZeroLengthSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
 
         if (v == 0)
         {
-            std::cerr << "ZeroLengthSection::recvSelf -- failed to allocate deformation Vector\n";
+            std::cerr << "ZeroLengthSection::receiveSelf -- failed to allocate deformation Vector\n";
             exit(-1);
         }
 
@@ -507,17 +507,17 @@ ZeroLengthSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
     // Check if either allocation failed from broker
     if (theSection == 0)
     {
-        std::cerr << "ZeroLengthSection::recvSelf -- failed to allocate new Section\n";
+        std::cerr << "ZeroLengthSection::receiveSelf -- failed to allocate new Section\n";
         return -1;
     }
 
     // Receive the section
     theSection->setDbTag(idData(7));
-    res += theSection->recvSelf(commitTag, theChannel, theBroker);
+    res += theSection->receiveSelf(commitTag, theChannel, theBroker);
 
     if (res < 0)
     {
-        std::cerr << "ZeroLengthSection::recvSelf -- failed to receive Section\n";
+        std::cerr << "ZeroLengthSection::receiveSelf -- failed to receive Section\n";
         return res;
     }
 

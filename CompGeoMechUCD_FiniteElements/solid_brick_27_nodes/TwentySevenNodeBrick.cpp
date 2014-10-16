@@ -3186,15 +3186,15 @@ int TwentySevenNodeBrick::sendSelf (int commitTag, Channel &theChannel)
 
 //=============================================================================
 //implemented by Babak Kamrani on 10/18/2012
-int TwentySevenNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int TwentySevenNodeBrick::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(30);
     // Quad now receives the tags of its four external nodes
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        std::cerr << "WARNING TwentySevenNodeBrick::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+        std::cerr << "WARNING TwentySevenNodeBrick::receiveSelf() - " << this->getTag() << " failed to receive ID\n";
         return -1;
     }
 
@@ -3274,21 +3274,21 @@ int TwentySevenNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_Obje
             NDMaterial *ndmat = theBroker.getNewNDMaterial(matClassTag);
             if (ndmat == 0)
             {
-                std::cerr << "TwentySevenNodeBrick::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                std::cerr << "TwentySevenNodeBrick::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
                 return -1;
             }
             // Now receive materials into the newly allocated space
             ndmat->setDbTag(matDbTag);
-            if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                std::cerr << "TwentySevenNodeBrick::recvSelf() - material " << i << "failed to recv itself\n";
+                std::cerr << "TwentySevenNodeBrick::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
             matpoint[i]->matmodel = ndmat;
 
         }
     }
-    // materials exist , ensure materials of correct type and recvSelf on them
+    // materials exist , ensure materials of correct type and receiveSelf on them
     else
     {
         for (int i = 0; i < 27; i++)
@@ -3302,15 +3302,15 @@ int TwentySevenNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_Obje
                 //        ndmat = theBroker.getNewNDMaterial(matClassTag);
                 if (ndmat ==  0)
                 {
-                    std::cerr << "TwentySevenNodeBrick::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                    std::cerr << "TwentySevenNodeBrick::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
                     return -1;
                 }
                 ndmat->setDbTag(matDbTag);
             }
             // Receive the material
-            if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                std::cerr << "TwentySevenNodeBrick::recvSelf() - material " << i << "failed to recv itself\n";
+                std::cerr << "TwentySevenNodeBrick::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
             matpoint[i]->matmodel = ndmat;
@@ -3318,9 +3318,9 @@ int TwentySevenNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_Obje
         }
     }
     static Vector matProp(4);
-    if ( theChannel.recvVector(dataTag, commitTag, matProp) < 0 )
+    if ( theChannel.receiveVector(dataTag, commitTag, matProp) < 0 )
     {
-        std::cerr << "TwentySevenNodeBrick::recvSelf() - failed to recv rho!\n";
+        std::cerr << "TwentySevenNodeBrick::receiveSelf() - failed to recv rho!\n";
         return -1;
     }
 

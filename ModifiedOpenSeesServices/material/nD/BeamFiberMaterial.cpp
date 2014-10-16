@@ -494,7 +494,7 @@ BeamFiberMaterial::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-BeamFiberMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+BeamFiberMaterial::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
@@ -512,7 +512,7 @@ BeamFiberMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
     int matClassTag = idData(1);
 
     // if the associated material has not yet been created or is of the wrong type
-    // create a new material for recvSelf later
+    // create a new material for receiveSelf later
     if (theMaterial == 0 || theMaterial->getClassTag() != matClassTag)
     {
         if (theMaterial != 0)
@@ -524,7 +524,7 @@ BeamFiberMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
 
         if (theMaterial == 0)
         {
-            cerr << "BeamFiberMaterial::recvSelf() - failed to get a material of type: " << matClassTag << endln;
+            cerr << "BeamFiberMaterial::receiveSelf() - failed to get a material of type: " << matClassTag << endln;
             return -1;
         }
     }
@@ -533,7 +533,7 @@ BeamFiberMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
 
     // recv a vector containing strains and set the strains
     static Vector vecData(3);
-    res = theChannel.recvVector(this->getDbTag(), commitTag, vecData);
+    res = theChannel.receiveVector(this->getDbTag(), commitTag, vecData);
 
     if (res < 0)
     {
@@ -550,7 +550,7 @@ BeamFiberMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker
     Tgamma23  = Cgamma23;
 
     // now receive the materials data
-    res = theMaterial->recvSelf(commitTag, theChannel, theBroker);
+    res = theMaterial->receiveSelf(commitTag, theChannel, theBroker);
 
     if (res < 0)
     {

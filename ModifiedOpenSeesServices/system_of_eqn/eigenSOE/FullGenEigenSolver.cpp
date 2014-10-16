@@ -363,7 +363,7 @@ int FullGenEigenSolver::sendSelf(int commitTag, Channel& theChannel)
 }
 
 
-int FullGenEigenSolver::recvSelf(int commitTag, Channel& theChannel,
+int FullGenEigenSolver::receiveSelf(int commitTag, Channel& theChannel,
                                  FEM_ObjectBroker& theBroker)
 {
     return 0;

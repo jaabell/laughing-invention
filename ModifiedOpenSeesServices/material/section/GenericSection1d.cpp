@@ -234,18 +234,18 @@ GenericSection1d::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-GenericSection1d::recvSelf(int cTag, Channel& theChannel,
+GenericSection1d::receiveSelf(int cTag, Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
     static ID data(4);
 
-    res += theChannel.recvID(this->getDbTag(), cTag, data);
+    res += theChannel.receiveID(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "GenericSection1d::recvSelf -- could not receive ID\n";
+        cerr << "GenericSection1d::receiveSelf -- could not receive ID\n";
         return res;
     }
 
@@ -270,17 +270,17 @@ GenericSection1d::recvSelf(int cTag, Channel& theChannel,
     // Check if either allocation failed
     if (theModel == 0)
     {
-        cerr << "GenericSection1d::recvSelf -- could not get a UniaxialMaterial\n";
+        cerr << "GenericSection1d::receiveSelf -- could not get a UniaxialMaterial\n";
         return -1;
     }
 
     // Now, receive the material
     theModel->setDbTag(data(3));
-    res += theModel->recvSelf(cTag, theChannel, theBroker);
+    res += theModel->receiveSelf(cTag, theChannel, theBroker);
 
     if (res < 0)
     {
-        cerr << "GenericSection1d::recvSelf -- could not receive UniaxialMaterial\n";
+        cerr << "GenericSection1d::receiveSelf -- could not receive UniaxialMaterial\n";
         return res;
     }
 

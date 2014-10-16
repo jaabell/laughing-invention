@@ -437,17 +437,17 @@ Isolator2spring::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-Isolator2spring::recvSelf(int cTag, Channel& theChannel,
+Isolator2spring::receiveSelf(int cTag, Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
     static Vector data(13);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "Isolator2spring::recvSelf() - failed to receive data\n";
+        cerr << "Isolator2spring::receiveSelf() - failed to receive data\n";
         this->setTag(0);
     }
     else

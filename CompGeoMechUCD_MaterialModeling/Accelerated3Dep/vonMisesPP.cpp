@@ -246,7 +246,7 @@ int vonMisesPP::sendSelf(int commitTag, Channel& theChannel)
     return 0;
 }
 
-int vonMisesPP::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int vonMisesPP::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

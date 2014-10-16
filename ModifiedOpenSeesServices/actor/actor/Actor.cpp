@@ -183,15 +183,15 @@ Actor::sendObject(MovableObject &theObject,
 }
 
 int
-Actor::recvObject(MovableObject &theObject,
+Actor::receiveObject(MovableObject &theObject,
                   ChannelAddress *theAddress )
 {
     if (theAddress == 0)
-        return theChannel->recvObj(commitTag, theObject, *theBroker,
+        return theChannel->receiveObj(commitTag, theObject, *theBroker,
                                    theRemoteShadowsAddress);
     else
     {
-        return theChannel->recvObj(commitTag, theObject, *theBroker, theAddress);
+        return theChannel->receiveObj(commitTag, theObject, *theBroker, theAddress);
     }
 }
 
@@ -201,11 +201,11 @@ Actor::recvMessage(Message &theMessage, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
-        return theChannel->recvMsg(0, commitTag, theMessage, theRemoteShadowsAddress);
+        return theChannel->receiveMsg(0, commitTag, theMessage, theRemoteShadowsAddress);
     }
     else
     {
-        return theChannel->recvMsg(0, commitTag, theMessage, theAddress);
+        return theChannel->receiveMsg(0, commitTag, theMessage, theAddress);
     }
 }
 
@@ -238,15 +238,15 @@ Actor::sendMatrix(const Matrix &theMatrix, ChannelAddress *theAddress )
 }
 
 int
-Actor::recvMatrix(Matrix &theMatrix, ChannelAddress *theAddress )
+Actor::receiveMatrix(Matrix &theMatrix, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
-        return theChannel->recvMatrix(0, commitTag, theMatrix, theRemoteShadowsAddress);
+        return theChannel->receiveMatrix(0, commitTag, theMatrix, theRemoteShadowsAddress);
     }
     else
     {
-        return theChannel->recvMatrix(0, commitTag, theMatrix, theAddress);
+        return theChannel->receiveMatrix(0, commitTag, theMatrix, theAddress);
     }
 }
 
@@ -264,15 +264,15 @@ Actor::sendVector(const Vector &theVector, ChannelAddress *theAddress )
 }
 
 int
-Actor::recvVector(Vector &theVector, ChannelAddress *theAddress )
+Actor::receiveVector(Vector &theVector, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
-        return theChannel->recvVector(0, commitTag, theVector, theRemoteShadowsAddress);
+        return theChannel->receiveVector(0, commitTag, theVector, theRemoteShadowsAddress);
     }
     else
     {
-        return theChannel->recvVector(0, commitTag, theVector, theAddress);
+        return theChannel->receiveVector(0, commitTag, theVector, theAddress);
     }
 }
 
@@ -290,7 +290,7 @@ Actor::sendID(const ID &theID, ChannelAddress *theAddress )
 }
 
 int
-Actor::recvID(ID &theID, ChannelAddress *theAddress )
+Actor::receiveID(ID &theID, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
@@ -299,11 +299,11 @@ Actor::recvID(ID &theID, ChannelAddress *theAddress )
 
         if (theID(1) == 7001)
         {
-            cerr << "Babak@ Actor::recvID(ID &theID, ChannelAddress *theAddress ) - theAddress =0... theID " << theID << "\n";
+            cerr << "Babak@ Actor::receiveID(ID &theID, ChannelAddress *theAddress ) - theAddress =0... theID " << theID << "\n";
         }
 
 #endif
-        return theChannel->recvID(0, commitTag, theID, theRemoteShadowsAddress);
+        return theChannel->receiveID(0, commitTag, theID, theRemoteShadowsAddress);
     }
     else
     {
@@ -312,11 +312,11 @@ Actor::recvID(ID &theID, ChannelAddress *theAddress )
 
         if (theID(1) == 7001)
         {
-            cerr << "Babak@ Actor::recvID(ID &theID, ChannelAddress *theAddress ) ... theID " << theID << "\n";
+            cerr << "Babak@ Actor::receiveID(ID &theID, ChannelAddress *theAddress ) ... theID " << theID << "\n";
         }
 
 #endif
-        return theChannel->recvID(0, commitTag, theID, theAddress);
+        return theChannel->receiveID(0, commitTag, theID, theAddress);
     }
 }
 
@@ -358,7 +358,7 @@ Actor::barrierCheck(int myResult = 0)
     static ID data(1);
     data(0) = myResult;
     theChannel->sendID(0, commitTag, data);
-    theChannel->recvID(0, commitTag, data);
+    theChannel->receiveID(0, commitTag, data);
     result = data(0);
     return result;
 }

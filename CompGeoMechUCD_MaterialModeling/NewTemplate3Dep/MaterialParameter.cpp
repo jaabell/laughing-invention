@@ -466,7 +466,7 @@ int MaterialParameter::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int MaterialParameter::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int MaterialParameter::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
@@ -476,9 +476,9 @@ int MaterialParameter::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBr
     static Vector* data_internal_tensor = NULL;
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "MaterialParameter::recvSelf -- failed to recv ID\n";
+        cerr << "MaterialParameter::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 
@@ -499,9 +499,9 @@ int MaterialParameter::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBr
         //static Vector
         data = new Vector(Material_Constant, Num_Material_Constant);
 
-        if ( theChannel.recvVector(dataTag, commitTag, *data) < 0 )
+        if ( theChannel.receiveVector(dataTag, commitTag, *data) < 0 )
         {
-            cerr << "MaterialParameter::recvSelf -- failed to recv Material_Constant\n";
+            cerr << "MaterialParameter::receiveSelf -- failed to recv Material_Constant\n";
             return -1;
         }
 
@@ -523,10 +523,10 @@ int MaterialParameter::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBr
         //  data = new Vector(Internal_Scalar, Num_Internal_Scalar);
         data_internal_scalar = new Vector(Internal_Scalar, Num_Internal_Scalar);
 
-        if ( theChannel.recvVector(dataTag, commitTag, *data_internal_scalar) < 0 )
-            //  if ( theChannel.recvVector(dataTag, commitTag, Internal_Scalar) < 0 )
+        if ( theChannel.receiveVector(dataTag, commitTag, *data_internal_scalar) < 0 )
+            //  if ( theChannel.receiveVector(dataTag, commitTag, Internal_Scalar) < 0 )
         {
-            cerr << "MaterialParameter::recvSelf -- failed to recv Internal_Scalar\n";
+            cerr << "MaterialParameter::receiveSelf -- failed to recv Internal_Scalar\n";
             return -1;
         }
 
@@ -555,9 +555,9 @@ int MaterialParameter::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBr
 
         for (int i = 0; i < Num_Internal_Tensor; i++)
         {
-            if ( theChannel.recvnDarray(dataTag, commitTag, Internal_Tensor[i]) < 0 )
+            if ( theChannel.receivenDarray(dataTag, commitTag, Internal_Tensor[i]) < 0 )
             {
-                cerr << "MaterialParameter::recvSelf -- failed to recv Internal_Tensor\n";
+                cerr << "MaterialParameter::receiveSelf -- failed to recv Internal_Tensor\n";
                 return -1;
             }
         }

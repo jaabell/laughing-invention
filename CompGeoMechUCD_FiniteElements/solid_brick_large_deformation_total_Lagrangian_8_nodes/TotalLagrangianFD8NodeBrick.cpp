@@ -1472,7 +1472,7 @@ int TotalLagrangianFD8NodeBrick::sendSelf (int commitTag, Channel &theChannel)
 
 //=============================================================================
 
-int TotalLagrangianFD8NodeBrick::recvSelf (int commitTag, Channel &theChannel,
+int TotalLagrangianFD8NodeBrick::receiveSelf (int commitTag, Channel &theChannel,
 
         FEM_ObjectBroker &theBroker)
 

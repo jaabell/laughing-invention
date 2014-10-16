@@ -168,7 +168,7 @@ PetscSparseSeqSolver::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-PetscSparseSeqSolver::recvSelf(int cTag, Channel& theChannel,
+PetscSparseSeqSolver::receiveSelf(int cTag, Channel& theChannel,
                                FEM_ObjectBroker& theBroker)
 {
     // nothing to do

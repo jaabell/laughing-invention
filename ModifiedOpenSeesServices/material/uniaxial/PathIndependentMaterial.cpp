@@ -183,7 +183,7 @@ PathIndependentMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-PathIndependentMaterial::recvSelf(int cTag, Channel& theChannel,
+PathIndependentMaterial::receiveSelf(int cTag, Channel& theChannel,
                                   FEM_ObjectBroker& theBroker)
 {
     int res = 0;
@@ -192,11 +192,11 @@ PathIndependentMaterial::recvSelf(int cTag, Channel& theChannel,
 
     int dbTag = this->getDbTag();
 
-    res = theChannel.recvID(dbTag, cTag, classTags);
+    res = theChannel.receiveID(dbTag, cTag, classTags);
 
     if (res < 0)
     {
-        cerr << "PathIndependentMaterial::recvSelf -- could not receive ID\n";
+        cerr << "PathIndependentMaterial::receiveSelf -- could not receive ID\n";
         return res;
     }
 
@@ -209,7 +209,7 @@ PathIndependentMaterial::recvSelf(int cTag, Channel& theChannel,
 
         if (theMaterial == 0)
         {
-            cerr << " PathIndependentMaterial::recvSelf -- could not get a UniaxialMaterial\n";
+            cerr << " PathIndependentMaterial::receiveSelf -- could not get a UniaxialMaterial\n";
             return -1;
         }
     }
@@ -223,18 +223,18 @@ PathIndependentMaterial::recvSelf(int cTag, Channel& theChannel,
 
         if (theMaterial == 0)
         {
-            cerr << "PathIndependentMaterial::recvSelf -- could not get a UniaxialMaterial\n";
+            cerr << "PathIndependentMaterial::receiveSelf -- could not get a UniaxialMaterial\n";
             exit(-1);
         }
     }
 
     // Now, receive the material
     theMaterial->setDbTag(classTags(1));
-    res += theMaterial->recvSelf(cTag, theChannel, theBroker);
+    res += theMaterial->receiveSelf(cTag, theChannel, theBroker);
 
     if (res < 0)
     {
-        cerr << "PathIndependentMaterial::recvSelf -- could not receive UniaxialMaterial\n";
+        cerr << "PathIndependentMaterial::receiveSelf -- could not receive UniaxialMaterial\n";
         return res;
     }
 

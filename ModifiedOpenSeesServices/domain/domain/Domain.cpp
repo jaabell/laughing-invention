@@ -4084,7 +4084,7 @@ Domain::sendSelf( int cTag, Channel &theChannel )
 
 
 int
-Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
     // set the commitTag in the domain to cTag & update the getTag if needed
     commitTag = cTag;
@@ -4093,7 +4093,7 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
     // first we get the data about the state of the domain for this commitTag
     ID domainData( 11 );
 
-    if ( theChannel.recvID( theDbTag, commitTag, domainData ) < 0 )
+    if ( theChannel.receiveID( theDbTag, commitTag, domainData ) < 0 )
     {
         cerr << "Domain::recv - channel failed to recv the initial ID\n";
         return -1;
@@ -4102,7 +4102,7 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
     // recv the time information
     Vector domainTime( 1 );
 
-    if ( theChannel.recvVector( theDbTag, commitTag, domainTime ) < 0 )
+    if ( theChannel.receiveVector( theDbTag, commitTag, domainTime ) < 0 )
     {
         cerr << "Domain::send - channel failed to recv thetime Vector\n";
         return -1;
@@ -4150,14 +4150,14 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
             ID nodeData( 2 * numNod );
 
             // now receive the ID about the nodes, class tag and dbTags
-            if ( theChannel.recvID( dbNod, geoTag, nodeData ) < 0 )
+            if ( theChannel.receiveID( dbNod, geoTag, nodeData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the node ID\n";
                 return -2;
             }
 
             // now for each node we 1) get a new node of the correct type from the ObjectBroker
-            // 2) ensure the node exists and set it's dbTag, 3) we invoke recvSelf on this new
+            // 2) ensure the node exists and set it's dbTag, 3) we invoke receiveSelf on this new
             // blank node and 4) add this node to the domain
             loc = 0;
 
@@ -4176,9 +4176,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
                 theNode->setDbTag( dbTag );
 
-                if ( theNode->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - node with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "Domain::recv - node with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
@@ -4203,7 +4203,7 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
         {
             ID eleData( 2 * numEle );
 
-            if ( theChannel.recvID( dbEle, geoTag, eleData ) < 0 )
+            if ( theChannel.receiveID( dbEle, geoTag, eleData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the Ele ID\n";
                 return -2;
@@ -4226,9 +4226,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
                 theEle->setDbTag( dbTag );
 
-                if ( theEle->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theEle->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - Ele with dbTag " << dbTag << " failed in recvSelf()\n";
+                    cerr << "Domain::recv - Ele with dbTag " << dbTag << " failed in receiveSelf()\n";
                     return -2;
                 }
 
@@ -4253,7 +4253,7 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
         {
             ID spData( 2 * numSPs );
 
-            if ( theChannel.recvID( dbSPs, geoTag, spData ) < 0 )
+            if ( theChannel.receiveID( dbSPs, geoTag, spData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the SP_Constraints ID\n";
                 return -2;
@@ -4276,9 +4276,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
                 theSP->setDbTag( dbTag );
 
-                if ( theSP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theSP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - SP_Constraint with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "Domain::recv - SP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
@@ -4304,7 +4304,7 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
         {
             ID mpData( 2 * numMPs );
 
-            if ( theChannel.recvID( dbMPs, geoTag, mpData ) < 0 )
+            if ( theChannel.receiveID( dbMPs, geoTag, mpData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
                 return -2;
@@ -4327,9 +4327,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
                 theMP->setDbTag( dbTag );
 
-                if ( theMP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theMP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - MP_Constraint with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "Domain::recv - MP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
@@ -4354,7 +4354,7 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
         {
             ID lpData( 2 * numLPs );
 
-            if ( theChannel.recvID( dbLPs, geoTag, lpData ) < 0 )
+            if ( theChannel.receiveID( dbLPs, geoTag, lpData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
                 return -2;
@@ -4377,9 +4377,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
                 theLP->setDbTag( dbTag );
 
-                if ( theLP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theLP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - LoadPattern with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "Domain::recv - LoadPattern with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
@@ -4413,9 +4413,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
         while ( ( theNode = theNodes() ) != 0 )
         {
-            if ( theNode->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - node with tag " << theNode->getTag() << " failed in recvSelf\n";
+                cerr << "Domain::recv - node with tag " << theNode->getTag() << " failed in receiveSelf\n";
                 return -7;
             }
         }
@@ -4425,9 +4425,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
         while ( ( theEle = theElements() ) != 0 )
         {
-            if ( theEle->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theEle->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - element with tag " << theEle->getTag() <<  " failed in recvSelf\n";
+                cerr << "Domain::recv - element with tag " << theEle->getTag() <<  " failed in receiveSelf\n";
                 return -8;
             }
 
@@ -4439,9 +4439,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
         while ( ( theSP = theSPs() ) != 0 )
         {
-            if ( theSP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theSP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - SP_Constraint with tag " << theSP->getTag() << " failed in recvSelf\n";
+                cerr << "Domain::recv - SP_Constraint with tag " << theSP->getTag() << " failed in receiveSelf\n";
                 return -9;
             }
         }
@@ -4451,9 +4451,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
         while ( ( theMP = theMPs() ) != 0 )
         {
-            if ( theMP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theMP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - MP_Constraint with tag " << theMP->getTag() << " failed in recvSelf\n";
+                cerr << "Domain::recv - MP_Constraint with tag " << theMP->getTag() << " failed in receiveSelf\n";
                 return -10;
             }
         }
@@ -4463,9 +4463,9 @@ Domain::recvSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 
         while ( ( theLP = theLPs() ) != 0 )
         {
-            if ( theLP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theLP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - LoadPattern with tag" << theLP->getTag() << " failed in recvSelf";
+                cerr << "Domain::recv - LoadPattern with tag" << theLP->getTag() << " failed in receiveSelf";
                 return -11;
             }
         }
@@ -4563,7 +4563,7 @@ Domain::sendSelfDatabase( int cTag, Channel &theChannel )
     /*
     if (theChannel.isDatastore() == 1) {
       static ID theLastSendTag(1);
-      if (theChannel.recvID(0,0,theLastSendTag) == 0)
+      if (theChannel.receiveID(0,0,theLastSendTag) == 0)
         lastGeoSendTag = theLastSendTag(0);
       else
         lastGeoSendTag = -1;
@@ -4844,7 +4844,7 @@ Domain::sendSelfDatabase( int cTag, Channel &theChannel )
 
 
 int
-Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+Domain::receiveSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
     // set the commitTag in the domain to cTag & update the getTag if needed
     commitTag = cTag;
@@ -4853,7 +4853,7 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
     // first we get the data about the state of the domain for this commitTag
     ID domainData( 11 );
 
-    if ( theChannel.recvID( theDbTag, commitTag, domainData ) < 0 )
+    if ( theChannel.receiveID( theDbTag, commitTag, domainData ) < 0 )
     {
         cerr << "Domain::recv - channel failed to recv the initial ID\n";
         return -1;
@@ -4862,7 +4862,7 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
     // recv the time information
     Vector domainTime( 1 );
 
-    if ( theChannel.recvVector( theDbTag, commitTag, domainTime ) < 0 )
+    if ( theChannel.receiveVector( theDbTag, commitTag, domainTime ) < 0 )
     {
         cerr << "Domain::send - channel failed to recv thetime Vector\n";
         return -1;
@@ -4879,7 +4879,7 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
     // if (theChannel.isDatastore() == 1) {
     //   static ID theLastSendTag(1);
-    //   if (theChannel.recvID(0,0,theLastSendTag) == 0)
+    //   if (theChannel.receiveID(0,0,theLastSendTag) == 0)
     //     lastGeoSendTag = theLastSendTag(0);
     // }
 
@@ -4917,14 +4917,14 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
             ID nodeData( 2 * numNod );
 
             // now receive the ID about the nodes, class tag and dbTags
-            if ( theChannel.recvID( dbNod, geoTag, nodeData ) < 0 )
+            if ( theChannel.receiveID( dbNod, geoTag, nodeData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the node ID\n";
                 return -2;
             }
 
             // now for each node we 1) get a new node of the correct type from the ObjectBroker
-            // 2) ensure the node exists and set it's dbTag, 3) we invoke recvSelf on this new
+            // 2) ensure the node exists and set it's dbTag, 3) we invoke receiveSelf on this new
             // blank node and 4) add this node to the domain
             loc = 0;
 
@@ -4943,9 +4943,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
                 theNode->setDbTag( dbTag );
 
-                if ( theNode->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - node with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "Domain::recv - node with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
@@ -4970,7 +4970,7 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
         {
             ID eleData( 2 * numEle );
 
-            if ( theChannel.recvID( dbEle, geoTag, eleData ) < 0 )
+            if ( theChannel.receiveID( dbEle, geoTag, eleData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the Ele ID\n";
                 return -2;
@@ -4993,9 +4993,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
                 theEle->setDbTag( dbTag );
 
-                if ( theEle->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theEle->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - Ele with dbTag " << dbTag << " failed in recvSelf()\n";
+                    cerr << "Domain::recv - Ele with dbTag " << dbTag << " failed in receiveSelf()\n";
                     return -2;
                 }
 
@@ -5020,7 +5020,7 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
         {
             ID spData( 2 * numSPs );
 
-            if ( theChannel.recvID( dbSPs, geoTag, spData ) < 0 )
+            if ( theChannel.receiveID( dbSPs, geoTag, spData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the SP_Constraints ID\n";
                 return -2;
@@ -5043,9 +5043,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
                 theSP->setDbTag( dbTag );
 
-                if ( theSP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theSP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - SP_Constraint with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "Domain::recv - SP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
@@ -5071,7 +5071,7 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
         {
             ID mpData( 2 * numMPs );
 
-            if ( theChannel.recvID( dbMPs, geoTag, mpData ) < 0 )
+            if ( theChannel.receiveID( dbMPs, geoTag, mpData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
                 return -2;
@@ -5094,9 +5094,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
                 theMP->setDbTag( dbTag );
 
-                if ( theMP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theMP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - MP_Constraint with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "Domain::recv - MP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
@@ -5121,7 +5121,7 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
         {
             ID lpData( 2 * numLPs );
 
-            if ( theChannel.recvID( dbLPs, geoTag, lpData ) < 0 )
+            if ( theChannel.receiveID( dbLPs, geoTag, lpData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
                 return -2;
@@ -5144,9 +5144,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
                 theLP->setDbTag( dbTag );
 
-                if ( theLP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+                if ( theLP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
-                    cerr << "Domain::recv - LoadPattern with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "Domain::recv - LoadPattern with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
@@ -5179,9 +5179,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
         while ( ( theNode = theNodes() ) != 0 )
         {
-            if ( theNode->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - node with tag " << theNode->getTag() << " failed in recvSelf\n";
+                cerr << "Domain::recv - node with tag " << theNode->getTag() << " failed in receiveSelf\n";
                 return -7;
             }
         }
@@ -5191,9 +5191,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
         while ( ( theEle = theElements() ) != 0 )
         {
-            if ( theEle->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theEle->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - element with tag " << theEle->getTag() <<  " failed in recvSelf\n";
+                cerr << "Domain::recv - element with tag " << theEle->getTag() <<  " failed in receiveSelf\n";
                 return -8;
             }
 
@@ -5205,9 +5205,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
         while ( ( theSP = theSPs() ) != 0 )
         {
-            if ( theSP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theSP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - SP_Constraint with tag " << theSP->getTag() << " failed in recvSelf\n";
+                cerr << "Domain::recv - SP_Constraint with tag " << theSP->getTag() << " failed in receiveSelf\n";
                 return -9;
             }
         }
@@ -5217,9 +5217,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
         while ( ( theMP = theMPs() ) != 0 )
         {
-            if ( theMP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theMP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - MP_Constraint with tag " << theMP->getTag() << " failed in recvSelf\n";
+                cerr << "Domain::recv - MP_Constraint with tag " << theMP->getTag() << " failed in receiveSelf\n";
                 return -10;
             }
         }
@@ -5229,9 +5229,9 @@ Domain::recvSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
         while ( ( theLP = theLPs() ) != 0 )
         {
-            if ( theLP->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( theLP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "Domain::recv - LoadPattern with tag" << theLP->getTag() << " failed in recvSelf";
+                cerr << "Domain::recv - LoadPattern with tag" << theLP->getTag() << " failed in receiveSelf";
                 return -11;
             }
         }

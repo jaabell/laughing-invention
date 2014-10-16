@@ -80,7 +80,7 @@ class RMC_YF : public YieldFunction
 
         //Guanzhou added for parallel
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     private:
         double geta(const MaterialParameter& MaterialParameter_in) const;

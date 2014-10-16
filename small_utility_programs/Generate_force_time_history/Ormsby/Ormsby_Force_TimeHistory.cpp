@@ -176,7 +176,7 @@ Ormsby_Force_TimeHistory::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Ormsby_Force_TimeHistory::recvSelf(int commitTag, Channel& theChannel,
+Ormsby_Force_TimeHistory::receiveSelf(int commitTag, Channel& theChannel,
                                    FEM_ObjectBroker& theBroker)
 {
     // to be completed later

@@ -86,7 +86,7 @@ Rayleigh::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-Rayleigh::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
+Rayleigh::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

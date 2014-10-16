@@ -248,7 +248,7 @@ int FiniteDeformationElastic3D::sendSelf (int commitTag, Channel& theChannel)
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
-int FiniteDeformationElastic3D::recvSelf (int commitTag,
+int FiniteDeformationElastic3D::receiveSelf (int commitTag,
         Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {

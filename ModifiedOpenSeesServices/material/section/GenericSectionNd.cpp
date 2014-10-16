@@ -228,7 +228,7 @@ GenericSectionNd::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-GenericSectionNd::recvSelf(int cTag, Channel& theChannel,
+GenericSectionNd::receiveSelf(int cTag, Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
     int res = 0;
@@ -236,12 +236,12 @@ GenericSectionNd::recvSelf(int cTag, Channel& theChannel,
     static ID data(5);
 
     // Receive the data ID
-    res += theChannel.recvID(this->getDbTag(), cTag, data);
+    res += theChannel.receiveID(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
         g3ErrorHandler->warning("%s -- could not receive data ID",
-                                "GenericSectionNd::recvSelf");
+                                "GenericSectionNd::receiveSelf");
         return res;
     }
 
@@ -263,17 +263,17 @@ GenericSectionNd::recvSelf(int cTag, Channel& theChannel,
     if (code == 0)
     {
         g3ErrorHandler->warning("%s -- could not allocate new code ID",
-                                "GenericSectionNd::recvSelf");
+                                "GenericSectionNd::receiveSelf");
         return -1;
     }
 
     // Receive the code ID
-    res += theChannel.recvID(otherDbTag, cTag, *code);
+    res += theChannel.receiveID(otherDbTag, cTag, *code);
 
     if (res < 0)
     {
         g3ErrorHandler->warning("%s -- could not receive code ID",
-                                "GenericSectionNd::recvSelf");
+                                "GenericSectionNd::receiveSelf");
         return res;
     }
 
@@ -297,18 +297,18 @@ GenericSectionNd::recvSelf(int cTag, Channel& theChannel,
     if (theModel == 0)
     {
         g3ErrorHandler->warning("%s -- could not get an NDMaterial",
-                                "GenericSectionNd::recvSelf");
+                                "GenericSectionNd::receiveSelf");
         return -1;
     }
 
     // Now, receive the material
     theModel->setDbTag(data(4));
-    res += theModel->recvSelf(cTag, theChannel, theBroker);
+    res += theModel->receiveSelf(cTag, theChannel, theBroker);
 
     if (res < 0)
     {
         g3ErrorHandler->warning("%s -- could not receive NDMaterial",
-                                "GenericSectionNd::recvSelf");
+                                "GenericSectionNd::receiveSelf");
         return res;
     }
 

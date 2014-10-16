@@ -1126,7 +1126,7 @@ DispBeamColumn3d::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
+DispBeamColumn3d::receiveSelf(int commitTag, Channel &theChannel,
                            FEM_ObjectBroker &theBroker)
 {
     //
@@ -1137,9 +1137,9 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
 
     static ID idData(7); // one bigger than needed so no clash with section ID
 
-    if (theChannel.recvID(dbTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dbTag, commitTag, idData) < 0)
     {
-        cerr << "DispBeamColumn3d::recvSelf() - failed to recv ID data\n";
+        cerr << "DispBeamColumn3d::receiveSelf() - failed to recv ID data\n";
         return -1;
     }
 
@@ -1155,7 +1155,7 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
         // recv damping coefficients
         static Vector dData(4);
 
-        if (theChannel.recvVector(dbTag, commitTag, dData) < 0)
+        if (theChannel.receiveVector(dbTag, commitTag, dData) < 0)
         {
             cerr << "DispBeamColumn3d::sendSelf() - failed to recv double data\n";
             return -1;
@@ -1175,7 +1175,7 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
     //       crdTransf = theBroker.getNewCrdTransf3d(crdTransfClassTag);
 
     //       if (crdTransf == 0) {
-    //  cerr << "DispBeamColumn3d::recvSelf() - " <<
+    //  cerr << "DispBeamColumn3d::receiveSelf() - " <<
     //    "failed to obtain a CrdTrans object with classTag" <<
     //    crdTransfClassTag << endln;
     //  return -2;
@@ -1184,8 +1184,8 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
 
     //   crdTransf->setDbTag(crdTransfDbTag);
 
-    // invoke recvSelf on the crdTransf object
-    //   if (crdTransf->recvSelf(commitTag, theChannel, theBroker) < 0) {
+    // invoke receiveSelf on the crdTransf object
+    //   if (crdTransf->receiveSelf(commitTag, theChannel, theBroker) < 0) {
     //     cerr << "DispBeamColumn3d::sendSelf() - failed to recv crdTranf\n";
     //     return -3;
     //   }
@@ -1197,9 +1197,9 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
     ID idSections(2 * idData(3));
     int loc = 0;
 
-    if (theChannel.recvID(dbTag, commitTag, idSections) < 0)
+    if (theChannel.receiveID(dbTag, commitTag, idSections) < 0)
     {
-        cerr << "DispBeamColumn3d::recvSelf() - failed to recv ID data\n";
+        cerr << "DispBeamColumn3d::receiveSelf() - failed to recv ID data\n";
         return -1;
     }
 
@@ -1212,7 +1212,7 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
 
         //
         // we do not have correct number of sections, must delete the old and create
-        // new ones before can recvSelf on the sections
+        // new ones before can receiveSelf on the sections
         //
 
         // delete the old
@@ -1231,12 +1231,12 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
 
         if (theSections == 0)
         {
-            cerr << "DispBeamColumn3d::recvSelf() - out of memory creating sections array of size" <<
+            cerr << "DispBeamColumn3d::receiveSelf() - out of memory creating sections array of size" <<
                  idData(3) << endln;
             exit(-1);
         }
 
-        // create a section and recvSelf on it
+        // create a section and receiveSelf on it
         numSections = idData(3);
         loc = 0;
 
@@ -1249,16 +1249,16 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
 
             if (theSections[i] == 0)
             {
-                cerr << "DispBeamColumn3d::recvSelf() - Broker could not create Section of class type" <<
+                cerr << "DispBeamColumn3d::receiveSelf() - Broker could not create Section of class type" <<
                      sectClassTag << endln;
                 exit(-1);
             }
 
             theSections[i]->setDbTag(sectDbTag);
 
-            if (theSections[i]->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if (theSections[i]->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "DispBeamColumn3d::recvSelf() - section " <<
+                cerr << "DispBeamColumn3d::receiveSelf() - section " <<
                      i << "failed to recv itself\n";
                 return -1;
             }
@@ -1270,7 +1270,7 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
 
         //
         // for each existing section, check it is of correct type
-        // (if not delete old & create a new one) then recvSelf on it
+        // (if not delete old & create a new one) then receiveSelf on it
         //
 
         loc = 0;
@@ -1290,18 +1290,18 @@ DispBeamColumn3d::recvSelf(int commitTag, Channel &theChannel,
 
                 if (theSections[i] == 0)
                 {
-                    cerr << "DispBeamColumn3d::recvSelf() - Broker could not create Section of class type" <<
+                    cerr << "DispBeamColumn3d::receiveSelf() - Broker could not create Section of class type" <<
                          sectClassTag << endln;
                     exit(-1);
                 }
             }
 
-            // recvSelf on it
+            // receiveSelf on it
             theSections[i]->setDbTag(sectDbTag);
 
-            if (theSections[i]->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if (theSections[i]->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "DispBeamColumn3d::recvSelf() - section " <<
+                cerr << "DispBeamColumn3d::receiveSelf() - section " <<
                      i << "failed to recv itself\n";
                 return -1;
             }

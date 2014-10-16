@@ -239,7 +239,7 @@ SectionAggregator::SectionAggregator (int tag, SectionForceDeformation &theSec,
     }
 }
 
-// constructor for blank object that recvSelf needs to be invoked upon
+// constructor for blank object that receiveSelf needs to be invoked upon
 SectionAggregator::SectionAggregator():
     SectionForceDeformation(0, SEC_TAG_Aggregator),
     theSection(0), theAdditions(0), matCodes(0), numMats(0),
@@ -775,17 +775,17 @@ SectionAggregator::sendSelf(int cTag, Channel &theChannel)
 
 
 int
-SectionAggregator::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+SectionAggregator::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
     // Create an ID and receive tag and section order
     static ID data(5);
-    res += theChannel.recvID(this->getDbTag(), cTag, data);
+    res += theChannel.receiveID(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "SectionAggregator::recvSelf -- could not receive data ID\n";
+        cerr << "SectionAggregator::receiveSelf -- could not receive data ID\n";
         return res;
     }
 
@@ -834,11 +834,11 @@ SectionAggregator::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &the
     ID classTags(numTags * 2 + numMats);
 
     // Receive the material class and db tags
-    res += theChannel.recvID(otherDbTag, cTag, classTags);
+    res += theChannel.receiveID(otherDbTag, cTag, classTags);
 
     if (res < 0)
     {
-        cerr << "SectionAggregator::recvSelf -- could not receive classTags ID\n";
+        cerr << "SectionAggregator::receiveSelf -- could not receive classTags ID\n";
         return res;
     }
 
@@ -849,7 +849,7 @@ SectionAggregator::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &the
 
         if (theAdditions == 0)
         {
-            cerr << "SectionAggregator::recvSelf -- could not allocate UniaxialMaterial array\n";
+            cerr << "SectionAggregator::receiveSelf -- could not allocate UniaxialMaterial array\n";
             return -1;
         }
 
@@ -884,17 +884,17 @@ SectionAggregator::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &the
         // Check if either allocation failed
         if (theAdditions[i] == 0)
         {
-            cerr << "SectionAggregator::recvSelf -- could not get UniaxialMaterial, i = " << i << endln;
+            cerr << "SectionAggregator::receiveSelf -- could not get UniaxialMaterial, i = " << i << endln;
             return -1;
         }
 
         // Now, receive the UniaxialMaterial
         theAdditions[i]->setDbTag(classTags(i + numTags));
-        res += theAdditions[i]->recvSelf(cTag, theChannel, theBroker);
+        res += theAdditions[i]->receiveSelf(cTag, theChannel, theBroker);
 
         if (res < 0)
         {
-            cerr << "SectionAggregator::recvSelf -- could not receive UniaxialMaterial, i = " << i << endln;
+            cerr << "SectionAggregator::receiveSelf -- could not receive UniaxialMaterial, i = " << i << endln;
             return res;
         }
     }
@@ -924,17 +924,17 @@ SectionAggregator::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &the
     // Check if either allocation failed
     if (theSection == 0)
     {
-        cerr << "SectionAggregator::recvSelf -- could not get a SectionForceDeformation\n";
+        cerr << "SectionAggregator::receiveSelf -- could not get a SectionForceDeformation\n";
         return -1;
     }
 
     // Now, receive the Section
     theSection->setDbTag(classTags(2 * numTags - 1));
-    res += theSection->recvSelf(cTag, theChannel, theBroker);
+    res += theSection->receiveSelf(cTag, theChannel, theBroker);
 
     if (res < 0)
     {
-        cerr << "SectionAggregator::recvSelf -- could not receive SectionForceDeformation\n";
+        cerr << "SectionAggregator::receiveSelf -- could not receive SectionForceDeformation\n";
         return res;
     }
 

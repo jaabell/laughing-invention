@@ -100,14 +100,14 @@ Beam3dUniformLoad::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-Beam3dUniformLoad::recvSelf(int commitTag, Channel& theChannel,
+Beam3dUniformLoad::receiveSelf(int commitTag, Channel& theChannel,
                             FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
 
     static Vector vectData(4);
 
-    int result = theChannel.recvVector(dbTag, commitTag, vectData);
+    int result = theChannel.receiveVector(dbTag, commitTag, vectData);
 
     if (result < 0)
     {
@@ -137,7 +137,7 @@ Beam3dUniformLoad::recvSelf(int commitTag, Channel& theChannel,
         }
     }
 
-    result = theChannel.recvID(dbTag, commitTag, *theElementTags);
+    result = theChannel.receiveID(dbTag, commitTag, *theElementTags);
 
     if (result < 0)
     {

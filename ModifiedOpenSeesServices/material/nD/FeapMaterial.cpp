@@ -467,18 +467,18 @@ FeapMaterial::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-FeapMaterial::recvSelf(int commitTag, Channel& theChannel,
+FeapMaterial::receiveSelf(int commitTag, Channel& theChannel,
                        FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
     static ID idData(4);
 
-    res += theChannel.recvID(this->getDbTag(), commitTag, idData);
+    res += theChannel.receiveID(this->getDbTag(), commitTag, idData);
 
     if (res < 0)
     {
-        cerr << "FeapMaterial::recvSelf() - failed to receive ID data\n";
+        cerr << "FeapMaterial::receiveSelf() - failed to receive ID data\n";
         return res;
     }
 
@@ -489,11 +489,11 @@ FeapMaterial::recvSelf(int commitTag, Channel& theChannel,
 
     Vector vecData(numHV + numData);
 
-    res += theChannel.recvVector(this->getDbTag(), commitTag, vecData);
+    res += theChannel.receiveVector(this->getDbTag(), commitTag, vecData);
 
     if (res < 0)
     {
-        cerr << "FeapMaterial::recvSelf() - failed to receive Vector data\n";
+        cerr << "FeapMaterial::receiveSelf() - failed to receive Vector data\n";
         return res;
     }
 

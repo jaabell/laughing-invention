@@ -541,7 +541,7 @@ int Pinching4Material::sendSelf(int commitTag, Channel& theChannel)
     return -1;
 }
 
-int Pinching4Material::recvSelf(int commitTag, Channel& theChannel,
+int Pinching4Material::receiveSelf(int commitTag, Channel& theChannel,
                                 FEM_ObjectBroker& theBroker)
 {
     return -1;

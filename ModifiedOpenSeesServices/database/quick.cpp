@@ -112,7 +112,7 @@ FileDatastore::sendID(int dataTag, int commitTag,
 }
 
 int
-FileDatastore::recvID(int dataTag, int commitTag,
+FileDatastore::receiveID(int dataTag, int commitTag,
                       ID& theID,
                       ChannelAddress* theAddress)
 {
@@ -121,7 +121,7 @@ FileDatastore::recvID(int dataTag, int commitTag,
 
     if (idSize >= maxIDsize)
     {
-        cerr << "FileDatastore::recvID() - the database does not deal with IDs";
+        cerr << "FileDatastore::receiveID() - the database does not deal with IDs";
         cerr << " of this size "  << idSize << endln;
         return -1;
     }
@@ -169,7 +169,7 @@ FileDatastore::recvID(int dataTag, int commitTag,
 
     if (found == false)
     {
-        cerr << "FileDatastore::recvID() - failed to find data for ID of size ";
+        cerr << "FileDatastore::receiveID() - failed to find data for ID of size ";
         cerr << idSize << endln;
         return -1;
     }

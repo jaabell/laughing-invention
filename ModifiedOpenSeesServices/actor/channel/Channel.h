@@ -70,7 +70,7 @@ class Channel
                             MovableObject &theObject,
                             ChannelAddress *theAddress = 0) = 0;
 
-        virtual int recvObj(int commitTag,
+        virtual int receiveObj(int commitTag,
                             MovableObject &theObject,
                             FEM_ObjectBroker &theBroker,
                             ChannelAddress *theAddress = 0) = 0;
@@ -79,7 +79,7 @@ class Channel
                             const Message &theMessage,
                             ChannelAddress *theAddress = 0) = 0;
 
-        virtual int recvMsg(int dbTag, int commitTag,
+        virtual int receiveMsg(int dbTag, int commitTag,
                             Message &theMessage,
                             ChannelAddress *theAddress = 0) = 0;
 
@@ -87,7 +87,7 @@ class Channel
                                const Matrix &theMatrix,
                                ChannelAddress *theAddress = 0) = 0;
 
-        virtual int recvMatrix(int dbTag, int commitTag,
+        virtual int receiveMatrix(int dbTag, int commitTag,
                                Matrix &theMatrix,
                                ChannelAddress *theAddress = 0) = 0;
 
@@ -95,7 +95,7 @@ class Channel
                                const Vector &theVector,
                                ChannelAddress *theAddress = 0) = 0;
 
-        virtual int recvVector(int dbTag, int commitTag,
+        virtual int receiveVector(int dbTag, int commitTag,
                                Vector &theVector,
                                ChannelAddress *theAddress = 0) = 0;
 
@@ -103,7 +103,7 @@ class Channel
                            const ID &theID,
                            ChannelAddress *theAddress = 0) = 0;
 
-        virtual int recvID(int dbTag, int commitTag,
+        virtual int receiveID(int dbTag, int commitTag,
                            ID &theID,
                            ChannelAddress *theAddress = 0) = 0;
 
@@ -111,7 +111,7 @@ class Channel
                                 const nDarray &theNDarray,
                                 ChannelAddress *theAddress = 0) = 0;
 
-        virtual int recvnDarray(int dbTag, int commitTag,
+        virtual int receivenDarray(int dbTag, int commitTag,
                                 nDarray &theNDarray,
                                 ChannelAddress *theAddress = 0) = 0;
 

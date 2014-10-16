@@ -47,7 +47,7 @@ class ProfileSPDLinSolverGather : public LinearSOESolver
         virtual int setLinearSOE(ProfileSPDLinSOEGather& theSOE);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     protected:
         ProfileSPDLinSOEGather* theSOE;

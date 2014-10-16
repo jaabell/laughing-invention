@@ -634,7 +634,7 @@ TransformationConstraintHandler::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-TransformationConstraintHandler::recvSelf(int cTag,
+TransformationConstraintHandler::receiveSelf(int cTag,
         Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {

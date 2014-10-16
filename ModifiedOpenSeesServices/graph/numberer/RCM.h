@@ -58,7 +58,7 @@ class RCM: public GraphNumberer
         const ID& number(Graph& theGraph, const ID& lastVertices);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
     protected:

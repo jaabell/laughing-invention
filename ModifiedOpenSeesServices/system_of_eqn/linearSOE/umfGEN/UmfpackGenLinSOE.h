@@ -71,7 +71,7 @@ class UmfpackGenLinSOE : public LinearSOE
         int setUmfpackGenLinSolver(UmfpackGenLinSolver& newSolver);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
         friend class UmfpackGenLinSolver;

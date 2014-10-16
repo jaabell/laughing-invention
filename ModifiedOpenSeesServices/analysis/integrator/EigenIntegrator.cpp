@@ -259,7 +259,7 @@ EigenIntegrator::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-EigenIntegrator::recvSelf(int commitTag, Channel& theChannel,
+EigenIntegrator::receiveSelf(int commitTag, Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {
     return 0;

@@ -185,7 +185,7 @@ PetscSOE::setSize(int MaxDOFtag)
 
             data(0) = size;
             theChannel->sendID(0, 0, data);
-            theChannel->recvID(0, 0, data);
+            theChannel->receiveID(0, 0, data);
 
             size = data(0);
         }
@@ -195,7 +195,7 @@ PetscSOE::setSize(int MaxDOFtag)
             for (int j = 0; j < numChannels; j++)
             {
                 Channel *theChannel = theChannels[j];
-                theChannel->recvID(0, 0, data);
+                theChannel->receiveID(0, 0, data);
 
                 if (data(0) > size)
                 {
@@ -507,7 +507,7 @@ PetscSOE::setSize(Graph &theGraph)
 
     data(0) = size;
     theChannel->sendID(0, 0, data);
-    theChannel->recvID(0, 0, data);
+    theChannel->receiveID(0, 0, data);
 
     size = data(0);
       }
@@ -517,7 +517,7 @@ PetscSOE::setSize(Graph &theGraph)
     for (int j=0; j<numChannels; j++)
     {
       Channel *theChannel = theChannels[j];
-      theChannel->recvID(0, 0, data);
+      theChannel->receiveID(0, 0, data);
       if (data(0) > size)
         size = data(0);
     }
@@ -1072,7 +1072,7 @@ PetscSOE::sendSelf(int cTag, Channel &theChannel)
 
 
 int
-PetscSOE::recvSelf(int cTag, Channel &theChannel,
+PetscSOE::receiveSelf(int cTag, Channel &theChannel,
                    FEM_ObjectBroker &theBroker)
 {
     numChannels = 1;
@@ -1385,7 +1385,7 @@ PetscSOE::setEigenSize(Graph &theGraph)
 
             data(0) = size;
             theChannel->sendID(0, 0, data);
-            theChannel->recvID(0, 0, data);
+            theChannel->receiveID(0, 0, data);
 
             size = data(0);
         }
@@ -1395,7 +1395,7 @@ PetscSOE::setEigenSize(Graph &theGraph)
             for (int j = 0; j < numChannels; j++)
             {
                 Channel *theChannel = theChannels[j];
-                theChannel->recvID(0, 0, data);
+                theChannel->receiveID(0, 0, data);
 
                 if (data(0) > size)
                 {

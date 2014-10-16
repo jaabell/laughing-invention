@@ -81,7 +81,7 @@ class Domain_Reduction_Method_Modified_Input : public LoadPattern
 
         // methods for o/p
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
         //  method to obtain a blank copy of the LoadPattern

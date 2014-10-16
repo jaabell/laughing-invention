@@ -72,7 +72,7 @@ Node::Node(int theClassTag)
       R(0), mass(0), unbalLoadWithInertia(0), a0(0.0), theEigenvectors(0), sizedMatrix(0), reaction(0),
       penalty_load(0)
 {
-    // for FEM_ObjectBroker, recvSelf() must be invoked on object
+    // for FEM_ObjectBroker, receiveSelf() must be invoked on object
 
 }
 
@@ -1541,7 +1541,7 @@ Node::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-Node::recvSelf(int cTag, Channel &theChannel,
+Node::receiveSelf(int cTag, Channel &theChannel,
                FEM_ObjectBroker &theBroker)
 {
     int res = 0;
@@ -1549,11 +1549,11 @@ Node::recvSelf(int cTag, Channel &theChannel,
 
 
     ID data(18);
-    res = theChannel.recvID(dataTag, cTag, data);
+    res = theChannel.receiveID(dataTag, cTag, data);
 
     if (res < 0)
     {
-        cerr << "Node::recvSelf() - failed to receive ID data\n";
+        cerr << "Node::receiveSelf() - failed to receive ID data\n";
         return res;
     }
 
@@ -1573,13 +1573,13 @@ Node::recvSelf(int cTag, Channel &theChannel,
     // check we did not run out of memory
     if (Crd == 0)
     {
-        cerr << "Node::recvSelf() - out of memory creating Coordinate vector\n";
+        cerr << "Node::receiveSelf() - out of memory creating Coordinate vector\n";
         return -1;
     }
 
-    if (theChannel.recvVector(dataTag, cTag, *Crd) < 0)
+    if (theChannel.receiveVector(dataTag, cTag, *Crd) < 0)
     {
-        cerr << "Node::recvSelf() - failed to receive the Coordinate vector\n";
+        cerr << "Node::receiveSelf() - failed to receive the Coordinate vector\n";
         return -2;
     }
 
@@ -1592,9 +1592,9 @@ Node::recvSelf(int cTag, Channel &theChannel,
         }
 
         // recv the committed disp
-        if (theChannel.recvVector(dataTag, cTag, *commitDisp) < 0)
+        if (theChannel.receiveVector(dataTag, cTag, *commitDisp) < 0)
         {
-            cerr << "Node::recvSelf - failed to receive Disp data\n";
+            cerr << "Node::receiveSelf - failed to receive Disp data\n";
             return res;
         }
 
@@ -1623,9 +1623,9 @@ Node::recvSelf(int cTag, Channel &theChannel,
         }
 
         // recv the committed vel
-        if (theChannel.recvVector(dataTag, cTag, *commitVel) < 0)
+        if (theChannel.receiveVector(dataTag, cTag, *commitVel) < 0)
         {
-            cerr << "Node::recvSelf - failed to receive Velocity data\n";
+            cerr << "Node::receiveSelf - failed to receive Velocity data\n";
             return -3;
         }
 
@@ -1645,9 +1645,9 @@ Node::recvSelf(int cTag, Channel &theChannel,
         }
 
         // recv the committed accel
-        if (theChannel.recvVector(dataTag, cTag, *commitAccel) < 0)
+        if (theChannel.receiveVector(dataTag, cTag, *commitAccel) < 0)
         {
-            cerr << "Node::recvSelf - failed to receive Acceleration data\n";
+            cerr << "Node::receiveSelf - failed to receive Acceleration data\n";
             return -4;
         }
 
@@ -1672,9 +1672,9 @@ Node::recvSelf(int cTag, Channel &theChannel,
             }
         }
 
-        if (theChannel.recvMatrix(dataTag, cTag, *mass) < 0)
+        if (theChannel.receiveMatrix(dataTag, cTag, *mass) < 0)
         {
-            cerr << "Node::recvSelf() - failed to receive Mass data\n";
+            cerr << "Node::receiveSelf() - failed to receive Mass data\n";
             return -6;
         }
     }
@@ -1696,9 +1696,9 @@ Node::recvSelf(int cTag, Channel &theChannel,
         }
 
         // now recv the R matrix
-        if (theChannel.recvMatrix(dataTag, cTag, *R) < 0)
+        if (theChannel.receiveMatrix(dataTag, cTag, *R) < 0)
         {
-            cerr << "Node::recvSelf() - failed to receive R data\n";
+            cerr << "Node::receiveSelf() - failed to receive R data\n";
             return res;
         }
     }
@@ -1718,9 +1718,9 @@ Node::recvSelf(int cTag, Channel &theChannel,
             }
         }
 
-        if (theChannel.recvVector(dataTag, cTag, *unbalLoad) < 0)
+        if (theChannel.receiveVector(dataTag, cTag, *unbalLoad) < 0)
         {
-            cerr << "Node::recvSelf() - failed to receive Load data\n";
+            cerr << "Node::receiveSelf() - failed to receive Load data\n";
             return res;
         }
     }
@@ -1736,9 +1736,9 @@ Node::recvSelf(int cTag, Channel &theChannel,
         Vector newreaction;// = new Vector(data(15), this);
         // ID newID(data(16));
 
-        if ( theChannel.recvVector(dataTag, cTag, newreaction) < 0)
+        if ( theChannel.receiveVector(dataTag, cTag, newreaction) < 0)
         {
-            cerr << "Node::recvSelf() - reaction failed to recv self!\n";
+            cerr << "Node::receiveSelf() - reaction failed to recv self!\n";
             return -1;
         }
 
@@ -1756,9 +1756,9 @@ Node::recvSelf(int cTag, Channel &theChannel,
         theDOF_GroupPtr = new DOF_Group(data(15), this);
         ID newID(data(16));
 
-        if ( theChannel.recvID(dataTag, cTag, newID) < 0)
+        if ( theChannel.receiveID(dataTag, cTag, newID) < 0)
         {
-            cerr << "Node::recvSelf() - DOF_Group failed to recv self!\n";
+            cerr << "Node::receiveSelf() - DOF_Group failed to recv self!\n";
             return -1;
         }
 

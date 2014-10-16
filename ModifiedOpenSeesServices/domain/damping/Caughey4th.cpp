@@ -86,7 +86,7 @@ Caughey4th::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-Caughey4th::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
+Caughey4th::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

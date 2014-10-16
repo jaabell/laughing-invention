@@ -701,7 +701,7 @@ int ShearBeamLT::sendSelf ( int commitTag, Channel &theChannel )
 
 }
 
-int ShearBeamLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+int ShearBeamLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
 
     // if ( !initialized )
@@ -711,9 +711,9 @@ int ShearBeamLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
 
     // ID idData( 5 );
 
-    // if ( theChannel.recvID( 0, commitTag, idData ) < 0 )
+    // if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
     // {
-    //     cerr << "WARNING ShearBeamLT::recvSelf() - failed to receive ID\n";
+    //     cerr << "WARNING ShearBeamLT::receiveSelf() - failed to receive ID\n";
     //     return -1;
     // }
 
@@ -724,9 +724,9 @@ int ShearBeamLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
 
 
     // Vector floatData(4);
-    // if ( theChannel.recvVector( 0, commitTag, floatData ) < 0 )
+    // if ( theChannel.receiveVector( 0, commitTag, floatData ) < 0 )
     // {
-    //     cerr << "WARNING ShearBeamLT::recvSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+    //     cerr << "WARNING ShearBeamLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
     //     return -1;
     // }
     // Volume                  = floatData(0) ;
@@ -737,9 +737,9 @@ int ShearBeamLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
 
     // // Recieve the nodes
 
-    // if ( theChannel.recvID( 0, commitTag, connectedExternalNodes ) < 0 )
+    // if ( theChannel.receiveID( 0, commitTag, connectedExternalNodes ) < 0 )
     // {
-    //     cerr << "WARNING ShearBeamLT::recvSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
+    //     cerr << "WARNING ShearBeamLT::receiveSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
     //     return -1;
     // }
 
@@ -754,14 +754,14 @@ int ShearBeamLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
     //         NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
     //         if ( ndmat == 0 )
     //         {
-    //             cerr << "ShearBeamLT::recvSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << endln;
+    //             cerr << "ShearBeamLT::receiveSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << endln;
     //             return -1;
     //         }
 
     //         // Now receive materials into the newly allocated space
-    //         if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+    //         if ( ( ndmat )->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
     //         {
-    //             cerr << "ShearBeamLT::recvSelf() - material " << i << "failed to recv itself\n";
+    //             cerr << "ShearBeamLT::receiveSelf() - material " << i << "failed to recv itself\n";
     //             return -1;
     //         }
 
@@ -770,30 +770,30 @@ int ShearBeamLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
     // }
 
     // // Q
-    // if ( theChannel.recvVector( 0, commitTag, Q ) < 0 )
+    // if ( theChannel.receiveVector( 0, commitTag, Q ) < 0 )
     // {
-    //     cerr << "ShearBeamLT::recvSelf() - failed to recv Q!\n";
+    //     cerr << "ShearBeamLT::receiveSelf() - failed to recv Q!\n";
     //     return -1;
     // }
 
     // // bf
-    // if ( theChannel.recvVector( 0, commitTag, bf ) < 0 )
+    // if ( theChannel.receiveVector( 0, commitTag, bf ) < 0 )
     // {
-    //     cerr << "ShearBeamLT::recvSelf() - failed to recv bf!\n";
+    //     cerr << "ShearBeamLT::receiveSelf() - failed to recv bf!\n";
     //     return -1;
     // }
 
     // // gauss_points
-    // if ( theChannel.recvMatrix( 0, commitTag, gauss_points ) < 0 )
+    // if ( theChannel.receiveMatrix( 0, commitTag, gauss_points ) < 0 )
     // {
-    //     cerr << "ShearBeamLT::recvSelf() - failed to recv gauss_points!\n";
+    //     cerr << "ShearBeamLT::receiveSelf() - failed to recv gauss_points!\n";
     //     return -1;
     // }
 
     // // outputVector
-    // if ( theChannel.recvVector( 0, commitTag, outputVector ) < 0 )
+    // if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
     // {
-    //     cerr << "ShearBeamLT::recvSelf() - failed to recv outputVector!\n";
+    //     cerr << "ShearBeamLT::receiveSelf() - failed to recv outputVector!\n";
     //     return -1;
     // }
 

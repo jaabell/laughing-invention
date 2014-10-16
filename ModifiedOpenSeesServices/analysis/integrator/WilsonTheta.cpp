@@ -447,14 +447,14 @@ WilsonTheta::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-WilsonTheta::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+WilsonTheta::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     //    static Vector data(5);
     static Vector data(1);
 
-    if (theChannel.recvVector(this->getDbTag(), cTag, data) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), cTag, data) < 0)
     {
-        cerr << "WilsonTheta::recvSelf() - ";
+        cerr << "WilsonTheta::receiveSelf() - ";
         cerr << " failed to receive the Vector\n";
         return -1;
     }

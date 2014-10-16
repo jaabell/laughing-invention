@@ -161,7 +161,7 @@ SymSparseLinSolver::sendSelf(int cTAg, Channel& theChannel)
 
 
 int
-SymSparseLinSolver::recvSelf(int cTag,
+SymSparseLinSolver::receiveSelf(int cTag,
                              Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     // nothing to do

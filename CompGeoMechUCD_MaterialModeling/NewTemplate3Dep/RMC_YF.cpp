@@ -325,16 +325,16 @@ int RMC_YF::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int RMC_YF::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int RMC_YF::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(6);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "DP_YF::recvSelf -- failed to recv ID\n";
+        cerr << "DP_YF::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 

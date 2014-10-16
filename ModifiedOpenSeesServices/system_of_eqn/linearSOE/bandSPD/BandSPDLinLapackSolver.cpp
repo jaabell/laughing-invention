@@ -185,7 +185,7 @@ BandSPDLinLapackSolver::sendSelf(int cTag,
 }
 
 int
-BandSPDLinLapackSolver::recvSelf(int tag,
+BandSPDLinLapackSolver::receiveSelf(int tag,
                                  Channel& theChannel,
                                  FEM_ObjectBroker& theBroker)
 {

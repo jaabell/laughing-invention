@@ -561,16 +561,16 @@ int Concrete04::sendSelf (int commitTag, Channel& theChannel)
     return res;
 }
 
-int Concrete04::recvSelf (int commitTag, Channel& theChannel,
+int Concrete04::receiveSelf (int commitTag, Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(15);
-    res = theChannel.recvVector(this->getDbTag(), commitTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), commitTag, data);
 
     if (res < 0)
     {
-        cerr << "Concrete04::recvSelf() - failed to receive data\n";
+        cerr << "Concrete04::receiveSelf() - failed to receive data\n";
         this->setTag(0);
     }
     else

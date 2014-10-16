@@ -34,7 +34,7 @@ class SymSparseLinSolver : public LinearSOESolver
         int setLinearSOE(SymSparseLinSOE& theSOE);
 
         int sendSelf(int cTag, Channel& theChannel);
-        int recvSelf(int cTag,
+        int receiveSelf(int cTag,
                      Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
     protected:

@@ -118,7 +118,7 @@ class HDF5_Channel: public Channel
                     MovableObject &theObject,
                     ChannelAddress *theAddress = 0);
 
-        int recvObj(int outputLevel,
+        int receiveObj(int outputLevel,
                     MovableObject &theObject,
                     FEM_ObjectBroker &theBroker,
                     ChannelAddress *theAddress = 0);
@@ -127,7 +127,7 @@ class HDF5_Channel: public Channel
                     const Message &theMessage,
                     ChannelAddress *theAddress = 0);
 
-        int recvMsg(int not_used, int outputLevel,
+        int receiveMsg(int not_used, int outputLevel,
                     Message &theMessage,
                     ChannelAddress *theAddress = 0);
 
@@ -135,7 +135,7 @@ class HDF5_Channel: public Channel
                        const Matrix &theMatrix,
                        ChannelAddress *theAddress = 0);
 
-        int recvMatrix(int not_used, int outputLevel,
+        int receiveMatrix(int not_used, int outputLevel,
                        Matrix &theMatrix,
                        ChannelAddress *theAddress = 0);
 
@@ -143,7 +143,7 @@ class HDF5_Channel: public Channel
                        const Vector &theVector,
                        ChannelAddress *theAddress = 0);
 
-        int recvVector(int not_used, int outputLevel,
+        int receiveVector(int not_used, int outputLevel,
                        Vector &theVector,
                        ChannelAddress *theAddress = 0);
 
@@ -151,7 +151,7 @@ class HDF5_Channel: public Channel
                    const ID &theID,
                    ChannelAddress *theAddress = 0);
 
-        int recvID(int not_used, int outputLevel,
+        int receiveID(int not_used, int outputLevel,
                    ID &theID,
                    ChannelAddress *theAddress = 0);
 
@@ -159,7 +159,7 @@ class HDF5_Channel: public Channel
                         const nDarray &theNDarray,
                         ChannelAddress *theAddress = 0);
 
-        int recvnDarray(int not_used, int outputLevel,
+        int receivenDarray(int not_used, int outputLevel,
                         nDarray &theNDarray,
                         ChannelAddress *theAddress = 0);
 

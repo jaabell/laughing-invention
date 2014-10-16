@@ -505,16 +505,16 @@ int Steel03::sendSelf (int commitTag, Channel& theChannel)
     return res;
 }
 
-int Steel03::recvSelf (int commitTag, Channel& theChannel,
+int Steel03::receiveSelf (int commitTag, Channel& theChannel,
                        FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(25);
-    res = theChannel.recvVector(this->getDbTag(), commitTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), commitTag, data);
 
     if (res < 0)
     {
-        cerr << "Steel03::recvSelf() - failed to receive data\n";
+        cerr << "Steel03::receiveSelf() - failed to receive data\n";
         this->setTag(0);
     }
     else

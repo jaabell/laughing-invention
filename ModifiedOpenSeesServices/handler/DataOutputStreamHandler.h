@@ -38,7 +38,7 @@ class DataOutputStreamHandler : public DataOutputHandler
         int write(Vector& data);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     private:
         StandardStream outputStream;

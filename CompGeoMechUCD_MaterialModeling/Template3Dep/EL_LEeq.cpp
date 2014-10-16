@@ -169,15 +169,15 @@ EvolutionLaw_L_Eeq::sendSelf(int commitTag, Channel& theChannel)
 
 //Guanzhou added for PDD
 int
-EvolutionLaw_L_Eeq::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+EvolutionLaw_L_Eeq::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(1);
-    res = theChannel.recvVector(this->getDbTag(), commitTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), commitTag, data);
 
     if (res < 0)
     {
-        cerr << "EvolutionLaw_L_Eeq::recvSelf() - failed to recv data\n";
+        cerr << "EvolutionLaw_L_Eeq::receiveSelf() - failed to recv data\n";
     }
     else
     {

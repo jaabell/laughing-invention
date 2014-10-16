@@ -174,12 +174,12 @@ DiagonalDirectSolver::sendSelf(int cTag,
 
 
 int
-DiagonalDirectSolver::recvSelf(int cTag,
+DiagonalDirectSolver::receiveSelf(int cTag,
                                Channel& theChannel,
                                FEM_ObjectBroker& theBroker)
 {
     static Vector data(1);
-    theChannel.recvVector(0, cTag, data);
+    theChannel.receiveVector(0, cTag, data);
 
     minDiagTol = data(0);
     return 0;

@@ -1371,18 +1371,18 @@ ContactElement_3DOF_3DOF::sendSelf(int commitTag, Channel &theChannel)
 //=============================================================================
 //implemented by Babak Kamrani on 10/30/2013
 int
-ContactElement_3DOF_3DOF::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+ContactElement_3DOF_3DOF::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
     int dataTag = this->getDbTag();
 
     static ID idData(6);
-    res = theChannel.recvID(dataTag, commitTag, idData);
+    res = theChannel.receiveID(dataTag, commitTag, idData);
 
     if (res < 0)
     {
-        std::cerr << "WARNING ContactElement_3DOF_3DOF::recvSelf() - " << dataTag << " failed to receive idData\n";
+        std::cerr << "WARNING ContactElement_3DOF_3DOF::receiveSelf() - " << dataTag << " failed to receive idData\n";
         return res;
     }
 
@@ -1394,11 +1394,11 @@ ContactElement_3DOF_3DOF::recvSelf(int commitTag, Channel &theChannel, FEM_Objec
     definecontact = idData(5);
 
     static Vector VectorData(32);
-    res = theChannel.recvVector(this->getDbTag(), commitTag, VectorData);
+    res = theChannel.receiveVector(this->getDbTag(), commitTag, VectorData);
 
     if (res < 0)
     {
-        std::cerr << "WARNING ContactElement_3DOF_3DOF::recvSelf() - " << dataTag << " failed to receive VectorData\n";
+        std::cerr << "WARNING ContactElement_3DOF_3DOF::receiveSelf() - " << dataTag << " failed to receive VectorData\n";
         return res;
     }
 

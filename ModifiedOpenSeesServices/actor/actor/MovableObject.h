@@ -56,7 +56,7 @@ class MovableObject
         void setDbTag(int dbTag);
 
         virtual int sendSelf(int commitTag, Channel &theChannel) = 0;
-        virtual int recvSelf(int commitTag, Channel &theChannel,
+        virtual int receiveSelf(int commitTag, Channel &theChannel,
                              FEM_ObjectBroker &theBroker) = 0;
 
     protected:

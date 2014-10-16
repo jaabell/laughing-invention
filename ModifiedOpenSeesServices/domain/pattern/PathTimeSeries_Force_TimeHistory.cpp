@@ -400,14 +400,14 @@ PathTimeSeries_Force_TimeHistory::sendSelf(int commitTag, Channel &theChannel)
 
 
 int
-PathTimeSeries_Force_TimeHistory::recvSelf(int commitTag, Channel &theChannel,
+PathTimeSeries_Force_TimeHistory::receiveSelf(int commitTag, Channel &theChannel,
         FEM_ObjectBroker &theBroker)
 {
     static ID IDdata(6);
-    int res = theChannel.recvID(0, commitTag, IDdata);
+    int res = theChannel.receiveID(0, commitTag, IDdata);
     if (res < 0)
     {
-        cerr << "PathTimeSeries_Force_TimeHistory::recvSelf() - channel failed to receive IDdata\n";
+        cerr << "PathTimeSeries_Force_TimeHistory::receiveSelf() - channel failed to receive IDdata\n";
         return res;
     }
 
@@ -423,10 +423,10 @@ PathTimeSeries_Force_TimeHistory::recvSelf(int commitTag, Channel &theChannel,
     time = new Vector(size);
 
     static Vector Vectordata(3);
-    res = theChannel.recvVector(0, commitTag, Vectordata);
+    res = theChannel.receiveVector(0, commitTag, Vectordata);
     if (res < 0)
     {
-        cerr << "PathTimeSeries_Force_TimeHistory::recvSelf() - channel failed to receive Vectordata\n";
+        cerr << "PathTimeSeries_Force_TimeHistory::receiveSelf() - channel failed to receive Vectordata\n";
         return res;
     }
 
@@ -435,18 +435,18 @@ PathTimeSeries_Force_TimeHistory::recvSelf(int commitTag, Channel &theChannel,
     loadValue    = Vectordata(2);
 
 
-    res = theChannel.recvVector(0, commitTag, *thePath);
+    res = theChannel.receiveVector(0, commitTag, *thePath);
     if (res < 0)
     {
-        cerr << "PathTimeSeries_Force_TimeHistory::recvSelf() - channel failed to receive thePath vector\n";
+        cerr << "PathTimeSeries_Force_TimeHistory::receiveSelf() - channel failed to receive thePath vector\n";
         return res;
     }
 
 
-    res = theChannel.recvVector(0, commitTag, *time);
+    res = theChannel.receiveVector(0, commitTag, *time);
     if (res < 0)
     {
-        cerr << "PathTimeSeries_Force_TimeHistory::recvSelf() - channel failed to receive time vector\n";
+        cerr << "PathTimeSeries_Force_TimeHistory::receiveSelf() - channel failed to receive time vector\n";
         return res;
     }
 

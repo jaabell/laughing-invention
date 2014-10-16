@@ -207,16 +207,16 @@ ImposedMotionSP::sendSelf(int cTag, Channel& theChannel)
 }
 
 int  //Guanzhou implemented
-ImposedMotionSP::recvSelf(int cTag, Channel& theChannel,
+ImposedMotionSP::receiveSelf(int cTag, Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {
     static ID data(4);
 
-    int result = theChannel.recvID(this->getDbTag(), cTag, data);
+    int result = theChannel.receiveID(this->getDbTag(), cTag, data);
 
     if (result < 0)
     {
-        cerr << "WARNING ImposedMotionSP::recvSelf - error receiving data\n";
+        cerr << "WARNING ImposedMotionSP::receiveSelf - error receiving data\n";
         return result;
     }
 

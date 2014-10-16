@@ -62,7 +62,7 @@ class ParMetis : public GraphPartitioner
 
         int sendSelf(int commitTag,
                      Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
 

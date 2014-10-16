@@ -138,7 +138,7 @@ Linear::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-Linear::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+Linear::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }

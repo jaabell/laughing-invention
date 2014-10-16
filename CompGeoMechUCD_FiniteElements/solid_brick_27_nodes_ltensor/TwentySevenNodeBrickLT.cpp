@@ -2901,15 +2901,15 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     return 0;
 }
 
-int TwentySevenNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
-    //Copied from EightNodeBrickLT (with modifications)    // cout << "TwentySevenNodeBrickLT::recvSelf() tag = " << this->getTag() << "\n";
+    //Copied from EightNodeBrickLT (with modifications)    // cout << "TwentySevenNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
 
     ID idData( 5 );
 
-    if ( theChannel.recvID( 0, commitTag, idData ) < 0 )
+    if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::recvSelf() - failed to receive ID\n";
+        cerr << "WARNING TwentySevenNodeBrickLT::receiveSelf() - failed to receive ID\n";
         return -1;
     }
 
@@ -2920,16 +2920,16 @@ int TwentySevenNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_O
     int matClassTag = idData( 4 );
 
 
-    // cout << "TwentySevenNodeBrickLT::recvSelf() numDOF           = " << numDOF << "\n";
-    // cout << "TwentySevenNodeBrickLT::recvSelf() nodes_in_brick   = " << nodes_in_brick << "\n";
-    // cout << "TwentySevenNodeBrickLT::recvSelf() order            = " << order << "\n";
-    // cout << "TwentySevenNodeBrickLT::recvSelf() materialclasstag = " << idData(4) << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() numDOF           = " << numDOF << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() nodes_in_brick   = " << nodes_in_brick << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() order            = " << order << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() materialclasstag = " << idData(4) << "\n";
 
 
     Vector floatData(4);
-    if ( theChannel.recvVector( 0, commitTag, floatData ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, floatData ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::recvSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        cerr << "WARNING TwentySevenNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
     Volume                  = floatData(0) ;
@@ -2937,21 +2937,21 @@ int TwentySevenNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_O
     determinant_of_Jacobian = floatData(2) ;
     rho                     = floatData(3) ;
 
-    // cout << "TwentySevenNodeBrickLT::recvSelf() Volume                  = " << Volume << "\n";
-    // cout << "TwentySevenNodeBrickLT::recvSelf() e_p                     = " << e_p << "\n";
-    // cout << "TwentySevenNodeBrickLT::recvSelf() determinant_of_Jacobian = " << determinant_of_Jacobian << "\n";
-    // cout << "TwentySevenNodeBrickLT::recvSelf() rho                     = " << rho << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() Volume                  = " << Volume << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() e_p                     = " << e_p << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() determinant_of_Jacobian = " << determinant_of_Jacobian << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() rho                     = " << rho << "\n";
 
 
     // Recieve the nodes
 
-    if ( theChannel.recvID( 0, commitTag, connectedExternalNodes ) < 0 )
+    if ( theChannel.receiveID( 0, commitTag, connectedExternalNodes ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::recvSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
+        cerr << "WARNING TwentySevenNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
         return -1;
     }
 
-    // cout << "TwentySevenNodeBrickLT::recvSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
+    // cout << "TwentySevenNodeBrickLT::receiveSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
 
     if ( material_array[0] == 0 )
     {
@@ -2962,14 +2962,14 @@ int TwentySevenNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_O
             NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
             if ( ndmat == 0 )
             {
-                cerr << "TwentySevenNodeBrickLT::recvSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
+                cerr << "TwentySevenNodeBrickLT::receiveSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
                 return -1;
             }
 
             // Now receive materials into the newly allocated space
-            if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( ( ndmat )->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "TwentySevenNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
+                cerr << "TwentySevenNodeBrickLT::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
 
@@ -2978,30 +2978,30 @@ int TwentySevenNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_O
     }
 
     // Q
-    if ( theChannel.recvVector( 0, commitTag, Q ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, Q ) < 0 )
     {
-        cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv Q!\n";
+        cerr << "TwentySevenNodeBrickLT::receiveSelf() - failed to recv Q!\n";
         return -1;
     }
 
     // bf
-    if ( theChannel.recvVector( 0, commitTag, bf ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, bf ) < 0 )
     {
-        cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv bf!\n";
+        cerr << "TwentySevenNodeBrickLT::receiveSelf() - failed to recv bf!\n";
         return -1;
     }
 
     // gauss_points
-    if ( theChannel.recvMatrix( 0, commitTag, gauss_points ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, gauss_points ) < 0 )
     {
-        cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv gauss_points!\n";
+        cerr << "TwentySevenNodeBrickLT::receiveSelf() - failed to recv gauss_points!\n";
         return -1;
     }
 
     // outputVector
-    if ( theChannel.recvVector( 0, commitTag, outputVector ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
     {
-        cerr << "TwentySevenNodeBrickLT::recvSelf() - failed to recv outputVector!\n";
+        cerr << "TwentySevenNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
         return -1;
     }
 

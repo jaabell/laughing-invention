@@ -80,7 +80,7 @@ PenaltyElementApplyDisplacement::PenaltyElementApplyDisplacement(int tag,
 
 
 // constructor:
-//   invoked by a FEM_ObjectBroker - blank object that recvSelf needs
+//   invoked by a FEM_ObjectBroker - blank object that receiveSelf needs
 //   to be invoked upon
 PenaltyElementApplyDisplacement::PenaltyElementApplyDisplacement()
     : Element(0, ELE_TAG_PenaltyElementApplyDisplacement),
@@ -480,7 +480,7 @@ PenaltyElementApplyDisplacement::sendSelf(int commitTag, Channel &theChannel)
 
 
 int
-PenaltyElementApplyDisplacement::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+PenaltyElementApplyDisplacement::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     //Iimplemented by Babak Kamrani on 6/12/13
     //-----------
@@ -488,11 +488,11 @@ PenaltyElementApplyDisplacement::recvSelf(int commitTag, Channel &theChannel, FE
     static Vector data(5);
 
 
-    res += theChannel.recvVector(this->getDbTag(), commitTag, data);
+    res += theChannel.receiveVector(this->getDbTag(), commitTag, data);
 
     if (res < 0)
     {
-        cerr << "PenaltyElementApplyDisplacement::recvSelf -- could not receive data Vector\n";
+        cerr << "PenaltyElementApplyDisplacement::receiveSelf -- could not receive data Vector\n";
         return res;
     }
 

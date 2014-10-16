@@ -591,14 +591,14 @@ int HHT::sendSelf(int cTag, Channel& theChannel)
 }
 
 
-int HHT::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int HHT::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     //    Vector data(7);
     Vector data(3);
 
-    if (theChannel.recvVector(this->getDbTag(), cTag, data) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), cTag, data) < 0)
     {
-        cerr << "WARNING HHT::recvSelf() - could not receive data\n";
+        cerr << "WARNING HHT::receiveSelf() - could not receive data\n";
         return -1;
     }
 

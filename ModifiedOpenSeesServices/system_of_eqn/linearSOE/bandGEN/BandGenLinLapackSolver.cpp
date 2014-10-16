@@ -204,7 +204,7 @@ BandGenLinLapackSolver::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-BandGenLinLapackSolver::recvSelf(int commitTag,
+BandGenLinLapackSolver::receiveSelf(int commitTag,
                                  Channel& theChannel,
                                  FEM_ObjectBroker& theBroker)
 {

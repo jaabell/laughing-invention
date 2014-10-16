@@ -252,12 +252,12 @@ CTestNormDispIncr::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-CTestNormDispIncr::recvSelf(int cTag, Channel &theChannel,
+CTestNormDispIncr::receiveSelf(int cTag, Channel &theChannel,
                             FEM_ObjectBroker &theBroker)
 {
     int res = 0;
     Vector x(4);
-    res = theChannel.recvVector(this->getDbTag(), cTag, x);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, x);
 
     tol = x(0);
     maxNumIter = x(1);

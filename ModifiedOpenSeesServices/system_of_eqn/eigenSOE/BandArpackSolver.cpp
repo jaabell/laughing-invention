@@ -713,7 +713,7 @@ BandArpackSolver::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-BandArpackSolver::recvSelf(int commitTag, Channel& theChannel,
+BandArpackSolver::receiveSelf(int commitTag, Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
     // nothing to do

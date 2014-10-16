@@ -5361,14 +5361,14 @@ int TwentySevenNodeBrickElastic::sendSelf (int commitTag, Channel &theChannel)
 
 
 //=============================================================================
-int TwentySevenNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int TwentySevenNodeBrickElastic::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
   int dataTag = this->getDbTag();
 
   static ID idData(30);
-  if (theChannel.recvID(dataTag, commitTag, idData) < 0) 
+  if (theChannel.receiveID(dataTag, commitTag, idData) < 0) 
   {
-    std::cerr << "WARNING TwentySevenNodeBrickElastic::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+    std::cerr << "WARNING TwentySevenNodeBrickElastic::receiveSelf() - " << this->getTag() << " failed to receive ID\n";
     return -1;
   }
 
@@ -5412,13 +5412,13 @@ int TwentySevenNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, F
       		NDMaterial *ndmat = theBroker.getNewNDMaterial(matClassTag);
       		if (ndmat == 0) 
 		{
-        		std::cerr << "TwentySevenNodeBrickElastic::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+        		std::cerr << "TwentySevenNodeBrickElastic::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
         		return -1;
       		}
       		ndmat->setDbTag(matDbTag);
-      		if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0) 
+      		if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0) 
 		{
-			std::cerr << "TwentySevenNodeBrickElastic::recvSelf() - material " << i << "failed to recv itself\n";
+			std::cerr << "TwentySevenNodeBrickElastic::receiveSelf() - material " << i << "failed to recv itself\n";
        			return -1;
 		} 
       		matpoint[i]->matmodel = ndmat;
@@ -5435,14 +5435,14 @@ int TwentySevenNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, F
         		delete matpoint[i]->matmodel;
         		if (ndmat ==  0) 
 			{
-          			std::cerr << "TwentySevenNodeBrickElastic::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+          			std::cerr << "TwentySevenNodeBrickElastic::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
           			return -1;
         		}
       			ndmat->setDbTag(matDbTag);
       		}
-     		if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0) 
+     		if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0) 
 		{
-			std::cerr << "TwentySevenNodeBrickElastic::recvSelf() - material " << i << "failed to recv itself\n";
+			std::cerr << "TwentySevenNodeBrickElastic::receiveSelf() - material " << i << "failed to recv itself\n";
        			return -1;
 		} 
       		matpoint[i]->matmodel = ndmat;

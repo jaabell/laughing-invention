@@ -198,7 +198,7 @@ PlainNumberer::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-PlainNumberer::recvSelf(int cTag,
+PlainNumberer::receiveSelf(int cTag,
                         Channel& theChannel,
                         FEM_ObjectBroker& theBroker)
 {

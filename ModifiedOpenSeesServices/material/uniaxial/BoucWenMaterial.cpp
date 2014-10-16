@@ -305,7 +305,7 @@ BoucWenMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-BoucWenMaterial::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+BoucWenMaterial::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

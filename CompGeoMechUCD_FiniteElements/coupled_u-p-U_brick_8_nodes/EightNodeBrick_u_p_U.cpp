@@ -681,7 +681,7 @@ int EightNodeBrick_u_p_U::sendSelf (int commitTag, Channel &theChannel)
 }
 
 //=============================================================================
-int EightNodeBrick_u_p_U::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int EightNodeBrick_u_p_U::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     // Not implemented yet
     return 0;

@@ -706,9 +706,9 @@ int ThreeNodeAndesBending::sendSelf (int commitTag, Channel& theChannel)
     return 0;
 }
 
-int ThreeNodeAndesBending::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int ThreeNodeAndesBending::receiveSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
-    cout << "ThreeNodeAndesBending::recvSelf ()" << endl;
+    cout << "ThreeNodeAndesBending::receiveSelf ()" << endl;
     return 0;
 }
 

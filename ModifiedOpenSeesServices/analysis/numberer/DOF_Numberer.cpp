@@ -475,12 +475,12 @@ DOF_Numberer::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-DOF_Numberer::recvSelf(int cTag, Channel& theChannel,
+DOF_Numberer::receiveSelf(int cTag, Channel& theChannel,
                        FEM_ObjectBroker& theBroker)
 {
     ID data(2);
     int dataTag = this->getDbTag();
-    theChannel.recvID(dataTag, cTag, data);
+    theChannel.receiveID(dataTag, cTag, data);
 
     // get a graphNumberer
     if (data(0) != -1)
@@ -490,11 +490,11 @@ DOF_Numberer::recvSelf(int cTag, Channel& theChannel,
         if (theGraphNumberer != 0)
         {
             theGraphNumberer->setDbTag(data(1));
-            theGraphNumberer->recvSelf(cTag, theChannel, theBroker);
+            theGraphNumberer->receiveSelf(cTag, theChannel, theBroker);
         }
         else
         {
-            cerr << "DOF_Numberer::recvSelf() - failed to get GraphNumberer\n";
+            cerr << "DOF_Numberer::receiveSelf() - failed to get GraphNumberer\n";
             return -1;
         }
     }

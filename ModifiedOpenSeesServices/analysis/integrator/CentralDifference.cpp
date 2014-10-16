@@ -352,7 +352,7 @@ CentralDifference::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-CentralDifference::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+CentralDifference::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

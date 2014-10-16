@@ -237,16 +237,16 @@ int CC_Ev::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int CC_Ev::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int CC_Ev::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(5);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "CC_Ev::recvSelf -- failed to recv ID\n";
+        cerr << "CC_Ev::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 

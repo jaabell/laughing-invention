@@ -77,12 +77,12 @@ ConstantSeries::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-ConstantSeries::recvSelf(int commitTag, Channel& theChannel,
+ConstantSeries::receiveSelf(int commitTag, Channel& theChannel,
                          FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
     Vector data(1);
-    int result = theChannel.recvVector(dbTag, commitTag, data);
+    int result = theChannel.receiveVector(dbTag, commitTag, data);
 
     if (result < 0)
     {

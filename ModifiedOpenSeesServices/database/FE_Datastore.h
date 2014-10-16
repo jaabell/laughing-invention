@@ -62,7 +62,7 @@ class FE_Datastore: public Channel
                     MovableObject& theObject,
                     ChannelAddress* theAddress = 0);
 
-        int recvObj(int commitTag,
+        int receiveObj(int commitTag,
                     MovableObject& theObject,
                     FEM_ObjectBroker& theBroker,
                     ChannelAddress* theAddress = 0);

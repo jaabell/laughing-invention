@@ -2903,7 +2903,7 @@ int EightNodeBrick::sendSelf (int commitTag, Channel &theChannel)
 }
 
 //Guanzhou added
-int EightNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int EightNodeBrick::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
 
 
@@ -2918,9 +2918,9 @@ int EightNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBrok
 
 
     // 8node brick now receives the tags of its four external nodes
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "WARNING EightNodeBrick::recvSelf() - failed to receive ID\n";
+        cerr << "WARNING EightNodeBrick::receiveSelf() - failed to receive ID\n";
         return -1;
     }
 
@@ -2953,23 +2953,23 @@ int EightNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBrok
 
             if (ndmat == 0)
             {
-                cerr << "EightNodeBrick::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                cerr << "EightNodeBrick::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
                 return -1;
             }
 
             // Now receive materials into the newly allocated space
             ndmat->setDbTag(matDbTag);
 
-            if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "EightNodeBrick::recvSelf() - material " << i << "failed to recv itself\n";
+                cerr << "EightNodeBrick::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
 
             matpoint[i]->matmodel = ndmat;
         }
     }
-    // materials exist , ensure materials of correct type and recvSelf on them
+    // materials exist , ensure materials of correct type and receiveSelf on them
     else
     {
         for (int i = 0; i < 8; i++)
@@ -2980,9 +2980,9 @@ int EightNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBrok
 
             static Vector matProp(4);
 
-            if ( theChannel.recvVector(dataTag, commitTag, matProp) < 0 )
+            if ( theChannel.receiveVector(dataTag, commitTag, matProp) < 0 )
             {
-                cerr << "EightNodeBrick::recvSelf() - failed to recv rho!\n";
+                cerr << "EightNodeBrick::receiveSelf() - failed to recv rho!\n";
                 return -1;
             }
 
@@ -2997,7 +2997,7 @@ int EightNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBrok
                 //        ndmat = theBroker.getNewNDMaterial(matClassTag);
                 if (ndmat ==  0)
                 {
-                    cerr << "EightNodeBrick::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                    cerr << "EightNodeBrick::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
                     return -1;
                 }
 
@@ -3005,9 +3005,9 @@ int EightNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBrok
             }
 
             // Receive the material
-            if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "EightNodeBrick::recvSelf() - material " << i << "failed to recv itself\n";
+                cerr << "EightNodeBrick::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
 
@@ -3018,9 +3018,9 @@ int EightNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBrok
 
     static Vector matProp(1);
 
-    if ( theChannel.recvVector(dataTag, commitTag, matProp) < 0 )
+    if ( theChannel.receiveVector(dataTag, commitTag, matProp) < 0 )
     {
-        cerr << "EightNodeBrick::recvSelf() - failed to recv rho!\n";
+        cerr << "EightNodeBrick::receiveSelf() - failed to recv rho!\n";
         return -1;
     }
 

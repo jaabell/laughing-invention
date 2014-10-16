@@ -388,19 +388,19 @@ PenaltyConstraintHandler::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-PenaltyConstraintHandler::recvSelf(int cTag,
+PenaltyConstraintHandler::receiveSelf(int cTag,
                                    Channel& theChannel,
                                    FEM_ObjectBroker& theBroker)
 {
     Vector data(2);
     int result = 0;
-    result = theChannel.recvVector(this->getDbTag(), cTag, data);
+    result = theChannel.receiveVector(this->getDbTag(), cTag, data);
     alphaSP = data(0);
     alphaMP = data(1);
 
     if (result != 0)
     {
-        cerr << "PenaltyConstraintHandler::recvSelf() - error receiving Vector\n";
+        cerr << "PenaltyConstraintHandler::receiveSelf() - error receiving Vector\n";
     }
 
     return result;

@@ -224,14 +224,14 @@ Vertex::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Vertex::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+Vertex::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     // recv the tag/ref/color/degree/tmp, an indication if weighted & size of adjacency
     static ID idData(7);
 
-    if (theChannel.recvID(0, commitTag, idData) < 0)
+    if (theChannel.receiveID(0, commitTag, idData) < 0)
     {
-        cerr << "Graph::recvSelf() - failed to receive the initial data\n";
+        cerr << "Graph::receiveSelf() - failed to receive the initial data\n";
         return -1;
     }
 
@@ -246,9 +246,9 @@ Vertex::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker
     {
         static Vector vectData(1);
 
-        if (theChannel.recvVector(0, commitTag, vectData) < 0)
+        if (theChannel.receiveVector(0, commitTag, vectData) < 0)
         {
-            cerr << "Graph::recvSelf() - failed to receive the weight\n";
+            cerr << "Graph::receiveSelf() - failed to receive the weight\n";
             return -2;
         }
 
@@ -261,9 +261,9 @@ Vertex::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker
     adjacencyData = new int[idData[6]];
     myAdjacency.setData(adjacencyData, idData[6], true);
 
-    if (theChannel.recvID(0, commitTag, myAdjacency) < 0)
+    if (theChannel.receiveID(0, commitTag, myAdjacency) < 0)
     {
-        cerr << "Graph::recvSelf() - failed to receive the initial data\n";
+        cerr << "Graph::receiveSelf() - failed to receive the initial data\n";
         return -3;
     }
 

@@ -83,7 +83,7 @@ class TwoStageEquivalentElasticIsotropic3D : public ElasticIsotropicMaterial
 
         //for PDD
         virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int recvSelf(int commitTag, Channel& theChannel,
+        virtual int receiveSelf(int commitTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker);
         int getObjectSize();
 

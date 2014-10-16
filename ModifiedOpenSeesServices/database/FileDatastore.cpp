@@ -184,11 +184,11 @@ FileDatastore::sendMsg(int dataTag, int commitTag,
 }
 
 int
-FileDatastore::recvMsg(int dataTag, int commitTag,
+FileDatastore::receiveMsg(int dataTag, int commitTag,
                        Message&,
                        ChannelAddress* theAddress)
 {
-    cerr << "FileDatastore::recvMsg() - not yet implemented\n";
+    cerr << "FileDatastore::receiveMsg() - not yet implemented\n";
     return -1;
 }
 
@@ -365,7 +365,7 @@ FileDatastore::sendMatrix(int dataTag, int commitTag,
 
 
 int
-FileDatastore::recvMatrix(int dataTag, int commitTag,
+FileDatastore::receiveMatrix(int dataTag, int commitTag,
                           Matrix& theMatrix,
                           ChannelAddress* theAddress)
 {
@@ -376,7 +376,7 @@ FileDatastore::recvMatrix(int dataTag, int commitTag,
 
     if (matSize >= maxMatSize)
     {
-        cerr << "FileDatastore::recvMatrix() - the database does not deal with Mats";
+        cerr << "FileDatastore::receiveMatrix() - the database does not deal with Mats";
         cerr << " of this size " << matSize << endln;
         return -1;
     }
@@ -395,7 +395,7 @@ FileDatastore::recvMatrix(int dataTag, int commitTag,
 
         if (mats[matSize] == 0)
         {
-            cerr << "FileDatastore::recvMatrix() - could not open file\n";
+            cerr << "FileDatastore::receiveMatrix() - could not open file\n";
             return -1;
         }
 
@@ -663,7 +663,7 @@ FileDatastore::sendVector(int dataTag, int commitTag,
 }
 
 int
-FileDatastore::recvVector(int dataTag, int commitTag,
+FileDatastore::receiveVector(int dataTag, int commitTag,
                           Vector& theVector,
                           ChannelAddress* theAddress)
 {
@@ -672,7 +672,7 @@ FileDatastore::recvVector(int dataTag, int commitTag,
 
     if (vectSize >= maxVectSize)
     {
-        cerr << "FileDatastore::recvVector() - the database does not deal with Vects";
+        cerr << "FileDatastore::receiveVector() - the database does not deal with Vects";
         cerr << " of this size " << vectSize << endln;
         return -1;
     }
@@ -691,7 +691,7 @@ FileDatastore::recvVector(int dataTag, int commitTag,
 
         if (vects[vectSize] == 0)
         {
-            cerr << "FileDatastore::recvVector() - could not open file\n";
+            cerr << "FileDatastore::receiveVector() - could not open file\n";
             return -1;
         }
 
@@ -959,7 +959,7 @@ FileDatastore::sendID(int dataTag, int commitTag,
 }
 
 int
-FileDatastore::recvID(int dataTag, int commitTag,
+FileDatastore::receiveID(int dataTag, int commitTag,
                       ID& theID,
                       ChannelAddress* theAddress)
 {
@@ -968,7 +968,7 @@ FileDatastore::recvID(int dataTag, int commitTag,
 
     if (idSize >= maxIDsize)
     {
-        cerr << "FileDatastore::recvID() - the database does not deal with IDs";
+        cerr << "FileDatastore::receiveID() - the database does not deal with IDs";
         cerr << " of this size "  << idSize << endln;
         return -1;
     }
@@ -987,7 +987,7 @@ FileDatastore::recvID(int dataTag, int commitTag,
 
         if (ids[idSize] == 0)
         {
-            cerr << "FileDatastore::recvID() - could not open file\n";
+            cerr << "FileDatastore::receiveID() - could not open file\n";
             return -1;
         }
 

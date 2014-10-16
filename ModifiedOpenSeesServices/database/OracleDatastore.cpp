@@ -182,12 +182,12 @@ OracleDatastore::sendObj(int commitTag,
 }
 
 int
-OracleDatastore::recvObj(int commitTag,
+OracleDatastore::receiveObj(int commitTag,
                          MovableObject& theObject,
                          FEM_ObjectBroker& theNewBroker,
                          ChannelAddress* theAddress)
 {
-    return theObject.recvSelf(commitTag, *this, theNewBroker);
+    return theObject.receiveSelf(commitTag, *this, theNewBroker);
 }
 
 
@@ -201,11 +201,11 @@ OracleDatastore::sendMsg(int dataTag, int commitTag,
 }
 
 int
-OracleDatastore::recvMsg(int dataTag, int commitTag,
+OracleDatastore::receiveMsg(int dataTag, int commitTag,
                          Message&,
                          ChannelAddress* theAddress)
 {
-    cerr << "OracleDatastore::recvMsg() - not yet implemented\n";
+    cerr << "OracleDatastore::receiveMsg() - not yet implemented\n";
     return -1;
 }
 
@@ -254,7 +254,7 @@ OracleDatastore::sendMatrix(int dataTag, int commitTag,
 
 
 int
-OracleDatastore::recvMatrix(int dataTag, int commitTag,
+OracleDatastore::receiveMatrix(int dataTag, int commitTag,
                             Matrix& theMatrix,
                             ChannelAddress* theAddress)
 {
@@ -313,7 +313,7 @@ OracleDatastore::sendVector(int dataTag, int commitTag,
 }
 
 int
-OracleDatastore::recvVector(int dataTag, int commitTag,
+OracleDatastore::receiveVector(int dataTag, int commitTag,
                             Vector& theVector,
                             ChannelAddress* theAddress)
 {
@@ -367,7 +367,7 @@ OracleDatastore::sendID(int dataTag, int commitTag,
 
 
 int
-OracleDatastore::recvID(int dataTag, int commitTag,
+OracleDatastore::receiveID(int dataTag, int commitTag,
                         ID& theID,
                         ChannelAddress* theAddress)
 {

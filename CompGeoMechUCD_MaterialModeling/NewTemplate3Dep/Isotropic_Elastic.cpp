@@ -163,7 +163,7 @@ int Isotropic_Elastic::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int Isotropic_Elastic::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int Isotropic_Elastic::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
@@ -171,9 +171,9 @@ int Isotropic_Elastic::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBr
     idData.Zero();
 
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "Isotropic_Elastic::recvSelf -- failed to recv ID\n";
+        cerr << "Isotropic_Elastic::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 
@@ -183,15 +183,15 @@ int Isotropic_Elastic::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBr
     int strain_tag   = idData(3);
 
 
-    if (theChannel.recvnDarray(stress_tag, commitTag, this->Stress) < 0)
+    if (theChannel.receivenDarray(stress_tag, commitTag, this->Stress) < 0)
     {
-        cerr << "Isotropic_Elastic::recvSelf() -  failed to recv nDarray Stress\n";
+        cerr << "Isotropic_Elastic::receiveSelf() -  failed to recv nDarray Stress\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(strain_tag, commitTag, this->Strain) < 0)
+    if (theChannel.receivenDarray(strain_tag, commitTag, this->Strain) < 0)
     {
-        cerr << "Isotropic_Elastic::recvSelf() -  failed to recv nDarray Strain\n";
+        cerr << "Isotropic_Elastic::receiveSelf() -  failed to recv nDarray Strain\n";
         return -1;
     }
 

@@ -159,11 +159,11 @@ MySqlDatastore::sendMsg(int dataTag, int commitTag,
 }
 
 int
-MySqlDatastore::recvMsg(int dataTag, int commitTag,
+MySqlDatastore::receiveMsg(int dataTag, int commitTag,
                         Message&,
                         ChannelAddress* theAddress)
 {
-    cerr.flush() << "MySqlDatastore::recvMsg() - not yet implemented\n";
+    cerr.flush() << "MySqlDatastore::receiveMsg() - not yet implemented\n";
     return -1;
 }
 
@@ -248,7 +248,7 @@ MySqlDatastore::sendMatrix(int dbTag, int commitTag,
 }
 
 int
-MySqlDatastore::recvMatrix(int dbTag, int commitTag,
+MySqlDatastore::receiveMatrix(int dbTag, int commitTag,
                            Matrix& theMatrix,
                            ChannelAddress* theAddress)
 {
@@ -273,7 +273,7 @@ MySqlDatastore::recvMatrix(int dbTag, int commitTag,
 
         if (query == 0)
         {
-            cerr.flush() << "MySqlDatastore::recvMatrix - out of memory creating query of size";
+            cerr.flush() << "MySqlDatastore::receiveMatrix - out of memory creating query of size";
             cerr.flush() << sizeQuery << endln;
             return -2;
         }
@@ -296,7 +296,7 @@ MySqlDatastore::recvMatrix(int dbTag, int commitTag,
     // execute the SELECT query
     if (mysql_query(&mysql, query) != 0)
     {
-        cerr.flush() << "MySqlDatastore::recvMatrix() - failed to receive Matrix from MySQL database";
+        cerr.flush() << "MySqlDatastore::receiveMatrix() - failed to receive Matrix from MySQL database";
         cerr.flush() << endln << mysql_error(&mysql) << endln;
         return -3;
     }
@@ -309,7 +309,7 @@ MySqlDatastore::recvMatrix(int dbTag, int commitTag,
     if (results == NULL)
     {
         // no matrix stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvMatrix - no data in database for Matrix with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receiveMatrix - no data in database for Matrix with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         return -4;
     }
@@ -319,7 +319,7 @@ MySqlDatastore::recvMatrix(int dbTag, int commitTag,
     if (row == NULL)
     {
         // no matrix stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvMatrix - no data in database for Matrix with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receiveMatrix - no data in database for Matrix with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         mysql_free_result(results);
         return -5;
@@ -422,7 +422,7 @@ MySqlDatastore::sendVector(int dbTag, int commitTag,
 }
 
 int
-MySqlDatastore::recvVector(int dbTag, int commitTag,
+MySqlDatastore::receiveVector(int dbTag, int commitTag,
                            Vector& theVector,
                            ChannelAddress* theAddress)
 {
@@ -447,7 +447,7 @@ MySqlDatastore::recvVector(int dbTag, int commitTag,
 
         if (query == 0)
         {
-            cerr.flush() << "MySqlDatastore::recvVector - out of memory creating query of size";
+            cerr.flush() << "MySqlDatastore::receiveVector - out of memory creating query of size";
             cerr.flush() << sizeQuery << endln;
             return -2;
         }
@@ -470,7 +470,7 @@ MySqlDatastore::recvVector(int dbTag, int commitTag,
     // execute the SELECT query
     if (mysql_query(&mysql, query) != 0)
     {
-        cerr.flush() << "MySqlDatastore::recvVector() - failed to receive vector from MySQL database";
+        cerr.flush() << "MySqlDatastore::receiveVector() - failed to receive vector from MySQL database";
         cerr.flush() << endln << mysql_error(&mysql) << endln;
         return -3;
     }
@@ -483,7 +483,7 @@ MySqlDatastore::recvVector(int dbTag, int commitTag,
     if (results == NULL)
     {
         // no vector stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvVector - no data in database for Vector with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receiveVector - no data in database for Vector with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         return -4;
     }
@@ -493,7 +493,7 @@ MySqlDatastore::recvVector(int dbTag, int commitTag,
     if (row == NULL)
     {
         // no vector stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvVector - no data in database for Vector with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receiveVector - no data in database for Vector with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         mysql_free_result(results);
         return -5;
@@ -595,7 +595,7 @@ MySqlDatastore::sendID(int dbTag, int commitTag,
 
 
 int
-MySqlDatastore::recvID(int dbTag, int commitTag,
+MySqlDatastore::receiveID(int dbTag, int commitTag,
                        ID& theID,
                        ChannelAddress* theAddress)
 {
@@ -620,7 +620,7 @@ MySqlDatastore::recvID(int dbTag, int commitTag,
 
         if (query == 0)
         {
-            cerr.flush() << "MySqlDatastore::recvID - out of memory creating query of size";
+            cerr.flush() << "MySqlDatastore::receiveID - out of memory creating query of size";
             cerr.flush() << sizeQuery << endln;
             return -2;
         }
@@ -643,7 +643,7 @@ MySqlDatastore::recvID(int dbTag, int commitTag,
     // execute the SELECT query
     if (mysql_query(&mysql, query) != 0)
     {
-        cerr.flush() << "MySqlDatastore::recvID() - failed to receive ID from MySQL database";
+        cerr.flush() << "MySqlDatastore::receiveID() - failed to receive ID from MySQL database";
         cerr.flush() << endln << mysql_error(&mysql) << endln;
         return -3;
     }
@@ -656,7 +656,7 @@ MySqlDatastore::recvID(int dbTag, int commitTag,
     if (results == NULL)
     {
         // no ID stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvID - no data in database for ID with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receiveID - no data in database for ID with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         return -4;
     }
@@ -666,7 +666,7 @@ MySqlDatastore::recvID(int dbTag, int commitTag,
     if (row == NULL)
     {
         // no ID stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvID - no data in database for ID with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receiveID - no data in database for ID with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         mysql_free_result(results);
         return -5;
@@ -1126,7 +1126,7 @@ MySqlDatastore::sendnDarray(int dbTag, int commitTag,
 
 
 int
-MySqlDatastore::recvnDarray(int dbTag, int commitTag,
+MySqlDatastore::receivenDarray(int dbTag, int commitTag,
                             nDarray& theNDarray,
                             ChannelAddress* theAddress)
 {
@@ -1153,7 +1153,7 @@ MySqlDatastore::recvnDarray(int dbTag, int commitTag,
 
         if (query == 0)
         {
-            cerr.flush() << "MySqlDatastore::recvnDarray - out of memory creating query of size";
+            cerr.flush() << "MySqlDatastore::receivenDarray - out of memory creating query of size";
             cerr.flush() << sizeQuery << endln;
             return -2;
         }
@@ -1176,7 +1176,7 @@ MySqlDatastore::recvnDarray(int dbTag, int commitTag,
     // execute the SELECT query
     if (mysql_query(&mysql, query) != 0)
     {
-        cerr.flush() << "MySqlDatastore::recvnDarray() - failed to receive nDarray from MySQL database";
+        cerr.flush() << "MySqlDatastore::receivenDarray() - failed to receive nDarray from MySQL database";
         cerr.flush() << endln << mysql_error(&mysql) << endln;
         return -3;
     }
@@ -1189,7 +1189,7 @@ MySqlDatastore::recvnDarray(int dbTag, int commitTag,
     if (results == NULL)
     {
         // no nDarray stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvnDarray - no data in database for nDarray with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receivenDarray - no data in database for nDarray with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         return -4;
     }
@@ -1200,7 +1200,7 @@ MySqlDatastore::recvnDarray(int dbTag, int commitTag,
     if (row == NULL)
     {
         // no nDarray stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvnDarray - no data in database for nDarray with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receivenDarray - no data in database for nDarray with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         mysql_free_result(results);
         return -5;
@@ -1606,7 +1606,7 @@ MySqlDatastore::recvDisplacementsVector(int NodeNumber, int dof, int commitTag, 
 //     sizeQuery = 2 * sizeData + 256; // 256 for the SLECECT data FROM ... blah blah
 //     query = new char [sizeQuery];
 //     if (query == 0) {
-//       cerr.flush() << "MySqlDatastore::recvVector - out of memory creating query of size";
+//       cerr.flush() << "MySqlDatastore::receiveVector - out of memory creating query of size";
 //       cerr.flush() << sizeQuery << endln;
 //       return -2;
 //     }
@@ -1628,7 +1628,7 @@ MySqlDatastore::recvDisplacementsVector(int NodeNumber, int dof, int commitTag, 
 //
 //   // execute the SELECT query
 //   if (mysql_query(&mysql, query) != 0) {
-//     cerr.flush() << "MySqlDatastore::recvVector() - failed to receive vector from MySQL database";
+//     cerr.flush() << "MySqlDatastore::receiveVector() - failed to receive vector from MySQL database";
 //     cerr.flush() << endln << mysql_error(&mysql) << endln;
 //     return -3;
 //   }
@@ -1639,14 +1639,14 @@ MySqlDatastore::recvDisplacementsVector(int NodeNumber, int dof, int commitTag, 
 //   results = mysql_store_result(&mysql);
 //   if (results == NULL) {
 //     // no vector stored in db with these keys
-//     cerr.flush() << "MySqlDatastore::recvVector - no data in database for Vector with dbTag, cTag: ";
+//     cerr.flush() << "MySqlDatastore::receiveVector - no data in database for Vector with dbTag, cTag: ";
 //     cerr.flush() << dbTag << ", " << commitTag << endln;
 //     return -4;
 //   }
 //   row = mysql_fetch_row(results);
 //   if (row == NULL) {
 //     // no vector stored in db with these keys
-//     cerr.flush() << "MySqlDatastore::recvVector - no data in database for Vector with dbTag, cTag: ";
+//     cerr.flush() << "MySqlDatastore::receiveVector - no data in database for Vector with dbTag, cTag: ";
 //     cerr.flush() << dbTag << ", " << commitTag << endln;
 //     mysql_free_result(results);
 //     return -5;
@@ -1709,7 +1709,7 @@ MySqlDatastore::recvDisplacementsID(int dbTag, int commitTag, int stepNumber,
 
         if (query == 0)
         {
-            cerr.flush() << "MySqlDatastore::recvID - out of memory creating query of size";
+            cerr.flush() << "MySqlDatastore::receiveID - out of memory creating query of size";
             cerr.flush() << sizeQuery << endln;
             return -2;
         }
@@ -1732,7 +1732,7 @@ MySqlDatastore::recvDisplacementsID(int dbTag, int commitTag, int stepNumber,
     // execute the SELECT query
     if (mysql_query(&mysql, query) != 0)
     {
-        cerr.flush() << "MySqlDatastore::recvID() - failed to receive ID from MySQL database";
+        cerr.flush() << "MySqlDatastore::receiveID() - failed to receive ID from MySQL database";
         cerr.flush() << endln << mysql_error(&mysql) << endln;
         return -3;
     }
@@ -1745,7 +1745,7 @@ MySqlDatastore::recvDisplacementsID(int dbTag, int commitTag, int stepNumber,
     if (results == NULL)
     {
         // no ID stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvID - no data in database for ID with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receiveID - no data in database for ID with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         return -4;
     }
@@ -1755,7 +1755,7 @@ MySqlDatastore::recvDisplacementsID(int dbTag, int commitTag, int stepNumber,
     if (row == NULL)
     {
         // no ID stored in db with these keys
-        cerr.flush() << "MySqlDatastore::recvID - no data in database for ID with dbTag, cTag: ";
+        cerr.flush() << "MySqlDatastore::receiveID - no data in database for ID with dbTag, cTag: ";
         cerr.flush() << dbTag << ", " << commitTag << endln;
         mysql_free_result(results);
         return -5;

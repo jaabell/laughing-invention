@@ -64,7 +64,7 @@ class Linear_Force_TimeHistory : public LoadPattern
 
         // methods for o/p
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
         //  method to obtain a blank copy of the LoadPattern
         LoadPattern* getCopy(void);

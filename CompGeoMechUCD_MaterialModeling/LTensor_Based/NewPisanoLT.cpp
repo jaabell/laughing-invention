@@ -484,7 +484,7 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
     //Send the stiffness tensors
 
     // here we unwrap the stiffness tensors into a vector of 81 components to be sent to remotes
-    // remotes (recvSelf) will have to re-wrap
+    // remotes (receiveSelf) will have to re-wrap
     Vector aux_stifftensor(81);
     int comp = 0;
     for (int ii = 0; ii < 3; ii++)
@@ -514,16 +514,16 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 }
 
 
-int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int NewPisanoLT::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     Vector model_parameters(14);
 
     // Receive model_parameters (double data)
 
 
-    if ( theChannel.recvVector( 0, commitTag, model_parameters ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, model_parameters ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive model_parameters\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive model_parameters\n";
         return -1;
     }
 
@@ -547,9 +547,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 1. Receiving strainplcum
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive strainplcum\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive strainplcum\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -562,9 +562,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 2. Receiving strainplcum
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive strainplcum\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive strainplcum\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -577,9 +577,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 3. Receiving TrialStrain
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive TrialStrain\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive TrialStrain\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -592,9 +592,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 4. Receiving TrialStress
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive TrialStress\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive TrialStress\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -607,9 +607,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 5. Receiving TrialPlastic_Strain
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive TrialPlastic_Strain\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive TrialPlastic_Strain\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -622,9 +622,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 6. Receiving ElasticStateStrain
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive ElasticStateStrain\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive ElasticStateStrain\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -637,9 +637,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 7. Receiving ElasticStateStress
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive ElasticStateStress\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive ElasticStateStress\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -652,9 +652,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 8. Receiving CommitStress
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive CommitStress\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive CommitStress\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -667,9 +667,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 9. Receiving CommitStrain
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive CommitStrain\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive CommitStrain\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -682,9 +682,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 10. Receiving CommitPlastic_Strain
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive CommitPlastic_Strain\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive CommitPlastic_Strain\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -697,9 +697,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 11. Receiving alpha
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive alpha\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive alpha\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -712,9 +712,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 12. Receiving alpha0
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive alpha0\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive alpha0\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -727,9 +727,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 13. Receiving alpha0mem
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive alpha0mem\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive alpha0mem\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -742,9 +742,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 14. Receiving strainpl0
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive strainpl0\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive strainpl0\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -757,9 +757,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 15. Receiving Stress_n_minus_2
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive Stress_n_minus_2\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive Stress_n_minus_2\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -772,9 +772,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 
     // 16. Receiving nij_dev
-    if ( theChannel.recvMatrix( 0, commitTag, aux ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive nij_dev\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive nij_dev\n";
         return -1;
     }
     for (int ii = 0; ii < 3; ii++)
@@ -788,9 +788,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
     //Receive the stiffness tensors (through a vector and wrap it)
     Vector aux_stifftensor(81);
-    if ( theChannel.recvVector( 0, commitTag, aux_stifftensor ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, aux_stifftensor ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive Stiffness\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive Stiffness\n";
         return -1;
     }
     int comp = 0;
@@ -802,9 +802,9 @@ int NewPisanoLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
                     Stiffness(ii, jj, kk, ll) = aux_stifftensor(comp++);
                 }
 
-    if ( theChannel.recvVector( 0, commitTag, aux_stifftensor ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, aux_stifftensor ) < 0 )
     {
-        cerr << "WARNING NewPisanoLT::recvSelf() - failed to receive Stiffness\n";
+        cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive Stiffness\n";
         return -1;
     }
     comp = 0;

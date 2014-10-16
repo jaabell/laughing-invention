@@ -509,13 +509,13 @@ GroundMotion::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-GroundMotion::recvSelf(int commitTag, Channel& theChannel,
+GroundMotion::receiveSelf(int commitTag, Channel& theChannel,
                        FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
 
     static ID idData(8);
-    int res = theChannel.recvID(dbTag, commitTag, idData);
+    int res = theChannel.receiveID(dbTag, commitTag, idData);
 
     if (res < 0)
     {
@@ -546,7 +546,7 @@ GroundMotion::recvSelf(int commitTag, Channel& theChannel,
         }
 
         theAccelSeries->setDbTag(seriesDbTag);
-        res = theAccelSeries->recvSelf(commitTag, theChannel, theBroker);
+        res = theAccelSeries->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {
@@ -578,7 +578,7 @@ GroundMotion::recvSelf(int commitTag, Channel& theChannel,
         }
 
         theVelSeries->setDbTag(seriesDbTag);
-        res = theVelSeries->recvSelf(commitTag, theChannel, theBroker);
+        res = theVelSeries->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {
@@ -610,7 +610,7 @@ GroundMotion::recvSelf(int commitTag, Channel& theChannel,
         }
 
         theDispSeries->setDbTag(seriesDbTag);
-        res = theDispSeries->recvSelf(commitTag, theChannel, theBroker);
+        res = theDispSeries->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {
@@ -642,7 +642,7 @@ GroundMotion::recvSelf(int commitTag, Channel& theChannel,
         }
 
         theIntegrator->setDbTag(seriesDbTag);
-        res = theIntegrator->recvSelf(commitTag, theChannel, theBroker);
+        res = theIntegrator->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {

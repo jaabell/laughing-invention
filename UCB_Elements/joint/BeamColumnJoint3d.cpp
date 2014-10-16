@@ -1384,7 +1384,7 @@ BeamColumnJoint3d::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-BeamColumnJoint3d::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+BeamColumnJoint3d::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return -1;
 }

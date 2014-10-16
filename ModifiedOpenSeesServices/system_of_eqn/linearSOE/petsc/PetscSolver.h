@@ -57,7 +57,7 @@ class PetscSolver : public LinearSOESolver
         virtual int setLinearSOE(PetscSOE &theSOE);
 
         int sendSelf(int commitTag, Channel &theChannel);
-        int recvSelf(int commitTag, Channel &theChannel,
+        int receiveSelf(int commitTag, Channel &theChannel,
                      FEM_ObjectBroker &theBroker);
 
         friend class ActorPetscSOE;

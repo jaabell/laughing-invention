@@ -374,7 +374,7 @@ NewTemplate3Dep::NewTemplate3Dep()
 
     Stiffness = tensor( 4, def_dim_4, 0.0 );
 
-    // Nima Tafazzoli (August 2012): revertToStart() is called in recvSelf()
+    // Nima Tafazzoli (August 2012): revertToStart() is called in receiveSelf()
 
     //     int err;
     //     err = this->revertToStart();
@@ -1512,7 +1512,7 @@ int NewTemplate3Dep::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //================================================================================
-int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int NewTemplate3Dep::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
 
     int dataTag = this->getDbTag();
@@ -1523,9 +1523,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
 
 
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        std::cerr << "NewTemplate3Dep::recvSelf -- failed to recv ID\n";
+        std::cerr << "NewTemplate3Dep::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 
@@ -1549,9 +1549,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
         ptr_material_parameter->setDbTag(material_parameter_Tag);
 
 
-        if (ptr_material_parameter->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ptr_material_parameter->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            std::cerr << "NewTemplate3Dep::recvSelf -- MaterialParameter failed to recv self\n";
+            std::cerr << "NewTemplate3Dep::receiveSelf -- MaterialParameter failed to recv self\n";
             return -1;
         }
 
@@ -1566,9 +1566,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
 
         ptr_elastic_state->setDbTag(elastic_state_Tag);
 
-        if (ptr_elastic_state->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ptr_elastic_state->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            std::cerr << "NewTemplate3Dep::recvSelf -- ElasticState failed to recv self\n";
+            std::cerr << "NewTemplate3Dep::receiveSelf -- ElasticState failed to recv self\n";
             return -1;
         }
 
@@ -1584,9 +1584,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
         ptr_yield_function->setDbTag(yield_function_Tag);
 
 
-        if (ptr_yield_function->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ptr_yield_function->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            std::cerr << "NewTemplate3Dep::recvSelf -- YieldFunction failed to recv self\n";
+            std::cerr << "NewTemplate3Dep::receiveSelf -- YieldFunction failed to recv self\n";
             return -1;
         }
 
@@ -1602,9 +1602,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
         ptr_plastic_flow->setDbTag(plastic_flow_Tag);
 
 
-        if (ptr_plastic_flow->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ptr_plastic_flow->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            std::cerr << "NewTemplate3Dep::recvSelf -- PlasticFlow failed to recv self\n";
+            std::cerr << "NewTemplate3Dep::receiveSelf -- PlasticFlow failed to recv self\n";
             return -1;
         }
 
@@ -1626,9 +1626,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
         pID_ScalarTags = new ID(NumScalar);
 
 
-        if (theChannel.recvID(scalar_evolution_id_tag, commitTag, *pID_ScalarTags) < 0)
+        if (theChannel.receiveID(scalar_evolution_id_tag, commitTag, *pID_ScalarTags) < 0)
         {
-            std::cerr << "NewTemplate3Dep::recvSelf -- failed to recv pID_ScalarTags\n";
+            std::cerr << "NewTemplate3Dep::receiveSelf -- failed to recv pID_ScalarTags\n";
             return -1;
         }
 
@@ -1638,9 +1638,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
         id_scalar_evolution_dbTags = new ID(NumScalar);
 
 
-        if (theChannel.recvID(scalar_evolution_dbTags, commitTag, *id_scalar_evolution_dbTags) < 0)
+        if (theChannel.receiveID(scalar_evolution_dbTags, commitTag, *id_scalar_evolution_dbTags) < 0)
         {
-            std::cerr << "NewTemplate3Dep::recvSelf -- failed to send id_scalar_evolution_dbTags\n";
+            std::cerr << "NewTemplate3Dep::receiveSelf -- failed to send id_scalar_evolution_dbTags\n";
             return -1;
         }
 
@@ -1652,9 +1652,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
 
             ptr_scalar_evolution[i]->setDbTag((*id_scalar_evolution_dbTags)(i));
 
-            if (ptr_scalar_evolution[i]->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if (ptr_scalar_evolution[i]->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                std::cerr << "NewTemplate3Dep::recvSelf -- ScalarEvolution failed to recv self\n";
+                std::cerr << "NewTemplate3Dep::receiveSelf -- ScalarEvolution failed to recv self\n";
                 return -1;
             }
         }
@@ -1675,9 +1675,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
 
         pID_TensorTags = new ID(NumTensor);
 
-        if (theChannel.recvID(tensor_evolution_id_tag, commitTag, *pID_TensorTags) < 0)
+        if (theChannel.receiveID(tensor_evolution_id_tag, commitTag, *pID_TensorTags) < 0)
         {
-            std::cerr << "NewTemplate3Dep::recvSelf -- failed to recv pID_TensorTags\n";
+            std::cerr << "NewTemplate3Dep::receiveSelf -- failed to recv pID_TensorTags\n";
             return -1;
         }
 
@@ -1687,9 +1687,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
         id_tensor_evolution_dbTags = new ID(NumTensor);
 
 
-        if (theChannel.recvID(tensor_evolution_dbTags, commitTag, *id_tensor_evolution_dbTags) < 0)
+        if (theChannel.receiveID(tensor_evolution_dbTags, commitTag, *id_tensor_evolution_dbTags) < 0)
         {
-            std::cerr << "NewTemplate3Dep::recvSelf -- failed to send id_tensor_evolution_dbTags\n";
+            std::cerr << "NewTemplate3Dep::receiveSelf -- failed to send id_tensor_evolution_dbTags\n";
             return -1;
         }
 
@@ -1700,9 +1700,9 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
 
             ptr_tensor_evolution[i]->setDbTag((*id_tensor_evolution_dbTags)(i));
 
-            if (ptr_tensor_evolution[i]->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if (ptr_tensor_evolution[i]->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                std::cerr << "NewTemplate3Dep::recvSelf -- TensorEvolution failed to recv self\n";
+                std::cerr << "NewTemplate3Dep::receiveSelf -- TensorEvolution failed to recv self\n";
                 return -1;
             }
         }
@@ -1726,21 +1726,21 @@ int NewTemplate3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
     int stiffness_tag = idData(22);
 
 
-    if (theChannel.recvnDarray(trial_strain_tag, commitTag, TrialStrain) < 0)
+    if (theChannel.receivenDarray(trial_strain_tag, commitTag, TrialStrain) < 0)
     {
-        std::cerr << "NewTemplate3Dep::recvSelf() -  failed to send nDarray TrialStrain\n";
+        std::cerr << "NewTemplate3Dep::receiveSelf() -  failed to send nDarray TrialStrain\n";
         return -1;
     }
 
 
-    if (theChannel.recvnDarray(trial_stress_tag, commitTag, TrialStress) < 0)
+    if (theChannel.receivenDarray(trial_stress_tag, commitTag, TrialStress) < 0)
     {
-        std::cerr << "NewTemplate3Dep::recvSelf() -  failed to send nDarray TrialStress\n";
+        std::cerr << "NewTemplate3Dep::receiveSelf() -  failed to send nDarray TrialStress\n";
         return -1;
     }
 
 
-    if (theChannel.recvnDarray(stiffness_tag, commitTag, Stiffness) < 0)
+    if (theChannel.receivenDarray(stiffness_tag, commitTag, Stiffness) < 0)
     {
         std::cerr << "NewTemplate3Dep::sendSelf() -  failed to send nDarray Stiffness\n";
         return -1;

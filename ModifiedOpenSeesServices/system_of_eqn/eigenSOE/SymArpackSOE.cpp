@@ -390,7 +390,7 @@ SymArpackSOE::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-SymArpackSOE::recvSelf(int cTag, Channel& theChannel,
+SymArpackSOE::receiveSelf(int cTag, Channel& theChannel,
                        FEM_ObjectBroker& theBroker)
 {
     return 0;

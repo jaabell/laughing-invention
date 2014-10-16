@@ -461,7 +461,7 @@ SeriesMaterial::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-SeriesMaterial::recvSelf(int cTag, Channel &theChannel,
+SeriesMaterial::receiveSelf(int cTag, Channel &theChannel,
                          FEM_ObjectBroker &theBroker)
 {
     int res = 0;
@@ -470,11 +470,11 @@ SeriesMaterial::recvSelf(int cTag, Channel &theChannel,
 
     static Vector data(5);
 
-    res = theChannel.recvVector(dataTag, cTag, data);
+    res = theChannel.receiveVector(dataTag, cTag, data);
 
     if (res < 0)
     {
-        cerr << "SeriesMaterial::recvSelf -- failed to receive data Vector\n";
+        cerr << "SeriesMaterial::receiveSelf -- failed to receive data Vector\n";
         return res;
     }
 
@@ -522,7 +522,7 @@ SeriesMaterial::recvSelf(int cTag, Channel &theChannel,
 
         if (theModels == 0)
         {
-            cerr << "SeriesMaterial::recvSelf -- failed to allocate UniaxialMaterial array\n";
+            cerr << "SeriesMaterial::receiveSelf -- failed to allocate UniaxialMaterial array\n";
             return -1;
         }
 
@@ -535,7 +535,7 @@ SeriesMaterial::recvSelf(int cTag, Channel &theChannel,
 
         if (strain == 0)
         {
-            cerr << "SeriesMaterial::recvSelf -- failed to allocate strain array\n";
+            cerr << "SeriesMaterial::receiveSelf -- failed to allocate strain array\n";
             return -1;
         }
 
@@ -543,7 +543,7 @@ SeriesMaterial::recvSelf(int cTag, Channel &theChannel,
 
         if (stress == 0)
         {
-            cerr << "SeriesMaterial::recvSelf -- failed to allocate stress array\n";
+            cerr << "SeriesMaterial::receiveSelf -- failed to allocate stress array\n";
             return -1;
         }
 
@@ -551,17 +551,17 @@ SeriesMaterial::recvSelf(int cTag, Channel &theChannel,
 
         if (flex == 0)
         {
-            cerr << "SeriesMaterial::recvSelf -- failed to allocate flex array\n";
+            cerr << "SeriesMaterial::receiveSelf -- failed to allocate flex array\n";
             return -1;
         }
     }
 
     ID classTags(2 * numMaterials);
-    res = theChannel.recvID(dataTag, cTag, classTags);
+    res = theChannel.receiveID(dataTag, cTag, classTags);
 
     if (res < 0)
     {
-        cerr << "SeriesMaterial::recvSelf -- failed to receive classTags ID\n";
+        cerr << "SeriesMaterial::receiveSelf -- failed to receive classTags ID\n";
         return res;
     }
 
@@ -582,16 +582,16 @@ SeriesMaterial::recvSelf(int cTag, Channel &theChannel,
 
         if (theModels[i] == 0)
         {
-            cerr << "SeriesMaterial::recvSelf -- failed to get a newUniaxialMaterial\n";
+            cerr << "SeriesMaterial::receiveSelf -- failed to get a newUniaxialMaterial\n";
             return -1;
         }
 
         theModels[i]->setDbTag(classTags(i + numMaterials));
-        res = theModels[i]->recvSelf(cTag, theChannel, theBroker);
+        res = theModels[i]->receiveSelf(cTag, theChannel, theBroker);
 
         if (res < 0)
         {
-            cerr << "SeriesMaterial::recvSelf -- failed to receive UniaxialMaterial: " << i << endln;
+            cerr << "SeriesMaterial::receiveSelf -- failed to receive UniaxialMaterial: " << i << endln;
             return res;
         }
     }

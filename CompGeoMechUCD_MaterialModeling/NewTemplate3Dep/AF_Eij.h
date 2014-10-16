@@ -64,7 +64,7 @@ class AF_Eij : public TensorEvolution
 
         //Guanzhou added for parallel
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     private:
 

@@ -112,7 +112,7 @@ DomainDecompAlgo::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-DomainDecompAlgo::recvSelf(int ctag, Channel& theChannel,
+DomainDecompAlgo::receiveSelf(int ctag, Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
     return 0;

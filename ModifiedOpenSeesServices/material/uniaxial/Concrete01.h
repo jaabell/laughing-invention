@@ -67,7 +67,7 @@ class Concrete01 : public UniaxialMaterial
         UniaxialMaterial* getCopy(void);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
         void Print(ostream& s, int flag = 0);
@@ -91,7 +91,7 @@ class Concrete01 : public UniaxialMaterial
         /*** CONVERGED State Variables ***/
         double Cstrain;
         double Cstress;
-        double Ctangent;  // Don't need Ctangent other than for revert and sendSelf/recvSelf
+        double Ctangent;  // Don't need Ctangent other than for revert and sendSelf/receiveSelf
         // Storing it is better than recomputing it!!!
 
         /*** TRIAL History Variables ***/

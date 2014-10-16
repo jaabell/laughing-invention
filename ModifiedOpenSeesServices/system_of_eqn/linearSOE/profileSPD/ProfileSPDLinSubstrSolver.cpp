@@ -665,7 +665,7 @@ ProfileSPDLinSubstrSolver::sendSelf(int cTag,
 
 
 int
-ProfileSPDLinSubstrSolver::recvSelf(int cTag,
+ProfileSPDLinSubstrSolver::receiveSelf(int cTag,
                                     Channel& theChannel,
                                     FEM_ObjectBroker& theBroker)
 {

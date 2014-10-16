@@ -329,7 +329,7 @@ SuperLU::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-SuperLU::recvSelf(int ctag,
+SuperLU::receiveSelf(int ctag,
                   Channel& theChannel,
                   FEM_ObjectBroker& theBroker)
 {

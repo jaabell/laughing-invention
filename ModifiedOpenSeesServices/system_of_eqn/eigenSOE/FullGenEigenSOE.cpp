@@ -327,7 +327,7 @@ int FullGenEigenSOE::sendSelf(int commitTag, Channel& theChannel)
 }
 
 
-int FullGenEigenSOE::recvSelf(int commitTag, Channel& theChannel,
+int FullGenEigenSOE::receiveSelf(int commitTag, Channel& theChannel,
                               FEM_ObjectBroker& theBroker)
 {
     return 0;

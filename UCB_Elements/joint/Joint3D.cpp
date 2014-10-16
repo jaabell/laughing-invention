@@ -931,7 +931,7 @@ int Joint3D::sendSelf(int commitTag, Channel &theChannel)
     return 0;
 }
 
-int Joint3D::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int Joint3D::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }

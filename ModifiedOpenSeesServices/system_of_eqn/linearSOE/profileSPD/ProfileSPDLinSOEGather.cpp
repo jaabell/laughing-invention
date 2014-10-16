@@ -134,7 +134,7 @@ ProfileSPDLinSOEGather::setSize(Graph& theGraph)
         for (int i = 0; i < numChannel; i++)
         {
             Graph theSubGraph;
-            theSubGraph.recvSelf(0, *theChannels[i], theBroker);
+            theSubGraph.receiveSelf(0, *theChannels[i], theBroker);
             theGraph.merge(theSubGraph);
         }
 
@@ -150,7 +150,7 @@ ProfileSPDLinSOEGather::setSize(Graph& theGraph)
         theGraph.sendSelf(0, *theChannels[0]);
 
         // receive the larger graph
-        theGraph.recvSelf(0, *theChannels[0], theBroker);
+        theGraph.receiveSelf(0, *theChannels[0], theBroker);
     }
 
 
@@ -377,7 +377,7 @@ ProfileSPDLinSOEGather::solve(void)
             // if not factored, recv the remote contribution to A
             if (isAfactored == false)
             {
-                theChannels[i]->recvVector(0, 0, dataA);
+                theChannels[i]->receiveVector(0, 0, dataA);
 
                 for (int j = 0; j < profileSize; j++)
                 {
@@ -386,7 +386,7 @@ ProfileSPDLinSOEGather::solve(void)
             }
 
             // recv the remote contribution to B
-            theChannels[i]->recvVector(0, 0, dataB);
+            theChannels[i]->receiveVector(0, 0, dataB);
 
             for (int k = 0; k < profileSize; k++)
             {
@@ -424,11 +424,11 @@ ProfileSPDLinSOEGather::solve(void)
         }
 
         theChannels[0]->sendVector(0, 0, *vectB);
-        theChannels[0]->recvID(0, 0, result);
+        theChannels[0]->receiveID(0, 0, result);
 
         if (result[0] == 0)
         {
-            theChannels[0]->recvVector(0, 0, *vectX);
+            theChannels[0]->receiveVector(0, 0, *vectX);
         }
     }
 
@@ -749,7 +749,7 @@ ProfileSPDLinSOEGather::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-ProfileSPDLinSOEGather::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ProfileSPDLinSOEGather::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

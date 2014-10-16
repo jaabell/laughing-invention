@@ -249,7 +249,7 @@ int DruckerPragerIH::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //================================================================================
-int DruckerPragerIH::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int DruckerPragerIH::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

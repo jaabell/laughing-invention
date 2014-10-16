@@ -402,7 +402,7 @@ ProfileSPDLinDirectThreadSolver::sendSelf(int cTag,
 
 
 int
-ProfileSPDLinDirectThreadSolver::recvSelf(int cTag,
+ProfileSPDLinDirectThreadSolver::receiveSelf(int cTag,
         Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {

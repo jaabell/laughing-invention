@@ -52,7 +52,7 @@ class FullGenEigenSolver : public EigenSolver
         virtual double getEigenvalue(int mode);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
     protected:

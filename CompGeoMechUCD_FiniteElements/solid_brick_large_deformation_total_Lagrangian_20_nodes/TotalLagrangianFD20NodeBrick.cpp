@@ -807,7 +807,7 @@ int TotalLagrangianFD20NodeBrick::sendSelf (int commitTag, Channel &theChannel)
 }
 
 //=============================================================================
-int TotalLagrangianFD20NodeBrick::recvSelf (int commitTag, Channel &theChannel,
+int TotalLagrangianFD20NodeBrick::receiveSelf (int commitTag, Channel &theChannel,
         FEM_ObjectBroker &theBroker)
 {
     // Not implemtented yet

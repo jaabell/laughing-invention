@@ -596,7 +596,7 @@ TransientDomainDecompositionAnalysis::sendSelf(int commitTag, Channel &theChanne
     return 0;
 }
 int
-TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChannel,
+TransientDomainDecompositionAnalysis::receiveSelf(int commitTag, Channel &theChannel,
         FEM_ObjectBroker &theBroker)
 {
 
@@ -605,11 +605,11 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
     // receive the data identifyng the objects in the aggregation
     static ID data(8);
     int dataTag = this->getDbTag();
-    theChannel.recvID(dataTag, commitTag, data);
+    theChannel.receiveID(dataTag, commitTag, data);
 
     // for all objects in the aggregation:
     //  1. make sure objects exist & are of correct type; create new objects if not
-    //  2. invoke recvSelf on the object
+    //  2. invoke receiveSelf on the object
     if (theConstraintHandler == 0 || theConstraintHandler->getClassTag() != data(0))
     {
         if (theConstraintHandler != 0)
@@ -621,13 +621,13 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
 
         if (theConstraintHandler == 0)
         {
-            cerr << "TransientDomainDecompositionAnalysis::recvSelf";
+            cerr << "TransientDomainDecompositionAnalysis::receiveSelf";
             cerr << " - failed to get the ConstraintHandler\n";
             return -1;
         }
     }
 
-    theConstraintHandler->recvSelf(commitTag, theChannel, theBroker);
+    theConstraintHandler->receiveSelf(commitTag, theChannel, theBroker);
 
     if (theDOF_Numberer == 0 || theDOF_Numberer->getClassTag() != data(1))
     {
@@ -640,13 +640,13 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
 
         if (theDOF_Numberer == 0)
         {
-            cerr << "TransientDomainDecompositionAnalysis::recvSelf";
+            cerr << "TransientDomainDecompositionAnalysis::receiveSelf";
             cerr << " - failed to get the ConstraintHandler\n";
             return -1;
         }
     }
 
-    theDOF_Numberer->recvSelf(commitTag, theChannel, theBroker);
+    theDOF_Numberer->receiveSelf(commitTag, theChannel, theBroker);
 
     if (theAnalysisModel == 0 || theAnalysisModel->getClassTag() != data(2))
     {
@@ -659,13 +659,13 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
 
         if (theAnalysisModel == 0)
         {
-            cerr << "TransientDomainDecompositionAnalysis::recvSelf";
+            cerr << "TransientDomainDecompositionAnalysis::receiveSelf";
             cerr << " - failed to get the Analysis Model\n";
             return -1;
         }
     }
 
-    theAnalysisModel->recvSelf(commitTag, theChannel, theBroker);
+    theAnalysisModel->receiveSelf(commitTag, theChannel, theBroker);
 
     if (theAlgorithm == 0 || theAlgorithm->getClassTag() != data(3))
     {
@@ -678,13 +678,13 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
 
         if (theAlgorithm == 0)
         {
-            cerr << "TransientDomainDecompositionAnalysis::recvSelf";
+            cerr << "TransientDomainDecompositionAnalysis::receiveSelf";
             cerr << " - failed to get the Solution Algorithm\n";
             return -1;
         }
     }
 
-    theAlgorithm->recvSelf(commitTag, theChannel, theBroker);
+    theAlgorithm->receiveSelf(commitTag, theChannel, theBroker);
 
     if (theSOE == 0 || theSOE->getClassTag() != data(4))
     {
@@ -697,15 +697,15 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
 
         if (theSOE == 0)
         {
-            cerr << "TransientDomainDecompositionAnalysis::recvSelf";
+            cerr << "TransientDomainDecompositionAnalysis::receiveSelf";
             cerr << " - failed to get the LinearSOE\n";
             return -1;
         }
     }
 
-    theSOE->recvSelf(commitTag, theChannel, theBroker);
+    theSOE->receiveSelf(commitTag, theChannel, theBroker);
     LinearSOESolver *theSolver = theSOE->getSolver();
-    theSolver->recvSelf(commitTag, theChannel, theBroker);
+    theSolver->receiveSelf(commitTag, theChannel, theBroker);
     theSOE->setAnalysisModel(*theAnalysisModel);
 
     if (theIntegrator == 0 || theIntegrator->getClassTag() != data(6))
@@ -719,13 +719,13 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
 
         if (theIntegrator == 0)
         {
-            cerr << "TransientDomainDecompositionAnalysis::recvSelf";
+            cerr << "TransientDomainDecompositionAnalysis::receiveSelf";
             cerr << " - failed to get the Integrator\n";
             return -1;
         }
     }
 
-    theIntegrator->recvSelf(commitTag, theChannel, theBroker);
+    theIntegrator->receiveSelf(commitTag, theChannel, theBroker);
 
 
     if (theTest == 0 || theTest->getClassTag() != data(7))
@@ -741,7 +741,7 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
 
             if (theTest == 0)
             {
-                cerr << "TransientDomainDecompositionAnalysis::recvSelf";
+                cerr << "TransientDomainDecompositionAnalysis::receiveSelf";
                 cerr << " - failed to get the ConvergenceTest\n";
                 return -1;
             }
@@ -750,7 +750,7 @@ TransientDomainDecompositionAnalysis::recvSelf(int commitTag, Channel &theChanne
 
     if (theTest != 0)
     {
-        theTest->recvSelf(commitTag, theChannel, theBroker);
+        theTest->receiveSelf(commitTag, theChannel, theBroker);
     }
 
     // set up the links needed by the elements in the aggregation

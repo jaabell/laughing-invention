@@ -74,7 +74,7 @@ MachineBroker::shutdown(void)
 
         cerr << " MachineBroker::shutdown() 2\n";
 
-        if (theChannel->recvID(0, 0, idData) < 0)
+        if (theChannel->receiveID(0, 0, idData) < 0)
         {
             cerr << "MachineBroker::run(void) - failed to send ID\n";
         }
@@ -108,7 +108,7 @@ MachineBroker::runActors(void)
     // loop until recv kill signal
     while (done == 0)
     {
-        if (theChannel->recvID(0, 0, idData) < 0)
+        if (theChannel->receiveID(0, 0, idData) < 0)
         {
             cerr << "MachineBroker::run(void) - failed to recv ID\n";
         }
@@ -240,7 +240,7 @@ MachineBroker::startActor(int actorType, int compDemand)
         return 0;
     }
 
-    if (theChannel->recvID(0, 0, idData) != 0)
+    if (theChannel->receiveID(0, 0, idData) != 0)
     {
         cerr << "MachineBroker::startActor() - remote process failure\n";
         return 0;

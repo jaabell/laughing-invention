@@ -130,12 +130,12 @@ Ormsby::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Ormsby::recvSelf(int commitTag, Channel& theChannel,
+Ormsby::receiveSelf(int commitTag, Channel& theChannel,
                  FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
     Vector data(8);
-    int result = theChannel.recvVector(dbTag, commitTag, data);
+    int result = theChannel.receiveVector(dbTag, commitTag, data);
 
     if (result < 0)
     {

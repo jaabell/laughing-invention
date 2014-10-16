@@ -46,7 +46,7 @@ class BandArpackSOE : public EigenSOE
         virtual double getShift(void);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
         friend class BandArpackSolver;

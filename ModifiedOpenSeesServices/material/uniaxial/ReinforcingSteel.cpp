@@ -736,17 +736,17 @@ ReinforcingSteel::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ReinforcingSteel::recvSelf(int cTag, Channel& theChannel,
+ReinforcingSteel::receiveSelf(int cTag, Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     int index = 0;
     static Vector data(71 + 12 * LastRule_RS / 2);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "ReinforcingSteel::recvSelf() - failed to receive data\n";
+        cerr << "ReinforcingSteel::receiveSelf() - failed to receive data\n";
         this->setTag(0);
     }
     else

@@ -506,14 +506,14 @@ HHT_alpha_method::sendSelf( int cTag, Channel& theChannel )
 }
 
 int
-HHT_alpha_method::recvSelf( int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker )
+HHT_alpha_method::receiveSelf( int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker )
 {
     //     Vector data(8);
     Vector data( 4 );
 
-    if ( theChannel.recvVector( this->getDbTag(), cTag, data ) < 0 )
+    if ( theChannel.receiveVector( this->getDbTag(), cTag, data ) < 0 )
     {
-        cerr << "WARNING HHT_alpha_method::recvSelf() - could not receive data\n";
+        cerr << "WARNING HHT_alpha_method::receiveSelf() - could not receive data\n";
         return -1;
     }
 

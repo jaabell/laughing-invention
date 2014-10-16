@@ -303,7 +303,7 @@ KrylovNewton::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-KrylovNewton::recvSelf(int cTag, Channel& theChannel,
+KrylovNewton::receiveSelf(int cTag, Channel& theChannel,
                        FEM_ObjectBroker& theBroker)
 {
     return -1;

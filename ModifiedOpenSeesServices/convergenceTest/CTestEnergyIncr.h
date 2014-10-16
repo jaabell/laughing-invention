@@ -64,7 +64,7 @@ class CTestEnergyIncr: public ConvergenceTest
         const Vector& getNorms(void);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
     protected:

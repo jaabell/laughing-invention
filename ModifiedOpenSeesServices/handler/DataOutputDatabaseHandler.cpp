@@ -225,7 +225,7 @@ DataOutputDatabaseHandler::sendSelf(int commitTag, Channel& theChannel)
     return -1;
 }
 int
-DataOutputDatabaseHandler::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+DataOutputDatabaseHandler::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     cerr << "DataOutputDatabaseHandler::sendSelf() - not yet implemented\n";
     return -1;

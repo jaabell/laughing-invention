@@ -345,7 +345,7 @@ DistributedDisplacementControl::domainChanged(void)
         data(0) = theDofID;
 
         theChannel->sendID(0, 0, data);
-        theChannel->recvID(0, 0, data);
+        theChannel->receiveID(0, 0, data);
         theDofID = data(0);
     }
 
@@ -356,7 +356,7 @@ DistributedDisplacementControl::domainChanged(void)
         for (int j = 0; j < numChannels; j++)
         {
             Channel* theChannel = theChannels[j];
-            theChannel->recvID(0, 0, data);
+            theChannel->receiveID(0, 0, data);
 
             if (data(0) != -1)
             {
@@ -582,7 +582,7 @@ DistributedDisplacementControl::sendSelf(int cTag, Channel& theChannel)
 
     if (res < 0)
     {
-        cerr << "WARNING DistributedDisplacementControl::recvSelf() - failed to recv vector data\n";
+        cerr << "WARNING DistributedDisplacementControl::receiveSelf() - failed to recv vector data\n";
         return -1;
     }
 
@@ -591,15 +591,15 @@ DistributedDisplacementControl::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-DistributedDisplacementControl::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+DistributedDisplacementControl::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 
 {
     static ID idData(3);
-    int res = theChannel.recvID(0, cTag, idData);
+    int res = theChannel.receiveID(0, cTag, idData);
 
     if (res < 0)
     {
-        cerr << "WARNING DistributedDisplacementControl::recvSelf() - failed to recv id data\n";
+        cerr << "WARNING DistributedDisplacementControl::receiveSelf() - failed to recv id data\n";
         return -1;
     }
 
@@ -608,11 +608,11 @@ DistributedDisplacementControl::recvSelf(int cTag, Channel& theChannel, FEM_Obje
     theDof  = idData(2);
 
     static Vector dData(5);
-    res = theChannel.recvVector(0, cTag, dData);
+    res = theChannel.receiveVector(0, cTag, dData);
 
     if (res < 0)
     {
-        cerr << "WARNING DistributedDisplacementControl::recvSelf() - failed to recv vector data\n";
+        cerr << "WARNING DistributedDisplacementControl::receiveSelf() - failed to recv vector data\n";
         return -1;
     }
 

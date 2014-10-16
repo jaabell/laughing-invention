@@ -272,7 +272,7 @@ MP_Joint3D::getConstrainedDOFs(void) const
     if (constrDOF == NULL)
     {
         std::cerr << "MP_Joint3D::getConstrainedDOF - no ID was set, ";
-        std::cerr << "was recvSelf() ever called? or subclass incorrect?\n";
+        std::cerr << "was receiveSelf() ever called? or subclass incorrect?\n";
         exit(-1);
     }
 
@@ -287,7 +287,7 @@ MP_Joint3D::getRetainedDOFs(void) const
     if (retainDOF == NULL)
     {
         std::cerr << "MP_Joint3D::getRetainedDOFs - no ID was set\n ";
-        std::cerr << "was recvSelf() ever called? or subclass incorrect?\n";
+        std::cerr << "was receiveSelf() ever called? or subclass incorrect?\n";
         exit(-1);
     }
 
@@ -373,7 +373,7 @@ int MP_Joint3D::sendSelf(int commitTag, Channel& theChannel)
 }
 
 
-int MP_Joint3D::recvSelf(int commitTag, Channel& theChannel,
+int MP_Joint3D::receiveSelf(int commitTag, Channel& theChannel,
                          FEM_ObjectBroker& theBroker)
 {
     return 0;

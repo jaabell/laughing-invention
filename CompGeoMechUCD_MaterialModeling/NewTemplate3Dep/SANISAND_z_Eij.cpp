@@ -790,16 +790,16 @@ int SANISAND_z_Eij::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int SANISAND_z_Eij::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int SANISAND_z_Eij::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(16);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "SANISAND_z_Eij::recvSelf -- failed to recv ID\n";
+        cerr << "SANISAND_z_Eij::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 

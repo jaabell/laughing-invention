@@ -209,7 +209,7 @@ ItpackLinSolver::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ItpackLinSolver::recvSelf(int commitTag, Channel& theChannel,
+ItpackLinSolver::receiveSelf(int commitTag, Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {
     return -1;

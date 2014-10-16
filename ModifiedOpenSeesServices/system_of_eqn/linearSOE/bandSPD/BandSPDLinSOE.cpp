@@ -594,7 +594,7 @@ BandSPDLinSOE::sendSelf(int tag, Channel& theChannel)
 
 
 int
-BandSPDLinSOE::recvSelf(int tag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+BandSPDLinSOE::receiveSelf(int tag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

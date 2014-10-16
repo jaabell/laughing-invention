@@ -108,11 +108,11 @@ NEESData::sendMsg(int dataTag, int commitTag,
 }
 
 int
-NEESData::recvMsg(int dataTag, int commitTag,
+NEESData::receiveMsg(int dataTag, int commitTag,
                   Message&,
                   ChannelAddress* theAddress)
 {
-    cerr << "NEESData::recvMsg(int dataTag, int commitTag,  - should not be called\n";
+    cerr << "NEESData::receiveMsg(int dataTag, int commitTag,  - should not be called\n";
     return -1;
 }
 
@@ -130,7 +130,7 @@ NEESData::sendMatrix(int dataTag, int commitTag,
 
 
 int
-NEESData::recvMatrix(int dataTag, int commitTag,
+NEESData::receiveMatrix(int dataTag, int commitTag,
                      Matrix& theMatrix,
                      ChannelAddress* theAddress)
 {
@@ -149,11 +149,11 @@ NEESData::sendVector(int dataTag, int commitTag,
 }
 
 int
-NEESData::recvVector(int dataTag, int commitTag,
+NEESData::receiveVector(int dataTag, int commitTag,
                      Vector& theVector,
                      ChannelAddress* theAddress)
 {
-    cerr << "NEESData::recvVector(int dataTag, int commitTag,  - should not be called\n";
+    cerr << "NEESData::receiveVector(int dataTag, int commitTag,  - should not be called\n";
     return -1;
 }
 
@@ -169,11 +169,11 @@ NEESData::sendID(int dataTag, int commitTag,
 }
 
 int
-NEESData::recvID(int dataTag, int commitTag,
+NEESData::receiveID(int dataTag, int commitTag,
                  ID& theID,
                  ChannelAddress* theAddress)
 {
-    cerr << "NEESData::recvID(int dataTag, int commitTag,  - should not be called\n";
+    cerr << "NEESData::receiveID(int dataTag, int commitTag,  - should not be called\n";
     return -1;
 }
 

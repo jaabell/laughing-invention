@@ -70,7 +70,7 @@ class Actor
 
         virtual int sendObject(MovableObject& theObject,
                                ChannelAddress* theAddress = 0);
-        virtual int recvObject(MovableObject& theObject,
+        virtual int receiveObject(MovableObject& theObject,
                                ChannelAddress* theAddress = 0);
 
         virtual int sendMessage(const Message& theMessage,
@@ -80,17 +80,17 @@ class Actor
 
         virtual int sendMatrix(const Matrix& theMatrix,
                                ChannelAddress* theAddress = 0);
-        virtual int recvMatrix(Matrix& theMatrix,
+        virtual int receiveMatrix(Matrix& theMatrix,
                                ChannelAddress* theAddress = 0);
 
         virtual int sendVector(const Vector& theVector,
                                ChannelAddress* theAddress = 0);
-        virtual int recvVector(Vector& theVector,
+        virtual int receiveVector(Vector& theVector,
                                ChannelAddress* theAddress = 0);
 
         virtual int sendID(const ID& theID,
                            ChannelAddress* theAddress = 0);
-        virtual int recvID(ID& theID,
+        virtual int receiveID(ID& theID,
                            ChannelAddress* theAddress = 0);
 
         Channel*         getChannelPtr(void) const;

@@ -585,7 +585,7 @@ ProfileSPDLinSolverGather::sendSelf(int cTag,
 
 
 int
-ProfileSPDLinSolverGather::recvSelf(int cTag,
+ProfileSPDLinSolverGather::receiveSelf(int cTag,
                                     Channel& theChannel,
                                     FEM_ObjectBroker& theBroker)
 {

@@ -63,7 +63,7 @@ class AxialCurve : public LimitCurve
         double getUnbalanceForce(void); // get change in axial load for next time step
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
         void Print(ostream& s, int flag = 0);

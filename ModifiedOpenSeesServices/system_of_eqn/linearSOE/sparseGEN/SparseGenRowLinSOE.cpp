@@ -643,7 +643,7 @@ SparseGenRowLinSOE::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-SparseGenRowLinSOE::recvSelf(int cTag, Channel& theChannel,
+SparseGenRowLinSOE::receiveSelf(int cTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker)
 {
     return 0;

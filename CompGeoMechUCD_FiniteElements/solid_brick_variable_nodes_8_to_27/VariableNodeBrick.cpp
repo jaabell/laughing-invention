@@ -2232,9 +2232,9 @@ int VariableNodeBrick::sendSelf (int commitTag, Channel &theChannel)
 
 
 
-int VariableNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int VariableNodeBrick::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
-    cerr << "VariableNodeBrick::recvSelf() haven't implemented yet!\n";
+    cerr << "VariableNodeBrick::receiveSelf() haven't implemented yet!\n";
     return 0;
 }
 

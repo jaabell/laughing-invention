@@ -379,7 +379,7 @@ class EPState : public TaggedObject, MovableObject //Guanzhou changed
 
         //Guanzhou added for PDD
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
         int getObjectSize();
 
 

@@ -116,7 +116,7 @@ DistributedDiagonalSolver::solve(void)
         {
             Channel* theChannel = theChannels[0];
             theChannel->sendVector(0, 0, *vectShared);
-            theChannel->recvVector(0, 0, *vectShared);
+            theChannel->receiveVector(0, 0, *vectShared);
         }
         else
         {
@@ -126,7 +126,7 @@ DistributedDiagonalSolver::solve(void)
             for (int i = 0; i < numChannels; i++)
             {
                 Channel* theChannel = theChannels[i];
-                theChannel->recvVector(0, 0, otherShared);
+                theChannel->receiveVector(0, 0, otherShared);
                 *vectShared += otherShared;
             }
 
@@ -178,12 +178,12 @@ DistributedDiagonalSolver::sendSelf(int cTag,
 
 
 int
-DistributedDiagonalSolver::recvSelf(int cTag,
+DistributedDiagonalSolver::receiveSelf(int cTag,
                                     Channel& theChannel,
                                     FEM_ObjectBroker& theBroker)
 {
     static Vector data(1);
-    theChannel.recvVector(0, cTag, data);
+    theChannel.receiveVector(0, cTag, data);
 
     minDiagTol = data(0);
     return 0;

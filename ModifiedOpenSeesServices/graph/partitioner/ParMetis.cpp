@@ -1132,7 +1132,7 @@ ParMetis::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ParMetis::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ParMetis::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

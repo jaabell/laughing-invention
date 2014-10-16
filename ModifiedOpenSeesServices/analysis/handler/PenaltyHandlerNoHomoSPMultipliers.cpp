@@ -402,7 +402,7 @@ PenaltyHandlerNoHomoSPMultipliers::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-PenaltyHandlerNoHomoSPMultipliers::recvSelf(int cTag,
+PenaltyHandlerNoHomoSPMultipliers::receiveSelf(int cTag,
         Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {
@@ -414,7 +414,7 @@ PenaltyHandlerNoHomoSPMultipliers::recvSelf(int cTag,
 
     if (result != 0)
     {
-        cerr << "PenaltyHandlerNoHomoSPMultipliers::recvSelf() - error receiving Vector\n";
+        cerr << "PenaltyHandlerNoHomoSPMultipliers::receiveSelf() - error receiving Vector\n";
     }
 
     return result;

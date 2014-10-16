@@ -70,10 +70,10 @@ Recorder::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-Recorder::recvSelf(int commitTag, Channel& theChannel,
+Recorder::receiveSelf(int commitTag, Channel& theChannel,
                    FEM_ObjectBroker& theBroker)
 {
-    cerr << "Recorder::recvSelf() - not yet implemented\n";
+    cerr << "Recorder::receiveSelf() - not yet implemented\n";
     return 0;
 }
 

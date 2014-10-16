@@ -654,17 +654,17 @@ rank_one_deficient_elastic_pinned_fixed_beam::sendSelf(int cTag, Channel &theCha
 }
 
 int
-rank_one_deficient_elastic_pinned_fixed_beam::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+rank_one_deficient_elastic_pinned_fixed_beam::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
     static Vector data(12);
 
-    res += theChannel.recvVector(this->getDbTag(), cTag, data);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::recvSelf -- could not receive data Vector\n";
+        cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::receiveSelf -- could not receive data Vector\n";
         return res;
     }
 
@@ -684,7 +684,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::recvSelf(int cTag, Channel &theCha
     //     if (theCoordTransf == 0) {
     //       theCoordTransf = theBroker.getNewCrdTransf3d(crdTag);
     //       if (theCoordTransf == 0) {
-    //  cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::recvSelf -- could not get a CrdTransf\n";
+    //  cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::receiveSelf -- could not get a CrdTransf\n";
     //  exit(-1);
     //       }
     //     }
@@ -695,16 +695,16 @@ rank_one_deficient_elastic_pinned_fixed_beam::recvSelf(int cTag, Channel &theCha
     //       delete theCoordTransf;
     //       theCoordTransf = theBroker.getNewCrdTransf3d(crdTag);
     //       if (theCoordTransf == 0) {
-    //  cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::recvSelf -- could not get a CrdTransf\n";
+    //  cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::receiveSelf -- could not get a CrdTransf\n";
     //  exit(-1);
     //       }
     //     }
 
     // Now, receive the CoordTransf
     //     theCoordTransf->setDbTag((int)data(11));
-    //     res += theCoordTransf->recvSelf(cTag, theChannel, theBroker);
+    //     res += theCoordTransf->receiveSelf(cTag, theChannel, theBroker);
     //     if (res < 0) {
-    //       cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::recvSelf -- could not receive CoordTransf\n";
+    //       cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::receiveSelf -- could not receive CoordTransf\n";
     //       return res;
     //     }
 

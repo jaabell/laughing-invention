@@ -205,7 +205,7 @@ ShadowSubdomain::getRemoteData(void)
         msgData(0) = ShadowActorSubdomain_getRemoteData;
         this->sendID(msgData);
 
-        this->recvID(msgData);
+        this->receiveID(msgData);
         numExternalNodes = msgData(0);
         numDOF = msgData(1);
 
@@ -223,7 +223,7 @@ ShadowSubdomain::getRemoteData(void)
 
         if (numExternalNodes != 0)
         {
-            this->recvID(theExternalNodes);
+            this->receiveID(theExternalNodes);
         }
 
         //cerr << "ShadowSubdomain::getREmoteData " << theExternalNodes;
@@ -265,7 +265,7 @@ ShadowSubdomain::addElement(Element *theEle)
     msgData(2) = 7;
     msgData(3) = 8;
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
     cerr << "ShadowSubdomain::addElement() : " << msgData;
     */
 
@@ -469,7 +469,7 @@ ShadowSubdomain::hasNode(int tag)
     msgData(0) = ShadowActorSubdomain_hasNode;
     msgData(1) = tag;
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
 
     if (msgData(0) == 0)
     {
@@ -487,7 +487,7 @@ ShadowSubdomain::hasInternalNode(int tag)
     msgData(0) = ShadowActorSubdomain_hasInternalNode;
     msgData(1) = tag;
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
 
     if (msgData(0) == 0)
     {
@@ -505,7 +505,7 @@ ShadowSubdomain::hasExternalNode(int tag)
     msgData(0) = ShadowActorSubdomain_hasExternalNode;
     msgData(1) = tag;
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
 
     if (msgData(0) == 0)
     {
@@ -523,7 +523,7 @@ ShadowSubdomain::hasElement(int tag)
     msgData(0) = ShadowActorSubdomain_hasElement;
     msgData(1) = tag;
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
 
     if (msgData(0) == 0)
     {
@@ -558,7 +558,7 @@ ShadowSubdomain::removeElement(int tag)
         // get the element from the actor
 
         //Note, Guanzhou took out these unnecessary communications!!!
-        //Guanzhou out this->recvID(msgData);
+        //Guanzhou out this->receiveID(msgData);
         //Guanzhou out int theType = msgData(0);
         //Guanzhou out
         //Guanzhou out if (theType == -1) // the ele was not there!
@@ -566,7 +566,7 @@ ShadowSubdomain::removeElement(int tag)
         //Guanzhou out
         //Guanzhou out Element *theEle = theBroker->getNewElement(theType);
         //Guanzhou out if (theEle != 0)
-        //Guanzhou out     this->recvObject(*theEle);
+        //Guanzhou out     this->receiveObject(*theEle);
         //Guanzhou out
         //Guanzhou out return theEle;
     }
@@ -604,7 +604,7 @@ ShadowSubdomain::removeNode(int tag)
         }
 
         // receive the node from the actor
-        this->recvID(msgData);
+        this->receiveID(msgData);
         //int theType = msgData(0);
 
         if (msgData(0) == 0)
@@ -621,7 +621,7 @@ ShadowSubdomain::removeNode(int tag)
         //Guanzhou out
         //Guanzhou out Node *theNode = theBroker->getNewNode(theType);
         //Guanzhou out if (theNode != 0) {
-        //Guanzhou out     this->recvObject(*theNode);
+        //Guanzhou out     this->receiveObject(*theNode);
         //Guanzhou out     if (loc >= 0)
         //Guanzhou out  numDOF -= theNode->getNumberDOF();
         //Guanzhou out }
@@ -787,14 +787,14 @@ ShadowSubdomain::getElement(int tag)
     msgData(0) = ShadowActorSubdomain_getElementPtr;
     msgData(1) = tag;
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
     int theType = msgData(0);
 
     Element *theEle = theBroker->getNewElement(theType);
 
     if (theEle != 0)
     {
-        this->recvObject(*theEle);
+        this->receiveObject(*theEle);
     }
 
     //cerr << "ShadowSubdomain::getElementPtr() ";
@@ -815,14 +815,14 @@ ShadowSubdomain::getElementPtr(int tag)
     msgData(0) = ShadowActorSubdomain_getElementPtr;
     msgData(1) = tag;
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
     int theType = msgData(0);
 
     Element *theEle = theBroker->getNewElement(theType);
 
     if (theEle != 0)
     {
-        this->recvObject(*theEle);
+        this->receiveObject(*theEle);
     }
 
     cerr << "ShadowSubdomain::getElementPtr() ";
@@ -842,7 +842,7 @@ ShadowSubdomain::getNodePtr(int tag)
     msgData(0) = ShadowActorSubdomain_getNodePtr;
     msgData(1) = tag;
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
     int theType = msgData(0);
 
     theNod = NULL;
@@ -850,7 +850,7 @@ ShadowSubdomain::getNodePtr(int tag)
 
     if (theNod != 0)
     {
-        this->recvObject(*theNod);
+        this->receiveObject(*theNod);
     }
 
     //cerr << "ShadowSubdomain::getNodPtr() ";
@@ -870,7 +870,7 @@ ShadowSubdomain::getNode(int tag)
     msgData(0) = ShadowActorSubdomain_getNodePtr;
     msgData(1) = tag;
     this->sendID(msgData);
-    //this->recvID(msgData);
+    //this->receiveID(msgData);
     //int theType = msgData(0);
 
     theNod = NULL;
@@ -878,7 +878,7 @@ ShadowSubdomain::getNode(int tag)
 
     if (theNod != 0)
     {
-        this->recvObject(*theNod);
+        this->receiveObject(*theNod);
     }
 
     //cerr << "ShadowSubdomain::getNodPtr() ";
@@ -1043,7 +1043,7 @@ int
 ShadowSubdomain::barrierCheckIN(void)
 {
     static ID data(1);
-    this->recvID(data);
+    this->receiveID(data);
     return data(0);
 }
 
@@ -1265,7 +1265,7 @@ ShadowSubdomain::getTang(void)
     //Guanzhou    theMatrix = new Matrix(numDOF,numDOF);
     //Guanzhou  }
     //Guanzhou
-    //Guanzhou  this->recvMatrix(*theMatrix);
+    //Guanzhou  this->receiveMatrix(*theMatrix);
     //Guanzhou  return *theMatrix;
 }
 
@@ -1289,7 +1289,7 @@ ShadowSubdomain::getResistingForce(void)
     //Guanzhou    theVector = new Vector(numDOF);
     //Guanzhou  }
     //Guanzhou
-    //Guanzhou  this->recvVector(*theVector);
+    //Guanzhou  this->receiveVector(*theVector);
     //Guanzhou  return *theVector;
 }
 
@@ -1431,7 +1431,7 @@ ShadowSubdomain::getCost(void)
 
       this->sendID(msgData);
       Vector cost(2);
-      this->recvVector(cost);
+      this->receiveVector(cost);
       return cost(0);
     */
     return 0.0;
@@ -1447,10 +1447,10 @@ ShadowSubdomain::sendSelf(int cTag, Channel &the_Channel)
 }
 
 int
-ShadowSubdomain::recvSelf(int cTag, Channel &the_Channel,
+ShadowSubdomain::receiveSelf(int cTag, Channel &the_Channel,
                           FEM_ObjectBroker &the_Broker)
 {
-    cerr << "ShadowSubdomain::recvSelf() ";
+    cerr << "ShadowSubdomain::receiveSelf() ";
     cerr << " - NOT YET IMPLEMENTED\n";
     return -1;
 }
@@ -1462,7 +1462,7 @@ ShadowSubdomain::Print(ostream &s, int flag)
     msgData(0) = ShadowActorSubdomain_Print;
 
     this->sendID(msgData);
-    this->recvID(msgData);
+    this->receiveID(msgData);
 }
 
 
@@ -1560,7 +1560,7 @@ ShadowSubdomain::reDistributeData(int numParts)
 
     while (!done)
     {
-        this->recvID(msgData);
+        this->receiveID(msgData);
         int action = msgData(0);
         //NodalLoad *theNodalLoad;
         //SP_Constraint *theSP;
@@ -1578,7 +1578,7 @@ ShadowSubdomain::reDistributeData(int numParts)
                 if (theSP != 0)
                 {
                     theSP->setDbTag(dbTag);
-                    this->recvObject(*theSP);
+                    this->receiveObject(*theSP);
                     bool result = theDomain.addSP_Constraint(theSP);
 
                     if (result == true)
@@ -1607,7 +1607,7 @@ ShadowSubdomain::reDistributeData(int numParts)
                 if (theNodalLoad != 0)
                 {
                     theNodalLoad->setDbTag(dbTag);
-                    this->recvObject(*theNodalLoad);
+                    this->receiveObject(*theNodalLoad);
                     bool result = theDomain.addNodalLoad(theNodalLoad, loadPatternTag);
 
                     if (result == true)
@@ -1636,7 +1636,7 @@ ShadowSubdomain::reDistributeData(int numParts)
                 if (theSP != 0)
                 {
                     theSP->setDbTag(dbTag);
-                    this->recvObject(*theSP);
+                    this->receiveObject(*theSP);
                     bool result = theDomain.addSP_Constraint(theSP, loadPatternTag);
 
                     if (result == true)
@@ -1725,7 +1725,7 @@ ShadowSubdomain::exportInternalNode(int nodeTag, int destination, int dof)
 
     if ( destination == 0 )   //export internal to master
     {
-        this->recvID(msgData);
+        this->receiveID(msgData);
         int theType = msgData(1);
         int dbTag = msgData(2);
         //if ( theNod != 0 ) delete theNod;
@@ -1734,7 +1734,7 @@ ShadowSubdomain::exportInternalNode(int nodeTag, int destination, int dof)
         if (theNod != 0)
         {
             theNod->setDbTag(dbTag);
-            this->recvObject(*theNod);
+            this->receiveObject(*theNod);
             theDomain.addNode(theNod);
             //theDomain.recvNode(theNod);
             //delete theNod;
@@ -1795,7 +1795,7 @@ ShadowSubdomain::swapNodeFromInternalToExternal(int nodeTag)
     msgData(1) = nodeTag;
     this->sendID(msgData);
 
-    this->recvID(msgData);//get the node back in master
+    this->receiveID(msgData);//get the node back in master
     int theType = msgData(1);
     int dbTag = msgData(2);
     //if ( theNod != 0 ) delete theNod;
@@ -1804,7 +1804,7 @@ ShadowSubdomain::swapNodeFromInternalToExternal(int nodeTag)
     if (theNod != 0)
     {
         theNod->setDbTag(dbTag);
-        this->recvObject(*theNod);
+        this->receiveObject(*theNod);
         //theDomain.recvNode(theNod);
         theDomain.addNode(theNod);
         int tag = theNod->getTag();

@@ -453,16 +453,16 @@ Domain_Reduction_Method_Restore_Forces::sendSelf(int commitTag, Channel& theChan
 }
 
 int
-Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChannel,
+Domain_Reduction_Method_Restore_Forces::receiveSelf(int commitTag, Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {
     //Guanzhou implemented for parallel processing
     int dataTag = this->getDbTag();
     static ID idData(7);
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv ID\n";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 
@@ -481,14 +481,14 @@ Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChan
 
     if (BoundaryNodes == 0 || BoundaryNodes->Size() == 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf() - ran out of memory constructing";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf() - ran out of memory constructing";
         cerr << " a ID of size: " <<  BoundaryNodes->Size() << endln;
         exit(1);
     }
 
-    if (theChannel.recvID(dataTag, commitTag, *BoundaryNodes) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, *BoundaryNodes) < 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv BoundaryNodes\n";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv BoundaryNodes\n";
         return -1;
     }
 
@@ -503,14 +503,14 @@ Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChan
 
     if (ExteriorNodes == 0 || ExteriorNodes->Size() == 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf() - ran out of memory constructing";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf() - ran out of memory constructing";
         cerr << " a ID of size: " << ExteriorNodes->Size() << endln;
         exit(1);
     }
 
-    if (theChannel.recvID(dataTag, commitTag, *ExteriorNodes) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, *ExteriorNodes) < 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv ExteriorNodes\n";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv ExteriorNodes\n";
         return -1;
     }
 
@@ -526,14 +526,14 @@ Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChan
 
     if (PBowlLoads == 0 || PBowlLoads->noRows() == 0 || PBowlLoads->noCols() == 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf() - ran out of memory constructing";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf() - ran out of memory constructing";
         cerr << " a Matrix of size (cols*rows): " << col << " * " << row << endln;
         exit(1);
     }
 
-    if (theChannel.recvMatrix(dataTag, commitTag, *PBowlLoads) < 0)
+    if (theChannel.receiveMatrix(dataTag, commitTag, *PBowlLoads) < 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv Matrix PBowlLoads\n";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv Matrix PBowlLoads\n";
         return -1;
     }
 
@@ -548,14 +548,14 @@ Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChan
 
     if (NodeID == 0 || NodeID->Size() == 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf() - ran out of memory constructing";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf() - ran out of memory constructing";
         cerr << " a ID of size: " << NodeID->Size() << endln;
         exit(1);
     }
 
-    if (theChannel.recvID(dataTag, commitTag, *NodeID) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, *NodeID) < 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv NodeID\n";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv NodeID\n";
         return -1;
     }
 
@@ -569,8 +569,8 @@ Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChan
     //  exit(1);
     //}
     //
-    //if (theChannel.recvMatrix(dataTag, commitTag, U) < 0) {
-    // cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv Matrix U\n";
+    //if (theChannel.receiveMatrix(dataTag, commitTag, U) < 0) {
+    // cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv Matrix U\n";
     // return -1;
     //}
     //
@@ -584,8 +584,8 @@ Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChan
     //  exit(1);
     //}
     //
-    //if (theChannel.recvMatrix(dataTag, commitTag, Udd) < 0) {
-    // cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv Matrix Udd\n";
+    //if (theChannel.receiveMatrix(dataTag, commitTag, Udd) < 0) {
+    // cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv Matrix Udd\n";
     // return -1;
     //}
     //
@@ -594,16 +594,16 @@ Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChan
     //if ( PBowlElements != 0 ) delete PBowlElements;
     //
     //PBowlElements = new ID(numPBE);
-    //if (theChannel.recvID(dataTag, commitTag, PBowlElements) < 0) {
-    // cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv PBowlElements\n";
+    //if (theChannel.receiveID(dataTag, commitTag, PBowlElements) < 0) {
+    // cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv PBowlElements\n";
     // return -1;
     //}
 
     static Vector data(2);
 
-    if (theChannel.recvVector(dataTag, commitTag, data) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, data) < 0)
     {
-        cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf -- failed to recv data\n";
+        cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf -- failed to recv data\n";
         return -1;
     }
 
@@ -616,7 +616,7 @@ Domain_Reduction_Method_Restore_Forces::recvSelf(int commitTag, Channel& theChan
     //zPlus      =   data(6);
     //zMinus     =   data(7);
 
-    //cerr << "Domain_Reduction_Method_Restore_Forces::recvSelf() - the Domain_Reduction_Method_Restore_Forces received: \n";// << *PBowlLoads << endln;
+    //cerr << "Domain_Reduction_Method_Restore_Forces::receiveSelf() - the Domain_Reduction_Method_Restore_Forces received: \n";// << *PBowlLoads << endln;
 
     LoadComputed = true;
 

@@ -3514,7 +3514,7 @@ int TwentySevenNodeBrickVariableGP::sendSelf (int commitTag, Channel &theChannel
 }
 
 //=============================================================================
-int TwentySevenNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int TwentySevenNodeBrickVariableGP::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     // Not implemtented yet
     return 0;

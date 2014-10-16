@@ -161,12 +161,12 @@ LoadControl::sendSelf(int cTag,
 
 
 int
-LoadControl::recvSelf(int cTag,
+LoadControl::receiveSelf(int cTag,
                       Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     Vector data(5);
 
-    if (theChannel.recvVector(this->getDbTag(), cTag, data) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), cTag, data) < 0)
     {
         cerr << "LoadControl::sendSelf() - failed to send the Vector\n";
         deltaLambda = 0;

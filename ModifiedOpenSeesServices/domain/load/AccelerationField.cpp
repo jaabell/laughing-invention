@@ -64,7 +64,7 @@ AccelerationField::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-AccelerationField::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
+AccelerationField::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

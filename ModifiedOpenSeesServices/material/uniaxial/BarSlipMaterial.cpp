@@ -701,7 +701,7 @@ int BarSlipMaterial::sendSelf(int commitTag, Channel& theChannel)
     return -1;
 }
 
-int BarSlipMaterial::recvSelf(int commitTag, Channel& theChannel,
+int BarSlipMaterial::receiveSelf(int commitTag, Channel& theChannel,
                               FEM_ObjectBroker& theBroker)
 {
     return -1;

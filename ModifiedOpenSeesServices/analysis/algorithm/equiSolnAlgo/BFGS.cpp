@@ -586,7 +586,7 @@ BFGS::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-BFGS::recvSelf(int cTag,
+BFGS::receiveSelf(int cTag,
                Channel& theChannel,
                FEM_ObjectBroker& theBroker)
 {

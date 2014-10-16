@@ -249,13 +249,13 @@ UDP_Socket::sendObj(int commitTag,
 
 
 int
-UDP_Socket::recvObj(int commitTag,
+UDP_Socket::receiveObj(int commitTag,
                     MovableObject& theObject,
                     FEM_ObjectBroker& theBroker,
                     ChannelAddress* theAddress)
 {
 
-    int res = theObject.recvSelf(commitTag, *this, theBroker);
+    int res = theObject.receiveSelf(commitTag, *this, theBroker);
 
     if (res < 0)
     {
@@ -275,7 +275,7 @@ UDP_Socket::recvObj(int commitTag,
                      theSocketAddress->addrLength) != 0)
             {
 
-                cerr << "UDP_Socket::recvObj() - a UDP_Socket ";
+                cerr << "UDP_Socket::receiveObj() - a UDP_Socket ";
                 cerr << "can only look at first incoming message\n";
                 cerr << "The last message did not come from write scource\n";
                 return -1;
@@ -283,7 +283,7 @@ UDP_Socket::recvObj(int commitTag,
         }
         else
         {
-            cerr << "UDP_Socket::recvObj() - a UDP_Socket ";
+            cerr << "UDP_Socket::receiveObj() - a UDP_Socket ";
             cerr << "can only communicate with a UDP_Socket";
             cerr << " address given is not of type SocketAddress\n";
             return -1;
@@ -298,7 +298,7 @@ UDP_Socket::recvObj(int commitTag,
 
 
 int
-UDP_Socket::recvMsg(int dbTag, int commitTag, Message& msg, ChannelAddress* theAddress )
+UDP_Socket::receiveMsg(int dbTag, int commitTag, Message& msg, ChannelAddress* theAddress )
 {
 
     // if o.k. get a ponter to the data in the message and
@@ -338,7 +338,7 @@ UDP_Socket::recvMsg(int dbTag, int commitTag, Message& msg, ChannelAddress* theA
                      theSocketAddress->addrLength) != 0)
             {
 
-                cerr << "UDP_Socket::recvMsg() - a UDP_Socket ";
+                cerr << "UDP_Socket::receiveMsg() - a UDP_Socket ";
                 cerr << "can only look at first incoming message\n";
                 cerr << "The last message did not come from write scource\n";
                 return -1;
@@ -412,7 +412,7 @@ UDP_Socket::sendMsg(int dbTag, int commitTag, const Message& msg, ChannelAddress
 
 
 int
-UDP_Socket::recvMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddress* theAddress )
+UDP_Socket::receiveMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddress* theAddress )
 {
 
     // if o.k. get a ponter to the data in the message and
@@ -450,7 +450,7 @@ UDP_Socket::recvMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddre
                      theSocketAddress->addrLength) != 0)
             {
 
-                cerr << "UDP_Socket::recvMsg() - a UDP_Socket ";
+                cerr << "UDP_Socket::receiveMsg() - a UDP_Socket ";
                 cerr << "can only look at first incoming message\n";
                 cerr << "The last message did not come from write scource\n";
                 return -1;
@@ -458,7 +458,7 @@ UDP_Socket::recvMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddre
         }
         else
         {
-            cerr << "UDP_Socket::recvMatrix() - a UDP_Socket ";
+            cerr << "UDP_Socket::receiveMatrix() - a UDP_Socket ";
             cerr << "can only communicate with a UDP_Socket";
             cerr << " address given is not of type SocketAddress\n";
             return -1;
@@ -526,7 +526,7 @@ UDP_Socket::sendMatrix(int dbTag, int commitTag, const Matrix& theMatrix, Channe
 
 
 int
-UDP_Socket::recvVector(int dbTag, int commitTag, Vector& theVector, ChannelAddress* theAddress )
+UDP_Socket::receiveVector(int dbTag, int commitTag, Vector& theVector, ChannelAddress* theAddress )
 {
 
     // if o.k. get a ponter to the data in the message and
@@ -565,7 +565,7 @@ UDP_Socket::recvVector(int dbTag, int commitTag, Vector& theVector, ChannelAddre
                      theSocketAddress->addrLength) != 0)
             {
 
-                cerr << "UDP_Socket::recvMsg() - a UDP_Socket ";
+                cerr << "UDP_Socket::receiveMsg() - a UDP_Socket ";
                 cerr << "can only look at first incoming message\n";
                 cerr << "The last message did not come from write scource\n";
                 return -1;
@@ -573,7 +573,7 @@ UDP_Socket::recvVector(int dbTag, int commitTag, Vector& theVector, ChannelAddre
         }
         else
         {
-            cerr << "UDP_Socket::recvVector() - a UDP_Socket ";
+            cerr << "UDP_Socket::receiveVector() - a UDP_Socket ";
             cerr << "can only communicate with a UDP_Socket";
             cerr << " address given is not of type SocketAddress\n";
             return -1;
@@ -639,7 +639,7 @@ UDP_Socket::sendVector(int dbTag, int commitTag, const Vector& theVector, Channe
 
 
 int
-UDP_Socket::recvID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddress )
+UDP_Socket::receiveID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddress )
 {
 
     // if o.k. get a ponter to the data in the message and
@@ -679,7 +679,7 @@ UDP_Socket::recvID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddre
                      theSocketAddress->addrLength) != 0)
             {
 
-                cerr << "UDP_Socket::recvMsg() - a UDP_Socket ";
+                cerr << "UDP_Socket::receiveMsg() - a UDP_Socket ";
                 cerr << "can only look at first incoming message\n";
                 cerr << "The last message did not come from write scource\n";
                 return -1;
@@ -687,7 +687,7 @@ UDP_Socket::recvID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddre
         }
         else
         {
-            cerr << "UDP_Socket::recvID() - a UDP_Socket ";
+            cerr << "UDP_Socket::receiveID() - a UDP_Socket ";
             cerr << "can only communicate with a UDP_Socket";
             cerr << " address given is not of type SocketAddress\n";
             return -1;

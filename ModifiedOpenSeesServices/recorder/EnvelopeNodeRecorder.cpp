@@ -553,7 +553,7 @@ EnvelopeNodeRecorder::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-EnvelopeNodeRecorder::recvSelf(int commitTag, Channel& theChannel,
+EnvelopeNodeRecorder::receiveSelf(int commitTag, Channel& theChannel,
                                FEM_ObjectBroker& theBroker)
 {
     if (theChannel.isDatastore() == 1)  //Guanzhou changed 0 to 1
@@ -564,9 +564,9 @@ EnvelopeNodeRecorder::recvSelf(int commitTag, Channel& theChannel,
 
     static ID idData(4);
 
-    if (theChannel.recvID(0, commitTag, idData) < 0)
+    if (theChannel.receiveID(0, commitTag, idData) < 0)
     {
-        cerr << "EnvelopeNodeRecorder::recvSelf() - failed to send idData\n";
+        cerr << "EnvelopeNodeRecorder::receiveSelf() - failed to send idData\n";
         return -1;
     }
 
@@ -592,16 +592,16 @@ EnvelopeNodeRecorder::recvSelf(int commitTag, Channel& theChannel,
 
             if (theDofs == 0 || theDofs->Size() != numDOFs)
             {
-                cerr << "EnvelopeNodeRecorder::recvSelf() - out of memory\n";
+                cerr << "EnvelopeNodeRecorder::receiveSelf() - out of memory\n";
                 return -1;
             }
         }
     }
 
     if (theDofs != 0)
-        if (theChannel.recvID(0, commitTag, *theDofs) < 0)
+        if (theChannel.receiveID(0, commitTag, *theDofs) < 0)
         {
-            cerr << "EnvelopeNodeRecorder::recvSelf() - failed to recv dof data\n";
+            cerr << "EnvelopeNodeRecorder::receiveSelf() - failed to recv dof data\n";
             return -1;
         }
 
@@ -622,16 +622,16 @@ EnvelopeNodeRecorder::recvSelf(int commitTag, Channel& theChannel,
 
             if (theNodalTags == 0 || theNodalTags->Size() != numNodes)
             {
-                cerr << "EnvelopeNodeRecorder::recvSelf() - out of memory\n";
+                cerr << "EnvelopeNodeRecorder::receiveSelf() - out of memory\n";
                 return -1;
             }
         }
     }
 
     if (theNodalTags != 0)
-        if (theChannel.recvID(0, commitTag, *theNodalTags) < 0)
+        if (theChannel.receiveID(0, commitTag, *theNodalTags) < 0)
         {
-            cerr << "EnvelopeNodeRecorder::recvSelf() - failed to recv dof data\n";
+            cerr << "EnvelopeNodeRecorder::receiveSelf() - failed to recv dof data\n";
             return -1;
         }
 
@@ -640,7 +640,7 @@ EnvelopeNodeRecorder::recvSelf(int commitTag, Channel& theChannel,
     data(0) = deltaT;
     data(1) = nextTimeStampToRecord;
 
-    if (theChannel.recvVector(0, commitTag, data) < 0)
+    if (theChannel.receiveVector(0, commitTag, data) < 0)
     {
         cerr << "EnvelopeNodeRecorder::sendSelf() - failed to receive data\n";
         return -1;
@@ -659,7 +659,7 @@ EnvelopeNodeRecorder::recvSelf(int commitTag, Channel& theChannel,
         return -1;
     }
 
-    if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0)
+    if (theHandler->receiveSelf(commitTag, theChannel, theBroker) < 0)
     {
         cerr << "EnvelopeNodeRecorder::sendSelf() - failed to send the DataOutputHandler\n";
         return -1;

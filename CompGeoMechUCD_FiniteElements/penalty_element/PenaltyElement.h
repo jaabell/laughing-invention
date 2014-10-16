@@ -105,7 +105,7 @@ class PenaltyElement : public Element
 
         // public methods for element output
         int sendSelf(int commitTag, Channel &theChannel);
-        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         void Print(ostream &s, int flag = 0);
 
         // Response* setResponse(const char** argv, int argc, Information& eleInfo);

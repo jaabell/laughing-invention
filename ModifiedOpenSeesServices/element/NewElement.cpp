@@ -188,7 +188,7 @@ NewElement::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-NewElement::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+NewElement::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return -1;
 }

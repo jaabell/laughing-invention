@@ -73,7 +73,7 @@ class NeoHookeanCompressible3D : public FiniteDeformationElastic3D
         const char* getType (void) const;
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
         const  stresstensor& getPK1StressTensor(void) ;
         const  stresstensor& getCauchyStressTensor(void) ;

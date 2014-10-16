@@ -66,7 +66,7 @@ class YieldFunction  : public MovableObject
 
         //Guanzhou added for parallel, pure virtual, subclasses must override
         virtual int sendSelf(int commitTag, Channel& theChannel) = 0;
-        virtual int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker) = 0;
+        virtual int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker) = 0;
 
         virtual int getNumInternalScalar() const = 0;
         virtual int getNumInternalTensor() const = 0;

@@ -101,7 +101,7 @@ class DomainDecompositionAnalysis: public Analysis, public MovableObject
         virtual const Vector& getTangVectProduct(void);
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int recvSelf(int commitTag, Channel& theChannel,
+        virtual int receiveSelf(int commitTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker);
 
         // methods to change the analysis aggregates

@@ -420,12 +420,12 @@ MinUnbalDispNorm::sendSelf(int cTag,
 
 
 int
-MinUnbalDispNorm::recvSelf(int cTag,
+MinUnbalDispNorm::receiveSelf(int cTag,
                            Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     Vector data(8);
 
-    if (theChannel.recvVector(this->getDbTag(), cTag, data) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), cTag, data) < 0)
     {
         cerr << "MinUnbalDispNorm::sendSelf() - failed to send the data\n";
         return -1;

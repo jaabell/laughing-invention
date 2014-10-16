@@ -65,7 +65,7 @@ class DrainMaterial : public UniaxialMaterial
         virtual UniaxialMaterial* getCopy(void);
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int recvSelf(int commitTag, Channel& theChannel,
+        virtual int receiveSelf(int commitTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker);
 
         virtual void Print(ostream& s, int flag = 0);

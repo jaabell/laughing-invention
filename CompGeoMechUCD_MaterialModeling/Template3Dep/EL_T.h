@@ -77,7 +77,7 @@ class EvolutionLaw_T : public MovableObject //Guanzhou
 
         //Guanzhou added for PDD
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
         int getObjectSize()
         {
             return 1;

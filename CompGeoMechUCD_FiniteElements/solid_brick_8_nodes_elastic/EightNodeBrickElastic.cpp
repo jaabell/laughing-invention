@@ -4368,11 +4368,11 @@ int EightNodeBrickElastic::sendSelf (int commitTag, Channel &theChannel)
 }
 
 //Guanzhou added
-int EightNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int EightNodeBrickElastic::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
 
 
-    //             cout << "recvSelf" << endln;
+    //             cout << "receiveSelf" << endln;
 
 
     if ( !initialized )
@@ -4385,9 +4385,9 @@ int EightNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, FEM_Obj
     static ID idData(11);
 
     // Quad now receives the tags of its four external nodes
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "WARNING EightNodeBrickElastic::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+        cerr << "WARNING EightNodeBrickElastic::receiveSelf() - " << this->getTag() << " failed to receive ID\n";
         return -1;
     }
 
@@ -4414,27 +4414,27 @@ int EightNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, FEM_Obj
 
             if (ndmat == 0)
             {
-                cerr << "EightNodeBrickElastic::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                cerr << "EightNodeBrickElastic::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
                 return -1;
             }
 
             // Now receive materials into the newly allocated space
             ndmat->setDbTag(matDbTag);
 
-            if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "EightNodeBrickElastic::recvSelf() - material " << i << "failed to recv itself\n";
+                cerr << "EightNodeBrickElastic::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
 
             matpoint[i]->matmodel = ndmat;
             //GZ ->getCopy();
             //GZ (matpoint[i]->matmodel)->setDbTag(matDbTag);
-            //cerr << "\n*********recvSelf*************\n";
+            //cerr << "\n*********receiveSelf*************\n";
             //(matpoint[i]->matmodel)->Print(cerr);
         }
     }
-    // materials exist , ensure materials of correct type and recvSelf on them
+    // materials exist , ensure materials of correct type and receiveSelf on them
     else
     {
         for (int i = 0; i < 8; i++)
@@ -4450,7 +4450,7 @@ int EightNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, FEM_Obj
                 //        ndmat = theBroker.getNewNDMaterial(matClassTag);
                 if (ndmat ==  0)
                 {
-                    cerr << "EightNodeBrickElastic::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                    cerr << "EightNodeBrickElastic::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
                     return -1;
                 }
 
@@ -4458,31 +4458,31 @@ int EightNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, FEM_Obj
             }
 
             // Receive the material
-            if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "EightNodeBrickElastic::recvSelf() - material " << i << "failed to recv itself\n";
+                cerr << "EightNodeBrickElastic::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
 
             matpoint[i]->matmodel = ndmat;
             //GZ ->getCopy();
             //GZ (matpoint[i]->matmodel)->setDbTag(matDbTag);
-            //cerr << "\n*********recvSelf*************\n";
+            //cerr << "\n*********receiveSelf*************\n";
             //(matpoint[i]->matmodel)->Print(cerr);
         }
     }
 
-    /*  res += theChannel.recvVector(dataTag, commitTag, P);
+    /*  res += theChannel.receiveVector(dataTag, commitTag, P);
       if (res < 0) {
-             cerr << "EightNodeBrickElastic::recvSelf() - material " << i << "failed to recv resisting force\n";
+             cerr << "EightNodeBrickElastic::receiveSelf() - material " << i << "failed to recv resisting force\n";
             return res;
      }*/
 
     static Vector matProp(1);
 
-    if ( theChannel.recvVector(dataTag, commitTag, matProp) < 0 )
+    if ( theChannel.receiveVector(dataTag, commitTag, matProp) < 0 )
     {
-        cerr << "EightNodeBrickElastic::recvSelf() - failed to recv rho!\n";
+        cerr << "EightNodeBrickElastic::receiveSelf() - failed to recv rho!\n";
         return -1;
     }
 

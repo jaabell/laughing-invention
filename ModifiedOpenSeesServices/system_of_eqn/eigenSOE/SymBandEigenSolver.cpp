@@ -389,7 +389,7 @@ SymBandEigenSolver::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-SymBandEigenSolver::recvSelf(int commitTag, Channel& theChannel,
+SymBandEigenSolver::receiveSelf(int commitTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker)
 {
     return 0;

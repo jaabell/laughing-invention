@@ -313,9 +313,9 @@ int NDMaterialLT::sendSelf(int commitTag, Channel &theChannel)
     cerr << "NDMaterialLT::sendSelf -> Subclass responsability" << endl;
     return -1;
 }
-int NDMaterialLT::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int NDMaterialLT::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
-    cerr << "NDMaterialLT::recvSelf -> Subclass responsability" << endl;
+    cerr << "NDMaterialLT::receiveSelf -> Subclass responsability" << endl;
     return -1;
 }
 

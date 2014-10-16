@@ -669,7 +669,7 @@ SparseGenColLinSOE::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-SparseGenColLinSOE::recvSelf(int cTag, Channel& theChannel,
+SparseGenColLinSOE::receiveSelf(int cTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker)
 {
     return 0;

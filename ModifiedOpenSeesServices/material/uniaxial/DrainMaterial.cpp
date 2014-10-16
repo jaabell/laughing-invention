@@ -298,18 +298,18 @@ DrainMaterial::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-DrainMaterial::recvSelf(int commitTag, Channel& theChannel,
+DrainMaterial::receiveSelf(int commitTag, Channel& theChannel,
                         FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
     Vector vecData(numHstv + numData + 5);
 
-    res += theChannel.recvVector(this->getDbTag(), commitTag, vecData);
+    res += theChannel.receiveVector(this->getDbTag(), commitTag, vecData);
 
     if (res < 0)
     {
-        cerr << "DrainMaterial::recvSelf() - failed to receive Vector data\n";
+        cerr << "DrainMaterial::receiveSelf() - failed to receive Vector data\n";
         return res;
     }
 

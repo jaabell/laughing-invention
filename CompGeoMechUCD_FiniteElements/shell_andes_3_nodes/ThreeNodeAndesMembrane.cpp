@@ -639,7 +639,7 @@ int ThreeNodeAndesMembrane::sendSelf (int commitTag, Channel& theChannel)
     return 0;
 }
 
-int ThreeNodeAndesMembrane::recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int ThreeNodeAndesMembrane::receiveSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

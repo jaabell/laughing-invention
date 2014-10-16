@@ -565,7 +565,7 @@ DiagonalSOE::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-DiagonalSOE::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+DiagonalSOE::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

@@ -634,18 +634,18 @@ DomainDecompositionAnalysis::sendSelf(int commitTag,
 }
 
 int
-DomainDecompositionAnalysis::recvSelf(int commitTag,
+DomainDecompositionAnalysis::receiveSelf(int commitTag,
                                       Channel& theChannel,
                                       FEM_ObjectBroker& theBroker)
 {
     // receive the data identifyng the objects in the aggregation
     ID data(14);
     int dataTag = this->getDbTag();
-    theChannel.recvID(dataTag, commitTag, data);
+    theChannel.receiveID(dataTag, commitTag, data);
 
     //
     // now ask the object broker an object of each type
-    // and invoke recvSelf() on the object to init it.
+    // and invoke receiveSelf() on the object to init it.
     //
 
     theHandler = theBroker.getNewConstraintHandler(data(0));
@@ -653,11 +653,11 @@ DomainDecompositionAnalysis::recvSelf(int commitTag,
     if (theHandler != 0)
     {
         theHandler->setDbTag(data(7));
-        theHandler->recvSelf(commitTag, theChannel, theBroker);
+        theHandler->receiveSelf(commitTag, theChannel, theBroker);
     }
     else
     {
-        cerr << "DomainDecompositionAnalysis::recvSelf";
+        cerr << "DomainDecompositionAnalysis::receiveSelf";
         cerr << " - failed to get the ConstraintHandler\n";
         return -1;
     }
@@ -669,11 +669,11 @@ DomainDecompositionAnalysis::recvSelf(int commitTag,
     if (theNumberer != 0)
     {
         theNumberer->setDbTag(data(8));
-        theNumberer->recvSelf(commitTag, theChannel, theBroker);
+        theNumberer->receiveSelf(commitTag, theChannel, theBroker);
     }
     else
     {
-        cerr << "DomainDecompositionAnalysis::recvSelf";
+        cerr << "DomainDecompositionAnalysis::receiveSelf";
         cerr << " - failed to get the DOF Numberer\n";
         return -1;
     }
@@ -684,11 +684,11 @@ DomainDecompositionAnalysis::recvSelf(int commitTag,
     if (theModel != 0)
     {
         theModel->setDbTag(data(9));
-        theModel->recvSelf(commitTag, theChannel, theBroker);
+        theModel->receiveSelf(commitTag, theChannel, theBroker);
     }
     else
     {
-        cerr << "DomainDecompositionAnalysis::recvSelf";
+        cerr << "DomainDecompositionAnalysis::receiveSelf";
         cerr << " - failed to get the AnalysisModel\n";
         return -1;
     }
@@ -699,11 +699,11 @@ DomainDecompositionAnalysis::recvSelf(int commitTag,
     if (theAlgorithm != 0)
     {
         theAlgorithm->setDbTag(data(10));
-        theAlgorithm->recvSelf(commitTag, theChannel, theBroker);
+        theAlgorithm->receiveSelf(commitTag, theChannel, theBroker);
     }
     else
     {
-        cerr << "DomainDecompositionAnalysis::recvSelf";
+        cerr << "DomainDecompositionAnalysis::receiveSelf";
         cerr << " - failed to get the Domain Decomp Algo\n";
         return -1;
     }
@@ -713,11 +713,11 @@ DomainDecompositionAnalysis::recvSelf(int commitTag,
     if (theIntegrator != 0)
     {
         theIntegrator->setDbTag(data(11));
-        theIntegrator->recvSelf(commitTag, theChannel, theBroker);
+        theIntegrator->receiveSelf(commitTag, theChannel, theBroker);
     }
     else
     {
-        cerr << "DomainDecompositionAnalysis::recvSelf";
+        cerr << "DomainDecompositionAnalysis::receiveSelf";
         cerr << " - failed to get the IncrementalIntegrator\n";
         return -1;
     }
@@ -727,7 +727,7 @@ DomainDecompositionAnalysis::recvSelf(int commitTag,
 
     if (theSOE == 0 || theSolver == 0)
     {
-        cerr << "DomainDecompositionAnalysis::recvSelf";
+        cerr << "DomainDecompositionAnalysis::receiveSelf";
         cerr << " - failed to get the LinearSOE and the DomainSolver \n";
         return -1;
     }
@@ -735,8 +735,8 @@ DomainDecompositionAnalysis::recvSelf(int commitTag,
     {
         theSOE->setDbTag(data(12));
         theSolver->setDbTag(data(13));
-        theSOE->recvSelf(commitTag, theChannel, theBroker);
-        theSolver->recvSelf(commitTag, theChannel, theBroker);
+        theSOE->receiveSelf(commitTag, theChannel, theBroker);
+        theSolver->receiveSelf(commitTag, theChannel, theBroker);
     }
 
     // set the links in all the objects

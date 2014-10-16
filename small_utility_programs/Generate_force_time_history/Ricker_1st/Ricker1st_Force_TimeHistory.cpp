@@ -155,7 +155,7 @@ Ricker1st_Force_TimeHistory::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Ricker1st_Force_TimeHistory::recvSelf(int commitTag, Channel& theChannel,
+Ricker1st_Force_TimeHistory::receiveSelf(int commitTag, Channel& theChannel,
                                       FEM_ObjectBroker& theBroker)
 {
     // to be completed later

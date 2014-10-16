@@ -227,7 +227,7 @@ class Subdomain: public Element, public Domain
         virtual bool doesIndependentAnalysis(void);
 
         virtual int sendSelf(int commitTag, Channel &theChannel);
-        virtual int recvSelf(int commitTag, Channel &theChannel,
+        virtual int receiveSelf(int commitTag, Channel &theChannel,
                              FEM_ObjectBroker &theBroker);
 
         virtual double getCost(void);

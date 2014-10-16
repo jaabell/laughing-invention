@@ -568,7 +568,7 @@ LoadPattern::sendSelf(int cTag, Channel &theChannel)
     /*
     if (theChannel.isDatastore() == 1) {
       static ID theLastSendTag(1);
-      if (theChannel.recvID(myDbTag,0,theLastSendTag) == 0)
+      if (theChannel.receiveID(myDbTag,0,theLastSendTag) == 0)
         lastGeoSendTag = theLastSendTag(0);
       else
         lastGeoSendTag = -1;
@@ -753,7 +753,7 @@ LoadPattern::sendSelf(int cTag, Channel &theChannel)
 
 
 int
-LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+LoadPattern::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
 
     // get my current database tag
@@ -764,9 +764,9 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
     int numNod, numEle, numSPs;
     ID lpData(11);
 
-    if (theChannel.recvID(myDbTag, cTag, lpData) < 0)
+    if (theChannel.receiveID(myDbTag, cTag, lpData) < 0)
     {
-        cerr << "LoadPattern::recvSelf - channel failed to recv the initial ID\n";
+        cerr << "LoadPattern::receiveSelf - channel failed to recv the initial ID\n";
         return -1;
     }
 
@@ -778,9 +778,9 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
     {
         Vector data(1);
 
-        if (theChannel.recvVector(myDbTag, cTag, data) < 0)
+        if (theChannel.receiveVector(myDbTag, cTag, data) < 0)
         {
-            cerr << "LoadPattern::recvSelf - channel failed to recv the Vector\n";
+            cerr << "LoadPattern::receiveSelf - channel failed to recv the Vector\n";
             return -2;
         }
 
@@ -802,15 +802,15 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
 
         if (theSeries == 0)
         {
-            cerr << "LoadPattern::recvSelf - failed to create TimeSeries\n";
+            cerr << "LoadPattern::receiveSelf - failed to create TimeSeries\n";
             return -3;
         }
 
         theSeries->setDbTag(lpData(9));
 
-        if (theSeries->recvSelf(cTag, theChannel, theBroker) < 0)
+        if (theSeries->receiveSelf(cTag, theChannel, theBroker) < 0)
         {
-            cerr << "LoadPattern::recvSelf - the TimeSeries failed to recv\n";
+            cerr << "LoadPattern::receiveSelf - the TimeSeries failed to recv\n";
             return -3;
         }
     }
@@ -818,7 +818,7 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
     /*
     if (theChannel.isDatastore() == 1) {
       static ID theLastSendTag(1);
-      if (theChannel.recvID(myDbTag,0,theLastSendTag) == 0)
+      if (theChannel.receiveID(myDbTag,0,theLastSendTag) == 0)
         lastGeoSendTag = theLastSendTag(0);
     }
     */
@@ -849,14 +849,14 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
 
 
             // now receive the ID about the nodes, class tag and dbTags
-            if (theChannel.recvID(dbNod, currentGeoTag, nodeData) < 0)
+            if (theChannel.receiveID(dbNod, currentGeoTag, nodeData) < 0)
             {
-                cerr << "LoadPAttern::recvSelf - channel failed to recv the NodalLoad ID\n";
+                cerr << "LoadPAttern::receiveSelf - channel failed to recv the NodalLoad ID\n";
                 return -2;
             }
 
             // now for each NodalLoad we 1) get a new node of the correct type from the ObjectBroker
-            // 2) ensure the node exists and set it's dbTag, 3) we invoke recvSelf on this new
+            // 2) ensure the node exists and set it's dbTag, 3) we invoke receiveSelf on this new
             // blank node and 4) add this node to the domain
 
             int loc = 0;
@@ -876,15 +876,15 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
 
                 theNode->setDbTag(dbTag);
 
-                if (theNode->recvSelf(cTag, theChannel, theBroker) < 0)
+                if (theNode->receiveSelf(cTag, theChannel, theBroker) < 0)
                 {
-                    cerr << "LoadPattern::recvSelf - NodalLoad with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "LoadPattern::receiveSelf - NodalLoad with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
                 if (this->addNodalLoad(theNode) == false)
                 {
-                    cerr << "LoadPattern::recvSelf - failed adding NodalLoad tagged " << theNode->getTag() << " into LP!\n";
+                    cerr << "LoadPattern::receiveSelf - failed adding NodalLoad tagged " << theNode->getTag() << " into LP!\n";
                     return -3;
                 }
 
@@ -900,9 +900,9 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
         {
             ID eleData(2 * numEle);
 
-            if (theChannel.recvID(dbEle, currentGeoTag, eleData) < 0)
+            if (theChannel.receiveID(dbEle, currentGeoTag, eleData) < 0)
             {
-                cerr << "LoadPattern::recvSelf - channel failed to recv the EleLoad ID\n";
+                cerr << "LoadPattern::receiveSelf - channel failed to recv the EleLoad ID\n";
                 return -2;
             }
 
@@ -923,15 +923,15 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
 
                 theEle->setDbTag(dbTag);
 
-                if (theEle->recvSelf(cTag, theChannel, theBroker) < 0)
+                if (theEle->receiveSelf(cTag, theChannel, theBroker) < 0)
                 {
-                    cerr << "LoadPattern::recvSelf - Ele with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "LoadPattern::receiveSelf - Ele with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
                 if (this->addElementalLoad(theEle) == false)
                 {
-                    cerr << "LoadPattern::recvSelf - could not add Ele with tag " << theEle->getTag() << " into LP!\n";
+                    cerr << "LoadPattern::receiveSelf - could not add Ele with tag " << theEle->getTag() << " into LP!\n";
                     return -3;
                 }
 
@@ -947,9 +947,9 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
         {
             ID spData(2 * numSPs);
 
-            if (theChannel.recvID(dbSPs, currentGeoTag, spData) < 0)
+            if (theChannel.receiveID(dbSPs, currentGeoTag, spData) < 0)
             {
-                cerr << "LoadPattern::recvSelf - channel failed to recv the SP_Constraints ID\n";
+                cerr << "LoadPattern::receiveSelf - channel failed to recv the SP_Constraints ID\n";
                 return -2;
             }
 
@@ -970,15 +970,15 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
 
                 theSP->setDbTag(dbTag);
 
-                if (theSP->recvSelf(cTag, theChannel, theBroker) < 0)
+                if (theSP->receiveSelf(cTag, theChannel, theBroker) < 0)
                 {
-                    cerr << "LoadPattern::recvSelf - SP_Constraint with dbTag " << dbTag << " failed in recvSelf\n";
+                    cerr << "LoadPattern::receiveSelf - SP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
                     return -2;
                 }
 
                 if (this->addSP_Constraint(theSP) == false)
                 {
-                    cerr << "LoadPattern::recvSelf - could not add SP_Constraint with tag " << theSP->getTag()
+                    cerr << "LoadPattern::receiveSelf - could not add SP_Constraint with tag " << theSP->getTag()
                          << " into LP!\n";
 
                     return -3;
@@ -996,9 +996,9 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
     else
     {
         if (theSeries != 0)
-            if (theSeries->recvSelf(cTag, theChannel, theBroker) < 0)
+            if (theSeries->receiveSelf(cTag, theChannel, theBroker) < 0)
             {
-                cerr << "LoadPattern::recvSelf - the TimeSeries failed to recv\n";
+                cerr << "LoadPattern::receiveSelf - the TimeSeries failed to recv\n";
                 return -3;
             }
 
@@ -1007,9 +1007,9 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
 
         while ((theNode = theNodes()) != 0)
         {
-            if (theNode->recvSelf(cTag, theChannel, theBroker) < 0)
+            if (theNode->receiveSelf(cTag, theChannel, theBroker) < 0)
             {
-                cerr << "LoadPattern::recvSelf - node with tag " << theNode->getTag() << " failed in recvSelf\n";
+                cerr << "LoadPattern::receiveSelf - node with tag " << theNode->getTag() << " failed in receiveSelf\n";
                 return -7;
             }
         }
@@ -1019,9 +1019,9 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
 
         while ((theEle = theElements()) != 0)
         {
-            if (theEle->recvSelf(cTag, theChannel, theBroker) < 0)
+            if (theEle->receiveSelf(cTag, theChannel, theBroker) < 0)
             {
-                cerr << "LoadPattern::recvSelf - element with tag " << theEle->getTag() << " failed in recvSelf\n";
+                cerr << "LoadPattern::receiveSelf - element with tag " << theEle->getTag() << " failed in receiveSelf\n";
                 return -8;
             }
         }
@@ -1031,9 +1031,9 @@ LoadPattern::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
 
         while ((theSP = theSPs()) != 0)
         {
-            if (theSP->recvSelf(cTag, theChannel, theBroker) < 0)
+            if (theSP->receiveSelf(cTag, theChannel, theBroker) < 0)
             {
-                cerr << "LoadPattern::recvSelf - SP_Constraint tagged " << theSP->getTag() << "  failed recvSelf\n";
+                cerr << "LoadPattern::receiveSelf - SP_Constraint tagged " << theSP->getTag() << "  failed receiveSelf\n";
                 return -9;
             }
         }

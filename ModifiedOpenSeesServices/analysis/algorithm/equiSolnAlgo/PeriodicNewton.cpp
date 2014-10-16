@@ -210,7 +210,7 @@ PeriodicNewton::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-PeriodicNewton::recvSelf(int cTag,
+PeriodicNewton::receiveSelf(int cTag,
                          Channel& theChannel,
                          FEM_ObjectBroker& theBroker)
 {
@@ -218,11 +218,11 @@ PeriodicNewton::recvSelf(int cTag,
     int result;
     int dataTag = this->getDbTag();
 
-    result = theChannel.recvID(dataTag, cTag, data);
+    result = theChannel.receiveID(dataTag, cTag, data);
 
     if (result != 0)
     {
-        cerr << "PeriodicNewton::recvSelf() - failed to receive ID\n";
+        cerr << "PeriodicNewton::receiveSelf() - failed to receive ID\n";
         return result;
     }
 
@@ -232,11 +232,11 @@ PeriodicNewton::recvSelf(int cTag,
 
     theTest = theBroker.getNewConvergenceTest(ctType);
     theTest->setDbTag(ctDb);
-    result = theTest->recvSelf(cTag, theChannel, theBroker);
+    result = theTest->receiveSelf(cTag, theChannel, theBroker);
 
     if (result != 0)
     {
-        cerr << "PeriodicNewton::recvSelf() - failed to recv CTest object\n";
+        cerr << "PeriodicNewton::receiveSelf() - failed to recv CTest object\n";
         return result;
     }
 

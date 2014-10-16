@@ -302,18 +302,18 @@ ElasticCrossAnisotropic::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ElasticCrossAnisotropic::recvSelf(int commitTag, Channel& theChannel,
+ElasticCrossAnisotropic::receiveSelf(int commitTag, Channel& theChannel,
                                   FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
     static Vector data(13);
 
-    res += theChannel.recvVector(this->getDbTag(), commitTag, data);
+    res += theChannel.receiveVector(this->getDbTag(), commitTag, data);
 
     if (res < 0)
     {
-        cerr << "ElasticCrossAnisotropic::recvSelf -- could not receive Vector\n";
+        cerr << "ElasticCrossAnisotropic::receiveSelf -- could not receive Vector\n";
         return res;
     }
 

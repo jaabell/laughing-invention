@@ -100,7 +100,7 @@ class EightNodeBrickLT: public Element
 
         //Used in parallel and in saving model
         int sendSelf ( int commitTag, Channel &theChannel );
-        int recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
+        int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
                        &theBroker );
 
         //General reporting of element status

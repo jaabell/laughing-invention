@@ -95,7 +95,7 @@ CorotTrussSection::CorotTrussSection(int tag, int dim,
 }
 
 // constructor:
-//   invoked by a FEM_ObjectBroker - blank object that recvSelf needs
+//   invoked by a FEM_ObjectBroker - blank object that receiveSelf needs
 //   to be invoked upon
 CorotTrussSection::CorotTrussSection()
     : Element(0, ELE_TAG_CorotTrussSection),
@@ -657,7 +657,7 @@ CorotTrussSection::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-CorotTrussSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+CorotTrussSection::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return -1;
 }

@@ -666,17 +666,17 @@ ElasticBeam::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-ElasticBeam::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+ElasticBeam::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
     static Vector data(12);
 
-    res += theChannel.recvVector(this->getDbTag(), cTag, data);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data Vector\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data Vector\n";
         return res;
     }
 
@@ -689,52 +689,52 @@ ElasticBeam::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker
     rho = data(6);
     this->setTag((int)data(7));
 
-    res += theChannel.recvID(this->getDbTag(), cTag, connectedExternalNodes);
+    res += theChannel.receiveID(this->getDbTag(), cTag, connectedExternalNodes);
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data Vector\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data Vector\n";
         return res;
     }
-    res += theChannel.recvVector(this->getDbTag(), cTag, *nodeIOffset);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, *nodeIOffset);
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data nodeIOffset\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data nodeIOffset\n";
         return res;
     }
-    res += theChannel.recvVector(this->getDbTag(), cTag, *nodeJOffset);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, *nodeJOffset);
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data nodeJOffset\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data nodeJOffset\n";
         return res;
     }
-    res += theChannel.recvVector(this->getDbTag(), cTag, *nodeIInitialDisp);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, *nodeIInitialDisp);
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data nodeIInitialDisp\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data nodeIInitialDisp\n";
         return res;
     }
-    res += theChannel.recvVector(this->getDbTag(), cTag, *nodeJInitialDisp);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, *nodeJInitialDisp);
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data nodeJInitialDisp\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data nodeJInitialDisp\n";
         return res;
     }
-    res += theChannel.recvMatrix(this->getDbTag(), cTag, R);
+    res += theChannel.receiveMatrix(this->getDbTag(), cTag, R);
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data R\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data R\n";
         return res;
     }
-    res += theChannel.recvVector(this->getDbTag(), cTag, P);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, P);
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data P\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data P\n";
         return res;
     }
-    res += theChannel.recvVector(this->getDbTag(), cTag, Q);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, Q);
     if (res < 0)
     {
-        cerr.flush() << "ElasticBeam::recvSelf -- could not receive data Q\n";
+        cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data Q\n";
         return res;
     }
 

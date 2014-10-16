@@ -269,7 +269,7 @@ BisectionLineSearch::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-BisectionLineSearch::recvSelf(int cTag,
+BisectionLineSearch::receiveSelf(int cTag,
                               Channel& theChannel,
                               FEM_ObjectBroker& theBroker)
 {

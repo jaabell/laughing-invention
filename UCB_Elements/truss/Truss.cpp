@@ -102,7 +102,7 @@ Truss::Truss(int tag,
 }
 
 // constructor:
-//   invoked by a FEM_ObjectBroker - blank object that recvSelf needs
+//   invoked by a FEM_ObjectBroker - blank object that receiveSelf needs
 //   to be invoked upon
 Truss::Truss()
     : Element(0, ELE_TAG_Truss),
@@ -665,7 +665,7 @@ Truss::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-Truss::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+Truss::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res;
     int dataTag = this->getDbTag();
@@ -674,11 +674,11 @@ Truss::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
     // internal data with the data in the Vector
 
     static Vector data(6);
-    res = theChannel.recvVector(dataTag, commitTag, data);
+    res = theChannel.receiveVector(dataTag, commitTag, data);
 
     if (res < 0)
     {
-        std::cerr << "WARNING Truss::recvSelf() - failed to receive Vector\n";
+        std::cerr << "WARNING Truss::receiveSelf() - failed to receive Vector\n";
         return -1;
     }
 
@@ -688,11 +688,11 @@ Truss::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
     rho = data(5);
 
     // truss now receives the tags of it's two external nodes
-    res = theChannel.recvID(dataTag, commitTag, connectedExternalNodes);
+    res = theChannel.receiveID(dataTag, commitTag, connectedExternalNodes);
 
     if (res < 0)
     {
-        std::cerr << "WARNING Truss::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+        std::cerr << "WARNING Truss::receiveSelf() - " << this->getTag() << " failed to receive ID\n";
         return -2;
     }
 
@@ -717,18 +717,18 @@ Truss::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 
         if (theMaterial == 0)
         {
-            std::cerr << "WARNING Truss::recvSelf() - " << this->getTag()
+            std::cerr << "WARNING Truss::receiveSelf() - " << this->getTag()
                       << " failed to get a blank Material of type " << matClass << endln;
             return -3;
         }
     }
 
     theMaterial->setDbTag(matDb); // note: we set the dbTag before we receive the material
-    res = theMaterial->recvSelf(commitTag, theChannel, theBroker);
+    res = theMaterial->receiveSelf(commitTag, theChannel, theBroker);
 
     if (res < 0)
     {
-        std::cerr << "WARNING Truss::recvSelf() - " << this->getTag() << "failed to receive its Material\n";
+        std::cerr << "WARNING Truss::receiveSelf() - " << this->getTag() << "failed to receive its Material\n";
         return -3;
     }
 

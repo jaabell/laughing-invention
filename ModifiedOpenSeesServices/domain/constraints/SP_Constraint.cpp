@@ -54,7 +54,7 @@ SP_Constraint::SP_Constraint(int tag, int node, int ndof, int clasTag)
     : DomainComponent(tag, clasTag),
       nodeTag(node), dofNumber(ndof), valueR(0.0), valueC(0.0), isConstant(true),
       loadPatternTag(-1)
-      // valueC is set to 1.0 so that homo will be false when recvSelf() invoked
+      // valueC is set to 1.0 so that homo will be false when receiveSelf() invoked
       // should be ok as valueC cannot be used by subclasses and subclasses should
       // not be used if it is a homogeneous constraint.
 {
@@ -170,16 +170,16 @@ SP_Constraint::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-SP_Constraint::recvSelf(int cTag, Channel& theChannel,
+SP_Constraint::receiveSelf(int cTag, Channel& theChannel,
                         FEM_ObjectBroker& theBroker)
 {
     Vector data(7);  // we sent the data as double to avoid having to send
     // two messages
-    int result = theChannel.recvVector(this->getDbTag(), cTag, data);
+    int result = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (result < 0)
     {
-        cerr << "WARNING SP_Constraint::recvSelf - error receiving Vector data\n";
+        cerr << "WARNING SP_Constraint::receiveSelf - error receiving Vector data\n";
         return result;
     }
 

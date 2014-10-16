@@ -123,7 +123,7 @@ FiberSection3d::FiberSection3d(int tag, int num, Fiber **fibers):
     code(2) = SECTION_RESPONSE_MY;
 }
 
-// constructor for blank object that recvSelf needs to be invoked upon
+// constructor for blank object that receiveSelf needs to be invoked upon
 FiberSection3d::FiberSection3d():
     SectionForceDeformation(0, SEC_TAG_FiberSection3d),
     numFibers(0), theMaterials(0), matData(0),
@@ -682,7 +682,7 @@ FiberSection3d::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-FiberSection3d::recvSelf(int commitTag, Channel &theChannel,
+FiberSection3d::receiveSelf(int commitTag, Channel &theChannel,
                          FEM_ObjectBroker &theBroker)
 {
     int res = 0;
@@ -690,7 +690,7 @@ FiberSection3d::recvSelf(int commitTag, Channel &theChannel,
     static ID data(3);
 
     int dbTag = this->getDbTag();
-    res += theChannel.recvID(dbTag, commitTag, data);
+    res += theChannel.receiveID(dbTag, commitTag, data);
 
     if (res < 0)
     {
@@ -704,7 +704,7 @@ FiberSection3d::recvSelf(int commitTag, Channel &theChannel,
     if (data(1) != 0)
     {
         ID materialData(2 * data(1));
-        res += theChannel.recvID(dbTag, commitTag, materialData);
+        res += theChannel.receiveID(dbTag, commitTag, materialData);
 
         if (res < 0)
         {
@@ -744,7 +744,7 @@ FiberSection3d::recvSelf(int commitTag, Channel &theChannel,
 
                 if (theMaterials == 0)
                 {
-                    cerr << "FiberSection3d::recvSelf -- failed to allocate Material pointers\n";
+                    cerr << "FiberSection3d::receiveSelf -- failed to allocate Material pointers\n";
                     exit(-1);
                 }
 
@@ -757,14 +757,14 @@ FiberSection3d::recvSelf(int commitTag, Channel &theChannel,
 
                 if (matData == 0)
                 {
-                    cerr << "FiberSection3d::recvSelf  -- failed to allocate double array for material data\n";
+                    cerr << "FiberSection3d::receiveSelf  -- failed to allocate double array for material data\n";
                     exit(-1);
                 }
             }
         }
 
         Vector fiberData(matData, 3 * numFibers);
-        res += theChannel.recvVector(dbTag, commitTag, fiberData);
+        res += theChannel.receiveVector(dbTag, commitTag, fiberData);
 
         if (res < 0)
         {
@@ -793,12 +793,12 @@ FiberSection3d::recvSelf(int commitTag, Channel &theChannel,
 
             if (theMaterials[i] == 0)
             {
-                cerr << "FiberSection3d::recvSelf -- failed to allocate double array for material data\n";
+                cerr << "FiberSection3d::receiveSelf -- failed to allocate double array for material data\n";
                 exit(-1);
             }
 
             theMaterials[i]->setDbTag(dbTag);
-            res += theMaterials[i]->recvSelf(commitTag, theChannel, theBroker);
+            res += theMaterials[i]->receiveSelf(commitTag, theChannel, theBroker);
         }
 
         double Qz = 0.0;

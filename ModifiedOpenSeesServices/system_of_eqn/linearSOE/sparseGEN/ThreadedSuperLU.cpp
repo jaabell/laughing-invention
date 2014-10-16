@@ -251,7 +251,7 @@ ThreadedSuperLU::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ThreadedSuperLU::recvSelf(int cTag,
+ThreadedSuperLU::receiveSelf(int cTag,
                           Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {

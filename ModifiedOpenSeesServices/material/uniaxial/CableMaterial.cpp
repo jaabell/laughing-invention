@@ -260,16 +260,16 @@ CableMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-CableMaterial::recvSelf(int cTag, Channel& theChannel,
+CableMaterial::receiveSelf(int cTag, Channel& theChannel,
                         FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(5);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "CableMaterial::recvSelf() - failed to receive data\n";
+        cerr << "CableMaterial::receiveSelf() - failed to receive data\n";
         E = 0;
         this->setTag(0);
         return res;

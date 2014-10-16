@@ -4031,14 +4031,14 @@ int Template3Dep::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added
-int Template3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int Template3Dep::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
     static ID idData(12);
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "Template3Dep::recvSelf -- failed to recv ID\n";
+        cerr << "Template3Dep::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 
@@ -4115,71 +4115,71 @@ int Template3Dep::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker&
     theElasticMat = theBroker.getNewNDMaterial(idData(11));
     //theElasticMat->setTag(idData(12));
 
-    if (EPS->recvSelf(commitTag, theChannel, theBroker) < 0)
+    if (EPS->receiveSelf(commitTag, theChannel, theBroker) < 0)
     {
-        cerr << "Template3Dep::recvSelf -- EPS failed to recv self\n";
+        cerr << "Template3Dep::receiveSelf -- EPS failed to recv self\n";
         return -1;
     }
 
     if(ELS1 != 0)
-        if (ELS1->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ELS1->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Template3Dep::recvSelf -- failed to recv ELS1\n";
+            cerr << "Template3Dep::receiveSelf -- failed to recv ELS1\n";
             return -1;
         }
 
     if(ELS2 != 0)
-        if (ELS2->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ELS2->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Template3Dep::recvSelf -- failed to recv ELS2\n";
+            cerr << "Template3Dep::receiveSelf -- failed to recv ELS2\n";
             return -1;
         }
 
     if(ELS3 != 0)
-        if (ELS3->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ELS3->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Template3Dep::recvSelf -- failed to recv ELS3\n";
+            cerr << "Template3Dep::receiveSelf -- failed to recv ELS3\n";
             return -1;
         }
 
     if(ELS4 != 0)
-        if (ELS4->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ELS4->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Template3Dep::recvSelf -- failed to recv ELS4\n";
+            cerr << "Template3Dep::receiveSelf -- failed to recv ELS4\n";
             return -1;
         }
 
     if(ELT1 != 0)
-        if (ELT1->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ELT1->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Template3Dep::recvSelf -- failed to recv ELT1\n";
+            cerr << "Template3Dep::receiveSelf -- failed to recv ELT1\n";
             return -1;
         }
 
     if(ELT2 != 0)
-        if (ELT2->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ELT2->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Template3Dep::recvSelf -- failed to recv ELT2\n";
+            cerr << "Template3Dep::receiveSelf -- failed to recv ELT2\n";
             return -1;
         }
 
     if(ELT3 != 0)
-        if (ELT3->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ELT3->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Template3Dep::recvSelf -- failed to recv ELT3\n";
+            cerr << "Template3Dep::receiveSelf -- failed to recv ELT3\n";
             return -1;
         }
 
     if(ELT4 != 0)
-        if (ELT4->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (ELT4->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Template3Dep::recvSelf -- failed to recv ELT4\n";
+            cerr << "Template3Dep::receiveSelf -- failed to recv ELT4\n";
             return -1;
         }
 
-    if (theElasticMat->recvSelf(commitTag, theChannel, theBroker) < 0)
+    if (theElasticMat->receiveSelf(commitTag, theChannel, theBroker) < 0)
     {
-        cerr << "Template3Dep::recvSelf -- failed to recv the Elastic part\n";
+        cerr << "Template3Dep::receiveSelf -- failed to recv the Elastic part\n";
         return -1;
     }
 

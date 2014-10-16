@@ -892,7 +892,7 @@ ContactElement_6DOF_6DOF::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-ContactElement_6DOF_6DOF::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+ContactElement_6DOF_6DOF::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }

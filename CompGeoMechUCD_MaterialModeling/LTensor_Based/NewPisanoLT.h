@@ -126,7 +126,7 @@ class NewPisanoLT : public NDMaterialLT
 
         int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         int sendSelf(int commitTag, Channel &theChannel);
-        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
         void Print(ostream &s, int flag = 0);
 

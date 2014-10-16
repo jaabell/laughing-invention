@@ -258,13 +258,13 @@ DataOutputFileHandler::sendSelf( int commitTag, Channel& theChannel )
 }
 
 int
-DataOutputFileHandler::recvSelf( int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker )
+DataOutputFileHandler::receiveSelf( int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker )
 {
     static ID idData( 3 );
 
-    if ( theChannel.recvID( 0, commitTag, idData ) < 0 )
+    if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
     {
-        cerr << "DataOutputFileHandler::recvSelf() - failed to recv id data\n";
+        cerr << "DataOutputFileHandler::receiveSelf() - failed to recv id data\n";
         return -1;
     }
 
@@ -304,15 +304,15 @@ DataOutputFileHandler::recvSelf( int commitTag, Channel& theChannel, FEM_ObjectB
 
         if ( fileName == 0 )
         {
-            cerr << "DataOutputFileHandler::recvSelf() - out of memory\n";
+            cerr << "DataOutputFileHandler::receiveSelf() - out of memory\n";
             return -1;
         }
 
         Message theMessage( fileName, fileNameLength );
 
-        if ( theChannel.recvMsg( 0, commitTag, theMessage ) < 0 )
+        if ( theChannel.receiveMsg( 0, commitTag, theMessage ) < 0 )
         {
-            cerr << "DataOutputFileHandler::recvSelf() - failed to recv message\n";
+            cerr << "DataOutputFileHandler::receiveSelf() - failed to recv message\n";
             return -1;
         }
 

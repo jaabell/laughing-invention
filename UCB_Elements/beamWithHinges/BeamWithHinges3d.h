@@ -78,7 +78,7 @@ class BeamWithHinges3d: public Element
         const Vector &getResistingForceIncInertia(void);
 
         int sendSelf(int commitTag, Channel &theChannel);
-        int recvSelf(int commitTag, Channel &theChannel,
+        int receiveSelf(int commitTag, Channel &theChannel,
                      FEM_ObjectBroker &theBroker);
 
         // Response* setResponse(const char** argv, int argc, Information& info);

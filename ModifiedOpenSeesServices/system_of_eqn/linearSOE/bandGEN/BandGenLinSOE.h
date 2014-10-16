@@ -72,7 +72,7 @@ class BandGenLinSOE : public LinearSOE
         virtual int setBandGenSolver(BandGenLinSolver& newSolver);
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        virtual int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
         friend class BandGenLinLapackSolver;
 
     protected:

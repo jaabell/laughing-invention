@@ -326,16 +326,16 @@ ElasticMembranePlateSection::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-ElasticMembranePlateSection::recvSelf(int cTag, Channel& theChannel,
+ElasticMembranePlateSection::receiveSelf(int cTag, Channel& theChannel,
                                       FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(5);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "ElasticMembranePlateSection::recvSelf() - failed to recv data\n";
+        cerr << "ElasticMembranePlateSection::receiveSelf() - failed to recv data\n";
     }
     else
     {

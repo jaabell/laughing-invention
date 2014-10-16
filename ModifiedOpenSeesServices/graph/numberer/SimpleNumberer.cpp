@@ -129,7 +129,7 @@ SimpleNumberer::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-SimpleNumberer::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+SimpleNumberer::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

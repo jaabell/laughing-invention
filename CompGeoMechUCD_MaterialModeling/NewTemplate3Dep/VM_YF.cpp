@@ -378,16 +378,16 @@ int VM_YF::sendSelf(int commitTag, Channel& theChannel)
 
 //================================================================================
 //Guanzhou added for parallel
-int VM_YF::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int VM_YF::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(4);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "VM_YF::recvSelf -- failed to recv ID\n";
+        cerr << "VM_YF::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 

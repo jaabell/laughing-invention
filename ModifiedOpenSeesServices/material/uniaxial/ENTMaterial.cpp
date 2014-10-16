@@ -143,16 +143,16 @@ ENTMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ENTMaterial::recvSelf(int cTag, Channel& theChannel,
+ENTMaterial::receiveSelf(int cTag, Channel& theChannel,
                       FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(2);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "ENTMaterial::recvSelf() - failed to receive data\n";
+        cerr << "ENTMaterial::receiveSelf() - failed to receive data\n";
         E = 0;
         this->setTag(0);
     }

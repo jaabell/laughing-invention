@@ -336,17 +336,17 @@ Bidirectional::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-Bidirectional::recvSelf(int cTag, Channel& theChannel,
+Bidirectional::receiveSelf(int cTag, Channel& theChannel,
                         FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
     static Vector data(10);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "Bidirectional::recvSelf() - failed to receive data\n";
+        cerr << "Bidirectional::receiveSelf() - failed to receive data\n";
         E = 0;
         this->setTag(0);
     }

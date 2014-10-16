@@ -144,7 +144,7 @@ MP_Constraint::getConstrainedDOFs(void) const
     if (constrDOF == 0)
     {
         cerr << "MP_Constraint::getConstrainedDOF - no ID was set, ";
-        cerr << "was recvSelf() ever called? or subclass incorrect?\n";
+        cerr << "was receiveSelf() ever called? or subclass incorrect?\n";
         exit(-1);
     }
 
@@ -159,7 +159,7 @@ MP_Constraint::getRetainedDOFs(void) const
     if (retainDOF == 0)
     {
         cerr << "MP_Constraint::getRetainedDOFs - no ID was set\n ";
-        cerr << "was recvSelf() ever called? or subclass incorrect?\n";
+        cerr << "was receiveSelf() ever called? or subclass incorrect?\n";
         exit(-1);
     }
 
@@ -303,16 +303,16 @@ MP_Constraint::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-MP_Constraint::recvSelf(int cTag, Channel& theChannel,
+MP_Constraint::receiveSelf(int cTag, Channel& theChannel,
                         FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
     ID data(9);
-    int result = theChannel.recvID(dataTag, cTag, data);
+    int result = theChannel.receiveID(dataTag, cTag, data);
 
     if (result < 0)
     {
-        cerr << "WARNING MP_Constraint::recvSelf - error receiving ID data\n";
+        cerr << "WARNING MP_Constraint::receiveSelf - error receiving ID data\n";
         return result;
     }
 
@@ -328,11 +328,11 @@ MP_Constraint::recvSelf(int cTag, Channel& theChannel,
     {
         constraint = new Matrix(numRows, numCols);
 
-        int result = theChannel.recvMatrix(dataTag, cTag, *constraint);
+        int result = theChannel.receiveMatrix(dataTag, cTag, *constraint);
 
         if (result < 0)
         {
-            cerr << "WARNING MP_Constraint::recvSelf ";
+            cerr << "WARNING MP_Constraint::receiveSelf ";
             cerr << "- error receiving Matrix data\n";
             return result;
         }
@@ -343,11 +343,11 @@ MP_Constraint::recvSelf(int cTag, Channel& theChannel,
     if (size != 0)
     {
         constrDOF = new ID(size);
-        int result = theChannel.recvID(dbTag1, cTag, *constrDOF);
+        int result = theChannel.receiveID(dbTag1, cTag, *constrDOF);
 
         if (result < 0)
         {
-            cerr << "WARNING MP_Constraint::recvSelf ";
+            cerr << "WARNING MP_Constraint::receiveSelf ";
             cerr << "- error receiving constrained data\n";
             return result;
         }
@@ -358,11 +358,11 @@ MP_Constraint::recvSelf(int cTag, Channel& theChannel,
     if (size != 0)
     {
         retainDOF = new ID(size);
-        int result = theChannel.recvID(dbTag2, cTag, *retainDOF);
+        int result = theChannel.receiveID(dbTag2, cTag, *retainDOF);
 
         if (result < 0)
         {
-            cerr << "WARNING MP_Retainaint::recvSelf ";
+            cerr << "WARNING MP_Retainaint::receiveSelf ";
             cerr << "- error receiving retained data\n";
             return result;
         }

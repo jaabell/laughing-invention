@@ -205,7 +205,7 @@ int HDF5_Channel::sendObj(int not_used2,
     return 0;
 }
 
-int HDF5_Channel::recvObj(int not_used2,
+int HDF5_Channel::receiveObj(int not_used2,
                           MovableObject &theObject,
                           FEM_ObjectBroker &theBroker,
                           ChannelAddress *theAddress )
@@ -220,7 +220,7 @@ int HDF5_Channel::sendMsg(int not_used, int not_used2,
     return 0;
 }
 
-int HDF5_Channel::recvMsg(int not_used, int not_used2,
+int HDF5_Channel::receiveMsg(int not_used, int not_used2,
                           Message &theMessage,
                           ChannelAddress *theAddress )
 {
@@ -419,7 +419,7 @@ int HDF5_Channel::sendMatrix(int not_used, int not_used2,
     return 0;
 }
 
-int HDF5_Channel::recvMatrix(int not_used, int not_used2,
+int HDF5_Channel::receiveMatrix(int not_used, int not_used2,
                              Matrix &theMatrix,
                              ChannelAddress *theAddress )
 {
@@ -610,7 +610,7 @@ int HDF5_Channel::sendVector(int id_object, int not_used2,
     return 0;
 }
 
-int HDF5_Channel::recvVector(int not_used, int not_used2,
+int HDF5_Channel::receiveVector(int not_used, int not_used2,
                              Vector &theVector,
                              ChannelAddress *theAddress )
 {
@@ -802,7 +802,7 @@ int HDF5_Channel::sendID(int not_used, int not_used2,
     return 0;
 }
 
-int HDF5_Channel::recvID(int not_used, int not_used2,
+int HDF5_Channel::receiveID(int not_used, int not_used2,
                          ID &theID,
                          ChannelAddress *theAddress )
 {
@@ -817,7 +817,7 @@ int HDF5_Channel::sendnDarray(int not_used, int not_used2,
     return 0;
 }
 
-int HDF5_Channel::recvnDarray(int not_used, int not_used2,
+int HDF5_Channel::receivenDarray(int not_used, int not_used2,
                               nDarray &theNDarray,
                               ChannelAddress *theAddress )
 {

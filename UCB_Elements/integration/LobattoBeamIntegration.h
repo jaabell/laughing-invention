@@ -48,7 +48,7 @@ class LobattoBeamIntegration : public BeamIntegration
         {
             return 0;
         }
-        int recvSelf(int cTag, Channel& theChannel,
+        int receiveSelf(int cTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker)
         {
             return 0;

@@ -294,18 +294,18 @@ MultiSupportPattern::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-MultiSupportPattern::recvSelf(int commitTag, Channel& theChannel,
+MultiSupportPattern::receiveSelf(int commitTag, Channel& theChannel,
                               FEM_ObjectBroker& theBroker)
 {
     //Guanzhou added
     int dbTag = this->getDbTag();
 
     static ID data(3);
-    int res = theChannel.recvID(dbTag, commitTag, data);
+    int res = theChannel.receiveID(dbTag, commitTag, data);
 
     if (res < 0)
     {
-        cerr << "MultiSupportPattern::recvSelf() - channel failed to recv data\n";
+        cerr << "MultiSupportPattern::receiveSelf() - channel failed to recv data\n";
         return res;
     }
 
@@ -316,19 +316,19 @@ MultiSupportPattern::recvSelf(int commitTag, Channel& theChannel,
     static ID motionClassTag(new_numMotions);
     static ID motionDbTag(new_numMotions);
 
-    res = theChannel.recvID(dbTag, commitTag, motionClassTag);
+    res = theChannel.receiveID(dbTag, commitTag, motionClassTag);
 
     if (res < 0)
     {
-        cerr << "MultiSupportPattern::recvSelf() - channel failed to recv motionClassTag\n";
+        cerr << "MultiSupportPattern::receiveSelf() - channel failed to recv motionClassTag\n";
         return res;
     }
 
-    res = theChannel.recvID(dbTag, commitTag, motionDbTag);
+    res = theChannel.receiveID(dbTag, commitTag, motionDbTag);
 
     if (res < 0)
     {
-        cerr << "MultiSupportPattern::recvSelf() - channel failed to recv motionDbTag\n";
+        cerr << "MultiSupportPattern::receiveSelf() - channel failed to recv motionDbTag\n";
         return res;
     }
 
@@ -355,16 +355,16 @@ MultiSupportPattern::recvSelf(int commitTag, Channel& theChannel,
 
         if (theMotions[i] == 0)
         {
-            cerr << "MultiSupportPattern::recvSelf() - could not create a grond motion\n";
+            cerr << "MultiSupportPattern::receiveSelf() - could not create a grond motion\n";
             return -3;
         }
 
         theMotions[i]->setDbTag(motionDbTag(i));
-        res = theMotions[i]->recvSelf(commitTag, theChannel, theBroker);
+        res = theMotions[i]->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {
-            cerr << "MultiSupportPattern::recvSelf() - motion could not receive itself \n";
+            cerr << "MultiSupportPattern::receiveSelf() - motion could not receive itself \n";
             return res;
         }
     }
@@ -377,37 +377,37 @@ MultiSupportPattern::recvSelf(int commitTag, Channel& theChannel,
     theMotionTags.Zero();
     theMotionTags.resize(numMotions);
 
-    res = theChannel.recvID(dbTag, commitTag, theMotionTags);
+    res = theChannel.receiveID(dbTag, commitTag, theMotionTags);
 
     if (res < 0)
     {
-        cerr << "MultiSupportPattern::recvSelf() - channel failed to recv theMotionTags\n";
+        cerr << "MultiSupportPattern::receiveSelf() - channel failed to recv theMotionTags\n";
         return res;
     }
 
-    //res = theChannel.recvID(dbTag, commitTag, myTag);
+    //res = theChannel.receiveID(dbTag, commitTag, myTag);
     //if (res < 0) {
-    //  cerr << "MultiSupportPattern::recvSelf() - channel failed to recv myTag\n";
+    //  cerr << "MultiSupportPattern::receiveSelf() - channel failed to recv myTag\n";
     //  return res;
     //}
 
-    res = theChannel.recvID(dbTag, commitTag, MotionsIDs);
+    res = theChannel.receiveID(dbTag, commitTag, MotionsIDs);
 
     if (res < 0)
     {
-        cerr << "MultiSupportPattern::recvSelf() - channel failed to recv MotionsIDs\n";
+        cerr << "MultiSupportPattern::receiveSelf() - channel failed to recv MotionsIDs\n";
         return res;
     }
 
-    //res = theChannel.recvID(dbTag, commitTag, NodeTags);
+    //res = theChannel.receiveID(dbTag, commitTag, NodeTags);
     //if (res < 0) {
-    //  cerr << "MultiSupportPattern::recvSelf() - channel failed to recv NodeTags\n";
+    //  cerr << "MultiSupportPattern::receiveSelf() - channel failed to recv NodeTags\n";
     //  return res;
     //}
     //
-    //res = theChannel.recvID(dbTag, commitTag, DOFTags);
+    //res = theChannel.receiveID(dbTag, commitTag, DOFTags);
     //if (res < 0) {
-    //  cerr << "MultiSupportPattern::recvSelf() - channel failed to recv DOFTags\n";
+    //  cerr << "MultiSupportPattern::receiveSelf() - channel failed to recv DOFTags\n";
     //  return res;
     //}
 
@@ -425,15 +425,15 @@ MultiSupportPattern::recvSelf(int commitTag, Channel& theChannel,
 
         if (theSP == 0)
         {
-            cerr << "MultiSupportPattern::recvSelf() - could not create a imposed sp\n";
+            cerr << "MultiSupportPattern::receiveSelf() - could not create a imposed sp\n";
             return -3;
         }
 
-        res = theSP->recvSelf(commitTag, theChannel, theBroker);
+        res = theSP->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {
-            cerr << "MultiSupportPattern::recvSelf() - imposed sp could not receive itself \n";
+            cerr << "MultiSupportPattern::receiveSelf() - imposed sp could not receive itself \n";
             return res;
         }
 
@@ -444,7 +444,7 @@ MultiSupportPattern::recvSelf(int commitTag, Channel& theChannel,
         //  *theMotions[MotionsIDs(i)], MotionsIDs(i), false);
         if (this->addSP_Constraint((SP_Constraint*)theSP) == false)
         {
-            cerr << "MultiSupportPattern::recvSelf() - fail to add sp to pattern \n";
+            cerr << "MultiSupportPattern::receiveSelf() - fail to add sp to pattern \n";
             return -1;
         }
     }

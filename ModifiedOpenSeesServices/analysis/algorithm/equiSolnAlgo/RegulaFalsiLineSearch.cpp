@@ -229,7 +229,7 @@ RegulaFalsiLineSearch::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-RegulaFalsiLineSearch::recvSelf(int cTag,
+RegulaFalsiLineSearch::receiveSelf(int cTag,
                                 Channel& theChannel,
                                 FEM_ObjectBroker& theBroker)
 {

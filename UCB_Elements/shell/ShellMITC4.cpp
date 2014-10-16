@@ -2318,7 +2318,7 @@ int  ShellMITC4::sendSelf (int commitTag, Channel& theChannel)
     return res;
 }
 
-int  ShellMITC4::recvSelf (int commitTag,
+int  ShellMITC4::receiveSelf (int commitTag,
                            Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
@@ -2328,11 +2328,11 @@ int  ShellMITC4::recvSelf (int commitTag,
 
     static ID idData(13);
     // Quad now receives the tags of its four external nodes
-    res += theChannel.recvID(dataTag, commitTag, idData);
+    res += theChannel.receiveID(dataTag, commitTag, idData);
 
     if (res < 0)
     {
-        std::cerr << "WARNING ShellMITC4::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+        std::cerr << "WARNING ShellMITC4::receiveSelf() - " << this->getTag() << " failed to receive ID\n";
         return res;
     }
 
@@ -2343,7 +2343,7 @@ int  ShellMITC4::recvSelf (int commitTag,
     connectedExternalNodes(3) = idData(12);
 
     static Vector vectData(1);
-    res += theChannel.recvVector(dataTag, commitTag, vectData);
+    res += theChannel.receiveVector(dataTag, commitTag, vectData);
 
     if (res < 0)
     {
@@ -2366,17 +2366,17 @@ int  ShellMITC4::recvSelf (int commitTag,
 
             if (materialPointers[i] == 0)
             {
-                std::cerr << "ShellMITC4::recvSelf() - Broker could not create NDMaterial of class type" << matClassTag << endln;;
+                std::cerr << "ShellMITC4::receiveSelf() - Broker could not create NDMaterial of class type" << matClassTag << endln;;
                 return -1;
             }
 
             // Now receive materials into the newly allocated space
             materialPointers[i]->setDbTag(matDbTag);
-            res += materialPointers[i]->recvSelf(commitTag, theChannel, theBroker);
+            res += materialPointers[i]->receiveSelf(commitTag, theChannel, theBroker);
 
             if (res < 0)
             {
-                std::cerr << "NLBeamColumn3d::recvSelf() - material " << i <<
+                std::cerr << "NLBeamColumn3d::receiveSelf() - material " << i <<
                           "failed to recv itself\n";
                 return res;
             }
@@ -2399,18 +2399,18 @@ int  ShellMITC4::recvSelf (int commitTag,
 
                 if (materialPointers[i] == 0)
                 {
-                    std::cerr << "ShellMITC4::recvSelf() - Broker could not create NDMaterial of class type" << matClassTag << endln;
+                    std::cerr << "ShellMITC4::receiveSelf() - Broker could not create NDMaterial of class type" << matClassTag << endln;
                     exit(-1);
                 }
             }
 
             // Receive the material
             materialPointers[i]->setDbTag(matDbTag);
-            res += materialPointers[i]->recvSelf(commitTag, theChannel, theBroker);
+            res += materialPointers[i]->receiveSelf(commitTag, theChannel, theBroker);
 
             if (res < 0)
             {
-                std::cerr << "ShellMITC4::recvSelf() - material " << i << "failed to recv itself\n";
+                std::cerr << "ShellMITC4::receiveSelf() - material " << i << "failed to recv itself\n";
                 return res;
             }
         }

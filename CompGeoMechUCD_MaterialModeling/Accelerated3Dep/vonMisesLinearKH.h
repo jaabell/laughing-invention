@@ -109,7 +109,7 @@ class vonMisesLinearKH : public NDMaterial
 
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
         void Print(ostream& s, int flag = 0);
 

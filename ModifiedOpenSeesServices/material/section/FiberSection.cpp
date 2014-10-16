@@ -76,7 +76,7 @@ FiberSection::FiberSection(int tag, int num, Fiber **fibers):
     *code = theFibers[0]->getType();
 }
 
-// constructor for blank object that recvSelf needs to be invoked upon
+// constructor for blank object that receiveSelf needs to be invoked upon
 FiberSection::FiberSection():
     SectionForceDeformation(0, SEC_TAG_Fiber),
     numFibers(0), theFibers(0), sizeFibers(0),
@@ -450,7 +450,7 @@ FiberSection::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-FiberSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+FiberSection::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -458,12 +458,12 @@ FiberSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
     static ID data(5);
 
     // Receive the data ID
-    res += theChannel.recvID(this->getDbTag(), commitTag, data);
+    res += theChannel.receiveID(this->getDbTag(), commitTag, data);
 
     if (res < 0)
     {
         g3ErrorHandler->warning("%s -- failed to receive data ID",
-                                "FiberSection::recvSelf");
+                                "FiberSection::receiveSelf");
         return res;
     }
 
@@ -532,12 +532,12 @@ FiberSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
         }
 
         // Receive the committed section deformation
-        res += theChannel.recvVector(this->getDbTag(), commitTag, *eCommit);
+        res += theChannel.receiveVector(this->getDbTag(), commitTag, *eCommit);
 
         if (res < 0)
         {
             g3ErrorHandler->warning("%s -- failed to receive section deformations",
-                                    "FiberSection::recvSelf");
+                                    "FiberSection::receiveSelf");
             return res;
         }
 
@@ -550,12 +550,12 @@ FiberSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
         ID dbTags(numFibers + 1);
 
         // Receive the dbTags ID
-        res += theChannel.recvID(otherDbTag, commitTag, dbTags);
+        res += theChannel.receiveID(otherDbTag, commitTag, dbTags);
 
         if (res < 0)
         {
             g3ErrorHandler->warning("%s -- failed to receive dbTags ID",
-                                    "FiberSection::recvSelf");
+                                    "FiberSection::receiveSelf");
             return res;
         }
 
@@ -568,7 +568,7 @@ FiberSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
             if (theFibers == 0)
             {
                 g3ErrorHandler->warning("%s -- failed to allocate Fiber pointers",
-                                        "FiberSection::recvSelf");
+                                        "FiberSection::receiveSelf");
                 return -1;
             }
 
@@ -600,18 +600,18 @@ FiberSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
             if (theFibers[i] == 0)
             {
                 g3ErrorHandler->warning("%s -- could not get Fiber %d",
-                                        "FiberSection::recvSelf", i);
+                                        "FiberSection::receiveSelf", i);
                 return -1;
             }
 
             // Now, receive the Fiber
             theFibers[i]->setDbTag(dbTags(i));
-            res += theFibers[i]->recvSelf(commitTag, theChannel, theBroker);
+            res += theFibers[i]->receiveSelf(commitTag, theChannel, theBroker);
 
             if (res < 0)
             {
                 g3ErrorHandler->warning("%s -- could not receive Fiber %d",
-                                        "FiberSection::recvSelf", i);
+                                        "FiberSection::receiveSelf", i);
                 return res;
             }
         }

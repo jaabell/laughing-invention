@@ -127,7 +127,7 @@ class TwentySevenNodeBrick: public Element
         const Vector &getResistingForceIncInertia ();
 
         int sendSelf (int commitTag, Channel &theChannel);
-        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
+        int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
                       &theBroker);
         void Print(ostream &s, int flag = 0);
 

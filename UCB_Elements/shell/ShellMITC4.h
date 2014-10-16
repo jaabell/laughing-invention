@@ -101,7 +101,7 @@ class ShellMITC4 : public Element
 
         // public methods for element output
         int sendSelf (int commitTag, Channel &theChannel);
-        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
+        int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
                       &theBroker);
 
         std::string getElementName() const

@@ -256,15 +256,15 @@ ElasticPlateSection::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-ElasticPlateSection::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ElasticPlateSection::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(4);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "ElasticPlateSection::recvSelf() - failed to recv data\n";
+        cerr << "ElasticPlateSection::receiveSelf() - failed to recv data\n";
     }
     else
     {

@@ -103,16 +103,16 @@ ElementSelfWeight::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-ElementSelfWeight::recvSelf(int commitTag, Channel &theChannel,  FEM_ObjectBroker &theBroker)
+ElementSelfWeight::receiveSelf(int commitTag, Channel &theChannel,  FEM_ObjectBroker &theBroker)
 {
     int dbTag = this->getDbTag();
     static ID idData(2);
 
-    int result = theChannel.recvID(dbTag, commitTag, idData);
+    int result = theChannel.receiveID(dbTag, commitTag, idData);
 
     if (result < 0)
     {
-        cerr << "ElementSelfWeight::recvSelf() - failed to recv data\n";
+        cerr << "ElementSelfWeight::receiveSelf() - failed to recv data\n";
         return result;
     }
 
@@ -120,20 +120,20 @@ ElementSelfWeight::recvSelf(int commitTag, Channel &theChannel,  FEM_ObjectBroke
     int myTag = idData(1);
     ID *NewTags = new ID(numEle);
 
-    result = theChannel.recvID(dbTag, commitTag, *NewTags);
+    result = theChannel.receiveID(dbTag, commitTag, *NewTags);
 
     if (result < 0)
     {
-        cerr << "ElementSelfWeight::recvSelf() - failed to recv element tags\n";
+        cerr << "ElementSelfWeight::receiveSelf() - failed to recv element tags\n";
         return result;
     }
 
     // Vector *newdata;
-    result = theChannel.recvVector(dbTag, commitTag, data);
+    result = theChannel.receiveVector(dbTag, commitTag, data);
 
     if (result < 0)
     {
-        cerr << "ElementSelfWeight::recvSelf() - failed to recv data (value of self weight acceleration field.)\n";
+        cerr << "ElementSelfWeight::receiveSelf() - failed to recv data (value of self weight acceleration field.)\n";
         return result;
     }
 

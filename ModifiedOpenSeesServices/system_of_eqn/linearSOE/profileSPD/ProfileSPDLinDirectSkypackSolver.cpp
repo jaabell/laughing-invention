@@ -292,7 +292,7 @@ ProfileSPDLinDirectSkypackSolver::sendSelf(int cTag,
 
 
 int
-ProfileSPDLinDirectSkypackSolver::recvSelf(int cTag,
+ProfileSPDLinDirectSkypackSolver::receiveSelf(int cTag,
         Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {

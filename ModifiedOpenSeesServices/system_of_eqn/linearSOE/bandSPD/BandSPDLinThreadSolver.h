@@ -51,7 +51,7 @@ class BandSPDLinThreadSolver : public BandSPDLinSolver
         int setSize(void);
 
         int sendSelf(Channel& theChannel, FEM_ObjectBroker& theBroker);
-        int recvSelf(Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     protected:
 

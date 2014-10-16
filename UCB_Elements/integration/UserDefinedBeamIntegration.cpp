@@ -115,7 +115,7 @@ UserDefinedBeamIntegration::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-UserDefinedBeamIntegration::recvSelf(int cTag, Channel& theChannel,
+UserDefinedBeamIntegration::receiveSelf(int cTag, Channel& theChannel,
                                      FEM_ObjectBroker& theBroker)
 {
     return -1;

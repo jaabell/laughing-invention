@@ -426,15 +426,15 @@ TwoStageEquivalentElasticIsotropic3D::sendSelf (int commitTag, Channel& theChann
 }
 
 int
-TwoStageEquivalentElasticIsotropic3D::recvSelf (int commitTag, Channel& theChannel,
+TwoStageEquivalentElasticIsotropic3D::receiveSelf (int commitTag, Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
     static Vector data(4);
 
-    if (theChannel.recvVector(dataTag, commitTag, data) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, data) < 0)
     {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Vector\n";
+        cerr << "ElasticIsotropicMaterial::receiveSelf -- could not recv Vector\n";
         E = 0;
         this->setTag(0);
         return -1;
@@ -445,40 +445,40 @@ TwoStageEquivalentElasticIsotropic3D::recvSelf (int commitTag, Channel& theChann
     v = data(2);
     rho = data(3);
 
-    if (theChannel.recvVector(dataTag, commitTag, sigma) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, sigma) < 0)
     {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Stress Vector\n";
+        cerr << "ElasticIsotropicMaterial::receiveSelf -- could not recv Stress Vector\n";
         return -1;
     }
 
-    if (theChannel.recvMatrix(dataTag, commitTag, D) < 0)
+    if (theChannel.receiveMatrix(dataTag, commitTag, D) < 0)
     {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Elastic Constant Vector\n";
+        cerr << "ElasticIsotropicMaterial::receiveSelf -- could not recv Elastic Constant Vector\n";
         return -1;
     }
 
 
-    if (theChannel.recvVector(dataTag, commitTag, epsilon) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, epsilon) < 0)
     {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv strain Vector\n";
+        cerr << "ElasticIsotropicMaterial::receiveSelf -- could not recv strain Vector\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Stress) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Stress) < 0)
     {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Stress Tensor\n";
+        cerr << "ElasticIsotropicMaterial::receiveSelf -- could not recv Stress Tensor\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Dt) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Dt) < 0)
     {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Elastic Constant Tensor\n";
+        cerr << "ElasticIsotropicMaterial::receiveSelf -- could not recv Elastic Constant Tensor\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, Strain) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, Strain) < 0)
     {
-        cerr << "ElasticIsotropicMaterial::recvSelf -- could not recv Strain Tensor\n";
+        cerr << "ElasticIsotropicMaterial::receiveSelf -- could not recv Strain Tensor\n";
         return -1;
     }
 

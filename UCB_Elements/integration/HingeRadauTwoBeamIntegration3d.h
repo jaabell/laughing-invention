@@ -54,7 +54,7 @@ class HingeRadauTwoBeamIntegration3d : public BeamIntegration
         BeamIntegration* getCopy(void);
 
         int sendSelf(int cTag, Channel& theChannel);
-        int recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
         int setParameter(const char** argv, int argc, Information& info);
         int updateParameter(int parameterID, Information& info);

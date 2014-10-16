@@ -950,9 +950,9 @@ int Element::sendSelf(int commitTag, Channel &theChannel)
     cerr << "Element::sendSelf -> Subclass responsability" << endl;
     return -1;
 }
-int Element::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int Element::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
-    cerr << "Element::recvSelf -> Subclass responsability" << endl;
+    cerr << "Element::receiveSelf -> Subclass responsability" << endl;
     return -1;
 }
 

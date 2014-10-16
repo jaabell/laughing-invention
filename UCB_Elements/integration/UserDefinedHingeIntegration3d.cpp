@@ -233,7 +233,7 @@ UserDefinedHingeIntegration3d::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-UserDefinedHingeIntegration3d::recvSelf(int cTag, Channel& theChannel,
+UserDefinedHingeIntegration3d::receiveSelf(int cTag, Channel& theChannel,
                                         FEM_ObjectBroker& theBroker)
 {
     return -1;

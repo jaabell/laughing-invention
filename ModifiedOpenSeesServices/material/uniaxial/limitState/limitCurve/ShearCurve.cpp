@@ -305,7 +305,7 @@ ShearCurve::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ShearCurve::recvSelf(int commitTag, Channel& theChannel,
+ShearCurve::receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker)
 {
     return -1;

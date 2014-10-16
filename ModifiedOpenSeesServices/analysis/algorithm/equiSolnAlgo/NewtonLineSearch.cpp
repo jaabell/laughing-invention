@@ -200,7 +200,7 @@ NewtonLineSearch::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-NewtonLineSearch::recvSelf(int cTag,
+NewtonLineSearch::receiveSelf(int cTag,
                            Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {

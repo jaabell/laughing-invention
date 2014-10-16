@@ -45,7 +45,7 @@ class NullEvolution : public YS_Evolution
         {
             return -1;
         }
-        virtual int recvSelf(int commitTag, Channel& theChannel,
+        virtual int receiveSelf(int commitTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker)
         {
             return -1;

@@ -87,7 +87,7 @@ class NDMaterialLT : public Material
 
         virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         virtual int sendSelf(int commitTag, Channel &theChannel);
-        virtual int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        virtual int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
         // virtual Response *setResponse (const char **argv, int argc, Information &matInformation);
         // virtual int getResponse (int responseID, Information &matInformation);

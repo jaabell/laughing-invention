@@ -39,7 +39,7 @@ class DataOutputDatabaseHandler : public DataOutputHandler
 
         int setDatabase(FE_Datastore& theDatabase, const char* tableName);
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
     private:
         FE_Datastore* theDatabase;
         char* tableName;

@@ -247,16 +247,16 @@ MinMaxMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-MinMaxMaterial::recvSelf(int cTag, Channel& theChannel,
+MinMaxMaterial::receiveSelf(int cTag, Channel& theChannel,
                          FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
 
     static ID dataID(3);
 
-    if (theChannel.recvID(dbTag, cTag, dataID) < 0)
+    if (theChannel.receiveID(dbTag, cTag, dataID) < 0)
     {
-        cerr << "MinMaxMaterial::recvSelf() - failed to get the ID\n";
+        cerr << "MinMaxMaterial::receiveSelf() - failed to get the ID\n";
         return -1;
     }
 
@@ -270,7 +270,7 @@ MinMaxMaterial::recvSelf(int cTag, Channel& theChannel,
 
         if (theMaterial == 0)
         {
-            cerr << "MinMaxMaterial::recvSelf() - failed to create Material with classTag "
+            cerr << "MinMaxMaterial::receiveSelf() - failed to create Material with classTag "
                  << dataID(0) << endln;
             return -2;
         }
@@ -280,9 +280,9 @@ MinMaxMaterial::recvSelf(int cTag, Channel& theChannel,
 
     static Vector dataVec(3);
 
-    if (theChannel.recvVector(dbTag, cTag, dataVec) < 0)
+    if (theChannel.receiveVector(dbTag, cTag, dataVec) < 0)
     {
-        cerr << "MinMaxMaterial::recvSelf() - failed to get the Vector\n";
+        cerr << "MinMaxMaterial::receiveSelf() - failed to get the Vector\n";
         return -3;
     }
 
@@ -300,9 +300,9 @@ MinMaxMaterial::recvSelf(int cTag, Channel& theChannel,
 
     Tfailed = Cfailed;
 
-    if (theMaterial->recvSelf(cTag, theChannel, theBroker) < 0)
+    if (theMaterial->receiveSelf(cTag, theChannel, theBroker) < 0)
     {
-        cerr << "MinMaxMaterial::recvSelf() - failed to get the Material\n";
+        cerr << "MinMaxMaterial::receiveSelf() - failed to get the Material\n";
         return -4;
     }
 

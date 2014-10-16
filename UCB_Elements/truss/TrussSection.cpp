@@ -121,7 +121,7 @@ TrussSection::TrussSection(int tag,
 }
 
 // constructor:
-//   invoked by a FEM_ObjectBroker - blank object that recvSelf needs
+//   invoked by a FEM_ObjectBroker - blank object that receiveSelf needs
 //   to be invoked upon
 TrussSection::TrussSection()
     : Element(0, ELE_TAG_TrussSection),
@@ -755,7 +755,7 @@ TrussSection::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-TrussSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+TrussSection::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
 
     int res;
@@ -765,11 +765,11 @@ TrussSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
     // internal data with the data in the Vector
 
     static Vector data(6);
-    res = theChannel.recvVector(dataTag, commitTag, data);
+    res = theChannel.receiveVector(dataTag, commitTag, data);
 
     if (res < 0)
     {
-        std::cerr << "WARNING TrussSection::recvSelf() - failed to receive Vector\n";
+        std::cerr << "WARNING TrussSection::receiveSelf() - failed to receive Vector\n";
         return -1;
     }
 
@@ -779,11 +779,11 @@ TrussSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
     rho = data(3);
 
     // truss now receives the tags of it's two external nodes
-    res = theChannel.recvID(dataTag, commitTag, connectedExternalNodes);
+    res = theChannel.receiveID(dataTag, commitTag, connectedExternalNodes);
 
     if (res < 0)
     {
-        std::cerr << "WARNING TrussSection::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+        std::cerr << "WARNING TrussSection::receiveSelf() - " << this->getTag() << " failed to receive ID\n";
         return -2;
     }
 
@@ -808,17 +808,17 @@ TrussSection::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &the
     // Check if either allocation failed
     if (theSection == 0)
     {
-        std::cerr << "WARNING TrussSection::recvSelf() - " << this->getTag() <<
+        std::cerr << "WARNING TrussSection::receiveSelf() - " << this->getTag() <<
                   " failed to get a blank Section of type " << sectClass << endln;
         return -3;
     }
 
     theSection->setDbTag(sectDb); // note: we set the dbTag before we receive the Section
-    res = theSection->recvSelf(commitTag, theChannel, theBroker);
+    res = theSection->receiveSelf(commitTag, theChannel, theBroker);
 
     if (res < 0)
     {
-        std::cerr << "WARNING TrussSection::recvSelf() - " << this->getTag() << " failed to receive its Section\n";
+        std::cerr << "WARNING TrussSection::receiveSelf() - " << this->getTag() << " failed to receive its Section\n";
         return -3;
     }
 

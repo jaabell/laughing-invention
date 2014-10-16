@@ -296,7 +296,7 @@ CentralDifferenceNoDamping::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-CentralDifferenceNoDamping::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+CentralDifferenceNoDamping::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

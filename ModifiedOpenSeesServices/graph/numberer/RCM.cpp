@@ -321,7 +321,7 @@ RCM::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-RCM::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+RCM::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

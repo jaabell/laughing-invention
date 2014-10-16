@@ -265,16 +265,16 @@ BrickSurfaceLoad::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-BrickSurfaceLoad::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
+BrickSurfaceLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
 {
     // (Nima) SHOULD BE CHECKED IN PARALLEL VERSION
 
     //   int dbTag = this->getDbTag();
     //   static ID idData(10);
     //
-    //   int result = theChannel.recvID(dbTag, commitTag, idData);
+    //   int result = theChannel.receiveID(dbTag, commitTag, idData);
     //   if (result < 0) {
-    //     cerr << "BrickSurfaceLoad::recvSelf() - failed to recv data\n";
+    //     cerr << "BrickSurfaceLoad::receiveSelf() - failed to recv data\n";
     //     return result;
     //   }
     //
@@ -293,9 +293,9 @@ BrickSurfaceLoad::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker
     //
     //   ID *NewTags = new ID(numEle);
     //
-    //   result = theChannel.recvID(dbTag, commitTag, *NewTags);
+    //   result = theChannel.receiveID(dbTag, commitTag, *NewTags);
     //   if (result < 0) {
-    //     cerr << "BrickSurfaceLoad::recvSelf() - failed to recv element tags\n";
+    //     cerr << "BrickSurfaceLoad::receiveSelf() - failed to recv element tags\n";
     //     return result;
     //   }
     //

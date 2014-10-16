@@ -109,7 +109,7 @@ ActorSubdomain::run(void)
     while (exitYet == false)
     {
 
-        this->recvID(msgData);
+        this->receiveID(msgData);
         int action = msgData(0);
 
         //cerr << "ActorSubdomain running action: " << action << endln; //Guanzhou added more comments
@@ -149,7 +149,7 @@ ActorSubdomain::run(void)
                 break;
 
             case ShadowActorSubdomain_newStep:
-                this->recvVector(theVect);
+                this->receiveVector(theVect);
                 this->newStep(theVect(0));
 
                 break;
@@ -161,7 +161,7 @@ ActorSubdomain::run(void)
             //     tag = msgData(2); // numSubdomains
             //     // theBuilder = theBroker->getPtrNewPartitionedModelBuilder(*this,
             //     // theType);
-            //     this->recvObject(*theBuilder);
+            //     this->receiveObject(*theBuilder);
             //     this->buildSubdomain(tag, *theBuilder);
 
             //     break;
@@ -194,7 +194,7 @@ ActorSubdomain::run(void)
                 if (theEle != 0)
                 {
                     theEle->setDbTag(dbTag);
-                    this->recvObject(*theEle);
+                    this->receiveObject(*theEle);
                     bool result = this->addElement(theEle);
 
                     if (result == true)
@@ -212,7 +212,7 @@ ActorSubdomain::run(void)
                 }
 
                 /*
-                this->recvID(msgData);
+                this->receiveID(msgData);
                 cerr << "ActorSubdomain::addElement() : " << msgData;
 
                 msgData(0) = 1;
@@ -319,7 +319,7 @@ ActorSubdomain::run(void)
                 if (theNod != 0)
                 {
                     theNod->setDbTag(dbTag);
-                    this->recvObject(*theNod);
+                    this->receiveObject(*theNod);
                     bool result = this->addNode(theNod);
 
                     if (result == true)
@@ -351,7 +351,7 @@ ActorSubdomain::run(void)
                 if (theNod != 0)
                 {
                     theNod->setDbTag(dbTag);
-                    this->recvObject(*theNod);
+                    this->receiveObject(*theNod);
                     bool result = this->addExternalNode(theNod);
 
                     //delete theNod;
@@ -388,7 +388,7 @@ ActorSubdomain::run(void)
                 if (theSP != 0)
                 {
                     theSP->setDbTag(dbTag);
-                    this->recvObject(*theSP);
+                    this->receiveObject(*theSP);
                     bool result = this->addSP_Constraint(theSP);
 
                     if (result == true)
@@ -415,7 +415,7 @@ ActorSubdomain::run(void)
                 if (theMP != 0)
                 {
                     theMP->setDbTag(dbTag);
-                    this->recvObject(*theMP);
+                    this->receiveObject(*theMP);
                     bool result = this->addMP_Constraint(theMP);
 
                     if (result == true)
@@ -444,7 +444,7 @@ ActorSubdomain::run(void)
                 if (theLoadPattern != 0)
                 {
                     theLoadPattern->setDbTag(dbTag);
-                    this->recvObject(*theLoadPattern);
+                    this->receiveObject(*theLoadPattern);
                     bool result = this->addLoadPattern(theLoadPattern);
 
                     if (result == true)
@@ -473,7 +473,7 @@ ActorSubdomain::run(void)
                 if (theNodalLoad != 0)
                 {
                     theNodalLoad->setDbTag(dbTag);
-                    this->recvObject(*theNodalLoad);
+                    this->receiveObject(*theNodalLoad);
                     bool result = this->addNodalLoad(theNodalLoad, loadPatternTag);
 
                     if (result == true)
@@ -503,7 +503,7 @@ ActorSubdomain::run(void)
                 if (theElementalLoad != 0)
                 {
                     theElementalLoad->setDbTag(dbTag);
-                    this->recvObject(*theElementalLoad);
+                    this->receiveObject(*theElementalLoad);
                     bool result = this->addElementalLoad(theElementalLoad,
                                                          loadPatternTag);
 
@@ -533,7 +533,7 @@ ActorSubdomain::run(void)
                 if (theSP != 0)
                 {
                     theSP->setDbTag(dbTag);
-                    this->recvObject(*theSP);
+                    this->receiveObject(*theSP);
                     bool result = this->addSP_Constraint(theSP, loadPatternTag);
 
                     if (result == true)
@@ -732,12 +732,12 @@ ActorSubdomain::run(void)
                 break;
 
             case ShadowActorSubdomain_applyLoad:
-                this->recvVector(theVect);
+                this->receiveVector(theVect);
                 this->applyLoad(theVect(0));
                 break;
 
             case ShadowActorSubdomain_setCommittedTime:
-                this->recvVector(theVect);
+                this->receiveVector(theVect);
                 this->setCommittedTime(theVect(0));
                 this->setCurrentTime(theVect(0));
                 break;
@@ -767,7 +767,7 @@ ActorSubdomain::run(void)
                     lastResponse = new Vector(tag);
                 }
 
-                this->recvVector(*lastResponse);
+                this->receiveVector(*lastResponse);
                 this->computeNodalResponse();
 
 
@@ -790,7 +790,7 @@ ActorSubdomain::run(void)
 
                 // if (theRecorder != 0)
                 // {
-                //     this->recvObject(*theRecorder);
+                //     this->receiveObject(*theRecorder);
                 //     this->addRecorder(*theRecorder);
                 // }
 
@@ -808,7 +808,7 @@ ActorSubdomain::run(void)
 
                 if (theDDAnalysis != 0)
                 {
-                    this->recvObject(*theDDAnalysis);
+                    this->receiveObject(*theDDAnalysis);
                     this->setDomainDecompAnalysis(*theDDAnalysis);
                     msgData(0) = 0;
                 }
@@ -825,7 +825,7 @@ ActorSubdomain::run(void)
 
                 if (theAlgorithm != 0)
                 {
-                    this->recvObject(*theAlgorithm);
+                    this->receiveObject(*theAlgorithm);
                     this->setAnalysisAlgorithm(*theAlgorithm);
                     msgData(0) = 0;
                 }
@@ -842,7 +842,7 @@ ActorSubdomain::run(void)
 
                 if (theIntegrator != 0)
                 {
-                    this->recvObject(*theIntegrator);
+                    this->receiveObject(*theIntegrator);
                     this->setAnalysisIntegrator(*theIntegrator);
                     msgData(0) = 0;
                 }
@@ -860,9 +860,9 @@ ActorSubdomain::run(void)
 
                 if (theSOE != 0)
                 {
-                    this->recvObject(*theSOE);
+                    this->receiveObject(*theSOE);
                     theSolver = theSOE->getSolver();
-                    this->recvObject(*theSolver);
+                    this->receiveObject(*theSolver);
                     this->setAnalysisLinearSOE(*theSOE);
                     msgData(0) = 0;
                 }
@@ -879,7 +879,7 @@ ActorSubdomain::run(void)
 
                 if (theTest != 0)
                 {
-                    this->recvObject(*theTest);
+                    this->receiveObject(*theTest);
                     this->setAnalysisConvergenceTest(*theTest);
                     msgData(0) = 0;
                 }
@@ -1026,7 +1026,7 @@ ActorSubdomain::run(void)
                 }
 
                 ChangedNodes = new ID(msgData(1));
-                this->recvID(*ChangedNodes);
+                this->receiveID(*ChangedNodes);
                 break;
 
             case ShadowActorSubdomain_ChangeMPIChannel:
@@ -1173,7 +1173,7 @@ ActorSubdomain::updateTimeDt(void)
 {
     static Vector data(2);
 
-    this->recvVector(data);
+    this->receiveVector(data);
 
     double newTime = data(0);
     double dT = data(1);
@@ -1187,7 +1187,7 @@ ActorSubdomain::barrierCheck(int myResult)
     static ID data(1);
     data(0) = myResult;
     this->sendID(data);
-    this->recvID(data);
+    this->receiveID(data);
 
     return data(0);
 }
@@ -1292,7 +1292,7 @@ ActorSubdomain::reDistributeData(int numParts)
                     msgData(3) = loadPatternTag;
                     this->sendID(msgData);
                     this->sendObject(*theNodalLoad);
-                    //this->recvID(msgData);
+                    //this->receiveID(msgData);
                     //if ( msgData(0) != 0) {
                     //  cerr << "ActorSubdomain::reDistributeData(), master failed to add nodal load into load pattern!\n";
                     //  return -1;
@@ -1316,7 +1316,7 @@ ActorSubdomain::reDistributeData(int numParts)
                         msgData(0) = ShadowActorSubdomain_hasInternalNode;
                         msgData(1) = loadedNodeTag;
                         this->sendID(msgData, &other);
-                        this->recvID(msgData, &other);
+                        this->receiveID(msgData, &other);
                         setNextChannelAddress(0);//backup master channel
 
                         if (msgData(0) == 0)  //internal!
@@ -1335,7 +1335,7 @@ ActorSubdomain::reDistributeData(int numParts)
                             msgData(0) = ShadowActorSubdomain_hasExternalNode;
                             msgData(1) = loadedNodeTag;
                             this->sendID(msgData, &other);
-                            this->recvID(msgData, &other);
+                            this->receiveID(msgData, &other);
                             setNextChannelAddress(0);//backup master channel
 
                             if (msgData(0) == 0)  //external!
@@ -1347,7 +1347,7 @@ ActorSubdomain::reDistributeData(int numParts)
                                 //setNextChannelAddress(0);//backup master channel
                                 this->sendID(msgData);
                                 this->sendObject(*theNodalLoad);
-                                //this->recvID(msgData);
+                                //this->receiveID(msgData);
                                 //if ( msgData(0) != 0) {
                                 //  cerr << "ActorSubdomain::reDistributeData(), master failed to add nodal load into load pattern!\n";
                                 //  return -1;
@@ -1384,7 +1384,7 @@ ActorSubdomain::reDistributeData(int numParts)
                     msgData(3) = loadPatternTag;
                     this->sendID(msgData);
                     this->sendObject(*spPtr);
-                    //this->recvID(msgData);
+                    //this->receiveID(msgData);
                     //if ( msgData(0) != 0) {
                     //  cerr << "ActorSubdomain::reDistributeData(), master failed to add SP into load pattern!\n";
                     //  return -1;
@@ -1408,7 +1408,7 @@ ActorSubdomain::reDistributeData(int numParts)
                         msgData(0) = ShadowActorSubdomain_hasInternalNode;
                         msgData(1) = constrainedNodeTag;
                         this->sendID(msgData, &other);
-                        this->recvID(msgData, &other);
+                        this->receiveID(msgData, &other);
                         setNextChannelAddress(0);//backup master channel
 
                         if (msgData(0) == 0)  //internal!
@@ -1427,7 +1427,7 @@ ActorSubdomain::reDistributeData(int numParts)
                             msgData(0) = ShadowActorSubdomain_hasExternalNode;
                             msgData(1) = constrainedNodeTag;
                             this->sendID(msgData, &other);
-                            this->recvID(msgData, &other);
+                            this->receiveID(msgData, &other);
                             setNextChannelAddress(0);//backup master channel
 
                             if (msgData(0) == 0)  //external!
@@ -1438,7 +1438,7 @@ ActorSubdomain::reDistributeData(int numParts)
                                 msgData(3) = loadPatternTag;
                                 this->sendID(msgData);
                                 this->sendObject(*spPtr);
-                                //this->recvID(msgData);
+                                //this->receiveID(msgData);
                                 //if ( msgData(0) != 0) {
                                 //  cerr << "ActorSubdomain::reDistributeData(), master failed to add nodal load into load pattern!\n";
                                 //  return -1;
@@ -1489,7 +1489,7 @@ ActorSubdomain::reDistributeData(int numParts)
         msgData(2) = elePtr->getDbTag();
         this->sendID(msgData, &other);
         this->sendObject(*elePtr, &other);
-        //this->recvID(msgData, &other);
+        //this->receiveID(msgData, &other);
         setNextChannelAddress(0);//backup master channel
         //if ( msgData(0) != 0) {
         //  cerr << "Actorsubdomain::reDistributeData, failed to add element to subdomain!\n";
@@ -1552,7 +1552,7 @@ ActorSubdomain::reDistributeData(int numParts)
                 msgData(0) = ShadowActorSubdomain_hasNode;
                 msgData(1) = constrainedNodeTag;
                 this->sendID(msgData, &other);
-                this->recvID(msgData, &other);
+                this->receiveID(msgData, &other);
 
                 if (msgData(0) == 0)  //has node!
                 {
@@ -1569,7 +1569,7 @@ ActorSubdomain::reDistributeData(int numParts)
         msgData(0) = Master_hasNode;
         msgData(1) = constrainedNodeTag;
         this->sendID(msgData);
-        this->recvID(msgData);
+        this->receiveID(msgData);
 
         if (msgData(0) == 0)  //has node!
         {

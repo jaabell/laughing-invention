@@ -152,7 +152,7 @@ class ThreeNodeAndesMembrane: public Element
         const Vector& getResistingForceIncInertia ();
 
         int sendSelf (int commitTag, Channel& theChannel);
-        int recvSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf (int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
         void Print(ostream& s, int flag);
         Response* setResponse (const char** argv, int argc, Information& eleInformation);

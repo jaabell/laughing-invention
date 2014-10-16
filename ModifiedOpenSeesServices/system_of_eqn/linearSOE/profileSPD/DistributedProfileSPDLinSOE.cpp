@@ -104,7 +104,7 @@ DistributedProfileSPDLinSOE::setSize(Graph& theGraph)
         theGraph.sendSelf(0, *theChannel);
 
         static ID data(1);
-        theChannel->recvID(0, 0, data);
+        theChannel->receiveID(0, 0, data);
         size = data(0);
 
         if (size > Bsize)
@@ -119,7 +119,7 @@ DistributedProfileSPDLinSOE::setSize(Graph& theGraph)
 
         // receive my iDiagLoad
         ID iLoc(size);
-        theChannel->recvID(0, 0, iLoc);
+        theChannel->receiveID(0, 0, iLoc);
 
         // determine iDiagLoc, profileSize & local mapping
         ID* subMap = new ID(theGraph.getNumVertex());
@@ -172,7 +172,7 @@ DistributedProfileSPDLinSOE::setSize(Graph& theGraph)
         {
             Channel* theChannel = theChannels[j];
             Graph theSubGraph;
-            theSubGraph.recvSelf(0, *theChannel, theBroker);
+            theSubGraph.receiveSelf(0, *theChannel, theBroker);
             theGraph.merge(theSubGraph);
 
             int numSubVertex = theSubGraph.getNumVertex();
@@ -273,8 +273,8 @@ DistributedProfileSPDLinSOE::setSize(Graph& theGraph)
 
             static ID remoteLocalSize(1);
             ID* subMap = localCol[j];
-            theChannel->recvID(0, 0, *subMap);
-            theChannel->recvID(0, 0, remoteLocalSize);
+            theChannel->receiveID(0, 0, *subMap);
+            theChannel->receiveID(0, 0, remoteLocalSize);
             (*sizeLocal)(j) = remoteLocalSize(0);
         }
 
@@ -570,9 +570,9 @@ DistributedProfileSPDLinSOE::solve(void)
         }
 
         // receive X,B and result
-        theChannel->recvVector(0, 0, *vectX);
-        theChannel->recvVector(0, 0, *vectB);
-        theChannel->recvID(0, 0, result);
+        theChannel->receiveVector(0, 0, *vectX);
+        theChannel->receiveVector(0, 0, *vectB);
+        theChannel->receiveID(0, 0, result);
         isAfactored = true;
     }
 
@@ -592,7 +592,7 @@ DistributedProfileSPDLinSOE::solve(void)
 
             // get X & add
             Channel* theChannel = theChannels[j];
-            theChannel->recvVector(0, 0, *vectX);
+            theChannel->receiveVector(0, 0, *vectX);
             *vectB += *vectX;
 
             // get A & add using local map
@@ -601,7 +601,7 @@ DistributedProfileSPDLinSOE::solve(void)
                 const ID& localMap = *(localCol[j]);
                 int localSize = (*sizeLocal)(j);
                 Vector vectA(workArea, localSize);
-                theChannel->recvVector(0, 0, vectA);
+                theChannel->receiveVector(0, 0, vectA);
 
                 int loc = 0;
 
@@ -774,7 +774,7 @@ DistributedProfileSPDLinSOE::getB(void)
 
         // send B & recv merged B
         theChannel->sendVector(0, 0, *myVectB);
-        theChannel->recvVector(0, 0, *vectB);
+        theChannel->receiveVector(0, 0, *vectB);
     }
 
     //
@@ -793,7 +793,7 @@ DistributedProfileSPDLinSOE::getB(void)
         {
 
             Channel* theChannel = theChannels[j];
-            theChannel->recvVector(0, 0, remoteB);
+            theChannel->receiveVector(0, 0, remoteB);
             *vectB += remoteB;
         }
 
@@ -915,15 +915,15 @@ DistributedProfileSPDLinSOE::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-DistributedProfileSPDLinSOE::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+DistributedProfileSPDLinSOE::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
 
     ID idData(1);
-    int res = theChannel.recvID(0, commitTag, idData);
+    int res = theChannel.receiveID(0, commitTag, idData);
 
     if (res < 0)
     {
-        cerr << "WARNING DistributedProfileSPDLinSOE::recvSelf() - failed to send data\n";
+        cerr << "WARNING DistributedProfileSPDLinSOE::receiveSelf() - failed to send data\n";
         return -1;
     }
 

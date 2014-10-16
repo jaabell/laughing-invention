@@ -123,7 +123,7 @@ class AnalysisModel: public MovableObject
 
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int recvSelf(int commitTag, Channel& theChannel,
+        virtual int receiveSelf(int commitTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker);
         virtual int getMaxDOFtag(); // Added by Babak to get the maximum tag of DOFs in the AnalysisModel
 

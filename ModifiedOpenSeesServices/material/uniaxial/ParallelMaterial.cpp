@@ -74,7 +74,7 @@ ParallelMaterial::ParallelMaterial(
 
 
 // this constructor is used for a ParallelMaterailModel object that
-// needs to be constructed in a remote actor process. recvSelf() needs
+// needs to be constructed in a remote actor process. receiveSelf() needs
 // to be called on this object
 ParallelMaterial::ParallelMaterial()
     : UniaxialMaterial(0, MAT_TAG_ParallelMaterial),
@@ -93,7 +93,7 @@ ParallelMaterial::~ParallelMaterial()
     }
 
     // now we can delete the array
-    if (theModels != 0) // just in case blank constructor called and no recvSelf()
+    if (theModels != 0) // just in case blank constructor called and no receiveSelf()
     {
         delete [] theModels;
     }
@@ -315,18 +315,18 @@ ParallelMaterial::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-ParallelMaterial::recvSelf(int cTag, Channel &theChannel,
+ParallelMaterial::receiveSelf(int cTag, Channel &theChannel,
                            FEM_ObjectBroker &theBroker)
 {
     int res = 0;
     static ID data(3);
     int dbTag = this->getDbTag();
 
-    res = theChannel.recvID(dbTag, cTag, data);
+    res = theChannel.receiveID(dbTag, cTag, data);
 
     if (res < 0)
     {
-        cerr << "ParallelMaterial::recvSelf() - failed to send data\n";
+        cerr << "ParallelMaterial::receiveSelf() - failed to send data\n";
         return res;
     }
 
@@ -351,7 +351,7 @@ ParallelMaterial::recvSelf(int cTag, Channel &theChannel,
 
         if (theModels == 0)
         {
-            cerr << "FATAL ParallelMaterial::recvSelf() - ran out of memory";
+            cerr << "FATAL ParallelMaterial::receiveSelf() - ran out of memory";
             cerr << " for array of size: " << numMaterials << "\n";
             return -2;
         }
@@ -365,16 +365,16 @@ ParallelMaterial::recvSelf(int cTag, Channel &theChannel,
     // create and receive an ID for the classTags and dbTags of the local
     // MaterialModel objects
     ID classTags(numMaterials * 2);
-    res = theChannel.recvID(dbTag, cTag, classTags);
+    res = theChannel.receiveID(dbTag, cTag, classTags);
 
     if (res < 0)
     {
-        cerr << "ParallelMaterial::recvSelf() - failed to send data\n";
+        cerr << "ParallelMaterial::receiveSelf() - failed to send data\n";
         return res;
     }
 
     // now for each of the MaterialModel objects, create a new object
-    // and invoke recvSelf() on it
+    // and invoke receiveSelf() on it
     for (int i = 0; i < numMaterials; i++)
     {
         int matClassTag = classTags(i);
@@ -396,13 +396,13 @@ ParallelMaterial::recvSelf(int cTag, Channel &theChannel,
             }
             else
             {
-                cerr << "FATAL ParallelMaterial::recvSelf() ";
+                cerr << "FATAL ParallelMaterial::receiveSelf() ";
                 cerr << " could not get a UniaxialMaterial \n";
                 exit(-1);
             }
         }
 
-        theModels[i]->recvSelf(cTag, theChannel, theBroker);
+        theModels[i]->receiveSelf(cTag, theChannel, theBroker);
     }
 
     return 0;

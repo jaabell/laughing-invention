@@ -97,7 +97,7 @@ DataOutputStreamHandler::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-DataOutputStreamHandler::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+DataOutputStreamHandler::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

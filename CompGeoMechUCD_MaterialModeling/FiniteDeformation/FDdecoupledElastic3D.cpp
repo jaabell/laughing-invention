@@ -628,7 +628,7 @@ std:
 }
 
 //-----------------------------------------------------------------------------------------
-int FDdecoupledElastic3D::recvSelf (int commitTag,
+int FDdecoupledElastic3D::receiveSelf (int commitTag,
                                     Channel& theChannel,
                                     FEM_ObjectBroker& theBroker)
 {
@@ -636,12 +636,12 @@ int FDdecoupledElastic3D::recvSelf (int commitTag,
 
     static Vector data(2);
 
-    res += theChannel.recvVector(this->getDbTag(), commitTag, data);
+    res += theChannel.receiveVector(this->getDbTag(), commitTag, data);
 
     if (res < 0)
     {
 std:
-        cerr << "FDdecoupledElastic3D::recvSelf -- could not recv Vector\n";
+        cerr << "FDdecoupledElastic3D::receiveSelf -- could not recv Vector\n";
         return res;
     }
 

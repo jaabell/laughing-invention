@@ -289,7 +289,7 @@ int Pisano_model::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //================================================================================
-int Pisano_model::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int Pisano_model::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

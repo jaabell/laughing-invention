@@ -288,7 +288,7 @@ BandArpackSOE::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-BandArpackSOE::recvSelf(int commitTag, Channel& theChannel,
+BandArpackSOE::receiveSelf(int commitTag, Channel& theChannel,
                         FEM_ObjectBroker& theBroker)
 {
     return 0;

@@ -71,7 +71,7 @@ class SparseGenColLinSOE : public LinearSOE
         virtual int setSparseGenColSolver(SparseGenColLinSolver& newSolver);
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        virtual int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
         #ifdef _PARALLEL_PROCESSING
         friend class SuperLU;
         friend class ThreadedSuperLU;

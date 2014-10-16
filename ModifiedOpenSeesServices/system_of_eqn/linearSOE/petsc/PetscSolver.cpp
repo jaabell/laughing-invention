@@ -203,7 +203,7 @@ PetscSolver::solve(void)
 
 
 
-    static Vector recvVector(1);
+    static Vector receiveVector(1);
 
     if (numProcesses > 1)
     {
@@ -225,22 +225,22 @@ PetscSolver::solve(void)
             Channel *theChannel = theChannels[0];
 
             theChannel->sendVector(0, 0, *vectB);
-            theChannel->recvVector(0, 0, *vectB);
+            theChannel->receiveVector(0, 0, *vectB);
 
         }
         else
         {
 
-            if (recvVector.Size() != size)
+            if (receiveVector.Size() != size)
             {
-                recvVector.resize(size);
+                receiveVector.resize(size);
             }
 
             for (int j = 0; j < numChannels; j++)
             {
                 Channel *theChannel = theChannels[j];
-                theChannel->recvVector(0, 0, recvVector);
-                *vectB += recvVector;
+                theChannel->receiveVector(0, 0, receiveVector);
+                *vectB += receiveVector;
             }
 
             for (int j = 0; j < numChannels; j++)
@@ -303,22 +303,22 @@ PetscSolver::solve(void)
             Channel *theChannel = theChannels[0];
 
             theChannel->sendVector(0, 0, *vectX);
-            theChannel->recvVector(0, 0, *vectX);
+            theChannel->receiveVector(0, 0, *vectX);
 
         }
         else
         {
 
-            if (recvVector.Size() != size)
+            if (receiveVector.Size() != size)
             {
-                recvVector.resize(size);
+                receiveVector.resize(size);
             }
 
             for (int j = 0; j < numChannels; j++)
             {
                 Channel *theChannel = theChannels[j];
-                theChannel->recvVector(0, 0, recvVector);
-                *vectX += recvVector;
+                theChannel->receiveVector(0, 0, receiveVector);
+                *vectX += receiveVector;
             }
 
             for (int j = 0; j < numChannels; j++)
@@ -403,7 +403,7 @@ PetscSolver::solve(void)
 //
 //
 //
-//   static Vector recvVector(1);
+//   static Vector receiveVector(1);
 //
 //   if (numProcesses > 1)
 //   {
@@ -425,18 +425,18 @@ PetscSolver::solve(void)
 //       Channel *theChannel = theChannels[0];
 //
 //       theChannel->sendVector(0, 0, *vectB);
-//       theChannel->recvVector(0, 0, *vectB);
+//       theChannel->receiveVector(0, 0, *vectB);
 //
 //     } else
 //     {
 //
-//       if (recvVector.Size() != size)
-//  recvVector.resize(size);
+//       if (receiveVector.Size() != size)
+//  receiveVector.resize(size);
 //       for (int j=0; j<numChannels; j++)
 //       {
 //  Channel *theChannel = theChannels[j];
-//  theChannel->recvVector(0, 0, recvVector);
-//  *vectB += recvVector;
+//  theChannel->receiveVector(0, 0, receiveVector);
+//  *vectB += receiveVector;
 //       }
 //       for (int j=0; j<numChannels; j++)
 //       {
@@ -489,17 +489,17 @@ PetscSolver::solve(void)
 //       Channel *theChannel = theChannels[0];
 //
 //       theChannel->sendVector(0, 0, *vectX);
-//       theChannel->recvVector(0, 0, *vectX);
+//       theChannel->receiveVector(0, 0, *vectX);
 //
 //     } else {
 //
-//       if (recvVector.Size() != size)
-//  recvVector.resize(size);
+//       if (receiveVector.Size() != size)
+//  receiveVector.resize(size);
 //
 //       for (int j=0; j<numChannels; j++) {
 //  Channel *theChannel = theChannels[j];
-//  theChannel->recvVector(0, 0, recvVector);
-//  *vectX += recvVector;
+//  theChannel->receiveVector(0, 0, receiveVector);
+//  *vectX += receiveVector;
 //       }
 //       for (int j=0; j<numChannels; j++) {
 //  Channel *theChannel = theChannels[j];
@@ -690,11 +690,11 @@ PetscSolver::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-PetscSolver::recvSelf(int cTag, Channel &theChannel,
+PetscSolver::receiveSelf(int cTag, Channel &theChannel,
                       FEM_ObjectBroker &theBroker)
 {
     static ID idData(4);
-    theChannel.recvID(0, cTag, idData);
+    theChannel.receiveID(0, cTag, idData);
     maxIts = idData(0);
 
     if (idData(1) == 0)
@@ -723,7 +723,7 @@ PetscSolver::recvSelf(int cTag, Channel &theChannel,
     }
     else
     {
-        cerr << "PetscSolver::recvSelf() - unknown method recvd\n";
+        cerr << "PetscSolver::receiveSelf() - unknown method recvd\n";
         return -1;
     }
 
@@ -757,7 +757,7 @@ PetscSolver::recvSelf(int cTag, Channel &theChannel,
     }
     else
     {
-        cerr << "PetscSolver::recvSelf() - unknown preconditioner set\n";
+        cerr << "PetscSolver::receiveSelf() - unknown preconditioner set\n";
         return -1;
     }
 
@@ -786,12 +786,12 @@ PetscSolver::recvSelf(int cTag, Channel &theChannel,
     else
     {
         matType = MATMPIAIJ;
-        //  cerr << "PetscSolver::recvSelf() - unknown matType set\n";
+        //  cerr << "PetscSolver::receiveSelf() - unknown matType set\n";
         //  return -1;
     }
 
     static Vector data(3);
-    theChannel.recvVector(0, cTag, data);
+    theChannel.receiveVector(0, cTag, data);
     rTol = data(0);
     aTol = data(1);
     dTol = data(2);

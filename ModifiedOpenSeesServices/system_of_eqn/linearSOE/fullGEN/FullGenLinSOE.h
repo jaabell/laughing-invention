@@ -72,7 +72,7 @@ class FullGenLinSOE : public LinearSOE
         friend class FullGenLinLapackSolver;
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     protected:
 

@@ -268,9 +268,9 @@ DummyNode::sendSelf(Channel& theChannel, FEM_ObjectBroker& theBroker)
 }
 
 int
-DummyNode::recvSelf(Channel& theChannel, FEM_ObjectBroker& theBroker)
+DummyNode::receiveSelf(Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
-    cerr << "DummyNode::recvSelf - should never be called\n";
+    cerr << "DummyNode::receiveSelf - should never be called\n";
     return 0;
 }
 

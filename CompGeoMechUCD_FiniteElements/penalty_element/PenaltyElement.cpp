@@ -336,14 +336,14 @@ PenaltyElement::sendSelf(int commitTag, Channel &theChannel)
 
 
 int
-PenaltyElement::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+PenaltyElement::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     ID intData(5);
     Vector doubleData(1);
 
-    if (theChannel.recvID(this->getDbTag(), commitTag, intData) < 0)
+    if (theChannel.receiveID(this->getDbTag(), commitTag, intData) < 0)
     {
-        cerr << "PenaltyElement::recvSelf -- could not receive doubleData Vector\n";
+        cerr << "PenaltyElement::receiveSelf -- could not receive doubleData Vector\n";
         return -1;
     }
 
@@ -353,9 +353,9 @@ PenaltyElement::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &t
     connectedExternalNodes(0) = intData(3);
     connectedExternalNodes(1) = intData(4);
 
-    if (theChannel.recvVector(this->getDbTag(), commitTag, doubleData) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), commitTag, doubleData) < 0)
     {
-        cerr << "PenaltyElement::recvSelf -- could not receive doubleData Vector\n";
+        cerr << "PenaltyElement::receiveSelf -- could not receive doubleData Vector\n";
         return -1;
     }
     penaltystiffness = doubleData(0);

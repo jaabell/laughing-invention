@@ -608,14 +608,14 @@ Newmark::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-Newmark::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+Newmark::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     //    Vector data(8);
     Vector data(3);
 
-    if (theChannel.recvVector(this->getDbTag(), cTag, data) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), cTag, data) < 0)
     {
-        cerr << "WARNING Newmark::recvSelf() - could not receive data\n";
+        cerr << "WARNING Newmark::receiveSelf() - could not receive data\n";
         gamma = 0.5;
         beta = 0.25;
         return -1;

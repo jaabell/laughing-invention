@@ -333,7 +333,7 @@ SymBandEigenSOE::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-SymBandEigenSOE::recvSelf(int commitTag, Channel& theChannel,
+SymBandEigenSOE::receiveSelf(int commitTag, Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {
     return 0;

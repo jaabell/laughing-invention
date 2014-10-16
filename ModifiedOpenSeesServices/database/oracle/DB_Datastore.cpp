@@ -181,12 +181,12 @@ DB_Datastore::sendObj(int commitTag,
 }
 
 int
-DB_Datastore::recvObj(int commitTag,
+DB_Datastore::receiveObj(int commitTag,
                       MovableObject& theObject,
                       FEM_ObjectBroker& theNewBroker,
                       ChannelAddress* theAddress)
 {
-    return theObject.recvSelf(commitTag, *this, theNewBroker);
+    return theObject.receiveSelf(commitTag, *this, theNewBroker);
 }
 
 
@@ -200,11 +200,11 @@ DB_Datastore::sendMsg(int dataTag, int commitTag,
 }
 
 int
-DB_Datastore::recvMsg(int dataTag, int commitTag,
+DB_Datastore::receiveMsg(int dataTag, int commitTag,
                       Message&,
                       ChannelAddress* theAddress)
 {
-    cerr << "DB_Datastore::recvMsg() - not yet implemented\n";
+    cerr << "DB_Datastore::receiveMsg() - not yet implemented\n";
     return -1;
 }
 
@@ -253,7 +253,7 @@ DB_Datastore::sendMatrix(int dataTag, int commitTag,
 
 
 int
-DB_Datastore::recvMatrix(int dataTag, int commitTag,
+DB_Datastore::receiveMatrix(int dataTag, int commitTag,
                          Matrix& theMatrix,
                          ChannelAddress* theAddress)
 {
@@ -312,7 +312,7 @@ DB_Datastore::sendVector(int dataTag, int commitTag,
 }
 
 int
-DB_Datastore::recvVector(int dataTag, int commitTag,
+DB_Datastore::receiveVector(int dataTag, int commitTag,
                          Vector& theVector,
                          ChannelAddress* theAddress)
 {
@@ -366,7 +366,7 @@ DB_Datastore::sendID(int dataTag, int commitTag,
 
 
 int
-DB_Datastore::recvID(int dataTag, int commitTag,
+DB_Datastore::receiveID(int dataTag, int commitTag,
                      ID& theID,
                      ChannelAddress* theAddress)
 {

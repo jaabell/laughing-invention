@@ -167,7 +167,7 @@ Linear_Disp_TimeHistory_Penalty::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Linear_Disp_TimeHistory_Penalty::recvSelf(int commitTag, Channel& theChannel,
+Linear_Disp_TimeHistory_Penalty::receiveSelf(int commitTag, Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {
     // to be completed later

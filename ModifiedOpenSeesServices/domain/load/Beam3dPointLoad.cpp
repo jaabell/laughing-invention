@@ -100,13 +100,13 @@ Beam3dPointLoad::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-Beam3dPointLoad::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
+Beam3dPointLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
 
     static Vector vectData(5);
 
-    int result = theChannel.recvVector(dbTag, commitTag, vectData);
+    int result = theChannel.receiveVector(dbTag, commitTag, vectData);
 
     if (result < 0)
     {
@@ -137,7 +137,7 @@ Beam3dPointLoad::recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker&
         }
     }
 
-    result = theChannel.recvID(dbTag, commitTag, *theElementTags);
+    result = theChannel.receiveID(dbTag, commitTag, *theElementTags);
 
     if (result < 0)
     {

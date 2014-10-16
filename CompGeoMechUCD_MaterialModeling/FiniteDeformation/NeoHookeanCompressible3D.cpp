@@ -246,7 +246,7 @@ int NeoHookeanCompressible3D::sendSelf (int commitTag, Channel& theChannel)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-int NeoHookeanCompressible3D::recvSelf (int commitTag,
+int NeoHookeanCompressible3D::receiveSelf (int commitTag,
                                         Channel& theChannel,
                                         FEM_ObjectBroker& theBroker)
 {

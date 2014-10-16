@@ -174,12 +174,12 @@ LoadPath::sendSelf(int cTag,
 
 
 int
-LoadPath::recvSelf(int cTag,
+LoadPath::receiveSelf(int cTag,
                    Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     ID data(2);
 
-    if (theChannel.recvID(this->getDbTag(), cTag, data) < 0)
+    if (theChannel.receiveID(this->getDbTag(), cTag, data) < 0)
     {
         cerr << "LoadPath::sendSelf() - failed to send the ID\n";
         return -1;
@@ -192,11 +192,11 @@ LoadPath::recvSelf(int cTag,
 
     if (loadPath == 0 || loadPath->Size() == 0)
     {
-        cerr << "FATAL - LoadPath::recvSelf() - ran out of memory\n";
+        cerr << "FATAL - LoadPath::receiveSelf() - ran out of memory\n";
         exit(-1);
     }
 
-    if (theChannel.recvVector(this->getDbTag(), cTag, *loadPath) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), cTag, *loadPath) < 0)
     {
         cerr << "LoadPath::sendSelf() - failed to send the Vector\n";
         return -1;

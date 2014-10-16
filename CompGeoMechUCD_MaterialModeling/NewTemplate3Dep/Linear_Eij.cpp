@@ -161,16 +161,16 @@ int Linear_Eij::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int Linear_Eij::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int Linear_Eij::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(1);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "Linear_Eij::recvSelf -- failed to recv ID\n";
+        cerr << "Linear_Eij::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 

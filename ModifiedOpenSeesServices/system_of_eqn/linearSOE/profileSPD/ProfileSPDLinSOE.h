@@ -67,7 +67,7 @@ class ProfileSPDLinSOE : public LinearSOE
 
         virtual int setProfileSPDSolver(ProfileSPDLinSolver& newSolver);
         virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        virtual int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
         friend class ProfileSPDLinSolver;
         friend class ProfileSPDLinDirectSolver;

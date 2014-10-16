@@ -244,7 +244,7 @@ MyRCM::sendSelf(int tag, Channel& theChannel)
 }
 
 int
-MyRCM::recvSelf(int tag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+MyRCM::receiveSelf(int tag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

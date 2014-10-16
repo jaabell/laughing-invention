@@ -184,16 +184,16 @@ int Linear_Eeq::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int Linear_Eeq::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int Linear_Eeq::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(1);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "Linear_Eeq::recvSelf -- failed to recv ID\n";
+        cerr << "Linear_Eeq::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 

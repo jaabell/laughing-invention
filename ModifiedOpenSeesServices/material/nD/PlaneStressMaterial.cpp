@@ -467,7 +467,7 @@ PlaneStressMaterial::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-PlaneStressMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+PlaneStressMaterial::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
@@ -485,7 +485,7 @@ PlaneStressMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
     int matClassTag = idData(1);
 
     // if the associated material has not yet been created or is of the wrong type
-    // create a new material for recvSelf later
+    // create a new material for receiveSelf later
     if (theMaterial == 0 || theMaterial->getClassTag() != matClassTag)
     {
         if (theMaterial != 0)
@@ -497,7 +497,7 @@ PlaneStressMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
 
         if (theMaterial == 0)
         {
-            cerr << "PlaneStressMaterial::recvSelf() - failed to get a material of type: " << matClassTag << endln;
+            cerr << "PlaneStressMaterial::receiveSelf() - failed to get a material of type: " << matClassTag << endln;
             return -1;
         }
     }
@@ -506,7 +506,7 @@ PlaneStressMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
 
     // recv a vector containing strains and set the strains
     static Vector vecData(3);
-    res = theChannel.recvVector(this->getDbTag(), commitTag, vecData);
+    res = theChannel.receiveVector(this->getDbTag(), commitTag, vecData);
 
     if (res < 0)
     {
@@ -523,7 +523,7 @@ PlaneStressMaterial::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBrok
     Tgamma12  = Cgamma12;
 
     // now receive the materials data
-    res = theMaterial->recvSelf(commitTag, theChannel, theBroker);
+    res = theMaterial->receiveSelf(commitTag, theChannel, theBroker);
 
     if (res < 0)
     {

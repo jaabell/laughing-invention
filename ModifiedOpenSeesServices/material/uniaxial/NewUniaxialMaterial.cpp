@@ -123,7 +123,7 @@ NewUniaxialMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-NewUniaxialMaterial::recvSelf(int cTag, Channel& theChannel,
+NewUniaxialMaterial::receiveSelf(int cTag, Channel& theChannel,
                               FEM_ObjectBroker& theBroker)
 {
     return -1;

@@ -66,15 +66,15 @@ class Shadow
         virtual ~Shadow();
 
         virtual int sendObject(MovableObject& theObject);
-        virtual int recvObject(MovableObject& theObject);
+        virtual int receiveObject(MovableObject& theObject);
         virtual int sendMessage(const Message& theMessage);
         virtual int recvMessage(Message& theMessage);
         virtual int sendMatrix(const Matrix& theMatrix);
-        virtual int recvMatrix(Matrix& theMatrix);
+        virtual int receiveMatrix(Matrix& theMatrix);
         virtual int sendVector(const Vector& theVector);
-        virtual int recvVector(Vector& theVector);
+        virtual int receiveVector(Vector& theVector);
         virtual int sendID(const ID& theID);
-        virtual int recvID(ID& theID);
+        virtual int receiveID(ID& theID);
         void setCommitTag(int commitTag);
 
         Channel*           getChannelPtr(void) const;

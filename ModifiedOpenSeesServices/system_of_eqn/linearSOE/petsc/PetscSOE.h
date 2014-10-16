@@ -81,7 +81,7 @@ class PetscSOE : public LinearSOE
         int setSolver(PetscSolver &newSolver);
 
         int sendSelf(int commitTag, Channel &theChannel);
-        int recvSelf(int commitTag, Channel &theChannel,
+        int receiveSelf(int commitTag, Channel &theChannel,
                      FEM_ObjectBroker &theBroker);
 
         //Addec by Babak Kamrani for dumping B vector (RHS) in a file on 03/30/2012:

@@ -75,7 +75,7 @@ class BandSPDLinSOE : public LinearSOE
         virtual int setBandSPDSolver(BandSPDLinSolver& newSolver);
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        virtual int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
         friend class BandSPDLinSolver;
         friend class BandSPDLinLapackSolver;

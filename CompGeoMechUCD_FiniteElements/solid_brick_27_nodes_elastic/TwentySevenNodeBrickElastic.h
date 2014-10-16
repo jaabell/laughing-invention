@@ -140,7 +140,7 @@ class TwentySevenNodeBrickElastic: public Element
 
         // public methods for element output
         int sendSelf (int commitTag, Channel &theChannel);
-        int recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
+        int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker
                       &theBroker);
         //    int displaySelf (Renderer &theViewer, int displayMode, float fact);
         void Print(ostream &s, int flag = 0);

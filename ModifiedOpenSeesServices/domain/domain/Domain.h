@@ -288,11 +288,11 @@ class Domain
         friend ostream &operator<<(ostream &s, Domain &M);
 
         virtual int sendSelf(int commitTag, Channel &theChannel);
-        virtual int recvSelf(int commitTag, Channel &theChannel,
+        virtual int receiveSelf(int commitTag, Channel &theChannel,
                              FEM_ObjectBroker &theBroker);
 
         virtual int sendSelfDatabase(int commitTag, Channel &theChannel);
-        virtual int recvSelfDatabase(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        virtual int receiveSelfDatabase(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
         //Babak Added on Aug 2012:
         void Dump_All_Nodes_Displacement_Onefileperprocess(void);

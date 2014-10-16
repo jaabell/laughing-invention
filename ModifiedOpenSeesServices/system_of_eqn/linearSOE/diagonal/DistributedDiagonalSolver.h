@@ -48,7 +48,7 @@ class DistributedDiagonalSolver : public LinearSOESolver
         virtual int setSize(void);
         virtual int setLinearSOE(DistributedDiagonalSOE& theSOE);
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     protected:
         DistributedDiagonalSOE* theSOE;

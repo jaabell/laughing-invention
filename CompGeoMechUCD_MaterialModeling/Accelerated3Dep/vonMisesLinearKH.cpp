@@ -256,7 +256,7 @@ int vonMisesLinearKH::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //================================================================================
-int vonMisesLinearKH::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int vonMisesLinearKH::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

@@ -253,16 +253,16 @@ ElasticPPMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ElasticPPMaterial::recvSelf(int cTag, Channel& theChannel,
+ElasticPPMaterial::receiveSelf(int cTag, Channel& theChannel,
                             FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(6);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "ElasticPPMaterial::recvSelf() - failed to recv data\n";
+        cerr << "ElasticPPMaterial::receiveSelf() - failed to recv data\n";
     }
     else
     {

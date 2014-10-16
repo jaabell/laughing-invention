@@ -209,7 +209,7 @@ FullGenLinLapackSolver::sendSelf(int commitTag,
 }
 
 int
-FullGenLinLapackSolver::recvSelf(int commitTag,
+FullGenLinLapackSolver::receiveSelf(int commitTag,
                                  Channel& theChannel,
                                  FEM_ObjectBroker& theBroker)
 {

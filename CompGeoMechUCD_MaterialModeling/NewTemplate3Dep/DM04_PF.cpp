@@ -895,16 +895,16 @@ int DM04_PF::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int DM04_PF::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int DM04_PF::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(24);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "DM04_PF::recvSelf -- failed to recv ID\n";
+        cerr << "DM04_PF::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 

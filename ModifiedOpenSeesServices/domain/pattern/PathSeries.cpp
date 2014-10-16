@@ -300,13 +300,13 @@ PathSeries::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-PathSeries::recvSelf(int commitTag, Channel& theChannel,
+PathSeries::receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
 
     Vector data(5);
-    int result = theChannel.recvVector(dbTag, commitTag, data);
+    int result = theChannel.receiveVector(dbTag, commitTag, data);
 
     if (result < 0)
     {
@@ -328,7 +328,7 @@ PathSeries::recvSelf(int commitTag, Channel& theChannel,
 
         if (thePath == 0 || thePath->Size() == 0)
         {
-            cerr << "PathSeries::recvSelf() - ran out of memory";
+            cerr << "PathSeries::receiveSelf() - ran out of memory";
             cerr << " a Vector of size: " <<  size << endln;
 
             if (thePath != 0)
@@ -340,11 +340,11 @@ PathSeries::recvSelf(int commitTag, Channel& theChannel,
             return -1;
         }
 
-        result = theChannel.recvVector(otherDbTag, lastSendCommitTag, *thePath);
+        result = theChannel.receiveVector(otherDbTag, lastSendCommitTag, *thePath);
 
         if (result < 0)
         {
-            cerr << "PathSeries::recvSelf() - ";
+            cerr << "PathSeries::receiveSelf() - ";
             cerr << "channel failed to receive tha Path Vector\n";
             return result;
         }

@@ -100,7 +100,7 @@ DistributedBandSPDLinSOE::setSize(Graph& theGraph)
         theGraph.sendSelf(0, *theChannel);
 
         static ID data(2);
-        theChannel->recvID(0, 0, data);
+        theChannel->receiveID(0, 0, data);
         size = data(0);
         half_band = data(1);
 
@@ -132,7 +132,7 @@ DistributedBandSPDLinSOE::setSize(Graph& theGraph)
         {
             Channel* theChannel = theChannels[j];
             Graph theSubGraph;
-            theSubGraph.recvSelf(0, *theChannel, theBroker);
+            theSubGraph.receiveSelf(0, *theChannel, theBroker);
             theGraph.merge(theSubGraph);
 
             int numSubVertex = theSubGraph.getNumVertex();
@@ -186,7 +186,7 @@ DistributedBandSPDLinSOE::setSize(Graph& theGraph)
             theChannel->sendID(0, 0, data);
 
             ID* subMap = localCol[j];
-            theChannel->recvID(0, 0, *subMap);
+            theChannel->receiveID(0, 0, *subMap);
         }
     }
 
@@ -482,9 +482,9 @@ DistributedBandSPDLinSOE::solve(void)
         }
 
         // receive X,B and result
-        theChannel->recvVector(0, 0, *vectX);
-        theChannel->recvVector(0, 0, *vectB);
-        theChannel->recvID(0, 0, result);
+        theChannel->receiveVector(0, 0, *vectX);
+        theChannel->receiveVector(0, 0, *vectB);
+        theChannel->receiveID(0, 0, result);
         factored = true;
     }
 
@@ -503,7 +503,7 @@ DistributedBandSPDLinSOE::solve(void)
 
             // get X & add
             Channel* theChannel = theChannels[j];
-            theChannel->recvVector(0, 0, *vectX);
+            theChannel->receiveVector(0, 0, *vectX);
             *vectB += *vectX;
 
             // get A & add using local map
@@ -512,7 +512,7 @@ DistributedBandSPDLinSOE::solve(void)
                 const ID& localMap = *(localCol[j]);
                 int localSize = localMap.Size() * half_band;
                 Vector vectA(workArea, localSize);
-                theChannel->recvVector(0, 0, vectA);
+                theChannel->receiveVector(0, 0, vectA);
 
                 int loc = 0;
 
@@ -668,7 +668,7 @@ DistributedBandSPDLinSOE::getB(void)
 
         // send B & recv merged B
         theChannel->sendVector(0, 0, *myVectB);
-        theChannel->recvVector(0, 0, *vectB);
+        theChannel->receiveVector(0, 0, *vectB);
     }
 
     //
@@ -686,7 +686,7 @@ DistributedBandSPDLinSOE::getB(void)
         {
 
             Channel* theChannel = theChannels[j];
-            theChannel->recvVector(0, 0, remoteB);
+            theChannel->receiveVector(0, 0, remoteB);
             *vectB += remoteB;
         }
 
@@ -803,14 +803,14 @@ DistributedBandSPDLinSOE::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-DistributedBandSPDLinSOE::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+DistributedBandSPDLinSOE::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     ID idData(1);
-    int res = theChannel.recvID(0, commitTag, idData);
+    int res = theChannel.receiveID(0, commitTag, idData);
 
     if (res < 0)
     {
-        cerr << "WARNING DistributedBandSPDLinSOE::recvSelf() - failed to send data\n";
+        cerr << "WARNING DistributedBandSPDLinSOE::receiveSelf() - failed to send data\n";
         return -1;
     }
 

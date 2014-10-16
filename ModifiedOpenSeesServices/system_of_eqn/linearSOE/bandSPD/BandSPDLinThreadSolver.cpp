@@ -225,7 +225,7 @@ BandSPDLinThreadSolver::sendSelf(Channel& theChannel,
 }
 
 int
-BandSPDLinThreadSolver::recvSelf(Channel& theChannel,
+BandSPDLinThreadSolver::receiveSelf(Channel& theChannel,
                                  FEM_ObjectBroker& theBroker)
 {
     // nothing to do

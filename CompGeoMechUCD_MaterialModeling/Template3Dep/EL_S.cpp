@@ -84,7 +84,7 @@ int EvolutionLaw_S::sendSelf(int commitTag, Channel& theChannel)
     return 0;
 }
 
-int EvolutionLaw_S::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int EvolutionLaw_S::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     //sub-Class responsibility
     return 0;

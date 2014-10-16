@@ -460,7 +460,7 @@ PlainHandler::sendSelf(int cTag,
 }
 
 int
-PlainHandler::recvSelf(int cTag,
+PlainHandler::receiveSelf(int cTag,
                        Channel &theChannel,
                        FEM_ObjectBroker &theBroker)
 {

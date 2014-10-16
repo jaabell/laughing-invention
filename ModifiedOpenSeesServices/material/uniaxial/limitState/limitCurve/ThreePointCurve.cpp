@@ -262,7 +262,7 @@ ThreePointCurve::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ThreePointCurve::recvSelf(int commitTag, Channel& theChannel,
+ThreePointCurve::receiveSelf(int commitTag, Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {
     return -1;

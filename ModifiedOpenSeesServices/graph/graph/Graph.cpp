@@ -450,19 +450,19 @@ Graph::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Graph::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+Graph::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     // check not from a datastore
     if (theChannel.isDatastore() != 0)
     {
-        cerr << "Graph::recvSelf() - at present does not receive from a database\n";
+        cerr << "Graph::receiveSelf() - at present does not receive from a database\n";
         return -1;
     }
 
     // check blank
     if (this->getNumVertex() != 0)
     {
-        cerr << "Graph::recvSelf() - can only receive to an empty graph at present\n";
+        cerr << "Graph::receiveSelf() - can only receive to an empty graph at present\n";
 
         numEdge = 0;
         myVertices->clearAll();
@@ -471,9 +471,9 @@ Graph::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
     // recv numEdge & numVertices
     static ID idData(2);
 
-    if (theChannel.recvID(0, commitTag, idData) < 0)
+    if (theChannel.receiveID(0, commitTag, idData) < 0)
     {
-        cerr << "Graph::recvSelf() - failed to receive the id\n";
+        cerr << "Graph::receiveSelf() - failed to receive the id\n";
         return -3;
     }
 
@@ -487,13 +487,13 @@ Graph::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 
         if (theVertex == 0)
         {
-            cerr << "Graph::recvSelf() - out of memory\n";
+            cerr << "Graph::receiveSelf() - out of memory\n";
             return -4;
         }
 
-        if (theVertex->recvSelf(commitTag, theChannel, theBroker) < 0)
+        if (theVertex->receiveSelf(commitTag, theChannel, theBroker) < 0)
         {
-            cerr << "Graph::recvSelf() - vertex failed to receive itself\n";
+            cerr << "Graph::receiveSelf() - vertex failed to receive itself\n";
             return -5;
         }
 

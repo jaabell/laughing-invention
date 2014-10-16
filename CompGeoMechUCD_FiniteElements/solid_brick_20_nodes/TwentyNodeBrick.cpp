@@ -4315,7 +4315,7 @@ int TwentyNodeBrick::sendSelf (int commitTag, Channel &theChannel)
 }
 
 //=============================================================================
-int TwentyNodeBrick::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int TwentyNodeBrick::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     // Not implemtented yet
     return 0;

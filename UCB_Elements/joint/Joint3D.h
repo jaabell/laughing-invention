@@ -100,7 +100,7 @@ class Joint3D : public Element
         // Response* setResponse(const char** argv, int argc, Information& eleInformation);
         // int getResponse(int responseID, Information& eleInformation);
         int sendSelf(int commitTag, Channel &theChannel);
-        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         void Print(ostream &s, int flag = 0);
 
 

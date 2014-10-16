@@ -211,7 +211,7 @@ SecantLineSearch::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-SecantLineSearch::recvSelf(int cTag,
+SecantLineSearch::receiveSelf(int cTag,
                            Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {

@@ -149,7 +149,7 @@ DistributedSparseGenRowLinSOE::setSize(Graph& theGraph)
         }
         else
         {
-            theChannel->recvID(0, 0, rankSendRecv);
+            theChannel->receiveID(0, 0, rankSendRecv);
 
             if (rankSendRecv(0) > n)
             {
@@ -263,7 +263,7 @@ DistributedSparseGenRowLinSOE::setSize(Graph& theGraph)
 
             FEM_ObjectBroker theBroker;
             Graph otherGraph;
-            otherGraph.recvSelf(0, *theChannel, theBroker);
+            otherGraph.receiveSelf(0, *theChannel, theBroker);
             VertexIter& theVertices = otherGraph.getVertices();
             Vertex* otherVertex;
 
@@ -819,7 +819,7 @@ DistributedSparseGenRowLinSOE::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-DistributedSparseGenRowLinSOE::recvSelf(int cTag, Channel& theChannel,
+DistributedSparseGenRowLinSOE::receiveSelf(int cTag, Channel& theChannel,
                                         FEM_ObjectBroker& theBroker)
 {
     numChannels = 1;

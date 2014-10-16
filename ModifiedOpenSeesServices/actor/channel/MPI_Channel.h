@@ -54,26 +54,26 @@ class MPI_Channel : public Channel
                     MovableObject& theObject,
                     ChannelAddress* theAddress = 0);
 
-        int recvObj(int commitTag,
+        int receiveObj(int commitTag,
                     MovableObject& theObject,
                     FEM_ObjectBroker& theBroker,
                     ChannelAddress* theAddress = 0);
 
-        int recvMsg(int dbTag, int commitTag, Message&, ChannelAddress* theAddress = 0);
+        int receiveMsg(int dbTag, int commitTag, Message&, ChannelAddress* theAddress = 0);
         int sendMsg(int dbTag, int commitTag, const Message&, ChannelAddress* theAddress = 0);
 
         int sendMatrix(int dbTag, int commitTag, const Matrix& theMatrix, ChannelAddress* theAddress = 0);
-        int recvMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddress* theAddress = 0);
+        int receiveMatrix(int dbTag, int commitTag, Matrix& theMatrix, ChannelAddress* theAddress = 0);
 
         int sendVector(int dbTag, int commitTag, const Vector& theVector, ChannelAddress* theAddress = 0);
-        int recvVector(int dbTag, int commitTag, Vector& theVector, ChannelAddress* theAddress = 0);
+        int receiveVector(int dbTag, int commitTag, Vector& theVector, ChannelAddress* theAddress = 0);
 
         int sendID(int dbTag, int commitTag, const ID& theID, ChannelAddress* theAddress = 0);
-        int recvID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddress = 0);
+        int receiveID(int dbTag, int commitTag, ID& theID, ChannelAddress* theAddress = 0);
 
         //Guanzhou added
         int sendnDarray(int dbTag, int commitTag, const nDarray& theNDarray, ChannelAddress* theAddress = 0);
-        int recvnDarray(int dbTag, int commitTag, nDarray& theNDarray, ChannelAddress* theAddress = 0);
+        int receivenDarray(int dbTag, int commitTag, nDarray& theNDarray, ChannelAddress* theAddress = 0);
 
     protected:
 

@@ -259,9 +259,9 @@ DriftRecorder::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-DriftRecorder::recvSelf(int commitTag, Channel& theChannel,
+DriftRecorder::receiveSelf(int commitTag, Channel& theChannel,
                         FEM_ObjectBroker& theBroker)
 {
-    cerr << "DriftRecorder::recvSelf() - NOT YET IMPLEMENTED\n";
+    cerr << "DriftRecorder::receiveSelf() - NOT YET IMPLEMENTED\n";
     return -1;
 }

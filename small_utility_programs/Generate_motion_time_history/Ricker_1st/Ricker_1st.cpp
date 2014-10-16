@@ -99,12 +99,12 @@ Ricker_1st::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Ricker_1st::recvSelf(int commitTag, Channel& theChannel,
+Ricker_1st::receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
     Vector data(5);
-    int result = theChannel.recvVector(dbTag, commitTag, data);
+    int result = theChannel.receiveVector(dbTag, commitTag, data);
 
     if (result < 0)
     {

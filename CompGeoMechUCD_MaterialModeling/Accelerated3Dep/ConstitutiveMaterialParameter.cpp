@@ -191,7 +191,7 @@ int ConstitutiveMaterialParameter::sendSelf(int commitTag, Channel& theChannel)
     return 0;
 }
 
-int ConstitutiveMaterialParameter::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int ConstitutiveMaterialParameter::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

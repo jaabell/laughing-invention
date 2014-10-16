@@ -52,7 +52,7 @@ class EarthquakePattern : public LoadPattern
 
         // methods for o/p
         virtual int sendSelf(int commitTag, Channel& theChannel) = 0;
-        virtual int recvSelf(int commitTag, Channel& theChannel,
+        virtual int receiveSelf(int commitTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker) = 0;
         virtual void Print(ostream& s, int flag = 0);
 

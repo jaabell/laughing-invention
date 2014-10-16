@@ -38,7 +38,7 @@ class SymArpackSolver : public EigenSolver
         virtual double getEigenvalue(int mode);
 
         int sendSelf(int cTag, Channel& theChannel);
-        int recvSelf(int cTag, Channel& theChannel,
+        int receiveSelf(int cTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
     protected:

@@ -95,21 +95,21 @@ int main(int argc, char** argv)
 
       cerr << "RESULTS\n";
       ID id5(2);
-      theDb.recvID(1,1,id5);
+      theDb.receiveID(1,1,id5);
       cerr << id5;
-      theDb.recvID(1,2,id5);
+      theDb.receiveID(1,2,id5);
       cerr << id5;
-      theDb.recvID(2,1,id5);
+      theDb.receiveID(2,1,id5);
       cerr << id5;
-      theDb.recvID(2,2,id5);
+      theDb.receiveID(2,2,id5);
       cerr << id5;
-      theDb.recvID(1,1,id5);
+      theDb.receiveID(1,1,id5);
       cerr << id5;
-      theDb.recvID(1,2,id5);
+      theDb.receiveID(1,2,id5);
       cerr << id5;
-      theDb.recvID(2,1,id5);
+      theDb.receiveID(2,1,id5);
       cerr << id5;
-      theDb.recvID(2,2,id5);
+      theDb.receiveID(2,2,id5);
       cerr << id5;
 
       theDb.sendID(2,2,id1);
@@ -117,20 +117,20 @@ int main(int argc, char** argv)
       theDb.sendID(1,2,id3);
       theDb.sendID(1,1,id4);
 
-      theDb.recvID(1,1,id5);
+      theDb.receiveID(1,1,id5);
       cerr << id5;
-      theDb.recvID(1,2,id5);
+      theDb.receiveID(1,2,id5);
       cerr << id5;
-      theDb.recvID(2,1,id5);
+      theDb.receiveID(2,1,id5);
       cerr << id5;
-      theDb.recvID(2,2,id5);
+      theDb.receiveID(2,2,id5);
       cerr << id5;
 
       theDb.sendID(4,4,id5);
-      theDb.recvID(4,4,id5);
+      theDb.receiveID(4,4,id5);
       cerr << id5;
 
-      theDb.recvID(5,5,id5);
+      theDb.receiveID(5,5,id5);
       cerr << id5;
       */
 
@@ -156,13 +156,13 @@ int main(int argc, char** argv)
 
     cerr << "RESULTS\n";
     Vector vect5(2);
-    theDb.recvVector(1,1,vect5);
+    theDb.receiveVector(1,1,vect5);
     cerr << vect5;
-    theDb.recvVector(1,2,vect5);
+    theDb.receiveVector(1,2,vect5);
     cerr << vect5;
-    theDb.recvVector(2,1,vect5);
+    theDb.receiveVector(2,1,vect5);
     cerr << vect5;
-    theDb.recvVector(2,2,vect5);
+    theDb.receiveVector(2,2,vect5);
     cerr << vect5;
 
     theDb.sendVector(2,2,vect1);
@@ -170,21 +170,21 @@ int main(int argc, char** argv)
     theDb.sendVector(1,2,vect3);
     theDb.sendVector(1,1,vect4);
 
-    theDb.recvVector(1,1,vect5);
+    theDb.receiveVector(1,1,vect5);
     cerr << vect5;
-    theDb.recvVector(1,2,vect5);
+    theDb.receiveVector(1,2,vect5);
     cerr << vect5;
-    theDb.recvVector(2,1,vect5);
+    theDb.receiveVector(2,1,vect5);
     cerr << vect5;
-    theDb.recvVector(2,2,vect5);
+    theDb.receiveVector(2,2,vect5);
     cerr << vect5;
 
 
     theDb.sendVector(4,4,vect5);
-    theDb.recvVector(4,4,vect5);
+    theDb.receiveVector(4,4,vect5);
     cerr << vect5;
 
-    theDb.recvVector(5,5,vect5);
+    theDb.receiveVector(5,5,vect5);
     cerr << vect5;
     **************************/
     /*
@@ -202,15 +202,15 @@ int main(int argc, char** argv)
     theDb.sendMatrix(1,1,mat1);
 
     Matrix mat3(2,2);
-    theDb.recvMatrix(1,1,mat3);
+    theDb.receiveMatrix(1,1,mat3);
     cerr << mat3;
 
 
-    theDb.recvMatrix(2,1,mat3);
+    theDb.receiveMatrix(2,1,mat3);
     cerr << mat3;
 
     theDb.sendMatrix(2,1,mat1);
-    theDb.recvMatrix(2,1,mat3);
+    theDb.receiveMatrix(2,1,mat3);
     cerr << mat3;
     */
 

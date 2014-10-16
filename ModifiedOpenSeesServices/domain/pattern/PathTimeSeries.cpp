@@ -551,16 +551,16 @@ PathTimeSeries::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-PathTimeSeries::recvSelf(int commitTag, Channel& theChannel,
+PathTimeSeries::receiveSelf(int commitTag, Channel& theChannel,
                          FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
     Vector data(5);
-    int result = theChannel.recvVector(dbTag, commitTag, data);
+    int result = theChannel.receiveVector(dbTag, commitTag, data);
 
     if (result < 0)
     {
-        cerr << "PathTimeSeries::recvSelf() - channel failed to receive data\n";
+        cerr << "PathTimeSeries::receiveSelf() - channel failed to receive data\n";
         cFactor = 1.0;
         return result;
     }
@@ -581,7 +581,7 @@ PathTimeSeries::recvSelf(int commitTag, Channel& theChannel,
                 thePath->Size() == 0 || time->Size() == 0)
         {
 
-            cerr << "PathTimeSeries::recvSelf() - ran out of memory";
+            cerr << "PathTimeSeries::receiveSelf() - ran out of memory";
             cerr << " a Vector of size: " <<  size << endln;
 
             if (thePath != 0)
@@ -599,20 +599,20 @@ PathTimeSeries::recvSelf(int commitTag, Channel& theChannel,
             return -1;
         }
 
-        result = theChannel.recvVector(dbTag1, lastSendCommitTag, *thePath);
+        result = theChannel.receiveVector(dbTag1, lastSendCommitTag, *thePath);
 
         if (result < 0)
         {
-            cerr << "PathTimeSeries::recvSelf() - ";
+            cerr << "PathTimeSeries::receiveSelf() - ";
             cerr << "channel failed to receive tha Path Vector\n";
             return result;
         }
 
-        result = theChannel.recvVector(dbTag2, lastSendCommitTag, *time);
+        result = theChannel.receiveVector(dbTag2, lastSendCommitTag, *time);
 
         if (result < 0)
         {
-            cerr << "PathTimeSeries::recvSelf() - ";
+            cerr << "PathTimeSeries::receiveSelf() - ";
             cerr << "channel failed to receive tha time Vector\n";
             return result;
         }

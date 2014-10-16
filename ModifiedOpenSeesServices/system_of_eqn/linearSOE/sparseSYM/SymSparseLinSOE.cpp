@@ -859,7 +859,7 @@ SymSparseLinSOE::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-SymSparseLinSOE::recvSelf(int cTag,
+SymSparseLinSOE::receiveSelf(int cTag,
                           Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     // not implemented.

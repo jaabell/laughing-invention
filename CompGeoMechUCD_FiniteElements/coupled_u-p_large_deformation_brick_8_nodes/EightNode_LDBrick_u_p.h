@@ -80,7 +80,7 @@ class EightNode_LDBrick_u_p: public Element
         const Vector &getResistingForceIncInertia(void);
 
         int sendSelf(int commitTag, Channel &theChannel);
-        int recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         int displaySelf(Renderer &theViewer, int displayMode, float fact);
         void Print(ostream &s, int flag = 0);
 

@@ -272,10 +272,10 @@ InterpolatedGroundMotion::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-InterpolatedGroundMotion::recvSelf(int commitTag, Channel& theChannel,
+InterpolatedGroundMotion::receiveSelf(int commitTag, Channel& theChannel,
                                    FEM_ObjectBroker& theBroker)
 {
-    cerr << "InterpolatedGroundMotion::recvSelf() -- not yet impelemented" << endln;
+    cerr << "InterpolatedGroundMotion::receiveSelf() -- not yet impelemented" << endln;
     return -1;
 }
 

@@ -134,7 +134,7 @@ int YieldSurface::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //================================================================================
-int YieldSurface::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int YieldSurface::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     //sub-class responsibility
     return 0;

@@ -56,7 +56,7 @@ class DistributedBandSPDLinSOE : public BandSPDLinSOE
         const Vector& getB(void);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
         friend class BandSPDLinLapackSolver;
 
         int setProcessID(int processTag);

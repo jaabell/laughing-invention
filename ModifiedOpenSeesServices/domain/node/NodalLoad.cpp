@@ -189,17 +189,17 @@ NodalLoad::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-NodalLoad::recvSelf(int cTag, Channel& theChannel,
+NodalLoad::receiveSelf(int cTag, Channel& theChannel,
                     FEM_ObjectBroker& theBroker)
 {
     int result;
     int dataTag = this->getDbTag();
     ID data(5);
-    result = theChannel.recvID(dataTag, cTag, data);
+    result = theChannel.receiveID(dataTag, cTag, data);
 
     if (result < 0)
     {
-        cerr << "NodalLoad::recvSelf() - failed to recv data\n";
+        cerr << "NodalLoad::receiveSelf() - failed to recv data\n";
         return result;
     }
 
@@ -212,11 +212,11 @@ NodalLoad::recvSelf(int cTag, Channel& theChannel,
     if (loadSize != 0)
     {
         load = new Vector(data(2));
-        result = theChannel.recvVector(dataTag, cTag, *load);
+        result = theChannel.receiveVector(dataTag, cTag, *load);
 
         if (result < 0)
         {
-            cerr << "NodalLoad::recvSelf() - failed to recv load\n";
+            cerr << "NodalLoad::receiveSelf() - failed to recv load\n";
             return result;
         }
     }

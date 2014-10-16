@@ -173,19 +173,19 @@ Linear_Force_TimeHistory::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Linear_Force_TimeHistory::recvSelf(int commitTag, Channel& theChannel,
+Linear_Force_TimeHistory::receiveSelf(int commitTag, Channel& theChannel,
                                    FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
 
     static Vector data(6);
 
-    int res = theChannel.recvVector(dbTag, commitTag, data);
+    int res = theChannel.receiveVector(dbTag, commitTag, data);
 
 
     if (res < 0)
     {
-        cerr << "Linear_Force_TimeHistory::recvSelf() - channel failed to recv data\n";
+        cerr << "Linear_Force_TimeHistory::receiveSelf() - channel failed to recv data\n";
         return res;
     }
 

@@ -106,12 +106,12 @@ FE_Datastore::sendObj(int commitTag,
 }
 
 int
-FE_Datastore::recvObj(int commitTag,
+FE_Datastore::receiveObj(int commitTag,
                       MovableObject& theObject,
                       FEM_ObjectBroker& theNewBroker,
                       ChannelAddress* theAddress)
 {
-    return theObject.recvSelf(commitTag, *this, theNewBroker);
+    return theObject.receiveSelf(commitTag, *this, theNewBroker);
 }
 
 
@@ -150,21 +150,21 @@ FE_Datastore::commitState(int commitTag)
 int
 FE_Datastore::restoreState(int commitTag)
 {
-    // invoke recvSelf on the domain object with this as an arg
+    // invoke receiveSelf on the domain object with this as an arg
     int res = 0;
 
     if (theDomain != 0)
     {
-        res = theDomain->recvSelfDatabase(commitTag, *this, *theObjectBroker);
+        res = theDomain->receiveSelfDatabase(commitTag, *this, *theObjectBroker);
 
         if (res < 0)
         {
-            cerr << "FE_Datastore::restoreState - domain failed to recvSelf\n";
+            cerr << "FE_Datastore::restoreState - domain failed to receiveSelf\n";
         }
 
         ID maxlastDbTag(1);
 
-        if (this->recvID(0, 0, maxlastDbTag) < 0)
+        if (this->receiveID(0, 0, maxlastDbTag) < 0)
         {
             cerr << "FE_Datastore::restoreState - failed to get max lastDbTag data from database - problems may ariise\n";
         }
@@ -262,10 +262,10 @@ FE_Datastore::setDbTag(int cTag)
 //   {
 //     res = theDomain->restoreResults(commitTag, *this, *theObjectBroker);
 //     if (res < 0) {
-//       cerr << "FE_Datastore::restoreResults - domain failed to recvSelf\n";
+//       cerr << "FE_Datastore::restoreResults - domain failed to receiveSelf\n";
 //     }
 //     ID maxlastDbTag(1);
-//     if (this->recvID(0,0,maxlastDbTag) < 0)
+//     if (this->receiveID(0,0,maxlastDbTag) < 0)
 //     {
 //       cerr << "FE_Datastore::restoreResults - failed to get max lastDbTag data from database - problems may ariise\n";
 //     } else

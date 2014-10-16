@@ -274,7 +274,7 @@ UniaxialFiber3d::sendSelf(int commitTag, Channel &theChannel)
 
 
 int
-UniaxialFiber3d::recvSelf(int commitTag, Channel &theChannel,
+UniaxialFiber3d::receiveSelf(int commitTag, Channel &theChannel,
                           FEM_ObjectBroker &theBroker)
 {
     //
@@ -284,9 +284,9 @@ UniaxialFiber3d::recvSelf(int commitTag, Channel &theChannel,
     static ID idData(3);
     int dbTag = this->getDbTag();
 
-    if (theChannel.recvID(dbTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dbTag, commitTag, idData) < 0)
     {
-        cerr << "UniaxialFiber3d::recvSelf() -  failed to recv ID data\n";
+        cerr << "UniaxialFiber3d::receiveSelf() -  failed to recv ID data\n";
         return -1;
     }
 
@@ -298,9 +298,9 @@ UniaxialFiber3d::recvSelf(int commitTag, Channel &theChannel,
 
     static Vector dData(3);
 
-    if (theChannel.recvVector(dbTag, commitTag, dData) < 0)
+    if (theChannel.receiveVector(dbTag, commitTag, dData) < 0)
     {
-        cerr << "UniaxialFiber3d::recvSelf() -  failed to recv Vector data\n";
+        cerr << "UniaxialFiber3d::receiveSelf() -  failed to recv Vector data\n";
         return -2;
     }
 
@@ -332,19 +332,19 @@ UniaxialFiber3d::recvSelf(int commitTag, Channel &theChannel,
 
         if (theMaterial == 0)
         {
-            cerr << "UniaxialFiber3d::recvSelf() - " <<
+            cerr << "UniaxialFiber3d::receiveSelf() - " <<
                  "failed to get a UniaxialMaterial of type " << matClassTag << endln;
             return -3;
         }
     }
 
-    // set the materials dbTag and invoke recvSelf on the material
+    // set the materials dbTag and invoke receiveSelf on the material
     theMaterial->setDbTag(idData(2));
 
-    // now invoke recvSelf on the material
-    if (theMaterial->recvSelf(commitTag, theChannel, theBroker) < 0)
+    // now invoke receiveSelf on the material
+    if (theMaterial->receiveSelf(commitTag, theChannel, theBroker) < 0)
     {
-        cerr << "UniaxialFiber3d::recvSelf() -  the material failed in recvSelf()\n";
+        cerr << "UniaxialFiber3d::receiveSelf() -  the material failed in receiveSelf()\n";
         return -4;
     }
 

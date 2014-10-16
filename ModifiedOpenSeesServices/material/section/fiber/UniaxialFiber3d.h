@@ -72,7 +72,7 @@ class UniaxialFiber3d: public Fiber
         const ID &getType(void);
 
         int sendSelf(int cTag, Channel &theChannel);
-        int recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        int receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
         void Print(ostream &s, int flag = 0);
 
         // Response *setResponse(const char **argv, int argc, Information &info);

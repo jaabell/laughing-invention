@@ -437,7 +437,7 @@ DisplacementControl::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-DisplacementControl::recvSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+DisplacementControl::receiveSelf(int cTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     // TO FINISH
     return 0;

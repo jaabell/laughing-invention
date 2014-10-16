@@ -119,8 +119,8 @@ class DM04_z_Eij : public TensorEvolution
         //Guanzhou added for parallel
         //! sendSelf: for parallel computing
         int sendSelf(int commitTag, Channel& theChannel);
-        //! recvSelf: for parallel computing
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        //! receiveSelf: for parallel computing
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     private:
 

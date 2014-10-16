@@ -235,7 +235,7 @@ int Concrete3D::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //================================================================================
-int Concrete3D::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int Concrete3D::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

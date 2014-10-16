@@ -392,7 +392,7 @@ AxialCurve::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-AxialCurve::recvSelf(int commitTag, Channel& theChannel,
+AxialCurve::receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker)
 {
     return -1;

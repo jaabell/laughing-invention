@@ -135,7 +135,7 @@ class BeamColumnJoint3d : public Element
 
         // public methods for element output for parallel and database processing
         int sendSelf(int commitTag, Channel &theChannel);
-        int recvSelf(int commitTag, Channel &theChannel,
+        int receiveSelf(int commitTag, Channel &theChannel,
                      FEM_ObjectBroker &theBroker);
 
         // display element graphically

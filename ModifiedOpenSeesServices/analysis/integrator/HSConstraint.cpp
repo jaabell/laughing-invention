@@ -422,14 +422,14 @@ HSConstraint::sendSelf(int cTag,
 
 
 int
-HSConstraint::recvSelf(int cTag,
+HSConstraint::receiveSelf(int cTag,
                        Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     Vector data(4);
 
-    if (theChannel.recvVector(this->getDbTag(), cTag, data) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), cTag, data) < 0)
     {
-        cerr << "HSConstraint::recvSelf() - failed to receive the data\n";
+        cerr << "HSConstraint::receiveSelf() - failed to receive the data\n";
         return -1;
     }
 

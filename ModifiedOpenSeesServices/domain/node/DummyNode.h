@@ -95,7 +95,7 @@ class DummyNode : public Node
         int getColor(void) const;
 
         int sendSelf(Channel& theChannel, FEM_ObjectBroker& theBroker);
-        int recvSelf(Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(Channel& theChannel, FEM_ObjectBroker& theBroker);
 
     private:
         Node* theRealNode;

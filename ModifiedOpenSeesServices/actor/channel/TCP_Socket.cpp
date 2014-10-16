@@ -246,7 +246,7 @@ TCP_Socket::setNextAddress(const ChannelAddress& theAddress)
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvMsg() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveMsg() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
@@ -301,7 +301,7 @@ TCP_Socket::sendObj(int commitTag,
 }
 
 int
-TCP_Socket::recvObj(int commitTag,
+TCP_Socket::receiveObj(int commitTag,
                     MovableObject& theObject,
                     FEM_ObjectBroker& theBroker,
                     ChannelAddress* theAddress)
@@ -327,13 +327,13 @@ TCP_Socket::recvObj(int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvMsg() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveMsg() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
     }
 
-    return theObject.recvSelf(commitTag, *this, theBroker);
+    return theObject.receiveSelf(commitTag, *this, theBroker);
 }
 
 
@@ -341,7 +341,7 @@ TCP_Socket::recvObj(int commitTag,
 //  Method to receive a message, also sets other_Addr.addr_in to that of sender
 
 int
-TCP_Socket::recvMsg(int dbTag, int commitTag,
+TCP_Socket::receiveMsg(int dbTag, int commitTag,
                     Message& msg, ChannelAddress* theAddress)
 {
     // first check address is the only address a TCP_socket can send to
@@ -365,7 +365,7 @@ TCP_Socket::recvMsg(int dbTag, int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvMsg() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveMsg() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
@@ -417,7 +417,7 @@ TCP_Socket::sendMsg(int dbTag, int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvMsg() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveMsg() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
@@ -444,7 +444,7 @@ TCP_Socket::sendMsg(int dbTag, int commitTag,
 
 
 int
-TCP_Socket::recvMatrix(int dbTag, int commitTag,
+TCP_Socket::receiveMatrix(int dbTag, int commitTag,
                        Matrix& theMatrix, ChannelAddress* theAddress)
 
 {
@@ -469,7 +469,7 @@ TCP_Socket::recvMatrix(int dbTag, int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvMatrix() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveMatrix() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
@@ -523,7 +523,7 @@ TCP_Socket::sendMatrix(int dbTag, int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvMatrix() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveMatrix() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
@@ -555,7 +555,7 @@ TCP_Socket::sendMatrix(int dbTag, int commitTag,
 
 
 int
-TCP_Socket::recvVector(int dbTag, int commitTag,
+TCP_Socket::receiveVector(int dbTag, int commitTag,
                        Vector& theVector, ChannelAddress* theAddress)
 
 {
@@ -580,7 +580,7 @@ TCP_Socket::recvVector(int dbTag, int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvVector() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveVector() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
@@ -632,7 +632,7 @@ TCP_Socket::sendVector(int dbTag, int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvVector() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveVector() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
@@ -659,7 +659,7 @@ TCP_Socket::sendVector(int dbTag, int commitTag,
 
 
 int
-TCP_Socket::recvID(int dbTag, int commitTag,
+TCP_Socket::receiveID(int dbTag, int commitTag,
                    ID& theID, ChannelAddress* theAddress)
 
 {
@@ -684,7 +684,7 @@ TCP_Socket::recvID(int dbTag, int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvID() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveID() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }
@@ -736,7 +736,7 @@ TCP_Socket::sendID(int dbTag, int commitTag,
                  theSocketAddress->addrLength) != 0)
         {
 
-            cerr << "TCP_Socket::recvID() - a TCP_Socket ";
+            cerr << "TCP_Socket::receiveID() - a TCP_Socket ";
             cerr << "can only communicate with one other TCP_Socket\n";
             return -1;
         }

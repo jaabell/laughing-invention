@@ -604,7 +604,7 @@ PetscSOE::sendSelf(Channel& theChannel, FEM_ObjectBroker& theBroker)
 
 
 int
-PetscSOE::recvSelf(Channel& theChannel, FEM_ObjectBroker& theBroker)
+PetscSOE::receiveSelf(Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

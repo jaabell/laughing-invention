@@ -66,7 +66,7 @@ class EnvelopeNodeRecorder: public Recorder
 
         int setDomain(Domain& theDomain);
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
     protected:

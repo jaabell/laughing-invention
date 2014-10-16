@@ -168,17 +168,17 @@ UniformExcitation::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-UniformExcitation::recvSelf(int commitTag, Channel& theChannel,
+UniformExcitation::receiveSelf(int commitTag, Channel& theChannel,
                             FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
 
     static Vector data(5);
-    int res = theChannel.recvVector(dbTag, commitTag, data);
+    int res = theChannel.receiveVector(dbTag, commitTag, data);
 
     if (res < 0)
     {
-        cerr << "UniformExcitation::recvSelf() - channel failed to recv data\n";
+        cerr << "UniformExcitation::receiveSelf() - channel failed to recv data\n";
         return res;
     }
 
@@ -199,7 +199,7 @@ UniformExcitation::recvSelf(int commitTag, Channel& theChannel,
 
         if (theMotion == 0)
         {
-            cerr << "UniformExcitation::recvSelf() - could not create a grond motion\n";
+            cerr << "UniformExcitation::receiveSelf() - could not create a grond motion\n";
             return -3;
         }
 
@@ -215,11 +215,11 @@ UniformExcitation::recvSelf(int commitTag, Channel& theChannel,
     }
 
     theMotion->setDbTag(motionDbTag);
-    res = theMotion->recvSelf(commitTag, theChannel, theBroker);
+    res = theMotion->receiveSelf(commitTag, theChannel, theBroker);
 
     if (res < 0)
     {
-        cerr << "UniformExcitation::recvSelf() - motion could not receive itself \n";
+        cerr << "UniformExcitation::receiveSelf() - motion could not receive itself \n";
         return res;
     }
 

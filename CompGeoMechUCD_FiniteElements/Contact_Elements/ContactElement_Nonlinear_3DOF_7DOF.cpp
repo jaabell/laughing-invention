@@ -1129,7 +1129,7 @@ ContactElement_Nonlinear_3DOF_7DOF::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-ContactElement_Nonlinear_3DOF_7DOF::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+ContactElement_Nonlinear_3DOF_7DOF::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     return 0;
 }

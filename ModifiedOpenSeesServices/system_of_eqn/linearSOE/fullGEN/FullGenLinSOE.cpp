@@ -554,7 +554,7 @@ FullGenLinSOE::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-FullGenLinSOE::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+FullGenLinSOE::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

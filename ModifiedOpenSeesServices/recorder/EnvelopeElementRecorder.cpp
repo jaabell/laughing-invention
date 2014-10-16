@@ -386,12 +386,12 @@ EnvelopeElementRecorder::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
+EnvelopeElementRecorder::receiveSelf(int commitTag, Channel& theChannel,
                                   FEM_ObjectBroker& theBroker)
 {
     if (theChannel.isDatastore() == 1)   //Guanzhou changed 0 to 1
     {
-        cerr << "EnvelopeElementRecorder::recvSelf() - does not recv data to a datastore\n";
+        cerr << "EnvelopeElementRecorder::receiveSelf() - does not recv data to a datastore\n";
         return -1;
     }
 
@@ -401,9 +401,9 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
 
     static ID idData(4);
 
-    if (theChannel.recvID(0, commitTag, idData) < 0)
+    if (theChannel.receiveID(0, commitTag, idData) < 0)
     {
-        cerr << "EnvelopeElementRecorder::recvSelf() - failed to recv idData\n";
+        cerr << "EnvelopeElementRecorder::receiveSelf() - failed to recv idData\n";
         return -1;
     }
 
@@ -419,16 +419,16 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
 
     if (eleSize == 0)
     {
-        cerr << "EnvelopeElementRecorder::recvSelf() - 0 sized eleID\n";
+        cerr << "EnvelopeElementRecorder::receiveSelf() - 0 sized eleID\n";
         return -1;
     }
 
     int* eleData = new int [eleSize];
     eleID.setData(eleData, eleSize, true);
 
-    if (theChannel.recvID(0, commitTag, eleID) < 0)
+    if (theChannel.receiveID(0, commitTag, eleID) < 0)
     {
-        cerr << "EnvelopeElementRecorder::recvSelf() - failed to recv idData\n";
+        cerr << "EnvelopeElementRecorder::receiveSelf() - failed to recv idData\n";
         return -1;
     }
 
@@ -438,7 +438,7 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
 
     if (msgLength == 0)
     {
-        cerr << "EnvelopeElementRecorder::recvSelf() - 0 sized string for responses\n";
+        cerr << "EnvelopeElementRecorder::receiveSelf() - 0 sized string for responses\n";
         return -1;
     }
 
@@ -446,15 +446,15 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
 
     if (allResponseArgs == 0)
     {
-        cerr << "EnvelopeElementRecorder::recvSelf() - out of memory\n";
+        cerr << "EnvelopeElementRecorder::receiveSelf() - out of memory\n";
         return -1;
     }
 
     Message theMessage(allResponseArgs, msgLength);
 
-    if (theChannel.recvMsg(0, commitTag, theMessage) < 0)
+    if (theChannel.receiveMsg(0, commitTag, theMessage) < 0)
     {
-        cerr << "EnvelopeElementRecorder::recvSelf() - failed to recv message\n";
+        cerr << "EnvelopeElementRecorder::receiveSelf() - failed to recv message\n";
         return -1;
     }
 
@@ -466,7 +466,7 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
 
     if (responseArgs == 0)
     {
-        cerr << "EnvelopeElementRecorder::recvSelf() - out of memory\n";
+        cerr << "EnvelopeElementRecorder::receiveSelf() - out of memory\n";
         return -1;
     }
 
@@ -479,7 +479,7 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
 
         if (responseArgs[j] == 0)
         {
-            cerr << "EnvelopeElementRecorder::recvSelf() - out of memory\n";
+            cerr << "EnvelopeElementRecorder::receiveSelf() - out of memory\n";
             return -1;
         }
 
@@ -489,7 +489,7 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
     }
 
     //
-    // create a new handler object and invoke recvSelf() on it
+    // create a new handler object and invoke receiveSelf() on it
     //
 
     if (theHandler != 0)
@@ -505,7 +505,7 @@ EnvelopeElementRecorder::recvSelf(int commitTag, Channel& theChannel,
         return -1;
     }
 
-    if (theHandler->recvSelf(commitTag, theChannel, theBroker) < 0)
+    if (theHandler->receiveSelf(commitTag, theChannel, theBroker) < 0)
     {
         cerr << "NodeRecorder::sendSelf() - failed to send the DataOutputHandler\n";
         return -1;

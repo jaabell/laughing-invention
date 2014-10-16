@@ -220,7 +220,7 @@ int CamClay::sendSelf(int commitTag, Channel& theChannel)
     return 0;
 }
 
-int CamClay::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int CamClay::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

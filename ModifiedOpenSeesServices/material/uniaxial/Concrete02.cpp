@@ -292,7 +292,7 @@ Concrete02::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-Concrete02::recvSelf(int commitTag, Channel& theChannel,
+Concrete02::receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker)
 {
 
@@ -300,7 +300,7 @@ Concrete02::recvSelf(int commitTag, Channel& theChannel,
 
     if (theChannel.sendVector(this->getDbTag(), commitTag, data) < 0)
     {
-        cerr << "Concrete02::recvSelf() - failed to recvSelf\n";
+        cerr << "Concrete02::receiveSelf() - failed to receiveSelf\n";
         return -1;
     }
 

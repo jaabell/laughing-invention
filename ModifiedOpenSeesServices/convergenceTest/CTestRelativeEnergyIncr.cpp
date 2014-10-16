@@ -272,12 +272,12 @@ CTestRelativeEnergyIncr::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-CTestRelativeEnergyIncr::recvSelf(int cTag, Channel& theChannel,
+CTestRelativeEnergyIncr::receiveSelf(int cTag, Channel& theChannel,
                                   FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     Vector x(2);
-    res = theChannel.recvVector(this->getDbTag(), cTag, x);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, x);
 
     if (res < 0)
     {

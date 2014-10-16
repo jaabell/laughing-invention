@@ -1521,35 +1521,35 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 
 }
 
-int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
-    // cout << "EightNodeBrickLT::recvSelf() tag = " << this->getTag() << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
 
     ID idData( 5 );
 
-    if ( theChannel.recvID( 0, commitTag, idData ) < 0 )
+    if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::recvSelf() - failed to receive ID\n";
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - failed to receive ID\n";
         return -1;
     }
 
     this->setTag( idData( 0 ) );
-    numDOF = idData(1);
-    nodes_in_brick = idData(2);
-    order = idData(3);
+    numDOF          = idData(1);
+    nodes_in_brick  = idData(2);
+    order           = idData(3);
     int matClassTag = idData( 4 );
 
 
-    // cout << "EightNodeBrickLT::recvSelf() numDOF           = " << numDOF << "\n";
-    // cout << "EightNodeBrickLT::recvSelf() nodes_in_brick   = " << nodes_in_brick << "\n";
-    // cout << "EightNodeBrickLT::recvSelf() order            = " << order << "\n";
-    // cout << "EightNodeBrickLT::recvSelf() materialclasstag = " << idData(4) << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() numDOF           = " << numDOF << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() nodes_in_brick   = " << nodes_in_brick << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() order            = " << order << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() materialclasstag = " << idData(4) << "\n";
 
 
     Vector floatData(4);
-    if ( theChannel.recvVector( 0, commitTag, floatData ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, floatData ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::recvSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
     Volume                  = floatData(0) ;
@@ -1557,21 +1557,21 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
     determinant_of_Jacobian = floatData(2) ;
     rho                     = floatData(3) ;
 
-    // cout << "EightNodeBrickLT::recvSelf() Volume                  = " << Volume << "\n";
-    // cout << "EightNodeBrickLT::recvSelf() e_p                     = " << e_p << "\n";
-    // cout << "EightNodeBrickLT::recvSelf() determinant_of_Jacobian = " << determinant_of_Jacobian << "\n";
-    // cout << "EightNodeBrickLT::recvSelf() rho                     = " << rho << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() Volume                  = " << Volume << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() e_p                     = " << e_p << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() determinant_of_Jacobian = " << determinant_of_Jacobian << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() rho                     = " << rho << "\n";
 
 
     // Recieve the nodes
 
-    if ( theChannel.recvID( 0, commitTag, connectedExternalNodes ) < 0 )
+    if ( theChannel.receiveID( 0, commitTag, connectedExternalNodes ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::recvSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
         return -1;
     }
 
-    // cout << "EightNodeBrickLT::recvSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
 
     if ( material_array[0] == 0 )
     {
@@ -1582,14 +1582,14 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
             NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
             if ( ndmat == 0 )
             {
-                cerr << "EightNodeBrickLT::recvSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
+                cerr << "EightNodeBrickLT::receiveSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
                 return -1;
             }
 
             // Now receive materials into the newly allocated space
-            if ( ( ndmat )->recvSelf( commitTag, theChannel, theBroker ) < 0 )
+            if ( ( ndmat )->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
             {
-                cerr << "EightNodeBrickLT::recvSelf() - material " << i << "failed to recv itself\n";
+                cerr << "EightNodeBrickLT::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
 
@@ -1598,30 +1598,30 @@ int EightNodeBrickLT::recvSelf ( int commitTag, Channel &theChannel, FEM_ObjectB
     }
 
     // Q
-    if ( theChannel.recvVector( 0, commitTag, Q ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, Q ) < 0 )
     {
-        cerr << "EightNodeBrickLT::recvSelf() - failed to recv Q!\n";
+        cerr << "EightNodeBrickLT::receiveSelf() - failed to recv Q!\n";
         return -1;
     }
 
     // bf
-    if ( theChannel.recvVector( 0, commitTag, bf ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, bf ) < 0 )
     {
-        cerr << "EightNodeBrickLT::recvSelf() - failed to recv bf!\n";
+        cerr << "EightNodeBrickLT::receiveSelf() - failed to recv bf!\n";
         return -1;
     }
 
     // gauss_points
-    if ( theChannel.recvMatrix( 0, commitTag, gauss_points ) < 0 )
+    if ( theChannel.receiveMatrix( 0, commitTag, gauss_points ) < 0 )
     {
-        cerr << "EightNodeBrickLT::recvSelf() - failed to recv gauss_points!\n";
+        cerr << "EightNodeBrickLT::receiveSelf() - failed to recv gauss_points!\n";
         return -1;
     }
 
     // outputVector
-    if ( theChannel.recvVector( 0, commitTag, outputVector ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
     {
-        cerr << "EightNodeBrickLT::recvSelf() - failed to recv outputVector!\n";
+        cerr << "EightNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
         return -1;
     }
 

@@ -308,7 +308,7 @@ ElasticSection3d::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ElasticSection3d::recvSelf(int commitTag, Channel& theChannel,
+ElasticSection3d::receiveSelf(int commitTag, Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
     int res = 0;
@@ -317,11 +317,11 @@ ElasticSection3d::recvSelf(int commitTag, Channel& theChannel,
 
     int dataTag = this->getDbTag();
 
-    res += theChannel.recvVector(dataTag, commitTag, data);
+    res += theChannel.receiveVector(dataTag, commitTag, data);
 
     if(res < 0)
     {
-        cerr << "ElasticSection3d::recvSelf -- failed to receive data\n";
+        cerr << "ElasticSection3d::receiveSelf -- failed to receive data\n";
         return res;
     }
 

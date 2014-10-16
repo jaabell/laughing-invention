@@ -650,7 +650,7 @@ PathSeries_Disp_TimeHistory_Penalty::sendSelf(int commitTag, Channel& theChannel
 //Implemented by Babak Jume 24 2013
 //---------
 int
-PathSeries_Disp_TimeHistory_Penalty::recvSelf(int commitTag, Channel& theChannel,
+PathSeries_Disp_TimeHistory_Penalty::receiveSelf(int commitTag, Channel& theChannel,
         FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
@@ -661,9 +661,9 @@ PathSeries_Disp_TimeHistory_Penalty::recvSelf(int commitTag, Channel& theChannel
     //---
     static ID intData(5);
 
-    if (theChannel.recvID(dataTag, commitTag, intData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, intData) < 0)
     {
-        std::cerr << "PathSeries_Disp_TimeHistory_Penalty::recvSelf() -- failed to recv intData\n";
+        std::cerr << "PathSeries_Disp_TimeHistory_Penalty::receiveSelf() -- failed to recv intData\n";
         return -1;
     }
 
@@ -681,9 +681,9 @@ PathSeries_Disp_TimeHistory_Penalty::recvSelf(int commitTag, Channel& theChannel
     //---
     static Vector doubleData(2);
 
-    if (theChannel.recvVector(dataTag, commitTag, doubleData) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, doubleData) < 0)
     {
-        std::cerr << "PathSeries_Disp_TimeHistory_Penalty::recvSelf() -- failed to recv doubleData\n";
+        std::cerr << "PathSeries_Disp_TimeHistory_Penalty::receiveSelf() -- failed to recv doubleData\n";
         return -1;
     }
 
@@ -696,9 +696,9 @@ PathSeries_Disp_TimeHistory_Penalty::recvSelf(int commitTag, Channel& theChannel
 
     //Receiving time ...
     //---
-    if (theChannel.recvVector(dataTag, commitTag, *time) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, *time) < 0)
     {
-        std::cerr << "PathSeries_Disp_TimeHistory_Penalty::recvSelf() -- failed to recv time\n";
+        std::cerr << "PathSeries_Disp_TimeHistory_Penalty::receiveSelf() -- failed to recv time\n";
         return -1;
     }
 
@@ -708,9 +708,9 @@ PathSeries_Disp_TimeHistory_Penalty::recvSelf(int commitTag, Channel& theChannel
 
     //Receiving time ...
     //---
-    if (theChannel.recvVector(dataTag, commitTag, *thePath) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, *thePath) < 0)
     {
-        std::cerr << "PathSeries_Disp_TimeHistory_Penalty::recvSelf() -- failed to recv thePath\n";
+        std::cerr << "PathSeries_Disp_TimeHistory_Penalty::receiveSelf() -- failed to recv thePath\n";
         return -1;
     }
 

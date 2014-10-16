@@ -1067,12 +1067,12 @@ Subdomain::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-Subdomain::recvSelf(int cTag, Channel &theChannel,
+Subdomain::receiveSelf(int cTag, Channel &theChannel,
                     FEM_ObjectBroker &theBroker)
 {
     int dataTag = this->getDbTag();
     ID data(2);
-    theChannel.recvID(dataTag, cTag, data);
+    theChannel.receiveID(dataTag, cTag, data);
 
     if (data(1) == 0)
     {
@@ -1080,7 +1080,7 @@ Subdomain::recvSelf(int cTag, Channel &theChannel,
 
         if (theAnalysis != 0)
         {
-            return theAnalysis->recvSelf(cTag, theChannel, theBroker);
+            return theAnalysis->receiveSelf(cTag, theChannel, theBroker);
         }
     }
 

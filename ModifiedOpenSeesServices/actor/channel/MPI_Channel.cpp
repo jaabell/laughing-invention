@@ -143,7 +143,7 @@ MPI_Channel::sendObj(int commitTag,
 }
 
 int
-MPI_Channel::recvObj(int commitTag,
+MPI_Channel::receiveObj(int commitTag,
                      MovableObject &theObject,
                      FEM_ObjectBroker &theBroker,
                      ChannelAddress *theAddress)
@@ -161,14 +161,14 @@ MPI_Channel::recvObj(int commitTag,
         }
         else
         {
-            cerr << "MPI_Channel::recvObj() - a MPI_Channel ";
+            cerr << "MPI_Channel::receiveObj() - a MPI_Channel ";
             cerr << "can only communicate with a MPI_Channel";
             cerr << " address given is not of type MPI_ChannelAddress\n";
             return -1;
         }
     }
 
-    return theObject.recvSelf(commitTag, *this, theBroker);
+    return theObject.receiveSelf(commitTag, *this, theBroker);
 }
 
 
@@ -176,7 +176,7 @@ MPI_Channel::recvObj(int commitTag,
 //  Method to receive a message, also sets other_Addr to that of sender
 
 int
-MPI_Channel::recvMsg(int dbTag, int commitTag, Message &msg, ChannelAddress *theAddress)
+MPI_Channel::receiveMsg(int dbTag, int commitTag, Message &msg, ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
     MPI_ChannelAddress *theMPI_ChannelAddress = 0;
@@ -261,7 +261,7 @@ MPI_Channel::sendMsg(int dbTag, int commitTag, const Message &msg, ChannelAddres
 }
 
 int
-MPI_Channel::recvMatrix(int dbTag, int commitTag, Matrix &theMatrix, ChannelAddress *theAddress)
+MPI_Channel::receiveMatrix(int dbTag, int commitTag, Matrix &theMatrix, ChannelAddress *theAddress)
 
 {
     // first check address is the only address a MPI_Channel can send to
@@ -277,7 +277,7 @@ MPI_Channel::recvMatrix(int dbTag, int commitTag, Matrix &theMatrix, ChannelAddr
         }
         else
         {
-            cerr << "MPI_Channel::recvMatrix() - a MPI_Channel ";
+            cerr << "MPI_Channel::receiveMatrix() - a MPI_Channel ";
             cerr << "can only communicate with a MPI_Channel";
             cerr << " address given is not of type MPI_ChannelAddress\n";
             return -1;
@@ -299,7 +299,7 @@ MPI_Channel::recvMatrix(int dbTag, int commitTag, Matrix &theMatrix, ChannelAddr
 
     if (count != nleft)
     {
-        cerr << "MPI_Channel::recvMatrix() -";
+        cerr << "MPI_Channel::receiveMatrix() -";
         cerr << " incorrect number of entries for Matrix received: " << count << "\n";
         return -1;
     }
@@ -356,7 +356,7 @@ MPI_Channel::sendMatrix(int dbTag, int commitTag, const Matrix &theMatrix, Chann
 
 
 int
-MPI_Channel::recvVector(int dbTag, int commitTag, Vector &theVector, ChannelAddress *theAddress)
+MPI_Channel::receiveVector(int dbTag, int commitTag, Vector &theVector, ChannelAddress *theAddress)
 
 {
     // first check address is the only address a MPI_Channel can send to
@@ -372,7 +372,7 @@ MPI_Channel::recvVector(int dbTag, int commitTag, Vector &theVector, ChannelAddr
         }
         else
         {
-            cerr << "MPI_Channel::recvVector() - a MPI_Channel ";
+            cerr << "MPI_Channel::receiveVector() - a MPI_Channel ";
             cerr << "can only communicate with a MPI_Channel";
             cerr << " address given is not of type MPI_ChannelAddress\n";
             return -1;
@@ -393,7 +393,7 @@ MPI_Channel::recvVector(int dbTag, int commitTag, Vector &theVector, ChannelAddr
 
     if (count != nleft)
     {
-        cerr << "MPI_Channel::recvVector() -";
+        cerr << "MPI_Channel::receiveVector() -";
         cerr << " incorrect number of entries for Vector received: " << count <<
              " expected: " << theVector.sz << "\n";
 
@@ -448,15 +448,15 @@ MPI_Channel::sendVector(int dbTag, int commitTag, const Vector &theVector, Chann
 
 
 int
-MPI_Channel::recvID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress)
+MPI_Channel::receiveID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress)
 {
 
 #ifdef _BABAK_DEBUG
 
     if (theID(1) == 7001)
     {
-        cerr << "Babak@ MPI_Channel::recvID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress) ... ClassTag " << theID << "\n";
-        cerr << "Babak@ MPI_Channel::recvID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress) ... IDSize " << theID.sz << "\n";
+        cerr << "Babak@ MPI_Channel::receiveID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress) ... ClassTag " << theID << "\n";
+        cerr << "Babak@ MPI_Channel::receiveID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress) ... IDSize " << theID.sz << "\n";
 
     }
 
@@ -474,7 +474,7 @@ MPI_Channel::recvID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddr
         }
         else
         {
-            cerr << "MPI_Channel::recvID() - a MPI_Channel ";
+            cerr << "MPI_Channel::receiveID() - a MPI_Channel ";
             cerr << "can only communicate with a MPI_Channel";
             cerr << " address given is not of type MPI_ChannelAddress\n";
             return -1;
@@ -495,11 +495,11 @@ MPI_Channel::recvID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddr
 
     //    int rank;
     //MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    //cerr << "MPI_Channel::recvID " << rank << " " << otherTag << " " << theID;
+    //cerr << "MPI_Channel::receiveID " << rank << " " << otherTag << " " << theID;
 
     if (count != nleft)
     {
-        cerr << "MPI_Channel::recvID() -";
+        cerr << "MPI_Channel::receiveID() -";
         cerr << " incorrect number of entries for ID received: " << count << "\n";
         return -1;
     }
@@ -596,7 +596,7 @@ MPI_Channel::sendnDarray(int dbTag, int commitTag, const nDarray &theNDarray, Ch
 
 //Guanzhou added
 int
-MPI_Channel::recvnDarray(int dbTag, int commitTag, nDarray &theNDarray, ChannelAddress *theAddress)
+MPI_Channel::receivenDarray(int dbTag, int commitTag, nDarray &theNDarray, ChannelAddress *theAddress)
 {
     // first check address is the only address a MPI_Channel can send to
     MPI_ChannelAddress *theMPI_ChannelAddress = 0;
@@ -631,7 +631,7 @@ MPI_Channel::recvnDarray(int dbTag, int commitTag, nDarray &theNDarray, ChannelA
 
     if (count != elem)
     {
-        cerr << "MPI_Channel::recvnDarray() -";
+        cerr << "MPI_Channel::receivenDarray() -";
         cerr << " incorrect number of entries for nDarray recieved ";
         return -1;
     }
@@ -642,7 +642,7 @@ MPI_Channel::recvnDarray(int dbTag, int commitTag, nDarray &theNDarray, ChannelA
     //    MPI_Get_count(&status, MPI_DOUBLE, &count);
     //    if (count != rank)
     //    {
-    //        cerr<<"MPI_Channel::recvnDarray() -";
+    //        cerr<<"MPI_Channel::receivenDarray() -";
     //        cerr<<" incorrect number of entries for nDarray dims recieved ";
     //        return -1;
     //    }

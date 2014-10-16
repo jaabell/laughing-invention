@@ -4357,7 +4357,7 @@ int TwentyNodeBrickElastic::sendSelf (int commitTag, Channel &theChannel)
 }
 
 //=============================================================================
-int TwentyNodeBrickElastic::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int TwentyNodeBrickElastic::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     // Not implemtented yet
     return 0;

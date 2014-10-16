@@ -395,7 +395,7 @@ MeshRegion::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-MeshRegion::recvSelf(int commitTag, Channel& theChannel,
+MeshRegion::receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker)
 {
     // get my current database tag
@@ -405,9 +405,9 @@ MeshRegion::recvSelf(int commitTag, Channel& theChannel,
     // into an ID we place all info needed to determine state of MeshRegion
     ID lpData(6);
 
-    if (theChannel.recvID(myDbTag, commitTag, lpData) < 0)
+    if (theChannel.receiveID(myDbTag, commitTag, lpData) < 0)
     {
-        cerr << "MeshRegion::recvSelf - channel failed to recv the initial ID\n";
+        cerr << "MeshRegion::receiveSelf - channel failed to recv the initial ID\n";
         return -1;
     }
 
@@ -444,14 +444,14 @@ MeshRegion::recvSelf(int commitTag, Channel& theChannel,
         }
 
         if (numNod != 0)
-            if (theChannel.recvID(dbNod, currentGeoTag, *theNodes) < 0)
+            if (theChannel.receiveID(dbNod, currentGeoTag, *theNodes) < 0)
             {
                 cerr << "MeshRegion::sendSelf - channel failed to recv the nodes\n";
                 return -1;
             }
 
         if (numEle != 0)
-            if (theChannel.recvID(dbEle, currentGeoTag, *theElements) < 0)
+            if (theChannel.receiveID(dbEle, currentGeoTag, *theElements) < 0)
             {
                 cerr << "MeshRegion::sendSelf - channel failed to recv the elements\n";
                 return -1;

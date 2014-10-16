@@ -567,17 +567,17 @@ HystereticMaterial::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-HystereticMaterial::recvSelf(int commitTag, Channel& theChannel,
+HystereticMaterial::receiveSelf(int commitTag, Channel& theChannel,
                              FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
     static Vector data(27);
-    res = theChannel.recvVector(this->getDbTag(), commitTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), commitTag, data);
 
     if (res < 0)
     {
-        cerr << "HystereticMaterial::recvSelf() - failed to receive data\n";
+        cerr << "HystereticMaterial::receiveSelf() - failed to receive data\n";
         return res;
     }
     else

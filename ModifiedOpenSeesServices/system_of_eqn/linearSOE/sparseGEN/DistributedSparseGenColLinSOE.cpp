@@ -99,7 +99,7 @@ DistributedSparseGenColLinSOE::setSize(Graph& theGraph)
         theGraph.sendSelf(0, *theChannel);
 
         static ID data(2);
-        theChannel->recvID(0, 0, data);
+        theChannel->receiveID(0, 0, data);
         size = data(0);
         nnz = data(1);
 
@@ -160,8 +160,8 @@ DistributedSparseGenColLinSOE::setSize(Graph& theGraph)
 
         ID rowAdata(rowA, nnz);
         ID colStartAdata(colStartA, size + 1);
-        theChannel->recvID(0, 0, rowAdata);
-        theChannel->recvID(0, 0, colStartAdata);
+        theChannel->receiveID(0, 0, rowAdata);
+        theChannel->receiveID(0, 0, colStartAdata);
     }
 
     // if main domain, collect graphs from all subdomains,
@@ -178,7 +178,7 @@ DistributedSparseGenColLinSOE::setSize(Graph& theGraph)
         {
             Channel* theChannel = theChannels[j];
             Graph theSubGraph;
-            theSubGraph.recvSelf(0, *theChannel, theBroker);
+            theSubGraph.receiveSelf(0, *theChannel, theBroker);
             theGraph.merge(theSubGraph);
 
             int numSubVertex = theSubGraph.getNumVertex();
@@ -220,7 +220,7 @@ DistributedSparseGenColLinSOE::setSize(Graph& theGraph)
             theChannel->sendID(0, 0, data);
 
             ID* subMap = localCol[j];
-            theChannel->recvID(0, 0, *subMap);
+            theChannel->receiveID(0, 0, *subMap);
         }
 
         if (nnz > Asize)   // we have to get more space for A and rowA
@@ -682,9 +682,9 @@ DistributedSparseGenColLinSOE::solve(void)
         }
 
         // receive X,B and result
-        theChannel->recvVector(0, 0, *vectX);
-        theChannel->recvVector(0, 0, *vectB);
-        theChannel->recvID(0, 0, result);
+        theChannel->receiveVector(0, 0, *vectX);
+        theChannel->receiveVector(0, 0, *vectB);
+        theChannel->receiveID(0, 0, result);
         factored = true;
     }
 
@@ -704,13 +704,13 @@ DistributedSparseGenColLinSOE::solve(void)
 
             // get X & add
             Channel* theChannel = theChannels[j];
-            theChannel->recvVector(0, 0, *vectX);
+            theChannel->receiveVector(0, 0, *vectX);
             *vectB += *vectX;
 
             if (factored == false)
             {
                 Vector vectA(workArea, nnz);
-                theChannel->recvVector(0, 0, vectA);
+                theChannel->receiveVector(0, 0, vectA);
 
                 for (int i = 0; i < nnz; i++)
                 {
@@ -723,7 +723,7 @@ DistributedSparseGenColLinSOE::solve(void)
             const ID &localMap = *(localCol[j]);
             int localSize = localMap.Size() * half_band;
             Vector vectA(workArea, localSize);
-            theChannel->recvVector(0, 0, vectA);
+            theChannel->receiveVector(0, 0, vectA);
 
             int loc = 0;
             for (int i=0; i<localMap.Size(); i++) {
@@ -765,7 +765,7 @@ DistributedSparseGenColLinSOE::getB(void)
 
         // send B & recv merged B
         theChannel->sendVector(0, 0, *myVectB);
-        theChannel->recvVector(0, 0, *vectB);
+        theChannel->receiveVector(0, 0, *vectB);
     }
 
     //
@@ -784,7 +784,7 @@ DistributedSparseGenColLinSOE::getB(void)
         {
 
             Channel* theChannel = theChannels[j];
-            theChannel->recvVector(0, 0, remoteB);
+            theChannel->receiveVector(0, 0, remoteB);
             *vectB += remoteB;
         }
 
@@ -899,14 +899,14 @@ DistributedSparseGenColLinSOE::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-DistributedSparseGenColLinSOE::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+DistributedSparseGenColLinSOE::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     ID idData(1);
-    int res = theChannel.recvID(0, commitTag, idData);
+    int res = theChannel.receiveID(0, commitTag, idData);
 
     if (res < 0)
     {
-        cerr << "WARNING DistributedSparseGenColLinSOE::recvSelf() - failed to send data\n";
+        cerr << "WARNING DistributedSparseGenColLinSOE::receiveSelf() - failed to send data\n";
         return -1;
     }
 

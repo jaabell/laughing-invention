@@ -239,16 +239,16 @@ int PressureDependent_Elastic::sendSelf(int commitTag, Channel& theChannel)
 }
 
 //Guanzhou added for parallel
-int PressureDependent_Elastic::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+int PressureDependent_Elastic::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
 
     static ID idData(5);
     idData.Zero();
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "PressureDependent_Elastic::recvSelf -- failed to recv ID\n";
+        cerr << "PressureDependent_Elastic::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 
@@ -258,15 +258,15 @@ int PressureDependent_Elastic::recvSelf(int commitTag, Channel& theChannel, FEM_
     p_ref_index = idData(3);
     k_cut_index = idData(4);
 
-    if (theChannel.recvnDarray(dataTag, commitTag, this->Stress) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, this->Stress) < 0)
     {
-        cerr << "PressureDependent_Elastic::recvSelf() -  failed to recv nDarray Stress\n";
+        cerr << "PressureDependent_Elastic::receiveSelf() -  failed to recv nDarray Stress\n";
         return -1;
     }
 
-    if (theChannel.recvnDarray(dataTag, commitTag, this->Strain) < 0)
+    if (theChannel.receivenDarray(dataTag, commitTag, this->Strain) < 0)
     {
-        cerr << "PressureDependent_Elastic::recvSelf() -  failed to recv nDarray Strain\n";
+        cerr << "PressureDependent_Elastic::receiveSelf() -  failed to recv nDarray Strain\n";
         return -1;
     }
 

@@ -722,17 +722,17 @@ ElasticBeamLumpedMass::sendSelf(int cTag, Channel &theChannel)
 }
 
 int
-ElasticBeamLumpedMass::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+ElasticBeamLumpedMass::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
     static Vector data(12);
 
-    res += theChannel.recvVector(this->getDbTag(), cTag, data);
+    res += theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        std::cerr << "ElasticBeamLumpedMass::recvSelf -- could not receive data Vector\n";
+        std::cerr << "ElasticBeamLumpedMass::receiveSelf -- could not receive data Vector\n";
         return res;
     }
 
@@ -752,7 +752,7 @@ ElasticBeamLumpedMass::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker 
     //     if (theCoordTransf == 0) {
     //       theCoordTransf = theBroker.getNewCrdTransf3d(crdTag);
     //       if (theCoordTransf == 0) {
-    //  std::cerr << "ElasticBeamLumpedMass::recvSelf -- could not get a CrdTransf\n";
+    //  std::cerr << "ElasticBeamLumpedMass::receiveSelf -- could not get a CrdTransf\n";
     //  exit(-1);
     //       }
     //     }
@@ -763,16 +763,16 @@ ElasticBeamLumpedMass::recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker 
     //       delete theCoordTransf;
     //       theCoordTransf = theBroker.getNewCrdTransf3d(crdTag);
     //       if (theCoordTransf == 0) {
-    //  std::cerr << "ElasticBeamLumpedMass::recvSelf -- could not get a CrdTransf\n";
+    //  std::cerr << "ElasticBeamLumpedMass::receiveSelf -- could not get a CrdTransf\n";
     //  exit(-1);
     //       }
     //     }
 
     // Now, receive the CoordTransf
     //     theCoordTransf->setDbTag((int)data(11));
-    //     res += theCoordTransf->recvSelf(cTag, theChannel, theBroker);
+    //     res += theCoordTransf->receiveSelf(cTag, theChannel, theBroker);
     //     if (res < 0) {
-    //       std::cerr << "ElasticBeamLumpedMass::recvSelf -- could not receive CoordTransf\n";
+    //       std::cerr << "ElasticBeamLumpedMass::receiveSelf -- could not receive CoordTransf\n";
     //       return res;
     //     }
 

@@ -177,16 +177,16 @@ ViscousMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ViscousMaterial::recvSelf(int cTag, Channel& theChannel,
+ViscousMaterial::receiveSelf(int cTag, Channel& theChannel,
                           FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(4);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "ViscousMaterial::recvSelf() - failed to receive data\n";
+        cerr << "ViscousMaterial::receiveSelf() - failed to receive data\n";
         C = 0;
         this->setTag(0);
     }

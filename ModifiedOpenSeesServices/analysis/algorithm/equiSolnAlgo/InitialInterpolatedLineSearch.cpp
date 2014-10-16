@@ -204,7 +204,7 @@ InitialInterpolatedLineSearch::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-InitialInterpolatedLineSearch::recvSelf(int cTag,
+InitialInterpolatedLineSearch::receiveSelf(int cTag,
                                         Channel& theChannel,
                                         FEM_ObjectBroker& theBroker)
 {

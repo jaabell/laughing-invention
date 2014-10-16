@@ -94,9 +94,9 @@ DistributedSuperLU::solve(void)
     if (processID != 0)
     {
         Channel* theChannel = theChannels[0];
-        theChannel->recvVector(0, 0, (*theSOE->vectB));
+        theChannel->receiveVector(0, 0, (*theSOE->vectB));
         Vector vectA(theSOE->A, theSOE->nnz);
-        theChannel->recvVector(0, 0, vectA);
+        theChannel->receiveVector(0, 0, vectA);
     }
 
     //
@@ -182,7 +182,7 @@ DistributedSuperLU::solve(void)
       for (int j=0; j<numChannels; j++) {
         static ID idData(1);
         Channel *theChannel = theChannels[j];
-        theChannel->recvID(0, 0, idData);
+        theChannel->receiveID(0, 0, idData);
       }
     }
     */
@@ -381,17 +381,17 @@ DistributedSuperLU::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-DistributedSuperLU::recvSelf(int cTag,
+DistributedSuperLU::receiveSelf(int cTag,
                              Channel& theChannel,
                              FEM_ObjectBroker& theBroker)
 {
     static ID idData(3);
 
-    int res = theChannel.recvID(0, cTag, idData);
+    int res = theChannel.receiveID(0, cTag, idData);
 
     if (res < 0)
     {
-        cerr << "WARNING DistributedSuperLU::recvSelf() - failed to receive data\n";
+        cerr << "WARNING DistributedSuperLU::receiveSelf() - failed to receive data\n";
         return -1;
     }
 

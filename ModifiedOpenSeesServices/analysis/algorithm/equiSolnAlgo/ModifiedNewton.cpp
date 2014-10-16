@@ -191,12 +191,12 @@ ModifiedNewton::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ModifiedNewton::recvSelf(int cTag,
+ModifiedNewton::receiveSelf(int cTag,
                          Channel& theChannel,
                          FEM_ObjectBroker& theBroker)
 {
     static ID data(1);
-    theChannel.recvID(this->getDbTag(), cTag, data);
+    theChannel.receiveID(this->getDbTag(), cTag, data);
     tangent = data(0);
     return 0;
 }

@@ -273,7 +273,7 @@ int vonMisesPPLT::sendSelf( int commitTag, Channel &theChannel )
     return 0;
 }
 
-int vonMisesPPLT::recvSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+int vonMisesPPLT::receiveSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
     return 0;
 }

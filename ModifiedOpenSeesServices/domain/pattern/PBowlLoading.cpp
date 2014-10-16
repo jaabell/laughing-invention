@@ -706,16 +706,16 @@ PBowlLoading::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
+PBowlLoading::receiveSelf(int commitTag, Channel &theChannel,
                        FEM_ObjectBroker &theBroker)
 {
     //Guanzhou implemented for parallel processing
     int dataTag = this->getDbTag();
     static ID idData(7);
 
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "PBowlLoading::recvSelf -- failed to recv ID\n";
+        cerr << "PBowlLoading::receiveSelf -- failed to recv ID\n";
         return -1;
     }
 
@@ -734,14 +734,14 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
 
     if (BoundaryNodes == 0 || BoundaryNodes->Size() == 0)
     {
-        cerr << "PBowlLoading::recvSelf() - ran out of memory constructing";
+        cerr << "PBowlLoading::receiveSelf() - ran out of memory constructing";
         cerr << " a ID of size: " <<  BoundaryNodes->Size() << endln;
         exit(1);
     }
 
-    if (theChannel.recvID(dataTag, commitTag, *BoundaryNodes) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, *BoundaryNodes) < 0)
     {
-        cerr << "PBowlLoading::recvSelf -- failed to recv BoundaryNodes\n";
+        cerr << "PBowlLoading::receiveSelf -- failed to recv BoundaryNodes\n";
         return -1;
     }
 
@@ -756,14 +756,14 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
 
     if (ExteriorNodes == 0 || ExteriorNodes->Size() == 0)
     {
-        cerr << "PBowlLoading::recvSelf() - ran out of memory constructing";
+        cerr << "PBowlLoading::receiveSelf() - ran out of memory constructing";
         cerr << " a ID of size: " << ExteriorNodes->Size() << endln;
         exit(1);
     }
 
-    if (theChannel.recvID(dataTag, commitTag, *ExteriorNodes) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, *ExteriorNodes) < 0)
     {
-        cerr << "PBowlLoading::recvSelf -- failed to recv ExteriorNodes\n";
+        cerr << "PBowlLoading::receiveSelf -- failed to recv ExteriorNodes\n";
         return -1;
     }
 
@@ -779,14 +779,14 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
 
     if (PBowlLoads == 0 || PBowlLoads->noRows() == 0 || PBowlLoads->noCols() == 0)
     {
-        cerr << "PBowlLoading::recvSelf() - ran out of memory constructing";
+        cerr << "PBowlLoading::receiveSelf() - ran out of memory constructing";
         cerr << " a Matrix of size (cols*rows): " << col << " * " << row << endln;
         exit(1);
     }
 
-    if (theChannel.recvMatrix(dataTag, commitTag, *PBowlLoads) < 0)
+    if (theChannel.receiveMatrix(dataTag, commitTag, *PBowlLoads) < 0)
     {
-        cerr << "PBowlLoading::recvSelf -- failed to recv Matrix PBowlLoads\n";
+        cerr << "PBowlLoading::receiveSelf -- failed to recv Matrix PBowlLoads\n";
         return -1;
     }
 
@@ -801,14 +801,14 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
 
     if (NodeID == 0 || NodeID->Size() == 0)
     {
-        cerr << "PBowlLoading::recvSelf() - ran out of memory constructing";
+        cerr << "PBowlLoading::receiveSelf() - ran out of memory constructing";
         cerr << " a ID of size: " << NodeID->Size() << endln;
         exit(1);
     }
 
-    if (theChannel.recvID(dataTag, commitTag, *NodeID) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, *NodeID) < 0)
     {
-        cerr << "PBowlLoading::recvSelf -- failed to recv NodeID\n";
+        cerr << "PBowlLoading::receiveSelf -- failed to recv NodeID\n";
         return -1;
     }
 
@@ -822,8 +822,8 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
     //  exit(1);
     //}
     //
-    //if (theChannel.recvMatrix(dataTag, commitTag, U) < 0) {
-    // cerr << "PBowlLoading::recvSelf -- failed to recv Matrix U\n";
+    //if (theChannel.receiveMatrix(dataTag, commitTag, U) < 0) {
+    // cerr << "PBowlLoading::receiveSelf -- failed to recv Matrix U\n";
     // return -1;
     //}
     //
@@ -837,8 +837,8 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
     //  exit(1);
     //}
     //
-    //if (theChannel.recvMatrix(dataTag, commitTag, Udd) < 0) {
-    // cerr << "PBowlLoading::recvSelf -- failed to recv Matrix Udd\n";
+    //if (theChannel.receiveMatrix(dataTag, commitTag, Udd) < 0) {
+    // cerr << "PBowlLoading::receiveSelf -- failed to recv Matrix Udd\n";
     // return -1;
     //}
     //
@@ -847,16 +847,16 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
     //if ( PBowlElements != 0 ) delete PBowlElements;
     //
     //PBowlElements = new ID(numPBE);
-    //if (theChannel.recvID(dataTag, commitTag, PBowlElements) < 0) {
-    // cerr << "PBowlLoading::recvSelf -- failed to recv PBowlElements\n";
+    //if (theChannel.receiveID(dataTag, commitTag, PBowlElements) < 0) {
+    // cerr << "PBowlLoading::receiveSelf -- failed to recv PBowlElements\n";
     // return -1;
     //}
 
     static Vector data(2);
 
-    if (theChannel.recvVector(dataTag, commitTag, data) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, data) < 0)
     {
-        cerr << "PBowlLoading::recvSelf -- failed to recv data\n";
+        cerr << "PBowlLoading::receiveSelf -- failed to recv data\n";
         return -1;
     }
 
@@ -869,7 +869,7 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
     //zPlus      =   data(6);
     //zMinus     =   data(7);
 
-    //cerr << "PBowlLoading::recvSelf() - the PBowlLoading received: \n";// << *PBowlLoads << endln;
+    //cerr << "PBowlLoading::receiveSelf() - the PBowlLoading received: \n";// << *PBowlLoads << endln;
 
     LoadComputed = true;
 
@@ -923,14 +923,14 @@ PBowlLoading::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
+PBowlLoading::receiveSelf(int commitTag, Channel &theChannel,
        FEM_ObjectBroker &theBroker)
 {
   // first get the tag and info about the number of ground motions from the Channel
   int myDbTag = this->getDbTag();
   ID theData(2);
-  if (theChannel.recvID(myDbTag, commitTag, theData) < 0) {
-    g3ErrorHandler->warning("PBowlLoading::recvSelf - channel failed to recv the initial ID");
+  if (theChannel.receiveID(myDbTag, commitTag, theData) < 0) {
+    g3ErrorHandler->warning("PBowlLoading::receiveSelf - channel failed to recv the initial ID");
     return -1;
   }
 
@@ -939,8 +939,8 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
 
   // now get info about each channel
   ID theMotionsData (2*theData(1));
-  if (theChannel.recvID(myDbTag, commitTag, theMotionsData) < 0) {
-    g3ErrorHandler->warning("PBowlLoading::recvSelf - channel failed to recv the motions ID");
+  if (theChannel.receiveID(myDbTag, commitTag, theMotionsData) < 0) {
+    g3ErrorHandler->warning("PBowlLoading::receiveSelf - channel failed to recv the motions ID");
     return -1;
   }
 
@@ -948,7 +948,7 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
   if (numMotions != theData(1)) {
 
     //
-    // we must delete the old motions and create new ones and then invoke recvSelf on these new ones
+    // we must delete the old motions and create new ones and then invoke receiveSelf on these new ones
     //
 
     if (numMotions != 0) {
@@ -959,7 +959,7 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
     numMotions = theData[1];
     theMotions = new (GroundMotion *)[numMotions];
     if (theMotions == 0) {
-      g3ErrorHandler->warning("PBowlLoading::recvSelf - out of memory creating motion array of size %d\n", numMotions);
+      g3ErrorHandler->warning("PBowlLoading::receiveSelf - out of memory creating motion array of size %d\n", numMotions);
       numMotions = 0;
       return -1;
     }
@@ -967,13 +967,13 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
     for (int i=0; i<numMotions; i++) {
       theMotions[i] = theBroker.getNewGroundMotion(theMotionsData[i]);
       if (theMotions[i] == 0) {
-  g3ErrorHandler->warning("PBowlLoading::recvSelf - out of memory creating motion array of size %d\n", numMotions);
+  g3ErrorHandler->warning("PBowlLoading::receiveSelf - out of memory creating motion array of size %d\n", numMotions);
   numMotions = 0;
   return -1;
       }
       theMotions[i]->setDbTag(theMotionsData[i+numMotions]);
-      if (theMotions[i]->recvSelf(commitTag, theChannel, theBroker) < 0) {
-  g3ErrorHandler->warning("PBowlLoading::recvSelf - motion no: %d failed in recvSelf", i);
+      if (theMotions[i]->receiveSelf(commitTag, theChannel, theBroker) < 0) {
+  g3ErrorHandler->warning("PBowlLoading::receiveSelf - motion no: %d failed in receiveSelf", i);
   numMotions = 0;
   return -1;
       }
@@ -982,14 +982,14 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
   } else {
 
     //
-    // we invoke rrecvSelf on the motions, note if a motion not of correct class
+    // we invoke rreceiveSelf on the motions, note if a motion not of correct class
     // we must invoke the destructor on the motion and create a new one of correct type
     //
 
     for (int i=0; i<numMotions; i++) {
       if (theMotions[i]->getClassTag() == theMotionsData[i]) {
-  if (theMotions[i]->recvSelf(commitTag, theChannel, theBroker) < 0) {
-    g3ErrorHandler->warning("PBowlLoading::recvSelf - motion no: %d failed in recvSelf", i);
+  if (theMotions[i]->receiveSelf(commitTag, theChannel, theBroker) < 0) {
+    g3ErrorHandler->warning("PBowlLoading::receiveSelf - motion no: %d failed in receiveSelf", i);
     return -1;
   }
       } else {
@@ -997,13 +997,13 @@ PBowlLoading::recvSelf(int commitTag, Channel &theChannel,
   delete theMotions[i];
   theMotions[i] = theBroker.getNewGroundMotion(theMotionsData[i]);
   if (theMotions[i] == 0) {
-    g3ErrorHandler->warning("PBowlLoading::recvSelf - out of memory creating motion array of size %d\n", numMotions);
+    g3ErrorHandler->warning("PBowlLoading::receiveSelf - out of memory creating motion array of size %d\n", numMotions);
     numMotions = 0;
     return -1;
   }
   theMotions[i]->setDbTag(theMotionsData[i+numMotions]);
-  if (theMotions[i]->recvSelf(commitTag, theChannel, theBroker) < 0) {
-    g3ErrorHandler->warning("PBowlLoading::recvSelf - motion no: %d failed in recvSelf", i);
+  if (theMotions[i]->receiveSelf(commitTag, theChannel, theBroker) < 0) {
+    g3ErrorHandler->warning("PBowlLoading::receiveSelf - motion no: %d failed in receiveSelf", i);
     numMotions = 0;
     return -1;
   }

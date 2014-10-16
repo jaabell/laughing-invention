@@ -103,16 +103,16 @@ Shadow::sendObject(MovableObject& theObject)
 }
 
 int
-Shadow::recvObject(MovableObject& theObject)
+Shadow::receiveObject(MovableObject& theObject)
 {
-    return theChannel->recvObj(commitTag, theObject, *theBroker, theRemoteActorsAddress);
+    return theChannel->receiveObj(commitTag, theObject, *theBroker, theRemoteActorsAddress);
 }
 
 
 int
 Shadow::recvMessage(Message& theMessage)
 {
-    return theChannel->recvMsg(0, commitTag, theMessage, theRemoteActorsAddress);
+    return theChannel->receiveMsg(0, commitTag, theMessage, theRemoteActorsAddress);
 }
 
 int
@@ -128,9 +128,9 @@ Shadow::sendMatrix(const Matrix& theMatrix)
 }
 
 int
-Shadow::recvMatrix(Matrix& theMatrix)
+Shadow::receiveMatrix(Matrix& theMatrix)
 {
-    return theChannel->recvMatrix(0, commitTag, theMatrix, theRemoteActorsAddress);
+    return theChannel->receiveMatrix(0, commitTag, theMatrix, theRemoteActorsAddress);
 }
 
 int
@@ -140,9 +140,9 @@ Shadow::sendVector(const Vector& theVector)
 }
 
 int
-Shadow::recvVector(Vector& theVector)
+Shadow::receiveVector(Vector& theVector)
 {
-    return theChannel->recvVector(0, commitTag, theVector, theRemoteActorsAddress);
+    return theChannel->receiveVector(0, commitTag, theVector, theRemoteActorsAddress);
 }
 
 int
@@ -160,17 +160,17 @@ Shadow::sendID(const ID& theID)
 }
 
 int
-Shadow::recvID(ID& theID)
+Shadow::receiveID(ID& theID)
 {
     #ifdef _BABAK_DEBUG
 
     if (theID(1) == 14)
     {
-        cerr << "Babak@ Shadow::recvID(ID &theID) ... theID " << theID << "\n";
+        cerr << "Babak@ Shadow::receiveID(ID &theID) ... theID " << theID << "\n";
     }
 
     #endif
-    return theChannel->recvID(0, commitTag, theID, theRemoteActorsAddress);
+    return theChannel->receiveID(0, commitTag, theID, theRemoteActorsAddress);
 }
 
 

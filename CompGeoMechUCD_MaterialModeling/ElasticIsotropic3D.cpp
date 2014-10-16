@@ -348,15 +348,15 @@ ElasticIsotropic3D::sendSelf (int commitTag, Channel& theChannel)
 
 //Reimplemented by Babak 5/31/14
 int
-ElasticIsotropic3D::recvSelf (int commitTag, Channel& theChannel,
+ElasticIsotropic3D::receiveSelf (int commitTag, Channel& theChannel,
                               FEM_ObjectBroker& theBroker)
 {
     int dataTag = this->getDbTag();
     static Vector data(4);
 
-    if (theChannel.recvVector(dataTag, commitTag, data) < 0)
+    if (theChannel.receiveVector(dataTag, commitTag, data) < 0)
     {
-        cerr << "WARNING -- ElasticIsotropicMaterial::recvSelf -- could not recv Vector\n";
+        cerr << "WARNING -- ElasticIsotropicMaterial::receiveSelf -- could not recv Vector\n";
         E = 0;
         this->setTag(0);
         return -1;

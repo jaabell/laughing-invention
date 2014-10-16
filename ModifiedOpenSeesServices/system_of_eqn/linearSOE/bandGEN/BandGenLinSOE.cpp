@@ -649,7 +649,7 @@ BandGenLinSOE::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-BandGenLinSOE::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+BandGenLinSOE::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     return 0;
 }

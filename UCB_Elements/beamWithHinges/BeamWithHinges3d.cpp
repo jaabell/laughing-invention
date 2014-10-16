@@ -1132,7 +1132,7 @@ BeamWithHinges3d::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
+BeamWithHinges3d::receiveSelf(int commitTag, Channel &theChannel,
                            FEM_ObjectBroker &theBroker)
 {
     // place the integer data into an ID
@@ -1142,9 +1142,9 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
 
     static ID idData(11);
 
-    if (theChannel.recvID(dbTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dbTag, commitTag, idData) < 0)
     {
-        std::cerr << "NLBeamColumn3d::recvSelf() - failed to recv ID data\n";
+        std::cerr << "NLBeamColumn3d::receiveSelf() - failed to recv ID data\n";
         return -1;
     }
 
@@ -1166,7 +1166,7 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
     //       theCoordTransf = theBroker.getNewCrdTransf3d(crdTransfClassTag);
 
     //       if (theCoordTransf == 0) {
-    //  std::cerr << "NLBeamColumn3d::recvSelf() - failed to obtain a CrdTrans object with classTag " <<
+    //  std::cerr << "NLBeamColumn3d::receiveSelf() - failed to obtain a CrdTrans object with classTag " <<
     //              crdTransfClassTag << endln;
     //    return -2;
     //       }
@@ -1175,8 +1175,8 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
 
     //   theCoordTransf->setDbTag(crdTransfDbTag);
 
-    // invoke recvSelf on the crdTransf obkject
-    //   if (theCoordTransf->recvSelf(commitTag, theChannel, theBroker) < 0)
+    // invoke receiveSelf on the crdTransf obkject
+    //   if (theCoordTransf->receiveSelf(commitTag, theChannel, theBroker) < 0)
     //   {
     //      std::cerr << "NLBeamColumn3d::sendSelf() - failed to recv crdTranf\n";
     //      return -3;
@@ -1191,7 +1191,7 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
     if (section[0] == 0)
     {
 
-        // if no sections yet created, we create new ones and then do a recvSelf
+        // if no sections yet created, we create new ones and then do a receiveSelf
         for (i = 0; i < 2; i++)
         {
             int sectClassTag = idData(loc);
@@ -1201,15 +1201,15 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
 
             if (section[i] == 0)
             {
-                std::cerr << "NLBeamColumn3d::recvSelf() - Broker could not create Section of class type" << sectClassTag << endln;
+                std::cerr << "NLBeamColumn3d::receiveSelf() - Broker could not create Section of class type" << sectClassTag << endln;
                 exit(-1);
             }
 
             section[i]->setDbTag(sectDbTag);
 
-            if (section[i]->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if (section[i]->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                std::cerr << "NLBeamColumn3d::recvSelf() - section " << i << " failed to recv itself\n";
+                std::cerr << "NLBeamColumn3d::receiveSelf() - section " << i << " failed to recv itself\n";
                 return -1;
             }
         }
@@ -1220,7 +1220,7 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
     else
     {
 
-        // if sections exist, we ensure of correct type and then do a recvSelf
+        // if sections exist, we ensure of correct type and then do a receiveSelf
         for (i = 0; i < 2; i++)
         {
 
@@ -1237,7 +1237,7 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
 
                 if (section[i] == 0)
                 {
-                    std::cerr << "NLBeamColumn3d::recvSelf() - Broker could not create Section of class type" << sectClassTag << endln;
+                    std::cerr << "NLBeamColumn3d::receiveSelf() - Broker could not create Section of class type" << sectClassTag << endln;
                     exit(-1);
                 }
             }
@@ -1245,9 +1245,9 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
             // recvvSelf on it
             section[i]->setDbTag(sectDbTag);
 
-            if (section[i]->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if (section[i]->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                std::cerr << "NLBeamColumn3d::recvSelf() - section " <<
+                std::cerr << "NLBeamColumn3d::receiveSelf() - section " <<
                           i << "failed to recv itself\n";
                 return -1;
             }
@@ -1267,7 +1267,7 @@ BeamWithHinges3d::recvSelf(int commitTag, Channel &theChannel,
     Vector dData(10 + 6 + 36 + secDefSize);
     loc = 0;
 
-    if (theChannel.recvVector(dbTag, commitTag, dData) < 0)
+    if (theChannel.receiveVector(dbTag, commitTag, dData) < 0)
     {
         std::cerr << "NLBeamColumn3d::sendSelf() - failed to send Vector data\n";
         return -1;
@@ -1391,7 +1391,7 @@ BeamWithHinges3d::setNodePtrs(Domain *theDomain)
 int
 BeamWithHinges3d::update(void)
 {
-    // if have completed a recvSelf() - do a revertToLastCommit
+    // if have completed a receiveSelf() - do a revertToLastCommit
     // to get e, kb, etc. set correctly
     if (initialFlag == 2)
     {

@@ -68,7 +68,7 @@ class ProfileSPDLinSOEGather : public LinearSOE
         int setProfileSPDSolver(ProfileSPDLinSolverGather& newSolver);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
 
         friend class ProfileSPDLinSolverGather;
 

@@ -69,7 +69,7 @@ class MP_Joint3D : public MP_Constraint
 
         // methods for output
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,
+        int receiveSelf(int commitTag, Channel& theChannel,
                      FEM_ObjectBroker& theBroker);
 
         void Print(ostream& s, int flag = 0);

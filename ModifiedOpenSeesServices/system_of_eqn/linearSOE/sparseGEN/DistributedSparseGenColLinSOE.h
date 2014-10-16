@@ -58,7 +58,7 @@ class DistributedSparseGenColLinSOE : public SparseGenColLinSOE
 
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
         friend class SuperLU;
         friend class ThreadedSuperLU;
         friend class DistributedSuperLU;

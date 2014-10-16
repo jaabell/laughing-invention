@@ -452,11 +452,11 @@ GroundMotionRecord::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-GroundMotionRecord::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+GroundMotionRecord::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int dbTag = this->getDbTag();
     static ID idData(6);
-    int res = theChannel.recvID(dbTag, commitTag, idData);
+    int res = theChannel.receiveID(dbTag, commitTag, idData);
 
     if (res < 0)
     {
@@ -487,7 +487,7 @@ GroundMotionRecord::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroke
         }
 
         theAccelTimeSeries->setDbTag(seriesDbTag);
-        res = theAccelTimeSeries->recvSelf(commitTag, theChannel, theBroker);
+        res = theAccelTimeSeries->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {
@@ -519,7 +519,7 @@ GroundMotionRecord::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroke
         }
 
         theVelTimeSeries->setDbTag(seriesDbTag);
-        res = theVelTimeSeries->recvSelf(commitTag, theChannel, theBroker);
+        res = theVelTimeSeries->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {
@@ -551,7 +551,7 @@ GroundMotionRecord::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroke
         }
 
         theDispTimeSeries->setDbTag(seriesDbTag);
-        res = theDispTimeSeries->recvSelf(commitTag, theChannel, theBroker);
+        res = theDispTimeSeries->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {

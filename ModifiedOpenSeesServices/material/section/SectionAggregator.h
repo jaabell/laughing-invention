@@ -80,7 +80,7 @@ class SectionAggregator : public SectionForceDeformation
         int getOrder (void) const;
 
         int sendSelf(int cTag, Channel &theChannel);
-        int recvSelf(int cTag, Channel &theChannel,
+        int receiveSelf(int cTag, Channel &theChannel,
                      FEM_ObjectBroker &theBroker);
 
         void Print(ostream &s, int flag = 0);

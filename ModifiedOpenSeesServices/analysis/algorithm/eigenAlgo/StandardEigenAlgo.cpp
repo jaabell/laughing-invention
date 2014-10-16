@@ -102,7 +102,7 @@ StandardEigenAlgo::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-StandardEigenAlgo::recvSelf(int cTag, Channel& theChannel,
+StandardEigenAlgo::receiveSelf(int cTag, Channel& theChannel,
                             FEM_ObjectBroker& theBroker)
 {
     return 0;

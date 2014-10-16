@@ -2340,7 +2340,7 @@ int EightNodeBrickVariableGP::sendSelf (int commitTag, Channel &theChannel)
 }
 
 
-int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int EightNodeBrickVariableGP::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     if ( !initialized )
     {
@@ -2352,9 +2352,9 @@ int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_
     static ID idData(11);
 
     // Quad now receives the tags of its four external nodes
-    if (theChannel.recvID(dataTag, commitTag, idData) < 0)
+    if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
     {
-        cerr << "WARNING EightNodeBrickVariableGP::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+        cerr << "WARNING EightNodeBrickVariableGP::receiveSelf() - " << this->getTag() << " failed to receive ID\n";
         return -1;
     }
 
@@ -2381,16 +2381,16 @@ int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_
 
             if (ndmat == 0)
             {
-                cerr << "EightNodeBrickVariableGP::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                cerr << "EightNodeBrickVariableGP::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
                 return -1;
             }
 
             // Now receive materials into the newly allocated space
             ndmat->setDbTag(matDbTag);
 
-            if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "EightNodeBrickVariableGP::recvSelf() - material " << i << "failed to recv itself\n";
+                cerr << "EightNodeBrickVariableGP::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
 
@@ -2398,7 +2398,7 @@ int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_
 
         }
     }
-    // materials exist , ensure materials of correct type and recvSelf on them
+    // materials exist , ensure materials of correct type and receiveSelf on them
     else
     {
         for (int i = 0; i < 8; i++)
@@ -2413,7 +2413,7 @@ int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_
 
                 if (ndmat ==  0)
                 {
-                    cerr << "EightNodeBrickVariableGP::recvSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
+                    cerr << "EightNodeBrickVariableGP::receiveSelf() - Broker could not create NDMaterial of class type " << matClassTag << endln;
                     return -1;
                 }
 
@@ -2421,9 +2421,9 @@ int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_
             }
 
             // Receive the material
-            if ((ndmat)->recvSelf(commitTag, theChannel, theBroker) < 0)
+            if ((ndmat)->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "EightNodeBrickVariableGP::recvSelf() - material " << i << "failed to recv itself\n";
+                cerr << "EightNodeBrickVariableGP::receiveSelf() - material " << i << "failed to recv itself\n";
                 return -1;
             }
 
@@ -2436,9 +2436,9 @@ int EightNodeBrickVariableGP::recvSelf (int commitTag, Channel &theChannel, FEM_
 
     static Vector matProp(1);
 
-    if ( theChannel.recvVector(dataTag, commitTag, matProp) < 0 )
+    if ( theChannel.receiveVector(dataTag, commitTag, matProp) < 0 )
     {
-        cerr << "EightNodeBrickVariableGP::recvSelf() - failed to recv rho!\n";
+        cerr << "EightNodeBrickVariableGP::receiveSelf() - failed to recv rho!\n";
         return -1;
     }
 

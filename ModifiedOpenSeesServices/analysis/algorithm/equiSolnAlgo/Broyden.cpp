@@ -496,7 +496,7 @@ Broyden::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-Broyden::recvSelf(int cTag,
+Broyden::receiveSelf(int cTag,
                   Channel& theChannel,
                   FEM_ObjectBroker& theBroker)
 {

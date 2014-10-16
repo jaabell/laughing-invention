@@ -151,7 +151,7 @@ ZeroLength::ZeroLength(int tag,
 
 
 //   Constructor:
-//   invoked by a FEM_ObjectBroker - blank object that recvSelf needs
+//   invoked by a FEM_ObjectBroker - blank object that receiveSelf needs
 //   to be invoked upon
 ZeroLength::ZeroLength(void)
     : Element(0, ELE_TAG_ZeroLength),
@@ -727,7 +727,7 @@ ZeroLength::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-ZeroLength::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+ZeroLength::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -738,20 +738,20 @@ ZeroLength::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
     static ID idData(6 + 1);
 
-    res += theChannel.recvID(dataTag, commitTag, idData);
+    res += theChannel.receiveID(dataTag, commitTag, idData);
 
     if (res < 0)
     {
-        std::cerr << "ZeroLength::recvSelf -- failed to receive ID data\n";
+        std::cerr << "ZeroLength::receiveSelf -- failed to receive ID data\n";
 
         return res;
     }
 
-    res += theChannel.recvMatrix(dataTag, commitTag, transformation);
+    res += theChannel.receiveMatrix(dataTag, commitTag, transformation);
 
     if (res < 0)
     {
-        std::cerr << "ZeroLength::recvSelf -- failed to receive transformation Matrix\n";
+        std::cerr << "ZeroLength::receiveSelf -- failed to receive transformation Matrix\n";
 
         return res;
     }
@@ -798,7 +798,7 @@ ZeroLength::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
             if (theMaterial1d == 0)
             {
-                std::cerr << "ZeroLength::recvSelf -- failed to new Material1d array\n";
+                std::cerr << "ZeroLength::receiveSelf -- failed to new Material1d array\n";
                 return -1;
             }
 
@@ -817,18 +817,18 @@ ZeroLength::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBr
 
             if (dir1d == 0)
             {
-                std::cerr << "ZeroLength::recvSelf -- failed to new dir ID\n";
+                std::cerr << "ZeroLength::receiveSelf -- failed to new dir ID\n";
 
                 return -1;
             }
         }
 
         ID classTags(3 * numMaterials1d);
-        res += theChannel.recvID(dataTag, commitTag, classTags);
+        res += theChannel.receiveID(dataTag, commitTag, classTags);
 
         if (res < 0)
         {
-            std::cerr << "ZeroLength::recvSelf -- failed to receive classTags ID\n";
+            std::cerr << "ZeroLength::receiveSelf -- failed to receive classTags ID\n";
             return res;
         }
 
@@ -852,17 +852,17 @@ ZeroLength::recvSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBr
             // Check if either allocation failed from broker
             if (theMaterial1d[i] == 0)
             {
-                std::cerr << "ZeroLength::recvSelf  -- failed to allocate new Material1d " << i << endln;
+                std::cerr << "ZeroLength::receiveSelf  -- failed to allocate new Material1d " << i << endln;
                 return -1;
             }
 
             // Receive the materials
             theMaterial1d[i]->setDbTag(classTags(i));
-            res += theMaterial1d[i]->recvSelf(commitTag, theChannel, theBroker);
+            res += theMaterial1d[i]->receiveSelf(commitTag, theChannel, theBroker);
 
             if (res < 0)
             {
-                std::cerr << "ZeroLength::recvSelf  -- failed to receive new Material1d " << i << endln;
+                std::cerr << "ZeroLength::receiveSelf  -- failed to receive new Material1d " << i << endln;
                 return res;
             }
 

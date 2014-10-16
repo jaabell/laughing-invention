@@ -279,11 +279,11 @@ BerkeleyDbDatastore::sendMsg(int dataTag, int commitTag,
 }
 
 int
-BerkeleyDbDatastore::recvMsg(int dataTag, int commitTag,
+BerkeleyDbDatastore::receiveMsg(int dataTag, int commitTag,
                              Message&,
                              ChannelAddress* theAddress)
 {
-    cerr << "BerkeleyDbDatastore::recvMsg() - not yet implemented\n";
+    cerr << "BerkeleyDbDatastore::receiveMsg() - not yet implemented\n";
     return -1;
 }
 
@@ -327,7 +327,7 @@ BerkeleyDbDatastore::sendMatrix(int dbTag, int commitTag,
 
 
 int
-BerkeleyDbDatastore::recvMatrix(int dbTag, int commitTag,
+BerkeleyDbDatastore::receiveMatrix(int dbTag, int commitTag,
                                 Matrix& theMatrix,
                                 ChannelAddress* theAddress)
 {
@@ -356,7 +356,7 @@ BerkeleyDbDatastore::recvMatrix(int dbTag, int commitTag,
 
     if ((ret = dbMatrix->get(dbMatrix, NULL, &key, &data, 0)) != 0)
     {
-        cerr << "BerkeleyDbDatastore::recvMatrix() - failed to get the Matrix from database\n";
+        cerr << "BerkeleyDbDatastore::receiveMatrix() - failed to get the Matrix from database\n";
         dbMatrix->err(dbMatrix, ret, "DB->get");
         return -2;
     }
@@ -405,7 +405,7 @@ BerkeleyDbDatastore::sendVector(int dbTag, int commitTag,
 
 
 int
-BerkeleyDbDatastore::recvVector(int dbTag, int commitTag,
+BerkeleyDbDatastore::receiveVector(int dbTag, int commitTag,
                                 Vector& theVector,
                                 ChannelAddress* theAddress)
 {
@@ -434,7 +434,7 @@ BerkeleyDbDatastore::recvVector(int dbTag, int commitTag,
 
     if ((ret = dbVector->get(dbVector, NULL, &key, &data, 0)) != 0)
     {
-        cerr << "BerkeleyDbDatastore::recvVector() - failed to get the Vector from database\n";
+        cerr << "BerkeleyDbDatastore::receiveVector() - failed to get the Vector from database\n";
         dbVector->err(dbVector, ret, "DB->get");
         return -2;
     }
@@ -486,7 +486,7 @@ BerkeleyDbDatastore::sendID(int dbTag, int commitTag,
 
 
 int
-BerkeleyDbDatastore::recvID(int dbTag, int commitTag,
+BerkeleyDbDatastore::receiveID(int dbTag, int commitTag,
                             ID& theID,
                             ChannelAddress* theAddress)
 {
@@ -519,7 +519,7 @@ BerkeleyDbDatastore::recvID(int dbTag, int commitTag,
 
     if ((ret = dbID->get(dbID, NULL, &key, &data, 0)) != 0)
     {
-        cerr << "BerkeleyDbDatastore::recvID() - failed to get the ID from database\n";
+        cerr << "BerkeleyDbDatastore::receiveID() - failed to get the ID from database\n";
         dbID->err(dbID, ret, "DB->get");
         return -2;
     }

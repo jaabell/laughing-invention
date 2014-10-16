@@ -286,7 +286,7 @@ int ElasticIsotropic3DLT::sendSelf( int commitTag, Channel &theChannel )
     return 0;
 }
 
-int ElasticIsotropic3DLT::recvSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+int ElasticIsotropic3DLT::receiveSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
 
     static ID idData(1);
@@ -294,7 +294,7 @@ int ElasticIsotropic3DLT::recvSelf( int commitTag, Channel &theChannel, FEM_Obje
     static Matrix a(3, 3);
 
 
-    if (theChannel.recvID(0, commitTag, idData) < 0)
+    if (theChannel.receiveID(0, commitTag, idData) < 0)
     {
         cerr << "ElasticIsotropic3DLT::sendSelf -- could not send idData\n";
         return -1;
@@ -302,7 +302,7 @@ int ElasticIsotropic3DLT::recvSelf( int commitTag, Channel &theChannel, FEM_Obje
     this->setTag(idData(0));
 
 
-    if (theChannel.recvVector(0, commitTag, vectorData) < 0)
+    if (theChannel.receiveVector(0, commitTag, vectorData) < 0)
     {
         cerr << "ElasticIsotropic3DLT::sendSelf -- could not send vectorData\n";
         return -1;
@@ -312,7 +312,7 @@ int ElasticIsotropic3DLT::recvSelf( int commitTag, Channel &theChannel, FEM_Obje
     E = vectorData(0);
 
 
-    if (theChannel.recvMatrix(0, 0, a) < 0)
+    if (theChannel.receiveMatrix(0, 0, a) < 0)
     {
         cerr << "ElasticIsotropic3DLT::sendSelf -- could not send Elastic Constant strain\n";
         return -1;
@@ -323,7 +323,7 @@ int ElasticIsotropic3DLT::recvSelf( int commitTag, Channel &theChannel, FEM_Obje
         {
             CommitStress(ii, jj) = a(ii, jj);
         }
-    if (theChannel.recvMatrix(0, 0, a) < 0)
+    if (theChannel.receiveMatrix(0, 0, a) < 0)
     {
         cerr << "ElasticIsotropic3DLT::sendSelf -- could not send Elastic Constant Tensor\n";
         return -1;

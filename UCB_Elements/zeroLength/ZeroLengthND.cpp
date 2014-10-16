@@ -641,7 +641,7 @@ ZeroLengthND::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-ZeroLengthND::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+ZeroLengthND::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
@@ -652,15 +652,15 @@ ZeroLengthND::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& the
 
     static ID idData(11);
 
-    res += theChannel.recvID(dataTag, commitTag, idData);
+    res += theChannel.receiveID(dataTag, commitTag, idData);
 
     if (res < 0)
     {
-        std::cerr << "ZeroLengtHND::recvSelf -- failed to receive ID data\n";
+        std::cerr << "ZeroLengtHND::receiveSelf -- failed to receive ID data\n";
         return res;
     }
 
-    res += theChannel.recvMatrix(dataTag, commitTag, transformation);
+    res += theChannel.receiveMatrix(dataTag, commitTag, transformation);
 
     if (res < 0)
     {
@@ -733,7 +733,7 @@ ZeroLengthND::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& the
 
     // Receive the NDMaterial
     theNDMaterial->setDbTag(idData(8));
-    res += theNDMaterial->recvSelf(commitTag, theChannel, theBroker);
+    res += theNDMaterial->receiveSelf(commitTag, theChannel, theBroker);
 
     if (res < 0)
     {
@@ -768,7 +768,7 @@ ZeroLengthND::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& the
 
         // Receive the UniaxialMaterial
         the1DMaterial->setDbTag(idData(10));
-        res += the1DMaterial->recvSelf(commitTag, theChannel, theBroker);
+        res += the1DMaterial->receiveSelf(commitTag, theChannel, theBroker);
 
         if (res < 0)
         {

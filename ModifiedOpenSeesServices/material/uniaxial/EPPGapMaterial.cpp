@@ -273,16 +273,16 @@ EPPGapMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-EPPGapMaterial::recvSelf(int cTag, Channel& theChannel,
+EPPGapMaterial::receiveSelf(int cTag, Channel& theChannel,
                          FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(9);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "EPPGapMaterial::recvSelf() - failed to recv data\n";
+        cerr << "EPPGapMaterial::receiveSelf() - failed to recv data\n";
     }
     else
     {

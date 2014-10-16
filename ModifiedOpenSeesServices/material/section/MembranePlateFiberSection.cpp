@@ -558,7 +558,7 @@ MembranePlateFiberSection::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-MembranePlateFiberSection::recvSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+MembranePlateFiberSection::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
@@ -566,11 +566,11 @@ MembranePlateFiberSection::recvSelf(int commitTag, Channel& theChannel, FEM_Obje
 
     static ID idData(11);
     // Quad now receives the tags of its four external nodes
-    res += theChannel.recvID(dataTag, commitTag, idData);
+    res += theChannel.receiveID(dataTag, commitTag, idData);
 
     if (res < 0)
     {
-        cerr << "WARNING MembranePlateFiberSection::recvSelf() - " << this->getTag() << " failed to receive ID\n";
+        cerr << "WARNING MembranePlateFiberSection::receiveSelf() - " << this->getTag() << " failed to receive ID\n";
         return res;
     }
 
@@ -589,18 +589,18 @@ MembranePlateFiberSection::recvSelf(int commitTag, Channel& theChannel, FEM_Obje
 
             if (theFibers[i] == 0)
             {
-                cerr << "MembranePlateFiberSection::recvSelf() - " <<
+                cerr << "MembranePlateFiberSection::receiveSelf() - " <<
                      "Broker could not create NDMaterial of class type " << matClassTag << endln;
                 return -1;
             }
 
             // Now receive materials into the newly allocated space
             theFibers[i]->setDbTag(matDbTag);
-            res += theFibers[i]->recvSelf(commitTag, theChannel, theBroker);
+            res += theFibers[i]->receiveSelf(commitTag, theChannel, theBroker);
 
             if (res < 0)
             {
-                cerr << "NLBeamColumn3d::recvSelf() - material " <<
+                cerr << "NLBeamColumn3d::receiveSelf() - material " <<
                      i << "failed to recv itself\n";
                 return res;
             }
@@ -623,7 +623,7 @@ MembranePlateFiberSection::recvSelf(int commitTag, Channel& theChannel, FEM_Obje
 
                 if (theFibers[i] == 0)
                 {
-                    cerr << "MembranePlateFiberSection::recvSelf() - " <<
+                    cerr << "MembranePlateFiberSection::receiveSelf() - " <<
                          "Broker could not create NDMaterial of class type" << matClassTag << endln;
                     exit(-1);
                 }
@@ -631,11 +631,11 @@ MembranePlateFiberSection::recvSelf(int commitTag, Channel& theChannel, FEM_Obje
 
             // Receive the material
             theFibers[i]->setDbTag(matDbTag);
-            res += theFibers[i]->recvSelf(commitTag, theChannel, theBroker);
+            res += theFibers[i]->receiveSelf(commitTag, theChannel, theBroker);
 
             if (res < 0)
             {
-                cerr << "MembranePlateFiberSection::recvSelf() - material " <<
+                cerr << "MembranePlateFiberSection::receiveSelf() - material " <<
                      i << ", failed to recv itself\n";
                 return res;
             }

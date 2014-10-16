@@ -61,21 +61,21 @@ class TCP_SocketNoDelay : public Channel
                     FEM_ObjectBroker& theBroker,
                     ChannelAddress* theAddress = 0);
 
-        int recvObj(MovableObject& theObject,
+        int receiveObj(MovableObject& theObject,
                     FEM_ObjectBroker& theBroker,
                     ChannelAddress* theAddress = 0);
 
-        int recvMsg(Message&, ChannelAddress* theAddress = 0);
+        int receiveMsg(Message&, ChannelAddress* theAddress = 0);
         int sendMsg(const Message&, ChannelAddress* theAddress = 0);
 
         int sendMatrix(const Matrix& theMatrix, ChannelAddress* theAddress = 0);
-        int recvMatrix(Matrix& theMatrix, ChannelAddress* theAddress = 0);
+        int receiveMatrix(Matrix& theMatrix, ChannelAddress* theAddress = 0);
 
         int sendVector(const Vector& theVector, ChannelAddress* theAddress = 0);
-        int recvVector(Vector& theVector, ChannelAddress* theAddress = 0);
+        int receiveVector(Vector& theVector, ChannelAddress* theAddress = 0);
 
         int sendID(const ID& theID, ChannelAddress* theAddress = 0);
-        int recvID(ID& theID, ChannelAddress* theAddress = 0);
+        int receiveID(ID& theID, ChannelAddress* theAddress = 0);
 
         unsigned int getPortNumber(void) const;
         char* addToProgram(void);

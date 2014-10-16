@@ -243,17 +243,17 @@ HardeningMaterial::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-HardeningMaterial::recvSelf(int cTag, Channel& theChannel,
+HardeningMaterial::receiveSelf(int cTag, Channel& theChannel,
                             FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 
     static Vector data(12);
-    res = theChannel.recvVector(this->getDbTag(), cTag, data);
+    res = theChannel.receiveVector(this->getDbTag(), cTag, data);
 
     if (res < 0)
     {
-        cerr << "HardeningMaterial::recvSelf() - failed to receive data\n";
+        cerr << "HardeningMaterial::receiveSelf() - failed to receive data\n";
         E = 0;
         this->setTag(0);
     }

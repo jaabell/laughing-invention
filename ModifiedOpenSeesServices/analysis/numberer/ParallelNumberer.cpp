@@ -171,14 +171,14 @@ ParallelNumberer::numberDOF(int lastDOF)
 
         /*
         static ID test(2); test(0) = processID; test(1) = 25;
-        theChannel->recvID(0, 0, test);
+        theChannel->receiveID(0, 0, test);
         */
 
         theGraph.sendSelf(0, *theChannel);
 
         // recv iD
         ID theID(2 * numVertex);
-        theChannel->recvID(0, 0, theID);
+        theChannel->receiveID(0, 0, theID);
 
         // set vertex numbering based on ID received
         for (int i = 0; i < numVertex; i ++)
@@ -256,7 +256,7 @@ ParallelNumberer::numberDOF(int lastDOF)
             theChannel->sendID(0, 0, test);
             */
 
-            theSubGraph->recvSelf(0, *theChannel, theBroker);
+            theSubGraph->receiveSelf(0, *theChannel, theBroker);
 
             theSubdomainIDs[j] = new ID(theSubGraph->getNumVertex() * 2);
 
@@ -382,7 +382,7 @@ ParallelNumberer::numberDOF(int lastDOF)
             }
 
             theChannel->sendID(0, 0, theSubdomain);
-            theChannel->recvID(0, 0, theSubdomain);
+            theChannel->receiveID(0, 0, theSubdomain);
             delete theSubdomainIDs[k];
         }
 
@@ -550,16 +550,16 @@ ParallelNumberer::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-ParallelNumberer::recvSelf(int cTag,
+ParallelNumberer::receiveSelf(int cTag,
                            Channel& theChannel,
                            FEM_ObjectBroker& theBroker)
 {
     ID idData(1);
-    int res = theChannel.recvID(0, cTag, idData);
+    int res = theChannel.receiveID(0, cTag, idData);
 
     if (res < 0)
     {
-        cerr << "WARNING Parallel::recvSelf() - failed to send data\n";
+        cerr << "WARNING Parallel::receiveSelf() - failed to send data\n";
         return -1;
     }
 
@@ -605,7 +605,7 @@ ParallelNumberer::numberDOF(ID& lastDOFs)
         int numVertex = theGraph.getNumVertex();
         theGraph.sendSelf(0, *theChannel);
         ID theID(2 * numVertex);
-        theChannel->recvID(0, 0, theID);
+        theChannel->receiveID(0, 0, theID);
 
         for (int i = 0; i < numVertex; i += 2)
         {
@@ -663,7 +663,7 @@ ParallelNumberer::numberDOF(ID& lastDOFs)
         {
             Channel* theChannel = theChannels[j];
             Graph theSubGraph;
-            theSubGraph.recvSelf(0, *theChannel, theBroker);
+            theSubGraph.receiveSelf(0, *theChannel, theBroker);
             theSubdomainIDs[j] = new ID(theSubGraph.getNumVertex() * 2);
             this->mergeSubGraph(theGraph, theSubGraph, vertexTags, vertexRefs, *theSubdomainIDs[j]);
         }

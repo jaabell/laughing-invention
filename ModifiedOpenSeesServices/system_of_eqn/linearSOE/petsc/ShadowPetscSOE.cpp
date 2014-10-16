@@ -474,7 +474,7 @@ ShadowPetscSOE::sendSelf(int cTag, Channel& theChannel)
 
 
 int
-ShadowPetscSOE::recvSelf(int cTag,
+ShadowPetscSOE::receiveSelf(int cTag,
                          Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     cerr << "WARNING ShadowPetscSOE::sendSelf - does not receive itself YET\n";

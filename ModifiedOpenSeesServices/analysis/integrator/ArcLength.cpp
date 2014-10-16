@@ -391,12 +391,12 @@ ArcLength::sendSelf(int cTag,
 
 
 int
-ArcLength::recvSelf(int cTag,
+ArcLength::receiveSelf(int cTag,
                     Channel& theChannel, FEM_ObjectBroker& theBroker)
 {
     Vector data(5);
 
-    if (theChannel.recvVector(this->getDbTag(), cTag, data) < 0)
+    if (theChannel.receiveVector(this->getDbTag(), cTag, data) < 0)
     {
         cerr << "ArcLength::sendSelf() - failed to send the data\n";
         return -1;

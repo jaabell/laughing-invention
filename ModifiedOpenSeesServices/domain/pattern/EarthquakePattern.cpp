@@ -251,14 +251,14 @@ EarthquakePattern::sendSelf(int commitTag, Channel &theChannel)
 }
 
 int
-EarthquakePattern::recvSelf(int commitTag, Channel &theChannel,
+EarthquakePattern::receiveSelf(int commitTag, Channel &theChannel,
              FEM_ObjectBroker &theBroker)
 {
   // first get the tag and info about the number of ground motions from the Channel
   int myDbTag = this->getDbTag();
   ID theData(2);
-  if (theChannel.recvID(myDbTag, commitTag, theData) < 0) {
-    g3ErrorHandler->warning("EarthquakePattern::recvSelf - channel failed to recv the initial ID");
+  if (theChannel.receiveID(myDbTag, commitTag, theData) < 0) {
+    g3ErrorHandler->warning("EarthquakePattern::receiveSelf - channel failed to recv the initial ID");
     return -1;
   }
 
@@ -267,8 +267,8 @@ EarthquakePattern::recvSelf(int commitTag, Channel &theChannel,
 
   // now get info about each channel
   ID theMotionsData (2*theData(1));
-  if (theChannel.recvID(myDbTag, commitTag, theMotionsData) < 0) {
-    g3ErrorHandler->warning("EarthquakePattern::recvSelf - channel failed to recv the motions ID");
+  if (theChannel.receiveID(myDbTag, commitTag, theMotionsData) < 0) {
+    g3ErrorHandler->warning("EarthquakePattern::receiveSelf - channel failed to recv the motions ID");
     return -1;
   }
 
@@ -276,7 +276,7 @@ EarthquakePattern::recvSelf(int commitTag, Channel &theChannel,
   if (numMotions != theData(1)) {
 
     //
-    // we must delete the old motions and create new ones and then invoke recvSelf on these new ones
+    // we must delete the old motions and create new ones and then invoke receiveSelf on these new ones
     //
 
     if (numMotions != 0) {
@@ -287,7 +287,7 @@ EarthquakePattern::recvSelf(int commitTag, Channel &theChannel,
     numMotions = theData[1];
     theMotions = new (GroundMotion *)[numMotions];
     if (theMotions == 0) {
-      g3ErrorHandler->warning("EarthquakePattern::recvSelf - out of memory creating motion array of size %d\n", numMotions);
+      g3ErrorHandler->warning("EarthquakePattern::receiveSelf - out of memory creating motion array of size %d\n", numMotions);
       numMotions = 0;
       return -1;
     }
@@ -295,13 +295,13 @@ EarthquakePattern::recvSelf(int commitTag, Channel &theChannel,
     for (int i=0; i<numMotions; i++) {
       theMotions[i] = theBroker.getNewGroundMotion(theMotionsData[i]);
       if (theMotions[i] == 0) {
-    g3ErrorHandler->warning("EarthquakePattern::recvSelf - out of memory creating motion array of size %d\n", numMotions);
+    g3ErrorHandler->warning("EarthquakePattern::receiveSelf - out of memory creating motion array of size %d\n", numMotions);
     numMotions = 0;
     return -1;
       }
       theMotions[i]->setDbTag(theMotionsData[i+numMotions]);
-      if (theMotions[i]->recvSelf(commitTag, theChannel, theBroker) < 0) {
-    g3ErrorHandler->warning("EarthquakePattern::recvSelf - motion no: %d failed in recvSelf", i);
+      if (theMotions[i]->receiveSelf(commitTag, theChannel, theBroker) < 0) {
+    g3ErrorHandler->warning("EarthquakePattern::receiveSelf - motion no: %d failed in receiveSelf", i);
     numMotions = 0;
     return -1;
       }
@@ -310,14 +310,14 @@ EarthquakePattern::recvSelf(int commitTag, Channel &theChannel,
   } else {
 
     //
-    // we invoke rrecvSelf on the motions, note if a motion not of correct class
+    // we invoke rreceiveSelf on the motions, note if a motion not of correct class
     // we must invoke the destructor on the motion and create a new one of correct type
     //
 
     for (int i=0; i<numMotions; i++) {
       if (theMotions[i]->getClassTag() == theMotionsData[i]) {
-    if (theMotions[i]->recvSelf(commitTag, theChannel, theBroker) < 0) {
-      g3ErrorHandler->warning("EarthquakePattern::recvSelf - motion no: %d failed in recvSelf", i);
+    if (theMotions[i]->receiveSelf(commitTag, theChannel, theBroker) < 0) {
+      g3ErrorHandler->warning("EarthquakePattern::receiveSelf - motion no: %d failed in receiveSelf", i);
       return -1;
     }
       } else {
@@ -325,13 +325,13 @@ EarthquakePattern::recvSelf(int commitTag, Channel &theChannel,
     delete theMotions[i];
     theMotions[i] = theBroker.getNewGroundMotion(theMotionsData[i]);
     if (theMotions[i] == 0) {
-      g3ErrorHandler->warning("EarthquakePattern::recvSelf - out of memory creating motion array of size %d\n", numMotions);
+      g3ErrorHandler->warning("EarthquakePattern::receiveSelf - out of memory creating motion array of size %d\n", numMotions);
       numMotions = 0;
       return -1;
     }
     theMotions[i]->setDbTag(theMotionsData[i+numMotions]);
-    if (theMotions[i]->recvSelf(commitTag, theChannel, theBroker) < 0) {
-      g3ErrorHandler->warning("EarthquakePattern::recvSelf - motion no: %d failed in recvSelf", i);
+    if (theMotions[i]->receiveSelf(commitTag, theChannel, theBroker) < 0) {
+      g3ErrorHandler->warning("EarthquakePattern::receiveSelf - motion no: %d failed in receiveSelf", i);
       numMotions = 0;
       return -1;
     }

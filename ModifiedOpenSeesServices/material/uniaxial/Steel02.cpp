@@ -404,7 +404,7 @@ Steel02::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-Steel02::recvSelf(int commitTag, Channel& theChannel,
+Steel02::receiveSelf(int commitTag, Channel& theChannel,
                   FEM_ObjectBroker& theBroker)
 {
 
@@ -412,7 +412,7 @@ Steel02::recvSelf(int commitTag, Channel& theChannel,
 
     if (theChannel.sendVector(this->getDbTag(), commitTag, data) < 0)
     {
-        cerr << "Steel02::recvSelf() - failed to recvSelf\n";
+        cerr << "Steel02::receiveSelf() - failed to receiveSelf\n";
         return -1;
     }
 

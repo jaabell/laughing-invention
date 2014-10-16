@@ -93,7 +93,7 @@ class BrickSurfaceLoad : public ElementalLoad
         const Vector& getData(int& type, double loadFactor);
 
         int sendSelf(int commitTag, Channel& theChannel);
-        int recvSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker);
+        int receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker);
         void Print(ostream& s, int flag = 0);
 
     protected:

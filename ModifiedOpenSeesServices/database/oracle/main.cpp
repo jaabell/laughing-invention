@@ -125,7 +125,7 @@ int main(int argc, char** argv)
     theDomain->sendSelf(1, *database);
 
     Domain* theDomain2 = new Domain();
-    theDomain2->recvSelf(1, *database, *theBroker);
+    theDomain2->receiveSelf(1, *database, *theBroker);
 
     Node* theNode = theDomain2->getNode(6);
     Vector disp = theNode->getDisp();
