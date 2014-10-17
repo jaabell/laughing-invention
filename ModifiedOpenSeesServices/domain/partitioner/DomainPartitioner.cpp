@@ -512,16 +512,15 @@ DomainPartitioner::partition(int numParts)
         cout << "       Nodes on Partition " << ipart <<  "          = " << nodesOnEachPart[ipart] << "\n";
     }
     cout << "       Total Number of External Nodes = " << numExternalNodes << "\n";
-
     cout << "    Done Sending Nodes.\n";
 
-    ofstream parcountfile("parcount.dat", ios::out);
-    for (int index = 0; index < maxNodeTag; index++)
-    {
-        parcountfile << ParCount[index] << "\n";
-    }
+    // ofstream parcountfile("parcount.dat", ios::out);
+    // for (int index = 0; index < maxNodeTag; index++)
+    // {
+    //     parcountfile << ParCount[index] << "\n";
+    // }
 
-    parcountfile.close();
+    // parcountfile.close();
 
 
 
@@ -626,6 +625,7 @@ DomainPartitioner::partition(int numParts)
 
         int eleTag = vertexPtr->getRef();
         Element *elePtr = myDomain->removeElement(eleTag);
+
 
         Subdomain *theSubdomain = myDomain->getSubdomainPtr(partition);
         elementsOnEachPart[partition]++;

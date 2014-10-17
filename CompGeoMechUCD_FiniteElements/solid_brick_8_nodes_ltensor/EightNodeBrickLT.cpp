@@ -1523,7 +1523,6 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 
 int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
 {
-    // cout << "EightNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
 
     ID idData( 5 );
 
@@ -1539,6 +1538,7 @@ int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_Obje
     order           = idData(3);
     int matClassTag = idData( 4 );
 
+    cout << "EightNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
 
     // cout << "EightNodeBrickLT::receiveSelf() numDOF           = " << numDOF << "\n";
     // cout << "EightNodeBrickLT::receiveSelf() nodes_in_brick   = " << nodes_in_brick << "\n";
@@ -1573,29 +1573,27 @@ int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_Obje
 
     // cout << "EightNodeBrickLT::receiveSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
 
-    if ( material_array[0] == 0 )
+    for ( int i = 0; i < 8; i++ )
     {
-        for ( int i = 0; i < 8; i++ )
+
+        // Allocate new material with the sent class tag
+        NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
+        if ( ndmat == 0 )
         {
-
-            // Allocate new material with the sent class tag
-            NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
-            if ( ndmat == 0 )
-            {
-                cerr << "EightNodeBrickLT::receiveSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
-                return -1;
-            }
-
-            // Now receive materials into the newly allocated space
-            if ( ( ndmat )->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-            {
-                cerr << "EightNodeBrickLT::receiveSelf() - material " << i << "failed to recv itself\n";
-                return -1;
-            }
-
-            material_array[i] = ndmat;
+            cerr << "EightNodeBrickLT::receiveSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
+            return -1;
         }
+
+        // Now receive materials into the newly allocated space
+        if ( ( ndmat )->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+        {
+            cerr << "EightNodeBrickLT::receiveSelf() - material " << i << "failed to recv itself\n";
+            return -1;
+        }
+
+        material_array[i] = ndmat;
     }
+
 
     // Q
     if ( theChannel.receiveVector( 0, commitTag, Q ) < 0 )

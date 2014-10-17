@@ -2953,29 +2953,27 @@ int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FE
 
     // cout << "TwentySevenNodeBrickLT::receiveSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
 
-    if ( material_array[0] == 0 )
+    for ( int i = 0; i < 27; i++ )
     {
-        for ( int i = 0; i < 27; i++ )
+
+        // Allocate new material with the sent class tag
+        NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
+        if ( ndmat == 0 )
         {
-
-            // Allocate new material with the sent class tag
-            NDMaterialLT *ndmat = theBroker.getNewNDMaterialLT( matClassTag );
-            if ( ndmat == 0 )
-            {
-                cerr << "TwentySevenNodeBrickLT::receiveSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
-                return -1;
-            }
-
-            // Now receive materials into the newly allocated space
-            if ( ( ndmat )->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-            {
-                cerr << "TwentySevenNodeBrickLT::receiveSelf() - material " << i << "failed to recv itself\n";
-                return -1;
-            }
-
-            material_array[i] = ndmat;
+            cerr << "TwentySevenNodeBrickLT::receiveSelf() - Broker could not create NDMaterialLT of class type " << matClassTag << "\n";
+            return -1;
         }
+
+        // Now receive materials into the newly allocated space
+        if ( ( ndmat )->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+        {
+            cerr << "TwentySevenNodeBrickLT::receiveSelf() - material " << i << "failed to recv itself\n";
+            return -1;
+        }
+
+        material_array[i] = ndmat;
     }
+
 
     // Q
     if ( theChannel.receiveVector( 0, commitTag, Q ) < 0 )
