@@ -990,7 +990,7 @@ int
 PartitionedDomain::update(double newTime, double dT)
 {
     this->applyLoad(newTime);
-    int res = this->Domain::update();
+    int res = 0;//this->Domain::update();
 
     // do the same for all the subdomains
     if (theSubdomains != 0)
@@ -1006,9 +1006,9 @@ PartitionedDomain::update(double newTime, double dT)
         }
     }
 
-#ifdef _PARALLEL_PROCESSING
-    return this->barrierCheck(res);
-#endif
+    // #ifdef _PARALLEL_PROCESSING
+    //     return this->barrierCheck(res);
+    // #endif
     return 0;
 
     /*

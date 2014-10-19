@@ -136,6 +136,8 @@ Linear_Force_TimeHistory::applyLoad(double time)
 
         theNode->addUnbalancedLoad(*nodalLoad);
         delete nodalLoad;
+
+        //cout << "Linear_Force_TimeHistory - Applied load!" << endl;
     }
 
 }
@@ -173,7 +175,7 @@ Linear_Force_TimeHistory::sendSelf(int commitTag, Channel &theChannel)
 
 int
 Linear_Force_TimeHistory::receiveSelf(int commitTag, Channel &theChannel,
-                                   FEM_ObjectBroker &theBroker)
+                                      FEM_ObjectBroker &theBroker)
 {
     int dbTag = this->getDbTag();
 

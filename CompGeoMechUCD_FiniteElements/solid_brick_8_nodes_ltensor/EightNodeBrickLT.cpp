@@ -1538,7 +1538,7 @@ int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_Obje
     order           = idData(3);
     int matClassTag = idData( 4 );
 
-    cout << "EightNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
+    // cout << "EightNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
 
     // cout << "EightNodeBrickLT::receiveSelf() numDOF           = " << numDOF << "\n";
     // cout << "EightNodeBrickLT::receiveSelf() nodes_in_brick   = " << nodes_in_brick << "\n";

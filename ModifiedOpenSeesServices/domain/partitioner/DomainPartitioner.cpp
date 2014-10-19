@@ -530,7 +530,7 @@ DomainPartitioner::partition(int numParts)
     while ((theLoadPattern = theLoadPatterns()) != 0)
     {
         int loadPatternTag = theLoadPattern->getTag();
-        cout << "   Sending Load Pattern with tag " << loadPatternTag << "\n";
+        // cout << "   Sending Load Pattern with tag " << loadPatternTag << "\n";
 
         // check that each subdomain has a loadPattern with a similar tag and class tag
         //add LoadPattern to all subdomains
@@ -580,7 +580,7 @@ DomainPartitioner::partition(int numParts)
             number_of_nodal_loads++;
         }
 
-        cout << "   Sent " << number_of_nodal_loads << " nodal loads!\n";
+        // cout << "   Sent " << number_of_nodal_loads << " nodal loads!\n";
 
         SP_ConstraintIter &theSPs = theLoadPattern->getSPs();
         SP_Constraint *spPtr;
