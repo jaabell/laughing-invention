@@ -54,12 +54,15 @@ int start_new_stage(string CurrentStageName)
     StageName = CurrentStageName;
 
     //Iterate through load patterns and set them all constant
-    LoadPattern *thePattern;
-    LoadPatternIter &thePatterns = theDomain.getLoadPatterns();
-    while ((thePattern = thePatterns()) != 0)
-    {
-        thePattern->setLoadConstant();
-    }
+    // LoadPattern *thePattern;
+    // LoadPatternIter &thePatterns = theDomain.getLoadPatterns();
+    // while ((thePattern = thePatterns()) != 0)
+    // {
+    //     thePattern->setLoadConstant();
+    // }
+    theDomain.setLoadConstant();
+
+
 
     //Reset time
     int newTime = 0;
