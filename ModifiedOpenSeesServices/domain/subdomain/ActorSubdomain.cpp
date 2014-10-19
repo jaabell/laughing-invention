@@ -952,7 +952,6 @@ ActorSubdomain::run(void)
                 exitYet = true;
                 break;
 
-#ifdef _PARALLEL_PROCESSING //Guanzhou
 
             case ShadowActorSubdomain_resetSubMultipleSupport:
                 loadPatternTag = msgData(1);
@@ -999,7 +998,6 @@ ActorSubdomain::run(void)
                 break;
 
 
-#endif
 
 # ifdef _PDD
 
