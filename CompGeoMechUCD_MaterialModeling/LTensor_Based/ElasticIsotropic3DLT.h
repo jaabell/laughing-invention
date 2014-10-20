@@ -102,6 +102,7 @@ class ElasticIsotropic3DLT : public NDMaterialLT
 
         void Print( ostream &s, int flag = 0 ); // used
 
+        int getObjectSize();
 
 
     private:

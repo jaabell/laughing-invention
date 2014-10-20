@@ -1569,7 +1569,88 @@ DTensor2 NewPisanoLT::get_nij_dev() const
 
 
 
+int NewPisanoLT::getObjectSize()
+{
+    int size = 0;
 
+    //Model parameters
+    //double beta;                // Scalar distance coefficient as internal variable
+    size += sizeof(beta);
+    //double E0;                  // Young's modulus at p = patm
+    size += sizeof(E0);
+    //double v;                   // Modulus of poisson
+    size += sizeof(v);
+    //double M;                   // Critical stress ratio in triax compression
+    size += sizeof(M);
+    //double kd;                  // Dilatancy parameter (controls the transition from dilative to compactive behavior)
+    size += sizeof(kd);
+    //double xi;                  // Dilatancy parameter(controls the ammount of volumetric plastic strain developed)
+    size += sizeof(xi);
+    //double h;                   // Hardening parameter
+    size += sizeof(h);
+    //double m;                   // Hardening parameter
+    size += sizeof(m);
+    //double rho;                 //
+    size += sizeof(rho);
+    //double initialconfiningstress;
+    size += sizeof(initialconfiningstress);
+    //double n;                   // Controls shape of boundary surface in deviatoric plane (n=-0.229 matches Mohr-Coulomb deviatoric section)
+    size += sizeof(n);
+    //double a;                   // Exponent for pressure dependent elastic moduli
+    size += sizeof(a);
+    //double eplcum_cr;           // Critical cumulated plastic strain upon stress reversal (for overshooting) // Should be always between 1e-5 and 1e-6 (cfr. Mojtaba E-Kan, Hossein A. Taiebat, On implementation of bounding surface plasticity models with no overshooting effect in solving boundary value problems, Computers and Geotechnics, Volume 55, January 2014, Pages 103-116, ISSN 0266-352X, http://dx.doi.org/10.1016/j.compgeo.2013.08.006.(http://www.sciencedirect.com/science/article/pii/S0266352X13001213))
+    size += sizeof(eplcum_cr);
+    // double eplcum;
+    size += sizeof(eplcum);
+
+
+    // DTensor2 strainplcum;         //Cumulated plastic strain upon stress reversal (for overshooting)
+    size += sizeof(double) * strainplcum.get_size();
+    // DTensor2 TrialStrain;
+    size += sizeof(double) * TrialStrain.get_size();
+    // DTensor2 TrialStress;
+    size += sizeof(double) * TrialStress.get_size();
+    // DTensor2 TrialPlastic_Strain;
+    size += sizeof(double) * TrialPlastic_Strain.get_size();
+    // DTensor2 ElasticStateStrain;
+    size += sizeof(double) * ElasticStateStrain.get_size();
+    // DTensor2 ElasticStateStress;
+    size += sizeof(double) * ElasticStateStress.get_size();
+    // DTensor2 CommitStress;
+    size += sizeof(double) * CommitStress.get_size();
+    // DTensor2 CommitStrain;
+    size += sizeof(double) * CommitStrain.get_size();
+    // DTensor2 CommitPlastic_Strain;
+    size += sizeof(double) * CommitPlastic_Strain.get_size();
+    // DTensor2 alpha;             // back stress ratio tensor
+    size += sizeof(double) * alpha.get_size();
+    // DTensor2 alpha0;            // back stress ratio tensor
+    size += sizeof(double) * alpha0.get_size();
+    // DTensor2 alpha0mem;         // back stress ratio tensor at last previous stress reversal
+    size += sizeof(double) * alpha0mem.get_size();
+    // DTensor2 strainpl0;         // Plastic strain at stress reversal (for overshooting)
+    size += sizeof(double) * strainpl0.get_size();
+    // DTensor2 Stress_n_minus_2;  // Stress tensor at step n-2
+    size += sizeof(double) * Stress_n_minus_2.get_size();
+    // DTensor2 nij_dev;           // direction of deviatoric plastic strain increment(unit tensor)
+    size += sizeof(double) * nij_dev.get_size();
+
+
+    //Fourth order stiffness
+    // DTensor4 Stiffness;
+    size += sizeof(double) * Stiffness.get_size();
+    // DTensor4 Ee;
+    size += sizeof(double) * Ee.get_size();
+
+
+    //Global indexes for LTensor
+    // Index < 'i' > i;
+    // Index < 'j' > j;
+    size += sizeof(i);
+    size += sizeof(j);
+
+    return size;
+}
 
 #endif
 

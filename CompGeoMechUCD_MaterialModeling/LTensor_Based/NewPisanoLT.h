@@ -142,7 +142,7 @@ class NewPisanoLT : public NDMaterialLT
         DTensor2 get_Stress_n_minus_2() const;
         DTensor2 get_nij_dev() const;
 
-
+        int getObjectSize();
     private:
 
 

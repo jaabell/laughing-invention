@@ -389,3 +389,41 @@ double ElasticIsotropic3DLT::getRho( void )
 {
     return rho;
 }
+
+
+
+int ElasticIsotropic3DLT::getObjectSize()
+{
+    int size = 0;
+    // DTensor2 TrialStrain;
+    size += sizeof(double) * TrialStrain.get_size();
+    // DTensor2 TrialStress;
+    size += sizeof(double) * TrialStress.get_size();
+    // DTensor2 ElasticStateStrain;
+    size += sizeof(double) * ElasticStateStrain.get_size();
+    // DTensor2 ElasticStateStress;
+    size += sizeof(double) * ElasticStateStress.get_size();
+    // DTensor2 CommitStress;
+    size += sizeof(double) * CommitStress.get_size();
+    // DTensor2 CommitStrain;
+    size += sizeof(double) * CommitStrain.get_size();
+    // double E;
+    size += sizeof(E);
+    // double v;
+    size += sizeof(v);
+    // double rho;
+    size += sizeof(rho);
+    // DTensor4 Ee;
+    size += sizeof(double) * Ee.get_size();
+    // Index < 'i' > i;
+    size += sizeof(i);
+    // Index < 'j' > j;
+    size += sizeof(j);
+    // Index < 'k' > k;
+    size += sizeof(k);
+    // Index < 'l' > l;
+    size += sizeof(l);
+
+
+    return size;
+}

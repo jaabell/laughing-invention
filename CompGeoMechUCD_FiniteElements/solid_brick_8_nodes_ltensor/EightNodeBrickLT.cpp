@@ -1633,14 +1633,60 @@ int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_Obje
 int EightNodeBrickLT::getObjectSize()
 {
 
-    int size = sizeof(*this);
+    int size = 0;
+    // Just add all sizes of data-members (there is some static local variables too.... but those are not important for transference)
+    //
+    // bool is_mass_computed;
+    size += sizeof(is_mass_computed);
+    // int numDOF;
+    size += sizeof(numDOF);
+    // int nodes_in_brick;
+    size += sizeof(nodes_in_brick);
+    // int order;
+    size += sizeof(order);
+    // double Volume;
+    size += sizeof(Volume);
+    // double e_p;
+    size += sizeof(e_p);
+    // double determinant_of_Jacobian;
+    size += sizeof(determinant_of_Jacobian);
+    // double rho;
+    size += sizeof(rho);
+    // ID  connectedExternalNodes;
+    size += sizeof(int) * connectedExternalNodes.Size();
+    // DTensor2 stress[8];
+    size += sizeof(double) * stress[0].get_size() * 8;
+    // Matrix *Ki;
+    size += sizeof(Ki);
+    // Node *theNodes[8];
+    size += sizeof(theNodes) ;
+    // NDMaterialLT *mmodel;
+    size += sizeof(mmodel);
+    // NDMaterialLT *material_array[8];
+    size += sizeof(material_array) * 8;
+    // Vector Q;
+    size += sizeof(double) * Q.Size();
+    // Vector bf;
+    size += sizeof(double) * bf.Size();
+    // Matrix gauss_points   NOT INCLUDED IN MEMORY COUNT... THEY're Static (J. Abell);
+    // size += sizeof(gauss_points);
+    // // Vector outputVector;
+    // size += sizeof(outputVector);
+    // Index < 'i' > i;
+    size += sizeof(i);
+    // Index < 'j' > j;
+    size += sizeof(j);
+    // Index < 'k' > k;
+    size += sizeof(k);
+    // Index < 'l' > l;
+    size += sizeof(l);
+
+
+
     for ( int i = 0; i < 8; i++ )
     {
         size += material_array[i]->getObjectSize();
     }
-
-    cout << "EightNodeBrickLT::getObjectSize() - tag = " << this->getTag()
-         << "  size = " << size << "\n";
 
     return size;
 }
