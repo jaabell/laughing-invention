@@ -53,7 +53,8 @@ class OutputWriter
                                          const        ID &connectivity,
                                          int          materialtag,
                                          const        Matrix &gausscoordinates,
-                                         int          length_of_output) = 0;
+                                         int          length_of_output,
+                                         int class_tag) = 0;
         virtual int writeMaterialMeshData(int         tag,
                                           std::string type,
                                           Vector     &parameters) = 0;

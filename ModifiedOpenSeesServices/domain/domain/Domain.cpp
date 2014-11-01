@@ -2731,7 +2731,8 @@ Domain::commit( void )
                                                      elePtr->getExternalNodes(),
                                                      materialtag ,
                                                      elePtr->getGaussCoordinates(),
-                                                     elePtr->getOutputSize());
+                                                     elePtr->getOutputSize(),
+                                                     elePtr->getElementclassTag());
             }
             theOutputWriter.writeMesh();
             have_written_static_mesh_data = true;

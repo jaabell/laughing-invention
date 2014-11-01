@@ -283,7 +283,7 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
 }
 
 int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID &connectivity , int materialtag , const Matrix &gausscoordinates,
-        int length_of_output)
+        int length_of_output, int class_tag)
 {
     int nnodes, ntags;
     ntags = Number_of_Nodes.Size();
@@ -300,6 +300,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
         Material_tags[ntags + i]                    = -1;
         Element_types.push_back(" not defined ");
         Number_of_Output_Fields[ntags + i]          = -1;
+        Class_Tags[ntags + i]                       = -1;
     }
 
     //Check if the element has already been added!!
@@ -342,6 +343,9 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 
     // Writing Number_of_Output_Fields;
     Number_of_Output_Fields[tag] = length_of_output;
+
+    // Writing Class_Tags;
+    Class_Tags[tag] = class_tag;
 
     // Writing Index_to_Outputs;
     Index_to_Outputs[tag] = pos_elements_outputs;
@@ -552,6 +556,16 @@ void H5OutputWriter::syncWriters()
         Material_tags.resize(length_send);
     }
     int_buffer = Material_tags.data;
+    MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+    //ID Class_Tags;
+    length_send = Class_Tags.Size();
+    MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+    if (processID != 0)
+    {
+        Class_Tags.resize(length_send);
+    }
+    int_buffer = Class_Tags.data;
     MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
 
 
@@ -945,6 +959,7 @@ void H5OutputWriter::writeMesh()
         id_index_to_elements_gausscoords  = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
         id_elements_type                  = createVariableLengthStringArray (id_elements_group,  "Element_types", " ");
         id_elements_materialtag           = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
+        id_elements_classtag              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
 
         // Write a vector with the number of nodes at a given elements tag
         datarank     = 1;
@@ -1042,6 +1057,19 @@ void H5OutputWriter::writeMesh()
                                         block,
                                         int_data_buffer);
 
+        dims[0]      = (hsize_t) Class_Tags.Size();
+        data_dims[0] = (hsize_t) Class_Tags.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Class_Tags.data;
+        writeVariableLengthIntegerArray(id_elements_classtag,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
         // TODO: Bring back element types
         // //Write material tags

@@ -1316,6 +1316,7 @@ PartitionedDomain::partition(int numPartitions)
                 int eleMaterialTag   = 0;       // To be implemented somehow
                 Matrix eleGaussCoord = elePtr->getGaussCoordinates();
                 int eleOutputSize    = elePtr->getOutputSize();
+                int classTag = elePtr->getElementclassTag();
                 if ( eleName.compare("Element") != 0  )  // If the type of the element is the base class, then dont add it!
                 {
                     theOutputWriter.writeElementMeshData( eleTag,
@@ -1323,7 +1324,8 @@ PartitionedDomain::partition(int numPartitions)
                                                           eleConnectivity,
                                                           eleMaterialTag ,
                                                           eleGaussCoord,
-                                                          eleOutputSize);
+                                                          eleOutputSize,
+                                                          classTag);
                 }
                 ;
             }

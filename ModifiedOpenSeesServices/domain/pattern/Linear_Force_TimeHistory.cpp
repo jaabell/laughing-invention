@@ -137,7 +137,7 @@ Linear_Force_TimeHistory::applyLoad(double time)
         theNode->addUnbalancedLoad(*nodalLoad);
         delete nodalLoad;
 
-        //cout << "Linear_Force_TimeHistory - Applied load!" << endl;
+        cout << "Linear_Force_TimeHistory - Applied load!" << endl;
     }
 
 }

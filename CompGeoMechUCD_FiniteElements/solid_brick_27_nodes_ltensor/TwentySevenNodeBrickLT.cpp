@@ -3019,8 +3019,8 @@ int TwentySevenNodeBrickLT::getObjectSize()
         size += material_array[i]->getObjectSize();
     }
 
-    cout << "TwentySevenNodeBrickLT::getObjectSize() - tag = " << this->getTag()
-         << "  size = " << size << "\n";
+    // cout << "TwentySevenNodeBrickLT::getObjectSize() - tag = " << this->getTag()
+    // << "  size = " << size << "\n";
 
     return size;
 }
