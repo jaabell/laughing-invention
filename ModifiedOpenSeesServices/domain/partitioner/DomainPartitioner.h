@@ -52,23 +52,25 @@ class DomainPartitioner
 {
     public:
 
-        DomainPartitioner(GraphPartitioner& theGraphPartitioner,
-                          LoadBalancer& theLoadBalancer);
+        DomainPartitioner(GraphPartitioner &theGraphPartitioner,
+                          LoadBalancer &theLoadBalancer);
 
-        DomainPartitioner(GraphPartitioner& theGraphPartitioner);
+        DomainPartitioner(GraphPartitioner &theGraphPartitioner);
         virtual  ~DomainPartitioner();
 
-        virtual void setPartitionedDomain(PartitionedDomain& theDomain);
+        virtual void setPartitionedDomain(PartitionedDomain &theDomain);
         virtual int partition(int numParts);
 
-        # ifdef _PDD
+# ifdef _PDD
         virtual int repartition(int numParts);
-        # endif
+# endif
 
-        virtual int balance(Graph& theWeightedSubdomainGraph);
+        virtual int balance(Graph &theWeightedSubdomainGraph);
 
         // public member functions needed by the load balancer
         virtual int getNumPartitions(void) const;
+
+        virtual Graph *getElementGraph() const ;
         //GZ virtual Graph &getPartitionGraph(void);
         //GZ virtual Graph &getColoredGraph(void);
         //GZ
@@ -97,15 +99,15 @@ class DomainPartitioner
     protected:
 
     private:
-        PartitionedDomain* myDomain;
-        GraphPartitioner&  thePartitioner;
-        LoadBalancer*      theBalancer;
+        PartitionedDomain *myDomain;
+        GraphPartitioner  &thePartitioner;
+        LoadBalancer      *theBalancer;
 
-        Graph* theElementGraph;
-        Graph** theBoundaryElements;
+        Graph *theElementGraph;
+        Graph **theBoundaryElements;
 
-        ID* nodePlace;
-        ID* elementPlace;
+        ID *nodePlace;
+        ID *elementPlace;
         int numPartitions;
         ID primes;
         bool partitionFlag;
@@ -114,17 +116,17 @@ class DomainPartitioner
 
         //# ifdef _PDD //Guanzhou added to keep track of mesh structures, thus to save communication
         //when repartition
-        int* ele_nodes;
+        int *ele_nodes;
         int numNodesPerEle;
-        ID* ChangedNodeList;
+        ID *ChangedNodeList;
         int numChangedNodes;
-        int* data;
+        int *data;
         int Repartition_Count;
 
-        int* nodePartition;
-        int* ParCount;
-        int* newNodePartition;
-        int* newParCount;
+        int *nodePartition;
+        int *ParCount;
+        int *newNodePartition;
+        int *newParCount;
         //# endif
 
 };

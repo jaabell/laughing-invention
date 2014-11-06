@@ -57,6 +57,7 @@
 #include <PartitionedDomainSubIter.h>
 #include <SingleDomEleIter.h>
 #include <Vertex.h>
+#include <VertexIter.h>
 #include <Graph.h>
 #include <LoadPattern.h>
 #include <NodalLoad.h>
@@ -1365,6 +1366,19 @@ PartitionedDomain::partition(int numPartitions)
     {
         cerr << "PartitionedDomain::partition(int numPartitions) - no associated partitioner\n";
         return -1;
+    }
+
+
+    //Write partition to HDF5 file
+    Graph *coloredGraph = thePartitioner->getElementGraph();
+    VertexIter &theVertexIter = coloredGraph->getVertices();
+    Vertex *vertexPtr;
+
+    while ((vertexPtr = theVertexIter()) != 0)
+    {
+        int eleTag = vertexPtr->getRef();
+        int vertexColor = vertexPtr->getColor();
+        theOutputWriter.writeElementPartitionData( eleTag, vertexColor);
     }
 
     cout << "PartitionedDomain::partition()   -- END \n";

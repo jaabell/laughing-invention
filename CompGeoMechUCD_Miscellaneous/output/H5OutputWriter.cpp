@@ -961,6 +961,10 @@ void H5OutputWriter::writeMesh()
         id_elements_materialtag           = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
         id_elements_classtag              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
 
+#ifdef _PARALLEL_PROCESSING // Only write partition if in parallel mode
+        id_elements_partition             = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Partition", " ");
+#endif
+
         // Write a vector with the number of nodes at a given elements tag
         datarank     = 1;
         dims[0]      = (hsize_t) Number_of_Nodes.Size();
@@ -1071,6 +1075,23 @@ void H5OutputWriter::writeMesh()
                                         block,
                                         int_data_buffer);
 
+
+#ifdef _PARALLEL_PROCESSING
+        dims[0]      = (hsize_t) Class_Tags.Size();
+        data_dims[0] = (hsize_t) Class_Tags.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Partition.data;
+        writeVariableLengthIntegerArray(id_elements_partition,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+#endif
+
         // TODO: Bring back element types
         // //Write material tags
         // for (int tag = 0; tag < (int) Element_types.size(); tag++)
@@ -1173,7 +1194,24 @@ void H5OutputWriter::writeMesh()
 
 }
 
+int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
+{
+#ifdef _PARALLEL_PROCESSING
+    int nnodes, ntags;
+    ntags = Number_of_Nodes.Size();
+    int addzeros = tag - ntags;
 
+    //Extend arrays
+    for (int i = 0; i <= addzeros; i++)
+    {
+        Partition[ntags + i]                       = -1;
+    }
+    Partition[tag] = partition;
+#else
+    cout << "H5OutputWriter::writeElementPartitionData() -- Not available in sequential mode\n";
+#endif
+    return 0;
+}
 
 
 
@@ -1186,32 +1224,6 @@ int H5OutputWriter::writeMaterialMeshData(int tag , std::string type , Vector &p
 // Results for Nodes
 int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacements)
 {
-
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  NOTE!!!!!! If this implementation changes, so must change writeVelocities() and writeAccelerations()
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-
-    // if (create_nodeDisplacements_arrays)
-    // {
-    //     int rank = 2;
-    //     hsize_t dims[2];
-    //     hsize_t maxdims[2];
-    //     dims[0] = (hsize_t) length_nodes_displacements_output;
-    //     dims[1] = 1;
-    //     maxdims[0] = (hsize_t)  length_nodes_displacements_output;
-    //     maxdims[1] = H5S_UNLIMITED;
-
-    //     id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
-
-    //     create_nodeDisplacements_arrays = false;
-
-    // }
 
     int pos, ndofs;
 
@@ -1267,271 +1279,27 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
     H5Sclose(id_memspace);
     H5OUTPUTWRITER_COUNT_OBJS;
     return 0;
-    //  ********************************************************************************************
-    //  **************************** SEE NOTE ******************************************************
-    //  ********************************************************************************************
 }
 
 
 int H5OutputWriter::writeVelocities(     int nodeTag, const Vector &velocities)
 {
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  NOTE!!!!!! If this implementation changes, so must change writeDisplacements() and writeAccelerations()
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-
-    // if (create_nodeVelocities_arrays)
-    // {
-    //     int rank = 2;
-    //     hsize_t dims[2];
-    //     hsize_t maxdims[2];
-    //     dims[0] = (hsize_t) length_nodes_velocities_output;
-    //     dims[1] = 1;
-    //     maxdims[0] = (hsize_t)  length_nodes_velocities_output;
-    //     maxdims[1] = H5S_UNLIMITED;
-
-    //     id_nodes_velocities = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Velocities", " ");
-
-    //     create_nodeVelocities_arrays = false;
-
-    // }
-
-    int pos, ndofs;
-
-    // Read NDOFS from HDF5 file
-    int datarank         = 1;
-    hsize_t data_dims[1] = {1};
-    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
-    hsize_t stride[2]    = {1, 0};
-    hsize_t count[2]     = {1, 0};
-    hsize_t block[2]     = {1, 0};
-
-    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
-    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
-    status = H5Sselect_hyperslab(
-                 id_dataspace,          // Id of the parent dataspace
-                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
-                 offset,                // start of selection
-                 stride,                // stride in each dimension, NULL  is select everything
-                 count ,                // how many blocks to select in each direction
-                 block                  // little block selected per selection
-             );
-
-    hdf5_check_error(status);
-
-    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
-    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
-
-
-    //Write data
-    hsize_t dims[2]      =  { (hsize_t)  length_nodes_velocities_output, (hsize_t)  current_time_step};
-    data_dims[0] = (hsize_t) ndofs;
-
-    offset[0]    = (hsize_t) pos;
-    offset[1]    = (hsize_t) current_time_step - 1;
-    stride[0]    = 1;
-    stride[1]    = 1;
-    count[0]     = (hsize_t) ndofs;
-    count[1]     = 1;
-    block[0]     = 1;
-    block[1]     = 1;
-    double *data = velocities.theData;
-    writeVariableLengthDoubleArray(id_nodes_velocities,
-                                   datarank,
-                                   dims,
-                                   data_dims,
-                                   offset,
-                                   stride,
-                                   count,
-                                   block,
-                                   data);
-
-    H5OUTPUTWRITER_COUNT_OBJS;
-    H5Sclose(id_dataspace);
-    H5Sclose(id_memspace);
+    cout << "H5OutputWriter::writeVelocities()  -- Not available. Implement by copying writeDisplacements.\n ";
     return 0;
-    //  ********************************************************************************************
-    //  **************************** SEE NOTE ******************************************************
-    //  ********************************************************************************************
 }
 
 
 int H5OutputWriter::writeAccelerations(  int nodeTag, const Vector &accelerations)
 {
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  NOTE!!!!!! If this implementation changes, so must change writeVelocities() and writeDisplacements()
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-
-    // if (create_nodeAccelerations_arrays)
-    // {
-    //     int rank = 2;
-    //     hsize_t dims[2];
-    //     hsize_t maxdims[2];
-    //     dims[0] = (hsize_t) length_nodes_accelerations_output;
-    //     dims[1] = 1;
-    //     maxdims[0] = (hsize_t)  length_nodes_accelerations_output;
-    //     maxdims[1] = H5S_UNLIMITED;
-
-    //     id_nodes_accelerations = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Accelerations", " ");
-
-    //     create_nodeAccelerations_arrays = false;
-
-    // }
-
-    int pos, ndofs;
-
-    // Read NDOFS from HDF5 file
-    int datarank         = 1;
-    hsize_t data_dims[1] = {1};
-    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
-    hsize_t stride[2]    = {1, 0};
-    hsize_t count[2]     = {1, 0};
-    hsize_t block[2]     = {1, 0};
-
-    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
-    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
-    status = H5Sselect_hyperslab(
-                 id_dataspace,          // Id of the parent dataspace
-                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
-                 offset,                // start of selection
-                 stride,                // stride in each dimension, NULL  is select everything
-                 count ,                // how many blocks to select in each direction
-                 block                  // little block selected per selection
-             );
-
-    hdf5_check_error(status);
-
-    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
-    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
-
-
-    //Write data
-    hsize_t dims[2]      =  { (hsize_t)  length_nodes_accelerations_output, (hsize_t)  current_time_step};
-    data_dims[0] = (hsize_t) ndofs;
-
-    offset[0]    = (hsize_t) pos;
-    offset[1]    = (hsize_t) current_time_step - 1;
-    stride[0]    = 1;
-    stride[1]    = 1;
-    count[0]     = (hsize_t) ndofs;
-    count[1]     = 1;
-    block[0]     = 1;
-    block[1]     = 1;
-    double *data = accelerations.theData;
-    writeVariableLengthDoubleArray(id_nodes_accelerations,
-                                   datarank,
-                                   dims,
-                                   data_dims,
-                                   offset,
-                                   stride,
-                                   count,
-                                   block,
-                                   data);
-    H5Sclose(id_dataspace);
-    H5Sclose(id_memspace);
-    H5OUTPUTWRITER_COUNT_OBJS;
+    cout << "H5OutputWriter::writeAccelerations()  -- Not available. Implement by copying writeDisplacements.\n ";
     return 0;
-    //  ********************************************************************************************
-    //  **************************** SEE NOTE ******************************************************
-    //  ********************************************************************************************
 }
 
 
 int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForces)
 {
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  NOTE!!!!!! If this implementation changes, so must change writeVelocities() and writeDisplacements()
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-
-    // if (create_nodeReactionForces_arrays)
-    // {
-    //     int rank = 2;
-    //     hsize_t dims[2];
-    //     hsize_t maxdims[2];
-    //     dims[0] = (hsize_t) length_nodes_reaction_forcess_output;
-    //     dims[1] = 1;
-    //     maxdims[0] = (hsize_t)  length_nodes_reaction_forcess_output;
-    //     maxdims[1] = H5S_UNLIMITED;
-
-    //     id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Reactions", " ");
-
-    //     create_nodeReactionForces_arrays = false;
-
-    // }
-
-    int pos, ndofs;
-
-    // Read NDOFS from HDF5 file
-    int datarank         = 1;
-    hsize_t data_dims[1] = {1};
-    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
-    hsize_t stride[2]    = {1, 0};
-    hsize_t count[2]     = {1, 0};
-    hsize_t block[2]     = {1, 0};
-
-    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
-    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
-    status = H5Sselect_hyperslab(
-                 id_dataspace,          // Id of the parent dataspace
-                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
-                 offset,                // start of selection
-                 stride,                // stride in each dimension, NULL  is select everything
-                 count ,                // how many blocks to select in each direction
-                 block                  // little block selected per selection
-             );
-
-    hdf5_check_error(status);
-
-    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
-    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
-
-
-    //Write data
-    hsize_t dims[2]      =  { (hsize_t)  length_nodes_reaction_forcess_output, (hsize_t)  current_time_step};
-    data_dims[0] = (hsize_t) ndofs;
-
-    offset[0]    = (hsize_t) pos;
-    offset[1]    = (hsize_t) current_time_step - 1;
-    stride[0]    = 1;
-    stride[1]    = 1;
-    count[0]     = (hsize_t) ndofs;
-    count[1]     = 1;
-    block[0]     = 1;
-    block[1]     = 1;
-    double *data = reactionForces.theData;
-    writeVariableLengthDoubleArray(id_nodes_reaction_forces,
-                                   datarank,
-                                   dims,
-                                   data_dims,
-                                   offset,
-                                   stride,
-                                   count,
-                                   block,
-                                   data);
-    H5Sclose(id_dataspace);
-    H5Sclose(id_memspace);
-    H5OUTPUTWRITER_COUNT_OBJS;
+    cout << "H5OutputWriter::writeReactionForces()  -- Not available. Implement by copying writeDisplacements.\n ";
     return 0;
-    //  ********************************************************************************************
-    //  **************************** SEE NOTE ******************************************************
-    //  ********************************************************************************************
 }
 
 
@@ -1540,33 +1308,8 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
 int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
 {
 
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  NOTE!!!!!! If this implementation changes, so must change writeVelocities() and writeAccelerations()
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
-    //  ********************************************************************************************
     if (length_element_output > 0) // If there is nothing to output, there is nothing to output
     {
-        // if (create_elementOutput_arrays)
-        // {
-        //     int rank = 2;
-        //     hsize_t dims[2];
-        //     hsize_t maxdims[2];
-        //     dims[0] = (hsize_t) length_element_output;
-        //     dims[1] = 1;
-        //     maxdims[0] = (hsize_t)  length_element_output;
-        //     maxdims[1] = H5S_UNLIMITED;
-
-        //     id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
-
-        //     create_elementOutput_arrays = false;
-
-        // }
-
         int pos, noutputs;
 
         // Read NOUTPUTS from HDF5 file
@@ -1622,9 +1365,6 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
         H5OUTPUTWRITER_COUNT_OBJS;
     }
     return 0;
-    //  ********************************************************************************************
-    //  **************************** SEE NOTE ******************************************************
-    //  ********************************************************************************************
 }
 
 
@@ -1674,9 +1414,6 @@ int H5OutputWriter::setTime(double t)
     hsize_t dims_new[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
 
     status =  H5Dset_extent( id_nodes_displacements, dims_new );
-    // status =  H5Dset_extent( id_nodes_velocities, dims_new );
-    // status =  H5Dset_extent( id_nodes_accelerations, dims_new );
-    // status =  H5Dset_extent( id_nodes_reaction_forces, dims_new );
 
     dims_new[0] = length_element_output;
     dims_new[1] = current_time_step;

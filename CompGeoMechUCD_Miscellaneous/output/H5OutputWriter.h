@@ -98,6 +98,7 @@ class H5OutputWriter: public OutputWriter
 
         virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
         virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity         , int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
+        virtual int writeElementPartitionData(int tag  , int partition) ;
         virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
 
         // Results for Nodes
@@ -278,6 +279,7 @@ class H5OutputWriter: public OutputWriter
         hid_t id_elements_type;
         hid_t id_elements_materialtag;
         hid_t id_elements_classtag;
+        hid_t id_elements_partition;
 
 
 
@@ -323,6 +325,7 @@ class H5OutputWriter: public OutputWriter
         std::vector<std::string> Element_types;
         ID Material_tags;
         ID Class_Tags;
+        ID Partition;
 
 };
 

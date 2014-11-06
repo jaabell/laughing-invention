@@ -1368,4 +1368,10 @@ DomainPartitioner::repartition(int numParts)
     return 0;
 }
 
+
+Graph *DomainPartitioner::getElementGraph() const
+{
+    return theElementGraph;
+}
+
 #endif
