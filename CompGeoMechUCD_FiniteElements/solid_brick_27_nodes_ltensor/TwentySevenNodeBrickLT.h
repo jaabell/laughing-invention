@@ -109,7 +109,7 @@ class TwentySevenNodeBrickLT: public Element
         //Used in parallel and in saving model
         int sendSelf ( int commitTag, Channel &theChannel );
         int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
-                       &theBroker );
+                          &theBroker );
 
         //General reporting of element status
         void Print( ostream &s, int flag = 0 );
@@ -199,9 +199,9 @@ class TwentySevenNodeBrickLT: public Element
         Vector bf;
 
         static double SurfaceLoadValues_in_function;
-        static Matrix K;
-        static Matrix M;
-        static Vector P;
+        Matrix K;
+        Matrix M;
+        Vector P;
         static Vector ShapeFunctionValues_in_function;
         static Vector J_vector_in_function;
 

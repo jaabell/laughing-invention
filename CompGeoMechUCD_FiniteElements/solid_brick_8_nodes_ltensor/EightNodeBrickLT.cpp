@@ -40,10 +40,10 @@ double EightNodeBrickLT::SurfaceLoadValues_in_function;         // Nima added fo
 DTensor2 EightNodeBrickLT::gp_coords(8, 3, 0.0);
 DTensor1 EightNodeBrickLT::gp_weight(8, 0.0);
 
-Matrix EightNodeBrickLT::K( 24, 24);
-Matrix EightNodeBrickLT::M( 24, 24);
+// Matrix EightNodeBrickLT::K( 24, 24);
+// Matrix EightNodeBrickLT::M( 24, 24);
+// Vector EightNodeBrickLT::P( 24 );
 
-Vector EightNodeBrickLT::P( 24 );
 Vector EightNodeBrickLT::ShapeFunctionValues_in_function( 4 );  // Nima added for surface load (July 2012)
 Vector EightNodeBrickLT::J_vector_in_function( 3 );             // Nima added for surface load (July 2012)
 
@@ -60,7 +60,9 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 
     : Element( element_number, ELE_TAG_EightNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 8 ),
-      Ki( 0 ), Q( 24 ), bf(3), gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
+      Ki( 0 ), Q( 24 ), bf(3),
+      K( 24, 24), M( 24, 24), P( 24 ),
+      gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
 {
 
     rho = Globalmmodel->getRho();
@@ -136,7 +138,10 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 
 //====================================================================
 EightNodeBrickLT::EightNodeBrickLT(): Element( 0, ELE_TAG_EightNodeBrickLT ),
-    rho( 0.0 ), connectedExternalNodes( 8 ) , Ki( 0 ), mmodel( 0 ), Q( 24 ), bf(3),  gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
+    rho( 0.0 ), connectedExternalNodes( 8 ) ,
+    Ki( 0 ), mmodel( 0 ), Q( 24 ), bf(3),
+    K( 24, 24), M( 24, 24), P( 24 ),
+    gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
 {
     is_mass_computed = false;
 

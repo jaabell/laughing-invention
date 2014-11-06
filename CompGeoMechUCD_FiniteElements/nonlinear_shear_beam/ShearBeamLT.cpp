@@ -38,18 +38,18 @@
 DTensor2 ShearBeamLT::gp_coords(1, 3, 0.0);
 DTensor1 ShearBeamLT::gp_weight(1, 0.0);
 
-Matrix ShearBeamLT::K( 6, 6);
-Matrix ShearBeamLT::M( 6, 6);
+// Matrix ShearBeamLT::K( 6, 6);
+// Matrix ShearBeamLT::M( 6, 6);
 
-Vector ShearBeamLT::P( 6 );
+// Vector ShearBeamLT::P( 6 );
 
 ShearBeamLT::ShearBeamLT( int element_number,
                           int node_numb_1, int node_numb_2, double area,
                           NDMaterialLT *Globalmmodel)
-
     : Element( element_number, ELE_TAG_ShearBeamLT ),
       rho( 0.0 ), connectedExternalNodes( 2 ),
-      Ki( 0 ), Q( 6 ), bf(3), gauss_points(1, 3), outputVector(ShearBeamLT_OUTPUT_SIZE)
+      Ki( 0 ), Q( 6 ), bf(3), K( 6, 6),
+      M( 6, 6), P(6), gauss_points(1, 3), outputVector(ShearBeamLT_OUTPUT_SIZE)
 {
 
     rho = Globalmmodel->getRho();
@@ -74,7 +74,8 @@ ShearBeamLT::ShearBeamLT( int element_number,
 //====================================================================
 ShearBeamLT::ShearBeamLT(): Element( 0, ELE_TAG_ShearBeamLT ),
     rho( 0.0 ), connectedExternalNodes( 2 ) , Ki( 0 ), mmodel( 0 ),
-    Q( 6 ), bf(3),
+    Q( 6 ), bf(3), K( 6, 6),
+    M( 6, 6), P(6),
     gauss_points(1, 3),
     outputVector(ShearBeamLT_OUTPUT_SIZE)
 {

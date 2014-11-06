@@ -38,10 +38,10 @@ double TwentySevenNodeBrickLT::SurfaceLoadValues_in_function;         // Nima ad
 DTensor2 TwentySevenNodeBrickLT::gp_coords(27, 3, 0.0);
 DTensor2 TwentySevenNodeBrickLT::gp_weight(27, 3, 0.0);
 
-Matrix TwentySevenNodeBrickLT::K(81, 81);
-Matrix TwentySevenNodeBrickLT::M( 81, 81);
+// Matrix TwentySevenNodeBrickLT::K(81, 81);
+// Matrix TwentySevenNodeBrickLT::M( 81, 81);
+// Vector TwentySevenNodeBrickLT::P( 81 );
 
-Vector TwentySevenNodeBrickLT::P( 81 );
 Vector TwentySevenNodeBrickLT::ShapeFunctionValues_in_function( 9 );  // Nima added for surface load (July 2012)
 Vector TwentySevenNodeBrickLT::J_vector_in_function( 3 );             // Nima added for surface load (July 2012)
 
@@ -66,7 +66,9 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
 
     : Element( element_number, ELE_TAG_TwentySevenNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 27 ),
-      Ki( 0 ), Q( 81 ), bf(3), gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
+      Ki( 0 ), Q( 81 ), bf(3),
+      K(81, 81), M( 81, 81), P( 81 ),
+      gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
 {
 
 
@@ -244,7 +246,10 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
 
 //====================================================================
 TwentySevenNodeBrickLT::TwentySevenNodeBrickLT(): Element( 0, ELE_TAG_TwentySevenNodeBrickLT ),
-    rho( 0.0 ), connectedExternalNodes( 27 ) , Ki( 0 ), mmodel( 0 ), Q( 81 ), bf(3), gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
+    rho( 0.0 ), connectedExternalNodes( 27 ) , Ki( 0 ), mmodel( 0 ),
+    Q( 81 ), bf(3),
+    K(81, 81), M( 81, 81), P( 81 ),
+    gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
 {
 
 

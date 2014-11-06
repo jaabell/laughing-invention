@@ -102,7 +102,7 @@ class ShearBeamLT: public Element
         int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
         int sendSelf ( int commitTag, Channel &theChannel );
         int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
-                       &theBroker );
+                          &theBroker );
 
         //General reporting of element status
         void Print( ostream &s, int flag = 0 );
@@ -165,9 +165,9 @@ class ShearBeamLT: public Element
         Vector Q;
         Vector bf;
 
-        static Matrix K;
-        static Matrix M;
-        static Vector P;
+        Matrix K;
+        Matrix M;
+        Vector P;
 
         static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
         static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
