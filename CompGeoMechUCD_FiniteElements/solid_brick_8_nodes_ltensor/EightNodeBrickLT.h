@@ -179,8 +179,6 @@ class EightNodeBrickLT: public Element
         NDMaterialLT *mmodel;
         NDMaterialLT *material_array[8];
 
-
-
         Vector Q;
         Vector bf;
 

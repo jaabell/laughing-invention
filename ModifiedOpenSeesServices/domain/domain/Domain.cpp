@@ -3511,18 +3511,60 @@ Domain::buildEleGraph( Graph *theEleGraph )
             {
                 int Element1 = id( i );
 
+
+                /////////////////////////////////////////////////////////////////////
+                //////////////////////// BEGIN OLD VERSION
+                /////////////////////////////////////////////////////////////////////
+
                 Element *ele1 = this->getElement( Element1 );
 
+                const ID &nodes1 = ele1->getExternalNodes();
+                int num1 = nodes1.Size();
                 const ID &nodes_in_element1 = ele1->getExternalNodes();
                 int number_of_nodes_in_element1 = nodes_in_element1.Size();
 
-                //How many elements are in the boundary of an element (added 8/20/13):
-                //-------------------------
-                int Num1_Boundary_Nodes = ele1->getNumberOfBoundaryNodes();
+                int Num1_Boundary_Nodes = 1;
 
-                //--------------------------
+                if (num1 == 27)
+                {
+                    Num1_Boundary_Nodes = 9;
+                }
+
+                if (num1 == 4)
+                {
+                    Num1_Boundary_Nodes = 2;
+                }
+
+                if (num1 == 2)
+                {
+                    Num1_Boundary_Nodes = 1;
+                }
+
                 int vertexTag1 = theElementTagVertices[Element1];
 
+                /////////////////////////////////////////////////////////////////////
+                //////////////////////// END OLD VERSION
+                /////////////////////////////////////////////////////////////////////
+
+
+                /////////////////////////////////////////////////////////////////////
+                //////////////////////// BEGIN NEW VERSION
+                /////////////////////////////////////////////////////////////////////
+                // Element *ele1 = this->getElement( Element1 );
+
+                // const ID &nodes_in_element1 = ele1->getExternalNodes();
+                // int number_of_nodes_in_element1 = nodes_in_element1.Size();
+
+                // //How many elements are in the boundary of an element (added 8/20/13):
+                // //-------------------------
+                // int Num1_Boundary_Nodes = ele1->getNumberOfBoundaryNodes();
+
+                // //--------------------------
+                // int vertexTag1 = theElementTagVertices[Element1];
+
+                /////////////////////////////////////////////////////////////////////
+                //////////////////////// END NEW VERSION
+                /////////////////////////////////////////////////////////////////////
                 for ( int j = 0; j < size; j++ )
                     if ( i != j )
                     {
@@ -3532,41 +3574,122 @@ Domain::buildEleGraph( Graph *theEleGraph )
 
                         Element *ele2 = this->getElement( Element2 );
 
+
+                        /////////////////////////////////////////////////////////////////////
+                        //////////////////////// BEGIN NEW VERSION
+                        /////////////////////////////////////////////////////////////////////
+
+                        // const ID &nodes_in_element2 = ele2->getExternalNodes();
+                        // int number_of_nodes_in_element2 = nodes_in_element2.Size();
+                        // //How many elements are in the boundary of an element (added 8/20/13):
+                        // //-------------------------
+                        // int Num2_Boundary_Nodes = ele2->getNumberOfBoundaryNodes();
+
+                        // //--------------------------
+                        // // Keep the smallest of number of boundary nodes
+                        // int number_of_common_nodes = Num1_Boundary_Nodes;
+                        // if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
+                        // {
+                        //     number_of_common_nodes = Num2_Boundary_Nodes;
+                        // }
+
+                        // //--------------------------
+                        // //Count the number of common nodes
+                        // int common = 0;
+
+                        // for ( int k = 0; k < number_of_nodes_in_element1; k++ )
+                        // {
+                        //     for ( int l = 0; l < number_of_nodes_in_element2; l++ )
+                        //     {
+                        //         if ( nodes_in_element1( k ) == nodes_in_element2( l ) )
+                        //         {
+                        //             common++;
+                        //         }
+                        //     }
+                        // }
+
+                        // cout << "Element" << ele1->getTag() << " and element " << ele2->getTag() << " have " << common << " nodes in common.\n";
+
+                        // // Adde edge for both vertices
+                        // if ( ( vertexTag1 > vertexTag2 ) && ( common == number_of_common_nodes ) )
+                        // {
+                        //     theEleGraph->addEdge( vertexTag1, vertexTag2 );
+                        //     theEleGraph->addEdge( vertexTag2, vertexTag1 );
+                        // }
+
+                        /////////////////////////////////////////////////////////////////////
+                        //////////////////////// END NEW VERSION
+                        /////////////////////////////////////////////////////////////////////
+
+                        /////////////////////////////////////////////////////////////////////
+                        //////////////////////// START OLD VERSION
+                        /////////////////////////////////////////////////////////////////////
+                        const ID &nodes2 = ele2->getExternalNodes();
+                        int num2 = nodes2.Size();
                         const ID &nodes_in_element2 = ele2->getExternalNodes();
                         int number_of_nodes_in_element2 = nodes_in_element2.Size();
                         //How many elements are in the boundary of an element (added 8/20/13):
                         //-------------------------
-                        int Num2_Boundary_Nodes = ele2->getNumberOfBoundaryNodes();
+                        int Num2_Boundary_Nodes = 1;
+
+                        if (num2 == 27)
+                        {
+                            Num2_Boundary_Nodes = 9;
+                        }
+
+                        if (num2 == 4)
+                        {
+                            Num2_Boundary_Nodes = 2;
+                        }
+
+                        if (num2 == 2)
+                        {
+                            Num2_Boundary_Nodes = 1;
+                        }
 
                         //--------------------------
+                        int num_comm = Num1_Boundary_Nodes;
+
                         // Keep the smallest of number of boundary nodes
                         int number_of_common_nodes = Num1_Boundary_Nodes;
                         if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
                         {
+                            num_comm = Num2_Boundary_Nodes;
                             number_of_common_nodes = Num2_Boundary_Nodes;
                         }
 
                         //--------------------------
+
                         //Count the number of common nodes
                         int common = 0;
 
-                        for ( int k = 0; k < number_of_nodes_in_element1; k++ )
-                        {
-                            for ( int l = 0; l < number_of_nodes_in_element2; l++ )
+                        for ( int k = 0; k < num1; k++ )
+                            for ( int k = 0; k < number_of_nodes_in_element1; k++ )
                             {
-                                if ( nodes_in_element1( k ) == nodes_in_element2( l ) )
-                                {
-                                    common++;
-                                }
+                                for ( int l = 0; l < num2; l++ )
+                                    for ( int l = 0; l < number_of_nodes_in_element2; l++ )
+                                    {
+                                        if ( nodes1( k ) == nodes2( l ) )
+                                            if ( nodes_in_element1( k ) == nodes_in_element2( l ) )
+                                            {
+                                                common++;
+                                            }
+                                    }
                             }
-                        }
 
-                        // Adde edge for both vertices
-                        if ( ( vertexTag1 > vertexTag2 ) && ( common == number_of_common_nodes ) )
-                        {
-                            theEleGraph->addEdge( vertexTag1, vertexTag2 );
-                            theEleGraph->addEdge( vertexTag2, vertexTag1 );
-                        }
+                        // addEdge() adds for both vertices - do only once
+                        if ( ( vertexTag1 > vertexTag2 ) && ( common == 4 ) )
+                            // Adde edge for both vertices
+                            if ( ( vertexTag1 > vertexTag2 ) && ( common == number_of_common_nodes ) )
+                            {
+                                theEleGraph->addEdge( vertexTag1, vertexTag2 );
+                                theEleGraph->addEdge( vertexTag2, vertexTag1 );
+                            }
+
+                        /////////////////////////////////////////////////////////////////////
+                        //////////////////////// END OLD VERSION
+                        /////////////////////////////////////////////////////////////////////
+
                     }
             }
         }

@@ -569,6 +569,16 @@ void H5OutputWriter::syncWriters()
     MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
 
 
+    //ID Partition;
+    length_send = Partition.Size();
+    MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+    if (processID != 0)
+    {
+        Partition.resize(length_send);
+    }
+    int_buffer = Partition.data;
+    MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
 
 
 
@@ -1077,8 +1087,14 @@ void H5OutputWriter::writeMesh()
 
 
 #ifdef _PARALLEL_PROCESSING
-        dims[0]      = (hsize_t) Class_Tags.Size();
-        data_dims[0] = (hsize_t) Class_Tags.Size();
+        // if (processID == 0) // Only main processor knows about the global partition
+        // {
+
+        cout << "Processor " << processID << " writing partition data \n";
+        cout << "     Partition.Size() = " << Partition.Size() << " \n";
+        cout << "     dims[0]          = " << dims[0] << " \n";
+        dims[0]      = (hsize_t) Partition.Size();
+        data_dims[0] = (hsize_t) Partition.Size();
         count[0]     = dims[0];
         int_data_buffer = Partition.data;
         writeVariableLengthIntegerArray(id_elements_partition,
@@ -1090,8 +1106,10 @@ void H5OutputWriter::writeMesh()
                                         count,
                                         block,
                                         int_data_buffer);
+        // }
 #endif
 
+        cout << "Processor " << processID << " went through. \n";
         // TODO: Bring back element types
         // //Write material tags
         // for (int tag = 0; tag < (int) Element_types.size(); tag++)
