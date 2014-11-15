@@ -1107,9 +1107,9 @@ void H5OutputWriter::writeMesh()
                                         block,
                                         int_data_buffer);
         // }
+        cout << "Processor " << processID << " went through. \n";
 #endif
 
-        cout << "Processor " << processID << " went through. \n";
         // TODO: Bring back element types
         // //Write material tags
         // for (int tag = 0; tag < (int) Element_types.size(); tag++)
