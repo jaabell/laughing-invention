@@ -54,12 +54,12 @@ using namespace std;
 Graph::Graph()
     : myVertices(0), theVertexIter(0), numEdge(0), nextFreeTag(START_VERTEX_NUM)
 {
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     int numProcesses, processID;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
     cerr << "BABAK @ Graph::Graph() --  PID:" << processID << "---Graph::Graph() called ...:" << endl;
-    #endif
+#endif
     myVertices = new ArrayOfTaggedObjects(32);
     theVertexIter = new VertexIter(myVertices);
 }
@@ -68,28 +68,28 @@ Graph::Graph()
 Graph::Graph(int numVertices)
     : myVertices(0), theVertexIter(0), numEdge(0), nextFreeTag(START_VERTEX_NUM)
 {
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     int numProcesses, processID;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
     cerr << "BABAK @ Graph(int numVertices) --  PID:" << processID << "---Graph::Graph() called ...:" << endl;
-    #endif
+#endif
     myVertices = new ArrayOfTaggedObjects(numVertices);
     theVertexIter = new VertexIter(myVertices);
 }
 
 
-Graph::Graph(TaggedObjectStorage& theVerticesStorage)
+Graph::Graph(TaggedObjectStorage &theVerticesStorage)
     : myVertices(&theVerticesStorage), theVertexIter(0), numEdge(0), nextFreeTag(START_VERTEX_NUM)
 {
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     int numProcesses, processID;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
     cerr << "BABAK @ raph(TaggedObjectStorage &theVerticesStorage) --  PID:" << processID << "---Graph::Graph() called ...:" << endl;
-    #endif
-    TaggedObject* theObject;
-    TaggedObjectIter& theObjects = theVerticesStorage.getComponents();
+#endif
+    TaggedObject *theObject;
+    TaggedObjectIter &theObjects = theVerticesStorage.getComponents();
 
     while ((theObject = theObjects()) != 0)
         if (theObject->getTag() > nextFreeTag)
@@ -102,20 +102,20 @@ Graph::Graph(TaggedObjectStorage& theVerticesStorage)
 }
 
 
-Graph::Graph(Graph& other)
+Graph::Graph(Graph &other)
     : myVertices(0), theVertexIter(0), numEdge(0), nextFreeTag(START_VERTEX_NUM)
 {
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     int numProcesses, processID;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
     cerr << "BABAK @ Graph(Graph &other) --  PID:" << processID << "---Graph::Graph() called ...:" << endl;
-    #endif
+#endif
     myVertices = new ArrayOfTaggedObjects(other.getNumVertex());
     theVertexIter = new VertexIter(myVertices);
 
-    VertexIter& otherVertices = other.getVertices();
-    Vertex* vertexPtr;
+    VertexIter &otherVertices = other.getVertices();
+    Vertex *vertexPtr;
 
     // loop through other creating vertices if tag not the same in this
     while ((vertexPtr = otherVertices()) != 0)
@@ -134,12 +134,12 @@ Graph::Graph(Graph& other)
     }
 
     // loop through other adding all the edges that exist in other
-    VertexIter& otherVertices2 = other.getVertices();
+    VertexIter &otherVertices2 = other.getVertices();
 
     while ((vertexPtr = otherVertices2()) != 0)
     {
         int vertexTag = vertexPtr->getTag();
-        const ID& adjacency = vertexPtr->getAdjacency();
+        const ID &adjacency = vertexPtr->getAdjacency();
 
         for (int i = 0; i < adjacency.Size(); i++)
         {
@@ -179,7 +179,7 @@ Graph::~Graph()
 // before the vertex is added.
 
 bool
-Graph::addVertex(Vertex* vertexPtr, bool checkAdjacency)
+Graph::addVertex(Vertex *vertexPtr, bool checkAdjacency)
 {
     // check the vertex * and its adjacency list
     if (vertexPtr == 0)
@@ -193,12 +193,12 @@ Graph::addVertex(Vertex* vertexPtr, bool checkAdjacency)
     {
         if (vertexPtr->getDegree() != 0)
         {
-            const ID& adjacency = vertexPtr->getAdjacency();
+            const ID &adjacency = vertexPtr->getAdjacency();
             int size = adjacency.Size();
 
             for (int i = 0; i < size; i++)
             {
-                Vertex* other = this->getVertexPtr(adjacency(i));
+                Vertex *other = this->getVertexPtr(adjacency(i));
 
                 if (other == 0)
                 {
@@ -247,8 +247,8 @@ Graph::addEdge(int vertexTag, int otherVertexTag)
 {
     // get pointers to the vertices, if one does not exist return
 
-    Vertex* vertex1 = this->getVertexPtr(vertexTag);
-    Vertex* vertex2 = this->getVertexPtr(otherVertexTag);
+    Vertex *vertex1 = this->getVertexPtr(vertexTag);
+    Vertex *vertex2 = this->getVertexPtr(otherVertexTag);
 
     if ((vertex1 == 0) || (vertex2 == 0))
     {
@@ -279,22 +279,22 @@ Graph::addEdge(int vertexTag, int otherVertexTag)
 }
 
 
-Vertex*
+Vertex *
 Graph::getVertexPtr(int vertexTag)
 {
-    TaggedObject* res = myVertices->getComponentPtr(vertexTag);
+    TaggedObject *res = myVertices->getComponentPtr(vertexTag);
 
     if (res == 0)
     {
         return 0;
     }
 
-    Vertex* result = (Vertex*)res;
+    Vertex *result = (Vertex *)res;
     return result;
 }
 
 
-VertexIter&
+VertexIter &
 Graph::getVertices(void)
 {
     // reset the iter and then return it
@@ -321,17 +321,17 @@ Graph::getFreeTag(void)
     return nextFreeTag;
 }
 
-Vertex*
+Vertex *
 Graph::removeVertex(int tag, bool flag)
 {
-    TaggedObject* mc = myVertices->removeComponent(tag);
+    TaggedObject *mc = myVertices->removeComponent(tag);
 
     if (mc == 0)
     {
         return 0;
     }
 
-    Vertex* result = (Vertex*)mc;
+    Vertex *result = (Vertex *)mc;
 
     if (flag == true)   // remove all edges associated with the vertex
     {
@@ -345,18 +345,18 @@ Graph::removeVertex(int tag, bool flag)
 
 
 int
-Graph::merge(Graph& other)
+Graph::merge(Graph &other)
 {
 
     int result = 0;
-    VertexIter& otherVertices = other.getVertices();
-    Vertex* vertexPtrOther;
+    VertexIter &otherVertices = other.getVertices();
+    Vertex *vertexPtrOther;
 
     // loop through other creating vertices if tag not the same in this
     while ((vertexPtrOther = otherVertices()) != 0)
     {
         int vertexTag = vertexPtrOther->getTag();
-        Vertex* vertexPtr = this->getVertexPtr(vertexTag);
+        Vertex *vertexPtr = this->getVertexPtr(vertexTag);
 
         if (vertexPtr == 0)
         {
@@ -375,12 +375,12 @@ Graph::merge(Graph& other)
 
 
     // loop through other adding all the edges that exist in other
-    VertexIter& otherVertices2 = other.getVertices();
+    VertexIter &otherVertices2 = other.getVertices();
 
     while ((vertexPtrOther = otherVertices2()) != 0)
     {
         int vertexTag = vertexPtrOther->getTag();
-        const ID& adjacency = vertexPtrOther->getAdjacency();
+        const ID &adjacency = vertexPtrOther->getAdjacency();
 
         for (int i = 0; i < adjacency.Size(); i++)
         {
@@ -397,13 +397,13 @@ Graph::merge(Graph& other)
 
 
 void
-Graph::Print(ostream& s, int flag)
+Graph::Print(ostream &s, int flag)
 {
     myVertices->Print(s, flag);
 }
 
 
-ostream& operator<<(ostream& s, Graph& M)
+ostream &operator<<(ostream &s, Graph &M)
 {
     M.Print(s);
     return s;
@@ -411,7 +411,7 @@ ostream& operator<<(ostream& s, Graph& M)
 
 
 int
-Graph::sendSelf(int commitTag, Channel& theChannel)
+Graph::sendSelf(int commitTag, Channel &theChannel)
 {
     // check not a datastore ..
     if (theChannel.isDatastore() != 0)
@@ -432,8 +432,8 @@ Graph::sendSelf(int commitTag, Channel& theChannel)
     }
 
     // send each vertex
-    VertexIter& theVertices = this->getVertices();
-    Vertex* vertexPtr;
+    VertexIter &theVertices = this->getVertices();
+    Vertex *vertexPtr;
 
     while ((vertexPtr = theVertices()) != 0)
     {
@@ -450,7 +450,7 @@ Graph::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Graph::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     // check not from a datastore
     if (theChannel.isDatastore() != 0)
@@ -483,7 +483,7 @@ Graph::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBrok
     // for each vertex to be received, create it, receive it and then add it to the graph
     for (int i = 0; i < numVertex; i++)
     {
-        Vertex* theVertex = new Vertex(0, 0);
+        Vertex *theVertex = new Vertex(0, 0);
 
         if (theVertex == 0)
         {

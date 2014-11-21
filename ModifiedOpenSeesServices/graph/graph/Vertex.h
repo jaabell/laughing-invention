@@ -49,7 +49,7 @@ class Vertex: public TaggedObject
 {
     public:
         Vertex(int tag, int ref, double weight = 0, int color = 0);
-        Vertex(const Vertex& other);
+        Vertex(const Vertex &other);
 
         virtual ~Vertex();
 
@@ -64,16 +64,15 @@ class Vertex: public TaggedObject
 
         virtual int addEdge(int otherTag);
         virtual int getDegree(void) const;
-        virtual const ID& getAdjacency(void) const;
+        virtual const ID &getAdjacency(void) const;
 
-        virtual  void Print(ostream& s, int flag = 0);
-        int sendSelf(int commitTag, Channel& theChannel);
-        int receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker);
+        virtual  void Print(ostream &s, int flag = 0);
+        int sendSelf(int commitTag, Channel &theChannel);
+        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        # ifdef _PDD //Guanzhou added
+
         void setVertexSize(int size);// {vsize = size;};
         int getVertexSize();// {return vsize;};
-        # endif
 
     protected:
 
@@ -84,10 +83,7 @@ class Vertex: public TaggedObject
         int myDegree;
         int myTmp;
         ID  myAdjacency;
-
-        # ifdef _PDD
-        int vsize; //Guanzhou added for repartitioning
-        # endif
+        int vsize;
 
 };
 

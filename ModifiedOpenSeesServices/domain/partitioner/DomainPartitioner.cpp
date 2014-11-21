@@ -400,6 +400,12 @@ DomainPartitioner::partition(int numParts)
     partfile.close();
 
 
+    ofstream graphfile("graph.dat", ios::out);
+    int flag = 4;  // 4= print a lot!
+    graphfile << " Weight Color Tmp vsize myDegree\n";
+    theElementGraph->Print(graphfile, 4);
+    graphfile.close();
+
     // now go through the MP_Constraints and ensure:
     //   1. if in different partitions both on boundary
     //  2. if constrained on boundary - retained also on boundary

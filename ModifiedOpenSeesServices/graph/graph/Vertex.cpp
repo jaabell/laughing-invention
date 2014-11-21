@@ -108,20 +108,20 @@ Vertex::addEdge(int otherTag)
     }
 
     // check the otherVertex has not already been added
-    #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
     std::cerr << "BABAK @ Vertex::addEdge  " << "myAdjacency.getLocation(otherTag)" << myAdjacency.getLocation(otherTag) << "\n";
-    #endif
+#endif
 
     if (myAdjacency.getLocation(otherTag) < 0)
     {
         myAdjacency[myDegree]  = otherTag;
-        #ifdef _BABAK_DEBUG
+#ifdef _BABAK_DEBUG
         int numProcesses, processID;
         MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
         MPI_Comm_rank(MPI_COMM_WORLD, &processID);
         cerr << "BABAK @ Vertex::addEdge ---- PID: " << processID << " myAdjacency[myDegree]: " << myAdjacency(myDegree) << " and otherTag is: " << otherTag << "\n";
         cerr << "BABAK @ Vertex::addEdge ---- PID: " << processID << " myAdjacency.getLocation(otherTag) " << myAdjacency.getLocation(otherTag) << "\n";
-        #endif
+#endif
         myDegree++;
         return 0;
     }
@@ -138,14 +138,14 @@ Vertex::getDegree(void) const
     return myDegree;
 }
 
-const ID&
+const ID &
 Vertex::getAdjacency(void) const
 {
     return myAdjacency;
 }
 
 void
-Vertex::Print(ostream& s, int flag)
+Vertex::Print(ostream &s, int flag)
 {
     s << this->getTag() << " " ;
     s << myRef << " ";
@@ -164,7 +164,7 @@ Vertex::Print(ostream& s, int flag)
     }
     else if (flag == 4)
     {
-        s << myWeight << " " << myColor << " " << myTmp << " " ;
+        s << myWeight << " " << myColor << " " << myTmp << " " << vsize << " " << myDegree << " " ;
     }
 
     s << "ADJACENCY: " << myAdjacency;
@@ -172,7 +172,7 @@ Vertex::Print(ostream& s, int flag)
 
 
 int
-Vertex::sendSelf(int commitTag, Channel& theChannel)
+Vertex::sendSelf(int commitTag, Channel &theChannel)
 {
     // send the tag/ref/color/degree/tmp, an indication if weighted & size of adjacency
     static ID idData(7);
@@ -224,7 +224,7 @@ Vertex::sendSelf(int commitTag, Channel& theChannel)
 
 
 int
-Vertex::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBroker)
+Vertex::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
     // recv the tag/ref/color/degree/tmp, an indication if weighted & size of adjacency
     static ID idData(7);
@@ -257,7 +257,7 @@ Vertex::receiveSelf(int commitTag, Channel& theChannel, FEM_ObjectBroker& theBro
 
     // resize the adjacency & receive it
     //  myAdjacency[idData(6)-1] = 0;
-    int* adjacencyData;
+    int *adjacencyData;
     adjacencyData = new int[idData[6]];
     myAdjacency.setData(adjacencyData, idData[6], true);
 

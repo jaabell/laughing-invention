@@ -14,7 +14,8 @@ OBJS       = SingleDomEleIter.o \
              SingleDomMP_Iter.o \
              SingleDomAllSP_Iter.o \
              SingleDomUniaxialMaterialIter.o \
-             SingleDomNDMaterialIter.o
+             SingleDomNDMaterialIter.o \
+             SingleDomNDMaterialLTIter.o
 
 # Compilation control
 

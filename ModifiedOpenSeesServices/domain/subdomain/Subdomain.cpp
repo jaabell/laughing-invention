@@ -117,6 +117,7 @@ Subdomain::Subdomain(int tag,
                      TaggedObjectStorage &theSPsStorage,
                      TaggedObjectStorage &theUniaxialMaterialStorage,
                      TaggedObjectStorage &theNDMaterialStorage,
+                     TaggedObjectStorage &theNDMaterialLTStorage,
                      TaggedObjectStorage &theSectionStorage,
                      TaggedObjectStorage &theSectionRepresentsStorage,
                      TaggedObjectStorage &the3dGeomTransfsStorage,
@@ -131,6 +132,7 @@ Subdomain::Subdomain(int tag,
              theLoadPatternsStorage,
              theUniaxialMaterialStorage,
              theNDMaterialStorage,
+             theNDMaterialLTStorage,
              theSectionStorage,
              theSectionRepresentsStorage,
              theMultiSupportStorage,
@@ -224,8 +226,8 @@ Subdomain::~Subdomain()
 bool
 Subdomain::addNode(Node *node)
 {
-#ifdef _G3DEBUG
     int nodTag = node->getTag();
+#ifdef _G3DEBUG
     TaggedObject *other = externalNodes->getComponentPtr(nodTag);
 
     if (other != 0)
@@ -258,6 +260,11 @@ Subdomain::addNode(Node *node)
     {
         cerr << "Subdomain::addNode - failed to add Node " << node->getTag() << "\n";
         return -1;
+    }
+
+    if ( nodTag > maxNodesTag)
+    {
+        maxNodesTag = nodTag;
     }
 
     return result;
@@ -1068,7 +1075,7 @@ Subdomain::sendSelf(int cTag, Channel &theChannel)
 
 int
 Subdomain::receiveSelf(int cTag, Channel &theChannel,
-                    FEM_ObjectBroker &theBroker)
+                       FEM_ObjectBroker &theBroker)
 {
     int dataTag = this->getDbTag();
     ID data(2);

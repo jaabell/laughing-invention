@@ -304,6 +304,7 @@ DOMAIN_LIBS =  ./domain/component/DomainComponent.o \
                ./domain/domain/single/SingleDomMP_Iter.o \
                ./domain/domain/single/SingleDomUniaxialMaterialIter.o \
                ./domain/domain/single/SingleDomNDMaterialIter.o \
+               ./domain/domain/single/SingleDomNDMaterialLTIter.o \
                ./domain/domain/partitioned/PartitionedDomain.o \
                ./domain/domain/partitioned/PartitionedDomainEleIter.o \
                ./domain/domain/partitioned/PartitionedDomainSubIter.o \
@@ -370,6 +371,7 @@ DOMAIN_LIBS =  ./domain/component/DomainComponent.o \
                ./domain/domain/single/SingleDomMP_Iter.o \
                ./domain/domain/single/SingleDomUniaxialMaterialIter.o \
                ./domain/domain/single/SingleDomNDMaterialIter.o \
+               ./domain/domain/single/SingleDomNDMaterialLTIter.o \
                ./domain/node/Node.o \
                ./domain/node/NodalLoad.o \
                ./domain/constraints/SP_Constraint.o \

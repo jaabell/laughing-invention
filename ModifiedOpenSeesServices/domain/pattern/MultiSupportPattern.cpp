@@ -80,8 +80,8 @@ MultiSupportPattern::~MultiSupportPattern()
 void
 MultiSupportPattern::applyLoad(double time)
 {
-    SP_Constraint* sp;
-    SP_ConstraintIter& theIter = this->getSPs();
+    SP_Constraint *sp;
+    SP_ConstraintIter &theIter = this->getSPs();
 
     while ((sp = theIter()) != 0)
     {
@@ -91,7 +91,7 @@ MultiSupportPattern::applyLoad(double time)
 
 
 int
-MultiSupportPattern::addMotion(GroundMotion& theMotion, int tag)
+MultiSupportPattern::addMotion(GroundMotion &theMotion, int tag)
 {
     // ensure no motion with given tag already added
     if (theMotionTags.getLocation(tag) >= 0)
@@ -101,7 +101,7 @@ MultiSupportPattern::addMotion(GroundMotion& theMotion, int tag)
     }
 
     // make space for new
-    GroundMotion** newMotions = new GroundMotion *[numMotions + 1];
+    GroundMotion **newMotions = new GroundMotion *[numMotions + 1];
 
     //  GroundMotion **newMotions = (GroundMotion **)malloc(sizeof(GroundMotion *)*(numMotions+1));
     if (newMotions == 0)
@@ -135,7 +135,7 @@ MultiSupportPattern::addMotion(GroundMotion& theMotion, int tag)
 
 
 
-GroundMotion*
+GroundMotion *
 MultiSupportPattern::getMotion(int tag)
 {
     int loc = theMotionTags.getLocation(tag);
@@ -153,14 +153,14 @@ MultiSupportPattern::getMotion(int tag)
 
 
 bool
-MultiSupportPattern::addNodalLoad(NodalLoad*)
+MultiSupportPattern::addNodalLoad(NodalLoad *)
 {
     cerr << "MultiSupportPattern::addNodalLoad() - cannot add NodalLoad to EQ pattern\n";
     return false;
 }
 
 bool
-MultiSupportPattern::addElementalLoad(ElementalLoad*)
+MultiSupportPattern::addElementalLoad(ElementalLoad *)
 {
     cerr << "MultiSupportPattern::addElementalLoad() - cannot add ElementalLoad to EQ pattern\n";
     return false;
@@ -169,7 +169,7 @@ MultiSupportPattern::addElementalLoad(ElementalLoad*)
 
 
 int
-MultiSupportPattern::sendSelf(int commitTag, Channel& theChannel)
+MultiSupportPattern::sendSelf(int commitTag, Channel &theChannel)
 {
     //Guanzhou added
     int dbTag = this->getDbTag();
@@ -259,12 +259,12 @@ MultiSupportPattern::sendSelf(int commitTag, Channel& theChannel)
         return res;
     }
 
-    SP_ConstraintIter& theIter = this->getSPs();
+    SP_ConstraintIter &theIter = this->getSPs();
     //SP_Constraint *sp;
-    ImposedMotionSP* sp;
+    ImposedMotionSP *sp;
 
     //int count = 0;
-    while ((sp = (ImposedMotionSP*)theIter()) != 0)
+    while ((sp = (ImposedMotionSP *)theIter()) != 0)
     {
         sp->sendSelf(commitTag, theChannel);
         //myTag(count) = sp->getTag();
@@ -294,8 +294,8 @@ MultiSupportPattern::sendSelf(int commitTag, Channel& theChannel)
 }
 
 int
-MultiSupportPattern::receiveSelf(int commitTag, Channel& theChannel,
-                              FEM_ObjectBroker& theBroker)
+MultiSupportPattern::receiveSelf(int commitTag, Channel &theChannel,
+                                 FEM_ObjectBroker &theBroker)
 {
     //Guanzhou added
     int dbTag = this->getDbTag();
@@ -414,14 +414,14 @@ MultiSupportPattern::receiveSelf(int commitTag, Channel& theChannel,
     //theMotionTags =  MotionsIDs;
 
     //SP_Constraint *theSP;
-    ImposedMotionSP* theSP;
+    ImposedMotionSP *theSP;
 
     //Domain *theDomain = this->getDomain();
     //
     for (int i = 0; i < num_sp; i++)
     {
         //if ( theDomain->getNode(NodeTags(i)) == 0 ) continue;
-        theSP = (ImposedMotionSP*)theBroker.getNewSP(CNSTRNT_TAG_ImposedMotionSP);
+        theSP = (ImposedMotionSP *)theBroker.getNewSP(CNSTRNT_TAG_ImposedMotionSP);
 
         if (theSP == 0)
         {
@@ -442,7 +442,7 @@ MultiSupportPattern::receiveSelf(int commitTag, Channel& theChannel,
 
         //theSP = new ImposedMotionSP(myTag(i), NodeTags(i), DOFTags(i),
         //  *theMotions[MotionsIDs(i)], MotionsIDs(i), false);
-        if (this->addSP_Constraint((SP_Constraint*)theSP) == false)
+        if (this->addSP_Constraint((SP_Constraint *)theSP) == false)
         {
             cerr << "MultiSupportPattern::receiveSelf() - fail to add sp to pattern \n";
             return -1;
@@ -453,11 +453,11 @@ MultiSupportPattern::receiveSelf(int commitTag, Channel& theChannel,
 }
 
 void
-MultiSupportPattern::Print(ostream& s, int flag)
+MultiSupportPattern::Print(ostream &s, int flag)
 {
     s << "MultiSupportPattern  tag: " << this->getTag() << endln;
-    SP_Constraint* sp;
-    SP_ConstraintIter& theIter = this->getSPs();
+    SP_Constraint *sp;
+    SP_ConstraintIter &theIter = this->getSPs();
     s << "Number of GM " << numMotions << " GMs: " << theMotionTags << endln;
 
     while ((sp = theIter()) != 0)
@@ -466,7 +466,7 @@ MultiSupportPattern::Print(ostream& s, int flag)
     }
 }
 
-LoadPattern*
+LoadPattern *
 MultiSupportPattern::getCopy(void)
 {
     //replaced by Babak on Feb 4 2013:
@@ -488,7 +488,7 @@ MultiSupportPattern::getCopy(void)
 
     //----------
 
-    MultiSupportPattern* theCopy = new MultiSupportPattern(this->getTag());
+    MultiSupportPattern *theCopy = new MultiSupportPattern(this->getTag());
 
     if (theCopy == 0)
     {
@@ -504,8 +504,8 @@ MultiSupportPattern::getCopy(void)
         theCopy->addMotion(*(this->getMotion(i + 1)), i + 1);
     }
 
-    cerr << theCopy->theMotionTags << "\n";
-    cerr << theCopy->numMotions << "\n";
+    // cerr << theCopy->theMotionTags << "\n";
+    // cerr << theCopy->numMotions << "\n";
 
 
     return theCopy; // in case fatal() does not exit

@@ -78,6 +78,7 @@ class Subdomain: public Element, public Domain
                   TaggedObjectStorage &theSPsStorage,
                   TaggedObjectStorage &theUniaxialMaterialStorage,
                   TaggedObjectStorage &theNDMaterialStorage,
+                  TaggedObjectStorage &theNDMaterialLTStorage,
                   TaggedObjectStorage &theSectionStorage,
                   TaggedObjectStorage &theSectionRepresentsStorage,
                   TaggedObjectStorage &the3dGeomTransfsStorage,
@@ -228,7 +229,7 @@ class Subdomain: public Element, public Domain
 
         virtual int sendSelf(int commitTag, Channel &theChannel);
         virtual int receiveSelf(int commitTag, Channel &theChannel,
-                             FEM_ObjectBroker &theBroker);
+                                FEM_ObjectBroker &theBroker);
 
         virtual double getCost(void);
         //    virtual  bool addLoadPattern_Fake(LoadPattern *); // Added by Babak Kamrani for debugging purposes

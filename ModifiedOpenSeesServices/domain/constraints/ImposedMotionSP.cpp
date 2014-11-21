@@ -58,7 +58,7 @@ ImposedMotionSP::ImposedMotionSP()
 
 // constructor for a subclass to use
 ImposedMotionSP::ImposedMotionSP(int tag, int node, int ndof,
-                                 GroundMotion& theMotion, int gMotionID, bool killMotion)
+                                 GroundMotion &theMotion, int gMotionID, bool killMotion)
     : SP_Constraint(tag, node, ndof, CNSTRNT_TAG_ImposedMotionSP),
       theNode(0), theNodeResponse(0), theGroundMotionResponse(3), destroyMotion(0)
 {
@@ -93,7 +93,7 @@ ImposedMotionSP::~ImposedMotionSP()
 }
 
 int//Guanzhou added
-ImposedMotionSP::setGroundMotion(GroundMotion* theMotion)
+ImposedMotionSP::setGroundMotion(GroundMotion *theMotion)
 {
     if (theMotion != 0)
     {
@@ -122,7 +122,7 @@ ImposedMotionSP::applyConstraint(double time)
 
     if (theNode == 0 || theNodeResponse)
     {
-        Domain* theDomain = this->getDomain();
+        Domain *theDomain = this->getDomain();
 
 
         if (theDomain == 0)
@@ -152,9 +152,6 @@ ImposedMotionSP::applyConstraint(double time)
         cerr << "ImposedMotionSP::ImposedMotionSP() theNodeResponse can not be set" << endl;
         exit(-1);
     }
-
-
-
 
 
     // now get the response from the ground motion
@@ -188,7 +185,7 @@ ImposedMotionSP::isHomogeneous(void) const
 
 
 int //Guanzhou implemented
-ImposedMotionSP::sendSelf(int cTag, Channel& theChannel)
+ImposedMotionSP::sendSelf(int cTag, Channel &theChannel)
 {
     static ID data(4);
 
@@ -207,8 +204,8 @@ ImposedMotionSP::sendSelf(int cTag, Channel& theChannel)
 }
 
 int  //Guanzhou implemented
-ImposedMotionSP::receiveSelf(int cTag, Channel& theChannel,
-                          FEM_ObjectBroker& theBroker)
+ImposedMotionSP::receiveSelf(int cTag, Channel &theChannel,
+                             FEM_ObjectBroker &theBroker)
 {
     static ID data(4);
 
@@ -234,7 +231,7 @@ ImposedMotionSP::receiveSelf(int cTag, Channel& theChannel,
 }
 
 void
-ImposedMotionSP::Print(ostream& s, int flag)
+ImposedMotionSP::Print(ostream &s, int flag)
 {
     s << "ImposedMotionSP: " << this->getTag();
     s << "\t Node: " << this->getNodeTag();

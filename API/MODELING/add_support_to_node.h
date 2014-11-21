@@ -99,3 +99,44 @@ int add_support_to_node(int NodeNumber,
 };
 
 
+
+int add_support_to_node(int NodeNumber,
+                        int dof_number, double value)
+{
+
+    int currentSpTag = 0;
+    // SP_ConstraintIter &theSPs = theDomain.getSPs();
+    // SP_Constraint *theSP;
+
+    // while ((theSP = theSPs()) != 0)
+    // {
+    //     int spTag = theSP->getTag();
+
+    //     if (spTag >= currentSpTag)
+    //     {
+    //         currentSpTag = spTag + 1;
+    //     }
+    // }
+    currentSpTag = theDomain.getMaxSPsTag() + 1;
+
+    SP_Constraint *sp  = 0;
+    sp = new SP_Constraint(currentSpTag, NodeNumber,
+                           dof_number - 1, // for SP dofs start from 0, for us from 1
+                           value);  // DOF_value
+
+    if (sp == NULL)
+    {
+        cerr << "Error: (add_support_to_node) memory allocating for SP_Constraint!" << endl;
+        return -1;
+    }
+
+
+    if ( theDomain.addSP_Constraint(sp) == false )
+    {
+        cerr << "Error: (add_support_to_node) SP_Constraint could not be added to the domain " << endl;
+        return -1;
+    }
+
+    return 0;
+};
+

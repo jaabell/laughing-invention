@@ -25,7 +25,7 @@ document:
 essi:  $(OBJS)
 	@$(ECHO) 
 	@$(ECHO) Linking ESSI.
-	@$(LINKER) $(LINKFLAGS) $(OBJS) $(LIBS) -o ../bin/$@
+	$(LINKER) $(LINKFLAGS) $(OBJS) $(LIBS) -o ../bin/$@
 	@$(ECHO) 
 	@$(ECHO) Done!
 	@$(ECHO) 

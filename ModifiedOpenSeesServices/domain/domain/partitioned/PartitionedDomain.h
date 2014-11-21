@@ -58,7 +58,7 @@ class PartitionedDomain: public Domain
 
         PartitionedDomain(int numNodes, int numElements,
                           int numSPs, int numMPs, int numLoadPatterns,
-                          int numUniaxialMat, int numNDMaterial, int numSections, //Added by Babak on December 2012
+                          int numUniaxialMat, int numNDMaterial, int numNDMaterialLT, int numSections, //Added by Babak on December 2012
                           int numofSectionRepresents, int num3dGeomTransfs,//Added by Babak on December 2012
                           int nummultipleexcitation, int numBodyForces, int numDamping,//Added by Babak on December 2012
                           int numSubdomains,

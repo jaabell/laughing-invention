@@ -58,8 +58,10 @@
 // Nima Tafazzoli (Sep. 2012)
 #include <UniaxialMaterialIter.h>
 #include <NDMaterialIter.h>
+#include <NDMaterialLTIter.h>
 #include <SingleDomUniaxialMaterialIter.h>
 #include <SingleDomNDMaterialIter.h>
+#include <SingleDomNDMaterialLTIter.h>
 
 
 #include <ArrayOfTaggedObjects.h>
@@ -124,6 +126,7 @@ Domain *ops_TheActiveDomain = 0;
 Domain::Domain()
     :
     theDatabases(0), numDatabases(0),
+    output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
     currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
     hasDomainChangedFlag( false ), theDbTag( 0 ), lastGeoSendTag( -1 ),
     dbEle( 0 ), dbNod( 0 ), dbSPs( 0 ), dbMPs( 0 ), dbLPs( 0 ),
@@ -131,8 +134,7 @@ Domain::Domain()
     theElementGraph( 0 ),
     commitTag( 0 ),
     theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
-    number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-    output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false)
+    number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
 {
 
     // init the arrays for storing the domain components
@@ -149,6 +151,7 @@ Domain::Domain()
 
     theUniaxialMaterials = new ArrayOfTaggedObjects( 32 );
     theNDMaterials = new ArrayOfTaggedObjects( 32 );
+    theNDMaterialLTs = new ArrayOfTaggedObjects( 32 );
     theSections  = new ArrayOfTaggedObjects( 32 );
     theSectionRepresents = new ArrayOfTaggedObjects( 32 );
     theMultipleSupports = new ArrayOfTaggedObjects( 256 );
@@ -182,6 +185,7 @@ Domain::Domain()
     // Nima Tafazzoli (Sep. 2012)
     theUniMaterialIter = new SingleDomUniaxialMaterialIter( theUniaxialMaterials );
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
+    theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
 
     // check that there was space to create the data structures
@@ -190,6 +194,7 @@ Domain::Domain()
             theEleIter == 0 || theNodIter == 0 ||
             theMP_Iter == 0 || theSP_Iter == 0 ||
             theUniMaterialIter == 0 || theNDMaterialIter == 0 ||
+            theNDMaterialLTIter == 0 ||
             theLoadPatterns == 0 || theLoadPatternIter == 0 )
     {
 
@@ -221,10 +226,11 @@ Domain::Domain()
 
 
 Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
-                int numLoadPatterns, int numUniaxialMat, int numNDMaterial, int numSections,
+                int numLoadPatterns, int numUniaxialMat, int numNDMaterial, int numNDMaterialLT, int numSections,
                 int numofSectionRepresents,
                 int nummultipleexcitation, int numAccelerationFields, int numDamping )
     : theDatabases( 0 ), numDatabases( 0 ),
+      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
       currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
       hasDomainChangedFlag( false ), theDbTag( 0 ), lastGeoSendTag( -1 ),
       dbEle( 0 ), dbNod( 0 ), dbSPs( 0 ), dbMPs( 0 ), dbLPs( 0 ),
@@ -232,8 +238,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
       theElementGraph( 0 ),
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false)
+      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
 {
     // init the arrays for storing the domain components
     theElements = new ArrayOfTaggedObjects( numElements );
@@ -244,6 +249,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
     // Instead of Using TclModelBuilder
     theUniaxialMaterials = new ArrayOfTaggedObjects( numUniaxialMat );
     theNDMaterials = new ArrayOfTaggedObjects( numNDMaterial );
+    theNDMaterialLTs = new ArrayOfTaggedObjects( numNDMaterialLT );
     theSections  = new ArrayOfTaggedObjects( numSections );
     theSectionRepresents = new ArrayOfTaggedObjects( numofSectionRepresents );
     theMultipleSupports = new ArrayOfTaggedObjects( nummultipleexcitation );
@@ -273,6 +279,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
     // Nima Tafazzoli (Sep. 2012)
     theUniMaterialIter = new SingleDomUniaxialMaterialIter( theUniaxialMaterials );
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
+    theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
 
     // check that there was space to create the data structures
@@ -280,7 +287,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
             theSPs == 0 || theMPs == 0 ||
             theEleIter == 0 || theNodIter == 0 ||
             theMP_Iter == 0 || theSP_Iter == 0 ||
-            theUniMaterialIter == 0 || theNDMaterialIter == 0 ||
+            theUniMaterialIter == 0 || theNDMaterialIter == 0 || theNDMaterialLTIter == 0 ||
             theLoadPatterns == 0 || theLoadPatternIter == 0 )
     {
 
@@ -306,12 +313,14 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
                 TaggedObjectStorage &theLoadPatternsStorage,
                 TaggedObjectStorage &theUniaxialMaterialStorage,
                 TaggedObjectStorage &theNDMaterialStorage,
+                TaggedObjectStorage &theNDMaterialLTStorage,
                 TaggedObjectStorage &theSectionStorage,
                 TaggedObjectStorage &theSectionRepresentsStorage,
                 TaggedObjectStorage &theMultiSupportStorage,
                 TaggedObjectStorage &theAccelerationFieldStorage,
                 TaggedObjectStorage &theDampingStorage )
     : theDatabases( 0 ), numDatabases( 0 ),
+      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
       currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
       hasDomainChangedFlag( false ), theDbTag( 0 ), lastGeoSendTag( -1 ),
       dbEle( 0 ), dbNod( 0 ), dbSPs( 0 ), dbMPs( 0 ), dbLPs( 0 ),
@@ -324,6 +333,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
       // Instead of Using TclModelBuilder
       theUniaxialMaterials( &theUniaxialMaterialStorage ),
       theNDMaterials( &theNDMaterialStorage ),
+      theNDMaterialLTs( &theNDMaterialLTStorage ),
       theSections( &theSectionStorage ),
       theSectionRepresents( &theSectionRepresentsStorage ),
       theMultipleSupports( &theMultiSupportStorage ),
@@ -337,8 +347,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
       theLoadPatterns( &theLoadPatternsStorage ),
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false)
+      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
 {
     // init the iters
     theEleIter = new SingleDomEleIter( theElements );
@@ -352,6 +361,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
     // Nima Tafazzoli (Sep. 2012)
     theUniMaterialIter = new SingleDomUniaxialMaterialIter( theUniaxialMaterials );
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
+    theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
 
     // check that the containers are empty
@@ -370,7 +380,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
             theSPs == 0 || theMPs == 0 ||
             theEleIter == 0 || theNodIter == 0 ||
             theMP_Iter == 0 || theSP_Iter == 0 ||
-            theUniMaterialIter == 0 || theNDMaterialIter == 0 ||
+            theUniMaterialIter == 0 || theNDMaterialIter == 0 || theNDMaterialLTIter == 0 ||
             theLoadPatterns == 0 || theLoadPatternIter == 0 )
     {
 
@@ -391,6 +401,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
 
 Domain::Domain( TaggedObjectStorage &theStorage )
     : theDatabases( 0 ), numDatabases( 0 ),
+      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
       currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
       hasDomainChangedFlag( false ), theDbTag( 0 ), lastGeoSendTag( -1 ),
       dbEle( 0 ), dbNod( 0 ), dbSPs( 0 ), dbMPs( 0 ), dbLPs( 0 ),
@@ -398,8 +409,7 @@ Domain::Domain( TaggedObjectStorage &theStorage )
       theElementGraph( 0 ),
       commitTag( 0 ),
       theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 ),
-      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false)
+      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
 {
     // init the arrays for storing the domain components
     theStorage.clearAll(); // clear the storage just in case populated
@@ -411,6 +421,7 @@ Domain::Domain( TaggedObjectStorage &theStorage )
     // Instead of Using TclModelBuilder
     theUniaxialMaterials = theStorage.getEmptyCopy();
     theNDMaterials = theStorage.getEmptyCopy();
+    theNDMaterialLTs = theStorage.getEmptyCopy();
     theSections = theStorage.getEmptyCopy();
     theSectionRepresents = theStorage.getEmptyCopy();
     theMultipleSupports = theStorage.getEmptyCopy();
@@ -437,6 +448,7 @@ Domain::Domain( TaggedObjectStorage &theStorage )
     // Nima Tafazzoli (Sep. 2012)
     theUniMaterialIter = new SingleDomUniaxialMaterialIter( theUniaxialMaterials );
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
+    theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
 
     // check that there was space to create the data structures
@@ -444,7 +456,7 @@ Domain::Domain( TaggedObjectStorage &theStorage )
             theSPs == 0 || theMPs == 0 ||
             theEleIter == 0 || theNodIter == 0 ||
             theMP_Iter == 0 || theSP_Iter == 0 ||
-            theUniMaterialIter == 0 || theNDMaterialIter == 0 ||
+            theUniMaterialIter == 0 || theNDMaterialIter == 0 || theNDMaterialLTIter == 0 ||
             theLoadPatterns == 0 || theLoadPatternIter == 0 )
     {
 
@@ -499,6 +511,11 @@ Domain::~Domain()
     if ( theNDMaterials != 0 )
     {
         delete theNDMaterials;
+    }
+
+    if ( theNDMaterialLTs != 0 )
+    {
+        delete theNDMaterialLTs;
     }
 
     if ( theSections != 0 )
@@ -580,6 +597,11 @@ Domain::~Domain()
     if ( theNDMaterialIter != 0 )
     {
         delete theNDMaterialIter;
+    }
+
+    if ( theNDMaterialLTIter != 0 )
+    {
+        delete theNDMaterialLTIter;
     }
 
 
@@ -1020,7 +1042,7 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
 
 
     // check if a Material with a similar tag already exists in the Domain
-    TaggedObject *other = theNDMaterials->getComponentPtr( materialTag );
+    TaggedObject *other = theNDMaterialLTs->getComponentPtr( materialTag );
 
     if ( other != 0 )
     {
@@ -1029,7 +1051,7 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
     }
 
     // add the element to the container object for the elements
-    bool result = theNDMaterials->addComponent( &theMaterial );
+    bool result = theNDMaterialLTs->addComponent( &theMaterial );
 
     if ( result == true )
     {
@@ -1041,9 +1063,9 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
         return -1;  // end Jose Abell addition
     }// end Jose Abell addition
 
-    if (materialTag > maxNDMaterialsLTTag)
+    if (materialTag > maxNDMaterialLTsTag)
     {
-        maxNDMaterialsLTTag = materialTag;
+        maxNDMaterialLTsTag = materialTag;
     }
 }// end Jose Abell addition
 
@@ -1486,6 +1508,7 @@ Domain::clearAll( void )
     // Instead of Using TclModelBuilder
     theUniaxialMaterials->clearAll();
     theNDMaterials->clearAll();
+    theNDMaterialLTs->clearAll();
     // ***************************************************
     // Nima Tafazzoli added July 2012
     theAccelerationFields->clearAll();
@@ -1660,6 +1683,27 @@ Domain::removeNDMaterial( int tag )
     this->domainChange();
 
     NDMaterial *result = ( NDMaterial *)mc;
+    //  result->setDomain(0);
+    return result;
+}
+// *****************************************************************************************
+// Jose Abell (Dec. 2014)
+NDMaterialLT *
+Domain::removeNDMaterialLT( int tag )
+{
+    // remove the object from the container
+    TaggedObject *mc = theNDMaterialLTs->removeComponent( tag );
+
+    // if not there return 0
+    if ( mc == 0 )
+    {
+        return 0;
+    }
+
+    // otherwise mark the domain as having changed
+    this->domainChange();
+
+    NDMaterialLT *result = ( NDMaterialLT *)mc;
     //  result->setDomain(0);
     return result;
 }
@@ -2046,6 +2090,13 @@ Domain::getNDMaterials()
     theNDMaterialIter->reset();
     return *theNDMaterialIter;
 }
+
+NDMaterialLTIter &
+Domain::getNDMaterialLTs()
+{
+    theNDMaterialLTIter->reset();
+    return *theNDMaterialLTIter;
+}
 // ***************************************************************************
 
 
@@ -2131,7 +2182,7 @@ Domain::getNDMaterial( int tag )
 NDMaterialLT *
 Domain::getNDMaterialLT( int tag )
 {
-    TaggedObject *mc = theNDMaterials->getComponentPtr( tag );
+    TaggedObject *mc = theNDMaterialLTs->getComponentPtr( tag );
 
     if ( mc == 0 )
     {
@@ -2600,36 +2651,6 @@ Domain::setDampingFactorsforElement( int ElementTag, int DampingTag )
     result += elePtr->setDampingFactors( a0, a1, a2, a3, stiffness_type, damping_type );
 
 
-    //   Element *elePtr;
-    //   ElementIter &theElemIter = this->getElements();
-    //   while ((elePtr = theElemIter()) != 0)
-    //   {
-    //     classtag = elePtr->getElementclassTag();
-    //
-    // // Nima added July 2011
-    //     if ( (classtag == 7001) || (classtag == 7002) || (classtag == 7010) || (classtag == 7014) )
-    //       {
-    //         a0 = elePtr->getDamping_a0();
-    //         a1 = elePtr->getDamping_a1();
-    //         a2 = elePtr->getDamping_a2();
-    //         a3 = elePtr->getDamping_a3();
-    //         stiffness_type = elePtr->getDamping_stiffnesstype();
-    //         damping_type = elePtr->getDamping_type();
-    //       }
-    //     else
-    //       {
-    //         a0 = 0;
-    //         a1 = 0;
-    //         a2 = 0;
-    //         a3 = 0;
-    //         stiffness_type = "Initial_Stiffness";
-    //         damping_type = "Rayleigh";
-    //       }
-    //
-    //
-    //     result += elePtr->setDampingFactors(a0, a1, a2, a3, stiffness_type, damping_type);
-    //   }
-
 
     return result;
 }
@@ -2870,13 +2891,6 @@ Domain::revertToStart( void )
         elePtr->revertToStart();
     }
 
-    // ADDED BY TERJE //////////////////////////////////
-    // invoke 'restart' on all recorders
-    // for ( int i = 0; i < numRecorders; i++ )
-    // {
-    //     theRecorders[i]->restart();
-    // }
-
     /////////////////////////////////////////////////////
 
     // set the current time and load factor in the domain to last committed
@@ -3103,95 +3117,6 @@ ostream &operator<<( ostream &s, Domain &M )
 }
 
 
-// int
-// Domain::addRecorder( Recorder &theRecorder )
-// {
-//     if ( theRecorder.setDomain( *this ) != 0 )
-//     {
-//         cerr << "Domain::addRecorder() - recorder could not be added\n";
-//         return -1;
-//     }
-
-//     for ( int i = 0; i < numRecorders; i++ )
-//     {
-//         if ( theRecorders[i] == 0 )
-//         {
-//             theRecorders[i] = &theRecorder;
-//             return 0;
-//         }
-//     }
-
-//     Recorder **newRecorders = new Recorder *[numRecorders + 1];
-
-//     if ( newRecorders == 0 )
-//     {
-//         cerr << "Domain::addRecorder() - could not add ran out of memory\n";
-//         return -1;
-//     }
-
-//     for ( int i = 0; i < numRecorders; i++ )
-//     {
-//         newRecorders[i] = theRecorders[i];
-//     }
-
-//     newRecorders[numRecorders] = &theRecorder;
-
-//     if ( theRecorders != 0 )
-//     {
-//         delete [] theRecorders;
-//     }
-
-//     theRecorders = newRecorders;
-//     numRecorders++;
-//     return 0;
-// }
-
-
-// int
-// Domain::removeRecorders( void )
-// {
-//     for ( int i = 0; i < numRecorders; i++ )
-//     {
-//         delete theRecorders[i];
-//     }
-
-//     if ( theRecorders != 0 )
-//     {
-//         delete [] theRecorders;
-//     }
-
-//     theRecorders = 0;
-//     numRecorders = 0;
-//     return 0;
-// }
-
-
-// int
-// Domain::removeRecorder( int tag )
-// {
-//     for ( int i = 0; i < numRecorders; i++ )
-//     {
-//         if ( theRecorders[i] != 0 )
-//         {
-//             if ( theRecorders[i]->getTag() == tag )
-//             {
-//                 delete theRecorders[i];
-//                 theRecorders[i] = 0;
-//                 return 0;
-//             }
-//         }
-//     }
-
-//     return -1;
-// }
-
-
-
-
-//===================================================================================
-// Nima Tafazzoli (Nov. 2012)
-
-
 int
 Domain::addDatabase( FE_Datastore &theDatabase )
 {
@@ -3284,69 +3209,6 @@ Domain::getDatabase( int tag )
 
 
 
-// FE_Datastore &
-// Domain::getDatabase(int tag)
-// {
-//   TaggedObject &mc = theDatabases->getComponentPtr(tag);
-//   if (mc == 0)
-//     return 0;
-//
-//   // otherweise we do a cast and return
-//   FE_Datastore &theDatabase = (FE_Datastore &)mc;
-//   return theDatabase;
-//
-// }
-
-
-//===================================================================================
-
-
-
-// int
-// Domain::addRegion(MeshRegion &theRegion)
-// {
-//     MeshRegion **newRegions = new MeshRegion *[numRegions + 1];
-//     if (newRegions == 0) {
-//  cerr << "Domain::addRegion() - could not add ran out of memory\n";
-//  return -1;
-//     }
-//
-//     for (int i=0; i<numRegions; i++)
-//  newRegions[i] = theRegions[i];
-//     newRegions[numRegions] = &theRegion;
-//     theRegion.setDomain(this);
-//     if (theRegions != 0)
-//       delete [] theRegions;
-//
-//     theRegions = newRegions;
-//     numRegions++;
-//     return 0;
-// }
-
-
-
-// MeshRegion *
-// Domain::getRegion(int tag)
-// {
-//     for (int i=0; i<numRegions; i++)
-//       if (theRegions[i]->getTag() == tag)
-//  return theRegions[i];
-//
-//     return 0;
-// }
-
-
-//BorisJeremic took it out 13Nov2004
-//out BJ
-//out BJ int
-//out BJ Domain::playback(int cTag)
-//out BJ {
-//out BJ     for (int i=0; i<numRecorders; i++)
-//out BJ    theRecorders[i]->playback(cTag);
-//out BJ     return 0;
-//out BJ }
-//BorisJeremic took it out 13Nov2004
-
 int
 Domain::buildEleGraph( Graph *theEleGraph )
 {
@@ -3363,7 +3225,7 @@ Domain::buildEleGraph( Graph *theEleGraph )
     // create another vertices array which aids in adding edges
 
     int *theElementTagVertices = 0;
-    int maxEleNum = 0;
+    int maxEleNum = maxElementsTag;
     Element *elePtr;
     ElementIter &eleIter = this->getElements();
 
@@ -3427,7 +3289,7 @@ Domain::buildEleGraph( Graph *theEleGraph )
     // will not be adding vertices but element tags.
 
     Vertex **theNodeTagVertices = 0;
-    int maxNodNum = 0;
+    int maxNodNum = maxNodesTag;
     Node *nodPtr;
     NodeIter &nodeIter = this->getNodes();
 
@@ -3499,12 +3361,16 @@ Domain::buildEleGraph( Graph *theEleGraph )
 # ifdef _PDD
     Vertex *vertexPtr;
 
+    // For all node tags
     for ( int k = 0; k <= maxNodNum; k++ )
-        if ( ( vertexPtr = theNodeTagVertices[k] ) != 0 )
-        {
 
+        // Get a pointer to the graph vertex corresponding to tag "k"
+        if ( ( vertexPtr = theNodeTagVertices[k] ) != 0 ) // If not available skip this node tag
+        {
+            // Get the list of elements connected to this node
             const ID &id = vertexPtr->getAdjacency();
 
+            //Get the number of elements connected to this node
             int size = id.Size();
 
             for ( int i = 0; i < size; i++ )
@@ -3516,31 +3382,31 @@ Domain::buildEleGraph( Graph *theEleGraph )
                 //////////////////////// BEGIN OLD VERSION
                 /////////////////////////////////////////////////////////////////////
 
-                Element *ele1 = this->getElement( Element1 );
+                // Element *ele1 = this->getElement( Element1 );
 
-                const ID &nodes1 = ele1->getExternalNodes();
-                int num1 = nodes1.Size();
-                const ID &nodes_in_element1 = ele1->getExternalNodes();
-                int number_of_nodes_in_element1 = nodes_in_element1.Size();
+                // const ID &nodes1 = ele1->getExternalNodes();
+                // int num1 = nodes1.Size();
+                // const ID &nodes_in_element1 = ele1->getExternalNodes();
+                // int number_of_nodes_in_element1 = nodes_in_element1.Size();
 
-                int Num1_Boundary_Nodes = 1;
+                // int Num1_Boundary_Nodes = 1;
 
-                if (num1 == 27)
-                {
-                    Num1_Boundary_Nodes = 9;
-                }
+                // if (num1 == 27)
+                // {
+                //     Num1_Boundary_Nodes = 9;
+                // }
 
-                if (num1 == 4)
-                {
-                    Num1_Boundary_Nodes = 2;
-                }
+                // if (num1 == 4)
+                // {
+                //     Num1_Boundary_Nodes = 2;
+                // }
 
-                if (num1 == 2)
-                {
-                    Num1_Boundary_Nodes = 1;
-                }
+                // if (num1 == 2)
+                // {
+                //     Num1_Boundary_Nodes = 1;
+                // }
 
-                int vertexTag1 = theElementTagVertices[Element1];
+                // int vertexTag1 = theElementTagVertices[Element1];
 
                 /////////////////////////////////////////////////////////////////////
                 //////////////////////// END OLD VERSION
@@ -3550,17 +3416,17 @@ Domain::buildEleGraph( Graph *theEleGraph )
                 /////////////////////////////////////////////////////////////////////
                 //////////////////////// BEGIN NEW VERSION
                 /////////////////////////////////////////////////////////////////////
-                // Element *ele1 = this->getElement( Element1 );
+                Element *ele1 = this->getElement( Element1 );
 
-                // const ID &nodes_in_element1 = ele1->getExternalNodes();
-                // int number_of_nodes_in_element1 = nodes_in_element1.Size();
+                const ID &nodes_in_element1 = ele1->getExternalNodes();
+                int number_of_nodes_in_element1 = nodes_in_element1.Size();
 
-                // //How many elements are in the boundary of an element (added 8/20/13):
-                // //-------------------------
-                // int Num1_Boundary_Nodes = ele1->getNumberOfBoundaryNodes();
+                //How many elements are in the boundary of an element (added 8/20/13):
+                //-------------------------
+                int Num1_Boundary_Nodes = ele1->getNumberOfBoundaryNodes();
 
-                // //--------------------------
-                // int vertexTag1 = theElementTagVertices[Element1];
+                //--------------------------
+                int vertexTag1 = theElementTagVertices[Element1];
 
                 /////////////////////////////////////////////////////////////////////
                 //////////////////////// END NEW VERSION
@@ -3572,51 +3438,58 @@ Domain::buildEleGraph( Graph *theEleGraph )
                         int Element2 = id( j );
                         int vertexTag2 = theElementTagVertices[Element2];
 
-                        Element *ele2 = this->getElement( Element2 );
+                        if ( vertexTag1 > vertexTag2 ) // This avoids doing double work
+                        {
+                            Element *ele2 = this->getElement( Element2 );
 
 
-                        /////////////////////////////////////////////////////////////////////
-                        //////////////////////// BEGIN NEW VERSION
-                        /////////////////////////////////////////////////////////////////////
+                            /////////////////////////////////////////////////////////////////////
+                            //////////////////////// BEGIN NEW VERSION
+                            /////////////////////////////////////////////////////////////////////
 
-                        // const ID &nodes_in_element2 = ele2->getExternalNodes();
-                        // int number_of_nodes_in_element2 = nodes_in_element2.Size();
-                        // //How many elements are in the boundary of an element (added 8/20/13):
-                        // //-------------------------
-                        // int Num2_Boundary_Nodes = ele2->getNumberOfBoundaryNodes();
+                            const ID &nodes_in_element2 = ele2->getExternalNodes();
+                            int number_of_nodes_in_element2 = nodes_in_element2.Size();
+                            //How many elements are in the boundary of an element (added 8/20/13):
+                            //-------------------------
+                            int Num2_Boundary_Nodes = ele2->getNumberOfBoundaryNodes();
 
-                        // //--------------------------
-                        // // Keep the smallest of number of boundary nodes
-                        // int number_of_common_nodes = Num1_Boundary_Nodes;
-                        // if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
-                        // {
-                        //     number_of_common_nodes = Num2_Boundary_Nodes;
-                        // }
+                            //--------------------------
+                            // Keep the smallest of number of boundary nodes
+                            int number_of_common_nodes = Num1_Boundary_Nodes;
+                            if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
+                            {
+                                number_of_common_nodes = Num2_Boundary_Nodes;
+                            }
 
-                        // //--------------------------
-                        // //Count the number of common nodes
-                        // int common = 0;
+                            //--------------------------
+                            //Count the number of common nodes
+                            int common = 0;
 
-                        // for ( int k = 0; k < number_of_nodes_in_element1; k++ )
-                        // {
-                        //     for ( int l = 0; l < number_of_nodes_in_element2; l++ )
-                        //     {
-                        //         if ( nodes_in_element1( k ) == nodes_in_element2( l ) )
-                        //         {
-                        //             common++;
-                        //         }
-                        //     }
-                        // }
+                            for ( int kk = 0; kk < number_of_nodes_in_element1; kk++ )
+                            {
+                                for ( int l = 0; l < number_of_nodes_in_element2; l++ )
+                                {
+                                    if ( nodes_in_element1( kk ) == nodes_in_element2( l ) )
+                                    {
+                                        common++;
+                                    }
+                                }
+                            }
 
-                        // cout << "Element" << ele1->getTag() << " and element " << ele2->getTag() << " have " << common << " nodes in common.\n";
+                            cout << "Element" << ele1->getTag() << " and element " << ele2->getTag() << " have " << common << " nodes in common.";
 
-                        // // Adde edge for both vertices
-                        // if ( ( vertexTag1 > vertexTag2 ) && ( common == number_of_common_nodes ) )
-                        // {
-                        //     theEleGraph->addEdge( vertexTag1, vertexTag2 );
-                        //     theEleGraph->addEdge( vertexTag2, vertexTag1 );
-                        // }
-
+                            // Adde edge for both vertices
+                            if (  common == number_of_common_nodes  )
+                            {
+                                cout << "  Vertex added!\n";
+                                theEleGraph->addEdge( vertexTag1, vertexTag2 );
+                                theEleGraph->addEdge( vertexTag2, vertexTag1 );
+                            }
+                            else
+                            {
+                                cout << "  \n";
+                            }
+                        }
                         /////////////////////////////////////////////////////////////////////
                         //////////////////////// END NEW VERSION
                         /////////////////////////////////////////////////////////////////////
@@ -3624,67 +3497,67 @@ Domain::buildEleGraph( Graph *theEleGraph )
                         /////////////////////////////////////////////////////////////////////
                         //////////////////////// START OLD VERSION
                         /////////////////////////////////////////////////////////////////////
-                        const ID &nodes2 = ele2->getExternalNodes();
-                        int num2 = nodes2.Size();
-                        const ID &nodes_in_element2 = ele2->getExternalNodes();
-                        int number_of_nodes_in_element2 = nodes_in_element2.Size();
-                        //How many elements are in the boundary of an element (added 8/20/13):
-                        //-------------------------
-                        int Num2_Boundary_Nodes = 1;
+                        // const ID &nodes2 = ele2->getExternalNodes();
+                        // int num2 = nodes2.Size();
+                        // const ID &nodes_in_element2 = ele2->getExternalNodes();
+                        // int number_of_nodes_in_element2 = nodes_in_element2.Size();
+                        // //How many elements are in the boundary of an element (added 8/20/13):
+                        // //-------------------------
+                        // int Num2_Boundary_Nodes = 1;
 
-                        if (num2 == 27)
-                        {
-                            Num2_Boundary_Nodes = 9;
-                        }
+                        // if (num2 == 27)
+                        // {
+                        //     Num2_Boundary_Nodes = 9;
+                        // }
 
-                        if (num2 == 4)
-                        {
-                            Num2_Boundary_Nodes = 2;
-                        }
+                        // if (num2 == 4)
+                        // {
+                        //     Num2_Boundary_Nodes = 2;
+                        // }
 
-                        if (num2 == 2)
-                        {
-                            Num2_Boundary_Nodes = 1;
-                        }
+                        // if (num2 == 2)
+                        // {
+                        //     Num2_Boundary_Nodes = 1;
+                        // }
 
-                        //--------------------------
-                        int num_comm = Num1_Boundary_Nodes;
+                        // //--------------------------
+                        // int num_comm = Num1_Boundary_Nodes;
 
-                        // Keep the smallest of number of boundary nodes
-                        int number_of_common_nodes = Num1_Boundary_Nodes;
-                        if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
-                        {
-                            num_comm = Num2_Boundary_Nodes;
-                            number_of_common_nodes = Num2_Boundary_Nodes;
-                        }
+                        // // Keep the smallest of number of boundary nodes
+                        // int number_of_common_nodes = Num1_Boundary_Nodes;
+                        // if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
+                        // {
+                        //     num_comm = Num2_Boundary_Nodes;
+                        //     number_of_common_nodes = Num2_Boundary_Nodes;
+                        // }
 
-                        //--------------------------
+                        // //--------------------------
 
-                        //Count the number of common nodes
-                        int common = 0;
+                        // //Count the number of common nodes
+                        // int common = 0;
 
-                        for ( int k = 0; k < num1; k++ )
-                            for ( int k = 0; k < number_of_nodes_in_element1; k++ )
-                            {
-                                for ( int l = 0; l < num2; l++ )
-                                    for ( int l = 0; l < number_of_nodes_in_element2; l++ )
-                                    {
-                                        if ( nodes1( k ) == nodes2( l ) )
-                                            if ( nodes_in_element1( k ) == nodes_in_element2( l ) )
-                                            {
-                                                common++;
-                                            }
-                                    }
-                            }
+                        // for ( int k = 0; k < num1; k++ )
+                        //     for ( int k = 0; k < number_of_nodes_in_element1; k++ )
+                        //     {
+                        //         for ( int l = 0; l < num2; l++ )
+                        //             for ( int l = 0; l < number_of_nodes_in_element2; l++ )
+                        //             {
+                        //                 if ( nodes1( k ) == nodes2( l ) )
+                        //                     if ( nodes_in_element1( k ) == nodes_in_element2( l ) )
+                        //                     {
+                        //                         common++;
+                        //                     }
+                        //             }
+                        //     }
 
-                        // addEdge() adds for both vertices - do only once
-                        if ( ( vertexTag1 > vertexTag2 ) && ( common == 4 ) )
-                            // Adde edge for both vertices
-                            if ( ( vertexTag1 > vertexTag2 ) && ( common == number_of_common_nodes ) )
-                            {
-                                theEleGraph->addEdge( vertexTag1, vertexTag2 );
-                                theEleGraph->addEdge( vertexTag2, vertexTag1 );
-                            }
+                        // // addEdge() adds for both vertices - do only once
+                        // if ( ( vertexTag1 > vertexTag2 ) && ( common == 4 ) )
+                        //     // Adde edge for both vertices
+                        //     if ( ( vertexTag1 > vertexTag2 ) && ( common == number_of_common_nodes ) )
+                        //     {
+                        //         theEleGraph->addEdge( vertexTag1, vertexTag2 );
+                        //         theEleGraph->addEdge( vertexTag2, vertexTag1 );
+                        //     }
 
                         /////////////////////////////////////////////////////////////////////
                         //////////////////////// END OLD VERSION
@@ -3868,7 +3741,7 @@ Domain::sendSelf( int cTag, Channel &theChannel )
     numMPs = theMPs->getNumComponents();
     numLPs = theLoadPatterns->getNumComponents();
 
-    ID domainData( 11 + 12 );  //jose added the maxtags
+    ID domainData( 11 + 13 );  //jose added the maxtags
     domainData( 0 ) = currentGeoTag;
 
     domainData( 1 ) = numNod;
@@ -3898,14 +3771,15 @@ Domain::sendSelf( int cTag, Channel &theChannel )
     domainData( 12 ) = maxNodesTag;
     domainData( 13 ) = maxUniaxialMaterialsTag;
     domainData( 14 ) = maxNDMaterialsTag;
-    domainData( 15 ) = maxSectionsTag;
-    domainData( 16 ) = maxSectionRepresentsTag;
-    domainData( 17 ) = maxMultipleSupportsTag;
-    domainData( 18 ) = maxAccelerationFieldsTag;
-    domainData( 19 ) = maxDampingsTag;
-    domainData( 20 ) = maxSPsTag;
-    domainData( 21 ) = maxMPsTag;
-    domainData( 22 ) = maxLoadPatternsTag;
+    domainData( 15 ) = maxNDMaterialLTsTag;
+    domainData( 16 ) = maxSectionsTag;
+    domainData( 17 ) = maxSectionRepresentsTag;
+    domainData( 18 ) = maxMultipleSupportsTag;
+    domainData( 19 ) = maxAccelerationFieldsTag;
+    domainData( 20 ) = maxDampingsTag;
+    domainData( 21 ) = maxSPsTag;
+    domainData( 22 ) = maxMPsTag;
+    domainData( 23 ) = maxLoadPatternsTag;
 
 
 
@@ -4215,7 +4089,7 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
     this->hasDomainChanged();
 
     // first we get the data about the state of the domain for this commitTag
-    ID domainData( 11 );
+    ID domainData( 11 + 13);
 
     if ( theChannel.receiveID( theDbTag, commitTag, domainData ) < 0 )
     {
@@ -4604,14 +4478,15 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
     maxNodesTag              = domainData( 12 );
     maxUniaxialMaterialsTag  = domainData( 13 );
     maxNDMaterialsTag        = domainData( 14 );
-    maxSectionsTag           = domainData( 15 );
-    maxSectionRepresentsTag  = domainData( 16 );
-    maxMultipleSupportsTag   = domainData( 17 );
-    maxAccelerationFieldsTag = domainData( 18 );
-    maxDampingsTag           = domainData( 19 );
-    maxSPsTag                = domainData( 20 );
-    maxMPsTag                = domainData( 21 );
-    maxLoadPatternsTag       = domainData( 22 );
+    maxNDMaterialLTsTag        = domainData( 15 );
+    maxSectionsTag           = domainData( 16 );
+    maxSectionRepresentsTag  = domainData( 17 );
+    maxMultipleSupportsTag   = domainData( 18 );
+    maxAccelerationFieldsTag = domainData( 19 );
+    maxDampingsTag           = domainData( 20 );
+    maxSPsTag                = domainData( 21 );
+    maxMPsTag                = domainData( 22 );
+    maxLoadPatternsTag       = domainData( 23 );
 
 
     // if get here we were successfull
@@ -5495,7 +5370,7 @@ int Domain::CheckMesh( const char *check_mesh_file )
     }
 
 
-    // ******************** checking uniaxial constitutive models *****************
+    // ******************** checking  constitutive models *****************
 
     NDMaterial *theNDMaterial;
 
@@ -5504,6 +5379,15 @@ int Domain::CheckMesh( const char *check_mesh_file )
     while ( ( theNDMaterial = theNDMaterials() ) != 0 )
     {
         theNDMaterial->CheckMesh( checkmesh_file );
+    }
+
+    NDMaterialLT *theNDMaterialLT;
+
+    NDMaterialLTIter &theNDMaterialLTs = this->getNDMaterialLTs();
+
+    while ( ( theNDMaterialLT = theNDMaterialLTs() ) != 0 )
+    {
+        theNDMaterialLT->CheckMesh( checkmesh_file );
     }
 
 
@@ -6080,9 +5964,9 @@ int  Domain::getMaxNDMaterialsTag()
     return maxNDMaterialsTag;
 }
 
-int  Domain::getMaxNDMaterialsLTTag()
+int  Domain::getMaxNDMaterialLTsTag()
 {
-    return maxNDMaterialsLTTag;
+    return maxNDMaterialLTsTag;
 }
 
 int  Domain::getMaxSectionsTag()

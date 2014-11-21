@@ -84,8 +84,10 @@ class SingleDomAllSP_Iter;
 //Nima Tafazzoli (Sep. 2012)
 class UniaxialMaterialIter;
 class NDMaterialIter;
+class NDMaterialLTIter;
 class SingleDomUniaxialMaterialIter;
 class SingleDomNDMaterialIter;
+class SingleDomNDMaterialLTIter;
 
 
 
@@ -108,7 +110,7 @@ class Domain
     public:
         Domain();
         Domain(int numNodes, int numElements, int numSPs, int numMPs,
-               int numLoadPatterns, int numUniaxialMat, int numNDMaterial, int numSections,
+               int numLoadPatterns, int numUniaxialMat, int numNDMaterial, int numNDMaterialLT, int numSections,
                int numofSectionRepresents,
                int nummultipleexcitation, int numAccelerationFields, int numDamping);
 
@@ -122,6 +124,7 @@ class Domain
                TaggedObjectStorage &theLoadPatternsStorage,
                TaggedObjectStorage &theUniaxialMaterialStorage,
                TaggedObjectStorage &theNDMaterialStorage,
+               TaggedObjectStorage &theNDMaterialLTStorage,
                TaggedObjectStorage &theSectionStorage,
                TaggedObjectStorage &theSectionRepresentsStorage,
                TaggedObjectStorage &theMultiSupportStorage,
@@ -169,6 +172,7 @@ class Domain
         // Instead of Using TclModelBuilder
         virtual UniaxialMaterial  *removeUniaxialMaterial(int tag);
         virtual NDMaterial  *removeNDMaterial(int tag);
+        virtual NDMaterialLT  *removeNDMaterialLT(int tag);
 
         // Nima Tafazzoli (added on Oct. 2010)
         virtual AccelerationField  *removeAccelerationField(int tag);
@@ -197,6 +201,7 @@ class Domain
         virtual  SP_ConstraintIter &getDomainAndLoadPatternSPs();
         virtual  UniaxialMaterialIter  &getUniaxialMaterials();
         virtual  NDMaterialIter        &getNDMaterials();
+        virtual  NDMaterialLTIter        &getNDMaterialLTs();
 
         //Accessing nodes an elements by tag
         virtual  Element       *getElement(int tag);
@@ -289,7 +294,7 @@ class Domain
 
         virtual int sendSelf(int commitTag, Channel &theChannel);
         virtual int receiveSelf(int commitTag, Channel &theChannel,
-                             FEM_ObjectBroker &theBroker);
+                                FEM_ObjectBroker &theBroker);
 
         virtual int sendSelfDatabase(int commitTag, Channel &theChannel);
         virtual int receiveSelfDatabase(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
@@ -337,7 +342,7 @@ class Domain
         virtual int getMaxNodesTag();
         virtual int getMaxUniaxialMaterialsTag();
         virtual int getMaxNDMaterialsTag();
-        virtual int getMaxNDMaterialsLTTag();
+        virtual int getMaxNDMaterialLTsTag();
         virtual int getMaxSectionsTag();
         virtual int getMaxSectionRepresentsTag();
         virtual int getMaxMultipleSupportsTag();
@@ -416,6 +421,7 @@ class Domain
         // Instead of Using TclModelBuilder
         TaggedObjectStorage *theUniaxialMaterials;
         TaggedObjectStorage *theNDMaterials;
+        TaggedObjectStorage *theNDMaterialLTs;
         TaggedObjectStorage *theSections;
         TaggedObjectStorage *theSectionRepresents;
         TaggedObjectStorage *theMultipleSupports;
@@ -438,6 +444,7 @@ class Domain
         // Nima Tafazzoli (Sep. 2012)
         SingleDomUniaxialMaterialIter  *theUniMaterialIter;
         SingleDomNDMaterialIter        *theNDMaterialIter;
+        SingleDomNDMaterialLTIter        *theNDMaterialLTIter;
 
         //     MeshRegion **theRegions;
         //     int numRegions;
@@ -462,7 +469,7 @@ class Domain
         int maxNodesTag;
         int maxUniaxialMaterialsTag;
         int maxNDMaterialsTag;
-        int maxNDMaterialsLTTag;
+        int maxNDMaterialLTsTag;
         int maxSectionsTag;
         int maxSectionRepresentsTag;
         int maxMultipleSupportsTag;
