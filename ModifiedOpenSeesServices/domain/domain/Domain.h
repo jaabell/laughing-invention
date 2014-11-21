@@ -315,6 +315,8 @@ class Domain
                                     std::string stage_name_in,
                                     int nsteps);
 
+        virtual int setNumberOfOutputSteps(int nsteps);
+
         virtual int enableOutput(bool is_output_enabled);
         virtual int enableElementOutput(bool is_element_output_enabled);
 

@@ -270,7 +270,7 @@ Vertex::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBro
     return 0;
 }
 
-# ifdef _PDD
+// # ifdef _PDD
 void
 Vertex::setVertexSize(int size)
 {
@@ -281,4 +281,4 @@ int Vertex::getVertexSize()
 {
     return vsize;
 }
-# endif
+// # endif

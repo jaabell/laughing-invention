@@ -36,7 +36,7 @@
 #ifndef H5OutputWriter_H
 #define H5OutputWriter_H
 
-
+#define HDF5_CREATE_CHECK
 // #define HDF5_CHECK_ERROR  {if(status < 0){cout << "status = " << status << endl; }}//return(-1);}}
 inline void hdf5_check_error(herr_t status)
 {
@@ -67,10 +67,11 @@ inline void hdf5_check_error(herr_t status)
 #define H5OUTPUTWRITER_CLEAN if(stack_length == 0) \
     { H5Oclose(id_current_object); }
 
-//These optimize access to HDF5 file (tuninng knobs)
+//These control the efficiency access to HDF5 file (tuning knobs)
 #define H5OUTPUTWRITER_CHUNK_NSLOTS 101                        // Good if it is a prime number 101 1009  10007 (http://primes.utm.edu/lists/small/100000.txt)
 #define H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK 10        // 
 #define H5OUTPUTWRITER_CHUNK_TIMEDIM 10                        // Size of chunks in time dimension
+#define H5OUTPUTWRITER_CHUNK_MAXDIMENSION 10000
 #define H5OUTPUTWRITER_META_BLOCK_SIZE 2048*16                 // Not used
 #define H5OUTPUTWRITER_SIEVE_BUFFER_SIZE 1024*1024             // Not used because of chunking
 #define H5OUTPUTWRITER_PREEMPTION_POLICY 0.75
@@ -116,6 +117,7 @@ class H5OutputWriter: public OutputWriter
                         std::string model_name_in,
                         std::string stage_name_in,
                         int nsteps);
+        void set_number_of_time_steps(int nsteps);
 
         void finalize();
 
@@ -130,21 +132,27 @@ class H5OutputWriter: public OutputWriter
                                         hsize_t *maxdims,
                                         std::string name,
                                         std::string attibute,
-                                        hid_t type, int sizeof_type, void *fill_value_ptr);
+                                        hid_t type,
+                                        int sizeof_type,
+                                        void *fill_value_ptr,
+                                        int timedimension = -1);
 
         hid_t createVariableLengthDoubleArray(hid_t here,
                                               int rank,
                                               hsize_t *dims,
                                               hsize_t *maxdims,
                                               std::string name,
-                                              std::string attibute);
+                                              std::string attibute,
+                                              int timedimension = -1);
+
 
         hid_t createVariableLengthIntegerArray(hid_t here,
                                                int rank,
                                                hsize_t *dims,
                                                hsize_t *maxdims,
                                                std::string name,
-                                               std::string attibute);
+                                               std::string attibute,
+                                               int timedimension = -1);
 
         hid_t createVariableLengthStringArray(hid_t here,
                                               std::string name,

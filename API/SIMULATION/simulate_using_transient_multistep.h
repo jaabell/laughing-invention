@@ -149,7 +149,7 @@ int simulate_using_transient_multistep(double dT,
     }
     cout << "Done!\n";
 
-
+    theDomain.setNumberOfOutputSteps(numSteps);
 
     //=====================================================================================
     // Parallel Dynamic Analysis

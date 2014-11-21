@@ -3440,11 +3440,7 @@ Domain::buildEleGraph( Graph *theEleGraph )
                                 // cout << "  Vertex added!\n";
                                 theEleGraph->addEdge( vertexTag1, vertexTag2 );
                                 theEleGraph->addEdge( vertexTag2, vertexTag1 );
-                            }
-                            else
-                            {
-                                cout << "  \n";
-                            }
+                            };
                         }
 
                     }
@@ -5320,6 +5316,12 @@ Domain::setOutputWriter(std::string filename_in,
 }
 
 
+int
+Domain::setNumberOfOutputSteps(int nsteps)
+{
+    theOutputWriter.set_number_of_time_steps( nsteps);
+    return 0;
+}
 
 
 

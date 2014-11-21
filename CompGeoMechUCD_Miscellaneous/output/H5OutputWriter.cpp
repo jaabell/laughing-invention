@@ -213,7 +213,10 @@ void H5OutputWriter::initialize(std::string filename_in,
 
 
 
-
+void H5OutputWriter::set_number_of_time_steps(int nsteps)
+{
+    number_of_time_steps = nsteps;
+}
 
 
 
@@ -1182,11 +1185,11 @@ void H5OutputWriter::writeMesh()
             hsize_t dims[2];
             hsize_t maxdims[2];
             dims[0] = (hsize_t) length_nodes_displacements_output;
-            dims[1] = 1;
+            dims[1] = number_of_time_steps;
             maxdims[0] = (hsize_t)  length_nodes_displacements_output;
-            maxdims[1] = H5S_UNLIMITED;
+            maxdims[1] = number_of_time_steps;
 
-            id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+            id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
         }
 
         {
@@ -1194,11 +1197,11 @@ void H5OutputWriter::writeMesh()
             hsize_t dims[2];
             hsize_t maxdims[2];
             dims[0] = (hsize_t) length_element_output;
-            dims[1] = 1;
+            dims[1] = number_of_time_steps;
             maxdims[0] = (hsize_t)  length_element_output;
-            maxdims[1] = H5S_UNLIMITED;
+            maxdims[1] = number_of_time_steps;
 
-            id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+            id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ", 1);
 
         }//    create_elementOutput_arrays = false;
 
@@ -1546,7 +1549,8 @@ hid_t H5OutputWriter::createVariableLengthDoubleArray(hid_t here,
         hsize_t *dims,
         hsize_t *maxdims,
         std::string name,
-        std::string attribute)
+        std::string attribute,
+        int timedimension)
 {
     hid_t id_array;
     double fill_value = 0.0;
@@ -1558,7 +1562,8 @@ hid_t H5OutputWriter::createVariableLengthDoubleArray(hid_t here,
                                          attribute,
                                          H5T_NATIVE_DOUBLE,
                                          sizeof(double),
-                                         &fill_value);
+                                         &fill_value,
+                                         timedimension);
 
     return id_array;
 }
@@ -1568,7 +1573,8 @@ hid_t H5OutputWriter::createVariableLengthIntegerArray(hid_t here,
         hsize_t *dims,
         hsize_t *maxdims,
         std::string name,
-        std::string attribute)
+        std::string attribute,
+        int timedimension)
 {
     hid_t id_array;
     int fill_value = -1;
@@ -1580,7 +1586,8 @@ hid_t H5OutputWriter::createVariableLengthIntegerArray(hid_t here,
                                          attribute,
                                          H5T_NATIVE_INT,
                                          sizeof(int),
-                                         &fill_value);
+                                         &fill_value,
+                                         timedimension);
 
     return id_array;
 }
@@ -1592,6 +1599,11 @@ hid_t H5OutputWriter::createVariableLengthStringArray(hid_t here,
         std::string name,
         std::string attribute)
 {
+
+
+#ifdef HDF5_CREATE_CHECK
+    cout << "HDF5 array var-length (string) create: " << name << "\n";
+#endif
     int rank = 1;
     hsize_t dims[1] = {1};
     hsize_t maxdims[1] = {H5S_UNLIMITED};
@@ -1652,7 +1664,7 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
         hsize_t *maxdims,
         std::string name,
         std::string attribute,
-        hid_t type, int sizeof_type, void *fill_value_ptr)
+        hid_t type, int sizeof_type, void *fill_value_ptr, int timedimension)
 {
     // int fill_value = 0;
 
@@ -1662,22 +1674,21 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
 
     // Set the layout to be chunked, the chunk size and the fill value
     // needs to be chunked because it is extensible
-    // Set the layout to be chunked, the chunk size and the fill value
-    // needs to be chunked because it is extensible
+
     hsize_t chunk_dims[rank];
     int nbytes_one_chunk = sizeof_type;// sizeof(int);
     for (int i = 0; i < rank; i++)
     {
-        if (maxdims[i] == H5S_UNLIMITED)
-        {
-            chunk_dims[i] = H5OUTPUTWRITER_CHUNK_TIMEDIM;
-        }
-        else
-        {
-            chunk_dims[i] = maxdims[i];
-        }
+
+        chunk_dims[i] = std::min(maxdims[i], static_cast<hsize_t>(H5OUTPUTWRITER_CHUNK_MAXDIMENSION));
+
         nbytes_one_chunk *= chunk_dims[i];
     }
+    if (timedimension >= 0)
+    {
+        chunk_dims[timedimension] = H5OUTPUTWRITER_CHUNK_TIMEDIM;
+    }
+
 
     // cout << "nbytes_one_chunk = " << nbytes_one_chunk << "\n\n\n";
     // cout << "nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK = " << nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK << "\n\n\n";
@@ -1702,7 +1713,31 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
     // status = H5Pset_deflate (dataset_creation_plist, 6);
     // hdf5_check_error(status);
 
-
+#ifdef HDF5_CREATE_CHECK
+    cout << "HDF5 array var-length << ";
+    if (type == H5T_NATIVE_DOUBLE)
+    {
+        cout << "(double)";
+    }
+    else if (type == H5T_NATIVE_INT)
+    {
+        cout << "(int)";
+    }
+    cout << " create: " << name << "\n";
+    cout << "    rank = " << rank << "\n";
+    for (int i = 0; i < rank; i++)
+    {
+        cout << "          dims[" << i << "] = " << dims[i] << "\n";
+    }
+    for (int i = 0; i < rank; i++)
+    {
+        cout << "       maxdims[" << i << "] = " << maxdims[i] << "\n";
+    }
+    for (int i = 0; i < rank; i++)
+    {
+        cout << "    chunk_dims[" << i << "] = " << chunk_dims[i] << "\n";
+    }
+#endif
 
     //Create the data description both for data in file and in memory
     hid_t id_dataspace;
@@ -1732,6 +1767,19 @@ hid_t H5OutputWriter::createConstantLengthDoubleArray(hid_t here,
         std::string name,
         std::string attribute)
 {
+
+#ifdef HDF5_CREATE_CHECK
+    cout << "HDF5 array const-length (double) create: " << name << "\n";
+    cout << "    rank = " << rank << "\n";
+    for (int i = 0; i < rank; i++)
+    {
+        cout << "          dims[" << i << "] = " << dims[i] << "\n";
+    }
+    for (int i = 0; i < rank; i++)
+    {
+        cout << "       maxdims[" << i << "] = " << maxdims[i] << "\n";
+    }
+#endif
     double fill_value = 0.0;
 
     //Setup the creation property list
@@ -1771,6 +1819,19 @@ hid_t H5OutputWriter::createConstantLengthIntegerArray(hid_t here,
         std::string name,
         std::string attribute)
 {
+#ifdef HDF5_CREATE_CHECK
+    cout << "HDF5 array const-length (int) create: " << name << "\n";
+    cout << "    rank = " << rank << "\n";
+    for (int i = 0; i < rank; i++)
+    {
+        cout << "          dims[" << i << "] = " << dims[i] << "\n";
+    }
+    for (int i = 0; i < rank; i++)
+    {
+        cout << "       maxdims[" << i << "] = " << maxdims[i] << "\n";
+    }
+
+#endif
     int fill_value = 0;
 
     //Setup the creation property list

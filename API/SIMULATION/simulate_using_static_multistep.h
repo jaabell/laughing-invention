@@ -118,6 +118,9 @@ int simulate_using_static_multistep(int numSteps)
     cout << "Pass!\n";
 
 
+    theDomain.setNumberOfOutputSteps(numSteps);
+
+
     theStaticAnalysis = new StaticAnalysis(theDomain,
                                            *theHandler,
                                            *theNumberer,
