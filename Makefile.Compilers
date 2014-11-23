@@ -95,18 +95,17 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-O2 \
 										$(INLINING_OPTS) \
 										-funroll-loops \
-										-std=c++0x \
 										-D_LINUX \
 										-D_UNIX \
 										$(PROGRAMMING_FLAG) \
 										-DBrzi_nDarray_val \
-										-std=c++0x \
+										-std=c++11 \
 										-Wno-write-strings \
 										-static \
 										-static-libgcc \
 										-static-libstdc++ \
 										-march=native 
-										# -std=c++11 \
+										
 	CFLAGS          = $(LTO_FLAGS) -O2 \
 										-D_LINUX \
 										-D_UNIX \
@@ -127,7 +126,7 @@ else
 										 $(PROGRAMMING_FLAG) \
 										-DBrzi_nDarray_val \
 										-D_TEACHING_MODE \
-										-std=c++0x \
+										-std=c++11 \
 										-Wno-write-strings
 
 	CFLAGS          = -g -pg \

@@ -138,7 +138,7 @@ class Domain
         // methods to populate a domain
         virtual  bool addElement(Element *);
         virtual  bool addNode(Node *);
-        virtual  bool addElementDatabase(Element *);
+        // virtual  bool addElementDatabase(Element *);
 
         //*****************************************************************************************
         // Nima Tafazzoli (added on Sep. 2nd 2009)
@@ -257,9 +257,9 @@ class Domain
         // (September 2012)
         virtual  int  CheckMesh(const char *);
         // (January 2013)
-        virtual  int  getNumberof8GPBrickElements(void);
-        virtual  int  getNumberof27GPBrickElements(void);
-        virtual  int  getNumberofLineElements(void);
+        // virtual  int  getNumberof8GPBrickElements(void);
+        // virtual  int  getNumberof27GPBrickElements(void);
+        // virtual  int  getNumberofLineElements(void);
         //*****************************************************************************************
 
 
@@ -296,14 +296,14 @@ class Domain
         virtual int receiveSelf(int commitTag, Channel &theChannel,
                                 FEM_ObjectBroker &theBroker);
 
-        virtual int sendSelfDatabase(int commitTag, Channel &theChannel);
-        virtual int receiveSelfDatabase(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+        // virtual int sendSelfDatabase(int commitTag, Channel &theChannel);
+        // virtual int receiveSelfDatabase(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
         //Babak Added on Aug 2012:
-        void Dump_All_Nodes_Displacement_Onefileperprocess(void);
-        void Dump_All_Nodes_Displacement_Singlefile(void);
-        //Babak Added on October 2012:
-        void Dump_All_Nodes_Displacement_Singlefile_GIDFormat(void);
+        // void Dump_All_Nodes_Displacement_Onefileperprocess(void);
+        // void Dump_All_Nodes_Displacement_Singlefile(void);
+        // //Babak Added on October 2012:
+        // void Dump_All_Nodes_Displacement_Singlefile_GIDFormat(void);
 
         virtual int setHDF5_Channel(std::string filename_in,
                                     std::string model_name_in,
@@ -329,13 +329,13 @@ class Domain
         //                                              FEM_ObjectBroker &theBroker);
         //     virtual double restoreNodalDisplacement(int commitTag, int NodeNumber, int dof, int stepNumber, Channel &theChannel,
         //                                              FEM_ObjectBroker &theBroker);
-        virtual int saveNodalDisplacements(int stepNumber, Channel &theChannel);
-        virtual int save8GPBrickStresses(int stepNumber, Channel &theChannel);
-        virtual int save27GPBrickStresses(int stepNumber, Channel &theChannel);
-        virtual int saveLineElementForces(int stepNumber, Channel &theChannel);
-        virtual int addDatabase(FE_Datastore &theDatabase);
-        virtual FE_Datastore &getDatabase(int tag);
-        virtual int removeDatabase(int tag);
+        // virtual int saveNodalDisplacements(int stepNumber, Channel &theChannel);
+        // virtual int save8GPBrickStresses(int stepNumber, Channel &theChannel);
+        // virtual int save27GPBrickStresses(int stepNumber, Channel &theChannel);
+        // virtual int saveLineElementForces(int stepNumber, Channel &theChannel);
+        // virtual int addDatabase(FE_Datastore &theDatabase);
+        // virtual FE_Datastore &getDatabase(int tag);
+        // virtual int removeDatabase(int tag);
         //=======================================================================================
 
 
@@ -355,18 +355,13 @@ class Domain
         virtual int getMaxLoadPatternsTag();
 
 
-# ifdef _PDD //Guanzhou added
-        virtual bool recvNode(Node *theNod);
-# endif
-
 #ifdef _PARALLEL_PROCESSING
-        //Guanzhou added this func
+        virtual bool recvNode(Node *theNod);
         virtual int  resetMultipleSupport(const int loadPatternTag)
         {
             return 0;
         };
         virtual bool hasInternalNode(int);
-        //virtual int  resetRecorders(void);
         virtual Node *getOutsideNode(int tag)
         {
             return 0;
@@ -382,15 +377,8 @@ class Domain
         virtual int buildEleGraph(Graph *theEleGraph);
         virtual int buildNodeGraph(Graph *theNodeGraph);
 
-        //Recorder **theRecorders;
-        //int numRecorders;
-
-
         H5OutputWriter theOutputWriter;
 
-        // Nima Tafazzoli, Nov. 2012
-        FE_Datastore **theDatabases;
-        int numDatabases;
 
 
         bool output_is_enabled;
@@ -404,9 +392,9 @@ class Domain
         double dT;                        // difference between committed and current time
         int    currentGeoTag;             // an integer used to mark if domain has changed
         bool   hasDomainChangedFlag;      // a bool flag used to indicate if GeoTag needs to be ++
-        int    theDbTag;                   // the Domains unique database tag == 0
-        int    lastGeoSendTag;            // the value of currentGeoTag when sendSelf was last invoked
-        int    dbEle, dbNod, dbSPs, dbMPs, dbLPs; // database tags for storing info
+        // int    theDbTag;                   // the Domains unique database tag == 0
+        // int    lastGeoSendTag;            // the value of currentGeoTag when sendSelf was last invoked
+        // int    dbEle, dbNod, dbSPs, dbMPs, dbLPs; // database tags for storing info
 
 
         bool eleGraphBuiltFlag;
@@ -459,9 +447,9 @@ class Domain
         double theEigenvalueSetTime;
 
         // Nima Tafazzoli added Jan. 2013
-        int number_of_8GP_brick_elements;
-        int number_of_27GP_brick_elements;
-        int number_of_line_elements;
+        // int number_of_8GP_brick_elements;
+        // int number_of_27GP_brick_elements;
+        // int number_of_line_elements;
 
         int lastChannel;
 

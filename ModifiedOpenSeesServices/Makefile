@@ -25,7 +25,6 @@ WIPE_LIBS   = $(MOSS_LIBRARY)
 all:
 	$(RM) $(RMFLAGS) $(MOSS_LIBRARY);
 	$(CD) matrix; $(MAKE);
-	$(CD) database; $(MAKE);
 	$(CD) system_of_eqn; $(MAKE);
 	$(CD) tagged; $(MAKE);
 	$(CD) material; $(MAKE);
@@ -57,13 +56,15 @@ all:
             $(ANALYSIS_LIBS) \
             $(ACTOR_LIBS) \
             $(ERRORHANDLER_LIBS) 
+	# $(CD) database; $(MAKE);
 # $(RESPONSE_LIBS)
 # $(CD) response; $(MAKE);
 # $(CD) recorder; $(MAKE);
 # $(CD) machine; $(MAKE);
    
 
-FMK_LIBS = ./database/FE_Datastore.o
+# FMK_LIBS = ./database/FE_Datastore.o
+FMK_LIBS = 
 
 
 

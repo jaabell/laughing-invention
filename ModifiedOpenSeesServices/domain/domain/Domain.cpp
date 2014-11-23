@@ -125,16 +125,13 @@ Domain *ops_TheActiveDomain = 0;
 
 Domain::Domain()
     :
-    theDatabases(0), numDatabases(0),
     output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
-    currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
-    hasDomainChangedFlag( false ), theDbTag( 0 ), lastGeoSendTag( -1 ),
-    dbEle( 0 ), dbNod( 0 ), dbSPs( 0 ), dbMPs( 0 ), dbLPs( 0 ),
+    currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ),
+    hasDomainChangedFlag( false ),
     eleGraphBuiltFlag( false ),  nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
     theElementGraph( 0 ),
     commitTag( 0 ),
-    theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0),
-    number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
+    theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0)
 {
 
     // init the arrays for storing the domain components
@@ -229,16 +226,13 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
                 int numLoadPatterns, int numUniaxialMat, int numNDMaterial, int numNDMaterialLT, int numSections,
                 int numofSectionRepresents,
                 int nummultipleexcitation, int numAccelerationFields, int numDamping )
-    : theDatabases( 0 ), numDatabases( 0 ),
-      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
+    : output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
       currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
-      hasDomainChangedFlag( false ), theDbTag( 0 ), lastGeoSendTag( -1 ),
-      dbEle( 0 ), dbNod( 0 ), dbSPs( 0 ), dbMPs( 0 ), dbLPs( 0 ),
+      hasDomainChangedFlag( false ),
       eleGraphBuiltFlag( false ), nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
       theElementGraph( 0 ),
       commitTag( 0 ),
-      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
+      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 )
 {
     // init the arrays for storing the domain components
     theElements = new ArrayOfTaggedObjects( numElements );
@@ -319,18 +313,13 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
                 TaggedObjectStorage &theMultiSupportStorage,
                 TaggedObjectStorage &theAccelerationFieldStorage,
                 TaggedObjectStorage &theDampingStorage )
-    : theDatabases( 0 ), numDatabases( 0 ),
-      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
-      currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
-      hasDomainChangedFlag( false ), theDbTag( 0 ), lastGeoSendTag( -1 ),
-      dbEle( 0 ), dbNod( 0 ), dbSPs( 0 ), dbMPs( 0 ), dbLPs( 0 ),
+    : output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
+      currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ),
+      hasDomainChangedFlag( false ),
       eleGraphBuiltFlag( false ), nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
       theElementGraph( 0 ),
       theElements( &theElementsStorage ),
       theNodes( &theNodesStorage ),
-
-      // Nima Tafazzoli (added on Sep. 2nd 2009)
-      // Instead of Using TclModelBuilder
       theUniaxialMaterials( &theUniaxialMaterialStorage ),
       theNDMaterials( &theNDMaterialStorage ),
       theNDMaterialLTs( &theNDMaterialLTStorage ),
@@ -339,15 +328,11 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
       theMultipleSupports( &theMultiSupportStorage ),
       theAccelerationFields( &theAccelerationFieldStorage ),
       theDampings( &theDampingStorage ),
-
-      // *****************************************************************************************
-
       theSPs( &theSPsStorage ),
       theMPs( &theMPsStorage ),
       theLoadPatterns( &theLoadPatternsStorage ),
       commitTag( 0 ),
-      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
+      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 )
 {
     // init the iters
     theEleIter = new SingleDomEleIter( theElements );
@@ -400,16 +385,13 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
 
 
 Domain::Domain( TaggedObjectStorage &theStorage )
-    : theDatabases( 0 ), numDatabases( 0 ),
-      output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
-      currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
-      hasDomainChangedFlag( false ), theDbTag( 0 ), lastGeoSendTag( -1 ),
-      dbEle( 0 ), dbNod( 0 ), dbSPs( 0 ), dbMPs( 0 ), dbLPs( 0 ),
+    : output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
+      currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ),
+      hasDomainChangedFlag( false ),
       eleGraphBuiltFlag( false ), nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
       theElementGraph( 0 ),
       commitTag( 0 ),
-      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ),
-      number_of_8GP_brick_elements( 0 ), number_of_27GP_brick_elements( 0 ), number_of_line_elements( 0 )
+      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 )
 {
     // init the arrays for storing the domain components
     theStorage.clearAll(); // clear the storage just in case populated
@@ -470,11 +452,11 @@ Domain::Domain( TaggedObjectStorage &theStorage )
     theBounds( 4 ) = 0;
     theBounds( 5 ) = 0;
 
-    dbEle = 0;
-    dbNod = 0;
-    dbSPs = 0;
-    dbMPs = 0;
-    dbLPs = 0;
+    // dbEle = 0;
+    // dbNod = 0;
+    // dbSPs = 0;
+    // dbMPs = 0;
+    // dbLPs = 0;
 }
 
 
@@ -618,16 +600,16 @@ Domain::~Domain()
 
 
     // Nima Tafazzoli (Nov. 2012)
-    for ( int i = 0; i < numDatabases; i++ )
-    {
-        delete theDatabases[i];
-    }
+    // for ( int i = 0; i < numDatabases; i++ )
+    // {
+    //     delete theDatabases[i];
+    // }
 
-    if ( theDatabases != 0 )
-    {
-        delete [] theDatabases;
-        theDatabases = 0;
-    }
+    // if ( theDatabases != 0 )
+    // {
+    //     delete [] theDatabases;
+    //     theDatabases = 0;
+    // }
 
 
     //     for (i=0; i<numRegions; i++)
@@ -666,12 +648,12 @@ Domain::~Domain()
     // theRecorders = 0;
     // numRecorders = 0;
 
-    theDatabases = 0;
-    numDatabases = 0;
+    // theDatabases = 0;
+    // numDatabases = 0;
 
-    number_of_8GP_brick_elements = 0;
-    number_of_27GP_brick_elements = 0;
-    number_of_line_elements = 0;
+    // number_of_8GP_brick_elements = 0;
+    // number_of_27GP_brick_elements = 0;
+    // number_of_line_elements = 0;
 
 }
 
@@ -793,108 +775,108 @@ Domain::addElement( Element *element )
 //==============================================================
 // Nima Tafazzoli (Feb. 2013)
 
-bool
-Domain::addElementDatabase( Element *element )
-{
-    int eleTag = element->getTag();
+// bool
+// Domain::addElementDatabase( Element *element )
+// {
+//     int eleTag = element->getTag();
 
-#ifdef _G3DEBUG
-    // check all the elements nodes exist in the domain
-    const ID &nodes = element->getExternalNodes();
-    int numDOF = 0;
+// #ifdef _G3DEBUG
+//     // check all the elements nodes exist in the domain
+//     const ID &nodes = element->getExternalNodes();
+//     int numDOF = 0;
 
-    for ( int i = 0; i < nodes.Size(); i++ )
-    {
-        int nodeTag = nodes( i );
-        Node *nodePtr = this->getNode( nodeTag );
+//     for ( int i = 0; i < nodes.Size(); i++ )
+//     {
+//         int nodeTag = nodes( i );
+//         Node *nodePtr = this->getNode( nodeTag );
 
-        if ( nodePtr == 0 )
-        {
-            cerr << "WARNING Domain::addElement - In element ";
-            //    cerr << "WARNING Domain::addElement - In element " << *element;
-            cerr << "\n no Node " << nodeTag << " exists in the domain\n";
-            return false;
-        }
+//         if ( nodePtr == 0 )
+//         {
+//             cerr << "WARNING Domain::addElement - In element ";
+//             //    cerr << "WARNING Domain::addElement - In element " << *element;
+//             cerr << "\n no Node " << nodeTag << " exists in the domain\n";
+//             return false;
+//         }
 
-        numDOF += nodePtr->getNumberDOF();
-    }
+//         numDOF += nodePtr->getNumberDOF();
+//     }
 
-#endif
+// #endif
 
-    // check if an Element with a similar tag already exists in the Domain
+//     // check if an Element with a similar tag already exists in the Domain
 
-    TaggedObject *other = theElements->getComponentPtr( eleTag );
+//     TaggedObject *other = theElements->getComponentPtr( eleTag );
 
-    if ( other != 0 )
-    {
-        cerr << "Domain::addElement - element with tag " << eleTag << "already exists in model\n";
-        return false;
-    }
+//     if ( other != 0 )
+//     {
+//         cerr << "Domain::addElement - element with tag " << eleTag << "already exists in model\n";
+//         return false;
+//     }
 
-    // add the element to the container object for the elements
-    bool result = theElements->addComponent( element );
+//     // add the element to the container object for the elements
+//     bool result = theElements->addComponent( element );
 
-    if ( result == true )
-    {
-        element->setDomain( this );
-        //     element->update();
+//     if ( result == true )
+//     {
+//         element->setDomain( this );
+//         //     element->update();
 
-        // finally check the ele has correct number of dof
-#ifdef _G3DEBUG
+//         // finally check the ele has correct number of dof
+// #ifdef _G3DEBUG
 
-        if ( numDOF != element->getNumDOF() )
-        {
+//         if ( numDOF != element->getNumDOF() )
+//         {
 
-            cerr << "Domain::addElement - element " << eleTag << " - #DOF does not match with number at nodes\n";
-            theElements->removeComponent( eleTag );
-            return false;
-        }
+//             cerr << "Domain::addElement - element " << eleTag << " - #DOF does not match with number at nodes\n";
+//             theElements->removeComponent( eleTag );
+//             return false;
+//         }
 
-#endif
+// #endif
 
-        // mark the Domain as having been changed
-        this->domainChange();
-    }
-    else
-    {
-        cerr << "Domain::addElement - element " << eleTag << "could not be added to container\n";
-    }
-
-
-    //==============================================================
-    // Nima Tafazzoli (Feb. 2013)
-    if ( ( element->getElementclassTag() == ELE_TAG_EightNodeBrick ) ||
-            ( element->getElementclassTag() == ELE_TAG_EightNodeBrickElastic ) ||
-            ( element->getElementclassTag() == ELE_TAG_EightNodeBrick_u_p_U ) ||
-            ( element->getElementclassTag() == ELE_TAG_EightNode_Brick_u_p ) )
-    {
-        number_of_8GP_brick_elements++;
-    }
+//         // mark the Domain as having been changed
+//         this->domainChange();
+//     }
+//     else
+//     {
+//         cerr << "Domain::addElement - element " << eleTag << "could not be added to container\n";
+//     }
 
 
-    if ( ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick ) ||
-            ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrickElastic ) ||
-            ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrick ) ||
-            ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrickElastic ) ||
-            ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick_u_p_U ) )
-    {
-        number_of_27GP_brick_elements++;
-    }
+//     //==============================================================
+//     // Nima Tafazzoli (Feb. 2013)
+//     if ( ( element->getElementclassTag() == ELE_TAG_EightNodeBrick ) ||
+//             ( element->getElementclassTag() == ELE_TAG_EightNodeBrickElastic ) ||
+//             ( element->getElementclassTag() == ELE_TAG_EightNodeBrick_u_p_U ) ||
+//             ( element->getElementclassTag() == ELE_TAG_EightNode_Brick_u_p ) )
+//     {
+//         number_of_8GP_brick_elements++;
+//     }
 
 
-    if ( ( element->getElementclassTag() == ELE_TAG_ElasticBeamLumpedMass ) ||
-            ( element->getElementclassTag() == ELE_TAG_DispBeamColumn3d ) ||
-            ( element->getElementclassTag() == ELE_TAG_Truss ) ||
-            ( element->getElementclassTag() == ELE_TAG_ElasticBeam ) ||
-            ( element->getElementclassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam ) )
-    {
-        number_of_line_elements++;
-    }
+//     if ( ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick ) ||
+//             ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrickElastic ) ||
+//             ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrick ) ||
+//             ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrickElastic ) ||
+//             ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick_u_p_U ) )
+//     {
+//         number_of_27GP_brick_elements++;
+//     }
 
-    //==============================================================
 
-    return result; // end nima stuff
-} // end it
+//     if ( ( element->getElementclassTag() == ELE_TAG_ElasticBeamLumpedMass ) ||
+//             ( element->getElementclassTag() == ELE_TAG_DispBeamColumn3d ) ||
+//             ( element->getElementclassTag() == ELE_TAG_Truss ) ||
+//             ( element->getElementclassTag() == ELE_TAG_ElasticBeam ) ||
+//             ( element->getElementclassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam ) )
+//     {
+//         number_of_line_elements++;
+//     }
+
+//     //==============================================================
+
+//     return result; // end nima stuff
+// } // end it
 
 
 
@@ -1537,18 +1519,18 @@ Domain::clearAll( void )
 
 
     // Nima Tafazzoli (Nov. 2012)
-    for ( int i = 0; i < numDatabases; i++ )
-    {
-        delete theDatabases[i];
-    }
+    // for ( int i = 0; i < numDatabases; i++ )
+    // {
+    //     delete theDatabases[i];
+    // }
 
-    numDatabases = 0;
+    // numDatabases = 0;
 
-    if ( theDatabases != 0 )
-    {
-        delete [] theDatabases;
-        theDatabases = 0;
-    }
+    // if ( theDatabases != 0 )
+    // {
+    //     delete [] theDatabases;
+    //     theDatabases = 0;
+    // }
 
 
 
@@ -1575,19 +1557,19 @@ Domain::clearAll( void )
     theBounds( 4 ) = 0;
     theBounds( 5 ) = 0;
 
-    currentGeoTag = 0;
-    lastGeoSendTag = -1;
+    // currentGeoTag = 0;
+    // lastGeoSendTag = -1;
 
     // rest the flag to be as initial
     hasDomainChangedFlag = false;
     nodeGraphBuiltFlag = false;
     eleGraphBuiltFlag = false;
 
-    dbEle = 0;
-    dbNod = 0;
-    dbSPs = 0;
-    dbMPs = 0;
-    dbLPs = 0;
+    // dbEle = 0;
+    // dbNod = 0;
+    // dbSPs = 0;
+    // dbMPs = 0;
+    // dbLPs = 0;
 
 #ifndef _PARALLEL_PROCESSING //Done in PartitionedDomain::clearAll for parallel case
     theOutputWriter.finalize();
@@ -2382,25 +2364,25 @@ Domain::getPhysicalBounds( void )
 }
 
 
-int
-Domain::getNumberof8GPBrickElements( void )
-{
-    return number_of_8GP_brick_elements;
-}
+// int
+// Domain::getNumberof8GPBrickElements( void )
+// {
+//     return number_of_8GP_brick_elements;
+// }
 
 
-int
-Domain::getNumberof27GPBrickElements( void )
-{
-    return number_of_27GP_brick_elements;
-}
+// int
+// Domain::getNumberof27GPBrickElements( void )
+// {
+//     return number_of_27GP_brick_elements;
+// }
 
 
-int
-Domain::getNumberofLineElements( void )
-{
-    return number_of_line_elements;
-}
+// int
+// Domain::getNumberofLineElements( void )
+// {
+//     return number_of_line_elements;
+// }
 
 
 
@@ -3117,94 +3099,94 @@ ostream &operator<<( ostream &s, Domain &M )
 }
 
 
-int
-Domain::addDatabase( FE_Datastore &theDatabase )
-{
-    //   if (theDatabase.setDomain(*this) != 0) {
-    //     cerr << "Domain::addRecorder() - recorder could not be added\n";
-    //     return -1;
-    //   }
+// int
+// Domain::addDatabase( FE_Datastore &theDatabase )
+// {
+//     //   if (theDatabase.setDomain(*this) != 0) {
+//     //     cerr << "Domain::addRecorder() - recorder could not be added\n";
+//     //     return -1;
+//     //   }
 
 
-    for ( int i = 0; i < numDatabases; i++ )
-    {
-        if ( theDatabases[i] == 0 )
-        {
-            theDatabases[i] = &theDatabase;
-            return 0;
-        }
-    }
+//     for ( int i = 0; i < numDatabases; i++ )
+//     {
+//         if ( theDatabases[i] == 0 )
+//         {
+//             theDatabases[i] = &theDatabase;
+//             return 0;
+//         }
+//     }
 
 
-    FE_Datastore **newDatabases = new FE_Datastore *[numDatabases + 1];
+//     FE_Datastore **newDatabases = new FE_Datastore *[numDatabases + 1];
 
-    if ( newDatabases == 0 )
-    {
-        cerr << "Domain::addDatabase() - could not add database, ran out of memory\n";
-        return -1;
-    }
-
-
-    for ( int i = 0; i < numDatabases; i++ )
-    {
-        newDatabases[i] = theDatabases[i];
-    }
-
-    newDatabases[numDatabases] = &theDatabase;
+//     if ( newDatabases == 0 )
+//     {
+//         cerr << "Domain::addDatabase() - could not add database, ran out of memory\n";
+//         return -1;
+//     }
 
 
-    if ( theDatabases != 0 )
-    {
-        delete [] theDatabases;
-    }
+//     for ( int i = 0; i < numDatabases; i++ )
+//     {
+//         newDatabases[i] = theDatabases[i];
+//     }
 
-    theDatabases = newDatabases;
-    numDatabases++;
-
-    return 0;
-}
+//     newDatabases[numDatabases] = &theDatabase;
 
 
+//     if ( theDatabases != 0 )
+//     {
+//         delete [] theDatabases;
+//     }
 
-int
-Domain::removeDatabase( int tag )
-{
-    for ( int i = 0; i < numDatabases; i++ )
-    {
-        if ( theDatabases[i] != 0 )
-        {
-            if ( theDatabases[i]->getTag() == tag )
-            {
-                delete theDatabases[i];
-                theDatabases[i] = 0;
-                return 0;
-            }
-        }
-    }
+//     theDatabases = newDatabases;
+//     numDatabases++;
 
-    return -1;
-}
+//     return 0;
+// }
 
 
 
+// int
+// Domain::removeDatabase( int tag )
+// {
+//     for ( int i = 0; i < numDatabases; i++ )
+//     {
+//         if ( theDatabases[i] != 0 )
+//         {
+//             if ( theDatabases[i]->getTag() == tag )
+//             {
+//                 delete theDatabases[i];
+//                 theDatabases[i] = 0;
+//                 return 0;
+//             }
+//         }
+//     }
 
-FE_Datastore &
-Domain::getDatabase( int tag )
-{
-    for ( int i = 0; i < numDatabases; i++ )
-    {
-        if ( theDatabases[i] != 0 )
-        {
-            if ( theDatabases[i]->getTag() == tag )
-            {
-                return *theDatabases[i];
-            }
-        }
-    }
+//     return -1;
+// }
 
-    cerr.flush() << "Domain::getDatabase - could not find Database with tag " << tag << "\n";
-    exit( -1 );
-}
+
+
+
+// FE_Datastore &
+// Domain::getDatabase( int tag )
+// {
+//     for ( int i = 0; i < numDatabases; i++ )
+//     {
+//         if ( theDatabases[i] != 0 )
+//         {
+//             if ( theDatabases[i]->getTag() == tag )
+//             {
+//                 return *theDatabases[i];
+//             }
+//         }
+//     }
+
+//     cerr.flush() << "Domain::getDatabase - could not find Database with tag " << tag << "\n";
+//     exit( -1 );
+// }
 
 
 
@@ -3633,20 +3615,20 @@ Domain::sendSelf( int cTag, Channel &theChannel )
     // add the database tag for the ID's storing node, element, constraints
     // and loadpattern data into domainData
     // NOTE: if these still 0 get new ones from the channel
-    if ( dbNod == 0 )
-    {
-        dbNod = theChannel.getDbTag();
-        dbEle = theChannel.getDbTag();
-        dbSPs = theChannel.getDbTag();
-        dbMPs = theChannel.getDbTag();
-        dbLPs = theChannel.getDbTag();
-    }
+    // if ( dbNod == 0 )
+    // {
+    //     dbNod = theChannel.getDbTag();
+    //     dbEle = theChannel.getDbTag();
+    //     dbSPs = theChannel.getDbTag();
+    //     dbMPs = theChannel.getDbTag();
+    //     dbLPs = theChannel.getDbTag();
+    // }
 
-    domainData( 6 ) = dbNod;
-    domainData( 7 ) = dbEle;
-    domainData( 8 ) = dbSPs;
-    domainData( 9 ) = dbMPs;
-    domainData( 10 ) = dbLPs;
+    domainData( 6 ) = 0;// Deprecated by J.Abell     dbNod;
+    domainData( 7 ) = 0;// Deprecated by J.Abell     dbEle;
+    domainData( 8 ) = 0;// Deprecated by J.Abell     dbSPs;
+    domainData( 9 ) = 0;// Deprecated by J.Abell     dbMPs;
+    domainData( 10 ) = 0;// Deprecated by J.Abell     dbLPs;
     domainData( 11 ) = maxElementsTag;
     domainData( 12 ) = maxNodesTag;
     domainData( 13 ) = maxUniaxialMaterialsTag;
@@ -3665,7 +3647,7 @@ Domain::sendSelf( int cTag, Channel &theChannel )
 
 
 
-    if ( theChannel.sendID( theDbTag, commitTag, domainData ) < 0 )
+    if ( theChannel.sendID( 0, commitTag, domainData ) < 0 )
     {
         cerr << "Domain::send - channel failed to send the initial ID\n";
         return -1;
@@ -3675,7 +3657,7 @@ Domain::sendSelf( int cTag, Channel &theChannel )
     Vector domainTime( 1 );
     domainTime( 0 ) = committedTime;
 
-    if ( theChannel.sendVector( theDbTag, commitTag, domainTime ) < 0 )
+    if ( theChannel.sendVector( 0, commitTag, domainTime ) < 0 )
     {
         cerr << "Domain::send - channel failed to send the time Vector\n";
         return -2;
@@ -3686,7 +3668,7 @@ Domain::sendSelf( int cTag, Channel &theChannel )
     // HANDLE VERY LARGE ID OBJECTS.
 
 
-    if ( lastChannel != theChannel.getTag() || lastGeoSendTag != currentGeoTag )
+    if ( lastChannel != theChannel.getTag() )//|| lastGeoSendTag != currentGeoTag )
     {
 
         lastChannel = theChannel.getTag();
@@ -3727,7 +3709,8 @@ Domain::sendSelf( int cTag, Channel &theChannel )
             }
 
             // now send the ID
-            if ( theChannel.sendID( dbNod, currentGeoTag, nodeData ) < 0 )
+            // if ( theChannel.sendID( dbNod, currentGeoTag, nodeData ) < 0 )
+            if ( theChannel.sendID( 0, 0, nodeData ) < 0 )
             {
                 cerr << "Domain::send - channel failed to send the node ID\n";
                 return -2;
@@ -3764,7 +3747,8 @@ Domain::sendSelf( int cTag, Channel &theChannel )
             }
 
             // now send the ID
-            if ( theChannel.sendID( dbEle, currentGeoTag, elementData ) < 0 )
+            // if ( theChannel.sendID( dbEle, currentGeoTag, elementData ) < 0 )
+            if ( theChannel.sendID( 0, 0, elementData ) < 0 )
             {
                 cerr << "Domain::send - channel failed to send the element ID\n";
                 return -3;
@@ -3800,7 +3784,8 @@ Domain::sendSelf( int cTag, Channel &theChannel )
                 loc += 2;
             }
 
-            if ( theChannel.sendID( dbSPs, currentGeoTag, spData ) < 0 )
+            // if ( theChannel.sendID( dbSPs, currentGeoTag, spData ) < 0 )
+            if ( theChannel.sendID( 0, 0, spData ) < 0 )
             {
                 cerr << "Domain::send - channel failed to send the SP_Constraint ID\n";
                 return -4;
@@ -3836,7 +3821,8 @@ Domain::sendSelf( int cTag, Channel &theChannel )
                 loc += 2;
             }
 
-            if ( theChannel.sendID( dbMPs, currentGeoTag, mpData ) < 0 )
+            // if ( theChannel.sendID( dbMPs, currentGeoTag, mpData ) < 0 )
+            if ( theChannel.sendID( 0, 0, mpData ) < 0 )
             {
                 cerr << "Domain::send - channel failed to send the MP_Constraint ID\n";
                 return -5;
@@ -3872,7 +3858,8 @@ Domain::sendSelf( int cTag, Channel &theChannel )
                 loc += 2;
             }
 
-            if ( theChannel.sendID( dbLPs, currentGeoTag, lpData ) < 0 )
+            // if ( theChannel.sendID( dbLPs, currentGeoTag, lpData ) < 0 )
+            if ( theChannel.sendID( 0, 0, lpData ) < 0 )
             {
                 cerr << "Domain::send - channel failed to send the LoadPattern ID\n";
                 return -6;
@@ -3881,7 +3868,7 @@ Domain::sendSelf( int cTag, Channel &theChannel )
 
 
         // now so that we don't do this next time if nothing in the domain has changed
-        lastGeoSendTag = currentGeoTag;
+        // lastGeoSendTag = currentGeoTag;
     }
 
     //
@@ -3971,7 +3958,8 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
     // first we get the data about the state of the domain for this commitTag
     ID domainData( 11 + 13);
 
-    if ( theChannel.receiveID( theDbTag, commitTag, domainData ) < 0 )
+    // if ( theChannel.receiveID( theDbTag, commitTag, domainData ) < 0 )
+    if ( theChannel.receiveID( 0, 0, domainData ) < 0 )
     {
         cerr << "Domain::recv - channel failed to recv the initial ID\n";
         return -1;
@@ -3980,7 +3968,8 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
     // recv the time information
     Vector domainTime( 1 );
 
-    if ( theChannel.receiveVector( theDbTag, commitTag, domainTime ) < 0 )
+    // if ( theChannel.receiveVector( theDbTag, commitTag, domainTime ) < 0 )
+    if ( theChannel.receiveVector( 0, 0, domainTime ) < 0 )
     {
         cerr << "Domain::send - channel failed to recv thetime Vector\n";
         return -1;
@@ -4000,14 +3989,14 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
         lastChannel = theChannel.getTag();
 
         // set the currrentGeoTag
-        int geoTag = domainData( 0 );
+        // int geoTag = domainData( 0 );
 
         int i, loc;
         int numEle, numNod, numSPs, numMPs, numLPs;
 
         // if receiving set lastGeoSendTag to be equal to currentGeoTag
         // at time all the data was sent if not we must clear out the objects and rebuild
-        lastGeoSendTag = domainData( 0 );
+        // lastGeoSendTag = domainData( 0 );
 
         // clear out the all the components in the current domain
         this->clearAll();
@@ -4021,14 +4010,15 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
 
         // first get the information from the domainData about the nodes
         numNod = domainData( 1 );
-        dbNod = domainData( 6 );
+        // dbNod = domainData( 6 );
 
         if ( numNod != 0 )
         {
             ID nodeData( 2 * numNod );
 
             // now receive the ID about the nodes, class tag and dbTags
-            if ( theChannel.receiveID( dbNod, geoTag, nodeData ) < 0 )
+            // if ( theChannel.receiveID( dbNod, geoTag, nodeData ) < 0 )
+            if ( theChannel.receiveID( 0, 0, nodeData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the node ID\n";
                 return -2;
@@ -4054,6 +4044,7 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
 
                 theNode->setDbTag( dbTag );
 
+                // if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
                 {
                     cerr << "Domain::recv - node with dbTag " << dbTag << " failed in receiveSelf\n";
@@ -4075,13 +4066,14 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
         //
 
         numEle = domainData( 2 );
-        dbEle = domainData( 7 );
+        // dbEle = domainData( 7 );
 
         if ( numEle != 0 )
         {
             ID eleData( 2 * numEle );
 
-            if ( theChannel.receiveID( dbEle, geoTag, eleData ) < 0 )
+            // if ( theChannel.receiveID( dbEle, geoTag, eleData ) < 0 )
+            if ( theChannel.receiveID( 0, 0, eleData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the Ele ID\n";
                 return -2;
@@ -4125,13 +4117,14 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
         //
 
         numSPs = domainData( 3 );
-        dbSPs = domainData( 8 );
+        // dbSPs = domainData( 8 );
 
         if ( numSPs != 0 )
         {
             ID spData( 2 * numSPs );
 
-            if ( theChannel.receiveID( dbSPs, geoTag, spData ) < 0 )
+            // if ( theChannel.receiveID( dbSPs, geoTag, spData ) < 0 )
+            if ( theChannel.receiveID( 0, 0, spData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the SP_Constraints ID\n";
                 return -2;
@@ -4176,13 +4169,14 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
         //
 
         numMPs = domainData( 4 );
-        dbMPs = domainData( 9 );
+        // dbMPs = domainData( 9 );
 
         if ( numMPs != 0 )
         {
             ID mpData( 2 * numMPs );
 
-            if ( theChannel.receiveID( dbMPs, geoTag, mpData ) < 0 )
+            // if ( theChannel.receiveID( dbMPs, geoTag, mpData ) < 0 )
+            if ( theChannel.receiveID( 0, 0, mpData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
                 return -2;
@@ -4226,13 +4220,14 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
         //
 
         numLPs = domainData( 5 );
-        dbLPs = domainData( 10 );
+        // dbLPs = domainData( 10 );
 
         if ( numLPs != 0 )
         {
             ID lpData( 2 * numLPs );
 
-            if ( theChannel.receiveID( dbLPs, geoTag, lpData ) < 0 )
+            // if ( theChannel.receiveID( dbLPs, geoTag, lpData ) < 0 )
+            if ( theChannel.receiveID( 0, 0, lpData ) < 0 )
             {
                 cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
                 return -2;
@@ -4276,7 +4271,7 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
         // the analysis will not have to to do a domainChanged() operation
         currentGeoTag = domainData( 0 );
 
-        lastGeoSendTag = currentGeoTag;
+        // lastGeoSendTag = currentGeoTag;
         hasDomainChangedFlag = false;
 
 
@@ -4350,7 +4345,7 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
     }
 
     // now set the domains lastGeoSendTag and currentDomainChangedFlag
-    lastGeoSendTag = currentGeoTag;
+    // lastGeoSendTag = currentGeoTag;
 
 
     //Max tags (jose added)
@@ -4375,756 +4370,757 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
 
 
 
-int
-Domain::sendSelfDatabase( int cTag, Channel &theChannel )
-{
-    // update the commitTag and currentGeoTag
-    commitTag = cTag;
-
-    this->hasDomainChanged();
-
-    // first we send info about the current domain flag and the number of
-    // elements, nodes, constraints and load patterns currently in the domain
-    int numEle, numNod, numSPs, numMPs, numLPs;
-    numNod = theNodes->getNumComponents();
-    numEle = theElements->getNumComponents();
-    numSPs = theSPs->getNumComponents();
-    numMPs = theMPs->getNumComponents();
-    numLPs = theLoadPatterns->getNumComponents();
-
-    ID domainData( 11 );
-    domainData( 0 ) = currentGeoTag;
-
-    domainData( 1 ) = numNod;
-    domainData( 2 ) = numEle;
-    domainData( 3 ) = numSPs;
-    domainData( 4 ) = numMPs;
-    domainData( 5 ) = numLPs;
-
-    // add the database tag for the ID's storing node, element, constraints
-    // and loadpattern data into domainData
-    // NOTE: if these still 0 get new ones from the channel
-    if ( dbNod == 0 )
-    {
-        dbNod = theChannel.getDbTag();
-        dbEle = theChannel.getDbTag();
-        dbSPs = theChannel.getDbTag();
-        dbMPs = theChannel.getDbTag();
-        dbLPs = theChannel.getDbTag();
-    }
-
-    domainData( 6 )  = dbNod;
-    domainData( 7 )  = dbEle;
-    domainData( 8 )  = dbSPs;
-    domainData( 9 )  = dbMPs;
-    domainData( 10 ) = dbLPs;
-
-    if ( theChannel.sendID( theDbTag, commitTag, domainData ) < 0 )
-    {
-        cerr << "Domain::send - channel failed to send the initial ID\n";
-        return -1;
-    }
-
-    // send the time information
-    Vector domainTime( 1 );
-    domainTime( 0 ) = committedTime;
-
-    if ( theChannel.sendVector( theDbTag, commitTag, domainTime ) < 0 )
-    {
-        cerr << "Domain::send - channel failed to send the time Vector\n";
-        return -2;
-    }
-
-    // now check if data defining the objects in the domain needs to be sent
-    // NOTE THIS APPROACH MAY NEED TO CHANGE FOR VERY LARGE PROBLEMS IF CHANNEL CANNOT
-    // HANDLE VERY LARGE ID OBJECTS.
-
-    /*
-    if (theChannel.isDatastore() == 1) {
-      static ID theLastSendTag(1);
-      if (theChannel.receiveID(0,0,theLastSendTag) == 0)
-        lastGeoSendTag = theLastSendTag(0);
-      else
-        lastGeoSendTag = -1;
-    }
-    */
-
-    if ( lastChannel != theChannel.getTag() || lastGeoSendTag != currentGeoTag )
-    {
-
-        lastChannel = theChannel.getTag();
-
-        //
-        // into an ID we are gonna place the class and db tags for each node so can rebuild
-        // this ID we then send to the channel
-        //
-
-        // create the ID and get the node iter
-        if ( numNod != 0 )
-        {
-            ID nodeData( numNod * 2 );
-            Node *theNode;
-            NodeIter &theNodes = this->getNodes();
-            int loc = 0;
-
-            // loop over nodes in domain adding their classTag and dbTag to the ID
-            while ( ( theNode = theNodes() ) != 0 )
-            {
-                nodeData( loc ) = theNode->getClassTag();
-                int dbTag = theNode->getDbTag();
-
-                // if dbTag still 0 get one from Channel;
-                // if this tag != 0 set the dbTag in node
-                if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
-                {
-                    dbTag = theChannel.getDbTag();
-
-                    if ( dbTag != 0 )
-                    {
-                        theNode->setDbTag( dbTag );
-                    }
-                }
-
-                nodeData( loc + 1 ) = dbTag;
-                loc += 2;
-            }
-
-            // now send the ID
-            if ( theChannel.sendID( dbNod, currentGeoTag, nodeData ) < 0 )
-            {
-                cerr << "Domain::send - channel failed to send the node ID\n";
-                return -2;
-            }
-        }
-
-        // we do the same for elements as we did for nodes above .. see comments
-        // for nodes if you can't figure whats going on!
-
-        if ( numEle != 0 )
-        {
-            ID elementData( numEle * 2 );
-            Element *theEle;
-            ElementIter &theElements = this->getElements();
-            int loc = 0;
-
-            while ( ( theEle = theElements() ) != 0 )
-            {
-                elementData( loc ) = theEle->getClassTag();
-                int dbTag = theEle->getDbTag();
-
-                if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
-                {
-                    dbTag = theChannel.getDbTag();
-
-                    if ( dbTag != 0 )
-                    {
-                        theEle->setDbTag( dbTag );
-                    }
-                }
-
-                elementData( loc + 1 ) = dbTag;
-                loc += 2;
-            }
-
-            // now send the ID
-            if ( theChannel.sendID( dbEle, currentGeoTag, elementData ) < 0 )
-            {
-                cerr << "Domain::send - channel failed to send the element ID\n";
-                return -3;
-            }
-        }
-
-        // we do the same for SP_Constraints as for Nodes above .. see comments
-        // for nodes if you can't figure whats going on!
-
-        if ( numSPs != 0 )
-        {
-            ID spData( numSPs * 2 );
-            SP_Constraint *theSP;
-            SP_ConstraintIter &theSPs = this->getSPs();
-            int loc = 0;
-
-            while ( ( theSP = theSPs() ) != 0 )
-            {
-                spData( loc ) = theSP->getClassTag();
-                int dbTag = theSP->getDbTag();
-
-                if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
-                {
-                    dbTag = theChannel.getDbTag();
-
-                    if ( dbTag != 0 )
-                    {
-                        theSP->setDbTag( dbTag );
-                    }
-                }
-
-                spData( loc + 1 ) = dbTag;
-                loc += 2;
-            }
-
-            if ( theChannel.sendID( dbSPs, currentGeoTag, spData ) < 0 )
-            {
-                cerr << "Domain::send - channel failed to send the SP_Constraint ID\n";
-                return -4;
-            }
-        }
-
-        // we do the same for MP_Constraints as for Nodes above .. see comments
-        // for nodes if you can't figure whats going on!
-
-        if ( numMPs != 0 )
-        {
-            ID mpData( numMPs * 2 );
-            MP_Constraint *theMP;
-            MP_ConstraintIter &theMPs = this->getMPs();
-            int loc = 0;
-
-            while ( ( theMP = theMPs() ) != 0 )
-            {
-                mpData( loc ) = theMP->getClassTag();
-                int dbTag = theMP->getDbTag();
-
-                if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
-                {
-                    dbTag = theChannel.getDbTag();
-
-                    if ( dbTag != 0 )
-                    {
-                        theMP->setDbTag( dbTag );
-                    }
-                }
-
-                mpData( loc + 1 ) = dbTag;
-                loc += 2;
-            }
-
-            if ( theChannel.sendID( dbMPs, currentGeoTag, mpData ) < 0 )
-            {
-                cerr << "Domain::send - channel failed to send the MP_Constraint ID\n";
-                return -5;
-            }
-        }
-
-        // we do the same for LoadPatterns as we did for Nodes above .. see comments
-        // for nodes if you can't figure whats going on!
-
-        if ( numLPs != 0 )
-        {
-            ID lpData( numLPs * 2 );
-            LoadPattern *theLP;
-            LoadPatternIter &theLPs = this->getLoadPatterns();
-            int loc = 0;
-
-            while ( ( theLP = theLPs() ) != 0 )
-            {
-                lpData( loc ) = theLP->getClassTag();
-                int dbTag = theLP->getDbTag();
-
-                if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
-                {
-                    dbTag = theChannel.getDbTag();
-
-                    if ( dbTag != 0 )
-                    {
-                        theLP->setDbTag( dbTag );
-                    }
-                }
-
-                lpData( loc + 1 ) = dbTag;
-                loc += 2;
-            }
-
-            if ( theChannel.sendID( dbLPs, currentGeoTag, lpData ) < 0 )
-            {
-                cerr << "Domain::send - channel failed to send the LoadPattern ID\n";
-                return -6;
-            }
-        }
-
-
-        // now so that we don't do this next time if nothing in the domain has changed
-        lastGeoSendTag = currentGeoTag;
-    }
-
-    //
-    // now we invoke sendSelf on each of the objects ..
-    // NOTE: don't have to set the dbTags of the objects as just done this above
-    //
-
-    // send the nodes
-    Node *theNode;
-    NodeIter &theNodes = this->getNodes();
-
-    while ( ( theNode = theNodes() ) != 0 )
-    {
-        if ( theNode->sendSelf( commitTag, theChannel ) < 0 )
-        {
-            cerr << "Domain::send - node with tag " << theNode->getTag() << " failed in sendSelf\n";
-            return -7;
-        }
-    }
-
-    // send the elements
-    Element *theEle;
-    ElementIter &theElements = this->getElements();
-
-    while ( ( theEle = theElements() ) != 0 )
-    {
-        if ( theEle->sendSelf( commitTag, theChannel ) < 0 )
-        {
-            cerr << "Domain::send - element with tag " << theEle->getTag() << " failed in sendSelf\n";
-            return -8;
-        }
-    }
-
-    // send the single point constraints
-    SP_Constraint *theSP;
-    SP_ConstraintIter &theSPs = this->getSPs();
-
-    while ( ( theSP = theSPs() ) != 0 )
-    {
-        if ( theSP->sendSelf( commitTag, theChannel ) < 0 )
-        {
-            cerr << "Domain::send - SP_Constraint with tag " << theSP->getTag() << " failed in sendSelf\n";
-            return -9;
-        }
-    }
-
-    // send the multi point constraints
-    MP_Constraint *theMP;
-    MP_ConstraintIter &theMPs = this->getMPs();
-
-    while ( ( theMP = theMPs() ) != 0 )
-    {
-        if ( theMP->sendSelf( commitTag, theChannel ) < 0 )
-        {
-            cerr << "Domain::send - MP_Constraint with tag " << theMP->getTag() << " failed in sendSelf\n";
-            return -10;
-        }
-    }
-
-    // send the load patterns
-    LoadPattern *theLP;
-    LoadPatternIter &theLPs = this->getLoadPatterns();
-
-    while ( ( theLP = theLPs() ) != 0 )
-    {
-        if ( theLP->sendSelf( commitTag, theChannel ) < 0 )
-        {
-            cerr << "Domain::send - LoadPattern with tag " << theLP->getTag() << " failed in sendSelf\n";
-            return -11;
-        }
-    }
-
-    // if get here we were successfull
-    return commitTag;
-}
-
-
-int
-Domain::receiveSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
-{
-    // set the commitTag in the domain to cTag & update the getTag if needed
-    commitTag = cTag;
-    this->hasDomainChanged();
-
-    // first we get the data about the state of the domain for this commitTag
-    ID domainData( 11 );
-
-    if ( theChannel.receiveID( theDbTag, commitTag, domainData ) < 0 )
-    {
-        cerr << "Domain::recv - channel failed to recv the initial ID\n";
-        return -1;
-    }
-
-    // recv the time information
-    Vector domainTime( 1 );
-
-    if ( theChannel.receiveVector( theDbTag, commitTag, domainTime ) < 0 )
-    {
-        cerr << "Domain::send - channel failed to recv thetime Vector\n";
-        return -1;
-    }
-
-    currentTime = domainTime( 0 );
-    committedTime = currentTime;
-
-    //
-    // now if the currentGeoTag does not agree with whats in the domain
-    // we must wipe everything in the domain and recreate the domain based on the info from the channel
-    //
-
-
-    // if (theChannel.isDatastore() == 1) {
-    //   static ID theLastSendTag(1);
-    //   if (theChannel.receiveID(0,0,theLastSendTag) == 0)
-    //     lastGeoSendTag = theLastSendTag(0);
-    // }
-
-    if ( currentGeoTag == 0 || lastChannel != theChannel.getTag() || domainData( 0 ) != currentGeoTag )
-    {
-
-        lastChannel = theChannel.getTag();
-
-        // set the currrentGeoTag
-        int geoTag = domainData( 0 );
-
-        int i, loc;
-        int numEle, numNod, numSPs, numMPs, numLPs;
-
-        // if receiving set lastGeoSendTag to be equal to currentGeoTag
-        // at time all the data was sent if not we must clear out the objects and rebuild
-        lastGeoSendTag = domainData( 0 );
-
-        // clear out the all the components in the current domain
-        this->clearAll();
-
-        currentTime = domainTime( 0 );
-        committedTime = currentTime;
-
-        //
-        // now we rebuild the nodes
-        //
-
-        // first get the information from the domainData about the nodes
-        numNod = domainData( 1 );
-        dbNod = domainData( 6 );
-
-        if ( numNod != 0 )
-        {
-            ID nodeData( 2 * numNod );
-
-            // now receive the ID about the nodes, class tag and dbTags
-            if ( theChannel.receiveID( dbNod, geoTag, nodeData ) < 0 )
-            {
-                cerr << "Domain::recv - channel failed to recv the node ID\n";
-                return -2;
-            }
-
-            // now for each node we 1) get a new node of the correct type from the ObjectBroker
-            // 2) ensure the node exists and set it's dbTag, 3) we invoke receiveSelf on this new
-            // blank node and 4) add this node to the domain
-            loc = 0;
-
-            for ( i = 0; i < numNod; i++ )
-            {
-                int classTag = nodeData( loc );
-                int dbTag = nodeData( loc + 1 );
-
-                Node *theNode = theBroker.getNewNode( classTag );
-
-                if ( theNode == 0 )
-                {
-                    cerr << "Domain::recv - cannot create node with classTag " << classTag << endln;
-                    return -2;
-                }
-
-                theNode->setDbTag( dbTag );
-
-                if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "Domain::recv - node with dbTag " << dbTag << " failed in receiveSelf\n";
-                    return -2;
-                }
-
-                if ( this->addNode( theNode ) == false )
-                {
-                    cerr << "Domain::recv - could not add node with tag " << theNode->getTag() << " into domain\n!";
-                    return -3;
-                }
-
-                loc += 2;
-            }
-        }
-
-        //
-        // now we rebuild the elements .. same as nodes above .. see above if can't understand!!
-        //
-
-        numEle = domainData( 2 );
-        dbEle = domainData( 7 );
-
-        if ( numEle != 0 )
-        {
-            ID eleData( 2 * numEle );
-
-            if ( theChannel.receiveID( dbEle, geoTag, eleData ) < 0 )
-            {
-                cerr << "Domain::recv - channel failed to recv the Ele ID\n";
-                return -2;
-            }
-
-            loc = 0;
-
-            for ( i = 0; i < numEle; i++ )
-            {
-                int classTag = eleData( loc );
-                int dbTag = eleData( loc + 1 );
-
-                Element *theEle = theBroker.getNewElement( classTag );
-
-                if ( theEle == 0 )
-                {
-                    cerr << "Domain::recv - cannot create element with classTag " << classTag << endln;
-                    return -2;
-                }
-
-                theEle->setDbTag( dbTag );
-
-                if ( theEle->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "Domain::recv - Ele with dbTag " << dbTag << " failed in receiveSelf()\n";
-                    return -2;
-                }
-
-                if ( this->addElementDatabase( theEle ) == false )
-                {
-                    cerr << "Domain::recv - could not add Ele with tag " << theEle->getTag() << " into domain!\n";
-                    return -3;
-                }
-
-                loc += 2;
-            }
-        }
-
-        //
-        // now we rebuild the SP_Constraints .. same as nodes above .. see above if can't understand!!
-        //
-
-        numSPs = domainData( 3 );
-        dbSPs = domainData( 8 );
-
-        if ( numSPs != 0 )
-        {
-            ID spData( 2 * numSPs );
-
-            if ( theChannel.receiveID( dbSPs, geoTag, spData ) < 0 )
-            {
-                cerr << "Domain::recv - channel failed to recv the SP_Constraints ID\n";
-                return -2;
-            }
-
-            loc = 0;
-
-            for ( i = 0; i < numSPs; i++ )
-            {
-                int classTag = spData( loc );
-                int dbTag = spData( loc + 1 );
-
-                SP_Constraint *theSP = theBroker.getNewSP( classTag );
-
-                if ( theSP == 0 )
-                {
-                    cerr << "Domain::recv - cannot create SP_Constraint with classTag " << classTag << endln;
-                    return -2;
-                }
-
-                theSP->setDbTag( dbTag );
-
-                if ( theSP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "Domain::recv - SP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
-                    return -2;
-                }
-
-                if ( this->addSP_Constraint( theSP ) == false )
-                {
-                    cerr << "Domain::recv - could not add SP_Constraint with tag " << theSP->getTag() << " into domain!\n";
-                    return -3;
-                }
-
-                loc += 2;
-            }
-        }
-
-
-        //
-        // now we rebuild the MP_Constraints .. same as nodes above .. see above if can't understand!!
-        //
-
-        numMPs = domainData( 4 );
-        dbMPs = domainData( 9 );
-
-        if ( numMPs != 0 )
-        {
-            ID mpData( 2 * numMPs );
-
-            if ( theChannel.receiveID( dbMPs, geoTag, mpData ) < 0 )
-            {
-                cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
-                return -2;
-            }
-
-            loc = 0;
-
-            for ( i = 0; i < numMPs; i++ )
-            {
-                int classTag = mpData( loc );
-                int dbTag = mpData( loc + 1 );
-
-                MP_Constraint *theMP = theBroker.getNewMP( classTag );
-
-                if ( theMP == 0 )
-                {
-                    cerr << "Domain::recv - cannot create MP_Constraint with classTag " << classTag << endln;
-                    return -2;
-                }
-
-                theMP->setDbTag( dbTag );
-
-                if ( theMP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "Domain::recv - MP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
-                    return -2;
-                }
-
-                if ( this->addMP_Constraint( theMP ) == false )
-                {
-                    cerr << "Domain::recv - could not add MP_Constraint with tag " << theMP->getTag() << " into domain!\n";
-                    return -3;
-                }
-
-                loc += 2;
-            }
-        }
-
-        //
-        // now we rebuild the LoadPatterns .. same as nodes above .. see above if can't understand!!
-        //
-
-        numLPs = domainData( 5 );
-        dbLPs = domainData( 10 );
-
-        if ( numLPs != 0 )
-        {
-            ID lpData( 2 * numLPs );
-
-            if ( theChannel.receiveID( dbLPs, geoTag, lpData ) < 0 )
-            {
-                cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
-                return -2;
-            }
-
-            loc = 0;
-
-            for ( i = 0; i < numLPs; i++ )
-            {
-                int classTag = lpData( loc );
-                int dbTag = lpData( loc + 1 );
-
-                LoadPattern *theLP = theBroker.getNewLoadPattern( classTag );
-
-                if ( theLP == 0 )
-                {
-                    cerr << "Domain::recv - cannot create MP_Constraint with classTag  " << classTag << endln;
-                    return -2;
-                }
-
-                theLP->setDbTag( dbTag );
-
-                if ( theLP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-                {
-                    cerr << "Domain::recv - LoadPattern with dbTag " << dbTag << " failed in receiveSelf\n";
-                    return -2;
-                }
-
-                if ( this->addLoadPattern( theLP ) == false )
-                {
-                    cerr << "Domain::recv - could not add LoadPattern with tag " << theLP->getTag() <<  " into the Domain\n";
-                    return -3;
-                }
-
-                loc += 2;
-            }
-        }
-
-        // set the currentGeoTag & mark domainChangeFlag as false
-        // this way if restoring froma a database and domain has not changed for the analysis
-        // the analysis will not have to to do a domainChanged() operation
-        currentGeoTag = domainData( 0 );
-
-        lastGeoSendTag = currentGeoTag;
-        hasDomainChangedFlag = false;
-
-    }
-    else
-    {
-
-        // in this block .. we have the components they just have to recv themselves again
-
-        Node *theNode;
-        NodeIter &theNodes = this->getNodes();
-
-        while ( ( theNode = theNodes() ) != 0 )
-        {
-            if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-            {
-                cerr << "Domain::recv - node with tag " << theNode->getTag() << " failed in receiveSelf\n";
-                return -7;
-            }
-        }
-
-        Element *theEle;
-        ElementIter &theElements = this->getElements();
-
-        while ( ( theEle = theElements() ) != 0 )
-        {
-            if ( theEle->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-            {
-                cerr << "Domain::recv - element with tag " << theEle->getTag() <<  " failed in receiveSelf\n";
-                return -8;
-            }
-
-            theEle->update();
-        }
-
-        SP_Constraint *theSP;
-        SP_ConstraintIter &theSPs = this->getSPs();
-
-        while ( ( theSP = theSPs() ) != 0 )
-        {
-            if ( theSP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-            {
-                cerr << "Domain::recv - SP_Constraint with tag " << theSP->getTag() << " failed in receiveSelf\n";
-                return -9;
-            }
-        }
-
-        MP_Constraint *theMP;
-        MP_ConstraintIter &theMPs = this->getMPs();
-
-        while ( ( theMP = theMPs() ) != 0 )
-        {
-            if ( theMP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-            {
-                cerr << "Domain::recv - MP_Constraint with tag " << theMP->getTag() << " failed in receiveSelf\n";
-                return -10;
-            }
-        }
-
-        LoadPattern *theLP;
-        LoadPatternIter &theLPs = this->getLoadPatterns();
-
-        while ( ( theLP = theLPs() ) != 0 )
-        {
-            if ( theLP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
-            {
-                cerr << "Domain::recv - LoadPattern with tag" << theLP->getTag() << " failed in receiveSelf";
-                return -11;
-            }
-        }
-    }
-
-    // now set the domains lastGeoSendTag and currentDomainChangedFlag
-    lastGeoSendTag = currentGeoTag;
-
-    // if get here we were successfull
-    return 0;
-}
-
-
-# ifdef _PDD
+// int
+// Domain::sendSelfDatabase( int cTag, Channel &theChannel )
+// {
+//     // update the commitTag and currentGeoTag
+//     commitTag = cTag;
+
+//     this->hasDomainChanged();
+
+//     // first we send info about the current domain flag and the number of
+//     // elements, nodes, constraints and load patterns currently in the domain
+//     int numEle, numNod, numSPs, numMPs, numLPs;
+//     numNod = theNodes->getNumComponents();
+//     numEle = theElements->getNumComponents();
+//     numSPs = theSPs->getNumComponents();
+//     numMPs = theMPs->getNumComponents();
+//     numLPs = theLoadPatterns->getNumComponents();
+
+//     ID domainData( 11 );
+//     domainData( 0 ) = currentGeoTag;
+
+//     domainData( 1 ) = numNod;
+//     domainData( 2 ) = numEle;
+//     domainData( 3 ) = numSPs;
+//     domainData( 4 ) = numMPs;
+//     domainData( 5 ) = numLPs;
+
+//     // add the database tag for the ID's storing node, element, constraints
+//     // and loadpattern data into domainData
+//     // NOTE: if these still 0 get new ones from the channel
+//     if ( dbNod == 0 )
+//     {
+//         dbNod = theChannel.getDbTag();
+//         dbEle = theChannel.getDbTag();
+//         dbSPs = theChannel.getDbTag();
+//         dbMPs = theChannel.getDbTag();
+//         dbLPs = theChannel.getDbTag();
+//     }
+
+//     domainData( 6 )  = dbNod;
+//     domainData( 7 )  = dbEle;
+//     domainData( 8 )  = dbSPs;
+//     domainData( 9 )  = dbMPs;
+//     domainData( 10 ) = dbLPs;
+
+//     if ( theChannel.sendID( theDbTag, commitTag, domainData ) < 0 )
+//     {
+//         cerr << "Domain::send - channel failed to send the initial ID\n";
+//         return -1;
+//     }
+
+//     // send the time information
+//     Vector domainTime( 1 );
+//     domainTime( 0 ) = committedTime;
+
+//     if ( theChannel.sendVector( theDbTag, commitTag, domainTime ) < 0 )
+//     {
+//         cerr << "Domain::send - channel failed to send the time Vector\n";
+//         return -2;
+//     }
+
+//     // now check if data defining the objects in the domain needs to be sent
+//     // NOTE THIS APPROACH MAY NEED TO CHANGE FOR VERY LARGE PROBLEMS IF CHANNEL CANNOT
+//     // HANDLE VERY LARGE ID OBJECTS.
+
+//     /*
+//     if (theChannel.isDatastore() == 1) {
+//       static ID theLastSendTag(1);
+//       if (theChannel.receiveID(0,0,theLastSendTag) == 0)
+//         lastGeoSendTag = theLastSendTag(0);
+//       else
+//         lastGeoSendTag = -1;
+//     }
+//     */
+
+//     if ( lastChannel != theChannel.getTag() || lastGeoSendTag != currentGeoTag )
+//     {
+
+//         lastChannel = theChannel.getTag();
+
+//         //
+//         // into an ID we are gonna place the class and db tags for each node so can rebuild
+//         // this ID we then send to the channel
+//         //
+
+//         // create the ID and get the node iter
+//         if ( numNod != 0 )
+//         {
+//             ID nodeData( numNod * 2 );
+//             Node *theNode;
+//             NodeIter &theNodes = this->getNodes();
+//             int loc = 0;
+
+//             // loop over nodes in domain adding their classTag and dbTag to the ID
+//             while ( ( theNode = theNodes() ) != 0 )
+//             {
+//                 nodeData( loc ) = theNode->getClassTag();
+//                 int dbTag = theNode->getDbTag();
+
+//                 // if dbTag still 0 get one from Channel;
+//                 // if this tag != 0 set the dbTag in node
+//                 if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
+//                 {
+//                     dbTag = theChannel.getDbTag();
+
+//                     if ( dbTag != 0 )
+//                     {
+//                         theNode->setDbTag( dbTag );
+//                     }
+//                 }
+
+//                 nodeData( loc + 1 ) = dbTag;
+//                 loc += 2;
+//             }
+
+//             // now send the ID
+//             if ( theChannel.sendID( dbNod, currentGeoTag, nodeData ) < 0 )
+//             {
+//                 cerr << "Domain::send - channel failed to send the node ID\n";
+//                 return -2;
+//             }
+//         }
+
+//         // we do the same for elements as we did for nodes above .. see comments
+//         // for nodes if you can't figure whats going on!
+
+//         if ( numEle != 0 )
+//         {
+//             ID elementData( numEle * 2 );
+//             Element *theEle;
+//             ElementIter &theElements = this->getElements();
+//             int loc = 0;
+
+//             while ( ( theEle = theElements() ) != 0 )
+//             {
+//                 elementData( loc ) = theEle->getClassTag();
+//                 int dbTag = theEle->getDbTag();
+
+//                 if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
+//                 {
+//                     dbTag = theChannel.getDbTag();
+
+//                     if ( dbTag != 0 )
+//                     {
+//                         theEle->setDbTag( dbTag );
+//                     }
+//                 }
+
+//                 elementData( loc + 1 ) = dbTag;
+//                 loc += 2;
+//             }
+
+//             // now send the ID
+//             if ( theChannel.sendID( dbEle, currentGeoTag, elementData ) < 0 )
+//             {
+//                 cerr << "Domain::send - channel failed to send the element ID\n";
+//                 return -3;
+//             }
+//         }
+
+//         // we do the same for SP_Constraints as for Nodes above .. see comments
+//         // for nodes if you can't figure whats going on!
+
+//         if ( numSPs != 0 )
+//         {
+//             ID spData( numSPs * 2 );
+//             SP_Constraint *theSP;
+//             SP_ConstraintIter &theSPs = this->getSPs();
+//             int loc = 0;
+
+//             while ( ( theSP = theSPs() ) != 0 )
+//             {
+//                 spData( loc ) = theSP->getClassTag();
+//                 int dbTag = theSP->getDbTag();
+
+//                 if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
+//                 {
+//                     dbTag = theChannel.getDbTag();
+
+//                     if ( dbTag != 0 )
+//                     {
+//                         theSP->setDbTag( dbTag );
+//                     }
+//                 }
+
+//                 spData( loc + 1 ) = dbTag;
+//                 loc += 2;
+//             }
+
+//             if ( theChannel.sendID( dbSPs, currentGeoTag, spData ) < 0 )
+//             {
+//                 cerr << "Domain::send - channel failed to send the SP_Constraint ID\n";
+//                 return -4;
+//             }
+//         }
+
+//         // we do the same for MP_Constraints as for Nodes above .. see comments
+//         // for nodes if you can't figure whats going on!
+
+//         if ( numMPs != 0 )
+//         {
+//             ID mpData( numMPs * 2 );
+//             MP_Constraint *theMP;
+//             MP_ConstraintIter &theMPs = this->getMPs();
+//             int loc = 0;
+
+//             while ( ( theMP = theMPs() ) != 0 )
+//             {
+//                 mpData( loc ) = theMP->getClassTag();
+//                 int dbTag = theMP->getDbTag();
+
+//                 if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
+//                 {
+//                     dbTag = theChannel.getDbTag();
+
+//                     if ( dbTag != 0 )
+//                     {
+//                         theMP->setDbTag( dbTag );
+//                     }
+//                 }
+
+//                 mpData( loc + 1 ) = dbTag;
+//                 loc += 2;
+//             }
+
+//             if ( theChannel.sendID( dbMPs, currentGeoTag, mpData ) < 0 )
+//             {
+//                 cerr << "Domain::send - channel failed to send the MP_Constraint ID\n";
+//                 return -5;
+//             }
+//         }
+
+//         // we do the same for LoadPatterns as we did for Nodes above .. see comments
+//         // for nodes if you can't figure whats going on!
+
+//         if ( numLPs != 0 )
+//         {
+//             ID lpData( numLPs * 2 );
+//             LoadPattern *theLP;
+//             LoadPatternIter &theLPs = this->getLoadPatterns();
+//             int loc = 0;
+
+//             while ( ( theLP = theLPs() ) != 0 )
+//             {
+//                 lpData( loc ) = theLP->getClassTag();
+//                 int dbTag = theLP->getDbTag();
+
+//                 if ( dbTag == 0 ) // go get a new tag and setDbTag in ele if this not 0
+//                 {
+//                     dbTag = theChannel.getDbTag();
+
+//                     if ( dbTag != 0 )
+//                     {
+//                         theLP->setDbTag( dbTag );
+//                     }
+//                 }
+
+//                 lpData( loc + 1 ) = dbTag;
+//                 loc += 2;
+//             }
+
+//             if ( theChannel.sendID( dbLPs, currentGeoTag, lpData ) < 0 )
+//             {
+//                 cerr << "Domain::send - channel failed to send the LoadPattern ID\n";
+//                 return -6;
+//             }
+//         }
+
+
+//         // now so that we don't do this next time if nothing in the domain has changed
+//         lastGeoSendTag = currentGeoTag;
+//     }
+
+//     //
+//     // now we invoke sendSelf on each of the objects ..
+//     // NOTE: don't have to set the dbTags of the objects as just done this above
+//     //
+
+//     // send the nodes
+//     Node *theNode;
+//     NodeIter &theNodes = this->getNodes();
+
+//     while ( ( theNode = theNodes() ) != 0 )
+//     {
+//         if ( theNode->sendSelf( commitTag, theChannel ) < 0 )
+//         {
+//             cerr << "Domain::send - node with tag " << theNode->getTag() << " failed in sendSelf\n";
+//             return -7;
+//         }
+//     }
+
+//     // send the elements
+//     Element *theEle;
+//     ElementIter &theElements = this->getElements();
+
+//     while ( ( theEle = theElements() ) != 0 )
+//     {
+//         if ( theEle->sendSelf( commitTag, theChannel ) < 0 )
+//         {
+//             cerr << "Domain::send - element with tag " << theEle->getTag() << " failed in sendSelf\n";
+//             return -8;
+//         }
+//     }
+
+//     // send the single point constraints
+//     SP_Constraint *theSP;
+//     SP_ConstraintIter &theSPs = this->getSPs();
+
+//     while ( ( theSP = theSPs() ) != 0 )
+//     {
+//         if ( theSP->sendSelf( commitTag, theChannel ) < 0 )
+//         {
+//             cerr << "Domain::send - SP_Constraint with tag " << theSP->getTag() << " failed in sendSelf\n";
+//             return -9;
+//         }
+//     }
+
+//     // send the multi point constraints
+//     MP_Constraint *theMP;
+//     MP_ConstraintIter &theMPs = this->getMPs();
+
+//     while ( ( theMP = theMPs() ) != 0 )
+//     {
+//         if ( theMP->sendSelf( commitTag, theChannel ) < 0 )
+//         {
+//             cerr << "Domain::send - MP_Constraint with tag " << theMP->getTag() << " failed in sendSelf\n";
+//             return -10;
+//         }
+//     }
+
+//     // send the load patterns
+//     LoadPattern *theLP;
+//     LoadPatternIter &theLPs = this->getLoadPatterns();
+
+//     while ( ( theLP = theLPs() ) != 0 )
+//     {
+//         if ( theLP->sendSelf( commitTag, theChannel ) < 0 )
+//         {
+//             cerr << "Domain::send - LoadPattern with tag " << theLP->getTag() << " failed in sendSelf\n";
+//             return -11;
+//         }
+//     }
+
+//     // if get here we were successfull
+//     return commitTag;
+// }
+
+
+// int
+// Domain::receiveSelfDatabase( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+// {
+//     // set the commitTag in the domain to cTag & update the getTag if needed
+//     commitTag = cTag;
+//     this->hasDomainChanged();
+
+//     // first we get the data about the state of the domain for this commitTag
+//     ID domainData( 11 );
+
+//     if ( theChannel.receiveID( theDbTag, commitTag, domainData ) < 0 )
+//     {
+//         cerr << "Domain::recv - channel failed to recv the initial ID\n";
+//         return -1;
+//     }
+
+//     // recv the time information
+//     Vector domainTime( 1 );
+
+//     if ( theChannel.receiveVector( theDbTag, commitTag, domainTime ) < 0 )
+//     {
+//         cerr << "Domain::send - channel failed to recv thetime Vector\n";
+//         return -1;
+//     }
+
+//     currentTime = domainTime( 0 );
+//     committedTime = currentTime;
+
+//     //
+//     // now if the currentGeoTag does not agree with whats in the domain
+//     // we must wipe everything in the domain and recreate the domain based on the info from the channel
+//     //
+
+
+//     // if (theChannel.isDatastore() == 1) {
+//     //   static ID theLastSendTag(1);
+//     //   if (theChannel.receiveID(0,0,theLastSendTag) == 0)
+//     //     lastGeoSendTag = theLastSendTag(0);
+//     // }
+
+//     if ( currentGeoTag == 0 || lastChannel != theChannel.getTag() || domainData( 0 ) != currentGeoTag )
+//     {
+
+//         lastChannel = theChannel.getTag();
+
+//         // set the currrentGeoTag
+//         int geoTag = domainData( 0 );
+
+//         int i, loc;
+//         int numEle, numNod, numSPs, numMPs, numLPs;
+
+//         // if receiving set lastGeoSendTag to be equal to currentGeoTag
+//         // at time all the data was sent if not we must clear out the objects and rebuild
+//         lastGeoSendTag = domainData( 0 );
+
+//         // clear out the all the components in the current domain
+//         this->clearAll();
+
+//         currentTime = domainTime( 0 );
+//         committedTime = currentTime;
+
+//         //
+//         // now we rebuild the nodes
+//         //
+
+//         // first get the information from the domainData about the nodes
+//         numNod = domainData( 1 );
+//         dbNod = domainData( 6 );
+
+//         if ( numNod != 0 )
+//         {
+//             ID nodeData( 2 * numNod );
+
+//             // now receive the ID about the nodes, class tag and dbTags
+//             if ( theChannel.receiveID( dbNod, geoTag, nodeData ) < 0 )
+//             {
+//                 cerr << "Domain::recv - channel failed to recv the node ID\n";
+//                 return -2;
+//             }
+
+//             // now for each node we 1) get a new node of the correct type from the ObjectBroker
+//             // 2) ensure the node exists and set it's dbTag, 3) we invoke receiveSelf on this new
+//             // blank node and 4) add this node to the domain
+//             loc = 0;
+
+//             for ( i = 0; i < numNod; i++ )
+//             {
+//                 int classTag = nodeData( loc );
+//                 int dbTag = nodeData( loc + 1 );
+
+//                 Node *theNode = theBroker.getNewNode( classTag );
+
+//                 if ( theNode == 0 )
+//                 {
+//                     cerr << "Domain::recv - cannot create node with classTag " << classTag << endln;
+//                     return -2;
+//                 }
+
+//                 theNode->setDbTag( dbTag );
+
+//                 if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//                 {
+//                     cerr << "Domain::recv - node with dbTag " << dbTag << " failed in receiveSelf\n";
+//                     return -2;
+//                 }
+
+//                 if ( this->addNode( theNode ) == false )
+//                 {
+//                     cerr << "Domain::recv - could not add node with tag " << theNode->getTag() << " into domain\n!";
+//                     return -3;
+//                 }
+
+//                 loc += 2;
+//             }
+//         }
+
+//         //
+//         // now we rebuild the elements .. same as nodes above .. see above if can't understand!!
+//         //
+
+//         numEle = domainData( 2 );
+//         dbEle = domainData( 7 );
+
+//         if ( numEle != 0 )
+//         {
+//             ID eleData( 2 * numEle );
+
+//             if ( theChannel.receiveID( dbEle, geoTag, eleData ) < 0 )
+//             {
+//                 cerr << "Domain::recv - channel failed to recv the Ele ID\n";
+//                 return -2;
+//             }
+
+//             loc = 0;
+
+//             for ( i = 0; i < numEle; i++ )
+//             {
+//                 int classTag = eleData( loc );
+//                 int dbTag = eleData( loc + 1 );
+
+//                 Element *theEle = theBroker.getNewElement( classTag );
+
+//                 if ( theEle == 0 )
+//                 {
+//                     cerr << "Domain::recv - cannot create element with classTag " << classTag << endln;
+//                     return -2;
+//                 }
+
+//                 theEle->setDbTag( dbTag );
+
+//                 if ( theEle->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//                 {
+//                     cerr << "Domain::recv - Ele with dbTag " << dbTag << " failed in receiveSelf()\n";
+//                     return -2;
+//                 }
+
+//                 if ( this->addElementDatabase( theEle ) == false )
+//                 {
+//                     cerr << "Domain::recv - could not add Ele with tag " << theEle->getTag() << " into domain!\n";
+//                     return -3;
+//                 }
+
+//                 loc += 2;
+//             }
+//         }
+
+//         //
+//         // now we rebuild the SP_Constraints .. same as nodes above .. see above if can't understand!!
+//         //
+
+//         numSPs = domainData( 3 );
+//         dbSPs = domainData( 8 );
+
+//         if ( numSPs != 0 )
+//         {
+//             ID spData( 2 * numSPs );
+
+//             if ( theChannel.receiveID( dbSPs, geoTag, spData ) < 0 )
+//             {
+//                 cerr << "Domain::recv - channel failed to recv the SP_Constraints ID\n";
+//                 return -2;
+//             }
+
+//             loc = 0;
+
+//             for ( i = 0; i < numSPs; i++ )
+//             {
+//                 int classTag = spData( loc );
+//                 int dbTag = spData( loc + 1 );
+
+//                 SP_Constraint *theSP = theBroker.getNewSP( classTag );
+
+//                 if ( theSP == 0 )
+//                 {
+//                     cerr << "Domain::recv - cannot create SP_Constraint with classTag " << classTag << endln;
+//                     return -2;
+//                 }
+
+//                 theSP->setDbTag( dbTag );
+
+//                 if ( theSP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//                 {
+//                     cerr << "Domain::recv - SP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
+//                     return -2;
+//                 }
+
+//                 if ( this->addSP_Constraint( theSP ) == false )
+//                 {
+//                     cerr << "Domain::recv - could not add SP_Constraint with tag " << theSP->getTag() << " into domain!\n";
+//                     return -3;
+//                 }
+
+//                 loc += 2;
+//             }
+//         }
+
+
+//         //
+//         // now we rebuild the MP_Constraints .. same as nodes above .. see above if can't understand!!
+//         //
+
+//         numMPs = domainData( 4 );
+//         dbMPs = domainData( 9 );
+
+//         if ( numMPs != 0 )
+//         {
+//             ID mpData( 2 * numMPs );
+
+//             if ( theChannel.receiveID( dbMPs, geoTag, mpData ) < 0 )
+//             {
+//                 cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
+//                 return -2;
+//             }
+
+//             loc = 0;
+
+//             for ( i = 0; i < numMPs; i++ )
+//             {
+//                 int classTag = mpData( loc );
+//                 int dbTag = mpData( loc + 1 );
+
+//                 MP_Constraint *theMP = theBroker.getNewMP( classTag );
+
+//                 if ( theMP == 0 )
+//                 {
+//                     cerr << "Domain::recv - cannot create MP_Constraint with classTag " << classTag << endln;
+//                     return -2;
+//                 }
+
+//                 theMP->setDbTag( dbTag );
+
+//                 if ( theMP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//                 {
+//                     cerr << "Domain::recv - MP_Constraint with dbTag " << dbTag << " failed in receiveSelf\n";
+//                     return -2;
+//                 }
+
+//                 if ( this->addMP_Constraint( theMP ) == false )
+//                 {
+//                     cerr << "Domain::recv - could not add MP_Constraint with tag " << theMP->getTag() << " into domain!\n";
+//                     return -3;
+//                 }
+
+//                 loc += 2;
+//             }
+//         }
+
+//         //
+//         // now we rebuild the LoadPatterns .. same as nodes above .. see above if can't understand!!
+//         //
+
+//         numLPs = domainData( 5 );
+//         dbLPs = domainData( 10 );
+
+//         if ( numLPs != 0 )
+//         {
+//             ID lpData( 2 * numLPs );
+
+//             if ( theChannel.receiveID( dbLPs, geoTag, lpData ) < 0 )
+//             {
+//                 cerr << "Domain::recv - channel failed to recv the MP_Constraints ID\n";
+//                 return -2;
+//             }
+
+//             loc = 0;
+
+//             for ( i = 0; i < numLPs; i++ )
+//             {
+//                 int classTag = lpData( loc );
+//                 int dbTag = lpData( loc + 1 );
+
+//                 LoadPattern *theLP = theBroker.getNewLoadPattern( classTag );
+
+//                 if ( theLP == 0 )
+//                 {
+//                     cerr << "Domain::recv - cannot create MP_Constraint with classTag  " << classTag << endln;
+//                     return -2;
+//                 }
+
+//                 theLP->setDbTag( dbTag );
+
+//                 if ( theLP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//                 {
+//                     cerr << "Domain::recv - LoadPattern with dbTag " << dbTag << " failed in receiveSelf\n";
+//                     return -2;
+//                 }
+
+//                 if ( this->addLoadPattern( theLP ) == false )
+//                 {
+//                     cerr << "Domain::recv - could not add LoadPattern with tag " << theLP->getTag() <<  " into the Domain\n";
+//                     return -3;
+//                 }
+
+//                 loc += 2;
+//             }
+//         }
+
+//         // set the currentGeoTag & mark domainChangeFlag as false
+//         // this way if restoring froma a database and domain has not changed for the analysis
+//         // the analysis will not have to to do a domainChanged() operation
+//         currentGeoTag = domainData( 0 );
+
+//         lastGeoSendTag = currentGeoTag;
+//         hasDomainChangedFlag = false;
+
+//     }
+//     else
+//     {
+
+//         // in this block .. we have the components they just have to recv themselves again
+
+//         Node *theNode;
+//         NodeIter &theNodes = this->getNodes();
+
+//         while ( ( theNode = theNodes() ) != 0 )
+//         {
+//             if ( theNode->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//             {
+//                 cerr << "Domain::recv - node with tag " << theNode->getTag() << " failed in receiveSelf\n";
+//                 return -7;
+//             }
+//         }
+
+//         Element *theEle;
+//         ElementIter &theElements = this->getElements();
+
+//         while ( ( theEle = theElements() ) != 0 )
+//         {
+//             if ( theEle->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//             {
+//                 cerr << "Domain::recv - element with tag " << theEle->getTag() <<  " failed in receiveSelf\n";
+//                 return -8;
+//             }
+
+//             theEle->update();
+//         }
+
+//         SP_Constraint *theSP;
+//         SP_ConstraintIter &theSPs = this->getSPs();
+
+//         while ( ( theSP = theSPs() ) != 0 )
+//         {
+//             if ( theSP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//             {
+//                 cerr << "Domain::recv - SP_Constraint with tag " << theSP->getTag() << " failed in receiveSelf\n";
+//                 return -9;
+//             }
+//         }
+
+//         MP_Constraint *theMP;
+//         MP_ConstraintIter &theMPs = this->getMPs();
+
+//         while ( ( theMP = theMPs() ) != 0 )
+//         {
+//             if ( theMP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//             {
+//                 cerr << "Domain::recv - MP_Constraint with tag " << theMP->getTag() << " failed in receiveSelf\n";
+//                 return -10;
+//             }
+//         }
+
+//         LoadPattern *theLP;
+//         LoadPatternIter &theLPs = this->getLoadPatterns();
+
+//         while ( ( theLP = theLPs() ) != 0 )
+//         {
+//             if ( theLP->receiveSelf( commitTag, theChannel, theBroker ) < 0 )
+//             {
+//                 cerr << "Domain::recv - LoadPattern with tag" << theLP->getTag() << " failed in receiveSelf";
+//                 return -11;
+//             }
+//         }
+//     }
+
+//     // now set the domains lastGeoSendTag and currentDomainChangedFlag
+//     lastGeoSendTag = currentGeoTag;
+
+//     // if get here we were successfull
+//     return 0;
+// }
+
+
+# ifdef _PARALLEL_PROCESSING
+
 bool
 Domain::recvNode( Node *thePtr )
 {
@@ -5142,9 +5138,7 @@ Domain::recvNode( Node *thePtr )
     return result;
 
 }
-# endif
 
-# ifdef _PARALLEL_PROCESSING
 
 
 bool
@@ -5329,485 +5323,485 @@ Domain::setNumberOfOutputSteps(int nsteps)
 // *******************************************************************************
 // Nima Tafazzoli added for saving results using mySQL, November 2012
 
-int
-Domain::saveNodalDisplacements( int stepNumber, Channel &theChannel )
-{
+// int
+// Domain::saveNodalDisplacements( int stepNumber, Channel &theChannel )
+// {
 
-    Node *theNode;
-    NodeIter &theNodes = this->getNodes();
+//     Node *theNode;
+//     NodeIter &theNodes = this->getNodes();
 
-    bool comma = false;
+//     bool comma = false;
 
-    int number_of_domain_nodes = this->getNumNodes();
-
-
-    ////////////////////////////////////////
-
-    int sizeData = number_of_domain_nodes * 8 * sizeof( double );
-    int sizeQuery = 10 * sizeData;
-
-    char *query = new char[sizeQuery];
-
-    ////////////////////////////////////////
-    // converting integer to char
-    string stepnumber;
-    stringstream stepnumberout;
-    stepnumberout << stepNumber;
-    stepnumber = stepnumberout.str();
-    ////////////////////////////////////////
+//     int number_of_domain_nodes = this->getNumNodes();
 
 
-    string displacementVector = "NodalDisplacementStepNumber" + stepnumber;
-    const char *vectortableName = displacementVector.c_str();
+//     ////////////////////////////////////////
+
+//     int sizeData = number_of_domain_nodes * 8 * sizeof( double );
+//     int sizeQuery = 10 * sizeData;
+
+//     char *query = new char[sizeQuery];
+
+//     ////////////////////////////////////////
+//     // converting integer to char
+//     string stepnumber;
+//     stringstream stepnumberout;
+//     stepnumberout << stepNumber;
+//     stepnumber = stepnumberout.str();
+//     ////////////////////////////////////////
 
 
-    sprintf( query, "INSERT INTO %s VALUES ", vectortableName );
+//     string displacementVector = "NodalDisplacementStepNumber" + stepnumber;
+//     const char *vectortableName = displacementVector.c_str();
 
 
-
-    while ( ( theNode = theNodes() ) != 0 )
-    {
-
-        int number_of_dof = theNode->getNumberDOF();
-
-        Vector commitDisp( number_of_dof );
-        commitDisp = theNode->getDisp();
+//     sprintf( query, "INSERT INTO %s VALUES ", vectortableName );
 
 
 
-        int nodeNumber = theNode->getTag();
+//     while ( ( theNode = theNodes() ) != 0 )
+//     {
 
+//         int number_of_dof = theNode->getNumberDOF();
 
-        if ( comma )
-        {
-            strcat( query, ", " );
-        }
-
-
-        ////////////////////////////////////////
-        // converting integer to char
-        string rowNumber;
-        stringstream out;
-        out << nodeNumber;
-        rowNumber = out.str();
-        ////////////////////////////////////////
+//         Vector commitDisp( number_of_dof );
+//         commitDisp = theNode->getDisp();
 
 
 
-        switch ( number_of_dof )
-        {
-
-            case 3:
-            {
-                ////////////////////////////////////////
-                string vectordisp;
-                stringstream out;
-                string rowvector = "(" + rowNumber + ", ";
-
-                for ( int i = 0; i < 3; i++ )
-                {
-                    out << commitDisp( i );
-                    vectordisp = out.str();
-                    rowvector += vectordisp + ", ";
-                    out.str( "" );
-                }
-
-                rowvector += " 0.0, 0.0, 0.0, 0.0) ";
-                const char *rowvectortable = rowvector.c_str();
-                strcat( query, rowvectortable );
-                break;
-            }
+//         int nodeNumber = theNode->getTag();
 
 
-            case 6:
-            {
-                ////////////////////////////////////////
-                string vectordisp;
-                stringstream out;
-                string rowvector = "(" + rowNumber + ", ";
-
-                for ( int i = 0; i < 6; i++ )
-                {
-                    out << commitDisp( i );
-                    vectordisp = out.str();
-                    rowvector += vectordisp + ", ";
-                    out.str( "" );
-                }
-
-                rowvector += " 0.0) ";
-                const char *rowvectortable = rowvector.c_str();
-                strcat( query, rowvectortable );
-                break;
-            }
-
-            case 7:
-            {
-                ////////////////////////////////////////
-                string vectordisp;
-                stringstream out;
-                string rowvector = "(" + rowNumber;
-
-                for ( int i = 0; i < 7; i++ )
-                {
-                    out << commitDisp( i );
-                    vectordisp = out.str();
-                    rowvector += ", " + vectordisp;
-                    out.str( "" );
-                }
-
-                rowvector += ")";
-                const char *rowvectortable = rowvector.c_str();
-                strcat( query, rowvectortable );
-                break;
-            }
-
-            default:
-            {
-                cerr.flush() << "Domain::sendDisplacementsVector - wrong size of the vector!";
-                exit( -1 );
-            }
-        }
+//         if ( comma )
+//         {
+//             strcat( query, ", " );
+//         }
 
 
-        comma = true;
+//         ////////////////////////////////////////
+//         // converting integer to char
+//         string rowNumber;
+//         stringstream out;
+//         out << nodeNumber;
+//         rowNumber = out.str();
+//         ////////////////////////////////////////
 
-    }
 
 
-    return 0;
-}
+//         switch ( number_of_dof )
+//         {
+
+//             case 3:
+//             {
+//                 ////////////////////////////////////////
+//                 string vectordisp;
+//                 stringstream out;
+//                 string rowvector = "(" + rowNumber + ", ";
+
+//                 for ( int i = 0; i < 3; i++ )
+//                 {
+//                     out << commitDisp( i );
+//                     vectordisp = out.str();
+//                     rowvector += vectordisp + ", ";
+//                     out.str( "" );
+//                 }
+
+//                 rowvector += " 0.0, 0.0, 0.0, 0.0) ";
+//                 const char *rowvectortable = rowvector.c_str();
+//                 strcat( query, rowvectortable );
+//                 break;
+//             }
+
+
+//             case 6:
+//             {
+//                 ////////////////////////////////////////
+//                 string vectordisp;
+//                 stringstream out;
+//                 string rowvector = "(" + rowNumber + ", ";
+
+//                 for ( int i = 0; i < 6; i++ )
+//                 {
+//                     out << commitDisp( i );
+//                     vectordisp = out.str();
+//                     rowvector += vectordisp + ", ";
+//                     out.str( "" );
+//                 }
+
+//                 rowvector += " 0.0) ";
+//                 const char *rowvectortable = rowvector.c_str();
+//                 strcat( query, rowvectortable );
+//                 break;
+//             }
+
+//             case 7:
+//             {
+//                 ////////////////////////////////////////
+//                 string vectordisp;
+//                 stringstream out;
+//                 string rowvector = "(" + rowNumber;
+
+//                 for ( int i = 0; i < 7; i++ )
+//                 {
+//                     out << commitDisp( i );
+//                     vectordisp = out.str();
+//                     rowvector += ", " + vectordisp;
+//                     out.str( "" );
+//                 }
+
+//                 rowvector += ")";
+//                 const char *rowvectortable = rowvector.c_str();
+//                 strcat( query, rowvectortable );
+//                 break;
+//             }
+
+//             default:
+//             {
+//                 cerr.flush() << "Domain::sendDisplacementsVector - wrong size of the vector!";
+//                 exit( -1 );
+//             }
+//         }
+
+
+//         comma = true;
+
+//     }
+
+
+//     return 0;
+// }
 
 //
 //=================================================================================
-int
-Domain::save8GPBrickStresses( int stepNumber, Channel &theChannel )
-{
+// int
+// Domain::save8GPBrickStresses( int stepNumber, Channel &theChannel )
+// {
 
-    bool comma = false; //
+//     bool comma = false; //
 
 
-    ////////////////////////////////////////
+//     ////////////////////////////////////////
 
-    int sizeData = number_of_8GP_brick_elements * 49 * sizeof( double );
-    int sizeQuery = 10 * sizeData;
+//     int sizeData = number_of_8GP_brick_elements * 49 * sizeof( double );
+//     int sizeQuery = 10 * sizeData;
 
-    char *query = new char[sizeQuery];
+//     char *query = new char[sizeQuery];
 
-    ////////////////////////////////////////
-    string stepnumber;
-    stringstream stepnumberout;
-    stepnumberout << stepNumber;
-    stepnumber = stepnumberout.str();
-    ////////////////////////////////////////
+//     ////////////////////////////////////////
+//     string stepnumber;
+//     stringstream stepnumberout;
+//     stepnumberout << stepNumber;
+//     stepnumber = stepnumberout.str();
+//     ////////////////////////////////////////
 
 
-    string stresstable = "Brick8GPStressStepNumber" + stepnumber;
-    const char *stresstablename = stresstable.c_str();
+//     string stresstable = "Brick8GPStressStepNumber" + stepnumber;
+//     const char *stresstablename = stresstable.c_str();
 
 
-    sprintf( query, "INSERT INTO %s VALUES ", stresstablename );
+//     sprintf( query, "INSERT INTO %s VALUES ", stresstablename );
 
 
 
-    Element *theElement;
-    ElementIter &theElemIter = this->getElements();
+//     Element *theElement;
+//     ElementIter &theElemIter = this->getElements();
 
 
-    while ( ( ( theElement = theElemIter() ) != 0 ) &&
-            ( ( theElement->getElementclassTag() == ELE_TAG_EightNodeBrick ) ||
-              ( theElement->getElementclassTag() == ELE_TAG_EightNodeBrickElastic ) ) )
-    {
+//     while ( ( ( theElement = theElemIter() ) != 0 ) &&
+//             ( ( theElement->getElementclassTag() == ELE_TAG_EightNodeBrick ) ||
+//               ( theElement->getElementclassTag() == ELE_TAG_EightNodeBrickElastic ) ) )
+//     {
 
 
-        int elementNumber = theElement->getTag();
+//         int elementNumber = theElement->getTag();
 
 
-        if ( comma )
-        {
-            strcat( query, ", " );
-        }
+//         if ( comma )
+//         {
+//             strcat( query, ", " );
+//         }
 
 
-        ////////////////////////////////////////
-        string rowNumber;
-        stringstream out;
-        out << elementNumber;
-        rowNumber = out.str();
-        ////////////////////////////////////////
+//         ////////////////////////////////////////
+//         string rowNumber;
+//         stringstream out;
+//         out << elementNumber;
+//         rowNumber = out.str();
+//         ////////////////////////////////////////
 
 
-        Vector *elementStress = new Vector( 48 );
+//         Vector *elementStress = new Vector( 48 );
 
-        elementStress = theElement->getStress();
+//         elementStress = theElement->getStress();
 
 
-        string vectorStress;
-        stringstream outStress;
+//         string vectorStress;
+//         stringstream outStress;
 
-        string rowvector = "(" + rowNumber;
+//         string rowvector = "(" + rowNumber;
 
-        for ( int i = 0; i < 48; i++ )
-        {
+//         for ( int i = 0; i < 48; i++ )
+//         {
 
-            outStress << ( *elementStress )( i );
-            vectorStress = outStress.str();
-            rowvector += ", " + vectorStress;
+//             outStress << ( *elementStress )( i );
+//             vectorStress = outStress.str();
+//             rowvector += ", " + vectorStress;
 
-            outStress.str( "" );
-            vectorStress.clear();
+//             outStress.str( "" );
+//             vectorStress.clear();
 
-        }
+//         }
 
-        rowvector += ") ";
+//         rowvector += ") ";
 
-        //        const char *rowvectortable = rowvector.c_str();
-        strcat( query, rowvector.c_str() );
+//         //        const char *rowvectortable = rowvector.c_str();
+//         strcat( query, rowvector.c_str() );
 
 
-        comma = true;
+//         comma = true;
 
-    }
+//     }
 
 
-    // if ( theChannel.sendquery( 0, query ) < 0 )
-    // {
-    //     cerr << "Domain::save8nodeBrickStresses - failed to send the query\n";
-    //     return -7;
-    // }
+//     // if ( theChannel.sendquery( 0, query ) < 0 )
+//     // {
+//     //     cerr << "Domain::save8nodeBrickStresses - failed to send the query\n";
+//     //     return -7;
+//     // }
 
 
 
-    return 0;
-}
+//     return 0;
+// }
 
 
-//=================================================================================
-int
-Domain::save27GPBrickStresses( int stepNumber, Channel &theChannel )
-{
+// //=================================================================================
+// int
+// Domain::save27GPBrickStresses( int stepNumber, Channel &theChannel )
+// {
 
-    bool comma = false;
+//     bool comma = false;
 
 
-    ////////////////////////////////////////
+//     ////////////////////////////////////////
 
-    int sizeData = number_of_27GP_brick_elements * 27 * 6 * sizeof( double );
-    int sizeQuery = 10 * sizeData;
+//     int sizeData = number_of_27GP_brick_elements * 27 * 6 * sizeof( double );
+//     int sizeQuery = 10 * sizeData;
 
 
-    char *query = new char[sizeQuery];
+//     char *query = new char[sizeQuery];
 
 
-    ////////////////////////////////////////
-    string stepnumber;
-    stringstream stepnumberout;
-    stepnumberout << stepNumber;
-    stepnumber = stepnumberout.str();
-    ////////////////////////////////////////
+//     ////////////////////////////////////////
+//     string stepnumber;
+//     stringstream stepnumberout;
+//     stepnumberout << stepNumber;
+//     stepnumber = stepnumberout.str();
+//     ////////////////////////////////////////
 
 
-    string stresstable = "Brick27GPStressStepNumber" + stepnumber;
-    const char *stresstablename = stresstable.c_str();
+//     string stresstable = "Brick27GPStressStepNumber" + stepnumber;
+//     const char *stresstablename = stresstable.c_str();
 
 
-    sprintf( query, "INSERT INTO %s VALUES ", stresstablename );
+//     sprintf( query, "INSERT INTO %s VALUES ", stresstablename );
 
 
 
-    Element *theElement;
-    ElementIter &theElemIter = this->getElements();
+//     Element *theElement;
+//     ElementIter &theElemIter = this->getElements();
 
 
-    while ( ( theElement = theElemIter() ) != 0 )
-    {
+//     while ( ( theElement = theElemIter() ) != 0 )
+//     {
 
-        if ( ( theElement->getElementclassTag() == ELE_TAG_TwentyNodeBrick ) ||
-                ( theElement->getElementclassTag() == ELE_TAG_TwentyNodeBrickElastic ) ||
-                ( theElement->getElementclassTag() == ELE_TAG_TwentySevenNodeBrick ) ||
-                ( theElement->getElementclassTag() == ELE_TAG_TwentySevenNodeBrickElastic ) )
-        {
+//         if ( ( theElement->getElementclassTag() == ELE_TAG_TwentyNodeBrick ) ||
+//                 ( theElement->getElementclassTag() == ELE_TAG_TwentyNodeBrickElastic ) ||
+//                 ( theElement->getElementclassTag() == ELE_TAG_TwentySevenNodeBrick ) ||
+//                 ( theElement->getElementclassTag() == ELE_TAG_TwentySevenNodeBrickElastic ) )
+//         {
 
 
 
 
 
-            int elementNumber = theElement->getTag();
+//             int elementNumber = theElement->getTag();
 
 
-            if ( comma )
-            {
-                strcat( query, ", " );
-            }
+//             if ( comma )
+//             {
+//                 strcat( query, ", " );
+//             }
 
 
-            ////////////////////////////////////////
-            string rowNumber;
-            stringstream out;
-            out << elementNumber;
-            rowNumber = out.str();
-            ////////////////////////////////////////
+//             ////////////////////////////////////////
+//             string rowNumber;
+//             stringstream out;
+//             out << elementNumber;
+//             rowNumber = out.str();
+//             ////////////////////////////////////////
 
 
-            Vector *elementStress = new Vector( 162 );
+//             Vector *elementStress = new Vector( 162 );
 
-            elementStress = theElement->getStress();
+//             elementStress = theElement->getStress();
 
 
-            string vectorStress;
-            stringstream outStress;
+//             string vectorStress;
+//             stringstream outStress;
 
-            string rowvector = "(" + rowNumber;
+//             string rowvector = "(" + rowNumber;
 
-            for ( int i = 0; i < 162; i++ )
-            {
+//             for ( int i = 0; i < 162; i++ )
+//             {
 
-                outStress << ( *elementStress )( i );
-                vectorStress = outStress.str();
+//                 outStress << ( *elementStress )( i );
+//                 vectorStress = outStress.str();
 
-                rowvector += ", " + vectorStress;
+//                 rowvector += ", " + vectorStress;
 
-                outStress.str( "" );
-                vectorStress.clear();
+//                 outStress.str( "" );
+//                 vectorStress.clear();
 
-            }
+//             }
 
 
-            rowvector += ")";
+//             rowvector += ")";
 
-            strcat( query, rowvector.c_str() );
+//             strcat( query, rowvector.c_str() );
 
 
-            comma = true;
+//             comma = true;
 
-        }
+//         }
 
 
-    }
+//     }
 
 
 
-    // if ( theChannel.sendquery( 0, query ) < 0 )
-    // {
-    //     cerr << "Domain::save27GPBrickStresses - failed to send the query\n";
-    //     return -7;
-    // }
+//     // if ( theChannel.sendquery( 0, query ) < 0 )
+//     // {
+//     //     cerr << "Domain::save27GPBrickStresses - failed to send the query\n";
+//     //     return -7;
+//     // }
 
 
-    return 0;
-}
+//     return 0;
+// }
 
 
 
 
-//=================================================================================
-int
-Domain::saveLineElementForces( int stepNumber, Channel &theChannel )
-{
+// //=================================================================================
+// int
+// Domain::saveLineElementForces( int stepNumber, Channel &theChannel )
+// {
 
-    bool comma = false;
+//     bool comma = false;
 
 
-    ////////////////////////////////////////
+//     ////////////////////////////////////////
 
-    int sizeData = number_of_line_elements * 13 * sizeof( double );
-    int sizeQuery = 10 * sizeData;
+//     int sizeData = number_of_line_elements * 13 * sizeof( double );
+//     int sizeQuery = 10 * sizeData;
 
 
-    char *query = new char[sizeQuery];
+//     char *query = new char[sizeQuery];
 
 
-    ////////////////////////////////////////
-    string stepnumber;
-    stringstream stepnumberout;
-    stepnumberout << stepNumber;
-    stepnumber = stepnumberout.str();
-    ////////////////////////////////////////
+//     ////////////////////////////////////////
+//     string stepnumber;
+//     stringstream stepnumberout;
+//     stepnumberout << stepNumber;
+//     stepnumber = stepnumberout.str();
+//     ////////////////////////////////////////
 
 
-    string forcetable = "LineElementForcesStepNumber" + stepnumber;
-    const char *forcetablename = forcetable.c_str();
+//     string forcetable = "LineElementForcesStepNumber" + stepnumber;
+//     const char *forcetablename = forcetable.c_str();
 
 
-    sprintf( query, "INSERT INTO %s VALUES ", forcetablename );
+//     sprintf( query, "INSERT INTO %s VALUES ", forcetablename );
 
 
 
-    Element *theElement;
-    ElementIter &theElemIter = this->getElements();
+//     Element *theElement;
+//     ElementIter &theElemIter = this->getElements();
 
 
 
-    while ( ( ( theElement = theElemIter() ) != 0 ) &&
-            ( ( theElement->getElementclassTag() == ELE_TAG_ElasticBeamLumpedMass ) ||
-              ( theElement->getElementclassTag() == ELE_TAG_DispBeamColumn3d ) ||
-              ( theElement->getElementclassTag() == ELE_TAG_Truss ) ||
-              ( theElement->getElementclassTag() == ELE_TAG_ElasticBeam ) ||
-              ( theElement->getElementclassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam ) ) )
-    {
+//     while ( ( ( theElement = theElemIter() ) != 0 ) &&
+//             ( ( theElement->getElementclassTag() == ELE_TAG_ElasticBeamLumpedMass ) ||
+//               ( theElement->getElementclassTag() == ELE_TAG_DispBeamColumn3d ) ||
+//               ( theElement->getElementclassTag() == ELE_TAG_Truss ) ||
+//               ( theElement->getElementclassTag() == ELE_TAG_ElasticBeam ) ||
+//               ( theElement->getElementclassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam ) ) )
+//     {
 
 
-        int elementNumber = theElement->getTag();
+//         int elementNumber = theElement->getTag();
 
 
-        if ( comma )
-        {
-            strcat( query, ", " );
-        }
+//         if ( comma )
+//         {
+//             strcat( query, ", " );
+//         }
 
 
-        ////////////////////////////////////////
-        string rowNumber;
-        stringstream out;
-        out << elementNumber;
-        rowNumber = out.str();
-        ////////////////////////////////////////
+//         ////////////////////////////////////////
+//         string rowNumber;
+//         stringstream out;
+//         out << elementNumber;
+//         rowNumber = out.str();
+//         ////////////////////////////////////////
 
 
-        Vector *elementForce = new Vector( 12 );
+//         Vector *elementForce = new Vector( 12 );
 
-        elementForce = theElement->getForce();
+//         elementForce = theElement->getForce();
 
 
-        string vectorForce;
-        stringstream outForce;
+//         string vectorForce;
+//         stringstream outForce;
 
-        string rowvector = "(" + rowNumber;
+//         string rowvector = "(" + rowNumber;
 
-        for ( int i = 0; i < 12; i++ )
-        {
+//         for ( int i = 0; i < 12; i++ )
+//         {
 
-            outForce << ( *elementForce )( i );
-            vectorForce = outForce.str();
+//             outForce << ( *elementForce )( i );
+//             vectorForce = outForce.str();
 
-            rowvector += ", " + vectorForce;
+//             rowvector += ", " + vectorForce;
 
-            outForce.str( "" );
-            vectorForce.clear();
+//             outForce.str( "" );
+//             vectorForce.clear();
 
-        }
+//         }
 
 
-        rowvector += ")";
+//         rowvector += ")";
 
-        strcat( query, rowvector.c_str() );
+//         strcat( query, rowvector.c_str() );
 
 
-        comma = true;
+//         comma = true;
 
 
-    }
+//     }
 
 
 
-    // if ( theChannel.sendquery( 0, query ) < 0 )
-    // {
-    //     cerr << "Domain::saveLineElementForces - failed to send the query\n";
-    //     return -7;
-    // }
+//     // if ( theChannel.sendquery( 0, query ) < 0 )
+//     // {
+//     //     cerr << "Domain::saveLineElementForces - failed to send the query\n";
+//     //     return -7;
+//     // }
 
 
-    return 0;
-}
+//     return 0;
+// }
 
 
 

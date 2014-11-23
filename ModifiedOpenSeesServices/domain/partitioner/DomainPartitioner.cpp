@@ -184,9 +184,7 @@ DomainPartitioner::partition(int numParts)
             return -1;
         }
 
-#ifdef _PDD
         subdomainPtr->partition(numParts);
-#endif
 
     }
 
@@ -288,7 +286,7 @@ DomainPartitioner::partition(int numParts)
     //
 
     //Note:  This can be moved to the HDF5 file..... :/ -JAbell
-    ofstream partfile("part.dat", ios::out);
+    // ofstream partfile("part.dat", ios::out);
 
 
     const int eleNum = theElementGraph->getNumVertex();
@@ -389,25 +387,25 @@ DomainPartitioner::partition(int numParts)
 
     }
 
-    //Guanzhou added
-    for (int i = 1; i <= eleNum; i++)
-    {
-        partfile << i << " " << *(where + i - 1) << '\n';
+    // //Guanzhou added
+    // for (int i = 1; i <= eleNum; i++)
+    // {
+    //     partfile << i << " " << *(where + i - 1) << '\n';
 
-    }
+    // }
 
-    delete [] where;
-    partfile.close();
+    // delete [] where;
+    // partfile.close();
 
 
-    ofstream graphfile("graph.dat", ios::out);
-    int flag = 4;  // 4= print a lot!
-    graphfile << " Weight Color Tmp vsize myDegree\n";
-    theElementGraph->Print(graphfile, 4);
-    graphfile.close();
+    // ofstream graphfile("graph.dat", ios::out);
+    // int flag = 4;  // 4= print a lot!
+    // graphfile << " Weight Color Tmp vsize myDegree\n";
+    // theElementGraph->Print(graphfile, 4);
+    // graphfile.close();
 
     // now go through the MP_Constraints and ensure:
-    //   1. if in different partitions both on boundary
+    //   1. if=-0987654321`in different partitions both on boundary
     //  2. if constrained on boundary - retained also on boundary
     MP_ConstraintIter &theMPs = myDomain->getMPs();
     MP_Constraint *mpPtr;
@@ -480,7 +478,6 @@ DomainPartitioner::partition(int numParts)
             // its an internal node
             // remove the node & add it to the subdomain
 
-            //GZ change data structure Subdomain *theSubdomain = myDomain->getSubdomainPtr(j);
             const int par = nodePartition[nodeTag * 8 + count - 1];
             if ( par != 0 )
             {
