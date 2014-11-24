@@ -140,8 +140,9 @@ RESPONSE_LIBS =
 
 
 
-DATABASE_LIBS = ./database/FileDatastore.o \
-                ./database/NEESData.o 
+DATABASE_LIBS = 
+# ./database/FileDatastore.o \
+#                 ./database/NEESData.o 
 #               ./database/MySqlDatastore.o \
 #               ./database/MySqlDataRecorder.o
 

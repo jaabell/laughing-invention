@@ -2575,3 +2575,27 @@ PartitionedDomain::return_element_numberofNodes(int tag)
     return Element_Node_Number_List[tag - 1];
 }
 //------
+
+
+
+
+int PartitionedDomain::setNumberOfOutputSteps(int nsteps)
+{
+    return this->setNumberOfOutputSteps(nsteps);
+}
+
+int PartitionedDomain::setOutputEveryNsteps(int output_every_nsteps)
+{
+    return this->setOutputEveryNsteps(output_every_nsteps);
+}
+
+
+int PartitionedDomain::enableOutput(bool is_output_enabled)
+{
+    return this->enableOutput(is_output_enabled);
+}
+
+int PartitionedDomain::enableElementOutput(bool is_element_output_enabled)
+{
+    return this->enableElementOutput(is_element_output_enabled);
+}

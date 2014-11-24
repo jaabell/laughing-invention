@@ -139,6 +139,14 @@ class PartitionedDomain: public Domain
         // friend classes
         friend class PartitionedDomainEleIter;
 
+
+        // For output control
+        virtual int setNumberOfOutputSteps(int nsteps);
+        virtual int setOutputEveryNsteps(int output_every_nsteps);
+
+        virtual int enableOutput(bool is_output_enabled);
+        virtual int enableElementOutput(bool is_element_output_enabled);
+
     protected:
         int barrierCheck(int result);
         DomainPartitioner *getPartitioner(void) const;

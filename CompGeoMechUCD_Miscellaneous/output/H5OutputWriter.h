@@ -36,7 +36,7 @@
 #ifndef H5OutputWriter_H
 #define H5OutputWriter_H
 
-#define HDF5_CREATE_CHECK
+// #define HDF5_CREATE_CHECK
 // #define HDF5_CHECK_ERROR  {if(status < 0){cout << "status = " << status << endl; }}//return(-1);}}
 inline void hdf5_check_error(herr_t status)
 {

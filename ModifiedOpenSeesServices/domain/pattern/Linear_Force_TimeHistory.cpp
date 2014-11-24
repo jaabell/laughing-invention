@@ -111,7 +111,7 @@ Linear_Force_TimeHistory::applyLoad(double time)
 
     if (theNode == 0)
     {
-        cerr << "Linear_Force_TimeHistory - no nodes associtated to the nodeTag " << nodeTag << "\n";
+        // cerr << "Linear_Force_TimeHistory - no nodes associtated to the nodeTag " << nodeTag << "\n";
         // exit(1);
     }
     else
@@ -137,7 +137,7 @@ Linear_Force_TimeHistory::applyLoad(double time)
         theNode->addUnbalancedLoad(*nodalLoad);
         delete nodalLoad;
 
-        cout << "Linear_Force_TimeHistory - Applied load!" << endl;
+        // cout << "Linear_Force_TimeHistory - Applied load!" << endl;
     }
 
 }

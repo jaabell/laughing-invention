@@ -316,6 +316,7 @@ class Domain
                                     int nsteps);
 
         virtual int setNumberOfOutputSteps(int nsteps);
+        virtual int setOutputEveryNsteps(int output_every_nsteps);
 
         virtual int enableOutput(bool is_output_enabled);
         virtual int enableElementOutput(bool is_element_output_enabled);
@@ -384,6 +385,7 @@ class Domain
         bool output_is_enabled;
         bool element_output_is_enabled;
         bool have_written_static_mesh_data;
+        bool output_every_nsteps;
 
         double currentTime;               // current pseudo time
 

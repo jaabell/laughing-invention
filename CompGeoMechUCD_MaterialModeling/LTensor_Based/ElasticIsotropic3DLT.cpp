@@ -211,25 +211,25 @@ NDMaterialLT *ElasticIsotropic3DLT::getCopy( void )
 
 
 //================================================================================
-NDMaterialLT *ElasticIsotropic3DLT::getCopy( const char *code )
-{
-    if ( strcmp( code, "ThreeDimensional" ) == 0 )
-    {
-        ElasticIsotropic3DLT *tmp = new ElasticIsotropic3DLT( this->getTag(),
-                this->getE(),
-                this->getv(),
-                this->getRho());
+// NDMaterialLT *ElasticIsotropic3DLT::getCopy( const char *code )
+// {
+//     if ( strcmp( code, "ThreeDimensional" ) == 0 )
+//     {
+//         ElasticIsotropic3DLT *tmp = new ElasticIsotropic3DLT( this->getTag(),
+//                 this->getE(),
+//                 this->getv(),
+//                 this->getRho());
 
-        return tmp;
-    }
-    else
-    {
-        cout << "ElasticIsotropic3DLT::getCopy failed to get model: " <<  code << endln;
-        exit( 1 );
-    }
+//         return tmp;
+//     }
+//     else
+//     {
+//         cout << "ElasticIsotropic3DLT::getCopy failed to get model: " <<  code << endln;
+//         exit( 1 );
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 
 //================================================================================
 const char *ElasticIsotropic3DLT::getType( void ) const

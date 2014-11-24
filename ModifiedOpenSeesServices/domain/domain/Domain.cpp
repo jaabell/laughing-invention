@@ -126,6 +126,7 @@ Domain *ops_TheActiveDomain = 0;
 Domain::Domain()
     :
     output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
+    output_every_nsteps(1),
     currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ),
     hasDomainChangedFlag( false ),
     eleGraphBuiltFlag( false ),  nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
@@ -227,6 +228,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
                 int numofSectionRepresents,
                 int nummultipleexcitation, int numAccelerationFields, int numDamping )
     : output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
+      output_every_nsteps(1),
       currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ), currentGeoTag( 0 ),
       hasDomainChangedFlag( false ),
       eleGraphBuiltFlag( false ), nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
@@ -314,6 +316,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
                 TaggedObjectStorage &theAccelerationFieldStorage,
                 TaggedObjectStorage &theDampingStorage )
     : output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
+      output_every_nsteps(1),
       currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ),
       hasDomainChangedFlag( false ),
       eleGraphBuiltFlag( false ), nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
@@ -386,6 +389,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
 
 Domain::Domain( TaggedObjectStorage &theStorage )
     : output_is_enabled(true), element_output_is_enabled(true), have_written_static_mesh_data(false),
+      output_every_nsteps(1),
       currentTime( 0.0 ), committedTime( 0.0 ), dT( 0.0 ),
       hasDomainChangedFlag( false ),
       eleGraphBuiltFlag( false ), nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),

@@ -771,7 +771,7 @@ void H5OutputWriter::writeMesh()
         //================================================================================
         //Setup the global property lists
         //================================================================================
-        // group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);
+        group_creation_plist = H5Pcreate(H5P_GROUP_CREATE);//H5P_GROUP_CREATE);
         // status = H5Pset_link_creation_order(group_creation_plist, H5P_CRT_ORDER_TRACKED | H5P_CRT_ORDER_INDEXED);
         // hdf5_check_error(status);
 

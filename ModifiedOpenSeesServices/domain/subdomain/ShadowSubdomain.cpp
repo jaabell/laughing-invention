@@ -236,38 +236,18 @@ ShadowSubdomain::getRemoteData(void)
 bool
 ShadowSubdomain::addElement(Element *theEle)
 {
+    //Tell the actor domain to add an element with the properties in the message
     int tag = theEle->getTag();
-    //cerr << "ShadowSubdomain::addElement(Element *theEle):-- Element External Nodes are " << theEle->getExternalNodes() << "\n";
-
-#ifdef _BABAK_DEBUG
-    cerr << "ShadowSubdomain::addElement(Element *theEle): -- Element Number # " << tag << "\n";
-#endif
-
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
 
     msgData(0) = ShadowActorSubdomain_addElement;
     msgData(1) = theEle->getClassTag();
     msgData(2) = theEle->getDbTag();
+
     this->sendID(msgData);
-#ifdef _BABAK_DEBUG
-    cerr << "ShadowSubdomain::addElement(Element *theEle): -- ID sent ... " << tag << "\n";
-#endif
     this->sendObject(*theEle);
+
     theElements[numElements] = tag;
     numElements++;
-    //    this->domainChange();
-
-    /*
-    msgData(0) = 5;
-    msgData(1) = 6;
-    msgData(2) = 7;
-    msgData(3) = 8;
-    this->sendID(msgData);
-    this->receiveID(msgData);
-    cerr << "ShadowSubdomain::addElement() : " << msgData;
-    */
 
     delete theEle;
 
@@ -277,22 +257,18 @@ ShadowSubdomain::addElement(Element *theEle)
 bool
 ShadowSubdomain::addNode(Node *theNode)
 {
-#ifdef _BABAK_DEBUG
-    cerr << *theNode << "\n"; //Added by Babak Kamrani for debugging purposes
-#endif
     int tag = theNode->getTag();
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
+
     msgData(0) = ShadowActorSubdomain_addNode;
     msgData(1) = theNode->getClassTag();
     msgData(2) = theNode->getDbTag();
+
     this->sendID(msgData);
     this->sendObject(*theNode);
+
     theNodes[numNodes] = tag;
     numNodes++;
     numDOF += theNode->getNumberDOF();
-    //this->domainChange();
 
     delete theNode;
 
@@ -303,22 +279,20 @@ bool
 ShadowSubdomain::addExternalNode(Node *theNode)
 {
     int tag = theNode->getTag();
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
 
     msgData(0) = ShadowActorSubdomain_addExternalNode;
     msgData(1) = theNode->getClassTag();
     msgData(2) = theNode->getDbTag();
+
     this->sendID(msgData);
     this->sendObject(*theNode);
+
     theNodes[numNodes] = tag;
     theExternalNodes[numExternalNodes] = tag;
+
     numNodes++;
     numExternalNodes++;
     numDOF += theNode->getNumberDOF();
-
-    //    this->domainChange();
 
     return true;
 }
@@ -327,36 +301,29 @@ bool
 ShadowSubdomain::addSP_Constraint(SP_Constraint *theSP)
 {
 
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
     msgData(0) = ShadowActorSubdomain_addSP_Constraint;
     msgData(1) = theSP->getClassTag();
     msgData(2) = theSP->getDbTag();
+
     this->sendID(msgData);
     this->sendObject(*theSP);
     numSPs++;
-    // this->domainChange();
 
-    //this->Subdomain::addSP_Constraint(theSP);
     return true;
 }
 
 bool
 ShadowSubdomain::addMP_Constraint(MP_Constraint *theMP)
 {
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
     msgData(0) = ShadowActorSubdomain_addMP_Constraint;
     msgData(1) = theMP->getClassTag();
     msgData(2) = theMP->getDbTag();
+
     this->sendID(msgData);
     this->sendObject(*theMP);
-    numMPs++;
-    // // this->domainChange();
 
-    //this->Subdomain::addMP_Constraint(theMP);
+    numMPs++;
+
     return true;
 }
 
@@ -364,21 +331,14 @@ ShadowSubdomain::addMP_Constraint(MP_Constraint *theMP)
 bool
 ShadowSubdomain::addLoadPattern(LoadPattern *thePattern)
 {
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
+
     msgData(0) = ShadowActorSubdomain_addLoadPattern;
     msgData(1) = thePattern->getClassTag();
     msgData(2) = thePattern->getDbTag();
-    this->sendID(msgData);
-#ifdef _BABAK_DEBUG
-    //      cerr << "ShadowSubdomain::addLoadPattern(LoadPattern *thePattern)--BEFORE this->sendObject(*thePattern) -- DRM INFORMATION:\n";
-    //      DRM_LOAD_PATTERN->Print(cerr);
-#endif
-    this->sendObject(*thePattern);
-    //    this->domainChange();
 
-    //this->Subdomain::addLoadPattern(thePattern);
+    this->sendID(msgData);
+    this->sendObject(*thePattern);
+
     numLoadPatterns++;
     return true;
 }
@@ -1448,7 +1408,7 @@ ShadowSubdomain::sendSelf(int cTag, Channel &the_Channel)
 
 int
 ShadowSubdomain::receiveSelf(int cTag, Channel &the_Channel,
-                          FEM_ObjectBroker &the_Broker)
+                             FEM_ObjectBroker &the_Broker)
 {
     cerr << "ShadowSubdomain::receiveSelf() ";
     cerr << " - NOT YET IMPLEMENTED\n";

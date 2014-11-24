@@ -66,34 +66,28 @@ class ElasticIsotropic3DLT : public NDMaterialLT
 
 
         // methods to set and retrieve state using the Tensor class
-        int setTrialStrain( const DTensor2 &v );         // Used
-        int setTrialStrainIncr( const DTensor2 &v );     // Not used (used by setTrialStrain)
+        int setTrialStrain( const DTensor2 &v );
+        int setTrialStrainIncr( const DTensor2 &v );
 
 
-        const DTensor4 &getTangentTensor( void );      // Used by element
-        const DTensor2 &getStressTensor( void );   // Used
-        const DTensor2 &getStrainTensor( void );    // Used
-        const DTensor2 &getPlasticStrainTensor( void ); // Not used
-
-        // Need these to make material usable by elements
-        //const BJtensor& getTangentTensor( void );      // Used by element
-        //const stresstensor& getStressTensor( void );   // Used
-        //const straintensor& getStrainTensor( void );    // Used
-        //const straintensor& getPlasticStrainTensor( void ); // Not used
+        const DTensor4 &getTangentTensor( void );
+        const DTensor2 &getStressTensor( void );
+        const DTensor2 &getStrainTensor( void );
+        const DTensor2 &getPlasticStrainTensor( void );
 
 
         double YieldFunctionValue( const DTensor2 &Stre ) const; // Material calls
-        double getE(); // may be used by get copy
-        double getv(); // may be used by get copy
-        double getRho(); // may be used by get copy
+        double getE();
+        double getv();
+        double getRho();
 
 
-        int commitState( void );             // called by element
-        int revertToLastCommit( void );         // called by element
-        int revertToStart( void );      // called by element
+        int commitState( void );
+        int revertToLastCommit( void );
+        int revertToStart( void );
 
-        NDMaterialLT *getCopy( void ); //might be used in parallel Im not sure about that
-        NDMaterialLT *getCopy( const char *code ); //probably not needed
+        NDMaterialLT *getCopy( void );
+        //NDMaterialLT *getCopy( const char *code ); //probably not needed
 
         const char *getType( void ) const; // probably not needed
 
