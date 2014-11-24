@@ -53,14 +53,10 @@ class ShadowSubdomain: public Shadow, public Subdomain
 
         virtual  ~ShadowSubdomain();
 
-        // method added for parallel domain generation
-        // virtual int buildSubdomain(int numSubdomains,
-        // PartitionedModelBuilder &theBuilder);
         virtual int getRemoteData(void);
 
         // Methods inherited from Domain, Subdomain and Element
         // which must be rewritten
-
         virtual  bool addElement(Element *);
         virtual  bool addNode(Node *);
         virtual  bool addExternalNode(Node *);
@@ -71,15 +67,12 @@ class ShadowSubdomain: public Shadow, public Subdomain
         virtual  bool addElementalLoad(ElementalLoad *, int loadPattern);
         virtual  bool addSP_Constraint(SP_Constraint *, int loadPattern);
 
-        //    virtual  bool addLoadPattern_Fake(LoadPattern *); // Added by Babak Kamrani for debugging purposes
-
         virtual bool hasNode(int tag);
         virtual bool hasInternalNode(int tag);
         virtual bool hasExternalNode(int tag);
 
         virtual bool hasElement(int tag);
 
-        //Guanzhou added
         virtual  Element       *getElement(int tag);
         virtual  Node       *getNode(int tag);
 
@@ -124,9 +117,6 @@ class ShadowSubdomain: public Shadow, public Subdomain
         virtual  int barrierCheckIN(void);
         virtual  int barrierCheckOUT(int);
 
-        // virtual int  addRecorder(Recorder& theRecorder);
-        // virtual int  removeRecorders(void);
-
         virtual void setDomainDecompAnalysis(DomainDecompositionAnalysis &theAnalysis);
         virtual int setAnalysisAlgorithm(EquiSolnAlgo &theAlgorithm);
         virtual int setAnalysisIntegrator(IncrementalIntegrator &theIntegrator);
@@ -157,31 +147,22 @@ class ShadowSubdomain: public Shadow, public Subdomain
 
         virtual  void Print(ostream &s, int flag = 0);
 
-        int swapNodeFromInternalToExternal(int nodeTag);//Guanzhou
+        int swapNodeFromInternalToExternal(int nodeTag);
 
-# ifdef _PDD
-        int partition(int numParts); //Guanzhou added for parallel graph partitioning
+
+        int partition(int numParts);
         int repartition(int numParts);
         int reDistributeData(int numParts);
         int recvChangedNodes(const ID &nodeList, int numNodes);
         int ChangeMPIChannel(int other);
         int swapNodeFromExternalToInternal(int nodeTag, int dof);
-        //int swapNodeFromInternalToExternal(int nodeTag);
+
         int exportInternalNode(int nodeTag, int destination, int dof);
         int restoreChannel(void);
-        // int resetRecorders(void);
-        //int *getPtrToNumDOF(void) {return &numDOF;};
-        //int *getPtrToNumNodes(void) {return &numNodes;};
-        //ID *getPtrToNodes(void) {return &theNodes;};
-        //void incrNumDOF(int dof) {numDOF = numDOF + dof;};
-        //void incrNumNodes(void) {numNodes++;};
+
         int addNodeTag(int nodeTag, int dof);
 
-# endif
-
-#ifdef _PARALLEL_PROCESSING
         virtual int resetSubMultipleSupport(const int loadPatternTag);
-#endif
 
         virtual int buildMap(void);
         virtual int buildEleGraph(void);
@@ -215,7 +196,6 @@ class ShadowSubdomain: public Shadow, public Subdomain
 
         FE_Element *theFEele;
 
-        //Guanzhou added to carry data around!!
         Node *theNod;
         NodalLoad *theNodalLoad;
         SP_Constraint *theSP;
@@ -225,7 +205,7 @@ class ShadowSubdomain: public Shadow, public Subdomain
 
         static char *shadowSubdomainProgram;
 
-        static int count;  // MHS
+        static int count;
         static int numShadowSubdomains;
         static ShadowSubdomain **theShadowSubdomains;
 };

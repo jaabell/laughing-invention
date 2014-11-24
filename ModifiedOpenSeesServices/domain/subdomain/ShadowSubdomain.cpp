@@ -173,14 +173,17 @@ ShadowSubdomain::getRemoteData(void)
 {
     if (buildRemote == true && gotRemoteData == false)
     {
+        //Tell remote to send the data
         msgData(0) = ShadowActorSubdomain_getRemoteData;
-        this->sendID(msgData);
 
+        //Listen to what remote is saying
+        this->sendID(msgData);
         this->receiveID(msgData);
+
+        //Unwrap the message and interpret it
         numExternalNodes = msgData(0);
         numDOF = msgData(1);
 
-        //cerr << "ShadowSubdomain::getRemoteData numExtNodes " << numExternalNodes << endln;
         if (theExternalNodes.Size() != numExternalNodes)
         {
             theExternalNodes[numExternalNodes - 1] = 0;    // this will resize
@@ -192,12 +195,11 @@ ShadowSubdomain::getRemoteData(void)
             return -1;
         }
 
+        //If all went well, the remote will send the external nodes... listen to it
         if (numExternalNodes != 0)
         {
             this->receiveID(theExternalNodes);
         }
-
-        //cerr << "ShadowSubdomain::getREmoteData " << theExternalNodes;
     }
 
     gotRemoteData = true;
@@ -319,18 +321,7 @@ ShadowSubdomain::addLoadPattern(LoadPattern *thePattern)
 bool
 ShadowSubdomain::addSP_Constraint(SP_Constraint *theSP, int loadPattern)
 {
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
-
-    /*
-    LoadPattern *thePattern = this->Subdomain::getLoadPattern(loadPattern);
-    if ((thePattern == 0) || (thePattern->addSP_Constraint(theSP) == false)) {
-      cerr << "ShadowSubdomain::addSP_Constraint() - could not add SP_Constraint: " << *theSP;
-      return false;
-    }
-    */
-
+    // Tell remote to add constraint
     msgData(0) = ShadowActorSubdomain_addSP_ConstraintToPattern;
     msgData(1) = theSP->getClassTag();
     msgData(2) = theSP->getDbTag();
@@ -338,7 +329,6 @@ ShadowSubdomain::addSP_Constraint(SP_Constraint *theSP, int loadPattern)
     this->sendID(msgData);
     this->sendObject(*theSP);
     numSPs++;
-    // this->domainChange();
 
     return true;
 }
@@ -346,19 +336,7 @@ ShadowSubdomain::addSP_Constraint(SP_Constraint *theSP, int loadPattern)
 bool
 ShadowSubdomain::addNodalLoad(NodalLoad *theLoad, int loadPattern)
 {
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
-
-    /*
-    LoadPattern *thePattern = this->Subdomain::getLoadPattern(loadPattern);
-    if ((thePattern == 0) || (thePattern->addNodalLoad(theLoad) == false)) {
-      cerr << "ShadowSubdomain::addNodalLoad() - could not add the load: " << *theLoad;
-      return false;
-    }
-    cerr << "ShadowSubdomain::addNodalLoad : " << this->getTag() << " " << theLoad->getNodeTag() << endln;
-    */
-
+    //Tell remote to add a new nodal load
     msgData(0) = ShadowActorSubdomain_addNodalLoadToPattern;
     msgData(1) = theLoad->getClassTag();
     msgData(2) = theLoad->getDbTag();
@@ -372,14 +350,7 @@ ShadowSubdomain::addNodalLoad(NodalLoad *theLoad, int loadPattern)
 bool
 ShadowSubdomain::addElementalLoad(ElementalLoad *theLoad, int loadPattern)
 {
-#ifdef _G3DEBUG
-    // do all the checking stuff
-#endif
-    //Guanzhou out LoadPattern *thePattern = this->Subdomain::getLoadPattern(loadPattern);
-    //Guanzhou out if ((thePattern == 0) || (thePattern->addElementalLoad(theLoad) == false)) {
-    //Guanzhou out   cerr << "ShadowSubdomain::addElementalLoad() - could not add the load: " << *theLoad;
-    //Guanzhou out   return false;
-    //Guanzhou out }
+    //Tell remote about a new element load
 
     msgData(0) = ShadowActorSubdomain_addElementalLoadToPattern;
     msgData(1) = theLoad->getClassTag();
@@ -388,7 +359,7 @@ ShadowSubdomain::addElementalLoad(ElementalLoad *theLoad, int loadPattern)
     this->sendID(msgData);
     this->sendObject(*theLoad);
 
-    delete theLoad;//GZ
+    delete theLoad;
 
     return true;
 }
@@ -397,6 +368,7 @@ ShadowSubdomain::addElementalLoad(ElementalLoad *theLoad, int loadPattern)
 bool
 ShadowSubdomain::hasNode(int tag)
 {
+    //Enquire whether the remote has a certain node tag
     msgData(0) = ShadowActorSubdomain_hasNode;
     msgData(1) = tag;
     this->sendID(msgData);
@@ -415,6 +387,7 @@ ShadowSubdomain::hasNode(int tag)
 bool
 ShadowSubdomain::hasInternalNode(int tag)
 {
+    //Enquire wheter a the remote has an internal node with a given tag
     msgData(0) = ShadowActorSubdomain_hasInternalNode;
     msgData(1) = tag;
     this->sendID(msgData);
@@ -433,6 +406,8 @@ ShadowSubdomain::hasInternalNode(int tag)
 bool
 ShadowSubdomain::hasExternalNode(int tag)
 {
+
+    //Enquire wheter a the remote has an external node with a given tag
     msgData(0) = ShadowActorSubdomain_hasExternalNode;
     msgData(1) = tag;
     this->sendID(msgData);
@@ -451,6 +426,8 @@ ShadowSubdomain::hasExternalNode(int tag)
 bool
 ShadowSubdomain::hasElement(int tag)
 {
+
+    //Enquire wheter a the remote has an element with a given tag
     msgData(0) = ShadowActorSubdomain_hasElement;
     msgData(1) = tag;
     this->sendID(msgData);
@@ -484,22 +461,8 @@ ShadowSubdomain::removeElement(int tag)
         this->sendID(msgData);
 
         numElements--;
-        // this->domainChange();
 
-        // get the element from the actor
-
-        //Note, Guanzhou took out these unnecessary communications!!!
-        //Guanzhou out this->receiveID(msgData);
-        //Guanzhou out int theType = msgData(0);
-        //Guanzhou out
-        //Guanzhou out if (theType == -1) // the ele was not there!
-        //Guanzhou out     return 0;
-        //Guanzhou out
-        //Guanzhou out Element *theEle = theBroker->getNewElement(theType);
-        //Guanzhou out if (theEle != 0)
-        //Guanzhou out     this->receiveObject(*theEle);
-        //Guanzhou out
-        //Guanzhou out return theEle;
+        return 0;
     }
 }
 
@@ -525,7 +488,6 @@ ShadowSubdomain::removeNode(int tag)
             numNodes--;
         }
 
-        // this->domainChange();
         // remove from external as well
         loc = theExternalNodes.removeValue(tag);
 
@@ -536,7 +498,6 @@ ShadowSubdomain::removeNode(int tag)
 
         // receive the node from the actor
         this->receiveID(msgData);
-        //int theType = msgData(0);
 
         if (msgData(0) == 0)
         {
@@ -548,77 +509,54 @@ ShadowSubdomain::removeNode(int tag)
             exit(1);
         }
 
-        //Guanzhou out     return 0;
-        //Guanzhou out
-        //Guanzhou out Node *theNode = theBroker->getNewNode(theType);
-        //Guanzhou out if (theNode != 0) {
-        //Guanzhou out     this->receiveObject(*theNode);
-        //Guanzhou out     if (loc >= 0)
-        //Guanzhou out  numDOF -= theNode->getNumberDOF();
-        //Guanzhou out }
-        //Guanzhou out return theNode;
+        return 0;
     }
 }
 
 SP_Constraint *
 ShadowSubdomain::removeSP_Constraint(int tag)
 {
-    //SP_Constraint *spPtr = this->Subdomain::removeSP_Constraint(tag);
-    //if (spPtr == 0)
-    //  return 0;
-
     msgData(0) = ShadowActorSubdomain_removeSP_Constraint;
     msgData(1) = tag;
 
     this->sendID(msgData);
     numSPs--;
 
-    //return spPtr;
+    return 0;
 }
 
 MP_Constraint *
 ShadowSubdomain::removeMP_Constraint(int tag)
 {
-    //MP_Constraint *mpPtr = this->Subdomain::removeMP_Constraint(tag);
-    //if (mpPtr == 0)
-    //  return 0;
-
     msgData(0) = ShadowActorSubdomain_removeMP_Constraint;
     msgData(1) = tag;
 
     this->sendID(msgData);
 
     numMPs--;
-    //return mpPtr;
+    return 0;
 }
 
 LoadPattern *
 ShadowSubdomain::removeLoadPattern(int loadTag)
 {
-    //LoadPattern *res = this->Subdomain::removeLoadPattern(loadTag);
-    //if (res == 0)
-    //  return 0;
-
     msgData(0) = ShadowActorSubdomain_removeLoadPattern;
     msgData(1) = loadTag;
 
     this->sendID(msgData);
-    //return res;
+    return 0;
 }
 
 NodalLoad *
 ShadowSubdomain::removeNodalLoad(int loadTag, int loadPattern)
 {
-    //NodalLoad *res = this->Subdomain::removeNodalLoad(loadTag, loadPattern);
-    //if (res == 0)
-    //  return 0;
-
     msgData(0) = ShadowActorSubdomain_removeNodalLoadFromPattern;
     msgData(1) = loadTag;
     msgData(2) = loadPattern;
 
     this->sendID(msgData);
-    //return res;
+
+    return 0;
 }
 
 
@@ -626,31 +564,25 @@ ShadowSubdomain::removeNodalLoad(int loadTag, int loadPattern)
 ElementalLoad *
 ShadowSubdomain::removeElementalLoad(int loadTag, int loadPattern)
 {
-    //ElementalLoad *res = this->Subdomain::removeElementalLoad(loadTag, loadPattern);
-    //if (res == 0)
-    //  return 0;
-
     msgData(0) = ShadowActorSubdomain_removeElementalLoadFromPattern;
     msgData(1) = loadTag;
     msgData(2) = loadPattern;
 
     this->sendID(msgData);
-    //return res;
+
+    return 0;
 }
 
 SP_Constraint *
 ShadowSubdomain::removeSP_Constraint(int loadTag, int loadPattern)
 {
-    //SP_Constraint *res = this->Subdomain::removeSP_Constraint(loadTag, loadPattern);
-    //if (res == 0)
-    //  return 0;
-
     msgData(0) = ShadowActorSubdomain_removeSP_ConstraintFromPattern;
     msgData(1) = loadTag;
     msgData(2) = loadPattern;
 
     this->sendID(msgData);
-    //return res;
+
+    return 0;
 }
 
 
@@ -706,7 +638,7 @@ ShadowSubdomain::getExternalNodeIter(void)
     return *theIter;
 }
 
-//Guanzhou added for PBLoading
+
 Element *
 ShadowSubdomain::getElement(int tag)
 {
@@ -728,8 +660,6 @@ ShadowSubdomain::getElement(int tag)
         this->receiveObject(*theEle);
     }
 
-    //cerr << "ShadowSubdomain::getElementPtr() ";
-    //cerr << " - SHOULD BE AVOIDED IF POSSIBLE \n";
 
     return theEle;
 }
@@ -784,9 +714,6 @@ ShadowSubdomain::getNodePtr(int tag)
         this->receiveObject(*theNod);
     }
 
-    //cerr << "ShadowSubdomain::getNodPtr() ";
-    //cerr << " - SHOULD BE AVOIDED IF POSSIBLE \n";
-
     return theNod;
 }
 
@@ -801,8 +728,7 @@ ShadowSubdomain::getNode(int tag)
     msgData(0) = ShadowActorSubdomain_getNodePtr;
     msgData(1) = tag;
     this->sendID(msgData);
-    //this->receiveID(msgData);
-    //int theType = msgData(0);
+
 
     theNod = NULL;
     theNod = theBroker->getNewNode(NOD_TAG_Node);
@@ -989,24 +915,6 @@ ShadowSubdomain::barrierCheckOUT(int result)
 }
 
 
-// int
-// ShadowSubdomain::addRecorder(Recorder &theRecorder)
-// {
-//     msgData(0) = ShadowActorSubdomain_addRecorder;
-//     msgData(1) = theRecorder.getClassTag();
-//     this->sendID(msgData);
-//     this->sendObject(theRecorder);
-//     return 0;
-// }
-
-// int
-// ShadowSubdomain::removeRecorders(void)
-// {
-//     msgData(0) = ShadowActorSubdomain_removeRecorders;
-//     this->sendID(msgData);
-//     return 0;
-// }
-
 int
 ShadowSubdomain::commit(void)
 {
@@ -1117,20 +1025,6 @@ ShadowSubdomain::domainChange(void)
 {
     msgData(0) = ShadowActorSubdomain_domainChange;
     this->sendID(msgData);
-
-    //Guanzhou if (theVector == 0)
-    //Guanzhou  theVector = new Vector(numDOF);
-    //Guanzhouelse if (theVector->Size() != numDOF) {
-    //Guanzhou  delete theVector;
-    //Guanzhou  theVector = new Vector(numDOF);
-    //Guanzhou}
-    //Guanzhou
-    //Guanzhouif (theMatrix == 0)
-    //Guanzhou  theMatrix = new Matrix(numDOF,numDOF);
-    //Guanzhouelse if (theMatrix->noRows() != numDOF) {
-    //Guanzhou  delete theMatrix;
-    //Guanzhou  theMatrix = new Matrix(numDOF,numDOF);
-    //Guanzhou}
 }
 
 void
@@ -1182,22 +1076,10 @@ const Matrix &
 ShadowSubdomain::getTang(void)
 {
     cerr << "ShadowSubdomain::getTang(void) should never be called!\n";
-    //Guanzhou// if the subdoamin was built remotly need to get it's data
-    //Guanzhouif (gotRemoteData == false && buildRemote == true)
-    //Guanzhou  this->getRemoteData();
-    //Guanzhou
-    //Guanzhou  msgData(0) =  ShadowActorSubdomain_getTang;
-    //Guanzhou  this->sendID(msgData);
-    //Guanzhou
-    //Guanzhou  if (theMatrix == 0)
-    //Guanzhou    theMatrix = new Matrix(numDOF,numDOF);
-    //Guanzhou  else if (theMatrix->noRows() != numDOF) {
-    //Guanzhou    delete theMatrix;
-    //Guanzhou    theMatrix = new Matrix(numDOF,numDOF);
-    //Guanzhou  }
-    //Guanzhou
-    //Guanzhou  this->receiveMatrix(*theMatrix);
-    //Guanzhou  return *theMatrix;
+
+    theMatrix = new Matrix(1, 1);
+
+    return *theMatrix;
 }
 
 
@@ -1206,22 +1088,10 @@ const Vector &
 ShadowSubdomain::getResistingForce(void)
 {
     cerr << "ShadowSubdomain::getResistingForce(void) should never be called!\n";
-    // if the subdoamin was built remotly need to get it's data
-    //Guanzhouif (gotRemoteData == false && buildRemote == true)
-    //Guanzhou  this->getRemoteData();
-    //Guanzhou
-    //Guanzhou  msgData(0) = ShadowActorSubdomain_getResistingForce;
-    //Guanzhou  this->sendID(msgData);
-    //Guanzhou
-    //Guanzhou  if (theVector == 0)
-    //Guanzhou    theVector = new Vector(numDOF);
-    //Guanzhou  else if (theVector->Size() != numDOF) {
-    //Guanzhou    delete theVector;
-    //Guanzhou    theVector = new Vector(numDOF);
-    //Guanzhou  }
-    //Guanzhou
-    //Guanzhou  this->receiveVector(*theVector);
-    //Guanzhou  return *theVector;
+
+    theVector = new Vector(1);
+
+    return *theVector;
 }
 
 
@@ -1357,14 +1227,9 @@ ShadowSubdomain::newStep(double dT)
 double
 ShadowSubdomain::getCost(void)
 {
-    /*
-      msgData(0) = ShadowActorSubdomain_getCost;
+    cerr << "ShadowSubdomain::getCost()";
+    cerr << " - Deprecated";
 
-      this->sendID(msgData);
-      Vector cost(2);
-      this->receiveVector(cost);
-      return cost(0);
-    */
     return 0.0;
 }
 
@@ -1398,16 +1263,11 @@ ShadowSubdomain::Print(ostream &s, int flag)
 
 
 int
-//GZ ShadowSubdomain::buildEleGraph(Graph *theEleGraph)
 ShadowSubdomain::buildEleGraph()
 {
-    //GZ cerr << "ShadowSubdomain::buildEleGraph() ";
-    //GZ cerr << " - NOT YET IMPLEMENTED\n";
-    //GZ return -1;
-# ifdef _PDD
     msgData(0) = ShadowActorSubdomain_BuildElementGraph;
     this->sendID(msgData);
-# endif
+
     return 0;
 }
 
@@ -1427,7 +1287,7 @@ ShadowSubdomain::buildMap(void)
 }
 
 
-#ifdef _PDD
+
 int
 ShadowSubdomain::recvChangedNodes(const ID &nodeList, int numNodes)
 {
@@ -1687,13 +1547,6 @@ ShadowSubdomain::exportInternalNode(int nodeTag, int destination, int dof)
     return 0;
 }
 
-// int
-// ShadowSubdomain::resetRecorders(void)
-// {
-//     msgData(0) = ShadowActorSubdomain_resetRecorders;
-//     this->sendID(msgData);
-//     return 0;
-// }
 
 int
 ShadowSubdomain::addNodeTag(int nodeTag, int dof)
@@ -1705,10 +1558,7 @@ ShadowSubdomain::addNodeTag(int nodeTag, int dof)
     return 0;
 }
 
-#endif
 
-#ifdef _PARALLEL_PROCESSING
-//Guanzhou added this func
 int
 ShadowSubdomain::resetSubMultipleSupport(const int loadPatternTag)
 {
@@ -1729,22 +1579,19 @@ ShadowSubdomain::swapNodeFromInternalToExternal(int nodeTag)
     this->receiveID(msgData);//get the node back in master
     int theType = msgData(1);
     int dbTag = msgData(2);
-    //if ( theNod != 0 ) delete theNod;
+
     theNod = theBroker->getNewNode(theType);
 
     if (theNod != 0)
     {
         theNod->setDbTag(dbTag);
         this->receiveObject(*theNod);
-        //theDomain.recvNode(theNod);
+
         theDomain.addNode(theNod);
         int tag = theNod->getTag();
-        //theNodes[numNodes] = tag;
-        //delete theNod;
+
         theExternalNodes[numExternalNodes] = tag;
-        //numNodes++;
         numExternalNodes++;
-        //numDOF += theNod->getNumberDOF();
     }
 
     return 0;
@@ -1776,9 +1623,4 @@ int ShadowSubdomain::enableElementOutput(bool is_element_output_enabled)
     return this->enableElementOutput(is_element_output_enabled);
 }
 
-
-
-
-
-#endif
 

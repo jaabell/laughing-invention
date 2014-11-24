@@ -104,7 +104,8 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-static \
 										-static-libgcc \
 										-static-libstdc++ \
-										-march=native 
+										-march=native \
+										-fdiagnostics-color=auto 
 										
 	CFLAGS          = $(LTO_FLAGS) -O2 \
 										-D_LINUX \
@@ -127,7 +128,8 @@ else
 										-DBrzi_nDarray_val \
 										-D_TEACHING_MODE \
 										-std=c++11 \
-										-Wno-write-strings
+										-Wno-write-strings \
+										-fdiagnostics-color=auto 
 
 	CFLAGS          = -g -pg \
 										-D_G3DEBUG \
