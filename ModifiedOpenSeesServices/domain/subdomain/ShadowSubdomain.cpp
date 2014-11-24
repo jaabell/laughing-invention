@@ -52,14 +52,14 @@
 #include <SingleDomEleIter.h>
 #include <Graph.h>
 #include <FE_Element.h>
-//#include <PartitionedModelBuilder.h>
+
 
 #include <EquiSolnAlgo.h>
 #include <IncrementalIntegrator.h>
 #include <LinearSOE.h>
 #include <LinearSOESolver.h>
 #include <ConvergenceTest.h>
-// #include <Recorder.h>
+
 
 #include <FE_Element.h>
 
@@ -70,14 +70,10 @@
 using namespace std;
 
 
-extern PartitionedDomain theDomain; //Global needed, Guanzhou added
+extern PartitionedDomain theDomain;
 extern FEM_ObjectBroker  *OPS_OBJECT_BROKER;
 
-#ifdef _BABAK_DEBUG
-extern LoadPattern *DRM_LOAD_PATTERN ;
-#endif
-
-int ShadowSubdomain::count = 0; // MHS
+int ShadowSubdomain::count = 0;
 int ShadowSubdomain::numShadowSubdomains = 0;
 ShadowSubdomain **ShadowSubdomain::theShadowSubdomains = 0;
 
@@ -117,14 +113,12 @@ ShadowSubdomain::ShadowSubdomain(int tag,
 
     theShadowSubdomains = theCopy;
 
-    // does nothing
     numLoadPatterns = 0;
 
+    //Set the tag on the actor subdomain
     msgData(0) = ShadowActorSubdomain_setTag;
     msgData(1) = tag;
     this->sendID(msgData);
-
-    //Guanzhou out this->setCommitTag(tag);
 }
 
 
@@ -162,7 +156,6 @@ ShadowSubdomain::ShadowSubdomain(int tag,
 
     theShadowSubdomains = theCopy;
 
-    // does nothing
     numLoadPatterns = 0;
 }
 
@@ -171,30 +164,8 @@ ShadowSubdomain::~ShadowSubdomain()
     // send a message to the remote actor telling it to shut sown
     msgData(0) = ShadowActorSubdomain_DIE;
     this->sendID(msgData);
-    // cerr << "ShadowSubdomain::~ShadowSubdomain() DONE\n";
 }
 
-
-// int
-// ShadowSubdomain::buildSubdomain(int numSubdomains, PartitionedModelBuilder &theBuilder)
-// {
-//     // send a message identify setting ModelBuilder and it's class tag
-//     buildRemote = true;
-//     gotRemoteData = false;
-
-//     msgData(0) = ShadowActorSubdomain_buildSubdomain;
-//     msgData(1) = theBuilder.getClassTag();
-//     msgData(2) = numSubdomains;
-//     msgData(3) = this->getTag();
-//     this->sendID(msgData);
-
-//     // send the builder
-//     this->sendObject(theBuilder);
-
-//     // mark the domain as having been modified
-//     this->domainChange();
-//     return 0;
-// }
 
 
 int
@@ -1780,29 +1751,34 @@ ShadowSubdomain::swapNodeFromInternalToExternal(int nodeTag)
 }
 
 
+
+
+
+
+int ShadowSubdomain::setNumberOfOutputSteps(int nsteps)
+{
+    return this->setNumberOfOutputSteps(nsteps);
+}
+
+int ShadowSubdomain::setOutputEveryNsteps(int output_every_nsteps)
+{
+    return this->setOutputEveryNsteps(output_every_nsteps);
+}
+
+
+int ShadowSubdomain::enableOutput(bool is_output_enabled)
+{
+    return this->enableOutput(is_output_enabled);
+}
+
+int ShadowSubdomain::enableElementOutput(bool is_element_output_enabled)
+{
+    return this->enableElementOutput(is_element_output_enabled);
+}
+
+
+
+
+
 #endif
-
-
-//Added by Babak Kamrani for debugging purposes
-////////////////////////////////////////////////
-// bool
-// ShadowSubdomain::addLoadPattern_Fake(LoadPattern *thePattern)
-// {
-// #ifdef _G3DEBUG
-//  // do all the checking stuff
-// #endif
-//     msgData(0) = ShadowActorSubdomain_addLoadPattern;
-//     msgData(1) = thePattern->getClassTag();
-//     msgData(2) = thePattern->getDbTag();
-//     this->sendID(msgData);
-//     this->sendObject(*thePattern);
-//     //    this->domainChange();
-//
-//     //this->Subdomain::addLoadPattern(thePattern);
-//     numLoadPatterns++;
-//     return true;
-// }
-
-//////////////////////////////////////////////////
-
 

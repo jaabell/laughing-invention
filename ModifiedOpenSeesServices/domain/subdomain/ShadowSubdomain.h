@@ -183,11 +183,17 @@ class ShadowSubdomain: public Shadow, public Subdomain
         virtual int resetSubMultipleSupport(const int loadPatternTag);
 #endif
 
-        //Guanzhou out protected:
         virtual int buildMap(void);
-        //GZ virtual int buildEleGraph(Graph *theEleGraph);
-        virtual int buildEleGraph(void); //Guanzhou added for PDD
+        virtual int buildEleGraph(void);
         virtual int buildNodeGraph(Graph *theNodeGraph);
+
+
+        // For output control
+        virtual int setNumberOfOutputSteps(int nsteps);
+        virtual int setOutputEveryNsteps(int output_every_nsteps);
+
+        virtual int enableOutput(bool is_output_enabled);
+        virtual int enableElementOutput(bool is_element_output_enabled);
 
     private:
         ID msgData;
