@@ -108,15 +108,12 @@ class TaggedObjectStorage;
 class Domain
 {
     public:
+        //This class has 4 constructors..... four!
         Domain();
         Domain(int numNodes, int numElements, int numSPs, int numMPs,
                int numLoadPatterns, int numUniaxialMat, int numNDMaterial, int numNDMaterialLT, int numSections,
                int numofSectionRepresents,
                int nummultipleexcitation, int numAccelerationFields, int numDamping);
-
-        //*****************************************************************************************
-        // Nima Tafazzoli (changed on Sep. 2nd 2009)
-        // Instead of Using TclModelBuilder
         Domain(TaggedObjectStorage &theNodesStorage,
                TaggedObjectStorage &theElementsStorage,
                TaggedObjectStorage &theMPsStorage,
@@ -130,19 +127,15 @@ class Domain
                TaggedObjectStorage &theMultiSupportStorage,
                TaggedObjectStorage &theAccelerationFieldsStorage,
                TaggedObjectStorage &theDampings);
-
         Domain(TaggedObjectStorage &theStorageType);
+
+        //And a destructor... only one. C++ standard only allows one
         virtual ~Domain();
 
         //*****************************************************************************************
         // methods to populate a domain
         virtual  bool addElement(Element *);
         virtual  bool addNode(Node *);
-        // virtual  bool addElementDatabase(Element *);
-
-        //*****************************************************************************************
-        // Nima Tafazzoli (added on Sep. 2nd 2009)
-        // Instead of Using TclModelBuilder
         virtual   int addUniaxialMaterial(UniaxialMaterial &theMaterial);
         virtual   int addNDMaterial(NDMaterial &theMaterial);
         virtual   int addNDMaterialLT(NDMaterialLT &theMaterial);
@@ -164,79 +157,56 @@ class Domain
         //*****************************************************************************************
         // methods to remove the components
         virtual void clearAll(void);
-        virtual Element       *removeElement(int tag);
-        virtual Node          *removeNode(int tag);
+        virtual Element            *removeElement(int tag);
+        virtual Node               *removeNode(int tag);
+        virtual UniaxialMaterial   *removeUniaxialMaterial(int tag);
+        virtual NDMaterial         *removeNDMaterial(int tag);
+        virtual NDMaterialLT       *removeNDMaterialLT(int tag);
+        virtual AccelerationField *removeAccelerationField(int tag);
+        virtual Damping            *removeDamping(int tag);
+        virtual SP_Constraint      *removeSP_Constraint(int tag);
+        virtual SP_Constraint      *removeSP_Constraint(int nodeTag, int dof, int loadPatternTag);
+        virtual MP_Constraint      *removeMP_Constraint(int tag);
+        virtual int                 removeMP_Constraints(int constrainedNodeTag);
+        virtual LoadPattern        *removeLoadPattern(int loadTag);
+        virtual NodalLoad          *removeNodalLoad(int tag, int loadPattern);
+        virtual ElementalLoad      *removeElementalLoad(int tag, int loadPattern);
+        virtual SP_Constraint      *removeSP_Constraint(int tag, int loadPattern);
 
-        //*****************************************************************************************
-        // Nima Tafazzoli (added on Sep. 2nd 2009)
-        // Instead of Using TclModelBuilder
-        virtual UniaxialMaterial  *removeUniaxialMaterial(int tag);
-        virtual NDMaterial  *removeNDMaterial(int tag);
-        virtual NDMaterialLT  *removeNDMaterialLT(int tag);
-
-        // Nima Tafazzoli (added on Oct. 2010)
-        virtual AccelerationField  *removeAccelerationField(int tag);
-        virtual Damping  *removeDamping(int tag);
-
-        //*****************************************************************************************
-        virtual SP_Constraint *removeSP_Constraint(int tag);
-        virtual SP_Constraint *removeSP_Constraint(int nodeTag, int dof, int loadPatternTag);
-        virtual MP_Constraint *removeMP_Constraint(int tag);
-        virtual int removeMP_Constraints(int constrainedNodeTag);
-
-        //*****************************************************************************************
-        // Nima Tafazzoli (added on June 2011)
-
-        virtual LoadPattern   *removeLoadPattern(int loadTag);
-        virtual NodalLoad     *removeNodalLoad(int tag, int loadPattern);
-        virtual ElementalLoad *removeElementalLoad(int tag, int loadPattern);
-        virtual SP_Constraint *removeSP_Constraint(int tag, int loadPattern);
 
         // methods to access the components of a domain
-        virtual  ElementIter       &getElements();
-        virtual  NodeIter          &getNodes();
-        virtual  SP_ConstraintIter &getSPs();
-        virtual  MP_ConstraintIter &getMPs();
-        virtual  LoadPatternIter   &getLoadPatterns();
-        virtual  SP_ConstraintIter &getDomainAndLoadPatternSPs();
-        virtual  UniaxialMaterialIter  &getUniaxialMaterials();
-        virtual  NDMaterialIter        &getNDMaterials();
-        virtual  NDMaterialLTIter        &getNDMaterialLTs();
-
-        //Accessing nodes an elements by tag
-        virtual  Element       *getElement(int tag);
-        virtual  Node          *getNode(int tag);
-
-
-        //*****************************************************************************************
-        // Nima Tafazzoli (added on Sep. 2nd 2009)
-        // Instead of Using TclModelBuilder
-        virtual  UniaxialMaterial  *getUniaxialMaterial(int tag);
-        virtual  NDMaterial  *getNDMaterial(int tag);
-        virtual  NDMaterialLT  *getNDMaterialLT(int tag);
-        virtual  SectionForceDeformation *getSection(int tag);
-        virtual  SectionRepres *getSectionRepres(int tag);
-        virtual  MultiSupportPattern *getMultipleSupport(int tag);
-        virtual  AccelerationField *getAccelerationField(int tag);
-        virtual  Damping *getDamping(int tag);
-        virtual  SP_Constraint *getSP_Constraint(int tag);
-        virtual  MP_Constraint *getMP_Constraint(int tag);
-        virtual  LoadPattern   *getLoadPattern(int tag);
-
-        // methods to query the state of the domain
-        //*****************************************************************************************
-        virtual double  getCurrentTime(void) const;
-        virtual int     getCommitTag(void) const;
-        virtual int getNumElements(void) const;
-        virtual int getNumNodes(void) const;
-        virtual int getNumSPs(void) const;
-        virtual int getNumMPs(void) const;
-        virtual int getNumLoadPatterns(void) const;
-        virtual const Vector &getPhysicalBounds(void);
-
-        // methods to get element and node graphs
-        virtual  Graph    *getElementGraph(void);
-        virtual  Graph  &getNodeGraph(void);
+        virtual  ElementIter               &getElements();
+        virtual  NodeIter                  &getNodes();
+        virtual  SP_ConstraintIter         &getSPs();
+        virtual  MP_ConstraintIter         &getMPs();
+        virtual  LoadPatternIter           &getLoadPatterns();
+        virtual  SP_ConstraintIter         &getDomainAndLoadPatternSPs();
+        virtual  UniaxialMaterialIter      &getUniaxialMaterials();
+        virtual  NDMaterialIter            &getNDMaterials();
+        virtual  NDMaterialLTIter          &getNDMaterialLTs();
+        virtual  Element                   *getElement(int tag);
+        virtual  Node                      *getNode(int tag);
+        virtual  UniaxialMaterial          *getUniaxialMaterial(int tag);
+        virtual  NDMaterial                *getNDMaterial(int tag);
+        virtual  NDMaterialLT              *getNDMaterialLT(int tag);
+        virtual  SectionForceDeformation   *getSection(int tag);
+        virtual  SectionRepres             *getSectionRepres(int tag);
+        virtual  MultiSupportPattern       *getMultipleSupport(int tag);
+        virtual  AccelerationField         *getAccelerationField(int tag);
+        virtual  Damping                   *getDamping(int tag);
+        virtual  SP_Constraint             *getSP_Constraint(int tag);
+        virtual  MP_Constraint             *getMP_Constraint(int tag);
+        virtual  LoadPattern               *getLoadPattern(int tag);
+        virtual double                      getCurrentTime(void) const;
+        virtual int                         getCommitTag(void) const;
+        virtual int                         getNumElements(void) const;
+        virtual int                         getNumNodes(void) const;
+        virtual int                         getNumSPs(void) const;
+        virtual int                         getNumMPs(void) const;
+        virtual int                         getNumLoadPatterns(void) const;
+        virtual const Vector               &getPhysicalBounds(void);
+        virtual  Graph                     *getElementGraph(void);
+        virtual  Graph                     &getNodeGraph(void);
 
         // methods to update the domain
         virtual  void setCommitTag(int newTag);
@@ -245,23 +215,13 @@ class Domain
         virtual  void applyLoad(double pseudoTime);
         virtual  void setLoadConstant(void);
         virtual  int  initialize(void);
-        //    virtual  int  setRayleighDampingFactors(double alphaM, double betaK, double betaK0, double betaKc);
 
-        //*****************************************************************************************
-        // Nima Tafazzoli
-        // (July 2011)
         virtual  int  setDampingFactorsforElement(int ElementTag, int DampingTag);
         virtual  int  setDampingFactorsforNode(int NodeTag, int DampingTag);
-        // (June 2012)
-        virtual  int  eigenAnalysis(int numMode);
-        // (September 2012)
-        virtual  int  CheckMesh(const char *);
-        // (January 2013)
-        // virtual  int  getNumberof8GPBrickElements(void);
-        // virtual  int  getNumberof27GPBrickElements(void);
-        // virtual  int  getNumberofLineElements(void);
-        //*****************************************************************************************
 
+        virtual  int  eigenAnalysis(int numMode);
+
+        virtual  int  CheckMesh(const char *);
 
         virtual  int  commit(void);
         virtual  int  revertToLastCommit(void);
@@ -270,24 +230,15 @@ class Domain
         virtual  int  update(double newTime, double dT);
         virtual  int  newStep(double dT);
 
-
-        // methods for eigenvalue analysis
         virtual int setEigenvalues(const Vector &theEigenvalues);
         virtual const Vector &getEigenvalues(void);
         virtual double getTimeEigenvaluesSet(void);
 
-        // methods for other objects to determine if model has changed
+
         virtual void domainChange(void);
         virtual int hasDomainChanged(void);
         virtual void setDomainChangeStamp(int newStamp);
 
-        // methods for output
-        //virtual int  addRecorder(Recorder &theRecorder);
-        //virtual int  removeRecorders(void);
-        //virtual int  removeRecorder(int tag);
-
-        //     virtual int  addRegion(MeshRegion &theRegion);
-        //     virtual MeshRegion *getRegion(int region);
 
         virtual void Print(ostream &s, int flag = 0);
         friend ostream &operator<<(ostream &s, Domain &M);
@@ -296,14 +247,6 @@ class Domain
         virtual int receiveSelf(int commitTag, Channel &theChannel,
                                 FEM_ObjectBroker &theBroker);
 
-        // virtual int sendSelfDatabase(int commitTag, Channel &theChannel);
-        // virtual int receiveSelfDatabase(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
-
-        //Babak Added on Aug 2012:
-        // void Dump_All_Nodes_Displacement_Onefileperprocess(void);
-        // void Dump_All_Nodes_Displacement_Singlefile(void);
-        // //Babak Added on October 2012:
-        // void Dump_All_Nodes_Displacement_Singlefile_GIDFormat(void);
 
         virtual int setHDF5_Channel(std::string filename_in,
                                     std::string model_name_in,
@@ -321,25 +264,6 @@ class Domain
         virtual int enableOutput(bool is_output_enabled);
         virtual int enableElementOutput(bool is_element_output_enabled);
 
-        //=======================================================================================
-        // Nima Tafazzoli added for saving results using mySQL, November 2012
-        //     virtual int saveResults(int commitTag, Channel &theChannel);
-        //     virtual int restoreResults(int commitTag, Channel &theChannel,
-        //                                FEM_ObjectBroker &theBroker);
-        //     virtual Vector& restoreNodalDisplacement(int commitTag, int NodeNumber, int dof, int stepNumber, Channel &theChannel,
-        //                                              FEM_ObjectBroker &theBroker);
-        //     virtual double restoreNodalDisplacement(int commitTag, int NodeNumber, int dof, int stepNumber, Channel &theChannel,
-        //                                              FEM_ObjectBroker &theBroker);
-        // virtual int saveNodalDisplacements(int stepNumber, Channel &theChannel);
-        // virtual int save8GPBrickStresses(int stepNumber, Channel &theChannel);
-        // virtual int save27GPBrickStresses(int stepNumber, Channel &theChannel);
-        // virtual int saveLineElementForces(int stepNumber, Channel &theChannel);
-        // virtual int addDatabase(FE_Datastore &theDatabase);
-        // virtual FE_Datastore &getDatabase(int tag);
-        // virtual int removeDatabase(int tag);
-        //=======================================================================================
-
-
 
         virtual int getMaxElementsTag();
         virtual int getMaxNodesTag();
@@ -356,7 +280,6 @@ class Domain
         virtual int getMaxLoadPatternsTag();
 
 
-#ifdef _PARALLEL_PROCESSING
         virtual bool recvNode(Node *theNod);
         virtual int  resetMultipleSupport(const int loadPatternTag)
         {
@@ -368,7 +291,6 @@ class Domain
             return 0;
         };
 
-#endif
 
         virtual int calculateNodalReactions(int flag);
 
@@ -379,8 +301,6 @@ class Domain
         virtual int buildNodeGraph(Graph *theNodeGraph);
 
         H5OutputWriter theOutputWriter;
-
-
 
         bool output_is_enabled;
         bool element_output_is_enabled;
@@ -394,10 +314,6 @@ class Domain
         double dT;                        // difference between committed and current time
         int    currentGeoTag;             // an integer used to mark if domain has changed
         bool   hasDomainChangedFlag;      // a bool flag used to indicate if GeoTag needs to be ++
-        // int    theDbTag;                   // the Domains unique database tag == 0
-        // int    lastGeoSendTag;            // the value of currentGeoTag when sendSelf was last invoked
-        // int    dbEle, dbNod, dbSPs, dbMPs, dbLPs; // database tags for storing info
-
 
         bool eleGraphBuiltFlag;
         bool nodeGraphBuiltFlag;
@@ -407,10 +323,6 @@ class Domain
 
         TaggedObjectStorage  *theElements;
         TaggedObjectStorage  *theNodes;
-
-        //*****************************************************************************************
-        // Nima Tafazzoli (added on Sep. 2nd 2009)
-        // Instead of Using TclModelBuilder
         TaggedObjectStorage *theUniaxialMaterials;
         TaggedObjectStorage *theNDMaterials;
         TaggedObjectStorage *theNDMaterialLTs;
@@ -419,8 +331,6 @@ class Domain
         TaggedObjectStorage *theMultipleSupports;
         TaggedObjectStorage *theAccelerationFields;
         TaggedObjectStorage *theDampings;
-        //*****************************************************************************************
-
         TaggedObjectStorage  *theSPs;
         TaggedObjectStorage  *theMPs;
         TaggedObjectStorage  *theLoadPatterns;
@@ -431,32 +341,20 @@ class Domain
         SingleDomMP_Iter      *theMP_Iter;
         LoadPatternIter       *theLoadPatternIter;
         SingleDomAllSP_Iter   *allSP_Iter;
-
-
-        // Nima Tafazzoli (Sep. 2012)
         SingleDomUniaxialMaterialIter  *theUniMaterialIter;
         SingleDomNDMaterialIter        *theNDMaterialIter;
         SingleDomNDMaterialLTIter        *theNDMaterialLTIter;
 
-        //     MeshRegion **theRegions;
-        //     int numRegions;
 
         int commitTag;
 
         Vector theBounds;
-
         Vector *theEigenvalues;
         double theEigenvalueSetTime;
-
-        // Nima Tafazzoli added Jan. 2013
-        // int number_of_8GP_brick_elements;
-        // int number_of_27GP_brick_elements;
-        // int number_of_line_elements;
 
         int lastChannel;
 
     public:
-        //max tags
         int maxElementsTag;
         int maxNodesTag;
         int maxUniaxialMaterialsTag;

@@ -92,7 +92,8 @@ ShadowSubdomain::ShadowSubdomain(int tag,
       numDOF(0), numElements(0), numNodes(0), numExternalNodes(0),
       numSPs(0), numMPs(0), buildRemote(false), gotRemoteData(false),
       theFEele(0),
-      theVector(0), theMatrix(0), theNod(0), theSP(0), theNodalLoad(0)
+      theNod(0), theNodalLoad(0), theSP(0),
+      theVector(0), theMatrix(0)
 {
 
     numShadowSubdomains++;
@@ -135,7 +136,8 @@ ShadowSubdomain::ShadowSubdomain(int tag,
       numDOF(0), numElements(0), numNodes(0), numExternalNodes(0),
       numSPs(0), numMPs(0), buildRemote(false), gotRemoteData(false),
       theFEele(0),
-      theVector(0), theMatrix(0), theNod(0), theSP(0), theNodalLoad(0)
+      theNod(0), theNodalLoad(0), theSP(0),
+      theVector(0), theMatrix(0)
 {
 
     numShadowSubdomains++;

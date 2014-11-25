@@ -57,38 +57,37 @@ class ShadowSubdomain: public Shadow, public Subdomain
 
         // Methods inherited from Domain, Subdomain and Element
         // which must be rewritten
-        virtual  bool addElement(Element *);
-        virtual  bool addNode(Node *);
-        virtual  bool addExternalNode(Node *);
-        virtual  bool addSP_Constraint(SP_Constraint *);
-        virtual  bool addMP_Constraint(MP_Constraint *);
-        virtual  bool addLoadPattern(LoadPattern *);
-        virtual  bool addNodalLoad(NodalLoad *, int loadPattern);
-        virtual  bool addElementalLoad(ElementalLoad *, int loadPattern);
-        virtual  bool addSP_Constraint(SP_Constraint *, int loadPattern);
+        virtual bool addElement(Element *);
+        virtual bool addNode(Node *);
+        virtual bool addExternalNode(Node *);
+        virtual bool addSP_Constraint(SP_Constraint *);
+        virtual bool addMP_Constraint(MP_Constraint *);
+        virtual bool addLoadPattern(LoadPattern *);
+        virtual bool addNodalLoad(NodalLoad *, int loadPattern);
+        virtual bool addElementalLoad(ElementalLoad *, int loadPattern);
+        virtual bool addSP_Constraint(SP_Constraint *, int loadPattern);
 
         virtual bool hasNode(int tag);
         virtual bool hasInternalNode(int tag);
         virtual bool hasExternalNode(int tag);
-
         virtual bool hasElement(int tag);
 
         virtual  Element       *getElement(int tag);
-        virtual  Node       *getNode(int tag);
+        virtual  Node          *getNode(int tag);
 
-        virtual Element       *removeElement(int tag);
-        virtual Node      *removeNode(int tag);
-        virtual SP_Constraint *removeSP_Constraint(int tag);
-        virtual MP_Constraint *removeMP_Constraint(int tag);
-        virtual LoadPattern   *removeLoadPattern(int tag);
-        virtual NodalLoad     *removeNodalLoad(int tag, int loadPattern);
-        virtual ElementalLoad *removeElementalLoad(int tag, int loadPattern);
-        virtual SP_Constraint *removeSP_Constraint(int tag, int loadPattern);
+        virtual Element        *removeElement(int tag);
+        virtual Node           *removeNode(int tag);
+        virtual SP_Constraint  *removeSP_Constraint(int tag);
+        virtual MP_Constraint  *removeMP_Constraint(int tag);
+        virtual LoadPattern    *removeLoadPattern(int tag);
+        virtual NodalLoad      *removeNodalLoad(int tag, int loadPattern);
+        virtual ElementalLoad  *removeElementalLoad(int tag, int loadPattern);
+        virtual SP_Constraint  *removeSP_Constraint(int tag, int loadPattern);
 
-        virtual  ElementIter       &getElements();
-        virtual  NodeIter          &getNodes();
-        virtual  NodeIter          &getInternalNodeIter(void);
-        virtual  NodeIter          &getExternalNodeIter(void);
+        virtual  ElementIter   &getElements();
+        virtual  NodeIter      &getNodes();
+        virtual  NodeIter      &getInternalNodeIter(void);
+        virtual  NodeIter      &getExternalNodeIter(void);
 
         virtual  Element       *getElementPtr(int tag);
         virtual  Node          *getNodePtr(int tag);
