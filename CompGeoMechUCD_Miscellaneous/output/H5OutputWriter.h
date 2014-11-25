@@ -226,7 +226,7 @@ class H5OutputWriter: public OutputWriter
         void syncWriters(); //Used in parallel
 
 
-
+        void set_zlib_compression_level(int level);
 
 
     private:
@@ -248,6 +248,8 @@ class H5OutputWriter: public OutputWriter
         int length_element_output;
 
         double current_time;
+
+        int zlib_compression_level;
 
         std::string file_name;          // Name of the HDF5 file
         std::string model_name;          // Name of the HDF5 file

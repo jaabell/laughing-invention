@@ -139,7 +139,7 @@ else
 endif
 
 
-AR          = ar 
+AR          = gcc-ar 
 ARFLAGS       = cqls
 MAKE            = make
 CD              = cd

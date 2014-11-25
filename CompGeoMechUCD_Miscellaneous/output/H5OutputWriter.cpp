@@ -79,6 +79,8 @@ H5OutputWriter::H5OutputWriter():
     create_nodeReactionForces_arrays     = true;
     create_elementMeshData_arrays        = true;
     create_elementOutput_arrays          = true;
+
+    zlib_compression_level = 0;
 }
 
 
@@ -128,6 +130,8 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
                model_name_in,
                stage_name_in,
                nsteps);
+
+    zlib_compression_level = 0;
 }
 
 
@@ -1710,8 +1714,12 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
         status = H5Pset_fill_time(dataset_creation_plist, H5D_FILL_TIME_NEVER);
     }
     hdf5_check_error(status);
-    // status = H5Pset_deflate (dataset_creation_plist, 6);
-    // hdf5_check_error(status);
+
+    if (zlib_compression_level > 0)
+    {
+        status = H5Pset_deflate (dataset_creation_plist, zlib_compression_level = 0);
+        hdf5_check_error(status);
+    }
 
 #ifdef HDF5_CREATE_CHECK
     cout << "HDF5 array var-length << ";
@@ -2269,4 +2277,9 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
     H5Sclose(id_memspace);
     H5OUTPUTWRITER_COUNT_OBJS;
     return id_array;
+}
+
+void H5OutputWriter::set_zlib_compression_level(int level)
+{
+    zlib_compression_level = level;
 }

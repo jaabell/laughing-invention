@@ -2747,7 +2747,7 @@ Domain::commit( void )
     }
 #endif
 
-    cout << "countdown_til_output = " << countdown_til_output << endl;
+    // cout << "countdown_til_output = " << countdown_til_output << endl;
     if (countdown_til_output == 0)
     {
         countdown_til_output = output_every_nsteps;
