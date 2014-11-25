@@ -672,7 +672,9 @@ void H5OutputWriter::syncWriters()
     MPI_Bcast(&number_of_nodes                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
     MPI_Bcast(&number_of_elements                   , 1 , MPI_INT , root , MPI_COMM_WORLD);
     MPI_Bcast(&max_node_tag                         , 1 , MPI_INT , root , MPI_COMM_WORLD);
-    MPI_Bcast(&max_element_tag                        , 1 , MPI_INT , root , MPI_COMM_WORLD);
+    MPI_Bcast(&max_element_tag                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
+
+    MPI_Bcast(&zlib_compression_level               , 1 , MPI_INT , root , MPI_COMM_WORLD);
 
     //The slave processes must be initialized after all this stuff is transmitted.
     if (processID != 0)

@@ -175,11 +175,14 @@
 
 // Output control
 //--------------------------------------------------------------------------------------------------
-#include "MODELING/enable_output.h"
-#include "MODELING/output_every_nsteps.h"
-#include "MODELING/define_output_to_binary.h"
+#include "SIMULATION/enable_output.h"
+#include "SIMULATION/output_every_nsteps.h"
+#include "SIMULATION/set_output_compression_level.h"
+#include "SIMULATION/define_output_to_binary.h"
+
 #include "MODELING/start_new_stage.h"
 #include "MODELING/define_model_name.h"
+
 #include "MODELING/write_domain_state_for_this_step.h"
 // #include "MODELING/StateWriter.h"
 #include "MODELING/output_of_node_to_screen.h"

@@ -154,7 +154,7 @@
 %token DEFINE ALGORITHM ALGNAME CONVERGENCE_TEST TESTNAME SOLVER SOLVERNAME
 %token DYNAMICINTEGRATOR DYNAMICINTEGRATOR_HHT DYNAMICINTEGRATOR_NEWMARK STATICINTEGRATOR STATICINTEGRATOR_DISPLACEMENT
 %token SIMULATE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations
-%token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY
+%token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY LEVEL
 %token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT
 %token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
 %token self_weight surface load_value
@@ -226,7 +226,7 @@
 %token equaldof master slave dof_to_constrain of
 
 // for output control
-%token OUTPUT BINARY TEXT ENABLE DISABLE
+%token OUTPUT BINARY TEXT ENABLE DISABLE COMPRESSION
 
 // for mysql
 //%token mysql databasename host password username port socket STATE
@@ -1561,6 +1561,13 @@ CMD_define
         args.clear(); signature.clear();
         args.push_back($3); signature.push_back(this_signature("nsteps", &isAdimensional));
         $$ = new FeiDslCaller1<int>(&output_every_nsteps,args,signature,"output_every_nsteps");
+        nodes.push($$);
+    }
+    | SET OUTPUT COMPRESSION LEVEL TO exp
+    {
+        args.clear(); signature.clear();
+        args.push_back($6); signature.push_back(this_signature("level", &isAdimensional));
+        $$ = new FeiDslCaller1<int>(&set_output_compression_level,args,signature,"set_output_compression_level");
         nodes.push($$);
     }
     //!=========================================================================================================

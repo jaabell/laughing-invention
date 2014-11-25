@@ -80,7 +80,7 @@
 #include <Graph.h>
 
 #include <Channel.h>
-#include <HDF5_Channel.h>
+// #include <HDF5_Channel.h>
 
 #include <Analysis.h>
 #include <FE_Datastore.h>
@@ -4384,15 +4384,15 @@ int Domain::CheckMesh( const char *check_mesh_file )
 // *******************************************************************************
 // Jose Abell for saving results via HDF5
 
-int
-Domain::setHDF5_Channel(std::string filename_in,
-                        std::string model_name_in,
-                        std::string stage_name_in,
-                        int nsteps)
-{
-    theHDF5_Channel.initialize(filename_in, model_name_in, stage_name_in, nsteps);
-    return 0;
-}
+// int
+// Domain::setHDF5_Channel(std::string filename_in,
+//                         std::string model_name_in,
+//                         std::string stage_name_in,
+//                         int nsteps)
+// {
+//     theHDF5_Channel.initialize(filename_in, model_name_in, stage_name_in, nsteps);
+//     return 0;
+// }
 
 
 int
@@ -4505,4 +4505,10 @@ int  Domain::getMaxMPsTag()
 int  Domain::getMaxLoadPatternsTag()
 {
     return maxLoadPatternsTag;
+}
+
+int Domain::setOutputCompressionLevel(int level)
+{
+    theOutputWriter.set_zlib_compression_level(level);
+    return 0;
 }

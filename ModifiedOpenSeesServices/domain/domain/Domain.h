@@ -1,4 +1,4 @@
-*/* ****************************************************************** **
+/* ****************************************************************** **
 **    OpenSees - Open System for Earthquake Engineering Simulation    **
 **          Pacific Earthquake Engineering Research Center            **
 **                                                                    **
@@ -97,7 +97,7 @@ class Graph;
 class NodeGraph;
 class ElementGraph;
 // class Channel;
-#include <HDF5_Channel.h>
+// #include <HDF5_Channel.h>
 #include <OutputWriter.h>
 #include <H5OutputWriter.h>
 class FEM_ObjectBroker;
@@ -248,10 +248,10 @@ class Domain
                                 FEM_ObjectBroker &theBroker);
 
 
-        virtual int setHDF5_Channel(std::string filename_in,
-                                    std::string model_name_in,
-                                    std::string stage_name_in,
-                                    int nsteps);
+        // virtual int setHDF5_Channel(std::string filename_in,
+        //                             std::string model_name_in,
+        //                             std::string stage_name_in,
+        //                             int nsteps);
 
         virtual int setOutputWriter(std::string filename_in,
                                     std::string model_name_in,
@@ -263,6 +263,7 @@ class Domain
 
         virtual int enableOutput(bool is_output_enabled);
         virtual int enableElementOutput(bool is_element_output_enabled);
+        virtual int setOutputCompressionLevel(int level);
 
 
         virtual int getMaxElementsTag();
@@ -294,7 +295,6 @@ class Domain
 
         virtual int calculateNodalReactions(int flag);
 
-        HDF5_Channel theHDF5_Channel;
 
     protected:
         virtual int buildEleGraph(Graph *theEleGraph);

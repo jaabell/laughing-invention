@@ -687,6 +687,7 @@ EXP	([Ee][-+]?[0-9]+)
 "text"                              {return token::TEXT;}
 "enable"                            {return token::ENABLE;}
 "disable"                           {return token::DISABLE;}
+"compression"                       {return token::COMPRESSION;}
 
 
  /* ================================================================================================= */
@@ -715,7 +716,8 @@ EXP	([Ee][-+]?[0-9]+)
 "response"                          {return token::RESPONSE;}
 "file"                              {return token::FILE;}
 "from"                              {return token::FROM;}
-"every"                              {return token::EVERY;}
+"every"                             {return token::EVERY;}
+"level"                             {return token::LEVEL;}
 
  /* Greek */
 "alpha"                             {return token::alpha;}
