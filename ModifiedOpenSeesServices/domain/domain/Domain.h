@@ -305,7 +305,8 @@ class Domain
         bool output_is_enabled;
         bool element_output_is_enabled;
         bool have_written_static_mesh_data;
-        bool output_every_nsteps;
+        int  output_every_nsteps;
+        int  countdown_til_output;
 
         double currentTime;               // current pseudo time
 

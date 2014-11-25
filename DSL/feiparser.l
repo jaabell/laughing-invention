@@ -715,6 +715,7 @@ EXP	([Ee][-+]?[0-9]+)
 "response"                          {return token::RESPONSE;}
 "file"                              {return token::FILE;}
 "from"                              {return token::FROM;}
+"every"                              {return token::EVERY;}
 
  /* Greek */
 "alpha"                             {return token::alpha;}

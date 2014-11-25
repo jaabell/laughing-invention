@@ -154,7 +154,7 @@
 %token DEFINE ALGORITHM ALGNAME CONVERGENCE_TEST TESTNAME SOLVER SOLVERNAME
 %token DYNAMICINTEGRATOR DYNAMICINTEGRATOR_HHT DYNAMICINTEGRATOR_NEWMARK STATICINTEGRATOR STATICINTEGRATOR_DISPLACEMENT
 %token SIMULATE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations
-%token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM
+%token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY
 %token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT
 %token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
 %token self_weight surface load_value
@@ -1554,6 +1554,13 @@ CMD_define
     {
         args.clear(); signature.clear();
         $$ = new FeiDslCaller0<>(&enable_element_output,args,signature,"enable_element_output");
+        nodes.push($$);
+    }
+    | OUTPUT  EVERY exp STEPS
+    {
+        args.clear(); signature.clear();
+        args.push_back($3); signature.push_back(this_signature("nsteps", &isAdimensional));
+        $$ = new FeiDslCaller1<int>(&output_every_nsteps,args,signature,"output_every_nsteps");
         nodes.push($$);
     }
     //!=========================================================================================================
