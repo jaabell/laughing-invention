@@ -748,7 +748,7 @@ DomainPartitioner::partition(int numParts)
 
     partitionFlag = true;
 
-
+    myDomain->sendOutputOptionsToSubdomains();
 
 
 

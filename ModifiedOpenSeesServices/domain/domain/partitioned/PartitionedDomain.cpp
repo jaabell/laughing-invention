@@ -759,22 +759,6 @@ PartitionedDomain::getNode(int tag)
         return result;
     }
 
-    //# ifdef _PDD
-    //# else
-    //    // go through the other subdomains until we find it or we run out of subdomains
-    //    if (theSubdomains != 0) {
-    //  ArrayOfTaggedObjectsIter theSubsIter(*theSubdomains);
-    //  TaggedObject *theObject;
-    //  while ((theObject = theSubsIter()) != 0) {
-    //      Subdomain *theSub = (Subdomain *)theObject;
-    //      result = theSub->getNode(tag);
-    //      if (result != 0)
-    //      return result;
-    //  }
-    //    }
-    //
-    //    // its not there
-    //# endif
     return 0;
 
 }
@@ -1007,36 +991,8 @@ PartitionedDomain::update(double newTime, double dT)
         }
     }
 
-    // #ifdef _PARALLEL_PROCESSING
-    //     return this->barrierCheck(res);
-    // #endif
+
     return 0;
-
-    /*
-
-    cerr << "PartitionedDomain::update(double newTime, double dT) -1\n";
-    int result = 0;
-
-
-    cerr << "PartitionedDomain::update(double newTime, double dT) -2\n";
-    this->update();
-    cerr << "PartitionedDomain::update(double newTime, double dT) -2a\n";
-
-    // do the same for all the subdomains
-    if (theSubdomains != 0) {
-      ArrayOfTaggedObjectsIter theSubsIter(*theSubdomains);
-      TaggedObject *theObject;
-      while ((theObject = theSubsIter()) != 0) {
-        Subdomain *theSub = (Subdomain *)theObject;
-        theSub->update(newTime, dT);
-      }
-      this->barrierCheck(result);
-    }
-    cerr << "PartitionedDomain::update(double newTime, double dT) -3\n";
-    return result;
-
-    */
-
 }
 
 
@@ -1182,67 +1138,6 @@ PartitionedDomain::revertToStart(void)
 }
 
 
-// int
-// PartitionedDomain::addRecorder(Recorder& theRecorder)
-// {
-//     if (this->Domain::addRecorder(theRecorder) < 0)
-//     {
-//         return -1;
-//     }
-
-//     // do the same for all the subdomains
-//     if (theSubdomains != 0)
-//     {
-//         ArrayOfTaggedObjectsIter theSubsIter(*theSubdomains);
-//         TaggedObject* theObject;
-
-//         while ((theObject = theSubsIter()) != 0)
-//         {
-//             Subdomain* theSub = (Subdomain*)theObject;
-//             int res = theSub->addRecorder(theRecorder);
-
-//             if (res < 0)
-//             {
-//                 cerr << "PartitionedDomain::revertToLastCommit(void)";
-//                 cerr << " - failed in Subdomain::revertToLastCommit()\n";
-//                 return res;
-//             }
-//         }
-//     }
-
-//     return 0;
-// }
-
-// int
-// PartitionedDomain::removeRecorders(void)
-// {
-//     if (this->Domain::removeRecorders() < 0)
-//     {
-//         return -1;
-//     }
-
-//     // do the same for all the subdomains
-//     if (theSubdomains != 0)
-//     {
-//         ArrayOfTaggedObjectsIter theSubsIter(*theSubdomains);
-//         TaggedObject* theObject;
-
-//         while ((theObject = theSubsIter()) != 0)
-//         {
-//             Subdomain* theSub = (Subdomain*)theObject;
-//             int res = theSub->removeRecorders();
-
-//             if (res < 0)
-//             {
-//                 cerr << "PartitionedDomain::revertToLastCommit(void)";
-//                 cerr << " - failed in Subdomain::revertToLastCommit()\n";
-//                 return res;
-//             }
-//         }
-//     }
-
-//     return 0;
-// }
 
 void
 PartitionedDomain::Print(ostream &s, int flag)
@@ -1632,7 +1527,6 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
 
     while ((nodPtr = nodeIter()) != 0)
     {
-        //  if ( nodPtr->getNumberDOF() != 3) continue;//Guanzhou added -- Out by babak on 12/12/12
         if ( nodPtr->getNumberDOF() != 6 && nodPtr->getNumberDOF() != 3 )
         {
             continue;    //Babak Added to count the Beam Elements in ... 12/12/12
@@ -1830,475 +1724,6 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
 
 
     return 0;
-
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-    // NEW APPROACH
-
-    //     int numVertex = this->getNumElements();
-
-    //     // see if quick return
-
-    //     if ( numVertex == 0 )
-    //     {
-    //         return 0;
-    //     }
-
-
-    //     // create another vertices array which aids in adding edges
-
-    //     int *theElementTagVertices = 0;
-    //     int maxEleNum = maxElementsTag;
-    //     Element *elePtr;
-    //     ElementIter &eleIter = this->getElements();
-
-    //     while ( ( elePtr = eleIter() ) != 0 )
-    //     {
-    //         //if ( elePtr->getClassTag() != ELE_TAG_EightNodeBrick  ) continue;//Guanzhou added //out by Babak on October 17 2012
-    //         int eleClassTag = elePtr->getClassTag();
-    //         if ( eleClassTag != ELE_TAG_EightNodeBrick
-    //                 && eleClassTag != ELE_TAG_TwentySevenNodeBrick
-    //                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickElastic                  // Babak added on November 16 2012d
-    //                 && eleClassTag != ELE_TAG_ElasticBeam                                  // Added by Babak to consider the Elastic Beam Element in the Graph 12/12/12
-    //                 && eleClassTag != ELE_TAG_EightNodeBrickElastic                        // Added by Babak to consider the Elastic eigh node Brick in the Graph 1/18/13
-    //                 && eleClassTag != ELE_TAG_ThreeNodeAndesShell                          // Added by Babak to consider the Three Node Andes Shell in the Graph 2/11/13
-    //                 && eleClassTag != ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam // Added by Babak to consider the ank_one_deficient_elastic_pinned_fixed_beaml in the Graph 5/9/13
-    //                 && eleClassTag != ELE_TAG_PenaltyElement                               // Babak added on June 12 2013
-    //                 && eleClassTag != ELE_TAG_PenaltyElementApplyDisplacement              // Babak added on June 12 2013
-    //                 && eleClassTag != ELE_TAG_ContactElement_3DOF_3DOF                     // Babak added on November 5 2013
-    //                 && eleClassTag != ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF           // Babak added on November 25 2013
-    //                 && eleClassTag != ELE_TAG_Truss                                        // Babak added on January  22 2013
-    //                 && eleClassTag != ELE_TAG_FourNodeAndesShell                           // Babak added sometime
-    //                 && eleClassTag != ELE_TAG_EightNodeBrickLT                             // Jose Added Oct 2014
-    //                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                             // Jose Added Oct 2014
-    //            )
-    //         {
-    //             cerr << "PartitionedDomain::buildEleGraph() -- (2) Unknown element classTag = " << eleClassTag << " \n";
-    //             continue;    //Added by Babak Kamrani to include the 4NodeAndesShell in the element graph 12/28/12
-    //         }
-    //         if ( elePtr->getTag() > maxEleNum )
-    //         {
-    //             maxEleNum = elePtr->getTag();
-    //         }
-    //     }
-
-    //     theElementTagVertices = new int[maxEleNum + 1];
-
-    //     if ( theElementTagVertices == 0 )
-    //     {
-    //         cerr << "WARNING Domain::buildEleGraph ";
-    //         cerr << " - Not Enough Memory for ElementTagVertices\n";
-    //         return -1;
-    //     }
-
-    //     for ( int j = 0; j <= maxEleNum; j++ )
-    //     {
-    //         theElementTagVertices[j] = -1;
-    //     }
-
-    //     cout << "Building element graph............\n";
-    //     cout << "     numVertex = " << numVertex << "\n";
-    //     cout << "     maxEleNum = " << maxEleNum << "\n\n";
-
-
-    //     // now create the vertices with a reference equal to the element number.
-    //     // and a tag which ranges from 0 through numVertex-1
-
-    //     ElementIter &eleIter2 = this->getElements();
-    //     int count = START_VERTEX_NUM;  // = 0 Defined in Vertex.h
-
-    //     while ( ( elePtr = eleIter2() ) != 0 )
-    //     {
-    //         int ElementTag = elePtr->getTag();
-
-    //         int eleClassTag = elePtr->getClassTag();
-    //         if ( eleClassTag != ELE_TAG_EightNodeBrick
-    //                 && eleClassTag != ELE_TAG_TwentySevenNodeBrick
-    //                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickElastic                  // Babak added on November 16 2012d
-    //                 && eleClassTag != ELE_TAG_ElasticBeam                                  // Added by Babak to consider the Elastic Beam Element in the Graph 12/12/12
-    //                 && eleClassTag != ELE_TAG_EightNodeBrickElastic                        // Added by Babak to consider the Elastic eigh node Brick in the Graph 1/18/13
-    //                 && eleClassTag != ELE_TAG_ThreeNodeAndesShell                          // Added by Babak to consider the Three Node Andes Shell in the Graph 2/11/13
-    //                 && eleClassTag != ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam // Added by Babak to consider the ank_one_deficient_elastic_pinned_fixed_beaml in the Graph 5/9/13
-    //                 && eleClassTag != ELE_TAG_PenaltyElement                               // Babak added on June 12 2013
-    //                 && eleClassTag != ELE_TAG_PenaltyElementApplyDisplacement              // Babak added on June 12 2013
-    //                 && eleClassTag != ELE_TAG_ContactElement_3DOF_3DOF                     // Babak added on November 5 2013
-    //                 && eleClassTag != ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF           // Babak added on November 25 2013
-    //                 && eleClassTag != ELE_TAG_Truss                                        // Babak added on January  22 2013
-    //                 && eleClassTag != ELE_TAG_FourNodeAndesShell                           // Babak added sometime
-    //                 && eleClassTag != ELE_TAG_EightNodeBrickLT                             // Jose Added Oct 2014
-    //                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                             // Jose Added Oct 2014
-    //            )
-    //         {
-    //             cerr << "PartitionedDomain::buildEleGraph() -- (2) Unknown element classTag = " << eleClassTag << " \n";
-    //             continue;    //Added by Babak Kamrani to include the 4NodeAndesShell in the element graph 12/28/12
-    //         }
-
-
-    //         Vertex *vertexPtr = new Vertex( count, ElementTag );
-
-    //         if ( vertexPtr == 0 )
-    //         {
-    //             cerr << "WARNING Domain::buildEleGraph";
-    //             cerr << " - Not Enough Memory to create ";
-    //             cerr << count << "th Vertex\n";
-    //             delete [] theElementTagVertices;
-    //             return -1;
-    //         }
-
-    // # ifdef _PDD //Guanzhou added
-    //         vertexPtr->setVertexSize( elePtr->getObjectSize() );
-    //         //represents the (memory) size of vertex, which equals to the size of data
-    //         //should be sent through SendSelf!
-    // # endif
-    //         theEleGraph->addVertex( vertexPtr );
-    //         theElementTagVertices[ElementTag] = count++;
-    //     }
-
-    //     // We now need to determine which elements are asssociated with each node.
-    //     // As this info is not in the Node interface we must build it; which we
-    //     // do using vertices for each node, when we addVertex at thes nodes we
-    //     // will not be adding vertices but element tags.
-
-    //     Vertex **theNodeTagVertices = 0;
-    //     int maxNodNum = maxNodesTag;
-    //     Node *nodPtr;
-    //     NodeIter &nodeIter = this->getNodes();
-
-    //     while ( ( nodPtr = nodeIter() ) != 0 )
-    //         if ( nodPtr->getTag() > maxNodNum )
-    //         {
-    //             maxNodNum = nodPtr->getTag();
-    //         }
-
-    //     theNodeTagVertices = new Vertex *[maxNodNum + 1];
-
-    //     if ( theNodeTagVertices == 0 )
-    //     {
-    //         cerr << "WARNING Domain::buildEleGraph ";
-    //         cerr << " - Not Enough Memory for NodeTagVertices\n";
-    //         return -1;
-    //     }
-
-    //     for ( int l = 0; l <= maxNodNum; l++ )
-    //     {
-    //         theNodeTagVertices[l] = 0;
-    //     }
-
-    //     // now create the vertices with a reference equal to the node number.
-    //     // and a tag which ranges from 0 through numVertex-1 and placed in
-    //     // theNodeTagVertices at a position equal to the node's tag.
-
-    //     NodeIter &nodeIter2 = this->getNodes();
-    //     count = START_VERTEX_NUM;
-
-    //     while ( ( nodPtr = nodeIter2() ) != 0 )
-    //     {
-    //         int nodeTag = nodPtr->getTag();
-    //         Vertex *vertexPtr = new Vertex( count++, nodeTag );
-    //         theNodeTagVertices[nodeTag] = vertexPtr;
-
-    //         if ( vertexPtr == 0 )
-    //         {
-    //             cerr << "WARNING Domain::buildEleGraph";
-    //             cerr << " - Not Enough Memory to create ";
-    //             cerr << count << "th Node Vertex\n";
-    //             delete [] theNodeTagVertices;
-    //             return -1;
-    //         }
-    //     }
-
-    //     // now add the the Elements to the nodes
-
-    //     ElementIter &eleIter3 = this->getElements();
-
-    //     while ( ( elePtr = eleIter3() ) != 0 )
-    //     {
-    //         int eleTag = elePtr->getTag();
-    //         const ID &id = elePtr->getExternalNodes();
-
-    //         int size = id.Size();
-
-    //         for ( int i = 0; i < size; i++ )
-    //         {
-    //             theNodeTagVertices[id( i )]->addEdge( eleTag );
-    //         }
-    //     }
-
-
-
-    //     // now add the edges to the vertices of our element graph;
-    //     // this is done by looping over the Node vertices, getting their
-    //     // Adjacenecy and adding edges between elements with common nodes
-    // # ifdef _PDD
-    //     Vertex *vertexPtr;
-
-    //     // For all node tags
-    //     for ( int k = 0; k <= maxNodNum; k++ )
-
-    //         // Get a pointer to the graph vertex corresponding to tag "k"
-    //         if ( ( vertexPtr = theNodeTagVertices[k] ) != 0 ) // If not available skip this node tag
-    //         {
-    //             // Get the list of elements connected to this node
-    //             const ID &id = vertexPtr->getAdjacency();
-
-    //             //Get the number of elements connected to this node
-    //             int size = id.Size();
-
-    //             for ( int i = 0; i < size; i++ )
-    //             {
-    //                 int Element1 = id( i );
-
-
-    //                 /////////////////////////////////////////////////////////////////////
-    //                 //////////////////////// BEGIN OLD VERSION
-    //                 /////////////////////////////////////////////////////////////////////
-
-    //                 // Element *ele1 = this->getElement( Element1 );
-
-    //                 // const ID &nodes1 = ele1->getExternalNodes();
-    //                 // int num1 = nodes1.Size();
-    //                 // const ID &nodes_in_element1 = ele1->getExternalNodes();
-    //                 // int number_of_nodes_in_element1 = nodes_in_element1.Size();
-
-    //                 // int Num1_Boundary_Nodes = 1;
-
-    //                 // if (num1 == 27)
-    //                 // {
-    //                 //     Num1_Boundary_Nodes = 9;
-    //                 // }
-
-    //                 // if (num1 == 4)
-    //                 // {
-    //                 //     Num1_Boundary_Nodes = 2;
-    //                 // }
-
-    //                 // if (num1 == 2)
-    //                 // {
-    //                 //     Num1_Boundary_Nodes = 1;
-    //                 // }
-
-    //                 // int vertexTag1 = theElementTagVertices[Element1];
-
-    //                 /////////////////////////////////////////////////////////////////////
-    //                 //////////////////////// END OLD VERSION
-    //                 /////////////////////////////////////////////////////////////////////
-
-
-    //                 /////////////////////////////////////////////////////////////////////
-    //                 //////////////////////// BEGIN NEW VERSION
-    //                 /////////////////////////////////////////////////////////////////////
-    //                 Element *ele1 = this->getElement( Element1 );
-
-    //                 const ID &nodes_in_element1 = ele1->getExternalNodes();
-    //                 int number_of_nodes_in_element1 = nodes_in_element1.Size();
-
-    //                 //How many elements are in the boundary of an element (added 8/20/13):
-    //                 //-------------------------
-    //                 int Num1_Boundary_Nodes = ele1->getNumberOfBoundaryNodes();
-
-    //                 //--------------------------
-    //                 int vertexTag1 = theElementTagVertices[Element1];
-
-    //                 /////////////////////////////////////////////////////////////////////
-    //                 //////////////////////// END NEW VERSION
-    //                 /////////////////////////////////////////////////////////////////////
-    //                 for ( int j = 0; j < size; j++ )
-    //                     if ( i != j )
-    //                     {
-
-    //                         int Element2 = id( j );
-    //                         int vertexTag2 = theElementTagVertices[Element2];
-
-    //                         if ( vertexTag1 > vertexTag2 ) // This avoids doing double work
-    //                         {
-    //                             Element *ele2 = this->getElement( Element2 );
-
-
-    //                             /////////////////////////////////////////////////////////////////////
-    //                             //////////////////////// BEGIN NEW VERSION
-    //                             /////////////////////////////////////////////////////////////////////
-
-    //                             const ID &nodes_in_element2 = ele2->getExternalNodes();
-    //                             int number_of_nodes_in_element2 = nodes_in_element2.Size();
-    //                             //How many elements are in the boundary of an element (added 8/20/13):
-    //                             //-------------------------
-    //                             int Num2_Boundary_Nodes = ele2->getNumberOfBoundaryNodes();
-
-    //                             //--------------------------
-    //                             // Keep the smallest of number of boundary nodes
-    //                             int number_of_common_nodes = Num1_Boundary_Nodes;
-    //                             if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
-    //                             {
-    //                                 number_of_common_nodes = Num2_Boundary_Nodes;
-    //                             }
-
-    //                             //--------------------------
-    //                             //Count the number of common nodes
-    //                             int common = 0;
-
-    //                             for ( int kk = 0; kk < number_of_nodes_in_element1; kk++ )
-    //                             {
-    //                                 for ( int l = 0; l < number_of_nodes_in_element2; l++ )
-    //                                 {
-    //                                     if ( nodes_in_element1( kk ) == nodes_in_element2( l ) )
-    //                                     {
-    //                                         common++;
-    //                                     }
-    //                                 }
-    //                             }
-
-    //                             cout << "Element" << ele1->getTag() << " and element " << ele2->getTag() << " have " << common << " nodes in common.";
-
-    //                             // Adde edge for both vertices
-    //                             if (  common == number_of_common_nodes  )
-    //                             {
-    //                                 cout << "  Vertex added!\n";
-    //                                 theEleGraph->addEdge( vertexTag1, vertexTag2 );
-    //                                 theEleGraph->addEdge( vertexTag2, vertexTag1 );
-    //                             }
-    //                             else
-    //                             {
-    //                                 cout << "  \n";
-    //                             }
-    //                         }
-    //                         /////////////////////////////////////////////////////////////////////
-    //                         //////////////////////// END NEW VERSION
-    //                         /////////////////////////////////////////////////////////////////////
-
-    //                         /////////////////////////////////////////////////////////////////////
-    //                         //////////////////////// START OLD VERSION
-    //                         /////////////////////////////////////////////////////////////////////
-    //                         // const ID &nodes2 = ele2->getExternalNodes();
-    //                         // int num2 = nodes2.Size();
-    //                         // const ID &nodes_in_element2 = ele2->getExternalNodes();
-    //                         // int number_of_nodes_in_element2 = nodes_in_element2.Size();
-    //                         // //How many elements are in the boundary of an element (added 8/20/13):
-    //                         // //-------------------------
-    //                         // int Num2_Boundary_Nodes = 1;
-
-    //                         // if (num2 == 27)
-    //                         // {
-    //                         //     Num2_Boundary_Nodes = 9;
-    //                         // }
-
-    //                         // if (num2 == 4)
-    //                         // {
-    //                         //     Num2_Boundary_Nodes = 2;
-    //                         // }
-
-    //                         // if (num2 == 2)
-    //                         // {
-    //                         //     Num2_Boundary_Nodes = 1;
-    //                         // }
-
-    //                         // //--------------------------
-    //                         // int num_comm = Num1_Boundary_Nodes;
-
-    //                         // // Keep the smallest of number of boundary nodes
-    //                         // int number_of_common_nodes = Num1_Boundary_Nodes;
-    //                         // if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
-    //                         // {
-    //                         //     num_comm = Num2_Boundary_Nodes;
-    //                         //     number_of_common_nodes = Num2_Boundary_Nodes;
-    //                         // }
-
-    //                         // //--------------------------
-
-    //                         // //Count the number of common nodes
-    //                         // int common = 0;
-
-    //                         // for ( int k = 0; k < num1; k++ )
-    //                         //     for ( int k = 0; k < number_of_nodes_in_element1; k++ )
-    //                         //     {
-    //                         //         for ( int l = 0; l < num2; l++ )
-    //                         //             for ( int l = 0; l < number_of_nodes_in_element2; l++ )
-    //                         //             {
-    //                         //                 if ( nodes1( k ) == nodes2( l ) )
-    //                         //                     if ( nodes_in_element1( k ) == nodes_in_element2( l ) )
-    //                         //                     {
-    //                         //                         common++;
-    //                         //                     }
-    //                         //             }
-    //                         //     }
-
-    //                         // // addEdge() adds for both vertices - do only once
-    //                         // if ( ( vertexTag1 > vertexTag2 ) && ( common == 4 ) )
-    //                         //     // Adde edge for both vertices
-    //                         //     if ( ( vertexTag1 > vertexTag2 ) && ( common == number_of_common_nodes ) )
-    //                         //     {
-    //                         //         theEleGraph->addEdge( vertexTag1, vertexTag2 );
-    //                         //         theEleGraph->addEdge( vertexTag2, vertexTag1 );
-    //                         //     }
-
-    //                         /////////////////////////////////////////////////////////////////////
-    //                         //////////////////////// END OLD VERSION
-    //                         /////////////////////////////////////////////////////////////////////
-
-    //                     }
-    //             }
-    //         }
-
-    // # else
-    //     Vertex *vertexPtr;
-
-    //     for ( int k = 0; k <= maxNodNum; k++ )
-    //         if ( ( vertexPtr = theNodeTagVertices[k] ) != 0 )
-    //         {
-
-    //             const ID &id = vertexPtr->getAdjacency();
-
-    //             int size = id.Size();
-
-    //             for ( int i = 0; i < size; i++ )
-    //             {
-    //                 int Element1 = id( i );
-
-    //                 int vertexTag1 = theElementTagVertices[Element1];
-
-    //                 for ( int j = 0; j < size; j++ )
-    //                     if ( i != j )
-    //                     {
-
-    //                         int Element2 = id( j );
-    //                         int vertexTag2 = theElementTagVertices[Element2];
-
-    //                         // addEdge() adds for both vertices - do only once
-    //                         if ( vertexTag1 > vertexTag2 )
-    //                         {
-    //                             theEleGraph->addEdge( vertexTag1, vertexTag2 );
-    //                             theEleGraph->addEdge( vertexTag2, vertexTag1 );
-    //                         }
-    //                     }
-    //             }
-    //         }
-
-    // # endif
-
-
-    //     // done now delete theElementTagVertices, the node Vertices and
-    //     // theNodeTagVertices
-
-    //     delete [] theElementTagVertices;
-
-    //     for ( int i = 0; i <= maxNodNum; i++ )
-    //         if ( ( vertexPtr = theNodeTagVertices[i] ) != 0 )
-    //         {
-    //             delete vertexPtr;
-    //         }
-
-    //     delete [] theNodeTagVertices;
-
-    //     return 0;
-
-
 
 
 }
@@ -2525,77 +1950,41 @@ PartitionedDomain::getSubdomainGraph(void)
     return *mySubdomainGraph;
 }
 
-//Copied from Domain by Babak on October 2012:
-//-------------
-
-// BodyForce *
-// Domain::removeBodyForce(int tag)
-// {
-//   // remove the object from the container
-//   TaggedObject *mc = theBodyForces->removeComponent(tag);
-//
-//   // if not there return 0
-//   if (mc == 0)
-//       return 0;
-//
-//   // otherwise mark the domain as having changed
-//   this->domainChange();
-//
-//   BodyForce *result = (BodyForce *)mc;
-//   //  result->setDomain(0);
-//   return result;
-// }
-//
-// Damping *
-// Domain::removeDamping(int tag)
-// {
-//   // remove the object from the container
-//   TaggedObject *mc = theDampings->removeComponent(tag);
-//
-//   // if not there return 0
-//   if (mc == 0)
-//       return 0;
-//
-//   // otherwise mark the domain as having changed
-//   this->domainChange();
-//
-//   Damping *result = (Damping *)mc;
-//   //  result->setDomain(0);
-//   return result;
-// }
-// //--------------
 
 
-//added by babak at 2/25/13
-//------
 int
 PartitionedDomain::return_element_numberofNodes(int tag)
 {
     //tag starts from 1 ... but array starts from zero ...
     return Element_Node_Number_List[tag - 1];
 }
-//------
 
-
-
-
-int PartitionedDomain::setNumberOfOutputSteps(int nsteps)
+int PartitionedDomain::sendOutputOptionsToSubdomains()
 {
-    return this->setNumberOfOutputSteps(nsteps);
-}
-
-int PartitionedDomain::setOutputEveryNsteps(int output_every_nsteps)
-{
-    return this->setOutputEveryNsteps(output_every_nsteps);
-}
+    cout  << "PartitionedDomain::sendOutputOptionsToSubdomains() - Start\n";
 
 
-int PartitionedDomain::enableOutput(bool is_output_enabled)
-{
-    return this->enableOutput(is_output_enabled);
-}
+    SubdomainIter &theSubdomains = this->getSubdomains();
+    Subdomain *theSub;
 
-int PartitionedDomain::enableElementOutput(bool is_element_output_enabled)
-{
-    return this->enableElementOutput(is_element_output_enabled);
+    while ((theSub = theSubdomains()) != 0)
+    {
+        // Output options
+        // butput_is_enabled;
+        // bool element_output_is_enabled;
+        // bool have_written_static_mesh_data;
+        // int  output_every_nsteps;
+        // int  countdown_til_output;
+
+        theSub->setNumberOfOutputSteps(theOutputWriter.get_number_of_time_steps());
+        theSub->enableOutput(output_is_enabled);
+        theSub->enableElementOutput(element_output_is_enabled);
+        theSub->setOutputEveryNsteps(output_every_nsteps);
+        theSub->setOutputCompressionLevel(theOutputWriter.get_zlib_compression_level());
+        theSub->sendOutputOptionsToSubdomain();
+
+    }
+
+    cout  << "PartitionedDomain::sendOutputOptionsToSubdomains() - End\n";
+    return 0;
 }

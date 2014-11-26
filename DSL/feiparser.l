@@ -264,6 +264,7 @@ EXP	([Ee][-+]?[0-9]+)
 "check"                             {return token::CMD_check;}
 "mesh"                              {return token::MESH;}
 "require"                           {return token::REQUIRE;}
+"set"                               {return token::SET;}
 
 
   /* New loading stage.... should change */

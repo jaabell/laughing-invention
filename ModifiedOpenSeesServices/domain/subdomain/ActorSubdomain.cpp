@@ -132,7 +132,7 @@ ActorSubdomain::run(void)
         LinearSOE                    *theSOE;
         LinearSOESolver              *theSolver;
         ConvergenceTest              *theTest;
-        // Recorder *theRecorder;
+        ID                           options(7);
         bool res;
         DOF_Group *pDOF_Group;
 
@@ -1060,51 +1060,28 @@ ActorSubdomain::run(void)
 
                 break;
 
-            // case ShadowActorSubdomain_swapNodeFromInternalToExternal:
-            //     theNod = this->removeNode(msgData(1));
-
-            //     if ( this->getNode(theNod->getTag()) != 0)
-            //     {
-            //         cerr << "ActorSubdomain::run() - swapNodeFromInternalToExternal failed to remove node "
-            //              << theNod->getTag() << "\n";
-            //         exit(1);
-            //     }
-
-            //     pDOF_Group = theNod->getDOF_GroupPtr();
-
-            //     if (pDOF_Group != 0)
-            //     {
-            //         pDOF_Group->unSetMyNode();
-            //     }
-
-            //     this->addExternalNode(theNod);
-
-            //     //tmpNode =
-            //     //this->Subdomain::addExternalNode(theNod);
-
-            //     if ( this->getNode(theNod->getTag()) == 0)
-            //     {
-            //         cerr << "ActorSubdomain::run() - swapNodeFromInternalToExternal failed to add external node "
-            //              << theNod->getTag() << "\n";
-            //         exit(1);
-            //     }
-
-            //     //delete theNod;
-
-            //     //send it back to master!
-            //     msgData(1) = theNod->getClassTag();
-            //     msgData(2) = theNod->getDbTag();
-            //     this->sendID(msgData);
-            //     this->sendObject(*theNod);
-            //     //delete theNod;
-            //     break;
-
             case ShadowActorSubdomain_exportInternalNode:
                 exportInternalNode(msgData(1), msgData(2));
                 break;
 
             case ShadowActorSubdomain_resetRecorders:
                 // resetRecorders3();
+                break;
+
+            case ShadowActorSubdomain_sendOutputOptions:
+                this->receiveID(options);
+                output_is_enabled             = options(0) ;
+                element_output_is_enabled     = options(1) ;
+                have_written_static_mesh_data = options(2) ;
+                output_every_nsteps           = options(3) ;
+                countdown_til_output          = options(4) ;
+
+                this->enableOutput(output_is_enabled);
+                this->enableElementOutput(element_output_is_enabled);
+                this->setOutputEveryNsteps(output_every_nsteps);
+                this->setNumberOfOutputSteps(options(5));
+                this->setOutputCompressionLevel(options(6));
+
                 break;
 
 # endif

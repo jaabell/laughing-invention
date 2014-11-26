@@ -4512,3 +4512,15 @@ int Domain::setOutputCompressionLevel(int level)
     theOutputWriter.set_zlib_compression_level(level);
     return 0;
 }
+
+int Domain::sendOutputOptionsToSubdomains()
+{
+    cerr << "Domain::sendOutputOptionsToSubdomains() - Should be done by subdomains";
+    return 0;
+}
+
+int Domain::receiveOutputOptionsToSubdomains()
+{
+    cerr << "Domain::receiveOutputOptionsToSubdomains() - Should be done by subdomains";
+    return 0;
+}

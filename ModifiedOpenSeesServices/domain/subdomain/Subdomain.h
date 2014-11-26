@@ -241,6 +241,8 @@ class Subdomain: public Element, public Domain
         DomainDecompositionAnalysis *getDDAnalysis(void);
         int clearAnalysis(void);
 
+        virtual int sendOutputOptionsToSubdomain();
+
     protected:
         virtual int buildMap(void);
         bool mapBuilt;

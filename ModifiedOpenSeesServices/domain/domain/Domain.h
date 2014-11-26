@@ -96,7 +96,7 @@ class SingleDomNDMaterialLTIter;
 class Graph;
 class NodeGraph;
 class ElementGraph;
-// class Channel;
+class Channel;
 // #include <HDF5_Channel.h>
 #include <OutputWriter.h>
 #include <H5OutputWriter.h>
@@ -294,6 +294,9 @@ class Domain
 
 
         virtual int calculateNodalReactions(int flag);
+
+        virtual int sendOutputOptionsToSubdomains();
+        virtual int receiveOutputOptionsToSubdomains();
 
 
     protected:

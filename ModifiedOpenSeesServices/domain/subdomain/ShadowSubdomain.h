@@ -175,6 +175,8 @@ class ShadowSubdomain: public Shadow, public Subdomain
         virtual int enableOutput(bool is_output_enabled);
         virtual int enableElementOutput(bool is_element_output_enabled);
 
+        virtual int sendOutputOptionsToSubdomain();
+
     private:
         ID msgData;
         ID theElements;

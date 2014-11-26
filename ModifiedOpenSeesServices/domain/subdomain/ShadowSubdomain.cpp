@@ -1625,4 +1625,25 @@ int ShadowSubdomain::enableElementOutput(bool is_element_output_enabled)
     return this->enableElementOutput(is_element_output_enabled);
 }
 
+int ShadowSubdomain::sendOutputOptionsToSubdomain()
+{
+
+    msgData(0) = ShadowActorSubdomain_sendOutputOptions;
+
+    this->sendID(msgData);
+
+    ID options(7);
+    options(0) = output_is_enabled;
+    options(1) = element_output_is_enabled;
+    options(2) = have_written_static_mesh_data;
+    options(3) = output_every_nsteps;
+    options(4) = countdown_til_output;
+    options(5) = theOutputWriter.get_number_of_time_steps();
+    options(6) = theOutputWriter.get_zlib_compression_level();
+
+    this->sendID(options);
+
+    return 0;
+}
+
 

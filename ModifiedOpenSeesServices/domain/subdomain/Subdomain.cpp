@@ -1286,3 +1286,9 @@ Domain::removeDamping(int tag)
   return result;
 }*/
 //--------------
+
+int  Subdomain::sendOutputOptionsToSubdomain()
+{
+    cerr << "Subdomain::sendOutputOptionsToSubdomain() - Nothing to do. Subclass maybe?\n";
+    return 0;
+}

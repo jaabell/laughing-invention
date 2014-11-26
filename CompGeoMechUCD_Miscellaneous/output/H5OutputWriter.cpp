@@ -1719,9 +1719,10 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
 
     if (zlib_compression_level > 0)
     {
-        status = H5Pset_deflate (dataset_creation_plist, zlib_compression_level = 0);
+        status = H5Pset_deflate (dataset_creation_plist, zlib_compression_level );
         hdf5_check_error(status);
     }
+
 
 #ifdef HDF5_CREATE_CHECK
     cout << "HDF5 array var-length << ";

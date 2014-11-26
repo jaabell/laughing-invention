@@ -118,6 +118,10 @@ class H5OutputWriter: public OutputWriter
                         std::string stage_name_in,
                         int nsteps);
         void set_number_of_time_steps(int nsteps);
+        int get_number_of_time_steps()
+        {
+            return number_of_time_steps;
+        };
 
         void finalize();
 
@@ -227,6 +231,10 @@ class H5OutputWriter: public OutputWriter
 
 
         void set_zlib_compression_level(int level);
+        int get_zlib_compression_level()
+        {
+            return zlib_compression_level;
+        }
 
 
     private:
