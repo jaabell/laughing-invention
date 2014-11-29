@@ -28,6 +28,12 @@
 
 int set_output_compression_level(int level)
 {
+#ifdef _PARALLEL_PROCESSING
+    cout << "Warning! Output compresison not available in parallel as HDF5 (as of Dec 2014, version 1.8.12) does not support parallel filtered outputt. \n";
+    cout << "     Please check HDF5 website for further information. \n";
+    return 0;
+#else
     return theDomain.setOutputCompressionLevel(level);
+#endif
 }
 
