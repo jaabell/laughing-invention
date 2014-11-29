@@ -744,7 +744,7 @@ PartitionedDomain::getElement(int tag)
     }
 
     // its not there
-# endif
+#endif
     return 0;
 }
 

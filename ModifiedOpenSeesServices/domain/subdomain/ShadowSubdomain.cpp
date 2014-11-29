@@ -1604,26 +1604,26 @@ ShadowSubdomain::swapNodeFromInternalToExternal(int nodeTag)
 
 
 
-int ShadowSubdomain::setNumberOfOutputSteps(int nsteps)
-{
-    return this->setNumberOfOutputSteps(nsteps);
-}
+// int ShadowSubdomain::setNumberOfOutputSteps(int nsteps)
+// {
+//     return this->setNumberOfOutputSteps(nsteps);
+// }
 
-int ShadowSubdomain::setOutputEveryNsteps(int output_every_nsteps)
-{
-    return this->setOutputEveryNsteps(output_every_nsteps);
-}
+// int ShadowSubdomain::setOutputEveryNsteps(int output_every_nsteps)
+// {
+//     return this->setOutputEveryNsteps(output_every_nsteps);
+// }
 
 
-int ShadowSubdomain::enableOutput(bool is_output_enabled)
-{
-    return this->enableOutput(is_output_enabled);
-}
+// int ShadowSubdomain::enableOutput(bool is_output_enabled)
+// {
+//     return this->enableOutput(is_output_enabled);
+// }
 
-int ShadowSubdomain::enableElementOutput(bool is_element_output_enabled)
-{
-    return this->enableElementOutput(is_element_output_enabled);
-}
+// int ShadowSubdomain::enableElementOutput(bool is_element_output_enabled)
+// {
+//     return this->enableElementOutput(is_element_output_enabled);
+// }
 
 int ShadowSubdomain::sendOutputOptionsToSubdomain()
 {
