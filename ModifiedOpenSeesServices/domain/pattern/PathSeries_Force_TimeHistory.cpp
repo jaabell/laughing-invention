@@ -276,7 +276,11 @@ PathSeries_Force_TimeHistory::PathSeries_Force_TimeHistory(int tag,
       isConstant(isConstant_)
 {
     thePath = new Vector(*thePath_);
-    time = new Vector(*time_);
+
+    if (time_ == 0)
+    {
+        time = 0;
+    }
 
 }
 
@@ -467,13 +471,21 @@ PathSeries_Force_TimeHistory::applyLoad(double time)
 int
 PathSeries_Force_TimeHistory::sendSelf(int commitTag, Channel &theChannel)
 {
-    static ID IDdata(6);
+    static ID IDdata(7);
+    int MSG_sending_time = 1;
+    if (time == 0)
+    {
+        MSG_sending_time = 0;
+    }
+
     IDdata(0) = currentTimeLoc;
     IDdata(1) = nodeTag;
     IDdata(2) = dof;
     IDdata(3) = isConstant;
     IDdata(4) = thePath->Size();
     IDdata(5) = this->getTag();
+    IDdata(6) = MSG_sending_time;
+
 
     int res = theChannel.sendID(0, commitTag, IDdata);
     if (res < 0)
@@ -500,15 +512,15 @@ PathSeries_Force_TimeHistory::sendSelf(int commitTag, Channel &theChannel)
         return res;
     }
 
-
-    res = theChannel.sendVector(0, commitTag, *time);
-    if (res < 0)
+    if (MSG_sending_time == 1)
     {
-        cerr << "PathSeries_Force_TimeHistory::sendSelf() - channel failed to send time vector\n";
-        return res;
+        res = theChannel.sendVector(0, commitTag, *time);
+        if (res < 0)
+        {
+            cerr << "PathSeries_Force_TimeHistory::sendSelf() - channel failed to send time vector\n";
+            return res;
+        }
     }
-
-
 
     return 0;
 }
@@ -516,10 +528,10 @@ PathSeries_Force_TimeHistory::sendSelf(int commitTag, Channel &theChannel)
 
 int
 PathSeries_Force_TimeHistory::receiveSelf(int commitTag, Channel &theChannel,
-                                       FEM_ObjectBroker &theBroker)
+        FEM_ObjectBroker &theBroker)
 {
 
-    static ID IDdata(6);
+    static ID IDdata(7);
     int res = theChannel.receiveID(0, commitTag, IDdata);
     if (res < 0)
     {
@@ -534,6 +546,8 @@ PathSeries_Force_TimeHistory::receiveSelf(int commitTag, Channel &theChannel,
     int size       = IDdata(4);
     int tag        = IDdata(5);
     this->setTag(tag);
+
+    int MSG_sending_time = IDdata(6);
 
     thePath = new Vector(size);
     time = new Vector(size);
@@ -558,13 +572,16 @@ PathSeries_Force_TimeHistory::receiveSelf(int commitTag, Channel &theChannel,
         return res;
     }
 
-
-    res = theChannel.receiveVector(0, commitTag, *time);
-    if (res < 0)
+    if (MSG_sending_time == 1)
     {
-        cerr << "PathSeries_Force_TimeHistory::receiveSelf() - channel failed to receive time vector\n";
-        return res;
+        res = theChannel.receiveVector(0, commitTag, *time);
+        if (res < 0)
+        {
+            cerr << "PathSeries_Force_TimeHistory::receiveSelf() - channel failed to receive time vector\n";
+            return res;
+        }
     }
+
 
 
     return 0;
