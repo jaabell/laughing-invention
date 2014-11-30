@@ -55,12 +55,17 @@ inline void hdf5_check_error(herr_t status)
 #define H5OUTPUTWRITER_MAX_STRING_SIZE 1024
 
 //Comment to untoggle
-// #define _DEBUG_H5OUTPUTWRITER 1
+// #define _DEBUG_H5OUTPUTWRITER 1;
+
 #ifdef _DEBUG_H5OUTPUTWRITER
-#define H5OUTPUTWRITER_COUNT_OBJS ssize_t nobjects = H5Fget_obj_count( id_file, H5F_OBJ_ALL ); \
+#define H5OUTPUTWRITER_COUNT_OBJS  nobjects = H5Fget_obj_count( id_file, H5F_OBJ_ALL ); \
     cout << "Objects open = "  << nobjects << endl;
 #else
 #define H5OUTPUTWRITER_COUNT_OBJS
+#endif
+
+#ifdef _DEBUG_H5OUTPUTWRITER
+ssize_t nobjects;
 #endif
 
 
@@ -75,7 +80,6 @@ inline void hdf5_check_error(herr_t status)
 #define H5OUTPUTWRITER_META_BLOCK_SIZE 2048*16                 // Not used
 #define H5OUTPUTWRITER_SIEVE_BUFFER_SIZE 1024*1024             // Not used because of chunking
 #define H5OUTPUTWRITER_PREEMPTION_POLICY 0.75
-
 #define H5OUTPUTWRITER_TIMESTRING_MAX_SIZE 64
 
 
@@ -235,6 +239,11 @@ class H5OutputWriter: public OutputWriter
         {
             return zlib_compression_level;
         }
+        void set_flag_write_element_output(bool is_element_output_is_enabled_)
+        {
+            flag_write_element_output = is_element_output_is_enabled_;
+            cout << "flag_write_element_output = " << flag_write_element_output << endl;
+        }
 
 
     private:
@@ -258,6 +267,7 @@ class H5OutputWriter: public OutputWriter
         double current_time;
 
         int zlib_compression_level;
+        int flag_write_element_output;
 
         std::string file_name;          // Name of the HDF5 file
         std::string model_name;          // Name of the HDF5 file
@@ -305,6 +315,7 @@ class H5OutputWriter: public OutputWriter
         hid_t group_creation_plist;
         hid_t dataset_creation_plist;
         hid_t dataset_access_plist;
+        hid_t dataset_xfer_plist;
 
         //Some flags
         bool create_nodeMeshData_arrays;

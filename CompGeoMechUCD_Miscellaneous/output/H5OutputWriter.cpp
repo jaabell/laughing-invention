@@ -81,6 +81,12 @@ H5OutputWriter::H5OutputWriter():
     create_elementOutput_arrays          = true;
 
     zlib_compression_level = 0;
+    flag_write_element_output            = 1;
+
+    dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);
+#ifdef _PARALLEL_PROCESSING
+    H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
+#endif
 }
 
 
@@ -132,6 +138,7 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
                nsteps);
 
     zlib_compression_level = 0;
+    flag_write_element_output = 1;
 }
 
 
@@ -675,6 +682,7 @@ void H5OutputWriter::syncWriters()
     MPI_Bcast(&max_element_tag                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
 
     MPI_Bcast(&zlib_compression_level               , 1 , MPI_INT , root , MPI_COMM_WORLD);
+    MPI_Bcast(&flag_write_element_output            , 1 , MPI_INT , root , MPI_COMM_WORLD);
 
     //The slave processes must be initialized after all this stuff is transmitted.
     if (processID != 0)
@@ -832,7 +840,7 @@ void H5OutputWriter::writeMesh()
         write_string(id_file, "Date_and_Time_Start", timestring);
 
 
-        createVariableLengthStringArray(id_file, "Analysis_Options", " ")
+        createVariableLengthStringArray(id_file, "Analysis_Options", " ");
 
 
         H5OUTPUTWRITER_COUNT_OBJS;
@@ -1099,9 +1107,9 @@ void H5OutputWriter::writeMesh()
         // if (processID == 0) // Only main processor knows about the global partition
         // {
 
-        cout << "Processor " << processID << " writing partition data \n";
-        cout << "     Partition.Size() = " << Partition.Size() << " \n";
-        cout << "     dims[0]          = " << dims[0] << " \n";
+        // cout << "Processor " << processID << " writing partition data \n";
+        // cout << "     Partition.Size() = " << Partition.Size() << " \n";
+        // cout << "     dims[0]          = " << dims[0] << " \n";
         dims[0]      = (hsize_t) Partition.Size();
         data_dims[0] = (hsize_t) Partition.Size();
         count[0]     = dims[0];
@@ -1116,7 +1124,7 @@ void H5OutputWriter::writeMesh()
                                         block,
                                         int_data_buffer);
         // }
-        cout << "Processor " << processID << " went through. \n";
+        // cout << "Processor " << processID << " went through. \n";
 #endif
 
         // TODO: Bring back element types
@@ -1207,7 +1215,12 @@ void H5OutputWriter::writeMesh()
             maxdims[0] = (hsize_t)  length_element_output;
             maxdims[1] = number_of_time_steps;
 
-            id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ", 1);
+            if (flag_write_element_output == 1)
+            {
+                // dims[1] = 1;
+                // maxdims[1] = 1;
+                id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ", 1);
+            }
 
         }//    create_elementOutput_arrays = false;
 
@@ -1442,10 +1455,13 @@ int H5OutputWriter::setTime(double t)
 
     status =  H5Dset_extent( id_nodes_displacements, dims_new );
 
-    dims_new[0] = length_element_output;
-    dims_new[1] = current_time_step;
 
-    status =  H5Dset_extent( id_elements_output, dims_new );
+    if ( flag_write_element_output == 1 ) //extend element output array depending on whether the flag is enabled.
+    {
+        dims_new[0] = length_element_output;
+        dims_new[1] = current_time_step;
+        status =  H5Dset_extent( id_elements_output, dims_new );
+    }
 
 
     return 0;
@@ -1479,15 +1495,16 @@ int H5OutputWriter::write_string(hid_t here, std::string name, std::string conte
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
+    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(id_data_string,
                       id_type_string,
                       H5S_ALL,
                       H5S_ALL,
-                      file_access_plist,
+                      dataset_xfer_plist,
                       contents.c_str());
+
 #else
 
     status = H5Dwrite(id_data_string,
@@ -1910,17 +1927,19 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
+    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(
                  id_array,              // Dataset to write to
                  H5T_NATIVE_DOUBLE,     // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
-                 file_access_plist,           // Form of writing
+                 dataset_xfer_plist,           // Form of writing
                  data                   // The actual data
              );
+
+    // H5Pclose(file_access_plist);
 #else
 
     status = H5Dwrite(
@@ -1988,8 +2007,8 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
+    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     //Write data!
     status = H5Dwrite(
@@ -1997,7 +2016,7 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
                  H5T_NATIVE_INT,        // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
-                 file_access_plist,           // Form of writing
+                 dataset_xfer_plist,           // Form of writing
                  data                   // The actual data
 
              );
@@ -2087,15 +2106,15 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
+    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(
                  id_array,              // Dataset to write to
                  type,                  // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
-                 file_access_plist,           // Form of writing
+                 dataset_xfer_plist,           // Form of writing
                  thedata// The actual data
              );
 
@@ -2165,15 +2184,15 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
+    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(
                  id_array,              // Dataset to write to
                  H5T_NATIVE_DOUBLE,     // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
-                 file_access_plist,           // Form of writing
+                 dataset_xfer_plist,           // Form of writing
                  data                   // The actual data
              );
 #else
@@ -2210,6 +2229,7 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
 
 
 
+
 hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
         int datarank,
         hsize_t *dims,
@@ -2239,15 +2259,15 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
+    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
+    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(
                  id_array,              // Dataset to write to
                  H5T_NATIVE_INT,        // Format of data in memory
                  id_memspace,           // Description of data in memory
                  id_dataspace,          // Description of data in storage (including selection)
-                 file_access_plist,           // Form of writing
+                 dataset_xfer_plist,           // Form of writing
                  data                   // The actual data
              );
 #else

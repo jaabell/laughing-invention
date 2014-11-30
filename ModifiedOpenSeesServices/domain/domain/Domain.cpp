@@ -4428,6 +4428,7 @@ int Domain::enableOutput(bool is_output_enabled_)
 int Domain::enableElementOutput(bool is_element_output_is_enabled)
 {
     element_output_is_enabled =  is_element_output_is_enabled;
+    theOutputWriter.set_flag_write_element_output(is_element_output_is_enabled);
     have_written_static_mesh_data = false;
     return 0;
 }
