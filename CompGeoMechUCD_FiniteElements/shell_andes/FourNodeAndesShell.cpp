@@ -506,7 +506,8 @@ int FourNodeAndesShell::addLoad(ElementalLoad *theLoad, double loadFactor)
 
         Vector Fbody = this->getBodyForce(loadFactor, data);
 
-        Q.addVector(1.0, Fbody, 1.0);
+        //-Factor added to compatibilize with rest of code :/
+        Q.addVector(1.0, Fbody, -1.0);
 
     }
     else

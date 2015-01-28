@@ -136,7 +136,7 @@ const DTensor2 &ElasticIsotropic3DLT::getStrainTensor( void )
 //================================================================================
 const DTensor2 &ElasticIsotropic3DLT::getPlasticStrainTensor( void )
 {
-    return TrialStrain;
+    return ZeroStrain;
 }
 
 //================================================================================
