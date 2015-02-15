@@ -158,7 +158,9 @@
 %token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT
 %token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
 %token self_weight surface load_value
-%token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit number_of_steps number_of_drm_nodes number_of_drm_elements x_max x_min y_max y_min z_max z_min element_file nodes_file displacement_file acceleration_file velocity_file force_file series_file time_series_file MAGNITUDES MAGNITUDE
+%token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit 
+%token number_of_steps number_of_boundary_nodes number_of_exterior_nodes number_of_drm_elements 
+%token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file series_file time_series_file MAGNITUDES MAGNITUDE
 %token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain constitutive testing constant mean triaxial drained undrained simple shear
 %token number_of_subincrements maximum_number_of_iterations tolerance_1 tolerance_2 strain stress control Guass points Gauss each point single value
 // Additionally these tokens carry a string type (the above carry no type)
@@ -537,7 +539,7 @@ CMD_add
     | ADD ELEMENT ADD_element   { $$ = $3; }
     //!=========================================================================================================
     //!
-    //!FEIDOC add elements from file "string"
+    //!FEIDOC add elements from file "string";
     | ADD ELEMENTS FROM FILE exp
     {
         args.clear();
@@ -1226,21 +1228,18 @@ CMD_add
     }
     //!=========================================================================================================
     //!
-    //!FEIDOC add domain reduction method loading # <.> time_step = <time> scale_factor = <.> number_of_steps = <.> number_of_drm_nodes = <.> number_of_drm_elements = <.> x_max = <length> x_min = <length> y_max = <length> y_min = <length> z_max = <length> z_min = <length> element_file = "filename" nodes_file = "filename" displacement_file = "filename" acceleration_file = "filename";
-    | ADD DRM LOADING TEXTNUMBER exp
+    //!FEIDOC add domain reduction method loading # <.> time_step = <T> scale_factor = <.> number_of_steps = <.> number_of_boundary_nodes = <.> number_of_exterior_nodes = <.> number_of_drm_elements = <.> element_file = <string> boundary_nodes_file = <string> exterior_nodes_file = <string> displacement_file = <string> acceleration_file = <string>;
+    | ADD DRM LOADING TEXTNUMBER 
+                      exp
                       time_step '=' exp
                       scale_factor '=' exp
                       number_of_steps '=' exp
-                      number_of_drm_nodes '=' exp
+                      number_of_boundary_nodes '=' exp
+                      number_of_exterior_nodes '=' exp
                       number_of_drm_elements '=' exp
-                      x_max '=' exp
-                      x_min '=' exp
-                      y_max '=' exp
-                      y_min '=' exp
-                      z_max '=' exp
-                      z_min '=' exp
                       element_file '=' exp
-                      nodes_file '=' exp
+                      boundary_nodes_file '=' exp
+                      exterior_nodes_file '=' exp
                       displacement_file '=' exp
                       acceleration_file '=' exp
     {
@@ -1250,122 +1249,22 @@ CMD_add
         args.push_back($8); signature.push_back(this_signature("time_step",            &isTime));
         args.push_back($11); signature.push_back(this_signature("scale_factor",         &isAdimensional));
         args.push_back($14); signature.push_back(this_signature("number_of_steps",       &isAdimensional));
-        args.push_back($17); signature.push_back(this_signature("number_of_drm_nodes",     &isAdimensional));
-        args.push_back($20); signature.push_back(this_signature("number_of_drm_elements",   &isAdimensional));
-        args.push_back($23); signature.push_back(this_signature("x_max",           &isLength));
-        args.push_back($26); signature.push_back(this_signature("x_min",           &isLength));
-        args.push_back($29); signature.push_back(this_signature("y_max",           &isLength));
-        args.push_back($32); signature.push_back(this_signature("y_min",           &isLength));
-        args.push_back($35); signature.push_back(this_signature("z_max",           &isLength));
-        args.push_back($38); signature.push_back(this_signature("z_min",           &isLength));
+        args.push_back($17); signature.push_back(this_signature("number_of_boundary_nodes",     &isAdimensional));
+        args.push_back($20); signature.push_back(this_signature("number_of_exterior_nodes",     &isAdimensional));
+        args.push_back($23); signature.push_back(this_signature("number_of_drm_elements",   &isAdimensional));
+        args.push_back($26); signature.push_back(this_signature("element_file",       &isAdimensional));
+        args.push_back($29); signature.push_back(this_signature("boundary_nodes_file",         &isAdimensional));
+        args.push_back($32); signature.push_back(this_signature("exterior_nodes_file",         &isAdimensional));
+        args.push_back($35); signature.push_back(this_signature("displacement_file",  &isAdimensional));
+        args.push_back($38); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
 
+        $$ = new FeiDslCaller12<int,
+        double,double,
+            int,int,int,int,
+            string,string,string,
+            string,string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
 
-        args.push_back($41); signature.push_back(this_signature("element_file",       &isAdimensional));
-        args.push_back($44); signature.push_back(this_signature("nodes_file",         &isAdimensional));
-        args.push_back($47); signature.push_back(this_signature("displacement_file",  &isAdimensional));
-        args.push_back($50); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
-
-        $$ = new FeiDslCaller16<int, 
-                                double, double, 
-                                int, int, int, 
-                                double, double, double, 
-                                double, double, double, 
-                                string, string, 
-                                string, string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
-
-        for(int i = 1; i <= 16; i++) nodes.pop();
-        nodes.push($$);
-    }
-    //!=========================================================================================================
-    //!
-    //!FEIDOC add domain reduction method loading save forces time_step = <time> scale_factor = <.> number_of_steps = <.> number_of_drm_nodes = <.> number_of_drm_elements = <.> x_max = <length> x_min = <length> y_max = <length> y_min = <length> z_max = <length> z_min = <length> element_file = "filename" nodes_file = "filename" displacement_file = "filename" acceleration_file = "filename" force_file = "filename";
-    | ADD DRM LOADING SAVEFORCES TEXTNUMBER exp
-                      time_step '=' exp
-                      scale_factor '=' exp
-                      number_of_steps '=' exp
-                      number_of_drm_nodes '=' exp
-                      number_of_drm_elements '=' exp
-                      x_max '=' exp
-                      x_min '=' exp
-                      y_max '=' exp
-                      y_min '=' exp
-                      z_max '=' exp
-                      z_min '=' exp
-                      element_file '=' exp
-                      nodes_file '=' exp
-                      displacement_file '=' exp
-                      acceleration_file '=' exp
-                      force_file '=' exp
-    {
-        args.clear(); signature.clear();
-
-        args.push_back($6); signature.push_back(this_signature("pattern_number",           &isAdimensional));
-        args.push_back($9); signature.push_back(this_signature("time_step",           &isTime));
-        args.push_back($12); signature.push_back(this_signature("scale_factor",           &isAdimensional));
-        args.push_back($15); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
-        args.push_back($18); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
-        args.push_back($21); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
-        args.push_back($24); signature.push_back(this_signature("x_max",           &isLength));
-        args.push_back($27); signature.push_back(this_signature("x_min",           &isLength));
-        args.push_back($30); signature.push_back(this_signature("y_max",           &isLength));
-        args.push_back($33); signature.push_back(this_signature("y_min",           &isLength));
-        args.push_back($36); signature.push_back(this_signature("z_max",           &isLength));
-        args.push_back($39); signature.push_back(this_signature("z_min",           &isLength));
-
-
-        args.push_back($42); signature.push_back(this_signature("element_file",       &isAdimensional));
-        args.push_back($45); signature.push_back(this_signature("nodes_file",         &isAdimensional));
-        args.push_back($48); signature.push_back(this_signature("displacement_file",  &isAdimensional));
-        args.push_back($51); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
-        args.push_back($54); signature.push_back(this_signature("force_file",         &isAdimensional));
-
-        $$ = new FeiDslCaller17<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string, string, string>(&add_load_pattern_domain_reduction_method_save_forces, args, signature, "add_load_pattern_domain_reduction_method_save_forces");
-
-        for(int i = 1; i <= 17; i++) nodes.pop();
-        nodes.push($$);
-    }
-    //!=========================================================================================================
-    //!
-    //!FEIDOC add domain reduction method loading restore forces time_step = <time> scale_factor = <.> number_of_steps = <.> number_of_drm_nodes = <.> number_of_drm_elements = <.> x_max = <length> x_min = <length> y_max = <length> y_min = <length> z_max = <length> z_min = <length> element_file = "filename" nodes_file = "filename" force_file = "filename";
-    | ADD DRM LOADING RESTOREFORCES TEXTNUMBER exp
-                      time_step '=' exp
-                      scale_factor '=' exp
-                      number_of_steps '=' exp
-                      number_of_drm_nodes '=' exp
-                      number_of_drm_elements '=' exp
-                      x_max '=' exp
-                      x_min '=' exp
-                      y_max '=' exp
-                      y_min '=' exp
-                      z_max '=' exp
-                      z_min '=' exp
-                      element_file '=' exp
-                      nodes_file '=' exp
-                      force_file '=' exp
-    {
-        args.clear(); signature.clear();
-
-        args.push_back($6); signature.push_back(this_signature("pattern_number",           &isAdimensional));
-        args.push_back($9); signature.push_back(this_signature("time_step",           &isTime));
-        args.push_back($12); signature.push_back(this_signature("scale_factor",           &isAdimensional));
-        args.push_back($15); signature.push_back(this_signature("number_of_steps",           &isAdimensional));
-        args.push_back($18); signature.push_back(this_signature("number_of_drm_nodes",           &isAdimensional));
-        args.push_back($21); signature.push_back(this_signature("number_of_drm_elements",           &isAdimensional));
-        args.push_back($24); signature.push_back(this_signature("x_max",           &isLength));
-        args.push_back($27); signature.push_back(this_signature("x_min",           &isLength));
-        args.push_back($30); signature.push_back(this_signature("y_max",           &isLength));
-        args.push_back($33); signature.push_back(this_signature("y_min",           &isLength));
-        args.push_back($36); signature.push_back(this_signature("z_max",           &isLength));
-        args.push_back($39); signature.push_back(this_signature("z_min",           &isLength));
-
-
-        args.push_back($42); signature.push_back(this_signature("element_file",           &isAdimensional));
-        args.push_back($45); signature.push_back(this_signature("nodes_file",           &isAdimensional));
-        args.push_back($48); signature.push_back(this_signature("force_file",           &isAdimensional));
-
-        $$ = new FeiDslCaller15<int, double, double, int, int, int, double, double, double, double, double, double, string, string, string>(&add_load_pattern_domain_reduction_method_restore_forces, args, signature, "add_load_pattern_domain_reduction_method_restore_forces");
-
-        for(int i = 1; i <= 15; i++) nodes.pop();
+        for(int i = 1; i <= 12; i++) nodes.pop();
         nodes.push($$);
     }
     //!=========================================================================================================
@@ -1550,12 +1449,14 @@ CMD_define
         $$ = new FeiDslCaller0<>(&disable_output,args,signature,"disable_output");
         nodes.push($$);
     }
+    //!FEIDOC enable element output;
     | ENABLE ELEMENT OUTPUT 
     {
         args.clear(); signature.clear();
         $$ = new FeiDslCaller0<>(&enable_element_output,args,signature,"enable_element_output");
         nodes.push($$);
     }
+    //!FEIDOC output every <.> steps;
     | OUTPUT  EVERY exp STEPS
     {
         args.clear(); signature.clear();
@@ -1563,6 +1464,7 @@ CMD_define
         $$ = new FeiDslCaller1<int>(&output_every_nsteps,args,signature,"output_every_nsteps");
         nodes.push($$);
     }
+    //!FEIDOC set output compression level to <.>;
     | SET OUTPUT COMPRESSION LEVEL TO exp
     {
         args.clear(); signature.clear();

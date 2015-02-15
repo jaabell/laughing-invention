@@ -105,7 +105,14 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-static-libgcc \
 										-static-libstdc++ \
 										-march=native \
-										-fdiagnostics-color=auto 										
+										-fdiagnostics-color=auto \
+										-ftree-vectorize \
+										-ftree-slp-vectorize \
+										-ffast-math  \
+										-funroll-loops \
+										-fvariable-expansion-in-unroller \
+										-floop-block \
+										-floop-strip-mine 									
 	CFLAGS          = $(LTO_FLAGS) -O2 \
 										-D_LINUX \
 										-D_UNIX \

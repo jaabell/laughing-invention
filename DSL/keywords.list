@@ -28,8 +28,9 @@ bending_Iy
 bending_Iz
 beta
 beta_min
-binary
+boundary_nodes_file
 check
+compression
 compressive_strength
 constant
 constitutive
@@ -47,6 +48,7 @@ damping
 databasename
 define
 direction
+disable
 displacement
 displacement_control
 displacement_file
@@ -68,17 +70,21 @@ elastic_modulus_horizontal
 elastic_modulus_vertical
 element
 element_file
+elements
 else
+enable
 equal
 equaldof
+every
+exterior_nodes_file
 factor
 field
+file
 filename
 fix
-force_file
-forces
 free
 friction_ratio
+from
 gamma
 Gauss
 h_in
@@ -110,6 +116,7 @@ kd_in
 kinematic_hardening_rate
 lambda
 length
+level
 linear
 load
 loading
@@ -139,16 +146,17 @@ name
 new
 node
 nodes
-nodes_file
 normal_stiffness
+number_of_boundary_nodes
 number_of_drm_elements
-number_of_drm_nodes
+number_of_exterior_nodes
 number_of_iterations
 number_of_modes
 number_of_steps
 number_of_subincrements
 number_of_times_reaching_maximum_strain
 of
+output
 output
 password
 path_series
@@ -220,6 +228,7 @@ scale_factor
 section
 self_weight
 series_file
+set
 shear
 shear_modulus
 shear_modulus_h_v
@@ -232,6 +241,7 @@ solver
 stage
 state
 static
+steps
 steps
 stiffness
 stiffness_to_use
@@ -272,15 +282,9 @@ von_mises_radius
 while
 whos
 with
-x_max
-x_min
 xi_in
 xz_plane_vector
-y_max
-y_min
 yield_strength
-z_max
-z_min
 
 
 20NodeBrick
@@ -327,6 +331,7 @@ Hilber_Hughes_Taylor
 linear
 linear_elastic_crossanisotropic
 linear_elastic_isotropic_3d
+linear_elastic_isotropic_3d_LT
 Modified_Newton
 Mx
 My
@@ -345,6 +350,7 @@ ProfileSPD
 Rayleigh
 sanisand2004
 sanisand2008
+ShearBeamLT
 static
 transient
 truss

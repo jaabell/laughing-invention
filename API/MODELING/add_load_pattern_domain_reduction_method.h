@@ -76,31 +76,51 @@
 
 
 
-int add_load_pattern_domain_reduction_method(int PatternNumber,
-        double dt,
-        double factor,
-        int numberofsteps,
-        int numberofdrmnodes,
-        int numberofdrmelements,
-        double xpositive,
-        double xminus,
-        double ypositive,
-        double yminus,
-        double zpositive,
-        double zminus,
-        string ElementNumbersFilename,
-        string NodeNumbersFilename,
-        string DisplacementTimeHistoryFilename,
-        string AccelerationTimeHistoryFilename)
+int add_load_pattern_domain_reduction_method(
+    int PatternNumber,
+    double dt,
+    double factor,
+    int numberofsteps,
+    int numberofdrmnodes_b,
+    int numberofdrmnodes_e,
+    int numberofdrmelements,
+    string ElementNumbersFilename,
+    string NodeNumbersFilename_b,
+    string NodeNumbersFilename_e,
+    string DisplacementTimeHistoryFilename,
+    string AccelerationTimeHistoryFilename)
 {
 
-    const char* ElementNumbers = ElementNumbersFilename.c_str();
-    const char* NodeNumbers = NodeNumbersFilename.c_str();
-    const char* DisplacementTimeHistory = DisplacementTimeHistoryFilename.c_str();
-    const char* AccelerationTimeHistory = AccelerationTimeHistoryFilename.c_str();
-
-    LoadPattern* theDRMPattern = 0;
-    theDRMPattern = new Domain_Reduction_Method_Modified_Input(PatternNumber, ElementNumbers, NodeNumbers, DisplacementTimeHistory, AccelerationTimeHistory, dt, factor, numberofsteps, numberofdrmelements, numberofdrmnodes, xpositive, xminus, ypositive, yminus, zpositive, zminus);
+    // const char *ElementNumbers = ElementNumbersFilename.c_str();
+    // const char *NodeNumbers = NodeNumbersFilename.c_str();
+    // const char *DisplacementTimeHistory = DisplacementTimeHistoryFilename.c_str();
+    // const char *AccelerationTimeHistory = AccelerationTimeHistoryFilename.c_str();
+    // int tag,
+    // const char *ElementsFilename,
+    // const char *DispfName,
+    // const char *AccefName,
+    // const char *boundaryNodesFile,
+    // const char *externalNodesFile,
+    // double theTimeIncr,
+    // double theFactor,
+    // int timeSteps,
+    // int Number_of_DRM_Elements,
+    // int Number_of_DRM_Nodes_b,
+    // int Number_of_DRM_Nodes_e);
+    LoadPattern *theDRMPattern = 0;
+    theDRMPattern = new Domain_Reduction_Method_Modified_Input(
+        PatternNumber,
+        ElementNumbersFilename.c_str(),
+        DisplacementTimeHistoryFilename.c_str(),
+        AccelerationTimeHistoryFilename.c_str(),
+        NodeNumbersFilename_b.c_str(),
+        NodeNumbersFilename_e.c_str(),
+        dt,
+        factor,
+        numberofsteps,
+        numberofdrmelements,
+        numberofdrmnodes_b,
+        numberofdrmnodes_e);
 
     if (theDRMPattern == 0)
     {
