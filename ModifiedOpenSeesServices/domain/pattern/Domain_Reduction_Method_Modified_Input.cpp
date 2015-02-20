@@ -61,7 +61,8 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input()
       NodeID(0),
       PBowlLoads(0),
       U(0),
-      Udd(0)
+      Udd(0),
+      maxnodetag(0)
 {
     LoadComputed = false;
 }
@@ -97,7 +98,8 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input
       NodeID(0),
       PBowlLoads(0),
       U(0),
-      Udd(0)
+      Udd(0),
+      maxnodetag(0)
 {
 
     int numDataPoints = 0;
@@ -212,6 +214,10 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input
             for (int m = 0; m < Number_of_DRM_Nodes_e; m++)
             {
                 theFileNOD >> (*ExteriorNodes)(m);
+                if ((*ExteriorNodes)(m) > maxnodetag)
+                {
+                    maxnodetag = (*ExteriorNodes)(m);
+                }
                 numDataPoints++;
             }
         }
@@ -220,7 +226,7 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input
         theFileNOD.close();
 
         //Check if read in correctly
-        cerr << "Number of DRM External Nodes: " << number_of_DRM_nodes << " of " << Number_of_DRM_Nodes_e << endln;
+        cerr << "Number of DRM External Nodes: " << Number_of_DRM_Nodes_e << " of " << number_of_DRM_nodes << endln;
     }
 
 
@@ -264,6 +270,10 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input
             for (int m = 0; m < Number_of_DRM_Nodes_b; m++)
             {
                 theFileNOD >> (*BoundaryNodes)(m);
+                if ((*BoundaryNodes)(m) > maxnodetag)
+                {
+                    maxnodetag = (*BoundaryNodes)(m);
+                }
                 numDataPoints++;
             }
         }
@@ -272,10 +282,14 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input
         theFileNOD.close();
 
         //Check if read in correctly
-        cerr << "Number of DRM External Nodes: " << number_of_DRM_nodes << " of " << Number_of_DRM_Nodes_b << endln;
+        cerr << "Number of DRM Boundary Nodes: " << Number_of_DRM_Nodes_b << " of " << number_of_DRM_nodes << endln;
     }
 
-    NodeID = new ID(number_of_DRM_nodes);
+    NodeID = new ID(maxnodetag + 1);
+    for (int i = 0; i < NodeID->Size(); i++)
+    {
+        (*NodeID)(i) = -1;
+    }
 
     if (NodeID == 0)
     {
@@ -286,15 +300,22 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input
         int i = 0;
         for (; i < Number_of_DRM_Nodes_b; i++)
         {
-            (*NodeID)(i) = (*BoundaryNodes)(i);
+            (*NodeID)((*BoundaryNodes)(i)) = i;
         }
         int j = 0;
         for (; j < Number_of_DRM_Nodes_e; j++)
         {
-            (*NodeID)(i + j) = (*ExteriorNodes)(j);
+            (*NodeID)((*ExteriorNodes)(j)) = i + j;
         }
+        cout << "Copied " << i << " out of "  << Number_of_DRM_Nodes_b << " boundary nodes.\n";
+        cout << "Copied " << j << " out of "  << Number_of_DRM_Nodes_e << " exterior nodes.\n";
     }
 
+    cout << "NodeID: \n";
+    for (int i = 0; i < NodeID->Size(); i++)
+    {
+        cout << " " << i << " -> " << (*NodeID)(i) << endl;
+    }
 
 
     //--------------------------------------
@@ -855,6 +876,9 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
     ///////////////////////////////////////
     // Figure out the interior and exterior nodes //Guanzhou added
     ////////////////////////////////
+
+    cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads()\n";
+
     clock_t init, final;
 
     init = clock();
@@ -864,6 +888,10 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
     //Assume all the plastic bowl elements have the same number of nodes
     // Also the same number of DOFS
     Element *theElement = theDomain->getElement( (*PBowlElements)(0) );
+    if (theElement == 0)
+    {
+        cerr << "Element number " << (*PBowlElements)(0) << " not found!!\n";
+    }
     int NIE = theElement->getNumExternalNodes();
 
     int max_bnode = PBowlElements->Size() * NIE;
@@ -879,7 +907,8 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
     }
 
     int no_bnode = NIE;
-    int no_boundarynodes = 0, no_exteriornodes = 0;
+    int no_boundarynodes = number_of_DRM_nodes_b;
+    int no_exteriornodes = number_of_DRM_nodes_e;
     int Bowl_elem_nb = PBowlElements->Size();
     ID Temp;
 
@@ -893,8 +922,10 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
 
 # endif
 
+    cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads() - Bowl nodes: \n";
     for ( i = 1; i < Bowl_elem_nb; i++)
     {
+        cout << i << "(" << (*PBowlElements)(i) << ") ";
         theElement = theDomain->getElement( (*PBowlElements)(i) );
         Temp = theElement->getExternalNodes();
 
@@ -940,12 +971,12 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
     cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads() - # Boundary Nodes: " << no_boundarynodes << endln;
     cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads() - # Exterior Nodes: " << no_exteriornodes << endln;
 
-    if ( no_exteriornodes + no_boundarynodes != NodeID->Size())
-    {
-        cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads() - Error!\n";
-        cerr << "Number of nodes in PBElement does not equal to NodeID size!\n";
-        exit(1);
-    }
+    // if ( no_exteriornodes + no_boundarynodes != num)
+    // {
+    //     cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads() - Error!\n";
+    //     cerr << "Number of nodes in PBElement does not equal to NodeID size!\n";
+    //     exit(1);
+    // }
 
     cerr << "Computing the equivalent(effective) forces for all plastic bowl nodes" << endln;
     int cols = Udd->noRows();
@@ -990,13 +1021,10 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
     cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): time spent for initialization is ..." << (double)final / ((double)CLOCKS_PER_SEC) << " seconds \n";
 
     Element *theBowlElements;
-
+    ofstream fout("loads.txt", ios::out);
     for (int i = 0; i < Bowl_elem_nb; i++)
     {
-        if (i == 2315)
-        {
-            std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): ELE # " << i << " *-*-*-*-I" << "\n";
-        }
+
 
         init = clock();
         // get the Brick;
@@ -1010,6 +1038,12 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
 
         Matrix Me = theBowlElements ->getMass();
         Matrix Ke = theBowlElements ->getTangentStiff();
+
+
+
+        // cout << "Element " << (*PBowlElements)(i) << " matrices:\n";
+        // cout << "  M = " << Me << endl;
+        // cout << "  K = " << Ke << endl;
 
         //-------------------------------------------------------------------------
         //Zero diagonal block entries of boundary and exterior nodes, respectively
@@ -1048,10 +1082,10 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
 
         }
 
-        if (i == 2315)
-        {
-            std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): ELE # " << i << " *-*-*-*-II" << "\n";
-        }
+        // fout << "Element # " << (*PBowlElements)(i) << endl;
+        // fout << "    nB = " << nB << endl;
+        // fout << "    nE = " << nE << endl;
+
 
         //Zero out the diagonal block of Boundary nodes
         int m;
@@ -1080,13 +1114,16 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
         delete B_node;
         delete E_node;
 
+        // cout << "      Element " << (*PBowlElements)(i) << " matrices (w/o diagonal):\n";
+        // cout << "        M = " << Me << endl;
+        // cout << "        K = " << Ke << endl;
 
-        if (i == 2315)
-        {
-            std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): ELE # " << i << " *-*-*-*-III" << "\n";
-        }
 
         // get the u and u_dotdot for this element
+        fout << "====== Element " << (*PBowlElements)(i) << " accelerations and displs:\n";
+        fout << "     thetimeSteps = " << thetimeSteps << endl;
+        double accnorm = 0;
+        double disnorm = 0;
         for ( int t = 0; t < thetimeSteps; t++)
         {
 
@@ -1094,120 +1131,107 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
             for (int j = 0; j < NIE; j++)
             {
 
-                int mid_index = 0;
-                int max_index = 0;
-                int min_index = 0;
-                max_index = NodeID->Size() - 1 ;
-                mid_index = (max_index / 2 );
+                // int mid_index = 0;
+                // int max_index = 0;
+                // int min_index = 0;
+                // max_index = NodeID->Size() - 1 ;
+                // mid_index = (max_index / 2 );
 
+                // for()
+                // while ((nd(j) != (*NodeID)(mid_index)) && (min_index != mid_index) )
+                // {
+                //     // cout << " nd(j)                     = " << nd(j) << "\n";
+                //     // cout << "  mid_index                = " << mid_index << "\n";
+                //     // cout << "  max_index                = " << max_index << "\n";
+                //     // cout << "  min_index                = " << min_index << "\n";
+                //     // cout << "  (*NodeID)(mid_index)     = " << (*NodeID)(mid_index) << "\n";
+                //     if ( nd(j) > (*NodeID)(mid_index) )
+                //     {
+                //         min_index = mid_index;
+                //         mid_index = (min_index + max_index) / 2;
 
-                if (i == 2315)
-                {
-                    std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): ELE # " << i << " II-*-*-*-*-j: " << j << "\n";
-                }
-
-                while ((nd(j) != (*NodeID)(mid_index)) && (min_index != mid_index) )
-                {
-                    if ( nd(j) > (*NodeID)(mid_index) )
-                    {
-                        min_index = mid_index;
-                        mid_index = (min_index + max_index) / 2;
-
-                    }
-                    else
-                    {
-                        max_index = mid_index;
-                        mid_index = (min_index + max_index) / 2;
-                    }
-
-                    if (i == 2315)
-                    {
-                        std::cerr << "j#" << j << " min index# " << min_index << "\n";
-                        std::cerr << "j#" << j << " mid index# " << mid_index << "\n";
-                        std::cerr << "j#" << j << " max index# " << max_index << "\n";
-
-                    }
-
-
-
-
-                }
+                //     }
+                //     else
+                //     {
+                //         max_index = mid_index;
+                //         mid_index = (min_index + max_index) / 2;
+                //     }
+                // }
 
                 //check for the array with the size 2:
-                if (nd(j) == (*NodeID)(max_index))
-                {
-                    mid_index = max_index;
-                }
+                // if (nd(j) == (*NodeID)(max_index))
+                // {
+                //     mid_index = max_index;
+                // }
 
-                if ( min_index == max_index )
-                {
-                    std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): can not find the node # " << nd(j) << " in the DRM nodes list\n";
-                    exit(1);
-                }
+                // if ( min_index == max_index )
+                // {
+                //     std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): can not find the node # " << nd(j) << " in the DRM nodes list\n";
+                //     exit(1);
+                // }
 
                 int r;
-                r = mid_index;
+                // r = mid_index;
+                r = (*NodeID)(nd(j));
 
                 for (int d = 0; d < NDOF; d++)
                 {
+                    // cout << "Doing this " << NDOF << " " << d << " " <<  j << " " <<  nd(j) << " " <<  r << " " <<  endl;
                     (*u_e)(j * NDOF + d)   = (*U)(r * NDOF + d, t);
                     (*udd_e)(j * NDOF + d) = (*Udd)(r * NDOF + d, t);
-
+                    accnorm += (*udd_e)(j * NDOF + d) * (*udd_e)(j * NDOF + d);
+                    disnorm += (*u_e)(j * NDOF + d) * (*u_e)(j * NDOF + d);
                 }
             }
 
             //-----------------------------------------------------------
 
 
-            if (i == 2315)
-            {
-                std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): ELE # " << i << " II-*-*-*-*-t: " << t << "\n";
-            }
-
-
             Fm->addMatrixVector(0.0, Me, (*udd_e), 1.0);
             Fk->addMatrixVector(0.0, Ke, (*u_e), 1.0);
 
 
+
             for (int k = 0; k < NIE; k++)
             {
-                int mid_index = 0;
-                int max_index = 0;
-                int min_index = 0;
-                max_index = NodeID->Size() - 1 ;
-                mid_index = (max_index / 2 );
+                // int mid_index = 0;
+                // int max_index = 0;
+                // int min_index = 0;
+                // max_index = NodeID->Size() - 1 ;
+                // mid_index = (max_index / 2 );
 
 
-                while ((nd(k) != (*NodeID)(mid_index)) && (min_index != mid_index) )
-                {
-                    if ( nd(k) > (*NodeID)(mid_index) )
-                    {
-                        min_index = mid_index;
-                        mid_index = (min_index + max_index) / 2;
+                // while ((nd(k) != (*NodeID)(mid_index)) && (min_index != mid_index) )
+                // {
+                //     if ( nd(k) > (*NodeID)(mid_index) )
+                //     {
+                //         min_index = mid_index;
+                //         mid_index = (min_index + max_index) / 2;
 
-                    }
-                    else
-                    {
-                        max_index = mid_index;
-                        mid_index = (min_index + max_index) / 2;
-                    }
+                //     }
+                //     else
+                //     {
+                //         max_index = mid_index;
+                //         mid_index = (min_index + max_index) / 2;
+                //     }
 
-                }
+                // }
 
-                //check for the array with the size 2:
-                if  (nd(k) == (*NodeID)(max_index))
-                {
-                    mid_index = max_index;
-                }
+                // //check for the array with the size 2:
+                // if  (nd(k) == (*NodeID)(max_index))
+                // {
+                //     mid_index = max_index;
+                // }
 
-                if ( min_index == max_index )
-                {
-                    std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): can not find the node # " << nd(k) << " in the DRM nodes list\n";
-                    exit(1);
-                }
+                // if ( min_index == max_index )
+                // {
+                //     std::cerr << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): can not find the node # " << nd(k) << " in the DRM nodes list\n";
+                //     exit(1);
+                // }
 
                 int r;
-                r = mid_index;
+                // r = mid_index;
+                r = (*NodeID)(nd(k));
 
                 for (int d = 0; d < NDOF; d++)
                 {
@@ -1216,7 +1240,8 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
             }
 
         } //end for timestep
-
+        fout << accnorm << endl;
+        fout << disnorm << endl;
         final = clock() - init;
         cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): time spent for calculating the forces for element # " << i <<  " is " << (double)final / ((double)CLOCKS_PER_SEC) << " seconds \n";
 
@@ -1246,12 +1271,25 @@ Domain_Reduction_Method_Modified_Input::CompPBLoads()
 
 # endif
 
-        final = clock() - init;
-        cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): time spent for calculating the forces for element # " << i <<  " is " << (double)final / ((double)CLOCKS_PER_SEC) << " seconds \n";
+        // final = clock() - init;
+        // cout << "Domain_Reduction_Method_Modified_Input::CompPBLoads(): time spent for calculating the forces for element # " << i <<  " is " << (double)final / ((double)CLOCKS_PER_SEC) << " seconds \n";
     }  // end for bowl element
 
 
     PBowlLoads = new Matrix(*F);
+
+    // ofstream fout("loads.txt", ios::out);
+    // for (int i = 0; i < PBowlLoads->noRows(); i++)
+    // {
+    //     for (int j = 0; j <  PBowlLoads->noCols(); j++)
+    //     {
+    //         fout << (*PBowlLoads)(i, j) << " ";
+    //     }
+    //     fout << "\n";
+    // }
+    fout.close();
+
+    cout << "PBowlLoads->noRows() == " << PBowlLoads->noRows() <<  " \n PBowlLoads->noCols() = " << PBowlLoads->noCols() << endl;
 
     // ensure we did not run out of memory
     if (PBowlLoads->noRows() == 0 || PBowlLoads->noCols() == 0 )
@@ -1306,6 +1344,7 @@ Domain_Reduction_Method_Modified_Input::getNodalLoad(int nodeTag, double time)
     // check for a quick return
     if (time < 0.0 || PBowlLoads == 0)
     {
+        cout << "Domain_Reduction_Method_Modified_Input::getNodalLoad()  - Warning, returning zero load! \n";
         return nodalLoad;
     }
 
@@ -1331,20 +1370,34 @@ Domain_Reduction_Method_Modified_Input::getNodalLoad(int nodeTag, double time)
             //Guanzhou introduce new data structure!!!
             int r;
 
-            for (r = 0; r < NodeID->Size(); r++)
-            {
-                if ( nodeTag == (*NodeID)(r) )
-                {
-                    break;
-                }
-            }
+            // for (r = 0; r < NodeID->Size(); r++)
+            // {
+            //     if ( nodeTag == (*NodeID)(r) )
+            //     {
+            //         break;
+            //     }
+            // }
+
+            r = (*NodeID)(nodeTag);
 
             value1 = (*PBowlLoads)(numDOF * r + i, incr1);
             value2 = (*PBowlLoads)(numDOF * r + i, incr2);
 
             (*nodalLoad)(i) = cFactor * (value1 + (value2 - value1) * (time / PBTimeIncr - incr1));
+
+            // cout <<   "       r          = " << r      << endl;
+            // cout <<   "       i          = " << i      << endl;
+            // cout <<   "       value1     = " << value1 << endl;
+            // cout <<   "       value2     = " << value2 << endl;
+            // cout <<   "       cFactor    = " << cFactor << endl;
+            // cout <<   "       time       = " << time << endl;
+            // cout <<   "       PBTimeIncr = " << PBTimeIncr << endl;
+            // cout <<   "       incr1      = " << incr1 << endl;
         }
     }
+
+    // cout << "Nodal load for node tag " << nodeTag << " at time " << time << " is :";
+    // cout << *nodalLoad << endl;
 
     return nodalLoad;
 }

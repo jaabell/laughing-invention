@@ -118,6 +118,7 @@ class Domain_Reduction_Method_Modified_Input : public LoadPattern
         char *DRMNodesFile;
         char *DRMDisplacementsFile;
         char *DRMAccelerationsFile;
+        int maxnodetag;
 };
 
 #endif
