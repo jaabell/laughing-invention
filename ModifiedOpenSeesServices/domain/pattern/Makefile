@@ -10,6 +10,7 @@ include ../../../Makefile.Compilers
 OBJS       =   EarthquakePattern.o \
                Domain_Reduction_Method.o \
                Domain_Reduction_Method_Modified_Input.o \
+               Domain_Reduction_Method_HDF5_input.o \
                Domain_Reduction_Method_Save_Forces.o \
                Domain_Reduction_Method_Restore_Forces.o \
                LinearSeries.o \

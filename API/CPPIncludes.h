@@ -222,6 +222,7 @@
 #include "../ModifiedOpenSeesServices/domain/pattern/PBowlLoading.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method_Modified_Input.h"
+#include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method_HDF5_input.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method_Save_Forces.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method_Restore_Forces.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/UniformExcitation.h"

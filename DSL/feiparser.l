@@ -611,6 +611,7 @@ EXP	([Ee][-+]?[0-9]+)
 "exterior_nodes_file"                 {return token::exterior_nodes_file;}
 "displacement_file"          {return token::displacement_file;}
 "acceleration_file"          {return token::acceleration_file;}
+"hdf5_file"             {return token::hdf5_file;}
 "velocity_file"              {return token::velocity_file;}
 "force_file"                 {return token::force_file;}
 "series_file"                {return token::series_file;}

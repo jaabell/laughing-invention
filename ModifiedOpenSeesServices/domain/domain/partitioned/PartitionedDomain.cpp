@@ -1179,7 +1179,7 @@ PartitionedDomain::partition(int numPartitions)
     //This outputs the mesh information to the HDF5 writer. This is important because it builds the
     // arrays of indexes into node output data and element output data.
 
-    cout << "\n\nPartitionedDomain::partition(" << numPartitions << "); \n";
+    cout << "\n\nPartitioning Mesh into " << numPartitions << " partitions. \n";
 
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
@@ -1195,6 +1195,7 @@ PartitionedDomain::partition(int numPartitions)
         //Write out static mesh data once!
         if (!have_populated_static_mesh_data)
         {
+            cout << "\n  --> Writing mesh data into HDF5 file.\n";
             //Write Node Mesh data!
             theOutputWriter.writeNumberOfNodes(this->getNumNodes());
             while ( ( nodePtr = theNodeIter() ) != 0 )
@@ -1225,6 +1226,7 @@ PartitionedDomain::partition(int numPartitions)
                 }
                 ;
             }
+            cout << "\n  --> Done writing mesh into HDF5 file.\n";
         }
         have_populated_static_mesh_data = true;
     }
@@ -1258,7 +1260,7 @@ PartitionedDomain::partition(int numPartitions)
         thePartitioner->partition(numPartitions);
     }
     else
-    {
+{
         cerr << "PartitionedDomain::partition(int numPartitions) - no associated partitioner\n";
         return -1;
     }
@@ -1269,6 +1271,8 @@ PartitionedDomain::partition(int numPartitions)
     VertexIter &theVertexIter = coloredGraph->getVertices();
     Vertex *vertexPtr;
 
+    cout << "\n  --> Writing partition data into HDF5 file.\n";
+
     while ((vertexPtr = theVertexIter()) != 0)
     {
         int eleTag = vertexPtr->getRef();
@@ -1276,7 +1280,8 @@ PartitionedDomain::partition(int numPartitions)
         theOutputWriter.writeElementPartitionData( eleTag, vertexColor);
     }
 
-    cout << "PartitionedDomain::partition()   -- END \n";
+    cout << "\n  --> Done writing partition data into HDF5 file.\n";
+    cout << "\n\n === Finished partitioning ===\n";
 
     return 0;
 

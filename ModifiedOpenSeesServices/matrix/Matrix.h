@@ -55,119 +55,120 @@ class Message;
 
 class Matrix
 {
-    public:
-        // constructors and destructor
-        Matrix();
-        Matrix(int nrows, int ncols);
-        Matrix(double *data, int nrows, int ncols);
-        Matrix(const Matrix &M);
-        ~Matrix();
+public:
+    // constructors and destructor
+    Matrix();
+    Matrix(int nrows, int ncols);
+    Matrix(double *data, int nrows, int ncols);
+    Matrix(const Matrix &M);
+    ~Matrix();
 
-        // utility methods
-        int setData(double *newData, int nRows, int nCols);
-        const double *getData() const;
-        inline int noRows() const;
-        inline int noCols() const;
-        void Zero(void);
-        int resize(int numRow, int numCol);
+    // utility methods
+    int setData(double *newData, int nRows, int nCols);
+    const double *getData() const;
+    inline int noRows() const;
+    inline int noCols() const;
+    void Zero(void);
+    int resize(int numRow, int numCol);
 
-        int  Assemble(const Matrix &, const ID &rows, const ID &cols,
-                      double fact = 1.0);
+    int  Assemble(const Matrix &, const ID &rows, const ID &cols,
+                  double fact = 1.0);
 
-        int Solve(const Vector &V, Vector &res) const;
-        int Solve(const Matrix &M, Matrix &res) const;
-        int Invert(Matrix &res) const;
+    int Solve(const Vector &V, Vector &res) const;
+    int Solve(const Matrix &M, Matrix &res) const;
+    int Invert(Matrix &res) const;
 
-        int addMatrix(double factThis, const Matrix &other, double factOther);
-        int addMatrixProduct(double factThis, const Matrix &A, const Matrix &B, double factOther); // AB
-        int addMatrixTripleProduct(double factThis, const Matrix &A, const Matrix &B, double factOther); // A'BA
-        //int addMatrixTripleProduct(const Matrix &A, const Matrix &B, const Matrix &C double fact = 1.0); //ABC
+    int addMatrix(double factThis, const Matrix &other, double factOther);
+    int addMatrixProduct(double factThis, const Matrix &A, const Matrix &B, double factOther); // AB
+    int addMatrixTripleProduct(double factThis, const Matrix &A, const Matrix &B, double factOther); // A'BA
+    //int addMatrixTripleProduct(const Matrix &A, const Matrix &B, const Matrix &C double fact = 1.0); //ABC
 
-        // overloaded operators all of which are pure
-        inline double &operator()(int row, int col);
-        inline double operator()(int row, int col) const;
-        Matrix operator()(const ID &rows, const ID &cols) const;
+    // overloaded operators all of which are pure
+    inline double &operator()(int row, int col);
+    inline double operator()(int row, int col) const;
+    Matrix operator()(const ID &rows, const ID &cols) const;
 
-        Matrix &operator=(const Matrix &M);
-        Matrix &operator=(const Tensor &T);
+    Matrix &operator=(const Matrix &M);
+    Matrix &operator=(const Tensor &T);
 
-        // matrix operations which will preserve the derived type and
-        // which can be implemented efficiently without many constructor calls.
+    // matrix operations which will preserve the derived type and
+    // which can be implemented efficiently without many constructor calls.
 
-        // matrix-scalar operations
-        Matrix &operator+=(double fact);
-        Matrix &operator-=(double fact);
-        Matrix &operator*=(double fact);
-        Matrix &operator/=(double fact);
+    // matrix-scalar operations
+    Matrix &operator+=(double fact);
+    Matrix &operator-=(double fact);
+    Matrix &operator*=(double fact);
+    Matrix &operator/=(double fact);
 
-        // matrix operations which generate a new Matrix. They are not the
-        // most efficient to use, as constructors must be called twice. They
-        // however are usefull for matlab like expressions involving Matrices.
+    // matrix operations which generate a new Matrix. They are not the
+    // most efficient to use, as constructors must be called twice. They
+    // however are usefull for matlab like expressions involving Matrices.
 
-        // matrix-scalar operations
-        Matrix operator+(double fact) const;
-        Matrix operator-(double fact) const;
-        Matrix operator*(double fact) const;
-        Matrix operator/(double fact) const;
+    // matrix-scalar operations
+    Matrix operator+(double fact) const;
+    Matrix operator-(double fact) const;
+    Matrix operator*(double fact) const;
+    Matrix operator/(double fact) const;
 
-        // matrix-vector operations
-        Vector operator*(const Vector &V) const;
-        Vector operator^(const Vector &V) const;
+    // matrix-vector operations
+    Vector operator*(const Vector &V) const;
+    Vector operator^(const Vector &V) const;
 
 
-        // matrix-matrix operations
-        Matrix operator+(const Matrix &M) const;
-        Matrix operator-(const Matrix &M) const;
-        Matrix operator*(const Matrix &M) const;
-        //     Matrix operator/(const Matrix &M) const;
-        Matrix operator^(const Matrix &M) const;
-        Matrix &operator+=(const Matrix &M);
-        Matrix &operator-=(const Matrix &M);
+    // matrix-matrix operations
+    Matrix operator+(const Matrix &M) const;
+    Matrix operator-(const Matrix &M) const;
+    Matrix operator*(const Matrix &M) const;
+    //     Matrix operator/(const Matrix &M) const;
+    Matrix operator^(const Matrix &M) const;
+    Matrix &operator+=(const Matrix &M);
+    Matrix &operator-=(const Matrix &M);
 
-        bool operator==(const Matrix &M) const;
+    bool operator==(const Matrix &M) const;
 
-        // methods to read/write to/from the matrix
-        void Output(ostream &s) const;
-        //    void Input(istream &s);
+    // methods to read/write to/from the matrix
+    void Output(ostream &s) const;
+    //    void Input(istream &s);
 
-        // methods added by Remo
-        int  Assemble(const Matrix &V, int init_row, int init_col, double fact = 1.0);
-        int  AssembleTranspose(const Matrix &V, int init_row, int init_col, double fact = 1.0);
-        int  Extract (const Matrix &V, int init_row, int init_col, double fact = 1.0);
+    // methods added by Remo
+    int  Assemble(const Matrix &V, int init_row, int init_col, double fact = 1.0);
+    int  AssembleTranspose(const Matrix &V, int init_row, int init_col, double fact = 1.0);
+    int  Extract (const Matrix &V, int init_row, int init_col, double fact = 1.0);
 
-        friend ostream &operator<<(ostream &s, const Matrix &M);
-        //    friend istream &operator>>(istream &s, Matrix &M);
-        friend Matrix operator*(double a, const Matrix &M);
+    friend ostream &operator<<(ostream &s, const Matrix &M);
+    //    friend istream &operator>>(istream &s, Matrix &M);
+    friend Matrix operator*(double a, const Matrix &M);
 
-        // NOTE: This is awful programming....
-        friend class Vector;
-        friend class Message;
-        friend class TCP_Socket;
-        friend class TCP_SocketNoDelay;
-        friend class UDP_Socket;
-        friend class MPI_Channel;
-        friend class HDF5_Channel;
-        friend class H5OutputWriter;
-        friend class OutputWriter;
-        friend class MySqlDatastore;
-        friend class MySqlDataRecorder;
-        friend class BerkeleyDbDatastore;
-        friend class ElasticIsotropic3D; //Guanzhou added for PDD
-        friend class TwoStageEquivalentElasticIsotropic3D;
-    protected:
+    // NOTE: This is awful programming....
+    friend class Vector;
+    friend class Message;
+    friend class TCP_Socket;
+    friend class TCP_SocketNoDelay;
+    friend class UDP_Socket;
+    friend class MPI_Channel;
+    friend class HDF5_Channel;
+    friend class H5OutputWriter;
+    friend class OutputWriter;
+    friend class MySqlDatastore;
+    friend class MySqlDataRecorder;
+    friend class BerkeleyDbDatastore;
+    friend class ElasticIsotropic3D; //Guanzhou added for PDD
+    friend class TwoStageEquivalentElasticIsotropic3D;
+    friend class Domain_Reduction_Method_HDF5_input;
+protected:
 
-    private:
-        static double MATRIX_NOT_VALID_ENTRY;
-        static double *matrixWork;
-        static int *intWork;
-        static int sizeDoubleWork;
-        static int sizeIntWork;
+private:
+    static double MATRIX_NOT_VALID_ENTRY;
+    static double *matrixWork;
+    static int *intWork;
+    static int sizeDoubleWork;
+    static int sizeIntWork;
 
-        int numRows;
-        int numCols;
-        int dataSize;
-        double *data;
-        int fromFree;
+    int numRows;
+    int numCols;
+    int dataSize;
+    double *data;
+    int fromFree;
 };
 
 

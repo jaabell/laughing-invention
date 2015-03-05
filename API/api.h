@@ -47,6 +47,7 @@
 #include "MODELING/add_load_to_brick_surface_from_contact_pore_pressure.h"
 #include "MODELING/add_load_pattern_domain_reduction_method_old_inputfiles_format.h"
 #include "MODELING/add_load_pattern_domain_reduction_method.h"
+#include "MODELING/add_load_pattern_domain_reduction_method_hdf5.h"
 #include "MODELING/add_load_pattern_domain_reduction_method_save_forces.h"
 #include "MODELING/add_load_pattern_domain_reduction_method_restore_forces.h"
 #include "MODELING/add_plastic_bowl_method_load_pattern.h"

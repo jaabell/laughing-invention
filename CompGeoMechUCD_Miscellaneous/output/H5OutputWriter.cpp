@@ -34,12 +34,9 @@
 #include <hdf5.h>
 #include <time.h>
 
-//Added By Babak 5/31/14
-//------------------------
 #ifdef _PARALLEL_PROCESSING
 #include <mpi.h>
 #endif
-//------------------------
 
 
 H5OutputWriter::H5OutputWriter():

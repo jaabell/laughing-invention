@@ -26,6 +26,8 @@
 #ifndef Channel_h
 #define Channel_h
 
+#include <string>
+
 // Written: fmk
 // Created: 11/96
 // Revision: A
@@ -51,77 +53,85 @@ class LTensor;
 
 class Channel
 {
-    public:
-        Channel ();
-        virtual ~Channel();
+public:
+  Channel ();
+  virtual ~Channel();
 
-        // methods to set up the channel in an actor space
-        virtual char *addToProgram(void) = 0;
-        virtual int setUpConnection(void) = 0;
-        virtual int setNextAddress(const ChannelAddress &theAddress) = 0;
-        virtual ChannelAddress *getLastSendersAddress(void) = 0;
+  // methods to set up the channel in an actor space
+  virtual char *addToProgram(void) = 0;
+  virtual int setUpConnection(void) = 0;
+  virtual int setNextAddress(const ChannelAddress &theAddress) = 0;
+  virtual ChannelAddress *getLastSendersAddress(void) = 0;
 
-        virtual int isDatastore(void);
-        virtual int getDbTag(void);
-        int getTag(void);
+  virtual int isDatastore(void);
+  virtual int getDbTag(void);
+  int getTag(void);
 
-        // methods to send/receive messages and objects on channels.
-        virtual int sendObj(int commitTag,
-                            MovableObject &theObject,
+  // methods to send/receive messages and objects on channels.
+  virtual int sendObj(int commitTag,
+                      MovableObject &theObject,
+                      ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receiveObj(int commitTag,
+                         MovableObject &theObject,
+                         FEM_ObjectBroker &theBroker,
+                         ChannelAddress *theAddress = 0) = 0;
+
+  virtual int sendMsg(int dbTag, int commitTag,
+                      const Message &theMessage,
+                      ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receiveMsg(int dbTag, int commitTag,
+                         Message &theMessage,
+                         ChannelAddress *theAddress = 0) = 0;
+
+  virtual int sendMatrix(int dbTag, int commitTag,
+                         const Matrix &theMatrix,
+                         ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receiveMatrix(int dbTag, int commitTag,
+                            Matrix &theMatrix,
                             ChannelAddress *theAddress = 0) = 0;
 
-        virtual int receiveObj(int commitTag,
-                            MovableObject &theObject,
-                            FEM_ObjectBroker &theBroker,
+  virtual int sendVector(int dbTag, int commitTag,
+                         const Vector &theVector,
+                         ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receiveVector(int dbTag, int commitTag,
+                            Vector &theVector,
                             ChannelAddress *theAddress = 0) = 0;
 
-        virtual int sendMsg(int dbTag, int commitTag,
-                            const Message &theMessage,
+  virtual int sendID(int dbTag, int commitTag,
+                     const ID &theID,
+                     ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receiveID(int dbTag, int commitTag,
+                        ID &theID,
+                        ChannelAddress *theAddress = 0) = 0;
+
+  virtual int sendnDarray(int dbTag, int commitTag,
+                          const nDarray &theNDarray,
+                          ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receivenDarray(int dbTag, int commitTag,
+                             nDarray &theNDarray,
+                             ChannelAddress *theAddress = 0) = 0;
+
+  virtual int sendString(int dbTag, int commitTag,
+                         const std::string &theString,
+                         ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receiveString(int dbTag, int commitTag,
+                            std::string &theString,
                             ChannelAddress *theAddress = 0) = 0;
 
-        virtual int receiveMsg(int dbTag, int commitTag,
-                            Message &theMessage,
-                            ChannelAddress *theAddress = 0) = 0;
-
-        virtual int sendMatrix(int dbTag, int commitTag,
-                               const Matrix &theMatrix,
-                               ChannelAddress *theAddress = 0) = 0;
-
-        virtual int receiveMatrix(int dbTag, int commitTag,
-                               Matrix &theMatrix,
-                               ChannelAddress *theAddress = 0) = 0;
-
-        virtual int sendVector(int dbTag, int commitTag,
-                               const Vector &theVector,
-                               ChannelAddress *theAddress = 0) = 0;
-
-        virtual int receiveVector(int dbTag, int commitTag,
-                               Vector &theVector,
-                               ChannelAddress *theAddress = 0) = 0;
-
-        virtual int sendID(int dbTag, int commitTag,
-                           const ID &theID,
-                           ChannelAddress *theAddress = 0) = 0;
-
-        virtual int receiveID(int dbTag, int commitTag,
-                           ID &theID,
-                           ChannelAddress *theAddress = 0) = 0;
-
-        virtual int sendnDarray(int dbTag, int commitTag,
-                                const nDarray &theNDarray,
-                                ChannelAddress *theAddress = 0) = 0;
-
-        virtual int receivenDarray(int dbTag, int commitTag,
-                                nDarray &theNDarray,
-                                ChannelAddress *theAddress = 0) = 0;
 
 
+protected:
 
-    protected:
-
-    private:
-        static int numChannel;
-        int tag;
+private:
+  static int numChannel;
+  int tag;
 
 };
 

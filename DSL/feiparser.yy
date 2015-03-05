@@ -160,7 +160,7 @@
 %token self_weight surface load_value
 %token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit 
 %token number_of_steps number_of_boundary_nodes number_of_exterior_nodes number_of_drm_elements 
-%token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file series_file time_series_file MAGNITUDES MAGNITUDE
+%token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file hdf5_file series_file time_series_file MAGNITUDES MAGNITUDE
 %token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain constitutive testing constant mean triaxial drained undrained simple shear
 %token number_of_subincrements maximum_number_of_iterations tolerance_1 tolerance_2 strain stress control Guass points Gauss each point single value
 // Additionally these tokens carry a string type (the above carry no type)
@@ -1265,6 +1265,23 @@ CMD_add
             string,string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
 
         for(int i = 1; i <= 12; i++) nodes.pop();
+        nodes.push($$);
+    }
+    //!=========================================================================================================
+    //!
+    //!FEIDOC add domain reduction method loading # <.> hdf5_file = <string>;
+    | ADD DRM LOADING TEXTNUMBER 
+                      exp
+                      hdf5_file '=' exp
+    {
+        args.clear(); signature.clear();
+
+        args.push_back($5); signature.push_back(this_signature("pattern_number",        &isAdimensional));
+        args.push_back($8); signature.push_back(this_signature("hdf5_file",            &isAdimensional));
+
+        $$ = new FeiDslCaller2<int,string>(&add_load_pattern_domain_reduction_method_hdf5, args, signature, "add_load_pattern_domain_reduction_method_hdf5");
+
+        for(int i = 1; i <= 2; i++) nodes.pop();
         nodes.push($$);
     }
     //!=========================================================================================================
