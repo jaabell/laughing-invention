@@ -463,6 +463,11 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
         return;
     }
 
+    if (Elements->Size() == 0)
+    {
+        return;
+    }
+
     t = time;
     if ( (t < t1) or (t2 < t) )
     {
@@ -516,62 +521,14 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
 int
 Domain_Reduction_Method_HDF5_input::sendSelf(int commitTag, Channel & theChannel)
 {
-// #ifdef _BABAK_DEBUG
-//     cerr << "DomaiPartitioner::partition--BEFORE theSubdomain->addLoadPattern(newLoadPattern) -- DRM INFORMATION:\n";
-// #endif
-//     static ID idData(7);
 
-//     int dataTag = this->getDbTag();
+    DRMout << "sending filename: " << HDF5filename << endl;
 
-//     idData.Zero();
-//     idData(0) = this->getTag();
-//     idData(1) = thetimeSteps;
-//     idData(2) = BoundaryNodes->Size();
-//     idData(3) = ExteriorNodes->Size();
-//     idData(4) = PBowlLoads->noRows();
-//     idData(5) = PBowlLoads->noCols();
-//     idData(6) = NodeID->Size();
-
-//     if (theChannel.sendID(dataTag, commitTag, idData) < 0)
-//     {
-//         cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send ID\n";
-//         return -1;
-//     }
-
-//     if (theChannel.sendID(dataTag, commitTag, *BoundaryNodes) < 0)
-//     {
-//         cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send BoundaryNodes\n";
-//         return -1;
-//     }
-
-//     if (theChannel.sendID(dataTag, commitTag, *ExteriorNodes) < 0)
-//     {
-//         cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send ExteriorNodes\n";
-//         return -1;
-//     }
-
-//     if (theChannel.sendMatrix(dataTag, commitTag, *PBowlLoads) < 0)
-//     {
-//         cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send Matrix PBowlLoads\n";
-//         return -1;
-//     }
-
-//     if (theChannel.sendID(dataTag, commitTag, *NodeID) < 0)
-//     {
-//         cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send ExteriorNodes\n";
-//         return -1;
-//     }
-
-//     static Vector data(2);
-
-//     data(0) = PBTimeIncr;
-//     data(1) = cFactor;
-
-//     if (theChannel.sendVector(dataTag, commitTag, data) < 0)
-//     {
-//         cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send data\n";
-//         return -1;
-//     }
+    if (theChannel.sendString(0, 0, HDF5filename) < 0)
+    {
+        cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send HDF5filename\n";
+        return -1;
+    }
 
     return 0;
 }
@@ -580,125 +537,17 @@ int
 Domain_Reduction_Method_HDF5_input::receiveSelf(int commitTag, Channel & theChannel,
         FEM_ObjectBroker & theBroker)
 {
-    // //Guanzhou implemented for parallel processing
-    // int dataTag = this->getDbTag();
-    // static ID idData(7);
+    DRMout << "receiving...\n";
 
-    // if (theChannel.receiveID(dataTag, commitTag, idData) < 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to recv ID\n";
-    //     return -1;
-    // }
+    if (theChannel.receiveString(0, 0, HDF5filename) < 0)
+    {
+        cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to receive HDF5filename\n";
+        return -1;
+    }
 
-    // this->setTag(idData(0));
-
-    // thetimeSteps = idData(1);
-
-    // int numBnodes = idData(2);
-
-    // if ( BoundaryNodes != 0 )
-    // {
-    //     delete BoundaryNodes;
-    // }
-
-    // BoundaryNodes = new ID(numBnodes);
-
-    // if (BoundaryNodes == 0 || BoundaryNodes->Size() == 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf() - ran out of memory constructing";
-    //     cerr << " a ID of size: " <<  BoundaryNodes->Size() << endln;
-    //     exit(1);
-    // }
-
-    // if (theChannel.receiveID(dataTag, commitTag, *BoundaryNodes) < 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to recv BoundaryNodes\n";
-    //     return -1;
-    // }
-
-    // int numEnodes = idData(3);
-
-    // if ( ExteriorNodes != 0 )
-    // {
-    //     delete ExteriorNodes;
-    // }
-
-    // ExteriorNodes = new ID(numEnodes);
-
-    // if (ExteriorNodes == 0 || ExteriorNodes->Size() == 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf() - ran out of memory constructing";
-    //     cerr << " a ID of size: " << ExteriorNodes->Size() << endln;
-    //     exit(1);
-    // }
-
-    // if (theChannel.receiveID(dataTag, commitTag, *ExteriorNodes) < 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to recv ExteriorNodes\n";
-    //     return -1;
-    // }
-
-    // int row = idData(4);
-    // int col = idData(5);
-
-    // if ( PBowlLoads != 0 )
-    // {
-    //     delete PBowlLoads;
-    // }
-
-    // PBowlLoads = new Matrix(row, col);
-
-    // if (PBowlLoads == 0 || PBowlLoads->noRows() == 0 || PBowlLoads->noCols() == 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf() - ran out of memory constructing";
-    //     cerr << " a Matrix of size (cols*rows): " << col << " * " << row << endln;
-    //     exit(1);
-    // }
-
-    // if (theChannel.receiveMatrix(dataTag, commitTag, *PBowlLoads) < 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to recv Matrix PBowlLoads\n";
-    //     return -1;
-    // }
-
-    // int numNodes = idData(6);
-
-    // if ( NodeID != 0 )
-    // {
-    //     delete NodeID;
-    // }
-
-    // NodeID = new ID(numNodes);
-
-    // if (NodeID == 0 || NodeID->Size() == 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf() - ran out of memory constructing";
-    //     cerr << " a ID of size: " << NodeID->Size() << endln;
-    //     exit(1);
-    // }
-
-    // if (theChannel.receiveID(dataTag, commitTag, *NodeID) < 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to recv NodeID\n";
-    //     return -1;
-    // }
-
-    // static Vector data(2);
-
-    // if (theChannel.receiveVector(dataTag, commitTag, data) < 0)
-    // {
-    //     cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to recv data\n";
-    //     return -1;
-    // }
-
-    // PBTimeIncr =   data(0);
-    // cFactor    =   data(1);
-
-    // LoadComputed = true;
-
+    DRMout << "got filename: " << HDF5filename << endl;
 
     return 0;
-
 }
 
 void
@@ -713,9 +562,7 @@ Domain_Reduction_Method_HDF5_input::Print(ostream & s, int flag)
 LoadPattern *
 Domain_Reduction_Method_HDF5_input::getCopy(void)
 {
-
-
-    return 0;
+    return new Domain_Reduction_Method_HDF5_input(this->getTag(), HDF5filename);
 }
 
 void

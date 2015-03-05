@@ -299,6 +299,7 @@
 #include <Linear_Disp_TimeHistory_Penalty.h>
 
 #include <Domain_Reduction_Method_Modified_Input.h>
+#include <Domain_Reduction_Method_HDF5_input.h>
 
 
 
@@ -326,15 +327,15 @@ FEM_ObjectBroker::getNewActor(int classTag, Channel *theChannel)
 
 #ifdef _PARALLEL_PROCESSING
 
-        case ACTOR_TAGS_SUBDOMAIN:
-            return new ActorSubdomain(*theChannel, *this);
+    case ACTOR_TAGS_SUBDOMAIN:
+        return new ActorSubdomain(*theChannel, *this);
 #endif
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewActor - ";
-            cerr << " - no ActorType type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewActor - ";
+        cerr << " - no ActorType type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -345,11 +346,11 @@ FEM_ObjectBroker::getPtrNewPartitionedModelBuilder(Subdomain &theSubdomain,
 {
     switch (classTag)
     {
-        default:
-            cerr << "FEM_ObjectBroker::getPtrNewPartitionedModelBuilder - ";
-            cerr << " - no PartitionedModelBuilder type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getPtrNewPartitionedModelBuilder - ";
+        cerr << " - no PartitionedModelBuilder type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -360,23 +361,23 @@ FEM_ObjectBroker::getPtrNewGraphNumberer(int classTag)
 {
     switch (classTag)
     {
-        case GraphNUMBERER_TAG_RCM:
-            return new RCM();
+    case GraphNUMBERER_TAG_RCM:
+        return new RCM();
 
 
-        case GraphNUMBERER_TAG_MyRCM:
-            return new MyRCM();
+    case GraphNUMBERER_TAG_MyRCM:
+        return new MyRCM();
 
 
-        case GraphNUMBERER_TAG_SimpleNumberer:
-            return new SimpleNumberer();
+    case GraphNUMBERER_TAG_SimpleNumberer:
+        return new SimpleNumberer();
 
 
-        default:
-            cerr << "ObjectBroker::getPtrNewGraphNumberer - ";
-            cerr << " - no GraphNumberer type exists for class tag " ;
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "ObjectBroker::getPtrNewGraphNumberer - ";
+        cerr << " - no GraphNumberer type exists for class tag " ;
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -392,53 +393,53 @@ FEM_ObjectBroker::getNewElement(int classTag)
 {
     switch (classTag)
     {
-        case ELE_TAG_EightNodeBrick:            //Guanzhou added //temp out by babak
-            return new EightNodeBrick();//temp out by babak
+    case ELE_TAG_EightNodeBrick:            //Guanzhou added //temp out by babak
+        return new EightNodeBrick();//temp out by babak
 
-        case ELE_TAG_TwentySevenNodeBrick:          //Babak added on 10/18/2012
-            return new TwentySevenNodeBrick();
+    case ELE_TAG_TwentySevenNodeBrick:          //Babak added on 10/18/2012
+        return new TwentySevenNodeBrick();
 
-        case ELE_TAG_TwentySevenNodeBrickElastic:           //Babak added on 11/16/2012
-            return new TwentySevenNodeBrickElastic();
+    case ELE_TAG_TwentySevenNodeBrickElastic:           //Babak added on 11/16/2012
+        return new TwentySevenNodeBrickElastic();
 
-        case ELE_TAG_ElasticBeam:            //Babak added on 12/14/2012
-            return new ElasticBeam();
+    case ELE_TAG_ElasticBeam:            //Babak added on 12/14/2012
+        return new ElasticBeam();
 
-        case ELE_TAG_FourNodeAndesShell:
-            return new FourNodeAndesShell();
+    case ELE_TAG_FourNodeAndesShell:
+        return new FourNodeAndesShell();
 
-        case ELE_TAG_ThreeNodeAndesShell:           //Babak added on 2/11/2013
-            return new ThreeNodeAndesShell();
+    case ELE_TAG_ThreeNodeAndesShell:           //Babak added on 2/11/2013
+        return new ThreeNodeAndesShell();
 
-        case ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam:          //Babak added on 5/8/2013
-            return new rank_one_deficient_elastic_pinned_fixed_beam();
+    case ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam:          //Babak added on 5/8/2013
+        return new rank_one_deficient_elastic_pinned_fixed_beam();
 
-        case ELE_TAG_EightNodeBrickElastic:
-            return new EightNodeBrickElastic();
+    case ELE_TAG_EightNodeBrickElastic:
+        return new EightNodeBrickElastic();
 
-        case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
-            return new PenaltyElement();
+    case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
+        return new PenaltyElement();
 
-        case ELE_TAG_ContactElement_3DOF_3DOF:          //Babak added on 11/05/13
-            return new ContactElement_3DOF_3DOF();
+    case ELE_TAG_ContactElement_3DOF_3DOF:          //Babak added on 11/05/13
+        return new ContactElement_3DOF_3DOF();
 
-        case ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF:            //Babak added on 11/25/13
-            return new ContactElement_Nonlinear_3DOF_3DOF();
+    case ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF:            //Babak added on 11/25/13
+        return new ContactElement_Nonlinear_3DOF_3DOF();
 
-        case ELE_TAG_EightNodeBrickLT:            //Jose added on Oct 9, 2014
-            return new EightNodeBrickLT();
+    case ELE_TAG_EightNodeBrickLT:            //Jose added on Oct 9, 2014
+        return new EightNodeBrickLT();
 
-        case ELE_TAG_TwentySevenNodeBrickLT:            //Jose added on Oct 9, 2014
-            return new TwentySevenNodeBrickLT();
+    case ELE_TAG_TwentySevenNodeBrickLT:            //Jose added on Oct 9, 2014
+        return new TwentySevenNodeBrickLT();
 
 
-            break;
+        break;
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewElement - ";
-            cerr << " - no Element type exists for class tag " ;
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewElement - ";
+        cerr << " - no Element type exists for class tag " ;
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -448,15 +449,15 @@ FEM_ObjectBroker::getNewNode(int classTag)
 {
     switch (classTag)
     {
-        case NOD_TAG_Node:
-            return new Node(classTag);
+    case NOD_TAG_Node:
+        return new Node(classTag);
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewNode - ";
-            cerr << " - no Node type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewNode - ";
+        cerr << " - no Node type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -467,14 +468,14 @@ FEM_ObjectBroker::getNewMP(int classTag)
 {
     switch (classTag)
     {
-        case CNSTRNT_TAG_MP_Constraint:
-            return new MP_Constraint( 0 , classTag);
+    case CNSTRNT_TAG_MP_Constraint:
+        return new MP_Constraint( 0 , classTag);
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewMP - ";
-            cerr << " - no SP_Constraint type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewMP - ";
+        cerr << " - no SP_Constraint type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -485,18 +486,18 @@ FEM_ObjectBroker::getNewSP(int classTag)
 {
     switch (classTag)
     {
-        case CNSTRNT_TAG_SP_Constraint:
-            return new SP_Constraint(classTag);
+    case CNSTRNT_TAG_SP_Constraint:
+        return new SP_Constraint(classTag);
 
-        case CNSTRNT_TAG_ImposedMotionSP:
-            return new ImposedMotionSP();
-            break;
+    case CNSTRNT_TAG_ImposedMotionSP:
+        return new ImposedMotionSP();
+        break;
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewSP - ";
-            cerr << " - no SP_Constraint type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewSP - ";
+        cerr << " - no SP_Constraint type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -506,15 +507,15 @@ FEM_ObjectBroker::getNewNodalLoad(int classTag)
 {
     switch (classTag)
     {
-        case LOAD_TAG_NodalLoad:
-            return new NodalLoad(classTag);
+    case LOAD_TAG_NodalLoad:
+        return new NodalLoad(classTag);
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewNodalLoad - ";
-            cerr << " - no NodalLoad type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewNodalLoad - ";
+        cerr << " - no NodalLoad type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -527,20 +528,20 @@ FEM_ObjectBroker::getNewElementalLoad(int classTag)
     {
 
 
-        case LOAD_TAG_Beam3dUniformLoad:
-            return new Beam3dUniformLoad();
+    case LOAD_TAG_Beam3dUniformLoad:
+        return new Beam3dUniformLoad();
 
-        case LOAD_TAG_Beam3dPointLoad:
-            return new Beam3dPointLoad();
+    case LOAD_TAG_Beam3dPointLoad:
+        return new Beam3dPointLoad();
 
-        case LOAD_TAG_ElementSelfWeight:
-            return new ElementSelfWeight();
+    case LOAD_TAG_ElementSelfWeight:
+        return new ElementSelfWeight();
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewNodalLoad - ";
-            cerr << " - no NodalLoad type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewNodalLoad - ";
+        cerr << " - no NodalLoad type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 
@@ -555,11 +556,11 @@ FEM_ObjectBroker::getNewBeamIntegration(int classTag)
     switch (classTag)
     {
 
-        default:
-            cerr << "FEM_ObjectBroker::getBeamIntegration - ";
-            cerr << " - no BeamIntegration type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getBeamIntegration - ";
+        cerr << " - no BeamIntegration type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -569,71 +570,71 @@ FEM_ObjectBroker::getNewUniaxialMaterial(int classTag)
 {
     switch (classTag)
     {
-        case MAT_TAG_ElasticMaterial:
-            return new ElasticMaterial(); // values set in receiveSelf
+    case MAT_TAG_ElasticMaterial:
+        return new ElasticMaterial(); // values set in receiveSelf
 
-        case MAT_TAG_ElasticPPMaterial:
-            return new ElasticPPMaterial(); // values set in receiveSelf
+    case MAT_TAG_ElasticPPMaterial:
+        return new ElasticPPMaterial(); // values set in receiveSelf
 
-        case MAT_TAG_ParallelMaterial:
-            return new ParallelMaterial();
+    case MAT_TAG_ParallelMaterial:
+        return new ParallelMaterial();
 
-        //  case MAT_TAG_Concrete01:        out by B. Kamrani for debugging purposes
-        //       return new Concrete01();       out by B. Kamrani for debugging purposes
+    //  case MAT_TAG_Concrete01:        out by B. Kamrani for debugging purposes
+    //       return new Concrete01();       out by B. Kamrani for debugging purposes
 
-        case MAT_TAG_Steel01:
-            return new Steel01();
+    case MAT_TAG_Steel01:
+        return new Steel01();
 
-        case MAT_TAG_Hardening:
-            return new HardeningMaterial();
+    case MAT_TAG_Hardening:
+        return new HardeningMaterial();
 
-        //// Boris Jeremic took out 20Mar2008
-        //  //PY springs: RWBoulanger and BJeremic
-        //  case MAT_TAG_PySimple1:
-        //      return new PySimple1();
-        //
-        //  case MAT_TAG_PyLiq1:
-        //      return new PyLiq1();
-        //
-        //  case MAT_TAG_TzSimple1:
-        //      return new TzSimple1();
-        //
-        //  case MAT_TAG_TzLiq1:
-        //      return new TzLiq1();
-        //
-        //  case MAT_TAG_QzSimple1:
-        //      return new QzSimple1();
+    //// Boris Jeremic took out 20Mar2008
+    //  //PY springs: RWBoulanger and BJeremic
+    //  case MAT_TAG_PySimple1:
+    //      return new PySimple1();
+    //
+    //  case MAT_TAG_PyLiq1:
+    //      return new PyLiq1();
+    //
+    //  case MAT_TAG_TzSimple1:
+    //      return new TzSimple1();
+    //
+    //  case MAT_TAG_TzLiq1:
+    //      return new TzLiq1();
+    //
+    //  case MAT_TAG_QzSimple1:
+    //      return new QzSimple1();
 
 
-        case MAT_TAG_Hysteretic:
-            return new HystereticMaterial();
+    case MAT_TAG_Hysteretic:
+        return new HystereticMaterial();
 
-        case MAT_TAG_EPPGap:
-            return new EPPGapMaterial();
+    case MAT_TAG_EPPGap:
+        return new EPPGapMaterial();
 
-        case MAT_TAG_Viscous:
-            return new ViscousMaterial();
+    case MAT_TAG_Viscous:
+        return new ViscousMaterial();
 
-        case MAT_TAG_PathIndependent:
-            return new PathIndependentMaterial();
+    case MAT_TAG_PathIndependent:
+        return new PathIndependentMaterial();
 
-        case MAT_TAG_SeriesMaterial:
-            return new SeriesMaterial();
+    case MAT_TAG_SeriesMaterial:
+        return new SeriesMaterial();
 
-        case MAT_TAG_CableMaterial:
-            return new CableMaterial();
+    case MAT_TAG_CableMaterial:
+        return new CableMaterial();
 
-        case MAT_TAG_ENTMaterial:
-            return new ENTMaterial();
+    case MAT_TAG_ENTMaterial:
+        return new ENTMaterial();
 
-        case MAT_TAG_MinMax:
-            return new MinMaxMaterial();
+    case MAT_TAG_MinMax:
+        return new MinMaxMaterial();
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewUniaxialMaterial - ";
-            cerr << " - no UniaxialMaterial type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewUniaxialMaterial - ";
+        cerr << " - no UniaxialMaterial type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -644,42 +645,42 @@ FEM_ObjectBroker::getNewSection(int classTag)
     switch (classTag)
     {
 
-        case SEC_TAG_Elastic3d:
-            return new ElasticSection3d();
+    case SEC_TAG_Elastic3d:
+        return new ElasticSection3d();
 
-        case SEC_TAG_Generic1d:
-            return new GenericSection1d();
+    case SEC_TAG_Generic1d:
+        return new GenericSection1d();
 
-        //case SEC_TAG_GenericNd:
-        //return new GenericSectionNd();
+    //case SEC_TAG_GenericNd:
+    //return new GenericSectionNd();
 
-        case SEC_TAG_Aggregator:
-            return new SectionAggregator();
+    case SEC_TAG_Aggregator:
+        return new SectionAggregator();
 
-        //case SEC_TAG_Fiber:
-        //return new FiberSection();
+    //case SEC_TAG_Fiber:
+    //return new FiberSection();
 
 
-        case SEC_TAG_FiberSection3d:
-            return new FiberSection3d();
+    case SEC_TAG_FiberSection3d:
+        return new FiberSection3d();
 
-        case SEC_TAG_ElasticPlateSection:
-            return new ElasticPlateSection();
+    case SEC_TAG_ElasticPlateSection:
+        return new ElasticPlateSection();
 
-        case SEC_TAG_ElasticMembranePlateSection:
-            return new ElasticMembranePlateSection();
+    case SEC_TAG_ElasticMembranePlateSection:
+        return new ElasticMembranePlateSection();
 
-        case SEC_TAG_MembranePlateFiberSection:
-            return new MembranePlateFiberSection();
+    case SEC_TAG_MembranePlateFiberSection:
+        return new MembranePlateFiberSection();
 
-        case SEC_TAG_Bidirectional:
-            return new Bidirectional();
+    case SEC_TAG_Bidirectional:
+        return new Bidirectional();
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewSection - ";
-            cerr << " - no section type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewSection - ";
+        cerr << " - no section type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -691,57 +692,57 @@ FEM_ObjectBroker::getNewNDMaterial(int classTag)
     {
 
 
-        //   case ND_TAG_ElasticIsotropicAxiSymm:
-        //     return new ElasticIsotropicAxiSymm();
+    //   case ND_TAG_ElasticIsotropicAxiSymm:
+    //     return new ElasticIsotropicAxiSymm();
 
-        //  case ND_TAG_ElasticIsotropicPlateFiber:
-        //    return new ElasticIsotropicPlateFiber();
+    //  case ND_TAG_ElasticIsotropicPlateFiber:
+    //    return new ElasticIsotropicPlateFiber();
 
-        case ND_TAG_ElasticIsotropic3D:
-            return new ElasticIsotropic3D();
+    case ND_TAG_ElasticIsotropic3D:
+        return new ElasticIsotropic3D();
 
 
-        //   case ND_TAG_PlaneStressMaterial:
-        //     return new PlaneStressMaterial();
+    //   case ND_TAG_PlaneStressMaterial:
+    //     return new PlaneStressMaterial();
 
-        //  case ND_TAG_PlateFiberMaterial:
-        //    return new PlateFiberMaterial();
+    //  case ND_TAG_PlateFiberMaterial:
+    //    return new PlateFiberMaterial();
 
-        // Boris Jeremic took out 20mar2008
-        //  case ND_TAG_FluidSolidPorousMaterial:
-        //    return new FluidSolidPorousMaterial();
-        //
-        //  case ND_TAG_PressureDependMultiYield:
-        //    return new PressureDependMultiYield();
-        //
-        //  case ND_TAG_PressureIndependMultiYield:
-        //    return new PressureIndependMultiYield();
+    // Boris Jeremic took out 20mar2008
+    //  case ND_TAG_FluidSolidPorousMaterial:
+    //    return new FluidSolidPorousMaterial();
+    //
+    //  case ND_TAG_PressureDependMultiYield:
+    //    return new PressureDependMultiYield();
+    //
+    //  case ND_TAG_PressureIndependMultiYield:
+    //    return new PressureIndependMultiYield();
 
-        //Guanzhou case ND_TAG_FeapMaterial03:
-        //Guanzhou   return new FeapMaterial03();
+    //Guanzhou case ND_TAG_FeapMaterial03:
+    //Guanzhou   return new FeapMaterial03();
 
-        //Guanzhou added
-        case ND_TAG_Template3Dep:
-            return new Template3Dep();
+    //Guanzhou added
+    case ND_TAG_Template3Dep:
+        return new Template3Dep();
 
-        //added by Babak November 5, 2012
-        case ND_TAG_vonMisesPP:
-            return new vonMisesPP();
+    //added by Babak November 5, 2012
+    case ND_TAG_vonMisesPP:
+        return new vonMisesPP();
 
-        //Guanzhou added
-        case ND_TAG_NewTemplate3Dep:
-            return new NewTemplate3Dep();
-            break;
+    //Guanzhou added
+    case ND_TAG_NewTemplate3Dep:
+        return new NewTemplate3Dep();
+        break;
 
-        //   case ND_TAG_PressureDependentElastic3D:
-        //return new PressureDependentElastic3D();
-        //      break;
+    //   case ND_TAG_PressureDependentElastic3D:
+    //return new PressureDependentElastic3D();
+    //      break;
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewNDMaterial - ";
-            cerr << " - no NDMaterial type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewNDMaterial - ";
+        cerr << " - no NDMaterial type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -751,28 +752,28 @@ FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
 {
     switch (classTag)
     {
-        case ND_TAG_ElasticIsotropic3DLT :
-            return new ElasticIsotropic3DLT();
-            break;
+    case ND_TAG_ElasticIsotropic3DLT :
+        return new ElasticIsotropic3DLT();
+        break;
 
-        case ND_TAG_vonMisesPPLT :
-            return new vonMisesPPLT();
-            break;
+    case ND_TAG_vonMisesPPLT :
+        return new vonMisesPPLT();
+        break;
 
-        case ND_TAG_PisanoLT :
-            return new PisanoLT();
-            break;
+    case ND_TAG_PisanoLT :
+        return new PisanoLT();
+        break;
 
-        case ND_TAG_NewPisanoLT :
-            return new NewPisanoLT();
-            break;
+    case ND_TAG_NewPisanoLT :
+        return new NewPisanoLT();
+        break;
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewNDMaterialLT - ";
-            cerr << " - no NDMaterialLT type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewNDMaterialLT - ";
+        cerr << " - no NDMaterialLT type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -793,27 +794,27 @@ FEM_ObjectBroker::getNewElasticStatePtr(int classTag)
 {
     switch (classTag)
     {
-        case ES_TAG_DM04:
-            return new DM04_Elastic();
-            break;
+    case ES_TAG_DM04:
+        return new DM04_Elastic();
+        break;
 
-        case ES_TAG_elnpElastic:
-            return new elnp_Elastic();
-            break;
+    case ES_TAG_elnpElastic:
+        return new elnp_Elastic();
+        break;
 
-        case ES_TAG_PressureDependentElastic:
-            return new PressureDependent_Elastic();
-            break;
+    case ES_TAG_PressureDependentElastic:
+        return new PressureDependent_Elastic();
+        break;
 
-        case ES_TAG_IsotropicElastic:
-            return new Isotropic_Elastic();
-            break;
+    case ES_TAG_IsotropicElastic:
+        return new Isotropic_Elastic();
+        break;
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewElasticStatePtr - ";
-            cerr << " - no Elastic State type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewElasticStatePtr - ";
+        cerr << " - no Elastic State type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -825,27 +826,27 @@ FEM_ObjectBroker::getNewYieldFunctionPtr(int classTag)
 {
     switch (classTag)
     {
-        case YF_TAG_VM:
-            return new VM_YF();
-            break;
+    case YF_TAG_VM:
+        return new VM_YF();
+        break;
 
-        case YF_TAG_CC:
-            return new CC_YF();
-            break;
+    case YF_TAG_CC:
+        return new CC_YF();
+        break;
 
-        case YF_TAG_DP:
-            return new DP_YF();
-            break;
+    case YF_TAG_DP:
+        return new DP_YF();
+        break;
 
-        case YF_TAG_DM04:
-            return new DM04_YF();
-            break;
+    case YF_TAG_DM04:
+        return new DM04_YF();
+        break;
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewYieldFunctionPtr - ";
-            cerr << " - no Yield Function type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewYieldFunctionPtr - ";
+        cerr << " - no Yield Function type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -857,27 +858,27 @@ FEM_ObjectBroker::getNewPlasticFlowPtr(int classTag)
 {
     switch (classTag)
     {
-        case PF_TAG_VM:
-            return new VM_PF();
-            break;
+    case PF_TAG_VM:
+        return new VM_PF();
+        break;
 
-        case PF_TAG_CC:
-            return new CC_PF();
-            break;
+    case PF_TAG_CC:
+        return new CC_PF();
+        break;
 
-        case PF_TAG_DP:
-            return new DP_PF();
-            break;
+    case PF_TAG_DP:
+        return new DP_PF();
+        break;
 
-        case PF_TAG_DM04:
-            return new DM04_PF();
-            break;
+    case PF_TAG_DM04:
+        return new DM04_PF();
+        break;
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewPlasticFlowPtr - ";
-            cerr << " - no Plastic Flow type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewPlasticFlowPtr - ";
+        cerr << " - no Plastic Flow type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -889,19 +890,19 @@ FEM_ObjectBroker::getNewScalarEvolutionPtr(int classTag)
 {
     switch (classTag)
     {
-        case SE_TAG_Linear_Eeq:
-            return new Linear_Eeq();
-            break;
+    case SE_TAG_Linear_Eeq:
+        return new Linear_Eeq();
+        break;
 
-        case SE_TAG_CC:
-            return new CC_Ev();
-            break;
+    case SE_TAG_CC:
+        return new CC_Ev();
+        break;
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewScalarEvolutionPtr - ";
-            cerr << " - no Scalar Evolution type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewScalarEvolutionPtr - ";
+        cerr << " - no Scalar Evolution type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -913,27 +914,27 @@ FEM_ObjectBroker::getNewTensorEvolutionPtr(int classTag)
 {
     switch (classTag)
     {
-        case TE_TAG_Linear_Eij:
-            return new Linear_Eij();
-            break;
+    case TE_TAG_Linear_Eij:
+        return new Linear_Eij();
+        break;
 
-        case TE_TAG_AF:
-            return new AF_Eij();
-            break;
+    case TE_TAG_AF:
+        return new AF_Eij();
+        break;
 
-        case TE_TAG_DM04_alpha_Eij:
-            return new DM04_alpha_Eij();
-            break;
+    case TE_TAG_DM04_alpha_Eij:
+        return new DM04_alpha_Eij();
+        break;
 
-        case TE_TAG_DM04_z_Eij:
-            return new DM04_z_Eij();
-            break;
+    case TE_TAG_DM04_z_Eij:
+        return new DM04_z_Eij();
+        break;
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewTensorEvolutionPtr - ";
-            cerr << " - no Tensor Evolution type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewTensorEvolutionPtr - ";
+        cerr << " - no Tensor Evolution type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -945,14 +946,14 @@ FEM_ObjectBroker::getNewFiber(int classTag)
     switch (classTag)
     {
 
-        case FIBER_TAG_Uniaxial3d:
-            return new UniaxialFiber3d();
+    case FIBER_TAG_Uniaxial3d:
+        return new UniaxialFiber3d();
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewFiber - ";
-            cerr << " - no Fiber type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewFiber - ";
+        cerr << " - no Fiber type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
     }
 }
 
@@ -961,21 +962,21 @@ FEM_ObjectBroker::getNewConvergenceTest(int classTag)
 {
     switch (classTag)
     {
-        case CONVERGENCE_TEST_CTestNormUnbalance:
-            return new CTestNormUnbalance();
+    case CONVERGENCE_TEST_CTestNormUnbalance:
+        return new CTestNormUnbalance();
 
-        case CONVERGENCE_TEST_CTestNormDispIncr:
-            return new CTestNormDispIncr();
+    case CONVERGENCE_TEST_CTestNormDispIncr:
+        return new CTestNormDispIncr();
 
-        case CONVERGENCE_TEST_CTestEnergyIncr:
-            return new CTestEnergyIncr();
+    case CONVERGENCE_TEST_CTestEnergyIncr:
+        return new CTestEnergyIncr();
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewConvergenceTest - ";
-            cerr << " - no ConvergenceTest type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewConvergenceTest - ";
+        cerr << " - no ConvergenceTest type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -986,67 +987,58 @@ FEM_ObjectBroker::getNewLoadPattern(int classTag)
 {
     switch (classTag)
     {
-        case PATTERN_TAG_LoadPattern:
-            return new LoadPattern();
+    case PATTERN_TAG_LoadPattern:
+        return new LoadPattern();
 
-        //Guanzhou added
-        case PATTERN_TAG_PBowlLoading:
-            return new PBowlLoading();
+    //Guanzhou added
+    case PATTERN_TAG_PBowlLoading:
+        return new PBowlLoading();
 
-        case PATTERN_TAG_UniformExcitation:
-            return new UniformExcitation();
+    case PATTERN_TAG_UniformExcitation:
+        return new UniformExcitation();
 
-        case PATTERN_TAG_MultiSupportPattern:
-            return new MultiSupportPattern(0);
+    case PATTERN_TAG_MultiSupportPattern:
+        return new MultiSupportPattern(0);
 
 
-        //##################################################################################
-        //Nima Tafazzoli added
-        case  PATTERN_TAG_Linear_Force_TimeHistory:
-        {
-#ifdef _BABAK_DEBUG
-            //Added by Babak Kamrani :
-            int numProcesses, processID;
-            MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-            MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-            cerr << "BABAK@FEM_ObjectBroker::getNewLoadPattern--PID # " << processID << "classTag is: " << classTag << "\n";
-#endif
-            return new Linear_Force_TimeHistory();
-        }
+    //##################################################################################
+    //Nima Tafazzoli added
+    case  PATTERN_TAG_Linear_Force_TimeHistory:
+    {
+        return new Linear_Force_TimeHistory();
+    }
 
-        //--------------------
-        //Babak Kamrani added to use PATTERN_TAG_Domain_Reduction_Method_Modified_Input
-        //--------------------
-        case PATTERN_TAG_Domain_Reduction_Method_Modified_Input:
-        {
-#ifdef _BABAK_DEBUG
-            //Added by Babak Kamrani :
-            int numProcesses, processID;
-            MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-            MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-            cerr << "BABAK@FEM_ObjectBroker::getNewLoadPattern--PID # " << processID << "classTag is: " << classTag << "\n";
-#endif
-            return new Domain_Reduction_Method_Modified_Input();
-        }
+    //--------------------
+    //Babak Kamrani added to use PATTERN_TAG_Domain_Reduction_Method_Modified_Input
+    //--------------------
+    case PATTERN_TAG_Domain_Reduction_Method_Modified_Input:
+    {
+        return new Domain_Reduction_Method_Modified_Input();
+    }
 
-        case  PATTERN_TAG_PathSeries_Force_TimeHistory:
-            return new PathSeries_Force_TimeHistory();
+    case PATTERN_TAG_Domain_Reduction_Method_HDF5_Input:
+    {
+        return new Domain_Reduction_Method_HDF5_input();
+    }
 
-        case  PATTERN_TAG_PathTimeSeries_Force_TimeHistory:
-            return new PathTimeSeries_Force_TimeHistory();
+    case  PATTERN_TAG_PathSeries_Force_TimeHistory:
+        return new PathSeries_Force_TimeHistory();
 
-        case  PATTERN_TAG_Linear_Disp_TimeHistory_Penalty:
-            return new Linear_Disp_TimeHistory_Penalty();
+    case  PATTERN_TAG_PathTimeSeries_Force_TimeHistory:
+        return new PathTimeSeries_Force_TimeHistory();
 
-        //##################################################################################
+    case  PATTERN_TAG_Linear_Disp_TimeHistory_Penalty:
+        return new Linear_Disp_TimeHistory_Penalty();
+
+    //##################################################################################
 
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getPtrLoadPattern - ";
-            cerr << " - no Load type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getPtrLoadPattern - ";
+        cerr << " - no Load type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1058,14 +1050,14 @@ FEM_ObjectBroker::getNewGroundMotion(int classTag)
     switch (classTag)
     {
 
-        case GROUND_MOTION_TAG_GroundMotion:
-            return new GroundMotion(GROUND_MOTION_TAG_GroundMotion);
+    case GROUND_MOTION_TAG_GroundMotion:
+        return new GroundMotion(GROUND_MOTION_TAG_GroundMotion);
 
-        default:
-            cerr << "FEM_ObjectBroker::getPtrGroundMotion - ";
-            cerr << " - no Load type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getPtrGroundMotion - ";
+        cerr << " - no Load type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1075,24 +1067,24 @@ FEM_ObjectBroker::getNewTimeSeries(int classTag)
 {
     switch (classTag)
     {
-        case TSERIES_TAG_LinearSeries:
-            return new LinearSeries;
+    case TSERIES_TAG_LinearSeries:
+        return new LinearSeries;
 
-        case TSERIES_TAG_PathTimeSeries:
-            return new PathTimeSeries;
+    case TSERIES_TAG_PathTimeSeries:
+        return new PathTimeSeries;
 
-        case TSERIES_TAG_PathSeries:
-            return new PathSeries;
+    case TSERIES_TAG_PathSeries:
+        return new PathSeries;
 
-        case TSERIES_TAG_ConstantSeries:
-            return new ConstantSeries;
+    case TSERIES_TAG_ConstantSeries:
+        return new ConstantSeries;
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getPtrTimeSeries - ";
-            cerr << " - no Load type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getPtrTimeSeries - ";
+        cerr << " - no Load type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1102,14 +1094,14 @@ FEM_ObjectBroker::getNewTimeSeriesIntegrator(int classTag)
 {
     switch (classTag)
     {
-        case TIMESERIES_INTEGRATOR_TAG_Trapezoidal:
-            return new TrapezoidalTimeSeriesIntegrator();
+    case TIMESERIES_INTEGRATOR_TAG_Trapezoidal:
+        return new TrapezoidalTimeSeriesIntegrator();
 
-        default:
-            cerr << "FEM_ObjectBroker::getPtrTimeSeriesIntegrator - ";
-            cerr << " - no Load type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getPtrTimeSeriesIntegrator - ";
+        cerr << " - no Load type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1120,15 +1112,15 @@ FEM_ObjectBroker::getPtrNewMatrix(int classTag, int noRows, int noCols)
 {
     switch (classTag)
     {
-        case MATRIX_TAG_Matrix:
-            return new Matrix(noRows, noCols);
+    case MATRIX_TAG_Matrix:
+        return new Matrix(noRows, noCols);
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getPtrNewMatrix - ";
-            cerr << " - no NodalLoad type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getPtrNewMatrix - ";
+        cerr << " - no NodalLoad type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1139,15 +1131,15 @@ FEM_ObjectBroker::getPtrNewVector(int classTag, int size)
 {
     switch (classTag)
     {
-        case VECTOR_TAG_Vector:
-            return new Vector(size);
+    case VECTOR_TAG_Vector:
+        return new Vector(size);
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getPtrNewVector - ";
-            cerr << " - no Vector type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getPtrNewVector - ";
+        cerr << " - no Vector type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1158,15 +1150,15 @@ FEM_ObjectBroker::getPtrNewID(int classTag, int size)
 {
     switch (classTag)
     {
-        case ID_TAG_ID:
-            return new ID(size);
+    case ID_TAG_ID:
+        return new ID(size);
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getPtrNewID - ";
-            cerr << " - no ID type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getPtrNewID - ";
+        cerr << " - no ID type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1239,23 +1231,23 @@ FEM_ObjectBroker::getNewConstraintHandler(int classTag)
 {
     switch (classTag)
     {
-        case HANDLER_TAG_PlainHandler:
-            return new PlainHandler();
+    case HANDLER_TAG_PlainHandler:
+        return new PlainHandler();
 
-        case HANDLER_TAG_PenaltyConstraintHandler:
-            return new PenaltyConstraintHandler(1.0e12, 1.0e12);
+    case HANDLER_TAG_PenaltyConstraintHandler:
+        return new PenaltyConstraintHandler(1.0e12, 1.0e12);
 
-        case HANDLER_TAG_LagrangeConstraintHandler:
-            return new LagrangeConstraintHandler(1.0, 1.0);
+    case HANDLER_TAG_LagrangeConstraintHandler:
+        return new LagrangeConstraintHandler(1.0, 1.0);
 
-        case HANDLER_TAG_TransformationConstraintHandler:
-            return new TransformationConstraintHandler();
+    case HANDLER_TAG_TransformationConstraintHandler:
+        return new TransformationConstraintHandler();
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewConstraintHandler - ";
-            cerr << " - no ConstraintHandler type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewConstraintHandler - ";
+        cerr << " - no ConstraintHandler type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1266,25 +1258,25 @@ FEM_ObjectBroker::getNewNumberer(int classTag)
 {
     switch (classTag)
     {
-        case NUMBERER_TAG_DOF_Numberer:
-            return new DOF_Numberer();
+    case NUMBERER_TAG_DOF_Numberer:
+        return new DOF_Numberer();
 
 
-        case NUMBERER_TAG_PlainNumberer:
-            return new PlainNumberer();
+    case NUMBERER_TAG_PlainNumberer:
+        return new PlainNumberer();
 
 
 #ifdef _PARALLEL_PROCESSING
 
-        case NUMBERER_TAG_ParallelNumberer:
-            return new ParallelNumberer();
+    case NUMBERER_TAG_ParallelNumberer:
+        return new ParallelNumberer();
 #endif
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewConstraintHandler - ";
-            cerr << " - no ConstraintHandler type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewConstraintHandler - ";
+        cerr << " - no ConstraintHandler type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1295,15 +1287,15 @@ FEM_ObjectBroker::getNewAnalysisModel(int classTag)
 {
     switch (classTag)
     {
-        case AnaMODEL_TAGS_AnalysisModel:
-            return new AnalysisModel();
+    case AnaMODEL_TAGS_AnalysisModel:
+        return new AnalysisModel();
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewAnalysisModel - ";
-            cerr << " - no AnalysisModel type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewAnalysisModel - ";
+        cerr << " - no AnalysisModel type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1314,23 +1306,23 @@ FEM_ObjectBroker::getNewEquiSolnAlgo(int classTag)
 {
     switch (classTag)
     {
-        case EquiALGORITHM_TAGS_Linear:
-            return new Linear();
+    case EquiALGORITHM_TAGS_Linear:
+        return new Linear();
 
 
-        case EquiALGORITHM_TAGS_NewtonRaphson:
-            return new NewtonRaphson();
+    case EquiALGORITHM_TAGS_NewtonRaphson:
+        return new NewtonRaphson();
 
 
-        case EquiALGORITHM_TAGS_ModifiedNewton:
-            return new ModifiedNewton();
+    case EquiALGORITHM_TAGS_ModifiedNewton:
+        return new ModifiedNewton();
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewEquiSolnAlgo - ";
-            cerr << " - no EquiSolnAlgo type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewEquiSolnAlgo - ";
+        cerr << " - no EquiSolnAlgo type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1341,14 +1333,14 @@ FEM_ObjectBroker::getNewDomainDecompAlgo(int classTag)
 {
     switch (classTag)
     {
-        case DomDecompALGORITHM_TAGS_DomainDecompAlgo:
-            return new DomainDecompAlgo();
+    case DomDecompALGORITHM_TAGS_DomainDecompAlgo:
+        return new DomainDecompAlgo();
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewDomainDecompAlgo - ";
-            cerr << " - no DomainDecompAlgo type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewDomainDecompAlgo - ";
+        cerr << " - no DomainDecompAlgo type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1359,24 +1351,24 @@ FEM_ObjectBroker::getNewStaticIntegrator(int classTag)
 {
     switch (classTag)
     {
-        case INTEGRATOR_TAGS_LoadControl:
-            return new LoadControl(1.0, 1, 1.0, .10); // must receiveSelf
+    case INTEGRATOR_TAGS_LoadControl:
+        return new LoadControl(1.0, 1, 1.0, .10); // must receiveSelf
 
 #ifdef _PARALLEL_PROCESSING
 
-        case INTEGRATOR_TAGS_DistributedDisplacementControl:
-            return new DistributedDisplacementControl(); // must receiveSelf
+    case INTEGRATOR_TAGS_DistributedDisplacementControl:
+        return new DistributedDisplacementControl(); // must receiveSelf
 #endif
 
-        case INTEGRATOR_TAGS_ArcLength:
-            return new ArcLength(1.0);      // must receiveSelf
+    case INTEGRATOR_TAGS_ArcLength:
+        return new ArcLength(1.0);      // must receiveSelf
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewStaticIntegrator - ";
-            cerr << " - no StaticIntegrator type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewStaticIntegrator - ";
+        cerr << " - no StaticIntegrator type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1387,15 +1379,15 @@ FEM_ObjectBroker::getNewTransientIntegrator(int classTag)
 {
     switch (classTag)
     {
-        case INTEGRATOR_TAGS_Newmark:
-            return new Newmark();
+    case INTEGRATOR_TAGS_Newmark:
+        return new Newmark();
 
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewTransientIntegrator - ";
-            cerr << " - no TransientIntegrator type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewTransientIntegrator - ";
+        cerr << " - no TransientIntegrator type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1406,28 +1398,28 @@ FEM_ObjectBroker::getNewIncrementalIntegrator(int classTag)
 {
     switch (classTag)
     {
-        case INTEGRATOR_TAGS_LoadControl:
-            return new LoadControl(1.0, 1, 1.0, 1.0); // must receiveSelf
+    case INTEGRATOR_TAGS_LoadControl:
+        return new LoadControl(1.0, 1, 1.0, 1.0); // must receiveSelf
 
 
-        case INTEGRATOR_TAGS_ArcLength:
-            return new ArcLength(1.0);      // must receiveSelf
+    case INTEGRATOR_TAGS_ArcLength:
+        return new ArcLength(1.0);      // must receiveSelf
 
 
-        case INTEGRATOR_TAGS_Newmark:
-            return new Newmark();
+    case INTEGRATOR_TAGS_Newmark:
+        return new Newmark();
 
 #ifdef _PARALLEL_PROCESSING
 
-        case INTEGRATOR_TAGS_DistributedDisplacementControl:
-            return new DistributedDisplacementControl(); // must receiveSelf
+    case INTEGRATOR_TAGS_DistributedDisplacementControl:
+        return new DistributedDisplacementControl(); // must receiveSelf
 #endif
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewIncrementalIntegrator - ";
-            cerr << " - no IncrementalIntegrator type exists for class tag ";
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewIncrementalIntegrator - ";
+        cerr << " - no IncrementalIntegrator type exists for class tag ";
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1455,29 +1447,29 @@ FEM_ObjectBroker::getNewLinearSOE(int classTagSOE,
 
 
 #ifdef _PETSC
-        case LinSOE_TAGS_PetscSOE:
+    case LinSOE_TAGS_PetscSOE:
 
-            if (classTagSolver == SOLVER_TAGS_PetscSolver)
-            {
-                thePetscSolver = new PetscSolver();
-                theSOE = new PetscSOE(*thePetscSolver);
-                return theSOE;
-            }
-            else
-            {
-                cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-                cerr << " - no PetscSolver type exists for class tag ";
-                cerr << classTagSolver << endln;
-                return 0;
-            }
+        if (classTagSolver == SOLVER_TAGS_PetscSolver)
+        {
+            thePetscSolver = new PetscSolver();
+            theSOE = new PetscSOE(*thePetscSolver);
+            return theSOE;
+        }
+        else
+        {
+            cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+            cerr << " - no PetscSolver type exists for class tag ";
+            cerr << classTagSolver << endln;
+            return 0;
+        }
 
 #endif
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-            cerr << " - no LinearSOE type exists for class tag ";
-            cerr << classTagSOE << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+        cerr << " - no LinearSOE type exists for class tag ";
+        cerr << classTagSOE << endln;
+        return 0;
 
 
     }
@@ -1499,11 +1491,11 @@ FEM_ObjectBroker::getPtrNewDDLinearSOE(int classTagSOE,
     switch (classTagSOE)
     {
 
-        default:
-            cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
-            cerr << " - no LinearSOE type exists for class tag ";
-            cerr << classTagSOE << endln;
-            return 0;
+    default:
+        cerr << "FEM_ObjectBroker::getNewLinearSOE - ";
+        cerr << " - no LinearSOE type exists for class tag ";
+        cerr << classTagSOE << endln;
+        return 0;
 
     }
 }
@@ -1515,23 +1507,23 @@ FEM_ObjectBroker::getNewDomainDecompAnalysis(int classTag,
 {
     switch (classTag)
     {
-        case DomDecompANALYSIS_TAGS_DomainDecompositionAnalysis:
-            return new DomainDecompositionAnalysis(theSubdomain);
+    case DomDecompANALYSIS_TAGS_DomainDecompositionAnalysis:
+        return new DomainDecompositionAnalysis(theSubdomain);
 
 #ifdef _PARALLEL_PROCESSING
 
-        case ANALYSIS_TAGS_StaticDomainDecompositionAnalysis:
-            return new StaticDomainDecompositionAnalysis(theSubdomain);
+    case ANALYSIS_TAGS_StaticDomainDecompositionAnalysis:
+        return new StaticDomainDecompositionAnalysis(theSubdomain);
 
-        case ANALYSIS_TAGS_TransientDomainDecompositionAnalysis:
-            return new TransientDomainDecompositionAnalysis(theSubdomain);
+    case ANALYSIS_TAGS_TransientDomainDecompositionAnalysis:
+        return new TransientDomainDecompositionAnalysis(theSubdomain);
 #endif
 
-        default:
-            cerr << "ObjectBroker::getNewDomainDecompAnalysis ";
-            cerr << " - no DomainDecompAnalysis type exists for class tag " ;
-            cerr << classTag << endln;
-            return 0;
+    default:
+        cerr << "ObjectBroker::getNewDomainDecompAnalysis ";
+        cerr << " - no DomainDecompAnalysis type exists for class tag " ;
+        cerr << classTag << endln;
+        return 0;
 
     }
 }
@@ -1550,33 +1542,33 @@ FEM_ObjectBroker::getYieldSurfacePtr(int clsTag)
 {
     switch (clsTag)
     {
-        // [J.Abell] These are located in Template3DEP inside the CompGeoMech_Material_Modeling folder
-        // case YS_TAG_CAMYieldSurface:
-        //     return new CAMYieldSurface(1.2);
+    // [J.Abell] These are located in Template3DEP inside the CompGeoMech_Material_Modeling folder
+    // case YS_TAG_CAMYieldSurface:
+    //     return new CAMYieldSurface(1.2);
 
-        // //      case YS_TAG_DPYieldSurface01:
-        // //              return new DPYieldSurface01(1.0);
+    // //      case YS_TAG_DPYieldSurface01:
+    // //              return new DPYieldSurface01(1.0);
 
-        // case YS_TAG_DPYieldSurface:
-        //     return new DPYieldSurface();
+    // case YS_TAG_DPYieldSurface:
+    //     return new DPYieldSurface();
 
-        // case YS_TAG_MDYieldSurface:
-        //     return new MDYieldSurface();
+    // case YS_TAG_MDYieldSurface:
+    //     return new MDYieldSurface();
 
-        // case YS_TAG_RMC01YieldSurface:
-        //     return new RMC01YieldSurface();
+    // case YS_TAG_RMC01YieldSurface:
+    //     return new RMC01YieldSurface();
 
-        // //      case YS_TAG_TriFCYieldSurface:
-        // //              return new TriFCYieldSurface(1.0,1.0,1.0,1.0);
+    // //      case YS_TAG_TriFCYieldSurface:
+    // //              return new TriFCYieldSurface(1.0,1.0,1.0,1.0);
 
-        // case YS_TAG_VMYieldSurface:
-        //     return new VMYieldSurface();
+    // case YS_TAG_VMYieldSurface:
+    //     return new VMYieldSurface();
 
-        default:
-            cerr << "ObjectBroker::getYieldSurfacePtr ";
-            cerr << " - no YieldSurface type exists for class tag " ;
-            cerr << clsTag << endln;
-            return  0;
+    default:
+        cerr << "ObjectBroker::getYieldSurfacePtr ";
+        cerr << " - no YieldSurface type exists for class tag " ;
+        cerr << clsTag << endln;
+        return  0;
 
     }
 }
@@ -1586,31 +1578,31 @@ FEM_ObjectBroker::getPotentialSurfacePtr(int clsTag)
 {
     switch (clsTag)
     {
-        // [J.Abell]  These are located in Template3DEP inside the CompGeoMech_Material_Modeling folder
+    // [J.Abell]  These are located in Template3DEP inside the CompGeoMech_Material_Modeling folder
 
-        // case PS_TAG_CAMPotentialSurface:
-        //     return new CAMPotentialSurface(1.2);
+    // case PS_TAG_CAMPotentialSurface:
+    //     return new CAMPotentialSurface(1.2);
 
-        // case PS_TAG_DPPotentialSurface:
-        //     return new DPPotentialSurface(0.2);
+    // case PS_TAG_DPPotentialSurface:
+    //     return new DPPotentialSurface(0.2);
 
-        // //    case PS_TAG_MDPotentialSurface01:
-        // //              return new MDPotentialSurface01(1.0);
+    // //    case PS_TAG_MDPotentialSurface01:
+    // //              return new MDPotentialSurface01(1.0);
 
-        // case PS_TAG_MDPotentialSurface:
-        //     return new MDPotentialSurface();
+    // case PS_TAG_MDPotentialSurface:
+    //     return new MDPotentialSurface();
 
-        // case PS_TAG_RMC01PotentialSurface:
-        //     return new RMC01PotentialSurface();
+    // case PS_TAG_RMC01PotentialSurface:
+    //     return new RMC01PotentialSurface();
 
-        // case PS_TAG_VMPotentialSurface:
-        //     return new VMPotentialSurface();
+    // case PS_TAG_VMPotentialSurface:
+    //     return new VMPotentialSurface();
 
-        default:
-            cerr << "ObjectBroker::getPotentialSurfacePtr ";
-            cerr << " - no PotentialSurface type exists for class tag " ;
-            cerr << clsTag << endln;
-            return  0;
+    default:
+        cerr << "ObjectBroker::getPotentialSurfacePtr ";
+        cerr << " - no PotentialSurface type exists for class tag " ;
+        cerr << clsTag << endln;
+        return  0;
 
     }
 }
@@ -1620,24 +1612,24 @@ FEM_ObjectBroker::getEL_S(int clsTag)
 {
     switch (clsTag)
     {
-        // [J.Abell] These are located in Template3DEP inside the CompGeoMech_Material_Modeling folder
+    // [J.Abell] These are located in Template3DEP inside the CompGeoMech_Material_Modeling folder
 
-        // case ELS_TAG_L_Eeq:
-        //     return new EvolutionLaw_L_Eeq(0.0);
+    // case ELS_TAG_L_Eeq:
+    //     return new EvolutionLaw_L_Eeq(0.0);
 
-        // case ELS_TAG_NL_Eeq:
-        //     return new EvolutionLaw_NL_Eeq();
-
-
-        // case ELS_TAG_NL_Ep:
-        //     return new EvolutionLaw_NL_Ep(0.65, 0.19, 0.06);
+    // case ELS_TAG_NL_Eeq:
+    //     return new EvolutionLaw_NL_Eeq();
 
 
-        default:
-            cerr << "ObjectBroker::getEL_S ";
-            cerr << " - no EvolutionType type exists for class tag " ;
-            cerr << clsTag << endln;
-            return  0;
+    // case ELS_TAG_NL_Ep:
+    //     return new EvolutionLaw_NL_Ep(0.65, 0.19, 0.06);
+
+
+    default:
+        cerr << "ObjectBroker::getEL_S ";
+        cerr << " - no EvolutionType type exists for class tag " ;
+        cerr << clsTag << endln;
+        return  0;
 
     }
 
@@ -1651,24 +1643,24 @@ FEM_ObjectBroker::getEL_T(int clsTag)
 
     switch (clsTag)
     {
-        // [J.Abell] Thes[J.Abell] e are located in Template3DEP inside the CompGeoMech_Material_Modeling folder
+    // [J.Abell] Thes[J.Abell] e are located in Template3DEP inside the CompGeoMech_Material_Modeling folder
 
-        // case ELT_TAG_L_Eij:
-        //     return new EvolutionLaw_L_Eij(0.0);
+    // case ELT_TAG_L_Eij:
+    //     return new EvolutionLaw_L_Eij(0.0);
 
-        // case ELT_TAG_NL_Eij:
-        //     return new EvolutionLaw_NL_Eij(0.0, 0.0);
-
-
-        //case ELT_TAG_NL_EijMD:
-        //          return new EvolutionLaw_NL_EijMD();
+    // case ELT_TAG_NL_Eij:
+    //     return new EvolutionLaw_NL_Eij(0.0, 0.0);
 
 
-        default:
-            cerr << "ObjectBroker::getEL_T ";
-            cerr << " - no EvolutionType type exists for class tag " ;
-            cerr << clsTag << endln;
-            return  0;
+    //case ELT_TAG_NL_EijMD:
+    //          return new EvolutionLaw_NL_EijMD();
+
+
+    default:
+        cerr << "ObjectBroker::getEL_T ";
+        cerr << " - no EvolutionType type exists for class tag " ;
+        cerr << clsTag << endln;
+        return  0;
 
     }
 
