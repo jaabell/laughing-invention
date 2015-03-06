@@ -135,8 +135,8 @@ PartitionedDomain::PartitionedDomain(int numNodes, int numElements,
              numUniaxialMat, numNDMaterial, numNDMaterialLT, numSections,
              numofSectionRepresents,
              nummultipleexcitation, numBodyForces, numDamping),
-    theSubdomains(0), theDomainPartitioner(&thePartitioner),
-    theSubdomainIter(0), mySubdomainGraph(0), have_populated_static_mesh_data(false)
+      theSubdomains(0), theDomainPartitioner(&thePartitioner),
+      theSubdomainIter(0), mySubdomainGraph(0), have_populated_static_mesh_data(false)
 {
     elements = new ArrayOfTaggedObjects(numElements);
     theSubdomains = new ArrayOfTaggedObjects(numSubdomains);
@@ -192,11 +192,10 @@ PartitionedDomain::~PartitionedDomain()
 void
 PartitionedDomain::clearAll(void)
 {
-    this->Domain::clearAll();
-
-    elements->clearAll();
     theSubdomains->clearAll();
-    this->Domain::theOutputWriter.finalize();
+    elements->clearAll();
+    this->Domain::clearAll();
+    this->Domain::theOutputWriter.finalize();   // Calls H5Close()!!
 }
 
 
@@ -1260,7 +1259,7 @@ PartitionedDomain::partition(int numPartitions)
         thePartitioner->partition(numPartitions);
     }
     else
-{
+    {
         cerr << "PartitionedDomain::partition(int numPartitions) - no associated partitioner\n";
         return -1;
     }

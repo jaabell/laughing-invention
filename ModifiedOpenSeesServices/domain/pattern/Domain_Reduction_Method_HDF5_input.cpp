@@ -380,6 +380,9 @@ Domain_Reduction_Method_HDF5_input::~Domain_Reduction_Method_HDF5_input()
 
 void Domain_Reduction_Method_HDF5_input::clean_all_data()
 {
+
+    // DRMout << "cleanup!\n";
+
     if ( Elements != 0)
     {
         delete Elements;
