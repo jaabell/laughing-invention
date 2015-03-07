@@ -121,6 +121,11 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     // ones correspond to this subdomain.
     //===========================================================================
 
+    hsize_t data_dims[1];
+    hsize_t data_maxdims[1];
+    hsize_t rank_one_array = 1;
+    hsize_t id_memspace = 0;
+
     hsize_t id_elements = H5Dopen(id_drm_file, "Elements", H5P_DEFAULT);
 
     if (id_elements < 0)
@@ -132,21 +137,36 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     //Open dataspace and get number of elements from it
     hsize_t id_dataspace = H5Dget_space(id_elements);
     int ndims =  H5Sget_simple_extent_ndims( id_dataspace );
-    hsize_t data_dims[ndims];
-    hsize_t data_maxdims[ndims];
 
-    H5Sget_simple_extent_dims(id_dataspace, data_dims, data_maxdims );
-    number_of_DRM_elements = data_dims[0];
+    int* all_DRM_elements_list = 0;
+    if (ndims == 0) // Handle the single-element case
+    {
+        number_of_DRM_elements = 1;
+        all_DRM_elements_list = new int[number_of_DRM_elements];
+        data_dims[0] = 1;
+        data_maxdims[0] = 1;
+        id_memspace  = H5Screate_simple(rank_one_array, data_dims, data_maxdims);       // create dataspace of memory
+        H5Dread(id_elements, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, all_DRM_elements_list);
+    }
+    else if (ndims == 1)
+    {
 
-    //Temporary array to hold DRM element ids
-    int* all_DRM_elements_list = new int[number_of_DRM_elements];
+        H5Sget_simple_extent_dims(id_dataspace, data_dims, data_maxdims );
+        number_of_DRM_elements = data_dims[0];
 
-    //Now read the array and report number of elements found
-    hsize_t rank_one_array = 1;
-    hsize_t id_memspace  = H5Screate_simple(rank_one_array, data_dims, data_maxdims);       // create dataspace of memory
-    H5Dread(id_elements, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, all_DRM_elements_list);
+        //Temporary array to hold DRM element ids
+        all_DRM_elements_list  = new int[number_of_DRM_elements];
+
+        //Now read the array and report number of elements found
+        id_memspace  = H5Screate_simple(rank_one_array, data_dims, data_maxdims);       // create dataspace of memory
+        H5Dread(id_elements, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, all_DRM_elements_list);
+    }
+    else
+    {
+        DRMerror << " \"Elements\" array should be scalar or at most 1-D\n";
+    }
+
     DRMout << "Dataset \"" << HDF5filename << "\" has " << number_of_DRM_elements << " DRM elements on layer.\n";
-
     // Find out whether the elements have been defined in current model. In parallel, subdomain might not
     // contain all the defined elements, so keep only those that are local.
     int number_of_local_elements = 0;
@@ -572,9 +592,9 @@ void
 Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
 {
 
-    clock_t init, final;
+    // clock_t init, final;
 
-    init = clock();
+    // init = clock();
 
     Domain *theDomain = this->getDomain();
 
@@ -656,7 +676,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
         ID B_node(NIE);
         ID E_node(NIE);
         int nB = 0, nE = 0;
-        bool bdnode;
+        // bool bdnode;
 
         for ( int ii = 0; ii < NIE; ii++)
         {
