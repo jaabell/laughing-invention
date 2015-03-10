@@ -2831,6 +2831,7 @@ Domain::revertToStart( void )
 int
 Domain::update( void )
 {
+    cout << "Domain::update( void ) -- Constitutive integration happening!\n";
     // set the global constants
     ops_Dt = dT;
     ops_TheActiveDomain = this;
