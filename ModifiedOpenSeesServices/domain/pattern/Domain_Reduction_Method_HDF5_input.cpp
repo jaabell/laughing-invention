@@ -468,7 +468,7 @@ Domain_Reduction_Method_HDF5_input::setDomain(Domain *theDomain)
 void
 Domain_Reduction_Method_HDF5_input::applyLoad(double time)
 {
-    // cout << "Domain_Reduction_Method_HDF5_input::applyLoad(" << time <<  ")\n";
+    DRMout << "time = " << time <<  "\n";
     if (not is_initialized)
     {
         intitialize();

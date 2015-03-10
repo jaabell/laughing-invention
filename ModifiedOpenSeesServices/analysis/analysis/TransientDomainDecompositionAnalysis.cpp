@@ -195,20 +195,17 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
 
         if (result < 0)
         {
-            cerr << "TransientDomainDecompositionAnalysis::analyze() - domainChanged failed";
+            cerr << "TransientDomainDecompositionAnalysis::analyze() -- domainChanged failed";
             return -1;
         }
     }
 
-    //Babak Added for Debugging Purposes:
-    //----
-    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- I \n";
-    //----
+    std::cout << "TransientDomainDecompositionAnalysis -- Analysis Starting. \n";
 
     // result = theAnalysisModel->newStepDomain();
     if (result < 0)
     {
-        cerr << "TransientDomainDecompositionAnalysis::analyze() - the AnalysisModel failed";
+        cerr << "TransientDomainDecompositionAnalysis::analyze() -- the AnalysisModel failed";
         cerr << " with domain at load factor ";
         cerr << the_Domain->getCurrentTime() << endln;
         the_Domain->revertToLastCommit();
@@ -216,16 +213,15 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
         return -2;
     }
 
-    //Babak Added for Debugging Purposes:
-    //----
-    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- II \n ";
-    //----
+
+    std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Calling NewStep() on integrator. \n ";
+
 
     result = theIntegrator->newStep(dT);
 
     if (result < 0)
     {
-        cerr << "TransientDomainDecompositionAnalysis::analyze() - the Integrator failed";
+        cerr << "TransientDomainDecompositionAnalysis::analyze() -- the Integrator failed";
         cerr << " with domain at load factor ";
         cerr << the_Domain->getCurrentTime() << endln;
         the_Domain->revertToLastCommit();
@@ -233,16 +229,15 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
         return -2;
     }
 
-    //Babak Added for Debugging Purposes:
-    //----
-    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- III \n";
-    //----
+
+    std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Solving Current SOE \n";
+
 
     result = theAlgorithm->solveCurrentStep();
 
     if (result < 0)
     {
-        cerr << "TransientDomainDecompositionAnalysis::analyze() - the Algorithm failed";
+        cerr << "TransientDomainDecompositionAnalysis::analyze() -- the Algorithm failed";
         cerr << " with domain at load factor ";
         cerr << the_Domain->getCurrentTime() << endln;
         the_Domain->revertToLastCommit();
@@ -251,10 +246,8 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
         return -3;
     }
 
-    //Babak Added for Debugging Purposes:
-    //----
-    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- IV \n";
-    //----
+
+    std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Commiting results. \n";
 
     result = theIntegrator->commit();
 
@@ -270,10 +263,9 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
         return -4;
     }
 
-    //Babak Added for Debugging Purposes:
-    //----
-    // std::cerr << "BABAK@TransientDomainDecompositionAnalysis::analyze() -- V \n";
-    //----
+
+    std::cerr << "TransientDomainDecompositionAnalysis::analyze() --  Step end.\n";
+
     return 0;
 }
 

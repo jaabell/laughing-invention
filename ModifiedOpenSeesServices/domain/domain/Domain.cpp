@@ -2837,19 +2837,14 @@ Domain::update( void )
 
     int ok = 0;
 
-    // invoke update on all the ele's
-    //Guanzhou out ElementIter &theEles = this->getElements();
-    //Guanzhou out Element *theEle;
 
-# ifdef _PDD //Guanzhou added
-    //Replaced by Babak Kamrani on September 2012:
-    //Timer myTime;
-    NanoTimer myTime; //Replaced by Babak Kamrani
+# ifdef _PDD
+
+    NanoTimer myTime;
     Graph *theEleGraph = this->getElementGraph();
     VertexIter &theVertexIter = theEleGraph->getVertices();
     Vertex *vertexPtr;
-    ElementIter &theEles = this->getElements(); //has to be put here in order to
-    //reset the eleIter(), which firstly called by getElementGraph without rewind!!!!
+    ElementIter &theEles = this->getElements(); //has to be put here in order to reset the eleIter(), which firstly called by getElementGraph without rewind!!!!
     Element *theEle;
 
     while ( ( theEle = theEles() ) != 0 )
@@ -2867,21 +2862,16 @@ Domain::update( void )
 
         if ( vertexPtr != 0 )
         {
-            //          myTime.start();
             double start_time = MPI_Wtime();
             ok += theEle->update();
-            //          myTime.pause();
             double end_time = MPI_Wtime();
             double oldweight = vertexPtr->getWeight();
-            //          vertexPtr->setWeight(oldweight + 1.0*(double)myTime.getReal());
             vertexPtr->setWeight(oldweight + 100.0 * (end_time - start_time)); //to be milisecond unit
-            //vertexPtr->setWeight(1000.0*myTime.getReal());//to be milisecond unit
         }
         else
         {
             ok += theEle->update();
         }
-
     }
 
 # else
@@ -2907,6 +2897,7 @@ Domain::update( void )
 int
 Domain::update( double newTime, double dT )
 {
+    cout << "Domain::update( double newTime, double dT ) -- applyLoad() getting called\n";
     this->applyLoad( newTime );
     // this->update();     /// if this is un/commented, update(void)  gets called twice per step for an analysis with a Linear algorithm (with_no_convergence_check)
     return 0;
