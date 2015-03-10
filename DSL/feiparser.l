@@ -10,6 +10,8 @@
     #include <fstream>
     #include <string>
 
+
+
     //Old C libraries are used in lexer....
     #include <cstdlib>
     #include <cstring>
@@ -17,7 +19,7 @@
     #include <stdio.h>                         // Provides printf, etc.
     #include <string.h>
     #include <getopt.h>                        // For the command-line argument parser
-    // =================================================================================
+    /// =================================================================================
     // Please do not erase! Might make it into code someday.
     // #include <readline/readline.h>
     // #include <readline/history.h>
@@ -61,6 +63,7 @@
 
     //Standard namespace
     using namespace std;
+
 
     //
     //FILE * ;
@@ -1002,6 +1005,11 @@ void print_usage()
 
 int start_parser(int argc, char**argv)
 {
+
+    //Allegedly, this forces cout to be non-buffered. Always flushes!!
+    std::cout<<std::unitbuf; 
+
+    
     //Welcome message
     welcome_msg();
 
