@@ -37,9 +37,9 @@ using std::ifstream;
 
 Linear_Force_TimeHistory::Linear_Force_TimeHistory()
     : LoadPattern(0, PATTERN_TAG_Linear_Force_TimeHistory),
+      final_load(0),
       nodeTag(0),
       dof(0),
-      final_load(0),
       theFactor(0),
       isConstant(0)
 {
@@ -51,9 +51,9 @@ Linear_Force_TimeHistory::Linear_Force_TimeHistory(int tag,
         int dof_to_be_shaken,
         double final_load_value)
     : LoadPattern(tag, PATTERN_TAG_Linear_Force_TimeHistory),
+      final_load(final_load_value),
       nodeTag(NodeNumber),
       dof(dof_to_be_shaken),
-      final_load(final_load_value),
       theFactor(0),
       isConstant(0)
 {

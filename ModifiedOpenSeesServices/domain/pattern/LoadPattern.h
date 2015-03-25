@@ -40,6 +40,7 @@
 
 #include <DomainComponent.h>
 #include <Vector.h>
+#include <string>
 
 class NodalLoad;
 class TimeSeries;
@@ -53,75 +54,80 @@ class TaggedObjectStorage;
 
 class LoadPattern : public DomainComponent
 {
-    public:
-        // constructors
-        LoadPattern(int tag);
-        LoadPattern();                      // for FEM_ObjectBroker
-        LoadPattern(int tag, int classTag); // for subclasses
+public:
+    // constructors
+    LoadPattern(int tag);
+    LoadPattern();                      // for FEM_ObjectBroker
+    LoadPattern(int tag, int classTag); // for subclasses
 
-        // destructor
-        virtual ~LoadPattern();
+    // destructor
+    virtual ~LoadPattern();
 
-        // method to set the associated TimeSeries and Domain
-        virtual void setTimeSeries(TimeSeries *theSeries);
-        virtual void setDomain(Domain *theDomain);
+    // method to set the associated TimeSeries and Domain
+    virtual void setTimeSeries(TimeSeries *theSeries);
+    virtual void setDomain(Domain *theDomain);
 
-        // methods to add loads
-        virtual bool addSP_Constraint(SP_Constraint *);
-        virtual bool addNodalLoad(NodalLoad *);
-        virtual bool addElementalLoad(ElementalLoad *);
-        virtual NodalLoadIter     &getNodalLoads(void);
-        virtual ElementalLoadIter &getElementalLoads(void);
-        virtual SP_ConstraintIter &getSPs(void);
+    // methods to add loads
+    virtual bool addSP_Constraint(SP_Constraint *);
+    virtual bool addNodalLoad(NodalLoad *);
+    virtual bool addElementalLoad(ElementalLoad *);
+    virtual NodalLoadIter     &getNodalLoads(void);
+    virtual ElementalLoadIter &getElementalLoads(void);
+    virtual SP_ConstraintIter &getSPs(void);
 
-        // methods to remove loads
-        virtual void clearAll(void);
-        virtual NodalLoad *removeNodalLoad(int tag);
-        virtual ElementalLoad *removeElementalLoad(int tag);
-        virtual SP_Constraint *removeSP_Constraint(int tag);
+    // methods to remove loads
+    virtual void clearAll(void);
+    virtual NodalLoad *removeNodalLoad(int tag);
+    virtual ElementalLoad *removeElementalLoad(int tag);
+    virtual SP_Constraint *removeSP_Constraint(int tag);
 
-        // methods to apply loads
-        virtual void applyLoad(double pseudoTime = 0.0);
-        virtual void setLoadConstant(void);
+    // methods to apply loads
+    virtual void applyLoad(double pseudoTime = 0.0);
+    virtual void setLoadConstant(void);
 
-        virtual void unsetLoadConstant(void);
-        virtual double getLoadFactor(void);
+    virtual void unsetLoadConstant(void);
+    virtual double getLoadFactor(void);
 
-        // methods for o/p
-        virtual int sendSelf(int commitTag, Channel &theChannel);
-        virtual int receiveSelf(int commitTag, Channel &theChannel,
-                                FEM_ObjectBroker &theBroker);
-        virtual void Print(ostream &s, int flag = 0);
+    // methods for o/p
+    virtual int sendSelf(int commitTag, Channel &theChannel);
+    virtual int receiveSelf(int commitTag, Channel &theChannel,
+                            FEM_ObjectBroker &theBroker);
+    virtual void Print(ostream &s, int flag = 0);
 
-        // method to obtain a blank copy of the LoadPattern
-        virtual LoadPattern *getCopy(void);
+    // method to obtain a blank copy of the LoadPattern
+    virtual LoadPattern *getCopy(void);
+
+    virtual std::string getName() const
+    {
+        return "LoadPattern";
+    }
 
 
 
 
-    protected:
-        int    isConstant;     // to indictae whether setConstant has been called
-        TaggedObjectStorage  *theSPs; //Guanzhou make it available to child
+protected:
+    int    isConstant;     // to indictae whether setConstant has been called
+    TaggedObjectStorage  *theSPs; //Guanzhou make it available to child
 
-    private:
-        double loadFactor;     // current load factor
+private:
+    double loadFactor;     // current load factor
 
-        TimeSeries *theSeries; // pointer to associated TimeSeries
+    TimeSeries *theSeries; // pointer to associated TimeSeries
 
-        // int    currentGeoTag;
-        // int    lastGeoSendTag;
-        // int    dbSPs, dbNod, dbEle; // database tags for storing info about components
+    // int    currentGeoTag;
+    // int    lastGeoSendTag;
+    // int    dbSPs, dbNod, dbEle; // database tags for storing info about components
 
-        // storage objects for the loads and constraints
-        TaggedObjectStorage  *theNodalLoads;
-        TaggedObjectStorage  *theElementalLoads;
+    // storage objects for the loads and constraints
+    TaggedObjectStorage  *theNodalLoads;
+    TaggedObjectStorage  *theElementalLoads;
 
-        // iterator objects for the objects added to the storage objects
-        NodalLoadIter       *theNodIter;
-        ElementalLoadIter   *theEleIter;
-        SingleDomSP_Iter    *theSpIter;
+    // iterator objects for the objects added to the storage objects
+    NodalLoadIter       *theNodIter;
+    ElementalLoadIter   *theEleIter;
+    SingleDomSP_Iter    *theSpIter;
 
-        int lastChannel;
+    int lastChannel;
 };
 
 #endif

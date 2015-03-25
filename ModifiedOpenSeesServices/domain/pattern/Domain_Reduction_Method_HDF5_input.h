@@ -82,6 +82,13 @@ public:
     //  method to obtain a blank copy of the LoadPattern
     LoadPattern *getCopy(void);
 
+    virtual std::string getName() const
+    {
+        return "Domain_Reduction_Method_HDF5_input";
+    }
+
+
+
 protected:
 
     void ComputeDRMLoads();

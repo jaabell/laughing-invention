@@ -285,9 +285,6 @@ DomainPartitioner::partition(int numParts)
     // have to be added to the subdomain.
     //
 
-    //Note:  This can be moved to the HDF5 file..... :/ -JAbell
-    // ofstream partfile("part.dat", ios::out);
-
 
     const int eleNum = theElementGraph->getNumVertex();
     elementPlace = new ID(eleNum);
@@ -606,9 +603,8 @@ DomainPartitioner::partition(int numParts)
                 number_of_sps++;
             }
         }
-
-
     }
+
     cout << "   Sent " << number_of_nodal_loads << " nodal loads!\n";
     cout << "   Sent " << number_of_sps << " SP constraints!\n";
 

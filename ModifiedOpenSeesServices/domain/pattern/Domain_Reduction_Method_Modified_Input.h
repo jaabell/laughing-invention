@@ -54,71 +54,77 @@ class Matrix;
 
 class Domain_Reduction_Method_Modified_Input : public LoadPattern
 {
-    public:
-        Domain_Reduction_Method_Modified_Input();
-        Domain_Reduction_Method_Modified_Input(int tag,
-                                               const char *ElementsFilename,
-                                               const char *DispfName,
-                                               const char *AccefName,
-                                               const char *boundaryNodesFile,
-                                               const char *externalNodesFile,
-                                               double theTimeIncr,
-                                               double theFactor,
-                                               int timeSteps,
-                                               int Number_of_DRM_Elements,
-                                               int Number_of_DRM_Nodes_b,
-                                               int Number_of_DRM_Nodes_e);
-        ~Domain_Reduction_Method_Modified_Input();
+public:
+  Domain_Reduction_Method_Modified_Input();
+  Domain_Reduction_Method_Modified_Input(int tag,
+                                         const char *ElementsFilename,
+                                         const char *DispfName,
+                                         const char *AccefName,
+                                         const char *boundaryNodesFile,
+                                         const char *externalNodesFile,
+                                         double theTimeIncr,
+                                         double theFactor,
+                                         int timeSteps,
+                                         int Number_of_DRM_Elements,
+                                         int Number_of_DRM_Nodes_b,
+                                         int Number_of_DRM_Nodes_e);
+  ~Domain_Reduction_Method_Modified_Input();
 
-        void setDomain(Domain *theDomain);
-        void applyLoad(double time);
-        void Print(ostream &s, int flag = 0);
+  void setDomain(Domain *theDomain);
+  void applyLoad(double time);
+  void Print(ostream &s, int flag = 0);
 
-        // methods for o/p
-        int sendSelf(int commitTag, Channel &theChannel);
-        int receiveSelf(int commitTag, Channel &theChannel,
-                        FEM_ObjectBroker &theBroker);
+  // methods for o/p
+  int sendSelf(int commitTag, Channel &theChannel);
+  int receiveSelf(int commitTag, Channel &theChannel,
+                  FEM_ObjectBroker &theBroker);
 
-        //  method to obtain a blank copy of the LoadPattern
-        LoadPattern *getCopy(void);
+  //  method to obtain a blank copy of the LoadPattern
+  LoadPattern *getCopy(void);
 
-    protected:
-        //void addPBElements(const ID &PBEle);    //Adding plastic bowl elements
-        //void addPBNodes(const ID &PBNodes);     //Adding plastic bowl nodes
-        //void addPBLoads(const Matrix &PBLoads); //Adding plastic bowl loades
-        void CompPBLoads();        //Finding all plastic bowl nodes and compute the equivalent forces from plastic bowl loading
-        Vector *getNodalLoad(int node, double time); //Getting the nodal load computed from plastic bowl loading corresponding to time
-
-    private:
-        ID *PBowlElements;   // vector containing the plastic bowling elements
-        ID *ExteriorNodes;   // vector containing the nodes on plastic bowl except boundary nodes
-        ID *BoundaryNodes;   // vector containing the nodes on the boundary of the plastic bowl
-
-        ID *NodeID;     //Guanzhou added to reduce input file size
-
-        Matrix *PBowlLoads;  // matrix containing the plastic bowling loads
-
-        Matrix *U;           // vector to store input displ. for all nodes and all time steps
-        int UnumDataPoints;   // number of data points
-        Matrix *Udd;         // vector to store input accel. for all nodes and all time steps
-        int UddnumDataPoints;// number of data points
+  virtual std::string getName() const
+  {
+    return "Domain_Reduction_Method_Modified_Input";
+  }
 
 
-        //Coordinates for the plastic box
-        double PBTimeIncr;   // specifies the time increment used in load path vector
-        double cFactor;      // additional factor on the returned load factor
+protected:
+  //void addPBElements(const ID &PBEle);    //Adding plastic bowl elements
+  //void addPBNodes(const ID &PBNodes);     //Adding plastic bowl nodes
+  //void addPBLoads(const Matrix &PBLoads); //Adding plastic bowl loades
+  void CompPBLoads();        //Finding all plastic bowl nodes and compute the equivalent forces from plastic bowl loading
+  Vector *getNodalLoad(int node, double time); //Getting the nodal load computed from plastic bowl loading corresponding to time
 
-        int number_of_DRM_elements;
-        int number_of_DRM_nodes;
-        int number_of_DRM_nodes_b;
-        int number_of_DRM_nodes_e;
-        int thetimeSteps;
-        bool LoadComputed;   // flag to indicate whether the equivalent force has been computed
-        char *DRMElementsFile;
-        char *DRMNodesFile;
-        char *DRMDisplacementsFile;
-        char *DRMAccelerationsFile;
-        int maxnodetag;
+private:
+  ID *PBowlElements;   // vector containing the plastic bowling elements
+  ID *ExteriorNodes;   // vector containing the nodes on plastic bowl except boundary nodes
+  ID *BoundaryNodes;   // vector containing the nodes on the boundary of the plastic bowl
+
+  ID *NodeID;     //Guanzhou added to reduce input file size
+
+  Matrix *PBowlLoads;  // matrix containing the plastic bowling loads
+
+  Matrix *U;           // vector to store input displ. for all nodes and all time steps
+  int UnumDataPoints;   // number of data points
+  Matrix *Udd;         // vector to store input accel. for all nodes and all time steps
+  int UddnumDataPoints;// number of data points
+
+
+  //Coordinates for the plastic box
+  double PBTimeIncr;   // specifies the time increment used in load path vector
+  double cFactor;      // additional factor on the returned load factor
+
+  int number_of_DRM_elements;
+  int number_of_DRM_nodes;
+  int number_of_DRM_nodes_b;
+  int number_of_DRM_nodes_e;
+  int thetimeSteps;
+  bool LoadComputed;   // flag to indicate whether the equivalent force has been computed
+  char *DRMElementsFile;
+  char *DRMNodesFile;
+  char *DRMDisplacementsFile;
+  char *DRMAccelerationsFile;
+  int maxnodetag;
 };
 
 #endif

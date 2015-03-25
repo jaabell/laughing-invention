@@ -110,9 +110,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-ftree-slp-vectorize \
 										-ffast-math  \
 										-funroll-loops \
-										-fvariable-expansion-in-unroller \
-										-floop-block \
-										-floop-strip-mine 									
+										-fvariable-expansion-in-unroller 
 	CFLAGS          = $(LTO_FLAGS) -O2 \
 										-D_LINUX \
 										-D_UNIX \

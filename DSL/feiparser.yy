@@ -147,7 +147,7 @@
 %token CMD_print CMD_help CMD_whos CMD_check CMD_save CMD_restore
 
 %token MODEL NAME RESTART MESH
-%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION DAMPING DAMPINGTYPE CONSTRAINT DRM SAVEFORCES RESTOREFORCES SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE SET
+%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION DAMPING DAMPINGTYPE CONSTRAINT DRM  SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE SET
 %token ELEMENTNAME MATERIALNAME
 %token ACCELERATION_FIELD
 %token FIX FREE REMOVE
@@ -400,7 +400,7 @@ dsl
     | CMD_restore STATE of MODEL TYPE mysql databasename exp host exp username exp password exp port exp socket exp
     {
         args.clear(); signature.clear();
-
+qq
         args.push_back($8); signature.push_back(this_signature("databaseName", &isAdimensional));
         args.push_back($10); signature.push_back(this_signature("host", &isAdimensional));
         args.push_back($12); signature.push_back(this_signature("username", &isAdimensional));
@@ -991,77 +991,77 @@ CMD_add
     //!=========================================================================================================
     //!
     //!FEIDOC add penalty displacement # <.> to element # <.>  [DOFTYPE] = <length> type linear;
-    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp DOF '=' exp TYPE TH_LINEAR
-    {
-
-        args.clear(); signature.clear();
-
-        Expression* dof_number = dof2number(*$9);
-
-        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
-        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
-        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-        args.push_back($11); signature.push_back(this_signature(*$9,   &isLength));
-
-
-       $$ = new FeiDslCaller4<int, int, int, double>(&add_penalty_displacement_time_history_linear, args,signature, "add_penalty_displacement_time_history_linear");
-
-
-        for(int i = 1; i <= 3; i++) nodes.pop();
-        nodes.push($$);
-    }
+    //    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp DOF '=' exp TYPE TH_LINEAR
+    //    {
+    //
+    //        args.clear(); signature.clear();
+    //
+    //        Expression* dof_number = dof2number(*$9);
+    //
+    //        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
+    //        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
+    //        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
+    //        args.push_back($11); signature.push_back(this_signature(*$9,   &isLength));
+    //
+    //
+    //       $$ = new FeiDslCaller4<int, int, int, double>(&add_penalty_displacement_time_history_linear, args,signature, "add_penalty_displacement_time_history_linear");
+    //
+    //
+    //        for(int i = 1; i <= 3; i++) nodes.pop();
+    //        nodes.push($$);
+    //    }
     //!=========================================================================================================
     //!
     //!FEIDOC add penalty displacement # <.> to element # <.> dof [DOFTYPE] type path_series time_step = <time> scale_factor = <.> series_file = "STRING";
-    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp dof DOF TYPE TH_PATH_SERIES
-      time_step '=' exp
-      scale_factor '=' exp
-      series_file '=' exp
-    {
-
-        args.clear(); signature.clear();
-
-        Expression* dof_number = dof2number(*$10);
-
-        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
-        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
-        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-        args.push_back($15); signature.push_back(this_signature("time_step",   &isTime));
-        args.push_back($18); signature.push_back(this_signature("scale_factor",   &isAdimensional));
-        args.push_back($21); signature.push_back(this_signature("series_file",   &isAdimensional));
-
-
-       $$ = new FeiDslCaller6<int, int, int, double, double, string>(&add_penalty_displacement_time_history_path_series, args,signature, "add_penalty_displacement_time_history_path_series");
-
-
-        for(int i = 1; i <= 5; i++) nodes.pop();
-        nodes.push($$);
-    }
+    //    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp dof DOF TYPE TH_PATH_SERIES
+    //      time_step '=' exp
+    //      scale_factor '=' exp
+    //      series_file '=' exp
+    //    {
+    //
+    //        args.clear(); signature.clear();
+    //
+    //        Expression* dof_number = dof2number(*$10);
+    //
+    //        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
+    //        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
+    //        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
+    //        args.push_back($15); signature.push_back(this_signature("time_step",   &isTime));
+    //        args.push_back($18); signature.push_back(this_signature("scale_factor",   &isAdimensional));
+    //        args.push_back($21); signature.push_back(this_signature("series_file",   &isAdimensional));
+    //
+    //
+    //       $$ = new FeiDslCaller6<int, int, int, double, double, string>(&add_penalty_displacement_time_history_path_series, args,signature, "add_penalty_displacement_time_history_path_series");
+    //
+    //
+    //        for(int i = 1; i <= 5; i++) nodes.pop();
+    //        nodes.push($$);
+    //    }
     //!=========================================================================================================
     //!
     //!FEIDOC add penalty displacement # <.> to element # <.> dof [DOFTYPE] type path_time_series scale_factor = <.> series_file = "STRING";
-    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp dof DOF TYPE TH_PATH_TIME_SERIES
-      scale_factor '=' exp
-      series_file '=' exp
-    {
-
-        args.clear(); signature.clear();
-
-        Expression* dof_number = dof2number(*$10);
-
-        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
-        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
-        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-        args.push_back($15); signature.push_back(this_signature("scale_factor",   &isAdimensional));
-        args.push_back($18); signature.push_back(this_signature("series_file",   &isAdimensional));
-
-
-       $$ = new FeiDslCaller5<int, int, int, double, string>(&add_penalty_displacement_time_history_path_time_series, args,signature, "add_penalty_displacement_time_history_path_time_series");
-
-
-        for(int i = 1; i <= 4; i++) nodes.pop();
-        nodes.push($$);
-    }
+    //    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp dof DOF TYPE TH_PATH_TIME_SERIES
+    //      scale_factor '=' exp
+    //      series_file '=' exp
+    //    {
+    //
+    //        args.clear(); signature.clear();
+    //
+    //        Expression* dof_number = dof2number(*$10);
+    //
+    //        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
+    //        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
+    //        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
+    //        args.push_back($15); signature.push_back(this_signature("scale_factor",   &isAdimensional));
+    //        args.push_back($18); signature.push_back(this_signature("series_file",   &isAdimensional));
+    //
+    //
+    //       $$ = new FeiDslCaller5<int, int, int, double, string>(&add_penalty_displacement_time_history_path_time_series, args,signature, "add_penalty_displacement_time_history_path_time_series");
+    //
+    //
+    //        for(int i = 1; i <= 4; i++) nodes.pop();
+    //        nodes.push($$);
+    //    }
     //!=========================================================================================================
     //!
     //!FEIDOC add damping # <.> type [Rayleigh] with a0 = <time> a1 = <1/time> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;

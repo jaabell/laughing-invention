@@ -60,8 +60,7 @@ TrapezoidalTimeSeriesIntegrator::integrate(TimeSeries* theSeries, double delta)
     // Check for zero time step, before dividing to get number of steps
     if (delta <= 0.0)
     {
-        cerr << "TrapezoidalTimeSeriesIntegrator::integrate() Attempting to integrate time step" <<
-             delta, "<= 0\n";
+        cerr << "TrapezoidalTimeSeriesIntegrator::integrate() Attempting to integrate time step" << delta << "<= 0\n";
         return 0;
     }
 

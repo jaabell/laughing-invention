@@ -77,15 +77,15 @@ Domain_Reduction_Method::Domain_Reduction_Method(int tag,
         double zminus)
     : LoadPattern(tag,
                   PATTERN_TAG_Domain_Reduction_Method),
-    PBTimeIncr(theTimeIncr),
-    cFactor(theFactor),
-    numNodeDOF(numDOF),
-    xPlus(xplus),
-    xMinus(xminus),
-    yPlus(yplus),
-    yMinus(yminus),
-    zPlus(zplus),
-    zMinus(zminus)
+      PBTimeIncr(theTimeIncr),
+      cFactor(theFactor),
+      numNodeDOF(numDOF),
+      xPlus(xplus),
+      xMinus(xminus),
+      yPlus(yplus),
+      yMinus(yminus),
+      zPlus(zplus),
+      zMinus(zminus)
 {
     // determine the number of data points .. open file and count num entries
     int timeSteps1 = 0;
@@ -555,7 +555,7 @@ Domain_Reduction_Method::applyLoad(double time)
 
     for (i = 0; i < numBnodes; i++)
     {
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( !theDomain->hasInternalNode((*BoundaryNodes)[i]) &&
                 (theDomain->Domain::getNode( (*BoundaryNodes)[i] ) == 0) )
@@ -563,7 +563,7 @@ Domain_Reduction_Method::applyLoad(double time)
             continue;
         }
 
-        # endif
+# endif
         theNode = theDomain->getNode( (*BoundaryNodes)[i] );
 
         if ( theNode == 0 )
@@ -581,7 +581,7 @@ Domain_Reduction_Method::applyLoad(double time)
     //Apply loads on each exterior bowl nodes
     for (i = 0; i < numEnodes; i++)
     {
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( !theDomain->hasInternalNode((*ExteriorNodes)[i]) &&
                 (theDomain->Domain::getNode( (*ExteriorNodes)[i] ) == 0) )
@@ -589,7 +589,7 @@ Domain_Reduction_Method::applyLoad(double time)
             continue;
         }
 
-        # endif
+# endif
         theNode = theDomain->getNode( (*ExteriorNodes)[i] );
 
         if ( theNode == 0 )
@@ -694,7 +694,7 @@ Domain_Reduction_Method::sendSelf(int commitTag, Channel& theChannel)
 
 int
 Domain_Reduction_Method::receiveSelf(int commitTag, Channel& theChannel,
-                                  FEM_ObjectBroker& theBroker)
+                                     FEM_ObjectBroker& theBroker)
 {
     //Guanzhou implemented for parallel processing
     int dataTag = this->getDbTag();
@@ -1080,7 +1080,7 @@ Domain_Reduction_Method::CompPBLoads()
     ID* Bound_node = new ID(max_bnode);
     ID NidesinFirstEle = theElement->getExternalNodes();
 
-    int i, j, k, bi;
+    int i, j, k;//, bi;
 
     //Inital node list from the first plastic bowl element
     for (i = 0; i < NIE; i++)
@@ -1093,7 +1093,7 @@ Domain_Reduction_Method::CompPBLoads()
     int Bowl_elem_nb = PBowlElements->Size();
     ID Temp;
 
-    # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
     if ( theElement != NULL )
     {
@@ -1101,7 +1101,7 @@ Domain_Reduction_Method::CompPBLoads()
         theElement = NULL;
     }
 
-    # endif
+# endif
 
     for ( i = 1; i < Bowl_elem_nb; i++)
     {
@@ -1129,7 +1129,7 @@ Domain_Reduction_Method::CompPBLoads()
         } //end of for (j=0...)
 
 
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theElement != NULL )
         {
@@ -1137,7 +1137,7 @@ Domain_Reduction_Method::CompPBLoads()
             theElement = NULL;
         }
 
-        # endif
+# endif
     }
 
     //--Joey------------------------------------------------
@@ -1170,11 +1170,11 @@ Domain_Reduction_Method::CompPBLoads()
 
     for (i = 0; i < no_bnode; i++)
     {
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
         Node* theNode = theDomain->getOutsideNode( (*Bowl_node)(i) );
-        # else
+# else
         Node* theNode = theDomain->getNode( (*Bowl_node)(i) );
-        # endif
+# endif
         const Vector& coor = theNode->getCrds();
 
         //right face
@@ -1214,7 +1214,7 @@ Domain_Reduction_Method::CompPBLoads()
             no_boundarynodes++;
         }
 
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theDomain->Domain::getNode( (*Bowl_node)(i) )  == NULL )
         {
@@ -1222,7 +1222,7 @@ Domain_Reduction_Method::CompPBLoads()
             theNode = NULL;
         }
 
-        # endif
+# endif
     }
 
     //Adding all boundary nodes on the plastic bowl
@@ -1328,15 +1328,15 @@ Domain_Reduction_Method::CompPBLoads()
     Matrix* F = new Matrix(cols, thetimeSteps);
 
     //Assume all plastic bowl nodes have the same number of DOFs
-    # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
     Node* theNode = theDomain->getOutsideNode((*BoundaryNodes)(0));
-    # else
+# else
     Node* theNode = theDomain->getNode((*BoundaryNodes)(0));
-    # endif
+# endif
 
     int NDOF = theNode->getNumberDOF();
 
-    # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
     if ( theDomain->Domain::getNode( (*BoundaryNodes)(0) )  == NULL )
     {
@@ -1344,7 +1344,7 @@ Domain_Reduction_Method::CompPBLoads()
         theNode = NULL;
     }
 
-    # endif
+# endif
 
     Vector* Fm = new Vector(NIE * NDOF);
     Vector* Fk  = new Vector(NIE * NDOF);
@@ -1368,9 +1368,9 @@ Domain_Reduction_Method::CompPBLoads()
         // get the Brick;
         theBowlElements = theDomain->getElement( (*PBowlElements)(i) );
 
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
         theBowlElements->setDomain(theDomain);
-        # endif
+# endif
 
         const ID& nd = theBowlElements->getExternalNodes();
 
@@ -1555,7 +1555,7 @@ Domain_Reduction_Method::CompPBLoads()
         } //end for timestep
 
 
-        # ifdef _PARALLEL_PROCESSING
+# ifdef _PARALLEL_PROCESSING
 
         if ( theBowlElements != NULL )
         {
@@ -1578,7 +1578,7 @@ Domain_Reduction_Method::CompPBLoads()
             theBowlElements = NULL;
         }
 
-        # endif
+# endif
 
     }  // end for bowl element
 

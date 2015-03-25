@@ -11,8 +11,6 @@ OBJS       =   EarthquakePattern.o \
                Domain_Reduction_Method.o \
                Domain_Reduction_Method_Modified_Input.o \
                Domain_Reduction_Method_HDF5_input.o \
-               Domain_Reduction_Method_Save_Forces.o \
-               Domain_Reduction_Method_Restore_Forces.o \
                LinearSeries.o \
                LoadPattern.o \
                LoadPatternIter.o \
@@ -26,17 +24,11 @@ OBJS       =   EarthquakePattern.o \
                Linear_Force_TimeHistory.o \
                PathSeries_Force_TimeHistory.o \
                PathTimeSeries_Force_TimeHistory.o \
-               Linear_Disp_TimeHistory_Penalty.o \
-               PathSeries_Disp_TimeHistory_Penalty.o \
-               PBowlLoading.o \
                UniformExcitation.o
-#               TclSeriesCommand.o \
-#               TclSeriesIntegratorCommand.o
-#               TclPatternCommand.o \
 
-#Boris Jeremic took out 19Mar2008
-#                DiscretizedRandomProcessSeries.o 
-#               SimulatedRandomProcessSeries.o \
+               # PBowlLoading.o \
+               # Linear_Disp_TimeHistory_Penalty.o \
+               # PathSeries_Disp_TimeHistory_Penalty.o \
 
 # Compilation control
 

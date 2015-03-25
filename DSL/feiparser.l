@@ -295,10 +295,8 @@ EXP	([Ee][-+]?[0-9]+)
 "domain reduction method"           {return token::DRM;}
 "section"                           {return token::SECTION;}
 "load pattern"                      {return token::LOADPATTERN;}
-"penalty displacement"              {return token::PENALTYDISPLACEMENT;}
+ /* "penalty displacement"              {return token::PENALTYDISPLACEMENT;} */
 "load value"                        {return token::LOADVALUE;}
-"save forces"                       {return token::SAVEFORCES;}
-"restore forces"                    {return token::RESTOREFORCES;}
 
  /* Element names */
 "8NodeBrick"                        {return token::EightNodeBrick;}
@@ -322,7 +320,7 @@ EXP	([Ee][-+]?[0-9]+)
 "4NodeShell_ANDES"                  {return token::FourNodeShellANDES;}
 "truss"                             {return token::truss;}
 "penalty"                           {return token::penalty;}
-"penalty_for_applying_generalized_displacement" {return token::penalty_for_applying_generalized_displacement;}
+  /* "penalty_for_applying_generalized_displacement" {return token::penalty_for_applying_generalized_displacement;} */
 "contact"                           {return token::contact;}
 "variable_node_brick_8_to_27"       {return token::variable_node_brick_8_to_27;}
 "ShearBeamLT"                       {return token::ShearBeamLT;}

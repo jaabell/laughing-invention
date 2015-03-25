@@ -53,10 +53,15 @@ using namespace std;
 
 LoadPattern::LoadPattern(int tag, int clasTag)
     : DomainComponent(tag, clasTag),
-      isConstant(1), loadFactor(0),
+      isConstant(1),
+      theSPs(0),
+      loadFactor(0),
       theSeries(0),
-      theNodalLoads(0), theElementalLoads(0), theSPs(0),
-      theNodIter(0), theEleIter(0), theSpIter(0)
+      theNodalLoads(0),
+      theElementalLoads(0),
+      theNodIter(0),
+      theEleIter(0),
+      theSpIter(0)
 {
     // constructor for subclass
     theNodalLoads = new ArrayOfTaggedObjects(32);
@@ -84,10 +89,16 @@ LoadPattern::LoadPattern(int tag, int clasTag)
 
 LoadPattern::LoadPattern()
     : DomainComponent(0, PATTERN_TAG_LoadPattern),
-      isConstant(1), loadFactor(0),
+      isConstant(1),
+      theSPs(0),
+      loadFactor(0),
       theSeries(0),
-      theNodalLoads(0), theElementalLoads(0), theSPs(0),
-      theNodIter(0), theEleIter(0), theSpIter(0), lastChannel(0)
+      theNodalLoads(0),
+      theElementalLoads(0),
+      theNodIter(0),
+      theEleIter(0),
+      theSpIter(0),
+      lastChannel(0)
 {
     theNodalLoads = new ArrayOfTaggedObjects(32);
     theElementalLoads = new ArrayOfTaggedObjects(32);
@@ -114,10 +125,16 @@ LoadPattern::LoadPattern()
 
 LoadPattern::LoadPattern(int tag)
     : DomainComponent(tag, PATTERN_TAG_LoadPattern),
-      isConstant(1), loadFactor(0.),
+      isConstant(1),
+      theSPs(0),
+      loadFactor(0.),
       theSeries(0),
-      theNodalLoads(0), theElementalLoads(0), theSPs(0),
-      theNodIter(0), theEleIter(0), theSpIter(0), lastChannel(0)
+      theNodalLoads(0),
+      theElementalLoads(0),
+      theNodIter(0),
+      theEleIter(0),
+      theSpIter(0),
+      lastChannel(0)
 {
     theNodalLoads = new ArrayOfTaggedObjects(32);
     theElementalLoads = new ArrayOfTaggedObjects(32);

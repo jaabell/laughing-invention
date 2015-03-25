@@ -82,16 +82,6 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input
     int Number_of_DRM_Nodes_b,
     int Number_of_DRM_Nodes_e)
     : LoadPattern(tag, PATTERN_TAG_Domain_Reduction_Method_Modified_Input),
-      PBTimeIncr(theTimeIncr),
-      cFactor(theFactor),
-      number_of_DRM_elements(Number_of_DRM_Elements),
-      number_of_DRM_nodes(Number_of_DRM_Nodes_b + Number_of_DRM_Nodes_e),
-      number_of_DRM_nodes_e(Number_of_DRM_Nodes_e),
-      number_of_DRM_nodes_b(Number_of_DRM_Nodes_b),
-      thetimeSteps(timeSteps),
-      DRMElementsFile(strdup(ElementsFilename)),
-      DRMDisplacementsFile(strdup(DispfName)),
-      DRMAccelerationsFile(strdup(AccefName)),
       PBowlElements(0),
       ExteriorNodes(0),
       BoundaryNodes(0),
@@ -99,6 +89,16 @@ Domain_Reduction_Method_Modified_Input::Domain_Reduction_Method_Modified_Input
       PBowlLoads(0),
       U(0),
       Udd(0),
+      PBTimeIncr(theTimeIncr),
+      cFactor(theFactor),
+      number_of_DRM_elements(Number_of_DRM_Elements),
+      number_of_DRM_nodes(Number_of_DRM_Nodes_b + Number_of_DRM_Nodes_e),
+      number_of_DRM_nodes_b(Number_of_DRM_Nodes_b),
+      number_of_DRM_nodes_e(Number_of_DRM_Nodes_e),
+      thetimeSteps(timeSteps),
+      DRMElementsFile(strdup(ElementsFilename)),
+      DRMDisplacementsFile(strdup(DispfName)),
+      DRMAccelerationsFile(strdup(AccefName)),
       maxnodetag(0)
 {
 
