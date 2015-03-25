@@ -84,7 +84,7 @@ public:
 
     virtual std::string getName() const
     {
-        return "Domain_Reduction_Method_HDF5_input";
+        return "Domain_Reduction_Method_HDF5_input: " + HDF5filename;
     }
 
 

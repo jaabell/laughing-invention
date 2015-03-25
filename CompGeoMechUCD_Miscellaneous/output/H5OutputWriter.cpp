@@ -392,6 +392,23 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     return 0;
 }
 
+
+int writeLoadPatternData(int tag , std::string name)
+{
+    int ntags;
+    ntags = LoadPattern_names.Size();
+    int addzeros = tag - ntags;
+
+    //Extend arrays
+    for (int i = 0; i <= addzeros; i++)
+    {
+        LoadPattern_names.push_back(" not defined ");
+    }
+    LoadPattern_names.push_back(name);
+    return 0;
+}
+
+
 void H5OutputWriter::syncWriters()
 {
 #ifdef _PARALLEL_PROCESSING
@@ -680,6 +697,22 @@ void H5OutputWriter::syncWriters()
 
     MPI_Bcast(&zlib_compression_level               , 1 , MPI_INT , root , MPI_COMM_WORLD);
     MPI_Bcast(&flag_write_element_output            , 1 , MPI_INT , root , MPI_COMM_WORLD);
+
+
+    int number_of_load_patterns = LoadPattern_names.size();
+    // MPI_Bcast(&number_of_load_patterns            , 1 , MPI_INT , root , MPI_COMM_WORLD);
+
+    // if (processID == 0)
+    // {
+    //     for (auto s : LoadPattern_names)
+    //     {
+    //         char_buffer = s.
+    //     }
+    // }
+    // else
+    // {
+
+    // }
 
     //The slave processes must be initialized after all this stuff is transmitted.
     if (processID != 0)

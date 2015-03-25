@@ -1213,7 +1213,7 @@ PartitionedDomain::partition(int numPartitions)
                 Matrix eleGaussCoord = elePtr->getGaussCoordinates();
                 int eleOutputSize    = elePtr->getOutputSize();
                 int classTag = elePtr->getElementclassTag();
-                if ( eleName.compare("Element") != 0  )  // If the type of the element is the base class, then dont add it!
+                if ( eleName.compare("Element") != 0  )  // If the type of the element is the base class, then dont add it! Needed for those fake elements that represent the partitioned domains... which are treated like elements :/
                 {
                     theOutputWriter.writeElementMeshData( eleTag,
                                                           eleName,
