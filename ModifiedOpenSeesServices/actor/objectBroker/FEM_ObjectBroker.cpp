@@ -279,7 +279,7 @@
 #include <UniformExcitation.h>
 #include <GroundMotion.h>
 #include <MultiSupportPattern.h>
-#include <PBowlLoading.h>
+// #include <PBowlLoading.h>
 
 // time series
 #include <LinearSeries.h>
@@ -296,7 +296,7 @@
 #include <Linear_Force_TimeHistory.h>
 #include <PathSeries_Force_TimeHistory.h>
 #include <PathTimeSeries_Force_TimeHistory.h>
-#include <Linear_Disp_TimeHistory_Penalty.h>
+// #include <Linear_Disp_TimeHistory3_Penalty.h>
 
 #include <Domain_Reduction_Method_Modified_Input.h>
 #include <Domain_Reduction_Method_HDF5_input.h>
@@ -991,8 +991,8 @@ FEM_ObjectBroker::getNewLoadPattern(int classTag)
         return new LoadPattern();
 
     //Guanzhou added
-    case PATTERN_TAG_PBowlLoading:
-        return new PBowlLoading();
+    // case PATTERN_TAG_PBowlLoading:
+    //     return new PBowlLoading();
 
     case PATTERN_TAG_UniformExcitation:
         return new UniformExcitation();
@@ -1027,8 +1027,8 @@ FEM_ObjectBroker::getNewLoadPattern(int classTag)
     case  PATTERN_TAG_PathTimeSeries_Force_TimeHistory:
         return new PathTimeSeries_Force_TimeHistory();
 
-    case  PATTERN_TAG_Linear_Disp_TimeHistory_Penalty:
-        return new Linear_Disp_TimeHistory_Penalty();
+    // case  PATTERN_TAG_Linear_Disp_TimeHistory_Penalty:
+    //     return new Linear_Disp_TimeHistory_Penalty();
 
     //##################################################################################
 

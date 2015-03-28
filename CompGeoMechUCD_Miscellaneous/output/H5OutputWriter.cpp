@@ -393,18 +393,18 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 }
 
 
-int writeLoadPatternData(int tag , std::string name)
+int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
 {
-    int ntags;
-    ntags = LoadPattern_names.Size();
-    int addzeros = tag - ntags;
+    // int ntags;
+    // ntags = LoadPattern_names.Size();
+    // int addzeros = tag - ntags;
 
-    //Extend arrays
-    for (int i = 0; i <= addzeros; i++)
-    {
-        LoadPattern_names.push_back(" not defined ");
-    }
-    LoadPattern_names.push_back(name);
+    // //Extend arrays
+    // for (int i = 0; i <= addzeros; i++)
+    // {
+    //     LoadPattern_names.push_back(" not defined ");
+    // }
+    // LoadPattern_names.push_back(name);
     return 0;
 }
 

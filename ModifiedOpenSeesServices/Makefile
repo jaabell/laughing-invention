@@ -358,8 +358,7 @@ DOMAIN_LIBS =  ./domain/component/DomainComponent.o \
                ./analysis/analysis/DomainUser.o \
                ./domain/pattern/Domain_Reduction_Method.o \
                ./domain/pattern/Domain_Reduction_Method_Modified_Input.o \
-               ./domain/pattern/Domain_Reduction_Method_HDF5_input.o \
-               ./domain/pattern/PBowlLoading.o 
+               ./domain/pattern/Domain_Reduction_Method_HDF5_input.o 
 
 else
 DOMAIN_LIBS =  ./domain/component/DomainComponent.o \

@@ -504,12 +504,14 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
     int use_this_step = 0;
     for (int i = step1; i < step2; i++)
     {
-        if ((*times)[i] < time)
+        if ((*times)[i] >= time)
         {
             break;
         }
         use_this_step++;
     }
+
+    cout << "Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1] << endl;
 
 
     for (int i = 0; i < Nodes->Size(); i++)
@@ -624,7 +626,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
         step2 = number_of_timesteps;
         Nt = step2 - step1;
     }
-    t2 = (*times)[step2];
+    t2 = (*times)[step2 - 1];
 
 
 
@@ -694,16 +696,14 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
             }
         }
 
-        // DRMout << "Element # " << eleTag << endl
-        //        << "                 nB = " << nB << endl
-        //        << "                 nE = " << nE << endl;
+        DRMout << "Element # " << eleTag << endl
+               << "                 nB = " << nB << endl
+               << "                 nE = " << nE << endl;
 
 
 
         //Zero out the diagonal block of Boundary nodes
-        int m;
-
-        for (m = 0; m < nB; m++)
+        for (int m = 0; m < nB; m++)
             for (int n = 0; n < nB; n++)
                 for (int d = 0; d < NDOF; d++)
                     for (int e = 0; e < NDOF; e++)
@@ -714,7 +714,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
 
 
         //Zero out the diagonal block of Exterior nodes
-        for (m = 0; m < nE; m++)
+        for (int m = 0; m < nE; m++)
             for (int n = 0; n < nE; n++)
                 for (int d = 0; d < NDOF; d++)
                     for (int e = 0; e < NDOF; e++)
@@ -726,7 +726,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
 
         for (int n = 0; n < NIE; n++)
         {
-            const int nodeTag = elementNodes(n);
+            int nodeTag = elementNodes(n);
             int pos = nodetag2index[nodeTag];
 
             hsize_t start[2]  = {(hsize_t) 3 * pos , (hsize_t)step1};
@@ -768,18 +768,18 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
         Fk->addMatrixProduct(0.0, Ke, (*u_e), 1.0);
 
 
-        for (int j = 0 ; j < Nt; j++)
+        for (int k = 0; k < NIE; k++)
         {
-            for (int k = 0; k < NIE; k++)
+            int r = nodetag2index[elementNodes(k)];
+            for (int d = 0; d < NDOF; d++)
             {
-                int r = nodetag2index[elementNodes(k)];
-                for (int d = 0; d < NDOF; d++)
+                for (int j = 0 ; j < Nt; j++)
                 {
                     (*DRMForces)( r * NDOF + d, j) +=  (*Fk)(k * NDOF + d, j) + (*Fm)(k * NDOF + d, j);
                 }
             }
         }
-    }
+    } // For elements
 
 
     delete Fm;
@@ -815,7 +815,7 @@ Domain_Reduction_Method_HDF5_input::getNodalLoad(int nodeTag, double time)
     int use_this_step = 0;
     for (int i = step1; i < step2; i++)
     {
-        if ((*times)[i] < time)
+        if ((*times)[i] > time)
         {
             break;
         }
