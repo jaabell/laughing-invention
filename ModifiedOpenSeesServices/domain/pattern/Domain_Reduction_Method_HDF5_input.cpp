@@ -67,6 +67,9 @@ Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input()
       maxnodetag(0)
 {
     is_initialized = false;
+    t =  t1 =  t2 =  tfinal = 0;
+    cFactor = 0;
+    step = step1 = step2 = 0;
 }
 
 Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input
@@ -84,6 +87,9 @@ Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input
       maxnodetag(0)
 {
     is_initialized = false;
+    t =  t1 =  t2 =  tfinal = 0;
+    cFactor = 0;
+    step = step1 = step2 = 0;
 }
 
 void Domain_Reduction_Method_HDF5_input::intitialize()
@@ -670,10 +676,6 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
         //List of current element nodes
         const ID &elementNodes = theElement->getExternalNodes();
 
-        //Mass and stiffness matrices
-        Matrix Me = theElement->getMass();
-        Matrix Ke = theElement->getTangentStiff();
-
         //Identify boundary and exterior nodes for this element
         ID B_node(NIE);
         ID E_node(NIE);
@@ -696,91 +698,96 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
             }
         }
 
-        DRMout << "Element # " << eleTag << endl
-               << "                 nB = " << nB << endl
-               << "                 nE = " << nE << endl;
-
-
-
-        //Zero out the diagonal block of Boundary nodes
-        for (int m = 0; m < nB; m++)
-            for (int n = 0; n < nB; n++)
-                for (int d = 0; d < NDOF; d++)
-                    for (int e = 0; e < NDOF; e++)
-                    {
-                        Me( B_node(m)*NDOF + d, B_node(n)*NDOF + e ) = 0.0;
-                        Ke( B_node(m)*NDOF + d, B_node(n)*NDOF + e ) = 0.0;
-                    }
-
-
-        //Zero out the diagonal block of Exterior nodes
-        for (int m = 0; m < nE; m++)
-            for (int n = 0; n < nE; n++)
-                for (int d = 0; d < NDOF; d++)
-                    for (int e = 0; e < NDOF; e++)
-                    {
-                        Me( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
-                        Ke( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
-                    }
-
-
-        for (int n = 0; n < NIE; n++)
+        if ( nB != 0 and nE != 0 )
         {
-            int nodeTag = elementNodes(n);
-            int pos = nodetag2index[nodeTag];
-
-            hsize_t start[2]  = {(hsize_t) 3 * pos , (hsize_t)step1};
-            hsize_t stride[2] = {1       , 1};
-            hsize_t count[2]  = {1       , 1};
-            hsize_t block[2]  = {3       , (hsize_t) Nt};
-
-            H5Sselect_hyperslab(
-                id_displacements_dataspace,
-                H5S_SELECT_SET, start, stride, count, block );
-
-            H5Sselect_hyperslab(
-                id_accelerations_dataspace,
-                H5S_SELECT_SET, start, stride, count, block );
-
-            start[0] = start[1] = 0;
-
-            H5Sselect_hyperslab(
-                id_one_node_memspace,
-                H5S_SELECT_SET, start, stride, count, block );
+            // DRMout << "Element # " << eleTag << ", nB = " << nB << ", nE = " << nE << endl;
+            //Mass and stiffness matrices
+            Matrix Me = theElement->getMass();
+            Matrix Ke = theElement->getTangentStiff();
 
 
-            H5Dread( id_displacements, H5T_NATIVE_DOUBLE, id_one_node_memspace,
-                     id_displacements_dataspace, id_xfer_plist,  d );
-
-            H5Dread( id_accelerations, H5T_NATIVE_DOUBLE, id_one_node_memspace,
-                     id_accelerations_dataspace, id_xfer_plist,  a );
-
-            //This can be optimized by using the arrays directly and also BLAS-2 kernels for matmul
-            for (int j = 0 ; j < Nt; j++)
-                for (int i = 0 ; i < 3; i++)
-                {
-                    (*u_e)(3 * n + i, j) = d[i][j];
-                    (*udd_e)(3 * n + i, j) = a[i][j];
-                }
-        }
-
-        Fm->addMatrixProduct(0.0, Me, (*udd_e), 1.0);
-        Fk->addMatrixProduct(0.0, Ke, (*u_e), 1.0);
+            //Zero out the diagonal block of Boundary nodes
+            for (int m = 0; m < nB; m++)
+                for (int n = 0; n < nB; n++)
+                    for (int d = 0; d < NDOF; d++)
+                        for (int e = 0; e < NDOF; e++)
+                        {
+                            Me( B_node(m)*NDOF + d, B_node(n)*NDOF + e ) = 0.0;
+                            Ke( B_node(m)*NDOF + d, B_node(n)*NDOF + e ) = 0.0;
+                        }
 
 
-        for (int k = 0; k < NIE; k++)
-        {
-            int r = nodetag2index[elementNodes(k)];
-            for (int d = 0; d < NDOF; d++)
+            //Zero out the diagonal block of Exterior nodes
+            for (int m = 0; m < nE; m++)
+                for (int n = 0; n < nE; n++)
+                    for (int d = 0; d < NDOF; d++)
+                        for (int e = 0; e < NDOF; e++)
+                        {
+                            Me( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
+                            Ke( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
+                        }
+
+
+            for (int n = 0; n < NIE; n++)
             {
+                int nodeTag = elementNodes(n);
+                int pos = nodetag2index[nodeTag];
+
+                hsize_t start[2]  = {(hsize_t) 3 * pos , (hsize_t)step1};
+                hsize_t stride[2] = {1       , 1};
+                hsize_t count[2]  = {1       , 1};
+                hsize_t block[2]  = {3       , (hsize_t) Nt};
+
+                H5Sselect_hyperslab(
+                    id_displacements_dataspace,
+                    H5S_SELECT_SET, start, stride, count, block );
+
+                H5Sselect_hyperslab(
+                    id_accelerations_dataspace,
+                    H5S_SELECT_SET, start, stride, count, block );
+
+                start[0] = start[1] = 0;
+
+                H5Sselect_hyperslab(
+                    id_one_node_memspace,
+                    H5S_SELECT_SET, start, stride, count, block );
+
+
+                H5Dread( id_displacements, H5T_NATIVE_DOUBLE, id_one_node_memspace,
+                         id_displacements_dataspace, id_xfer_plist,  d );
+
+                H5Dread( id_accelerations, H5T_NATIVE_DOUBLE, id_one_node_memspace,
+                         id_accelerations_dataspace, id_xfer_plist,  a );
+
+                //This can be optimized by using the arrays directly and also BLAS-2 kernels for matmul
                 for (int j = 0 ; j < Nt; j++)
+                    for (int i = 0 ; i < 3; i++)
+                    {
+                        (*u_e)(3 * n + i, j) = d[i][j];
+                        (*udd_e)(3 * n + i, j) = a[i][j];
+                    }
+            }
+
+            Fm->addMatrixProduct(0.0, Me, (*udd_e), 1.0);
+            Fk->addMatrixProduct(0.0, Ke, (*u_e), 1.0);
+
+
+            for (int k = 0; k < NIE; k++)
+            {
+                int r = nodetag2index[elementNodes(k)];
+                for (int d = 0; d < NDOF; d++)
                 {
-                    (*DRMForces)( r * NDOF + d, j) +=  (*Fk)(k * NDOF + d, j) + (*Fm)(k * NDOF + d, j);
+                    for (int j = 0 ; j < Nt; j++)
+                    {
+                        (*DRMForces)( r * NDOF + d, j) +=  (*Fk)(k * NDOF + d, j) + (*Fm)(k * NDOF + d, j);
+                    }
                 }
             }
         }
     } // For elements
 
+
+    // cout << "DRMFORCES = " << *DRMForces << endl;
 
     delete Fm;
     delete Fk;
