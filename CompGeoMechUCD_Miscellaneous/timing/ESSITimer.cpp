@@ -33,27 +33,37 @@
 
 
 
-ESSITimer::ESSITimer(std::string name_):
-    name(name_)
+ESSITimer::ESSITimer(std::string reportfilename_):
+	reportfilename(reportfilename_)
 {
-    //
+	//
 }
 
-void ESSITimer::start(std::string filename_, int linestart_)
+void ESSITimer::start(std::string timername)
 {
-    filename_ = filename_;
-    linestart = linestart_;
-    beginning = clock_::now();
+	// auto timer = timers[timername];
+	auto &timepoint = timepoints[timername];
+	timepoint = ESSIClock::now();
+
 }
 
-void ESSITimer::stop(int linestop_)
+void ESSITimer::stop(std::string timername)
 {
-    linestop = linestop_;
-    end = clock_::now();
+	auto &timer = timers[timername];
+	auto &timepoint = timepoints[timername];
+	timer += (ESSIClock::now() - timepoint);
 }
 
-double ESSITimer::report()
+void ESSITimer::report()
 {
-    return std::chrono::duration_cast<second_>(end - beginning).count();
+	std::ofstream fid(reportfilename, std::ios::out);
+
+	for (auto const &timer : timers)
+	{
+		fid << timer.first << " : " << std::chrono::duration_cast<ESSIDuration>(timer.second).count() << std::endl;
+	}
+
+	fid.close();
+	// return std::chrono::duration_cast<second_>(end - beginning).count();
 }
 

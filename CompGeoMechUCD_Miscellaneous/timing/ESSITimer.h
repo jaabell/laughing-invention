@@ -33,24 +33,26 @@
 #include <string>
 #include <chrono>
 #include <fstream>
+#include <map>
 
+typedef std::chrono::high_resolution_clock ESSIClock;
+typedef std::chrono::duration<double, std::ratio<1> > ESSIDuration;
+typedef std::map<std::string, ESSIDuration> ESSITimerList;
+typedef std::chrono::time_point<ESSIClock> ESSITimePoint;
+typedef std::map<std::string, ESSITimePoint> ESSITimePointList;
 
 class ESSITimer
 {
-    public:
-        ESSITimer(std::string name);
-        void start(std::string filename, int linestart);
-        void stop(int linestop);
-        double report();
+public:
+    ESSITimer(std::string reportfilename_);
+    void start(std::string timername);
+    void stop(std::string timername);
+    void report();
 
 
-    private:
-        std::string name;
-        std::string filename;
-        int linestart;
-        int linestop;
-        typedef std::chrono::high_resolution_clock clock_;
-        typedef std::chrono::duration<double, std::ratio<1> > second_;
-        std::chrono::time_point<clock_> beginning;
-        std::chrono::time_point<clock_> end;
+private:
+    std::string reportfilename;
+
+    ESSITimePointList timepoints;
+    ESSITimerList timers;
 };
