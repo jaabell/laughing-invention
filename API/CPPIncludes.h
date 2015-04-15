@@ -352,6 +352,7 @@
 
 #endif
 
+#include <../CompGeoMechUCD_Miscellaneous/timing/ESSITimer.h>
 
 
 
@@ -409,7 +410,7 @@ LoadBalancer       *OPS_BALANCER           = 0;
 FEM_ObjectBroker   *OPS_OBJECT_BROKER;
 MachineBroker      *OPS_MACHINE;
 Element            *ops_TheActiveElement   = 0;
-MPI_MachineBroker *theMachineBroker       = 0;
+MPI_MachineBroker  *theMachineBroker       = 0;
 
 #else // If not _PARALLEL_PROCESSING
 
@@ -421,7 +422,7 @@ Domain theDomain;
 LoadPattern *DRM_LOAD_PATTERN = 0 ; //Pointer to DRM Load pattern to be available ftom everywhere ... added by Babak
 Channel          **OPS_theChannels = 0;
 
-
+std::string profiling_results_filename = ""; //Where to put timing results
 
 // =================================================================================================
 // Application Programming Interface (API)

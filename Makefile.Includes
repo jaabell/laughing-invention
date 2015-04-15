@@ -150,6 +150,7 @@ ESSI_INCLUDES  = -I$(FEIBASEDIR)/ModifiedOpenSeesServices/matrix \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_variable_nodes_8_to_27 \
             -I$(FEIBASEDIR)/CompGeoMechUCD_Miscellaneous/units \
             -I$(FEIBASEDIR)/CompGeoMechUCD_Miscellaneous/output \
+            -I$(FEIBASEDIR)/CompGeoMechUCD_Miscellaneous/timing \
             -I$(FEIBASEDIR)/UCB_Elements/beamWithHinges \
             -I$(FEIBASEDIR)/UCB_Elements/dispBeamColumn \
             -I$(FEIBASEDIR)/UCB_Elements/elasticBeamLumpedMass \
@@ -196,6 +197,7 @@ ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
       $(FEIBASEDIR)/lib/libndarray.a \
       $(FEIBASEDIR)/lib/libquantity.a \
       $(FEIBASEDIR)/lib/libltensorutilities.a \
+      $(FEIBASEDIR)/lib/libessitiming.a \
       $(FEIBASEDIR)/lib/liboutputwriters.a 
 
 

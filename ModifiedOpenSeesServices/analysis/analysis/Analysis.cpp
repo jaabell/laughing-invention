@@ -39,7 +39,7 @@
 #include <Domain.h>
 
 Analysis::Analysis(Domain& theDom)
-    : theDomain(&theDom)
+	: theDomain(&theDom)
 {
 
 }
@@ -49,10 +49,17 @@ Analysis::~Analysis()
 
 }
 
+//Added by Jose to time analysis for profiling. Instances of analysis have to implement the actual timing of the parts.
+// int Analysis::setTimer(std::string reportfilename_, std::string header)
+// {
+// 	timers.setReportFileName(reportfilename_, header);
+// }
+
+
 Domain*
 Analysis::getDomainPtr(void)
 {
-    return theDomain;
+	return theDomain;
 }
 
 

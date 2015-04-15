@@ -37,23 +37,29 @@
 //
 // What: "@(#) Analysis.h, revA"
 
+// #include <ESSITimer.h>
+
 class Domain;
 
 class Analysis
 {
-    public:
-        Analysis(Domain& theDomain);
-        virtual ~Analysis();
+public:
+    Analysis(Domain& theDomain);
+    virtual ~Analysis();
 
-        // pure virtual functions
-        //    virtual int analyze(void) =0;
-        virtual int domainChanged(void) = 0;
+    // pure virtual functions
+    //    virtual int analyze(void) =0;
+    virtual int domainChanged(void) = 0;
 
-    protected:
-        Domain* getDomainPtr(void);
+    //Added by Jose to time analysis for profiling. Instances of analysis have to implement the actual timing of the parts.
+    // virtual int setTimer(std::string reportfilename_, std::string header = "");
 
-    private:
-        Domain* theDomain;
+protected:
+    Domain* getDomainPtr(void);
+
+private:
+    Domain* theDomain;
+    // ESSITimer timers;
 };
 
 #endif

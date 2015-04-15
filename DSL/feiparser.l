@@ -110,6 +110,7 @@
     extern void set_outcppfile_name(string newfilename);
     extern void wipe_model();
     extern void set_dry_run_mode(int);
+    extern void set_profiling_results_filename(char* cstring);
 
 
 %}
@@ -962,14 +963,15 @@ void print_usage()
          "ESSI: UCDavis Earthquake-Soil-Structure-Interaction Simulator \n"
          "              -          -    -         -                     \n"
          "Usage: essi [-cfhnsmbe FILENAME]\n"
-         "  -c --cpp-output          : Output cpp version of the analysis done. \n"
-         "  -f --filename [FILENAME] : Include and run FILENAME. \n"
-         "  -h --help                : Print this message. \n"
-         "  -n --no-interactive      : Disable interactive mode. \n"
-         "  -s --set-variable        : Set a variable from the command line. \n"
-         "  -d --dry-run             : Do not execute ESSI API calls. Just parse. \n"
-         "  -m --model-name [NAME]   : Set the model name from the command line. \n"
-         "  -b --binary-output       : The output generated will be in binary instead of plain text. \n"
+         "  -c --cpp-output                : Output cpp version of the analysis done. \n"
+         "  -f --filename [FILENAME]       : Include and run FILENAME. \n"
+         "  -h --help                      : Print this message. \n"
+         "  -n --no-interactive            : Disable interactive mode. \n"
+         "  -s --set-variable              : Set a variable from the command line. \n"
+         "  -d --dry-run                   : Do not execute ESSI API calls. Just parse. \n"
+         "  -m --model-name [NAME]         : Set the model name from the command line. \n"
+         "  -b --binary-output             : The output generated will be in binary instead of plain text. \n"
+         "  -p --profile-report [FILENAME] : Set the filename for the profiler report (and activate lightweight profiling)\n"
          " \n\n"
          "Example to set a variable name from command line:\n"
          "    essi -s a=10,b=20,c=30\n"
@@ -1017,6 +1019,7 @@ int start_parser(int argc, char**argv)
     //Parse Command Line Parameters
     int c;
     char *filename_from_command_line = 0;
+    char *char_string_aux = 0;
 
     while (1)
     {
@@ -1031,6 +1034,7 @@ int start_parser(int argc, char**argv)
             {"set-variable",     required_argument, 0, 's'},
             {"no-cpp-output",    no_argument,       0, 'x'},
             {"dry-run",          no_argument,       0, 'd'},
+            {"profile-report",   required_argument, 0, 'p'},
             {0, 0, 0, 0}
         };
 
@@ -1038,7 +1042,7 @@ int start_parser(int argc, char**argv)
         int option_index = 0;
 
         //This is the command line option parser
-        c = getopt_long(argc, argv, "cf:hns:xm:d", long_options, &option_index);
+        c = getopt_long(argc, argv, "cf:hns:xm:dp:", long_options, &option_index);
 
         /* Detect the end of the options. */
         if (c == -1)
@@ -1078,6 +1082,10 @@ int start_parser(int argc, char**argv)
                 break;
             case 'b': //  -b --binary-output: The output generated will be in binary instead of plain text.
                 FLAG_binary_output = 1;
+                break;
+            case 'p': // -p --profile-report: Set the filename for the profiler report (and activate profiling)
+                //cout << "Setting report file to:" << optarg << endl;
+                set_profiling_results_filename(optarg);
                 break;
             default:
                 print_usage();

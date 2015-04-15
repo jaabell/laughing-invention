@@ -45,7 +45,7 @@
 #include <Matrix.h>
 #include <ID.h>
 #include <Graph.h>
-#include <Timer.h>
+#include <ESSITimer.h>
 
 // Nima Tafazzoli added August 2010
 #include <stdlib.h>
@@ -169,7 +169,12 @@ StaticAnalysis::analyze(int numSteps)
         // every call to cerr maybe should be preceded by a std::endl
         cout.flush() << "\r Static Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
 
+
+        globalESSITimer.start("Domain_Step");
         result = theAnalysisModel->newStepDomain();
+        globalESSITimer.stop("Domain_Step");
+
+
 
         if (result < 0)
         {
@@ -202,8 +207,10 @@ StaticAnalysis::analyze(int numSteps)
         }
 
 
-        result = theIntegrator->newStep();
 
+        globalESSITimer.start("Integrator_Step");
+        result = theIntegrator->newStep();
+        globalESSITimer.stop("Integrator_Step");
         if (result < 0)
         {
             cerr << "StaticAnalysis::analyze() - the Integrator failed";
@@ -214,8 +221,11 @@ StaticAnalysis::analyze(int numSteps)
             return -2;
         }
 
-        result = theAlgorithm->solveCurrentStep();
 
+
+        globalESSITimer.start("SOE_Solution");
+        result = theAlgorithm->solveCurrentStep();
+        globalESSITimer.stop("SOE_Solution");
         if (result < 0)
         {
             cerr << "StaticAnalysis::analyze() - the Algorithm failed";
@@ -229,8 +239,10 @@ StaticAnalysis::analyze(int numSteps)
 
 
 
-        result = theIntegrator->commit();
 
+        globalESSITimer.start("Results_commited");
+        result = theIntegrator->commit();
+        globalESSITimer.stop("Results_commited");
         if (result < 0)
         {
             cerr << "StaticAnalysis::analyze() - ";
@@ -243,14 +255,16 @@ StaticAnalysis::analyze(int numSteps)
             return -4;
         }
 
-# ifdef _PDD //Guanzhou added repartitioning
-        //GraphPartitioner *theGraphPartitioner = new ParMetis;
-        //DomainPartitioner *theDomainPartitioner = new DomainPartitioner(*theGraphPartitioner);
-        //theDomain.setPartitioner(theDomainPartitioner);
-        PartitionedDomain *myDomain = (PartitionedDomain *)this->getDomainPtr();
-        //myDomain->setPartitioner(OPS_DOMAIN_PARTITIONER);
+
+
+
+# ifdef _PDD
+        PartitionedDomain *myDomain = (PartitionedDomain *)this->getDomainPtr(); // Upcast domain pointer
+        globalESSITimer.start("Repartitioning");
         myDomain->repartition(OPS_NUM_SUBDOMAINS);
+        globalESSITimer.stop("Repartitioning");
 # endif
+
 
     }
 

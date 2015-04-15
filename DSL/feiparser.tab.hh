@@ -123,7 +123,7 @@ namespace yy {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 110 "feiparser.yy" // lalr1.cc:372
+    #line 111 "feiparser.yy" // lalr1.cc:372
 
   Expression    *exp;           /* For the expressions. Since it is a pointer, no problem. */
   Quantity      *value;         /* For the lexical analyser. NUMBER tokens */

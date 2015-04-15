@@ -130,6 +130,16 @@ int simulate_using_static_multistep(int numSteps)
                                            *theStaticIntegrator,
                                            theConvergenceTest);
 
+    if (profiling_results_filename.length() > 4)
+    {
+        globalESSITimer.setReportFileName(profiling_results_filename, ModelName + "_" + StageName);
+        // theStaticAnalysis->setTimer(profiling_results_filename, ModelName + "_" + StageName);
+    }
+    else if (profiling_results_filename.length() > 0)
+    {
+        cout << "Profiling filename needs to have more than 4 characters. Currently: " << profiling_results_filename << endl;
+    }
+
     if (theStaticAnalysis == NULL)
     {
         cerr << "Error: (simulate_using_static_multistep) memory for theStaticAnalysis can not be allocated!" << endl;
@@ -259,6 +269,8 @@ int simulate_using_static_multistep(int numSteps)
 
 #endif
 
+
+    globalESSITimer.report();
     // delete channel;
 
     return result;

@@ -28,6 +28,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
+#ifndef ESSITIMER_H
+#define ESSITIMER_H
 
 #include <iostream>
 #include <string>
@@ -44,15 +46,29 @@ typedef std::map<std::string, ESSITimePoint> ESSITimePointList;
 class ESSITimer
 {
 public:
-    ESSITimer(std::string reportfilename_);
+    ESSITimer();
+    ESSITimer(std::string reportfilename_, std::string header = "");
+    void setReportFileName(std::string reportfilename_, std::string header = "");
     void start(std::string timername);
     void stop(std::string timername);
     void report();
+    void print();
+    void resetAll();
+    void reset(std::string timername);
+    void clearAll();
+    void remove(std::string timername);
 
 
 private:
     std::string reportfilename;
+    std::string header;
 
     ESSITimePointList timepoints;
     ESSITimerList timers;
+
+    bool activated;
 };
+
+extern ESSITimer globalESSITimer;
+
+#endif

@@ -84,6 +84,7 @@
     extern int error_behavior(void);
 
     void set_outcppfile_name(string newfilename);
+    void set_profiling_results_filename(string filename);
 
     //Command line options flags
     extern int FLAG_interactive_mode;
@@ -5042,6 +5043,14 @@ void set_outcppfile_name(string newfilename)
         *outputcppfile << "{" << endl;
     }
 }
+
+void set_profiling_results_filename(char* cstring)
+{
+    string filename(cstring);
+    cout << "Setting timing report file to : " << filename << endl;
+    profiling_results_filename = filename;
+}
+
 
 void set_dry_run_mode(int flag)
 {

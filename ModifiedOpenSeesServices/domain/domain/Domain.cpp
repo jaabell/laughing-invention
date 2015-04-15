@@ -103,9 +103,9 @@ using std::ifstream;
 using namespace std;
 
 
+# include <ESSITimer.h>
 
 # ifdef _PDD
-# include <Timer.h>
 # include<NanoTimer.h>
 # include <VertexIter.h>
 # endif
@@ -2650,6 +2650,9 @@ Domain::commit( void )
     Element *elePtr;
     ElementIter &theElemIter = this->getElements();
 
+    globalESSITimer.start("Domain_Mesh_Output");
+
+
 #ifdef _PARALLEL_PROCESSING
     int numProcesses, processID;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
@@ -2703,10 +2706,12 @@ Domain::commit( void )
     }
 #endif
 
+    globalESSITimer.stop("Domain_Mesh_Output");
     theNodIter->reset();
 
     theNodeIter = this->getNodes();
 
+    globalESSITimer.start("Domain_Node_Commit_and_output");
     while ( ( nodePtr = theNodeIter() ) != 0 )
     {
         nodePtr->commitState();
@@ -2723,10 +2728,11 @@ Domain::commit( void )
 #ifdef _PARALLEL_PROCESSING
         }
 #endif
-
-
-
     }
+    globalESSITimer.stop("Domain_Node_Commit_and_output");
+
+
+    globalESSITimer.start("Domain_Element_Commit_and_output");
 #ifdef _PARALLEL_PROCESSING
     if (processID != 0)  //Master process does not write any output!
     {
@@ -2746,6 +2752,7 @@ Domain::commit( void )
 #ifdef _PARALLEL_PROCESSING
     }
 #endif
+    globalESSITimer.stop("Domain_Element_Commit_and_output");
 
     // cout << "countdown_til_output = " << countdown_til_output << endl;
     if (countdown_til_output == 0)
@@ -2838,7 +2845,7 @@ Domain::update( void )
 
     int ok = 0;
 
-
+    globalESSITimer.start("Domain_Element_update");
 # ifdef _PDD
 
     NanoTimer myTime;
@@ -2885,6 +2892,7 @@ Domain::update( void )
     }
 
 # endif
+    globalESSITimer.stop("Domain_Element_update");
 
     if ( ok != 0 )
     {
