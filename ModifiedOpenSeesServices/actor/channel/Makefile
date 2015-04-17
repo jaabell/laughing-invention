@@ -5,9 +5,9 @@ include ../../../Makefile.Includes
 include ../../../Makefile.Compilers
 
 ifeq ($(PROGRAMMING_MODE), PARALLEL)
-OBJS	=	MPI_Channel.o Channel.o HDF5_Channel.o
+OBJS	=	MPI_Channel.o Channel.o
 else
-OBJS	=	Channel.o HDF5_Channel.o
+OBJS	=	Channel.o
 endif
 
 all:       $(OBJS)

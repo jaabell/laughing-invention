@@ -38,7 +38,7 @@
 #include <limits>
 #include "LTensorDisplay.h"
 #include <Channel.h>
-#include <HDF5_Channel.h>
+// #include <HDF5_Channel.h>
 #include <Matrix.h>
 #include <Vector.h>
 
@@ -290,21 +290,21 @@ const char *PisanoLT::getType(void) const
 //  For the parallel / storage
 //================================================================================
 
-int PisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
-{
-    theHDF5_Channel.beginMaterialDescription("PisanoLT" , this->getTag());
-    theHDF5_Channel.addField("strain"                   , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);    // 1.
-    theHDF5_Channel.addField("stress"                   , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);    // 2.
-    theHDF5_Channel.addField("plastic_strain"           , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED); // 3.
-    theHDF5_Channel.addField("alpha"                    , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 4.
-    theHDF5_Channel.addField("stress_n_minus_2"         , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 5.
-    theHDF5_Channel.addField("nij_dev"                  , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 6.
-    theHDF5_Channel.addField("nij_dev_prev"             , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 7.
-    theHDF5_Channel.addField("model_parameters"         , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED); // 8.
-    theHDF5_Channel.endMaterialDescription();
+// int PisanoLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+// {
+//     theHDF5_Channel.beginMaterialDescription("PisanoLT" , this->getTag());
+//     theHDF5_Channel.addField("strain"                   , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);    // 1.
+//     theHDF5_Channel.addField("stress"                   , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);    // 2.
+//     theHDF5_Channel.addField("plastic_strain"           , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED); // 3.
+//     theHDF5_Channel.addField("alpha"                    , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 4.
+//     theHDF5_Channel.addField("stress_n_minus_2"         , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 5.
+//     theHDF5_Channel.addField("nij_dev"                  , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 6.
+//     theHDF5_Channel.addField("nij_dev_prev"             , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DEBUG);    // 7.
+//     theHDF5_Channel.addField("model_parameters"         , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED); // 8.
+//     theHDF5_Channel.endMaterialDescription();
 
-    return 0;
-}
+//     return 0;
+// }
 
 
 int PisanoLT::sendSelf(int commitTag, Channel &theChannel)

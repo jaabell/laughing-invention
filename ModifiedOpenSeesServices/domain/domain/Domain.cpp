@@ -132,7 +132,7 @@ Domain::Domain()
     eleGraphBuiltFlag( false ),  nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
     theElementGraph( 0 ),
     commitTag( 0 ),
-    theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0)
+    theBounds(6), theEigenvalues(0), theEigenvalueSetTime(0), numberOfDomainNodeDOFs(0),  numberOfDomainElementOutputs(0)
 {
 
     // init the arrays for storing the domain components
@@ -234,7 +234,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
       eleGraphBuiltFlag( false ), nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
       theElementGraph( 0 ),
       commitTag( 0 ),
-      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 )
+      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ), numberOfDomainNodeDOFs(0),  numberOfDomainElementOutputs(0)
 {
     // init the arrays for storing the domain components
     theElements = new ArrayOfTaggedObjects( numElements );
@@ -335,7 +335,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
       theMPs( &theMPsStorage ),
       theLoadPatterns( &theLoadPatternsStorage ),
       commitTag( 0 ),
-      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 )
+      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ), numberOfDomainNodeDOFs(0),  numberOfDomainElementOutputs(0)
 {
     // init the iters
     theEleIter = new SingleDomEleIter( theElements );
@@ -395,7 +395,7 @@ Domain::Domain( TaggedObjectStorage &theStorage )
       eleGraphBuiltFlag( false ), nodeGraphBuiltFlag( false ), theNodeGraph( 0 ),
       theElementGraph( 0 ),
       commitTag( 0 ),
-      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 )
+      theBounds( 6 ), theEigenvalues( 0 ), theEigenvalueSetTime( 0 ), numberOfDomainNodeDOFs(0),   numberOfDomainElementOutputs(0)
 {
     // init the arrays for storing the domain components
     theStorage.clearAll(); // clear the storage just in case populated
@@ -732,38 +732,10 @@ Domain::addElement( Element *element )
         cerr << "Domain::addElement - element " << eleTag << "could not be added to container\n";
     }
 
+    // cout << "numberOfDomainElementOutputs = " << numberOfDomainElementOutputs << " | ";
+    numberOfDomainElementOutputs += element->getOutputSize();
+    // cout << numberOfDomainElementOutputs << endl;
 
-    //==============================================================
-    // Nima Tafazzoli (Feb. 2013) [Out by Jose, Sun 06 Apr 2014 02:46:29 PM PDT]
-    // if ( ( element->getElementclassTag() == ELE_TAG_EightNodeBrick ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_EightNodeBrickElastic ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_EightNodeBrick_u_p_U ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_EightNode_Brick_u_p ) )
-    // {
-    //     number_of_8GP_brick_elements++;
-    // }
-
-
-    // if ( ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrickElastic ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrick ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrickElastic ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick_u_p_U ) )
-    // {
-    //     number_of_27GP_brick_elements++;
-    // }
-
-
-    // if ( ( element->getElementclassTag() == ELE_TAG_ElasticBeamLumpedMass ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_DispBeamColumn3d ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_Truss ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_ElasticBeam ) ||
-    //         ( element->getElementclassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam ) )
-    // {
-    //     number_of_line_elements++;
-    // }
-
-    //==============================================================
 
     if (eleTag > maxElementsTag)
     {
@@ -776,116 +748,6 @@ Domain::addElement( Element *element )
 
 
 
-//==============================================================
-// Nima Tafazzoli (Feb. 2013)
-
-// bool
-// Domain::addElementDatabase( Element *element )
-// {
-//     int eleTag = element->getTag();
-
-// #ifdef _G3DEBUG
-//     // check all the elements nodes exist in the domain
-//     const ID &nodes = element->getExternalNodes();
-//     int numDOF = 0;
-
-//     for ( int i = 0; i < nodes.Size(); i++ )
-//     {
-//         int nodeTag = nodes( i );
-//         Node *nodePtr = this->getNode( nodeTag );
-
-//         if ( nodePtr == 0 )
-//         {
-//             cerr << "WARNING Domain::addElement - In element ";
-//             //    cerr << "WARNING Domain::addElement - In element " << *element;
-//             cerr << "\n no Node " << nodeTag << " exists in the domain\n";
-//             return false;
-//         }
-
-//         numDOF += nodePtr->getNumberDOF();
-//     }
-
-// #endif
-
-//     // check if an Element with a similar tag already exists in the Domain
-
-//     TaggedObject *other = theElements->getComponentPtr( eleTag );
-
-//     if ( other != 0 )
-//     {
-//         cerr << "Domain::addElement - element with tag " << eleTag << "already exists in model\n";
-//         return false;
-//     }
-
-//     // add the element to the container object for the elements
-//     bool result = theElements->addComponent( element );
-
-//     if ( result == true )
-//     {
-//         element->setDomain( this );
-//         //     element->update();
-
-//         // finally check the ele has correct number of dof
-// #ifdef _G3DEBUG
-
-//         if ( numDOF != element->getNumDOF() )
-//         {
-
-//             cerr << "Domain::addElement - element " << eleTag << " - #DOF does not match with number at nodes\n";
-//             theElements->removeComponent( eleTag );
-//             return false;
-//         }
-
-// #endif
-
-//         // mark the Domain as having been changed
-//         this->domainChange();
-//     }
-//     else
-//     {
-//         cerr << "Domain::addElement - element " << eleTag << "could not be added to container\n";
-//     }
-
-
-//     //==============================================================
-//     // Nima Tafazzoli (Feb. 2013)
-//     if ( ( element->getElementclassTag() == ELE_TAG_EightNodeBrick ) ||
-//             ( element->getElementclassTag() == ELE_TAG_EightNodeBrickElastic ) ||
-//             ( element->getElementclassTag() == ELE_TAG_EightNodeBrick_u_p_U ) ||
-//             ( element->getElementclassTag() == ELE_TAG_EightNode_Brick_u_p ) )
-//     {
-//         number_of_8GP_brick_elements++;
-//     }
-
-
-//     if ( ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick ) ||
-//             ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrickElastic ) ||
-//             ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrick ) ||
-//             ( element->getElementclassTag() == ELE_TAG_TwentySevenNodeBrickElastic ) ||
-//             ( element->getElementclassTag() == ELE_TAG_TwentyNodeBrick_u_p_U ) )
-//     {
-//         number_of_27GP_brick_elements++;
-//     }
-
-
-//     if ( ( element->getElementclassTag() == ELE_TAG_ElasticBeamLumpedMass ) ||
-//             ( element->getElementclassTag() == ELE_TAG_DispBeamColumn3d ) ||
-//             ( element->getElementclassTag() == ELE_TAG_Truss ) ||
-//             ( element->getElementclassTag() == ELE_TAG_ElasticBeam ) ||
-//             ( element->getElementclassTag() == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam ) )
-//     {
-//         number_of_line_elements++;
-//     }
-
-//     //==============================================================
-
-//     return result; // end nima stuff
-// } // end it
-
-
-
-// void addNode(Node *);
-//  Method to add a Node to the model.
 
 bool
 Domain::addNode( Node *node )
@@ -901,6 +763,10 @@ Domain::addNode( Node *node )
     }
 
     bool result = theNodes->addComponent( node );
+
+    // cout << "numberOfDomainNodeDOFs = " << numberOfDomainNodeDOFs << " | ";
+    numberOfDomainNodeDOFs += node->getNumberDOF();
+    // cout << numberOfDomainNodeDOFs << endl;
 
     if ( result == true )
     {
@@ -1555,6 +1421,9 @@ Domain::removeElement( int tag )
     // perform a downward cast to an Element (safe as only Element added to
     // this container, 0 the Elements DomainPtr and return the result of the cast
     Element *result = ( Element *)mc;
+
+    numberOfDomainElementOutputs -= result->getOutputSize();
+
     //  result->setDomain(0);
     return result;
 }
@@ -1577,6 +1446,9 @@ Domain::removeNode( int tag )
     // perform a downward cast to a Node (safe as only Node added to
     // this container and return the result of the cast
     Node *result = ( Node *)mc;
+
+    numberOfDomainNodeDOFs -= result->getNumberDOF();
+
     // result->setDomain(0);
     return result;
 }
@@ -2679,15 +2551,33 @@ Domain::commit( void )
         //Write out static mesh data once!
         if (!have_written_static_mesh_data)
         {
+            //     cout << "this->getNumNodes()           = " << this->getNumNodes() << endl;
+            //     cout << "this->getNumElements()        = " << this->getNumElements() << endl;
+            //     cout << "maxNodesTag                   = " << maxNodesTag << endl;
+            //     cout << "maxElementsTag                = " << maxElementsTag << endl;
+            //     cout << "numberOfDomainNodeDOFs        = " << numberOfDomainNodeDOFs << endl;
+            //     cout << "numberOfDomainElementOutputs) = " << numberOfDomainElementOutputs << endl;
+            globalESSITimer.start("HDF5_write_global_data");
+            theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
+                                                this->getNumElements(),
+                                                maxNodesTag,
+                                                maxElementsTag,
+                                                numberOfDomainNodeDOFs,
+                                                numberOfDomainElementOutputs);
+            globalESSITimer.stop("HDF5_write_global_data");
+            globalESSITimer.start("HDF5_buffer_nodes");
             //Write Node Mesh data!
-            theOutputWriter.writeNumberOfNodes(this->getNumNodes());
+
+            // theOutputWriter.writeNumberOfNodes(this->getNumNodes());
             while ( ( nodePtr = theNodeIter() ) != 0 )
             {
                 theOutputWriter.writeNodeMeshData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
             }
+            globalESSITimer.stop("HDF5_buffer_nodes");
 
+            globalESSITimer.start("HDF5_buffer_elements");
             //Write Element Mesh data!
-            theOutputWriter.writeNumberOfElements(this->getNumElements());
+            // theOutputWriter.writeNumberOfElements(this->getNumElements());
             while ( ( elePtr = theElemIter() ) != 0 )
             {
                 int materialtag = 0;
@@ -2699,7 +2589,12 @@ Domain::commit( void )
                                                      elePtr->getOutputSize(),
                                                      elePtr->getElementclassTag());
             }
+            globalESSITimer.stop("HDF5_buffer_elements");
+
+            globalESSITimer.start("HDF5_write");
             theOutputWriter.writeMesh();
+            globalESSITimer.stop("HDF5_write");
+
             have_written_static_mesh_data = true;
         }
         theOutputWriter.setTime(currentTime);

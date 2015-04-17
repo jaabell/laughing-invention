@@ -36,40 +36,47 @@
 
 class OutputWriter
 {
-    public:
-        OutputWriter();
-        ~OutputWriter();
+public:
+    OutputWriter();
+    ~OutputWriter();
 
-        virtual int setTime(double t) = 0;
+    virtual int setTime(double t) = 0;
 
-        // Mesh output
-        virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) = 0 ;
-        virtual int writeNumberOfElements(unsigned int numberOfElements_ ) = 0;
-        virtual int writeNodeMeshData(int tag,
-                                      const Vector &coords,
-                                      int ndofs ) = 0;
-        virtual int writeElementMeshData(int         tag,
-                                         std::string  type,
-                                         const        ID &connectivity,
-                                         int          materialtag,
-                                         const        Matrix &gausscoordinates,
-                                         int          length_of_output,
-                                         int class_tag) = 0;
-        virtual int writeMaterialMeshData(int         tag,
-                                          std::string type,
-                                          Vector     &parameters) = 0;
+    // Mesh output
+    virtual int writeGlobalMeshData(unsigned int number_of_nodes_in,
+                                    unsigned int number_of_elements_in,
+                                    unsigned int max_node_tag_in,
+                                    unsigned int max_element_tag_in,
+                                    unsigned int number_of_dofs_in,
+                                    unsigned int number_of_outputs_in) = 0;
 
-        // Results for Nodes
-        virtual int writeDisplacements(  int nodeTag, const Vector &displacements) = 0;
-        virtual int writeVelocities(     int nodeTag, const Vector &velocities) = 0;
-        virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) = 0;
-        virtual int writeReactionForces( int nodeTag, const Vector &reactionForces) = 0;
+    // virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
+    // virtual int writeNum
+    virtual int writeNodeMeshData(int tag,
+                                  const Vector &coords,
+                                  int ndofs ) = 0;
+    virtual int writeElementMeshData(int         tag,
+                                     std::string  type,
+                                     const        ID &connectivity,
+                                     int          materialtag,
+                                     const        Matrix &gausscoordinates,
+                                     int          length_of_output,
+                                     int class_tag) = 0;
+    virtual int writeMaterialMeshData(int         tag,
+                                      std::string type,
+                                      Vector     &parameters) = 0;
 
-        // Results for Elements
-        virtual int writeElementOutput(int elementTag, const Vector &output) = 0;
+    // Results for Nodes
+    virtual int writeDisplacements(  int nodeTag, const Vector &displacements) = 0;
+    virtual int writeVelocities(     int nodeTag, const Vector &velocities) = 0;
+    virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) = 0;
+    virtual int writeReactionForces( int nodeTag, const Vector &reactionForces) = 0;
+
+    // Results for Elements
+    virtual int writeElementOutput(int elementTag, const Vector &output) = 0;
 
 
-    private:
+private:
 
 };
 #endif   //#ifndef OutputWriter_H

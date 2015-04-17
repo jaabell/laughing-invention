@@ -7,7 +7,7 @@
 //Hack  it.  Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
 //all we wanted to do.'' bj
 // PROJECT:           Object Oriented Finite Element Program
-// FILE:              H5OutputWriter.cpp
+// FILE:              H5Output:ter.cpp
 // CLASS:             H5OutputWriter
 // MEMBER FUNCTIONS:
 //
@@ -38,6 +38,8 @@
 #include <mpi.h>
 #endif
 
+# include <ESSITimer.h>
+
 
 H5OutputWriter::H5OutputWriter():
     OutputWriter(),
@@ -47,6 +49,8 @@ H5OutputWriter::H5OutputWriter():
     number_of_time_steps(0),
     max_node_tag(0),
     max_element_tag(0),
+    number_of_dofs(0),
+    number_of_outputs(0),
     file_name(""),
     model_name(""),
     stage_name("")
@@ -98,6 +102,8 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
     number_of_time_steps(0),
     max_node_tag(0),
     max_element_tag(0),
+    number_of_dofs(0),
+    number_of_outputs(0),
     file_name(""),
     model_name(""),
     stage_name("")
@@ -236,28 +242,94 @@ void H5OutputWriter::set_number_of_time_steps(int nsteps)
 // Mesh output
 
 
-int H5OutputWriter::writeNumberOfNodes(unsigned int number_of_nodes_in )
+int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
+                                        unsigned int number_of_elements_in,
+                                        unsigned int max_node_tag_in,
+                                        unsigned int max_element_tag_in,
+                                        unsigned int number_of_dofs_in,
+                                        unsigned int number_of_outputs_in)
 {
     number_of_nodes = number_of_nodes_in;
+    number_of_elements = number_of_elements_in;
+    max_node_tag = max_node_tag_in;
+    max_element_tag = max_element_tag_in;
+    number_of_dofs = number_of_dofs_in;
+    number_of_outputs = number_of_outputs_in;
 
+
+    // cout << "number_of_nodes    = " << number_of_nodes    << endl;
+    // cout << "number_of_elements = " << number_of_elements << endl;
+    // cout << "max_node_tag       = " << max_node_tag       << endl;
+    // cout << "max_element_tag    = " << max_element_tag    << endl;
+    // cout << "number_of_dofs     = " << number_of_dofs     << endl;
+    // cout << "number_of_outputs  = " << number_of_outputs  << endl;
+
+    //Initialize data
+
+
+
+    Coordinates.resize(number_of_nodes * 3);
+
+    Number_of_DOFs.resize(max_node_tag);
+    Index_to_Coordinates.resize(max_node_tag);
+    Index_to_Generalized_Displacements.resize(max_node_tag);
+    for (int i = 0; i < max_node_tag; i++)
+    {
+        Number_of_DOFs[i] = -1;
+        Index_to_Coordinates[i] = -1;
+        Index_to_Generalized_Displacements[i] = -1;
+    }
+
+    //For Elements
+    Number_of_Nodes.resize(max_element_tag);
+    Index_to_Connectivity.resize(max_element_tag);
+    Index_to_Outputs.resize(max_element_tag);
+    Number_of_Gauss_Points.resize(max_element_tag);
+    Index_to_Gauss_Point_Coordinates.resize(max_element_tag);
+
+
+// Element_types.resize(max_element_tag);
+    Class_Tags.resize(max_element_tag);
+    Partition.resize(max_element_tag);
+    Number_of_Output_Fields.resize(max_element_tag);
+    for (int i = 0; i < max_element_tag; i++)
+    {
+        Number_of_Nodes[i] = -1;
+        Index_to_Connectivity[i] = -1;
+        Index_to_Outputs[i] = -1;
+        Number_of_Gauss_Points[i] = -1;
+        Index_to_Gauss_Point_Coordinates[i] = -1;
+        // Element_types[i] = -1;
+        Class_Tags[i] = -1;
+        Partition[i] = -1;
+        Number_of_Output_Fields[i] = -1;
+    }
+//NOTE: This is wasting some memory.
+//FIXME: Make pre-allocation for these arrays be exact
+    Connectivity.resize(27 * number_of_elements);
+    Gauss_Point_Coordinates.resize(27 * number_of_elements * 3);
+
+// LoadPattern_names.resize();
+// Material_tags.resize();
 
     return 0;
 }
 
-int H5OutputWriter::writeNumberOfElements(unsigned int numberOfElements_ )
-{
-    number_of_elements = numberOfElements_;
+// int H5OutputWriter::writeNumberOfElements(unsigned int numberOfElements_ )
+// {
+//     number_of_elements = numberOfElements_;
 
 
 
-    return 0;
-}
+//     return 0;
+// }
 
 
 int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int ndofs )
 {
     int ntags = Number_of_DOFs.Size();
     int addzeros = tag - ntags;
+
 
     //Extend arrays
     for (int i = 0; i < addzeros; i++)
@@ -268,15 +340,18 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
     }
 
 
+
     //Form Number_of_DOFs
     Number_of_DOFs[tag] = ndofs;
 
     //Form Coordinates
     // int ncoordinates = Coordinates.Size();
-    Coordinates.resize(pos_nodes_coordinates + 3);
+    // Coordinates.resize(pos_nodes_coordinates + 3);
+
     Coordinates[pos_nodes_coordinates] = coords(0);
     Coordinates[pos_nodes_coordinates + 1] = coords(1);
     Coordinates[pos_nodes_coordinates + 2] = coords(2);
+
 
     //For Index_to_Coordinates
     Index_to_Coordinates[tag] = pos_nodes_coordinates;
@@ -289,7 +364,6 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
     length_nodes_velocities_output       = pos_nodes_outputs;
     length_nodes_displacements_output    = pos_nodes_outputs;
     length_nodes_reaction_forcess_output = pos_nodes_outputs;
-
     return 0;
 }
 
@@ -303,6 +377,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     //Extend arrays
     for (int i = 0; i <= addzeros; i++)
     {
+        cout << "H5OutputWriter::writeElementMeshData() -- Should not happen!!\n\n";
         Number_of_Nodes[ntags + i]                  = -1;
         Index_to_Connectivity[ntags + i]            = -1;
         Index_to_Outputs[ntags + i]                 = -1;
@@ -313,14 +388,12 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
         Number_of_Output_Fields[ntags + i]          = -1;
         Class_Tags[ntags + i]                       = -1;
     }
-
     //Check if the element has already been added!!
     // if (Number_of_Nodes[tag] > 0 || Index_to_Connectivity[tag] >= 0 || Index_to_Outputs[tag] >= 0)
     // {
     //     cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " already defined in HDF5 database! Something is wrong"
     //          << endl;
     // }
-
     // Writing Number_of_Nodes;
     nnodes =  connectivity.Size();
     Number_of_Nodes[tag] = nnodes;
@@ -348,6 +421,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
         Connectivity[pos_elements_connectivity + n] = connectivity(n);
     }
 
+
     // Writing Index_to_Connectivity;
     Index_to_Connectivity[tag] = pos_elements_connectivity;
     pos_elements_connectivity +=  nnodes;
@@ -367,10 +441,11 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     // Writing Number_of_Gauss_Points;
     int ngauss = gausscoordinates.noRows();
     Number_of_Gauss_Points[tag] = ngauss;
-
     // Writing Gauss_Point_Coordinates;
     // int pos_gauss = Gauss_Point_Coordinates.Size();
-    Gauss_Point_Coordinates.resize(pos_elements_gausscoords + ngauss * 3);
+    // Gauss_Point_Coordinates.resize(pos_elements_gausscoords + ngauss * 3);
+
+
     int i = 0;
     for (int n = 0; n < ngauss; n++)
     {
@@ -384,11 +459,10 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     pos_elements_gausscoords += ngauss * 3;
 
     // Writing Element_types;
-    Element_types.push_back(type);
+    // Element_types.push_back(type);
 
     // Writing Material_tags;
-    Material_tags[tag] = 0;
-
+    // Material_tags[tag] = 0;
     return 0;
 }
 

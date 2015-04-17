@@ -291,12 +291,6 @@ ID::removeValue(int value)
 int &
 ID::operator[](int x)
 {
-#ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-    cerr << "BABAK @ ID::operator[](int x)  ---- PID: " << processID << " x: " << x << " and arraysize : " << arraySize << "   sz :" << sz << "\n";
-#endif
 
     //#ifdef _G3DEBUG
     // check if it is inside range [0,sz-1]

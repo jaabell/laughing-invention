@@ -38,7 +38,7 @@
 #include <Vector.h>
 #include <Matrix.h>
 #include <Channel.h>
-#include <HDF5_Channel.h>
+// #include <HDF5_Channel.h>
 #include <FEM_ObjectBroker.h>
 #include <DOF_Group.h>
 #include <string.h>
@@ -1298,47 +1298,47 @@ Node::getEigenvectors(void)
 }
 
 
-int Node::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
-{
-    theHDF5_Channel.beginNodeDescription(this->getTag());
-    theHDF5_Channel.addField("data"                       , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
-    theHDF5_Channel.addField("coordinates"                , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_BASIC);
-    if (commitDisp != 0)
-    {
-        theHDF5_Channel.addField("displacements"              , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
-    }
-    if (commitVel != 0)
-    {
-        theHDF5_Channel.addField("velocity"                   , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
-    }
-    if (commitAccel != 0)
-    {
-        theHDF5_Channel.addField("acceleration"               , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
-    }
-    if (mass != 0)
-    {
-        theHDF5_Channel.addField("mass_matrix"                , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
-    }
-    if (R != 0)
-    {
-        theHDF5_Channel.addField("nodal_participation_matrix" , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
-    }
-    if (unbalLoad  != 0)
-    {
-        theHDF5_Channel.addField("applied_forces"             , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED);
-    }
-    if (reaction  != 0)
-    {
-        theHDF5_Channel.addField("reactions"                  , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
-    }
-    if ( theDOF_GroupPtr != 0 )
-    {
-        theHDF5_Channel.addField("DOF_group"                  , ESSI_OUTPUT_TIME_INDEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED);
-    }
-    theHDF5_Channel.endNodeDescription();
+// int Node::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
+// {
+//     theHDF5_Channel.beginNodeDescription(this->getTag());
+//     theHDF5_Channel.addField("data"                       , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+//     theHDF5_Channel.addField("coordinates"                , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_BASIC);
+//     if (commitDisp != 0)
+//     {
+//         theHDF5_Channel.addField("displacements"              , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
+//     }
+//     if (commitVel != 0)
+//     {
+//         theHDF5_Channel.addField("velocity"                   , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
+//     }
+//     if (commitAccel != 0)
+//     {
+//         theHDF5_Channel.addField("acceleration"               , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
+//     }
+//     if (mass != 0)
+//     {
+//         theHDF5_Channel.addField("mass_matrix"                , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+//     }
+//     if (R != 0)
+//     {
+//         theHDF5_Channel.addField("nodal_participation_matrix" , ESSI_OUTPUT_TIME_INDEPENDENT , ESSI_OUTPUT_LEVEL_DETAILED);
+//     }
+//     if (unbalLoad  != 0)
+//     {
+//         theHDF5_Channel.addField("applied_forces"             , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED);
+//     }
+//     if (reaction  != 0)
+//     {
+//         theHDF5_Channel.addField("reactions"                  , ESSI_OUTPUT_TIME_DEPENDENT   , ESSI_OUTPUT_LEVEL_BASIC);
+//     }
+//     if ( theDOF_GroupPtr != 0 )
+//     {
+//         theHDF5_Channel.addField("DOF_group"                  , ESSI_OUTPUT_TIME_INDEPENDENT   , ESSI_OUTPUT_LEVEL_DETAILED);
+//     }
+//     theHDF5_Channel.endNodeDescription();
 
-    return 0;
-}
+//     return 0;
+// }
 
 
 int
@@ -1542,7 +1542,7 @@ Node::sendSelf(int cTag, Channel &theChannel)
 
 int
 Node::receiveSelf(int cTag, Channel &theChannel,
-               FEM_ObjectBroker &theBroker)
+                  FEM_ObjectBroker &theBroker)
 {
     int res = 0;
     int dataTag = this->getDbTag();

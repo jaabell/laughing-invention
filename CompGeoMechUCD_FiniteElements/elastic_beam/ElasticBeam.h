@@ -44,107 +44,107 @@ class SectionForceDeformation;
 
 class ElasticBeam : public Element
 {
-    public:
-        ElasticBeam();
-        ElasticBeam(int tag, double A, double E, double G,
-                    double Jx, double Iy, double Iz, int Nd1, int Nd2,
-                    double rho, int sectionTag,
-                    double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
-                    double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
-                    double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z);
+public:
+    ElasticBeam();
+    ElasticBeam(int tag, double A, double E, double G,
+                double Jx, double Iy, double Iz, int Nd1, int Nd2,
+                double rho, int sectionTag,
+                double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
+                double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
+                double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z);
 
-        ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *section,
-                    double rho,
-                    double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
-                    double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
-                    double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z);
+    ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *section,
+                double rho,
+                double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
+                double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
+                double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z);
 
-        ~ElasticBeam();
+    ~ElasticBeam();
 
-        const char *getClassType(void) const
-        {
-            return "ElasticBeam";
-        };
+    const char *getClassType(void) const
+    {
+        return "ElasticBeam";
+    };
 
-        int getNumExternalNodes(void) const;
-        const ID &getExternalNodes(void);
-        Node **getNodePtrs(void);
+    int getNumExternalNodes(void) const;
+    const ID &getExternalNodes(void);
+    Node **getNodePtrs(void);
 
-        int getNumDOF(void);
-        void setDomain(Domain *theDomain);
+    int getNumDOF(void);
+    void setDomain(Domain *theDomain);
 
-        int commitState(void);
-        int revertToLastCommit(void);
-        int revertToStart(void);
+    int commitState(void);
+    int revertToLastCommit(void);
+    int revertToStart(void);
 
-        int update(void);
-        const Matrix &getTangentStiff(void);
-        const Matrix &getInitialStiff(void);
-        const Matrix &getMass(void);
+    int update(void);
+    const Matrix &getTangentStiff(void);
+    const Matrix &getInitialStiff(void);
+    const Matrix &getMass(void);
 
-        void zeroLoad(void);
-        int addLoad(ElementalLoad *theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector &accel);
+    void zeroLoad(void);
+    int addLoad(ElementalLoad *theLoad, double loadFactor);
+    int addInertiaLoadToUnbalance(const Vector &accel);
 
-        const Vector &getResistingForce(void);
-        const Vector &getResistingForceIncInertia(void);
+    const Vector &getResistingForce(void);
+    const Vector &getResistingForceIncInertia(void);
 
-        virtual int getOutputSize() const;
-        virtual const Vector &getOutput() const;
-
-
-        int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
-        int sendSelf(int commitTag, Channel &theChannel);
-        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
-
-        void Print(ostream &s, int flag = 0);
-
-        Response *setResponse (const char **argv, int argc, Information &info);
-        int getResponse (int responseID, Information &info);
-
-        int getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis);
-        int computeElemtLengthAndOrient();
-        int initialize();
-        const Matrix &getGlobalStiffnessMatrix (const Matrix &KB);
-        const Matrix &getGlobalConsistentMassMatrix (const Matrix &KB);
-        Vector *getForce(void);
-
-        std::string getElementName() const
-        {
-            return "ElasticBeam";
-        }
+    virtual int getOutputSize() const;
+    virtual const Vector &getOutput() const;
 
 
-    private:
+    // int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        void formOutputVector();
+    void Print(ostream &s, int flag = 0);
 
-        double A, E, G, Jx, Iy, Iz;
-        double rho;
-        double L;       // undeformed element length
+    Response *setResponse (const char **argv, int argc, Information &info);
+    int getResponse (int responseID, Information &info);
 
-        Vector *nodeIOffset; // rigid joint offsets
-        Vector *nodeJOffset; // rigid joint offsets
+    int getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis);
+    int computeElemtLengthAndOrient();
+    int initialize();
+    const Matrix &getGlobalStiffnessMatrix (const Matrix &KB);
+    const Matrix &getGlobalConsistentMassMatrix (const Matrix &KB);
+    Vector *getForce(void);
 
-        Matrix Mass;
-        Matrix Stiffness;
-        int builtK;
-        int builtM;
+    std::string getElementName() const
+    {
+        return "ElasticBeam";
+    }
 
-        Matrix R;       // Transformation matrix
-        Vector P;
-        Vector Q;
-        // Vector LocalDisplacements;
-        // Vector LocalEndForces;
-        Vector outputVector;
 
-        ID  connectedExternalNodes;
+private:
 
-        Vector *nodeIInitialDisp;
-        Vector *nodeJInitialDisp;
-        bool initialDispChecked;
+    void formOutputVector();
 
-        Node *theNodes[2];
+    double A, E, G, Jx, Iy, Iz;
+    double rho;
+    double L;       // undeformed element length
+
+    Vector *nodeIOffset; // rigid joint offsets
+    Vector *nodeJOffset; // rigid joint offsets
+
+    Matrix Mass;
+    Matrix Stiffness;
+    int builtK;
+    int builtM;
+
+    Matrix R;       // Transformation matrix
+    Vector P;
+    Vector Q;
+    // Vector LocalDisplacements;
+    // Vector LocalEndForces;
+    Vector outputVector;
+
+    ID  connectedExternalNodes;
+
+    Vector *nodeIInitialDisp;
+    Vector *nodeJInitialDisp;
+    bool initialDispChecked;
+
+    Node *theNodes[2];
 };
 
 #endif

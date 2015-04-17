@@ -98,8 +98,14 @@ public:  // To meet with OutputWriter interfacec
   virtual int setTime(double t);
 
   // Mesh output
-  virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
-  virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
+  int writeGlobalMeshData(unsigned int number_of_nodes_in,
+                          unsigned int number_of_elements_in,
+                          unsigned int max_node_tag_in,
+                          unsigned int max_element_tag_in,
+                          unsigned int number_of_dofs_in,
+                          unsigned int number_of_outputs_in);
+  // virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
+  // virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
 
   virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
   virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity         , int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
@@ -258,6 +264,8 @@ private:
   int number_of_time_steps;
   int max_node_tag;
   int max_element_tag;
+  int number_of_dofs;
+  int number_of_outputs;
 
   int length_nodes_displacements_output;
   int length_nodes_velocities_output;

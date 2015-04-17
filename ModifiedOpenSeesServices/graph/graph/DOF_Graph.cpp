@@ -96,23 +96,6 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
     //
     // create a vertex for each dof
     //
-
-    //Added by Babak on 6/1/13:
-    //---------
-    #ifdef _BDEBUG
-
-    int rank, size;
-    MPI_Comm_rank (MPI_COMM_WORLD, &rank);
-    MPI_Comm_size (MPI_COMM_WORLD, &size);
-    clock_t init, final;
-
-    #endif
-
-    #ifdef _BDEBUG
-    init = clock();
-//     cerr << "BABAK@DOF_Graph::DOF_Graph((AnalysisModel &theModel)) --- I PID #" << rank << "-I\n";
-    #endif
-    //---------
     DOF_Group* dofPtr = 0;
     DOF_GrpIter& theDOFs = myModel.getDOFs();
 
@@ -124,15 +107,6 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
         for (int i = 0; i < size; i++)
         {
             int dofTag = id(i);
-            #ifdef _BDEBUG
-
-            std::stringstream Nodes_outfile;
-            Nodes_outfile << "DOF_ID-PID-" << rank << ".out";
-            ofstream file;
-            file.open(Nodes_outfile.str().c_str(), ios::out | ios::app);
-            file << dofTag << "\n";
-            file.close();
-            #endif
 
             if (dofTag >= START_EQN_NUM)
             {
@@ -158,14 +132,6 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
         }
     }
 
-    //Added by Babak on 6/1/13:
-    //---------
-    #ifdef _BDEBUG
-    final = clock() - init;
-//     cerr << "BABAK@DOF_Graph::DOF_Graph((AnalysisModel &theModel)) --- II  PID #" << rank << "\n";
-//     cerr << "BABAK@DOF_Graph::DOF_Graph((AnalysisModel &theModel)) ---  PID #" << rank << "  TIME ELAPSED I --- II (constructs the Graph -- adding the vertices...) is " << (double)final / ((double)CLOCKS_PER_SEC) << "sec.\n";
-    #endif
-
     //---------
 
     // now add the edges, by looping over the FE_elements, getting their
@@ -175,7 +141,7 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
     FE_EleIter& eleIter = myModel.getFEs();
     int cnt = 0;
 
-    while((elePtr = eleIter()) != 0)
+    while ((elePtr = eleIter()) != 0)
     {
         const ID& id = elePtr->getID();
         cnt++;
@@ -200,42 +166,7 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
                 }
             }
         }
-
-        //Added by Babak on 6/1/13:
-        //---------
-        /* #ifdef _BDEBUG
-            final=clock()-init;
-            cerr << "BABAK@DOF_Graph::DOF_Graph((AnalysisModel &theModel)) --- III  PID #" << rank << "\n";
-            cerr << "BABAK@DOF_Graph::DOF_Graph((AnalysisModel &theModel)) ---  PID #" << rank << "  TIME ELAPSED II --- III (constructs the Graph -- adding the edges...) is "<<(double)final / ((double)CLOCKS_PER_SEC) <<"sec.\n";
-        //     if (rank =!0)
-        //     exit(EXIT_SUCCESS);
-
-          #endif*/
-
-        //---------
-
-
-
-        //Added by Babak on 6/1/13:
-        //---------
-        //   #ifdef _BDEBUG
-        //     std::cerr << "BABAK@DOF_Graph::DOF_Graph((AnalysisModel &theModel)) PID #" << rank << " -- cnt#" << cnt << "\n";
-        //   #endif
-        //---------
     }
-
-    //Added by Babak on 6/1/13:
-    //---------
-    //   #ifdef _BDEBUG
-    //    final=clock()-init;
-    //    cerr << "BABAK@DOF_Graph::DOF_Graph((AnalysisModel &theModel)) --- III  PID #" << rank << "\n";
-    //     cerr << "BABAK@DOF_Graph::DOF_Graph((AnalysisModel &theModel)) ---  PID #" << rank << "  TIME ELAPSED II --- III (constructs the Graph -- adding the edges...) is "<<(double)final / ((double)CLOCKS_PER_SEC) <<"sec.\n";
-    //
-    //     exit(EXIT_SUCCESS);
-    //
-    //  #endif
-
-    //---------
 }
 
 DOF_Graph::~DOF_Graph()

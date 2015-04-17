@@ -1196,14 +1196,21 @@ PartitionedDomain::partition(int numPartitions)
         {
             cout << "\n  --> Writing mesh data into HDF5 file.\n";
             //Write Node Mesh data!
-            theOutputWriter.writeNumberOfNodes(this->getNumNodes());
+            // theOutputWriter.writeNumberOfNodes(this->getNumNodes());
+            theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
+                                                this->getNumElements(),
+                                                maxNodesTag,
+                                                maxElementsTag,
+                                                numberOfDomainNodeDOFs,
+                                                numberOfDomainElementOutputs);
+
             while ( ( nodePtr = theNodeIter() ) != 0 )
             {
                 theOutputWriter.writeNodeMeshData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
             }
 
             //Write Element Mesh data!
-            theOutputWriter.writeNumberOfElements(this->getNumElements());
+            // theOutputWriter.writeNumberOfElements(this->getNumElements());
             while ( ( elePtr = theElemIter() ) != 0 )
             {
                 int eleTag           = elePtr->getTag();

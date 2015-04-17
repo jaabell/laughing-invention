@@ -43,63 +43,59 @@
 
 // Boris Jeremic 17Nov2008
 #include <iostream>
-#ifdef _BABAK_DEBUG
-#include <cstdlib>
-#include <exception>
-#endif
+
 using namespace std;
 
 
 class ID
 {
-    public:
-        // constructors and destructor
-        ID();
-        ID(int);
-        ID(int size, int arraySize);
-        ID(int *data, int size, bool cleanIt = false);
-        ID(const ID &);
-        ~ID();
+public:
+    // constructors and destructor
+    ID();
+    ID(int);
+    ID(int size, int arraySize);
+    ID(int *data, int size, bool cleanIt = false);
+    ID(const ID &);
+    ~ID();
 
-        // utility methods
-        int Size(void) const;
-        void Zero(void);
-        int setData(int *newData, int size, bool cleanIt = false);
-        int resize(int newSize);
+    // utility methods
+    int Size(void) const;
+    void Zero(void);
+    int setData(int *newData, int size, bool cleanIt = false);
+    int resize(int newSize);
 
-        // overloaded operators
-        inline int &operator()(int x);
-        inline int operator()(int x) const;
-        int &operator[](int);
+    // overloaded operators
+    inline int &operator()(int x);
+    inline int operator()(int x) const;
+    int &operator[](int);
 
-        ID &operator=(const ID  &V);
-        bool operator==(const ID &rhs) const;
+    ID &operator=(const ID  &V);
+    bool operator==(const ID &rhs) const;
 
 
-        int getLocation(int value) const;
-        int removeValue(int value);
+    int getLocation(int value) const;
+    int removeValue(int value);
 
-        //        friend ostream& operator<<(ostream& s, const ID& V);
-        friend ostream &operator<<(ostream &s, const ID &V);
-        //    friend istream &operator>>(istream &s, ID &V);
+    //        friend ostream& operator<<(ostream& s, const ID& V);
+    friend ostream &operator<<(ostream &s, const ID &V);
+    //    friend istream &operator>>(istream &s, ID &V);
 
-        friend class UDP_Socket;
-        friend class TCP_Socket;
-        friend class TCP_SocketNoDelay;
-        friend class MPI_Channel;
-        friend class OutputWriter;
-        friend class H5OutputWriter;
-        friend class HDF5_Channel;
-        friend class MySqlDatastore;
-        friend class MySqlDataRecorder;
-        friend class BerkeleyDbDatastore;
+    // friend class UDP_Socket;
+    // friend class TCP_Socket;
+    // friend class TCP_SocketNoDelay;
+    friend class MPI_Channel;
+    friend class OutputWriter;
+    friend class H5OutputWriter;
+    // friend class MySqlDatastore;
+    // friend class MySqlDataRecorder;
+    // friend class BerkeleyDbDatastore;
 
-    private:
-        static int ID_NOT_VALID_ENTRY;
-        int sz;
-        int *data;
-        int arraySize;
-        int fromFree;
+private:
+    static int ID_NOT_VALID_ENTRY;
+    int sz;
+    int *data;
+    int arraySize;
+    int fromFree;
 };
 
 
