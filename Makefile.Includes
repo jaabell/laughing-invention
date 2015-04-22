@@ -265,19 +265,11 @@ SEQUENTIAL_MACHINE_LIBS =  -L/usr/lib64 \
 #      -lboost
 
 PARALLEL_MACHINE_LIBS = -lm \
-      -L/usr/lib/openmpi/lib \
-      -L/usr/lib/gcc/x86_64\
-      -L/usr/lib/x86_64\
-      -L/lib/x86_64\
-      -lmpi_f77 \
-      -lmpi \
       -lgfortran \
       -lquadmath \
       -ldl \
       -lz \
       -lgcc_s \
-      -lpthread \
-      -lmpi_cxx
-      # -lboost
+      -lpthread 
 
 # -L$(FEIBASEDIR)/lib \

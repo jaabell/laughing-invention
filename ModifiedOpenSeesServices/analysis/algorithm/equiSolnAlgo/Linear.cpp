@@ -50,7 +50,7 @@
 using namespace std;
 
 
-#include <Timer.h>
+#include <ESSITimer.h>
 // Constructor
 Linear::Linear()
     : EquiSolnAlgo(EquiALGORITHM_TAGS_Linear)
@@ -84,27 +84,34 @@ Linear::solveCurrentStep(void)
         return -5;
     }
 
+    globalESSITimer.start("Linear_algortithm_form_tangent");
     if (theIncIntegrator->formTangent() < 0)
     {
         cerr << "WARNING Linear::solveCurrentStep() -";
         cerr << "the Integrator failed in formTangent()\n";
         return -1;
     }
+    globalESSITimer.stop("Linear_algortithm_form_tangent");
 
+    globalESSITimer.start("Linear_algortithm_form_unbalance");
     if (theIncIntegrator->formUnbalance() < 0)
     {
         cerr << "WARNING Linear::solveCurrentStep() -";
         cerr << "the Integrator failed in formUnbalance()\n";
         return -2;
     }
+    globalESSITimer.stop("Linear_algortithm_form_unbalance");
 
+    globalESSITimer.start("Linear_algortithm_solve");
     if (theSOE->solve() < 0)
     {
         cerr << "WARNING Linear::solveCurrentStep() -";
         cerr << "the LinearSOE failed in solve()\n";
         return -3;
     }
+    globalESSITimer.stop("Linear_algortithm_solve");
 
+    globalESSITimer.start("Linear_algortithm_form_update");
     const Vector &deltaU = theSOE->getX();
 
     if (theIncIntegrator->update(deltaU) < 0)
@@ -113,7 +120,7 @@ Linear::solveCurrentStep(void)
         cerr << "the Integrator failed in update()\n";
         return -4;
     }
-
+    globalESSITimer.stop("Linear_algortithm_form_update");
     return 0;
 }
 
