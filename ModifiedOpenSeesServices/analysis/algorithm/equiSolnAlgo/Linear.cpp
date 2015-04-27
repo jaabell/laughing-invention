@@ -84,34 +84,34 @@ Linear::solveCurrentStep(void)
         return -5;
     }
 
-    globalESSITimer.start("Linear_algortithm_form_tangent");
+    globalESSITimer.start("SOE_Form_K");
     if (theIncIntegrator->formTangent() < 0)
     {
         cerr << "WARNING Linear::solveCurrentStep() -";
         cerr << "the Integrator failed in formTangent()\n";
         return -1;
     }
-    globalESSITimer.stop("Linear_algortithm_form_tangent");
+    globalESSITimer.stop("SOE_Form_K");
 
-    globalESSITimer.start("Linear_algortithm_form_unbalance");
+    globalESSITimer.start("SOE_Form_b");
     if (theIncIntegrator->formUnbalance() < 0)
     {
         cerr << "WARNING Linear::solveCurrentStep() -";
         cerr << "the Integrator failed in formUnbalance()\n";
         return -2;
     }
-    globalESSITimer.stop("Linear_algortithm_form_unbalance");
+    globalESSITimer.stop("SOE_Form_b");
 
-    globalESSITimer.start("Linear_algortithm_solve");
+    globalESSITimer.start("SOE_Solve");
     if (theSOE->solve() < 0)
     {
         cerr << "WARNING Linear::solveCurrentStep() -";
         cerr << "the LinearSOE failed in solve()\n";
         return -3;
     }
-    globalESSITimer.stop("Linear_algortithm_solve");
+    globalESSITimer.stop("SOE_Solve");
 
-    globalESSITimer.start("Linear_algortithm_form_update");
+    globalESSITimer.start("SOE_Update");
     const Vector &deltaU = theSOE->getX();
 
     if (theIncIntegrator->update(deltaU) < 0)
@@ -120,7 +120,7 @@ Linear::solveCurrentStep(void)
         cerr << "the Integrator failed in update()\n";
         return -4;
     }
-    globalESSITimer.stop("Linear_algortithm_form_update");
+    globalESSITimer.stop("SOE_Update");
     return 0;
 }
 

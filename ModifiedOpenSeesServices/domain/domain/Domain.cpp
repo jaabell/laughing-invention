@@ -2733,14 +2733,14 @@ Domain::revertToStart( void )
 int
 Domain::update( void )
 {
-    cout << "Domain::update( void ) -- Constitutive integration happening!\n";
+    // cout << "Domain::update( void ) -- Constitutive integration happening!\n";
     // set the global constants
     ops_Dt = dT;
     ops_TheActiveDomain = this;
 
     int ok = 0;
 
-    globalESSITimer.start("Domain_Element_update");
+    globalESSITimer.start("Constitutive_Integration");
 # ifdef _PDD
 
     NanoTimer myTime;
@@ -2787,7 +2787,7 @@ Domain::update( void )
     }
 
 # endif
-    globalESSITimer.stop("Domain_Element_update");
+    globalESSITimer.stop("Constitutive_Integration");
 
     if ( ok != 0 )
     {

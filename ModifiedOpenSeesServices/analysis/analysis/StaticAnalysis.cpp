@@ -240,9 +240,9 @@ StaticAnalysis::analyze(int numSteps)
 
 
 
-        globalESSITimer.start("Results_commited");
+        globalESSITimer.start("Output");
         result = theIntegrator->commit();
-        globalESSITimer.stop("Results_commited");
+        globalESSITimer.stop("Output");
         if (result < 0)
         {
             cerr << "StaticAnalysis::analyze() - ";

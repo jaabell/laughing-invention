@@ -635,8 +635,8 @@ DomainDecompositionAnalysis::sendSelf(int commitTag,
 
 int
 DomainDecompositionAnalysis::receiveSelf(int commitTag,
-                                      Channel& theChannel,
-                                      FEM_ObjectBroker& theBroker)
+        Channel& theChannel,
+        FEM_ObjectBroker& theBroker)
 {
     // receive the data identifyng the objects in the aggregation
     ID data(14);

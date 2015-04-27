@@ -92,7 +92,7 @@ endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
 	C++FLAGS        = $(LTO_FLAGS) -Wall \
-										-O2 \
+										-O2 -g \
 										$(INLINING_OPTS) \
 										-funroll-loops \
 										-D_LINUX \
