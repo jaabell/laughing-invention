@@ -2787,6 +2787,10 @@ Domain::update( void )
     }
 
 # endif
+#ifdef _PARALLEL_PROCESSING
+    //Need to syncronize to get proper global timing
+    MPI_Barrier( MPI_COMM_WORLD);
+#endif
     globalESSITimer.stop("Constitutive_Integration");
 
     if ( ok != 0 )

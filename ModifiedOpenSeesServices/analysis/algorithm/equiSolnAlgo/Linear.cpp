@@ -50,6 +50,11 @@
 using namespace std;
 
 
+#ifdef _PARALLEL_PROCESSING
+#include <mpi.h>
+#endif
+
+
 #include <ESSITimer.h>
 // Constructor
 Linear::Linear()
@@ -91,6 +96,12 @@ Linear::solveCurrentStep(void)
         cerr << "the Integrator failed in formTangent()\n";
         return -1;
     }
+
+#ifdef _PARALLEL_PROCESSING
+    //Need to syncronize to get proper global timing
+    MPI_Barrier( MPI_COMM_WORLD);
+#endif
+
     globalESSITimer.stop("SOE_Form_K");
 
     globalESSITimer.start("SOE_Form_b");
@@ -100,6 +111,11 @@ Linear::solveCurrentStep(void)
         cerr << "the Integrator failed in formUnbalance()\n";
         return -2;
     }
+#ifdef _PARALLEL_PROCESSING
+    //Need to syncronize to get proper global timing
+    MPI_Barrier( MPI_COMM_WORLD);
+#endif
+
     globalESSITimer.stop("SOE_Form_b");
 
     globalESSITimer.start("SOE_Solve");
@@ -109,6 +125,11 @@ Linear::solveCurrentStep(void)
         cerr << "the LinearSOE failed in solve()\n";
         return -3;
     }
+#ifdef _PARALLEL_PROCESSING
+    //Need to syncronize to get proper global timing
+    MPI_Barrier( MPI_COMM_WORLD);
+#endif
+
     globalESSITimer.stop("SOE_Solve");
 
     globalESSITimer.start("SOE_Update");
@@ -120,6 +141,10 @@ Linear::solveCurrentStep(void)
         cerr << "the Integrator failed in update()\n";
         return -4;
     }
+#ifdef _PARALLEL_PROCESSING
+    //Need to syncronize to get proper global timing
+    MPI_Barrier( MPI_COMM_WORLD);
+#endif
     globalESSITimer.stop("SOE_Update");
     return 0;
 }
