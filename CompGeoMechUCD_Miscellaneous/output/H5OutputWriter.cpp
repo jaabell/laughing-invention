@@ -374,10 +374,11 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     ntags = Number_of_Nodes.Size();
     int addzeros = tag - ntags;
 
-    //Extend arrays
+    //Extend arrays if necessary
     for (int i = 0; i <= addzeros; i++)
     {
-        cout << "H5OutputWriter::writeElementMeshData() -- Should not happen!!\n\n";
+        cout << "ntags = " << ntags << " tag = " << tag;
+        cout << " H5OutputWriter::writeElementMeshData() -- Should not happen!!\n\n";
         Number_of_Nodes[ntags + i]                  = -1;
         Index_to_Connectivity[ntags + i]            = -1;
         Index_to_Outputs[ntags + i]                 = -1;
