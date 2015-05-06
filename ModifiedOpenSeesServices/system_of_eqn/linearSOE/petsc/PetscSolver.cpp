@@ -176,14 +176,14 @@ PetscSolver::solve(void)
 
     //--petsc solver----:
 
-    // KSPSetType(ksp,KSPPREONLY);
-    // Mat       F;
-    // KSPGetPC(ksp,&pc);
-    // PCSetType(pc,PCLU);
-    // PCFactorSetMatSolverPackage(pc,MATSOLVERPETSC);
-    // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-    // PCFactorGetMatrix(pc,&F);
-    // KSPSetFromOptions(ksp);
+    KSPSetType(ksp, KSPPREONLY);
+    Mat       F;
+    KSPGetPC(ksp, &pc);
+    PCSetType(pc, PCLU);
+    PCFactorSetMatSolverPackage(pc, MATSOLVERPETSC);
+    PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
+    PCFactorGetMatrix(pc, &F);
+    KSPSetFromOptions(ksp);
     //-----------------------------
 
 
@@ -192,12 +192,12 @@ PetscSolver::solve(void)
 
 
     //----- to test spooles -----------------
-    KSPSetType(ksp, KSPPREONLY);
-    KSPGetPC(ksp, &pc);
-    PCSetType(pc, PCLU);
-    PCFactorSetMatSolverPackage(pc, MATSOLVERSPOOLES);
-    KSPSetFromOptions(ksp);
-    KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
+    // KSPSetType(ksp, KSPPREONLY);
+    // KSPGetPC(ksp, &pc);
+    // PCSetType(pc, PCLU);
+    // PCFactorSetMatSolverPackage(pc, MATSOLVERSPOOLES);
+    // KSPSetFromOptions(ksp);
+    // KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
     //---------------------------------------
 
 
@@ -691,7 +691,7 @@ PetscSolver::sendSelf(int cTag, Channel &theChannel)
 
 int
 PetscSolver::receiveSelf(int cTag, Channel &theChannel,
-                      FEM_ObjectBroker &theBroker)
+                         FEM_ObjectBroker &theBroker)
 {
     static ID idData(4);
     theChannel.receiveID(0, cTag, idData);

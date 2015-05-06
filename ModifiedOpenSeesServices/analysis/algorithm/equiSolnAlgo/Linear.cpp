@@ -125,10 +125,11 @@ Linear::solveCurrentStep(void)
         cerr << "the LinearSOE failed in solve()\n";
         return -3;
     }
-#ifdef _PARALLEL_PROCESSING
-    //Need to syncronize to get proper global timing
-    MPI_Barrier( MPI_COMM_WORLD);
-#endif
+    //Doesn't need sync, there is a barrier for the SOE solution inside solve() when called in parallel.
+// #ifdef _PARALLEL_PROCESSING
+//     //Need to syncronize to get proper global timing
+//     MPI_Barrier( MPI_COMM_WORLD);
+// #endif
 
     globalESSITimer.stop("SOE_Solve");
 
