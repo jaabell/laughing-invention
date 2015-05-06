@@ -63,6 +63,8 @@ public:
     void Zero(void);
     int setData(int *newData, int size, bool cleanIt = false);
     int resize(int newSize);
+    const int *getData() const;
+
 
     // overloaded operators
     inline int &operator()(int x);
@@ -144,6 +146,12 @@ ID::operator()(int x) const
 
     return data[x];
 }
+
+inline const int *ID::getData() const
+{
+    return data;
+}
+
 
 #endif
 

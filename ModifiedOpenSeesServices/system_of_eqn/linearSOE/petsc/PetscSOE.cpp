@@ -737,35 +737,69 @@ PetscSOE::addA(const Matrix &m, const ID &id, double fact)
     }
 
     int n = id.Size();
-    int row;
-    int col;
-    double value;
+    // int row;
+    // int col;
+    // double value;
 
+    // for (int i = 0; i < n; i++)
+    // {
+    //     row = id(i);
+
+    //     if (row >= 0)
+    //     {
+    //         for (int j = 0; j < n; j++)
+    //         {
+    //             col = id(j);
+
+    //             if (col >= 0)
+    //             {
+    //                 value = m(i, j) * fact;
+    //                 int ierr = MatSetValues(A, 1, &row, 1, &col, &value, ADD_VALUES);
+
+    //                 if (ierr)
+    //                 {
+    //                     cerr << processID << " " << row << " " << col << endln;
+    //                 }
+
+    //                 CHKERRQ(ierr);
+    //             }
+    //         }
+    //     }
+    // }
+
+    int row[n * 2];
+    int col[n * 2];
+    double values[n * 2];
+
+    const int * iddata = id.getData();
+    const double * matdata = m.getData();
+    int pos = 0;
     for (int i = 0; i < n; i++)
     {
-        row = id(i);
-
-        if (row >= 0)
+        if (iddata[i] >= 0)
         {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < n; j++) // Row-major, like C
             {
-                col = id(j);
-
-                if (col >= 0)
+                if (iddata[j] >= 0)
                 {
-                    value = m(i, j) * fact;
-                    int ierr = MatSetValues(A, 1, &row, 1, &col, &value, ADD_VALUES);
-
-                    if (ierr)
-                    {
-                        cerr << processID << " " << row << " " << col << endln;
-                    }
-
-                    CHKERRQ(ierr);
+                    row[pos] = iddata[i];
+                    col[pos] = iddata[j];
+                    values[pos] = matdata[j + i * n] * fact;
+                    pos++;
                 }
             }
         }
     }
+
+    int ierr = MatSetValues(A, pos, row, pos, col, values, ADD_VALUES);
+
+    if (ierr)
+    {
+        cerr << processID << " " << row << " " << col << endln;
+    }
+
+    CHKERRQ(ierr);
+
 
     return 0;
 }
@@ -1073,7 +1107,7 @@ PetscSOE::sendSelf(int cTag, Channel &theChannel)
 
 int
 PetscSOE::receiveSelf(int cTag, Channel &theChannel,
-                   FEM_ObjectBroker &theBroker)
+                      FEM_ObjectBroker &theBroker)
 {
     numChannels = 1;
     theChannels = new Channel *[1];

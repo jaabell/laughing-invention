@@ -271,6 +271,17 @@ PartitionedDomain::addElement(Element *elePtr)
         //----
     }
 
+    // cout << "numberOfDomainElementOutputs = " << numberOfDomainElementOutputs << " | ";
+    numberOfDomainElementOutputs += elePtr->getOutputSize();
+    // cout << numberOfDomainElementOutputs << endl;
+
+
+    if (eleTag > maxElementsTag)
+    {
+        maxElementsTag = eleTag;
+    }
+
+
     return result;
 }
 
