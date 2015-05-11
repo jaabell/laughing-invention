@@ -129,12 +129,6 @@ ParallelNumberer::setChannels(int nChannels, Channel** theC)
 int
 ParallelNumberer::numberDOF(int lastDOF)
 {
-    #ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-    cerr << "BABAK @ ParallelNumberer::numberDOF(int lastDOF) is called :--PID # " << processID << "  lastDOF passed in is  #" << lastDOF << "\n";
-    #endif
     int result = 0;
 
     // get a pointer to the model & check its not null
@@ -551,8 +545,8 @@ ParallelNumberer::sendSelf(int cTag, Channel& theChannel)
 
 int
 ParallelNumberer::receiveSelf(int cTag,
-                           Channel& theChannel,
-                           FEM_ObjectBroker& theBroker)
+                              Channel& theChannel,
+                              FEM_ObjectBroker& theBroker)
 {
     ID idData(1);
     int res = theChannel.receiveID(0, cTag, idData);

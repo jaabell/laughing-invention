@@ -2624,6 +2624,10 @@ Domain::commit( void )
         }
 #endif
     }
+#ifdef _PARALLEL_PROCESSING
+    MPI_Barrier( MPI_COMM_WORLD); //Barrier for correct timing of output
+#endif
+
     globalESSITimer.stop("Domain_Node_Commit_and_output");
 
 
@@ -2646,7 +2650,9 @@ Domain::commit( void )
 
 #ifdef _PARALLEL_PROCESSING
     }
+    MPI_Barrier( MPI_COMM_WORLD); //Barrier for correct timing of output
 #endif
+
     globalESSITimer.stop("Domain_Element_Commit_and_output");
 
     // cout << "countdown_til_output = " << countdown_til_output << endl;

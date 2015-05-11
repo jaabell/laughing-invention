@@ -279,18 +279,6 @@ IncrementalIntegrator::formElementResidual(void)
             cerr << " failed in addB for ID " << elePtr->getID();
             res = -2;
         }
-
-        //Added by Babak KAmrani 05/22/2012:
-        //       #ifdef _BABAK_DEBUG
-        //          int numProcesses, processID;
-        //  MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-        //  MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-        //
-        //  //cerr<< "BABAK @ IncrementalIntegrator::formElementResidual--PID # "<<processID<< ": Element #" << elePtr->getID()<< "Residual: "<< elePtr->getResidual(this) << endl; //Added by Babak KAmrani 04/09/2012
-        //  cerr<< "BABAK @ IncrementalIntegrator::formElementResidual--PID # "<<processID<< ": Element #" << ielem<< endl<< flush; //Added by Babak KAmrani 04/09/2012
-        //
-        //       #endif
-        ////////////////////////////
     }
 
     return res;

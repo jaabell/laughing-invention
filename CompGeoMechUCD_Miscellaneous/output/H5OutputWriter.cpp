@@ -87,6 +87,7 @@ H5OutputWriter::H5OutputWriter():
     dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);
 #ifdef _PARALLEL_PROCESSING
     H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
+    // H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_COLLECTIVE);
 #endif
 }
 
@@ -270,10 +271,10 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
 
     Coordinates.resize(number_of_nodes * 3);
 
-    Number_of_DOFs.resize(max_node_tag);
-    Index_to_Coordinates.resize(max_node_tag);
-    Index_to_Generalized_Displacements.resize(max_node_tag);
-    for (int i = 0; i < max_node_tag; i++)
+    Number_of_DOFs.resize(max_node_tag + 1);
+    Index_to_Coordinates.resize(max_node_tag + 1);
+    Index_to_Generalized_Displacements.resize(max_node_tag + 1);
+    for (int i = 0; i < max_node_tag + 1; i++)
     {
         Number_of_DOFs[i] = -1;
         Index_to_Coordinates[i] = -1;
@@ -281,17 +282,17 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
     }
 
     //For Elements
-    Number_of_Nodes.resize(max_element_tag);
-    Index_to_Connectivity.resize(max_element_tag);
-    Index_to_Outputs.resize(max_element_tag);
-    Number_of_Gauss_Points.resize(max_element_tag);
-    Index_to_Gauss_Point_Coordinates.resize(max_element_tag);
+    Number_of_Nodes.resize(max_element_tag + 1);
+    Index_to_Connectivity.resize(max_element_tag + 1);
+    Index_to_Outputs.resize(max_element_tag + 1);
+    Number_of_Gauss_Points.resize(max_element_tag + 1);
+    Index_to_Gauss_Point_Coordinates.resize(max_element_tag + 1);
 
 
-// Element_types.resize(max_element_tag);
-    Class_Tags.resize(max_element_tag);
-    Partition.resize(max_element_tag);
-    Number_of_Output_Fields.resize(max_element_tag);
+// Element_types.resize(max_element_tag+1);
+    Class_Tags.resize(max_element_tag + 1);
+    Partition.resize(max_element_tag + 1);
+    Number_of_Output_Fields.resize(max_element_tag + 1);
     for (int i = 0; i < max_element_tag; i++)
     {
         Number_of_Nodes[i] = -1;

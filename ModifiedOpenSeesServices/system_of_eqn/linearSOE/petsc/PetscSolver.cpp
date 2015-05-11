@@ -49,22 +49,10 @@
 #include "petscksp.h"
 
 
-//#include <iostream>
-
-
-//added by Babak Kamrani 01/24/2012:
-//-------------------------------------
-
-// #include <iostream>
-// #include <fstream>
-// using namespace std;
-
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
-//#include <FileStream.h>
 #include <stdio.h>
-//#include <sstream>
 
 using namespace std;
 //-------------------------------------
@@ -100,198 +88,180 @@ PetscSolver::~PetscSolver()
 }
 
 
-//------------------------------out by Babak and replaced 7/9/13---------------------
 int
 PetscSolver::solve(void)
 {
-
-
-
-
     int size = theSOE->size;
-    // cerr << "PetscSolver::solve:   --Size of the SOE is: " << size << endln; //added by babak kamrani for debugging purposes
-
-
-    // int factored = theSOE->isFactored;
-
-    int numProcesses = theSOE->numProcesses;
-    int processID = theSOE->processID;
-
+    // int numProcesses = theSOE->numProcesses;
+    int processID = theSOE->processID_world;
     int ierr;
 
-    globalESSITimer.start("PETSCSOE_Assembly");
+    if (processID > 0)
+    {
+
+        //MatSetType(theSOE->A, matType);
+        ierr = MatAssemblyBegin(theSOE->A, MAT_FINAL_ASSEMBLY);
+        CHKERRQ(ierr);
+
+        ierr = MatAssemblyEnd(theSOE->A, MAT_FINAL_ASSEMBLY);
+        CHKERRQ(ierr);
 
 
-    //MatSetType(theSOE->A, matType);
-    ierr = MatAssemblyBegin(theSOE->A, MAT_FINAL_ASSEMBLY);
-    CHKERRQ(ierr);
-
-    ierr = MatAssemblyEnd(theSOE->A, MAT_FINAL_ASSEMBLY);
-    CHKERRQ(ierr);
-
-    globalESSITimer.stop("PETSCSOE_Assembly");
-
-
-    globalESSITimer.start("PETSCSOE_KSPCreate");
-    //    MatSetOption(theSOE->A, MAT_SPD, PETSC_TRUE );
-    KSPCreate(PETSC_COMM_WORLD, &ksp);
-    KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
-    globalESSITimer.stop("PETSCSOE_KSPCreate");
+        //    MatSetOption(theSOE->A, MAT_SPD, PETSC_TRUE );
+        KSPCreate(theSOE->petsc_comm, &ksp);
+        KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
 
 
 
+        // //--mumps----:
+        //
+        //    KSPSetType(ksp,KSPPREONLY);
+        //    Mat       F;
+        //    PetscInt  ival,icntl;
+        //    PetscReal val;
+        //    KSPGetPC(ksp,&pc);
+        //    PCSetType(pc,PCLU);
+        // //   MatSetOption(A,MAT_SPD,PETSC_TRUE); /* set MUMPS id%SYM=1 */
+        // //   PCSetType(pc,PCCHOLESKY);
+        //     PCFactorSetMatSolverPackage(pc,MATSOLVERMUMPS);
+        //     PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
+        // //     MatGetFactor(theSOE->A, MATSOLVERMUMPS ,MAT_FACTOR_LU,&F);
+        //     PCFactorGetMatrix(pc,&F);
+        //     icntl = 7; ival = 2;
+        //     MatMumpsSetIcntl(F,icntl,ival);
+        //     icntl = 1; val = 0.0;
+        // // //     MatMumpsSetCntl(F,icntl,val);
+        //     KSPSetFromOptions(ksp);
+        // //-----------------------------
 
 
 
-    // //--mumps----:
-    //
-    //    KSPSetType(ksp,KSPPREONLY);
-    //    Mat       F;
-    //    PetscInt  ival,icntl;
-    //    PetscReal val;
-    //    KSPGetPC(ksp,&pc);
-    //    PCSetType(pc,PCLU);
-    // //   MatSetOption(A,MAT_SPD,PETSC_TRUE); /* set MUMPS id%SYM=1 */
-    // //   PCSetType(pc,PCCHOLESKY);
-    //     PCFactorSetMatSolverPackage(pc,MATSOLVERMUMPS);
-    //     PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-    // //     MatGetFactor(theSOE->A, MATSOLVERMUMPS ,MAT_FACTOR_LU,&F);
-    //     PCFactorGetMatrix(pc,&F);
-    //     icntl = 7; ival = 2;
-    //     MatMumpsSetIcntl(F,icntl,ival);
-    //     icntl = 1; val = 0.0;
-    // // //     MatMumpsSetCntl(F,icntl,val);
-    //     KSPSetFromOptions(ksp);
-    // //-----------------------------
+        //--SuperLu-dist----:
+        // KSPSetType(ksp, KSPPREONLY);
+        // Mat       F;
+        // KSPGetPC(ksp, &pc);
+        // PCSetType(pc, PCLU);
+
+        // PCFactorSetMatSolverPackage(pc, MATSOLVERSUPERLU_DIST);
+        // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
+        // PCFactorGetMatrix(pc, &F);
+        // MatSuperluSetILUDropTol(F, 1.e-1);
+        // KSPSetFromOptions(ksp);
+        // KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
+
+        //-----------------------------
+
+        //--petsc solver----:
+
+        // KSPSetType(ksp, KSPPREONLY);
+        // Mat       F;
+        // KSPGetPC(ksp, &pc);
+        // PCSetType(pc, PCLU);
+        // PCFactorSetMatSolverPackage(pc, MATSOLVERPETSC);
+        // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
+        // PCFactorGetMatrix(pc, &F);
+        // KSPSetFromOptions(ksp);
+        //-----------------------------
 
 
-    globalESSITimer.start("PETSCSOE_Setup");
-    //--SuperLu-dist----:
-    KSPSetType(ksp, KSPPREONLY);
-    Mat       F;
-    KSPGetPC(ksp, &pc);
-    PCSetType(pc, PCLU);
+        //----- to test spooles -----------------
+        KSPSetType(ksp, KSPPREONLY);
+        KSPGetPC(ksp, &pc);
+        PCSetType(pc, PCLU);
+        PCFactorSetMatSolverPackage(pc, MATSOLVERSPOOLES);
+        KSPSetFromOptions(ksp);
+        KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
+        //---------------------------------------
 
-    PCFactorSetMatSolverPackage(pc, MATSOLVERSUPERLU_DIST);
-    PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-    PCFactorGetMatrix(pc, &F);
-    MatSuperluSetILUDropTol(F, 1.e-1);
-    KSPSetFromOptions(ksp);
-    KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
 
-    //-----------------------------
-    globalESSITimer.stop("PETSCSOE_Setup");
-
-    //--petsc solver----:
-
-    // KSPSetType(ksp, KSPPREONLY);
-    // Mat       F;
-    // KSPGetPC(ksp, &pc);
-    // PCSetType(pc, PCLU);
-    // PCFactorSetMatSolverPackage(pc, MATSOLVERPETSC);
-    // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-    // PCFactorGetMatrix(pc, &F);
-    // KSPSetFromOptions(ksp);
-    //-----------------------------
+    }
 
 
 
-
-
-
-    //----- to test spooles -----------------
-    // KSPSetType(ksp, KSPPREONLY);
-    // KSPGetPC(ksp, &pc);
-    // PCSetType(pc, PCLU);
-    // PCFactorSetMatSolverPackage(pc, MATSOLVERSPOOLES);
-    // KSPSetFromOptions(ksp);
-    // KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
-    //---------------------------------------
-
-
-
-    globalESSITimer.start("PETSCSOE_Send_b_vector");
+// Everyone sends the assebled vector B to the rank 0 processor. Which sends it back...
     static Vector receiveVector(1);
 
-    if (numProcesses > 1)
+
+    Vector *vectX = theSOE->vectX;
+    Vector *vectB = theSOE->vectB;
+
+    // zero X
+    vectX->Zero();
+
+    //
+    // form B on each
+    //
+
+    int numChannels = theSOE->numChannels;
+    Channel **theChannels = theSOE->theChannels;
+
+    if (processID != 0)
     {
-        Vector *vectX = theSOE->vectX;
-        Vector *vectB = theSOE->vectB;
+        Channel *theChannel = theChannels[0];
 
-        // zero X
-        vectX->Zero();
+        theChannel->sendVector(0, 0, *vectB);
+        theChannel->receiveVector(0, 0, *vectB);
 
-        //
-        // form B on each
-        //
+    }
+    else //Master process assembles v vector. This is a bottleneck and can be improved with
+        //a collective reduction
+    {
 
-        int numChannels = theSOE->numChannels;
-        Channel **theChannels = theSOE->theChannels;
-
-        if (processID != 0)
+        if (receiveVector.Size() != size)
         {
-            Channel *theChannel = theChannels[0];
-
-            theChannel->sendVector(0, 0, *vectB);
-            theChannel->receiveVector(0, 0, *vectB);
-
+            receiveVector.resize(size);
         }
-        else //Master process assembles v vector. This is a bottleneck and can be improved with
-            //a collective reduction
+
+        //Better done with ALLREDUCE
+        for (int j = 0; j < numChannels; j++)
         {
+            Channel *theChannel = theChannels[j];
+            theChannel->receiveVector(0, 0, receiveVector);
+            *vectB += receiveVector;
+        }
 
-            if (receiveVector.Size() != size)
-            {
-                receiveVector.resize(size);
-            }
-
-            //Better done with ALLREDUCE
-            for (int j = 0; j < numChannels; j++)
-            {
-                Channel *theChannel = theChannels[j];
-                theChannel->receiveVector(0, 0, receiveVector);
-                *vectB += receiveVector;
-            }
-
-            //Better done with a BCast
-            for (int j = 0; j < numChannels; j++)
-            {
-                Channel *theChannel = theChannels[j];
-                theChannel->sendVector(0, 0, *vectB);
-            }
+        //Better done with a BCast
+        for (int j = 0; j < numChannels; j++)
+        {
+            Channel *theChannel = theChannels[j];
+            theChannel->sendVector(0, 0, *vectB);
         }
     }
-    globalESSITimer.stop("PETSCSOE_Send_b_vector");
+
+
     //
     // solve and mark as having been solved
     //
 
-    // double start_time = MPI_Wtime();
-    globalESSITimer.start("PETSCSOE_KSPSolve");
-    ierr = KSPSolve(ksp, theSOE->b, theSOE->x);
-    CHKERRQ(ierr);
-    theSOE->isFactored = 1;
-    globalESSITimer.stop("PETSCSOE_KSPSolve");
+
+
+    if (processID > 0)
+    {
+        ierr = KSPSolve(ksp, theSOE->b, theSOE->x);
+        CHKERRQ(ierr);
+        theSOE->isFactored = 1;
+    }
+
     //PETSc Diagnostics
     //----------------------------------------------
     // cout << "PetscSolver::solve()  ---------  Begin PetSC diagnostics\n";
     // KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD);
 
     // PetscViewer    viewer_A;
-    // PetscViewerASCIIOpen(PETSC_COMM_WORLD, "A.txt", &viewer_A);
+    // PetscViewerASCIIOpen(theSOE->petsc_comm, "A.txt", &viewer_A);
     // MatView(theSOE->A, viewer_A);
 
 
     // // cout << "PetscSolver::solve() -- PID#    " << processID << "     writing right hand side in RHS.txt file ... " << endl;
     // PetscViewer    viewer_RHS;
-    // PetscViewerASCIIOpen(PETSC_COMM_WORLD, "RHS.txt", &viewer_RHS);
+    // PetscViewerASCIIOpen(theSOE->petsc_comm, "RHS.txt", &viewer_RHS);
     // VecView(theSOE->b, viewer_RHS);
 
 
 
     // // cout << "PetscSolver::solve() -- PID#    " << processID << " writing results ... " << endl;
     // PetscViewer    viewer_x;
-    // PetscViewerASCIIOpen(PETSC_COMM_WORLD, "X.txt", &viewer_x);
+    // PetscViewerASCIIOpen(theSOE->petsc_comm, "X.txt", &viewer_x);
     // VecView(theSOE->x, viewer_x);
     // cout << "PetscSolver::solve()  ---------  End PetSC diagnostics\n";
     ////////////////////////////////////////
@@ -301,230 +271,62 @@ PetscSolver::solve(void)
     //
     // if parallel, we must form the total X: each processor has startRow through endRow-1
     //
-    globalESSITimer.start("PETSCSOE_Send_X_vector");
-    if (numProcesses > 1)
+
+
+    // Vector *vectX = theSOE->vectX;
+    vectX = theSOE->vectX;
+
+    // int numChannels = theSOE->numChannels;
+    numChannels = theSOE->numChannels;
+    // Channel **theChannels = theSOE->theChannels;
+    theChannels = theSOE->theChannels;
+
+    if (processID != 0)
     {
-        Vector *vectX = theSOE->vectX;
+        Channel *theChannel = theChannels[0];
 
-        int numChannels = theSOE->numChannels;
-        Channel **theChannels = theSOE->theChannels;
+        theChannel->sendVector(0, 0, *vectX);
+        theChannel->receiveVector(0, 0, *vectX);
 
-        if (processID != 0)
+    }
+    else //Again, the master process forms the global X vector which is then sent to all processors
+    {
+
+        if (receiveVector.Size() != size)
         {
-            Channel *theChannel = theChannels[0];
+            receiveVector.resize(size);
+        }
 
+        //Better done with ALLREDUCE
+        for (int j = 0; j < numChannels; j++)
+        {
+            Channel *theChannel = theChannels[j];
+            theChannel->receiveVector(0, 0, receiveVector);
+            *vectX += receiveVector;
+        }
+
+        //Better done with a BCast
+        for (int j = 0; j < numChannels; j++)
+        {
+            Channel *theChannel = theChannels[j];
             theChannel->sendVector(0, 0, *vectX);
-            theChannel->receiveVector(0, 0, *vectX);
-
         }
-        else //Again, the master process forms the global X vector which is then sent to all processors
-        {
 
-            if (receiveVector.Size() != size)
-            {
-                receiveVector.resize(size);
-            }
-
-            //Better done with ALLREDUCE
-            for (int j = 0; j < numChannels; j++)
-            {
-                Channel *theChannel = theChannels[j];
-                theChannel->receiveVector(0, 0, receiveVector);
-                *vectX += receiveVector;
-            }
-
-            //Better done with a BCast
-            for (int j = 0; j < numChannels; j++)
-            {
-                Channel *theChannel = theChannels[j];
-                theChannel->sendVector(0, 0, *vectX);
-            }
-
-            //Added by Babak Kamrani at 01/24/2012
-            //The following lines will dump all nodes displacement data in a file :
-            //------------------------------------------------------------------------
-            //       if (processID == 0)
-            //       {
-            //        char *fileName = "Disp_Dump.txt";
-            //        openMode theOMode = APPEND;
-            //        FileStream Dispoutputfile;
-            //        Dispoutputfile.setFile(fileName, theOMode);
-            //        Dispoutputfile << *vectX ;
-            //        Dispoutputfile << "Hi";
-            // //        Dispoutputfile.close();
-            //       }
-            //------------------------------------------------------------------------
-        }
     }
 
-    globalESSITimer.stop("PETSCSOE_Send_X_vector");
-    ierr = KSPDestroy(&ksp);
-    CHKERRQ(ierr);
 
+    if (processID > 0)
+    {
+        ierr = KSPDestroy(&ksp);
+        CHKERRQ(ierr);
+    }
 
     return ierr;
 
 
 
 }
-//---------------------------------------------------------------------------------------------------------------------------
 
-// int
-// PetscSolver::solve(void)
-// {
-//   //Major changes is done by Babak to make it work with direct solver ...
-//   int size = theSOE->size;
-//   int factored = theSOE->isFactored;
-//
-//   int numProcesses = theSOE->numProcesses;
-//   int processID = theSOE->processID;
-//
-//   int ierr;
-//
-//   //MatSetType(theSOE->A, matType);
-//
-//   ierr = MatAssemblyBegin(theSOE->A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
-//   ierr = MatAssemblyEnd(theSOE->A, MAT_FINAL_ASSEMBLY); CHKERRQ(ierr);
-//
-//
-//   //Create the linear solver context:
-//   //----------------------------------------------------------
-//   KSPCreate(PETSC_COMM_WORLD, &ksp);
-//   KSPSetOperators(ksp,theSOE->A,theSOE->A,DIFFERENT_NONZERO_PATTERN);
-//   //----------------------------------------------------------
-//
-//
-//   KSPSetType(ksp,KSPPREONLY);
-//   KSPGetPC(ksp,&pc);
-//   PCSetType(pc,PCLU);
-//   PCFactorSetMatSolverPackage(pc,MATSOLVERSUPERLU_DIST);
-//   PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-//   Mat       F;
-//   PCFactorGetMatrix(pc,&F);
-//   MatSuperluSetILUDropTol(F,1.e-8);
-//   KSPSetUp(ksp);
-//   KSPSetFromOptions(ksp);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//   static Vector receiveVector(1);
-//
-//   if (numProcesses > 1)
-//   {
-//     Vector *vectX = theSOE->vectX;
-//     Vector *vectB = theSOE->vectB;
-//
-//     // zero X
-//     vectX->Zero();
-//
-//     //
-//     // form B on each
-//     //
-//
-//     int numChannels = theSOE->numChannels;
-//     Channel **theChannels = theSOE->theChannels;
-//
-//     if (processID != 0)
-//     {
-//       Channel *theChannel = theChannels[0];
-//
-//       theChannel->sendVector(0, 0, *vectB);
-//       theChannel->receiveVector(0, 0, *vectB);
-//
-//     } else
-//     {
-//
-//       if (receiveVector.Size() != size)
-//  receiveVector.resize(size);
-//       for (int j=0; j<numChannels; j++)
-//       {
-//  Channel *theChannel = theChannels[j];
-//  theChannel->receiveVector(0, 0, receiveVector);
-//  *vectB += receiveVector;
-//       }
-//       for (int j=0; j<numChannels; j++)
-//       {
-//  Channel *theChannel = theChannels[j];
-//  theChannel->sendVector(0, 0, *vectB);
-//       }
-//     }
-//   }
-//
-//   //
-//   // solve and mark as having been solved
-//   //
-//
-//   //GZ added
-//   //KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
-//   //KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD);
-//   //MatView(theSOE->A, PETSC_VIEWER_STDOUT_WORLD);
-//   //VecView(theSOE->b, PETSC_VIEWER_STDOUT_WORLD);
-//
-// //GZ # ifdef _TIMING
-// //GZ # ifdef _PARALLEL_PROCESSING //Guanzhou added
-//  double start_time = MPI_Wtime();
-// //GZ # endif
-// //GZ # endif
-//   ierr = KSPSolve(ksp, theSOE->b, theSOE->x); CHKERRQ(ierr);
-//   //VecView(theSOE->x, PETSC_VIEWER_STDOUT_WORLD);
-//
-// //GZ # ifdef _TIMING
-// //GZ # ifdef _PARALLEL_RPOCESSING //Guanzhou added
-//  double end_time = MPI_Wtime();
-//  if ( processID == 0 )
-//      cerr << "Timing used by solving: " << end_time-start_time << endln;
-// //GZ # endif
-// //GZ # endif
-//
-//
-//   theSOE->isFactored = 1;
-//
-//   //
-//   // if parallel, we must form the total X: each processor has startRow through endRow-1
-//   //
-//
-//   if (numProcesses > 1) {
-//     Vector *vectX = theSOE->vectX;
-//
-//     int numChannels = theSOE->numChannels;
-//     Channel **theChannels = theSOE->theChannels;
-//
-//     if (processID != 0) {
-//       Channel *theChannel = theChannels[0];
-//
-//       theChannel->sendVector(0, 0, *vectX);
-//       theChannel->receiveVector(0, 0, *vectX);
-//
-//     } else {
-//
-//       if (receiveVector.Size() != size)
-//  receiveVector.resize(size);
-//
-//       for (int j=0; j<numChannels; j++) {
-//  Channel *theChannel = theChannels[j];
-//  theChannel->receiveVector(0, 0, receiveVector);
-//  *vectX += receiveVector;
-//       }
-//       for (int j=0; j<numChannels; j++) {
-//  Channel *theChannel = theChannels[j];
-//  theChannel->sendVector(0, 0, *vectX);
-//       }
-//     }
-//   }
-//
-//   ierr = KSPDestroy(&ksp);CHKERRQ(ierr);
-//
-//   return ierr;
-// }
 
 
 
@@ -535,8 +337,10 @@ PetscSolver::setSize()
     /*
      * Create linear solver context
      */
-
-    KSPCreate(PETSC_COMM_WORLD, &ksp);
+    if (theSOE->processID_world > 0)
+    {
+        KSPCreate(theSOE->petsc_comm, &ksp);
+    }
 
 
     return 0;

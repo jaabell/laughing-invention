@@ -97,10 +97,10 @@ Linear::solveCurrentStep(void)
         return -1;
     }
 
-#ifdef _PARALLEL_PROCESSING
-    //Need to syncronize to get proper global timing
-    MPI_Barrier( MPI_COMM_WORLD);
-#endif
+// #ifdef _PARALLEL_PROCESSING
+//     //Need to syncronize to get proper global timing
+//     MPI_Barrier( MPI_COMM_WORLD);
+// #endif
 
     globalESSITimer.stop("SOE_Form_K");
 
@@ -113,7 +113,7 @@ Linear::solveCurrentStep(void)
     }
 #ifdef _PARALLEL_PROCESSING
     //Need to syncronize to get proper global timing
-    MPI_Barrier( MPI_COMM_WORLD);
+    // MPI_Barrier( MPI_COMM_WORLD);
 #endif
 
     globalESSITimer.stop("SOE_Form_b");
@@ -144,7 +144,7 @@ Linear::solveCurrentStep(void)
     }
 #ifdef _PARALLEL_PROCESSING
     //Need to syncronize to get proper global timing
-    MPI_Barrier( MPI_COMM_WORLD);
+    // MPI_Barrier( MPI_COMM_WORLD);
 #endif
     globalESSITimer.stop("SOE_Update");
     return 0;
