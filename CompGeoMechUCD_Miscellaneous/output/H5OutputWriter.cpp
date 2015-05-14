@@ -143,6 +143,12 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
 
     zlib_compression_level = 0;
     flag_write_element_output = 1;
+
+    dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);
+#ifdef _PARALLEL_PROCESSING
+    H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
+    // H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_COLLECTIVE);
+#endif
 }
 
 
@@ -1370,11 +1376,13 @@ int H5OutputWriter::writeMaterialMeshData(int tag , std::string type , Vector &p
 // Results for Nodes
 int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacements)
 {
+
+#ifdef _PARALLEL_PROCESSING
     int processID;
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
-    cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[0] << ", " << displacements[0] << ")\n ";
-
+    cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
+#endif
     int pos, ndofs;
 
     // Read NDOFS from HDF5 file
@@ -1414,6 +1422,12 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
     count[1]     = 1;
     block[0]     = 1;
     block[1]     = 1;
+
+#if _PARALLEL_PROCESSING
+    cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
+#endif
+
+
     double *data = displacements.theData;
     writeVariableLengthDoubleArray(id_nodes_displacements,
                                    datarank,
@@ -1561,7 +1575,7 @@ int H5OutputWriter::setTime(double t)
 
 
     //Extend objects
-    hsize_t dims_new[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
+    hsize_t dims_new[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step + 1};
 
     status =  H5Dset_extent( id_nodes_displacements, dims_new );
 
@@ -1569,7 +1583,7 @@ int H5OutputWriter::setTime(double t)
     if ( flag_write_element_output == 1 ) //extend element output array depending on whether the flag is enabled.
     {
         dims_new[0] = length_element_output;
-        dims_new[1] = current_time_step;
+        dims_new[1] = current_time_step + 1;
         status =  H5Dset_extent( id_elements_output, dims_new );
     }
 
@@ -2021,7 +2035,14 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
     //Get pointer to the dataspace and create the memory space
     hsize_t id_dataspace = H5Dget_space(id_array);
     hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
-
+#ifdef _PARALLEL_PROCESSING
+    cout << "            data = ";
+    for (int i = 0; i < count[0]; i++)
+    {
+        cout << data[i] << " ";
+    }
+    cout << endl;
+#endif
     //Select the region of data to output to
     status = H5Sselect_hyperslab(
                  id_dataspace,          // Id of the parent dataspace

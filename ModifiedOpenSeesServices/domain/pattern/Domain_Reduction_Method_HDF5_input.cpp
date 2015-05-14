@@ -339,6 +339,8 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     double* all_timesteps = new double[number_of_timesteps];
 
     id_memspace  = H5Screate_simple(rank_one_array, data_dims, data_maxdims);       // create dataspace of memory
+
+    // cout << "Reading HDF5 dataset \n";
     H5Dread(id_time, H5T_NATIVE_DOUBLE, id_memspace, id_dataspace, H5P_DEFAULT, all_timesteps);
 
 
@@ -670,6 +672,8 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
     {
         int eleTag = (*Elements)[e];
 
+        cout << "eleTag = " << eleTag << " (" << e << " of " << Elements->Size()  << ") " << endl;
+
         //Pointer to current element
         theElement = theDomain->getElement(eleTag);
 
@@ -727,9 +731,10 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
                             Ke( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
                         }
 
-
+            // cout <<
             for (int n = 0; n < NIE; n++)
             {
+                cout << ".";
                 int nodeTag = elementNodes(n);
                 int pos = nodetag2index[nodeTag];
 
@@ -767,6 +772,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
                         (*udd_e)(3 * n + i, j) = a[i][j];
                     }
             }
+            cout << endl;
 
             Fm->addMatrixProduct(0.0, Me, (*udd_e), 1.0);
             Fk->addMatrixProduct(0.0, Ke, (*u_e), 1.0);
