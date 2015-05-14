@@ -204,12 +204,7 @@ ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
 
 
             
-SEQUENTIAL_NUMERIC_INCLUDES = -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1 \
-            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UFconfig \
-            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/AMD \
-            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/AMD/Include \
-            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UMFPACK \
-            -I$(ESSI_DEPEND_DIR)/UMFPACK5.5.1/UMFPACK/Include \
+SEQUENTIAL_NUMERIC_INCLUDES = -I$(ESSI_DEPEND_DIR)/lib/include \
             -I$(ESSI_DEPEND_DIR)/SuperLU \
             -I$(ESSI_DEPEND_DIR)/hdf5_sequential/include 
 
