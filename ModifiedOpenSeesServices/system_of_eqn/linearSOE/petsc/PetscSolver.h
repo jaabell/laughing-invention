@@ -46,37 +46,39 @@ class PetscSOE;
 
 class PetscSolver : public LinearSOESolver
 {
-    public:
-        PetscSolver();
-        PetscSolver(KSPType method, PCType preconditioner);
-        PetscSolver(KSPType method, PCType preconditioner, double rTol, double aTol, double dTol, int maxIts, MatType);//Guanzhou
-        ~PetscSolver();
+public:
+    PetscSolver();
+    PetscSolver(KSPType method, PCType preconditioner);
+    PetscSolver(KSPType method, PCType preconditioner, double rTol, double aTol, double dTol, int maxIts, MatType);//Guanzhou
+    ~PetscSolver();
 
-        int solve(void);
-        int setSize(void);
-        virtual int setLinearSOE(PetscSOE &theSOE);
+    int solve(void);
+    int setSize(void);
+    virtual int setLinearSOE(PetscSOE &theSOE);
 
-        int sendSelf(int commitTag, Channel &theChannel);
-        int receiveSelf(int commitTag, Channel &theChannel,
-                     FEM_ObjectBroker &theBroker);
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel,
+                    FEM_ObjectBroker &theBroker);
 
-        friend class ActorPetscSOE;
-        friend class ShadowPetscSOE;
+    friend class ActorPetscSOE;
+    friend class ShadowPetscSOE;
 
-    protected:
-        PetscSOE *theSOE;
+protected:
+    PetscSOE *theSOE;
 
-    private:
-        KSP ksp;
-        PC pc;
-        int its;
-        KSPType method;
-        PCType preconditioner;
-        double rTol;
-        double aTol;
-        double dTol;
-        int maxIts;
-        MatType matType;//Guanzhou
+private:
+    KSP ksp;
+    PC pc;
+    int its;
+    KSPType method;
+    PCType preconditioner;
+    double rTol;
+    double aTol;
+    double dTol;
+    int maxIts;
+    MatType matType;//Guanzhou
+
+    bool is_KSP_initialized;
 };
 
 #endif

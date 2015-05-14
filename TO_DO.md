@@ -67,11 +67,11 @@ Performance enhancements
 * Keep some elements in rank 0, to better use parallelism.
 * Take into account machine topology and performance for partitioning.
 * HDF5 mesh output can be done in parallel. 
-* Link to ATLAS-tuned BLAS and LAPACK.
+* Link to ATLAS-tuned BLAS and LAPACK. (PAPI - through HPCToolkit - is showing large ammouunt of L2 data-cache misses in the PETSc solver)
 * There is lots of room for tuning HDF5. Chunk sizes, filters (compression), using collective calls, are some of the things that could yield a performance increase.
 * About 50kb are used per element (8 node brick, with linear material). This is too much!
 * ParallelNumberer builds a graph of dofs and numbers them in P0, then distributing. This does not scale. (Might hurt performance for really large models, we haven't encountered these yet.)
-
+* Partitioning (graph construction) is also done in P0. 
 
 Bug fixes
 ---------

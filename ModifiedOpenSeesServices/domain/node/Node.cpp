@@ -527,6 +527,7 @@ Node::getIncrDeltaDisp(void)
 int
 Node::setTrialDisp(double value, int dof)
 {
+
     // check vector arg is of correct size
     if (dof < 0 || dof >=  numberDOF)
     {

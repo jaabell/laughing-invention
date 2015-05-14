@@ -85,6 +85,7 @@
 
     void set_outcppfile_name(string newfilename);
     void set_profiling_results_filename(string filename);
+    void sync_global_timers();
 
     //Command line options flags
     extern int FLAG_interactive_mode;
@@ -5075,7 +5076,10 @@ void set_dry_run_mode(int flag)
 
 
 
-
+void sync_global_timers()
+{
+    globalESSITimer.sync_parallel_timers();
+}
 
 
 

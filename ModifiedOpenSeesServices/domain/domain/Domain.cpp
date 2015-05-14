@@ -2618,6 +2618,7 @@ Domain::commit( void )
             //Jose Added for node output
             if (output_is_enabled && (countdown_til_output == 0))
             {
+                // cout << processID << "Calling HDF5 write displacements\n";
                 theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
             }
 #ifdef _PARALLEL_PROCESSING

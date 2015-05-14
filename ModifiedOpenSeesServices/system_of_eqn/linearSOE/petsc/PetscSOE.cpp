@@ -148,8 +148,11 @@ PetscSOE::setSize(int MaxDOFtag)
     {
 
 
-        MPI_Comm_size(PETSC_COMM_WORLD, &numProcesses_world);
-        MPI_Comm_rank(PETSC_COMM_WORLD, &processID_world);
+        // MPI_Comm_size(PETSC_COMM_WORLD, &numProcesses_world);
+        // MPI_Comm_rank(PETSC_COMM_WORLD, &processID_world);
+        MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
+        MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
+
         numProcesses = numProcesses_world - 1;
 
         //Fork a new group of processes with its own communicator
@@ -157,25 +160,25 @@ PetscSOE::setSize(int MaxDOFtag)
 
 
         //Ranks 1 through numProcesses are assigned to petsc_world... since rank 0 has no elements!
-        petsc_ranks = new int[numProcesses - 1];
-
-        for (int rank = 1; rank < numProcesses; rank++)
-        {
-            petsc_ranks[rank - 1] = rank;
-        }
-
+        petsc_ranks = new int[numProcesses_world - 1];
         if (petsc_ranks == NULL)
         {
             cerr << "PetscSOE::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
         }
 
+        for (int rank = 1; rank < numProcesses_world ; rank++)
+        {
+            petsc_ranks[rank - 1] = rank;
+        }
+
+
         //Get the MPI world
         MPI_Comm_group(MPI_COMM_WORLD, &world_group);
 
-        if (processID_world > 0)
-        {
-            MPI_Group_incl(world_group, numProcesses - 1, petsc_ranks, &petsc_group);
-        }
+        // if (processID_world > 0)
+        // {
+        MPI_Group_incl(world_group, numProcesses_world - 1, petsc_ranks, &petsc_group);
+        // }
 
 
         /* Create new communicator and then perform collective communications */
@@ -189,6 +192,7 @@ PetscSOE::setSize(int MaxDOFtag)
         if (processID_world > 0)
         {
             MPI_Group_rank (petsc_group, &processID);
+            cout << " Process " << processID_world << " calling PetscInitialize\n";
             PetscInitialize(0, PETSC_NULL, (char *)0, PETSC_NULL);
         }
         else
@@ -207,60 +211,50 @@ PetscSOE::setSize(int MaxDOFtag)
     // first determine system size
     //
 
-    if (numProcesses == 1)
+
+    // first determine local max
+    size = MaxDOFtag;
+    isFactored = 0;
+    static ID data(1);
+
+    // all local max's sent to P0 which determines the max
+    // and informs all others
+
+    if (processID_world != 0)
     {
+        Channel *theChannel = theChannels[0];
 
-        // if single process, the system size is size of graph
-        size = MaxDOFtag;
-        isFactored = 0;
+        data(0) = size;
+        theChannel->sendID(0, 0, data);
+        theChannel->receiveID(0, 0, data);
 
+        size = data(0);
     }
     else
     {
 
-        // first determine local max
-        size = MaxDOFtag;
-        isFactored = 0;
-        static ID data(1);
-
-        // all local max's sent to P0 which determines the max
-        // and informs all others
-
-        if (processID != 0)
+        for (int j = 0; j < numChannels; j++)
         {
-            Channel *theChannel = theChannels[0];
-
-            data(0) = size;
-            theChannel->sendID(0, 0, data);
+            Channel *theChannel = theChannels[j];
             theChannel->receiveID(0, 0, data);
 
-            size = data(0);
+            if (data(0) > size)
+            {
+                size = data(0);
+            }
         }
-        else
+
+        data(0) = size;
+
+        for (int j = 0; j < numChannels; j++)
         {
-
-            for (int j = 0; j < numChannels; j++)
-            {
-                Channel *theChannel = theChannels[j];
-                theChannel->receiveID(0, 0, data);
-
-                if (data(0) > size)
-                {
-                    size = data(0);
-                }
-            }
-
-            data(0) = size;
-
-            for (int j = 0; j < numChannels; j++)
-            {
-                Channel *theChannel = theChannels[j];
-                theChannel->sendID(0, 0, data);
-            }
+            Channel *theChannel = theChannels[j];
+            theChannel->sendID(0, 0, data);
         }
-
-        size = size + 1; // vertices numbered 0 through n-1
     }
+
+    size = size + 1; // vertices numbered 0 through n-1
+
 
 
 
@@ -438,8 +432,8 @@ PetscSOE::addA(const Matrix &m, const ID &id, double fact)
     const int * iddata = id.getData();
     const double * matdata = m.getData();
     int pos = 0;
-
     int nsmall = 0;
+
     for (int i = 0; i < n; i++)
     {
         if (iddata[i] >= 0)
@@ -505,13 +499,6 @@ PetscSOE::addB(const Vector &v, const ID &id, double fact)
             {
                 B[pos] += v(i);
             }
-
-#ifdef _BABAK_DEBUG
-            cerr << "BABAK @ PetscSOE::addB--PID #" << processID << "B [" << pos << "] = " << B[pos] << "and v(" << i << ") = " << v(i) << endl;
-#endif
-
-
-
         }
     }
     else if (fact == -1.0)
@@ -591,12 +578,17 @@ void
 PetscSOE::zeroA(void)
 {
     isFactored = 0;
-    MatZeroEntries(A);
+    if ( processID_world > 0 )
+    {
+        MatZeroEntries(A);
+    }
 }
 
 void
 PetscSOE::zeroB(void)
 {
+    // if ( processID_world > 0 )
+    // {
     double *Bptr = B;
 
     for (int i = 0; i < size; i++)
@@ -604,7 +596,8 @@ PetscSOE::zeroB(void)
         *Bptr++ = 0;
     }
 
-    VecZeroEntries(b);
+    // VecZeroEntries(b);
+    // }
 }
 
 

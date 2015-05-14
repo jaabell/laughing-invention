@@ -63,40 +63,45 @@ extern    int g_Step_Number ;
 
 PetscSolver::PetscSolver()
     : LinearSOESolver(SOLVER_TAGS_PetscSolver),
-      rTol(PETSC_DEFAULT), aTol(PETSC_DEFAULT), dTol(PETSC_DEFAULT), maxIts(PETSC_DEFAULT), matType(MATMPIAIJ)
+      rTol(PETSC_DEFAULT), aTol(PETSC_DEFAULT), dTol(PETSC_DEFAULT), maxIts(PETSC_DEFAULT), matType(MATMPIAIJ),
+      is_KSP_initialized(false)
 {
 
 }
 
 PetscSolver::PetscSolver(KSPType meth, PCType pre)
     : LinearSOESolver(SOLVER_TAGS_PetscSolver), method(meth), preconditioner(pre),
-      rTol(PETSC_DEFAULT), aTol(PETSC_DEFAULT), dTol(PETSC_DEFAULT), maxIts(PETSC_DEFAULT), matType(MATMPIAIJ)
+      rTol(PETSC_DEFAULT), aTol(PETSC_DEFAULT), dTol(PETSC_DEFAULT), maxIts(PETSC_DEFAULT), matType(MATMPIAIJ),
+      is_KSP_initialized(false)
 {
 
 }
 
 PetscSolver::PetscSolver(KSPType meth, PCType pre, double relTol, double absTol, double divTol, int maxIterations, MatType mat)
     : LinearSOESolver(SOLVER_TAGS_PetscSolver), method(meth), preconditioner(pre),
-      rTol(relTol), aTol(absTol), dTol(divTol), maxIts(maxIterations), matType(mat)
+      rTol(relTol), aTol(absTol), dTol(divTol), maxIts(maxIterations), matType(mat),
+      is_KSP_initialized(false)
 {
 
 }
 
 PetscSolver::~PetscSolver()
 {
-
+    // KSPDestroy(&ksp);
+    // CHKERRQ(ierr);
 }
 
 
 int
 PetscSolver::solve(void)
 {
+
     int size = theSOE->size;
     // int numProcesses = theSOE->numProcesses;
-    int processID = theSOE->processID_world;
+    int processID_world = theSOE->processID_world;
     int ierr;
 
-    if (processID > 0)
+    if (processID_world > 0)
     {
 
         //MatSetType(theSOE->A, matType);
@@ -107,72 +112,78 @@ PetscSolver::solve(void)
         CHKERRQ(ierr);
 
 
-        //    MatSetOption(theSOE->A, MAT_SPD, PETSC_TRUE );
-        KSPCreate(theSOE->petsc_comm, &ksp);
-        KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
+        if (not is_KSP_initialized)
+        {
+
+            //    MatSetOption(theSOE->A, MAT_SPD, PETSC_TRUE );
+            KSPCreate(theSOE->petsc_comm, &ksp);
+            KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
 
 
 
-        // //--mumps----:
-        //
-        //    KSPSetType(ksp,KSPPREONLY);
-        //    Mat       F;
-        //    PetscInt  ival,icntl;
-        //    PetscReal val;
-        //    KSPGetPC(ksp,&pc);
-        //    PCSetType(pc,PCLU);
-        // //   MatSetOption(A,MAT_SPD,PETSC_TRUE); /* set MUMPS id%SYM=1 */
-        // //   PCSetType(pc,PCCHOLESKY);
-        //     PCFactorSetMatSolverPackage(pc,MATSOLVERMUMPS);
-        //     PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-        // //     MatGetFactor(theSOE->A, MATSOLVERMUMPS ,MAT_FACTOR_LU,&F);
-        //     PCFactorGetMatrix(pc,&F);
-        //     icntl = 7; ival = 2;
-        //     MatMumpsSetIcntl(F,icntl,ival);
-        //     icntl = 1; val = 0.0;
-        // // //     MatMumpsSetCntl(F,icntl,val);
-        //     KSPSetFromOptions(ksp);
-        // //-----------------------------
+            // //--mumps----:
+            //
+            //    KSPSetType(ksp,KSPPREONLY);
+            //    Mat       F;
+            //    PetscInt  ival,icntl;
+            //    PetscReal val;
+            //    KSPGetPC(ksp,&pc);
+            //    PCSetType(pc,PCLU);
+            // //   MatSetOption(A,MAT_SPD,PETSC_TRUE); /* set MUMPS id%SYM=1 */
+            // //   PCSetType(pc,PCCHOLESKY);
+            //     PCFactorSetMatSolverPackage(pc,MATSOLVERMUMPS);
+            //     PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
+            // //     MatGetFactor(theSOE->A, MATSOLVERMUMPS ,MAT_FACTOR_LU,&F);
+            //     PCFactorGetMatrix(pc,&F);
+            //     icntl = 7; ival = 2;
+            //     MatMumpsSetIcntl(F,icntl,ival);
+            //     icntl = 1; val = 0.0;
+            // // //     MatMumpsSetCntl(F,icntl,val);
+            //     KSPSetFromOptions(ksp);
+            // //-----------------------------
 
 
 
-        //--SuperLu-dist----:
-        // KSPSetType(ksp, KSPPREONLY);
-        // Mat       F;
-        // KSPGetPC(ksp, &pc);
-        // PCSetType(pc, PCLU);
+            //--SuperLu-dist----:
+            // KSPSetType(ksp, KSPPREONLY);
+            // Mat       F;
+            // KSPGetPC(ksp, &pc);
+            // PCSetType(pc, PCLU);
 
-        // PCFactorSetMatSolverPackage(pc, MATSOLVERSUPERLU_DIST);
-        // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-        // PCFactorGetMatrix(pc, &F);
-        // MatSuperluSetILUDropTol(F, 1.e-1);
-        // KSPSetFromOptions(ksp);
-        // KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
+            // PCFactorSetMatSolverPackage(pc, MATSOLVERSUPERLU_DIST);
+            // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
+            // PCFactorGetMatrix(pc, &F);
+            // MatSuperluSetILUDropTol(F, 1.e-1);
+            // KSPSetFromOptions(ksp);
+            // KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
 
-        //-----------------------------
+            //-----------------------------
 
-        //--petsc solver----:
+            //--petsc solver----:
 
-        // KSPSetType(ksp, KSPPREONLY);
-        // Mat       F;
-        // KSPGetPC(ksp, &pc);
-        // PCSetType(pc, PCLU);
-        // PCFactorSetMatSolverPackage(pc, MATSOLVERPETSC);
-        // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-        // PCFactorGetMatrix(pc, &F);
-        // KSPSetFromOptions(ksp);
-        //-----------------------------
+            // KSPSetType(ksp, KSPPREONLY);
+            // Mat       F;
+            // KSPGetPC(ksp, &pc);
+            // PCSetType(pc, PCLU);
+            // PCFactorSetMatSolverPackage(pc, MATSOLVERPETSC);
+            // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
+            // PCFactorGetMatrix(pc, &F);
+            // KSPSetFromOptions(ksp);
+            //-----------------------------
 
 
-        //----- to test spooles -----------------
-        KSPSetType(ksp, KSPPREONLY);
-        KSPGetPC(ksp, &pc);
-        PCSetType(pc, PCLU);
-        PCFactorSetMatSolverPackage(pc, MATSOLVERSPOOLES);
-        KSPSetFromOptions(ksp);
-        KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
-        //---------------------------------------
+            //----- to test spooles -----------------
+            KSPSetType(ksp, KSPPREONLY);
+            KSPGetPC(ksp, &pc);
+            PCSetType(pc, PCLU);
+            PCFactorSetMatSolverPackage(pc, MATSOLVERSPOOLES);
+            KSPSetFromOptions(ksp);
+            KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
+            //---------------------------------------
 
+
+            is_KSP_initialized = true;
+        }
 
     }
 
@@ -195,7 +206,7 @@ PetscSolver::solve(void)
     int numChannels = theSOE->numChannels;
     Channel **theChannels = theSOE->theChannels;
 
-    if (processID != 0)
+    if (processID_world != 0)
     {
         Channel *theChannel = theChannels[0];
 
@@ -228,6 +239,10 @@ PetscSolver::solve(void)
         }
     }
 
+    cout << "Process " << processID_world << " norm(vectB) = " << vectB->Norm() << endl;
+    cout << "Process " << processID_world << " norm(vectX) = " << vectX->Norm() << endl;
+
+
 
     //
     // solve and mark as having been solved
@@ -235,8 +250,9 @@ PetscSolver::solve(void)
 
 
 
-    if (processID > 0)
+    if (processID_world > 0)
     {
+        cout << "Process " <<  processID_world << " calling KSPSolve()\n";
         ierr = KSPSolve(ksp, theSOE->b, theSOE->x);
         CHKERRQ(ierr);
         theSOE->isFactored = 1;
@@ -252,14 +268,14 @@ PetscSolver::solve(void)
     // MatView(theSOE->A, viewer_A);
 
 
-    // // cout << "PetscSolver::solve() -- PID#    " << processID << "     writing right hand side in RHS.txt file ... " << endl;
+    // // cout << "PetscSolver::solve() -- PID#    " << processID_world << "     writing right hand side in RHS.txt file ... " << endl;
     // PetscViewer    viewer_RHS;
     // PetscViewerASCIIOpen(theSOE->petsc_comm, "RHS.txt", &viewer_RHS);
     // VecView(theSOE->b, viewer_RHS);
 
 
 
-    // // cout << "PetscSolver::solve() -- PID#    " << processID << " writing results ... " << endl;
+    // // cout << "PetscSolver::solve() -- PID#    " << processID_world << " writing results ... " << endl;
     // PetscViewer    viewer_x;
     // PetscViewerASCIIOpen(theSOE->petsc_comm, "X.txt", &viewer_x);
     // VecView(theSOE->x, viewer_x);
@@ -281,7 +297,7 @@ PetscSolver::solve(void)
     // Channel **theChannels = theSOE->theChannels;
     theChannels = theSOE->theChannels;
 
-    if (processID != 0)
+    if (processID_world != 0)
     {
         Channel *theChannel = theChannels[0];
 
@@ -314,17 +330,34 @@ PetscSolver::solve(void)
 
     }
 
-
-    if (processID > 0)
+    //Destroy KSP and collect the error at P0
+    if (processID_world > 0)
     {
-        ierr = KSPDestroy(&ksp);
-        CHKERRQ(ierr);
+        // ierr = KSPDestroy(&ksp);
+        // CHKERRQ(ierr);
+
+        //The first rank in petsc_ranks (rank 0 in petsc_comm and petsc_group) send the exit error to
+        // the 0 processor
+        if ((theSOE->petsc_ranks)[0] == processID_world)
+        {
+            MPI_Send(&ierr, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        }
+    }
+    else
+    {
+        MPI_Status stat;
+        MPI_Recv(&ierr, 1, MPI_INT, (theSOE->petsc_ranks)[0], 0, MPI_COMM_WORLD, &stat);
     }
 
+    // int exitflag;
+    // MPI_Reduce(&ierr, &exitflag, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
+
+    cout << " > Process " << processID_world << " norm(vectB) = " << vectB->Norm() << endl;
+    cout << " > Process " << processID_world << " norm(vectX) = " << vectX->Norm() << endl;
+
+    cout << " PetscSolver.solve(), exitflag = " << ierr << endl;
+
     return ierr;
-
-
-
 }
 
 

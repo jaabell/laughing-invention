@@ -1370,6 +1370,10 @@ int H5OutputWriter::writeMaterialMeshData(int tag , std::string type , Vector &p
 // Results for Nodes
 int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacements)
 {
+    int processID;
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
+    cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[0] << ", " << displacements[0] << ")\n ";
 
     int pos, ndofs;
 
