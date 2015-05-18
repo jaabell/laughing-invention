@@ -91,7 +91,7 @@ else ifeq ($(Compiler), PARALLEL)
 endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
-	C++FLAGS        = $(LTO_FLAGS) -Wall \
+	C++FLAGS        = $(LTO_FLAGS) -Wall  \
 										-O2 -g \
 										$(INLINING_OPTS) \
 										-funroll-loops \

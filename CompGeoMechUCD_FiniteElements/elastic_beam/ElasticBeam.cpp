@@ -426,7 +426,52 @@ ElasticBeam::zeroLoad(void)
 int
 ElasticBeam::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
-    // NOTE: To be completed later
+    int type;
+    const Vector &data = theLoad->getData( type, loadFactor );
+
+    if ( type == LOAD_TAG_ElementSelfWeight )
+    {
+        // cout << "Applying self_weight!\n";
+        // Check for a quick return
+        if ( rho == 0.0 )
+        {
+            return 0;
+        }
+
+        static Vector bforce( 12 );
+        bforce.Zero();
+
+        double ax = data(0);
+        double ay = data(1);
+        double az = data(2);
+
+
+        Vector nodal_accelerations(12);
+        nodal_accelerations.Zero();
+        // Only non-rotational DOFS feel acceleration fields
+        nodal_accelerations( 0 ) =  ax * loadFactor;
+        nodal_accelerations( 1 ) =  ay * loadFactor;
+        nodal_accelerations( 2 ) =  az * loadFactor;
+        nodal_accelerations( 6 ) =  ax * loadFactor;
+        nodal_accelerations( 7 ) =  ay * loadFactor;
+        nodal_accelerations( 8 ) =  az * loadFactor;
+
+
+        //Form equivalent body force
+        this->getMass();
+
+        bforce.addMatrixVector( 0.0, Mass, nodal_accelerations, 1.0 );
+
+        // cout << "bforce = " << bforce << endl;
+
+        Q.addVector( 1.0, bforce, 1.0 );
+    }
+    else
+    {
+        cerr << "ElasticBeam::addLoad() - " << this->getTag() << ",load type " << type << "unknown\n";
+        return -1;
+    }
+
 
     return 0;
 }
@@ -554,6 +599,9 @@ ElasticBeam::getResistingForce()
 
     P.addMatrixVector(1.0, Stiffness, displacement, 1.0);
     P.addVector(1.0, Q, -1.0);
+
+    cout << "P = " << P << endl;
+    cout << "Q = " << Q << endl;
 
     return P;
 

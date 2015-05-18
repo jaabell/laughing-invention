@@ -224,12 +224,6 @@ SEQUENTIAL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/lib/liblapack.a \
       $(ESSI_DEPEND_DIR)/lib/libsuitesparseconfig.a \
       $(ESSI_DEPEND_DIR)/hdf5_sequential/lib/libhdf5.a 
 
-#-rw-rw-r-- 1 jaabell jaabell  11M May 13 23:25 libatlas.a
-#-rw-rw-r-- 1 jaabell jaabell 464K May 13 23:23 libcblas.a
-#-rw-rw-r-- 1 jaabell jaabell 575K May 13 23:24 libf77blas.a
-#-rw-rw-r-- 1 jaabell jaabell 589K May 13 23:25 libf77refblas.a
-#-rw-rw-r-- 1 jaabell jaabell  11M May 13 23:25 liblapack.a
-#-rw-rw-r-- 1 jaabell jaabell 527K May 13 23:17 libtstatlas.a
 
 PARALLEL_NUMERIC_INCLUDES = -I/usr/include/mpi \
          -I$(ESSI_DEPEND_DIR)/petsc-3.3-p7/include \
