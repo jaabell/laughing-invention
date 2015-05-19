@@ -672,7 +672,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
     {
         int eleTag = (*Elements)[e];
 
-        cout << "eleTag = " << eleTag << " (" << e << " of " << Elements->Size()  << ") " << endl;
+        // cout << "eleTag = " << eleTag << " (" << e << " of " << Elements->Size()  << ") " << endl;
 
         //Pointer to current element
         theElement = theDomain->getElement(eleTag);

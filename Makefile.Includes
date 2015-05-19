@@ -218,11 +218,10 @@ SEQUENTIAL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/lib/liblapack.a \
       $(ESSI_DEPEND_DIR)/lib/libcamd.a \
       $(ESSI_DEPEND_DIR)/lib/libccolamd.a \
       $(ESSI_DEPEND_DIR)/lib/libmetis.a \
-      $(ESSI_DEPEND_DIR)/lib/libcblas.a \
-      $(ESSI_DEPEND_DIR)/lib/libf77blas.a \
+      \/home/jaabell/Programs/OpenBLAS/lib/lib/libopenblas.a \
       $(ESSI_DEPEND_DIR)/lib/libatlas.a \
       $(ESSI_DEPEND_DIR)/lib/libsuitesparseconfig.a \
-      $(ESSI_DEPEND_DIR)/hdf5_sequential/lib/libhdf5.a 
+      $(ESSI_DEPEND_DIR)/hdf5_sequential/lib/libhdf5.a -lpthread
 
 
 PARALLEL_NUMERIC_INCLUDES = -I/usr/include/mpi \
