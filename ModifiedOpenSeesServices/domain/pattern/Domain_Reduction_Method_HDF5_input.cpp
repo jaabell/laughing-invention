@@ -734,7 +734,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
             // cout <<
             for (int n = 0; n < NIE; n++)
             {
-                cout << ".";
+                // cout << ".";
                 int nodeTag = elementNodes(n);
                 int pos = nodetag2index[nodeTag];
 
@@ -772,7 +772,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
                         (*udd_e)(3 * n + i, j) = a[i][j];
                     }
             }
-            cout << endl;
+            // cout << endl;
 
             Fm->addMatrixProduct(0.0, Me, (*udd_e), 1.0);
             Fk->addMatrixProduct(0.0, Ke, (*u_e), 1.0);
