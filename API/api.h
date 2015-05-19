@@ -44,6 +44,7 @@
 #include "MODELING/add_load.h"
 #include "MODELING/add_load_to_brick_surface.h"
 #include "MODELING/add_load_selfweight_to_element.h"
+#include "MODELING/add_load_selfweight_to_node.h"
 #include "MODELING/add_load_to_brick_surface_from_contact_pore_pressure.h"
 #include "MODELING/add_load_pattern_domain_reduction_method_old_inputfiles_format.h"
 #include "MODELING/add_load_pattern_domain_reduction_method.h"

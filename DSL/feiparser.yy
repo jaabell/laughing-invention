@@ -577,6 +577,24 @@ CMD_add
         for(int ii = 1;ii <=3; ii++) nodes.pop();
         nodes.push($$);
     }
+        //!=========================================================================================================
+    //!
+    //!FEIDOC add load # <.> to node # <.> type self_weight use acceleration field # <.>;
+    | ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE self_weight
+      USE ACCELERATION_FIELD TEXTNUMBER exp
+    {
+        args.clear(); signature.clear();
+
+
+        args.push_back($4);    signature.push_back(this_signature("number", &isAdimensional));
+        args.push_back($8);    signature.push_back(this_signature("to_node", &isAdimensional));
+        args.push_back($14);   signature.push_back(this_signature("accelerationfieldnumber", &isAdimensional));
+
+        $$ = new FeiDslCaller3<int, int, int>(&add_load_selfweight_to_node, args, signature, "add_load_selfweight_to_node");
+
+        for(int ii = 1;ii <=3; ii++) nodes.pop();
+        nodes.push($$);
+    }
     //!=========================================================================================================
     //!
     //!FEIDOC add load # <.> to element # <.> type surface at nodes (<.> , <.> , <.> , <.>) with magnitude <.>;
@@ -5073,13 +5091,6 @@ void set_dry_run_mode(int flag)
 
 
 
-
-
-
-void sync_global_timers()
-{
-    globalESSITimer.sync_parallel_timers();
-}
 
 
 

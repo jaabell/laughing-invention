@@ -600,8 +600,8 @@ ElasticBeam::getResistingForce()
     P.addMatrixVector(1.0, Stiffness, displacement, 1.0);
     P.addVector(1.0, Q, -1.0);
 
-    cout << "P = " << P << endl;
-    cout << "Q = " << Q << endl;
+    // cout << "P = " << P << endl;
+    // cout << "Q = " << Q << endl;
 
     return P;
 
