@@ -262,6 +262,7 @@ EXP	([Ee][-+]?[0-9]+)
 "free"                              {return token::FREE;}
 "remove"                            {return token::REMOVE;}
 "simulate"                          {return token::SIMULATE;}
+"compute"                           {return token::COMPUTE;}
 "print"                             {return token::CMD_print;}
 "help"                              {return token::CMD_help;}
 "whos"                              {return token::CMD_whos;}
@@ -293,6 +294,8 @@ EXP	([Ee][-+]?[0-9]+)
 "imposed motion"                    {return token::IMPOSEDMOTION;}
 "damping"                           {return token::DAMPING;}
 "constraint"                        {return token::CONSTRAINT;}
+"reaction"                          {return token::REACTION;}
+"forces"                            {return token::FORCES;}
 "domain reduction method"           {return token::DRM;}
 "section"                           {return token::SECTION;}
 "load pattern"                      {return token::LOADPATTERN;}
