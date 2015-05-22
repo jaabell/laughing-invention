@@ -44,7 +44,8 @@
 // * Delay allocating resources as much as possible (at least until setDomain function gets called).
 // * Clean up resources as soon as possible.
 // * Think parallel. Have to implement sendSelf() and receiveSelf() functions.
-
+//
+// 2015 Jose Abell - UCD CompGeoMech
 
 #include <NewElementTemplate.h>
 #include <classTags.h> // Must define the class tag for the new element in this file. 
