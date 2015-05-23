@@ -53,7 +53,7 @@
 #include <string>
 
 
-#define DRM_NUM_OF_PRECOMPUTED_TIMESTEPS 10
+#define DRM_NUM_OF_PRECOMPUTED_TIMESTEPS 50
 
 #define DRMerror std::cerr << std::endl << __PRETTY_FUNCTION__ << " - ERROR: \n"
 #define DRMwarning std::cout << std::endl <<  __PRETTY_FUNCTION__ << " - Warning: \n"

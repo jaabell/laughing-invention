@@ -440,6 +440,11 @@ int FrictionalPenaltyContact::update(void)
         {
             s_B = t_TB / norm_t_TB;
         }
+        else
+        {
+            s_B(0) = 1;
+            s_B(1) = 1;
+        }
 
         Vector A_B(3);
         A_B(0) = s_B(0);

@@ -521,6 +521,9 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
 
     cout << "Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1] << endl;
 
+    double time1 =  (*times)[use_this_step + step1];
+    double time2 =  (*times)[use_this_step + step1 + 1];
+    double tau = (time - time1) / (time2 - time1);
 
     for (int i = 0; i < Nodes->Size(); i++)
     {
@@ -538,7 +541,9 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
         int pos = nodetag2index[tag];
         for (int i = 0; i < 3; i++)
         {
-            (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step);
+            // (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step);
+            (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step) * (1 - tau);
+            (*load)(i) += (*DRMForces)(3 * pos + i, use_this_step + 1) * tau;
         }
 
         //Take care of the minus sign in the effective seismic force for boundary nodes
