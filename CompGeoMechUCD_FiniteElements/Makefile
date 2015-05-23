@@ -72,7 +72,6 @@ all:
 clean:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/Contact_Elements; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p_brick_8_nodes; $(MAKE) clean;
-
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p-U_brick_20_nodes; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p-U_brick_8_nodes; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes; $(MAKE) clean;

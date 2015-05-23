@@ -2812,7 +2812,7 @@ Domain::update( void )
 int
 Domain::update( double newTime, double dT )
 {
-    cout << "Domain::update( double newTime, double dT ) -- applyLoad() getting called\n";
+    // cout << "Domain::update( double newTime, double dT ) -- applyLoad() getting called\n";
     this->applyLoad( newTime );
     // this->update();     /// if this is un/commented, update(void)  gets called twice per step for an analysis with a Linear algorithm (with_no_convergence_check)
     return 0;

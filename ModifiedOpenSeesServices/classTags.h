@@ -312,7 +312,7 @@
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_3DOF_3DOF 5006
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_3DOF_6DOF 5007
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_6DOF_6DOF 5008
-#define ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF 5014
+#define ELE_TAG_FrictionalPenaltyContact 5015  //J.Abell
 
 #define ELE_TAG_PenaltyElement 5009
 #define ELE_TAG_PenaltyElementApplyDisplacement 5010

@@ -29,15 +29,16 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+
 // Style guide. ---
 // * Use CamelCase for member functions, constructors, destructors and class names have intial upper case
 //   letter and other functions have lower-case initial letter.
+// * Use underscores and lower cases for variable names (e.g yield_function_value)
 //      Exception:  when variables are named consistently with theory (e.g. K for striffness matrix, etc.)
-// * Use underscores for variable names (e.g yield_function_value)
 // * i,j,k,l,m,n,p,q are reserved for indexes into arrays (iterating over components)
-//     -Note1: the type of these can be integer or other fancy types, ie. when using LTensor class
-//             to store tensors.
-// * Use "Allman" code styling. Use a code formatter like AStyle (http://astyle.sourceforge.net/)
+//     -Note: the type of these can be integer or other fancy types, e.g. when using LTensor class
+//             to store tensors you can use i for the indexing class objects.
+// * Use "Allman" code formatting style. Better yet, use an auto code formatter like AStyle (http://astyle.sourceforge.net/)
 //   there are many plugins which interface this into editors (SublimeAStyleFormatter for sublime text editor)
 // * Use the most recent C++ standard supported by your compiler. Code should compile without
 //   warnings using the -Wall flag or equivalent. In case this cannot be done, comment on why.
@@ -50,6 +51,12 @@
 #include <NewElementTemplate.h>
 #include <classTags.h> // Must define the class tag for the new element in this file. 
 
+
+
+
+
+
+//==================================================================================================
 // Constructor. Receive all input parameters. Should not allocate resources!
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
@@ -62,6 +69,7 @@ NewElementTemplate::NewElementTemplate(int tag, int node1, .....):
 
 
 
+//==================================================================================================
 // Empty constructor.  Create an empty element (with possibly a bad state)
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
@@ -73,6 +81,8 @@ NewElementTemplate::NewElementTemplate():
 }
 
 
+
+//==================================================================================================
 // Destructor. Deallocate resources used by element.
 //   * Input: void
 //   * Output: void
@@ -83,7 +93,7 @@ NewElementTemplate::~NewElementTemplate()
 
 
 
-
+//==================================================================================================
 // returns the number of nodes of the element.
 //   * Input: void
 //   * Output: number of nodes
@@ -94,6 +104,8 @@ int NewElementTemplate::getNumExternalNodes(void) const
 }
 
 
+
+//==================================================================================================
 // Return an ID (integer vector) with the external nodes
 //   * Input: void
 //   * Output: ID with tags of external nodes
@@ -104,6 +116,8 @@ const ID &NewElementTemplate::getExternalNodes(void)
 }
 
 
+
+//==================================================================================================
 // Return pointer array to the nodes
 //   * Input: void
 //   * Output: node pointer array.
@@ -114,6 +128,8 @@ Node **NewElementTemplate::getNodePtrs(void)
 }
 
 
+
+//==================================================================================================
 //Return the number of dofs in the element.
 //   * Input: void
 //   * Output: number of dofs (sum of dofs over all of element's nodes)
@@ -123,24 +139,58 @@ int NewElementTemplate::getNumDOF(void)
 }
 
 
+
+//==================================================================================================
 // Receives a domain pointer, and sets the local domain pointer through calling the base class setDomain.
 // At this point the domain is defined and set, one can allocate resources (get nodal pointers, compute
-// some internal variables like lengths, volumes, etc. )
+// some internal variables like lengths, volumes, etc. ).
+// Usually we'll set the node pointers here (will be needed for getNodePtrs function).
+// Also, we'll check that the given nodes are defined (you get a valid pointer to them) and
+// that they have the right number of DOFS (implementation specific)
 //   * Input: domain pointer (see Domain.h)
 //   * Output: void
 void NewElementTemplate::setDomain(Domain *theDomain)
 {
-    this->DomainComponent::setDomain(theDomain);
+    // check Domain is not null - invoked when object removed from a domain
+    if (theDomain == 0)
+    {
+        //set node pointers to null
+    }
+    else
+    {
+        //Use the domain to set the node pointers...
+        //nodePointers[0] = theDomain->getNode(Nd1);
+        //nodePointers[1] = theDomain->getNode(Nd2);
+        // Check the pointers...
+        // if (nodePointers == 0)
+        // {
+        //     bad error, usually means node was never
+        //  return;
+        // }
+        // Check the number of DOFs
+        // if(nodePointers[0]->getNumberDOF() != MY_NUMBER_OF_DOFS)
+        // {
+        //     print a tantrum
+        //     return;
+        // }
+        //
+        // More checks maybe
+        //
+        // Set the base class domain pointer
+        this->DomainComponent::setDomain(theDomain);
+    }
 
-    //Additionally one can allocate resources at this point.
-    you must implement
+}
+
+//Additionally one can allocate resources at this point.
+you must implement
 
 }
 
 
 
 
-
+//==================================================================================================
 // Accept current state of the element and save it. (If applicable)
 // I this is a gauss-point based element, one calls commitState on
 // the material pointers (Gauss points) owned by this element.
@@ -154,6 +204,9 @@ int NewElementTemplate::commitState(void)
 }
 
 
+
+
+//==================================================================================================
 // Revert the state of the element to the last committed state.
 // Must call for gausspoints if needed.
 //   * Input: void
@@ -165,6 +218,9 @@ int NewElementTemplate::revertToLastCommit(void)
 }
 
 
+
+
+//==================================================================================================
 // Revert the state of the element to the initial state.
 // Must call for gausspoints if needed.
 //   * Input: void
@@ -176,6 +232,9 @@ int NewElementTemplate::revertToStart(void)
 }
 
 
+
+
+//==================================================================================================
 // Update the state of the element. I.E. compute new tangent stiffness,
 // compute new resisting force, advance state variables.
 // These changes should not be permanent until commit function is called.
@@ -188,6 +247,9 @@ int NewElementTemplate::update(void)
 }
 
 
+
+
+//==================================================================================================
 //  (optionl) Set the elemental load to zero.
 //   * Input: void
 //   * Output: void
@@ -198,6 +260,10 @@ void NewElementTemplate::zeroLoad(void)
 }
 
 
+
+
+
+//==================================================================================================
 // (optionl) Add a new elemental load. This will modify the resisting force vector.
 //   * Input: ElementalLoad pointer and a loadFactor.
 //   * Output: error flag, 0 if success
@@ -221,6 +287,11 @@ int NewElementTemplate::addLoad(ElementalLoad *theLoad, double loadFactor)
 }
 
 
+
+
+
+
+//==================================================================================================
 //  Add intertial terms to resisting force vector.
 //   * Input: A vector with nodal accelerations???
 //   * Output: error flag, 0 if success
@@ -237,6 +308,8 @@ int NewElementTemplate::addInertiaLoadToUnbalance(const Vector &accel)
 
 
 
+
+//==================================================================================================
 // Functions to obtain stiffness, mass, damping and residual information
 //   * Input: void
 //   * Output: reference to tangent stiffness matrix (of size nDOF x nDOF,
@@ -252,6 +325,10 @@ const Matrix &NewElementTemplate::getTangentStiff(void)
 }
 
 
+
+
+
+//==================================================================================================
 // Functions to obtain initial stiffness
 //   * Input: void
 //   * Output: reference to initial tangent stiffness matrix (of size nDOF x nDOF,
@@ -263,6 +340,11 @@ const Matrix &NewElementTemplate::getInitialStiff(void)
 }
 
 
+
+
+
+
+//==================================================================================================
 // (optional) If element provides its own damping matrix, then this function returns it
 //   * Input: void
 //   * Output: reference to damping stiffness matrix (of size nDOF x nDOF,
@@ -273,6 +355,11 @@ const Matrix &NewElementTemplate::getDamp(void)
 }
 
 
+
+
+
+
+//==================================================================================================
 // (optional) If element provides its own damping matrix, then this function returns it
 //   * Input: void
 //   * Output: reference to damping stiffness matrix (of size nDOF x nDOF,
@@ -283,6 +370,11 @@ const Matrix &NewElementTemplate::getMass(void)
 }
 
 
+
+
+
+
+//==================================================================================================
 // (optional) If element provides its own damping matrix, then this function returns it
 //   * Input: void
 //   * Output: reference to damping stiffness matrix (of size nDOF x nDOF,
@@ -293,6 +385,11 @@ const Vector &NewElementTemplate::getResistingForce(void)
 }
 
 
+
+
+
+
+//==================================================================================================
 // (optional) Add inertial terms to resisting force.
 //   * Input: void
 //   * Output: Vector of doubles with new resisting force.
@@ -306,7 +403,7 @@ const Vector &NewElementTemplate::getResistingForceIncInertia(void)
 
 
 
-
+//==================================================================================================
 // (optional, a must if you want to do parallel processing)
 //  Send all state data of the element through a channel (usually an MPI_Channel)
 //   * Input: a reference to the Channel to use.
@@ -330,6 +427,9 @@ int NewElementTemplate::sendSelf(int commitTag, Channel &theChannel)
 }
 
 
+
+
+//==================================================================================================
 // (optional, a must if you want to do parallel processing)
 //  Receive all state data of the element through a channel (usually an MPI_Channel)
 //  this data comes from an element that is calling sendSelf in some other process.
@@ -351,7 +451,7 @@ int NewElementTemplate::receiveSelf(int commitTag, Channel &theChannel, FEM_Obje
 
 
 
-
+//==================================================================================================
 // Print out element info
 //   * Input: an ostream to print stuff into, and a flag
 //   * Output: void
@@ -367,6 +467,8 @@ void NewElementTemplate::Print(ostream &s, int flag = 0)
 
 
 
+
+//==================================================================================================
 // Check element correctness
 //   * Input: an ostream to print stuff into (print details of what is being checked here.)
 //   * Output: an error flag (<0 if element is not right in some way)
@@ -379,6 +481,10 @@ int NewElementTemplate::CheckMesh(ofstream &)
 
 
 
+
+
+
+//==================================================================================================
 // Output interface functions
 //   * Input: void
 //   * Output: number of double outputs for the element (size of the output vector)
@@ -388,6 +494,10 @@ int NewElementTemplate::getOutputSize() const
 }
 
 
+
+
+
+//==================================================================================================
 // Output interface functions
 //   * Input: void
 //   * Output: Vector (array of doubles) with the element output.
@@ -398,6 +508,9 @@ const Vector &NewElementTemplate::getOutput() const
 
 
 
+
+
+//==================================================================================================
 // Return a Matrix with the coordinates of Gauss points (or points where outputs are generated, could be the endpoints of a beam)
 //   * Input: void
 //   * Output: Matrix (array of doubles) with the gauss coordinates
@@ -411,3 +524,9 @@ Matrix &NewElementTemplate::getGaussCoordinates(void)
     you must implement
 }
 
+
+
+
+
+//==================================================================================================
+// Add you own member functions at the end!

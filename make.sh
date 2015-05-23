@@ -25,7 +25,7 @@ echo ""
 set essiexecutable = $PWD/bin/essi
 if ( -e $essiexecutable) then
 	echo "Compilation successful! "
-	echo "ESSI exccutable can be found in "$PWD"/bin"
+	echo "ESSI execcutable can be found in "$PWD"/bin"
 else
 	echo "Compilation FAILED."
 endif 

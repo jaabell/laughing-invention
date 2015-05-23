@@ -23,8 +23,8 @@
 // VERSION:
 // LANGUAGE:          C++
 // TARGET OS:
-// PROGRAMMER:
-// DATE:
+// PROGRAMMER:      Jose Abell, Boris Jeremic
+// DATE:            Thu 21 May 2015 10:00:08 PM PDT
 // UPDATE HISTORY:
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,35 +49,37 @@
 // 2015 Jose Abell - UCD CompGeoMech
 
 
-// (!) More instructions and details on the implementation file NewElementTemplate.cpp
+// (!) More instructions and details on the implementation file FrictionalPenaltyContact.cpp
 
 // Rename the header guard
-#ifndef NewElementTemplate_h
-#define NewElementTemplate_h
+#ifndef FrictionalPenaltyContact_h
+#define FrictionalPenaltyContact_h
 
 
 #include <Element.h>
 #include <Matrix.h>
 #include <Vector.h>
+#include <Domain.h>
+#include <Node.h>
 
 
 class Node;
 class Channel;
 
 
-class NewElementTemplate: public Element
+class FrictionalPenaltyContact: public Element
 {
 
 public:
 
     // Constructor
-    NewElementTemplate(int tag, int node1, .....);      //You must implement this
+    FrictionalPenaltyContact(int tag, int node1, int node2, double kn,  double kt, double mu, double e1_x_, double e1_y_, double e1_z_);
 
     // Empty constructor
-    NewElementTemplate();
+    FrictionalPenaltyContact();
 
     //Destructor
-    ~NewElementTemplate();
+    ~FrictionalPenaltyContact();
 
     // Functions to obtain information about dof & connectivity
     int getNumExternalNodes(void) const;
@@ -119,7 +121,7 @@ public:
     // Give the element a name
     std::string getElementName() const
     {
-        return "NewElementTemplate";
+        return "FrictionalPenaltyContact";
     }
 
     // Output interface functions
@@ -131,15 +133,29 @@ public:
 
 protected:
     //Implementation-specific member functions...
-    // Should be protected, cause they're not going to be called
-    // from outside the class, but you might want to inherit them
-
+    void computeGap();
+    void initialize();
 
 
 
 private:
-    // All data must be private. Provide setter and getter methods if
-    // this class interacts with other classes.
+    double kn;     // Normal penalty stiffness
+    double kt;     // Tangential penalty stiffness
+    double mu;     // Coeficient of friction
+    bool is_in_contact;
+    bool is_in_contact_prev;
+    Matrix B;      // Global to local (incremental gap) matrix
+    Vector *d_ij0; // Distance from node i to j at last contact. If the pointer is NULL, it means there was no contact in previous step!
+    Vector *d_ij0_prev; // Distance from node i to j at last contact. If the pointer is NULL, it means there was no contact in previous step!
+    Vector *tA;     // Current commitred local forces  t = [t_T1, t_T2, t_N]
+    Vector *tC;     // Current trial local forces  t = [t_T1, t_T2, t_N]
+    Vector *R;     // Current resisting forces
+    Vector *g;     // Current gap
+    Vector *g_prev;// Previous gap
+    Matrix *C;     // Current local stiffness
+
+    ID external_nodes;
+    Node* nodes[2];
 
 };
 

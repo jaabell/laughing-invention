@@ -56,84 +56,85 @@ class SystemOfEqn;
 
 class Vector
 {
-    public:
-        // constructors and destructor
-        Vector();
-        Vector(int);
-        Vector(const Vector &);
-        Vector(double *data, int size);
-        ~Vector();
+public:
+    // constructors and destructor
+    Vector();
+    Vector(int);
+    Vector(const Vector &);
+    Vector(double *data, int size);
+    ~Vector();
 
-        // utility methods
-        int setData(double *newData, int size);
-        int Assemble(const Vector &V, const ID &l, double fact = 1.0);
-        double Norm(void) const;
-        inline int Size(void) const;
-        int resize(int newSize);
-        inline void Zero(void);
-        int Normalize(void);
+    // utility methods
+    int setData(double *newData, int size);
+    int Assemble(const Vector &V, const ID &l, double fact = 1.0);
+    double Norm(void) const;
+    const double *getData() const;
+    inline int Size(void) const;
+    int resize(int newSize);
+    inline void Zero(void);
+    int Normalize(void);
 
-        int addVector(double factThis, const Vector &other, double factOther);
-        int addMatrixVector(double factThis, const Matrix &m, const Vector &v, double factOther);
-        int addMatrixTransposeVector(double factThis, const Matrix &m, const Vector &v, double factOther);
+    int addVector(double factThis, const Vector &other, double factOther);
+    int addMatrixVector(double factThis, const Matrix &m, const Vector &v, double factOther);
+    int addMatrixTransposeVector(double factThis, const Matrix &m, const Vector &v, double factOther);
 
 
-        // overloaded operators
-        inline double operator()(int x) const;
-        inline double &operator()(int x);
-        double operator[](int x) const;  // these two operator do bounds checks
-        double &operator[](int x);
-        Vector operator()(const ID &rows) const;
-        Vector &operator=(const Vector  &V);
-        Vector &operator=(const Tensor  &T);
+    // overloaded operators
+    inline double operator()(int x) const;
+    inline double &operator()(int x);
+    double operator[](int x) const;  // these two operator do bounds checks
+    double &operator[](int x);
+    Vector operator()(const ID &rows) const;
+    Vector &operator=(const Vector  &V);
+    Vector &operator=(const Tensor  &T);
 
-        Vector &operator+=(double fact);
-        Vector &operator-=(double fact);
-        Vector &operator*=(double fact);
-        Vector &operator/=(double fact);
+    Vector &operator+=(double fact);
+    Vector &operator-=(double fact);
+    Vector &operator*=(double fact);
+    Vector &operator/=(double fact);
 
-        Vector operator+(double fact) const;
-        Vector operator-(double fact) const;
-        Vector operator*(double fact) const;
-        Vector operator/(double fact) const;
+    Vector operator+(double fact) const;
+    Vector operator-(double fact) const;
+    Vector operator*(double fact) const;
+    Vector operator/(double fact) const;
 
-        Vector &operator+=(const Vector &V);
-        Vector &operator-=(const Vector &V);
+    Vector &operator+=(const Vector &V);
+    Vector &operator-=(const Vector &V);
 
-        Vector operator+(const Vector &V) const;
-        Vector operator-(const Vector &V) const;
-        double operator^(const Vector &V) const;
-        Vector operator/(const Matrix &M) const;
+    Vector operator+(const Vector &V) const;
+    Vector operator-(const Vector &V) const;
+    double operator^(const Vector &V) const;
+    Vector operator/(const Matrix &M) const;
 
-        bool operator==(const Vector &V) const;
+    bool operator==(const Vector &V) const;
 
-        // methods added by Remo
-        int  Assemble(const Vector &V, int init_row, double fact = 1.0);
-        int  Extract (const Vector &V, int init_row, double fact = 1.0);
+    // methods added by Remo
+    int  Assemble(const Vector &V, int init_row, double fact = 1.0);
+    int  Extract (const Vector &V, int init_row, double fact = 1.0);
 
-        friend ostream &operator<<(ostream &s, const Vector &V);
-        // friend istream &operator>>(istream &s, Vector &V);
-        friend Vector operator*(double a, const Vector &V);
+    friend ostream &operator<<(ostream &s, const Vector &V);
+    // friend istream &operator>>(istream &s, Vector &V);
+    friend Vector operator*(double a, const Vector &V);
 
-        friend class Message;
-        friend class SystemOfEqn;
-        friend class Matrix;
-        friend class TCP_SocketNoDelay;
-        friend class TCP_Socket;
-        friend class UDP_Socket;
-        friend class MPI_Channel;
-        friend class HDF5_Channel;
-        friend class MySqlDatastore;
-        friend class MySqlDataRecorder;
-        friend class BerkeleyDbDatastore;
-        friend class OutputWriter;
-        friend class H5OutputWriter;
+    friend class Message;
+    friend class SystemOfEqn;
+    friend class Matrix;
+    friend class TCP_SocketNoDelay;
+    friend class TCP_Socket;
+    friend class UDP_Socket;
+    friend class MPI_Channel;
+    friend class HDF5_Channel;
+    friend class MySqlDatastore;
+    friend class MySqlDataRecorder;
+    friend class BerkeleyDbDatastore;
+    friend class OutputWriter;
+    friend class H5OutputWriter;
 
-    private:
-        static double VECTOR_NOT_VALID_ENTRY;
-        int sz;
-        double *theData;
-        int fromFree;
+private:
+    static double VECTOR_NOT_VALID_ENTRY;
+    int sz;
+    double *theData;
+    int fromFree;
 };
 
 
@@ -186,7 +187,16 @@ Vector::operator()(int x)
     //#endif
 
     return theData[x];
+
+
 }
+
+
+inline const double *Vector::getData() const
+{
+    return theData;
+}
+
 
 
 #endif

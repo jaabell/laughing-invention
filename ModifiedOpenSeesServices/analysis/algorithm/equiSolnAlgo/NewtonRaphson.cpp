@@ -182,7 +182,7 @@ NewtonRaphson::solveCurrentStep(void)
 
     if (result == -2)
     {
-        cerr << "NewtnRaphson::solveCurrentStep() -";
+        cerr << "NewtonRaphson::solveCurrentStep() -";
         cerr << "the ConvergenceTest object failed in test()\n";
         return -3;
     }
@@ -208,8 +208,8 @@ NewtonRaphson::sendSelf(int cTag, Channel& theChannel)
 
 int
 NewtonRaphson::receiveSelf(int cTag,
-                        Channel& theChannel,
-                        FEM_ObjectBroker& theBroker)
+                           Channel& theChannel,
+                           FEM_ObjectBroker& theBroker)
 {
     static ID data(1);
     theChannel.receiveID(this->getDbTag(), cTag, data);

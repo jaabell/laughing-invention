@@ -1368,7 +1368,7 @@ Vector::operator^(const Vector &V) const
 
     for (int i = 0; i < sz; i++)
     {
-        result += *dataThis++ **dataV++;
+        result += *dataThis++ * (*dataV++);
     }
 
     return result;

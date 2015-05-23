@@ -377,6 +377,12 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
 int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID &connectivity , int materialtag , const Matrix &gausscoordinates,
         int length_of_output, int class_tag)
 {
+
+    if (tag < 0)
+    {
+        cerr << "H5OutputWriter::writeElementMeshData - Error: got tag = " << tag << " < 0" << endl;
+    }
+
     int nnodes, ntags;
     ntags = Number_of_Nodes.Size();
     int addzeros = tag - ntags;
@@ -1311,9 +1317,9 @@ void H5OutputWriter::writeMesh()
             hsize_t dims[2];
             hsize_t maxdims[2];
             dims[0] = (hsize_t) length_nodes_displacements_output;
-            dims[1] = number_of_time_steps;
+            dims[1] = number_of_time_steps + 1;
             maxdims[0] = (hsize_t)  length_nodes_displacements_output;
-            maxdims[1] = number_of_time_steps;
+            maxdims[1] = number_of_time_steps + 1;
 
             id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
         }
@@ -1323,9 +1329,9 @@ void H5OutputWriter::writeMesh()
             hsize_t dims[2];
             hsize_t maxdims[2];
             dims[0] = (hsize_t) length_element_output;
-            dims[1] = number_of_time_steps;
+            dims[1] = number_of_time_steps + 1;
             maxdims[0] = (hsize_t)  length_element_output;
-            maxdims[1] = number_of_time_steps;
+            maxdims[1] = number_of_time_steps + 1;
 
             if (flag_write_element_output == 1)
             {

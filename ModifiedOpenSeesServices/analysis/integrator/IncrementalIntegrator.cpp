@@ -125,18 +125,12 @@ IncrementalIntegrator::formUnbalance(void)
         return -1;
     }
 
-    //Added by Babak KAmrani for debugging
-    //    cerr << "IncrementalIntegrator::formUnbalance after formNodalUnbalance" << this->formElementResidual()<< endl;
-
     if (this->formNodalUnbalance() < 0)
     {
         cerr << "WARNING IncrementalIntegrator::formUnbalance ";
         cerr << " - this->formNodalUnbalance failed\n";
         return -2;
     }
-
-    //Added by Babak KAmrani for debugging
-    //    cerr << "IncrementalIntegrator::formUnbalance after formNodalUnbalance" << this->formNodalUnbalance()<<endl;
 
     return 0;
 }

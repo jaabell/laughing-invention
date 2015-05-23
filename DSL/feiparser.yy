@@ -178,7 +178,7 @@
 // Tokens for elements
 %token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
 %token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based beam_elastic beam_elastic_lumped_mass penalty penalty_for_applying_generalized_displacement beam_9dof_elastic
-%token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact
+%token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact FrictionalPenaltyContact
 %token EightNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT
 
 // Element options tokens
@@ -4043,6 +4043,39 @@ ADD_element:
         $$ = new FeiDslCaller10<int, int, int,
                                double, double, double,
                                double, double, double, double>(&add_element_contact_nonlinear_3dof_to_3dof, args, signature, "add_element_contact_nonlinear_3dof_to_3dof");
+
+        for(int ii = 1;ii <=10; ii++) nodes.pop();
+        nodes.push($$);
+    }
+    //!=========================================================================================================
+    //!
+    //!FEIDOC add element # <.> type [FrictionalPenaltyContact] with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
+    | TEXTNUMBER exp TYPE FrictionalPenaltyContact WITH NODES
+        '(' exp ',' exp ')'
+        normal_stiffness '=' exp
+        tangential_stiffness '=' exp
+        friction_ratio '=' exp
+        contact_plane_vector '=' '(' exp ','  exp ','  exp ')'
+    {
+        args.clear(); signature.clear();
+
+        args.push_back($2); signature.push_back(this_signature("number",                  &isAdimensional));
+
+        args.push_back($8); signature.push_back(this_signature("node1",                   &isAdimensional));
+        args.push_back($10); signature.push_back(this_signature("node2",                  &isAdimensional));
+
+        args.push_back($14); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
+        args.push_back($17); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
+        args.push_back($20); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
+
+        args.push_back($24); signature.push_back(this_signature("x_local_1",              &isAdimensional));
+        args.push_back($26); signature.push_back(this_signature("x_local_2",              &isAdimensional));
+        args.push_back($28); signature.push_back(this_signature("x_local_3",              &isAdimensional));
+
+
+        $$ = new FeiDslCaller9<int, int, int,
+                               double, double, double,
+                               double, double, double>(&add_element_frictional_penalty_contact, args, signature, "add_element_frictional_penalty_contact");
 
         for(int ii = 1;ii <=9; ii++) nodes.pop();
         nodes.push($$);
