@@ -354,6 +354,8 @@ EXP	([Ee][-+]?[0-9]+)
 "stiffness"                         {return token::stiffness;}
 "normal_stiffness"                  {return token::normal_stiffness;}
 "tangential_stiffness"              {return token::tangential_stiffness;}
+"normal_damping"                    {return token::normal_damping;}
+"tangential_damping"                {return token::tangential_damping;}
 "friction_ratio"                    {return token::friction_ratio;}
 "maximum_gap"                       {return token::maximum_gap;}
 "contact_plane_vector"              {return token::contact_plane_vector;}

@@ -73,7 +73,7 @@ class FrictionalPenaltyContact: public Element
 public:
 
     // Constructor
-    FrictionalPenaltyContact(int tag, int node1, int node2, double kn,  double kt, double mu, double e1_x_, double e1_y_, double e1_z_);
+    FrictionalPenaltyContact(int tag, int node1, int node2, double kn,  double kt,  double cn_,  double ct_, double mu, double e1_x_, double e1_y_, double e1_z_);
 
     // Empty constructor
     FrictionalPenaltyContact();
@@ -141,6 +141,8 @@ protected:
 private:
     double kn;     // Normal penalty stiffness
     double kt;     // Tangential penalty stiffness
+    double cn;
+    double ct;
     double mu;     // Coeficient of friction
     bool is_in_contact;
     bool is_in_contact_prev;

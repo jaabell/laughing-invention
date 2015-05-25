@@ -278,7 +278,7 @@ Newmark::newStep(double deltaT)
     double time = theModel->getCurrentDomainTime();
     time += deltaT;
 
-    cout << "Newmark::newStep() - Updating doman.\n";
+    // cout << "Newmark::newStep() - Updating doman.\n";
     if (theModel->updateDomain(time, deltaT) < 0)
     {
         cerr << "Newmark::newStep() - failed to update the domain\n";

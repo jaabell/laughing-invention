@@ -60,10 +60,12 @@
 // Constructor. Receive all input parameters. Should not allocate resources!
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
-FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2, double kn_, double kt_, double mu_, double e1_x, double e1_y, double e1_z):
+FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2, double kn_, double kt_, double cn_, double ct_,  double mu_, double e1_x, double e1_y, double e1_z):
     Element(tag, ELE_TAG_FrictionalPenaltyContact),
     kn(kn_),
     kt(kt_),
+    cn(cn_),
+    ct(ct_),
     mu(mu_),
     is_in_contact(false),
     is_in_contact_prev(false),
@@ -157,6 +159,8 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
     Element(0, ELE_TAG_FrictionalPenaltyContact), //ATTENTION! Define the class tag in classTags.h
     kn(0.0),
     kt(0.0),
+    cn(0.0),
+    ct(0.0),
     mu(0.0),
     is_in_contact(false),
     is_in_contact_prev(false),
@@ -618,8 +622,17 @@ const Matrix &FrictionalPenaltyContact::getInitialStiff(void)
 //             where nDOF = FrictionalPenaltyContact::getNumDOF();
 const Matrix &FrictionalPenaltyContact::getDamp(void)
 {
-    static Matrix Czero(6, 6);
-    return Czero;
+    // cout << "FrictionalPenaltyContact::getDamp(void)\n";
+    static Matrix C(6, 6);
+    C.Zero();
+
+    Matrix Clocal(3, 3);
+    Clocal(0, 0) = ct;
+    Clocal(1, 1) = ct;
+    Clocal(2, 2) = cn;
+
+    C.addMatrixTripleProduct(0.0, B, Clocal, 1.0); // B' * C * B
+    return C;
 }
 
 

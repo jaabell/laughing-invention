@@ -182,7 +182,7 @@
 %token EightNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT
 
 // Element options tokens
-%token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule number_of_integration_points stiffness normal_stiffness tangential_stiffness
+%token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule number_of_integration_points stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
 %token friction_ratio maximum_gap
 %token xz_plane_vector joint_1_offset joint_2_offset direction contact_plane_vector
 
@@ -4049,11 +4049,13 @@ ADD_element:
     }
     //!=========================================================================================================
     //!
-    //!FEIDOC add element # <.> type [FrictionalPenaltyContact] with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
+    //!FEIDOC add element # <.> type [FrictionalPenaltyContact] with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
     | TEXTNUMBER exp TYPE FrictionalPenaltyContact WITH NODES
         '(' exp ',' exp ')'
         normal_stiffness '=' exp
         tangential_stiffness '=' exp
+        normal_damping '=' exp
+        tangential_damping '=' exp
         friction_ratio '=' exp
         contact_plane_vector '=' '(' exp ','  exp ','  exp ')'
     {
@@ -4066,15 +4068,17 @@ ADD_element:
 
         args.push_back($14); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
         args.push_back($17); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
-        args.push_back($20); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
+        args.push_back($20); signature.push_back(this_signature("normal_damping",       &isThisUnit<1, 0, -1>));
+        args.push_back($23); signature.push_back(this_signature("tangential_damping",   &isThisUnit<1, 0, -1>));
+        args.push_back($26); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
 
-        args.push_back($24); signature.push_back(this_signature("x_local_1",              &isAdimensional));
-        args.push_back($26); signature.push_back(this_signature("x_local_2",              &isAdimensional));
-        args.push_back($28); signature.push_back(this_signature("x_local_3",              &isAdimensional));
+        args.push_back($30); signature.push_back(this_signature("x_local_1",              &isAdimensional));
+        args.push_back($32); signature.push_back(this_signature("x_local_2",              &isAdimensional));
+        args.push_back($34); signature.push_back(this_signature("x_local_3",              &isAdimensional));
 
 
-        $$ = new FeiDslCaller9<int, int, int,
-                               double, double, double,
+        $$ = new FeiDslCaller11<int, int, int,
+                               double, double, double, double, double,
                                double, double, double>(&add_element_frictional_penalty_contact, args, signature, "add_element_frictional_penalty_contact");
 
         for(int ii = 1;ii <=9; ii++) nodes.pop();
