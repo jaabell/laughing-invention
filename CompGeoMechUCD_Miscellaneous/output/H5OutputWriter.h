@@ -33,6 +33,8 @@
 #include <hdf5.h>
 #include <hdf5_hl.h>
 
+#include <algorithm>  // For std::min and std::max functions
+
 #ifndef H5OutputWriter_H
 #define H5OutputWriter_H
 
@@ -82,6 +84,7 @@ ssize_t nobjects;
 #define H5OUTPUTWRITER_PREEMPTION_POLICY 0.75
 #define H5OUTPUTWRITER_TIMESTRING_MAX_SIZE 64
 
+#define H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS 100
 
 class H5OutputWriter: public OutputWriter
 {

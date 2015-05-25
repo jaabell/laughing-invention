@@ -458,6 +458,46 @@ void Domain_Reduction_Method_HDF5_input::clean_all_data()
     {
         DRMerror << "Unable to close one node memspace. " << endl;
     }
+
+    hid_t obj_id_list[H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS];
+    hsize_t n_obj_open = 10;
+    while (n_obj_open > 0)
+    {
+        n_obj_open = H5Fget_obj_count(id_drm_file, H5F_OBJ_DATASET | H5F_OBJ_GROUP | H5F_OBJ_ATTR | H5F_OBJ_LOCAL );
+        cout << "Domain_Reduction_Method_HDF5_input -- N of HDF5 objects open = " << n_obj_open << endl;
+
+        if (n_obj_open <= 0)
+        {
+            break;
+        }
+
+        int number_of_open_objects;
+
+        //Close datasets
+        number_of_open_objects = H5Fget_obj_ids( id_drm_file, H5F_OBJ_DATASET | H5F_OBJ_LOCAL, DRMHDF5_MAX_RETURN_OPEN_OBJS, obj_id_list );
+        for (int i = 0; i < std::min(number_of_open_objects, DRMHDF5_MAX_RETURN_OPEN_OBJS) ; i++ )
+        {
+            H5Dclose(obj_id_list[i]);
+        }
+
+        //Close groups
+        number_of_open_objects = H5Fget_obj_ids( id_drm_file, H5F_OBJ_GROUP | H5F_OBJ_LOCAL, DRMHDF5_MAX_RETURN_OPEN_OBJS, obj_id_list );
+        for (int i = 0; i < std::min(number_of_open_objects, DRMHDF5_MAX_RETURN_OPEN_OBJS) ; i++ )
+        {
+            H5Gclose(obj_id_list[i]);
+        }
+
+        //Close groups
+        number_of_open_objects = H5Fget_obj_ids( id_drm_file, H5F_OBJ_ATTR | H5F_OBJ_LOCAL, DRMHDF5_MAX_RETURN_OPEN_OBJS, obj_id_list );
+        for (int i = 0; i < std::min(number_of_open_objects, DRMHDF5_MAX_RETURN_OPEN_OBJS) ; i++ )
+        {
+            H5Aclose(obj_id_list[i]);
+        }
+
+    }
+
+
+
     if (H5Fclose(id_drm_file) < 0)
     {
         DRMerror << "Unable to close HDF5 file \"" << HDF5filename << "\"\n";

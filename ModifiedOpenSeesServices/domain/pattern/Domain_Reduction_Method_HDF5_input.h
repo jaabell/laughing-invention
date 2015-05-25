@@ -50,6 +50,9 @@
 #include <map>
 
 
+#include <algorithm>  // For std::min and std::max functions
+
+
 #include <string>
 
 
@@ -58,6 +61,8 @@
 #define DRMerror std::cerr << std::endl << __PRETTY_FUNCTION__ << " - ERROR: \n"
 #define DRMwarning std::cout << std::endl <<  __PRETTY_FUNCTION__ << " - Warning: \n"
 #define DRMout std::cout << std::endl << __PRETTY_FUNCTION__ << " : \n"
+
+#define DRMHDF5_MAX_RETURN_OPEN_OBJS 100
 
 class Vector;
 class Matrix;

@@ -161,6 +161,7 @@ H5OutputWriter::~H5OutputWriter()
 
 void H5OutputWriter::finalize()
 {
+    cout << "H5OutputWriter::finalize()-\n";
     if (file_is_open)
     {
         // cout << "endingtime \n\n";
@@ -172,9 +173,60 @@ void H5OutputWriter::finalize()
         write_string(id_file, "Date_and_Time_End", timestring);
 
 
-        //Close file
+        //Close all objects
+        // H5F_OBJ_FILE    Files only
+        // H5F_OBJ_DATASET Datasets only
+        // H5F_OBJ_GROUP   Groups only
+        // H5F_OBJ_DATATYPE    Named datatypes only
+        // H5F_OBJ_ATTR    Attributes only
+        // H5F_OBJ_ALL All of the above
+        // (That is, H5F_OBJ_FILE | H5F_OBJ_DATASET | H5F_OBJ_GROUP | H5F_OBJ_DATATYPE | H5F_OBJ_ATTR)
+        // H5F_OBJ_LOCAL   Restrict search to objects opened through current file identifier.
+        // Note: H5F_OBJ_LOCAL does not stand alone; it is effective only when used in combination with one or more of the preceding types. For example,
+        //     H5F_OBJ_DATASET | H5F_OBJ_GROUP | H5F_OBJ_LOCAL
+        // would count all datasets and groups opened through the current file identifier.
+
+        hid_t obj_id_list[H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS];
+        hsize_t n_obj_open = 10;
+        while (n_obj_open > 0)
+        {
+            n_obj_open = H5Fget_obj_count(id_file, H5F_OBJ_DATASET | H5F_OBJ_GROUP | H5F_OBJ_ATTR | H5F_OBJ_LOCAL );
+            cout << "H5OutputWriter -- N of HDF5 objects open = " << n_obj_open << endl;
+
+
+            if (n_obj_open <= 0)
+            {
+                break;
+            }
+
+
+            int number_of_open_objects;
+
+            //Close datasets
+            number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_DATASET | H5F_OBJ_LOCAL, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS, obj_id_list );
+            for (int i = 0; i < std::min(number_of_open_objects, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS) ; i++ )
+            {
+                H5Dclose(obj_id_list[i]);
+            }
+
+            //Close groups
+            number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_GROUP | H5F_OBJ_LOCAL, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS, obj_id_list );
+            for (int i = 0; i < std::min(number_of_open_objects, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS) ; i++ )
+            {
+                H5Gclose(obj_id_list[i]);
+            }
+
+            //Close groups
+            number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_ATTR | H5F_OBJ_LOCAL, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS, obj_id_list );
+            for (int i = 0; i < std::min(number_of_open_objects, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS) ; i++ )
+            {
+                H5Aclose(obj_id_list[i]);
+            }
+
+        }
+        //Finally close file
         file_is_open = false;
-        H5close();
+        H5Fclose(id_file);
     }
 }
 
@@ -1625,8 +1677,6 @@ int H5OutputWriter::write_string(hid_t here, std::string name, std::string conte
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(id_data_string,
                       id_type_string,
@@ -2066,8 +2116,6 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(
                  id_array,              // Dataset to write to
@@ -2146,8 +2194,6 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     //Write data!
     status = H5Dwrite(
@@ -2245,8 +2291,6 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(
                  id_array,              // Dataset to write to
@@ -2323,8 +2367,6 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(
                  id_array,              // Dataset to write to
@@ -2398,8 +2440,6 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
     //Added By Babak 5/31/14
     //------------------------
 #ifdef _PARALLEL_PROCESSING
-    // hid_t file_access_plist = H5Pcreate(H5P_DATASET_XFER);
-    // H5Pset_dxpl_mpio(file_access_plist, H5FD_MPIO_INDEPENDENT);
 
     status = H5Dwrite(
                  id_array,              // Dataset to write to
