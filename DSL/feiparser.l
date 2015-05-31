@@ -6,111 +6,112 @@
 %x COMMENT
 
 %{
-    #include <iostream>
-    #include <fstream>
-    #include <string>
+	#include <iostream>
+	#include <fstream>
+	#include <string>
 
 
 
-    //Old C libraries are used in lexer....
-    #include <cstdlib>
-    #include <cstring>
-    #include <csignal>
-    #include <stdio.h>                         // Provides printf, etc.
-    #include <string.h>
-    #include <getopt.h>                        // For the command-line argument parser
-    /// =================================================================================
-    // Please do not erase! Might make it into code someday.
-    // #include <readline/readline.h>
-    // #include <readline/history.h>
-    // =================================================================================
+	//Old C libraries are used in lexer....
+	#include <cstdlib>
+	#include <cstring>
+	#include <csignal>
+	#include <stdio.h>                         // Provides printf, etc.
+	#include <string.h>
+	#include <getopt.h>                        // For the command-line argument parser
+	/// =================================================================================
+	// Please do not erase! Might make it into code someday.
+	// #include <readline/readline.h>
+	// #include <readline/history.h>
+	// =================================================================================
 
-    //Our FEI libraries
-    #include "feiast.h"
-    #include "dsl_actions.h"
-    #include "siunit.h"
-    #include "quantity.h"
+	//Our FEI libraries
+	#include "feiast.h"
+	#include "dsl_actions.h"
+	#include "siunit.h"
+	#include "quantity.h"
 
-    //From the parser generator
-    #include "feiparser.tab.hh"
+	//From the parser generator
+	#include "feiparser.tab.hh"
 
-    //Boost for string to double conversion
-    //#include <../boost/boost/lexical_cast.hpp>
-    #include <boost/lexical_cast.hpp>
-
-
-    int yycolumn = 1;
-    #define YY_DECL int yylex(yy::feiparser::semantic_type *yylval, \
-                              yy::feiparser::location_type *yylloc)
-    //#define YY_USER_ACTION yylloc -> columns (yyleng);
-    #define YY_USER_ACTION yylloc->end.line = yylineno; \
-    yylloc->end.column = yycolumn+yyleng; \
-    yycolumn += yyleng;
-
-    // =================================================================================
-    // Please do not erase! Might make it into code someday.
-    // This is to replace STDIN with GNU Readline (Caution!!! GPL Licence).
-    // #undef YY_INPUT
-    // #define YY_INPUT(buf, result, max_size) (result = my_yyinput(buf, max_size))
-    // =================================================================================
-
-    //static int my_yyinput(char *buf, int max_size);
-    //static char *st_readline_buffer;
-    //static int  st_readline_used_len;
-
-    //Simplify the usage of tokens...
-    typedef yy::feiparser::token token;
-
-    //Standard namespace
-    using namespace std;
+	//Boost for string to double conversion
+	//#include <../boost/boost/lexical_cast.hpp>
+	#include <boost/lexical_cast.hpp>
 
 
-    //
-    //FILE * ;
+	int yycolumn = 1;
+	#define YY_DECL int yylex(yy::feiparser::semantic_type *yylval, \
+							  yy::feiparser::location_type *yylloc)
+	//#define YY_USER_ACTION yylloc -> columns (yyleng);
+	#define YY_USER_ACTION yylloc->end.line = yylineno; \
+	yylloc->end.column = yycolumn+yyleng; \
+	yycolumn += yyleng;
 
-    struct bufstack
-    {
-        struct bufstack *prev;
-        YY_BUFFER_STATE bs;
-        int lineno;
-        char* filename;
-        FILE *f;
-    } *curbs = 0;
+	// =================================================================================
+	// Please do not erase! Might make it into code someday.
+	// This is to replace STDIN with GNU Readline (Caution!!! GPL Licence).
+	// #undef YY_INPUT
+	// #define YY_INPUT(buf, result, max_size) (result = my_yyinput(buf, max_size))
+	// =================================================================================
 
-    char* curfilename;
+	//static int my_yyinput(char *buf, int max_size);
+	//static char *st_readline_buffer;
+	//static int  st_readline_used_len;
 
-    int newfile(char* fn);
-    int newstdin(void);
-    int popfile(void);
-    int error_behavior(void);
-    void welcome_msg();
-    void set_known_units();
-    void set_variables(char* cstring);
+	//Simplify the usage of tokens...
+	typedef yy::feiparser::token token;
+
+	//Standard namespace
+	using namespace std;
 
 
-    char initial[] = "STDIN";
+	//
+	//FILE * ;
 
-    //Command line options flags
-    int FLAG_interactive_mode    = 1;
-    int FLAG_generate_cpp_output = 0;
-    int FLAG_dry_run             = 0;
-    int FLAG_execute_apis        = 1;
-    int FLAG_inclusion_mode      = 0;
-    int FLAG_run_file            = 0;
-    int FLAG_binary_output       = 0;
+	struct bufstack
+	{
+		struct bufstack *prev;
+		YY_BUFFER_STATE bs;
+		int lineno;
+		char* filename;
+		FILE *f;
+	} *curbs = 0;
 
-    /* EXTERNS - All defined in feiparser.yy */
-    extern const string thePrompt;
-    extern string out_cpp_filename;
-    extern string prompt;
-    extern map<string,Quantity> global_variables;
-    extern set<string> locked_global_variables;
-    extern int recovery_mode;
-    extern void set_model_name(char* cstring);
-    extern void set_outcppfile_name(string newfilename);
-    extern void wipe_model();
-    extern void set_dry_run_mode(int);
-    extern void set_profiling_results_filename(char* cstring);
+	char* curfilename;
+
+	int newfile(char* fn);
+	int newstdin(void);
+	int popfile(void);
+	int error_behavior(void);
+	void welcome_msg();
+	void set_known_units();
+	void set_variables(char* cstring);
+
+
+	char initial[] = "STDIN";
+
+	//Command line options flags
+	int FLAG_interactive_mode    = 1;
+	int FLAG_generate_cpp_output = 0;
+	int FLAG_dry_run             = 0;
+	int FLAG_execute_apis        = 1;
+	int FLAG_inclusion_mode      = 0;
+	int FLAG_run_file            = 0;
+	int FLAG_binary_output       = 0;
+
+	/* EXTERNS - All defined in feiparser.yy */
+	extern const string thePrompt;
+	extern string out_cpp_filename;
+	extern string prompt;
+	extern map<string,Quantity> global_variables;
+	extern set<string> locked_global_variables;
+	extern int recovery_mode;
+	extern void set_model_name(char* cstring);
+	extern void set_outcppfile_name(string newfilename);
+	extern void wipe_model();
+	extern void set_dry_run_mode(int);
+	extern void set_profiling_results_filename(char* cstring);
+	extern void call_hdf5_flush_next_chance(void);
 
 
 %}
@@ -121,8 +122,8 @@ EXP	([Ee][-+]?[0-9]+)
 %%
 
 %{
-    // start where previous token ended
-    //yylloc -> step();
+	// start where previous token ended
+	//yylloc -> step();
 %}
 
  /* ================================================================================================= */
@@ -149,11 +150,11 @@ EXP	([Ee][-+]?[0-9]+)
 ")"                         { return yytext[0]; }
 
 ";"                         {
-                                yylloc->begin.line = yylineno;
-                                yylloc->begin.column = yycolumn;
+								yylloc->begin.line = yylineno;
+								yylloc->begin.column = yycolumn;
 
-                                return yytext[0];
-                            }
+								return yytext[0];
+							}
  /* assign operate */
 
 "+="                        { return token::PLUSEQUAL; }
@@ -212,23 +213,23 @@ EXP	([Ee][-+]?[0-9]+)
  /* Include statement is handled by the lexer */
 [ \t]*include[ \t]*\"       {BEGIN IFILE; }
 <IFILE>[^ \t\n\"]+          {
-                                {
-                                    //This ignores anything up to the newline.
-                                    int c;
-                                    while((c=yyinput()) && c != '\n');
-                                }
-                                yylineno++;
-                                if(newfile(yytext) == 0)
-                                    yyterminate();  /*file not found*/
-                                yylloc -> begin.filename = yylloc -> end.filename = new std::string(curfilename);
-                                prompt = "";
-                                BEGIN INITIAL;
-                                FLAG_inclusion_mode = 1;
-                            }
+								{
+									//This ignores anything up to the newline.
+									int c;
+									while((c=yyinput()) && c != '\n');
+								}
+								yylineno++;
+								if(newfile(yytext) == 0)
+									yyterminate();  /*file not found*/
+								yylloc -> begin.filename = yylloc -> end.filename = new std::string(curfilename);
+								prompt = "";
+								BEGIN INITIAL;
+								FLAG_inclusion_mode = 1;
+							}
 <IFILE>.|\n                 {
-                                cerr << curfilename << ":" << yylineno << ": bad include line." << endl;
-                                yyterminate();
-                            }
+								cerr << curfilename << ":" << yylineno << ": bad include line." << endl;
+								yyterminate();
+							}
 
 
  /* built in functions */
@@ -422,13 +423,13 @@ EXP	([Ee][-+]?[0-9]+)
 "control"                           {return token::control;}
 
 "explicit"                          {
-                                        yylval->value = new Quantity(0.0,unitless);
-                                        return token::NUMBER;
-                                    }
+										yylval->value = new Quantity(0.0,unitless);
+										return token::NUMBER;
+									}
 "implicit"                          {
-                                        yylval->value = new Quantity(1.0,unitless);
-                                        return token::NUMBER;
-                                    }
+										yylval->value = new Quantity(1.0,unitless);
+										return token::NUMBER;
+									}
 "isotropic_hardening_rate"          {return token::isotropic_hardening_rate;}
 "kinematic_hardening_rate"          {return token::kinematic_hardening_rate;}
 "initial_void_ratio"                {return token::initial_void_ratio;}
@@ -538,9 +539,9 @@ EXP	([Ee][-+]?[0-9]+)
 "F_fluid_x"                         |
 "F_fluid_y"                         |
 "F_fluid_z"                         {
-                                        yylval->ident = new string(yytext);
-                                        return token::FORCE;
-                                    }
+										yylval->ident = new string(yytext);
+										return token::FORCE;
+									}
 
  /* Acceleration field options*/
 "ax"                                {return token::ax;}
@@ -592,9 +593,9 @@ EXP	([Ee][-+]?[0-9]+)
 "Initial_Stiffness"                 |
 "Current_Stiffness"                 |
 "Last_Committed_Stiffness"           {
-                                        yylval->ident = new string(yytext);
-                                        return token::stiffness_to_use_opt;
-                                    }
+										yylval->ident = new string(yytext);
+										return token::stiffness_to_use_opt;
+									}
 
  /* Constraint types */
 "equal dof"                         {return token::equaldof;}
@@ -645,16 +646,16 @@ EXP	([Ee][-+]?[0-9]+)
 "modified_newton"                    |
 "newton"                             |
 "Newton"                             {
-                                        yylval->ident = new string(yytext);
-                                        return token::ALGNAME;
-                                     }
+										yylval->ident = new string(yytext);
+										return token::ALGNAME;
+									 }
  /* Test options */
 "Norm_Displacement_Increment"       |
 "Norm_Unbalance"                    |
 "Energy_Increment"                  {
-                                        yylval->ident = new string(yytext);
-                                        return token::TESTNAME;
-                                    }
+										yylval->ident = new string(yytext);
+										return token::TESTNAME;
+									}
 "tolerance"                         {return token::tolerance;}
 "maximum_iterations"                {return token::maximum_iterations;}
 "verbose_level"                     {return token::verbose_level;}
@@ -668,9 +669,9 @@ EXP	([Ee][-+]?[0-9]+)
 "parallel"                           |
 "umfpack"                           |
 "UMFPack"                           {
-                                        yylval->ident = new string(yytext);
-                                        return token::SOLVERNAME;
-                                    }
+										yylval->ident = new string(yytext);
+										return token::SOLVERNAME;
+									}
 
  /* define static and dynamic integrator options */
 "Newmark"                           {return token::DYNAMICINTEGRATOR_NEWMARK;}
@@ -749,17 +750,17 @@ EXP	([Ee][-+]?[0-9]+)
 "Uy"                                |
 "Uz"                                |
 "p"                                 {
-                                        yylval->ident = new string(yytext);
-                                        return token::DOF;
-                                    }
+										yylval->ident = new string(yytext);
+										return token::DOF;
+									}
 
  /*Other language commands*/
 "quit"                          |
 "exit"                          |
 "bye"                           {
-                                    yylval->ident = new string(yytext);
-                                    return token::BYE;
-                                }
+									yylval->ident = new string(yytext);
+									return token::BYE;
+								}
 "einstein;"                       {void show_einstein(); show_einstein();}
 
 
@@ -771,43 +772,43 @@ EXP	([Ee][-+]?[0-9]+)
 
  /* names */
 [_a-zA-Z][_a-zA-Z0-9]*              {
-                                        yylval->ident = new string(yytext);
-                                        return token::IDENT;
-                                    }
+										yylval->ident = new string(yytext);
+										return token::IDENT;
+									}
 
  /*numbers*/
 [0-9]+"."[0-9]*{EXP}?               |
 "."?[0-9]+{EXP}?                    {
-                                        yylval->value = new Quantity(atof(yytext), unitless);
-                                        return token::NUMBER;
-                                    }
+										yylval->value = new Quantity(atof(yytext), unitless);
+										return token::NUMBER;
+									}
  /* End-of-file discards current file and returns to the previous, otherwise to the interactive prompt */
 <<EOF>>                             {
-                                        if (popfile()==0)
-                                        {
-                                            if(FLAG_interactive_mode == 1)
-                                            {
-                                                newstdin();
-                                                yyrestart(yyin);
-                                                //yylloc -> begin.filename = yylloc -> end.filename = new std::string(curfilename);
-                                                prompt = thePrompt;
-                                                //cout << prompt;
-                                            }
-                                            else
-                                            {
-                                                cout << endl << "You forgot to say \"bye\"... " << endl;
-                                                wipe_model();
-                                                exit(0);
-                                            }
+										if (popfile()==0)
+										{
+											if(FLAG_interactive_mode == 1)
+											{
+												newstdin();
+												yyrestart(yyin);
+												//yylloc -> begin.filename = yylloc -> end.filename = new std::string(curfilename);
+												prompt = thePrompt;
+												//cout << prompt;
+											}
+											else
+											{
+												cout << endl << "You forgot to say \"bye\"... " << endl;
+												wipe_model();
+												exit(0);
+											}
 
-                                        }
-                                        if (strncmp(curfilename, initial, 5) == 0) //I dont like strncmp :(
-                                        {
-                                            prompt = thePrompt;
-                                            //cout << prompt;
-                                        }
-                                        yylloc -> begin.filename = yylloc -> end.filename = new std::string(curfilename);
-                                    }
+										}
+										if (strncmp(curfilename, initial, 5) == 0) //I dont like strncmp :(
+										{
+											prompt = thePrompt;
+											//cout << prompt;
+										}
+										yylloc -> begin.filename = yylloc -> end.filename = new std::string(curfilename);
+									}
 
  /* comments */
 "//".*
@@ -820,15 +821,15 @@ EXP	([Ee][-+]?[0-9]+)
  /* ignore newline*/
  /*\n                                  {yylloc -> lines(1);} */
 \n                                  {
-                                        yycolumn = 1;
-                                    }
+										yycolumn = 1;
+									}
 
  /* Match text strings */
 L?\"(\\.|[^\\"])*\"                 {
-                                        std::string* thisString = new std::string(yytext);
-                                        yylval->ident = thisString;
-                                        return token::STRING;
-                                    }
+										std::string* thisString = new std::string(yytext);
+										yylval->ident = thisString;
+										return token::STRING;
+									}
 
   /* catch-all of the rest and report (only useless characters like ? get to this point */
 .	                                { cout << "Failed to parse the character at line " << yylineno << " : " << *yytext << endl; }
@@ -837,28 +838,28 @@ L?\"(\\.|[^\\"])*\"                 {
 
 
 int newfile(char* fn) {
-    FILE *f = fopen(fn, "r");
+	FILE *f = fopen(fn, "r");
 
-    bufstack *bs = (bufstack*) malloc(sizeof( bufstack)) ;
+	bufstack *bs = (bufstack*) malloc(sizeof( bufstack)) ;
 
-    if (!f)     {perror(fn); return 0 ;}
-    if (!bs)    {perror("Out of memory."); exit(1);}
+	if (!f)     {perror(fn); return 0 ;}
+	if (!bs)    {perror("Out of memory."); exit(1);}
 
-    if (curbs) curbs->lineno = yylineno;
-    bs->prev = curbs;
+	if (curbs) curbs->lineno = yylineno;
+	bs->prev = curbs;
 
-    bs->bs = yy_create_buffer(f, YY_BUF_SIZE);
-    bs -> f = f;
-    bs -> filename = fn;
-    bs -> lineno = 1;
-    yy_switch_to_buffer(bs->bs);
-    curbs = bs;
-    yylineno = 1;
-    curfilename = fn;
+	bs->bs = yy_create_buffer(f, YY_BUF_SIZE);
+	bs -> f = f;
+	bs -> filename = fn;
+	bs -> lineno = 1;
+	yy_switch_to_buffer(bs->bs);
+	curbs = bs;
+	yylineno = 1;
+	curfilename = fn;
 
-    cout << "Including: \"" << fn << "\"" << endl << endl;
+	cout << "Including: \"" << fn << "\"" << endl << endl;
 
-    return 1;
+	return 1;
 }
 
 
@@ -866,124 +867,124 @@ int newfile(char* fn) {
 int newstdin()
 {
 
-    FILE *f = stdin;
+	FILE *f = stdin;
 
-    bufstack *bs = (bufstack *) malloc(sizeof( bufstack)) ;
-
-
-    if (!f)
-    {
-        perror("Could not open STDIN!");
-        return 0 ;
-    }
-    if (!bs)
-    {
-        perror("Out of memory.");
-        exit(1);
-    }
-
-    if (curbs)
-    {
-        curbs->lineno = yylineno;
-    }
-    bs->prev = curbs;
-    bs->bs = yy_create_buffer(f, YY_BUF_SIZE);
-    bs -> f = f;
-    bs -> lineno = 1;
-    bs -> filename = initial;
-
-    yy_switch_to_buffer(bs->bs);
-    curbs = bs;
+	bufstack *bs = (bufstack *) malloc(sizeof( bufstack)) ;
 
 
-    yylineno = 1;
-    curfilename = initial;
+	if (!f)
+	{
+		perror("Could not open STDIN!");
+		return 0 ;
+	}
+	if (!bs)
+	{
+		perror("Out of memory.");
+		exit(1);
+	}
 
-    cout << "Input: STDIN" << endl << endl;
-    prompt = thePrompt;
-    //cout << prompt ;
-    return 1;
+	if (curbs)
+	{
+		curbs->lineno = yylineno;
+	}
+	bs->prev = curbs;
+	bs->bs = yy_create_buffer(f, YY_BUF_SIZE);
+	bs -> f = f;
+	bs -> lineno = 1;
+	bs -> filename = initial;
+
+	yy_switch_to_buffer(bs->bs);
+	curbs = bs;
+
+
+	yylineno = 1;
+	curfilename = initial;
+
+	cout << "Input: STDIN" << endl << endl;
+	prompt = thePrompt;
+	//cout << prompt ;
+	return 1;
 }
 
 int popfile(void)
 {
-    bufstack *bs = curbs;
-    bufstack *prevbs;
+	bufstack *bs = curbs;
+	bufstack *prevbs;
 
-    if (!bs)
-    {
-        return 0;
-    }
+	if (!bs)
+	{
+		return 0;
+	}
 
-    fclose(bs->f);
-    yy_delete_buffer(bs->bs);
+	fclose(bs->f);
+	yy_delete_buffer(bs->bs);
 
-    prevbs = bs-> prev;
-    free(bs);
+	prevbs = bs-> prev;
+	free(bs);
 
-    if (!prevbs)
-    {
-        return 0;
-    }
+	if (!prevbs)
+	{
+		return 0;
+	}
 
-    yy_switch_to_buffer(prevbs->bs);
-    curbs = prevbs;
+	yy_switch_to_buffer(prevbs->bs);
+	curbs = prevbs;
 
-    cout << "Done including: \"" << curfilename << "\" (" << yylineno << " lines included)." << endl;
-    cout << "Continuing with \"" << curbs->filename << "\" at line " << curbs->lineno << "." << endl;
+	cout << "Done including: \"" << curfilename << "\" (" << yylineno << " lines included)." << endl;
+	cout << "Continuing with \"" << curbs->filename << "\" at line " << curbs->lineno << "." << endl;
 
-    cout << endl << prompt;
+	cout << endl << prompt;
 
-    yylineno = curbs->lineno;
-    curfilename = curbs->filename;
+	yylineno = curbs->lineno;
+	curfilename = curbs->filename;
 
-    return 1;
+	return 1;
 }
 
 int error_behavior()
 {
-    //while (popfile() != 0); // Discard everything!
+	//while (popfile() != 0); // Discard everything!
 
-    //Start new interactive mode
-    if ( FLAG_interactive_mode == 1 )
-    {
-        newstdin();
-        yyrestart(yyin);
+	//Start new interactive mode
+	if ( FLAG_interactive_mode == 1 )
+	{
+		newstdin();
+		yyrestart(yyin);
 
-        prompt = thePrompt;
-        //if (recovery_mode == 1)
-        //    prompt = "(safe) " + thePrompt;
-    }
-    else
-    {
-        exit(-1);
-    }
+		prompt = thePrompt;
+		//if (recovery_mode == 1)
+		//    prompt = "(safe) " + thePrompt;
+	}
+	else
+	{
+		exit(-1);
+	}
 
-    return 0;
+	return 0;
 }
 
 
 void print_usage()
 {
-    cout <<
-         "ESSI: UCDavis Earthquake-Soil-Structure-Interaction Simulator \n"
-         "              -          -    -         -                     \n"
-         "Usage: essi [-cfhnsmbe FILENAME]\n"
-         "  -c --cpp-output                : Output cpp version of the analysis done. \n"
-         "  -f --filename [FILENAME]       : Include and run FILENAME. \n"
-         "  -h --help                      : Print this message. \n"
-         "  -n --no-interactive            : Disable interactive mode. \n"
-         "  -s --set-variable              : Set a variable from the command line. \n"
-         "  -d --dry-run                   : Do not execute ESSI API calls. Just parse. \n"
-         "  -m --model-name [NAME]         : Set the model name from the command line. \n"
-         "  -b --binary-output             : The output generated will be in binary instead of plain text. \n"
-         "  -p --profile-report [FILENAME] : Set the filename for the profiler report (and activate lightweight profiling)\n"
-         " \n\n"
-         "Example to set a variable name from command line:\n"
-         "    essi -s a=10,b=20,c=30\n"
-         "Runs ESSI with variables a, b, and c set to 10, 20 and 30 respectively.\n"
-         "At this time, only unitless variables can be set. \n"
-         "\n\n";
+	cout <<
+		 "ESSI: UCDavis Earthquake-Soil-Structure-Interaction Simulator \n"
+		 "              -          -    -         -                     \n"
+		 "Usage: essi [-cfhnsmbe FILENAME]\n"
+		 "  -c --cpp-output                : Output cpp version of the analysis done. \n"
+		 "  -f --filename [FILENAME]       : Include and run FILENAME. \n"
+		 "  -h --help                      : Print this message. \n"
+		 "  -n --no-interactive            : Disable interactive mode. \n"
+		 "  -s --set-variable              : Set a variable from the command line. \n"
+		 "  -d --dry-run                   : Do not execute ESSI API calls. Just parse. \n"
+		 "  -m --model-name [NAME]         : Set the model name from the command line. \n"
+		 "  -b --binary-output             : The output generated will be in binary instead of plain text. \n"
+		 "  -p --profile-report [FILENAME] : Set the filename for the profiler report (and activate lightweight profiling)\n"
+		 " \n\n"
+		 "Example to set a variable name from command line:\n"
+		 "    essi -s a=10,b=20,c=30\n"
+		 "Runs ESSI with variables a, b, and c set to 10, 20 and 30 respectively.\n"
+		 "At this time, only unitless variables can be set. \n"
+		 "\n\n";
 
 }
 
@@ -1012,132 +1013,132 @@ void print_usage()
 int start_parser(int argc, char**argv)
 {
 
-    //Allegedly, this forces cout to be non-buffered. Always flushes!!
-    std::cout<<std::unitbuf; 
+	//Allegedly, this forces cout to be non-buffered. Always flushes!!
+	std::cout<<std::unitbuf; 
 
-    
-    //Welcome message
-    welcome_msg();
+	
+	//Welcome message
+	welcome_msg();
 
-    // Generate previously known units list
-    set_known_units();
+	// Generate previously known units list
+	set_known_units();
 
-    //Parse Command Line Parameters
-    int c;
-    char *filename_from_command_line = 0;
-    char *char_string_aux = 0;
+	//Parse Command Line Parameters
+	int c;
+	char *filename_from_command_line = 0;
+	char *char_string_aux = 0;
 
-    while (1)
-    {
-        static struct option long_options[] =
-        {
-            {"binary-output",    no_argument,       0, 'b'},
-            {"cpp-output",       no_argument,       0, 'c'},
-            {"file",             required_argument, 0, 'f'},
-            {"help",             no_argument,       0, 'h'},
-            {"model-name",       required_argument, 0, 'm'},
-            {"no-interactive",   no_argument,       0, 'n'},
-            {"set-variable",     required_argument, 0, 's'},
-            {"no-cpp-output",    no_argument,       0, 'x'},
-            {"dry-run",          no_argument,       0, 'd'},
-            {"profile-report",   required_argument, 0, 'p'},
-            {0, 0, 0, 0}
-        };
+	while (1)
+	{
+		static struct option long_options[] =
+		{
+			{"binary-output",    no_argument,       0, 'b'},
+			{"cpp-output",       no_argument,       0, 'c'},
+			{"file",             required_argument, 0, 'f'},
+			{"help",             no_argument,       0, 'h'},
+			{"model-name",       required_argument, 0, 'm'},
+			{"no-interactive",   no_argument,       0, 'n'},
+			{"set-variable",     required_argument, 0, 's'},
+			{"no-cpp-output",    no_argument,       0, 'x'},
+			{"dry-run",          no_argument,       0, 'd'},
+			{"profile-report",   required_argument, 0, 'p'},
+			{0, 0, 0, 0}
+		};
 
-        /* getopt_long stores the option index here. */
-        int option_index = 0;
+		/* getopt_long stores the option index here. */
+		int option_index = 0;
 
-        //This is the command line option parser
-        c = getopt_long(argc, argv, "cf:hns:xm:dp:", long_options, &option_index);
+		//This is the command line option parser
+		c = getopt_long(argc, argv, "cf:hns:xm:dp:", long_options, &option_index);
 
-        /* Detect the end of the options. */
-        if (c == -1)
-        {
-            break;
-        }
+		/* Detect the end of the options. */
+		if (c == -1)
+		{
+			break;
+		}
 
-        switch (c)
-        {
+		switch (c)
+		{
 
-            case 'c':  // -c --cpp-output: Create .cpp output
-                FLAG_generate_cpp_output = 1;
-                break;
-            case 'f': // -f --file: Take input from file
-                filename_from_command_line = optarg;
-                FLAG_run_file = 1;
-                break;
-            case 'h': // -h --help: print usage
-                print_usage();
-                return (0);
-                break;
-            case 'n': // -n --no-interactive: disable interactive mode
-                FLAG_interactive_mode = 0;
-                break;
-            case 's': // -s --set-variable: Set a variable from the command line
-                set_variables(optarg);
-                break;
-            case 'x': // -x --no-cpp-output: disable cpp output (default)
-                FLAG_generate_cpp_output = 0;
-                break;
-            case 'd': // -d --dry-run: do not call API... just make parser call and produce cpp output if so enabled
-                FLAG_dry_run = 1;
-                set_dry_run_mode(FLAG_dry_run);
-                break;
-            case 'm': // -m --model-name: Set model name from the command line
-                set_model_name(optarg);
-                break;
-            case 'b': //  -b --binary-output: The output generated will be in binary instead of plain text.
-                FLAG_binary_output = 1;
-                break;
-            case 'p': // -p --profile-report: Set the filename for the profiler report (and activate profiling)
-                //cout << "Setting report file to:" << optarg << endl;
-                set_profiling_results_filename(optarg);
-                break;
-            default:
-                print_usage();
-                return (0);
-        }
-    }
+			case 'c':  // -c --cpp-output: Create .cpp output
+				FLAG_generate_cpp_output = 1;
+				break;
+			case 'f': // -f --file: Take input from file
+				filename_from_command_line = optarg;
+				FLAG_run_file = 1;
+				break;
+			case 'h': // -h --help: print usage
+				print_usage();
+				return (0);
+				break;
+			case 'n': // -n --no-interactive: disable interactive mode
+				FLAG_interactive_mode = 0;
+				break;
+			case 's': // -s --set-variable: Set a variable from the command line
+				set_variables(optarg);
+				break;
+			case 'x': // -x --no-cpp-output: disable cpp output (default)
+				FLAG_generate_cpp_output = 0;
+				break;
+			case 'd': // -d --dry-run: do not call API... just make parser call and produce cpp output if so enabled
+				FLAG_dry_run = 1;
+				set_dry_run_mode(FLAG_dry_run);
+				break;
+			case 'm': // -m --model-name: Set model name from the command line
+				set_model_name(optarg);
+				break;
+			case 'b': //  -b --binary-output: The output generated will be in binary instead of plain text.
+				FLAG_binary_output = 1;
+				break;
+			case 'p': // -p --profile-report: Set the filename for the profiler report (and activate profiling)
+				//cout << "Setting report file to:" << optarg << endl;
+				set_profiling_results_filename(optarg);
+				break;
+			default:
+				print_usage();
+				return (0);
+		}
+	}
 
-    if (optind < argc)
-    {
-        cout << "Unexpected option" << endl << endl;
-        print_usage();
-        return (0);
-    }
+	if (optind < argc)
+	{
+		cout << "Unexpected option" << endl << endl;
+		print_usage();
+		return (0);
+	}
 
-    if (FLAG_interactive_mode)
-    {
-        newstdin();
-    }
+	if (FLAG_interactive_mode)
+	{
+		newstdin();
+	}
 
-    if (FLAG_run_file)
-    {
-        newfile(filename_from_command_line);
-        set_outcppfile_name(string(filename_from_command_line));
-        prompt = "";
-    }
+	if (FLAG_run_file)
+	{
+		newfile(filename_from_command_line);
+		set_outcppfile_name(string(filename_from_command_line));
+		prompt = "";
+	}
 
 #ifdef _PARALLEL_PROCESSING
-    //Kill other processes in case of dry run... parallel is not needed.
-    if(FLAG_dry_run)
-    {
-        theMachineBroker->shutdown();
-    }
+	//Kill other processes in case of dry run... parallel is not needed.
+	if(FLAG_dry_run)
+	{
+		theMachineBroker->shutdown();
+	}
 #endif
 
-    // Parse flag
-    int exitflag = -1;
+	// Parse flag
+	int exitflag = -1;
 
-    //Construct a parser object
-    yy::feiparser parser;
+	//Construct a parser object
+	yy::feiparser parser;
 
-    // Start parsing!
-    cout << prompt;
-    exitflag = parser.parse();
+	// Start parsing!
+	cout << prompt;
+	exitflag = parser.parse();
 
-    //Exit
-    return exitflag;
+	//Exit
+	return exitflag;
 }
 
 
@@ -1148,31 +1149,37 @@ int start_parser(int argc, char**argv)
 
 void signalHandler(int signum)
 {
-    if(signum == SIGINT)
-    {
-        cout << "Caught SIGINT! Program ending." << endl;
-    }
-    else if(signum == SIGABRT)
-    {
-        cout << "Caught SIGABRT! Program ending." << endl;
-    }
-    else if(signum == SIGSEGV)
-    {
-        cout << "Caught SIGSEGV! Program ending." << endl;
-    }
-    else if(signum == SIGTERM)
-    {
-        cout << "Caught SIGTERM! Program ending." << endl;
-    }
-    else if(signum == SIGILL)
-    {
-        cout << "Caught SIGILL! Program ending." << endl;
-    }
-    else if(signum == SIGFPE)
-    {
-        cout << "Caught SIGFPE! Program ending." << endl;
-    }
-    exit(signum);
+	if(signum == SIGINT)
+	{
+		cout << "Caught SIGINT! Program ending." << endl;
+	}
+	else if(signum == SIGABRT)
+	{
+		cout << "Caught SIGABRT! Program ending." << endl;
+	}
+	else if(signum == SIGSEGV)
+	{
+		cout << "Caught SIGSEGV! Program ending." << endl;
+	}
+	else if(signum == SIGTERM)
+	{
+		cout << "Caught SIGTERM! Program ending." << endl;
+	}
+	else if(signum == SIGILL)
+	{
+		cout << "Caught SIGILL! Program ending." << endl;
+	}
+	else if(signum == SIGFPE)
+	{
+		cout << "Caught SIGFPE! Program ending." << endl;
+	}
+	else if(signum == SIGUSR1 || signum == SIGUSR2)
+	{
+		cout << "HDF5 set to flush, please wait...\n\n";
+		call_hdf5_flush_next_chance();
+		return; // Do not quit on these signals.
+	}
+	exit(signum);
 }
 
 /* END SIGNALS */
@@ -1180,18 +1187,20 @@ void signalHandler(int signum)
 int main (int argc, char**argv)
 {
 
-    signal(SIGINT, signalHandler);
-    signal(SIGABRT, signalHandler);
-    signal(SIGSEGV, signalHandler);
-    signal(SIGTERM, signalHandler);
-    signal(SIGILL, signalHandler);
-    signal(SIGFPE, signalHandler);
+	signal(SIGINT, signalHandler);
+	signal(SIGABRT, signalHandler);
+	signal(SIGSEGV, signalHandler);
+	signal(SIGTERM, signalHandler);
+	signal(SIGILL, signalHandler);
+	signal(SIGFPE, signalHandler);
+	signal(SIGUSR1, signalHandler);
+	signal(SIGUSR2, signalHandler);
 
 
-    int exitflag = -1;
+	int exitflag = -1;
 
 #ifdef _PARALLEL_PROCESSING
-    // In parallel processing, a few things have to be setup before starting.
+	// In parallel processing, a few things have to be setup before starting.
 
    FEM_ObjectBroker theBroker;
    MPI_MachineBroker theMachine(&theBroker, argc, argv);
@@ -1201,44 +1210,44 @@ int main (int argc, char**argv)
 
    if (rank != 0) //If this is the main machine
    {
-        exitflag = theMachine.runActors();
+		exitflag = theMachine.runActors();
    } 
    else  // Or if it is a slave node
    {
-        OPS_OBJECT_BROKER       = &theBroker;
-        OPS_MACHINE             = &theMachine;
-        OPS_PARALLEL_PROCESSING = np;
-        OPS_NUM_SUBDOMAINS      = np - 1;
-        OPS_PARTITIONED         = false;
+		OPS_OBJECT_BROKER       = &theBroker;
+		OPS_MACHINE             = &theMachine;
+		OPS_PARALLEL_PROCESSING = np;
+		OPS_NUM_SUBDOMAINS      = np - 1;
+		OPS_PARTITIONED         = false;
 
-    	exitflag = start_parser(argc, argv);
-    }
+		exitflag = start_parser(argc, argv);
+	}
 
-    //this got moved to the wipe_model() API call...... 
-    theDomain.clearAll();
-    theMachine.shutdown();
+	//this got moved to the wipe_model() API call...... 
+	theDomain.clearAll();
+	theMachine.shutdown();
 
-    cout << "Process # " << rank << " ended with exitflag = " << exitflag << endl;
+	cout << "Process # " << rank << " ended with exitflag = " << exitflag << endl;
 #else
-    exitflag = start_parser(argc, argv);
+	exitflag = start_parser(argc, argv);
 #endif
 
 
-    return exitflag;
+	return exitflag;
 }
   
 
 
 int smaller(int a, int b)
 {
-    if (a >= b)
-    {
-        return b;
-    }
-    else
-    {
-        return a;
-    }
+	if (a >= b)
+	{
+		return b;
+	}
+	else
+	{
+		return a;
+	}
 }
 
 // =================================================================================
@@ -1292,110 +1301,110 @@ int smaller(int a, int b)
 #include <ctime>
 void welcome_msg()
 {
-    time_t rawtime;
-    struct tm *timeinfo;
-    char timestring[80];
-    time ( &rawtime );
-    timeinfo = localtime ( &rawtime );
-    strftime (timestring, 80, "%b %d %Y at %H:%M:%S", timeinfo);
-    cout << "                                                               " << endl;
-    cout << "                                                               " << endl;
-    cout << "  The Finite Element Interpreter                               " << endl;
-    cout << "                                                               " << endl;
-    cout << "  Real ESSI                                                  " << endl;
-    cout << "  Earthquake Soil Structure Interaction Simulator            " << endl;
-    cout << "                                                             " << endl;
-    #ifdef _PARALLEL_PROCESSING
-    cout << " Parallel processing mode. Main machine!                     " << endl;
-    #else
-    cout << "  Sequential processing mode.                                " << endl;
-    #endif
-    cout << "                                                             " << endl;
-    cout << "Compiled: " << __DATE__ << " at " << __TIME__  << endl;
-    cout << "Time Now: " << timestring  << endl;
-    cout << "                                                               " << endl;
-    cout << "Static startup tips:                                           " << endl;
-    cout << " * Remember: Every command ends with a semicolon ';'.          " << endl;
-    cout << " * Type 'quit;' or 'exit;' to finish.                          " << endl;
-    cout << " * Run 'essi -h to see available command line options.        " << endl;
-    cout << "                                                               " << endl;
+	time_t rawtime;
+	struct tm *timeinfo;
+	char timestring[80];
+	time ( &rawtime );
+	timeinfo = localtime ( &rawtime );
+	strftime (timestring, 80, "%b %d %Y at %H:%M:%S", timeinfo);
+	cout << "                                                               " << endl;
+	cout << "                                                               " << endl;
+	cout << "  The Finite Element Interpreter                               " << endl;
+	cout << "                                                               " << endl;
+	cout << "  Real ESSI                                                  " << endl;
+	cout << "  Earthquake Soil Structure Interaction Simulator            " << endl;
+	cout << "                                                             " << endl;
+	#ifdef _PARALLEL_PROCESSING
+	cout << " Parallel processing mode. Main machine!                     " << endl;
+	#else
+	cout << "  Sequential processing mode.                                " << endl;
+	#endif
+	cout << "                                                             " << endl;
+	cout << "Compiled: " << __DATE__ << " at " << __TIME__  << endl;
+	cout << "Time Now: " << timestring  << endl;
+	cout << "                                                               " << endl;
+	cout << "Static startup tips:                                           " << endl;
+	cout << " * Remember: Every command ends with a semicolon ';'.          " << endl;
+	cout << " * Type 'quit;' or 'exit;' to finish.                          " << endl;
+	cout << " * Run 'essi -h to see available command line options.        " << endl;
+	cout << "                                                               " << endl;
 }
 
 void set_known_units()
 {
-    //Base units*/
-    global_variables["m"] = Quantity(1.0, m);
-    global_variables["kg"] = Quantity(1.0, kg);
-    global_variables["s"] = Quantity(1.0, s);
+	//Base units*/
+	global_variables["m"] = Quantity(1.0, m);
+	global_variables["kg"] = Quantity(1.0, kg);
+	global_variables["s"] = Quantity(1.0, s);
 
-    // Length
-    global_variables["cm"] = Quantity(1.0, cm);
-    global_variables["mm"] = Quantity(1.0, mm);
-    global_variables["Km"] = Quantity(1.0, km);
+	// Length
+	global_variables["cm"] = Quantity(1.0, cm);
+	global_variables["mm"] = Quantity(1.0, mm);
+	global_variables["Km"] = Quantity(1.0, km);
 
-    //Time
-    global_variables["Hz"] = Quantity(1.0, Hz);
-    global_variables["ms"] = Quantity(1.0, ms);
-    global_variables["ns"] = Quantity(1.0, ns);
+	//Time
+	global_variables["Hz"] = Quantity(1.0, Hz);
+	global_variables["ms"] = Quantity(1.0, ms);
+	global_variables["ns"] = Quantity(1.0, ns);
 
-    //Force
-    global_variables["N"] = Quantity(1.0, N);
-    global_variables["kN"] = Quantity(1.0, kN);
+	//Force
+	global_variables["N"] = Quantity(1.0, N);
+	global_variables["kN"] = Quantity(1.0, kN);
 
-    //Pressure
-    global_variables["Pa"] = Quantity(1.0, Pa);
-    global_variables["kPa"] = Quantity(1.0, kPa);
-    global_variables["MPa"] = Quantity(1.0, MPa);
-    global_variables["GPa"] = Quantity(1.0, GPa);
+	//Pressure
+	global_variables["Pa"] = Quantity(1.0, Pa);
+	global_variables["kPa"] = Quantity(1.0, kPa);
+	global_variables["MPa"] = Quantity(1.0, MPa);
+	global_variables["GPa"] = Quantity(1.0, GPa);
 
-    //Constants
-    global_variables["g"] = g;  // gravitational acceleration on Earth at sea level and 45degrees of latitude
-    global_variables["pi"] = Quantity(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986, unitless); // pi to a useless ammount of significant digits
+	//Constants
+	global_variables["g"] = g;  // gravitational acceleration on Earth at sea level and 45degrees of latitude
+	global_variables["pi"] = Quantity(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986, unitless); // pi to a useless ammount of significant digits
 
-    // Put these variables in the locked list.... cuz we own this!
-    map<string, Quantity>::const_iterator it;
-    for (it = global_variables.begin();
-            it != global_variables.end();
-            it++)
-    {
-        locked_global_variables.insert(it->first);
-    }
+	// Put these variables in the locked list.... cuz we own this!
+	map<string, Quantity>::const_iterator it;
+	for (it = global_variables.begin();
+			it != global_variables.end();
+			it++)
+	{
+		locked_global_variables.insert(it->first);
+	}
 }
 
 void set_variables(char *cstring)
 {
-    string variables(cstring);
+	string variables(cstring);
 
-    cout << endl << "The following variables are being set from the command line:" << endl << endl;
+	cout << endl << "The following variables are being set from the command line:" << endl << endl;
 
-    while (1)
-    {
-        size_t i1 = variables.find("=");
-        size_t i2 = variables.find(",");
+	while (1)
+	{
+		size_t i1 = variables.find("=");
+		size_t i2 = variables.find(",");
 
-        if (i1 == string::npos)
-        {
-            break;
-        }
+		if (i1 == string::npos)
+		{
+			break;
+		}
 
-        string var_name(variables.substr(0, i1));
-        string var_value(variables.substr(i1 + 1, i2 - i1 - 1));
+		string var_name(variables.substr(0, i1));
+		string var_value(variables.substr(i1 + 1, i2 - i1 - 1));
 
-        if (i2 == string::npos)
-        {
-            variables = "";
-        }
-        else
-        {
-            variables = variables.substr(i2 + 1);
-        }
+		if (i2 == string::npos)
+		{
+			variables = "";
+		}
+		else
+		{
+			variables = variables.substr(i2 + 1);
+		}
 
-        cout << var_name << " = " << var_value << endl;
+		cout << var_name << " = " << var_value << endl;
 
-        double value = boost::lexical_cast<double>(var_value);
-        global_variables[var_name] = Quantity(value, unitless); // :) love boost!
-    }
-    cout << endl << endl;
+		double value = boost::lexical_cast<double>(var_value);
+		global_variables[var_name] = Quantity(value, unitless); // :) love boost!
+	}
+	cout << endl << endl;
 }
 
 
@@ -1428,70 +1437,70 @@ void set_variables(char *cstring)
 void show_einstein()
 {
 
-    cout << " "                                                                                 << endl;
-    cout << "                    .+~                :xx++::"                                    << endl;
-    cout << "                   :`. -          .!!X!~\"?!`~!~!. :-:."                           << endl;
-    cout << "                  <             .!!!H\":.~ ::+!~~!!!~ `%X."                        << endl;
-    cout << "                  '             ~~!M!!>!!X?!!!!!!!!!!...!~."                       << endl;
-    cout << "                              <!:!MM!~:XM!!!!!!.:!..~ !.  `<"                      << endl;
-    cout << "                  <: `   :~ .:<~!!M!XXHM!!!X!XXHtMMHHHX!  ~ ~"                     << endl;
-    cout << "                ~~~~<' ~!!!:!!!!!XM!!M!!!XHMMMRMSXXX!!!!!!:  <`"                   << endl;
-    cout << "                  `<  <::!!!!!X!X?M!!M!!XMMMMXXMMMM?!!!!!!?!:~<"                   << endl;
-    cout << "               : '~~~<!!!XMMH!!XMXMXHHXXXXM!!!!MMMMSXXXX!!!!!!!~"                  << endl;
-    cout << "            :    ::`~!!!MMMMXXXtMMMMMMMMMMMHX!!!!!!HMMMMMX!!!!!: ~"                << endl;
-    cout << "               '~:~!!!!!MMMMMMMMMMMMMMMMMMMMMMXXX!!!M??MMMM!!X!!i:"                << endl;
-    cout << "               <~<!!!!!XMMMMMMMMMMMM8M8MMMMM8MMMMMXX!!!!!!!!X!?t?!:"               << endl;
-    cout << "               ~:~~!!!!?MMMMMM@M@RMRRR$@@MMRMRMMMMMMXSX!!!XMMMX<?X!"               << endl;
-    cout << "             :XX <!!XHMMMM88MM88BR$M$$$$8@8RN88MMMMMMMMHXX?MMMMMX!!!"              << endl;
-    cout << "           .:X! <XMSM8M@@$$$$$$$$$$$$$$$$$$$B8R$8MMMMMMMMMMMMMMMMX!X"              << endl;
-    cout << "          :!?! !?XMMMMM8$$$$8$$$$$$$$$$$$$$BBR$$MMM@MMMMMMMMMMMMMM!!X"             << endl;
-    cout << "        ~<!!~ <!!XMMMB$$$$$$$$$$$$$$$$$$$$$$$$MMR$8MR$MMMMMMMMMMMMM!?!:"           << endl;
-    cout << "        :~~~ !:X!XMM8$$$$$$$$$$$$$$$$$$$$$$$RR$$MMMMR8NMMMMMMMMMMMMM<!`-"          << endl;
-    cout << "    ~:<!:~`~':!:HMM8N$$$$$$$$$$$$$$$$$$$$$$$$$8MRMM8R$MRMMMMMMMMRMMMX!"            << endl;
-    cout << "  !X!``~~   :~XM?SMM$B$$$$$$$$$$$$$$$$$$$$$$BR$$MMM$@R$M$MMMMMM$MMMMX?L"           << endl;
-    cout << " X~.      : `!!!MM#$RR$$$$$$$$$$$$$$$$$R$$$$$R$M$MMRRRM8MMMMMMM$$MMMM!?:"          << endl;
-    cout << " ! ~ <~  !! !!~`` :!!MR$$$$$$$$$$RMM!?!??RR?#R8$M$MMMRM$RMMMM8MM$MMM!M!:>"         << endl;
-    cout << ": ' >!~ '!!  !   .!XMM8$$$$$@$$$R888HMM!!XXHWX$8$RM$MR5$8MMMMR$$@MMM!!!< ~"        << endl;
-    cout << "!  ' !  ~!! :!:XXHXMMMR$$$$$$$$$$$$$$$$8$$$$8$$$MMR$M$$$MMMMMM$$$MMM!!!!"          << endl;
-    cout << " ~<!!!  !!! !!HMMMMMMMM$$$$$$$$$$$$$$$$$$$$$$$$$$MMM$M$$MM8MMMR$$MMXX!!!!/:`"      << endl;
-    cout << "  ~!!!  !!! !XMMMMMMMMMMR$$$$$$$$$$$$R$RRR$$$$$$$MMMM$RM$MM8MM$$$M8MMMX!!!!:"      << endl;
-    cout << "  !~ ~  !!~ XMMM%!!!XMMX?M$$$$$$$$B$MMSXXXH?MR$$8MMMM$$@$8$M$B$$$$B$MMMX!!!!"      << endl;
-    cout << "  ~!    !! 'XMM?~~!!!MMMX!M$$$$$$MRMMM?!%MMMH!R$MMMMMM$$$MM$8$$$$$$MR@M!!!!!"      << endl;
-    cout << "  <>    !!  !Mf x@#\"~!t?M~!$$$$$RMMM?Xb@!~`??MS$M@MMM@RMRMMM$$$$$$RMMMMM!!!!"     << endl;
-    cout << "  !    '!~ <!!:!?M   !@!M<XM$$R5M$8MMM$! -XXXMMRMBMMM$RMMM@$R$BR$MMMMXX?!X!!"      << endl;
-    cout << "  !    '!  !!X!!!?::xH!HM:MM$RM8M$RHMMMX...XMMMMM$RMMRRMMMMMMM8MMMMMMMMX!!X!"      << endl;
-    cout << "  !     ~  !!?:::!!!MXMR~!MMMRMM8MMMMMS!!M?XXMMMMM$$M$M$RMMMM8$RMMMMMMMM%X!!"      << endl;
-    cout << "  ~     ~  !~~X!!XHMMM?~ XM$MMMMRMMMMMM@MMMMMMMMMM$8@MMMMMMMMRMMMMM?!MMM%HX!"      << endl;
-    cout << "           !!!!XSMMXXMM .MMMMMMMM$$$BB8MMM@MMMMMMMR$RMMMMMMMMMMMMMMMXX!?H!XX"      << endl;
-    cout << "           XHXMMMMMMMM!.XMMMMMMMMMR$$$8M$$$$$M@88MMMMMMMMMMMMMMM!XMMMXX!!!XM"      << endl;
-    cout << "      ~   <!MMMMMMMMRM:XMMMMMMMMMM8R$$$$$$$$$$$$$$$NMMMMMMMM?!MM!M8MXX!!/t!M"      << endl;
-    cout << "      '   ~HMMMMMMMMM~!MM8@8MMM!MM$$8$$$$$$$$$$$$$$8MMMMMMM!!XMMMM$8MR!MX!MM"      << endl;
-    cout << "          'MMMMMMMMMM'MM$$$$$MMXMXM$$$$$$$$$$$$$$$$RMMMMMMM!!MMM$$$$MMMMM<!M"      << endl;
-    cout << "          'MMMMMMMMM!'MM$$$$$RMMMMMM$$$$$$$$$$$$$$$MMM!MMMX!!MM$$$$$M$$M$M!M"      << endl;
-    cout << "           !MMMMMM$M! !MR$$$RMM8$8MXM8$$$$$$$$$$$$NMMM!MMM!!!?MRR$$RXM$$MR!M"      << endl;
-    cout << "           !M?XMM$$M.< !MMMMMMSUSRMXM$8R$$$$$$$$$$#$MM!MMM!X!t8$M$MMMHMRMMX$"      << endl;
-    cout << "    ,-,   '!!!MM$RMSMX:.?!XMHRR$RM88$$$8M$$$$$R$$$$8MM!MMXMH!M$$RMMMMRNMMX!$"      << endl;
-    cout << "   -'`    '!!!MMMMMMMMMM8$RMM8MBMRRMR8RMMM$$$$8$8$$$MMXMMMMM!MR$MM!M?MMMMMM$"      << endl;
-    cout << "          'XX!MMMMMMM@RMM$MM@$$BM$$$M8MMMMR$$$$@$$$$MM!MMMMXX$MRM!XH!!??XMMM"      << endl;
-    cout << "          `!!!M?MHMMM$RMMMR@$$$$MR@MMMM8MMMM$$$$$$$WMM!MMMM!M$RMM!!.MM!%M?~!"      << endl;
-    cout << "           !!!!!!MMMMBMM$$RRMMMR8MMMMMRMMMMM8$$$$$$$MM?MMMM!f#RM~    `~!!!~!"      << endl;
-    cout << "           ~!!HX!!~!?MM?MMM??MM?MMMMMMMMMRMMMM$$$$$MMM!MMMM!!"                     << endl;
-    cout << "           '!!!MX!:`~~`~~!~~!!!!XM!!!?!?MMMM8$$$$$MMMMXMMM!!"                      << endl;
-    cout << "            !!~M@MX.. <!!X!!!!XHMHX!!``!XMMMB$MM$$B$M!MMM!!"                       << endl;
-    cout << "            !!!?MRMM!:!XHMHMMMMMMMM!  X!SMMX$$MM$$$RMXMMM~"                        << endl;
-    cout << "             !M!MMMM>!XMMMMMMMMXMM!!:!MM$MMMBRM$$$$8MMMM~"                         << endl;
-    cout << "             `?H!M$R>'MMMM?MMM!MM6!X!XM$$$MM$MM$$$$MX$f"                           << endl;
-    cout << " _______      `MXM$8X MMMMMMM!!MM!!!!XM$$$MM$MM$$$RX@\""                           << endl;
-    cout << "/       \\_/|   ~M?$MM !MMMMXM!!MM!!!XMMM$$$8$XM$$RM!`"                            << endl;
-    cout << "|Go AGS! _/    !XMMM !MMMMXX!XM!!!HMMMM$$$$RH$$M!~"                                << endl;
-    cout << "\\_______/       'M?MM `?MMXMM!XM!XMMMMM$$$$$RM$$#"                                << endl;
-    cout << "                 `>MMk ~MMHM!XM!XMMM$$$$$$BRM$M\""                                 << endl;
-    cout << "                  ~`?M. !M?MXM!X$$@M$$$$$$RMM#"                                    << endl;
-    cout << "                    `!M  !!MM!X8$$$RM$$$$MM#`"                                     << endl;
-    cout << "                      !% `~~~X8$$$$8M$$RR#`"                                       << endl;
-    cout << "                       !!x:xH$$$$$$$R$R*`"                                         << endl;
-    cout << "                        ~!?MMMMRRRM@M#`       -Sushil-"                            << endl;
-    cout << "                         `~???MMM?M\"`"                                            << endl;
-    cout << "                             ``~~"                                                 << endl;
+	cout << " "                                                                                 << endl;
+	cout << "                    .+~                :xx++::"                                    << endl;
+	cout << "                   :`. -          .!!X!~\"?!`~!~!. :-:."                           << endl;
+	cout << "                  <             .!!!H\":.~ ::+!~~!!!~ `%X."                        << endl;
+	cout << "                  '             ~~!M!!>!!X?!!!!!!!!!!...!~."                       << endl;
+	cout << "                              <!:!MM!~:XM!!!!!!.:!..~ !.  `<"                      << endl;
+	cout << "                  <: `   :~ .:<~!!M!XXHM!!!X!XXHtMMHHHX!  ~ ~"                     << endl;
+	cout << "                ~~~~<' ~!!!:!!!!!XM!!M!!!XHMMMRMSXXX!!!!!!:  <`"                   << endl;
+	cout << "                  `<  <::!!!!!X!X?M!!M!!XMMMMXXMMMM?!!!!!!?!:~<"                   << endl;
+	cout << "               : '~~~<!!!XMMH!!XMXMXHHXXXXM!!!!MMMMSXXXX!!!!!!!~"                  << endl;
+	cout << "            :    ::`~!!!MMMMXXXtMMMMMMMMMMMHX!!!!!!HMMMMMX!!!!!: ~"                << endl;
+	cout << "               '~:~!!!!!MMMMMMMMMMMMMMMMMMMMMMXXX!!!M??MMMM!!X!!i:"                << endl;
+	cout << "               <~<!!!!!XMMMMMMMMMMMM8M8MMMMM8MMMMMXX!!!!!!!!X!?t?!:"               << endl;
+	cout << "               ~:~~!!!!?MMMMMM@M@RMRRR$@@MMRMRMMMMMMXSX!!!XMMMX<?X!"               << endl;
+	cout << "             :XX <!!XHMMMM88MM88BR$M$$$$8@8RN88MMMMMMMMHXX?MMMMMX!!!"              << endl;
+	cout << "           .:X! <XMSM8M@@$$$$$$$$$$$$$$$$$$$B8R$8MMMMMMMMMMMMMMMMX!X"              << endl;
+	cout << "          :!?! !?XMMMMM8$$$$8$$$$$$$$$$$$$$BBR$$MMM@MMMMMMMMMMMMMM!!X"             << endl;
+	cout << "        ~<!!~ <!!XMMMB$$$$$$$$$$$$$$$$$$$$$$$$MMR$8MR$MMMMMMMMMMMMM!?!:"           << endl;
+	cout << "        :~~~ !:X!XMM8$$$$$$$$$$$$$$$$$$$$$$$RR$$MMMMR8NMMMMMMMMMMMMM<!`-"          << endl;
+	cout << "    ~:<!:~`~':!:HMM8N$$$$$$$$$$$$$$$$$$$$$$$$$8MRMM8R$MRMMMMMMMMRMMMX!"            << endl;
+	cout << "  !X!``~~   :~XM?SMM$B$$$$$$$$$$$$$$$$$$$$$$BR$$MMM$@R$M$MMMMMM$MMMMX?L"           << endl;
+	cout << " X~.      : `!!!MM#$RR$$$$$$$$$$$$$$$$$R$$$$$R$M$MMRRRM8MMMMMMM$$MMMM!?:"          << endl;
+	cout << " ! ~ <~  !! !!~`` :!!MR$$$$$$$$$$RMM!?!??RR?#R8$M$MMMRM$RMMMM8MM$MMM!M!:>"         << endl;
+	cout << ": ' >!~ '!!  !   .!XMM8$$$$$@$$$R888HMM!!XXHWX$8$RM$MR5$8MMMMR$$@MMM!!!< ~"        << endl;
+	cout << "!  ' !  ~!! :!:XXHXMMMR$$$$$$$$$$$$$$$$8$$$$8$$$MMR$M$$$MMMMMM$$$MMM!!!!"          << endl;
+	cout << " ~<!!!  !!! !!HMMMMMMMM$$$$$$$$$$$$$$$$$$$$$$$$$$MMM$M$$MM8MMMR$$MMXX!!!!/:`"      << endl;
+	cout << "  ~!!!  !!! !XMMMMMMMMMMR$$$$$$$$$$$$R$RRR$$$$$$$MMMM$RM$MM8MM$$$M8MMMX!!!!:"      << endl;
+	cout << "  !~ ~  !!~ XMMM%!!!XMMX?M$$$$$$$$B$MMSXXXH?MR$$8MMMM$$@$8$M$B$$$$B$MMMX!!!!"      << endl;
+	cout << "  ~!    !! 'XMM?~~!!!MMMX!M$$$$$$MRMMM?!%MMMH!R$MMMMMM$$$MM$8$$$$$$MR@M!!!!!"      << endl;
+	cout << "  <>    !!  !Mf x@#\"~!t?M~!$$$$$RMMM?Xb@!~`??MS$M@MMM@RMRMMM$$$$$$RMMMMM!!!!"     << endl;
+	cout << "  !    '!~ <!!:!?M   !@!M<XM$$R5M$8MMM$! -XXXMMRMBMMM$RMMM@$R$BR$MMMMXX?!X!!"      << endl;
+	cout << "  !    '!  !!X!!!?::xH!HM:MM$RM8M$RHMMMX...XMMMMM$RMMRRMMMMMMM8MMMMMMMMX!!X!"      << endl;
+	cout << "  !     ~  !!?:::!!!MXMR~!MMMRMM8MMMMMS!!M?XXMMMMM$$M$M$RMMMM8$RMMMMMMMM%X!!"      << endl;
+	cout << "  ~     ~  !~~X!!XHMMM?~ XM$MMMMRMMMMMM@MMMMMMMMMM$8@MMMMMMMMRMMMMM?!MMM%HX!"      << endl;
+	cout << "           !!!!XSMMXXMM .MMMMMMMM$$$BB8MMM@MMMMMMMR$RMMMMMMMMMMMMMMMXX!?H!XX"      << endl;
+	cout << "           XHXMMMMMMMM!.XMMMMMMMMMR$$$8M$$$$$M@88MMMMMMMMMMMMMMM!XMMMXX!!!XM"      << endl;
+	cout << "      ~   <!MMMMMMMMRM:XMMMMMMMMMM8R$$$$$$$$$$$$$$$NMMMMMMMM?!MM!M8MXX!!/t!M"      << endl;
+	cout << "      '   ~HMMMMMMMMM~!MM8@8MMM!MM$$8$$$$$$$$$$$$$$8MMMMMMM!!XMMMM$8MR!MX!MM"      << endl;
+	cout << "          'MMMMMMMMMM'MM$$$$$MMXMXM$$$$$$$$$$$$$$$$RMMMMMMM!!MMM$$$$MMMMM<!M"      << endl;
+	cout << "          'MMMMMMMMM!'MM$$$$$RMMMMMM$$$$$$$$$$$$$$$MMM!MMMX!!MM$$$$$M$$M$M!M"      << endl;
+	cout << "           !MMMMMM$M! !MR$$$RMM8$8MXM8$$$$$$$$$$$$NMMM!MMM!!!?MRR$$RXM$$MR!M"      << endl;
+	cout << "           !M?XMM$$M.< !MMMMMMSUSRMXM$8R$$$$$$$$$$#$MM!MMM!X!t8$M$MMMHMRMMX$"      << endl;
+	cout << "    ,-,   '!!!MM$RMSMX:.?!XMHRR$RM88$$$8M$$$$$R$$$$8MM!MMXMH!M$$RMMMMRNMMX!$"      << endl;
+	cout << "   -'`    '!!!MMMMMMMMMM8$RMM8MBMRRMR8RMMM$$$$8$8$$$MMXMMMMM!MR$MM!M?MMMMMM$"      << endl;
+	cout << "          'XX!MMMMMMM@RMM$MM@$$BM$$$M8MMMMR$$$$@$$$$MM!MMMMXX$MRM!XH!!??XMMM"      << endl;
+	cout << "          `!!!M?MHMMM$RMMMR@$$$$MR@MMMM8MMMM$$$$$$$WMM!MMMM!M$RMM!!.MM!%M?~!"      << endl;
+	cout << "           !!!!!!MMMMBMM$$RRMMMR8MMMMMRMMMMM8$$$$$$$MM?MMMM!f#RM~    `~!!!~!"      << endl;
+	cout << "           ~!!HX!!~!?MM?MMM??MM?MMMMMMMMMRMMMM$$$$$MMM!MMMM!!"                     << endl;
+	cout << "           '!!!MX!:`~~`~~!~~!!!!XM!!!?!?MMMM8$$$$$MMMMXMMM!!"                      << endl;
+	cout << "            !!~M@MX.. <!!X!!!!XHMHX!!``!XMMMB$MM$$B$M!MMM!!"                       << endl;
+	cout << "            !!!?MRMM!:!XHMHMMMMMMMM!  X!SMMX$$MM$$$RMXMMM~"                        << endl;
+	cout << "             !M!MMMM>!XMMMMMMMMXMM!!:!MM$MMMBRM$$$$8MMMM~"                         << endl;
+	cout << "             `?H!M$R>'MMMM?MMM!MM6!X!XM$$$MM$MM$$$$MX$f"                           << endl;
+	cout << " _______      `MXM$8X MMMMMMM!!MM!!!!XM$$$MM$MM$$$RX@\""                           << endl;
+	cout << "/       \\_/|   ~M?$MM !MMMMXM!!MM!!!XMMM$$$8$XM$$RM!`"                            << endl;
+	cout << "|Go AGS! _/    !XMMM !MMMMXX!XM!!!HMMMM$$$$RH$$M!~"                                << endl;
+	cout << "\\_______/       'M?MM `?MMXMM!XM!XMMMMM$$$$$RM$$#"                                << endl;
+	cout << "                 `>MMk ~MMHM!XM!XMMM$$$$$$BRM$M\""                                 << endl;
+	cout << "                  ~`?M. !M?MXM!X$$@M$$$$$$RMM#"                                    << endl;
+	cout << "                    `!M  !!MM!X8$$$RM$$$$MM#`"                                     << endl;
+	cout << "                      !% `~~~X8$$$$8M$$RR#`"                                       << endl;
+	cout << "                       !!x:xH$$$$$$$R$R*`"                                         << endl;
+	cout << "                        ~!?MMMMRRRM@M#`       -Sushil-"                            << endl;
+	cout << "                         `~???MMM?M\"`"                                            << endl;
+	cout << "                             ``~~"                                                 << endl;
 }
 
