@@ -52,6 +52,9 @@
 #endif
 
 
+#include <limits>   //For std::numeric_limits<double>::epsilon()
+
+
 
 #define numNodeDOF 3  // Only nodes with 3-dofs per node canbe used in DRM... :/
 
@@ -516,7 +519,7 @@ Domain_Reduction_Method_HDF5_input::setDomain(Domain *theDomain)
 void
 Domain_Reduction_Method_HDF5_input::applyLoad(double time)
 {
-    DRMout << "time = " << time <<  "\n";
+    // DRMout << "time = " << time <<  "\n";
     if (not is_initialized)
     {
         intitialize();
@@ -550,20 +553,40 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
     Vector *load = new Vector(3);
 
     int use_this_step = 0;
+    // cout << "Searching for timestep to use: ";
+    double macheps = std::numeric_limits<double>::epsilon() * (t2 - t1);
     for (int i = step1; i < step2; i++)
     {
-        if ((*times)[i] >= time)
+        // cout << "                               " << i << " (" << (*times)[i] - time << ") ";
+        if ((*times)[i] >= time or abs((*times)[i] - time) <= 10 * macheps)
         {
+            // cout << "!\n";
+            use_this_step -= 1;
             break;
         }
+        // cout << ".\n";
         use_this_step++;
     }
-
-    cout << "Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1] << endl;
+    cout << endl;
+    cout << " > DRM (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
 
     double time1 =  (*times)[use_this_step + step1];
     double time2 =  (*times)[use_this_step + step1 + 1];
     double tau = (time - time1) / (time2 - time1);
+
+    if ( abs(time1 - time) <= 10 * macheps)
+    {
+        tau = 0;
+    }
+    if ( abs(time2 - time) <= 10 * macheps)
+    {
+        tau = 1;
+    }
+
+    cout << ", tau = " << tau  << endl;
+
+    // ofstream fout("drmforces.txt", ios::app);
+    // fout << time << " ";
 
     for (int i = 0; i < Nodes->Size(); i++)
     {
@@ -584,6 +607,7 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
             // (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step);
             (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step) * (1 - tau);
             (*load)(i) += (*DRMForces)(3 * pos + i, use_this_step + 1) * tau;
+            // fout << (*load)(i) << " ";
         }
 
         //Take care of the minus sign in the effective seismic force for boundary nodes
@@ -591,8 +615,10 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
         {
             (*load) = (*load) * (-1.0);
         }
+
         theNode->addUnbalancedLoad(*load);
     }
+    // fout << endl;
     delete load;
 }
 
@@ -852,42 +878,44 @@ Vector *
 Domain_Reduction_Method_HDF5_input::getNodalLoad(int nodeTag, double time)
 {
     //Get the node
-    Domain *theDomain = this->getDomain();
-    Node *theNode = theDomain->getNode(nodeTag);
+    // Domain *theDomain = this->getDomain();
+    // Node *theNode = theDomain->getNode(nodeTag);
 
-    if (theNode == 0)
-    {
-        DRMerror <<  "no nodes associtated to the nodeTag " << nodeTag << "\n";
-        exit(1);
-    }
+    // if (theNode == 0)
+    // {
+    //     DRMerror <<  "no nodes associtated to the nodeTag " << nodeTag << "\n";
+    //     exit(1);
+    // }
 
 
-    Vector *nodalLoad = new Vector(3);
+    // Vector *nodalLoad = new Vector(3);
 
-    if (time < 0.0 )
-    {
-        DRMwarning << "Returning zero load! \n";
-        return nodalLoad;
-    }
+    // if (time < 0.0 )
+    // {
+    //     DRMwarning << "Returning zero load! \n";
+    //     return nodalLoad;
+    // }
 
-    int use_this_step = 0;
-    for (int i = step1; i < step2; i++)
-    {
-        if ((*times)[i] > time)
-        {
-            break;
-        }
-        use_this_step++;
-    }
+    // int use_this_step = 0;
+    // for (int i = step1; i < step2; i++)
+    // {
+    //     if ((*times)[i] > time)
+    //     {
+    //         break;
+    //     }
+    //     use_this_step++;
+    // }
 
-    cout << "step used = " << use_this_step << endl;
+    // // cout << "step used = " << use_this_step << endl;
 
-    int pos = nodetag2index[nodeTag];
-    for (int i = 0; i < 3; i++)
-    {
-        (*nodalLoad)(i) = (*DRMForces)(3 * pos + i, use_this_step);
-    }
+    // int pos = nodetag2index[nodeTag];
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     (*nodalLoad)(i) = (*DRMForces)(3 * pos + i, use_this_step);
+    // }
 
-    return nodalLoad;
+    // return nodalLoad;
+
+    return 0;
 }
 

@@ -73,7 +73,7 @@ class FrictionalPenaltyContact: public Element
 public:
 
     // Constructor
-    FrictionalPenaltyContact(int tag, int node1, int node2, double kn,  double kt,  double cn_,  double ct_, double mu, double e1_x_, double e1_y_, double e1_z_);
+    FrictionalPenaltyContact(int tag, int node1, int node2, double kn,  double kt,  double cn_,  double ct_, double mu, double e3_x_, double e3_y_, double e3_z_);
 
     // Empty constructor
     FrictionalPenaltyContact();
