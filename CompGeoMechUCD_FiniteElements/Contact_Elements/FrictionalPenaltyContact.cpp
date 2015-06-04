@@ -420,119 +420,105 @@ int FrictionalPenaltyContact::update(void)
 
 	// tN = -10;//std::fmin(tN, -100);
 
-	Vector dg = *g - *g_prev;
-	Vector g_current = *g_prev;
-
-
-	int Nsubsteps = 1;
-
-	for (int substep = 1; substep <= Nsubsteps; substep++)
+	if (is_in_contact)
 	{
-		g_current = *g_prev + dg * substep / Nsubsteps;
-		double gN = g_current(2);
-		if (gN <= 0)
+		// cout << "In Contact!\n";
+		//Set elastic tangent
+		C->Zero();
+		(*C)(0, 0) = kt;
+		(*C)(1, 1) = kt;
+		(*C)(2, 2) = kn;// * (*g_prev)(2);
+		// (*C)(2, 2) = kn * ((*g)(2) - (*g_prev)(2));
+
+		// cout << "  *C = " << *C ;
+		// cout << "  *tA = " << *tA ;
+
+		//Compute prediction force (B)
+		Vector tB = *tA;
+		// tB.Zero();
+		tB.addMatrixVector(1.0, *C, *g - *g_prev, 1.0);
+		// tB.addMatrixVector(1.0, *C, *g, 1.0);
+		// tB(2) = tN + kn * (*g)(2);
+		// tB(2) = tN + kn * ((*g)(2) - (*g_prev)(2));
+		// cout << "  tB = " << tB ;
+
+		//Compute Yield function at prediction point
+		Vector t_TB(2);         // Shear Force predictor
+		t_TB(0) = tB(0);
+		t_TB(1) = tB(1);
+
+		double norm_t_TB = t_TB.Norm();
+		Vector s_B(2);
+		if (norm_t_TB > 0)
 		{
-			is_in_contact = true;
-			// cout << "In Contact!\n";
-			//Set elastic tangent
-			C->Zero();
-			(*C)(0, 0) = kt;
-			(*C)(1, 1) = kt;
-			(*C)(2, 2) = kn;// * (*g_prev)(2);
-			// (*C)(2, 2) = kn * ((*g)(2) - (*g_prev)(2));
-
-			// cout << "  *C = " << *C ;
-			// cout << "  *tA = " << *tA ;
-
-			//Compute prediction force (B)
-			Vector tB = *tA;
-			// tB.Zero();
-			// tB.addMatrixVector(1.0, *C, *g - *g_prev, 1.0);
-			tB.addMatrixVector(1.0, *C, dg / Nsubsteps, 1.0);
-			// tB.addMatrixVector(1.0, *C, *g, 1.0);
-			// tB(2) = tN + kn * (*g)(2);
-			// tB(2) = tN + kn * ((*g)(2) - (*g_prev)(2));
-			// cout << "  tB = " << tB ;
-
-			//Compute Yield function at prediction point
-			Vector t_TB(2);         // Shear Force predictor
-			t_TB(0) = tB(0);
-			t_TB(1) = tB(1);
-
-			double norm_t_TB = t_TB.Norm();
-			Vector s_B(2);
-			if (norm_t_TB > 0)
-			{
-				s_B = t_TB / norm_t_TB;
-			}
-			else
-			{
-				s_B(0) = 1. / std::sqrt(2.0);
-				s_B(1) = 1. / std::sqrt(2.0);
-			}
-
-			Vector A_B(3);
-			A_B(0) = s_B(0);
-			A_B(1) = s_B(1);
-			A_B(2) = mu;
-
-			double yf_B = A_B ^ tB;
-
-			if (yf_B > 0) // Sliding
-			{
-				// cout << "Sliding!\n";
-				Vector b_B(3);
-				b_B(0) = s_B(0);
-				b_B(1) = s_B(1);
-				double den = A_B ^ ((*C) * b_B);
-				double delta_nu = yf_B / den;
-
-				// Compute corrected forces
-				*tC = tB - delta_nu * (*C) * b_B;
-
-				//Update local stiffness
-				Matrix Celast = *C;
-				const double *Cdata = Celast.getData();
-				const double *bdata = b_B.getData();
-				const double *adata = A_B.getData();
-				for (int i = 0; i < 3; i++)
-					for (int n = 0; n < 3; n++)
-						for (int j = 0; j < 3; j++)
-							for (int m = 0; m < 3; m++)
-							{
-								(*C)(i, j) =  (*C)(i, j) -  Cdata[3 * i + m] * bdata[m] * adata[n] * Cdata[3 * n + j] / den;
-							}
-				// cout << "C_t = " << *C ;
-
-			}
-			else // Sticking (yf_B < 0)
-			{
-
-				*tC = tB;
-			}
+			s_B = t_TB / norm_t_TB;
 		}
 		else
 		{
-			is_in_contact = false;
-			C->Zero();
-			tC-> Zero();
-
-			// cout << "tN = " << tN << endl;
-
-			// if (tN < 0)
-			// {
-			// 	(*C)(2, 2) = kn * std::exp(kn / tN * (*g)(2));
-			// 	(*tC)(2) = tN * std::exp(kn / tN * (*g)(2));
-			// }
-			// else
-			// {
-			// 	cout << "FrictionalPenaltyContact - Should not happen!!\n";
-			// }
-			// cout << "Not in contact!\n";
+			s_B(0) = 1. / std::sqrt(2.0);
+			s_B(1) = 1. / std::sqrt(2.0);
 		}
-		// commitState();
-		*tA = *tC;
+
+		Vector A_B(3);
+		A_B(0) = s_B(0);
+		A_B(1) = s_B(1);
+		A_B(2) = mu;
+
+		double yf_B = A_B ^ tB;
+
+		if (yf_B > 0) // Sliding
+		{
+			// cout << "Sliding!\n";
+			Vector b_B(3);
+			b_B(0) = s_B(0);
+			b_B(1) = s_B(1);
+			double den = A_B ^ ((*C) * b_B);
+			double delta_nu = yf_B / den;
+
+			// Compute corrected forces
+			*tC = tB - delta_nu * (*C) * b_B;
+
+			//Update local stiffness
+			Matrix Celast = *C;
+			const double *Cdata = Celast.getData();
+			const double *bdata = b_B.getData();
+			const double *adata = A_B.getData();
+			for (int i = 0; i < 3; i++)
+				for (int n = 0; n < 3; n++)
+					for (int j = 0; j < 3; j++)
+						for (int m = 0; m < 3; m++)
+						{
+							(*C)(i, j) =  (*C)(i, j) -  Cdata[3 * i + m] * bdata[m] * adata[n] * Cdata[3 * n + j] / den;
+						}
+			// cout << "C_t = " << *C ;
+
+		}
+		else // Sticking (yf_B < 0)
+		{
+
+			*tC = tB;
+		}
 	}
+	else
+	{
+
+		C->Zero();
+		tC-> Zero();
+
+		// cout << "tN = " << tN << endl;
+
+		// if (tN < 0)
+		// {
+		// 	(*C)(2, 2) = kn * std::exp(kn / tN * (*g)(2));
+		// 	(*tC)(2) = tN * std::exp(kn / tN * (*g)(2));
+		// }
+		// else
+		// {
+		// 	cout << "FrictionalPenaltyContact - Should not happen!!\n";
+		// }
+		// cout << "Not in contact!\n";
+	}
+
 	// cout << "  *tC = " << *tC << endl;
 
 	return 0;
