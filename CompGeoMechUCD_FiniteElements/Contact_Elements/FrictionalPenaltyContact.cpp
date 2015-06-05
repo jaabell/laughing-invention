@@ -446,8 +446,8 @@ int FrictionalPenaltyContact::update(void)
 		}
 		else
 		{
-			s_B(0) = 1;
-			s_B(1) = 1;
+			s_B(0) = 1.0 / std::sqrt(2.0);
+			s_B(1) = 1.0 / std::sqrt(2.0);
 		}
 
 		Vector A_B(3);
