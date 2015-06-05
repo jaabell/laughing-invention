@@ -54,13 +54,13 @@
 
 
 
-#include <cmath>
+
 
 //==================================================================================================
 // Constructor. Receive all input parameters. Should not allocate resources!
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
-FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2, double kn_, double kt_, double cn_, double ct_,  double mu_, double e3_x, double e3_y, double e3_z):
+FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2, double kn_, double kt_, double cn_, double ct_,  double mu_, double e1_x, double e1_y, double e1_z):
 	Element(tag, ELE_TAG_FrictionalPenaltyContact),
 	kn(kn_),
 	kt(kt_),
@@ -91,62 +91,62 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
 	// which is redundant, 'cause the normal vector components are the elements
 	// B[0,3], B[0,4], B[0,5] of the B matrix.
 
-	Vector e1(3), e2(3), e3(3);
-	double e3_norm = sqrt(e3_x * e3_x + e3_y * e3_y + e3_z * e3_z );
-	e3(0) = e3_x / e3_norm;
-	e3(1) = e3_y / e3_norm;
-	e3(2) = e3_z / e3_norm;
+	Vector x_local(3), y_local(3), z_local(3);
+	double e1_norm = sqrt(e1_x * e1_x + e1_y * e1_y + e1_z * e1_z );
+	z_local(0) = e1_x / e1_norm;
+	z_local(1) = e1_y / e1_norm;
+	z_local(2) = e1_z / e1_norm;
 
-	if ((abs(e3(0)) < 1e-5) && (abs(e3(1)) < 1e-5))  // Element is vertical, essentially
+	if ((abs(z_local(0)) < 1e-5) && (abs(z_local(1)) < 1e-5))  // Element is vertical, essentially
 	{
-		e2(0) =  0.0;
-		e2(1) =  1.0;
-		e2(2) =  0.0;
+		y_local(0) =  0.0;
+		y_local(1) =  1.0;
+		y_local(2) =  0.0;
 
-		e1(0) = e2(1) * e3(2) - e2(2) * e3(1);
-		e1(1) = e2(2) * e3(0) - e2(0) * e3(2);
-		e1(2) = e2(0) * e3(1) - e2(1) * e3(0);
+		x_local(0) = y_local(1) * z_local(2) - y_local(2) * z_local(1);
+		x_local(1) = y_local(2) * z_local(0) - y_local(0) * z_local(2);
+		x_local(2) = y_local(0) * z_local(1) - y_local(1) * z_local(0);
 	}
 	else
 	{
-		// creating the e1 axis from cross product of e3 and the z-direceted unit vector k
-		e1(0) =  e3(1) ;
-		e1(1) = -e3(0) ;
-		e1(2) = 0;
+		// creating a temporary vector (global y axis)
+		Vector temp_vector(3);
+		temp_vector(0) =  0.0;
+		temp_vector(1) =  0.0;
+		temp_vector(2) =  1.0;
 
-		// creating the e2 axis from cross product of e1 and e3
-		// which will be perpendicular to e1 and e3
-		e2(0) =  e3(1) * e1(2)  - e3(2) * e1(1);
-		e2(1) = -e3(0) * e1(2)  + e3(2) * e1(0);
-		e2(2) =  e3(0) * e1(1)  - e3(1) * e1(0);
+		// creating the z_local axis from cross product of z_local and temp_vector
+		// which will be perpendicular to x_local
+		x_local(0) = z_local(1) * temp_vector(2) - z_local(2) * temp_vector(1);
+		x_local(1) = z_local(2) * temp_vector(0) - z_local(0) * temp_vector(2);
+		x_local(2) = z_local(0) * temp_vector(1) - z_local(1) * temp_vector(0);
+
+		// creating the y_local axis from cross product of x_local and z_local
+		// which will be perpendicular to x_local and z_local
+		y_local(0) = z_local(1) * x_local(2) - z_local(2) * x_local(1);
+		y_local(1) = z_local(2) * x_local(0) - z_local(0) * x_local(2);
+		y_local(2) = z_local(0) * x_local(1) - z_local(1) * x_local(0);
 	}
-	//Recompute e3 for good measure
-	e3(0) =  e1(1) * e2(2)  - e1(2) * e2(1);
-	e3(1) = -e1(0) * e2(2)  + e1(2) * e2(0);
-	e3(2) =  e1(0) * e2(1)  - e1(1) * e2(0);
 
 	// compute length (norm) of vectors
-	double e1_norm = sqrt(e1(0) * e1(0) + e1(1) * e1(1) + e1(2) * e1(2));
-	double e2_norm = sqrt(e2(0) * e2(0) + e2(1) * e2(1) + e2(2) * e2(2));
-	e3_norm = sqrt(e3(0) * e3(0) + e3(1) * e3(1) + e3(2) * e3(2));
+	double x_local_norm = sqrt(x_local(0) * x_local(0) + x_local(1) * x_local(1) + x_local(2) * x_local(2));
+	double y_local_norm = sqrt(y_local(0) * y_local(0) + y_local(1) * y_local(1) + y_local(2) * y_local(2));
+	double z_local_norm = sqrt(z_local(0) * z_local(0) + z_local(1) * z_local(1) + z_local(2) * z_local(2));
 
-	// find the normalized local vectors and fill in transformation matrix
+	// find the normalized local vectors
 	for (int i = 0; i < 3; i++)
 	{
-		e1(i) = e1(i) / e1_norm;
-		e2(i) = e2(i) / e2_norm;
-		e3(i) = e3(i) / e3_norm;
+		x_local(i) = x_local(i) / x_local_norm;
+		y_local(i) = y_local(i) / y_local_norm;
+		z_local(i) = z_local(i) / z_local_norm;
 
-		B(0, i) = -e1(i);
-		B(1, i) = -e2(i);
-		B(2, i) = -e3(i);
-		B(0, i + 3) =  e1(i);
-		B(1, i + 3) =  e2(i);
-		B(2, i + 3) =  e3(i);
+		B(0, i) = -x_local(i);
+		B(1, i) = -y_local(i);
+		B(2, i) = -z_local(i);
+		B(0, i + 3) =  x_local(i);
+		B(1, i + 3) =  y_local(i);
+		B(2, i + 3) =  z_local(i);
 	}
-
-	// cout << "Contact tag = " << this->getTag() << ", B = " << B << endl;
-
 }
 
 
@@ -362,7 +362,7 @@ int FrictionalPenaltyContact::commitState(void)
 {
 	*tA = *tC;
 	*g_prev = *g;
-	// *d_ij0_prev = *d_ij0;
+	*d_ij0_prev = *d_ij0;
 	is_in_contact_prev = is_in_contact;
 	return 0;
 }
@@ -416,10 +416,6 @@ int FrictionalPenaltyContact::update(void)
 	// cout << " gap      = " << *g ;
 	// cout << " gap_prev = " << *g_prev ;
 
-	// double tN = (*tA)(2);
-
-	// tN = -10;//std::fmin(tN, -100);
-
 	if (is_in_contact)
 	{
 		// cout << "In Contact!\n";
@@ -427,19 +423,14 @@ int FrictionalPenaltyContact::update(void)
 		C->Zero();
 		(*C)(0, 0) = kt;
 		(*C)(1, 1) = kt;
-		(*C)(2, 2) = kn;// * (*g_prev)(2);
-		// (*C)(2, 2) = kn * ((*g)(2) - (*g_prev)(2));
+		(*C)(2, 2) = kn;
 
 		// cout << "  *C = " << *C ;
 		// cout << "  *tA = " << *tA ;
 
 		//Compute prediction force (B)
 		Vector tB = *tA;
-		// tB.Zero();
 		tB.addMatrixVector(1.0, *C, *g - *g_prev, 1.0);
-		// tB.addMatrixVector(1.0, *C, *g, 1.0);
-		// tB(2) = tN + kn * (*g)(2);
-		// tB(2) = tN + kn * ((*g)(2) - (*g_prev)(2));
 		// cout << "  tB = " << tB ;
 
 		//Compute Yield function at prediction point
@@ -455,8 +446,8 @@ int FrictionalPenaltyContact::update(void)
 		}
 		else
 		{
-			s_B(0) = 1. / std::sqrt(2.0);
-			s_B(1) = 1. / std::sqrt(2.0);
+			s_B(0) = 1;
+			s_B(1) = 1;
 		}
 
 		Vector A_B(3);
@@ -495,27 +486,12 @@ int FrictionalPenaltyContact::update(void)
 		}
 		else // Sticking (yf_B < 0)
 		{
-
+			// cout << "Sticking!\n";
 			*tC = tB;
 		}
 	}
 	else
 	{
-
-		C->Zero();
-		tC-> Zero();
-
-		// cout << "tN = " << tN << endl;
-
-		// if (tN < 0)
-		// {
-		// 	(*C)(2, 2) = kn * std::exp(kn / tN * (*g)(2));
-		// 	(*tC)(2) = tN * std::exp(kn / tN * (*g)(2));
-		// }
-		// else
-		// {
-		// 	cout << "FrictionalPenaltyContact - Should not happen!!\n";
-		// }
 		// cout << "Not in contact!\n";
 	}
 
@@ -908,7 +884,6 @@ void FrictionalPenaltyContact::computeGap()
 		else                                   // and now is no longer in contact
 		{
 			is_in_contact = false;                 // set to not in contact
-			d_ij0->Zero();
 			return;
 		}
 	}
@@ -917,7 +892,7 @@ void FrictionalPenaltyContact::computeGap()
 		if (g_N <= 0)                           // ... and now is in contact
 		{
 			is_in_contact = true;                  // ... set to being in contact
-			// *d_ij0 = d_ij;                          // ... record the point of contact
+			*d_ij0 = d_ij;                          // ... record the point of contact
 
 			// Recompute gap with reference to this new contact point
 			g->Zero();
@@ -926,8 +901,8 @@ void FrictionalPenaltyContact::computeGap()
 				// (*g)(0) += Bptr[3 + i + 0 * 6] * ( d_ij(i) - (*d_ij0_prev)(i));
 				// (*g)(1) += Bptr[3 + i + 1 * 6] * (d_ij(i) - (*d_ij0_prev)(i));
 				// (*g)(2) += Bptr[3 + i + 2 * 6] * d_ij(i);                  //Normal gap is with reference to zero distance
-				(*g)(0) += B(0, 3 + i) * ( d_ij(i) - (*d_ij0)(i));
-				(*g)(1) += B(1, 3 + i) * (d_ij(i) - (*d_ij0)(i));
+				(*g)(0) += B(0, 3 + i) * ( d_ij(i) - (*d_ij0_prev)(i));
+				(*g)(1) += B(1, 3 + i) * (d_ij(i) - (*d_ij0_prev)(i));
 				(*g)(2) += B(2, 3 + i) * d_ij(i);
 			}
 
@@ -935,7 +910,6 @@ void FrictionalPenaltyContact::computeGap()
 		}
 		else                                   // ... and is still not in contact
 		{
-			d_ij0->Zero();
 			return;
 		}
 	}
@@ -957,4 +931,3 @@ void FrictionalPenaltyContact::initialize()
 
 	return ;
 }
-// } 741
