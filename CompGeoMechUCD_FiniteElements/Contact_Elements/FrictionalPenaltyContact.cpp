@@ -72,8 +72,8 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
 	B(3, 6),
 	external_nodes(2)
 {
-	d_ij0 = 0;
-	d_ij0_prev = 0;
+	// d_ij0 = 0;
+	// d_ij0_prev = 0;
 	tA = 0;
 	tC = 0;
 	R = 0;
@@ -168,8 +168,8 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
 	external_nodes(2)
 {
 
-	d_ij0 = 0;
-	d_ij0_prev = 0;
+	// d_ij0 = 0;
+	// d_ij0_prev = 0;
 	tA = 0;
 	tC = 0;
 	R = 0;
@@ -191,16 +191,16 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
 FrictionalPenaltyContact::~FrictionalPenaltyContact()
 {
 
-	if ( d_ij0 != NULL )
-	{
-		delete d_ij0;
-		d_ij0 = NULL;
-	}
-	if ( d_ij0_prev != NULL )
-	{
-		delete d_ij0_prev;
-		d_ij0_prev = NULL;
-	}
+	// if ( d_ij0 != NULL )
+	// {
+	// 	delete d_ij0;
+	// 	d_ij0 = NULL;
+	// }
+	// if ( d_ij0_prev != NULL )
+	// {
+	// 	delete d_ij0_prev;
+	// 	d_ij0_prev = NULL;
+	// }
 	if ( tA != NULL )
 	{
 		delete tA;
@@ -362,7 +362,7 @@ int FrictionalPenaltyContact::commitState(void)
 {
 	*tA = *tC;
 	*g_prev = *g;
-	*d_ij0_prev = *d_ij0;
+	// *d_ij0_prev = *d_ij0;
 	is_in_contact_prev = is_in_contact;
 	return 0;
 }
@@ -379,7 +379,7 @@ int FrictionalPenaltyContact::revertToLastCommit(void)
 {
 	*tC = *tA;
 	*g = *g_prev;
-	*d_ij0 = *d_ij0_prev;
+	// *d_ij0 = *d_ij0_prev;
 	is_in_contact = is_in_contact_prev;
 	// you must implement
 	return 0;
@@ -867,8 +867,8 @@ void FrictionalPenaltyContact::computeGap()
 		// (*g)(0) += Bptr[3 + i + 0 * 6] * ( d_ij(i) - (*d_ij0_prev)(i));
 		// (*g)(1) += Bptr[3 + i + 1 * 6] * (d_ij(i) - (*d_ij0_prev)(i));
 		// (*g)(2) += Bptr[3 + i + 2 * 6] * d_ij(i);                  //Normal gap is with reference to zero distance
-		(*g)(0) += B(0, 3 + i) * ( d_ij(i) - (*d_ij0_prev)(i));
-		(*g)(1) += B(1, 3 + i) * (d_ij(i) - (*d_ij0_prev)(i));
+		(*g)(0) += B(0, 3 + i) * ( d_ij(i));// - (*d_ij0_prev)(i));
+		(*g)(1) += B(1, 3 + i) * (d_ij(i));// - (*d_ij0_prev)(i));
 		(*g)(2) += B(2, 3 + i) * d_ij(i);
 	}
 
@@ -892,24 +892,25 @@ void FrictionalPenaltyContact::computeGap()
 		if (g_N <= 0)                           // ... and now is in contact
 		{
 			is_in_contact = true;                  // ... set to being in contact
-			*d_ij0 = d_ij;                          // ... record the point of contact
+			// *d_ij0 = d_ij;                          // ... record the point of contact
 
 			// Recompute gap with reference to this new contact point
-			g->Zero();
-			for (int i = 0; i < 3; i++)
-			{
-				// (*g)(0) += Bptr[3 + i + 0 * 6] * ( d_ij(i) - (*d_ij0_prev)(i));
-				// (*g)(1) += Bptr[3 + i + 1 * 6] * (d_ij(i) - (*d_ij0_prev)(i));
-				// (*g)(2) += Bptr[3 + i + 2 * 6] * d_ij(i);                  //Normal gap is with reference to zero distance
-				(*g)(0) += B(0, 3 + i) * ( d_ij(i) - (*d_ij0_prev)(i));
-				(*g)(1) += B(1, 3 + i) * (d_ij(i) - (*d_ij0_prev)(i));
-				(*g)(2) += B(2, 3 + i) * d_ij(i);
-			}
+			// g->Zero();
+			// for (int i = 0; i < 3; i++)
+			// {
+			// 	// (*g)(0) += Bptr[3 + i + 0 * 6] * ( d_ij(i) - (*d_ij0_prev)(i));
+			// 	// (*g)(1) += Bptr[3 + i + 1 * 6] * (d_ij(i) - (*d_ij0_prev)(i));
+			// 	// (*g)(2) += Bptr[3 + i + 2 * 6] * d_ij(i);                  //Normal gap is with reference to zero distance
+			// 	(*g)(0) += B(0, 3 + i) * ( d_ij(i)) - (*d_ij0_prev)(i));
+			// 	(*g)(1) += B(1, 3 + i) * (d_ij(i)) - (*d_ij0_prev)(i));
+			// 	(*g)(2) += B(2, 3 + i) * d_ij(i);
+			// }
 
 			return;
 		}
 		else                                   // ... and is still not in contact
 		{
+			is_in_contact = false;                 // set to not in contact
 			return;
 		}
 	}
@@ -920,8 +921,8 @@ void FrictionalPenaltyContact::computeGap()
 
 void FrictionalPenaltyContact::initialize()
 {
-	d_ij0 = new Vector (3);     // Distance from node i to j at last contact
-	d_ij0_prev = new Vector (3);     // Distance from node i to j at last contact
+	// d_ij0 = new Vector (3);     // Distance from node i to j at last contact
+	// d_ij0_prev = new Vector (3);     // Distance from node i to j at last contact
 	tA = new Vector(3);          // Current commitred local forces  t = [t_T1, t_T2, t_N]
 	tC = new Vector(3);          // Current trial local forces  t = [t_T1, t_T2, t_N]
 	R = new Vector(6);          // Current resisting forces

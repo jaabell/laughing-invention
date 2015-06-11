@@ -147,8 +147,8 @@ private:
     bool is_in_contact;
     bool is_in_contact_prev;
     Matrix B;      // Global to local (incremental gap) matrix
-    Vector *d_ij0; // Distance from node i to j at last contact. If the pointer is NULL, it means there was no contact in previous step!
-    Vector *d_ij0_prev; // Distance from node i to j at last contact. If the pointer is NULL, it means there was no contact in previous step!
+    // Vector *d_ij0; // Distance from node i to j at last contact. If the pointer is NULL, it means there was no contact in previous step!
+    // Vector *d_ij0_prev; // Distance from node i to j at last contact. If the pointer is NULL, it means there was no contact in previous step!
     Vector *tA;     // Current commitred local forces  t = [t_T1, t_T2, t_N]
     Vector *tC;     // Current trial local forces  t = [t_T1, t_T2, t_N]
     Vector *R;     // Current resisting forces
