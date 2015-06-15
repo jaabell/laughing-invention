@@ -608,6 +608,13 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
             (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step) * (1 - tau);
             (*load)(i) += (*DRMForces)(3 * pos + i, use_this_step + 1) * tau;
             // fout << (*load)(i) << " ";
+
+            if (std::isnan((*load)(i)))
+            {
+                cerr << "DRM HDF5:   NAN encountered!! \n";
+                cerr << "    (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
+                cerr << "\n  load(i) = " << (*load)(i) << ", i = " << i << endl;
+            }
         }
 
         //Take care of the minus sign in the effective seismic force for boundary nodes
