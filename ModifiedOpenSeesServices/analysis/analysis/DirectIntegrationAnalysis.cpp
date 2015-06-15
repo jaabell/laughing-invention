@@ -299,7 +299,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             return -4;
         }
 
-        estimated_time_to_completion = step_start - std::chrono::high_resolution_clock::now();
+        estimated_time_to_completion =  std::chrono::high_resolution_clock::now() - step_start;
 
     }
 
