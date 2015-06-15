@@ -567,6 +567,10 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
         // cout << ".\n";
         use_this_step++;
     }
+    if (use_this_step < 0)
+    {
+        use_this_step = 0;
+    }
     cout << endl;
     cout << " > DRM (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
 
