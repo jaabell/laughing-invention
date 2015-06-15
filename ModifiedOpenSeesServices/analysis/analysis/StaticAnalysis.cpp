@@ -45,6 +45,7 @@
 #include <Matrix.h>
 #include <ID.h>
 #include <Graph.h>
+#include <chrono>
 #include <ESSITimer.h>
 
 // Nima Tafazzoli added August 2010
@@ -161,13 +162,27 @@ StaticAnalysis::analyze(int numSteps)
     int result = 0;
     Domain *the_Domain = this->getDomainPtr();
 
+
     for (int i = 0; i < numSteps; i++)
     {
+        cout << "Static Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
 
-        // Nima Tafazzoli added (august 2010)
-        // FIXME: This is not working nicely when there is an error.
-        // every call to cerr maybe should be preceded by a std::endl
-        cout.flush() << "\r Static Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
+        std::chrono::high_resolution_clock::time_point step_start;
+        std::chrono::high_resolution_clock::time_point step_end;
+        step_start = std::chrono::high_resolution_clock::now();
+
+
+        if (i > 0)
+        {
+            cout << " [ETA: "
+                 << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * (step_end - step_start))).count() << " h, "
+                 << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * (step_end - step_start)) % std::chrono::hours(1)).count() << " m, "
+                 << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * (step_end - step_start)) % std::chrono::minutes(1)).count() << " s]\n";
+        }
+        else
+        {
+            cout << "\n";
+        }
 
 
         globalESSITimer.start("Domain_Step");
@@ -265,6 +280,8 @@ StaticAnalysis::analyze(int numSteps)
         globalESSITimer.stop("Repartitioning");
 # endif
 
+
+        step_end = std::chrono::high_resolution_clock::now();
 
     }
 

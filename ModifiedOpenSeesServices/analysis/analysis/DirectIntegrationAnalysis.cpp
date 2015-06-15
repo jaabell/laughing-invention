@@ -55,6 +55,10 @@
 #include <ID.h>
 #include <Graph.h>
 
+#include <chrono>
+#include <ESSITimer.h>
+
+
 // Nima Tafazzoli added August 2010
 #include <stdlib.h>
 #include <stdio.h>
@@ -62,9 +66,6 @@
 #include <iostream>
 using namespace std;
 
-
-
-using namespace std;
 
 
 // Constructor
@@ -218,10 +219,25 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
     for (int i = 0; i < numSteps; i++)
     {
 
-        if (numSteps > 1)
+        cout << "Transient Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
+
+        std::chrono::high_resolution_clock::time_point step_start;
+        std::chrono::high_resolution_clock::time_point step_end;
+        step_start = std::chrono::high_resolution_clock::now();
+
+
+        if (i > 0)
         {
-            cout.flush() << "\r TransientAnalysis: Step Number is : " << i + 1 << " out of " << numSteps;
+            cout << " [ETA: "
+                 << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * (step_end - step_start))).count() << " h, "
+                 << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * (step_end - step_start)) % std::chrono::hours(1)).count() << " m, "
+                 << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * (step_end - step_start)) % std::chrono::minutes(1)).count() << " s]\n";
         }
+        else
+        {
+            cout << "\n";
+        }
+
 
         // cout << "       theAnalysisModel->newStepDomain(dT)\n";//Jdebug
         if (theAnalysisModel->newStepDomain(dT) < 0)
@@ -285,6 +301,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         }
 
         // cerr << "DirectIntegrationAnalysis - time: " << the_Domain->getCurrentTime() << endln;
+        step_end = std::chrono::high_resolution_clock::now();
+
     }
 
     cout << endl;
