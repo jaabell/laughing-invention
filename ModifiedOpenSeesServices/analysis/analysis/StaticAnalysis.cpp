@@ -168,16 +168,16 @@ StaticAnalysis::analyze(int numSteps)
         cout << "Static Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
 
         std::chrono::high_resolution_clock::time_point step_start;
-        std::chrono::high_resolution_clock::time_point step_end;
+        std::chrono::high_resolution_clock::duration estimated_time_to_completion;
         step_start = std::chrono::high_resolution_clock::now();
 
 
         if (i > 0)
         {
             cout << " [ETA: "
-                 << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * (step_end - step_start))).count() << " h, "
-                 << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * (step_end - step_start)) % std::chrono::hours(1)).count() << " m, "
-                 << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * (step_end - step_start)) % std::chrono::minutes(1)).count() << " s]\n";
+                 << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
+                 << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
+                 << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
         }
         else
         {
@@ -281,7 +281,7 @@ StaticAnalysis::analyze(int numSteps)
 # endif
 
 
-        step_end = std::chrono::high_resolution_clock::now();
+        estimated_time_to_completion = step_start - std::chrono::high_resolution_clock::now();
 
     }
 
