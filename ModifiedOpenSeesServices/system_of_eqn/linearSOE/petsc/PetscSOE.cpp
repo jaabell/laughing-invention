@@ -483,21 +483,33 @@ PetscSOE::setSize(Graph &theGraph)
 
         while ((theVertex = theVertices()) != 0)
         {
-            ID adj = theVertex->getAdjacency();
-            //Iterate over adjacent dofs and determine whether they are diagonal or not....
-            for (int i = 0; i < adj.Size(); i++)
-            {
-                int row = adj(i);
+            int dof = theVertex->getTag();
 
-                if ( startRow_vec[processID_world] <= row || row <= endRow_vec[processID_world]   )
+            // If the dof number belongs to this processor
+            if ( startRow_vec[processID_world] <= dof && dof <= endRow_vec[processID_world]   )
+            {
+                int row = dof - startRow_vec[processID_world];
+                ID adj = theVertex->getAdjacency();
+
+                //Iterate over adjacent dofs and determine whether they are in the "diagonal" block of the PETSc matrix
+                //  or not....
+                // Diagonal here means that the adjacent dof also belongs to this processor
+                for (int i = 0; i < adj.Size(); i++)
                 {
-                    d_nnz[dof - startRow_vec[processID_world]] += 1;
-                }
-                else
-                {
-                    o_nnz[dof - startRow_vec[processID_world]] += 1;
+                    int col = adj(i);
+
+                    if ( startRow_vec[processID_world] <= col && col <= endRow_vec[processID_world]   )
+                    {
+                        d_nnz[row ] += 1;
+                    }
+                    else
+                    {
+                        o_nnz[row ] += 1;
+                    }
                 }
             }
+
+
         }
         // PetscErrorCode  MatMPIAIJSetPreallocation(Mat B,PetscInt d_nz,const PetscInt d_nnz[],PetscInt o_nz,const PetscInt o_nnz[])
         // B   - the matrix
