@@ -384,13 +384,13 @@ StaticAnalysis::domainChanged(void)
 
 
 
-#ifdef _PARALLEL_PROCESSING
-    int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-    result = theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
-#else
+// #ifdef _PARALLEL_PROCESSING
+    // int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
+    // result = theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
+// #else
     Graph &theGraph = theAnalysisModel->getDOFGraph();//Out by Babak 06/4/13
     result = theSOE->setSize(theGraph);//Out by Babak 06/4/13
-#endif
+// #endif
 
 
     if (result < 0)

@@ -56,44 +56,44 @@ class ID;
 
 class LinearSOE : public SystemOfEqn
 {
-    public:
-        LinearSOE(LinearSOESolver& theSolver, int classTag);
-        virtual ~LinearSOE();
+public:
+    LinearSOE(LinearSOESolver& theSolver, int classTag);
+    virtual ~LinearSOE();
 
-        virtual int solve(void);
+    virtual int solve(void);
 
-	# ifdef _PARALLEL_PROCESSING
-        virtual int setSize(int MaxDOFtag); //Added by Babak 06/4/13 // Made it just virtual , by jose Fri 31 Jan 2014 04:12:02 PM PST
-	#else
-	  virtual int setSize(Graph& theGraph); //Out by Babak 06/4/13 // Back in by Jose Fri 31 Jan 2014 04:11:35 PM PST
-	#endif
+    // # ifdef _PARALLEL_PROCESSING
+    virtual int setSize(int MaxDOFtag); //Added by Babak 06/4/13 // Made it just virtual , by jose Fri 31 Jan 2014 04:12:02 PM PST
+    // #else
+    virtual int setSize(Graph& theGraph); //Out by Babak 06/4/13 // Back in by Jose Fri 31 Jan 2014 04:11:35 PM PST
+    // #endif
 
-        // pure virtual functions
+    // pure virtual functions
 
-        virtual int getNumEqn(void) const = 0;
+    virtual int getNumEqn(void) const = 0;
 
-        virtual int addA(const Matrix&, const ID&, double fact = 1.0) = 0;
-        virtual int addB(const Vector&, const ID&, double fact = 1.0) = 0;
-        virtual int setB(const Vector&, double fact = 1.0) = 0;
+    virtual int addA(const Matrix&, const ID&, double fact = 1.0) = 0;
+    virtual int addB(const Vector&, const ID&, double fact = 1.0) = 0;
+    virtual int setB(const Vector&, double fact = 1.0) = 0;
 
-        virtual void zeroA(void) = 0;
-        virtual void zeroB(void) = 0;
+    virtual void zeroA(void) = 0;
+    virtual void zeroB(void) = 0;
 
-        virtual const Vector& getX(void) = 0;
-        virtual const Vector& getB(void) = 0;
-        virtual double getDeterminant(void);
-        virtual double normRHS(void) = 0;
+    virtual const Vector& getX(void) = 0;
+    virtual const Vector& getB(void) = 0;
+    virtual double getDeterminant(void);
+    virtual double normRHS(void) = 0;
 
-        virtual void setX(int loc, double value) = 0;
-        virtual void setX(const Vector& X) = 0;
+    virtual void setX(int loc, double value) = 0;
+    virtual void setX(const Vector& X) = 0;
 
-        LinearSOESolver* getSolver(void);
+    LinearSOESolver* getSolver(void);
 
-    protected:
-        int setSolver(LinearSOESolver& newSolver);
+protected:
+    int setSolver(LinearSOESolver& newSolver);
 
-    private:
-        LinearSOESolver* theSolver;
+private:
+    LinearSOESolver* theSolver;
 };
 
 

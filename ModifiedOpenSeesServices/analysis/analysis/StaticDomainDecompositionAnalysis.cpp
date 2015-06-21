@@ -345,18 +345,18 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
 
     //Aded by babak 2/20/14:
     //--------------
-    # ifdef _PARALLEL_PROCESSING
-    //-------------------
-    int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-    result = theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
-    //-------------------
-    #else
+    // # ifdef _PARALLEL_PROCESSING
+    // //-------------------
+    // int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
+    // result = theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
+    // //-------------------
+    // #else
     // we invoke setSize() on the LinearSOE which
     // causes that object to determine its size
     Graph& theGraph = theAnalysisModel->getDOFGraph();
     result = theSOE->setSize(theGraph);
 
-    #endif
+    // #endif
     //------------
     if (result < 0)
     {

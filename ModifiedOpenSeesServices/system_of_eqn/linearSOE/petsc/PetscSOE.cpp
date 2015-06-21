@@ -28,6 +28,7 @@
 //
 // Description: This file contains the implementation for PetscSOE
 
+#include <limits>
 
 #include "PetscSOE.h"
 #include "PetscSolver.h"
@@ -138,6 +139,323 @@ PetscSOE::~PetscSOE()
 }
 
 
+int
+PetscSOE::setSize(Graph &theGraph)
+{
+    int result = 0;
+    int ierr = 0;
+
+    if (!init_done)
+    {
+
+        MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
+        MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
+
+        numProcesses = numProcesses_world - 1;
+
+        //Fork a new group of processes with its own communicator
+        // so that SOE solution can be done un a subset of all MPI processes.
+
+        //Ranks 1 through numProcesses are assigned to petsc_world... since rank 0 has no elements!
+        petsc_ranks = new int[numProcesses_world - 1];
+        if (petsc_ranks == NULL)
+        {
+            cerr << "PetscSOE::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
+        }
+
+        for (int rank = 1; rank < numProcesses_world ; rank++)
+        {
+            petsc_ranks[rank - 1] = rank;
+        }
+
+
+        //Get the MPI world
+        MPI_Comm_group(MPI_COMM_WORLD, &world_group);
+        MPI_Group_incl(world_group, numProcesses_world - 1, petsc_ranks, &petsc_group);
+
+
+        /* Create new communicator and then perform collective communications */
+
+        MPI_Comm_create(MPI_COMM_WORLD, petsc_group, &petsc_comm);
+
+
+        PETSC_COMM_WORLD = petsc_comm;
+        if (processID_world > 0)
+        {
+            MPI_Group_rank (petsc_group, &processID);
+            cout << " Process " << processID_world << " calling PetscInitialize\n";
+            PetscInitialize(0, PETSC_NULL, (char *)0, PETSC_NULL);
+        }
+        else
+        {
+            processID = -1;
+        }
+        init_done = true;
+    }
+
+
+
+
+
+
+
+    //
+    // first determine system size
+    //
+
+    // Size of the system is the maximum DOF tag + 1
+
+    //
+    //Each processor visits its DOF graph and determines the maximum DOF tag
+    // for its domain.
+    //
+    Vertex* theVertex;
+    VertexIter& theVertices = theGraph.getVertices();
+
+#ifdef max // This is needed because, to my frustration, someone, somewhere overloaded max()
+#undef max // Angrily, J. Abell
+#endif
+
+    int mindoftag = std::numeric_limits<int>::max();
+    int maxdoftag = 0;
+
+    int i = 0;
+    while ((theVertex = theVertices()) != 0)
+    {
+        int tag = theVertex->getTag();
+
+        // cout << processID_world << ":  " << i << " "
+        //      << tag << " "
+        //      << theVertex->getRef() << " "
+        //      << theVertex->getWeight() << " "
+        //      << theVertex->getColor() << " "
+        //      << theVertex->getTmp() << " "
+        //      << theVertex->getDegree() << " " << endl;
+
+        if (tag > maxdoftag)
+        {
+            maxdoftag = tag;
+        }
+        if (tag < mindoftag)
+        {
+            mindoftag = tag;
+        }
+    }
+
+    // cout << "Processor " << processID_world << " has DOF tags from " << mindoftag << " to " << maxdoftag << endl;
+    size = maxdoftag;
+
+
+
+    isFactored = 0;
+    static ID data(1);
+
+    // Then, all maximumg tags (size) are sent to P0 which gets the global maximum.
+
+    if (processID_world != 0)
+    {
+        Channel *theChannel = theChannels[0];
+
+        data(0) = size;
+        theChannel->sendID(0, 0, data);
+        theChannel->receiveID(0, 0, data);
+
+        size = data(0);
+    }
+    else
+    {
+
+        for (int j = 0; j < numChannels; j++)
+        {
+            Channel *theChannel = theChannels[j];
+            theChannel->receiveID(0, 0, data);
+
+            if (data(0) > size)
+            {
+                size = data(0);
+            }
+        }
+
+        data(0) = size;
+
+        for (int j = 0; j < numChannels; j++)
+        {
+            Channel *theChannel = theChannels[j];
+            theChannel->sendID(0, 0, data);
+        }
+    }
+
+    size = size + 1; // vertices numbered 0 through n-1, and n is the size of the system. therefore, add 1
+
+
+
+
+    // invoke the petsc destructors
+    if (A != 0)
+    {
+        MatDestroy(&A);
+    }
+
+    if (b != 0)
+    {
+        VecDestroy(&b);
+    }
+
+    if (x != 0)
+    {
+        VecDestroy(&x);
+    }
+
+    //
+    // now we create the opensees vector objects
+    //
+
+    // delete the old vectors
+    if (B != 0)
+    {
+        delete [] B;
+    }
+
+    if (X != 0)
+    {
+        delete [] X;
+    }
+
+    // create the new
+    B = new double[size];
+    X = new double[size];
+
+    if (B == 0 || X == 0)
+    {
+        cerr << "WARNING PetscSOE::PetscSOE :";
+        cerr << " ran out of memory for vectors (size) (";
+        cerr << size << ") \n";
+        size = 0;
+        result = -1;
+    }
+
+    // zero the vectors
+    for (int j = 0; j < size; j++)
+    {
+        B[j] = 0;
+        X[j] = 0;
+    }
+
+    if (vectX != 0)
+    {
+        delete vectX;
+    }
+
+    if (vectB != 0)
+    {
+        delete vectB;
+    }
+
+    vectX = new Vector(X, size);
+
+    if (vectX == NULL)
+    {
+        std::cerr << "PetscSOE::PetscSOE : can not allocate memory for vectX \n";
+    }
+
+    vectB = new Vector(B, size);
+
+
+    if (vectB == NULL)
+    {
+        std::cerr << "PetscSOE::PetscSOE : can not allocate memory for vectB \n";
+    }
+
+
+
+
+
+    //
+    // now create petsc matrix and vector objects
+    //
+
+    //
+    // Call Petsc VecCreate & MatCreate; NOTE: using previously allocated storage for vectors
+    //
+    //
+
+    if (processID_world > 0)
+    {
+        PetscOptionsGetInt(PETSC_NULL, "-n", &size, PETSC_NULL);
+
+        ierr = MatCreate(PETSC_COMM_WORLD, &A);
+        CHKERRQ(ierr);
+
+
+        // Performance opportunity.
+        //Can use 2nd and 3rd parameters to customize which rows belong to what processor.
+        ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, size, size);
+        CHKERRQ(ierr);
+
+
+        MatGetOwnershipRange(A, &startRow, &endRow);
+
+        cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
+
+        //       ierr = MatSetType(A,mType);CHKERRQ(ierr);
+        //      ierr = MatSetType(A,MATAIJ);CHKERRQ(ierr);
+        ierr = MatSetFromOptions(A);
+        CHKERRQ(ierr);
+
+        //MatSetOption(A, MAT_SYMMETRIC);
+        //MatSetOption(A, MAT_SYMMETRY_ETERNAL);
+
+        // PetscErrorCode  MatMPIAIJSetPreallocation(Mat B,PetscInt d_nz,const PetscInt d_nnz[],PetscInt o_nz,const PetscInt o_nnz[])
+        // B   - the matrix
+        // d_nz    - number of nonzeros per row in DIAGONAL portion of local submatrix (same value is used for all local rows)
+        // d_nnz   - array containing the number of nonzeros in the various rows of the DIAGONAL portion of the local submatrix (possibly different for each row) or NULL (PETSC_NULL_INTEGER in Fortran), if d_nz is used to specify the nonzero structure. The size of this array is equal to the number of local rows, i.e 'm'. For matrices that will be factored, you must leave room for (and set) the diagonal entry even if it is zero.
+        // o_nz    - number of nonzeros per row in the OFF-DIAGONAL portion of local submatrix (same value is used for all local rows).
+        // o_nnz   - array containing the number of nonzeros in the various rows of the OFF-DIAGONAL portion of the local submatrix (possibly different for each row) or NULL (PETSC_NULL_INTEGER in Fortran), if o_nz is used to specify the nonzero structure. The size of this array is equal to the number of local rows, i.e 'm'.
+
+
+        ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
+        CHKERRQ(ierr);
+        // ierr = MatSeqAIJSetPreallocation(A, 650 , PETSC_NULL);
+        // CHKERRQ(ierr);
+
+
+
+
+
+        ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, endRow - startRow , size, &X[startRow], &x);
+        CHKERRQ(ierr);
+        ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, endRow - startRow , size, &B[startRow], &b);
+        CHKERRQ(ierr);
+
+    }
+    else
+    {
+        cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
+    }
+
+    // invoke setSize() on the Solver
+    LinearSOESolver *tSolver = this->getSolver();
+    int solverOK = tSolver->setSize();
+
+    if (solverOK < 0)
+    {
+        cerr << "WARNING:PetscSOE::setSize :";
+        cerr << " solver failed setSize()\n";
+        return solverOK;
+    }
+
+    MatGetOwnershipRange(A, &startRow, &endRow);
+
+
+    cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
+
+
+
+
+
+
+    return result;
+}
 
 
 

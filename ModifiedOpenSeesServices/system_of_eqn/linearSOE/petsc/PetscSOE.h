@@ -54,8 +54,8 @@ public:
     ~PetscSOE();
 
     int getNumEqn(void) const;
-    //     int setSize(Graph &theGraph); //Out by Babak Babak 06/04/13
-    int setSize(int MaxDOFtag); //Added by Babak 06/04/13
+    int setSize(Graph &theGraph);
+    int setSize(int MaxDOFtag);
     int setEigenSize(Graph &theGraph); //Added by Babak to add mass Matrices ... 1/15/13
 
 
