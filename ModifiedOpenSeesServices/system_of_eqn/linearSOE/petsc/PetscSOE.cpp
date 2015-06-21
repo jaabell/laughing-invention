@@ -449,7 +449,7 @@ PetscSOE::setSize(Graph &theGraph)
         // Performance opportunity.
         //Can use 2nd and 3rd parameters to customize which rows belong to what processor.
         // ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, size, size);
-        ierr = MatSetSizes(A, nlocaldofs[processID_world], PETSC_DECIDE, PETSC_DETERMINE, size);
+        ierr = MatSetSizes(A, nlocaldofs[processID_world], PETSC_DECIDE, size, size);
         CHKERRQ(ierr);
 
 
