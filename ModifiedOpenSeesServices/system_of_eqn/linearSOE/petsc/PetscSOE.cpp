@@ -48,6 +48,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include <petscpc.h>
 
 
@@ -219,18 +220,23 @@ PetscSOE::setSize(Graph &theGraph)
     int mindoftag = std::numeric_limits<int>::max();
     int maxdoftag = 0;
 
-    int i = 0;
+    // stringstream ss;
+    // ss << "graph_" << processID_world << ".gph";
+    // fstream graphfile(ss.str(), ios::out);
+
+    // graphfile << "Processor " << processID_world << endl;
+    // int ndofs = 0;
     while ((theVertex = theVertices()) != 0)
     {
         int tag = theVertex->getTag();
 
-        // cout << processID_world << ":  " << i << " "
-        //      << tag << " "
-        //      << theVertex->getRef() << " "
-        //      << theVertex->getWeight() << " "
-        //      << theVertex->getColor() << " "
-        //      << theVertex->getTmp() << " "
-        //      << theVertex->getDegree() << " " << endl;
+        // graphfile << processID_world << ":   i = " << i << " "
+        //           << tag << " r = "
+        //           << theVertex->getRef() << " w = "
+        //           << theVertex->getWeight() << " c = "
+        //           << theVertex->getColor() << " t = "
+        //           << theVertex->getTmp() << " d = "
+        //           << theVertex->getDegree() << " " << endl;
 
         if (tag > maxdoftag)
         {
@@ -240,7 +246,10 @@ PetscSOE::setSize(Graph &theGraph)
         {
             mindoftag = tag;
         }
+        // i++;
     }
+
+    // graphfile.close();
 
     // cout << "Processor " << processID_world << " has DOF tags from " << mindoftag << " to " << maxdoftag << endl;
     size = maxdoftag;
@@ -367,9 +376,59 @@ PetscSOE::setSize(Graph &theGraph)
     }
 
 
+    // Determine start and end rows for each processor
+    // ================================================
+
+    // Create array to store number of dofs in each processor (allgather)
+    int nlocaldofs[numProcesses_world];
+
+    //Fill with -1 : indicating unused component
+    for (int i = 0; i < numProcesses_world; i++)
+    {
+        nlocaldofs[i] = -1;
+    }
+
+    //Make component corresponding to local component = the number of DOFS in this proc
+    nlocaldofs[processID_world] = theGraph.getNumVertex();
+
+    cout << "Processor " << processID_world << " owns " << nlocaldofs[processID_world] << " DOFS.\n";
+
+    //Now gather across all processes so we can determine a reasonable partition of
+    MPI_Allgather(&nlocaldofs[processID_world], 1, MPI_INT, &nlocaldofs, 1, MPI_INT,
+                  MPI_COMM_WORLD);
+
+    // Count the excess, ie. dofs which are shared across processes. These need to be
+    // evenly distributed.
+    int excess = 0;
+    for (int i = 1; i < numProcesses_world; i++)
+    {
+        excess += nlocaldofs[i];
+    }
+    excess -= size;
+
+    // Remove excess dofs uniformly from all processes
+    for (int i = 0; i < excess; i++)
+    {
+        nlocaldofs[i % (numProcesses_world - 1) + 1]--;
+    }
 
 
+    int startRow_vec[numProcesses_world];
+    int endRow_vec[numProcesses_world];
 
+    // Assign start and end rows
+    startRow_vec[0] = 0; // P0 gets nothing
+    endRow_vec[0] = 0;
+
+    int dof = 0;
+    for (int p = 1; p < numProcesses_world; p++)
+    {
+        startRow_vec[p] = dof;
+        endRow_vec[p] = dof + nlocaldofs[p] - 1;
+        dof += nlocaldofs[p];
+    }
+    startRow = startRow_vec[processID_world];
+    endRow = endRow_vec[processID_world];
     //
     // now create petsc matrix and vector objects
     //
@@ -389,11 +448,12 @@ PetscSOE::setSize(Graph &theGraph)
 
         // Performance opportunity.
         //Can use 2nd and 3rd parameters to customize which rows belong to what processor.
-        ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, size, size);
+        // ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, size, size);
+        ierr = MatSetSizes(A, nlocaldofs[processID_world], PETSC_DECIDE, PETSC_DETERMINE, size);
         CHKERRQ(ierr);
 
 
-        MatGetOwnershipRange(A, &startRow, &endRow);
+        // MatGetOwnershipRange(A, &startRow, &endRow);
 
         cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
 
@@ -405,6 +465,40 @@ PetscSOE::setSize(Graph &theGraph)
         //MatSetOption(A, MAT_SYMMETRIC);
         //MatSetOption(A, MAT_SYMMETRY_ETERNAL);
 
+
+        int d_nnz[nlocaldofs[processID_world]];
+        int o_nnz[nlocaldofs[processID_world]];
+
+        // Initialize diagonal to at least one nonzero element (the diagonal)
+        // Initialize off-diagonal to zero
+        for (int row = 0; row < nlocaldofs[processID_world]; row++)
+        {
+            d_nnz[row] = 1;
+            o_nnz[row] = 0;
+        }
+
+        //Iterate the vertices again to determine the number of nonzeros at each dof....
+        Vertex* theVertex;
+        VertexIter& theVertices = theGraph.getVertices();
+
+        while ((theVertex = theVertices()) != 0)
+        {
+            ID adj = theVertex->getAdjacency();
+            //Iterate over adjacent dofs and determine whether they are diagonal or not....
+            for (int i = 0; i < adj.Size(); i++)
+            {
+                int row = adj(i);
+
+                if ( startRow_vec[processID_world] <= row || row <= endRow_vec[processID_world]   )
+                {
+                    d_nnz[dof - startRow_vec[processID_world]] += 1;
+                }
+                else
+                {
+                    o_nnz[dof - startRow_vec[processID_world]] += 1;
+                }
+            }
+        }
         // PetscErrorCode  MatMPIAIJSetPreallocation(Mat B,PetscInt d_nz,const PetscInt d_nnz[],PetscInt o_nz,const PetscInt o_nnz[])
         // B   - the matrix
         // d_nz    - number of nonzeros per row in DIAGONAL portion of local submatrix (same value is used for all local rows)
@@ -412,8 +506,11 @@ PetscSOE::setSize(Graph &theGraph)
         // o_nz    - number of nonzeros per row in the OFF-DIAGONAL portion of local submatrix (same value is used for all local rows).
         // o_nnz   - array containing the number of nonzeros in the various rows of the OFF-DIAGONAL portion of the local submatrix (possibly different for each row) or NULL (PETSC_NULL_INTEGER in Fortran), if o_nz is used to specify the nonzero structure. The size of this array is equal to the number of local rows, i.e 'm'.
 
+        MatMPIAIJSetPreallocation(A, 0, d_nnz, 0, o_nnz);
 
-        ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
+        // ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
+        // ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
+
         CHKERRQ(ierr);
         // ierr = MatSeqAIJSetPreallocation(A, 650 , PETSC_NULL);
         // CHKERRQ(ierr);
@@ -444,10 +541,10 @@ PetscSOE::setSize(Graph &theGraph)
         return solverOK;
     }
 
-    MatGetOwnershipRange(A, &startRow, &endRow);
+    // MatGetOwnershipRange(A, &startRow, &endRow);
 
 
-    cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
+    // cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
 
 
 
