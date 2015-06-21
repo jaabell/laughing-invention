@@ -81,7 +81,7 @@ LinearSOE::getSolver(void)
 
 // Added default versions of these (Jose Abell, Fri 31 Jan 2014 04:14:52 PM PST)
 // Must overload the one you want to use
-# ifdef _PARALLEL_PROCESSING
+// # ifdef _PARALLEL_PROCESSING
 int LinearSOE::setSize(int MaxDOFtag)
 {
     cerr << "LinearSOE::setSize(int MaxDOFtag) -- this is the base class virtual function. " << endl;
@@ -89,14 +89,14 @@ int LinearSOE::setSize(int MaxDOFtag)
     return -1;
 }
 
-#else
+// #else
 int LinearSOE::setSize(Graph& theGraph)
 {
     cerr << "LinearSOE::setSize(Graph &theGraph) -- this is the base class virtual function. " << endl;
     cerr << "                      It is the subclass's responsability to implement. " << endl;
     return -1;
 }
-#endif
+// #endif
 
 
 
