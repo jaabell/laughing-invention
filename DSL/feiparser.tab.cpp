@@ -2383,7 +2383,7 @@ namespace yy {
 		args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
 		args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
 		args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",       &isAdimensional));
+		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",       &isPressure));
 		args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
 		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
 		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
@@ -2406,7 +2406,7 @@ namespace yy {
 		args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("elastic_modulus",  &isPressure));
 		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
 		args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-		args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate", &isAdimensional));
+		args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate", &isPressure));
 		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress", &isPressure));
 		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
 		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));
@@ -2697,7 +2697,7 @@ namespace yy {
 		args.push_back((yystack_[27].value.exp)); signature.push_back(this_signature("elastic_modulus",               &isPressure));
 		args.push_back((yystack_[24].value.exp)); signature.push_back(this_signature("poisson_ratio",                 &isAdimensional));
 		args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("druckerprager_angle",           &isAdimensional));
-		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",      &isAdimensional));
+		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",      &isPressure));
 		args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
 		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("number_of_subincrements",       &isAdimensional));
 		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations",  &isAdimensional));
@@ -2726,7 +2726,7 @@ namespace yy {
 		args.push_back((yystack_[21].value.exp)); signature.push_back(this_signature("elastic_modulus",              &isPressure));
 		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
 		args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
-		args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",     &isAdimensional));
+		args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("isotropic_hardening_rate",     &isPressure));
 		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
 		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
 		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("tolerance_1", &isAdimensional));

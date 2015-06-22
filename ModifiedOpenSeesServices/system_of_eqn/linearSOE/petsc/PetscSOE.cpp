@@ -32,6 +32,7 @@
 
 #include "PetscSOE.h"
 #include "PetscSolver.h"
+#include <petscmat.h>
 #include <petscvec.h>
 #include <Matrix.h>
 #include <Graph.h>
@@ -446,28 +447,33 @@ PetscSOE::setSize(Graph &theGraph)
         CHKERRQ(ierr);
 
 
+        ierr = MatSetType(A, MATMPIAIJ); CHKERRQ(ierr);
+
+
+        int ndofs = nlocaldofs[processID_world];
+
         // Performance opportunity.
         //Can use 2nd and 3rd parameters to customize which rows belong to what processor.
         // ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, size, size);
-        ierr = MatSetSizes(A, nlocaldofs[processID_world], nlocaldofs[processID_world], size, size);
-        CHKERRQ(ierr);
+        ierr = MatSetSizes(A, ndofs, ndofs, size, size);
+        MatSetOption(A, MAT_NEW_NONZERO_ALLOCATION_ERR, PETSC_FALSE);
+        // CHKERRQ(ierr);
 
 
         // MatGetOwnershipRange(A, &startRow, &endRow);
 
         cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
 
-        //       ierr = MatSetType(A,mType);CHKERRQ(ierr);
         //      ierr = MatSetType(A,MATAIJ);CHKERRQ(ierr);
-        ierr = MatSetFromOptions(A);
-        CHKERRQ(ierr);
+        // ierr = MatSetFromOptions(A);
+        // CHKERRQ(ierr);
 
         //MatSetOption(A, MAT_SYMMETRIC);
         //MatSetOption(A, MAT_SYMMETRY_ETERNAL);
 
 
-        PetscInt d_nnz[nlocaldofs[processID_world]];
-        PetscInt o_nnz[nlocaldofs[processID_world]];
+        PetscInt d_nnz[ndofs];
+        PetscInt o_nnz[ndofs];
 
         // Initialize diagonal to at least one nonzero element (the diagonal)
         // Initialize off-diagonal to zero
@@ -511,6 +517,11 @@ PetscSOE::setSize(Graph &theGraph)
 
 
         }
+
+
+        // ierr = MatCreateAIJ(PETSC_COMM_WORLD, ndofs, ndofs, size, size, 0, d_nnz, 0, o_nnz, &A);
+        // CHKERRQ(ierr);
+
         // PetscErrorCode  MatMPIAIJSetPreallocation(Mat B,PetscInt d_nz,const PetscInt d_nnz[],PetscInt o_nz,const PetscInt o_nnz[])
         // B   - the matrix
         // d_nz    - number of nonzeros per row in DIAGONAL portion of local submatrix (same value is used for all local rows)
@@ -518,12 +529,12 @@ PetscSOE::setSize(Graph &theGraph)
         // o_nz    - number of nonzeros per row in the OFF-DIAGONAL portion of local submatrix (same value is used for all local rows).
         // o_nnz   - array containing the number of nonzeros in the various rows of the OFF-DIAGONAL portion of the local submatrix (possibly different for each row) or NULL (PETSC_NULL_INTEGER in Fortran), if o_nz is used to specify the nonzero structure. The size of this array is equal to the number of local rows, i.e 'm'.
 
-        MatMPIAIJSetPreallocation(A, 0, d_nnz, 0, o_nnz);
+        MatMPIAIJSetPreallocation(A, PETSC_NULL, d_nnz, PETSC_NULL, o_nnz);
 
         // ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
         // ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
 
-        CHKERRQ(ierr);
+        // CHKERRQ(ierr);
         // ierr = MatSeqAIJSetPreallocation(A, 650 , PETSC_NULL);
         // CHKERRQ(ierr);
 
@@ -531,9 +542,9 @@ PetscSOE::setSize(Graph &theGraph)
 
 
 
-        ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, endRow - startRow , size, &X[startRow], &x);
+        ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, ndofs , size, &X[startRow], &x);
         CHKERRQ(ierr);
-        ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, endRow - startRow , size, &B[startRow], &b);
+        ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, ndofs , size, &B[startRow], &b);
         CHKERRQ(ierr);
 
     }

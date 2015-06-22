@@ -2175,7 +2175,7 @@ ADD_material
 		args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));
 		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
 		args.push_back($17); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-		args.push_back($20); signature.push_back(this_signature("isotropic_hardening_rate",       &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("isotropic_hardening_rate",       &isPressure));
 		args.push_back($23); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
 		args.push_back($29); signature.push_back(this_signature("number_of_subincrements",      &isAdimensional));
 		args.push_back($32); signature.push_back(this_signature("maximum_number_of_iterations",      &isAdimensional));
@@ -2206,7 +2206,7 @@ ADD_material
 		args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));
 		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
 		args.push_back($17); signature.push_back(this_signature("von_mises_radius",  &isPressure));
-		args.push_back($20); signature.push_back(this_signature("isotropic_hardening_rate", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("isotropic_hardening_rate", &isPressure));
 		args.push_back($23); signature.push_back(this_signature("initial_confining_stress", &isPressure));
 		args.push_back($26); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
 		args.push_back($29); signature.push_back(this_signature("tolerance_1", &isAdimensional));
@@ -2622,7 +2622,7 @@ ADD_material
 		args.push_back($11); signature.push_back(this_signature("elastic_modulus",               &isPressure));
 		args.push_back($14); signature.push_back(this_signature("poisson_ratio",                 &isAdimensional));
 		args.push_back($17); signature.push_back(this_signature("druckerprager_angle",           &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("isotropic_hardening_rate",      &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("isotropic_hardening_rate",      &isPressure));
 		args.push_back($23); signature.push_back(this_signature("initial_confining_stress",      &isPressure));
 		args.push_back($29); signature.push_back(this_signature("number_of_subincrements",       &isAdimensional));
 		args.push_back($32); signature.push_back(this_signature("maximum_number_of_iterations",  &isAdimensional));
@@ -2659,7 +2659,7 @@ ADD_material
 		args.push_back($11); signature.push_back(this_signature("elastic_modulus",              &isPressure));
 		args.push_back($14); signature.push_back(this_signature("poisson_ratio",                &isAdimensional));
 		args.push_back($17); signature.push_back(this_signature("druckerprager_angle",         &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("isotropic_hardening_rate",     &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("isotropic_hardening_rate",     &isPressure));
 		args.push_back($23); signature.push_back(this_signature("initial_confining_stress",     &isPressure));
 		args.push_back($26); signature.push_back(this_signature("maximum_number_of_iterations", &isAdimensional));
 		args.push_back($29); signature.push_back(this_signature("tolerance_1", &isAdimensional));
