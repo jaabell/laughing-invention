@@ -1441,7 +1441,7 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 	int processID;
 	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
-	cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
+	// cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
 #endif
 	int pos, ndofs;
 
