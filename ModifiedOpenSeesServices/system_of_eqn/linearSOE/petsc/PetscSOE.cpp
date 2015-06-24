@@ -441,7 +441,7 @@ PetscSOE::setSize(Graph &theGraph)
 
     if (processID_world > 0)
     {
-        PetscOptionsGetInt(PETSC_NULL, "-n", &size, PETSC_NULL);
+        // PetscOptionsGetInt(PETSC_NULL, "-n", &size, PETSC_NULL);
 
         ierr = MatCreate(PETSC_COMM_WORLD, &A);
         CHKERRQ(ierr);
@@ -456,7 +456,6 @@ PetscSOE::setSize(Graph &theGraph)
         //Can use 2nd and 3rd parameters to customize which rows belong to what processor.
         // ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, size, size);
         ierr = MatSetSizes(A, ndofs, ndofs, size, size);
-        MatSetOption(A, MAT_NEW_NONZERO_ALLOCATION_ERR, PETSC_FALSE);
         // CHKERRQ(ierr);
 
 
@@ -539,6 +538,7 @@ PetscSOE::setSize(Graph &theGraph)
         // CHKERRQ(ierr);
 
 
+        MatSetOption(A, MAT_NEW_NONZERO_ALLOCATION_ERR, PETSC_FALSE);
 
 
 

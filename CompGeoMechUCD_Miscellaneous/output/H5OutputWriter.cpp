@@ -1484,7 +1484,7 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 	block[1]     = 1;
 
 #if _PARALLEL_PROCESSING
-	cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
+	// cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
 #endif
 
 
@@ -2112,12 +2112,12 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 	hsize_t id_dataspace = H5Dget_space(id_array);
 	hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
 #ifdef _PARALLEL_PROCESSING
-	cout << "            data = ";
-	for (int i = 0; i < count[0]; i++)
-	{
-		cout << data[i] << " ";
-	}
-	cout << endl;
+	// cout << "            data = ";
+	// for (int i = 0; i < count[0]; i++)
+	// {
+	// 	cout << data[i] << " ";
+	// }
+	// cout << endl;
 #endif
 	//Select the region of data to output to
 	status = H5Sselect_hyperslab(
