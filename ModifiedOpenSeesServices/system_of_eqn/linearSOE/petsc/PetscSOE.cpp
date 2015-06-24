@@ -392,10 +392,11 @@ PetscSOE::setSize(Graph &theGraph)
     //Make component corresponding to local component = the number of DOFS in this proc
     nlocaldofs[processID_world] = theGraph.getNumVertex();
 
+    int my_nlocaldofs = nlocaldofs[processID_world];
     cout << "Processor " << processID_world << " owns " << nlocaldofs[processID_world] << " DOFS.\n";
 
     //Now gather across all processes so we can determine a reasonable partition of
-    MPI_Allgather(&nlocaldofs[processID_world], 1, MPI_INT, &nlocaldofs, 1, MPI_INT,
+    MPI_Allgather(&my_nlocaldofs, 1, MPI_INT, &nlocaldofs, 1, MPI_INT,
                   MPI_COMM_WORLD);
 
     // Count the excess, ie. dofs which are shared across processes. These need to be
