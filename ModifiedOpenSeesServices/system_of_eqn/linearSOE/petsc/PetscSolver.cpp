@@ -116,7 +116,7 @@ PetscSolver::solve(void)
         {
 
             //    MatSetOption(theSOE->A, MAT_SPD, PETSC_TRUE );
-            KSPCreate(theSOE->petsc_comm, &ksp);
+            KSPCreate(PETSC_COMM_WORLD, &ksp);
             KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
 
 
@@ -372,7 +372,7 @@ PetscSolver::setSize()
      */
     if (theSOE->processID_world > 0)
     {
-        KSPCreate(theSOE->petsc_comm, &ksp);
+        KSPCreate(PETSC_COMM_WORLD, &ksp);
     }
 
 
