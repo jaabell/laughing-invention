@@ -31,9 +31,9 @@
 #include <limits>
 
 
-#include "petsc.h"
-#include "PetscSOE.h"
-#include "PetscSolver.h"
+#include <petsc.h>
+#include <PetscSOE.h>
+#include <PetscSolver.h>
 #include <petscmat.h>
 #include <petscvec.h>
 #include <Matrix.h>
