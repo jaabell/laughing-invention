@@ -842,68 +842,72 @@ PetscSOE::setSize(int MaxDOFtag)
 int
 PetscSOE::addA(const Matrix &m, const ID &id, double fact)
 {
-    isFactored = 0;
 
-    // check for a quick return
-    if (fact == 0.0)
+    if (processID_world > 0)
     {
-        return 0;
-    }
+        isFactored = 0;
 
-
-    // check that m and id are of similar size
-    int idSize = id.Size();
-
-    if (idSize != m.noRows() && idSize != m.noCols())
-    {
-        cerr << "PetscSOE::addA() - Matrix and ID not of similar sizes\n";
-        return -1;
-    }
-
-    int n = id.Size();
-
-
-    int indx_ij[n ];
-
-    double values[n * n];
-
-
-    const int * iddata = id.getData();
-    const double * matdata = m.getData();
-    int pos = 0;
-    int nsmall = 0;
-
-    for (int i = 0; i < n; i++)
-    {
-        if (iddata[i] >= 0)
+        // check for a quick return
+        if (fact == 0.0)
         {
-            indx_ij[nsmall] = iddata[i];
-            nsmall++;
+            return 0;
         }
-    }
 
-    int ii = 0;
-    for (int i = 0; i < n; i++)
-    {
-        int jj = 0;
-        if (iddata[i] >= 0)
+
+        // check that m and id are of similar size
+        int idSize = id.Size();
+
+        if (idSize != m.noRows() && idSize != m.noCols())
         {
-            for (int j = 0; j < n; j++) // Row-major, like C
+            cerr << "PetscSOE::addA() - Matrix and ID not of similar sizes\n";
+            return -1;
+        }
+
+        int n = id.Size();
+
+
+        int indx_ij[n ];
+
+        double values[n * n];
+
+
+        const int * iddata = id.getData();
+        const double * matdata = m.getData();
+        int pos = 0;
+        int nsmall = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (iddata[i] >= 0)
             {
-                if (iddata[j] >= 0)
-                {
-                    values[ii * nsmall + jj] = m(i, j) * fact;
-                    pos++;
-                    jj++;
-                }
+                indx_ij[nsmall] = iddata[i];
+                nsmall++;
             }
-            ii++;
         }
+
+        int ii = 0;
+        for (int i = 0; i < n; i++)
+        {
+            int jj = 0;
+            if (iddata[i] >= 0)
+            {
+                for (int j = 0; j < n; j++) // Row-major, like C
+                {
+                    if (iddata[j] >= 0)
+                    {
+                        values[ii * nsmall + jj] = m(i, j) * fact;
+                        pos++;
+                        jj++;
+                    }
+                }
+                ii++;
+            }
+        }
+
+        int ierr = MatSetValues(A, nsmall, indx_ij, nsmall, indx_ij, values, ADD_VALUES);
+
+        CHKERRQ(ierr);
     }
-
-    int ierr = MatSetValues(A, nsmall, indx_ij, nsmall, indx_ij, values, ADD_VALUES);
-
-    CHKERRQ(ierr);
 
     return 0;
 }
@@ -912,59 +916,61 @@ PetscSOE::addA(const Matrix &m, const ID &id, double fact)
 int
 PetscSOE::addB(const Vector &v, const ID &id, double fact)
 {
-    // check for a quick return
-    if (fact == 0.0)
+    if (processID_world > 0)
     {
-        return 0;
-    }
-
-
-    // check that m and id are of similar size
-    int idSize = id.Size();
-
-    if (idSize != v.Size() )
-    {
-        cerr << "addB::addB()	- Vector and ID not of similar sizes\n";
-        return -1;
-    }
-
-    if (fact == 1.0)   // do not need to multiply if fact == 1.0
-    {
-        for (int i = 0; i < idSize; i++)
+        // check for a quick return
+        if (fact == 0.0)
         {
-            int pos = id(i);
+            return 0;
+        }
 
-            if (pos < size && pos >= 0)
+
+        // check that m and id are of similar size
+        int idSize = id.Size();
+
+        if (idSize != v.Size() )
+        {
+            cerr << "addB::addB()	- Vector and ID not of similar sizes\n";
+            return -1;
+        }
+
+        if (fact == 1.0)   // do not need to multiply if fact == 1.0
+        {
+            for (int i = 0; i < idSize; i++)
             {
-                B[pos] += v(i);
+                int pos = id(i);
+
+                if (pos < size && pos >= 0)
+                {
+                    B[pos] += v(i);
+                }
+            }
+        }
+        else if (fact == -1.0)
+        {
+            for (int i = 0; i < idSize; i++)
+            {
+                int pos = id(i);
+
+                if (pos < size && pos >= 0)
+                {
+                    B[pos] -= v(i);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < idSize; i++)
+            {
+                int pos = id(i);
+
+                if (pos < size && pos >= 0)
+                {
+                    B[pos] += v(i) * fact;
+                }
             }
         }
     }
-    else if (fact == -1.0)
-    {
-        for (int i = 0; i < idSize; i++)
-        {
-            int pos = id(i);
-
-            if (pos < size && pos >= 0)
-            {
-                B[pos] -= v(i);
-            }
-        }
-    }
-    else
-    {
-        for (int i = 0; i < idSize; i++)
-        {
-            int pos = id(i);
-
-            if (pos < size && pos >= 0)
-            {
-                B[pos] += v(i) * fact;
-            }
-        }
-    }
-
 
     return 0;
 }
@@ -973,42 +979,44 @@ PetscSOE::addB(const Vector &v, const ID &id, double fact)
 int
 PetscSOE::setB(const Vector &v, double fact)
 {
-    // check for a quick return
-    if (fact == 0.0)
+    if (processID_world > 0)
     {
-        return 0;
-    }
-
-
-    if (v.Size() != size)
-    {
-        cerr << "WARNING BandGenLinSOE::setB() -";
-        cerr << " incomptable sizes " << size << " and " << v.Size() << endln;
-        return -1;
-    }
-
-    if (fact == 1.0)   // do not need to multiply if fact == 1.0
-    {
-        for (int i = 0; i < size; i++)
+        // check for a quick return
+        if (fact == 0.0)
         {
-            B[i] = v(i);
+            return 0;
+        }
+
+
+        if (v.Size() != size)
+        {
+            cerr << "WARNING BandGenLinSOE::setB() -";
+            cerr << " incomptable sizes " << size << " and " << v.Size() << endln;
+            return -1;
+        }
+
+        if (fact == 1.0)   // do not need to multiply if fact == 1.0
+        {
+            for (int i = 0; i < size; i++)
+            {
+                B[i] = v(i);
+            }
+        }
+        else if (fact == -1.0)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                B[i] = -v(i);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < size; i++)
+            {
+                B[i] = v(i) * fact;
+            }
         }
     }
-    else if (fact == -1.0)
-    {
-        for (int i = 0; i < size; i++)
-        {
-            B[i] = -v(i);
-        }
-    }
-    else
-    {
-        for (int i = 0; i < size; i++)
-        {
-            B[i] = v(i) * fact;
-        }
-    }
-
     return 0;
 }
 
