@@ -626,8 +626,8 @@ PetscSOE::setSize(int MaxDOFtag)
         // MPI_Allreduce(&sendbuf, &recvbuf, 1, MPI_INT, MPI_SUM, new_comm);
 
 
-        // PetscSetCommWorld(petsc_comm);
-        PETSC_COMM_WORLD = petsc_comm;
+        PetscSetCommWorld(petsc_comm);
+        // PETSC_COMM_WORLD = petsc_comm;
         if (processID_world > 0)
         {
             MPI_Group_rank (petsc_group, &processID);
