@@ -30,6 +30,8 @@
 
 #include <limits>
 
+
+#include "petsc.h"
 #include "PetscSOE.h"
 #include "PetscSolver.h"
 #include <petscmat.h>
@@ -624,6 +626,7 @@ PetscSOE::setSize(int MaxDOFtag)
 
         MPI_Comm_create(MPI_COMM_WORLD, petsc_group, &petsc_comm);
         // MPI_Allreduce(&sendbuf, &recvbuf, 1, MPI_INT, MPI_SUM, new_comm);
+
 
 
         PetscSetCommWorld(petsc_comm);
