@@ -269,6 +269,6 @@ PARALLEL_MACHINE_LIBS = -lm \
       -lz \
       -lgcc_s \
       -lpthread \
-      -lssl
+      -lssl -lcrypto
 
 # -L$(FEIBASEDIR)/lib \
