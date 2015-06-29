@@ -234,9 +234,7 @@ PARALLEL_NUMERIC_INCLUDES = -I$(ESSI_DEPEND_DIR)/petsc-3.6.0/include \
 # -I/usr/lib/openmpi/include \
 # -I/usr/lib/openmpi/include/openmpi \
 
-PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.6.0/externalpackages/SuperLU_4.3/lib/libsuperlu_4.3.a \
-      $(ESSI_DEPEND_DIR)/petsc-3.6.0/externalpackages/spooles-2.2-dec-2008/libspooles.a \
-      $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libpetsc.a \
+PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libpetsc.a \
       $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libsuperlu_4.3.a \
       $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libsuperlu_dist_4.0.a \
       $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libspai.a \
@@ -247,6 +245,7 @@ PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.6.0/externalpackages/SuperLU_
       $(ESSI_DEPEND_DIR)/metis-4.0.2_install/lib/libmetis.a \
       $(ESSI_DEPEND_DIR)/hdf5_parallel/lib/libhdf5.a 
       
+# $(ESSI_DEPEND_DIR)/petsc-3.6.0/externalpackages/spooles-2.2-dec-2008/libspooles.a \
 # $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libPLAPACK.a \
 # $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libblacs.a \
 # $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libspooles.a \
