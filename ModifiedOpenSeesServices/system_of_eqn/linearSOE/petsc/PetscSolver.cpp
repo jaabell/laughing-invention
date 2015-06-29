@@ -117,7 +117,8 @@ PetscSolver::solve(void)
 
             //    MatSetOption(theSOE->A, MAT_SPD, PETSC_TRUE );
             KSPCreate(PETSC_COMM_WORLD, &ksp);
-            KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
+            // KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);  Deprecated usage of PETSc
+            KSPSetOperators(ksp, theSOE->A, theSOE->A); // For PetSc 3.6.0
 
 
 
