@@ -115,39 +115,12 @@ PetscSolver::solve(void)
         if (not is_KSP_initialized)
         {
 
-            //    MatSetOption(theSOE->A, MAT_SPD, PETSC_TRUE );
             KSPCreate(PETSC_COMM_WORLD, &ksp);
-            // KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);  Deprecated usage of PETSc
-            KSPSetOperators(ksp, theSOE->A, theSOE->A); // For PetSc 3.6.0
+            KSPSetFromOptions(ksp);
+            KSPSetOperators(ksp, theSOE->A, theSOE->A);
 
-
-
-            // //--mumps----:
-            //
-            //    KSPSetType(ksp,KSPPREONLY);
-            //    Mat       F;
-            //    PetscInt  ival,icntl;
-            //    PetscReal val;
-            //    KSPGetPC(ksp,&pc);
-            //    PCSetType(pc,PCLU);
-            // //   MatSetOption(A,MAT_SPD,PETSC_TRUE); /* set MUMPS id%SYM=1 */
-            // //   PCSetType(pc,PCCHOLESKY);
-            //     PCFactorSetMatSolverPackage(pc,MATSOLVERMUMPS);
-            //     PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-            // //     MatGetFactor(theSOE->A, MATSOLVERMUMPS ,MAT_FACTOR_LU,&F);
-            //     PCFactorGetMatrix(pc,&F);
-            //     icntl = 7; ival = 2;
-            //     MatMumpsSetIcntl(F,icntl,ival);
-            //     icntl = 1; val = 0.0;
-            // // //     MatMumpsSetCntl(F,icntl,val);
-            //     KSPSetFromOptions(ksp);
-            // //-----------------------------
-
-
-
-            //--SuperLu-dist----:
             // KSPSetType(ksp, KSPPREONLY);
-            // Mat       F;
+            // Mat       &F = theSOE->A;
             // KSPGetPC(ksp, &pc);
             // PCSetType(pc, PCLU);
 
@@ -155,32 +128,7 @@ PetscSolver::solve(void)
             // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
             // PCFactorGetMatrix(pc, &F);
             // MatSuperluSetILUDropTol(F, 1.e-1);
-            // KSPSetFromOptions(ksp);
-            // KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
 
-            //-----------------------------
-
-            //--petsc solver----:
-
-            // KSPSetType(ksp, KSPPREONLY);
-            // Mat       F;
-            // KSPGetPC(ksp, &pc);
-            // PCSetType(pc, PCLU);
-            // PCFactorSetMatSolverPackage(pc, MATSOLVERPETSC);
-            // PCFactorSetUpMatSolverPackage(pc); /* call MatGetFactor() to create F */
-            // PCFactorGetMatrix(pc, &F);
-            // KSPSetFromOptions(ksp);
-            //-----------------------------
-
-
-            //----- to test spooles -----------------
-            KSPSetType(ksp, KSPPREONLY);
-            KSPGetPC(ksp, &pc);
-            PCSetType(pc, PCLU);
-            PCFactorSetMatSolverPackage(pc, MATSOLVERSPOOLES);
-            KSPSetFromOptions(ksp);
-            KSPSetOperators(ksp, theSOE->A, theSOE->A, DIFFERENT_NONZERO_PATTERN);
-            //---------------------------------------
 
 
             is_KSP_initialized = true;
