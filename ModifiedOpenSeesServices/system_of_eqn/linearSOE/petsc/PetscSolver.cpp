@@ -568,14 +568,14 @@ PetscSolver::receiveSelf(int cTag, Channel &theChannel,
     else if (idData(3) == 1)
         //matType = MATMPISBAIJSPOOLES; Changed because this interface has been changed in  petsc 3.1   by B. Kamrani (Aug. 2010)
     {
-        matType = MATSOLVERSPOOLES;
+        matType = -1//MATSOLVERSPOOLES;
     }
     //else if (idData(3) == 2)
     //matType = MATMPIROWBS;  Ignored because this interface has been removed fro petsc 3.1   by B. Kamrani (Aug. 2010)
     else if (idData(3) == 3)
         //matType = MATMPIAIJSPOOLES; Changed because this interface has been changed in  petsc 3.1   by B. Kamrani (Aug. 2010)
     {
-        matType = MATSOLVERSPOOLES;
+        matType = -1//MATSOLVERSPOOLES;
     }
     else if (idData(3) == 4)
         //matType = MATAIJMUMPS; Changed because this interface has been changed in  petsc 3.1   by B. Kamrani (Aug. 2010)
