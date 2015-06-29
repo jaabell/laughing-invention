@@ -182,7 +182,6 @@ PetscSOE::setSize(Graph &theGraph)
 
         MPI_Comm_create(MPI_COMM_WORLD, petsc_group, &petsc_comm);
 
-
         PETSC_COMM_WORLD = petsc_comm;
         if (processID_world > 0)
         {
