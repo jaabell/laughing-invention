@@ -584,258 +584,259 @@ PetscSOE::setSize(Graph &theGraph)
 int
 PetscSOE::setSize(int MaxDOFtag)
 {
-    if (!init_done)
-    {
+    cerr << "PetscSOE::setSize(int MaxDOFtag) -- DEPRECATED! Should not get called\n";
+    // if (!init_done)
+    // {
 
 
-        // MPI_Comm_size(PETSC_COMM_WORLD, &numProcesses_world);
-        // MPI_Comm_rank(PETSC_COMM_WORLD, &processID_world);
-        MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
-        MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
+    //     // MPI_Comm_size(PETSC_COMM_WORLD, &numProcesses_world);
+    //     // MPI_Comm_rank(PETSC_COMM_WORLD, &processID_world);
+    //     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
+    //     MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
 
-        numProcesses = numProcesses_world - 1;
+    //     numProcesses = numProcesses_world - 1;
 
-        //Fork a new group of processes with its own communicator
-        // so that SOE solution can be done un a subset of all MPI processes.
+    //     //Fork a new group of processes with its own communicator
+    //     // so that SOE solution can be done un a subset of all MPI processes.
 
 
-        //Ranks 1 through numProcesses are assigned to petsc_world... since rank 0 has no elements!
-        petsc_ranks = new int[numProcesses_world - 1];
-        if (petsc_ranks == NULL)
-        {
-            cerr << "PetscSOE::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
-        }
+    //     //Ranks 1 through numProcesses are assigned to petsc_world... since rank 0 has no elements!
+    //     petsc_ranks = new int[numProcesses_world - 1];
+    //     if (petsc_ranks == NULL)
+    //     {
+    //         cerr << "PetscSOE::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
+    //     }
 
-        for (int rank = 1; rank < numProcesses_world ; rank++)
-        {
-            petsc_ranks[rank - 1] = rank;
-        }
+    //     for (int rank = 1; rank < numProcesses_world ; rank++)
+    //     {
+    //         petsc_ranks[rank - 1] = rank;
+    //     }
 
 
-        //Get the MPI world
-        MPI_Comm_group(MPI_COMM_WORLD, &world_group);
+    //     //Get the MPI world
+    //     MPI_Comm_group(MPI_COMM_WORLD, &world_group);
 
-        // if (processID_world > 0)
-        // {
-        MPI_Group_incl(world_group, numProcesses_world - 1, petsc_ranks, &petsc_group);
-        // }
+    //     // if (processID_world > 0)
+    //     // {
+    //     MPI_Group_incl(world_group, numProcesses_world - 1, petsc_ranks, &petsc_group);
+    //     // }
 
 
-        /* Create new communicator and then perform collective communications */
+    //     /* Create new communicator and then perform collective communications */
 
-        MPI_Comm_create(MPI_COMM_WORLD, petsc_group, &petsc_comm);
-        // MPI_Allreduce(&sendbuf, &recvbuf, 1, MPI_INT, MPI_SUM, new_comm);
+    //     MPI_Comm_create(MPI_COMM_WORLD, petsc_group, &petsc_comm);
+    //     // MPI_Allreduce(&sendbuf, &recvbuf, 1, MPI_INT, MPI_SUM, new_comm);
 
 
 
-        PetscSetCommWorld(petsc_comm);
-        // PETSC_COMM_WORLD = petsc_comm;
-        if (processID_world > 0)
-        {
-            MPI_Group_rank (petsc_group, &processID);
-            cout << " Process " << processID_world << " calling PetscInitialize\n";
-            PetscInitialize(0, PETSC_NULL, (char *)0, PETSC_NULL);
-        }
-        else
-        {
-            processID = -1;
-        }
-        init_done = true;
-    }
+    //     // PetscSetCommWorld(petsc_comm);
+    //     PETSC_COMM_WORLD = petsc_comm;
+    //     if (processID_world > 0)
+    //     {
+    //         MPI_Group_rank (petsc_group, &processID);
+    //         cout << " Process " << processID_world << " calling PetscInitialize\n";
+    //         PetscInitialize(0, PETSC_NULL, (char *)0, PETSC_NULL);
+    //     }
+    //     else
+    //     {
+    //         processID = -1;
+    //     }
+    //     init_done = true;
+    // }
 
-    //PetscLogInfoAllow(PETSC_TRUE, (char *)0);
+    // //PetscLogInfoAllow(PETSC_TRUE, (char *)0);
 
-    int result = 0;
-    int ierr = 0;
+    // int result = 0;
+    // int ierr = 0;
 
-    //
-    // first determine system size
-    //
+    // //
+    // // first determine system size
+    // //
 
 
-    // first determine local max
-    size = MaxDOFtag;
-    isFactored = 0;
-    static ID data(1);
+    // // first determine local max
+    // size = MaxDOFtag;
+    // isFactored = 0;
+    // static ID data(1);
 
-    // all local max's sent to P0 which determines the max
-    // and informs all others
+    // // all local max's sent to P0 which determines the max
+    // // and informs all others
 
-    if (processID_world != 0)
-    {
-        Channel *theChannel = theChannels[0];
+    // if (processID_world != 0)
+    // {
+    //     Channel *theChannel = theChannels[0];
 
-        data(0) = size;
-        theChannel->sendID(0, 0, data);
-        theChannel->receiveID(0, 0, data);
+    //     data(0) = size;
+    //     theChannel->sendID(0, 0, data);
+    //     theChannel->receiveID(0, 0, data);
 
-        size = data(0);
-    }
-    else
-    {
+    //     size = data(0);
+    // }
+    // else
+    // {
 
-        for (int j = 0; j < numChannels; j++)
-        {
-            Channel *theChannel = theChannels[j];
-            theChannel->receiveID(0, 0, data);
+    //     for (int j = 0; j < numChannels; j++)
+    //     {
+    //         Channel *theChannel = theChannels[j];
+    //         theChannel->receiveID(0, 0, data);
 
-            if (data(0) > size)
-            {
-                size = data(0);
-            }
-        }
+    //         if (data(0) > size)
+    //         {
+    //             size = data(0);
+    //         }
+    //     }
+
+    //     data(0) = size;
 
-        data(0) = size;
+    //     for (int j = 0; j < numChannels; j++)
+    //     {
+    //         Channel *theChannel = theChannels[j];
+    //         theChannel->sendID(0, 0, data);
+    //     }
+    // }
 
-        for (int j = 0; j < numChannels; j++)
-        {
-            Channel *theChannel = theChannels[j];
-            theChannel->sendID(0, 0, data);
-        }
-    }
+    // size = size + 1; // vertices numbered 0 through n-1
 
-    size = size + 1; // vertices numbered 0 through n-1
 
 
 
+    // // invoke the petsc destructors
+    // if (A != 0)
+    // {
+    //     MatDestroy(&A);
+    // }
 
-    // invoke the petsc destructors
-    if (A != 0)
-    {
-        MatDestroy(&A);
-    }
+    // if (b != 0)
+    // {
+    //     VecDestroy(&b);
+    // }
 
-    if (b != 0)
-    {
-        VecDestroy(&b);
-    }
+    // if (x != 0)
+    // {
+    //     VecDestroy(&x);
+    // }
 
-    if (x != 0)
-    {
-        VecDestroy(&x);
-    }
+    // //
+    // // now we create the opensees vector objects
+    // //
 
-    //
-    // now we create the opensees vector objects
-    //
+    // // delete the old vectors
+    // if (B != 0)
+    // {
+    //     delete [] B;
+    // }
 
-    // delete the old vectors
-    if (B != 0)
-    {
-        delete [] B;
-    }
+    // if (X != 0)
+    // {
+    //     delete [] X;
+    // }
 
-    if (X != 0)
-    {
-        delete [] X;
-    }
+    // // create the new
+    // B = new double[size];
+    // X = new double[size];
 
-    // create the new
-    B = new double[size];
-    X = new double[size];
+    // if (B == 0 || X == 0)
+    // {
+    //     cerr << "WARNING PetscSOE::PetscSOE :";
+    //     cerr << " ran out of memory for vectors (size) (";
+    //     cerr << size << ") \n";
+    //     size = 0;
+    //     result = -1;
+    // }
 
-    if (B == 0 || X == 0)
-    {
-        cerr << "WARNING PetscSOE::PetscSOE :";
-        cerr << " ran out of memory for vectors (size) (";
-        cerr << size << ") \n";
-        size = 0;
-        result = -1;
-    }
+    // // zero the vectors
+    // for (int j = 0; j < size; j++)
+    // {
+    //     B[j] = 0;
+    //     X[j] = 0;
+    // }
 
-    // zero the vectors
-    for (int j = 0; j < size; j++)
-    {
-        B[j] = 0;
-        X[j] = 0;
-    }
+    // if (vectX != 0)
+    // {
+    //     delete vectX;
+    // }
 
-    if (vectX != 0)
-    {
-        delete vectX;
-    }
+    // if (vectB != 0)
+    // {
+    //     delete vectB;
+    // }
 
-    if (vectB != 0)
-    {
-        delete vectB;
-    }
+    // vectX = new Vector(X, size);
 
-    vectX = new Vector(X, size);
+    // if (vectX == NULL)
+    // {
+    //     std::cerr << "PetscSOE::PetscSOE : can not allocate memory for vectX \n";
+    // }
 
-    if (vectX == NULL)
-    {
-        std::cerr << "PetscSOE::PetscSOE : can not allocate memory for vectX \n";
-    }
+    // vectB = new Vector(B, size);
 
-    vectB = new Vector(B, size);
 
+    // if (vectB == NULL)
+    // {
+    //     std::cerr << "PetscSOE::PetscSOE : can not allocate memory for vectB \n";
+    // }
 
-    if (vectB == NULL)
-    {
-        std::cerr << "PetscSOE::PetscSOE : can not allocate memory for vectB \n";
-    }
 
+    // //
+    // // now create petsc matrix and vector objects
+    // //
 
-    //
-    // now create petsc matrix and vector objects
-    //
+    // //
+    // // Call Petsc VecCreate & MatCreate; NOTE: using previously allocated storage for vectors
+    // //
+    // //
 
-    //
-    // Call Petsc VecCreate & MatCreate; NOTE: using previously allocated storage for vectors
-    //
-    //
+    // if (processID_world > 0)
+    // {
+    //     PetscOptionsGetInt(PETSC_NULL, "-n", &size, PETSC_NULL);
 
-    if (processID_world > 0)
-    {
-        PetscOptionsGetInt(PETSC_NULL, "-n", &size, PETSC_NULL);
+    //     ierr = MatCreate(PETSC_COMM_WORLD, &A);
+    //     CHKERRQ(ierr);
 
-        ierr = MatCreate(PETSC_COMM_WORLD, &A);
-        CHKERRQ(ierr);
 
+    //     // Performance opportunity.
+    //     //Can use 2nd and 3rd parameters to customize which rows belong to what processor.
+    //     ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, size, size);
+    //     CHKERRQ(ierr);
 
-        // Performance opportunity.
-        //Can use 2nd and 3rd parameters to customize which rows belong to what processor.
-        ierr = MatSetSizes(A, PETSC_DECIDE, PETSC_DECIDE, size, size);
-        CHKERRQ(ierr);
 
+    //     //       ierr = MatSetType(A,mType);CHKERRQ(ierr);
+    //     //      ierr = MatSetType(A,MATAIJ);CHKERRQ(ierr);
+    //     ierr = MatSetFromOptions(A);
+    //     CHKERRQ(ierr);
 
-        //       ierr = MatSetType(A,mType);CHKERRQ(ierr);
-        //      ierr = MatSetType(A,MATAIJ);CHKERRQ(ierr);
-        ierr = MatSetFromOptions(A);
-        CHKERRQ(ierr);
+    //     //MatSetOption(A, MAT_SYMMETRIC);
+    //     //MatSetOption(A, MAT_SYMMETRY_ETERNAL);
 
-        //MatSetOption(A, MAT_SYMMETRIC);
-        //MatSetOption(A, MAT_SYMMETRY_ETERNAL);
+    //     ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
+    //     CHKERRQ(ierr);
+    //     // ierr = MatSeqAIJSetPreallocation(A, 650 , PETSC_NULL);
+    //     // CHKERRQ(ierr);
 
-        ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
-        CHKERRQ(ierr);
-        // ierr = MatSeqAIJSetPreallocation(A, 650 , PETSC_NULL);
-        // CHKERRQ(ierr);
+    //     MatGetOwnershipRange(A, &startRow, &endRow);
 
-        MatGetOwnershipRange(A, &startRow, &endRow);
 
 
+    //     ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, endRow - startRow , size, &X[startRow], &x);
+    //     CHKERRQ(ierr);
+    //     ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, endRow - startRow , size, &B[startRow], &b);
+    //     CHKERRQ(ierr);
 
-        ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, endRow - startRow , size, &X[startRow], &x);
-        CHKERRQ(ierr);
-        ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, endRow - startRow , size, &B[startRow], &b);
-        CHKERRQ(ierr);
+    // }
 
-    }
+    // // invoke setSize() on the Solver
+    // LinearSOESolver *tSolver = this->getSolver();
+    // int solverOK = tSolver->setSize();
 
-    // invoke setSize() on the Solver
-    LinearSOESolver *tSolver = this->getSolver();
-    int solverOK = tSolver->setSize();
+    // if (solverOK < 0)
+    // {
+    //     cerr << "WARNING:PetscSOE::setSize :";
+    //     cerr << " solver failed setSize()\n";
+    //     return solverOK;
+    // }
 
-    if (solverOK < 0)
-    {
-        cerr << "WARNING:PetscSOE::setSize :";
-        cerr << " solver failed setSize()\n";
-        return solverOK;
-    }
 
-
-    cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
+    // cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
 
     return result;
 }
