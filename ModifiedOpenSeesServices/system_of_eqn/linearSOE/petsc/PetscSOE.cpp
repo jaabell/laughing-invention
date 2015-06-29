@@ -878,7 +878,7 @@ PetscSOE::addA(const Matrix &m, const ID &id, double fact)
 
 
         const int * iddata = id.getData();
-        const double * matdata = m.getData();
+        // const double * matdata = m.getData();
         int pos = 0;
         int nsmall = 0;
 
