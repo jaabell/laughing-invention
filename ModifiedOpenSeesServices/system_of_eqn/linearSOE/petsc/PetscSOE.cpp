@@ -584,7 +584,10 @@ PetscSOE::setSize(Graph &theGraph)
 int
 PetscSOE::setSize(int MaxDOFtag)
 {
+    int result = -1;
     cerr << "PetscSOE::setSize(int MaxDOFtag) -- DEPRECATED! Should not get called\n";
+
+    return result;
     // if (!init_done)
     // {
 
@@ -838,7 +841,7 @@ PetscSOE::setSize(int MaxDOFtag)
 
     // cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
 
-    return result;
+    // return result;
 }
 
 
