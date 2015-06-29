@@ -530,7 +530,7 @@ PetscSOE::setSize(Graph &theGraph)
         // o_nz    - number of nonzeros per row in the OFF-DIAGONAL portion of local submatrix (same value is used for all local rows).
         // o_nnz   - array containing the number of nonzeros in the various rows of the OFF-DIAGONAL portion of the local submatrix (possibly different for each row) or NULL (PETSC_NULL_INTEGER in Fortran), if o_nz is used to specify the nonzero structure. The size of this array is equal to the number of local rows, i.e 'm'.
 
-        MatMPIAIJSetPreallocation(A, PETSC_NULL, d_nnz, PETSC_NULL, o_nnz);
+        MatMPIAIJSetPreallocation(A, 0, d_nnz, 0, o_nnz);
 
         // ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
         // ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
