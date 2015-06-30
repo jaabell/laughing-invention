@@ -172,6 +172,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending local graph\n";
         theGraph.sendSelf(0, *theChannel);
 
+        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving ID from process 0\n";
         // recv iD
         ID theID(2 * numVertex);
         theChannel->receiveID(0, 0, theID);
