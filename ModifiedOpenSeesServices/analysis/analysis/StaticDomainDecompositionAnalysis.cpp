@@ -344,9 +344,10 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
     }
 
 
-    cout << "   * Setting SOE Size\n";
-
+    cout << "   * Forming DOF Graph\n";
     Graph &theGraph = theAnalysisModel->getDOFGraph();
+
+    cout << "   * Setting SOE Size\n";
     result = theSOE->setSize(theGraph);
     if (result < 0)
     {
