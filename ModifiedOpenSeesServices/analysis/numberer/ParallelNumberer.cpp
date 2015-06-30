@@ -129,6 +129,10 @@ ParallelNumberer::setChannels(int nChannels, Channel** theC)
 int
 ParallelNumberer::numberDOF(int lastDOF)
 {
+
+
+    cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Begin numbering\n";
+
     int result = 0;
 
     // get a pointer to the model & check its not null
@@ -153,6 +157,8 @@ ParallelNumberer::numberDOF(int lastDOF)
         cerr << " does not use the lastDOF as requested\n";
     }
 
+
+    cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Getting DOF group\n";
     Graph& theGraph = theModel->getDOFGroupGraph();
 
     // if subdomain, collect graph, send it off, get
@@ -163,23 +169,20 @@ ParallelNumberer::numberDOF(int lastDOF)
         Channel* theChannel = theChannels[0];
         int numVertex = theGraph.getNumVertex();
 
-        /*
-        static ID test(2); test(0) = processID; test(1) = 25;
-        theChannel->receiveID(0, 0, test);
-        */
-
+        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending local graph\n";
         theGraph.sendSelf(0, *theChannel);
 
         // recv iD
         ID theID(2 * numVertex);
         theChannel->receiveID(0, 0, theID);
 
+        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Numbering local graph\n";
         // set vertex numbering based on ID received
         for (int i = 0; i < numVertex; i ++)
         {
             int vertexTag = theID(i);
             int startID = theID(i + numVertex);
-            //      Vertex *vertexPtr = theGraph.getVertexPtr(vertexTag);
+
             int dofTag = vertexTag;
             DOF_Group* dofPtr;
             dofPtr = theModel->getDOF_GroupPtr(dofTag);
@@ -193,7 +196,7 @@ ParallelNumberer::numberDOF(int lastDOF)
             else
             {
                 const ID& theDOFID = dofPtr->getID();
-                //  cerr << "P: " << processID << " dofTag: " << dofTag << " " << "start: " << startID << " " << theDOFID;
+
                 int idSize = theDOFID.Size();
 
                 for (int j = 0; j < idSize; j++)
@@ -206,6 +209,7 @@ ParallelNumberer::numberDOF(int lastDOF)
             const ID& theDOFID = dofPtr->getID();
         }
 
+        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending ID\n";
         theChannel->sendID(0, 0, theID);
     }
 
@@ -250,10 +254,12 @@ ParallelNumberer::numberDOF(int lastDOF)
             theChannel->sendID(0, 0, test);
             */
 
+            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving graph from Channel " << theChannel->getTag() << "\n";
             theSubGraph->receiveSelf(0, *theChannel, theBroker);
 
             theSubdomainIDs[j] = new ID(theSubGraph->getNumVertex() * 2);
 
+            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Merging graph received from Channel " << theChannel->getTag() << "\n";
             this->mergeSubGraph(theGraph, *theSubGraph, vertexTags, vertexRefs, *theSubdomainIDs[j]);
 
             delete theSubGraph;
@@ -264,6 +270,8 @@ ParallelNumberer::numberDOF(int lastDOF)
         // then  those in 2 not in 1 and so on till done.
         //    GraphNumberer *theNumberer = this->getGraphNumbererPtr();
 
+
+        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Numbering the big merged graph\n";
         ID* theOrderedRefs = new ID(theGraph.getNumVertex());
 
         if (theNumberer != 0)
@@ -375,7 +383,9 @@ ParallelNumberer::numberDOF(int lastDOF)
                 theSubdomain[i + numVertexSubdomain] = startDOF;
             }
 
+            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending channel " << theChannel->getTag() << " its startdof\n";
             theChannel->sendID(0, 0, theSubdomain);
+            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Waiting for channel " << theChannel->getTag() << " to be done.\n";
             theChannel->receiveID(0, 0, theSubdomain);
             delete theSubdomainIDs[k];
         }
@@ -383,6 +393,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         delete [] theSubdomainIDs;
     }
 
+    cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Setting FEs\n";
     // iterate through the FE_Element getting them to set their IDs
     FE_EleIter& theEle = theModel->getFEs();
     FE_Element* elePtr;
@@ -392,6 +403,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         elePtr->setID();
     }
 
+    cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : End numbering!\n";
     return result;
 }
 
