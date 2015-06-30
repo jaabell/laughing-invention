@@ -203,6 +203,7 @@ PetscSolver::solve(void)
     {
         cout << "Process " <<  processID_world << " calling KSPSolve()\n";
         ierr = KSPSolve(ksp, theSOE->b, theSOE->x);
+        cout << "        " <<  processID_world << " done calling KSPSolve()\n";
         CHKERRQ(ierr);
         theSOE->isFactored = 1;
     }
