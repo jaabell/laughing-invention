@@ -93,6 +93,11 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
       }
       *****************************************************************************/
 
+#ifdef _PARALLEL_PROCESSING
+    int processID;
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+    cout << "        + DOF_Graph::DOF_Graph() [" << processID <<  "] : Creating vertices\n";
+#endif
     //
     // create a vertex for each dof
     //
@@ -136,7 +141,9 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
 
     // now add the edges, by looping over the FE_elements, getting their
     // IDs and adding edges between DOFs for equation numbers >= START_EQN_NUM
-
+#ifdef _PARALLEL_PROCESSING
+    cout << "        + DOF_Graph::DOF_Graph() [" << processID <<  "] : Adding edges\n";
+#endif
     FE_Element* elePtr = 0;
     FE_EleIter& eleIter = myModel.getFEs();
     int cnt = 0;
