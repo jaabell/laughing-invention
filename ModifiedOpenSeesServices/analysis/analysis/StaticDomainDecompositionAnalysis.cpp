@@ -301,27 +301,25 @@ StaticDomainDecompositionAnalysis::initialize(void)
 int
 StaticDomainDecompositionAnalysis::domainChanged(void)
 {
-    cerr << "StaticDomainDecompositionAnalysis::domainChanged(void)\n";
+    cout << "StaticDomainDecompositionAnalysis - The domain has changed. (Re)Creating model.\n";
     Domain* the_Domain = this->getDomainPtr();
     int stamp = the_Domain->hasDomainChanged();
+
     domainStamp = stamp;
 
     int result = 0;
 
-    // Timer theTimer; theTimer.start();
     theAnalysisModel->clearAll();
     theConstraintHandler->clearAll();
 
-    // theTimer.pause();
-    // cout <<  "StaticDomainDecompositionAnalysis::clearAll() " << theTimer.getReal();
-    // cout << theTimer.getCPU() << endln;
-    // theTimer.start();
 
     // now we invoke handle() on the constraint handler which
     // causes the creation of FE_Element and DOF_Group objects
     // and their addition to the AnalysisModel.
 
     result = theConstraintHandler->handle();
+
+    cout << "   * Handling constraints\n";
 
     if (result < 0)
     {
@@ -330,10 +328,12 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
         return -1;
     }
 
+
     // we now invoke number() on the numberer which causes
     // equation numbers to be assigned to all the DOFs in the
     // AnalysisModel.
 
+    cout << "   * Numbering DOFS\n";
     result = theDOF_Numberer->numberDOF();
 
     if (result < 0)
@@ -343,35 +343,11 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
         return -2;
     }
 
-    //Aded by babak 2/20/14:
-    //--------------
-    // # ifdef _PARALLEL_PROCESSING
-    // //-------------------
-    // int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-    // result = theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
-    // //-------------------
-    // #else
-    // we invoke setSize() on the LinearSOE which
-    // causes that object to determine its size
-    // Graph& theGraph = theAnalysisModel->getDOFGraph();
-    // result = theSOE->setSize(theGraph);
 
+    cout << "   * Setting SOE Size\n";
 
-#ifdef _PARALLEL_PROCESSING
-    // int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-    // result = theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
-    Graph &theGraph = theAnalysisModel->getDOFGraph();//Out by Babak 06/4/13
-    // Graph &theGraph = theAnalysisModel->getDOFGroupGraph();//Out by Babak 06/4/13
-    result = theSOE->setSize(theGraph);//Out by Babak 06/4/13
-
-#else
-    Graph &theGraph = theAnalysisModel->getDOFGraph();//Out by Babak 06/4/13
-    result = theSOE->setSize(theGraph);//Out by Babak 06/4/13
-#endif
-
-
-    // #endif
-    //------------
+    Graph &theGraph = theAnalysisModel->getDOFGraph();
+    result = theSOE->setSize(theGraph);
     if (result < 0)
     {
         cerr << "StaticDomainDecompositionAnalysis::handle() - ";
@@ -379,8 +355,11 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
         return -3;
     }
 
+
+
     // finally we invoke domainChanged on the Integrator and Algorithm
     // objects .. informing them that the model has changed
+    cout << "   * Setting up integrator\n";
 
     result = theIntegrator->domainChanged();
 
@@ -391,6 +370,7 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
         return -4;
     }
 
+    cout << "   * Setting up algorithm\n";
     result = theAlgorithm->domainChanged();
 
     if (result < 0)
@@ -400,6 +380,7 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
         return -5;
     }
 
+    cout << "   * Done with domain change\n";
     // if get here successfull
     return 0;
 }
