@@ -188,8 +188,8 @@ PetscSolver::solve(void)
         }
     }
 
-    cout << "Process " << processID_world << " norm(vectB) = " << vectB->Norm() << endl;
-    cout << "Process " << processID_world << " norm(vectX) = " << vectX->Norm() << endl;
+    // cout << "Process " << processID_world << " norm(vectB) = " << vectB->Norm() << endl;
+    // cout << "Process " << processID_world << " norm(vectX) = " << vectX->Norm() << endl;
 
 
 

@@ -421,9 +421,12 @@ Graph::sendSelf(int commitTag, Channel &theChannel)
     }
 
     // send numEdge & the number of vertices
+
+    int numVertex = this->getNumVertex();
+
     static ID idData(2);
     idData(0) = numEdge;
-    idData(1) = this->getNumVertex();
+    idData(1) = numVertex;
 
     if (theChannel.sendID(0, commitTag, idData) < 0)
     {
@@ -431,19 +434,69 @@ Graph::sendSelf(int commitTag, Channel &theChannel)
         return -3;
     }
 
-    // send each vertex
+    ID tags(numVertex + 1);  //Last one will be the size of the adjacency vector
+    ID refs(numVertex);
+    Vector weights(numVertex);
+    ID colors(numVertex);
+    ID tmps(numVertex);
+    // ID myTag(numEdge);
+    // ID myRef(numEdge);
+    // ID myWeight(numEdge);
+    // ID myColor(numEdge);
+    // ID myDegree(numEdge);
+    // ID myTmp(numEdge);
+    // ID vsize(numEdge);
+
+    // Send tags
     VertexIter &theVertices = this->getVertices();
     Vertex *vertexPtr;
-
+    int i = 0;
+    int adjsize = 0;
     while ((vertexPtr = theVertices()) != 0)
     {
-        if (vertexPtr->sendSelf(commitTag, theChannel) < 0)
+        tags[i] = vertexPtr->getTag();
+        refs[i] = vertexPtr->getRef();
+        weights[i] = vertexPtr->getWeight();
+        colors[i] = vertexPtr->getColor();
+        tmps[i] = vertexPtr->getTmp();
+        i++;
+        adjsize += 1;
+        adjsize += vertexPtr->getDegree();
+    }
+    tags[i + 1] = adjsize;
+    theChannel.sendID(0, commitTag, tags);
+    theChannel.sendID(0, commitTag, refs);
+    theChannel.sendVector(0, commitTag, weights);
+    theChannel.sendID(0, commitTag, colors);
+    theChannel.sendID(0, commitTag, tmps);
+
+    ID adjacency_vector(adjsize);
+    theVertices = this->getVertices();
+    int pos = 0;
+    while ((vertexPtr = theVertices()) != 0)
+    {
+        ID myadj = vertexPtr->getAdjacency();
+        adjacency_vector[pos++] = myadj.Size();
+        for (int i = 0; i < myadj.Size(); i++)
         {
-            cerr << "Graph::sendSelf() - failed to send a vertex ";
-            //       cerr << "Graph::sendSelf() - failed to send a vertex: " << *vertexPtr;
-            return -3;
+            adjacency_vector[pos++] = myadj[i];
         }
     }
+
+    theChannel.sendID(0, commitTag, adjacency_vector);
+
+    // send each vertex
+    // VertexIter &theVertices = this->getVertices();
+    // Vertex *vertexPtr;
+    // while ((vertexPtr = theVertices()) != 0)
+    // {
+    //     if (vertexPtr->sendSelf(commitTag, theChannel) < 0)
+    //     {
+    //         cerr << "Graph::sendSelf() - failed to send a vertex ";
+    //         //       cerr << "Graph::sendSelf() - failed to send a vertex: " << *vertexPtr;
+    //         return -3;
+    //     }
+    // }
 
     return 0;
 }
@@ -480,10 +533,27 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
     numEdge = idData(0);
     int numVertex = idData(1);
 
+    ID tags(numVertex + 1); //Last is the size of the adjacency vector
+    ID refs(numVertex);
+    Vector weights(numVertex);
+    ID colors(numVertex);
+    ID tmps(numVertex);
+
+    theChannel.receiveID(0, commitTag, tags);
+    theChannel.receiveID(0, commitTag, refs);
+    theChannel.receiveVector(0, commitTag, weights);
+    theChannel.receiveID(0, commitTag, colors);
+    theChannel.receiveID(0, commitTag, tmps);
+
     // for each vertex to be received, create it, receive it and then add it to the graph
     for (int i = 0; i < numVertex; i++)
     {
-        Vertex *theVertex = new Vertex(0, 0);
+        int tag = tags[i];
+        int ref = refs[i];
+        int weight = weights[i];
+        int color = colors[i];
+        int tmp = tmps[i];
+        Vertex *theVertex = new Vertex( tag,  ref,  weight ,  color );;
 
         if (theVertex == 0)
         {
@@ -499,6 +569,45 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
 
         this->addVertex(theVertex, false);
     }
+
+    int adjsize = tags[numVertex];
+
+    ID adjacency_vector(adjsize);
+
+    theChannel.receiveID(0, commitTag, adjacency_vector);
+
+    VertexIter &theVertices = this->getVertices();
+    Vertex *vertexPtr;
+    int pos = 0;
+    while ((vertexPtr = theVertices()) != 0)
+    {
+        int size = adjacency_vector[pos++];
+        for (int i = 0; i < size; i++)
+        {
+            vertexPtr->addEdge(adjacency_vector[pos++]);
+        }
+    }
+
+
+    // // for each vertex to be received, create it, receive it and then add it to the graph
+    // for (int i = 0; i < numVertex; i++)
+    // {
+    //     Vertex *theVertex = new Vertex(0, 0);
+
+    //     if (theVertex == 0)
+    //     {
+    //         cerr << "Graph::receiveSelf() - out of memory\n";
+    //         return -4;
+    //     }
+
+    //     if (theVertex->receiveSelf(commitTag, theChannel, theBroker) < 0)
+    //     {
+    //         cerr << "Graph::receiveSelf() - vertex failed to receive itself\n";
+    //         return -5;
+    //     }
+
+    //     this->addVertex(theVertex, false);
+    // }
 
     return 0;
 }

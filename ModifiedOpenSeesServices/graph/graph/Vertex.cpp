@@ -108,20 +108,10 @@ Vertex::addEdge(int otherTag)
     }
 
     // check the otherVertex has not already been added
-#ifdef _BABAK_DEBUG
-    std::cerr << "BABAK @ Vertex::addEdge  " << "myAdjacency.getLocation(otherTag)" << myAdjacency.getLocation(otherTag) << "\n";
-#endif
 
     if (myAdjacency.getLocation(otherTag) < 0)
     {
         myAdjacency[myDegree]  = otherTag;
-#ifdef _BABAK_DEBUG
-        int numProcesses, processID;
-        MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-        MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-        cerr << "BABAK @ Vertex::addEdge ---- PID: " << processID << " myAdjacency[myDegree]: " << myAdjacency(myDegree) << " and otherTag is: " << otherTag << "\n";
-        cerr << "BABAK @ Vertex::addEdge ---- PID: " << processID << " myAdjacency.getLocation(otherTag) " << myAdjacency.getLocation(otherTag) << "\n";
-#endif
         myDegree++;
         return 0;
     }
