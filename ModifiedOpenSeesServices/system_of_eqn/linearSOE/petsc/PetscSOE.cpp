@@ -149,6 +149,10 @@ PetscSOE::setSize(Graph &theGraph)
     int result = 0;
     int ierr = 0;
 
+
+
+    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Initializing\n";
+
     if (!init_done)
     {
 
@@ -206,8 +210,9 @@ PetscSOE::setSize(Graph &theGraph)
     // first determine system size
     //
 
-    // Size of the system is the maximum DOF tag + 1
+    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Getting local max dof tag\n";
 
+    // Size of the system is the maximum DOF tag + 1
     //
     //Each processor visits its DOF graph and determines the maximum DOF tag
     // for its domain.
@@ -222,23 +227,9 @@ PetscSOE::setSize(Graph &theGraph)
     int mindoftag = std::numeric_limits<int>::max();
     int maxdoftag = 0;
 
-    // stringstream ss;
-    // ss << "graph_" << processID_world << ".gph";
-    // fstream graphfile(ss.str(), ios::out);
-
-    // graphfile << "Processor " << processID_world << endl;
-    // int ndofs = 0;
     while ((theVertex = theVertices()) != 0)
     {
         int tag = theVertex->getTag();
-
-        // graphfile << processID_world << ":   i = " << i << " "
-        //           << tag << " r = "
-        //           << theVertex->getRef() << " w = "
-        //           << theVertex->getWeight() << " c = "
-        //           << theVertex->getColor() << " t = "
-        //           << theVertex->getTmp() << " d = "
-        //           << theVertex->getDegree() << " " << endl;
 
         if (tag > maxdoftag)
         {
@@ -248,21 +239,15 @@ PetscSOE::setSize(Graph &theGraph)
         {
             mindoftag = tag;
         }
-        // i++;
     }
-
-    // graphfile.close();
-
-    // cout << "Processor " << processID_world << " has DOF tags from " << mindoftag << " to " << maxdoftag << endl;
     size = maxdoftag;
 
 
-
-    isFactored = 0;
-    static ID data(1);
-
     // Then, all maximumg tags (size) are sent to P0 which gets the global maximum.
 
+    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Determining global maximum dof tag\n";
+    isFactored = 0;
+    static ID data(1);
     if (processID_world != 0)
     {
         Channel *theChannel = theChannels[0];
@@ -298,8 +283,10 @@ PetscSOE::setSize(Graph &theGraph)
 
     size = size + 1; // vertices numbered 0 through n-1, and n is the size of the system. therefore, add 1
 
+    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : size = "  << size << "\n";
 
 
+    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Allocating memory\n";
 
     // invoke the petsc destructors
     if (A != 0)
@@ -381,6 +368,8 @@ PetscSOE::setSize(Graph &theGraph)
     // Determine start and end rows for each processor
     // ================================================
 
+    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Distributing SOE rows amongst processors\n";
+
     // Create array to store number of dofs in each processor (allgather)
     int nlocaldofs[numProcesses_world];
 
@@ -441,8 +430,12 @@ PetscSOE::setSize(Graph &theGraph)
     //
     //
 
+
+
     if (processID_world > 0)
     {
+
+        cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Initializing PETSc\n";
         // PetscOptionsGetInt(PETSC_NULL, "-n", &size, PETSC_NULL);
 
         ierr = MatCreate(PETSC_COMM_WORLD, &A);
