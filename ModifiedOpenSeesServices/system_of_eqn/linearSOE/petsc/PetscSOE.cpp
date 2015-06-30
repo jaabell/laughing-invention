@@ -151,13 +151,14 @@ PetscSOE::setSize(Graph &theGraph)
 
 
 
-    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Initializing\n";
 
     if (!init_done)
     {
 
         MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
         MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
+
+        cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Initializing\n";
 
         numProcesses = numProcesses_world - 1;
 
