@@ -174,6 +174,9 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
             }
         }
     }
+#ifdef _PARALLEL_PROCESSING
+    cout << "        + DOF_Graph::DOF_Graph() [" << processID <<  "] : Done!\n";
+#endif
 }
 
 DOF_Graph::~DOF_Graph()
