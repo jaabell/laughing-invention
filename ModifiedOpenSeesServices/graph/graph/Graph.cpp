@@ -556,7 +556,8 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
         int weight = weights[i];
         int color = colors[i];
         int tmp = tmps[i];
-        Vertex *theVertex = new Vertex( tag,  ref,  weight ,  color );;
+        Vertex *theVertex = new Vertex( tag,  ref,  weight ,  color );
+        theVertex->setTmp(tmp);
 
         if (theVertex == 0)
         {
