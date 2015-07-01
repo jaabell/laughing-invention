@@ -49,6 +49,9 @@
 #include <time.h>
 #include <NanoTimer.h>
 
+#include <Vector.h>
+#include <ID.h>
+
 using namespace std;
 
 Graph::Graph()
