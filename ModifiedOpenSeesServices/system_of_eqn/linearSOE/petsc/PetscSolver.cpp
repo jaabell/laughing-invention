@@ -307,6 +307,11 @@ PetscSolver::solve(void)
 
     cout << " PetscSolver.solve(), exitflag = " << ierr << endl;
 
+    PetscViewer    viewer;
+    // PetscViewerASCIIOpen(PETSC_COMM_WORLD, "petsc_log.txt" , &viewer);
+    PetscViewerASCIIGetStdout(PETSC_COMM_WORLD, &viewer);
+    PetscLogView(viewer);
+
     return ierr;
 }
 
