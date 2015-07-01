@@ -36,6 +36,8 @@
 #include <PetscSolver.h>
 #include <petscmat.h>
 #include <petscvec.h>
+#include <petscsys.h>
+
 #include <Matrix.h>
 #include <Graph.h>
 #include <Vertex.h>
