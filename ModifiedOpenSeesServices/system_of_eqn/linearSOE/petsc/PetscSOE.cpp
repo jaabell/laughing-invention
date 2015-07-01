@@ -201,8 +201,20 @@ PetscSOE::setSize(Graph &theGraph)
         {
             MPI_Group_rank (petsc_group, &processID);
             cout << " Process " << processID_world << " calling PetscInitialize\n";
-            // PetscInitialize(0, PETSC_NULL, (char *)0, PETSC_NULL);
-            PetscInitialize(0, PETSC_NULL, "petsc_options.txt", "ESSI Simulator is using PETSc");
+            //
+
+            //Check if petsc_options.txt is present
+            if (FILE *file = fopen(PETSCSOE_PETSCOPTIONS_FILENAME, "r"))
+            {
+                fclose(file);
+                cout << "PetscSOE is using options from file: " << PETSCSOE_PETSCOPTIONS_FILENAME << endl;
+                PetscInitialize(0, PETSC_NULL, PETSCSOE_PETSCOPTIONS_FILENAME, "ESSI Simulator is using PETSc");
+            }
+            else
+            {
+                PetscInitialize(0, PETSC_NULL, (char *)0, "ESSI Simulator is using PETSc");
+            }
+
             PetscLogBegin();
         }
         else
