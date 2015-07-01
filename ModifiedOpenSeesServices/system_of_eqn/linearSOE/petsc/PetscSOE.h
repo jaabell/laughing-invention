@@ -44,6 +44,10 @@
 #include <petscksp.h>
 // }
 
+
+#define PETSCSOE_MIN_DNNZ 10
+#define PETSCSOE_MIN_ONNZ 30
+
 class PetscSolver;
 
 class PetscSOE : public LinearSOE

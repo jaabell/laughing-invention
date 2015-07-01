@@ -509,8 +509,19 @@ PetscSOE::setSize(Graph &theGraph)
                     }
                 }
             }
+        }
 
 
+        for (int row = 0; row < nlocaldofs[processID_world]; row++)
+        {
+            if (d_nnz[row] < PETSCSOE_MIN_DNNZ)
+            {
+                d_nnz[row] =  PETSCSOE_MIN_DNNZ;
+            }
+            if (o_nnz[row] < PETSCSOE_MIN_ONNZ)
+            {
+                o_nnz[row] =  PETSCSOE_MIN_ONNZ;
+            }
         }
 
 
