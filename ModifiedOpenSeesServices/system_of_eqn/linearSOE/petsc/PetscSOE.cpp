@@ -201,7 +201,8 @@ PetscSOE::setSize(Graph &theGraph)
         {
             MPI_Group_rank (petsc_group, &processID);
             cout << " Process " << processID_world << " calling PetscInitialize\n";
-            PetscInitialize(0, PETSC_NULL, (char *)0, PETSC_NULL);
+            // PetscInitialize(0, PETSC_NULL, (char *)0, PETSC_NULL);
+            PetscInitialize(0, PETSC_NULL, "petsc_options.txt", "ESSI Simulator is using PETSc");
             PetscLogBegin();
         }
         else
