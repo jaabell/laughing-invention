@@ -467,15 +467,15 @@ Graph::sendSelf(int commitTag, Channel &theChannel)
         adjsize += vertexPtr->getDegree();
     }
     tags[i + 1] = adjsize;
-    cout << "sending tags to " << theChannel->getTag() << endl;
+    cout << "sending tags to " << theChannel.getTag() << endl;
     theChannel.sendID(0, commitTag, tags);
-    cout << "sending refs to " << theChannel->getTag() << endl;
+    cout << "sending refs to " << theChannel.getTag() << endl;
     theChannel.sendID(0, commitTag, refs);
-    cout << "sending weights to " << theChannel->getTag() << endl;
+    cout << "sending weights to " << theChannel.getTag() << endl;
     theChannel.sendVector(0, commitTag, weights);
-    cout << "sending colors to " << theChannel->getTag() << endl;
+    cout << "sending colors to " << theChannel.getTag() << endl;
     theChannel.sendID(0, commitTag, colors);
-    cout << "sending tmps to " << theChannel->getTag() << endl;
+    cout << "sending tmps to " << theChannel.getTag() << endl;
     theChannel.sendID(0, commitTag, tmps);
 
     ID adjacency_vector(adjsize);
@@ -548,19 +548,19 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
     ID tmps(numVertex);
 
 
-    cout << "receiving tags from " << theChannel->getTag() << endl;
+    cout << "receiving tags from " << theChannel.getTag() << endl;
     theChannel.receiveID(0, commitTag, tags);
 
-    cout << "receiving refs from " << theChannel->getTag() << endl;
+    cout << "receiving refs from " << theChannel.getTag() << endl;
     theChannel.receiveID(0, commitTag, refs);
 
-    cout << "receiving weights from " << theChannel->getTag() << endl;
+    cout << "receiving weights from " << theChannel.getTag() << endl;
     theChannel.receiveVector(0, commitTag, weights);
 
-    cout << "receiving colors from " << theChannel->getTag() << endl;
+    cout << "receiving colors from " << theChannel.getTag() << endl;
     theChannel.receiveID(0, commitTag, colors);
 
-    cout << "receiving tmps from " << theChannel->getTag() << endl;
+    cout << "receiving tmps from " << theChannel.getTag() << endl;
     theChannel.receiveID(0, commitTag, tmps);
 
     // for each vertex to be received, create it, receive it and then add it to the graph
