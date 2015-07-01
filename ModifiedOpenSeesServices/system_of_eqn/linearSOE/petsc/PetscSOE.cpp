@@ -142,7 +142,7 @@ PetscSOE::~PetscSOE()
     {
         PetscViewer    viewer;
         // PetscViewerASCIIOpen(PETSC_COMM_WORLD, "petsc_log.txt" , &viewer);
-        PetscViewerASCIIGetStdout(PETSC_COMM_WORLD, &viewer)
+        PetscViewerASCIIGetStdout(PETSC_COMM_WORLD, &viewer);
         PetscLogView(viewer);
     }
 
