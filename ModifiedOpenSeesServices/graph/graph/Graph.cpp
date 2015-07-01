@@ -565,11 +565,11 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
             return -4;
         }
 
-        if (theVertex->receiveSelf(commitTag, theChannel, theBroker) < 0)
-        {
-            cerr << "Graph::receiveSelf() - vertex failed to receive itself\n";
-            return -5;
-        }
+        // if (theVertex->receiveSelf(commitTag, theChannel, theBroker) < 0)
+        // {
+        //     cerr << "Graph::receiveSelf() - vertex failed to receive itself\n";
+        //     return -5;
+        // }
 
         this->addVertex(theVertex, false);
     }
