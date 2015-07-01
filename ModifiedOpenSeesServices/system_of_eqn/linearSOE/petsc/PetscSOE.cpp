@@ -136,7 +136,7 @@ PetscSOE::~PetscSOE()
         VecDestroy(&x);
     }
 
-    //PetscLogPrintSummary(PETSC_COMM_SELF, (char *)0);
+    PetscLogPrintSummary(PETSC_COMM_SELF, (char *)0);
 
     PetscFinalize();
 
@@ -193,6 +193,7 @@ PetscSOE::setSize(Graph &theGraph)
             MPI_Group_rank (petsc_group, &processID);
             cout << " Process " << processID_world << " calling PetscInitialize\n";
             PetscInitialize(0, PETSC_NULL, (char *)0, PETSC_NULL);
+            PetscLogBegin();
         }
         else
         {
