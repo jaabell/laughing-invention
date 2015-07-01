@@ -140,7 +140,9 @@ PetscSOE::~PetscSOE()
 
     if (processID_world > 0)
     {
-        PetscLogPrintSummary(PETSC_COMM_WORLD, "petsc_log.txt");
+        PetscViewer    viewer;
+        PetscViewerASCIIOpen(PETSC_COMM_WORLD, "petsc_log.txt" , &viewer);
+        PetscLogView(viewer);
     }
 
     PetscFinalize();
