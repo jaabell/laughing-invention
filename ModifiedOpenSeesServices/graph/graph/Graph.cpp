@@ -541,6 +541,8 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
     numEdge = idData(0);
     int numVertex = idData(1);
 
+    cout << "Preparing for numVertex = " << numVertex << endl;
+
     ID tags(numVertex + 1); //Last is the size of the adjacency vector
     ID refs(numVertex);
     Vector weights(numVertex);
