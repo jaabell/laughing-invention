@@ -47,6 +47,7 @@
 
 #define PETSCSOE_MIN_DNNZ 10
 #define PETSCSOE_MIN_ONNZ 30
+#define PETSCSOE_PETSCOPTIONS_FILENAME "petsc_options.txt"
 
 class PetscSolver;
 
