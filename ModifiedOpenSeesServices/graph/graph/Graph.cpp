@@ -466,7 +466,7 @@ Graph::sendSelf(int commitTag, Channel &theChannel)
         adjsize += 1;
         adjsize += vertexPtr->getDegree();
     }
-    tags[i + 1] = adjsize;
+    tags[i] = adjsize;
     cout << "sending tags to " << theChannel.getTag() << endl;
     theChannel.sendID(0, commitTag, tags);
     cout << "sending refs to " << theChannel.getTag() << endl;
