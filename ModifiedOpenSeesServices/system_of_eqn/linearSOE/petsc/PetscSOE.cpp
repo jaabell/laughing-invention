@@ -136,7 +136,10 @@ PetscSOE::~PetscSOE()
         VecDestroy(&x);
     }
 
-    PetscLogPrintSummary(PETSC_COMM_SELF, (char *)0);
+    if (processID_world > 0)
+    {
+        PetscLogPrintSummary(PETSC_COMM_WORLD, "petsc_log.txt");
+    }
 
     PetscFinalize();
 
