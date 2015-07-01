@@ -474,7 +474,7 @@ Graph::sendSelf(int commitTag, Channel &theChannel)
     theChannel.sendID(0, commitTag, tmps);
 
     ID adjacency_vector(adjsize);
-    theVertices = this->getVertices();
+    theVertices.reset();
     int pos = 0;
     while ((vertexPtr = theVertices()) != 0)
     {
