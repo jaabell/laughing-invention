@@ -253,11 +253,11 @@ SECTION_LIBS = ./material/section/SectionForceDeformation.o \
 
 
 
-ifeq ($(PROGRAMMING_MODE), THREADS)
-SUPER_LU_OBJ = ./system_of_eqn/linearSOE/sparseGEN/ThreadedSuperLU.o
-else
-SUPER_LU_OBJ = ./system_of_eqn/linearSOE/spar.seGEN/SuperLU.o
-endif
+# ifeq ($(PROGRAMMING_MODE), THREADS)
+# SUPER_LU_OBJ = ./system_of_eqn/linearSOE/sparseGEN/ThreadedSuperLU.o
+# else
+# SUPER_LU_OBJ = ./system_of_eqn/linearSOE/spar.seGEN/SuperLU.o
+# endif
 
 ifeq ($(PROGRAMMING_MODE), PARALLEL)
 SysOfEqn_LIBS = ./system_of_eqn/SystemOfEqn.o \

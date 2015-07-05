@@ -267,7 +267,7 @@
 #include <ProfileSPDLinDirectSolver.h>
 #include <ProfileSPDLinSubstrSolver.h>
 #include <SparseGenColLinSOE.h>
-#include <SuperLU.h>
+// #include <SuperLU.h>
 #include <UmfpackGenLinSOE.h> //Guanzhou added
 #include <UmfpackGenLinSolver.h> //Guanzhou added
 #endif

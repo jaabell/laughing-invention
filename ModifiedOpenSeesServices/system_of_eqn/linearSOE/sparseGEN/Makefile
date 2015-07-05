@@ -12,14 +12,14 @@ include ../../../../Makefile.Compilers
 
 PROGRAM         = test
 
-OBJS       = SparseGenColLinSOE.o \
-             SparseGenColLinSolver.o \
-             SparseGenRowLinSOE.o \
-             SparseGenRowLinSolver.o \
-             SuperLU.o \
-             DistributedSparseGenColLinSOE.o \
-             DistributedSparseGenRowLinSOE.o
+# OBJS       = SparseGenColLinSOE.o \
+#              SparseGenColLinSolver.o \
+#              SparseGenRowLinSOE.o \
+#              SparseGenRowLinSolver.o \
+#              DistributedSparseGenColLinSOE.o \
+#              DistributedSparseGenRowLinSOE.o
 
+             # SuperLU.o \
 all:         $(OBJS)
 
 # Miscellaneous
