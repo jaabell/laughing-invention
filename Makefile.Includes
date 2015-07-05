@@ -205,7 +205,7 @@ ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
 
             
 SEQUENTIAL_NUMERIC_INCLUDES = -I$(ESSI_DEPEND_DIR)/lib/include \
-            -I$(ESSI_DEPEND_DIR)/SuperLU \
+            -I$(ESSI_DEPEND_DIR)/include \
             -I$(ESSI_DEPEND_DIR)/hdf5_sequential/include 
 
 
