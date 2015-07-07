@@ -582,11 +582,11 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
         // theVertex->setTmp(tmp);
         theVertex.setTmp(tmp);
 
-        if (theVertex == 0)
-        {
-            cerr << "Graph::receiveSelf() - out of memory\n";
-            return -4;
-        }
+        // if (theVertex == 0)
+        // {
+        //     cerr << "Graph::receiveSelf() - out of memory\n";
+        //     return -4;
+        // }
 
         // if (theVertex->receiveSelf(commitTag, theChannel, theBroker) < 0)
         // {
