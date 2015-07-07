@@ -146,7 +146,7 @@ Graph::addVertex(Vertex *vertexPtr, bool checkAdjacency)
     try
     {
 
-        int maxtag = myVertices.size();
+        int maxtag = myVertices.size() - 1;
         if (tag  == maxtag + 1) // If its a consecutive tag, then using push_back might be the best option
         {
             myVertices.push_back(*vertexPtr);
@@ -192,6 +192,10 @@ Graph::addVertex(Vertex *vertexPtr, bool checkAdjacency)
         {
             nextFreeTag = tag + 1;
         }
+    }
+    else
+    {
+        std::cerr << "Graph::addVertex - unable to add vertex. " << ba.what() << '\n';
     }
 
 
