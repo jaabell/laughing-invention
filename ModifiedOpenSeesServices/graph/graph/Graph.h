@@ -1,89 +1,82 @@
-/* ****************************************************************** **
-**    OpenSees - Open System for Earthquake Engineering Simulation    **
-**          Pacific Earthquake Engineering Research Center            **
-**                                                                    **
-**                                                                    **
-** (C) Copyright 1999, The Regents of the University of California    **
-** All Rights Reserved.                                               **
-**                                                                    **
-** Commercial use of this program without express permission of the   **
-** University of California, Berkeley, is strictly prohibited.  See   **
-** file 'COPYRIGHT'  in main directory for information on usage and   **
-** redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           **
-**                                                                    **
-** Developed by:                                                      **
-**   Frank McKenna (fmckenna@ce.berkeley.edu)                         **
-**   Gregory L. Fenves (fenves@ce.berkeley.edu)                       **
-**   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
-**                                                                    **
-** ****************************************************************** */
-
-// $Revision: 1.2 $
-// $Date: 2003/02/14 23:01:23 $
-// $Source: /usr/local/cvs/OpenSees/SRC/graph/graph/Graph.h,v $
+///////////////////////////////////////////////////////////////////////////////
+//
+// COPYLEFT (C):     :-))
+//``This  source code is Copyrighted in U.S., by the The Regents of the University
+//of California, for an indefinite period, and anybody caught using it without our
+//permission,  will  be  mighty  good friends of ourn, cause we don't give a darn.
+//Hack  it.  Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
+//all we wanted to do.'' bj
+// PROJECT:           Object Oriented Finite Element Program
+// FILE:              Graph.h
+// CLASS:             Graph
+// MEMBER FUNCTIONS:
+//
+// MEMBER VARIABLES
+//
+// PURPOSE:           Finite Element Class
+// RETURN:
+// VERSION:
+// LANGUAGE:          C++
+// TARGET OS:         DOS || UNIX || . . .
+// DESIGNER:          Jose Abell, Boris Jeremic
+// PROGRAMMER:        Jose Abell
+// DATE:              July 2015
+// UPDATE HISTORY:    Reimplements Graph class using std::vector<Vertex> as underlying container for
+//                    increased efficiency. Legacy Graph is renamed to OldGraph and not compiled.
+//
+///////////////////////////////////////////////////////////////////////////////
 
 
 #ifndef Graph_h
 #define Graph_h
 
-// Written: fmk
-// Revision: A
-//
-// Description: This file contains the class definition for Graph.
-// The Graph class provides the abstraction of a graph, a collection of
-// vertices and edges. The Graph class is a container class which stores
-// and provides access to Vertex objects. The Vertices contain information
-// about the edges in this design.
-//
-// What: "@(#) Graph.h, revA"
-
-#ifndef _bool_h
-#include "bool.h"
-#endif
-
+#include <vector>
 #include <iostream>
+#include <Vertex.h>
+#include <VertexIter.h>
 using namespace std;
 
-class Vertex;
-class VertexIter;
-class TaggedObjectStorage;
+// class Vertex;
+// class VertexIter;
 class Channel;
 class FEM_ObjectBroker;
 
+
 class Graph
 {
-    public:
-        Graph();
-        Graph(int numVertices);
-        Graph(TaggedObjectStorage &theVerticesStorage);
-        Graph(Graph &other);
-        virtual ~Graph();
+public:
+    Graph();
+    Graph(int numVertices);
+    Graph(VertexVector &otherVertices);
+    Graph(Graph &other);
+    virtual ~Graph();
 
-        virtual bool addVertex(Vertex *vertexPtr, bool checkAdjacency = true);
-        virtual int addEdge(int vertexTag, int otherVertexTag);
+    virtual bool addVertex(Vertex *vertexPtr, bool checkAdjacency = true);
+    virtual int addEdge(int vertexTag, int otherVertexTag);
 
-        virtual Vertex *getVertexPtr(int vertexTag);
-        virtual VertexIter &getVertices(void);
-        virtual int getNumVertex(void) const;
-        virtual int getNumEdge(void) const;
-        virtual int getFreeTag(void);
-        virtual Vertex *removeVertex(int tag, bool removeEdgeFlag = true);
+    virtual Vertex *getVertexPtr(int vertexTag);
+    virtual VertexIter &getVertices(void);
+    virtual int getNumVertex(void) const;
+    virtual int getNumEdge(void) const;
+    virtual int getFreeTag(void);
+    virtual Vertex *removeVertex(int tag, bool removeEdgeFlag = true);
 
-        virtual int merge(Graph &other);
+    virtual int merge(Graph &other);
 
-        virtual void Print(ostream &s, int flag = 0);
-        int sendSelf(int commitTag, Channel &theChannel);
-        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+    virtual void Print(ostream &s, int flag = 0);
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        friend ostream &operator<<(ostream &s, Graph &M);
+    friend ostream &operator<<(ostream &s, Graph &M);
 
-    protected:
+protected:
 
-    private:
-        TaggedObjectStorage *myVertices;
-        VertexIter *theVertexIter;
-        int numEdge;
-        int nextFreeTag;
+private:
+    VertexVector myVertices;
+    VertexIter theVertexIter;
+    int numVertices;
+    int numEdges;
+    int nextFreeTag;
 };
 
 #endif

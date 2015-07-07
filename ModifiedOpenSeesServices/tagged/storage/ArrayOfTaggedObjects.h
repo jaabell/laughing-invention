@@ -49,39 +49,39 @@
 
 class ArrayOfTaggedObjects : public TaggedObjectStorage
 {
-    public:
-        ArrayOfTaggedObjects(int size);
-        ~ArrayOfTaggedObjects();
+public:
+    ArrayOfTaggedObjects(int size);
+    ~ArrayOfTaggedObjects();
 
-        // public methods to populate a domain
-        int  setSize(int newSize);
-        bool addComponent(TaggedObject* newComponent);
-        //             bool allowMutltipleTags = false);
-        bool addComponent_graph(TaggedObject* newComponent); // Added by Babak 06/03/13
-        TaggedObject* removeComponent(int tag);
-        int  getNumComponents(void) const;
+    // public methods to populate a domain
+    int  setSize(int newSize);
+    bool addComponent(TaggedObject* newComponent);
+    //             bool allowMutltipleTags = false);
+    bool addComponent_graph(TaggedObject* newComponent); // Added by Babak 06/03/13
+    TaggedObject* removeComponent(int tag);
+    int  getNumComponents(void) const;
 
-        TaggedObject*     getComponentPtr(int tag);
-        TaggedObjectIter& getComponents();
+    TaggedObject*     getComponentPtr(int tag);
+    TaggedObjectIter& getComponents();
 
-        ArrayOfTaggedObjectsIter  getIter();
+    ArrayOfTaggedObjectsIter  getIter();
 
-        virtual TaggedObjectStorage* getEmptyCopy(void);
-        virtual void clearAll(bool invokeDestructor = true);
+    virtual TaggedObjectStorage* getEmptyCopy(void);
+    virtual void clearAll(bool invokeDestructor = true);
 
-        void Print(ostream& s, int flag = 0);
-        friend class ArrayOfTaggedObjectsIter;
+    void Print(ostream& s, int flag = 0);
+    friend class ArrayOfTaggedObjectsIter;
 
-    protected:
+protected:
 
-    private:
-        int numComponents;          // num of components added
-        int sizeComponentArray;     // size of the array
-        int positionLastEntry;      // marker of last position used in the array
-        int positionLastNoFitEntry; // marker of place array filled up to
-        bool fitFlag;               // flag indicating if all components in nicely
-        TaggedObject** theComponents; // the array
-        ArrayOfTaggedObjectsIter  myIter; // an iter for accessing the objects
+private:
+    int numComponents;          // num of components added
+    int sizeComponentArray;     // size of the array
+    int positionLastEntry;      // marker of last position used in the array
+    int positionLastNoFitEntry; // marker of place array filled up to
+    bool fitFlag;               // flag indicating if all components in nicely
+    TaggedObject** theComponents; // the array
+    ArrayOfTaggedObjectsIter  myIter; // an iter for accessing the objects
 };
 
 #endif

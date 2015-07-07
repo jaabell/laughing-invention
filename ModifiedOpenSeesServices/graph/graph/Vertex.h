@@ -47,43 +47,45 @@ class FEM_ObjectBroker;
 
 class Vertex: public TaggedObject
 {
-    public:
-        Vertex(int tag, int ref, double weight = 0, int color = 0);
-        Vertex(const Vertex &other);
+public:
+    Vertex(void);
+    Vertex(int tag, int ref, double weight = 0, int color = 0);
+    Vertex(const Vertex &other);
+    // Vertex(Vertex const &other);
 
-        virtual ~Vertex();
+    virtual ~Vertex();
 
-        virtual void setWeight(double newWeight);
-        virtual void setColor(int newColor);
-        virtual void setTmp(int newTmp);
+    virtual void setWeight(double newWeight);
+    virtual void setColor(int newColor);
+    virtual void setTmp(int newTmp);
 
-        virtual int getRef(void) const;
-        virtual double getWeight(void) const;
-        virtual int getColor(void) const;
-        virtual int getTmp(void) const;
+    virtual int getRef(void) const;
+    virtual double getWeight(void) const;
+    virtual int getColor(void) const;
+    virtual int getTmp(void) const;
 
-        virtual int addEdge(int otherTag);
-        virtual int getDegree(void) const;
-        virtual const ID &getAdjacency(void) const;
+    virtual int addEdge(int otherTag);
+    virtual int getDegree(void) const;
+    virtual const ID &getAdjacency(void) const;
 
-        virtual  void Print(ostream &s, int flag = 0);
-        int sendSelf(int commitTag, Channel &theChannel);
-        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+    virtual  void Print(ostream &s, int flag = 0);
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
 
-        void setVertexSize(int size);// {vsize = size;};
-        int getVertexSize();// {return vsize;};
+    void setVertexSize(int size);// {vsize = size;};
+    int getVertexSize();// {return vsize;};
 
-    protected:
+protected:
 
-    private:
-        int myRef;
-        double myWeight;
-        int myColor;
-        int myDegree;
-        int myTmp;
-        ID  myAdjacency;
-        int vsize;
+private:
+    int myRef;
+    double myWeight;
+    int myColor;
+    int myDegree;
+    int myTmp;
+    ID  myAdjacency;
+    int vsize;
 
 };
 

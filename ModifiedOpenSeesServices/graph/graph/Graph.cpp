@@ -1,40 +1,35 @@
-/* ****************************************************************** **
-**    OpenSees - Open System for Earthquake Engineering Simulation    **
-**          Pacific Earthquake Engineering Research Center            **
-**                                                                    **
-**                                                                    **
-** (C) Copyright 1999, The Regents of the University of California    **
-** All Rights Reserved.                                               **
-**                                                                    **
-** Commercial use of this program without express permission of the   **
-** University of California, Berkeley, is strictly prohibited.  See   **
-** file 'COPYRIGHT'  in main directory for information on usage and   **
-** redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           **
-**                                                                    **
-** Developed by:                                                      **
-**   Frank McKenna (fmckenna@ce.berkeley.edu)                         **
-**   Gregory L. Fenves (fenves@ce.berkeley.edu)                       **
-**   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
-**                                                                    **
-** ****************************************************************** */
-
-// $Revision: 1.2 $
-// $Date: 2003/02/14 23:01:23 $
-// $Source: /usr/local/cvs/OpenSees/SRC/graph/graph/Graph.cpp,v $
-
-
-// Written: fmk
-// Created: 11/96
-// Revision: A
+///////////////////////////////////////////////////////////////////////////////
 //
-// Description: This file contains the class implementation for Graph.
+// COPYLEFT (C):     :-))
+//``This  source code is Copyrighted in U.S., by the The Regents of the University
+//of California, for an indefinite period, and anybody caught using it without our
+//permission,  will  be  mighty  good friends of ourn, cause we don't give a darn.
+//Hack  it.  Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
+//all we wanted to do.'' bj
+// PROJECT:           Object Oriented Finite Element Program
+// FILE:              Graph.cpp
+// CLASS:             Graph
+// MEMBER FUNCTIONS:
 //
-// What: "@(#) Graph.C, revA"
+// MEMBER VARIABLES
+//
+// PURPOSE:           Finite Element Class
+// RETURN:
+// VERSION:
+// LANGUAGE:          C++
+// TARGET OS:         DOS || UNIX || . . .
+// DESIGNER:          Jose Abell, Boris Jeremic
+// PROGRAMMER:        Jose Abell
+// DATE:              July 2015
+// UPDATE HISTORY:    Reimplements Graph class using std::vector<Vertex> as underlying container for
+//                    increased efficiency. Legacy Graph is renamed to OldGraph and not compiled.
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #include <Graph.h>
 #include <Vertex.h>
 #include <VertexIter.h>
-#include <ArrayOfTaggedObjects.h>
+// #include <ArrayOfTaggedObjects.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
 #include <stdlib.h>
@@ -42,12 +37,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <string>
-#ifdef _PARALLEL_PROCESSING
-#include <mpi.h>
-#endif
 
-#include <time.h>
-#include <NanoTimer.h>
 
 #include <Vector.h>
 #include <ID.h>
@@ -55,122 +45,56 @@
 using namespace std;
 
 Graph::Graph()
-    : myVertices(0), theVertexIter(0), numEdge(0), nextFreeTag(START_VERTEX_NUM)
+    :  numVertices(0), numEdges(0), nextFreeTag(START_VERTEX_NUM)
 {
-#ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-    cerr << "BABAK @ Graph::Graph() --  PID:" << processID << "---Graph::Graph() called ...:" << endl;
-#endif
-    myVertices = new ArrayOfTaggedObjects(32);
-    theVertexIter = new VertexIter(myVertices);
+
 }
 
 
 Graph::Graph(int numVertices)
-    : myVertices(0), theVertexIter(0), numEdge(0), nextFreeTag(START_VERTEX_NUM)
+    : myVertices(numVertices)
 {
-#ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-    cerr << "BABAK @ Graph(int numVertices) --  PID:" << processID << "---Graph::Graph() called ...:" << endl;
-#endif
-    myVertices = new ArrayOfTaggedObjects(numVertices);
-    theVertexIter = new VertexIter(myVertices);
+
 }
 
 
-Graph::Graph(TaggedObjectStorage &theVerticesStorage)
-    : myVertices(&theVerticesStorage), theVertexIter(0), numEdge(0), nextFreeTag(START_VERTEX_NUM)
+Graph::Graph(VertexVector &theVerticesStorage)
+    : myVertices(theVerticesStorage), numVertices(0), numEdges(0), nextFreeTag(START_VERTEX_NUM)
 {
-#ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-    cerr << "BABAK @ raph(TaggedObjectStorage &theVerticesStorage) --  PID:" << processID << "---Graph::Graph() called ...:" << endl;
-#endif
-    TaggedObject *theObject;
-    TaggedObjectIter &theObjects = theVerticesStorage.getComponents();
-
-    while ((theObject = theObjects()) != 0)
-        if (theObject->getTag() > nextFreeTag)
+    for (auto it = theVerticesStorage.begin(); it != theVerticesStorage.end(); it++)
+    {
+        int tag = it->getTag();
+        if (tag > nextFreeTag)
         {
-            nextFreeTag = theObject->getTag() + 1;
+            nextFreeTag = it->getTag() + 1;
         }
-
-    theVerticesStorage.clearAll();
-    theVertexIter = new VertexIter(myVertices);
+        if (tag > 0)
+        {
+            numVertices++;
+        }
+    }
+    theVertexIter = VertexIter(myVertices);
 }
 
 
 Graph::Graph(Graph &other)
-    : myVertices(0), theVertexIter(0), numEdge(0), nextFreeTag(START_VERTEX_NUM)
+    : myVertices(other.myVertices), numVertices(other.numVertices), numEdges(other.numEdges), nextFreeTag(other.nextFreeTag)
 {
-#ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-    cerr << "BABAK @ Graph(Graph &other) --  PID:" << processID << "---Graph::Graph() called ...:" << endl;
-#endif
-    myVertices = new ArrayOfTaggedObjects(other.getNumVertex());
-    theVertexIter = new VertexIter(myVertices);
-
-    VertexIter &otherVertices = other.getVertices();
-    Vertex *vertexPtr;
-
-    // loop through other creating vertices if tag not the same in this
-    while ((vertexPtr = otherVertices()) != 0)
-    {
-        int vertexTag = vertexPtr->getTag();
-        int vertexRef = vertexPtr->getRef();
-        vertexPtr = new Vertex(vertexTag, vertexRef);
-
-        if (vertexPtr == 0)
-        {
-            cerr << "Graph::Graph - out of memory\n";
-            return;
-        }
-
-        this->addVertex(vertexPtr, false);
-    }
-
-    // loop through other adding all the edges that exist in other
-    VertexIter &otherVertices2 = other.getVertices();
-
-    while ((vertexPtr = otherVertices2()) != 0)
-    {
-        int vertexTag = vertexPtr->getTag();
-        const ID &adjacency = vertexPtr->getAdjacency();
-
-        for (int i = 0; i < adjacency.Size(); i++)
-        {
-            if (this->addEdge(vertexTag, adjacency(i)) < 0)
-            {
-                cerr << "Graph::merge - could not add an edge!\n";
-                return;
-            }
-        }
-    }
+    theVertexIter = VertexIter(myVertices);
 }
 
 Graph::~Graph()
 {
-    // invoke delete on the Vertices
-    //Out by Babak ... It makes some memory problems ... on September 2012
+
     // if (myVertices != 0)
-    //     myVertices->clearAll();
+    // {
+    //     delete myVertices;
+    // }
 
-    if (myVertices != 0)
-    {
-        delete myVertices;
-    }
-
-    if (theVertexIter != 0)
-    {
-        delete theVertexIter;
-    }
+    // if (theVertexIter != 0)
+    // {
+    //     delete theVertexIter;
+    // }
 }
 
 
@@ -185,6 +109,7 @@ bool
 Graph::addVertex(Vertex *vertexPtr, bool checkAdjacency)
 {
     // check the vertex * and its adjacency list
+
     if (vertexPtr == 0)
     {
         cerr << "WARNING Graph::addVertex";
@@ -214,24 +139,59 @@ Graph::addVertex(Vertex *vertexPtr, bool checkAdjacency)
     }
 
 
-    bool result = myVertices->addComponent(vertexPtr); //Out by Babak 6/3/13
-
-    //        bool result = myVertices->addComponent_graph(vertexPtr); //Replaced by Babak 6/3/13
-    if (result == false)
+    int tag = vertexPtr->getTag();
+    bool result = true;
+    try
     {
-        //cerr << *this;
-        //cerr << "BAD VERTEX\n: " << *vertexPtr;
-        cerr << "WARNING Graph::addVertex";
-        cerr << " - vertex could not be stored in TaggedObjectStorage object\n";
-        return false;
+
+        int maxtag = myVertices.size();
+        if (tag  == maxtag + 1) // If its a consecutive tag, then using push_back might be the best option
+        {
+            myVertices.push_back(*vertexPtr);
+        }
+        else if (tag > maxtag + 1) // If its not, we allocate for twice the size. Amortizing allocation costs.
+        {
+            myVertices.resize(2 * tag);
+            if (myVertices[tag].getTag() < 0) // Check if tag is available
+            {
+                myVertices[tag] = *vertexPtr;
+            }
+            else
+            {
+                std::cerr << "Graph::addVertex - vertex with tag. " << tag << " is already taken.\n";
+                result = false;
+            }
+        }
+        else // If we have the space, simply assign after checking if the spot is not taken.
+        {
+            if (myVertices[tag].getTag() < 0)
+            {
+                myVertices[tag] = *vertexPtr;
+            }
+            else
+            {
+                std::cerr << "Graph::addVertex - vertex with tag. " << tag << " is already taken.\n";
+                result = false;
+            }
+        }
+    }
+    catch (std::bad_alloc& ba) // Catch the possibility that push_back (or resize) fails.
+    {
+        std::cerr << "Graph::addVertex - bad alloc caught. " << ba.what() << '\n';
+        result = false;
     }
 
-
-    // check nextFreeTag
-    if (vertexPtr->getTag() >= nextFreeTag)
+    if (result)
     {
-        nextFreeTag = vertexPtr->getTag() + 1;
+        numVertices++;
+
+        // check nextFreeTag
+        if (tag >= nextFreeTag)
+        {
+            nextFreeTag = tag + 1;
+        }
     }
+
 
     return result;
 }
@@ -267,13 +227,13 @@ Graph::addEdge(int vertexTag, int otherVertexTag)
     {
         if ((result = vertex2->addEdge(vertexTag)) == 0)
         {
-            numEdge++;
+            numEdges++;
         }
         else
         {
             cerr << "WARNING Graph::addEdge() - " << vertexTag;
             cerr << " has not been added to " << otherVertexTag;
-            cerr << " adjacency - yet vica-versa ok.\n";
+            cerr << " adjacency - yet vice-versa ok.\n";
             return -2;
         }
     }
@@ -285,15 +245,24 @@ Graph::addEdge(int vertexTag, int otherVertexTag)
 Vertex *
 Graph::getVertexPtr(int vertexTag)
 {
-    TaggedObject *res = myVertices->getComponentPtr(vertexTag);
+    // TaggedObject *res = myVertices->getComponentPtr(vertexTag);
 
-    if (res == 0)
+    if ((unsigned int) vertexTag < myVertices.size())
+    {
+        Vertex * theVertex;
+        theVertex = &(myVertices[vertexTag]);
+
+        if (theVertex->getTag() != vertexTag)
+        {
+            return 0;
+        }
+
+        return theVertex;
+    }
+    else
     {
         return 0;
     }
-
-    Vertex *result = (Vertex *)res;
-    return result;
 }
 
 
@@ -301,21 +270,22 @@ VertexIter &
 Graph::getVertices(void)
 {
     // reset the iter and then return it
-    theVertexIter->reset();
-    return *theVertexIter;
+    theVertexIter = VertexIter(myVertices);
+    theVertexIter.reset();
+    return theVertexIter;
 }
 
 
 int
 Graph::getNumVertex(void) const
 {
-    return myVertices->getNumComponents();
+    return numVertices;
 }
 
 int
 Graph::getNumEdge(void) const
 {
-    return numEdge;
+    return numEdges;
 }
 
 int
@@ -324,17 +294,47 @@ Graph::getFreeTag(void)
     return nextFreeTag;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Vertex *
 Graph::removeVertex(int tag, bool flag)
 {
-    TaggedObject *mc = myVertices->removeComponent(tag);
+    Vertex *dumpMe = getVertexPtr(tag);
 
-    if (mc == 0)
+
+    if (dumpMe == 0)
     {
+        // No vertex. Nothing do do.
         return 0;
     }
 
-    Vertex *result = (Vertex *)mc;
+    //Simply set tag to -1 to indicate that is no longer there,
+    (*dumpMe) = Vertex(-1, -1);
+    numVertices--;
 
     if (flag == true)   // remove all edges associated with the vertex
     {
@@ -343,7 +343,7 @@ Graph::removeVertex(int tag, bool flag)
         return 0;
     }
 
-    return result;
+    return 0;
 }
 
 
@@ -402,7 +402,9 @@ Graph::merge(Graph &other)
 void
 Graph::Print(ostream &s, int flag)
 {
-    myVertices->Print(s, flag);
+    // myVertices->Print(s, flag);
+    s << "Graph::Print() -- not implemented.\n";
+    cout << "Graph::Print() -- not implemented.\n";
 }
 
 
@@ -423,13 +425,13 @@ Graph::sendSelf(int commitTag, Channel &theChannel)
         return -1;
     }
 
-    // send numEdge & the number of vertices
+    // send numEdges & the number of vertices
 
-    int numVertex = this->getNumVertex();
+    int numVertices = this->getNumVertex();
 
     static ID idData(2);
-    idData(0) = numEdge;
-    idData(1) = numVertex;
+    idData(0) = numEdges;
+    idData(1) = numVertices;
 
     if (theChannel.sendID(0, commitTag, idData) < 0)
     {
@@ -437,18 +439,18 @@ Graph::sendSelf(int commitTag, Channel &theChannel)
         return -3;
     }
 
-    ID tags(numVertex + 1);  //Last one will be the size of the adjacency vector
-    ID refs(numVertex);
-    Vector weights(numVertex);
-    ID colors(numVertex);
-    ID tmps(numVertex);
-    // ID myTag(numEdge);
-    // ID myRef(numEdge);
-    // ID myWeight(numEdge);
-    // ID myColor(numEdge);
-    // ID myDegree(numEdge);
-    // ID myTmp(numEdge);
-    // ID vsize(numEdge);
+    ID tags(numVertices + 1);  //Last one will be the size of the adjacency vector
+    ID refs(numVertices);
+    Vector weights(numVertices);
+    ID colors(numVertices);
+    ID tmps(numVertices);
+    // ID myTag(numEdges);
+    // ID myRef(numEdges);
+    // ID myWeight(numEdges);
+    // ID myColor(numEdges);
+    // ID myDegree(numEdges);
+    // ID myTmp(numEdges);
+    // ID vsize(numEdges);
 
     // Send tags
     VertexIter &theVertices = this->getVertices();
@@ -525,11 +527,11 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
     {
         cerr << "Graph::receiveSelf() - can only receive to an empty graph at present\n";
 
-        numEdge = 0;
-        myVertices->clearAll();
+        numEdges = 0;
+        // myVertices->clearAll();
     }
 
-    // recv numEdge & numVertices
+    // recv numEdges & numVertices
     static ID idData(2);
 
     if (theChannel.receiveID(0, commitTag, idData) < 0)
@@ -538,16 +540,16 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
         return -3;
     }
 
-    numEdge = idData(0);
-    int numVertex = idData(1);
+    numEdges = idData(0);
+    int numVertices = idData(1);
 
-    cout << "Preparing for numVertex = " << numVertex << endl;
+    cout << "Preparing for numVertices = " << numVertices << endl;
 
-    ID tags(numVertex + 1); //Last is the size of the adjacency vector
-    ID refs(numVertex);
-    Vector weights(numVertex);
-    ID colors(numVertex);
-    ID tmps(numVertex);
+    ID tags(numVertices + 1); //Last is the size of the adjacency vector
+    ID refs(numVertices);
+    Vector weights(numVertices);
+    ID colors(numVertices);
+    ID tmps(numVertices);
 
 
     cout << "receiving tags from " << theChannel.getTag() << endl;
@@ -566,7 +568,7 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
     theChannel.receiveID(0, commitTag, tmps);
 
     // for each vertex to be received, create it, receive it and then add it to the graph
-    for (int i = 0; i < numVertex; i++)
+    for (int i = 0; i < numVertices; i++)
     {
         int tag = tags[i];
         int ref = refs[i];
@@ -591,7 +593,7 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
         this->addVertex(theVertex, false);
     }
 
-    int adjsize = tags[numVertex];
+    int adjsize = tags[numVertices];
 
     ID adjacency_vector(adjsize);
 
@@ -611,7 +613,7 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
 
 
     // // for each vertex to be received, create it, receive it and then add it to the graph
-    // for (int i = 0; i < numVertex; i++)
+    // for (int i = 0; i < numVertices; i++)
     // {
     //     Vertex *theVertex = new Vertex(0, 0);
 

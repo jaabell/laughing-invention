@@ -1,50 +1,46 @@
-/* ****************************************************************** **
-**    OpenSees - Open System for Earthquake Engineering Simulation    **
-**          Pacific Earthquake Engineering Research Center            **
-**                                                                    **
-**                                                                    **
-** (C) Copyright 1999, The Regents of the University of California    **
-** All Rights Reserved.                                               **
-**                                                                    **
-** Commercial use of this program without express permission of the   **
-** University of California, Berkeley, is strictly prohibited.  See   **
-** file 'COPYRIGHT'  in main directory for information on usage and   **
-** redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           **
-**                                                                    **
-** Developed by:                                                      **
-**   Frank McKenna (fmckenna@ce.berkeley.edu)                         **
-**   Gregory L. Fenves (fenves@ce.berkeley.edu)                       **
-**   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
-**                                                                    **
-** ****************************************************************** */
-
-// $Revision: 1.1.1.1 $
-// $Date: 2000/09/15 08:23:21 $
-// $Source: /usr/local/cvs/OpenSees/SRC/graph/graph/VertexIter.cpp,v $
-
-
-// File: ~/OOP/graph/graph/VertexIter.C
+///////////////////////////////////////////////////////////////////////////////
 //
-// Written: fmk
-// Created: Fri Sep 20 15:27:47: 1996
-// Revision: A
+// COPYLEFT (C):     :-))
+//``This  source code is Copyrighted in U.S., by the The Regents of the University
+//of California, for an indefinite period, and anybody caught using it without our
+//permission,  will  be  mighty  good friends of ourn, cause we don't give a darn.
+//Hack  it.  Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
+//all we wanted to do.'' bj
+// PROJECT:           Object Oriented Finite Element Program
+// FILE:              Graph.cpp
+// CLASS:             Graph
+// MEMBER FUNCTIONS:
 //
-// Description: This file contains the method definitions for class
-// VertexIter. VertexIter is a class for iterating through the
-// vertices of a graph.
+// MEMBER VARIABLES
+//
+// PURPOSE:           Finite Element Class
+// RETURN:
+// VERSION:
+// LANGUAGE:          C++
+// TARGET OS:         DOS || UNIX || . . .
+// DESIGNER:          Jose Abell, Boris Jeremic
+// PROGRAMMER:        Jose Abell
+// DATE:              July 2015
+// UPDATE HISTORY:    Reimplements Vertex iterator class using std::vector<Vertex> as underlying container for
+//                    increased efficiency. Legacy VertexIter is renamed to OldVertexIter and not compiled.
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #include "VertexIter.h"
 #include <Graph.h>
 #include <Vertex.h>
-#include <TaggedObjectIter.h>
-#include <TaggedObjectStorage.h>
 
-
-// VertexIter():
-//  constructor that takes the model, just the basic iter
-VertexIter::VertexIter(TaggedObjectStorage* theStorage)
-    : myIter(theStorage->getComponents())
+VertexIter::VertexIter()
+    : myVertices(0)
 {
+
+}
+
+VertexIter::VertexIter(VertexVector& vertices)
+{
+    myVertices = &vertices;
+    myIter = myVertices->begin();
+    myIterEnd = myVertices->end();
 }
 
 
@@ -55,24 +51,40 @@ VertexIter::~VertexIter()
 void
 VertexIter::reset(void)
 {
-    myIter.reset();
+    if (myVertices != 0)
+    {
+        myIter = myVertices->begin();
+        myIterEnd = myVertices->end();
+    }
 }
+
+
 
 Vertex*
 VertexIter::operator()(void)
 {
-    // check if we still have elements in the model
-    // if not return 0, indicating we are done
-    TaggedObject* theComponent = myIter();
-
-    if (theComponent == 0)
+    if (myVertices != 0)
     {
-        return 0;
+        // check if we still have elements in the model
+        // if not return 0, indicating we are done
+        if (myIter != myIterEnd)
+        {
+            while (myIter->getTag() < 0) //Skip negative tags. Those are not there.
+            {
+                ++myIter;
+            }
+            Vertex* returnValue = &(*myIter);  //The return pointer is the current iterator value.
+            myIter++;  // Prepare for the next one
+            return returnValue;
+        }
+        else
+        {
+            return 0;
+        }
     }
     else
     {
-        Vertex* result = (Vertex*)theComponent;
-        return result;
+        return 0;
     }
 }
 

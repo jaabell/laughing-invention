@@ -41,12 +41,27 @@ using namespace std;
 //#ifdef _BABAK_DEBUG
 #ifdef _PARALLEL_PROCESSING
 #include <mpi.h>
-#endif//#endif
+#endif
+
+
+Vertex::Vertex()
+    : TaggedObject(-1), myRef(-1), myWeight(-1), myColor(-1),
+      myDegree(0), myTmp(0), myAdjacency(0)
+{
+
+}
 
 Vertex::Vertex(int tag, int ref, double weight, int color)
     : TaggedObject(tag), myRef(ref), myWeight(weight), myColor(color),
       myDegree(0), myTmp(0), myAdjacency(0)
       //GZ myAdjacency(0, 8)
+{
+
+}
+
+Vertex::Vertex(const Vertex &other)
+    : TaggedObject(other.getTag()), myRef(other.getRef()), myWeight(other.getWeight()), myColor(other.getColor()),
+      myDegree(other.getDegree()), myTmp(other.getTmp()), myAdjacency(other.getAdjacency())
 {
 
 }

@@ -194,7 +194,7 @@ ArrayOfTaggedObjects::addComponent_graph(TaggedObject* newComponent)
     int newComponentTag = newComponent->getTag();
     int maxTemp = newComponentTag;
 
-    if(sizeComponentArray >= newComponentTag)
+    if (sizeComponentArray >= newComponentTag)
     {
         int maxTemp = sizeComponentArray;
     }
@@ -408,6 +408,7 @@ ArrayOfTaggedObjects::getComponentPtr(int tag)
 
     // first check it's not where we would like it
     if ((tag >= 0) && (tag < sizeComponentArray))
+    {
         if (fitFlag == true) // either its at nice position or not entered
         {
             return theComponents[tag];
@@ -420,6 +421,7 @@ ArrayOfTaggedObjects::getComponentPtr(int tag)
                     return theComponents[tag];
                 }
         }
+    }
 
     // else we have to look through array until we find it or
     // reach lastPosition used

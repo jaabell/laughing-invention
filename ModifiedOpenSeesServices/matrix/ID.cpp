@@ -329,7 +329,8 @@ ID::operator[](int x)
     // otherwise we go get more space
     if (x >= arraySize)
     {
-        int newArraySize = x + 1 ;
+        // int newArraySize = x + 1 ;
+        int newArraySize = 2 * x ; //This amortizes the allocation costs for arrays that grow by one element at a time. At the cost of memory, of course.
         int *newData = new int[newArraySize];
 
         if (newData != 0)
