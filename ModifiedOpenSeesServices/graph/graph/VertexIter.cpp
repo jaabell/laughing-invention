@@ -72,6 +72,10 @@ VertexIter::operator()(void)
             while (myIter->getTag() < 0) //Skip negative tags. Those are not there.
             {
                 ++myIter;
+                if (myIter == myVertices->end())
+                {
+                    return 0;
+                }
             }
             Vertex* returnValue = &(*myIter);  //The return pointer is the current iterator value.
             myIter++;  // Prepare for the next one
