@@ -50,9 +50,11 @@ Graph::Graph()
 
 }
 
-
+//Allocates *space* for numVertices number of vertices. For the vertices to be valid
+// they have to be added through the addVertex() function. This constructor just
+// saves malloc calls.
 Graph::Graph(int numVertices)
-    : myVertices(numVertices)
+    : myVertices(numVertices), numVertices(0), numEdges(0), nextFreeTag(START_VERTEX_NUM)
 {
 
 }
@@ -568,6 +570,19 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
 
     cout << "receiving tmps from " << theChannel.getTag() << endl;
     theChannel.receiveID(0, commitTag, tmps);
+
+    //Allocate space for vertices....
+    int maxtag = 0;
+    for (int i = 0; i < numVertices; i++)
+    {
+        if (tag[i] > maxtag)
+        {
+            maxtag = tag[i];
+        }
+    }
+
+    myVertices.resize(maxtag + 1);
+
 
     // for each vertex to be received, create it, receive it and then add it to the graph
     for (int i = 0; i < numVertices; i++)
