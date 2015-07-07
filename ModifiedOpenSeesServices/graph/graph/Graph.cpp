@@ -575,9 +575,9 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
     int maxtag = 0;
     for (int i = 0; i < numVertices; i++)
     {
-        if (tag[i] > maxtag)
+        if (tags[i] > maxtag)
         {
-            maxtag = tag[i];
+            maxtag = tags[i];
         }
     }
 
