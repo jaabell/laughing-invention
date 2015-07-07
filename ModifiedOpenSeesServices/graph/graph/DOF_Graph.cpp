@@ -122,12 +122,12 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
                     // Vertex* vertexPtr = new Vertex(dofTag, dofTag);
                     Vertex vertex(dofTag, dofTag);
 
-                    if (vertexPtr == 0)
-                    {
-                        cerr << "WARNING DOF_Graph::DOF_Graph";
-                        cerr << " - Not Enough Memory to create " << i + 1 << "th Vertex\n";
-                        return;
-                    }
+                    // if (vertexPtr == 0)
+                    // {
+                    //     cerr << "WARNING DOF_Graph::DOF_Graph";
+                    //     cerr << " - Not Enough Memory to create " << i + 1 << "th Vertex\n";
+                    //     return;
+                    // }
 
                     // if (this->addVertex(vertexPtr, false) == false)
                     if (this->addVertex(&vertex, false) == false)
