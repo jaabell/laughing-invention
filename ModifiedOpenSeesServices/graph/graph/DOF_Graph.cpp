@@ -119,7 +119,8 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
 
                 if (vertexPtr == 0)
                 {
-                    Vertex* vertexPtr = new Vertex(dofTag, dofTag);
+                    // Vertex* vertexPtr = new Vertex(dofTag, dofTag);
+                    Vertex vertex(dofTag, dofTag);
 
                     if (vertexPtr == 0)
                     {
@@ -128,7 +129,8 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
                         return;
                     }
 
-                    if (this->addVertex(vertexPtr, false) == false)
+                    // if (this->addVertex(vertexPtr, false) == false)
+                    if (this->addVertex(&vertex, false) == false)
                     {
                         cerr << "WARNING DOF_Graph::DOF_Graph - error adding vertex\n";
                     }
