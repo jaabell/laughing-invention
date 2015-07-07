@@ -364,7 +364,8 @@ Graph::merge(Graph &other)
         if (vertexPtr == 0)
         {
             int vertexRef = vertexPtrOther->getRef();
-            vertexPtr = new Vertex(vertexTag, vertexRef);
+            // vertexPtr = new Vertex(vertexTag, vertexRef);
+            Vertex newVertex(vertexTag, vertexRef);
 
             if (vertexPtr == 0)
             {
@@ -372,7 +373,8 @@ Graph::merge(Graph &other)
                 return -1;
             }
 
-            this->addVertex(vertexPtr, false);
+            // this->addVertex(vertexPtr, false);
+            this->addVertex(&newVertex, false);
         }
     }
 
@@ -575,8 +577,10 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
         int weight = weights[i];
         int color = colors[i];
         int tmp = tmps[i];
-        Vertex *theVertex = new Vertex( tag,  ref,  weight ,  color );
-        theVertex->setTmp(tmp);
+        // Vertex *theVertex = new Vertex( tag,  ref,  weight ,  color );
+        Vertex theVertex( tag,  ref,  weight ,  color );
+        // theVertex->setTmp(tmp);
+        theVertex.setTmp(tmp);
 
         if (theVertex == 0)
         {
@@ -590,7 +594,7 @@ Graph::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBrok
         //     return -5;
         // }
 
-        this->addVertex(theVertex, false);
+        this->addVertex(&theVertex, false);
     }
 
     int adjsize = tags[numVertices];
