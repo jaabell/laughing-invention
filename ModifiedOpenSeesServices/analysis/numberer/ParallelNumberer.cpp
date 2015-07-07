@@ -437,9 +437,10 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
             vertexTagMerged = theGraph.getFreeTag();
             vertexTags[numVertex] = vertexTagMerged;
             vertexRefs[numVertex] = vertexTagRef;
-            Vertex* newVertex = new Vertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
+            // Vertex* newVertex = new Vertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
+            Vertex newVertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
 
-            theGraph.addVertex(newVertex);
+            theGraph.addVertex(&newVertex);
             numVertex++;
         }
         else
