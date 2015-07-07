@@ -195,7 +195,7 @@ Graph::addVertex(Vertex *vertexPtr, bool checkAdjacency)
     }
     else
     {
-        std::cerr << "Graph::addVertex - unable to add vertex. " << ba.what() << '\n';
+        std::cerr << "Graph::addVertex - unable to add vertex. \n";
     }
 
 
