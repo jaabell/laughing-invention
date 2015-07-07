@@ -67,7 +67,7 @@ VertexIter::operator()(void)
     {
         // check if we still have elements in the model
         // if not return 0, indicating we are done
-        if (myIter != myIterEnd)
+        if (myIter != myVertices->end())
         {
             while (myIter->getTag() < 0) //Skip negative tags. Those are not there.
             {
