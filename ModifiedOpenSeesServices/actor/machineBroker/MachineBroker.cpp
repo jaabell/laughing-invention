@@ -114,20 +114,22 @@ MachineBroker::runActors(void)
         }
 
         int actorType = idData(0);
-        cout << "    Spawning new actor domain - actorType: " << actorType << endln;;
 
         // switch on data type
         if (idData(0) == 0)
         {
+            cout << "    Finalizing current actor " << endl;
+
             done = 1;
 
             if (theChannel->sendID(0, 0, idData) < 0)
             {
-                cerr << "MachineBroker::run(void) - failed to recv ID\n";
+                cerr << "MachineBroker::run(void) - failed to send ID\n";
             }
         }
         else
         {
+            cout << "    Spawning new actor domain - actorType: " << actorType << endln;;
 
             // create an actor of approriate type
             Actor *theActor = theObjectBroker->getNewActor(actorType, theChannel);

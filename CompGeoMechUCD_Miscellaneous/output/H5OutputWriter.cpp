@@ -163,7 +163,7 @@ H5OutputWriter::~H5OutputWriter()
 
 void H5OutputWriter::finalize()
 {
-	cout << "H5OutputWriter::finalize()-\n";
+	cout << "H5OutputWriter::finalize() - ";
 	if (file_is_open)
 	{
 		// cout << "endingtime \n\n";
@@ -229,6 +229,11 @@ void H5OutputWriter::finalize()
 		//Finally close file
 		file_is_open = false;
 		H5Fclose(id_file);
+		cout << "Done!" << endl;
+	}
+	else
+	{
+		cout << "nothing to do... " << endl;
 	}
 }
 
