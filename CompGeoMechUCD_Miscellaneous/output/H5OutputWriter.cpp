@@ -953,6 +953,7 @@ void H5OutputWriter::writeMesh()
 	// status = H5Pset_sieve_buf_size( file_access_plist, H5OUTPUTWRITER_SIEVE_BUFFER_SIZE );
 	// hdf5_check_error(status);
 	id_file = H5Fcreate(file_name.c_str(), flags , file_creation_plist, file_access_plist);
+
 #endif
 	if (id_file > 0)
 	{
