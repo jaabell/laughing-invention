@@ -146,11 +146,7 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
 	zlib_compression_level = 0;
 	flag_write_element_output = 1;
 
-	dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);
-#ifdef _PARALLEL_PROCESSING
-	H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
-	// H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_COLLECTIVE);
-#endif
+
 }
 
 
@@ -286,6 +282,12 @@ void H5OutputWriter::initialize(std::string filename_in,
 	create_elementOutput_arrays          = true;
 
 	number_of_time_steps                 = nsteps;
+
+	dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);
+#ifdef _PARALLEL_PROCESSING
+	H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
+	// H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_COLLECTIVE);
+#endif
 
 }
 
