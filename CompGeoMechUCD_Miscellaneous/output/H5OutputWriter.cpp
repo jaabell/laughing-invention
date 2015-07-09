@@ -1482,7 +1482,9 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 
 
 	//Write data
-	hsize_t dims[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
+	// hsize_t dims[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
+	hsize_t *dims;
+	dims = 0;   // This is to disable array extension (would not be done collectively)
 	data_dims[0] = (hsize_t) ndofs;
 
 	offset[0]    = (hsize_t) pos;
@@ -1573,7 +1575,10 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
 
 
 		//Write data
-		hsize_t dims[2]      =  { (hsize_t)  length_element_output, (hsize_t)  current_time_step};
+		// hsize_t dims[2]      =  { (hsize_t)  length_element_output, (hsize_t)  current_time_step};
+		hsize_t *dims;
+		dims = 0;   // This is to disable array extension (would not be done collectively)
+
 		data_dims[0] = (hsize_t) noutputs;
 
 		offset[0]    = (hsize_t) pos;
@@ -2116,8 +2121,12 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
         double *data)
 {
 	// Extend it if necesary!
-	status =  H5Dset_extent( id_array, dims );
-	hdf5_check_error(status);
+	if (data_dims != 0)
+	{
+		status =  H5Dset_extent( id_array, dims ); // Needs to be avoided for Displacement and Outputs arrays, they are
+		//extended collectively in setTime() function
+		hdf5_check_error(status);
+	}
 
 	//Get pointer to the dataspace and create the memory space
 	hsize_t id_dataspace = H5Dget_space(id_array);
