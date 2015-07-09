@@ -1927,7 +1927,9 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
 	// The idea is to chunk less in the time dimension.
 	if (timedimension >= 0)
 	{
+		nbytes_one_chunk /= chunk_dims[timedimension];
 		chunk_dims[timedimension] = std::min(maxdims[timedimension], static_cast<hsize_t>(H5OUTPUTWRITER_CHUNK_TIMEDIM));
+		nbytes_one_chunk *= chunk_dims[timedimension];
 	}
 
 
