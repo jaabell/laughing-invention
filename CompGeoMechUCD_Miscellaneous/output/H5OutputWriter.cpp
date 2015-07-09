@@ -838,6 +838,8 @@ void H5OutputWriter::syncWriters()
 	MPI_Bcast(&number_of_elements                   , 1 , MPI_INT , root , MPI_COMM_WORLD);
 	MPI_Bcast(&max_node_tag                         , 1 , MPI_INT , root , MPI_COMM_WORLD);
 	MPI_Bcast(&max_element_tag                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	MPI_Bcast(&number_of_dofs                       , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	MPI_Bcast(&number_of_outputs                    , 1 , MPI_INT , root , MPI_COMM_WORLD);
 
 	MPI_Bcast(&zlib_compression_level               , 1 , MPI_INT , root , MPI_COMM_WORLD);
 	MPI_Bcast(&flag_write_element_output            , 1 , MPI_INT , root , MPI_COMM_WORLD);
