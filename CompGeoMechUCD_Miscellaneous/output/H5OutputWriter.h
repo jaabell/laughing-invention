@@ -75,7 +75,7 @@ ssize_t nobjects;
 		{ H5Oclose(id_current_object); }
 
 //These control the efficiency access to HDF5 file (tuning knobs)
-#define H5OUTPUTWRITER_CHUNK_NSLOTS 101                        // Good if it is a prime number 101 1009  10007 (http://primes.utm.edu/lists/small/100000.txt)
+#define H5OUTPUTWRITER_CHUNK_NSLOTS 10007                        // Good if it is a prime number 101 1009  10007 (http://primes.utm.edu/lists/small/100000.txt)
 #define H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK 10        // 
 #define H5OUTPUTWRITER_CHUNK_TIMEDIM 10                        // Size of chunks in time dimension
 #define H5OUTPUTWRITER_CHUNK_MAXDIMENSION 10000
