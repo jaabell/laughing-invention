@@ -723,7 +723,7 @@ void H5OutputWriter::syncWriters()
 	//ID Material_tags;
 	length_send = Material_tags.Size();
 	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
+	if (processID != 0 && (length_send > 0))
 	{
 		Material_tags.resize(length_send);
 	}
