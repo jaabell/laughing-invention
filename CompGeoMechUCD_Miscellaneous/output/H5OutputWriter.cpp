@@ -2121,7 +2121,7 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
         double *data)
 {
 	// Extend it if necesary!
-	if (data_dims != 0)
+	if (dims != 0)
 	{
 		status =  H5Dset_extent( id_array, dims ); // Needs to be avoided for Displacement and Outputs arrays, they are
 		//extended collectively in setTime() function
