@@ -42,6 +42,7 @@
 #include <ID.h>
 
 #define START_VERTEX_NUM 0
+#define VERTEX_INITIAL_ADJACENCY_SIZE 40
 class Channel;
 class FEM_ObjectBroker;
 
@@ -49,7 +50,7 @@ class Vertex: public TaggedObject
 {
 public:
     Vertex(void);
-    Vertex(int tag, int ref, double weight = 0, int color = 0);
+    Vertex(int tag, int ref, double weight = 0, int color = 0, int adj_size = 10);
     Vertex(const Vertex &other);
     // Vertex(Vertex const &other);
 

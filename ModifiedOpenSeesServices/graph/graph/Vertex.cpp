@@ -51,9 +51,9 @@ Vertex::Vertex()
 
 }
 
-Vertex::Vertex(int tag, int ref, double weight, int color)
+Vertex::Vertex(int tag, int ref, double weight, int color, int adj_size)
     : TaggedObject(tag), myRef(ref), myWeight(weight), myColor(color),
-      myDegree(0), myTmp(0), myAdjacency(0)
+      myDegree(0), myTmp(0), myAdjacency(0, adj_size)
       //GZ myAdjacency(0, 8)
 {
 

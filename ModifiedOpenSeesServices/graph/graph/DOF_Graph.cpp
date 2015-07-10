@@ -120,7 +120,7 @@ DOF_Graph::DOF_Graph(AnalysisModel& theModel)
                 if (vertexPtr == 0)
                 {
                     // Vertex* vertexPtr = new Vertex(dofTag, dofTag);
-                    Vertex vertex(dofTag, dofTag);
+                    Vertex vertex(dofTag, dofTag, 0, 0, 40);
 
                     // if (vertexPtr == 0)
                     // {
