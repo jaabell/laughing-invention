@@ -302,10 +302,10 @@ PetscSolver::solve(void)
     // int exitflag;
     // MPI_Reduce(&ierr, &exitflag, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
 
-    cout << " > Process " << processID_world << " norm(vectB) = " << vectB->Norm() << endl;
-    cout << " > Process " << processID_world << " norm(vectX) = " << vectX->Norm() << endl;
+    // cout << " > Process " << processID_world << " norm(vectB) = " << vectB->Norm() << endl;
+    // cout << " > Process " << processID_world << " norm(vectX) = " << vectX->Norm() << endl;
 
-    cout << " PetscSolver.solve(), exitflag = " << ierr << endl;
+    // cout << " PetscSolver.solve(), exitflag = " << ierr << endl;
 
     if (processID_world > 0)
     {
