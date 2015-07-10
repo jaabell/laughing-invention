@@ -46,7 +46,7 @@ using namespace std;
 
 Vertex::Vertex()
     : TaggedObject(-1), myRef(-1), myWeight(-1), myColor(-1),
-      myDegree(0), myTmp(0), myAdjacency(0)
+      myDegree(0), myTmp(0), myAdjacency(0, 10)
 {
 
 }
