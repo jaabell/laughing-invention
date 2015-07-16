@@ -201,8 +201,7 @@ int NewPisanoLT::setTrialStrain(const DTensor2 &v)
 }
 
 
-int NewPisanoLT::setTrialStrainIncr
-(const DTensor2 &strain_increment)
+int NewPisanoLT::setTrialStrainIncr(const DTensor2 &strain_increment)
 {
   return this->Explicit(strain_increment);
 }

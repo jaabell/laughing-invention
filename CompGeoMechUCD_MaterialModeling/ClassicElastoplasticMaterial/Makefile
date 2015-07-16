@@ -8,8 +8,8 @@
 #
 
 #These lines should point to Makefile.Includes and Makefile.Compiles files.
-include /home/jaabell/Repositories/essi_feb_21_2014_parallel_debug/Makefile.Includes
-include /home/jaabell/Repositories/essi_feb_21_2014_parallel_debug/Makefile.Compilers
+include ../../Makefile.Includes
+include ../../Makefile.Compilers
 
 #Will try to compile all .cpp files in current directory.
 SRCS = $(wildcard *.cpp)
@@ -17,9 +17,11 @@ OBJS = $(SRCS:.fei.cpp=.o)
 TARGETS = $(patsubst %.fei.cpp, % , $(SRCS))
 
 
+CPPFLAGS=--std=c++11
+
 #Rules
 %.o: %.fei.cpp
-	$(CC++) $(C++FLAGS) $(INCLUDES) -c $< -o $@
+	$(CC++) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
 
 all: $(TARGETS)
 

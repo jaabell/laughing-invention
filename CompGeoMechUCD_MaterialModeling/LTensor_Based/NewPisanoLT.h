@@ -86,10 +86,10 @@ public:
     int setTrialStrainIncr( const DTensor2 &v );     // Not used (used by setTrialStrain)
 
 
-    virtual const DTensor4 &getTangentTensor( void );      // Used by element
-    virtual const DTensor2 &getStressTensor( void );   // Used
-    virtual const DTensor2 &getStrainTensor( void );    // Used
-    virtual const DTensor2 &getPlasticStrainTensor( void ); // Not used
+    virtual const DTensor4 &getTangentTensor( void );
+    virtual const DTensor2 &getStressTensor( void );
+    virtual const DTensor2 &getStrainTensor( void );
+    virtual const DTensor2 &getPlasticStrainTensor( void );
 
     const DTensor2  &getCommittedStressTensor(void);
 
