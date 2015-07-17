@@ -478,7 +478,20 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
             // Vertex* newVertex = new Vertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
             Vertex newVertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
 
-            theGraph.addVertex(&newVertex);
+            bool success = theGraph.addVertex(&newVertex);
+
+            if (!success)
+            {
+                cerr << "Failed to add vertex \n";
+                cerr << "   vertexTagMerged = " << vertexTagMerged << "\n";
+                cerr << "      vertexTagRef = " << vertexTagRef << "\n";
+                cerr << "            Weight = " << subVertexPtr->getWeight() << "\n";
+                cerr << "             Color = " << subVertexPtr->getColor() << endl;
+
+                return -1;
+
+            }
+
             numVertex++;
         }
         else

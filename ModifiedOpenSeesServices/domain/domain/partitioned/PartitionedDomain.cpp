@@ -1983,7 +1983,7 @@ PartitionedDomain::return_element_numberofNodes(int tag)
 
 int PartitionedDomain::sendOutputOptionsToSubdomains()
 {
-    cout  << "PartitionedDomain::sendOutputOptionsToSubdomains() - Start\n";
+    // cout  << "PartitionedDomain::sendOutputOptionsToSubdomains() - Start\n";
 
 
     SubdomainIter &theSubdomains = this->getSubdomains();
@@ -2007,6 +2007,6 @@ int PartitionedDomain::sendOutputOptionsToSubdomains()
 
     }
 
-    cout  << "PartitionedDomain::sendOutputOptionsToSubdomains() - End\n";
+    // cout  << "PartitionedDomain::sendOutputOptionsToSubdomains() - End\n";
     return 0;
 }

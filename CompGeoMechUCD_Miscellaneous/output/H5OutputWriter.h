@@ -252,7 +252,7 @@ public:  //Additional stuff
 	void set_flag_write_element_output(bool is_element_output_is_enabled_)
 	{
 		flag_write_element_output = is_element_output_is_enabled_;
-		cout << "flag_write_element_output = " << flag_write_element_output << endl;
+		// cout << "flag_write_element_output = " << flag_write_element_output << endl;
 	}
 
 

@@ -4316,7 +4316,7 @@ Domain::setOutputWriter(std::string filename_in,
 int
 Domain::setNumberOfOutputSteps(int nsteps)
 {
-    cout << "setNumberOfOutputSteps ->  nsteps / output_every_nsteps = " << nsteps / output_every_nsteps << endl;
+    // cout << "setNumberOfOutputSteps ->  nsteps / output_every_nsteps = " << nsteps / output_every_nsteps << endl;
     theOutputWriter.set_number_of_time_steps( nsteps / output_every_nsteps);
     return 0;
 }

@@ -159,7 +159,7 @@ H5OutputWriter::~H5OutputWriter()
 
 void H5OutputWriter::finalize()
 {
-	cout << "H5OutputWriter::finalize() - ";
+	// cout << "H5OutputWriter::finalize() - ";
 	if (file_is_open)
 	{
 		// cout << "endingtime \n\n";
@@ -189,7 +189,7 @@ void H5OutputWriter::finalize()
 		while (n_obj_open > 0)
 		{
 			n_obj_open = H5Fget_obj_count(id_file, H5F_OBJ_DATASET | H5F_OBJ_GROUP | H5F_OBJ_ATTR | H5F_OBJ_LOCAL );
-			cout << "H5OutputWriter -- N of HDF5 objects open = " << n_obj_open << endl;
+			// cout << "H5OutputWriter -- N of HDF5 objects open = " << n_obj_open << endl;
 
 
 			if (n_obj_open <= 0)
@@ -225,11 +225,11 @@ void H5OutputWriter::finalize()
 		//Finally close file
 		file_is_open = false;
 		H5Fclose(id_file);
-		cout << "Done!" << endl;
+		// cout << "Done!" << endl;
 	}
 	else
 	{
-		cout << "nothing to do... " << endl;
+		// cout << "nothing to do... " << endl;
 	}
 }
 
