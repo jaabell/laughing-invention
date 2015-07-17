@@ -433,11 +433,29 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
     int numVertex = theGraph.getNumVertex();
     int numVertexSub = theSubGraph.getNumVertex();
 
+    //Build temporary indexes into vertexRefs and theSubfomainMaps for faster search
+    // This is a linear complexity operation at the extra cost of (temporary) memory usage.
+    // This is done only a couple of times (once for each subdomain apparently) as opposed to
+    // the linear time search done in ID::getLocation() which is repeated in a loop an raises, uncesessarily, the
+    //  complexity of the merging process.
+    ID vertexRefsIndex(vertexRefs.Size(), vertexRefs.Size(), -1);
+    for (int loc = 0; loc < vertexRefs.Size(); loc++)
+    {
+        vertexRefsIndex[vertexRefs[loc]] = loc;
+    }
+
+    ID theSubdomainMapIndex(theSubdomainMap.Size(), theSubdomainMap.Size(), -1);
+    for (int loc = 0; loc < theSubdomainMap.Size(); loc++)
+    {
+        vertexRefsIndex[theSubdomainMap[loc]] = loc;
+    }
+
     while ((subVertexPtr = theSubGraphIter1()) != 0)
     {
         int vertexTagSub = subVertexPtr->getTag();
         int vertexTagRef = subVertexPtr->getRef();
-        int loc = vertexRefs.getLocation(vertexTagRef);
+        // int loc = vertexRefs.getLocation(vertexTagRef);
+        loc = vertexRefs[vertexTagRef];
 
         int vertexTagMerged;
 
@@ -470,7 +488,8 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
     while ((subVertexPtr = theSubGraphIter2()) != 0)
     {
         int vertexTagSub = subVertexPtr->getTag();
-        int loc = theSubdomainMap.getLocation(vertexTagSub);
+        // int loc = theSubdomainMap.getLocation(vertexTagSub);
+        int loc = theSubdomainMapIndex[vertexTagSub];
         int vertexTagMerged = theSubdomainMap[loc + numVertexSub];
 
         const ID& adjacency = subVertexPtr->getAdjacency();
@@ -478,7 +497,8 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         for (int i = 0; i < adjacency.Size(); i++)
         {
             int vertexTagSubAdjacent = adjacency(i);
-            int loc = theSubdomainMap.getLocation(vertexTagSubAdjacent);
+            // int loc = theSubdomainMap.getLocation(vertexTagSubAdjacent);
+            int loc = theSubdomainMapIndex[vertexTagSubAdjacent];
             int vertexTagMergedAdjacent = theSubdomainMap[loc + numVertexSub];
             theGraph.addEdge(vertexTagMerged, vertexTagMergedAdjacent);
         }
