@@ -438,6 +438,9 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
     // This is done only a couple of times (once for each subdomain apparently) as opposed to
     // the linear time search done in ID::getLocation() which is repeated in a loop an raises, uncesessarily, the
     //  complexity of the merging process.
+
+    cout << "Building vertexRefsIndex" << endl;
+
     int maxref = 0;
     for (int loc = 0; loc < vertexRefs.Size(); loc++)
     {
@@ -453,8 +456,9 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         vertexRefsIndex[vertexRefs[loc]] = loc;
     }
 
-    int max_vertextagsub = 0;
+    cout << "Merging vertices" << endl;
 
+    int max_vertextagsub = 0;
     while ((subVertexPtr = theSubGraphIter1()) != 0)
     {
         int vertexTagSub = subVertexPtr->getTag();
@@ -493,6 +497,8 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         count++;
     }
 
+    cout << "Building theSubdomainMapIndex" << endl;
+
     int N_theSubdomainMap = theSubdomainMap.Size() / 2;
     ID theSubdomainMapIndex(max_vertextagsub, max_vertextagsub, -1);
     for (int loc = 0; loc < N_theSubdomainMap; loc++)
@@ -500,6 +506,8 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         theSubdomainMapIndex[theSubdomainMap[loc]] = loc;
     }
 
+
+    cout << "Merging edges" << endl;
     // for each vertex in subgraph, we add it's adjacenecy into the merged graph
     VertexIter & theSubGraphIter2 = theSubGraph.getVertices();
 
