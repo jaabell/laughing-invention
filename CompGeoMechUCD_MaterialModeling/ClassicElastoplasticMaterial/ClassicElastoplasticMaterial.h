@@ -85,7 +85,7 @@ C++ "Rule of 5"
 
 
 */
-template < class ElasticityType, class YieldFunctionType, , class PlasticFlowType, class HardeningLawType, int thisClassTag >
+template < class ElasticityType, class YieldFunctionType, class PlasticFlowType, class HardeningLawType, int thisClassTag >
 class ClassicElastoplasticMaterial : public NDMaterialLT
 {
 
