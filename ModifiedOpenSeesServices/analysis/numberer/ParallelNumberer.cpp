@@ -274,12 +274,17 @@ ParallelNumberer::numberDOF(int lastDOF)
 
         cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Numbering the big merged graph\n";
         ID* theOrderedRefs = new ID(theGraph.getNumVertex());
+        ID* theOrderedRefsIndex = new ID(theGraph.getNumVertex(), theGraph.getNumVertex(), -1);  // Use the 'fill' constructor here to set all values to -1. Jose adds this array to speedup searching for the location of element in teh 'theOrderedRefs' array. Used to use the ID::getLocation() function which does linear search and is super slow.
 
         if (theNumberer != 0)
         {
 
             // use the supplied graph numberer to number the merged graph
+            cout << "ParallelNumberer::number() - Warning - using user-provided numberer. Untested.\n";
+
             *theOrderedRefs = theNumberer->number(theGraph, lastDOF);
+            // cerr << "Must use the "
+
 
         }
         else
@@ -299,9 +304,11 @@ ParallelNumberer::numberDOF(int lastDOF)
                     int vertexTagMerged = theSubdomain(i + numVertexSubdomain);
 
                     //  int refTag = vertexRefs[vertexTags.getLocation(vertexTagMerged)];
-                    if (theOrderedRefs->getLocation(vertexTagMerged) == -1)
+                    // if (theOrderedRefs->getLocation(vertexTagMerged) == -1)
+                    if ( (*theOrderedRefsIndex)[vertexTagMerged] == -1  )
                     {
                         (*theOrderedRefs)[loc++] = vertexTagMerged;
+                        (*theOrderedRefs)[vertexTagMerged] = loc;
                     }
                 }
             }
