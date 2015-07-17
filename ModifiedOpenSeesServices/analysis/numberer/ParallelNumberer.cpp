@@ -485,7 +485,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         // use the subgraphs ID to hold the mapping of vertex numbers between merged and original
         if (max_vertextagsub < vertexTagSub)
         {
-            max_vertextagsub = vertexTagSub
+            max_vertextagsub = vertexTagSub;
         }
 
         theSubdomainMap[count] = vertexTagSub;
