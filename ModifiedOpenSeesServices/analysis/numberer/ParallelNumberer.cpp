@@ -445,7 +445,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
     }
 
     int N_theSubdomainMap = theSubdomainMap.Size() / 2;
-    ID theSubdomainMapIndex(N, N, -1);
+    ID theSubdomainMapIndex(N_theSubdomainMap, N_theSubdomainMap, -1);
     // for (int loc = 0; loc < N; loc++)
     // {
     //     theSubdomainMapIndex[theSubdomainMap[loc]] = loc;
