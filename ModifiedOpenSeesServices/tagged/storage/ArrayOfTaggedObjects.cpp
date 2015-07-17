@@ -253,19 +253,20 @@ ArrayOfTaggedObjects::addComponent(TaggedObject* newComponent)
 
     //    }
 
+    // we try to the Component in nicely, i.e. in
+    // position given by the newComponents Tag
+
+    int newComponentTag = newComponent->getTag();
+
     // check to see if size of current array is big enough. if not resize.
-    if (numComponents == sizeComponentArray)
-        if (this->setSize(2 * numComponents) < 0)
+    // if (numComponents == sizeComponentArray)
+    if ( sizeComponentArray - 1 < newComponentTag)
+        if (this->setSize(2 * newComponentTag) < 0)
         {
             cerr << "ArrayOfTaggedObjects::addComponent()- failed to enlarge the array with size" <<
                  2 * numComponents << endln;
             return false;
         }
-
-    // we try to the Component in nicely, i.e. in
-    // position given by the newComponents Tag
-
-    int newComponentTag = newComponent->getTag();
 
     if ((newComponentTag >= 0) && (newComponentTag < sizeComponentArray))
     {
@@ -283,31 +284,36 @@ ArrayOfTaggedObjects::addComponent(TaggedObject* newComponent)
         }
     }
 
-    // it won't go in nicely, so put wherever we can get it in
-    while (theComponents[positionLastNoFitEntry] != 0 &&
-            positionLastNoFitEntry < sizeComponentArray )
-    {
-        positionLastNoFitEntry++;
-    }
+    //Disable "fitting" the component. Result is too inefficient.
+    return false;
 
-    // just in case we don't get a location ..  though we should!!
-    if (positionLastNoFitEntry == sizeComponentArray)
-    {
-        cerr << "ArrayOfTaggedObjects::addComponent() - could not - find a vacant spot after enlarging!!\n";
-        return false;
-    }
 
-    theComponents[positionLastNoFitEntry] = newComponent;
-    numComponents++;
 
-    if (positionLastNoFitEntry > positionLastEntry)
-    {
-        positionLastEntry = positionLastNoFitEntry;
-    }
+    // // it won't go in nicely, so put wherever we can get it in
+    // while (theComponents[positionLastNoFitEntry] != 0 &&
+    //         positionLastNoFitEntry < sizeComponentArray )
+    // {
+    //     positionLastNoFitEntry++;
+    // }
 
-    fitFlag = false;
+    // // just in case we don't get a location ..  though we should!!
+    // if (positionLastNoFitEntry == sizeComponentArray)
+    // {
+    //     cerr << "ArrayOfTaggedObjects::addComponent() - could not - find a vacant spot after enlarging!!\n";
+    //     return false;
+    // }
 
-    return true;  // o.k.
+    // theComponents[positionLastNoFitEntry] = newComponent;
+    // numComponents++;
+
+    // if (positionLastNoFitEntry > positionLastEntry)
+    // {
+    //     positionLastEntry = positionLastNoFitEntry;
+    // }
+
+    // fitFlag = false;
+
+    // return true;  // o.k.
 }
 
 TaggedObject*

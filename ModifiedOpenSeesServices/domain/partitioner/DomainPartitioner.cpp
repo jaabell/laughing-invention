@@ -474,6 +474,7 @@ DomainPartitioner::partition(int numParts)
         {
             // its an internal node
             // remove the node & add it to the subdomain
+            // cout << "Sending node " << nodeTag << " internal" << endl;
 
             const int par = nodePartition[nodeTag * 8 + count - 1];
             if ( par != 0 )
@@ -487,6 +488,8 @@ DomainPartitioner::partition(int numParts)
         else
         {
             // its external, don't remove from mydomain, keep it global
+            // cout << "Sending node " << nodeTag << " external" << endl;
+
             for (int l = 0; l < count; l++)
             {
                 const int par = nodePartition[nodeTag * 8 + l];
