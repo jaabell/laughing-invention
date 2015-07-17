@@ -1421,7 +1421,7 @@ int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
 {
 #ifdef _PARALLEL_PROCESSING
 	int nnodes, ntags;
-	ntags = Number_of_Nodes.Size();
+	ntags = Partition.Size();
 	int addzeros = tag - ntags;
 
 	//Extend arrays

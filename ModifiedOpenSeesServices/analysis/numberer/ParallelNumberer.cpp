@@ -456,7 +456,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         vertexRefsIndex[vertexRefs[loc]] = loc;
     }
 
-    cout << "Merging vertices" << endl;
+    cout << "Merging vertices (maxref = " << maxref << ")" <<  endl;
 
     int max_vertextagsub = 0;
     while ((subVertexPtr = theSubGraphIter1()) != 0)
@@ -464,17 +464,27 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         int vertexTagSub = subVertexPtr->getTag();
         int vertexTagRef = subVertexPtr->getRef();
         // int loc = vertexRefs.getLocation(vertexTagRef);
-        int loc = vertexRefsIndex[vertexTagRef];
+        int loc;
+        if (vertexTagRef > maxref)
+        {
+            loc = -1;
+        }
+        else
+        {
+            loc = vertexRefsIndex[vertexTagRef];
+        }
 
         int vertexTagMerged;
 
+        // cout << "loc = " << loc << " vertexTagRef = " << vertexTagRef << endl;
         if (loc < 0)
         {
             // if not already in, we will be creating a new vertex
             vertexTagMerged = theGraph.getFreeTag();
             vertexTags[numVertex] = vertexTagMerged;
             vertexRefs[numVertex] = vertexTagRef;
-            vertexRefsIndex[vertexTagRef] = numVertex;
+            // vertexRefsIndex[vertexTagRef] = numVertex;  // Dont need to update the index... it wont be used...
+
             // Vertex* newVertex = new Vertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
             Vertex newVertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
 
@@ -528,7 +538,18 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
     {
         int vertexTagSub = subVertexPtr->getTag();
         // int loc = theSubdomainMap.getLocation(vertexTagSub);
-        int loc = theSubdomainMapIndex[vertexTagSub];
+        int loc;
+        if (vertexTagSub < max_vertextagsub)
+        {
+            loc = theSubdomainMapIndex[vertexTagSub];
+        }
+        else
+        {
+            loc = -1;
+            cerr << "vertexTagSub = " << vertexTagSub << " not available!!\n";
+            return -1;
+        }
+
         int vertexTagMerged = theSubdomainMap[loc + numVertexSub];
 
         const ID& adjacency = subVertexPtr->getAdjacency();
@@ -537,7 +558,21 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         {
             int vertexTagSubAdjacent = adjacency(i);
             // int loc = theSubdomainMap.getLocation(vertexTagSubAdjacent);
-            int loc = theSubdomainMapIndex[vertexTagSubAdjacent];
+            // int loc = theSubdomainMapIndex[vertexTagSubAdjacent];
+
+            int loc;
+            if (vertexTagSubAdjacent < max_vertextagsub)
+            {
+                loc = theSubdomainMapIndex[vertexTagSubAdjacent];
+            }
+            else
+            {
+                loc = -1;
+                cerr << "vertexTagSubAdjacent = " << vertexTagSubAdjacent << " not available!!\n";
+                return -1;
+            }
+
+
             int vertexTagMergedAdjacent = theSubdomainMap[loc + numVertexSub];
             theGraph.addEdge(vertexTagMerged, vertexTagMergedAdjacent);
         }
