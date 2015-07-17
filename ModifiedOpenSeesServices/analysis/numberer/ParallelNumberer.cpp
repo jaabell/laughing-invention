@@ -455,7 +455,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         int vertexTagSub = subVertexPtr->getTag();
         int vertexTagRef = subVertexPtr->getRef();
         // int loc = vertexRefs.getLocation(vertexTagRef);
-        loc = vertexRefs[vertexTagRef];
+        int loc = vertexRefs[vertexTagRef];
 
         int vertexTagMerged;
 
