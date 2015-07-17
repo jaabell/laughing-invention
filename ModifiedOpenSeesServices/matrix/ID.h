@@ -53,7 +53,7 @@ public:
     // constructors and destructor
     ID();
     ID(int);
-    ID(int size, int arraySize);
+    ID(int size, int arraySize, int fillValue = 0);
     ID(int *data, int size, bool cleanIt = false);
     ID(const ID &);
     ~ID();

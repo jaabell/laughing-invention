@@ -87,9 +87,10 @@ ID::ID(int size)
 
 
 // ID(int size):
-//  Constructor used to allocate a ID of size size.
+//  Fill constructor used to allocate a ID of size size, but available memory arraySz,
+// optionally provide a fill value
 
-ID::ID(int size, int arraySz)
+ID::ID(int size, int arraySz, int fillValue)
     : sz(size), data(0), arraySize(arraySz), fromFree(0)
 {
     //#ifdef _G3DEBUG
@@ -131,10 +132,10 @@ ID::ID(int size, int arraySz)
         exit(-1);
     }
 
-    // zero the data
+    // fill the data
     for (int i = 0; i < arraySize; i++)
     {
-        data[i] = 0;
+        data[i] = fillValue;
     }
 }
 
