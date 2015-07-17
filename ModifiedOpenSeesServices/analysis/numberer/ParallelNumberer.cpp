@@ -258,7 +258,7 @@ ParallelNumberer::numberDOF(int lastDOF)
             cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving graph from Channel " << theChannel->getTag() << "\n";
             theSubGraph->receiveSelf(0, *theChannel, theBroker);
 
-            theSubdomainIDs[j] = new ID(theSubGraph->getNumVertex() * 2);
+            theSubdomainIDs[j] = new ID(theSubGraph->getNumVertex() * 2, theSubGraph->getNumVertex() * 2, -1);
 
             cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Merging graph received from Channel " << theChannel->getTag() << "\n";
             this->mergeSubGraph(theGraph, *theSubGraph, vertexTags, vertexRefs, *theSubdomainIDs[j]);
@@ -444,11 +444,12 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         vertexRefsIndex[vertexRefs[loc]] = loc;
     }
 
-    ID theSubdomainMapIndex(theSubdomainMap.Size(), theSubdomainMap.Size(), -1);
-    for (int loc = 0; loc < theSubdomainMap.Size(); loc++)
-    {
-        theSubdomainMapIndex[theSubdomainMap[loc]] = loc;
-    }
+    int N_theSubdomainMap = theSubdomainMap.Size() / 2;
+    ID theSubdomainMapIndex(N, N, -1);
+    // for (int loc = 0; loc < N; loc++)
+    // {
+    //     theSubdomainMapIndex[theSubdomainMap[loc]] = loc;
+    // }
 
     while ((subVertexPtr = theSubGraphIter1()) != 0)
     {
@@ -465,6 +466,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
             vertexTagMerged = theGraph.getFreeTag();
             vertexTags[numVertex] = vertexTagMerged;
             vertexRefs[numVertex] = vertexTagRef;
+            vertexRefsIndex[vertexTagRef] = numVertex;
             // Vertex* newVertex = new Vertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
             Vertex newVertex(vertexTagMerged, vertexTagRef, subVertexPtr->getWeight(), subVertexPtr->getColor());
 
@@ -478,6 +480,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
 
         // use the subgraphs ID to hold the mapping of vertex numbers between merged and original
         theSubdomainMap[count] = vertexTagSub;
+        theSubdomainMapIndex[vertexTagSub] = count;
         theSubdomainMap[count + numVertexSub] = vertexTagMerged;
         count++;
     }
