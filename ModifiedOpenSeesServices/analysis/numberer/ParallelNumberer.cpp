@@ -308,7 +308,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                     if ( (*theOrderedRefsIndex)[vertexTagMerged] == -1  )
                     {
                         (*theOrderedRefs)[loc++] = vertexTagMerged;
-                        (*theOrderedRefs)[vertexTagMerged] = loc;
+                        (*theOrderedRefsIndex)[vertexTagMerged] = loc;
                     }
                 }
             }
@@ -318,9 +318,11 @@ ParallelNumberer::numberDOF(int lastDOF)
             {
                 int refTagP0 = vertexTags[j];
 
-                if (theOrderedRefs->getLocation(refTagP0) == -1)
+                // if (theOrderedRefs->getLocation(refTagP0) == -1)
+                if ((*theOrderedRefsIndex)[refTagP0] == -1)
                 {
                     (*theOrderedRefs)[loc++] = refTagP0;
+                    (*theOrderedRefsIndex)[refTagP0] = loc;
                 }
             }
 
@@ -342,6 +344,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         if (theNumberer == 0)
         {
             delete theOrderedRefs;
+            delete theOrderedRefsIndex;
         }
 
         // number own dof's
