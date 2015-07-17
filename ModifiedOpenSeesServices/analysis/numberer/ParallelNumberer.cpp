@@ -444,12 +444,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         vertexRefsIndex[vertexRefs[loc]] = loc;
     }
 
-    int N_theSubdomainMap = theSubdomainMap.Size() / 2;
-    ID theSubdomainMapIndex(N_theSubdomainMap, N_theSubdomainMap, -1);
-    // for (int loc = 0; loc < N; loc++)
-    // {
-    //     theSubdomainMapIndex[theSubdomainMap[loc]] = loc;
-    // }
+
 
     while ((subVertexPtr = theSubGraphIter1()) != 0)
     {
@@ -480,9 +475,15 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
 
         // use the subgraphs ID to hold the mapping of vertex numbers between merged and original
         theSubdomainMap[count] = vertexTagSub;
-        theSubdomainMapIndex[vertexTagSub] = count;
         theSubdomainMap[count + numVertexSub] = vertexTagMerged;
         count++;
+    }
+
+    int N_theSubdomainMap = theSubdomainMap.Size() / 2;
+    ID theSubdomainMapIndex(N_theSubdomainMap, N_theSubdomainMap, -1);
+    for (int loc = 0; loc < N_theSubdomainMap; loc++)
+    {
+        theSubdomainMapIndex[theSubdomainMap[loc]] = loc;
     }
 
     // for each vertex in subgraph, we add it's adjacenecy into the merged graph
