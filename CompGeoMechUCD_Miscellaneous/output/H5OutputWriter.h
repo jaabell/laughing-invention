@@ -118,12 +118,14 @@ public:  // To meet with OutputWriter interfacec
 
 	// Results for Nodes
 	virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
+	virtual int writeDummyDisplacements() ;
 	virtual int writeVelocities(     int nodeTag, const Vector &velocities) ;
 	virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) ;
 	virtual int writeReactionForces( int nodeTag, const Vector &reactionForces) ;
 
 	// Results for Elements
 	virtual int writeElementOutput(int elementTag, const Vector &output) ;
+	virtual int writeDummyElementOutput() ;  //Needed for collective HDF5 calls
 
 
 public:  //Additional stuff

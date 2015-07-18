@@ -897,8 +897,8 @@ void H5OutputWriter::syncWriters()
 
 
 	dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);
-	H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
-	// H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_COLLECTIVE);
+	// H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
+	H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_COLLECTIVE);
 
 
 #endif
@@ -1519,6 +1519,33 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 }
 
 
+// Results for Nodes
+int H5OutputWriter::writeDummyDisplacements(  )
+{
+
+
+	// Read NDOFS from HDF5 file
+	int datarank         = 1;
+	hsize_t dummy[1] = {1};
+
+	double *zerodata = 0;
+	writeVariableLengthDoubleArray(id_nodes_displacements,
+	                               datarank,
+	                               dummy,
+	                               dummy,
+	                               dummy,
+	                               dummy,
+	                               dummy,
+	                               dummy,
+	                               zerodata);
+
+	H5Sclose(id_dataspace);
+	H5Sclose(id_memspace);
+	H5OUTPUTWRITER_COUNT_OBJS;
+	return 0;
+}
+
+
 int H5OutputWriter::writeVelocities(     int nodeTag, const Vector &velocities)
 {
 	cout << "H5OutputWriter::writeVelocities()  -- Not available. Implement by copying writeDisplacements.\n ";
@@ -1608,6 +1635,32 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
 }
 
 
+
+
+
+// Results for Elements
+int H5OutputWriter::writeDummyElementOutput()
+{
+// Read NDOFS from HDF5 file
+	int datarank         = 1;
+	hsize_t dummy[1] = {1};
+
+	double *zerodata = 0;//displacements.theData;
+	writeVariableLengthDoubleArray(id_elements_output,
+	                               datarank,
+	                               dummy,
+	                               dummy,
+	                               dummy,
+	                               dummy,
+	                               dummy,
+	                               dummy,
+	                               zerodata);
+
+	H5Sclose(id_dataspace);
+	H5Sclose(id_memspace);
+	H5OUTPUTWRITER_COUNT_OBJS;
+	return 0;
+}
 
 
 
@@ -2123,7 +2176,7 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
         double *data)
 {
 	// Extend it if necesary!
-	if (dims != 0)
+	if (dims != 0 && data != 0)
 	{
 		status =  H5Dset_extent( id_array, dims ); // Needs to be avoided for Displacement and Outputs arrays, they are
 		//extended collectively in setTime() function
@@ -2131,32 +2184,31 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 	}
 
 	//Get pointer to the dataspace and create the memory space
-	hsize_t id_dataspace = H5Dget_space(id_array);
-	hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
-#ifdef _PARALLEL_PROCESSING
-	// cout << "            data = ";
-	// for (int i = 0; i < count[0]; i++)
-	// {
-	// 	cout << data[i] << " ";
-	// }
-	// cout << endl;
-#endif
-	//Select the region of data to output to
-	status = H5Sselect_hyperslab(
-	             id_dataspace,          // Id of the parent dataspace
-	             H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
-	             offset,                // start of selection
-	             stride,                // stride in each dimension, NULL  is select everything
-	             count ,                // how many blocks to select in each direction
-	             block                  // little block selected per selection
-	         );
+	hsize_t id_dataspace = 0;
+	hsize_t id_memspace = 0;
+
+	id_dataspace = H5Dget_space(id_array);
+	id_memspace = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+
+	if (data != 0)
+	{
+		//Select the region of data to output to
+		status = H5Sselect_hyperslab(
+		             id_dataspace,          // Id of the parent dataspace
+		             H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+		             offset,                // start of selection
+		             stride,                // stride in each dimension, NULL  is select everything
+		             count ,                // how many blocks to select in each direction
+		             block                  // little block selected per selection
+		         );
+	}
+	else
+	{
+		status = H5Sselect_none(id_dataspace);
+		status = H5Sselect_none(id_memspace);
+	}
 	hdf5_check_error(status);
 
-
-
-
-	//Added By Babak 5/31/14
-	//------------------------
 #ifdef _PARALLEL_PROCESSING
 
 	status = H5Dwrite(
@@ -2168,7 +2220,6 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 	             data                   // The actual data
 	         );
 
-	// H5Pclose(file_access_plist);
 #else
 
 	status = H5Dwrite(
@@ -2181,15 +2232,6 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 	         );
 #endif
 	//------------------------
-
-	//Write data!
-	//     status = H5Dwrite(
-	//                  id_array,              // Dataset to write to
-	//                  H5T_NATIVE_DOUBLE,     // Format of data in memory
-	//                  id_memspace,           // Description of data in memory
-	//                  id_dataspace,          // Description of data in storage (including selection)
-	//                  H5P_DEFAULT,           // Form of writing
-	//                  data                   // The actual data
 
 	hdf5_check_error(status);
 

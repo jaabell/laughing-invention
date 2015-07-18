@@ -2526,6 +2526,22 @@ Domain::commit( void )
 
 
 #ifdef _PARALLEL_PROCESSING
+
+    //Max number of nodes and elements to write on all processes (so hat collective call to write can)
+    //be done.
+    static int NnodesMax_AllProccesses;
+    static int NelemsMax_AllProccesses;
+
+    if (!have_written_static_mesh_data) //Will be done only once per stage
+    {
+        int tmpNnodes = theNodes->getNumComponents();
+        int tmpNelems = theElements->getNumComponents();
+
+        int MPI_Allreduce(&tmpNnodes, &NnodesMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
+        int MPI_Allreduce(&tmpNelems, &NelemsMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
+    }
+
+
     int numProcesses, processID;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
@@ -2602,61 +2618,86 @@ Domain::commit( void )
 #endif
 
     globalESSITimer.stop("Domain_Mesh_Output");
-    theNodIter->reset();
 
-    theNodeIter = this->getNodes();
 
     globalESSITimer.start("Domain_Node_Commit_and_output");
+
+    //Do the actual commit of nodal displacements
+    // theNodeIter.reset();
+    theNodeIter = this->getNodes();
     while ( ( nodePtr = theNodeIter() ) != 0 )
     {
         nodePtr->commitState();
+    }
 
+    //Do element output
+    if (output_is_enabled && (countdown_til_output == 0))
+    {
+        theNodeIter = this->getNodes();
 #ifdef _PARALLEL_PROCESSING
-        if (processID != 0)  //Master process does not write any output!
+        for (int i = 0; i < NnodesMax_AllProccesses; i++)
         {
-#endif
-            //Jose Added for node output
-            if (output_is_enabled && (countdown_til_output == 0))
+            nodePtr = theNodeIter();
+            if (nodePtr && (processID != 0)) //Process 0 always does the other branch
             {
-                // cout << processID << "Calling HDF5 write displacements\n";
                 theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
             }
-#ifdef _PARALLEL_PROCESSING
+            else
+            {
+                theOutputWriter.writeDummyDisplacements(); //Needed for collective calling of HDF5
+            }
+        }
+#else // Sequential output
+        while ((nodePtr = theNodeIter()) != 0)
+        {
+            theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
         }
 #endif
     }
-#ifdef _PARALLEL_PROCESSING
-    MPI_Barrier( MPI_COMM_WORLD); //Barrier for correct timing of output
-#endif
 
     globalESSITimer.stop("Domain_Node_Commit_and_output");
 
 
     globalESSITimer.start("Domain_Element_Commit_and_output");
-#ifdef _PARALLEL_PROCESSING
-    if (processID != 0)  //Master process does not write any output!
-    {
-#endif
-        theElemIter = this->getElements();
-        while ( ( elePtr = theElemIter() ) != 0 )
-        {
-            elePtr->commitState();
-            //Jose Added for element output
-            if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
-            {
 
+    //Commit all elements
+    theElemIter = this->getElements();
+    while ( ( elePtr = theElemIter() ) != 0 )
+    {
+        elePtr->commitState();
+    }
+
+
+    //Do element output!
+    if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
+    {
+        theElemIter = this->getElements();
+#ifdef _PARALLEL_PROCESSING
+
+        for (int i = 0; i < NelemsMax_AllProccesses; i++)
+        {
+            elePtr = theElemIter();
+            if (elePtr && (processID != 0)) //Process 0 always does the other branch
+            {
                 theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
+            }
+            else
+            {
+                theOutputWriter.writeDummyElementOutput(); //Needed for collective calling of HDF5
             }
         }
 
-#ifdef _PARALLEL_PROCESSING
-    }
-    MPI_Barrier( MPI_COMM_WORLD); //Barrier for correct timing of output
+#else //Not parallel processing
+        while ( ( elePtr = theElemIter() ) != 0 )
+        {
+            theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
+        }
 #endif
+    }
 
     globalESSITimer.stop("Domain_Element_Commit_and_output");
 
-    // cout << "countdown_til_output = " << countdown_til_output << endl;
+// cout << "countdown_til_output = " << countdown_til_output << endl;
     if (countdown_til_output == 0)
     {
         countdown_til_output = output_every_nsteps;
@@ -2829,7 +2870,7 @@ Domain::newStep( double dT )
 
 
 int
-Domain::setEigenvalues( const Vector &theValues )
+Domain::setEigenvalues( const Vector & theValues )
 {
     // make sure the eigen value vector is large enough
     if ( theEigenvalues == 0 || theEigenvalues->Size() != theValues.Size() )
@@ -2914,7 +2955,7 @@ Domain::hasDomainChanged( void )
 }
 
 void
-Domain::Print( ostream &s, int flag )
+Domain::Print( ostream & s, int flag )
 {
 
     s << "Current Domain Information\n";
@@ -2940,7 +2981,7 @@ Domain::Print( ostream &s, int flag )
     theLoadPatterns->Print( s, flag );
 }
 
-ostream &operator<<( ostream &s, Domain &M )
+ostream &operator<<( ostream & s, Domain & M )
 {
     M.Print( s );
     return s;
@@ -2950,7 +2991,7 @@ ostream &operator<<( ostream &s, Domain &M )
 
 
 int
-Domain::buildEleGraph( Graph *theEleGraph )
+Domain::buildEleGraph( Graph * theEleGraph )
 {
     int numVertex = this->getNumElements();
 
@@ -3242,7 +3283,7 @@ Domain::buildEleGraph( Graph *theEleGraph )
 }
 
 int
-Domain::buildNodeGraph( Graph *theNodeGraph )
+Domain::buildNodeGraph( Graph * theNodeGraph )
 {
     int numVertex = this->getNumNodes();
 
@@ -3345,7 +3386,7 @@ Domain::buildNodeGraph( Graph *theNodeGraph )
 
 
 int
-Domain::sendSelf( int cTag, Channel &theChannel )
+Domain::sendSelf( int cTag, Channel & theChannel )
 {
     // update the commitTag and currentGeoTag
     commitTag = cTag;
@@ -3707,7 +3748,7 @@ Domain::sendSelf( int cTag, Channel &theChannel )
 
 
 int
-Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker )
+Domain::receiveSelf( int cTag, Channel & theChannel, FEM_ObjectBroker & theBroker )
 {
     // set the commitTag in the domain to cTag & update the getTag if needed
     commitTag = cTag;
@@ -4128,7 +4169,7 @@ Domain::receiveSelf( int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker 
 
 
 bool
-Domain::recvNode( Node *thePtr )
+Domain::recvNode( Node * thePtr )
 {
     // create a dummy Node & try adding it to the nodes
     Node *newDummy = new Node( *thePtr, false );
