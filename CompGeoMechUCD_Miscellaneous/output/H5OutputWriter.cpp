@@ -1566,8 +1566,6 @@ int H5OutputWriter::writeDummyDisplacements(  )
 	                               dummy,
 	                               zerodata);
 
-	H5Sclose(id_dataspace);
-	H5Sclose(id_memspace);
 	H5OUTPUTWRITER_COUNT_OBJS;
 	return 0;
 }
@@ -1683,8 +1681,6 @@ int H5OutputWriter::writeDummyElementOutput()
 	                               dummy,
 	                               zerodata);
 
-	H5Sclose(id_dataspace);
-	H5Sclose(id_memspace);
 	H5OUTPUTWRITER_COUNT_OBJS;
 	return 0;
 }

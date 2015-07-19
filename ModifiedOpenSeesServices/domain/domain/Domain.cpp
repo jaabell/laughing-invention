@@ -2537,8 +2537,8 @@ Domain::commit( void )
         int tmpNnodes = theNodes->getNumComponents();
         int tmpNelems = theElements->getNumComponents();
 
-        int MPI_Allreduce(&tmpNnodes, &NnodesMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
-        int MPI_Allreduce(&tmpNelems, &NelemsMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&tmpNnodes, &NnodesMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&tmpNelems, &NelemsMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
     }
 
 
