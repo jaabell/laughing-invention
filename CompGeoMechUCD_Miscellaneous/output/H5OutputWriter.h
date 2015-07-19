@@ -376,6 +376,11 @@ private:
 	ID Class_Tags;
 	ID Partition;
 
+	int numof_NO_COLLECTIVE_calls;
+	int numof_CHUNK_INDEPENDENT_calls;
+	int numof_CHUNK_COLLECTIVE_calls;
+	int numof_CHUNK_MIXED_calls;
+
 
 };
 

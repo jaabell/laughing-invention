@@ -55,7 +55,11 @@ H5OutputWriter::H5OutputWriter():
 	number_of_outputs(0),
 	file_name(""),
 	model_name(""),
-	stage_name("")
+	stage_name(""),
+	numof_NO_COLLECTIVE_calls(0),
+	numof_CHUNK_INDEPENDENT_calls(0),
+	numof_CHUNK_COLLECTIVE_calls(0),
+	numof_CHUNK_MIXED_calls(0)
 {
 	current_time                         = 0.0;
 	current_time_step                    = 0;
@@ -107,7 +111,11 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
 	number_of_outputs(0),
 	file_name(""),
 	model_name(""),
-	stage_name("")
+	stage_name(""),
+	numof_NO_COLLECTIVE_calls(0),
+	numof_CHUNK_INDEPENDENT_calls(0),
+	numof_CHUNK_COLLECTIVE_calls(0),
+	numof_CHUNK_MIXED_calls(0)
 {
 	current_time                         = 0.0;
 	current_time_step                    = 0;
@@ -231,6 +239,21 @@ void H5OutputWriter::finalize()
 	{
 		// cout << "nothing to do... " << endl;
 	}
+	int total_write_calls = numof_NO_COLLECTIVE_calls +
+	                        numof_CHUNK_INDEPENDENT_calls +
+	                        numof_CHUNK_COLLECTIVE_calls +
+	                        numof_CHUNK_MIXED_calls;
+#ifdef _PARALLEL_PROCESSING
+	int processID;
+	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+	cout << "Finalized HDF5 writer on process " << processID << " \n";
+	cout << " Summary of HDF5 I/O mode statistics:\n";
+	cout << "   NO_COLLECTIVE     = " << numof_NO_COLLECTIVE_calls     << " (" << 100 * double(numof_NO_COLLECTIVE_calls) / double(total_write_calls)     << "%%)\n";
+	cout << "   CHUNK_INDEPENDENT = " << numof_CHUNK_INDEPENDENT_calls << " (" << 100 * double(numof_CHUNK_INDEPENDENT_calls) / double(total_write_calls) << "%%)\n";
+	cout << "   CHUNK_COLLECTIVE  = " << numof_CHUNK_COLLECTIVE_calls  << " (" << 100 * double(numof_CHUNK_COLLECTIVE_calls) / double(total_write_calls)  << "%%)\n";
+	cout << "   CHUNK_MIXED       = " << numof_CHUNK_MIXED_calls       << " (" << 100 * double(numof_CHUNK_MIXED_calls) / double(total_write_calls)       << "%%)\n";
+	cout << "   TOTAL             = " << total_write_calls             << endl;
+#endif
 }
 
 
@@ -283,6 +306,10 @@ void H5OutputWriter::initialize(std::string filename_in,
 
 	number_of_time_steps                 = nsteps;
 
+	numof_NO_COLLECTIVE_calls = 0;
+	numof_CHUNK_INDEPENDENT_calls = 0;
+	numof_CHUNK_COLLECTIVE_calls = 0;
+	numof_CHUNK_MIXED_calls = 0;
 
 }
 
@@ -2220,6 +2247,25 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 	             data                   // The actual data
 	         );
 
+	H5D_mpio_actual_io_mode_t actual_io_mode;
+	H5Pget_mpio_actual_io_mode( dataset_xfer_plist, &actual_io_mode);
+
+	switch (actual_io_mode)
+	{
+
+	case H5D_MPIO_NO_COLLECTIVE: //	 	No collective I/O was performed. Collective I/O was not requested or collective I/O isn't possible on this dataset.
+		numof_NO_COLLECTIVE_calls++;
+		break;
+	case H5D_MPIO_CHUNK_INDEPENDENT:	 	// HDF5 performed one the chunk collective optimization schemes and each chunk was accessed independently.
+		numof_CHUNK_INDEPENDENT_calls++;
+		break;
+	case H5D_MPIO_CHUNK_COLLECTIVE:	 	// HDF5 performed one the chunk collective optimization schemes and each chunk was accessed collectively.
+		numof_CHUNK_COLLECTIVE_calls++;
+		break;
+	case H5D_MPIO_CHUNK_MIXED:            // HDF5 performed one the chunk collective optimization schemes and some chunks were accessed independently, some collectively.
+		numof_CHUNK_MIXED_calls++;
+		break;
+	}
 #else
 
 	status = H5Dwrite(
@@ -2231,7 +2277,7 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 	             data                   // The actual data
 	         );
 #endif
-	//------------------------
+//------------------------
 
 	hdf5_check_error(status);
 
