@@ -1296,15 +1296,15 @@ void H5OutputWriter::writeMesh()
 		data_dims[0] = (hsize_t) Material_tags.Size();
 		count[0]     = dims[0];
 		int_data_buffer = Material_tags.data;
-		writeVariableLengthIntegerArray(id_elements_materialtag,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+		// writeVariableLengthIntegerArray(id_elements_materialtag,
+		//                                 datarank,
+		//                                 dims,
+		//                                 data_dims,
+		//                                 offset,
+		//                                 stride,
+		//                                 count,
+		//                                 block,
+		//                                 int_data_buffer);
 
 		dims[0]      = (hsize_t) Class_Tags.Size();
 		data_dims[0] = (hsize_t) Class_Tags.Size();
