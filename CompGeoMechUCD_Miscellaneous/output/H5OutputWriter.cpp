@@ -2625,3 +2625,12 @@ void call_hdf5_flush_next_chance()
 {
 	H5OutputWriter::call_hdf5_flush = true;
 }
+
+
+inline void hdf5_check_error(herr_t status)
+{
+	if (status < 0)
+	{
+		cout << "status = " << status << endl;
+	}
+}
