@@ -3278,6 +3278,9 @@ Domain::buildEleGraph( Graph * theEleGraph )
 
     delete [] theNodeTagVertices;
 
+    cout << "Done building ele graph.\n";
+
+
     return 0;
 
 }
