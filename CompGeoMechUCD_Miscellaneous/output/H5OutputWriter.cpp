@@ -233,7 +233,19 @@ void H5OutputWriter::finalize()
 		//Finally close file
 		file_is_open = false;
 		H5Fclose(id_file);
-		// cout << "Done!" << endl;
+
+#ifdef _PARALLEL_PROCESSING
+		int processID;
+		MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+		cout << "Finalized HDF5 writer on process " << processID << " \n";
+		cout << " Summary of HDF5 I/O mode statistics:\n";
+		cout << "   NO_COLLECTIVE     = " << numof_NO_COLLECTIVE_calls     << " (" << 100 * double(numof_NO_COLLECTIVE_calls) / double(total_write_calls)     << "%%)\n";
+		cout << "   CHUNK_INDEPENDENT = " << numof_CHUNK_INDEPENDENT_calls << " (" << 100 * double(numof_CHUNK_INDEPENDENT_calls) / double(total_write_calls) << "%%)\n";
+		cout << "   CHUNK_COLLECTIVE  = " << numof_CHUNK_COLLECTIVE_calls  << " (" << 100 * double(numof_CHUNK_COLLECTIVE_calls) / double(total_write_calls)  << "%%)\n";
+		cout << "   CHUNK_MIXED       = " << numof_CHUNK_MIXED_calls       << " (" << 100 * double(numof_CHUNK_MIXED_calls) / double(total_write_calls)       << "%%)\n";
+		cout << "   TOTAL             = " << total_write_calls             << endl;
+#endif
+
 	}
 	else
 	{
@@ -243,17 +255,7 @@ void H5OutputWriter::finalize()
 	                        numof_CHUNK_INDEPENDENT_calls +
 	                        numof_CHUNK_COLLECTIVE_calls +
 	                        numof_CHUNK_MIXED_calls;
-#ifdef _PARALLEL_PROCESSING
-	int processID;
-	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-	cout << "Finalized HDF5 writer on process " << processID << " \n";
-	cout << " Summary of HDF5 I/O mode statistics:\n";
-	cout << "   NO_COLLECTIVE     = " << numof_NO_COLLECTIVE_calls     << " (" << 100 * double(numof_NO_COLLECTIVE_calls) / double(total_write_calls)     << "%%)\n";
-	cout << "   CHUNK_INDEPENDENT = " << numof_CHUNK_INDEPENDENT_calls << " (" << 100 * double(numof_CHUNK_INDEPENDENT_calls) / double(total_write_calls) << "%%)\n";
-	cout << "   CHUNK_COLLECTIVE  = " << numof_CHUNK_COLLECTIVE_calls  << " (" << 100 * double(numof_CHUNK_COLLECTIVE_calls) / double(total_write_calls)  << "%%)\n";
-	cout << "   CHUNK_MIXED       = " << numof_CHUNK_MIXED_calls       << " (" << 100 * double(numof_CHUNK_MIXED_calls) / double(total_write_calls)       << "%%)\n";
-	cout << "   TOTAL             = " << total_write_calls             << endl;
-#endif
+
 }
 
 
