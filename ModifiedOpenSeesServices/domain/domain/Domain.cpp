@@ -2524,7 +2524,12 @@ Domain::commit( void )
 
     globalESSITimer.start("Domain_Mesh_Output");
 
+#ifdef _PARALLEL_PROCESSING
+    int numProcesses, processID;
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
+#endif
 #ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
 
 
@@ -2541,11 +2546,6 @@ Domain::commit( void )
         MPI_Allreduce(&tmpNnodes, &NnodesMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
         MPI_Allreduce(&tmpNelems, &NelemsMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
     }
-
-
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
     if (output_is_enabled && countdown_til_output == 0)
     {
