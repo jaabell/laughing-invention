@@ -1540,6 +1540,7 @@ void H5OutputWriter::writeMesh()
 			id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
 		}
 
+		if (processID > 0)
 		{
 			int rank = 2;
 			hsize_t dims[2];
@@ -1874,7 +1875,7 @@ int H5OutputWriter::setTime(double t)
 	status =  H5Dset_extent( id_nodes_displacements, dims_new );
 
 
-	if ( flag_write_element_output == 1 ) //extend element output array depending on whether the flag is enabled.
+	if ( flag_write_element_output == 1 && (processID > 0)) //extend element output array depending on whether the flag is enabled.
 	{
 		dims_new[0] = length_element_output;
 		dims_new[1] = current_time_step + 1;
