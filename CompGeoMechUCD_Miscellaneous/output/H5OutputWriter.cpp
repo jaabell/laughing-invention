@@ -1088,8 +1088,8 @@ void H5OutputWriter::writeMesh()
 	if (processID > 0)
 	{
 		stringstream ss();
-		ss << file_name << "." << setfill('0') << setw(digits) << processID;
-		file_name = ss.str();
+		ss << "." << setfill('0') << setw(digits) << processID;
+		file_name += ss.str();
 	}
 
 	cout << "Process " << processID << " filename = " << file_name << endl;
