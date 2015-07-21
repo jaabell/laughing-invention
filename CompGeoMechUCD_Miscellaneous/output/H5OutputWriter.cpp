@@ -1086,7 +1086,7 @@ void H5OutputWriter::writeMesh()
 	// return digits;
 	if (processID > 0)
 	{
-		std::stringstream ss('');
+		std::stringstream ss();
 		ss << ".";
 		ss << setfill('0') << setw(digits) << processID;
 		file_name += ss.str();
