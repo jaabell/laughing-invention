@@ -1582,7 +1582,7 @@ void H5OutputWriter::writeMesh()
 
 int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
 {
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 	int nnodes, ntags;
 	ntags = Partition.Size();
 	int addzeros = tag - ntags;
