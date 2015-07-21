@@ -2574,6 +2574,11 @@ Domain::commit( void )
             //     cout << "maxElementsTag                = " << maxElementsTag << endl;
             //     cout << "numberOfDomainNodeDOFs        = " << numberOfDomainNodeDOFs << endl;
             //     cout << "numberOfDomainElementOutputs) = " << numberOfDomainElementOutputs << endl;
+
+#ifdef _PARALLEL_PROCESSING
+            theOutputWriter.syncWriters();
+#endif
+
             globalESSITimer.start("HDF5_write_global_data");
             theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
                                                 this->getNumElements(),
