@@ -219,7 +219,6 @@ SEQUENTIAL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/lib/liblapack.a \
       $(ESSI_DEPEND_DIR)/lib/libccolamd.a \
       $(ESSI_DEPEND_DIR)/lib/libmetis.a \
       $(ESSI_DEPEND_DIR)/lib/libcblas.a \
-      $(ESSI_DEPEND_DIR)/lib/libblas.a \
       $(ESSI_DEPEND_DIR)/lib/libf77blas.a \
       $(ESSI_DEPEND_DIR)/lib/libatlas.a \
       $(ESSI_DEPEND_DIR)/lib/libsuitesparseconfig.a \
@@ -240,17 +239,11 @@ PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/lib
       $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libsuperlu_dist_4.0.a \
       $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libspai.a \
       $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libscalapack.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libflapack.a \
+      $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libfblas.a \
       $(ESSI_DEPEND_DIR)/parmetis-4.0.2_install/lib/libparmetis.a \
       $(ESSI_DEPEND_DIR)/metis-4.0.2_install/lib/libmetis.a \
-      $(ESSI_DEPEND_DIR)/lib/liblapack.a \
-      $(ESSI_DEPEND_DIR)/lib/libblas.a \
       $(ESSI_DEPEND_DIR)/hdf5_parallel/lib/libhdf5.a 
-
-
-#      $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libfblas.a \
-#      $(ESSI_DEPEND_DIR)/parmetis-4.0.2_install/lib/libparmetis.a \
-#      $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libflapack.a \
-
       
 # $(ESSI_DEPEND_DIR)/petsc-3.6.0/externalpackages/spooles-2.2-dec-2008/libspooles.a \
 # $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libPLAPACK.a \

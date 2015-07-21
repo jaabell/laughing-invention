@@ -1,12 +1,12 @@
-#Compiler = GNU
+Compiler = GNU
 #Compiler = CLANG
-Compiler = PARALLEL
+#Compiler = PARALLEL
 
 #DEBUG_MODE = DEBUG
 DEBUG_MODE = NO_DEBUG
 
-#PROGRAMMING_MODE = SEQUENTIAL
-PROGRAMMING_MODE = PARALLEL
+PROGRAMMING_MODE = SEQUENTIAL
+#PROGRAMMING_MODE = PARALLEL
 
 LTO_FLAGS = 
 # LTO_FLAGS = -flto
@@ -92,7 +92,7 @@ endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
 	C++FLAGS        = $(LTO_FLAGS) -Wall  \
-										-O3 -g \
+										-O2 -g \
 										$(INLINING_OPTS) \
 										-funroll-loops \
 										-D_LINUX \
@@ -111,14 +111,14 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-ffast-math  \
 										-funroll-loops \
 										-fvariable-expansion-in-unroller 
-	CFLAGS          = $(LTO_FLAGS) -O3 \
+	CFLAGS          = $(LTO_FLAGS) -O2 \
 										-D_LINUX \
 										-D_UNIX \
 										-D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84
 										-march=native $(MORE_CFLAGS)
 
-	FFLAGS          = -O3 $(MORE_FFLAGS)
-	LINKFLAGS       = -O3 $(LTO_FLAGS) $(MORE_LINKFLAGS)
+	FFLAGS          = -O2 $(MORE_FFLAGS)
+	LINKFLAGS       = -O2 $(LTO_FLAGS) $(MORE_LINKFLAGS)
 
 else
 	C++FLAGS        = -Wall \
