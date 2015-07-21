@@ -1085,7 +1085,7 @@ void H5OutputWriter::writeMesh()
 		number /= 10;
 		digits++;
 	}
-	return digits;
+	// return digits;
 	if (processID > 0)
 	{
 		stringstream ss(file_name);
