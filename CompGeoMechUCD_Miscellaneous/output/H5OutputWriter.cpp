@@ -591,7 +591,7 @@ int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
 
 void H5OutputWriter::syncWriters()
 {
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 	// This function is VERY important.
 	// Output writers are instantiated in every processor (within domain, or childs of domain)
 	// and must contain the SAME information about the sizes of the involved arrays, because
@@ -610,6 +610,10 @@ void H5OutputWriter::syncWriters()
 	// MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
+
+#endif
+
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
 
 	//For nodes ====================================================================================
 	//ID Number_of_DOFs;
