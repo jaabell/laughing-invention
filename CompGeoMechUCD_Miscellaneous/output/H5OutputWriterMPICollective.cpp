@@ -8,7 +8,7 @@
 //all we wanted to do.'' bj
 // PROJECT:           Object Oriented Finite Element Program
 // FILE:              H5Output:ter.cpp
-// CLASS:             H5OutputWriter
+// CLASS:             H5OutputWriterMPICollective
 // MEMBER FUNCTIONS:
 //
 // MEMBER VARIABLES
@@ -28,10 +28,9 @@
 
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <ID.h>
 #include <Vector.h>
-#include <H5OutputWriter.h>
+#include <H5OutputWriterMPICollective.h>
 #include <hdf5.h>
 #include <time.h>
 
@@ -42,9 +41,9 @@
 # include <ESSITimer.h>
 
 
-bool H5OutputWriter::call_hdf5_flush = false;
+bool H5OutputWriterMPICollective::call_hdf5_flush = false;
 
-H5OutputWriter::H5OutputWriter():
+H5OutputWriterMPICollective::H5OutputWriterMPICollective():
 	OutputWriter(),
 	file_is_open(false),
 	number_of_nodes(0),
@@ -91,16 +90,16 @@ H5OutputWriter::H5OutputWriter():
 	zlib_compression_level = 0;
 	flag_write_element_output            = 1;
 
-#ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifndef _PARALLEL_PROCESSING
 	dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);  //Otherwise created in syncWriters in the parallel case
 #endif
 }
 
 
-H5OutputWriter::H5OutputWriter(std::string filename_in,
-                               std::string model_name_in,
-                               std::string stage_name_in,
-                               int nsteps):
+H5OutputWriterMPICollective::H5OutputWriterMPICollective(std::string filename_in,
+        std::string model_name_in,
+        std::string stage_name_in,
+        int nsteps):
 	OutputWriter(),
 	file_is_open(false),
 	number_of_nodes(0),
@@ -153,22 +152,22 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
 	zlib_compression_level = 0;
 	flag_write_element_output = 1;
 
-#ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifndef _PARALLEL_PROCESSING
 	dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER); //Otherwise created in syncWriters in the parallel case
 #endif
 }
 
 
 
-H5OutputWriter::~H5OutputWriter()
+H5OutputWriterMPICollective::~H5OutputWriterMPICollective()
 {
 	finalize();
 }
 
 
-void H5OutputWriter::finalize()
+void H5OutputWriterMPICollective::finalize()
 {
-	// cout << "H5OutputWriter::finalize() - ";
+	// cout << "H5OutputWriterMPICollective::finalize() - ";
 	if (file_is_open)
 	{
 		// cout << "endingtime \n\n";
@@ -193,12 +192,12 @@ void H5OutputWriter::finalize()
 		//     H5F_OBJ_DATASET | H5F_OBJ_GROUP | H5F_OBJ_LOCAL
 		// would count all datasets and groups opened through the current file identifier.
 
-		hid_t obj_id_list[H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS];
+		hid_t obj_id_list[H5OutputWriterMPICollective_MAX_RETURN_OPEN_OBJS];
 		hsize_t n_obj_open = 10;
 		while (n_obj_open > 0)
 		{
 			n_obj_open = H5Fget_obj_count(id_file, H5F_OBJ_DATASET | H5F_OBJ_GROUP | H5F_OBJ_ATTR | H5F_OBJ_LOCAL );
-			// cout << "H5OutputWriter -- N of HDF5 objects open = " << n_obj_open << endl;
+			// cout << "H5OutputWriterMPICollective -- N of HDF5 objects open = " << n_obj_open << endl;
 
 
 			if (n_obj_open <= 0)
@@ -210,22 +209,22 @@ void H5OutputWriter::finalize()
 			int number_of_open_objects;
 
 			//Close datasets
-			number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_DATASET | H5F_OBJ_LOCAL, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS, obj_id_list );
-			for (int i = 0; i < std::min(number_of_open_objects, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS) ; i++ )
+			number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_DATASET | H5F_OBJ_LOCAL, H5OutputWriterMPICollective_MAX_RETURN_OPEN_OBJS, obj_id_list );
+			for (int i = 0; i < std::min(number_of_open_objects, H5OutputWriterMPICollective_MAX_RETURN_OPEN_OBJS) ; i++ )
 			{
 				H5Dclose(obj_id_list[i]);
 			}
 
 			//Close groups
-			number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_GROUP | H5F_OBJ_LOCAL, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS, obj_id_list );
-			for (int i = 0; i < std::min(number_of_open_objects, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS) ; i++ )
+			number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_GROUP | H5F_OBJ_LOCAL, H5OutputWriterMPICollective_MAX_RETURN_OPEN_OBJS, obj_id_list );
+			for (int i = 0; i < std::min(number_of_open_objects, H5OutputWriterMPICollective_MAX_RETURN_OPEN_OBJS) ; i++ )
 			{
 				H5Gclose(obj_id_list[i]);
 			}
 
 			//Close groups
-			number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_ATTR | H5F_OBJ_LOCAL, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS, obj_id_list );
-			for (int i = 0; i < std::min(number_of_open_objects, H5OUTPUTWRITER_MAX_RETURN_OPEN_OBJS) ; i++ )
+			number_of_open_objects = H5Fget_obj_ids( id_file, H5F_OBJ_ATTR | H5F_OBJ_LOCAL, H5OutputWriterMPICollective_MAX_RETURN_OPEN_OBJS, obj_id_list );
+			for (int i = 0; i < std::min(number_of_open_objects, H5OutputWriterMPICollective_MAX_RETURN_OPEN_OBJS) ; i++ )
 			{
 				H5Aclose(obj_id_list[i]);
 			}
@@ -235,7 +234,7 @@ void H5OutputWriter::finalize()
 		file_is_open = false;
 		H5Fclose(id_file);
 
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 		int processID;
 		MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
@@ -266,10 +265,10 @@ void H5OutputWriter::finalize()
 }
 
 
-void H5OutputWriter::initialize(std::string filename_in,
-                                std::string model_name_in,
-                                std::string stage_name_in,
-                                int nsteps)
+void H5OutputWriterMPICollective::initialize(std::string filename_in,
+        std::string model_name_in,
+        std::string stage_name_in,
+        int nsteps)
 {
 
 
@@ -326,7 +325,7 @@ void H5OutputWriter::initialize(std::string filename_in,
 
 
 
-void H5OutputWriter::set_number_of_time_steps(int nsteps)
+void H5OutputWriterMPICollective::set_number_of_time_steps(int nsteps)
 {
 	number_of_time_steps = nsteps;
 }
@@ -341,12 +340,12 @@ void H5OutputWriter::set_number_of_time_steps(int nsteps)
 // Mesh output
 
 
-int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
-                                        unsigned int number_of_elements_in,
-                                        unsigned int max_node_tag_in,
-                                        unsigned int max_element_tag_in,
-                                        unsigned int number_of_dofs_in,
-                                        unsigned int number_of_outputs_in)
+int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_nodes_in,
+        unsigned int number_of_elements_in,
+        unsigned int max_node_tag_in,
+        unsigned int max_element_tag_in,
+        unsigned int number_of_dofs_in,
+        unsigned int number_of_outputs_in)
 {
 	number_of_nodes = number_of_nodes_in;
 	number_of_elements = number_of_elements_in;
@@ -414,7 +413,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
 	return 0;
 }
 
-// int H5OutputWriter::writeNumberOfElements(unsigned int numberOfElements_ )
+// int H5OutputWriterMPICollective::writeNumberOfElements(unsigned int numberOfElements_ )
 // {
 //     number_of_elements = numberOfElements_;
 
@@ -424,7 +423,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
 // }
 
 
-int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int ndofs )
+int H5OutputWriterMPICollective::writeNodeMeshData(int tag     , const Vector &coords   , int ndofs )
 {
 	int ntags = Number_of_DOFs.Size();
 	int addzeros = tag - ntags;
@@ -466,13 +465,13 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
 	return 0;
 }
 
-int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID &connectivity , int materialtag , const Matrix &gausscoordinates,
+int H5OutputWriterMPICollective::writeElementMeshData(int tag  , std::string type , const ID &connectivity , int materialtag , const Matrix &gausscoordinates,
         int length_of_output, int class_tag)
 {
 
 	if (tag < 0)
 	{
-		cerr << "H5OutputWriter::writeElementMeshData - Error: got tag = " << tag << " < 0" << endl;
+		cerr << "H5OutputWriterMPICollective::writeElementMeshData - Error: got tag = " << tag << " < 0" << endl;
 	}
 
 	int nnodes, ntags;
@@ -483,7 +482,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 	for (int i = 0; i <= addzeros; i++)
 	{
 		cout << "ntags = " << ntags << " tag = " << tag;
-		cout << " H5OutputWriter::writeElementMeshData() -- Should not happen!!\n\n";
+		cout << " H5OutputWriterMPICollective::writeElementMeshData() -- Should not happen!!\n\n";
 		Number_of_Nodes[ntags + i]                  = -1;
 		Index_to_Connectivity[ntags + i]            = -1;
 		Index_to_Outputs[ntags + i]                 = -1;
@@ -497,7 +496,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 	//Check if the element has already been added!!
 	// if (Number_of_Nodes[tag] > 0 || Index_to_Connectivity[tag] >= 0 || Index_to_Outputs[tag] >= 0)
 	// {
-	//     cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " already defined in HDF5 database! Something is wrong"
+	//     cerr << "H5OutputWriterMPICollective::writeElementMeshData() - Element tag " << tag <<  " already defined in HDF5 database! Something is wrong"
 	//          << endl;
 	// }
 	// Writing Number_of_Nodes;
@@ -507,17 +506,17 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 
 	if (Number_of_Nodes[tag] > 0 && nnodes != Number_of_Nodes[tag])
 	{
-		cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " number of nodes changed in database."  << endl;
+		cerr << "H5OutputWriterMPICollective::writeElementMeshData() - Element tag " << tag <<  " number of nodes changed in database."  << endl;
 	}
 
 	if (Index_to_Connectivity[tag] > 0 && pos_elements_connectivity != Index_to_Connectivity[tag])
 	{
-		cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " index to connectivity changed in database."  << endl;
+		cerr << "H5OutputWriterMPICollective::writeElementMeshData() - Element tag " << tag <<  " index to connectivity changed in database."  << endl;
 	}
 
 	if (Index_to_Outputs[tag] > 0 && pos_elements_outputs != Index_to_Outputs[tag])
 	{
-		cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " index to output changed in database."  << endl;
+		cerr << "H5OutputWriterMPICollective::writeElementMeshData() - Element tag " << tag <<  " index to output changed in database."  << endl;
 	}
 
 	// Writing Connectivity;
@@ -573,7 +572,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
 }
 
 
-int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
+int H5OutputWriterMPICollective::writeLoadPatternData(int tag , std::string name)
 {
 	// int ntags;
 	// ntags = LoadPattern_names.Size();
@@ -589,9 +588,9 @@ int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
 }
 
 
-void H5OutputWriter::syncWriters()
+void H5OutputWriterMPICollective::syncWriters()
 {
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 	// This function is VERY important.
 	// Output writers are instantiated in every processor (within domain, or childs of domain)
 	// and must contain the SAME information about the sizes of the involved arrays, because
@@ -791,27 +790,27 @@ void H5OutputWriter::syncWriters()
 
 
 	// =============================================================================================
-	// Send the filenames and model names to initialize H5OutputWriter on other processes
+	// Send the filenames and model names to initialize H5OutputWriterMPICollective on other processes
 	// =============================================================================================
-	char char_buffer[H5OUTPUTWRITER_MAX_STRING_SIZE];//   Preset size for all strings
+	char char_buffer[H5OutputWriterMPICollective_MAX_STRING_SIZE];//   Preset size for all strings
 	string file_name_tmp, model_name_tmp, stage_name_tmp, previous_stage_name_tmp;
 
 
-	if (model_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
+	if (model_name.size() >  H5OutputWriterMPICollective_MAX_STRING_SIZE)
 	{
-		cerr << "Model name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+		cerr << "Model name is larger than " << H5OutputWriterMPICollective_MAX_STRING_SIZE << "!!! \n";
 	}
-	if (file_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
+	if (file_name.size() >  H5OutputWriterMPICollective_MAX_STRING_SIZE)
 	{
-		cerr << "File name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+		cerr << "File name is larger than " << H5OutputWriterMPICollective_MAX_STRING_SIZE << "!!! \n";
 	}
-	if (stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
+	if (stage_name.size() >  H5OutputWriterMPICollective_MAX_STRING_SIZE)
 	{
-		cerr << "Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+		cerr << "Stage name is larger than " << H5OutputWriterMPICollective_MAX_STRING_SIZE << "!!! \n";
 	}
-	if (previous_stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
+	if (previous_stage_name.size() >  H5OutputWriterMPICollective_MAX_STRING_SIZE)
 	{
-		cerr << "Previous_Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+		cerr << "Previous_Stage name is larger than " << H5OutputWriterMPICollective_MAX_STRING_SIZE << "!!! \n";
 	}
 
 	// model_name
@@ -938,108 +937,10 @@ void H5OutputWriter::syncWriters()
 
 
 #endif
-
-
-
-#ifdef _PARALLEL_PROCESSING
-
-
-	// =============================================================================================
-	// Send the filenames and model names to initialize H5OutputWriter on other processes
-	// =============================================================================================
-	char char_buffer[H5OUTPUTWRITER_MAX_STRING_SIZE];//   Preset size for all strings
-	string file_name_tmp, model_name_tmp, stage_name_tmp, previous_stage_name_tmp;
-
-
-	if (model_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
-	{
-		cerr << "Model name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
-	}
-	if (file_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
-	{
-		cerr << "File name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
-	}
-	if (stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
-	{
-		cerr << "Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
-	}
-	if (previous_stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
-	{
-		cerr << "Previous_Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
-	}
-
-	// model_name
-	length_send  = model_name.size() + 1;
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID == 0)
-	{
-		strcpy(char_buffer, model_name.c_str());
-		char_buffer[length_send - 1] = '\0';
-	}
-	MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
-	model_name = std::string(char_buffer);
-
-	// file_name
-	length_send  = file_name.size() + 1;
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID == 0)
-	{
-		strcpy(char_buffer, file_name.c_str());
-		char_buffer[length_send - 1] = '\0';
-	}
-	MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
-	file_name = std::string(char_buffer);
-
-	// stage_name;
-	length_send  = stage_name.size() + 1;
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID == 0)
-	{
-		strcpy(char_buffer, stage_name.c_str());
-		char_buffer[length_send - 1] = '\0';
-	}
-	MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
-	stage_name = std::string(char_buffer);
-
-	// previous_stage_name;
-	length_send  = previous_stage_name.size() + 1;
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID == 0)
-	{
-		strcpy(char_buffer, previous_stage_name.c_str());
-		char_buffer[length_send - 1] = '\0';
-	}
-	MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
-	previous_stage_name = std::string(char_buffer);
-
-
-	// nsteps;
-	//char_buffer = previous_stage_name.c_str();
-	//length_send = previous_stage_name.size();
-	MPI_Bcast(&number_of_time_steps, 1, MPI_CHAR,   root, MPI_COMM_WORLD);
-
-	current_time                         = 0.0;
-	current_time_step                    = 0;
-
-	pos_nodes_outputs                    = 0;
-	pos_nodes_coordinates                = 0;
-	pos_elements_outputs                 = 0;
-	pos_elements_gausscoords             = 0;
-	pos_elements_connectivity            = 0;
-
-	create_nodeMeshData_arrays           = true;
-	create_nodeDisplacements_arrays      = true;
-	create_nodeVelocities_arrays         = true;
-	create_nodeAccelerations_arrays      = true;
-	create_nodeReactionForces_arrays     = true;
-	create_elementMeshData_arrays        = true;
-	create_elementOutput_arrays          = true;
-
-#endif
 }
 
 
-void H5OutputWriter::writeMesh()
+void H5OutputWriterMPICollective::writeMesh()
 {
 	// =============================================================================================
 	//   Open HDF5 file for writing and create basic structure
@@ -1062,36 +963,14 @@ void H5OutputWriter::writeMesh()
 	//Initialize datamembers
 	file_is_open = false;
 
+
+	//Added By Babak 5/31/14
+	//------------------------
 #ifdef _PARALLEL_PROCESSING
 	int numProcesses, processID;
 	MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-#endif
 
-
-#ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
-	//Higher ranks get an additional extension .pid
-
-	// Determine the number of digits in the total number of processes
-	int number = numProcesses;
-	int digits = 0;
-	if (number < 0) digits = 1; // remove this line if '-' counts as a digit
-	while (number)
-	{
-		number /= 10;
-		digits++;
-	}
-	return digits;
-	if (processID > 0)
-	{
-		stringstream ss(file_name);
-		ss << "." << setfill('0') << setw(digits) << processID;
-		file_name = ss.str();
-	}
-#endif
-
-
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
 
 	hid_t file_access_plist   = H5Pcreate(H5P_FILE_ACCESS);
 	H5Pset_fapl_mpio(file_access_plist, MPI_COMM_WORLD, MPI_INFO_NULL);
@@ -1107,11 +986,11 @@ void H5OutputWriter::writeMesh()
 	unsigned flags = H5F_ACC_TRUNC;  // Truncate file (ie. if file exists overwrite it)
 	hid_t file_creation_plist = H5Pcreate(H5P_FILE_CREATE);
 	hid_t file_access_plist = H5Pcreate(H5P_FILE_ACCESS);
-	// status = H5Pset_meta_block_size(file_access_plist, H5OUTPUTWRITER_META_BLOCK_SIZE);
+	// status = H5Pset_meta_block_size(file_access_plist, H5OutputWriterMPICollective_META_BLOCK_SIZE);
 	// hdf5_check_error(status);
-	// status =  H5Pset_cache(file_access_plist, 0, H5OUTPUTWRITER_CHUNK_NSLOTS, H5OUTPUTWRITER_CHUNK_NBYTES, 0 );
+	// status =  H5Pset_cache(file_access_plist, 0, H5OutputWriterMPICollective_CHUNK_NSLOTS, H5OutputWriterMPICollective_CHUNK_NBYTES, 0 );
 	// hdf5_check_error(status);
-	// status = H5Pset_sieve_buf_size( file_access_plist, H5OUTPUTWRITER_SIEVE_BUFFER_SIZE );
+	// status = H5Pset_sieve_buf_size( file_access_plist, H5OutputWriterMPICollective_SIEVE_BUFFER_SIZE );
 	// hdf5_check_error(status);
 	id_file = H5Fcreate(file_name.c_str(), flags , file_creation_plist, file_access_plist);
 
@@ -1182,7 +1061,7 @@ void H5OutputWriter::writeMesh()
 		createVariableLengthStringArray(id_file, "Analysis_Options", " ");
 
 
-		H5OUTPUTWRITER_COUNT_OBJS;
+		H5OutputWriterMPICollective_COUNT_OBJS;
 
 
 		// =============================================================================================
@@ -1210,7 +1089,7 @@ void H5OutputWriter::writeMesh()
 		id_index_to_nodes_coordinates = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
 		id_index_to_nodes_outputs     = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
 
-		// #ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+		// #ifdef _PARALLEL_PROCESSING
 		//     // int processID;
 		//     // MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
@@ -1301,10 +1180,10 @@ void H5OutputWriter::writeMesh()
 
 
 
-		// #ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+		// #ifdef _PARALLEL_PROCESSING
 		//     }
 		// #endif
-		H5OUTPUTWRITER_COUNT_OBJS;
+		H5OutputWriterMPICollective_COUNT_OBJS;
 
 		// =============================================================================================
 		//   Write element mesh data
@@ -1327,7 +1206,7 @@ void H5OutputWriter::writeMesh()
 		id_elements_materialtag           = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
 		id_elements_classtag              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
 
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO // Only write partition if in parallel mode
+#ifdef _PARALLEL_PROCESSING // Only write partition if in parallel mode
 		id_elements_partition             = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Partition", " ");
 #endif
 
@@ -1442,7 +1321,7 @@ void H5OutputWriter::writeMesh()
 		                                int_data_buffer);
 
 
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 		// if (processID == 0) // Only main processor knows about the global partition
 		// {
 
@@ -1522,7 +1401,7 @@ void H5OutputWriter::writeMesh()
 		                               count,
 		                               block,
 		                               double_data_buffer);
-		H5OUTPUTWRITER_COUNT_OBJS;
+		H5OutputWriterMPICollective_COUNT_OBJS;
 
 
 
@@ -1567,15 +1446,15 @@ void H5OutputWriter::writeMesh()
 	}
 	else  //Could not open file
 	{
-		cerr << "H5OutputWriter::writeMesh() -> could not open file: " << file_name << "!\n\n";
+		cerr << "H5OutputWriterMPICollective::writeMesh() -> could not open file: " << file_name << "!\n\n";
 	}
 
 
 }
 
-int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
+int H5OutputWriterMPICollective::writeElementPartitionData(int tag  , int partition)
 {
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 	int nnodes, ntags;
 	ntags = Partition.Size();
 	int addzeros = tag - ntags;
@@ -1587,7 +1466,7 @@ int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
 	}
 	Partition[tag] = partition;
 #else
-	cout << "H5OutputWriter::writeElementPartitionData() -- Not available in sequential mode\n";
+	cout << "H5OutputWriterMPICollective::writeElementPartitionData() -- Not available in sequential mode\n";
 #endif
 	return 0;
 }
@@ -1595,16 +1474,16 @@ int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
 
 
 
-int H5OutputWriter::writeMaterialMeshData(int tag , std::string type , Vector &parameters)
+int H5OutputWriterMPICollective::writeMaterialMeshData(int tag , std::string type , Vector &parameters)
 {
 	return 0;
 }
 
 // Results for Nodes
-int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacements)
+int H5OutputWriterMPICollective::writeDisplacements(  int nodeTag, const Vector &displacements)
 {
 
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 	int processID;
 	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
@@ -1652,7 +1531,7 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 	block[0]     = 1;
 	block[1]     = 1;
 
-#if _PARALLEL_PROCESSING_COLLECTIVE_IO
+#if _PARALLEL_PROCESSING
 	// cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
 #endif
 
@@ -1670,13 +1549,13 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 
 	H5Sclose(id_dataspace);
 	H5Sclose(id_memspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return 0;
 }
 
 
 // Results for Nodes
-int H5OutputWriter::writeDummyDisplacements(  )
+int H5OutputWriterMPICollective::writeDummyDisplacements(  )
 {
 
 
@@ -1695,35 +1574,35 @@ int H5OutputWriter::writeDummyDisplacements(  )
 	                               dummy,
 	                               zerodata);
 
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return 0;
 }
 
 
-int H5OutputWriter::writeVelocities(     int nodeTag, const Vector &velocities)
+int H5OutputWriterMPICollective::writeVelocities(     int nodeTag, const Vector &velocities)
 {
-	cout << "H5OutputWriter::writeVelocities()  -- Not available. Implement by copying writeDisplacements.\n ";
+	cout << "H5OutputWriterMPICollective::writeVelocities()  -- Not available. Implement by copying writeDisplacements.\n ";
 	return 0;
 }
 
 
-int H5OutputWriter::writeAccelerations(  int nodeTag, const Vector &accelerations)
+int H5OutputWriterMPICollective::writeAccelerations(  int nodeTag, const Vector &accelerations)
 {
-	cout << "H5OutputWriter::writeAccelerations()  -- Not available. Implement by copying writeDisplacements.\n ";
+	cout << "H5OutputWriterMPICollective::writeAccelerations()  -- Not available. Implement by copying writeDisplacements.\n ";
 	return 0;
 }
 
 
-int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForces)
+int H5OutputWriterMPICollective::writeReactionForces( int nodeTag, const Vector &reactionForces)
 {
-	cout << "H5OutputWriter::writeReactionForces()  -- Not available. Implement by copying writeDisplacements.\n ";
+	cout << "H5OutputWriterMPICollective::writeReactionForces()  -- Not available. Implement by copying writeDisplacements.\n ";
 	return 0;
 }
 
 
 
 // Results for Elements
-int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
+int H5OutputWriterMPICollective::writeElementOutput(int elementTag, const  Vector &output)
 {
 
 	if (length_element_output > 0) // If there is nothing to output, there is nothing to output
@@ -1783,7 +1662,7 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
 
 		H5Sclose(id_dataspace);
 		H5Sclose(id_memspace);
-		H5OUTPUTWRITER_COUNT_OBJS;
+		H5OutputWriterMPICollective_COUNT_OBJS;
 	}
 	return 0;
 }
@@ -1793,7 +1672,7 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
 
 
 // Results for Elements
-int H5OutputWriter::writeDummyElementOutput()
+int H5OutputWriterMPICollective::writeDummyElementOutput()
 {
 // Read NDOFS from HDF5 file
 	int datarank         = 1;
@@ -1810,7 +1689,7 @@ int H5OutputWriter::writeDummyElementOutput()
 	                               dummy,
 	                               zerodata);
 
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return 0;
 }
 
@@ -1819,14 +1698,14 @@ int H5OutputWriter::writeDummyElementOutput()
 
 
 
-int H5OutputWriter::setTime(double t)
+int H5OutputWriterMPICollective::setTime(double t)
 {
 
 	if (call_hdf5_flush)
 	{
 		H5Fflush(id_file, H5F_SCOPE_GLOBAL);
 
-		cout << "H5OutputWriter: H5Flush has been called!\n";
+		cout << "H5OutputWriterMPICollective: H5Flush has been called!\n";
 		cout << " *****************************************************************\n";
 		cout << " *****************************************************************\n";
 		cout << " ESSI has stopped simulating and is waiting for you to continue. \n";
@@ -1870,7 +1749,7 @@ int H5OutputWriter::setTime(double t)
 	                                &number_of_time_steps);
 
 	current_time_step++;
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 
 
 	//Extend objects
@@ -1892,7 +1771,7 @@ int H5OutputWriter::setTime(double t)
 
 
 
-int H5OutputWriter::write_string(hid_t here, std::string name, std::string contents)
+int H5OutputWriterMPICollective::write_string(hid_t here, std::string name, std::string contents)
 {
 	// std::cout << "Writing string" << endl;
 	// Some variables needed
@@ -1917,7 +1796,7 @@ int H5OutputWriter::write_string(hid_t here, std::string name, std::string conte
 
 	//Added By Babak 5/31/14
 	//------------------------
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 
 	status = H5Dwrite(id_data_string,
 	                  id_type_string,
@@ -1953,7 +1832,7 @@ int H5OutputWriter::write_string(hid_t here, std::string name, std::string conte
 	return 0;
 }
 
-int H5OutputWriter::create_group(hid_t here, std::string name)
+int H5OutputWriterMPICollective::create_group(hid_t here, std::string name)
 {
 
 	// cout << "Creating group : " << name << endl;
@@ -1963,7 +1842,7 @@ int H5OutputWriter::create_group(hid_t here, std::string name)
 }
 
 
-int H5OutputWriter::setAttribute(hid_t object, std::string units)
+int H5OutputWriterMPICollective::setAttribute(hid_t object, std::string units)
 {
 	// hid_t atype;
 	// hid_t attribute_dataspace_id;
@@ -1988,7 +1867,7 @@ int H5OutputWriter::setAttribute(hid_t object, std::string units)
 
 
 
-hid_t H5OutputWriter::createVariableLengthDoubleArray(hid_t here,
+hid_t H5OutputWriterMPICollective::createVariableLengthDoubleArray(hid_t here,
         int rank,
         hsize_t *dims,
         hsize_t *maxdims,
@@ -2012,7 +1891,7 @@ hid_t H5OutputWriter::createVariableLengthDoubleArray(hid_t here,
 	return id_array;
 }
 
-hid_t H5OutputWriter::createVariableLengthIntegerArray(hid_t here,
+hid_t H5OutputWriterMPICollective::createVariableLengthIntegerArray(hid_t here,
         int rank,
         hsize_t *dims,
         hsize_t *maxdims,
@@ -2039,7 +1918,7 @@ hid_t H5OutputWriter::createVariableLengthIntegerArray(hid_t here,
 
 
 
-hid_t H5OutputWriter::createVariableLengthStringArray(hid_t here,
+hid_t H5OutputWriterMPICollective::createVariableLengthStringArray(hid_t here,
         std::string name,
         std::string attribute)
 {
@@ -2074,7 +1953,7 @@ hid_t H5OutputWriter::createVariableLengthStringArray(hid_t here,
 	hsize_t chunk_dims[1] = {1};
 
 	// cout << "nbytes_one_chunk = " << nbytes_one_chunk << "\n\n\n";
-	// cout << "nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK = " << nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK << "\n\n\n";
+	// cout << "nbytes_one_chunk * H5OutputWriterMPICollective_CHUNK_NBYTES_OVER_SIZEOF_CHUNK = " << nbytes_one_chunk * H5OutputWriterMPICollective_CHUNK_NBYTES_OVER_SIZEOF_CHUNK << "\n\n\n";
 
 	status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
 	hdf5_check_error(status);
@@ -2093,7 +1972,7 @@ hid_t H5OutputWriter::createVariableLengthStringArray(hid_t here,
 	setAttribute(id_array, attribute);
 
 	H5Sclose(id_dataspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 
 
 
@@ -2102,7 +1981,7 @@ hid_t H5OutputWriter::createVariableLengthStringArray(hid_t here,
 
 
 
-hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
+hid_t H5OutputWriterMPICollective::createVariableLengthArray(hid_t here,
         int rank,
         hsize_t *dims,
         hsize_t *maxdims,
@@ -2124,7 +2003,7 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
 	for (int i = 0; i < rank; i++)
 	{
 
-		chunk_dims[i] = std::min(maxdims[i], static_cast<hsize_t>(H5OUTPUTWRITER_CHUNK_MAXDIMENSION));
+		chunk_dims[i] = std::min(maxdims[i], static_cast<hsize_t>(H5OutputWriterMPICollective_CHUNK_MAXDIMENSION));
 
 		nbytes_one_chunk *= chunk_dims[i];
 	}
@@ -2133,19 +2012,19 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
 	if (timedimension >= 0)
 	{
 		nbytes_one_chunk /= chunk_dims[timedimension];
-		chunk_dims[timedimension] = std::min(maxdims[timedimension], static_cast<hsize_t>(H5OUTPUTWRITER_CHUNK_TIMEDIM));
+		chunk_dims[timedimension] = std::min(maxdims[timedimension], static_cast<hsize_t>(H5OutputWriterMPICollective_CHUNK_TIMEDIM));
 		nbytes_one_chunk *= chunk_dims[timedimension];
 	}
 
 
 	// cout << "nbytes_one_chunk = " << nbytes_one_chunk << "\n\n\n";
-	// cout << "nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK = " << nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK << "\n\n\n";
+	// cout << "nbytes_one_chunk * H5OutputWriterMPICollective_CHUNK_NBYTES_OVER_SIZEOF_CHUNK = " << nbytes_one_chunk * H5OutputWriterMPICollective_CHUNK_NBYTES_OVER_SIZEOF_CHUNK << "\n\n\n";
 
 	status = H5Pset_layout(dataset_creation_plist, H5D_CHUNKED);
 	hdf5_check_error(status);
 	status = H5Pset_chunk(dataset_creation_plist, rank, chunk_dims);
 	hdf5_check_error(status);
-	status = H5Pset_chunk_cache(dataset_access_plist, H5OUTPUTWRITER_CHUNK_NSLOTS, nbytes_one_chunk * H5OUTPUTWRITER_CHUNK_NBYTES_OVER_SIZEOF_CHUNK, H5OUTPUTWRITER_PREEMPTION_POLICY );
+	status = H5Pset_chunk_cache(dataset_access_plist, H5OutputWriterMPICollective_CHUNK_NSLOTS, nbytes_one_chunk * H5OutputWriterMPICollective_CHUNK_NBYTES_OVER_SIZEOF_CHUNK, H5OutputWriterMPICollective_PREEMPTION_POLICY );
 	hdf5_check_error(status);
 	status = H5Pset_fill_value(dataset_creation_plist, type, fill_value_ptr);
 	hdf5_check_error(status);
@@ -2207,13 +2086,13 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
 	setAttribute(id_array, attribute);
 
 	H5Sclose(id_dataspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 
 	return id_array;
 }
 
 
-hid_t H5OutputWriter::createConstantLengthDoubleArray(hid_t here,
+hid_t H5OutputWriterMPICollective::createConstantLengthDoubleArray(hid_t here,
         int rank,
         hsize_t *dims,
         hsize_t *maxdims,
@@ -2258,14 +2137,14 @@ hid_t H5OutputWriter::createConstantLengthDoubleArray(hid_t here,
 	                            H5P_DEFAULT);
 	setAttribute(id_array, attribute);
 	H5Sclose(id_dataspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return id_array;
 }
 
 
 
 
-hid_t H5OutputWriter::createConstantLengthIntegerArray(hid_t here,
+hid_t H5OutputWriterMPICollective::createConstantLengthIntegerArray(hid_t here,
         int rank,
         hsize_t *dims,
         hsize_t *maxdims,
@@ -2310,14 +2189,14 @@ hid_t H5OutputWriter::createConstantLengthIntegerArray(hid_t here,
 	                            H5P_DEFAULT);
 	setAttribute(id_array, attribute);
 	H5Sclose(id_dataspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return id_array;
 }
 
 
 
 
-hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
+hid_t H5OutputWriterMPICollective::writeVariableLengthDoubleArray(hid_t id_array,
         int datarank,
         hsize_t *dims,
         hsize_t *data_dims,
@@ -2361,7 +2240,7 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 	}
 	hdf5_check_error(status);
 
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 
 	status = H5Dwrite(
 	             id_array,              // Dataset to write to
@@ -2409,12 +2288,12 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
 	//Close stuff
 	H5Sclose(id_dataspace);
 	H5Sclose(id_memspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return id_array;
 }
 
 
-hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
+hid_t H5OutputWriterMPICollective::writeVariableLengthIntegerArray(hid_t id_array,
         int datarank,
         hsize_t *dims,
         hsize_t *data_dims,
@@ -2448,7 +2327,7 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
 
 	//Added By Babak 5/31/14
 	//------------------------
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 
 	//Write data!
 	status = H5Dwrite(
@@ -2490,13 +2369,13 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
 	//Close stuff
 	H5Sclose(id_dataspace);
 	H5Sclose(id_memspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return id_array;
 }
 
 
 
-hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
+hid_t H5OutputWriterMPICollective::writeVariableLengthStringArray(hid_t id_array,
         hsize_t offset_,
         hsize_t datasize,
         std::string &data)
@@ -2545,7 +2424,7 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
 
 	//Added By Babak 5/31/14
 	//------------------------
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 
 	status = H5Dwrite(
 	             id_array,              // Dataset to write to
@@ -2585,14 +2464,14 @@ hid_t H5OutputWriter::writeVariableLengthStringArray(hid_t id_array,
 	//Close stuff
 	H5Sclose(id_dataspace);
 	H5Sclose(id_memspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return id_array;
 }
 
 
 
 
-hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
+hid_t H5OutputWriterMPICollective::writeConstantLengthDoubleArray(hid_t id_array,
         int datarank,
         hsize_t *dims,
         hsize_t *data_dims,
@@ -2621,7 +2500,7 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
 
 	//Added By Babak 5/31/14
 	//------------------------
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 
 	status = H5Dwrite(
 	             id_array,              // Dataset to write to
@@ -2657,7 +2536,7 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
 	//Close stuff
 	H5Sclose(id_dataspace);
 	H5Sclose(id_memspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return id_array;
 }
 
@@ -2666,7 +2545,7 @@ hid_t H5OutputWriter::writeConstantLengthDoubleArray(hid_t id_array,
 
 
 
-hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
+hid_t H5OutputWriterMPICollective::writeConstantLengthIntegerArray(hid_t id_array,
         int datarank,
         hsize_t *dims,
         hsize_t *data_dims,
@@ -2694,7 +2573,7 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
 
 	//Added By Babak 5/31/14
 	//------------------------
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+#ifdef _PARALLEL_PROCESSING
 
 	status = H5Dwrite(
 	             id_array,              // Dataset to write to
@@ -2732,11 +2611,11 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
 	//Close stuff
 	H5Sclose(id_dataspace);
 	H5Sclose(id_memspace);
-	H5OUTPUTWRITER_COUNT_OBJS;
+	H5OutputWriterMPICollective_COUNT_OBJS;
 	return id_array;
 }
 
-void H5OutputWriter::set_zlib_compression_level(int level)
+void H5OutputWriterMPICollective::set_zlib_compression_level(int level)
 {
 	zlib_compression_level = level;
 }
@@ -2744,7 +2623,7 @@ void H5OutputWriter::set_zlib_compression_level(int level)
 
 void call_hdf5_flush_next_chance()
 {
-	H5OutputWriter::call_hdf5_flush = true;
+	H5OutputWriterMPICollective::call_hdf5_flush = true;
 }
 
 

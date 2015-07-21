@@ -2525,7 +2525,8 @@ Domain::commit( void )
     globalESSITimer.start("Domain_Mesh_Output");
 
 
-#ifdef _PARALLEL_PROCESSING
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+
 
     //Max number of nodes and elements to write on all processes (so hat collective call to write can)
     //be done.
@@ -2634,7 +2635,8 @@ Domain::commit( void )
     if (output_is_enabled && (countdown_til_output == 0))
     {
         theNodeIter = this->getNodes();
-#ifdef _PARALLEL_PROCESSING
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+
         for (int i = 0; i < NnodesMax_AllProccesses; i++)
         {
             nodePtr = theNodeIter();
@@ -2672,7 +2674,8 @@ Domain::commit( void )
     if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
     {
         theElemIter = this->getElements();
-#ifdef _PARALLEL_PROCESSING
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+
 
         for (int i = 0; i < NelemsMax_AllProccesses; i++)
         {

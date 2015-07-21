@@ -1196,6 +1196,7 @@ PartitionedDomain::partition(int numPartitions)
     Element *elePtr;
     ElementIter &theElemIter = this->getElements();
 
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
 
     if (output_is_enabled)
     {
@@ -1247,7 +1248,7 @@ PartitionedDomain::partition(int numPartitions)
         }
         have_populated_static_mesh_data = true;
     }
-
+#endif
 
     // need to create element graph before create new subdomains
     // DO NOT REMOVE THIS LINE __ EVEN IF COMPILER WARNING ABOUT UNUSED VARIABLE
