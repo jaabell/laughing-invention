@@ -1070,7 +1070,6 @@ void H5OutputWriter::writeMesh()
 	int numProcesses, processID;
 	MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-#endif
 
 
 #ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
@@ -1092,6 +1091,10 @@ void H5OutputWriter::writeMesh()
 		ss << "." << setfill('0') << setw(digits) << processID;
 		file_name = ss.str();
 	}
+
+	cout << "Process " << processID << " filename = " << file_name << endl;
+
+#endif
 #endif
 
 
