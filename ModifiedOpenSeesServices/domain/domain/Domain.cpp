@@ -2558,7 +2558,7 @@ Domain::commit( void )
         }
         theOutputWriter.setTime(currentTime);
     }
-#else
+#else //   _PARALLEL_PROCESSING_COLLECTIVE_IO  not defined
     // NOTE: This is done in PartitionedDomain::partition in the case of parallel processing.
     //
     // This outputs the mesh information to the HDF5 writer. This is important because it builds the
@@ -2600,6 +2600,23 @@ Domain::commit( void )
             globalESSITimer.start("HDF5_buffer_elements");
             //Write Element Mesh data!
             // theOutputWriter.writeNumberOfElements(this->getNumElements());
+#ifdef _PARALLEL_PROCESSING
+            if (processID > 0) // P0 has no elements
+            {
+
+                while ( ( elePtr = theElemIter() ) != 0 )
+                {
+                    int materialtag = 0;
+                    theOutputWriter.writeElementMeshData(elePtr->getTag() ,
+                                                         elePtr->getElementName(),
+                                                         elePtr->getExternalNodes(),
+                                                         materialtag ,
+                                                         elePtr->getGaussCoordinates(),
+                                                         elePtr->getOutputSize(),
+                                                         elePtr->getElementclassTag());
+                }
+            }
+#else
             while ( ( elePtr = theElemIter() ) != 0 )
             {
                 int materialtag = 0;
@@ -2611,6 +2628,8 @@ Domain::commit( void )
                                                      elePtr->getOutputSize(),
                                                      elePtr->getElementclassTag());
             }
+#endif
+
             globalESSITimer.stop("HDF5_buffer_elements");
 
             globalESSITimer.start("HDF5_write");
@@ -2621,6 +2640,8 @@ Domain::commit( void )
         }
         theOutputWriter.setTime(currentTime);
     }
+
+//   _PARALLEL_PROCESSING_COLLECTIVE_IO  not defined
 #endif
 
     globalESSITimer.stop("Domain_Mesh_Output");
