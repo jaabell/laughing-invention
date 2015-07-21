@@ -1874,6 +1874,11 @@ int H5OutputWriter::setTime(double t)
 
 	status =  H5Dset_extent( id_nodes_displacements, dims_new );
 
+	int processID = 1; //
+
+#ifdef _PARALLEL_PROCESSING
+	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+#endif
 
 	if ( flag_write_element_output == 1 && (processID > 0)) //extend element output array depending on whether the flag is enabled.
 	{
