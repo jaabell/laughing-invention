@@ -1072,7 +1072,6 @@ void H5OutputWriter::writeMesh()
 	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
 
-#ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
 	//Higher ranks get an additional extension .pid
 
 	// Determine the number of digits in the total number of processes
@@ -1087,8 +1086,8 @@ void H5OutputWriter::writeMesh()
 	// return digits;
 	if (processID > 0)
 	{
-		stringstream ss();
-		ss.str(".");
+		std::stringstream ss('');
+		ss << ".";
 		ss << setfill('0') << setw(digits) << processID;
 		file_name += ss.str();
 	}
@@ -1096,18 +1095,6 @@ void H5OutputWriter::writeMesh()
 	cout << "Process " << processID << " filename = " << file_name << endl;
 
 #endif
-#endif
-
-
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
-
-	hid_t file_access_plist   = H5Pcreate(H5P_FILE_ACCESS);
-	H5Pset_fapl_mpio(file_access_plist, MPI_COMM_WORLD, MPI_INFO_NULL);
-
-	id_file = H5Fcreate(file_name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, file_access_plist);
-	H5Pclose(file_access_plist);
-	//------------------------
-#else
 
 	//================================================================================
 	//Create the file, overwriting it if it exists
@@ -1123,7 +1110,7 @@ void H5OutputWriter::writeMesh()
 	// hdf5_check_error(status);
 	id_file = H5Fcreate(file_name.c_str(), flags , file_creation_plist, file_access_plist);
 
-#endif
+
 	if (id_file > 0)
 	{
 		file_is_open = true;
