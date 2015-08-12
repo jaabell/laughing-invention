@@ -26,93 +26,92 @@
 #include "unitdefinitions.h"
 #include "feiexceptions.h"
 
-using namespace std;
 
 class Expression
 {
-    public:
-        virtual ~Expression () {}
-        virtual Expression* clone () = 0;
-        virtual Quantity value () = 0;
+public:
+    virtual ~Expression () {}
+    virtual Expression* clone () = 0;
+    virtual Quantity value () = 0;
 };
 
 // Numbers are the most basic of expressions. They just hold a Quantity.
 class Number : public Expression
 {
-        Quantity qty;
+    Quantity qty;
 
-    public:
+public:
 
-        Number (double val): qty(val, unitless) {}
-        Number (double val, SIUnit u): qty(val, u) {}
-        Number (Quantity q): qty(q) {}
+    Number (double val): qty(val, ESSIunits::unitless) {}
+    Number (double val, SIUnit u): qty(val, u) {}
+    Number (Quantity q): qty(q) {}
 
-        // Copy constructor
-        Number (const Number& other)
+    // Copy constructor
+    Number (const Number& other)
+    {
+        qty = other.qty;
+    }
+
+    Number& operator = (const Number& other)
+    {
+        if (&other != this)
         {
             qty = other.qty;
         }
 
-        Number& operator = (const Number& other)
-        {
-            if (&other != this)
-            {
-                qty = other.qty;
-            }
+        return *this;
+    }
 
-            return *this;
-        }
+    virtual Expression* clone ()
+    {
+        return new Number (*this);
+    }
 
-        virtual Expression* clone ()
-        {
-            return new Number (*this);
-        }
-
-        virtual Quantity value ()
-        {
-            return qty;
-        }
+    virtual Quantity value ()
+    {
+        return qty;
+    }
 };
 
 // Numbers are the most basic of expressions. They just hold a Quantity.
 class FeiString : public Expression
 {
-        string str;
+    std::string str;
 
-    public:
+public:
 
-        FeiString (string s): str(s) {}
+    FeiString (std::string s): str(s) {}
 
-        // Copy constructor
-        FeiString (const FeiString& other)
+    // Copy constructor
+    FeiString (const FeiString& other)
+    {
+        str = other.str;
+    }
+
+    FeiString& operator = (const FeiString& other)
+    {
+        if (&other != this)
         {
             str = other.str;
         }
 
-        FeiString& operator = (const FeiString& other)
-        {
-            if (&other != this)
-            {
-                str = other.str;
-            }
+        return *this;
+    }
 
-            return *this;
-        }
+    std::string Getstring() const
+    {
+        return str;
+    }
 
-        string Getstring() const
-        {
-            return str;
-        }
+    virtual Expression* clone ()
+    {
+        return new FeiString (*this);
+    }
 
-        virtual Expression* clone ()
-        {
-            return new FeiString (*this);
-        }
-
-        virtual Quantity value ()
-        {
-            return Quantity(0, unitless);
-        }
+    virtual Quantity value ()
+    {
+        return Quantity(0, ESSIunits::unitless);
+    }
 };
 
 //#ifdef ISFEISTRING
@@ -142,22 +141,22 @@ class FeiString : public Expression
 // Empty statement
 class Empty : public Expression
 {
-    public:
-        Empty () {}
-        Empty (const Empty& other) { }
-        Empty& operator = (const Empty& other)
-        {
-            return *this;
-        }
-        virtual Expression* clone ()
-        {
-            return new Empty (*this);
-        }
-        virtual Quantity value ()
-        {
-            Quantity qempty(0., unitless);
-            return qempty;
-        }
+public:
+    Empty () {}
+    Empty (const Empty& other) { }
+    Empty& operator = (const Empty& other)
+    {
+        return *this;
+    }
+    virtual Expression* clone ()
+    {
+        return new Empty (*this);
+    }
+    virtual Quantity value ()
+    {
+        Quantity qempty(0., ESSIunits::unitless);
+        return qempty;
+    }
 };
 
 
@@ -169,147 +168,147 @@ class Empty : public Expression
 // For addictive expressions
 class Plus : public Expression
 {
-        Expression* m_left, *m_right;
+    Expression* m_left, *m_right;
 
-    public:
+public:
 
-        Plus (Expression* left, Expression* right): m_left (left), m_right (right) {}
+    Plus (Expression* left, Expression* right): m_left (left), m_right (right) {}
 
-        // Copy constructor
-        Plus (const Plus& other)
-        {
-            m_left  = other.m_left  -> clone ();
-            m_right = other.m_right -> clone ();
-        }
+    // Copy constructor
+    Plus (const Plus& other)
+    {
+        m_left  = other.m_left  -> clone ();
+        m_right = other.m_right -> clone ();
+    }
 
-        virtual ~Plus ()
+    virtual ~Plus ()
+    {
+        delete m_left;
+        delete m_right;
+    }
+
+    Plus& operator = (const Plus& other)
+    {
+        if (&other != this)
         {
             delete m_left;
             delete m_right;
+
+            m_left    = other.m_left  -> clone ();
+            m_right   = other.m_right -> clone ();
         }
 
-        Plus& operator = (const Plus& other)
-        {
-            if (&other != this)
-            {
-                delete m_left;
-                delete m_right;
-
-                m_left    = other.m_left  -> clone ();
-                m_right   = other.m_right -> clone ();
-            }
-
-            return *this;
-        }
+        return *this;
+    }
 
 
-        virtual Expression* clone ()
-        {
-            return new Plus (*this);
-        }
+    virtual Expression* clone ()
+    {
+        return new Plus (*this);
+    }
 
-        virtual Quantity value ()
-        {
-            return m_left->value () + m_right->value ();
-        }
+    virtual Quantity value ()
+    {
+        return m_left->value () + m_right->value ();
+    }
 
 };
 
 // For subtractive expressions
 class Minus : public Expression
 {
-        Expression* m_left, *m_right;
+    Expression* m_left, *m_right;
 
-    public:
+public:
 
-        Minus (Expression* left, Expression* right): m_left (left), m_right (right) {}
+    Minus (Expression* left, Expression* right): m_left (left), m_right (right) {}
 
-        // Copy constructor
-        Minus (const Minus& other)
+    // Copy constructor
+    Minus (const Minus& other)
+    {
+        m_left = other.m_left->clone ();
+        m_right = other.m_right->clone ();
+    }
+
+    virtual ~Minus ()
+    {
+        delete m_left;
+        delete m_right;
+    }
+
+    Minus& operator = (const Minus& other)
+    {
+        if (&other != this)
         {
+            delete m_left;
+            delete m_right;
+
             m_left = other.m_left->clone ();
             m_right = other.m_right->clone ();
         }
 
-        virtual ~Minus ()
-        {
-            delete m_left;
-            delete m_right;
-        }
-
-        Minus& operator = (const Minus& other)
-        {
-            if (&other != this)
-            {
-                delete m_left;
-                delete m_right;
-
-                m_left = other.m_left->clone ();
-                m_right = other.m_right->clone ();
-            }
-
-            return *this;
-        }
+        return *this;
+    }
 
 
-        virtual Expression* clone ()
-        {
-            return new Minus (*this);
-        }
+    virtual Expression* clone ()
+    {
+        return new Minus (*this);
+    }
 
-        virtual Quantity value ()
-        {
-            return m_left->value () - m_right->value ();
-        }
+    virtual Quantity value ()
+    {
+        return m_left->value () - m_right->value ();
+    }
 
 };
 
 // For multiplicative expressions
 class Times : public Expression
 {
-        Expression* m_left, *m_right;
+    Expression* m_left, *m_right;
 
-    public:
+public:
 
-        Times (Expression* left, Expression* right): m_left (left), m_right (right) {}
+    Times (Expression* left, Expression* right): m_left (left), m_right (right) {}
 
-        // Copy constructor
-        Times (const Times& other)
+    // Copy constructor
+    Times (const Times& other)
+    {
+        m_left = other.m_left->clone ();
+        m_right = other.m_right->clone ();
+    }
+
+    virtual ~Times ()
+    {
+        delete m_left;
+        delete m_right;
+    }
+
+    Times& operator = (const Times& other)
+    {
+        if (&other != this)
         {
+            delete m_left;
+            delete m_right;
+
             m_left = other.m_left->clone ();
             m_right = other.m_right->clone ();
         }
 
-        virtual ~Times ()
-        {
-            delete m_left;
-            delete m_right;
-        }
-
-        Times& operator = (const Times& other)
-        {
-            if (&other != this)
-            {
-                delete m_left;
-                delete m_right;
-
-                m_left = other.m_left->clone ();
-                m_right = other.m_right->clone ();
-            }
-
-            return *this;
-        }
+        return *this;
+    }
 
 
-        virtual Expression* clone ()
-        {
-            return new Times (*this);
-        }
+    virtual Expression* clone ()
+    {
+        return new Times (*this);
+    }
 
-        virtual Quantity value ()
-        {
-            return m_left->value () * m_right->value ();
-        }
+    virtual Quantity value ()
+    {
+        return m_left->value () * m_right->value ();
+    }
 
 };
 
@@ -317,48 +316,48 @@ class Times : public Expression
 // For division expressions
 class Divide : public Expression
 {
-        Expression* m_left, *m_right;
+    Expression* m_left, *m_right;
 
-    public:
+public:
 
-        Divide (Expression* left, Expression* right): m_left (left), m_right (right) {}
+    Divide (Expression* left, Expression* right): m_left (left), m_right (right) {}
 
-        // Copy constructor
-        Divide (const Divide& other)
+    // Copy constructor
+    Divide (const Divide& other)
+    {
+        m_left = other.m_left->clone ();
+        m_right = other.m_right->clone ();
+    }
+
+    virtual ~Divide ()
+    {
+        delete m_left;
+        delete m_right;
+    }
+
+    Divide& operator = (const Divide& other)
+    {
+        if (&other != this)
         {
+            delete m_left;
+            delete m_right;
+
             m_left = other.m_left->clone ();
             m_right = other.m_right->clone ();
         }
 
-        virtual ~Divide ()
-        {
-            delete m_left;
-            delete m_right;
-        }
+        return *this;
+    }
 
-        Divide& operator = (const Divide& other)
-        {
-            if (&other != this)
-            {
-                delete m_left;
-                delete m_right;
+    virtual Expression* clone ()
+    {
+        return new Divide (*this);
+    }
 
-                m_left = other.m_left->clone ();
-                m_right = other.m_right->clone ();
-            }
-
-            return *this;
-        }
-
-        virtual Expression* clone ()
-        {
-            return new Divide (*this);
-        }
-
-        virtual Quantity value ()
-        {
-            return m_left->value () / m_right->value ();    // Division by zero is handled by '/' operator between Quantities.
-        }
+    virtual Quantity value ()
+    {
+        return m_left->value () / m_right->value ();    // Division by zero is handled by '/' operator between Quantities.
+    }
 
 };
 
@@ -366,49 +365,49 @@ class Divide : public Expression
 // For exponentiation expressions
 class Pow : public Expression
 {
-        Expression* m_left, *m_right;
+    Expression* m_left, *m_right;
 
-    public:
+public:
 
-        Pow (Expression* left, Expression* right): m_left (left), m_right (right) {}
+    Pow (Expression* left, Expression* right): m_left (left), m_right (right) {}
 
-        // Copy constructor
-        Pow (const Pow& other)
+    // Copy constructor
+    Pow (const Pow& other)
+    {
+        m_left = other.m_left->clone ();
+        m_right = other.m_right->clone ();
+    }
+
+    virtual ~Pow ()
+    {
+        delete m_left;
+        delete m_right;
+    }
+
+    Pow& operator = (const Pow& other)
+    {
+        if (&other != this)
         {
+            delete m_left;
+            delete m_right;
+
             m_left = other.m_left->clone ();
             m_right = other.m_right->clone ();
         }
 
-        virtual ~Pow ()
-        {
-            delete m_left;
-            delete m_right;
-        }
-
-        Pow& operator = (const Pow& other)
-        {
-            if (&other != this)
-            {
-                delete m_left;
-                delete m_right;
-
-                m_left = other.m_left->clone ();
-                m_right = other.m_right->clone ();
-            }
-
-            return *this;
-        }
+        return *this;
+    }
 
 
-        virtual Expression* clone ()
-        {
-            return new Pow (*this);
-        }
+    virtual Expression* clone ()
+    {
+        return new Pow (*this);
+    }
 
-        virtual Quantity value ()
-        {
-            return pow(m_left->value (), m_right->value ());
-        }
+    virtual Quantity value ()
+    {
+        return pow(m_left->value (), m_right->value ());
+    }
 
 };
 
@@ -416,53 +415,53 @@ class Pow : public Expression
 // For exponentiation expressions
 class Modulo : public Expression
 {
-        Expression* m_left, *m_right;
+    Expression* m_left, *m_right;
 
-    public:
+public:
 
-        Modulo (Expression* left, Expression* right): m_left (left), m_right (right) {}
+    Modulo (Expression* left, Expression* right): m_left (left), m_right (right) {}
 
-        // Copy constructor
-        Modulo (const Modulo& other)
+    // Copy constructor
+    Modulo (const Modulo& other)
+    {
+        m_left = other.m_left->clone ();
+        m_right = other.m_right->clone ();
+    }
+
+    virtual ~Modulo ()
+    {
+        delete m_left;
+        delete m_right;
+    }
+
+    Modulo& operator = (const Modulo& other)
+    {
+        if (&other != this)
         {
+            delete m_left;
+            delete m_right;
+
             m_left = other.m_left->clone ();
             m_right = other.m_right->clone ();
         }
 
-        virtual ~Modulo ()
-        {
-            delete m_left;
-            delete m_right;
-        }
-
-        Modulo& operator = (const Modulo& other)
-        {
-            if (&other != this)
-            {
-                delete m_left;
-                delete m_right;
-
-                m_left = other.m_left->clone ();
-                m_right = other.m_right->clone ();
-            }
-
-            return *this;
-        }
+        return *this;
+    }
 
 
-        virtual Expression* clone ()
-        {
-            return new Modulo (*this);
-        }
+    virtual Expression* clone ()
+    {
+        return new Modulo (*this);
+    }
 
-        virtual Quantity value ()
-        {
-            Quantity quotient = m_left->value()  / m_right->value();
-            int iquotient = static_cast<int>( quotient.Getvalue() );
-            double mod = (m_left->value()).Getvalue()  - static_cast<double>(iquotient) * (m_right->value()).Getvalue() ;
-            Quantity result(mod, quotient.Getunit());
-            return result;
-        }
+    virtual Quantity value ()
+    {
+        Quantity quotient = m_left->value()  / m_right->value();
+        int iquotient = static_cast<int>( quotient.Getvalue() );
+        double mod = (m_left->value()).Getvalue()  - static_cast<double>(iquotient) * (m_right->value()).Getvalue() ;
+        Quantity result(mod, quotient.Getunit());
+        return result;
+    }
 
 };
 
@@ -477,110 +476,110 @@ class Modulo : public Expression
 // For names
 class VariableReference : public Expression
 {
-        string name;
-        const map<string, Quantity>& vars;
+    std::string name;
+    const map<std::string, Quantity>& vars;
 
-    public:
+public:
 
-        VariableReference (string n, const map<string, Quantity>&  v):
-            name (n),
-            vars(v)
+    VariableReference (std::string n, const map<std::string, Quantity>&  v):
+        name (n),
+        vars(v)
+    {
+        // empty
+    }
+
+    // Copy constructor
+    VariableReference (const VariableReference& other):
+        name(other.name),
+        vars(other.vars)
+    {
+        // empty
+    }
+
+    VariableReference& operator = (const VariableReference& other)
+    {
+        if (&other != this)
         {
-            // empty
+            name = other.name;
         }
 
-        // Copy constructor
-        VariableReference (const VariableReference& other):
-            name(other.name),
-            vars(other.vars)
+        return *this;
+    }
+
+    virtual Expression* clone ()
+    {
+        return new VariableReference (*this);
+    }
+
+    virtual Quantity value()
+    {
+        map<std::string, Quantity>::const_iterator iter;
+        iter = vars.find(name);
+
+        if (iter != vars.end())
         {
-            // empty
+            return iter->second;
         }
-
-        VariableReference& operator = (const VariableReference& other)
+        else
         {
-            if (&other != this)
-            {
-                name = other.name;
-            }
+            throw  RunTimeException("Variable or function name \'" + name +  "\' not found!");
 
-            return *this;
         }
-
-        virtual Expression* clone ()
-        {
-            return new VariableReference (*this);
-        }
-
-        virtual Quantity value()
-        {
-            map<string, Quantity>::const_iterator iter;
-            iter = vars.find(name);
-
-            if (iter != vars.end())
-            {
-                return iter->second;
-            }
-            else
-            {
-                throw  RunTimeException("Variable or function name \'" + name +  "\' not found!");
-
-            }
-        }
-        string getName()
-        {
-            return name;
-        };
+    }
+    std::string getName()
+    {
+        return name;
+    };
 };
 
 
 // For list of expressions
 class ExpressionList : public Expression
 {
-        Expression* m_left, *m_right;
+    Expression* m_left, *m_right;
 
-    public:
+public:
 
-        ExpressionList (Expression* left, Expression* right): m_left (left), m_right (right) {}
+    ExpressionList (Expression* left, Expression* right): m_left (left), m_right (right) {}
 
-        // Copy constructor
-        ExpressionList (const ExpressionList& other)
-        {
-            m_left = other.m_left -> clone();
-            m_right = other.m_right->clone ();
-        }
+    // Copy constructor
+    ExpressionList (const ExpressionList& other)
+    {
+        m_left = other.m_left -> clone();
+        m_right = other.m_right->clone ();
+    }
 
-        virtual ~ExpressionList ()
+    virtual ~ExpressionList ()
+    {
+        delete m_left;
+        delete m_right;
+    }
+
+    ExpressionList& operator = (const ExpressionList& other)
+    {
+        if (&other != this)
         {
             delete m_left;
             delete m_right;
+
+            m_left = other.m_left->clone ();
+            m_right = other.m_right->clone ();
         }
 
-        ExpressionList& operator = (const ExpressionList& other)
-        {
-            if (&other != this)
-            {
-                delete m_left;
-                delete m_right;
-
-                m_left = other.m_left->clone ();
-                m_right = other.m_right->clone ();
-            }
-
-            return *this;
-        }
+        return *this;
+    }
 
 
-        virtual Expression* clone ()
-        {
-            return new ExpressionList (*this);
-        }
+    virtual Expression* clone ()
+    {
+        return new ExpressionList (*this);
+    }
 
-        virtual Quantity value ()
-        {
-            m_left -> value();
-            return m_right->value ();
-        }
+    virtual Quantity value ()
+    {
+        m_left -> value();
+        return m_right->value ();
+    }
 
 };
 
@@ -591,329 +590,329 @@ class ExpressionList : public Expression
 
 class Comparison : public Expression
 {
-    protected:
-        Expression* m_left, *m_right;
+protected:
+    Expression* m_left, *m_right;
 
-    public:
+public:
 
-        Comparison();
-        Comparison (Expression* left, Expression* right): m_left (left), m_right (right)
+    Comparison();
+    Comparison (Expression* left, Expression* right): m_left (left), m_right (right)
+    {
+        // empty
+    }
+
+    // Copy constructor
+    Comparison (const Comparison& other)
+    {
+        m_left = other.m_left->clone ();
+        m_right = other.m_right->clone ();
+    }
+
+    virtual ~Comparison ()
+    {
+        delete m_left;
+        delete m_right;
+    }
+
+    Comparison& operator = (const Comparison& other)
+    {
+        if (&other != this)
         {
-            // empty
-        }
+            delete m_left;
+            delete m_right;
 
-        // Copy constructor
-        Comparison (const Comparison& other)
-        {
             m_left = other.m_left->clone ();
             m_right = other.m_right->clone ();
         }
 
-        virtual ~Comparison ()
-        {
-            delete m_left;
-            delete m_right;
-        }
+        return *this;
+    }
 
-        Comparison& operator = (const Comparison& other)
-        {
-            if (&other != this)
-            {
-                delete m_left;
-                delete m_right;
+    virtual bool truth() = 0;
+    virtual Expression* clone () = 0;
 
-                m_left = other.m_left->clone ();
-                m_right = other.m_right->clone ();
-            }
-
-            return *this;
-        }
-
-        virtual bool truth() = 0;
-        virtual Expression* clone () = 0;
-
-        virtual Quantity value ()
-        {
-            return Quantity(static_cast<double>(truth()), unitless);
-        }
+    virtual Quantity value ()
+    {
+        return Quantity(static_cast<double>(truth()), ESSIunits::unitless);
+    }
 
 };
 
 //                        a  >  b
 class GreaterThan : public Comparison
 {
-    public:
-        GreaterThan(Expression* left, Expression* right): Comparison(left, right)
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth = m_left->value() > m_right->value();
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new GreaterThan (*this);
-        }
+public:
+    GreaterThan(Expression* left, Expression* right): Comparison(left, right)
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth = m_left->value() > m_right->value();
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new GreaterThan (*this);
+    }
 };
 
 //                        a  <  b
 class LessThan : public Comparison
 {
-    public:
-        LessThan(Expression* left, Expression* right): Comparison(left, right)
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth = m_left->value() < m_right->value();
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new LessThan (*this);
-        }
+public:
+    LessThan(Expression* left, Expression* right): Comparison(left, right)
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth = m_left->value() < m_right->value();
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new LessThan (*this);
+    }
 };
 
 //                        a  !=  b
 class NotEqualTo : public Comparison
 {
-    public:
-        NotEqualTo(Expression* left, Expression* right): Comparison(left, right)
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth = m_left->value() != m_right->value();
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new NotEqualTo (*this);
-        }
+public:
+    NotEqualTo(Expression* left, Expression* right): Comparison(left, right)
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth = m_left->value() != m_right->value();
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new NotEqualTo (*this);
+    }
 };
 
 //                        a  ==  b
 class EqualTo : public Comparison
 {
-    public:
-        EqualTo(Expression* left, Expression* right): Comparison(left, right)
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth = m_left->value() == m_right->value();
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new EqualTo (*this);
-        }
+public:
+    EqualTo(Expression* left, Expression* right): Comparison(left, right)
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth = m_left->value() == m_right->value();
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new EqualTo (*this);
+    }
 };
 
 //                        a  >=  b
 class GreaterThanOrEqualTo : public Comparison
 {
-    public:
-        GreaterThanOrEqualTo(Expression* left, Expression* right): Comparison(left, right)
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth = m_left->value() >= m_right->value();
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new GreaterThanOrEqualTo (*this);
-        }
+public:
+    GreaterThanOrEqualTo(Expression* left, Expression* right): Comparison(left, right)
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth = m_left->value() >= m_right->value();
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new GreaterThanOrEqualTo (*this);
+    }
 };
 
 //                        a  <=  b
 class LessThanOrEqualTo : public Comparison
 {
-    public:
-        LessThanOrEqualTo(Expression* left, Expression* right): Comparison(left, right)
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth = m_left->value() <= m_right->value();
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new LessThanOrEqualTo (*this);
-        }
+public:
+    LessThanOrEqualTo(Expression* left, Expression* right): Comparison(left, right)
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth = m_left->value() <= m_right->value();
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new LessThanOrEqualTo (*this);
+    }
 };
 
 //                        a  &  b
 class LogicalAnd : public Comparison
 {
-    public:
-        LogicalAnd(Expression* left, Expression* right): Comparison(left, right)
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth = m_left->value() & m_right->value();
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new LogicalAnd (*this);
-        }
+public:
+    LogicalAnd(Expression* left, Expression* right): Comparison(left, right)
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth = m_left->value() & m_right->value();
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new LogicalAnd (*this);
+    }
 };
 
 //                        a  |  b
 class LogicalOr : public Comparison
 {
-    public:
-        LogicalOr(Expression* left, Expression* right): Comparison(left, right)
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth = m_left->value() | m_right->value();
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new LogicalOr (*this);
-        }
+public:
+    LogicalOr(Expression* left, Expression* right): Comparison(left, right)
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth = m_left->value() | m_right->value();
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new LogicalOr (*this);
+    }
 };
 
 //                        ! a
 class LogicalNot : public Comparison
 {
-    public:
-        LogicalNot(Expression* left): Comparison(left, left)  // I know... I'm cheap... :P
-        {
-            //empty
-        }
-        virtual bool truth()
-        {
-            bool theTruth =  ~m_left->value() ;
-            //cout << "The truth is " << theTruth <<  endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new LogicalNot (*this);
-        }
+public:
+    LogicalNot(Expression* left): Comparison(left, left)  // I know... I'm cheap... :P
+    {
+        //empty
+    }
+    virtual bool truth()
+    {
+        bool theTruth =  ~m_left->value() ;
+        //cout << "The truth is " << theTruth <<  endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new LogicalNot (*this);
+    }
 };
 
 //
 class UnitTypeTest : public Comparison
 {
-        /*
-        "isAdimensional"
-        "isMass"
-        "isLength"
-        "isTime"
-        "isArea"
-        "isVolume"
-        "isForce"
-        "isEnergy"
-        "isTorque"
-        "isPressure"
-        "isBodyForce"
-        "isDensity"
-        */
-    public:
-        UnitTypeTest(string t, Expression* e): Comparison(new Empty(), e), test(t)
+    /*
+    "isAdimensional"
+    "isMass"
+    "isLength"
+    "isTime"
+    "isArea"
+    "isVolume"
+    "isForce"
+    "isEnergy"
+    "isTorque"
+    "isPressure"
+    "isBodyForce"
+    "isDensity"
+    */
+public:
+    UnitTypeTest(std::string t, Expression* e): Comparison(new Empty(), e), test(t)
+    {
+    }
+    virtual bool truth()
+    {
+        bool theTruth = false;
+
+        if (test.compare("isAdimensional") == 0)
         {
-        }
-        virtual bool truth()
-        {
-            bool theTruth = false;
-
-            if (test.compare("isAdimensional") == 0)
-            {
-                theTruth = isAdimensional(m_right->value());
-            }
-
-            if (test.compare("isMass") == 0)
-            {
-                theTruth = isMass(m_right->value());
-            }
-
-            if (test.compare("isLength") == 0)
-            {
-                theTruth = isLength(m_right->value());
-            }
-
-            if (test.compare("isTime") == 0)
-            {
-                theTruth = isTime(m_right->value());
-            }
-
-            if (test.compare("isArea") == 0)
-            {
-                theTruth = isArea(m_right->value());
-            }
-
-            if (test.compare("isVolume") == 0)
-            {
-                theTruth = isVolume(m_right->value());
-            }
-
-            if (test.compare("isForce") == 0)
-            {
-                theTruth = isForce(m_right->value());
-            }
-
-            if (test.compare("isEnergy") == 0)
-            {
-                theTruth = isEnergy(m_right->value());
-            }
-
-            if (test.compare("isTorque") == 0)
-            {
-                theTruth = isTorque(m_right->value());
-            }
-
-            if (test.compare("isPressure") == 0)
-            {
-                theTruth = isPressure(m_right->value());
-            }
-
-            if (test.compare("isBodyForce") == 0)
-            {
-                theTruth = isBodyForce(m_right->value());
-            }
-
-            if (test.compare("isDensity") == 0)
-            {
-                theTruth = isDensity(m_right->value());
-            }
-
-            cout << test << " " <<  theTruth << endl;
-            return theTruth;
-        }
-        virtual Expression* clone ()
-        {
-            return new UnitTypeTest (*this);
+            theTruth = isAdimensional(m_right->value());
         }
 
-    private:
-        string test;
+        if (test.compare("isMass") == 0)
+        {
+            theTruth = isMass(m_right->value());
+        }
+
+        if (test.compare("isLength") == 0)
+        {
+            theTruth = isLength(m_right->value());
+        }
+
+        if (test.compare("isTime") == 0)
+        {
+            theTruth = isTime(m_right->value());
+        }
+
+        if (test.compare("isArea") == 0)
+        {
+            theTruth = isArea(m_right->value());
+        }
+
+        if (test.compare("isVolume") == 0)
+        {
+            theTruth = isVolume(m_right->value());
+        }
+
+        if (test.compare("isForce") == 0)
+        {
+            theTruth = isForce(m_right->value());
+        }
+
+        if (test.compare("isEnergy") == 0)
+        {
+            theTruth = isEnergy(m_right->value());
+        }
+
+        if (test.compare("isTorque") == 0)
+        {
+            theTruth = isTorque(m_right->value());
+        }
+
+        if (test.compare("isPressure") == 0)
+        {
+            theTruth = isPressure(m_right->value());
+        }
+
+        if (test.compare("isBodyForce") == 0)
+        {
+            theTruth = isBodyForce(m_right->value());
+        }
+
+        if (test.compare("isDensity") == 0)
+        {
+            theTruth = isDensity(m_right->value());
+        }
+
+        cout << test << " " <<  theTruth << endl;
+        return theTruth;
+    }
+    virtual Expression* clone ()
+    {
+        return new UnitTypeTest (*this);
+    }
+
+private:
+    std::string test;
 };
 
 
@@ -924,64 +923,64 @@ class UnitTypeTest : public Comparison
 
 class Assign : public Expression
 {
-        string varname;
-        Expression* rhs;
-        map<string, Quantity>& vars;
-        set<string> lockedvars;
+    std::string varname;
+    Expression* rhs;
+    map<std::string, Quantity>& vars;
+    set<std::string> lockedvars;
 
-    public:
+public:
 
-        Assign (string vname, Expression* right, map<string, Quantity>& v, set<string> l):
-            varname (vname),
-            rhs (right),
-            vars(v),
-            lockedvars(l)
+    Assign (std::string vname, Expression* right, map<std::string, Quantity>& v, set<std::string> l):
+        varname (vname),
+        rhs (right),
+        vars(v),
+        lockedvars(l)
+    {
+        // empty
+    }
+
+    // Copy constructor
+    Assign (const Assign& other) :
+        vars(other.vars),
+        lockedvars(other.lockedvars)
+    {
+        varname = other.varname;
+        rhs = other.rhs -> clone();
+    }
+
+    virtual ~Assign ()
+    {
+        delete rhs;
+    }
+
+    Assign& operator = (const Assign& other)
+    {
+        if (&other != this)
         {
-            // empty
-        }
-
-        // Copy constructor
-        Assign (const Assign& other) :
-            vars(other.vars),
-            lockedvars(other.lockedvars)
-        {
-            varname = other.varname;
+            delete rhs;
             rhs = other.rhs -> clone();
         }
 
-        virtual ~Assign ()
-        {
-            delete rhs;
-        }
+        return *this;
+    }
 
-        Assign& operator = (const Assign& other)
-        {
-            if (&other != this)
-            {
-                delete rhs;
-                rhs = other.rhs -> clone();
-            }
+    virtual Expression* clone ()
+    {
+        return new Assign (*this);
+    }
 
-            return *this;
-        }
-
-        virtual Expression* clone ()
+    virtual Quantity value ()
+    {
+        if (lockedvars.count(varname) != 0)
         {
-            return new Assign (*this);
+            cout << " Cannot assign to " << varname << " variable is locked." << endl;
+            return vars[varname];
         }
-
-        virtual Quantity value ()
+        else
         {
-            if (lockedvars.count(varname) != 0)
-            {
-                cout << " Cannot assign to " << varname << " variable is locked." << endl;
-                return vars[varname];
-            }
-            else
-            {
-                return (vars[varname] = rhs->value());
-            }
+            return (vars[varname] = rhs->value());
         }
+    }
 };
 
 
@@ -992,64 +991,64 @@ class Assign : public Expression
 
 class Require : public Expression
 {
-        string varname;
-        Expression* rhs;
-        map<string, Quantity>& vars;
-        set<string> lockedvars;
+    std::string varname;
+    Expression* rhs;
+    map<std::string, Quantity>& vars;
+    set<std::string> lockedvars;
 
-    public:
+public:
 
-        Require (string vname, Expression* right, map<string, Quantity>& v, set<string> l):
-            varname (vname),
-            rhs (right),
-            vars(v),
-            lockedvars(l)
+    Require (std::string vname, Expression* right, map<std::string, Quantity>& v, set<std::string> l):
+        varname (vname),
+        rhs (right),
+        vars(v),
+        lockedvars(l)
+    {
+        // empty
+    }
+
+    // Copy constructor
+    Require (const Require& other) :
+        vars(other.vars),
+        lockedvars(other.lockedvars)
+    {
+        varname = other.varname;
+        rhs = other.rhs -> clone();
+    }
+
+    virtual ~Require ()
+    {
+        delete rhs;
+    }
+
+    Require& operator = (const Require& other)
+    {
+        if (&other != this)
         {
-            // empty
-        }
-
-        // Copy constructor
-        Require (const Require& other) :
-            vars(other.vars),
-            lockedvars(other.lockedvars)
-        {
-            varname = other.varname;
+            delete rhs;
             rhs = other.rhs -> clone();
         }
 
-        virtual ~Require ()
-        {
-            delete rhs;
-        }
+        return *this;
+    }
 
-        Require& operator = (const Require& other)
-        {
-            if (&other != this)
-            {
-                delete rhs;
-                rhs = other.rhs -> clone();
-            }
+    virtual Expression* clone ()
+    {
+        return new Require (*this);
+    }
 
-            return *this;
-        }
-
-        virtual Expression* clone ()
+    virtual Quantity value ()
+    {
+        if (lockedvars.count(varname) != 0)
         {
-            return new Require (*this);
+            cout << " Cannot assign to " << varname << " variable is locked." << endl;
+            return vars[varname];
         }
-
-        virtual Quantity value ()
+        else
         {
-            if (lockedvars.count(varname) != 0)
-            {
-                cout << " Cannot assign to " << varname << " variable is locked." << endl;
-                return vars[varname];
-            }
-            else
-            {
-                return (vars[varname] = rhs->value());
-            }
+            return (vars[varname] = rhs->value());
         }
+    }
 };
 
 
@@ -1061,34 +1060,34 @@ class Require : public Expression
 
 class ConvertUnits : public Expression
 {
-        string var1;
-        string var2;
-        map<string, Quantity>& vars;
+    std::string var1;
+    std::string var2;
+    map<std::string, Quantity>& vars;
 
-    public:
+public:
 
-        ConvertUnits (string v1, string v2, map<string, Quantity>& v):
-            var1 (v1),
-            var2 (v2),
-            vars(v)
-        {
-            // empty
-        }
+    ConvertUnits (std::string v1, std::string v2, map<std::string, Quantity>& v):
+        var1 (v1),
+        var2 (v2),
+        vars(v)
+    {
+        // empty
+    }
 
-        virtual Expression* clone ()
-        {
-            return new ConvertUnits (*this);
-        }
+    virtual Expression* clone ()
+    {
+        return new ConvertUnits (*this);
+    }
 
-        virtual Quantity value ()
-        {
-            Quantity q1 = vars[var1];
-            Quantity q2 = vars[var2];
+    virtual Quantity value ()
+    {
+        Quantity q1 = vars[var1];
+        Quantity q2 = vars[var2];
 
-            Quantity newqty;
-            newqty = q1.convert(q2.Getunit());
-            return newqty;
-        }
+        Quantity newqty;
+        newqty = q1.convert(q2.Getunit());
+        return newqty;
+    }
 };
 
 
@@ -1102,77 +1101,77 @@ class ConvertUnits : public Expression
 
 class IfStatement : public Expression
 {
-        Expression* mainExp, *elseExp;
-        Comparison* condExp;
+    Expression* mainExp, *elseExp;
+    Comparison* condExp;
 
-    public:
+public:
 
-        IfStatement (Comparison* cond, Expression* main, Expression* else_):
-            mainExp (main),
-            elseExp (else_),
-            condExp (cond)
-        {
-            /*empty */
-        }
+    IfStatement (Comparison* cond, Expression* main, Expression* else_):
+        mainExp (main),
+        elseExp (else_),
+        condExp (cond)
+    {
+        /*empty */
+    }
 
-        // Copy constructor
-        IfStatement (const IfStatement& other)
-        {
-            condExp = dynamic_cast<Comparison*> (other.condExp -> clone());
-            mainExp = other.mainExp -> clone();
-            elseExp = other.elseExp -> clone();
-        }
+    // Copy constructor
+    IfStatement (const IfStatement& other)
+    {
+        condExp = dynamic_cast<Comparison*> (other.condExp -> clone());
+        mainExp = other.mainExp -> clone();
+        elseExp = other.elseExp -> clone();
+    }
 
-        virtual ~IfStatement ()
+    virtual ~IfStatement ()
+    {
+        delete condExp;
+        delete mainExp;
+        delete elseExp;
+    }
+
+    IfStatement& operator = (const IfStatement& other)
+    {
+        if (&other != this)
         {
             delete condExp;
             delete mainExp;
             delete elseExp;
+
+            condExp  = dynamic_cast<Comparison*> (other.condExp ->  clone());
+            mainExp  = other.mainExp ->  clone();
+            elseExp  = other.elseExp ->  clone();
         }
 
-        IfStatement& operator = (const IfStatement& other)
+        return *this;
+    }
+
+
+    virtual Expression* clone ()
+    {
+        return new IfStatement (*this);
+    }
+
+    virtual Quantity value ()
+    {
+        Quantity val;
+
+        if (condExp->truth())
         {
-            if (&other != this)
+            if (mainExp) /*protect from dereferencing a NULL pointer*/
             {
-                delete condExp;
-                delete mainExp;
-                delete elseExp;
-
-                condExp  = dynamic_cast<Comparison*> (other.condExp ->  clone());
-                mainExp  = other.mainExp ->  clone();
-                elseExp  = other.elseExp ->  clone();
+                val = mainExp -> value();
             }
-
-            return *this;
         }
-
-
-        virtual Expression* clone ()
+        else
         {
-            return new IfStatement (*this);
+            if (elseExp) /*protect from dereferencing a NULL pointer*/
+            {
+                val = elseExp -> value();
+            }
         }
 
-        virtual Quantity value ()
-        {
-            Quantity val;
-
-            if (condExp->truth())
-            {
-                if (mainExp) /*protect from dereferencing a NULL pointer*/
-                {
-                    val = mainExp -> value();
-                }
-            }
-            else
-            {
-                if (elseExp) /*protect from dereferencing a NULL pointer*/
-                {
-                    val = elseExp -> value();
-                }
-            }
-
-            return val;
-        }
+        return val;
+    }
 };
 
 
@@ -1181,65 +1180,65 @@ class IfStatement : public Expression
 
 class WhileStatement : public Expression
 {
-        Expression* mainExp;
-        Comparison* condExp;
+    Expression* mainExp;
+    Comparison* condExp;
 
-    public:
+public:
 
-        WhileStatement (Comparison* cond, Expression* main):
-            mainExp (main),
-            condExp (cond)
-        {
-            /*empty */
-        }
+    WhileStatement (Comparison* cond, Expression* main):
+        mainExp (main),
+        condExp (cond)
+    {
+        /*empty */
+    }
 
-        // Copy constructor
-        WhileStatement (const WhileStatement& other)
-        {
-            condExp = dynamic_cast<Comparison*> (other.condExp -> clone());
-            mainExp = other.mainExp -> clone();
-        }
+    // Copy constructor
+    WhileStatement (const WhileStatement& other)
+    {
+        condExp = dynamic_cast<Comparison*> (other.condExp -> clone());
+        mainExp = other.mainExp -> clone();
+    }
 
-        virtual ~WhileStatement ()
+    virtual ~WhileStatement ()
+    {
+        delete condExp;
+        delete mainExp;
+    }
+
+    WhileStatement& operator = (const WhileStatement& other)
+    {
+        if (&other != this)
         {
             delete condExp;
             delete mainExp;
+
+            condExp  = dynamic_cast<Comparison*> (other.condExp ->  clone());
+            mainExp  = other.mainExp ->  clone();
         }
 
-        WhileStatement& operator = (const WhileStatement& other)
+        return *this;
+    }
+
+
+    virtual Expression* clone ()
+    {
+        return new WhileStatement (*this);
+    }
+
+    virtual Quantity value ()
+    {
+        Quantity val;
+
+        while (condExp->truth())
         {
-            if (&other != this)
+            if (mainExp) /*protect from dereferencing a NULL pointer*/
             {
-                delete condExp;
-                delete mainExp;
-
-                condExp  = dynamic_cast<Comparison*> (other.condExp ->  clone());
-                mainExp  = other.mainExp ->  clone();
+                val = mainExp -> value();
             }
-
-            return *this;
         }
 
-
-        virtual Expression* clone ()
-        {
-            return new WhileStatement (*this);
-        }
-
-        virtual Quantity value ()
-        {
-            Quantity val;
-
-            while (condExp->truth())
-            {
-                if (mainExp) /*protect from dereferencing a NULL pointer*/
-                {
-                    val = mainExp -> value();
-                }
-            }
-
-            return val;
-        }
+        return val;
+    }
 };
 
 // ========================================================================
@@ -1248,35 +1247,35 @@ class WhileStatement : public Expression
 
 class DslAction : public Expression
 {
-    public:
-        DslAction ()
-        {
-            returnValue = Quantity(0.0, unitless);
-            setDslActionName("DslAction");
-        }
-        ~DslAction() {}
-        virtual void execute() = 0;
-        virtual Quantity value ()
-        {
-            execute();
-            return returnValue;
-        }
-        void setReturnValue(Quantity rv)
-        {
-            returnValue = rv;
-        }
-        string getDslActionName()
-        {
-            return dslActionName;
-        }
-        void setDslActionName(string name)
-        {
-            dslActionName = name;
-        }
-        virtual Expression* clone () = 0;
-    protected:
-        Quantity returnValue;
-        string dslActionName;
+public:
+    DslAction ()
+    {
+        returnValue = Quantity(0.0, ESSIunits::unitless);
+        setDslActionName("DslAction");
+    }
+    ~DslAction() {}
+    virtual void execute() = 0;
+    virtual Quantity value ()
+    {
+        execute();
+        return returnValue;
+    }
+    void setReturnValue(Quantity rv)
+    {
+        returnValue = rv;
+    }
+    std::string getDslActionName()
+    {
+        return dslActionName;
+    }
+    void setDslActionName(std::string name)
+    {
+        dslActionName = name;
+    }
+    virtual Expression* clone () = 0;
+protected:
+    Quantity returnValue;
+    std::string dslActionName;
 };
 
 
