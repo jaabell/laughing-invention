@@ -632,23 +632,23 @@ int NewTemplate3Dep::setTrialStrain(const Tensor& v, const Tensor& r)
 //================================================================================
 int NewTemplate3Dep::setTrialStrainIncr(const Tensor& strain_increment)
 {
-    switch(caseIndex)
+    switch (caseIndex)
     {
-        case (0):
-            return this->Explicit(strain_increment, this->subStep);
+    case (0):
+        return this->Explicit(strain_increment, this->subStep);
 
-        case (1):
-            return this->Implicit(strain_increment, this->subStep);
+    case (1):
+        return this->Implicit(strain_increment, this->subStep);
 
-        case (2):
-            return this->ImplicitLineSearch(strain_increment);
+    case (2):
+        return this->ImplicitLineSearch(strain_increment);
 
-        case (3):
-            return this->ScaledExplicit(strain_increment, this->subStep);
+    case (3):
+        return this->ScaledExplicit(strain_increment, this->subStep);
 
 
-        default:
-            return 0;
+    default:
+        return 0;
     }
 }
 
@@ -1807,7 +1807,7 @@ int NewTemplate3Dep::Explicit(const straintensor& strain_incr, int NumStep_in)
         start_stress = getStressTensor();
 
 
-        # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
         double p = 0;
         p = start_stress.p_hydrostatic();
         double q = 0;
@@ -1817,7 +1817,7 @@ int NewTemplate3Dep::Explicit(const straintensor& strain_incr, int NumStep_in)
         pq << p << "     " << q << endln;
 
         pq.close();
-        #endif
+#endif
 
 
         start_strain = getStrainTensor();
@@ -1861,14 +1861,14 @@ int NewTemplate3Dep::Explicit(const straintensor& strain_incr, int NumStep_in)
 
 
 
-            # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
             p = TrialStress.p_hydrostatic();
             q = TrialStress.q_deviatoric();
             pq.open("pq.feioutput", std::ios::app);
             pq << p << "     " << q << endln;
 
             pq.close();
-            #endif
+#endif
 
 
             if (iStep == NumStep_in)
@@ -1889,14 +1889,14 @@ int NewTemplate3Dep::Explicit(const straintensor& strain_incr, int NumStep_in)
 
 
 
-                # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
                 p = intersection_stress.p_hydrostatic();
                 q = intersection_stress.q_deviatoric();
                 pq.open("pq.feioutput", std::ios::app);
                 pq << p << "     " << q << endln;
 
                 pq.close();
-                #endif
+#endif
 
 
 
@@ -1979,24 +1979,24 @@ int NewTemplate3Dep::Explicit(const straintensor& strain_incr, int NumStep_in)
 
 
 
-            # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
             p = predicted_stress.p_hydrostatic();
             q = predicted_stress.q_deviatoric();
             pq.open("pq.feioutput", std::ios::app);
             pq << p << "     " << q << endln;
 
             pq.close();
-            #endif
+#endif
 
 
-            # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
             p = TrialStress.p_hydrostatic();
             q = TrialStress.q_deviatoric();
             pq.open("pq.feioutput", std::ios::app);
             pq << p << "     " << q << endln;
 
             pq.close();
-            #endif
+#endif
 
 
 
@@ -2105,7 +2105,7 @@ int NewTemplate3Dep::Implicit(const straintensor& strain_incr, int NumStep_in)
 
 
 
-        # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
         double p = 0;
         p = start_stress.p_hydrostatic();
         double q = 0;
@@ -2114,7 +2114,7 @@ int NewTemplate3Dep::Implicit(const straintensor& strain_incr, int NumStep_in)
         pq.open("pq.feioutput", std::ios::app);
         pq << p << "     " << q << endln;
         pq.close();
-        #endif
+#endif
 
 
 
@@ -2172,9 +2172,9 @@ int NewTemplate3Dep::Implicit(const straintensor& strain_incr, int NumStep_in)
         // //       incr_stress.null_indices();
         // //     PredictedStress = start_stress + incr_stress;
 
-        # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
         //    PredictedStress.report(" NewTemplate3Dep::Implicit(  PredictedStress");
-        #endif
+#endif
 
         TrialStress.Initialize(PredictedStress);
         TrialPlastic_Strain.Initialize(start_Pstrain);
@@ -2193,13 +2193,13 @@ int NewTemplate3Dep::Implicit(const straintensor& strain_incr, int NumStep_in)
             // ELASTIC  ELASTIC  ELASTIC   ELASTIC  ELASTIC ELASTIC
 
 
-            # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
             p = TrialStress.p_hydrostatic();
             q = TrialStress.q_deviatoric();
             pq.open("pq.feioutput", std::ios::app);
             pq << p << "     " << q << endln;
             pq.close();
-            #endif
+#endif
 
 
         }
@@ -2447,21 +2447,21 @@ int NewTemplate3Dep::Implicit(const straintensor& strain_incr, int NumStep_in)
 
                 err += Vector2TensorSysR2(D19, Dstress, 0);
 
-                # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
                 //           TrialStress.report(" NewTemplate3Dep::Implicit(   TrialStress");
-                #endif
+#endif
                 TrialStress += Dstress;
 
 
 
 
-                # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
                 p = TrialStress.p_hydrostatic();
                 q = TrialStress.q_deviatoric();
                 pq.open("pq.feioutput", std::ios::app);
                 pq << p << "     " << q << endln;
                 pq.close();
-                #endif
+#endif
 
 
 
@@ -3424,10 +3424,10 @@ int NewTemplate3Dep::ScaledExplicit(const straintensor& strain_incr, int NumStep
         f_pred =  ptr_yield_function->YieldFunctionValue( predicted_stress, *ptr_material_parameter );
 
 
-        # ifdef _TEACHING_MODE
+# ifdef _TEACHING_MODE
         fprintf(stdout, "explicit f_start = %12.4e", f_start);
         fprintf(stdout, "explicit f_pred = %12.4e", f_pred);
-        # endif
+# endif
 
 
         // If Elastic
