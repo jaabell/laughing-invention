@@ -13,21 +13,32 @@ include ../../Makefile.Compilers
 
 #Will try to compile all .cpp files in current directory.
 SRCS = $(wildcard *.cpp)
-OBJS = $(SRCS:.fei.cpp=.o)
-TARGETS = $(patsubst %.fei.cpp, % , $(SRCS))
+OBJS = $(SRCS:.cpp=.o)
+TARGETS = $(patsubst %.cpp, % , $(SRCS))
 
-
-CPPFLAGS=--std=c++11
+LIBSHERE = $(LIBS) 
+CPPFLAGS=--std=c++11 -g -pg
 
 #Rules
-%.o: %.fei.cpp
-	$(CC++) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
+%.o: %.cpp
+	$(CXX) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
 
-all: $(TARGETS)
+# all:  test_yield_surface_and_plastic_flow test_elasticity test_materialinternalvariables
+all:  ClassicElastoplasticityGlobals.o 
+tests:	all test_drucker test_vonmises 
 
 % : %.o
 	$(LINKER) $(LINKFLAGS) $< $(LIBS) -o $@
 
+.PHONY: test_drucker
+test_drucker : test_drucker.o 
+	$(CXX) $(LINKFLAGS) $< $(LIBSHERE) -o $@
+	rm test_drucker.o
+
+.PHONY: test_vonmises
+test_vonmises : test_vonmises.o 
+	$(CXX) $(LINKFLAGS) $< $(LIBSHERE) -o $@
+	rm test_vonmises.o
 
 
 ###########################################################################

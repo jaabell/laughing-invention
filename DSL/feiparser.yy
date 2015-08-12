@@ -73,7 +73,7 @@
 	stack <Expression *> nodes;
 
 	// Some useful quantities,
-	Quantity q0(0.0, unitless);
+	Quantity q0(0.0, ESSIunits::unitless);
 
 	extern int yylineno;
 	extern char* curfilename;
@@ -197,6 +197,7 @@
 %token sanisand2008 camclay camclay_accelerated sanisand2004 druckerprager_isotropic_hardening druckerprager_isotropic_hardening_accelerated druckerprager_kinematic_hardening druckerprager_kinematic_hardening_accelerated
 %token druckerprager_perfectly_plastic druckerprager_perfectly_plastic_accelerated linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
 %token vonmises_perfectly_plastic_LT pisanoLT New_PisanoLT linear_elastic_isotropic_3d_LT
+%token VonMisesLT DruckerPragerLT
 // Material options tokens
 %token mass_density elastic_modulus viscoelastic_modulus poisson_ratio von_mises_radius druckerprager_angle
 %token armstrong_frederick_ha armstrong_frederick_cr initial_confining_stress isotropic_hardening_rate kinematic_hardening_rate poisson_ratio_h_v poisson_ratio_h_h shear_modulus_h_v elastic_modulus_horizontal elastic_modulus_vertical pressure_reference_p0
@@ -900,7 +901,7 @@ CMD_add
 		args.clear(); signature.clear();
 
 		args.push_back($4);         signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back(new Number(-1, unitless));         signature.push_back(this_signature("to_node", &isAdimensional));
+		args.push_back(new Number(-1, ESSIunits::unitless));         signature.push_back(this_signature("to_node", &isAdimensional));
 
 		$$ = new FeiDslCaller2<int, int>(&add_load_to_node_from_reaction, args, signature, "add_load_to_node_from_reaction");
 
@@ -2351,6 +2352,76 @@ ADD_material
 
 		$$ = new FeiDslCaller10<int, double, double, double, double, double, double, int, double, double>(&add_constitutive_model_NDMaterial_accelerated_vonmises_linear_kinematic_hardening, args, signature, "add_constitutive_model_NDMaterial_accelerated_vonmises_linear_kinematic_hardening");
 		for(int ii = 1;ii <=10; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add material # <.> type [vonmises_linear_kinematic_hardening_accelerated] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> von_mises_radius = <F/L^2> kinematic_hardening_rate = <.> initial_confining_stress = <F/L^2> initial_confining_strain = <.> maximum_number_of_iterations = <.> tolerance_1 = <.> tolerance_2 = <.>;
+	| MATERIAL TEXTNUMBER exp TYPE VonMisesLT
+		mass_density '=' exp
+		elastic_modulus '=' exp
+		poisson_ratio '=' exp
+		von_mises_radius '=' exp
+		kinematic_hardening_rate '=' exp
+		isotropic_hardening_rate '=' exp
+	{
+
+		//int add_constitutive_model_NDMaterialLT_vonmises_linear_hardening(int MaterialNumber,
+        //double rho,
+        //double E,
+        //double nu,
+        //double k,
+        //double H_alpha,
+        //double H_k)
+
+
+		args.clear(); signature.clear();
+		args.push_back($3); signature.push_back(this_signature("number",            &isAdimensional));    // 1
+		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));  // 2
+		args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));  // 3
+		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));  // 4
+		args.push_back($17); signature.push_back(this_signature("von_mises_radius",  &isPressure));  // 5
+		args.push_back($20); signature.push_back(this_signature("kinematic_hardening_rate",   &isAdimensional));  // 6
+
+
+
+		$$ = new FeiDslCaller7<int, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_vonmises_linear_hardening, args, signature, "add_constitutive_model_NDMaterialLT_vonmises_linear_hardening");
+		for(int ii = 1;ii <=7; ii++) nodes.pop();
+		nodes.push($$);
+	}
+		//!=========================================================================================================
+	//!
+	//!FEIDOC add material # <.> type [vonmises_linear_kinematic_hardening_accelerated] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> von_mises_radius = <F/L^2> kinematic_hardening_rate = <.> initial_confining_stress = <F/L^2> initial_confining_strain = <.> maximum_number_of_iterations = <.> tolerance_1 = <.> tolerance_2 = <.>;
+	| MATERIAL TEXTNUMBER exp TYPE DruckerPragerLT
+		mass_density '=' exp
+		elastic_modulus '=' exp
+		poisson_ratio '=' exp
+		von_mises_radius '=' exp
+		kinematic_hardening_rate '=' exp
+		isotropic_hardening_rate '=' exp
+	{
+
+		//int add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening(int MaterialNumber,
+        //double rho,
+        //double E,
+        //double nu,
+        //double k,
+        //double H_alpha,
+        //double H_k)
+
+
+		args.clear(); signature.clear();
+		args.push_back($3); signature.push_back(this_signature("number",            &isAdimensional));    // 1
+		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));  // 2
+		args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));  // 3
+		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));  // 4
+		args.push_back($17); signature.push_back(this_signature("von_mises_radius",  &isPressure));  // 5
+		args.push_back($20); signature.push_back(this_signature("kinematic_hardening_rate",   &isAdimensional));  // 6
+
+
+
+		$$ = new FeiDslCaller7<int, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening, args, signature, "add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening");
+		for(int ii = 1;ii <=7; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================
@@ -4995,18 +5066,18 @@ namespace yy {
 // evident from reading below.
 Number* dof2number(string dof)
 {
-	if (dof.compare("ux") == 0) return new Number(1, unitless);
-	if (dof.compare("uy") == 0) return new Number(2, unitless);
-	if (dof.compare("uz") == 0) return new Number(3, unitless);
-	if (dof.compare("rx") == 0) return new Number(4, unitless);
-	if (dof.compare("ry") == 0) return new Number(5, unitless);
-	if (dof.compare("rz") == 0) return new Number(6, unitless);
-	if (dof.compare("Ux") == 0) return new Number(5, unitless);
-	if (dof.compare("Uy") == 0) return new Number(6, unitless);
-	if (dof.compare("Uz") == 0) return new Number(7, unitless);
-	if (dof.compare("p")  == 0) return new Number(4, unitless);
+	if (dof.compare("ux") == 0) return new Number(1, ESSIunits::unitless);
+	if (dof.compare("uy") == 0) return new Number(2, ESSIunits::unitless);
+	if (dof.compare("uz") == 0) return new Number(3, ESSIunits::unitless);
+	if (dof.compare("rx") == 0) return new Number(4, ESSIunits::unitless);
+	if (dof.compare("ry") == 0) return new Number(5, ESSIunits::unitless);
+	if (dof.compare("rz") == 0) return new Number(6, ESSIunits::unitless);
+	if (dof.compare("Ux") == 0) return new Number(5, ESSIunits::unitless);
+	if (dof.compare("Uy") == 0) return new Number(6, ESSIunits::unitless);
+	if (dof.compare("Uz") == 0) return new Number(7, ESSIunits::unitless);
+	if (dof.compare("p")  == 0) return new Number(4, ESSIunits::unitless);
 
-	return new Number(-100, unitless);
+	return new Number(-100, ESSIunits::unitless);
 }
 
 
@@ -5031,17 +5102,17 @@ UnitCheckerFunctionPointerType dof2signature(string dof)
 // Transforms a force string into a dof number.
 Number* force2number(string dof)
 {
-	if (dof.compare("Fx") == 0) return new Number(1, unitless);
-	if (dof.compare("Fy") == 0) return new Number(2, unitless);
-	if (dof.compare("Fz") == 0) return new Number(3, unitless);
-	if (dof.compare("Mx") == 0) return new Number(4, unitless);
-	if (dof.compare("My") == 0) return new Number(5, unitless);
-	if (dof.compare("Mz") == 0) return new Number(6, unitless);
-	if (dof.compare("F_fluid_x") == 0) return new Number(5, unitless);
-	if (dof.compare("F_fluid_y") == 0) return new Number(6, unitless);
-	if (dof.compare("F_fluid_z") == 0) return new Number(7, unitless);
+	if (dof.compare("Fx") == 0) return new Number(1, ESSIunits::unitless);
+	if (dof.compare("Fy") == 0) return new Number(2, ESSIunits::unitless);
+	if (dof.compare("Fz") == 0) return new Number(3, ESSIunits::unitless);
+	if (dof.compare("Mx") == 0) return new Number(4, ESSIunits::unitless);
+	if (dof.compare("My") == 0) return new Number(5, ESSIunits::unitless);
+	if (dof.compare("Mz") == 0) return new Number(6, ESSIunits::unitless);
+	if (dof.compare("F_fluid_x") == 0) return new Number(5, ESSIunits::unitless);
+	if (dof.compare("F_fluid_y") == 0) return new Number(6, ESSIunits::unitless);
+	if (dof.compare("F_fluid_z") == 0) return new Number(7, ESSIunits::unitless);
 
-	return new Number(-100, unitless);
+	return new Number(-100, ESSIunits::unitless);
 }
 
 // Returns the appropiate unit checking function pointer according to the

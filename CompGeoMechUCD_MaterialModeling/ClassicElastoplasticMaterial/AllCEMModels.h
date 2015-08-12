@@ -30,12 +30,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef DruckerPragerKinematicHardening_H
-#define DruckerPragerKinematicHardening_H
 
-
-
-
-
-
-#endif //EvolvingScalar_H
+#include "ConstitutiveModels/DruckerPragerLinearHardening.h"
+#include "ConstitutiveModels/VonMisesLinearHardening.h"

@@ -96,6 +96,9 @@
 #include "./ElasticCrossAnisotropic.h"
 
 
+//New Template-Template Classic Elastoplastic Models
+#include "ClassicElastoplasticMaterial/AllCEMModels.h"
+
 //Constitutive testing
 #include "./BardetConstraint.h"
 #include "./BardetConstraintLT.h"

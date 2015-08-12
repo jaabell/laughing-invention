@@ -372,6 +372,8 @@ EXP	([Ee][-+]?[0-9]+)
  /* Material Names*/
 "linear_elastic_isotropic_3d"       {return token::linear_elastic_isotropic_3d;}
 "vonmises_perfectly_plastic"        {return token::vonmises_perfectly_plastic;}
+"VonMisesLT"        				{return token::VonMisesLT;}
+"DruckerPragerLT"        				{return token::DruckerPragerLT;}
 "vonmises_perfectly_plastic_accelerated"        {return token::vonmises_perfectly_plastic_accelerated;}
 "vonmises_isotropic_hardening"      {return token::vonmises_isotropic_hardening;}
 "vonmises_isotropic_hardening_accelerated"      {return token::vonmises_isotropic_hardening_accelerated;}
@@ -423,11 +425,11 @@ EXP	([Ee][-+]?[0-9]+)
 "control"                           {return token::control;}
 
 "explicit"                          {
-										yylval->value = new Quantity(0.0,unitless);
+										yylval->value = new Quantity(0.0,ESSIunits::unitless);
 										return token::NUMBER;
 									}
 "implicit"                          {
-										yylval->value = new Quantity(1.0,unitless);
+										yylval->value = new Quantity(1.0,ESSIunits::unitless);
 										return token::NUMBER;
 									}
 "isotropic_hardening_rate"          {return token::isotropic_hardening_rate;}
@@ -779,7 +781,7 @@ EXP	([Ee][-+]?[0-9]+)
  /*numbers*/
 [0-9]+"."[0-9]*{EXP}?               |
 "."?[0-9]+{EXP}?                    {
-										yylval->value = new Quantity(atof(yytext), unitless);
+										yylval->value = new Quantity(atof(yytext), ESSIunits::unitless);
 										return token::NUMBER;
 									}
  /* End-of-file discards current file and returns to the previous, otherwise to the interactive prompt */
@@ -983,7 +985,7 @@ void print_usage()
 		 "Example to set a variable name from command line:\n"
 		 "    essi -s a=10,b=20,c=30\n"
 		 "Runs ESSI with variables a, b, and c set to 10, 20 and 30 respectively.\n"
-		 "At this time, only unitless variables can be set. \n"
+		 "At this time, only ESSIunits::unitless variables can be set. \n"
 		 "\n\n";
 
 }
@@ -1333,33 +1335,33 @@ void welcome_msg()
 void set_known_units()
 {
 	//Base units*/
-	global_variables["m"] = Quantity(1.0, m);
-	global_variables["kg"] = Quantity(1.0, kg);
-	global_variables["s"] = Quantity(1.0, s);
+	global_variables["m"] = Quantity(1.0, ESSIunits::m);
+	global_variables["kg"] = Quantity(1.0, ESSIunits::kg);
+	global_variables["s"] = Quantity(1.0, ESSIunits::s);
 
 	// Length
-	global_variables["cm"] = Quantity(1.0, cm);
-	global_variables["mm"] = Quantity(1.0, mm);
-	global_variables["Km"] = Quantity(1.0, km);
+	global_variables["cm"] = Quantity(1.0, ESSIunits::cm);
+	global_variables["mm"] = Quantity(1.0, ESSIunits::mm);
+	global_variables["Km"] = Quantity(1.0, ESSIunits::km);
 
 	//Time
-	global_variables["Hz"] = Quantity(1.0, Hz);
-	global_variables["ms"] = Quantity(1.0, ms);
-	global_variables["ns"] = Quantity(1.0, ns);
+	global_variables["Hz"] = Quantity(1.0, ESSIunits::Hz);
+	global_variables["ms"] = Quantity(1.0, ESSIunits::ms);
+	global_variables["ns"] = Quantity(1.0, ESSIunits::ns);
 
 	//Force
-	global_variables["N"] = Quantity(1.0, N);
-	global_variables["kN"] = Quantity(1.0, kN);
+	global_variables["N"] = Quantity(1.0, ESSIunits::N);
+	global_variables["kN"] = Quantity(1.0, ESSIunits::kN);
 
 	//Pressure
-	global_variables["Pa"] = Quantity(1.0, Pa);
-	global_variables["kPa"] = Quantity(1.0, kPa);
-	global_variables["MPa"] = Quantity(1.0, MPa);
-	global_variables["GPa"] = Quantity(1.0, GPa);
+	global_variables["Pa"] = Quantity(1.0, ESSIunits::Pa);
+	global_variables["kPa"] = Quantity(1.0, ESSIunits::kPa);
+	global_variables["MPa"] = Quantity(1.0, ESSIunits::MPa);
+	global_variables["GPa"] = Quantity(1.0, ESSIunits::GPa);
 
 	//Constants
-	global_variables["g"] = g;  // gravitational acceleration on Earth at sea level and 45degrees of latitude
-	global_variables["pi"] = Quantity(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986, unitless); // pi to a useless ammount of significant digits
+	global_variables["g"] = ESSIunits::g;  // gravitational acceleration on Earth at sea level and 45degrees of latitude
+	global_variables["pi"] = Quantity(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986, ESSIunits::unitless); // pi to a useless ammount of significant digits
 
 	// Put these variables in the locked list.... cuz we own this!
 	map<string, Quantity>::const_iterator it;
@@ -1402,7 +1404,7 @@ void set_variables(char *cstring)
 		cout << var_name << " = " << var_value << endl;
 
 		double value = boost::lexical_cast<double>(var_value);
-		global_variables[var_name] = Quantity(value, unitless); // :) love boost!
+		global_variables[var_name] = Quantity(value, ESSIunits::unitless); // :) love boost!
 	}
 	cout << endl << endl;
 }

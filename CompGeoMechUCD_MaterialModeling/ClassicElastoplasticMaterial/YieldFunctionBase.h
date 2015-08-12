@@ -30,12 +30,41 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef DruckerPragerKinematicHardening_H
-#define DruckerPragerKinematicHardening_H
+#ifndef YieldFunctionBase_H
+#define YieldFunctionBase_H
+
+#include "../../ltensor/LTensor.h"
+#include "EvolvingVariable.h"
+
+
+template <class T>
+class YieldFunctionBase
+{
+public:
+	YieldFunctionBase()
+	{
+	}
+
+	double operator()( const DTensor2& sigma) const
+	{
+		return static_cast<T*>(this)->operator()(sigma);
+	}
+
+	const DTensor2& df_dsigma_ij(const DTensor2& sigma)
+	{
+		return static_cast<T*>(this)->df_dsigma_ij(sigma);
+	}
+
+	double xi_star_h_star(const DTensor2& depsilon, const DTensor2& depsilon_pl, const DTensor2& sigma)
+	{
+		return static_cast<T*>(this)->df_dxi_star_h_star(depsilon, depsilon_pl , sigma);
+	}
+
+private:
+
+};
 
 
 
 
-
-
-#endif //EvolvingScalar_H
+#endif

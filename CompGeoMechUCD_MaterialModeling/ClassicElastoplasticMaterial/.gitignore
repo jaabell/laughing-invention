@@ -1,0 +1,4 @@
+*.txt
+*.o
+test_drucker
+test_vonmises

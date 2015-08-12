@@ -1,45 +1,46 @@
 
-DEBUG_MODE = DEBUG
+# DEBUG_MODE = DEBUG
 #DEBUG_MODE = NO_DEBUG
 
 #Compiler = GNU
-Compiler = PGI
+# Compiler = PGI
 
-PROGRAMMING_MODE = SEQUENTIAL
+# PROGRAMMING_MODE = SEQUENTIAL
 
-  PROGRAMMING_FLAG =
+  # PROGRAMMING_FLAG =
 
 
-BASE  = /usr
+# BASE  = /usr
 
-PWD := $(shell pwd)
+# PWD := $(shell pwd)
 
-PATH_TO_Constitutive_Domain = $(PWD)
+# PATH_TO_Constitutive_Domain = $(PWD)
 
 include ../../Makefile.Compilers
+include ../../Makefile.Includes
 
 
 
-MACHINE_INCLUDES        = -I/usr/include 
-# this file contains all the OpenSees1/ModifiedOpenSeesServices includes
+# MACHINE_INCLUDES        = -I/usr/include 
+# # this file contains all the OpenSees1/ModifiedOpenSeesServices includes
 
 
 
-FE_INCLUDES  = -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/matrix \
-               -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/tagged \
-               -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/tagged/storage \
-               -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/handler \
-               -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/actor/actor \
-               -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/domain/component \
-               -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices \
-               -I$(PATH_TO_Constitutive_Domain)/../../nDarray \
-               -I$(PATH_TO_Constitutive_Domain)/../../CompGeoMechUCD_MaterialModeling \
-               -I$(PATH_TO_Constitutive_Domain)/../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep \
-               -I$(PATH_TO_Constitutive_Domain)/. 
+# FE_INCLUDES  = -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/matrix \
+#                -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/tagged \
+#                -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/tagged/storage \
+#                -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/handler \
+#                -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/actor/actor \
+#                -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices/domain/component \
+#                -I$(PATH_TO_Constitutive_Domain)/../../ModifiedOpenSeesServices \
+#                -I$(PATH_TO_Constitutive_Domain)/../../nDarray \
+#                -I$(PATH_TO_Constitutive_Domain)/../../CompGeoMechUCD_MaterialModeling \
+#                -I$(PATH_TO_Constitutive_Domain)/../../CompGeoMechUCD_MaterialModeling/NewTemplate3Dep \
+#                -I$(PATH_TO_Constitutive_Domain)/. 
 
 
 
-INCLUDES =  $(MACHINE_INCLUDES)  $(FE_INCLUDES)
+# INCLUDES =  $(MACHINE_INCLUDES)  $(FE_INCLUDES)
 
 
 

@@ -11,7 +11,8 @@ OBJS       = Material.o \
              ElasticCrossAnisotropic.o \
              BardetConstraint.o \
              BardetConstraintLT.o \
-             TwoStageEquivalentElasticIsotropic3D.o
+             TwoStageEquivalentElasticIsotropic3D.o \
+             ClassicElastoplasticMaterial/ClassicElastoplasticityGlobals.o
 
 LIBRARY_Base_3D_EP  = ../lib/libbase_3dep.a
 
@@ -21,6 +22,7 @@ all: $(OBJS)
 	$(CD) Constitutive_Domain; $(MAKE);
 	$(CD) Accelerated3Dep; $(MAKE);
 	$(CD) LTensor_Based; $(MAKE);
+	$(CD) ClassicElastoplasticMaterial; $(MAKE);
 	$(AR) $(ARFLAGS) $(LIBRARY_Base_3D_EP) $(OBJS)
 
 

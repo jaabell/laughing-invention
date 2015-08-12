@@ -57,6 +57,8 @@ DTensor4 NDMaterialLT::errTensor4     (3, 3, 3, 3, 0.0);
 DTensor2 NDMaterialLT::errTensor2     (3, 3, 0.0);
 DTensor2 NDMaterialLT::errstresstensor(3, 3, 0.0);
 DTensor2 NDMaterialLT::errstraintensor(3, 3, 0.0);
+Vector  NDMaterialLT::errVectorVector(0.0);
+
 
 NDMaterialLT::NDMaterialLT(int tag, int classTag)
     : Material(tag, classTag)

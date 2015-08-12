@@ -30,43 +30,98 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef EvolvingScalar_H
-#define EvolvingScalar_H
+#ifndef EvolvingVariable_H
+#define EvolvingVariable_H
 
 #include "../../ltensor/LTensor.h"
+#include <iostream>
 
-template<class VarType, class Derivative>
+//Forward declaration needed for declaring the operator overload << (friend)
+template<class VarType, class T>
+class EvolvingVariable;
+
+//Forward declaration
+template<class VarType, class T>
+std::ostream& operator<<(std::ostream& os, const EvolvingVariable<VarType, T>& obj);
+
+
+
+
+template<class VarType, class T>
 class EvolvingVariable
 {
 public:
-	// EvolvingVariable(Derivative d_) : a(0.0), d(d_) {}
 
-	EvolvingVariable(VarType a_, Derivative *d_): a(a_), d(d_) {}
+	EvolvingVariable(VarType a_): a(a_) {}
 
-	VarType getDerivative(const DTensor2 &strain, const DTensor2 &plastic_strain, const DTensor2& stress) const
+	const VarType &getDerivative(const DTensor2 &depsilon,
+	                             const DTensor2 &m,
+	                             const DTensor2& sigma) const
 	{
-		// Derivative d(strain, plastic_strain, stress);
-		return (*d)(strain, plastic_strain, stress);
+		return static_cast<const T*>(this)->getDerivative(depsilon,  m,  sigma);
 	};
 
-	void evolve(double dlambda, const DTensor2& strain, const DTensor2 &plastic_strain, const DTensor2& stress)
+	EvolvingVariable<VarType, T> & operator= ( const EvolvingVariable<VarType, T> & other)
 	{
-		VarType h = getDerivative(strain, plastic_strain, stress);
-		h *= dlambda;
-		a +=  h;
+		//Check self-assignment
+		if (&other == this)
+		{
+			return *this;
+		}
+
+		a = other.a;
+
+		return *this;
 	}
 
-	VarType getVariable() const
+	void evolve(double dlambda,
+	            const DTensor2& depsilon,
+	            const DTensor2& m,
+	            const DTensor2& sigma)
+	{
+		const VarType& h = getDerivative(depsilon, m, sigma);
+		tmp = h;
+		tmp *= dlambda;
+
+		cout << "a = " << a << endl;
+
+		a +=  tmp;
+		cout << "     EVOOOOOLVE to a = " << a << endl;
+	}
+
+	const VarType& getVariableConstReference() const
 	{
 		return a;
 	}
 
+	void setVar(VarType v)
+	{
+		a = v;
+	}
+
+	//Overloaded operators.
+	operator VarType () { return a; }  // Convert into variable type
+	friend std::ostream& operator<< <>(std::ostream& os, const EvolvingVariable<VarType, T>& obj);
+
 
 private:
 	VarType a;
-	Derivative *d;
-
+	static VarType tmp;
 };
 
+
+
+
+
+// Forward stream operators to underlying class
+template<class VarType, class T>
+std::ostream& operator<<(std::ostream& os, const EvolvingVariable<VarType, T>& obj)
+{
+	os << obj.a;
+	return os;
+}
+
+template<class VarType, class T>
+VarType EvolvingVariable<VarType, T>::tmp;
 
 #endif
