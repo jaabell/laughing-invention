@@ -39,18 +39,15 @@ double EightNodeBrickLT::SurfaceLoadValues_in_function;         // Nima added fo
 
 DTensor2 EightNodeBrickLT::gp_coords(8, 3, 0.0);
 DTensor1 EightNodeBrickLT::gp_weight(8, 0.0);
+Matrix EightNodeBrickLT::gauss_points(8, 3);
+Vector EightNodeBrickLT::outputVector(EightNodeBrickLT_OUTPUT_SIZE);
 
-// Matrix EightNodeBrickLT::K( 24, 24);
-// Matrix EightNodeBrickLT::M( 24, 24);
-// Vector EightNodeBrickLT::P( 24 );
 
 Vector EightNodeBrickLT::ShapeFunctionValues_in_function( 4 );  // Nima added for surface load (July 2012)
 Vector EightNodeBrickLT::J_vector_in_function( 3 );             // Nima added for surface load (July 2012)
 
-// These are for returning Information from the element
-// Vector Info_Stress(8 * 6 + 1); // Stress 8*6+1  2X2X2
-// Vector Info_GaussCoordinates(8 * 3 + 1);      //Gauss point coordinates
-// Vector Info_Strain(8 * 6 + 1);
+Matrix EightNodeBrickLT::K( 24, 24);
+
 
 
 EightNodeBrickLT::EightNodeBrickLT( int element_number,
@@ -61,8 +58,7 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
     : Element( element_number, ELE_TAG_EightNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 8 ),
       Ki( 0 ), Q( 24 ), bf(3),
-      K( 24, 24), M( 24, 24), P( 24 ),
-      gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
+      M( 24, 24), P( 24 )
 {
 
     rho = Globalmmodel->getRho();
@@ -140,8 +136,7 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 EightNodeBrickLT::EightNodeBrickLT(): Element( 0, ELE_TAG_EightNodeBrickLT ),
     rho( 0.0 ), connectedExternalNodes( 8 ) ,
     Ki( 0 ), mmodel( 0 ), Q( 24 ), bf(3),
-    K( 24, 24), M( 24, 24), P( 24 ),
-    gauss_points(8, 3), outputVector(EightNodeBrickLT_OUTPUT_SIZE)
+    M( 24, 24), P( 24 )
 {
     is_mass_computed = false;
 
@@ -784,51 +779,9 @@ int EightNodeBrickLT::commitState ()
         retVal += material_array[ii]->commitState();
     }
 
-    formOutput();
-
     return retVal;
 }
 
-
-void EightNodeBrickLT::formOutput()
-{
-    DTensor2 stress(3, 3);
-    DTensor2 strain(3, 3);
-    DTensor2 plstrain(3, 3);
-
-    int ii = 0;
-    for (int gp = 0; gp < 8; gp++)
-    {
-        strain = material_array[gp]->getStrainTensor();
-        plstrain = material_array[gp]->getPlasticStrainTensor();
-        stress = material_array[gp]->getStressTensor();
-
-        //Write strain
-        outputVector(ii++) = strain(0, 0);
-        outputVector(ii++) = strain(1, 1);
-        outputVector(ii++) = strain(2, 2);
-        outputVector(ii++) = strain(0, 1);
-        outputVector(ii++) = strain(0, 2);
-        outputVector(ii++) = strain(1, 2);
-
-        //Write plastic strain
-        outputVector(ii++) = plstrain(0, 0);
-        outputVector(ii++) = plstrain(1, 1);
-        outputVector(ii++) = plstrain(2, 2);
-        outputVector(ii++) = plstrain(0, 1);
-        outputVector(ii++) = plstrain(0, 2);
-        outputVector(ii++) = plstrain(1, 2);
-
-
-        //Write stress
-        outputVector(ii++) = stress(0, 0);
-        outputVector(ii++) = stress(1, 1);
-        outputVector(ii++) = stress(2, 2);
-        outputVector(ii++) = stress(0, 1);
-        outputVector(ii++) = stress(0, 2);
-        outputVector(ii++) = stress(1, 2);
-    }
-}
 
 //=============================================================================
 int EightNodeBrickLT::revertToLastCommit ()
@@ -883,9 +836,7 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
     DTensor2 dhGlobal( 8, 3, 0.0 );
     DTensor2 Jacobian(3, 3, 0.0);
     DTensor2 JacobianINV(3, 3, 0.0);
-
     DTensor4 E_elpl(3, 3, 3, 3, 0.0);
-    // DTensor4 Kk( 8, 3, 3, 8, 0.0);
     DTensor4 Kkt( 8, 3, 3, 8, 0.0);
 
     Index < 'a' > a;
@@ -893,7 +844,6 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
     Index < 'c' > c;
     Index < 'd' > d;
 
-    //Set the stiffness tensor to zero (its static!)
     // Using STL-like iterators to linearly transverse the array
 
     for ( short gp = 0; gp < 8; gp++ )
@@ -927,6 +877,8 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
 
 
 
+    //Set the stiffness tensor to zero (its static!)
+    K.Zero();
 
     int Ki = 0;
     int Kj = 0;
@@ -1506,18 +1458,18 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     }
 
     //Send the gauss points
-    if ( theChannel.sendMatrix( 0, commitTag, gauss_points ) < 0 )
-    {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss point coordinates\n";
-        return -1;
-    }
+    // if ( theChannel.sendMatrix( 0, commitTag, gauss_points ) < 0 )
+    // {
+    //     cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss point coordinates\n";
+    //     return -1;
+    // }
 
-    //Send outputVector
-    if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
-    {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
-        return -1;
-    }
+    // //Send outputVector
+    // if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
+    // {
+    //     cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
+    //     return -1;
+    // }
 
 
 
@@ -1615,18 +1567,18 @@ int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_Obje
     }
 
     // gauss_points
-    if ( theChannel.receiveMatrix( 0, commitTag, gauss_points ) < 0 )
-    {
-        cerr << "EightNodeBrickLT::receiveSelf() - failed to recv gauss_points!\n";
-        return -1;
-    }
+    // if ( theChannel.receiveMatrix( 0, commitTag, gauss_points ) < 0 )
+    // {
+    //     cerr << "EightNodeBrickLT::receiveSelf() - failed to recv gauss_points!\n";
+    //     return -1;
+    // }
 
-    // outputVector
-    if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
-    {
-        cerr << "EightNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
-        return -1;
-    }
+    // // outputVector
+    // if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
+    // {
+    //     cerr << "EightNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
+    //     return -1;
+    // }
 
 
 
@@ -1981,18 +1933,65 @@ EightNodeBrickLT::getStress( void )
 
 Matrix &EightNodeBrickLT::getGaussCoordinates(void)
 {
+    computeGaussPoint();
     return gauss_points;
 }
 
 int EightNodeBrickLT::getOutputSize() const
 {
-    return EightNodeBrickLT_OUTPUT_SIZE;
+    return EightNodeBrickLT_OUTPUT_SIZE + material_array[0]->getOutputSize() * 8;
 }
 
 
 
 const Vector &EightNodeBrickLT::getOutput() const
 {
+
+    //Form the output vector
+    int ii = 0;
+    for (int gp = 0; gp < 8; gp++)
+    {
+        const DTensor2 & strain = material_array[gp]->getStrainTensor();
+        const DTensor2 & plstrain = material_array[gp]->getPlasticStrainTensor();
+        const DTensor2 & stress = material_array[gp]->getStressTensor();
+
+        //Write strain
+        outputVector(ii++) = strain(0, 0);
+        outputVector(ii++) = strain(1, 1);
+        outputVector(ii++) = strain(2, 2);
+        outputVector(ii++) = strain(0, 1);
+        outputVector(ii++) = strain(0, 2);
+        outputVector(ii++) = strain(1, 2);
+
+        //Write plastic strain
+        outputVector(ii++) = plstrain(0, 0);
+        outputVector(ii++) = plstrain(1, 1);
+        outputVector(ii++) = plstrain(2, 2);
+        outputVector(ii++) = plstrain(0, 1);
+        outputVector(ii++) = plstrain(0, 2);
+        outputVector(ii++) = plstrain(1, 2);
+
+
+        //Write stress
+        outputVector(ii++) = stress(0, 0);
+        outputVector(ii++) = stress(1, 1);
+        outputVector(ii++) = stress(2, 2);
+        outputVector(ii++) = stress(0, 1);
+        outputVector(ii++) = stress(0, 2);
+        outputVector(ii++) = stress(1, 2);
+
+        //Cycle material outputs and place them appropriately
+        int nmaterial_output = material_array[0]->getOutputSize();
+        if (nmaterial_output > 0)
+        {
+            const Vector & matOutput = material_array[gp]->getOutput();
+            for (int jj = 0; jj < nmaterial_output ; jj++)
+            {
+                outputVector(ii++) = matOutput(jj);
+            }
+        }
+    }
+
     return outputVector;
 }
 

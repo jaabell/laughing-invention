@@ -59,146 +59,148 @@ class Node;
 class EightNodeBrickLT: public Element
 {
 
-    public:
-        EightNodeBrickLT( int element_number,
-                          int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
-                          int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                          NDMaterialLT *Globalmmodel);
+public:
+    EightNodeBrickLT( int element_number,
+                      int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
+                      int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
+                      NDMaterialLT *Globalmmodel);
 
-        EightNodeBrickLT ();
-        ~EightNodeBrickLT();
+    EightNodeBrickLT ();
+    ~EightNodeBrickLT();
 
-        // ===================================================================================================================
-        // Implements interface to Element
-        // ===================================================================================================================
-        int update( void );
-        int getNumExternalNodes () const;
-        const ID &getExternalNodes ();
-        Node **getNodePtrs( void );
+    // ===================================================================================================================
+    // Implements interface to Element
+    // ===================================================================================================================
+    int update( void );
+    int getNumExternalNodes () const;
+    const ID &getExternalNodes ();
+    Node **getNodePtrs( void );
 
-        int getNumDOF ();
-        void setDomain( Domain *theDomain );
+    int getNumDOF ();
+    void setDomain( Domain *theDomain );
 
-        int commitState ();
-        int revertToLastCommit ();
-        int revertToStart ();
+    int commitState ();
+    int revertToLastCommit ();
+    int revertToStart ();
 
-        // These NEED to return fmk Matrices
-        const Matrix &getTangentStiff ();
-        const Matrix &getInitialStiff();
-        const Matrix &getMass ();
+    // These NEED to return fmk Matrices
+    const Matrix &getTangentStiff ();
+    const Matrix &getInitialStiff();
+    const Matrix &getMass ();
 
-        void zeroLoad ();
-        int addLoad( ElementalLoad *theLoad, double loadFactor );
-        int addInertiaLoadToUnbalance( const Vector &accel );
+    void zeroLoad ();
+    int addLoad( ElementalLoad *theLoad, double loadFactor );
+    int addInertiaLoadToUnbalance( const Vector &accel );
 
-        // These NEED to return fmk Vector
-        const Vector  FormEquiBodyForce( void );
-        const Vector &getResistingForce ();
-        const Vector &getResistingForceIncInertia ();
-        int getObjectSize();
+    // These NEED to return fmk Vector
+    const Vector  FormEquiBodyForce( void );
+    const Vector &getResistingForce ();
+    const Vector &getResistingForceIncInertia ();
+    int getObjectSize();
 
-        //Used in parallel and in saving model
-        int sendSelf ( int commitTag, Channel &theChannel );
-        int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
-                          &theBroker );
+    //Used in parallel and in saving model
+    int sendSelf ( int commitTag, Channel &theChannel );
+    int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
+                      &theBroker );
 
-        //General reporting of element status
-        void Print( ostream &s, int flag = 0 );
+    //General reporting of element status
+    void Print( ostream &s, int flag = 0 );
 
-        //Determine if element is ok and calls CheckMesh on children material
-        int CheckMesh( ofstream &);
+    //Determine if element is ok and calls CheckMesh on children material
+    int CheckMesh( ofstream &);
 
-        // ===================================================================================================================
-        // For Body Forces and Surface forces
-        // ===================================================================================================================
-        Vector &Direction_Weight( double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4 );
-        double SurfaceShapeFunctionValues( double Xi , double Eta, int whichcomponent );
-        double SurfaceLoadValues( double Xi , double Eta, Vector Pressure );
-        const Vector &getBodyForce( double loadFactor, const Vector &data );
-        const Vector &getSurfaceForce( double loadFactor, const Vector &data );
-
-
-        // ===================================================================================================================
-        // Internal member functions
-        // ===================================================================================================================
-
-        void formOutput();
-        void ComputeVolume();
-        void computeGaussPoint( void );
-
-        int  get_global_number_of_node( int local_node_number );
-        int  get_Brick_Number( void );
-        int *get_LM( void );
-
-        const DTensor2 &H_3D( double r1, double r2, double r3 ) const;
-        const DTensor1 &interp_poli_at( double r, double s, double t ) const;
-        const DTensor2 &dh_drst_at( double r, double s, double t ) const;
-        const DTensor4 &getStiffnessTensor( void ) const;
-        const DTensor2 &Jacobian_3D( const DTensor2 &dh ) const;
-        const DTensor2 &Jacobian_3Dinv( const DTensor2 &dh ) const;
-        const DTensor2 &Nodal_Coordinates( void ) const ;
-        const DTensor2 &incr_disp( void ) const;
-        const DTensor2 &total_disp( void ) const ;
-        const DTensor2 &nodal_forces( void ) const;
+    // ===================================================================================================================
+    // For Body Forces and Surface forces
+    // ===================================================================================================================
+    Vector &Direction_Weight( double Xi , double Eta, Vector coord1, Vector coord2, Vector coord3, Vector coord4 );
+    double SurfaceShapeFunctionValues( double Xi , double Eta, int whichcomponent );
+    double SurfaceLoadValues( double Xi , double Eta, Vector Pressure );
+    const Vector &getBodyForce( double loadFactor, const Vector &data );
+    const Vector &getSurfaceForce( double loadFactor, const Vector &data );
 
 
-        Matrix &getGaussCoordinates(void);
-        virtual int getOutputSize() const;
-        virtual const Vector &getOutput() const;
+    // ===================================================================================================================
+    // Internal member functions
+    // ===================================================================================================================
 
-        std::string getElementName() const
-        {
-            return "EightNodeBrickLT";
-        }
+    void formOutput();
+    void ComputeVolume();
+    void computeGaussPoint( void );
 
-        Vector *getStress( void );
+    int  get_global_number_of_node( int local_node_number );
+    int  get_Brick_Number( void );
+    int *get_LM( void );
+
+    const DTensor2 &H_3D( double r1, double r2, double r3 ) const;
+    const DTensor1 &interp_poli_at( double r, double s, double t ) const;
+    const DTensor2 &dh_drst_at( double r, double s, double t ) const;
+    const DTensor4 &getStiffnessTensor( void ) const;
+    const DTensor2 &Jacobian_3D( const DTensor2 &dh ) const;
+    const DTensor2 &Jacobian_3Dinv( const DTensor2 &dh ) const;
+    const DTensor2 &Nodal_Coordinates( void ) const ;
+    const DTensor2 &incr_disp( void ) const;
+    const DTensor2 &total_disp( void ) const ;
+    const DTensor2 &nodal_forces( void ) const;
 
 
-        // ===================================================================================================================
-        // Data members
-        // ===================================================================================================================
-    private:
-        bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
+    Matrix &getGaussCoordinates(void);
+    virtual int getOutputSize() const;
+    virtual const Vector &getOutput() const;
 
-        int numDOF;
-        int nodes_in_brick;
-        int order;
+    std::string getElementName() const
+    {
+        return "EightNodeBrickLT";
+    }
 
-        double Volume;
-        double e_p;
-        double determinant_of_Jacobian;
-        double rho;
+    Vector *getStress( void );
 
-        ID  connectedExternalNodes;
 
-        DTensor2 stress[8];
-        Matrix *Ki;
+    // ===================================================================================================================
+    // Data members
+    // ===================================================================================================================
+private:
+    bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
 
-        Node *theNodes[8];
-        NDMaterialLT *mmodel;
-        NDMaterialLT *material_array[8];
+    int numDOF;
+    int nodes_in_brick;
+    int order;
 
-        Vector Q;
-        Vector bf;
+    double Volume;
+    double e_p;
+    double determinant_of_Jacobian;
+    double rho;
 
-        static double SurfaceLoadValues_in_function;
-        Matrix K;
-        Matrix M;
-        Vector P;
-        static Vector ShapeFunctionValues_in_function;
-        static Vector J_vector_in_function;
+    ID  connectedExternalNodes;
 
-        static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
-        static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
+    DTensor2 stress[8];
+    Matrix *Ki;
 
-        Matrix gauss_points;
-        Vector outputVector;
+    Node *theNodes[8];
+    NDMaterialLT *mmodel;
+    NDMaterialLT *material_array[8];
 
-        Index < 'i' > i;
-        Index < 'j' > j;
-        Index < 'k' > k;
-        Index < 'l' > l;
+    Vector Q;
+    Vector bf;
+
+    Matrix M;
+    Vector P;
+
+    static double SurfaceLoadValues_in_function;
+    static Vector ShapeFunctionValues_in_function;
+    static Vector J_vector_in_function;
+
+    static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
+    static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
+
+    static Matrix gauss_points;
+    static Vector outputVector;
+
+    static Matrix K;
+
+    Index < 'i' > i;
+    Index < 'j' > j;
+    Index < 'k' > k;
+    Index < 'l' > l;
 };
 
 
