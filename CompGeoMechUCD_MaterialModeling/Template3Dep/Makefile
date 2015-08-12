@@ -4,66 +4,67 @@ DEBUG_MODE = DEBUG
 #DEBUG_MODE = NO_DEBUG
 
 #Compiler = GNU
-Compiler = PGI
+# Compiler = PGI
 
-BASE  = /usr
+# BASE  = /usr
 
-PATH_TO_Template3Dep       = $(PWD)
+# PATH_TO_Template3Dep       = $(PWD)
 
 include ../../Makefile.Compilers
+include ../../Makefile.Includes
 
 
 
-MACHINE_INCLUDES        = -I/usr/include 
-# this file contains all the OpenSees1/ModifiedOpenSeesServices includes
+# MACHINE_INCLUDES        = -I/usr/include 
+# # this file contains all the OpenSees1/ModifiedOpenSeesServices includes
 
 
-FE_INCLUDES  = -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/matrix \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/tagged \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/material \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/material/nD \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/recorder \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/handler \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/actor \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/analysis \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/ \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/actor/channel \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/actor/actor \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/element \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/domain \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/domain/domain \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/domain/partitioner \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/domain/component \
-               -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/actor/objectBroker \
-               -I$(PATH_TO_Template3Dep)/../../nDarray \
-               -I$(PATH_TO_Template3Dep)/. \
+# FE_INCLUDES  = -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/matrix \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/tagged \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/material \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/material/nD \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/recorder \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/handler \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/actor \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/analysis \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/ \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/actor/channel \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/actor/actor \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/element \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/domain \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/domain/domain \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/domain/partitioner \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/domain/component \
+#                -I$(PATH_TO_Template3Dep)/../../ModifiedOpenSeesServices/actor/objectBroker \
+#                -I$(PATH_TO_Template3Dep)/../../nDarray \
+#                -I$(PATH_TO_Template3Dep)/. \
 
 
 
-INCLUDES =  $(MACHINE_INCLUDES)  $(FE_INCLUDES)
+# INCLUDES =  $(MACHINE_INCLUDES)  $(FE_INCLUDES)
 
 
 # COMPILATION
 
-.SUFFIXES:
-.SUFFIXES:	.C .c .f .f90 .cpp .o .cpp
+# .SUFFIXES:
+# .SUFFIXES:	.C .c .f .f90 .cpp .o .cpp
 
-#
-# %------------------%
-# | Default command. |
-# %------------------%
-#
-.DEFAULT:
-	@$(ECHO) "Unknown target $@, try:  make help"
-#
-# %-----------------------------------------------%
-# |  Command to build .o files from source files. |
-# %-----------------------------------------------%
-#
+# #
+# # %------------------%
+# # | Default command. |
+# # %------------------%
+# #
+# .DEFAULT:
+# 	@$(ECHO) "Unknown target $@, try:  make help"
+# #
+# # %-----------------------------------------------%
+# # |  Command to build .o files from source files. |
+# # %-----------------------------------------------%
+# #
 
-.cpp.o: 
-#	@$(ECHO) Making $@ from $< $@ with $(CC++) $(C++FLAGS) $(INCLUDES) -c $<
-	$(CC++) $(C++FLAGS) $(INCLUDES) -c $<
+# .cpp.o: 
+# #	@$(ECHO) Making $@ from $< $@ with $(CC++) $(C++FLAGS) $(INCLUDES) -c $<
+# 	$(CC++) $(C++FLAGS) $(INCLUDES) -c $<
 
 
 #include ../../Makefile.def
