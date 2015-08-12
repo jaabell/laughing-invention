@@ -34,9 +34,9 @@
 Quantity get_nodal_coordinate( int node, int which_coord )
 {
 
-    Node* theNode = theDomain.getNode(node);
-    const Vector& coords = theNode->getCrds();
+	Node* theNode = theDomain.getNode(node);
+	const Vector& coords = theNode->getCrds();
 
-    Quantity coord(coords[which_coord - 1], meters);
-    return coord;
+	Quantity coord(coords[which_coord - 1], ESSIunits::meters);
+	return coord;
 };
