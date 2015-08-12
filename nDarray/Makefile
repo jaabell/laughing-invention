@@ -1,6 +1,7 @@
 #  Written: Boris Jeremic@ucdavis.edu, 17_Oct_2008
 
 include ../Makefile.Compilers
+include ../Makefile.Includes
 
 LIBRARY_NDARRAY     = ../lib/libndarray.a  # BJ_UCD jeremic@ucdavis.edu 
 NDARRAY             = BJtensor.o \
