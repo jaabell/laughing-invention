@@ -57,7 +57,7 @@
 // Undrained_cyclic_triaxial_loading_stress_control_d_epsilon_11   ->  4
 // Undrained_simple_shear_loading_strain_control_d_epsilon_12      ->  5
 
-BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *material_in):
+BardetConstraintLT::BardetConstraintLT(BardetConstraintType type_of_test_in, NDMaterialLT *material_in):
     S(6, 6, 0.0),
     E(6, 6, 0.0),
     Y(6, 0.0),
@@ -68,14 +68,13 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
     type_of_test = type_of_test_in;
     double K0 = 1.0;  // to be taken care of
 
-    double *p_S_values = NULL;
-    double *p_E_values = NULL;
 
-    if  ( type_of_test == 1 )
+    if  ( type_of_test == CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL )
     {
+        cout << "BardetConstraint -- Selected \"constant_p_triaxial_loading_strain_control_d_epsilon_11\" \n";
         ////////////////////////////////////////////////////////////////////
         // constant_p_triaxial_loading_strain_control_d_epsilon_11
-        double S_values[] =
+        double S_values[36] =
         {
             1.0  ,   1.0   ,   1.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   1.0   ,  -1.0   ,   0.0   ,   0.0   ,   0.0,
@@ -84,7 +83,7 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   1.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
-        double E_values[] =
+        double E_values[36] =
         {
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
@@ -94,16 +93,43 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             1.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
 
-        p_S_values = S_values;
-        p_E_values = E_values;
+        fillSE( S_values,  E_values);
 
     }
 
-    else if ( type_of_test == 2 )
+    else if ( type_of_test == DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL)
     {
+        cout << "BardetConstraint -- Selected \"drained_triaxial_loading_stress_control_d_sigma_11\" \n";
         ////////////////////////////////////////////////////////////////////
         // drained_triaxial_loading_strain_control_d_epsilon_11
-        double S_values[] =
+        double S_values[36] =
+        {
+            0.0  ,   1.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
+            0.0  ,   0.0   ,   1.0   ,   0.0   ,   0.0   ,   0.0,
+            0.0  ,   0.0   ,   0.0   ,   1.0   ,   0.0   ,   0.0,
+            0.0  ,   0.0   ,   0.0   ,   0.0   ,   1.0   ,   0.0,
+            0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   1.0,
+            1.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
+        };
+        double E_values[36] =
+        {
+            0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
+            0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
+            0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
+            0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
+            0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
+            0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
+        };
+        fillSE( S_values,  E_values);
+
+    }
+
+    else if ( type_of_test == DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL )
+    {
+        cout << "BardetConstraint -- Selected \"drained_triaxial_loading_strain_control_d_epsilon_11\" \n";
+        ////////////////////////////////////////////////////////////////////
+        // drained_triaxial_loading_strain_control_d_epsilon_11
+        double S_values[36] =
         {
             0.0  ,   1.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   0.0   ,   1.0   ,   0.0   ,   0.0   ,   0.0,
@@ -112,7 +138,7 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   1.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
-        double E_values[] =
+        double E_values[36] =
         {
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
@@ -121,16 +147,16 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             1.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
-        p_S_values = S_values;
-        p_E_values = E_values;
+        fillSE( S_values,  E_values);
 
     }
 
-    else if ( type_of_test == 3 )
+    else if ( type_of_test == UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL )
     {
+        cout << "BardetConstraint -- Selected \"Undrained_triaxial_loading_strain_control_d_epsilon_11\" \n";
         ////////////////////////////////////////////////////////////////////
         // Undrained_triaxial_loading_strain_control_d_epsilon_11
-        double S_values[] =
+        double S_values[36] =
         {
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   1.0   ,  -1.0   ,   0.0   ,   0.0   ,   0.0,
@@ -139,7 +165,7 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   1.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
-        double E_values[] =
+        double E_values[36] =
         {
             1.0  ,   1.0   ,   1.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
@@ -148,16 +174,16 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             1.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
-        p_S_values = S_values;
-        p_E_values = E_values;
+        fillSE( S_values,  E_values);
 
     }
 
-    else if ( type_of_test == 4 )
+    else if ( type_of_test == UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL )
     {
+        cout << "BardetConstraint -- Selected \"Undrained_cyclic_triaxial_loading_stress_control_d_epsilon_11\" \n";
         ////////////////////////////////////////////////////////////////////
         // Undrained_cyclic_triaxial_loading_stress_control_d_epsilon_11
-        double S_values[] =
+        double S_values[36] =
         {
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   1.0   ,  -1.0   ,   0.0   ,   0.0   ,   0.0,
@@ -166,7 +192,7 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   1.0,
             1.0  ,  -1.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
-        double E_values[] =
+        double E_values[36] =
         {
             1.0  ,   1.0   ,   1.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
@@ -175,16 +201,16 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
-        p_S_values = S_values;
-        p_E_values = E_values;
+        fillSE( S_values,  E_values);
 
     }
 
-    else if ( type_of_test == 5 )
+    else if ( type_of_test == UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL )
     {
+        cout << "BardetConstraint -- Selected \"Undrained_simple_shear_loading_strain_control_d_epsilon_12\" \n";
         ////////////////////////////////////////////////////////////////////
         // Undrained_simple_shear_loading_strain_control_d_epsilon_12
-        double S_values[] =
+        double S_values[36] =
         {
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             K0   ,  -1.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
@@ -193,7 +219,7 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   1.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0
         };
-        double E_values[] =
+        double E_values[36] =
         {
             1.0  ,   1.0   ,   1.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
@@ -202,19 +228,42 @@ BardetConstraintLT::BardetConstraintLT(int type_of_test_in, NDMaterialLT *materi
             0.0  ,   0.0   ,   0.0   ,   0.0   ,   0.0   ,   0.0,
             0.0  ,   0.0   ,   0.0   ,   1.0   ,   0.0   ,   0.0
         };
-        p_S_values = S_values;
-        p_E_values = E_values;
+        fillSE( S_values,  E_values);
+    }
+    else
+    {
+        cerr << "BardetConstraint -- Unknown test type \n";
     }
 
 
+
+}
+
+BardetConstraintLT::~BardetConstraintLT()
+{
+    // cout << "BardetConstraintLT::~BardetConstraintLT()\n";
+    // cout << "&S = " << &S << endl;
+    // cout << "   &data = " << (S.data) << endl;
+    // cout << "&E = " << &E << endl;
+    // cout << "   &data = " << (E.data) << endl;
+    // cout << "&Y = " << &Y << endl;
+    // cout << "   &data = " << (Y.data) << endl;
+    // cout << "&CurrentStiffness = " << &CurrentStiffness << endl;
+    // cout << "   &data = " << (CurrentStiffness.data) << endl;
+    // cout << "&d_epsilon_tensor = " << &d_epsilon_tensor << endl;
+    // cout << "   &data = " << (d_epsilon_tensor.data) << endl;
+}
+
+void BardetConstraintLT::fillSE(double * S_values, double * E_values)
+{
     //Fill matrices and vector appropriately
     int lindex = 0;
     for (int ii = 0; ii < 6; ii++)
     {
         for (int jj = 0; jj < 6; jj++)
         {
-            S(ii, jj) = p_S_values[lindex];
-            E(ii, jj) = p_E_values[lindex];
+            S(ii, jj) = S_values[lindex];
+            E(ii, jj) = E_values[lindex];
             lindex ++;
         }
     }
@@ -276,19 +325,43 @@ void BardetConstraintLT::applyIncrement(double Increment)
     DTensor2 S_times_C_plus_E(6, 6, 0.0);
     DTensor2 Inverse_S_times_C_plus_E(6, 6, 0.0);
     DTensor1 d_epsilon(6, 0.0);
-    double *det_Inverse_S_times_C_plus_E = NULL;
+    // double *det_Inverse_S_times_C_plus_E = NULL;
 
     S_times_C_plus_E(i, j)    = S(i, p) * CurrentStiffness(p, j) + E(i, j);
-    Inverse_S_times_C_plus_E  = S_times_C_plus_E.Inv(det_Inverse_S_times_C_plus_E);
-    d_epsilon(i)              = Inverse_S_times_C_plus_E(i, j) * Y(j);
+    // Inverse_S_times_C_plus_E  = S_times_C_plus_E.Inv(det_Inverse_S_times_C_plus_E);
+    // d_epsilon(i)              = Inverse_S_times_C_plus_E(i, j) * Y(j);
 
-    static double sqrthalf = sqrt(0.5);
+
+    bool error = false;
+    d_epsilon = S_times_C_plus_E.SolvebyGaussElim(Y, &error);
+    // d_epsilon = S_times_C_plus_E.SolvebyDGESV(Y, &error);
+
+    if (error)//det_Inverse_S_times_C_plus_E <= 0 )
+        // if (det_Inverse_S_times_C_plus_E <= 0 )
+    {
+        cerr << "BardetConstraintLT::applyIncrement() -- Stiffness is not invertible.\n";
+
+        cout << "S = "  << S << endl;
+        cout << "E = "  << E << endl;
+        cout << "CurrentStiffness = "  << CurrentStiffness << endl;
+        cout << "S_times_C_plus_E = "  << S_times_C_plus_E << endl;
+        cout << "Y = "  << Y << endl;
+        cout << "d_epsilon = "  << d_epsilon << endl;
+        cout << "CM = "  << CM << endl;
+
+        exit(1);
+    }
+
+    constexpr double sqrthalf = sqrt(0.5);
     d_epsilon_tensor(0, 0) = d_epsilon(0);
     d_epsilon_tensor(1, 1) = d_epsilon(1);
     d_epsilon_tensor(2, 2) = d_epsilon(2);
-    d_epsilon_tensor(0, 1) = d_epsilon_tensor(1, 0) = d_epsilon(3) * sqrthalf;
-    d_epsilon_tensor(1, 2) = d_epsilon_tensor(2, 1) = d_epsilon(4) * sqrthalf;
-    d_epsilon_tensor(0, 2) = d_epsilon_tensor(2, 0) = d_epsilon(5) * sqrthalf;
+    d_epsilon_tensor(0, 1) = d_epsilon(3) * sqrthalf;
+    d_epsilon_tensor(1, 0) = d_epsilon(3) * sqrthalf;
+    d_epsilon_tensor(1, 2) = d_epsilon(4) * sqrthalf;
+    d_epsilon_tensor(2, 1) = d_epsilon(4) * sqrthalf;
+    d_epsilon_tensor(0, 2) = d_epsilon(5) * sqrthalf;
+    d_epsilon_tensor(2, 0) = d_epsilon(5) * sqrthalf;
 
     //Send increment to the material
     material->setTrialStrainIncr(d_epsilon_tensor);            // Explicit integration takes place here

@@ -43,34 +43,41 @@
 #include <Channel.h>
 
 
-#define CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL         1
-#define DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL            2
-#define UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL          3
-#define UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL   4
-#define UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL      5
+
+enum BardetConstraintType
+{
+    CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL         ,
+    DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL         ,
+    DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL            ,
+    UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL          ,
+    UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL   ,
+    UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL
+};
 
 
 // DTensor2 BardetConstraintLT(int , double , NDMaterialLT *);
 
 class BardetConstraintLT
 {
-    public:
-        BardetConstraintLT(int test_type,  NDMaterialLT *material);
-        void  applyIncrement(double increment);
-        const DTensor2 &getStrainIncrement() const ;
-        const DTensor2 &getStress() const ;
+public:
+    BardetConstraintLT(BardetConstraintType type,  NDMaterialLT *material);
+    ~BardetConstraintLT();
+    void  applyIncrement(double increment);
+    const DTensor2 &getStrainIncrement() const ;
+    const DTensor2 &getStress() const ;
+    void fillSE(double * S_values, double * E_values);
 
-    private:
-        int type_of_test;
-        NDMaterialLT *material;
-        Index < 'i' > i;
-        Index < 'j' > j;
-        Index < 'p' > p;
-        DTensor2 S;//(6, 6);
-        DTensor2 E;//(6, 6);
-        DTensor1 Y;//(6, 0.0);
-        DTensor2 CurrentStiffness;
-        DTensor2 d_epsilon_tensor;//(3, 3, 0.0);
+private:
+    int type_of_test;
+    NDMaterialLT *material;
+    Index < 'i' > i;
+    Index < 'j' > j;
+    Index < 'p' > p;
+    DTensor2 S;//(6, 6);
+    DTensor2 E;//(6, 6);
+    DTensor1 Y;//(6, 0.0);
+    DTensor2 CurrentStiffness;
+    DTensor2 d_epsilon_tensor;//(3, 3, 0.0);
 };
 
 
