@@ -10,7 +10,8 @@
 /*=====================================================
                     BASE UNITS
 =====================================================*/
-
+namespace ESSIunits
+{
 //                       sc , M, L, T  : sc = scale factor
 static const SIUnit unitless   (1.0, 0, 0, 0);
 static const SIUnit meters     (1.0, 0, 1, 0);
@@ -60,6 +61,6 @@ static const SIUnit GPa     (1.e9, 1, -1, -2, "GPa");
 // Physical static constants
 static const Quantity g(9.81, m / s / s);
 
-
+}
 
 #endif // UNITDEFS_H

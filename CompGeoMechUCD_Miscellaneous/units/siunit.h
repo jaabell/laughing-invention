@@ -1,67 +1,66 @@
 #ifndef SIUNIT_H
 #define SIUNIT_H
 
-#include <iostream>
 #include <string>
 #include <sstream>
 
-using namespace std;
+// using namespace std;
 
 class SIUnit
 {
-    public:
-        // Constructors
-        SIUnit();
-        SIUnit(double s, short int m, short int l, short int t);
-        SIUnit(double s, short int m, short int l, short int t, const string& sym);
-        SIUnit(double s, const SIUnit& other);
-        SIUnit(double s, const SIUnit& other, const string& sym);
+public:
+    // Constructors
+    SIUnit();
+    SIUnit(double s, short int m, short int l, short int t);
+    SIUnit(double s, short int m, short int l, short int t, const std::string& sym);
+    SIUnit(double s, const SIUnit& other);
+    SIUnit(double s, const SIUnit& other, const std::string& sym);
 
-        // Arithmetic overloads
-        SIUnit operator * (const SIUnit b) const;
-        SIUnit operator / (const SIUnit b) const;
-        friend SIUnit operator * (const SIUnit& a, double b);
-        friend SIUnit operator * (double a, const SIUnit& b);
-        friend SIUnit operator / (const SIUnit& a, double b);
-        friend SIUnit operator / (double a, const SIUnit& b);
+    // Arithmetic overloads
+    SIUnit operator * (const SIUnit b) const;
+    SIUnit operator / (const SIUnit b) const;
+    friend SIUnit operator * (const SIUnit& a, double b);
+    friend SIUnit operator * (double a, const SIUnit& b);
+    friend SIUnit operator / (const SIUnit& a, double b);
+    friend SIUnit operator / (double a, const SIUnit& b);
 
-        //Logicals
-        bool operator == (const SIUnit b) const;
-        bool isConvertible(const SIUnit& other) const;
+    //Logicals
+    bool operator == (const SIUnit b) const;
+    bool isConvertible(const SIUnit& other) const;
 
-        //Setters and getters
-        double Getscale() const
-        {
-            return scale;
-        }
-        short int Getdim_m() const
-        {
-            return dim_m;
-        }
-        short int Getdim_l() const
-        {
-            return dim_l;
-        }
-        short int Getdim_t() const
-        {
-            return dim_t;
-        }
-        void SetSymbol(string n);
-        string GetSymbol() const;
-        string GetSISymbol() const;
+    //Setters and getters
+    double Getscale() const
+    {
+        return scale;
+    }
+    short int Getdim_m() const
+    {
+        return dim_m;
+    }
+    short int Getdim_l() const
+    {
+        return dim_l;
+    }
+    short int Getdim_t() const
+    {
+        return dim_t;
+    }
+    void SetSymbol(std::string n);
+    std::string GetSymbol() const;
+    std::string GetSISymbol() const;
 
-        //Friends
-        friend ostream& operator<<(ostream& out, const SIUnit& unit);
+    //Friends
+    friend std::ostream& operator<<(std::ostream& out, const SIUnit& unit);
 
-    protected:
-        void UpdateSymbol();
+protected:
+    void UpdateSymbol();
 
-    private:
-        double scale;
-        short int dim_m;   // kilogram (kg)
-        short int dim_l;   // meters   (m)
-        short int dim_t;   // seconds  (s)
-        string symbol;
+private:
+    double scale;
+    short int dim_m;   // kilogram (kg)
+    short int dim_l;   // meters   (m)
+    short int dim_t;   // seconds  (s)
+    std::string symbol;
 };
 
 
