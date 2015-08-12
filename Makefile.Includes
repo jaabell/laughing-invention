@@ -165,40 +165,41 @@ ESSI_INCLUDES  = -I$(FEIBASEDIR)/ModifiedOpenSeesServices/matrix \
 
 #            -I$(FEIBASEDIR)/ModifiedOpenSeesServices/response \
 
-ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_27_nodes.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_27_nodes_elastic.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_27_nodes_ltensor.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_20_nodes_elastic.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_20_nodes.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_8_nodes.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_8_nodes_ltensor.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_8_nodes_elastic.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_8_nodes_variable_gp.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_20_nodes_variable_gp.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_27_nodes_variable_gp.a \
-      $(FEIBASEDIR)/lib/libnonlinear_shear_beam.a \
-      $(FEIBASEDIR)/lib/libcoupled_u-p-U_brick_8_nodes.a \
-      $(FEIBASEDIR)/lib/libcoupled_u-p_brick_8_nodes.a \
-      $(FEIBASEDIR)/lib/libcoupled_u-p-U_brick_20_nodes.a \
-      $(FEIBASEDIR)/lib/libshell_3_node_andes.a \
-      $(FEIBASEDIR)/lib/libsolid_brick_variable_nodes_8_to_27.a \
-      $(FEIBASEDIR)/lib/libMOSS.a \
-      $(FEIBASEDIR)/lib/libucbelements.a \
-      $(FEIBASEDIR)/lib/libelasticbeam.a \
-      $(FEIBASEDIR)/lib/librank_one_deficient_elastic_pinned_fixed_beam.a \
-      $(FEIBASEDIR)/lib/libaccelerated3dep.a \
-      $(FEIBASEDIR)/lib/libtemplate3dep.a \
-      $(FEIBASEDIR)/lib/libnewtemplate3dep.a \
-      $(FEIBASEDIR)/lib/libpenaltyelement.a \
-      $(FEIBASEDIR)/lib/libpenaltyelementapplydisplacement.a \
-      $(FEIBASEDIR)/lib/libbase_3dep.a \
-      $(FEIBASEDIR)/lib/libltensorbasedmaterials.a \
-      $(FEIBASEDIR)/lib/libndarray.a \
-      $(FEIBASEDIR)/lib/libquantity.a \
-      $(FEIBASEDIR)/lib/libltensorutilities.a \
-      $(FEIBASEDIR)/lib/libessitiming.a \
-      $(FEIBASEDIR)/lib/liboutputwriters.a 
+ESSI_LIBS = -L$(FEIBASEDIR)/lib \
+      -lcontactelements \
+      -lsolid_brick_27_nodes \
+      -lsolid_brick_27_nodes_elastic \
+      -lsolid_brick_27_nodes_ltensor \
+      -lsolid_brick_20_nodes_elastic \
+      -lsolid_brick_20_nodes \
+      -lsolid_brick_8_nodes \
+      -lsolid_brick_8_nodes_ltensor \
+      -lsolid_brick_8_nodes_elastic \
+      -lsolid_brick_8_nodes_variable_gp \
+      -lsolid_brick_20_nodes_variable_gp \
+      -lsolid_brick_27_nodes_variable_gp \
+      -lnonlinear_shear_beam \
+      -lcoupled_u-p-U_brick_8_nodes \
+      -lcoupled_u-p_brick_8_nodes \
+      -lcoupled_u-p-U_brick_20_nodes \
+      -lshell_3_node_andes \
+      -lsolid_brick_variable_nodes_8_to_27 \
+      -lMOSS \
+      -lucbelements \
+      -lelasticbeam \
+      -lrank_one_deficient_elastic_pinned_fixed_beam \
+      -laccelerated3dep \
+      -ltemplate3dep \
+      -lnewtemplate3dep \
+      -lpenaltyelement \
+      -lpenaltyelementapplydisplacement \
+      -lbase_3dep \
+      -lltensorbasedmaterials \
+      -lndarray \
+      -lquantity \
+      -lltensorutilities \
+      -lessitiming \
+      -loutputwriters
 
 
 
@@ -206,22 +207,24 @@ ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
             
 SEQUENTIAL_NUMERIC_INCLUDES = -I$(ESSI_DEPEND_DIR)/lib/include \
             -I$(ESSI_DEPEND_DIR)/include \
+            -I$(ESSI_DEPEND_DIR)/ATLAS/include \
             -I$(ESSI_DEPEND_DIR)/hdf5_sequential/include 
 
 
-SEQUENTIAL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/lib/liblapack.a \
-      $(ESSI_DEPEND_DIR)/lib/libarpack.a \
-      $(ESSI_DEPEND_DIR)/lib/libumfpack.a \
-      $(ESSI_DEPEND_DIR)/lib/libamd.a \
-      $(ESSI_DEPEND_DIR)/lib/libcholmod.a \
-      $(ESSI_DEPEND_DIR)/lib/libcolamd.a \
-      $(ESSI_DEPEND_DIR)/lib/libcamd.a \
-      $(ESSI_DEPEND_DIR)/lib/libccolamd.a \
-      $(ESSI_DEPEND_DIR)/lib/libmetis.a \
-      $(ESSI_DEPEND_DIR)/lib/libcblas.a \
-      $(ESSI_DEPEND_DIR)/lib/libf77blas.a \
-      $(ESSI_DEPEND_DIR)/lib/libatlas.a \
-      $(ESSI_DEPEND_DIR)/lib/libsuitesparseconfig.a \
+SEQUENTIAL_NUMERIC_LIBS = -L$(ESSI_DEPEND_DIR)/lib/ \
+      -llapack \
+      -larpack \
+      -lumfpack \
+      -lamd \
+      -lcholmod \
+      -lcolamd \
+      -lcamd \
+      -lccolamd \
+      -lmetis \
+      -lcblas \
+      -lf77blas \
+      -latlas \
+      -lsuitesparseconfig \
       $(ESSI_DEPEND_DIR)/hdf5_sequential/lib/libhdf5.a 
 
 
@@ -252,8 +255,7 @@ PARALLEL_NUMERIC_LIBS = $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/lib
 # $(ESSI_DEPEND_DIR)/petsc-3.6.0/arch-linux2-c-opt/lib/libHYPRE.a \
 
 
-SEQUENTIAL_MACHINE_LIBS =  -L/usr/lib64 \
-      -L/usr/lib  \
+SEQUENTIAL_MACHINE_LIBS =  \
       -lm \
       -ldl \
       -lz \

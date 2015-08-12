@@ -175,7 +175,7 @@ SHELL           = /bin/sh
 
 %.o : %.cpp 
 	@$(ECHO) Compiling $@
-	@$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $<
+	$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $<
 
 
 %.o : %.C 
