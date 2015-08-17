@@ -6896,9 +6896,9 @@ Vector &TwentySevenNodeBrickElastic::Direction_Weight(double Xi , double Eta,
             - 2 * Eta * (1 - Xi * Xi) * coord9(2);
 
 
-    J_vector_in_function(0) = fabs( J1(1) * J2(2) - J1(2) * J2(1) );
-    J_vector_in_function(1) = fabs( J1(2) * J2(0) - J1(0) * J2(2) );
-    J_vector_in_function(2) = fabs( J1(0) * J2(1) - J1(1) * J2(0) );
+    J_vector_in_function(0) =  J1(1) * J2(2) - J1(2) * J2(1) ;
+    J_vector_in_function(1) =  J1(2) * J2(0) - J1(0) * J2(2) ;
+    J_vector_in_function(2) =  J1(0) * J2(1) - J1(1) * J2(0) ;
 
 
 
