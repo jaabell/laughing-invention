@@ -16,7 +16,7 @@ SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 TARGETS = $(patsubst %.cpp, % , $(SRCS))
 
-LIBSHERE = $(LIBS) 
+LIBSHERE = $(LIBS)
 CPPFLAGS=--std=c++11 -g -pg
 
 #Rules

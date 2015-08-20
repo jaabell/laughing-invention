@@ -416,6 +416,7 @@ EXP	([Ee][-+]?[0-9]+)
 "shear_modulus_h_v"                 {return token::shear_modulus_h_v;}
 "von_mises_radius"                  {return token::von_mises_radius;}
 "druckerprager_angle"               {return token::druckerprager_angle;}
+"druckerprager_k"               	{return token::druckerprager_k;}
 "armstrong_frederick_ha"            {return token::armstrong_frederick_ha;}
 "armstrong_frederick_cr"            {return token::armstrong_frederick_cr;}
 "initial_confining_stress"          {return token::initial_confining_stress;}
