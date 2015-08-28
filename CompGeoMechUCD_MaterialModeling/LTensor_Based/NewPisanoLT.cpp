@@ -43,6 +43,8 @@
 #include <Matrix.h>
 #include <Vector.h>
 
+#include <fstream>
+
 const  DTensor2 NewPisanoLT::ZeroStrain(3, 3, 0.0);
 const  DTensor2 NewPisanoLT::ZeroStress(3, 3, 0.0);
 const double NewPisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::epsilon()); // used to check the variable nullity
@@ -1047,6 +1049,9 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
   unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
 
+  static fstream outstuff("unload.prod", std::ios::app);
+  outstuff << unload_prod << endl;
+
   if (unload_prod <= 0.0)
   {
 
@@ -1262,6 +1267,7 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
   }
   else
   {
+    beta = beta_max;
     // cerr << "The norm of nij is not 1! This should never happen. Something wrong... ask Pisano." << endl;
     // cout << "Norm of nij_dev is nil. Might be non-deviatoric loading step... or something is wrong. Ask Pisano." << endl;
 

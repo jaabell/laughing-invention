@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-//   COPYLEFT (C): Woody's viral GPL-like license (by BJ):
+// LEGACY/DEFUNCT COPYLEFT (C): Woody's viral GPL-like license (by BJ):
 //                 ``This    source  code is Copyrighted in
 //                 U.S.,  for  an  indefinite  period,  and anybody
 //                 caught  using it without our permission, will be
@@ -9,26 +9,15 @@
 //                 wanted to do.''
 //
 //
-// COPYRIGHT (C):     :-))
-// PROJECT:           Object Oriented Finite Element Program
-// FILE:
-// CLASS:
-// MEMBER FUNCTIONS:
-//
-// MEMBER VARIABLES
-//
-// PURPOSE:
-//
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:
-// PROGRAMMER:        Jose Abell, Federico Pisano', Nima Tafazzoli, Boris Jeremic
-// DATE:              December 2013
-// UPDATE HISTORY:
-//
+// COPYRIGHT (C):  Version of Creative Commons (for details contact Boris Jeremic jeremic@ucdavis.edu)
+// PROJECT:        Real ESSI Simulator
+// PROGRAMMER:     Jose Abell, Federico Pisano', Nima Tafazzoli, Boris Jeremic
+// DATE:           December 2013
+// UPDATE HISTORY: Full update history in git repository.
 //
 /////////////////////////////////////////////////////////////////////////////
+
+
 
 // PisanoLT is another form of NewTemplate3Dep which has all
 // the functions embeded here for efficiency.
@@ -201,9 +190,9 @@ private:
     DTensor4 Stiffness;
 
     //Global constants
-    const static double beta_min;
-    const static double beta_max;
-    const static double patm;                // In basic SI units (Pa = kg / s^-2 / m)
+    static const double beta_min;
+    static const double beta_max;
+    static const double patm;                // In basic SI units (Pa = kg / s^-2 / m)
 
     static const  DTensor2 ZeroStrain;
     static const  DTensor2 ZeroStress;
