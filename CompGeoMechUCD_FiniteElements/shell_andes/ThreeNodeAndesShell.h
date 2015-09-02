@@ -1,29 +1,28 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// COPYLEFT (C):     :-))
-//``This  source code is Copyrighted in U.S., by the The Regents of the University
-//of California, for an indefinite period, and anybody caught using it without our
-//permission,  will  be  mighty  good friends of ourn, cause we don't give a darn.
-//Hack  it.  Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
-//all we wanted to do.'' bj
-// PROJECT:           Object Oriented Finite Element Program
-// FILE:              ThreeNodeAndesShell.h
-// CLASS:             ThreeNodeAndesShell
-// MEMBER FUNCTIONS:
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Boris Jeremic, Jose Abell
+// DATE:               July 2012
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
-// MEMBER VARIABLES
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
 //
-// PURPOSE:           Finite Element Class
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:         DOS || UNIX || . . .
-// DESIGNER:          Boris Jeremic, Jose Abell
-// PROGRAMMER:        Boris Jeremic, Jose Abell
-// DATE:              July 2012
-// UPDATE HISTORY:
-//
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -109,104 +108,104 @@ class Node;
 class ThreeNodeAndesShell: public Element
 {
 
-    public:
-        //===================================================================================
-        // Element Constructors / Destructors
-        //===================================================================================
-        ThreeNodeAndesShell ();
+public:
+    //===================================================================================
+    // Element Constructors / Destructors
+    //===================================================================================
+    ThreeNodeAndesShell ();
 
-        ThreeNodeAndesShell(int element_number,
-                            int node_numb_1, int node_numb_2, int node_numb_3, double t,
-                            NDMaterial *Globalmmodel);
-        ThreeNodeAndesShell(int element_number,
-                            int node_numb_1, int node_numb_2, int node_numb_3,
-                            double t,
-                            NDMaterial **material);
+    ThreeNodeAndesShell(int element_number,
+                        int node_numb_1, int node_numb_2, int node_numb_3, double t,
+                        NDMaterial *Globalmmodel);
+    ThreeNodeAndesShell(int element_number,
+                        int node_numb_1, int node_numb_2, int node_numb_3,
+                        double t,
+                        NDMaterial **material);
 
-        ~ThreeNodeAndesShell();
+    ~ThreeNodeAndesShell();
 
-        //===================================================================================
-        // Element interface
-        //===================================================================================
-        // These member functions are needed to satisfy the Element interface
-        // They all overload virtual functions. Most are even pure virtual functions.
+    //===================================================================================
+    // Element interface
+    //===================================================================================
+    // These member functions are needed to satisfy the Element interface
+    // They all overload virtual functions. Most are even pure virtual functions.
 
-        int getNumExternalNodes () const;
-        const ID &getExternalNodes ();
-        Node **getNodePtrs(void);
-        int getNumDOF ();
-        void setDomain(Domain *theDomain);
+    int getNumExternalNodes () const;
+    const ID &getExternalNodes ();
+    Node **getNodePtrs(void);
+    int getNumDOF ();
+    void setDomain(Domain *theDomain);
 
-        int commitState ();
-        int revertToLastCommit ();
-        int revertToStart ();
-        int update(void);
-
-
-        const Matrix &getTangentStiff ();
-        const Matrix &getInitialStiff();
-        const Matrix &getMass ();
-
-        void zeroLoad ();
-        int addLoad(ElementalLoad *theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector &accel);
-
-        const Vector &getResistingForce ();
-        const Vector &getResistingForceIncInertia ();
-
-        int sendSelf (int commitTag, Channel &theChannel);
-        int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
-
-        void Print(ostream &s, int flag);
-        // Response* setResponse (const char** argv, int argc, Information& eleInformation);
-        // int getResponse (int responseID, Information& eleInformation);
-
-        Matrix returnMass(void);
-
-        void useThisCoordinateSystem(Vector e1, Vector e2, Vector e3);
-
-        double getArea() const;
-
-        const Vector &getBodyForce(double loadFactor, const Vector &data);
-        const Vector FormEquiBodyForce(void);
-
-        //For stress recovery
-        Vector get_moment_field();
-
-        //Utility
-        bool gotMass() const;           // Got Mass?  (check for rho value)
-
-        std::string getElementName() const
-        {
-            return "ThreeNodeAndesShell";
-        }
-
-    private:
+    int commitState ();
+    int revertToLastCommit ();
+    int revertToStart ();
+    int update(void);
 
 
-        //===================================================================================
-        // Internal variables
-        //===================================================================================
+    const Matrix &getTangentStiff ();
+    const Matrix &getInitialStiff();
+    const Matrix &getMass ();
 
-        // Pointers to other Domain components
-        ID  connectedExternalNodes;     // Tags of  nodes
-        Node *theNodes[3];              // pointers to 3 nodes
-        NDMaterial **theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
+    void zeroLoad ();
+    int addLoad(ElementalLoad *theLoad, double loadFactor);
+    int addInertiaLoadToUnbalance(const Vector &accel);
 
-        // Finite element matrices
-        Matrix K;                       // Element stiffness Matrix
-        Matrix M;                       // Element mass matrix
-        Vector P;                       // Element resisting force vector
-        Vector Q;                       // Applied nodal loads
-        Vector bf;                      // Body forces
+    const Vector &getResistingForce ();
+    const Vector &getResistingForceIncInertia ();
 
-        ThreeNodeAndesBending *bending_element;
-        ThreeNodeAndesMembrane *membrane_element;
+    int sendSelf (int commitTag, Channel &theChannel);
+    int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        static unsigned int number_of_three_node_andes_shells;
+    void Print(ostream &s, int flag);
+    // Response* setResponse (const char** argv, int argc, Information& eleInformation);
+    // int getResponse (int responseID, Information& eleInformation);
 
-        bool is_stiffness_calculated;
-        bool is_mass_calculated;
+    Matrix returnMass(void);
+
+    void useThisCoordinateSystem(Vector e1, Vector e2, Vector e3);
+
+    double getArea() const;
+
+    const Vector &getBodyForce(double loadFactor, const Vector &data);
+    const Vector FormEquiBodyForce(void);
+
+    //For stress recovery
+    Vector get_moment_field();
+
+    //Utility
+    bool gotMass() const;           // Got Mass?  (check for rho value)
+
+    std::string getElementName() const
+    {
+        return "ThreeNodeAndesShell";
+    }
+
+private:
+
+
+    //===================================================================================
+    // Internal variables
+    //===================================================================================
+
+    // Pointers to other Domain components
+    ID  connectedExternalNodes;     // Tags of  nodes
+    Node *theNodes[3];              // pointers to 3 nodes
+    NDMaterial **theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
+
+    // Finite element matrices
+    Matrix K;                       // Element stiffness Matrix
+    Matrix M;                       // Element mass matrix
+    Vector P;                       // Element resisting force vector
+    Vector Q;                       // Applied nodal loads
+    Vector bf;                      // Body forces
+
+    ThreeNodeAndesBending *bending_element;
+    ThreeNodeAndesMembrane *membrane_element;
+
+    static unsigned int number_of_three_node_andes_shells;
+
+    bool is_stiffness_calculated;
+    bool is_mass_calculated;
 
 };
 

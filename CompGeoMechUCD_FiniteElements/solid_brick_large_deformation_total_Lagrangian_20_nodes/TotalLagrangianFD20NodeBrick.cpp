@@ -1,30 +1,30 @@
-//===============================================================================
-//# COPYRIGHT (C): Woody's license (by BJ):
-//                 ``This    source  code is Copyrighted in
-//                 U.S.,  for  an  indefinite  period,  and anybody
-//                 caught  using it without our permission, will be
-//                 mighty good friends of ourn, cause we don't give
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-//                 wanted to do.''
+///////////////////////////////////////////////////////////////////////////////
 //
-//# PROJECT:           Object Oriented Finite Element Program
-//# PURPOSE:           Finite Deformation Hyper-Elastic classes
-//# CLASS:
-//#
-//# VERSION:           0.6_(1803398874989) (golden section)
-//# LANGUAGE:          C++
-//# TARGET OS:         all...
-//# DESIGN:            Zhao Cheng, Boris Jeremic (jeremic@ucdavis.edu)
-//# PROGRAMMER(S):     Zhao Cheng, Boris Jeremic
-//#
-//#
-//# DATE:              Sept2003
-//# UPDATE HISTORY:    28May2004, Zhao put all Ks & Rs in the integration cycle and
-//#                          and use minor symmetries to make concise and efficient
-//#                    April2005 Zhao adds new output options
-//#                    Sept2005  Zhao shortens the codes
-//===============================================================================
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Zhao Cheng, Boris Jeremic
+// DATE:               Sept2003
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
+//
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
+
+
 #ifndef TOTALLAGRANGIANFD20NODEBRICK_CPP
 #define TOTALLAGRANGIANFD20NODEBRICK_CPP
 

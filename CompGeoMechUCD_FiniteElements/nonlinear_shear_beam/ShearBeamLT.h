@@ -1,29 +1,29 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// COPYLEFT (C):     :-))
-//``This  source code is Copyrighted in U.S., by the The Regents of the University
-//of California, for an indefinite period, and anybody caught using it without our
-//permission,  will  be  mighty  good friends of ourn, cause we don't give a darn.
-//Hack  it.  Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
-//all we wanted to do.'' bj
-// PROJECT:           Object Oriented Finite Element Program
-// FILE:              ShearBeamLT.cpp
-// CLASS:             ShearBeamLT
-// MEMBER FUNCTIONS:
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Boris Jeremic  & Jose Abell
+// DATE:               September 2014
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
-// MEMBER VARIABLES
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
 //
-// PURPOSE:           Finite Element Class
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:         DOS || UNIX || . . .
-// DESIGNER:          Boris Jeremic  & Jose Abell
-// PROGRAMMER:        Boris Jeremic  & Jose Abell
-// DATE:              September 2014
-// UPDATE HISTORY:
-//
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
 
 
 #ifndef ShearBeamLT_H
@@ -59,126 +59,126 @@ class Node;
 class ShearBeamLT: public Element
 {
 
-    public:
-        ShearBeamLT( int element_number,
-                     int node_numb_1, int node_numb_2,
-                     double area,
-                     NDMaterialLT *Globalmmodel);
+public:
+    ShearBeamLT( int element_number,
+                 int node_numb_1, int node_numb_2,
+                 double area,
+                 NDMaterialLT *Globalmmodel);
 
-        ShearBeamLT ();
-        ~ShearBeamLT();
+    ShearBeamLT ();
+    ~ShearBeamLT();
 
-        // ===================================================================================================================
-        // Implements interface to Element
-        // ===================================================================================================================
-        int update( void );
-        int getNumExternalNodes () const;
-        const ID &getExternalNodes ();
-        Node **getNodePtrs( void );
+    // ===================================================================================================================
+    // Implements interface to Element
+    // ===================================================================================================================
+    int update( void );
+    int getNumExternalNodes () const;
+    const ID &getExternalNodes ();
+    Node **getNodePtrs( void );
 
-        int getNumDOF ();
-        void setDomain( Domain *theDomain );
+    int getNumDOF ();
+    void setDomain( Domain *theDomain );
 
-        int commitState ();
-        int revertToLastCommit ();
-        int revertToStart ();
+    int commitState ();
+    int revertToLastCommit ();
+    int revertToStart ();
 
-        // These NEED to return fmk Matrices
-        const Matrix &getTangentStiff ();
-        const Matrix &getInitialStiff();
-        const Matrix &getMass ();
+    // These NEED to return fmk Matrices
+    const Matrix &getTangentStiff ();
+    const Matrix &getInitialStiff();
+    const Matrix &getMass ();
 
-        void zeroLoad ();
-        int addLoad( ElementalLoad *theLoad, double loadFactor );
-        int addInertiaLoadToUnbalance( const Vector &accel );
+    void zeroLoad ();
+    int addLoad( ElementalLoad *theLoad, double loadFactor );
+    int addInertiaLoadToUnbalance( const Vector &accel );
 
-        // These NEED to return fmk Vector
-        const Vector  FormEquiBodyForce( void );
-        const Vector &getResistingForce ();
-        const Vector &getResistingForceIncInertia ();
-        int getObjectSize();
+    // These NEED to return fmk Vector
+    const Vector  FormEquiBodyForce( void );
+    const Vector &getResistingForce ();
+    const Vector &getResistingForceIncInertia ();
+    int getObjectSize();
 
-        //Used in parallel and in saving model
-        int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
-        int sendSelf ( int commitTag, Channel &theChannel );
-        int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
-                          &theBroker );
+    //Used in parallel and in saving model
+    int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
+    int sendSelf ( int commitTag, Channel &theChannel );
+    int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
+                      &theBroker );
 
-        //General reporting of element status
-        void Print( ostream &s, int flag = 0 );
+    //General reporting of element status
+    void Print( ostream &s, int flag = 0 );
 
-        //Determine if element is ok and calls CheckMesh on children material
-        int CheckMesh( ofstream &);
+    //Determine if element is ok and calls CheckMesh on children material
+    int CheckMesh( ofstream &);
 
-        // ===================================================================================================================
-        // For Body Forces and Surface forces
-        // ===================================================================================================================
-        double SurfaceShapeFunctionValues( double Xi , double Eta, int whichcomponent );
-        double SurfaceLoadValues( double Xi , double Eta, Vector Pressure );
-        const Vector &getBodyForce( double loadFactor, const Vector &data );
-        const Vector &getSurfaceForce( double loadFactor, const Vector &data );
-        // double returnPressure(void);
-
-
-        // ===================================================================================================================
-        // Internal member functions
-        // ===================================================================================================================
-
-        void formOutput();
-        void ComputeVolume();
-        void computeGaussPoint( void );
+    // ===================================================================================================================
+    // For Body Forces and Surface forces
+    // ===================================================================================================================
+    double SurfaceShapeFunctionValues( double Xi , double Eta, int whichcomponent );
+    double SurfaceLoadValues( double Xi , double Eta, Vector Pressure );
+    const Vector &getBodyForce( double loadFactor, const Vector &data );
+    const Vector &getSurfaceForce( double loadFactor, const Vector &data );
+    // double returnPressure(void);
 
 
-        Matrix &getGaussCoordinates(void);
-        virtual int getOutputSize() const;
-        virtual const Vector &getOutput() const;
+    // ===================================================================================================================
+    // Internal member functions
+    // ===================================================================================================================
 
-        std::string getElementName() const
-        {
-            return "ShearBeamLT";
-        }
-
-        Vector *getStress( void );
+    void formOutput();
+    void ComputeVolume();
+    void computeGaussPoint( void );
 
 
-        // ===================================================================================================================
-        // Data members
-        // ===================================================================================================================
-    private:
-        // bool initialized;
-        bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
-        double Area;
-        double length;
-        double rho;
+    Matrix &getGaussCoordinates(void);
+    virtual int getOutputSize() const;
+    virtual const Vector &getOutput() const;
 
-        ID  connectedExternalNodes;
+    std::string getElementName() const
+    {
+        return "ShearBeamLT";
+    }
 
-        DTensor2 stress[1];
-        Matrix *Ki;
-
-        Node *theNodes[2];
-        NDMaterialLT *mmodel;
-        NDMaterialLT *material_array[1];
+    Vector *getStress( void );
 
 
+    // ===================================================================================================================
+    // Data members
+    // ===================================================================================================================
+private:
+    // bool initialized;
+    bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
+    double Area;
+    double length;
+    double rho;
 
-        Vector Q;
-        Vector bf;
+    ID  connectedExternalNodes;
 
-        Matrix K;
-        Matrix M;
-        Vector P;
+    DTensor2 stress[1];
+    Matrix *Ki;
 
-        static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
-        static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
+    Node *theNodes[2];
+    NDMaterialLT *mmodel;
+    NDMaterialLT *material_array[1];
 
-        Matrix gauss_points;
-        Vector outputVector;
 
-        Index < 'i' > i;
-        Index < 'j' > j;
-        Index < 'k' > k;
-        Index < 'l' > l;
+
+    Vector Q;
+    Vector bf;
+
+    Matrix K;
+    Matrix M;
+    Vector P;
+
+    static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
+    static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
+
+    Matrix gauss_points;
+    Vector outputVector;
+
+    Index < 'i' > i;
+    Index < 'j' > j;
+    Index < 'k' > k;
+    Index < 'l' > l;
 };
 
 

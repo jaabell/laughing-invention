@@ -1,18 +1,29 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// COPYRIGHT (C):     :-))
-// PROJECT:           Object Oriented Finite Element Program
-// FILE:              EightNodeBrick_u_p.cpp
-// CLASS:             EightNodeBrick_u_p
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:         DOS || UNIX || . . .
-// DESIGNER:          Zhao Cheng, Boris Jeremic
-// PROGRAMMER:        Zhao Cheng, Boris Jeremic
-// DATE:              Aug. 2006
-// UPDATE HISTORY:
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Zhao Cheng, Boris Jeremic
+// DATE:               Aug. 2006
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
-///////////////////////////////////////////////////////////////////////////////
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef EIGHTNODE_LDBRICK_U_P_H
 #define EIGHTNODE_LDBRICK_U_P_H
@@ -41,107 +52,107 @@
 
 class EightNode_LDBrick_u_p: public Element
 {
-    public:
-        EightNode_LDBrick_u_p(int element_number,
-                              int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
-                              int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                              NDMaterial *Globalmmodel, double b1, double b2, double b3,
-                              double nf, double rs, double rf,
-                              double permb_x, double permb_y, double permb_z,
-                              double kkf);
-        EightNode_LDBrick_u_p();
-        ~EightNode_LDBrick_u_p();
+public:
+    EightNode_LDBrick_u_p(int element_number,
+                          int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
+                          int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
+                          NDMaterial *Globalmmodel, double b1, double b2, double b3,
+                          double nf, double rs, double rf,
+                          double permb_x, double permb_y, double permb_z,
+                          double kkf);
+    EightNode_LDBrick_u_p();
+    ~EightNode_LDBrick_u_p();
 
-        const char *getClassType(void) const
-        {
-            return "EightNode_LDBrick_u_p";
-        };
+    const char *getClassType(void) const
+    {
+        return "EightNode_LDBrick_u_p";
+    };
 
-        int getNumExternalNodes(void) const;
-        const ID &getExternalNodes(void);
-        Node **getNodePtrs(void);
-        int getNumDOF(void);
-        void setDomain(Domain *theDomain);
+    int getNumExternalNodes(void) const;
+    const ID &getExternalNodes(void);
+    Node **getNodePtrs(void);
+    int getNumDOF(void);
+    void setDomain(Domain *theDomain);
 
-        int commitState(void);
-        int revertToLastCommit(void);
-        int revertToStart(void);
-        int update(void);
+    int commitState(void);
+    int revertToLastCommit(void);
+    int revertToStart(void);
+    int update(void);
 
-        const Matrix &getTangentStiff(void);
-        const Matrix &getInitialStiff(void);
-        const Matrix &getDamp(void);
-        const Matrix &getMass(void);
+    const Matrix &getTangentStiff(void);
+    const Matrix &getInitialStiff(void);
+    const Matrix &getDamp(void);
+    const Matrix &getMass(void);
 
-        void zeroLoad(void);
-        int addLoad(ElementalLoad *theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector &accel);
-        const Vector &getResistingForce(void);
-        const Vector &getResistingForceIncInertia(void);
+    void zeroLoad(void);
+    int addLoad(ElementalLoad *theLoad, double loadFactor);
+    int addInertiaLoadToUnbalance(const Vector &accel);
+    const Vector &getResistingForce(void);
+    const Vector &getResistingForceIncInertia(void);
 
-        int sendSelf(int commitTag, Channel &theChannel);
-        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
-        int displaySelf(Renderer &theViewer, int displayMode, float fact);
-        void Print(ostream &s, int flag = 0);
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+    int displaySelf(Renderer &theViewer, int displayMode, float fact);
+    void Print(ostream &s, int flag = 0);
 
-        // Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        // int getResponse(int responseID, Information& eleInformation);
+    // Response* setResponse(const char** argv, int argc, Information& eleInfo);
+    // int getResponse(int responseID, Information& eleInformation);
 
-        //int setParameter (const char **argv, int argc, Information &info);
-        //int updateParameter (int parameterID, Information &info);
+    //int setParameter (const char **argv, int argc, Information &info);
+    //int updateParameter (int parameterID, Information &info);
 
-    private:
-        tensor shapeFunction(double, double, double);
-        tensor shapeFunctionDerivative(double, double, double);
-        tensor getNodesCrds();
-        tensor getNodesDisp();
-        tensor Jacobian_3D(double, double, double);
-        tensor Jacobian_3Dinv(double, double, double);
-        tensor dh_Global(double, double, double);
+private:
+    tensor shapeFunction(double, double, double);
+    tensor shapeFunctionDerivative(double, double, double);
+    tensor getNodesCrds();
+    tensor getNodesDisp();
+    tensor Jacobian_3D(double, double, double);
+    tensor Jacobian_3Dinv(double, double, double);
+    tensor dh_Global(double, double, double);
 
-        tensor getGaussPts(void);
-        double getPorePressure(double, double, double);
+    tensor getGaussPts(void);
+    double getPorePressure(double, double, double);
 
-        tensor getStiffnessTensorK1();
-        tensor getStiffnessTensorK2();
-        tensor getMassTensorM1();
-        tensor getMassTensorM2();
-        tensor getDampingTensorC1();
-        tensor getDampingTensorC2();
-        tensor getMatStiffness();
-        const Matrix &getStiff(int Ki_flag);
-        const Matrix &getStiffnessK0();
-        const Vector &getInternalForce();
-        const Vector &getForceU();
-        const Vector &getForceP();
-        tensor LagrangianPerm(const tensor &Finv, const tensor &permea, double Jin);
+    tensor getStiffnessTensorK1();
+    tensor getStiffnessTensorK2();
+    tensor getMassTensorM1();
+    tensor getMassTensorM2();
+    tensor getDampingTensorC1();
+    tensor getDampingTensorC2();
+    tensor getMatStiffness();
+    const Matrix &getStiff(int Ki_flag);
+    const Matrix &getStiffnessK0();
+    const Vector &getInternalForce();
+    const Vector &getForceU();
+    const Vector &getForceP();
+    tensor LagrangianPerm(const tensor &Finv, const tensor &permea, double Jin);
 
-    private:
-        ID  connectedExternalNodes;
-        Node *theNodes[8];
-        NDMaterial **theMaterial;
+private:
+    ID  connectedExternalNodes;
+    Node *theNodes[8];
+    NDMaterial **theMaterial;
 
-        static Matrix MCK;
-        static Vector P;
+    static Matrix MCK;
+    static Vector P;
 
-        static const int  Num_IntegrationPts;
-        static const int  Num_TotalGaussPts;
-        static const int  Num_Nodes;
-        static const int  Num_Dim;
-        static const int  Num_Dof;
-        static const int  Num_ElemDof;
-        static const double pts[2];
-        static const double wts[2];
-        static tensor perm;            // Permeability = k/(rho_f*g)
+    static const int  Num_IntegrationPts;
+    static const int  Num_TotalGaussPts;
+    static const int  Num_Nodes;
+    static const int  Num_Dim;
+    static const int  Num_Dof;
+    static const int  Num_ElemDof;
+    static const double pts[2];
+    static const double wts[2];
+    static tensor perm;            // Permeability = k/(rho_f*g)
 
-        Vector bf;
-        double nf;
-        double rho_s;
-        double rho_f;
-        double kf;
+    Vector bf;
+    double nf;
+    double rho_s;
+    double rho_f;
+    double kf;
 
-        Vector *Q;
-        Matrix *Ki;
+    Vector *Q;
+    Matrix *Ki;
 };
 
 

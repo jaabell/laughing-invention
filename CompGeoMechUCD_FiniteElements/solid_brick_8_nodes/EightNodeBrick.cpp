@@ -4,7 +4,7 @@
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
 // PROGRAMMER:         Boris Jeremic, Zhaohui Yang  and Xiaoyan Wu
-// DATE:               Aug 2000
+// DATE:               Aug. 2000
 // UPDATE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation
@@ -24,7 +24,16 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-
+///////////////////////////////////////////////////////////////////////////////
+// UPDATE HISTORY:    Modified from Brick3D and FourNodeQuad.hh  07/06/00
+//                    Sept. - Oct 2000 connected to OpenSees by Zhaohui
+//                    Sept 2001 optimized to some extent (static tensors...)
+//                    May 2004 Guanzhou added update()
+//                    September 2010 Nima removed density as an input argument
+//                    October 2010 Nima removed pressure as an input argument
+//                    July 2012 Nima added the surface load
+//
+///////////////////////////////////////////////////////////////////////////////
 
 
 

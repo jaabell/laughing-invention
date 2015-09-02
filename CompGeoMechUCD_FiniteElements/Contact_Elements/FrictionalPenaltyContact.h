@@ -24,29 +24,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-
-// Style guide. ---
-// * Use CamelCase for member functions, constructors, destructors and class names have intial upper case
-//   letter and other functions have lower-case initial letter.
-//      Exception:  when variables are named consistently with theory (e.g. K for striffness matrix, etc.)
-// * Use underscores for variable names (e.g yield_function_value)
-// * i,j,k,l,m,n,p,q are reserved for indexes into arrays (iterating over components)
-//     -Note1: the type of these can be integer or other fancy types, ie. when using LTensor class
-//             to store tensors.
-// * Use "Allman" code styling. Use a code formatter like AStyle (http://astyle.sourceforge.net/)
-//   there are many plugins which interface this into editors (SublimeAStyleFormatter for sublime text editor)
-// * Use the most recent C++ standard supported by your compiler. Code should compile without
-//   warnings using the -Wall flag or equivalent. In case this cannot be done, comment on why.
-// * Delay allocating resources as much as possible (at least until setDomain function gets called).
-// * Clean up resources as soon as possible.
-// * Think parallel. Have to implement sendSelf() and receiveSelf() functions.
-//
-// 2015 Jose Abell - UCD CompGeoMech
-
-
-// (!) More instructions and details on the implementation file FrictionalPenaltyContact.cpp
-
-// Rename the header guard
 #ifndef FrictionalPenaltyContact_h
 #define FrictionalPenaltyContact_h
 

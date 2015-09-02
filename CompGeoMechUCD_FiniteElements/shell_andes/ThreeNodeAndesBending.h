@@ -1,29 +1,28 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// COPYLEFT (C):     :-))
-//``This  source code is Copyrighted in U.S., by the The Regents of the University
-//of California, for an indefinite period, and anybody caught using it without our
-//permission,  will  be  mighty  good friends of ourn, cause we don't give a darn.
-//Hack  it.  Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
-//all we wanted to do.'' bj
-// PROJECT:           Object Oriented Finite Element Program
-// FILE:              ThreeNodeAndesBending.h
-// CLASS:             ThreeNodeAndesBending
-// MEMBER FUNCTIONS:
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Boris Jeremic, Jose Abell
+// DATE:               July 2012
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
-// MEMBER VARIABLES
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
 //
-// PURPOSE:           Finite Element Class
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:         DOS || UNIX || . . .
-// DESIGNER:          Boris Jeremic, Jose Abell
-// PROGRAMMER:        Boris Jeremic, Jose Abell
-// DATE:              July 2012
-// UPDATE HISTORY:
-//
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -108,131 +107,131 @@ class Node;
 class ThreeNodeAndesBending: public Element
 {
 
-    public:
-        //===================================================================================
-        // Element Constructors / Destructors
-        //===================================================================================
-        ThreeNodeAndesBending ();
+public:
+    //===================================================================================
+    // Element Constructors / Destructors
+    //===================================================================================
+    ThreeNodeAndesBending ();
 
-        ThreeNodeAndesBending(int element_number,
-                              int node_numb_1, int node_numb_2, int node_numb_3, double t,
-                              NDMaterial *Globalmmodel);
-        ThreeNodeAndesBending(int element_number,
-                              int node_numb_1, int node_numb_2, int node_numb_3, double t,
-                              NDMaterial **material);  // Need this to be called when this element is part of complete shell element :P
-        ~ThreeNodeAndesBending();
+    ThreeNodeAndesBending(int element_number,
+                          int node_numb_1, int node_numb_2, int node_numb_3, double t,
+                          NDMaterial *Globalmmodel);
+    ThreeNodeAndesBending(int element_number,
+                          int node_numb_1, int node_numb_2, int node_numb_3, double t,
+                          NDMaterial **material);  // Need this to be called when this element is part of complete shell element :P
+    ~ThreeNodeAndesBending();
 
-        //===================================================================================
-        // Element interface
-        //===================================================================================
-        // These member functions are needed to satisfy the Element interface
-        // They all overload virtual functions. Most are even pure virtual functions.
+    //===================================================================================
+    // Element interface
+    //===================================================================================
+    // These member functions are needed to satisfy the Element interface
+    // They all overload virtual functions. Most are even pure virtual functions.
 
-        int getNumExternalNodes () const;
-        const ID &getExternalNodes ();
-        Node **getNodePtrs(void);
-        int getNumDOF ();
-        void setDomain(Domain *theDomain);
+    int getNumExternalNodes () const;
+    const ID &getExternalNodes ();
+    Node **getNodePtrs(void);
+    int getNumDOF ();
+    void setDomain(Domain *theDomain);
 
-        int commitState ();
-        int revertToLastCommit ();
-        int revertToStart ();
-        int update(void);
-
-
-        const Matrix &getTangentStiff ();
-        const Matrix &getInitialStiff();
-        const Matrix &getMass ();
-
-        void zeroLoad ();
-        int addLoad(ElementalLoad *theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector &accel);
-
-        const Vector &getResistingForce ();
-        const Vector &getResistingForceIncInertia ();
-
-        int sendSelf (int commitTag, Channel &theChannel);
-        int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
-
-        void Print(ostream &s, int flag);
-        // Response* setResponse (const char** argv, int argc, Information& eleInformation);
-        // int getResponse (int responseID, Information& eleInformation);
-
-        Matrix returnMass(void);
-
-        void useThisCoordinateSystem(Vector e1, Vector e2, Vector e3);
-        double getArea() const;
-
-        //Handling body and surface forces
-        const Vector &getBodyforce(double loadFactor, const Vector &data);
-        const Vector FormEquiBodyForce(void);
-
-        // Stress recovery
-        Vector get_moment_field();
-
-        //Utility
-        bool gotMass() const;           // Got Mass?  (check for rho value)
-
-        std::string getElementName() const
-        {
-            return "ThreeNodeAndesBending";
-        }
-
-    private:
-        //===================================================================================
-        // Internal Functions
-        //===================================================================================
-        void initializeGeometry();                              // Calculates all geometry related internal variables
-        void initializeMq();
-        void calculate_E_planestress();
+    int commitState ();
+    int revertToLastCommit ();
+    int revertToStart ();
+    int update(void);
 
 
-        //Member functions for bending component
-        //Matrix getBendingForceLumpingMatrix();
-        Matrix getBendingBasicStiffness();
-        Matrix getBendingHighOrderStiffness();
+    const Matrix &getTangentStiff ();
+    const Matrix &getInitialStiff();
+    const Matrix &getMass ();
 
-        //===================================================================================
-        // Internal variables
-        //===================================================================================
+    void zeroLoad ();
+    int addLoad(ElementalLoad *theLoad, double loadFactor);
+    int addInertiaLoadToUnbalance(const Vector &accel);
 
-        // Pointers to other Domain components
-        ID  connectedExternalNodes;     // Tags of  nodes
-        Node *theNodes[3];              // pointers to 3 nodes
-        NDMaterial **theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
+    const Vector &getResistingForce ();
+    const Vector &getResistingForceIncInertia ();
 
-        // Finite element matrices
-        Matrix K;                       // Element stiffness Matrix
-        Matrix M;                       // Element mass matrix
-        Vector P;                       // Element resisting force vector
-        Vector Q;                       // Applied nodal loads
-        Vector bf;                      // Body forces
+    int sendSelf (int commitTag, Channel &theChannel);
+    int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        // Geometry related
-        double thickness;               // Element thickness
-        Vector xl1,  xl2, xl3;          // Node i's local x and y coordinates (z = 0)
-        Vector x0;                      // Centroid in global coordinates
-        Matrix T_lg;                    // Local-to-global transformation matrix T_lg = [x_l, y_l, z_l]
-        double Area;                    // yes... its the area of the triangle :)
-        double x12, x23, x31;           // Differences in local x coordinates on nodes ij, xij = xli[0] - xlj[0]
-        double y12, y23, y31;           // Differences in local y coordinates on nodes ij, yij = yli[0] - ylj[0]
+    void Print(ostream &s, int flag);
+    // Response* setResponse (const char** argv, int argc, Information& eleInformation);
+    // int getResponse (int responseID, Information& eleInformation);
+
+    Matrix returnMass(void);
+
+    void useThisCoordinateSystem(Vector e1, Vector e2, Vector e3);
+    double getArea() const;
+
+    //Handling body and surface forces
+    const Vector &getBodyforce(double loadFactor, const Vector &data);
+    const Vector FormEquiBodyForce(void);
+
+    // Stress recovery
+    Vector get_moment_field();
+
+    //Utility
+    bool gotMass() const;           // Got Mass?  (check for rho value)
+
+    std::string getElementName() const
+    {
+        return "ThreeNodeAndesBending";
+    }
+
+private:
+    //===================================================================================
+    // Internal Functions
+    //===================================================================================
+    void initializeGeometry();                              // Calculates all geometry related internal variables
+    void initializeMq();
+    void calculate_E_planestress();
 
 
-        // Material related
-        double rho;                     // Mass per unit volume
-        Matrix E_planestress;           // Plane stress constitutive matrix
+    //Member functions for bending component
+    //Matrix getBendingForceLumpingMatrix();
+    Matrix getBendingBasicStiffness();
+    Matrix getBendingHighOrderStiffness();
 
-        // Element formulation related
+    //===================================================================================
+    // Internal variables
+    //===================================================================================
 
-        //static Matrix;
-        //static double alpha_bending;
-        //static Matrix beta_bending;
-        static Matrix Mq;
+    // Pointers to other Domain components
+    ID  connectedExternalNodes;     // Tags of  nodes
+    Node *theNodes[3];              // pointers to 3 nodes
+    NDMaterial **theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
 
-        static unsigned int number_of_three_node_andes_bending;
+    // Finite element matrices
+    Matrix K;                       // Element stiffness Matrix
+    Matrix M;                       // Element mass matrix
+    Vector P;                       // Element resisting force vector
+    Vector Q;                       // Applied nodal loads
+    Vector bf;                      // Body forces
 
-        bool is_stiffness_calculated;
-        bool is_mass_calculated;
+    // Geometry related
+    double thickness;               // Element thickness
+    Vector xl1,  xl2, xl3;          // Node i's local x and y coordinates (z = 0)
+    Vector x0;                      // Centroid in global coordinates
+    Matrix T_lg;                    // Local-to-global transformation matrix T_lg = [x_l, y_l, z_l]
+    double Area;                    // yes... its the area of the triangle :)
+    double x12, x23, x31;           // Differences in local x coordinates on nodes ij, xij = xli[0] - xlj[0]
+    double y12, y23, y31;           // Differences in local y coordinates on nodes ij, yij = yli[0] - ylj[0]
+
+
+    // Material related
+    double rho;                     // Mass per unit volume
+    Matrix E_planestress;           // Plane stress constitutive matrix
+
+    // Element formulation related
+
+    //static Matrix;
+    //static double alpha_bending;
+    //static Matrix beta_bending;
+    static Matrix Mq;
+
+    static unsigned int number_of_three_node_andes_bending;
+
+    bool is_stiffness_calculated;
+    bool is_mass_calculated;
 
 };
 

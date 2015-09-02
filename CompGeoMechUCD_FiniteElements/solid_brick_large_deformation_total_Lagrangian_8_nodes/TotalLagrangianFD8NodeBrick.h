@@ -1,54 +1,29 @@
-//===============================================================================
-
-//# COPYRIGHT (C): Woody's license (by BJ):
-
-//                 ``This    source  code is Copyrighted in
-
-//                 U.S.,  for  an  indefinite  period,  and anybody
-
-//                 caught  using it without our permission, will be
-
-//                 mighty good friends of ourn, cause we don't give
-
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-
-//                 wanted to do.''
-
+///////////////////////////////////////////////////////////////////////////////
 //
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Zhao Cheng, Boris Jeremic
+// DATE:               Sept2003
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
+//
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
 
-//# PROJECT:           Object Oriented Finite Element Program
-
-//# PURPOSE:           Finite Deformation Hyper-Elastic classes
-
-//# CLASS:
-
-//#
-
-//# VERSION:           0.6_(1803398874989) (golden section)
-
-//# LANGUAGE:          C++
-
-//# TARGET OS:         all...
-
-//# DESIGN:            Zhao Cheng, Boris Jeremic (jeremic@ucdavis.edu)
-
-//# PROGRAMMER(S):     Zhao Cheng, Boris Jeremic
-
-//#
-
-//#
-
-//# DATE:              Sept2005
-
-//# UPDATE HISTORY:
-
-//#
-
-//#
-
-//===============================================================================
 
 #ifndef TOTALLAGRANGIANFD8BRICK_H
 
@@ -120,192 +95,192 @@ class TotalLagrangianFD8NodeBrick: public Element
 
 {
 
-    public:
+public:
 
-        TotalLagrangianFD8NodeBrick(int tag,
+    TotalLagrangianFD8NodeBrick(int tag,
 
-                                    int node_numb_1,  int node_numb_2,  int node_numb_3,  int node_numb_4,
+                                int node_numb_1,  int node_numb_2,  int node_numb_3,  int node_numb_4,
 
-                                    int node_numb_5,  int node_numb_6,  int node_numb_7,  int node_numb_8,
+                                int node_numb_5,  int node_numb_6,  int node_numb_7,  int node_numb_8,
 
-                                    NDMaterial &m, double b1 = 0.0, double b2 = 0.0, double b3 = 0.0);
+                                NDMaterial &m, double b1 = 0.0, double b2 = 0.0, double b3 = 0.0);
 
 
 
-        TotalLagrangianFD8NodeBrick ();
+    TotalLagrangianFD8NodeBrick ();
 
-        ~TotalLagrangianFD8NodeBrick();
+    ~TotalLagrangianFD8NodeBrick();
 
 
 
-        const char *getClassType(void) const
-        {
-            return "TotalLagrangianFD8NodeBrick";
-        };
+    const char *getClassType(void) const
+    {
+        return "TotalLagrangianFD8NodeBrick";
+    };
 
 
 
-        int getNumExternalNodes () const;
+    int getNumExternalNodes () const;
 
-        const ID &getExternalNodes ();
+    const ID &getExternalNodes ();
 
-        Node **getNodePtrs();
+    Node **getNodePtrs();
 
 
 
-        int getNumDOF ();
+    int getNumDOF ();
 
-        void setDomain(Domain *theDomain);
+    void setDomain(Domain *theDomain);
 
 
 
-        int commitState ();
+    int commitState ();
 
-        int revertToLastCommit ();
+    int revertToLastCommit ();
 
-        int revertToStart ();
+    int revertToStart ();
 
-        int update();
+    int update();
 
 
 
-        const Matrix &getTangentStiff ();
+    const Matrix &getTangentStiff ();
 
-        const Matrix &getInitialStiff();
+    const Matrix &getInitialStiff();
 
-        const Matrix &getMass ();
+    const Matrix &getMass ();
 
 
 
-        void zeroLoad ();
+    void zeroLoad ();
 
-        int addLoad(ElementalLoad *theLoad, double loadFactor);
+    int addLoad(ElementalLoad *theLoad, double loadFactor);
 
-        int addInertiaLoadToUnbalance(const Vector &accel);
+    int addInertiaLoadToUnbalance(const Vector &accel);
 
 
 
-        const Vector &getResistingForce ();
+    const Vector &getResistingForce ();
 
-        const Vector &getResistingForceIncInertia ();
+    const Vector &getResistingForceIncInertia ();
 
 
 
-        // public methods for element output
+    // public methods for element output
 
-        int sendSelf (int commitTag, Channel &theChannel);
+    int sendSelf (int commitTag, Channel &theChannel);
 
-        int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+    int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
-        int displaySelf (Renderer &theViewer, int displayMode, float fact);
+    int displaySelf (Renderer &theViewer, int displayMode, float fact);
 
-        void Print(ostream &s, int flag = 0);
+    void Print(ostream &s, int flag = 0);
 
 
 
-        // Response* setResponse (const char** argv, int argc, Information& eleInformation);
+    // Response* setResponse (const char** argv, int argc, Information& eleInformation);
 
-        // int getResponse (int responseID, Information& eleInformation);
+    // int getResponse (int responseID, Information& eleInformation);
 
 
 
-        //    int setParameter(const char **argv, int argc, Information &info);
+    //    int setParameter(const char **argv, int argc, Information &info);
 
-        //    int updateParameter(int parameterID, Information &info);
+    //    int updateParameter(int parameterID, Information &info);
 
 
 
 
 
-    protected:
+protected:
 
 
 
-    private:
+private:
 
 
 
-        NDMaterial **theMaterial; // Pointer to the NDMaterial objects
+    NDMaterial **theMaterial; // Pointer to the NDMaterial objects
 
-        ID  connectedExternalNodes; // Tags of TotalLagrangianFD20Brick nodes
+    ID  connectedExternalNodes; // Tags of TotalLagrangianFD20Brick nodes
 
-        Node *theNodes[8];
+    Node *theNodes[8];
 
 
 
-        static Matrix K;    // Element stiffness Matrix
+    static Matrix K;    // Element stiffness Matrix
 
-        //    static Matrix C;    // Element damping matrix
+    //    static Matrix C;    // Element damping matrix
 
-        static Matrix M;    // Element mass matrix
+    static Matrix M;    // Element mass matrix
 
-        static Vector P;    // Element resisting force vector
+    static Vector P;    // Element resisting force vector
 
-        static const double pts[2];   // Stores quadrature points
+    static const double pts[2];   // Stores quadrature points
 
-        static const double wts[2];   // Stores quadrature weights
+    static const double wts[2];   // Stores quadrature weights
 
-        Vector *Q;     // Applied nodal loads
+    Vector *Q;     // Applied nodal loads
 
-        Vector bf;     // Body forces
+    Vector bf;     // Body forces
 
 
 
-        double rho;    // Mass per unit volume
+    double rho;    // Mass per unit volume
 
 
 
-        double det_of_Jacobian;
+    double det_of_Jacobian;
 
 
 
-        Matrix *Ki;
+    Matrix *Ki;
 
 
 
-    private:
+private:
 
 
 
-        static const int  NumIntegrationPts;
+    static const int  NumIntegrationPts;
 
-        static const int  NumTotalGaussPts;
+    static const int  NumTotalGaussPts;
 
-        static const int  NumNodes;
+    static const int  NumNodes;
 
-        static const int  NumDof;
+    static const int  NumDof;
 
-        static const int  NumElemDof;
+    static const int  NumElemDof;
 
 
 
-        tensor shapeFunction(double , double , double );
+    tensor shapeFunction(double , double , double );
 
-        tensor shapeFunctionDerivative(double , double , double );
+    tensor shapeFunctionDerivative(double , double , double );
 
 
 
-        tensor Jacobian_3D(double , double , double);
+    tensor Jacobian_3D(double , double , double);
 
-        tensor Jacobian_3Dinv(double , double , double);
+    tensor Jacobian_3Dinv(double , double , double);
 
-        tensor dh_Global(double , double , double);
+    tensor dh_Global(double , double , double);
 
-        tensor getNodesCrds(void);
+    tensor getNodesCrds(void);
 
-        tensor getNodesDisp(void);
+    tensor getNodesDisp(void);
 
 
 
-        tensor getStiffnessTensor(void);
+    tensor getStiffnessTensor(void);
 
-        tensor getRtensor(void);
+    tensor getRtensor(void);
 
-        tensor getBodyForce(void);
+    tensor getBodyForce(void);
 
-        tensor getSurfaceForce(void);
+    tensor getSurfaceForce(void);
 
-        tensor getForces(void);
+    tensor getForces(void);
 
 
 
