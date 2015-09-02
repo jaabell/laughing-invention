@@ -3,8 +3,8 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:
-// DATE:
+// PROGRAMMER:         .
+// DATE:               .
 // UPDATE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation

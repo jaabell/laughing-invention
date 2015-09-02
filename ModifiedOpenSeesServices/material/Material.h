@@ -42,11 +42,6 @@
 #include <DomainComponent.h>
 #include <MovableObject.h>
 
-// Nima Tafazzoli added for Check Mesh (Sep. 2012)
-#include <fstream>
-using namespace std;
-
-
 class Information;
 class Response;
 

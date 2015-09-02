@@ -157,7 +157,7 @@ ModifiedNewton::solveCurrentStep(void)
             return -2;
         }
 
-        this->record(count++);
+        // this->record(count++);
         result = theTest->test();
 
     }
@@ -192,8 +192,8 @@ ModifiedNewton::sendSelf(int cTag, Channel& theChannel)
 
 int
 ModifiedNewton::receiveSelf(int cTag,
-                         Channel& theChannel,
-                         FEM_ObjectBroker& theBroker)
+                            Channel& theChannel,
+                            FEM_ObjectBroker& theBroker)
 {
     static ID data(1);
     theChannel.receiveID(this->getDbTag(), cTag, data);

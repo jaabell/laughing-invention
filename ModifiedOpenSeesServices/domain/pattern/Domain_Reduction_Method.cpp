@@ -1,37 +1,38 @@
-//===============================================================================
-//# COPYRIGHT (C): Woody's license (by BJ):
-//                 ``This    source  code is Copyrighted in
-//                 U.S.,  for  an  indefinite  period,  and anybody
-//                 caught  using it without our permission, will be
-//                 mighty good friends of ourn, cause we don't give
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-//                 wanted to do.''
+///////////////////////////////////////////////////////////////////////////////
 //
-//# PROJECT:           Object Oriented Finite Element Program
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Nima Tafazzoli , Boris Jeremic
+// DATE:               June 1st. 2010
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
+//
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
+
+
 //# PURPOSE:           Plastic Bowl (aka Domain Reduction) implementation:
 //#                    This file contains the class definition for Domain_Reduction_Method.
 //#                    Domain_Reduction_Method is a subclass of loadPattern,
 //#                    which implements the plastic bowl loading
 //#                    (aka Domain Reduction Method) as described
 //#                    by Jacobo Bielak et al.
-//# CLASS:             Domain_Reduction_Method
-//#
-//# VERSION:           0.61803398874989 (golden section)
-//# LANGUAGE:          C++
-//# TARGET OS:         all...
-//# DESIGN:            Nima Tafazzoli , Boris Jeremic
-//# PROGRAMMER(S):     Nima Tafazzoli , Boris Jeremic
-//# Modified Version
-//#              of:   PBowlLoading written by:
+//# Based on:          PBowlLoading written by:
 //#                    Jinxiu Liao, Zhaohui Yang, Boris Jeremic
-//#
-//#
-//# DATE:              June 1st 2010
-//# UPDATE HISTORY:
-//#
-//#
-//===============================================================================
 
 
 // Purpose: This file contains the class definition for Domain_Reduction_Method.

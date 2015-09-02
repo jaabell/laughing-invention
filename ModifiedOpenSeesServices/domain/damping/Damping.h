@@ -1,29 +1,29 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// COPYLEFT (C):     :-))
-//  ``This  source code is Copyrighted in U.S., by the The Regents of the University
-//  of California, for an indefinite period, and anybody caught using it without our
-//  permission,  will  be  mighty  good friends of ourn, cause we don't give a darn.
-//  Hack  it.  Compile it. Debug it. Run it. Yodel it. Enjoy it. We wrote it, that's
-//  all we wanted to do.'' bj
-// PROJECT:           Object Oriented Finite Element Program
-// FILE:              Damping.h
-// CLASS:             Damping
-// MEMBER FUNCTIONS:
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Nima Tafazzoli, Boris Jeremic
+// DATE:               Oct 2010
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
-// MEMBER VARIABLES
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
 //
-// PURPOSE:           Adding Damping to Domain
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:         DOS || UNIX || . . .
-// DESIGNER:          Nima Tafazzoli, Boris Jeremic
-// PROGRAMMER:        Nima Tafazzoli, Boris Jeremic
-// DATE:              Oct. 2010
-// UPDATE HISTORY:
-//
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
 
 
 #ifndef Damping_h
@@ -40,33 +40,33 @@ using namespace std;
 
 class Damping : public DomainComponent
 {
-    public:
-        Damping(int tag, int classTag);
+public:
+    Damping(int tag, int classTag);
 
-        virtual ~Damping();
+    virtual ~Damping();
 
-        virtual double return_a0();
-        virtual double return_a1();
-        virtual double return_a2();
-        virtual double return_a3();
-        virtual string return_dampingtype();
-        virtual string return_stiffnesstype();
-        virtual int return_tag();
+    virtual double return_a0();
+    virtual double return_a1();
+    virtual double return_a2();
+    virtual double return_a3();
+    virtual string return_dampingtype();
+    virtual string return_stiffnesstype();
+    virtual int return_tag();
 
-        // pure virtual functions
-        //    virtual void applyDamping(double loadfactor) =0;
+    // pure virtual functions
+    //    virtual void applyDamping(double loadfactor) =0;
 
-        //    virtual void setDampingTag(int loadPaternTag);
-        //    virtual int  getDampingTag(void) const;
+    //    virtual void setDampingTag(int loadPaternTag);
+    //    virtual int  getDampingTag(void) const;
 
-    protected:
+protected:
 
-    private:
-        int dampingTag;
-        double a0;
-        double a1;
-        double a2;
-        double a3;
+private:
+    int dampingTag;
+    double a0;
+    double a1;
+    double a2;
+    double a3;
 };
 
 #endif

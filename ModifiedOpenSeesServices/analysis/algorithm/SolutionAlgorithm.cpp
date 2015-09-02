@@ -24,7 +24,7 @@
 
 
 #include <SolutionAlgorithm.h>
-#include <Recorder.h>
+// #include <Recorder.h>
 #include <stdlib.h>
 #include <OPS_Globals.h>
 #include <iostream>
@@ -32,22 +32,22 @@ using namespace std;
 
 
 SolutionAlgorithm::SolutionAlgorithm(int clasTag)
-    : MovableObject(clasTag), theRecorders(0), numRecorders(0)
+    : MovableObject(clasTag)//, theRecorders(0), numRecorders(0)
 {
 
 }
 
 SolutionAlgorithm::~SolutionAlgorithm()
 {
-    for (int i = 0; i < numRecorders; i++)
-    {
-        delete theRecorders[i];
-    }
+    // for (int i = 0; i < numRecorders; i++)
+    // {
+    //     delete theRecorders[i];
+    // }
 
-    if (theRecorders != 0)
-    {
-        free((void*)theRecorders);
-    }
+    // if (theRecorders != 0)
+    // {
+    //     free((void*)theRecorders);
+    // }
 }
 
 int
@@ -56,43 +56,43 @@ SolutionAlgorithm::domainChanged()
     return 0;
 }
 
-int
-SolutionAlgorithm::addRecorder(Recorder& theRecorder)
-{
-    Recorder** newRecorders = (Recorder**)malloc((numRecorders + 1) * sizeof(Recorder*));
+// int
+// SolutionAlgorithm::addRecorder(Recorder& theRecorder)
+// {
+//     Recorder** newRecorders = (Recorder**)malloc((numRecorders + 1) * sizeof(Recorder*));
 
-    if (newRecorders == 0)
-    {
-        cerr << "SolutionAlgorithm::addRecorder - ran out of memory\n";
-        return -1;
-    }
+//     if (newRecorders == 0)
+//     {
+//         cerr << "SolutionAlgorithm::addRecorder - ran out of memory\n";
+//         return -1;
+//     }
 
-    for (int i = 0; i < numRecorders; i++)
-    {
-        newRecorders[i] = theRecorders[i];
-    }
+//     for (int i = 0; i < numRecorders; i++)
+//     {
+//         newRecorders[i] = theRecorders[i];
+//     }
 
-    newRecorders[numRecorders] = &theRecorder;
+//     newRecorders[numRecorders] = &theRecorder;
 
-    if (theRecorders != 0)
-    {
-        free((void*)theRecorders);
-    }
+//     if (theRecorders != 0)
+//     {
+//         free((void*)theRecorders);
+//     }
 
-    theRecorders = newRecorders;
-    numRecorders++;
-    return 0;
-}
+//     theRecorders = newRecorders;
+//     numRecorders++;
+//     return 0;
+// }
 
 
-int
-SolutionAlgorithm::record(int cTag)
-{
-    for (int i = 0; i < numRecorders; i++)
-    {
-        theRecorders[i]->record(cTag, 0.0);
-    }
+// int
+// SolutionAlgorithm::record(int cTag)
+// {
+//     for (int i = 0; i < numRecorders; i++)
+//     {
+//         theRecorders[i]->record(cTag, 0.0);
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 

@@ -50,10 +50,6 @@
 
 #include <OPS_Globals.h>
 
-#ifdef _BABAK_DEBUG
-#include <mpi.h>
-#endif
-
 #include <iostream>
 using namespace std;
 

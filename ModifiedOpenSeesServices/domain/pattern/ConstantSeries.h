@@ -42,43 +42,43 @@
 
 class ConstantSeries : public TimeSeries
 {
-    public:
-        ConstantSeries(double cFactor = 1.0);
+public:
+    ConstantSeries(double cFactor = 1.0);
 
-        ~ConstantSeries();
+    ~ConstantSeries();
 
-        // method to get load factor
-        double getFactor(double pseudoTime)
-        {
-            return cFactor;
-        }
+    // method to get load factor
+    double getFactor(double pseudoTime)
+    {
+        return cFactor;
+    }
 
-        // None of the following functions should be invoked on this type
-        // of object
-        double getDuration ()
-        {
-            return 0.0;   // dummy function
-        }
-        double getPeakFactor ()
-        {
-            return cFactor;   // dummy function
-        }
-        double getTimeIncr (double pseudoTime)
-        {
-            return 1.0;   // dummy function
-        }
+    // None of the following functions should be invoked on this type
+    // of object
+    double getDuration ()
+    {
+        return 0.0;   // dummy function
+    }
+    double getPeakFactor ()
+    {
+        return cFactor;   // dummy function
+    }
+    double getTimeIncr (double pseudoTime)
+    {
+        return 1.0;   // dummy function
+    }
 
-        // methods for output
-        int sendSelf(int commitTag, Channel& theChannel);
-        int receiveSelf(int commitTag, Channel& theChannel,
-                     FEM_ObjectBroker& theBroker);
+    // methods for output
+    int sendSelf(int commitTag, Channel& theChannel);
+    int receiveSelf(int commitTag, Channel& theChannel,
+                    FEM_ObjectBroker& theBroker);
 
-        void Print(ostream& s, int flag = 0);
+    void Print(ostream& s, int flag = 0);
 
-    protected:
+protected:
 
-    private:
-        double cFactor;  // factor = cFactor
+private:
+    double cFactor;  // factor = cFactor
 };
 
 #endif

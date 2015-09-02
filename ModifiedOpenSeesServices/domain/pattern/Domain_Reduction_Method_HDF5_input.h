@@ -1,35 +1,29 @@
-//===============================================================================
-//# COPYRIGHT (C): Woody's license (by BJ):
-//                 ``This    source  code is Copyrighted in
-//                 U.S.,  for  an  indefinite  period,  and anybody
-//                 caught  using it without our permission, will be
-//                 mighty good friends of ourn, cause we don't give
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-//                 wanted to do.''
+///////////////////////////////////////////////////////////////////////////////
 //
-//# PROJECT:           Object Oriented Finite Element Program
-//# PURPOSE:           Plastic Bowl (aka Domain Reduction) implementation:
-//#                    This file contains the class definition for Domain_Reduction_Method_HDF5_input.
-//#                    Domain_Reduction_Method_HDF5_input is a subclass of loadPattern,
-//#                    which implements the plastic bowl loading
-//#                    (aka Domain Reduction Method) as described
-//#                    by Jacobo Bielak et al.
-//# CLASS:             Domain_Reduction_Method_HDF5_input
-//#
-//# VERSION:           0.61803398874989 (golden section)
-//# LANGUAGE:          C++
-//# TARGET OS:         all...
-//# DESIGN:
-//# PROGRAMMER(S):
-//# Based on:
-//#
-//#
-//# DATE:              March 2011
-//# UPDATE HISTORY:
-//#
-//#
-//===============================================================================
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Jose Abell
+// DATE:               Nov 2014
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
+//
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef Domain_Reduction_Method_HDF5_input_h
 #define Domain_Reduction_Method_HDF5_input_h

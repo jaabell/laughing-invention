@@ -46,21 +46,21 @@ class Recorder;
 
 class SolutionAlgorithm: public MovableObject
 {
-    public:
-        SolutionAlgorithm(int classTag);
-        virtual ~SolutionAlgorithm();
+public:
+    SolutionAlgorithm(int classTag);
+    virtual ~SolutionAlgorithm();
 
-        virtual int domainChanged(void);
+    virtual int domainChanged(void);
 
-        // methods for monitoring the analysis during an algorithm
-        virtual int  addRecorder(Recorder& theRecorder);
-        virtual int  record(int track);
+    // methods for monitoring the analysis during an algorithm
+    // virtual int  addRecorder(Recorder& theRecorder);
+    // virtual int  record(int track);
 
-    protected:
+protected:
 
-    private:
-        Recorder** theRecorders;
-        int numRecorders;
+private:
+    // Recorder** theRecorders;
+    // int numRecorders;
 };
 
 #endif

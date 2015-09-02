@@ -298,7 +298,6 @@
 #include <PathTimeSeries_Force_TimeHistory.h>
 // #include <Linear_Disp_TimeHistory3_Penalty.h>
 
-#include <Domain_Reduction_Method_Modified_Input.h>
 #include <Domain_Reduction_Method_HDF5_input.h>
 
 
@@ -419,12 +418,6 @@ FEM_ObjectBroker::getNewElement(int classTag)
 
     case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
         return new PenaltyElement();
-
-    case ELE_TAG_ContactElement_3DOF_3DOF:          //Babak added on 11/05/13
-        return new ContactElement_3DOF_3DOF();
-
-    case ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF:            //Babak added on 11/25/13
-        return new ContactElement_Nonlinear_3DOF_3DOF();
 
     case ELE_TAG_EightNodeBrickLT:            //Jose added on Oct 9, 2014
         return new EightNodeBrickLT();
@@ -1008,13 +1001,6 @@ FEM_ObjectBroker::getNewLoadPattern(int classTag)
         return new Linear_Force_TimeHistory();
     }
 
-    //--------------------
-    //Babak Kamrani added to use PATTERN_TAG_Domain_Reduction_Method_Modified_Input
-    //--------------------
-    case PATTERN_TAG_Domain_Reduction_Method_Modified_Input:
-    {
-        return new Domain_Reduction_Method_Modified_Input();
-    }
 
     case PATTERN_TAG_Domain_Reduction_Method_HDF5_Input:
     {
@@ -1435,7 +1421,6 @@ LinearSOE *
 FEM_ObjectBroker::getNewLinearSOE(int classTagSOE,
                                   int classTagSolver)
 {
-    LinearSOE *theSOE = 0;
 
 #ifdef _PETSC
     PetscSolver *thePetscSolver = 0;
@@ -1451,6 +1436,7 @@ FEM_ObjectBroker::getNewLinearSOE(int classTagSOE,
 
         if (classTagSolver == SOLVER_TAGS_PetscSolver)
         {
+            LinearSOE *theSOE = 0;
             thePetscSolver = new PetscSolver();
             theSOE = new PetscSOE(*thePetscSolver);
             return theSOE;

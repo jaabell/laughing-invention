@@ -24,9 +24,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "./Contact_Elements/ContactElement_3DOF_3DOF.h"
-#include "./Contact_Elements/ContactElement_Nonlinear_3DOF_7DOF.h"
-#include "./Contact_Elements/ContactElement_Nonlinear_3DOF_3DOF.h"
 #include "./Contact_Elements/FrictionalPenaltyContact.h"
 #include "./solid_brick_8_nodes/EightNodeBrick.h"
 #include "./solid_brick_8_nodes_variable_number_of_gauss_points/EightNodeBrickVariableGP.h"
