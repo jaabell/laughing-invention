@@ -1,3 +1,32 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Jose Abell
+// DATE:               Jan 2012
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
+//
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+
 /*
     This file holds the definition of the DSL actions for FEI.
     Actions are commands which operate over the defined variables
@@ -86,96 +115,96 @@ class DslPrint : public DslAction
  out its value, if not it prints out this fact.
 */
 {
-    public:
-        // Constructor sets internal data
-        DslPrint (Expression *e)  // <- Actually a VariableReference type object. (see the cast below)
-        {
-            exp = e;
-            setDslActionName("print");
-        }
+public:
+    // Constructor sets internal data
+    DslPrint (Expression *e)  // <- Actually a VariableReference type object. (see the cast below)
+    {
+        exp = e;
+        setDslActionName("print");
+    }
 
-        //execute member function does the dirty work
-        void execute()
+    //execute member function does the dirty work
+    void execute()
+    {
+        if (exp != 0) //check for null pointer
         {
-            if (exp != 0) //check for null pointer
+            VariableReference *vref_ptr =
+                dynamic_cast<VariableReference *>(exp);
+
+            if (vref_ptr != 0)
             {
-                VariableReference *vref_ptr =
-                    dynamic_cast<VariableReference *>(exp);
-
-                if (vref_ptr != 0)
-                {
-                    cout << vref_ptr->getName() << " = ";
-                }
-
-                FeiString *feistring_ptr = dynamic_cast<FeiString *>(exp);
-
-                if (feistring_ptr != 0)
-                {
-                    cout << feistring_ptr->Getstring();
-                }
-                else
-                {
-                    cout << exp->value();
-                }
-
-                cout << endl;
+                cout << vref_ptr->getName() << " = ";
             }
+
+            FeiString *feistring_ptr = dynamic_cast<FeiString *>(exp);
+
+            if (feistring_ptr != 0)
+            {
+                cout << feistring_ptr->Getstring();
+            }
+            else
+            {
+                cout << exp->value();
+            }
+
+            cout << endl;
         }
-        virtual Expression *clone ()
-        {
-            return new DslPrint (*this);
-        }
+    }
+    virtual Expression *clone ()
+    {
+        return new DslPrint (*this);
+    }
 
 
-    private:
-        // internal data should always be private.
-        // Remember the rule of 3 when holding pointers and
-        // references to variables or objects.
-        // http://en.wikipedia.org/wiki/Rule_of_three_(C%2B%2B_programming)
-        Expression *exp;
+private:
+    // internal data should always be private.
+    // Remember the rule of 3 when holding pointers and
+    // references to variables or objects.
+    // http://en.wikipedia.org/wiki/Rule_of_three_(C%2B%2B_programming)
+    Expression *exp;
 };
 
 #include <iomanip>
 // Next is the whos commands, which illustrates the use of references to variables
 class DslWhos : public DslAction
 {
-    public:
-        DslWhos(const varMapType &v , const set<string> &l) : vars(v), lockedvars(l)
-        {
-        }
+public:
+    DslWhos(const varMapType &v , const set<string> &l) : vars(v), lockedvars(l)
+    {
+    }
 
-        void execute()
-        {
-            cout << endl << "Declared variables:" << endl;
+    void execute()
+    {
+        cout << endl << "Declared variables:" << endl;
 
-            for (varMapConstIterator iter = vars.begin();
-                    iter != vars.end();
-                    iter ++)
+        for (varMapConstIterator iter = vars.begin();
+                iter != vars.end();
+                iter ++)
+        {
+            if (lockedvars.count(iter->first) != 0)
             {
-                if (lockedvars.count(iter->first) != 0)
-                {
-                    cout << "  * " << setw(8) << iter->first << " = " << setw(15) << iter->second;
-                    cout << endl;
-                }
-                else
-                {
-                    cout << "    " << setw(8) << iter->first << " = " << setw(15) << iter->second;
-                    cout << endl;
-                }
+                cout << "  * " << setw(8) << iter->first << " = " << setw(15) << iter->second;
+                cout << endl;
             }
-
-            cout << endl << "    * = locked variable";
-            cout << endl;
+            else
+            {
+                cout << "    " << setw(8) << iter->first << " = " << setw(15) << iter->second;
+                cout << endl;
+            }
         }
 
-        virtual Expression *clone ()
-        {
-            return new DslWhos (*this);
-        }
+        cout << endl << "    * = locked variable";
+        cout << endl;
+    }
 
-    private:
-        const varMapType &vars;
-        const set<string> &lockedvars;
+    virtual Expression *clone ()
+    {
+        return new DslWhos (*this);
+    }
+
+private:
+    const varMapType &vars;
+    const set<string> &lockedvars;
 };
 
 
@@ -183,30 +212,30 @@ class DslWhos : public DslAction
 // Next is the whos commands, which illustrates the use of references.
 class DslParseError : public DslAction
 {
-    public:
-        DslParseError() : str("Unspecified error."), line(-1)
-        {
-        }
-        DslParseError(const string s) : str(s), line(-1)
-        {
-        }
-        DslParseError(const string s, const int l) : str(s), line(l)
-        {
-        }
+public:
+    DslParseError() : str("Unspecified error."), line(-1)
+    {
+    }
+    DslParseError(const string s) : str(s), line(-1)
+    {
+    }
+    DslParseError(const string s, const int l) : str(s), line(l)
+    {
+    }
 
-        void execute()
-        {
-            cout << "Line " << line << ": Parse error --> " << str << endl;
-        }
+    void execute()
+    {
+        cout << "Line " << line << ": Parse error --> " << str << endl;
+    }
 
-        virtual Expression *clone ()
-        {
-            return new DslParseError (*this);
-        }
+    virtual Expression *clone ()
+    {
+        return new DslParseError (*this);
+    }
 
-    private:
-        const string str;
-        const int line;
+private:
+    const string str;
+    const int line;
 };
 
 
