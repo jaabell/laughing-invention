@@ -1,5 +1,5 @@
 RealESSI_SRC = $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-RealESSI_Dependencies = $(realpath $(dir $(lastword $(MAKEFILE_LIST))))/../essi_dependencies
+RealESSI_Dependencies = $(realpath $(dir $(lastword $(MAKEFILE_LIST))))/../RealESSI_Dependencies
 
 
 # ###################################################
@@ -163,7 +163,6 @@ ESSI_INCLUDES  = -I$(RealESSI_SRC)/ModifiedOpenSeesServices/matrix \
             -I$(RealESSI_SRC)/API \
             -I$(RealESSI_SRC)/small_utility_programs/ltensor_utilities
 
-#            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/response \
 
 ESSI_LIBS = -L$(RealESSI_SRC)/lib \
       -lcontactelements \
@@ -205,9 +204,8 @@ ESSI_LIBS = -L$(RealESSI_SRC)/lib \
 
 
             
-SEQUENTIAL_NUMERIC_INCLUDES = -I$(RealESSI_Dependencies)/lib/include \
+SEQUENTIAL_NUMERIC_INCLUDES = -I$(RealESSI_Dependencies)/include \
             -I$(RealESSI_Dependencies)/include \
-            -I$(RealESSI_Dependencies)/ATLAS/include \
             -I$(RealESSI_Dependencies)/hdf5_sequential/include 
 
 
@@ -232,29 +230,21 @@ PARALLEL_NUMERIC_INCLUDES = -I$(RealESSI_Dependencies)/petsc-3.6.0/include \
          -I$(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/include \
          -I$(RealESSI_Dependencies)/parmetis-4.0.2_install/include \
          -I$(RealESSI_Dependencies)/metis-4.0.2_install/include \
-         -I$(RealESSI_Dependencies)/hdf5_parallel/include
+         -I$(RealESSI_Dependencies)/hdf5_parallel/include \
+         -I$(RealESSI_Dependencies)/include 
          
-# -I/usr/lib/openmpi/include \
-# -I/usr/lib/openmpi/include/openmpi \
-
-PARALLEL_NUMERIC_LIBS = $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libpetsc.a \
-      $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libsuperlu_4.3.a \
-      $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libsuperlu_dist_4.0.a \
-      $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libspai.a \
-      $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libscalapack.a \
-      $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libflapack.a \
-      $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libfblas.a \
-      $(RealESSI_Dependencies)/parmetis-4.0.2_install/lib/libparmetis.a \
-      $(RealESSI_Dependencies)/metis-4.0.2_install/lib/libmetis.a \
-      $(RealESSI_Dependencies)/hdf5_parallel/lib/libhdf5.a 
+PARALLEL_NUMERIC_LIBS = -L$(RealESSI_Dependencies)/lib/ \
+      -lpetsc \
+      -lsuperlu_4.3 \
+      -lsuperlu_dist_4.0 \
+      -lspai \
+      -lscalapack \
+      -lflapack \
+      -lfblas \
+      -lparmetis \
+      -lmetis \
+      $(RealESSI_Dependencies)/hdf5_parallel/lib/libhdf5.a
       
-# $(RealESSI_Dependencies)/petsc-3.6.0/externalpackages/spooles-2.2-dec-2008/libspooles.a \
-# $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libPLAPACK.a \
-# $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libblacs.a \
-# $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libspooles.a \
-# $(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/lib/libHYPRE.a \
-
-
 SEQUENTIAL_MACHINE_LIBS =  \
       -lm \
       -ldl \
@@ -262,7 +252,6 @@ SEQUENTIAL_MACHINE_LIBS =  \
       -lgfortran \
       -lieee \
       -lc 
-#      -lboost
 
 PARALLEL_MACHINE_LIBS = -lm \
       -lgfortran \
@@ -270,7 +259,8 @@ PARALLEL_MACHINE_LIBS = -lm \
       -ldl \
       -lz \
       -lgcc_s \
-      -lpthread \
-      -lssl -lcrypto
+      -lpthread 
 
-# -L$(RealESSI_SRC)/lib \
+#\
+#-lssl -lcrypto
+

@@ -1,6 +1,29 @@
-// $Revision: 1.3 $
-// $Date: 2004/07/26 14:26:10 $
-// $Source: /usr/local/cvs/OpenSees/SRC/nDarray/BJtensor.cpp,v $
+///////////////////////////////////////////////////////////////////////////////
+//
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Boris Jeremic
+// DATE:               Summer of 93
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
+//
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
+
 
 
 //############################################################################
@@ -179,7 +202,7 @@ BJtensor& BJtensor::operator=( const BJtensor& rval)
     //       old BJtensor_rep to ensure proper operation when assigning a
     //       BJtensor_rep to itself ( after ARKoenig JOOP May/June '90 )  */
     // clean up current value;
-    if( reference_count(-1) == 0)  // if nobody else is referencing us.
+    if ( reference_count(-1) == 0) // if nobody else is referencing us.
     {
         delete [] data();
         delete [] dim();
@@ -781,59 +804,59 @@ BJtensor BJtensor::operator*( double rval) const //Guanzhou added const
 
 
 
-    switch(this->rank())
+    switch (this->rank())
     {
-        case 0:
+    case 0:
+    {
+        mult.val(1) = cval(1) * rval;
+        break;
+    }
+
+    case 1:
+    {
+        for ( int i1 = 1 ; i1 <= this->dim()[0] ; i1++ )
+        {
+            mult.val(i1) = cval(i1) * rval;
+        }
+
+        break;
+    }
+
+    case 2:
+    {
+        for ( int i2 = 1 ; i2 <= this->dim()[0] ; i2++ )
+            for ( int j2 = 1 ; j2 <= this->dim()[1] ; j2++ )
             {
-                mult.val(1) = cval(1) * rval;
-                break;
+                mult.val(i2, j2) = cval(i2, j2) * rval;
             }
 
-        case 1:
-            {
-                for ( int i1 = 1 ; i1 <= this->dim()[0] ; i1++ )
+        break;
+    }
+
+    case 3:
+    {
+        for ( int i3 = 1 ; i3 <= this->dim()[0] ; i3++ )
+            for ( int j3 = 1 ; j3 <= this->dim()[1] ; j3++ )
+                for ( int k3 = 1 ; k3 <= this->dim()[2] ; k3++ )
                 {
-                    mult.val(i1) = cval(i1) * rval;
+                    mult.val(i3, j3, k3) = cval(i3, j3, k3) * rval;
                 }
 
-                break;
-            }
+        break;
+    }
 
-        case 2:
-            {
-                for ( int i2 = 1 ; i2 <= this->dim()[0] ; i2++ )
-                    for ( int j2 = 1 ; j2 <= this->dim()[1] ; j2++ )
+    case 4:
+    {
+        for ( int i4 = 1 ; i4 <= this->dim()[0] ; i4++ )
+            for ( int j4 = 1 ; j4 <= this->dim()[1] ; j4++ )
+                for ( int k4 = 1 ; k4 <= this->dim()[2] ; k4++ )
+                    for ( int l4 = 1 ; l4 <= this->dim()[3] ; l4++ )
                     {
-                        mult.val(i2, j2) = cval(i2, j2) * rval;
+                        mult.val(i4, j4, k4, l4) = cval(i4, j4, k4, l4) * rval;
                     }
 
-                break;
-            }
-
-        case 3:
-            {
-                for ( int i3 = 1 ; i3 <= this->dim()[0] ; i3++ )
-                    for ( int j3 = 1 ; j3 <= this->dim()[1] ; j3++ )
-                        for ( int k3 = 1 ; k3 <= this->dim()[2] ; k3++ )
-                        {
-                            mult.val(i3, j3, k3) = cval(i3, j3, k3) * rval;
-                        }
-
-                break;
-            }
-
-        case 4:
-            {
-                for ( int i4 = 1 ; i4 <= this->dim()[0] ; i4++ )
-                    for ( int j4 = 1 ; j4 <= this->dim()[1] ; j4++ )
-                        for ( int k4 = 1 ; k4 <= this->dim()[2] ; k4++ )
-                            for ( int l4 = 1 ; l4 <= this->dim()[3] ; l4++ )
-                            {
-                                mult.val(i4, j4, k4, l4) = cval(i4, j4, k4, l4) * rval;
-                            }
-
-                break;
-            }
+        break;
+    }
     }
 
     mult.null_indices();
@@ -884,13 +907,13 @@ BJtensor BJtensor::operator*( BJtensor& arg)
     int* this_uncontr = new int[MAX_TENS_ORD];
     int* arg_uncontr  = new int[MAX_TENS_ORD];
 
-    for(int this_ic = 0 ; this_ic < MAX_TENS_ORD ; this_ic++ )
+    for (int this_ic = 0 ; this_ic < MAX_TENS_ORD ; this_ic++ )
     {
         this_contr[this_ic] = 0;
         this_uncontr[this_ic] = 0;
     }
 
-    for( int arg_ic = 0 ; arg_ic < MAX_TENS_ORD ; arg_ic++ )
+    for ( int arg_ic = 0 ; arg_ic < MAX_TENS_ORD ; arg_ic++ )
     {
         arg_contr[arg_ic]  = 0;
         arg_uncontr[arg_ic]  = 0;
@@ -1038,18 +1061,18 @@ arg.rank() = %d\n",
     int a = 0;
     static int results_dims[MAX_TENS_ORD];
 
-    for( t = 0 ; t < this_uni_count ; t++ )
+    for ( t = 0 ; t < this_uni_count ; t++ )
     {
         results_dims[t] = this->dim()[this_uncontr[t] - 1];
     }
 
-    for( a = 0 ; a < arg_uni_count ; a++ )
+    for ( a = 0 ; a < arg_uni_count ; a++ )
     {
         results_dims[a + t] = arg.dim()[arg_uncontr[a] - 1];
     }
 
     // do kraja (till the end) . . .
-    for( ; a < MAX_TENS_ORD - t ; a++ )
+    for ( ; a < MAX_TENS_ORD - t ; a++ )
     {
         results_dims[a + t] = 1;
     }
@@ -1058,12 +1081,12 @@ arg.rank() = %d\n",
     // Indices  pa sada indeksi ( index )
     static char results_indices[MAX_TENS_ORD + 1];
 
-    for( t = 0 ; t < this_uni_count ; t++ )
+    for ( t = 0 ; t < this_uni_count ; t++ )
     {
         results_indices[t] = this_indices[this_uncontr[t] - 1];
     }
 
-    for( a = 0 ; a < arg_uni_count ; a++ )
+    for ( a = 0 ; a < arg_uni_count ; a++ )
     {
         results_indices[a + t] = arg_indices[arg_uncontr[a] - 1];
     }
@@ -1082,7 +1105,7 @@ arg.rank() = %d\n",
 
     //////////////////////////////////////////////////
     // check dimensions in each BJtensor order
-    for( t = 0 ; t < contr_counter ; t++ )
+    for ( t = 0 ; t < contr_counter ; t++ )
         if ( this->dim()[this_contr[t] - 1] !=
                 arg.dim()[arg_contr[t] - 1] )
         {
@@ -1120,13 +1143,13 @@ arg.rank() = %d\n",
 
     int* inerr_dims = new int[MAX_TENS_ORD];
 
-    for( t = 0 ; t < contr_counter ; t++ )
+    for ( t = 0 ; t < contr_counter ; t++ )
     {
         inerr_dims[t] = this->dim()[this_contr[t] - 1];
         //DEBUGprint       ::printf("    inerr_dims[%d] = %d\n",t,inerr_dims[t]);
     }
 
-    for( ; t < MAX_TENS_ORD ; t++ )
+    for ( ; t < MAX_TENS_ORD ; t++ )
     {
         inerr_dims[t] = 1;
         //DEBUGprint       ::printf("          the rest of inerr_dims[%d] = %d\n",t,inerr_dims[t]);
@@ -1135,7 +1158,7 @@ arg.rank() = %d\n",
 
     int* lid = new int[MAX_TENS_ORD];
 
-    for( t = 0 ; t < MAX_TENS_ORD ; t++ )
+    for ( t = 0 ; t < MAX_TENS_ORD ; t++ )
     {
         lid[t] = 1;
         //DEBUGprint       ::printf("    lid[%d] = %d\n",t,lid[t]);
@@ -1143,7 +1166,7 @@ arg.rank() = %d\n",
 
     int* rid = new int[MAX_TENS_ORD];
 
-    for( t = 0 ;  t < MAX_TENS_ORD ; t++ )
+    for ( t = 0 ;  t < MAX_TENS_ORD ; t++ )
     {
         rid[t] = 1;
         //DEBUGprint       ::printf("    rid[%d] = %d\n",t,rid[t]);
@@ -1154,7 +1177,7 @@ arg.rank() = %d\n",
 
     int* resd = new int[MAX_TENS_ORD];
 
-    for( t = 0 ;  t < MAX_TENS_ORD ; t++ )
+    for ( t = 0 ;  t < MAX_TENS_ORD ; t++ )
     {
         resd[t] = 1;
         //DEBUGprint       ::printf("    resd[%d] = %d\n",t,resd[t]);
@@ -2074,59 +2097,59 @@ BJtensor BJtensor::operator/( BJtensor& rval)
 
     div.indices1 = this->indices1;
 
-    switch(this->rank())
+    switch (this->rank())
     {
-        case 0:
+    case 0:
+    {
+        div.val(1) = val(1) / rvalDouble;
+        break;
+    }
+
+    case 1:
+    {
+        for ( int i1 = 1 ; i1 <= 3 ; i1++ )
+        {
+            div.val(i1) = val(i1) / rvalDouble;
+        }
+
+        break;
+    }
+
+    case 2:
+    {
+        for ( int i2 = 1 ; i2 <= 3 ; i2++ )
+            for ( int j2 = 1 ; j2 <= 3 ; j2++ )
             {
-                div.val(1) = val(1) / rvalDouble;
-                break;
+                div.val(i2, j2) = val(i2, j2) / rvalDouble;
             }
 
-        case 1:
-            {
-                for ( int i1 = 1 ; i1 <= 3 ; i1++ )
+        break;
+    }
+
+    case 3:
+    {
+        for ( int i3 = 1 ; i3 <= 3 ; i3++ )
+            for ( int j3 = 1 ; j3 <= 3 ; j3++ )
+                for ( int k3 = 1 ; k3 <= 3 ; k3++ )
                 {
-                    div.val(i1) = val(i1) / rvalDouble;
+                    div.val(i3, j3, k3) = val(i3, j3, k3) / rvalDouble;
                 }
 
-                break;
-            }
+        break;
+    }
 
-        case 2:
-            {
-                for ( int i2 = 1 ; i2 <= 3 ; i2++ )
-                    for ( int j2 = 1 ; j2 <= 3 ; j2++ )
+    case 4:
+    {
+        for ( int i4 = 1 ; i4 <= 3 ; i4++ )
+            for ( int j4 = 1 ; j4 <= 3 ; j4++ )
+                for ( int k4 = 1 ; k4 <= 3 ; k4++ )
+                    for ( int l4 = 1 ; l4 <= 3 ; l4++ )
                     {
-                        div.val(i2, j2) = val(i2, j2) / rvalDouble;
+                        div.val(i4, j4, k4, l4) = val(i4, j4, k4, l4) / rvalDouble;
                     }
 
-                break;
-            }
-
-        case 3:
-            {
-                for ( int i3 = 1 ; i3 <= 3 ; i3++ )
-                    for ( int j3 = 1 ; j3 <= 3 ; j3++ )
-                        for ( int k3 = 1 ; k3 <= 3 ; k3++ )
-                        {
-                            div.val(i3, j3, k3) = val(i3, j3, k3) / rvalDouble;
-                        }
-
-                break;
-            }
-
-        case 4:
-            {
-                for ( int i4 = 1 ; i4 <= 3 ; i4++ )
-                    for ( int j4 = 1 ; j4 <= 3 ; j4++ )
-                        for ( int k4 = 1 ; k4 <= 3 ; k4++ )
-                            for ( int l4 = 1 ; l4 <= 3 ; l4++ )
-                            {
-                                div.val(i4, j4, k4, l4) = val(i4, j4, k4, l4) / rvalDouble;
-                            }
-
-                break;
-            }
+        break;
+    }
     }
 
     null_indices();
@@ -2720,46 +2743,46 @@ double BJtensor::determinant() const
     double det = 0.0;
 
     //    switch(pc_nDarray_rep->nDarray_rank)
-    switch(this->rank())
+    switch (this->rank())
     {
-        case 0:
-            {
-                det = cval(1);
-                break;
-            }
+    case 0:
+    {
+        det = cval(1);
+        break;
+    }
 
-        case 1:
-            {
-                if(dim()[0] != 1)
-                {
-                    ::fprintf(stderr, "\a\n ERROR: only for square BJvector (1) \n");
-                    ::exit(1);
-                }
+    case 1:
+    {
+        if (dim()[0] != 1)
+        {
+            ::fprintf(stderr, "\a\n ERROR: only for square BJvector (1) \n");
+            ::exit(1);
+        }
 
-                det = cval(1);
-                break;
-            }
+        det = cval(1);
+        break;
+    }
 
-        case 2:
-            {
-                BJmatrix converted = this->BJtensor2BJmatrix_2();
-                det = converted.determinant();
-                break;
-            }
+    case 2:
+    {
+        BJmatrix converted = this->BJtensor2BJmatrix_2();
+        det = converted.determinant();
+        break;
+    }
 
-        case 3:
-            {
-                ::fprintf(stderr, "\a\n SORRY: not implemented \n");
-                ::exit(1);
-                break;
-            }
+    case 3:
+    {
+        ::fprintf(stderr, "\a\n SORRY: not implemented \n");
+        ::exit(1);
+        break;
+    }
 
-        case 4:
-            {
-                ::fprintf(stderr, "\a\n SORRY: not implemented \n");
-                ::exit(1);
-                break;
-            }
+    case 4:
+    {
+        ::fprintf(stderr, "\a\n SORRY: not implemented \n");
+        ::exit(1);
+        break;
+    }
     }
 
     //..........    null_indices();
@@ -3145,7 +3168,7 @@ BJtensor BJtensor::inverse()  const // invert BJtensor of even rank by
     }
 
     //    result.print("t","back to BJtensor result");
-    #ifdef SASA
+#ifdef SASA
 
     //***** Dodo Sasa
     //  result.pc_nDarray_rep->dim=this->dim();
@@ -3153,7 +3176,7 @@ BJtensor BJtensor::inverse()  const // invert BJtensor of even rank by
     // iskopira niz a ne pointer jer ovako moze da bude problema ako
     // se unisti jedan od nizova !!!
     // Takodje ako su dimenzije tenzora razlicite bi ce problema
-    if(BJmatrix_or_BJtensor4 == 4)
+    if (BJmatrix_or_BJtensor4 == 4)
     {
         result.pc_nDarray_rep->dim[0] = this->dim()[2];
         result.pc_nDarray_rep->dim[1] = this->dim()[3];
@@ -3166,7 +3189,7 @@ BJtensor BJtensor::inverse()  const // invert BJtensor of even rank by
         result.pc_nDarray_rep->dim[1] = this->dim()[0];
     }
 
-    #endif
+#endif
     // ***************** Kraj izmena koje je dodao Sasa
     return result;
 }
@@ -3213,12 +3236,12 @@ BJtensor BJtensor::inverse()  const // invert BJtensor of even rank by
 //##############################################################################
 char* BJtensor::f_indices1( void ) const
 {
-    return( this->indices1 );
+    return ( this->indices1 );
 }
 //##############################################################################
 char* BJtensor::f_indices2( void ) const
 {
-    return( this->indices2 );
+    return ( this->indices2 );
 }
 
 

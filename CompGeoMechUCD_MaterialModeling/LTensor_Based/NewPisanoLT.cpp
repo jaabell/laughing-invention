@@ -1063,16 +1063,21 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     else // the previous projection center is reset
     {
       alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
+      unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
     }
-
     strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
   }
 
+  // if (unload_prod <= 0.0)
+  // {
+  //   strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+  // }
 
 
-  //---------------------------------------------------------------------------------------------
-  // Compute distance and dilatancy coefficients
-  //---------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------
+// Compute distance and dilatancy coefficients
+//---------------------------------------------------------------------------------------------
 
   if ( abs(n) < check_for_zero)
   {
@@ -1088,9 +1093,9 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
 
 
-  //---------------------------------------------------------------------------------------------
-  // Compute plastic modulus (H)
-  //---------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+// Compute plastic modulus (H)
+//---------------------------------------------------------------------------------------------
 
   if (m == 1.0)
   {
@@ -1101,9 +1106,9 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     H = pp * h * (pow(beta, m));
   }
 
-  //---------------------------------------------------------------------------------------------
-  // Compute plastic flow direction (mij)
-  //---------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+// Compute plastic flow direction (mij)
+//---------------------------------------------------------------------------------------------
 
   mij = nij_dev;
 
@@ -1111,15 +1116,15 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
   mij(1, 1) = nij_dev(1, 1) - 1.0 * D / 3.0;
   mij(2, 2) = nij_dev(2, 2) - 1.0 * D / 3.0;
 
-  //---------------------------------------------------------------------------------------------
-  // Compute plastic multiplier
-  //---------------------------------------------------------------------------------------------
-  // scalar product incr_strain_dev:nij_dev
+//---------------------------------------------------------------------------------------------
+// Compute plastic multiplier
+//---------------------------------------------------------------------------------------------
+// scalar product incr_strain_dev:nij_dev
   incr_strain_dev_nijdev = incr_strain_dev(i, j) * nij_dev(i, j);
 
   alpha_nijdev = alpha(i, j) * nij_dev(i, j);                          // scalar product alphaij:nij_dev
 
-  // Plastic muliplier;
+// Plastic muliplier;
   double num =  (2.0 * G * incr_strain_dev_nijdev + K * alpha_nijdev * incr_strain_vol);
   double den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
 
@@ -1129,23 +1134,23 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     Delta_lambda = 0.0;
   }
 
-  //---------------------------------------------------------------------------------------------
-  // Update internal variales and increments
-  //---------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+// Update internal variales and increments
+//---------------------------------------------------------------------------------------------
 
-  // Plastic strain increment
+// Plastic strain increment
   incr_Pstrain(i, j) = mij(i, j) * (Delta_lambda);
   incr_stress(i, j)  = Ee(i, j, p, q) * (  incr_strain(p, q) - incr_Pstrain(p, q) );
   ep_stress(i, j)    = start_stress(i, j) + incr_stress(i, j);
 
-  // Update all variables
+// Update all variables
   TrialStress(i, j)         = ep_stress(i, j);            // try again Initiailize whenever you have tensor = tensor...
   TrialPlastic_Strain(i, j) = start_Pstrain(i, j);
   TrialPlastic_Strain(i, j) += incr_Pstrain(i, j);
 
-  //---------------------------------------------------------------------------------------------
-  // Overshooting Remediation
-  //---------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------
+// Overshooting Remediation
+//---------------------------------------------------------------------------------------------
   strainplcum(i, j) += incr_Pstrain(i, j);
 
   strainplcum.compute_deviatoric_tensor(strainplcum_dev, strainplcum_vol); //check declaration!
@@ -1154,8 +1159,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
   ep_stress.compute_deviatoric_tensor(ep_stress_dev, ep_stress_p);
   ep_stress_p = -ep_stress(i, i) / 3;
 
-  // this avoids weird alpha values...it is difficult to find a general rule for the checking factor..tests needed
-  // stress rapporto -> stress ratio
+// this avoids weird alpha values...it is difficult to find a general rule for the checking factor..tests needed
+// stress rapporto -> stress ratio
 
   if (ep_stress_p > 1000 * check_for_zero)
   {
@@ -1167,10 +1172,10 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
     alpha(i, j) = ZeroStress(i, j);
   };
 
-  //---------------------------------------------------------------------------------------------
-  // Compute Elastic-Plastic stiffness
-  //---------------------------------------------------------------------------------------------
-  // To obtain Eep, at the last step
+//---------------------------------------------------------------------------------------------
+// Compute Elastic-Plastic stiffness
+//---------------------------------------------------------------------------------------------
+// To obtain Eep, at the last step
 
   Stiffness(p, q, i, j) =  nij_dev(i, j) * nij_dev(p, q) * (-4.0 * G * G / den) +
                            kronecker_delta(i, j)      * nij_dev(p, q) * (2.0 * G * K * D / den) +
