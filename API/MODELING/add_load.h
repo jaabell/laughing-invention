@@ -1,65 +1,33 @@
 ///////////////////////////////////////////////////////////////////////////////
-//   COPYLEFT (C): Woody's viral LGPL (by BJ):
-//                 ``This    source  code is Copyrighted in
-//                 U.S.,  for  an  indefinite  period,  and anybody
-//                 caught  using it without our permission, will be
-//                 mighty good friends of ourn, cause we don't give
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-//                 wanted to do.''
 //
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         CompGeoMech
+// DATE:               October 2009 - Aug 2015
+// UPDATE HISTORY:     See git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
-// COPYRIGHT (C):     LGPL
-// PROJECT:           Object Oriented Finite Element Program
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
 //
-// PURPOSE:           Domain Specific Language (DSL)
-//
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:
-// PROGRAMMER:        Nima Tafazzoli, Boris Jeremic
-//
-// DATE:              May 2009
-// UPDATE HISTORY:    October 2009
-//
-///////////////////////////////////////////////////////////////////////////////
-
-
-
-//!
-//! @mainpage
-//! \n
-//! <div class="contents">
-//! <h1>DSL of Nodal Load - Linear</h1>
-//! <h3 align="center">By: <a href="http://cml00.engr.ucdavis.edu/~ntafazzoli" target="_blank">Nima Tafazzoli</A> and <a href="http://sokocalo.engr.ucdavis.edu/~jeremic" target="_blank">Boris Jeremic</A> (October 2009) </h3><br>
-//! \n
-//! This documentation is the API for Domain Specific Language (DSL) of linear nodal load.
-//! \n
-//! \n Currently if works for 3 dofs (brick elements), 6 dofs (beam elements) and 7 dofs (multi-phase brick elements).
-//! \n
-//! \n
-//! For information about the function and inputs <A HREF="a00001.html">click here! </A></div>
-//! \n
-//!
-//!
-
-
+/////////////////////////////////////////////////////////////////////////////
 
 //! Inputs:
 //! - LoadNumber: integer tag identifying the load
 //! - NodeNumber: tag of the node that load is to be applied
 //! - vectorvalue(s): load values that are to be applied to the node corresponding to the dofs
-
-
-
-
-//! \n
-//! \n
-//! \n
-//! <B> For information about the theory behind this function and its arguments, please consult the <A HREF="http://sokocalo.engr.ucdavis.edu/~jeremic/CG/CompGeomechanicsLectureNotes/CompGeomechanicsLectureNotes.html" target="_blank">lecture notes. </A></div>
-//! \n
-//! \n
 
 
 
@@ -91,7 +59,7 @@ int add_load(int LoadNumber,
 
     theLoadPattern->setTimeSeries(theSeries);
 
-    if( theDomain.addLoadPattern(theLoadPattern) == false )
+    if ( theDomain.addLoadPattern(theLoadPattern) == false )
     {
         cerr << "Error: (start_new_stage) LoadPattern " << LoadNumber << " could not be added to the domain " << endl;
         return -1;
@@ -116,7 +84,7 @@ int add_load(int LoadNumber,
     }
 
 
-    if( theDomain.addNodalLoad(theLoad, LoadNumber) == false )
+    if ( theDomain.addNodalLoad(theLoad, LoadNumber) == false )
     {
         cerr << "Error: (add_load) Nodal load could not be added to the domain " << endl;
         return -1;
@@ -165,7 +133,7 @@ int add_load(int LoadNumber,
 
     theLoadPattern->setTimeSeries(theSeries);
 
-    if( theDomain.addLoadPattern(theLoadPattern) == false )
+    if ( theDomain.addLoadPattern(theLoadPattern) == false )
     {
         cerr << "Error: (start_new_stage) LoadPattern " << LoadNumber << " could not be added to the domain " << endl;
         return -1;
@@ -191,7 +159,7 @@ int add_load(int LoadNumber,
     }
 
 
-    if( theDomain.addNodalLoad(theLoad, LoadNumber) == false )
+    if ( theDomain.addNodalLoad(theLoad, LoadNumber) == false )
     {
         cerr << "Error: (add_load) Nodal load could not be added to the domain " << endl;
         return -1;
@@ -244,7 +212,7 @@ int add_load(int LoadNumber,
 
     theLoadPattern->setTimeSeries(theSeries);
 
-    if( theDomain.addLoadPattern(theLoadPattern) == false )
+    if ( theDomain.addLoadPattern(theLoadPattern) == false )
     {
         cerr << "Error: (start_new_stage) LoadPattern " << LoadNumber << " could not be added to the domain " << endl;
         return -1;
@@ -271,7 +239,7 @@ int add_load(int LoadNumber,
     }
 
 
-    if( theDomain.addNodalLoad(theLoad, LoadNumber) == false )
+    if ( theDomain.addNodalLoad(theLoad, LoadNumber) == false )
     {
         cerr << "Error: (add_load) Nodal load could not be added to the domain " << endl;
         return -1;

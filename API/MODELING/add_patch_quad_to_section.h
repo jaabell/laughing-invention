@@ -1,48 +1,28 @@
 ///////////////////////////////////////////////////////////////////////////////
-//   COPYLEFT (C): Woody's viral LGPL (by BJ):
-//                 ``This    source  code is Copyrighted in
-//                 U.S.,  for  an  indefinite  period,  and anybody
-//                 caught  using it without our permission, will be
-//                 mighty good friends of ourn, cause we don't give
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-//                 wanted to do.''
 //
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         CompGeoMech
+// DATE:               October 2009 - Aug 2015
+// UPDATE HISTORY:     See git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
-// COPYRIGHT (C):     LGPL
-// PROJECT:           Object Oriented Finite Element Program
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
 //
-// PURPOSE:           Domain Specific Language (DSL)
-//
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:
-// PROGRAMMER:        Nima Tafazzoli, Boris Jeremic
-//
-// DATE:              September 2009
-// UPDATE HISTORY:
-//
-///////////////////////////////////////////////////////////////////////////////
-
-
-//!
-//! @mainpage
-//! \n
-//! <div class="contents">
-//! <h1>DSL of Section Patches (Quadrilateral)</h1>
-//! <h3 align="center">By: <a href="http://cml00.engr.ucdavis.edu/~ntafazzoli" target="_blank">Nima Tafazzoli</A> and <a href="http://sokocalo.engr.ucdavis.edu/~jeremic" target="_blank">Boris Jeremic</A> (September 2009) </h3><br>
-//! \n
-//! This documentation is the API for Domain Specific Language (DSL) of quadrilateral type of section patches.
-//! \n
-//! \n
-//! For information about the function and inputs <A HREF="a00001.html">click here! </A></div>
-//! \n
-//!
-//!
-
-
-
+/////////////////////////////////////////////////////////////////////////////
 
 //! Inputs:
 //! - SectionNumber: unique section object tag
@@ -53,17 +33,6 @@
 //! - yj , zj: y & z-coordinates of vertex J (local coordinate system)
 //! - yk , zk: y & z-coordinates of vertex K (local coordinate system)
 //! - yl , zl: y & z-coordinates of vertex L (local coordinate system)
-
-
-
-
-
-//! \n
-//! \n
-//! \n
-//! <B> For information about the theory behind this function and its arguments, please consult the <A HREF="http://sokocalo.engr.ucdavis.edu/~jeremic/CG/CompGeomechanicsLectureNotes/CompGeomechanicsLectureNotes.html" target="_blank">lecture notes. </A></div>
-//! \n
-//! \n
 
 
 
@@ -83,57 +52,57 @@ int add_patch_quad_to_section(int SectionNumber,
                               double zl)
 {
 
-    static Matrix vertexCoords(4, 2);
+  static Matrix vertexCoords(4, 2);
 
-    vertexCoords(0, 0) = yi;
-    vertexCoords(0, 1) = zi;
-    vertexCoords(1, 0) = yj;
-    vertexCoords(1, 1) = zj;
-    vertexCoords(2, 0) = yk;
-    vertexCoords(2, 1) = zk;
-    vertexCoords(3, 0) = yl;
-    vertexCoords(3, 1) = zl;
-
-
-    SectionRepres* sectionRepres = theDomain.getSectionRepres(SectionNumber);
-
-    if (sectionRepres == 0)
-    {
-        cerr <<  "WARNING: (add_patch_quad_to_section) cannot retrieve section\n";
-        return -1;
-    }
-
-    FiberSectionRepr* fiberSectionRepr = (FiberSectionRepr*) sectionRepres;
+  vertexCoords(0, 0) = yi;
+  vertexCoords(0, 1) = zi;
+  vertexCoords(1, 0) = yj;
+  vertexCoords(1, 1) = zj;
+  vertexCoords(2, 0) = yk;
+  vertexCoords(2, 1) = zk;
+  vertexCoords(3, 0) = yl;
+  vertexCoords(3, 1) = zl;
 
 
-    if (fiberSectionRepr == 0)
-    {
-        cerr <<  "WARNING: (add_patch_quad_to_section) cannot allocate fiberSectionRepr\n";
-        return -1;
-    }
+  SectionRepres* sectionRepres = theDomain.getSectionRepres(SectionNumber);
+
+  if (sectionRepres == 0)
+  {
+    cerr <<  "WARNING: (add_patch_quad_to_section) cannot retrieve section\n";
+    return -1;
+  }
+
+  FiberSectionRepr* fiberSectionRepr = (FiberSectionRepr*) sectionRepres;
 
 
-    // create patch
-    QuadPatch* patch = new QuadPatch(MaterialNumber, numSubdivIJ, numSubdivJK, vertexCoords);
-
-    if (!patch)
-    {
-        cerr <<  "WARNING: (add_patch_quad_to_section) cannot allocate patch\n";
-        return -1;
-    }
+  if (fiberSectionRepr == 0)
+  {
+    cerr <<  "WARNING: (add_patch_quad_to_section) cannot allocate fiberSectionRepr\n";
+    return -1;
+  }
 
 
-    // add patch to section representation
-    int error = fiberSectionRepr->addPatch(*patch);
-    delete patch;
+  // create patch
+  QuadPatch* patch = new QuadPatch(MaterialNumber, numSubdivIJ, numSubdivJK, vertexCoords);
 
-    if (error)
-    {
-        cerr <<  "WARNING: (add_patch_quad_to_section) cannot add patch to section\n";
-        return -1;
-    }
+  if (!patch)
+  {
+    cerr <<  "WARNING: (add_patch_quad_to_section) cannot allocate patch\n";
+    return -1;
+  }
 
-    return 0;
+
+  // add patch to section representation
+  int error = fiberSectionRepr->addPatch(*patch);
+  delete patch;
+
+  if (error)
+  {
+    cerr <<  "WARNING: (add_patch_quad_to_section) cannot add patch to section\n";
+    return -1;
+  }
+
+  return 0;
 
 };
 

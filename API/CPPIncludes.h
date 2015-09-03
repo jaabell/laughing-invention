@@ -1,35 +1,28 @@
 ///////////////////////////////////////////////////////////////////////////////
-//   COPYLEFT (C): Woody's viral LGPL (by BJ):
-//                 ``This    source  code is Copyrighted in
-//                 U.S.,  for  an  indefinite  period,  and anybody
-//                 caught  using it without our permission, will be
-//                 mighty good friends of ourn, cause we don't give
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-//                 wanted to do.''
 //
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Jose Abell & Boris Jeremic
+// DATE:               Jan 2013
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
-// COPYRIGHT (C):     LGPL
-// PROJECT:           Object Oriented Finite Element Program
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
 //
-// PURPOSE:           Domain Specific Language (DSL)
-//                    This file should be included in he main file of the example
-//                    which are  expected to be run in parallel mode and contains
-//                    all of the  needed header files also some of the parameters
-//                    are iitialized here and some of the needed objects are defined.
-//
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:
-// PROGRAMMER:        Nima Tafazzoli, Babak Kamrani, Boris Jeremic
-//
-// DATE:              May 2009
-// LAST UPDATE:       Feb 2014
-//
-// Note: Jose Abell merged CPPIncludes.h (in sequential code) with
-//  CPPIncludes_Parallel.h from Babak
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 
 // =================================================================================================
@@ -371,7 +364,7 @@ static DOF_Numberer                               *theNumberer                  
 static LinearSOE                                  *theSOE                               = 0;
 static StaticAnalysis                             *theStaticAnalysis                    = 0;
 static DirectIntegrationAnalysis                  *theTransientAnalysis                 = 0;
-static VariableTimeStepDirectIntegrationAnalysis *theVariableTimeStepTransientAnalysis = 0;
+static VariableTimeStepDirectIntegrationAnalysis *theVariableTimeStepTransientAnalysis  = 0;
 static StaticIntegrator                           *theStaticIntegrator                  = 0;
 static TransientIntegrator                        *theTransientIntegrator               = 0;
 static ConvergenceTest                            *theConvergenceTest                   = 0;
@@ -400,11 +393,11 @@ static ParallelNumberer *theParallelNumberer = new ParallelNumberer();
 PartitionedDomain theDomain;
 
 
-int OPS_PARALLEL_PROCESSING               = 0;
-int OPS_NUM_SUBDOMAINS                    = 0;
-bool OPS_PARTITIONED                      = false;
-bool OPS_REDEFINE_ANALYSIS                = true;
-DomainPartitioner *OPS_DOMAIN_PARTITIONER = 0;
+int OPS_PARALLEL_PROCESSING                = 0;
+int OPS_NUM_SUBDOMAINS                     = 0;
+bool OPS_PARTITIONED                       = false;
+bool OPS_REDEFINE_ANALYSIS                 = true;
+DomainPartitioner *OPS_DOMAIN_PARTITIONER  = 0;
 GraphPartitioner   *OPS_GRAPH_PARTITIONER  = 0;
 LoadBalancer       *OPS_BALANCER           = 0;
 FEM_ObjectBroker   *OPS_OBJECT_BROKER;
@@ -419,7 +412,7 @@ Domain theDomain;
 #endif
 
 
-LoadPattern *DRM_LOAD_PATTERN = 0 ; //Pointer to DRM Load pattern to be available ftom everywhere ... added by Babak
+LoadPattern *DRM_LOAD_PATTERN      = 0 ; //Pointer to DRM Load pattern to be available ftom everywhere ... added by Babak
 Channel          **OPS_theChannels = 0;
 
 std::string profiling_results_filename = ""; //Where to put timing results
