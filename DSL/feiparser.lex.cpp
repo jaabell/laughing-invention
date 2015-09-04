@@ -6195,7 +6195,7 @@ int error_behavior()
 void print_usage()
 {
 	cout <<
-		 "ESSI: UCDavis Earthquake-Soil-Structure-Interaction Simulator \n"
+		 "RealESSI Simulator: UCDavis Earthquake-Soil-Structure-Interaction Simulator \n"
 		 "              -          -    -         -                     \n"
 		 "Usage: essi [-cfhnsmbe FILENAME]\n"
 		 "  -c --cpp-output                : Output cpp version of the analysis done. \n"
@@ -6205,7 +6205,6 @@ void print_usage()
 		 "  -s --set-variable              : Set a variable from the command line. \n"
 		 "  -d --dry-run                   : Do not execute ESSI API calls. Just parse. \n"
 		 "  -m --model-name [NAME]         : Set the model name from the command line. \n"
-		 "  -b --binary-output             : The output generated will be in binary instead of plain text. \n"
 		 "  -p --profile-report [FILENAME] : Set the filename for the profiler report (and activate lightweight profiling)\n"
 		 " \n\n"
 		 "Example to set a variable name from command line:\n"
@@ -6254,13 +6253,11 @@ int start_parser(int argc, char**argv)
 	//Parse Command Line Parameters
 	int c;
 	char *filename_from_command_line = 0;
-	char *char_string_aux = 0;
 
 	while (1)
 	{
 		static struct option long_options[] =
 		{
-			{"binary-output",    no_argument,       0, 'b'},
 			{"cpp-output",       no_argument,       0, 'c'},
 			{"file",             required_argument, 0, 'f'},
 			{"help",             no_argument,       0, 'h'},
