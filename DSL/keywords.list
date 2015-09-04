@@ -1,6 +1,4 @@
 
-,
-/
 20NodeBrick
 27NodeBrick
 8NodeBrick
@@ -32,6 +30,7 @@ boundary_nodes_file
 check
 compression
 compressive_strength
+compute
 constant
 constitutive
 constrain
@@ -60,6 +59,7 @@ domain
 domain
 drained
 druckerprager_angle
+druckerprager_k
 dynamic
 e0
 each
@@ -82,12 +82,14 @@ field
 file
 filename
 fix
+forces
 free
 friction_ratio
 from
 gamma
 Gauss
 h_in
+hdf5_file
 help
 host
 if
@@ -146,6 +148,7 @@ name
 new
 node
 nodes
+normal_damping
 normal_stiffness
 number_of_boundary_nodes
 number_of_drm_elements
@@ -174,6 +177,7 @@ pressure
 pressure_reference_p0
 print
 R0
+reaction
 reduction
 reference_void_ratio
 remove
@@ -252,6 +256,7 @@ strain_hardening_ratio
 strain_increment_size
 stress
 surface
+tangential_damping
 tangential_stiffness
 tensile_strength
 tension_softening_stiffness
@@ -318,11 +323,13 @@ druckerprager_kinematic_hardening
 druckerprager_kinematic_hardening_accelerated
 druckerprager_perfectly_plastic
 druckerprager_perfectly_plastic_accelerated
+DruckerPragerLT
 Energy_Increment
 F_fluid_x
 F_fluid_y
 F_fluid_z
 FORCETYPE
+FrictionalPenaltyContact
 from_reactions
 Fx
 Fy
@@ -369,4 +376,5 @@ vonmises_linear_kinematic_hardening_accelerated
 vonmises_perfectly_plastic
 vonmises_perfectly_plastic_accelerated
 vonmises_perfectly_plastic_LT
+VonMisesLT
 With_no_convergence_check

@@ -3160,6 +3160,7 @@ ADD_material
 	//!
 	//!FEIDOC add material # <.> type [New_PisanoLT] elastic_modulus = <F/L^2> poisson_ratio = <.> M_in = <F/L^2> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> mass_density = <M/L^2> initial_confining_stress = <F/L^2> beta_min = <.>;
 	| MATERIAL TEXTNUMBER exp TYPE New_PisanoLT
+						mass_density '=' exp
 						elastic_modulus_1atm '=' exp
 						poisson_ratio '=' exp
 						M_in '=' exp
@@ -3167,7 +3168,6 @@ ADD_material
 						xi_in '=' exp
 						h_in '=' exp
 						m_in '=' exp
-						mass_density '=' exp
 						initial_confining_stress '=' exp
 						n_in '=' exp
 						a_in '=' exp
@@ -3176,14 +3176,14 @@ ADD_material
 		args.clear(); signature.clear();
 
 		args.push_back($3); signature.push_back(this_signature("number"                    , &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("elastic_modulus_1atm"      , &isPressure));
-		args.push_back($11); signature.push_back(this_signature("poisson_ratio"            , &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("M_in"                     , &isAdimensional));
-		args.push_back($17); signature.push_back(this_signature("kd_in"                    , &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("xi_in"                    , &isAdimensional));
-		args.push_back($23); signature.push_back(this_signature("h_in"                     , &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("m_in"                     , &isAdimensional));
-		args.push_back($29); signature.push_back(this_signature("mass_density"             , &isDensity));
+		args.push_back($11); signature.push_back(this_signature("elastic_modulus_1atm"      , &isPressure));
+		args.push_back($14); signature.push_back(this_signature("poisson_ratio"            , &isAdimensional));
+		args.push_back($17); signature.push_back(this_signature("M_in"                     , &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("kd_in"                    , &isAdimensional));
+		args.push_back($23); signature.push_back(this_signature("xi_in"                    , &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("h_in"                     , &isAdimensional));
+		args.push_back($29); signature.push_back(this_signature("m_in"                     , &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("mass_density"             , &isDensity));
 		args.push_back($32); signature.push_back(this_signature("initial_confining_stress" , &isPressure));
 		args.push_back($35); signature.push_back(this_signature("n_in"                     , &isAdimensional));
 		args.push_back($38); signature.push_back(this_signature("a_in"                     , &isAdimensional));
