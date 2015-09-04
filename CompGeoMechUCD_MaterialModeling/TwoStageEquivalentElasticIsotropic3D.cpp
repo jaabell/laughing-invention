@@ -1,29 +1,28 @@
-//===============================================================================
-//# COPYRIGHT (C): Woody's license (by BJ):
-//                 ``This    source  code is Copyrighted in
-//                 U.S.,  for  an  indefinite  period,  and anybody
-//                 caught  using it without our permission, will be
-//                 mighty good friends of ourn, cause we don't give
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-//                 wanted to do.''
+///////////////////////////////////////////////////////////////////////////////
 //
-//# PROJECT:           Object Oriented Finite Element Program
-//# PURPOSE:
-//# CLASS:             TwoStageEquivalentElasticIsotropic3D
-//#
-//# VERSION:           0.61803398874989 (golden section)
-//# LANGUAGE:          C++
-//# TARGET OS:         all...
-//# DESIGN:            J. Abell
-//# PROGRAMMER(S):     J. Abell
-//#
-//#
-//# DATE:              July 2013
-//# UPDATE HISTORY:
-//#
-//#
-//===============================================================================
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         J. Abell
+// DATE:               July 2013
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
+//
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
 
 #include <TwoStageEquivalentElasticIsotropic3D.h>
 #include <math.h>
@@ -511,10 +510,10 @@ inline void TwoStageEquivalentElasticIsotropic3D::nextStage()
 
 inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
 {
-    #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
     cout << "=====================================" << endl;
     cout << "Update Modulus call" << endl;
-    #endif
+#endif
 
     /*cout << "    stage   = " << stage << endl;
     cout << "    nu      = " << v << endl;
@@ -535,9 +534,9 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
     // ============================================================================================
     if ( stage <= 0)
     {
-        #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
         cout << "--->  Static analysis" << endl;
-        #endif
+#endif
         double s1, s3;  // Average stress between previous step and current... (results in a secant stiffness :P)
         double desv, devfh, strlev, phi, Bmin, G_mod, Ei_el;
 
@@ -545,30 +544,30 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
         {
             stresstensor st = getStressTensor();
             nDarray ss = st.eigenvalues();
-            #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
             cout << "Stress tensor:" << endln;
             st.print();
             cout << endln;
             cout << "Eigenvalues  :" << endln;
             ss.print();
             cout << endln;
-            #endif
+#endif
             sig1 = -ss.cval(3);
             sig3 = -ss.cval(1);
-            #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
 
             for (int i = 0; i <= 3; i++)
             {
                 cout << "ss.cval(" << i << ") = " << ss.cval(i) << endl;
             }
 
-            #endif
+#endif
         }
         else // For very first step (initial tangent) set confinement to be atmospheric pressures
         {
-            #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
             cout << "---> Initial step" << endl;
-            #endif
+#endif
             sig1 = pa;
             sig3 = pa;
             sig1p = pa;
@@ -578,32 +577,32 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
         s1 = sig1;//0.5*(sig1 + sig1p);
         s3 = sig3;//0.5*(sig3 + sig3p);
 
-        #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
         cout << "s1 = " << s1 << endl;
         cout << "s3 = " << s3 << endl;
-        #endif
+#endif
         /// TCL
 
         desv = s1 - s3;
 
-        #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
         cout << "desv = " << desv << endl;
-        #endif
+#endif
 
         // Calculate Stress-Level
         if (c > 0.)
         {
-            #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
             cout << "--->  With cohesion (c > 0)" << endl;
-            #endif
+#endif
             devfh = (2 * c * cos(phi0) + 2 * s3 * sin(phi0)) / (1. - sin(phi0));
 
         }
         else
         {
-            #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
             cout << "--->  No cohesion (c < 0)" << endl;
-            #endif
+#endif
 
             if (s3 <= 0.25 * pa )
             {
@@ -622,13 +621,13 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
             }
         }
 
-        #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
         cout << "phi0 = " << phi0 << endl;
         cout << "dphi = " << dphi << endl;
         cout << "phi = " << phi << endl;
         cout << "sin(phi) = " << sin(phi) << endl;
         cout << "desvfh = " << devfh << endl;
-        #endif
+#endif
 
         if ( devfh == 0 )
         {
@@ -659,9 +658,9 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
         //Tension Failure
         if (s3 < -0.1 * pa)
         {
-            #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
             cout << "--->  Tension failure (s3 < -0.1*pa.)" << endl;
-            #endif
+#endif
             B_el = B_calc  (Kb, pa, n, ( 0.25 * pa) );
 
             if (stage == 0)       // NOTE: If this produces problems think about it better and compare with TCL stuff.
@@ -680,9 +679,9 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
 
             if (strlev > 0.95 )
             {
-                #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
                 cout << "--->  Shear failure (strlev = " << strlev << " > 0.95)" << endl;
-                #endif
+#endif
                 // Shear failure
                 Ei_el = Ei_calc(K, pa, n, s3);
                 B_el  =  B_calc(Kb, pa, n, s3);
@@ -697,9 +696,9 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
                 //Elastic Unloading
                 if (strlev < ( 0.95 * strlev_max))
                 {
-                    #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
                     cout << "--->  Elastic unloading   (strlev = " << strlev << " < ( 0.95*strlev_max) = " << 0.95 * strlev_max <<  ") " << endl;
-                    #endif
+#endif
                     Ei_el = Eur_calc(Kur, pa, n, s3);
                     B_el = B_calc(Kb, pa, n, s3);
 
@@ -715,9 +714,9 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
                 }
                 else
                 {
-                    #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
                     cout << "--->  Primary loading (strlev = " << strlev <<  ")" << endl;
-                    #endif
+#endif
 
                     //Primary loading
                     if ( s3 > 0. )
@@ -748,10 +747,10 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
             strlev_max = strlev;
         }
 
-        #ifdef _TSEL_Debug_Mode
+#ifdef _TSEL_Debug_Mode
         cout << "   E          = " << E << endl;
         cout << "   nu         = " << v << endl;
-        #endif
+#endif
         //cout << "   strlev     = " << strlev << endl;
 
 

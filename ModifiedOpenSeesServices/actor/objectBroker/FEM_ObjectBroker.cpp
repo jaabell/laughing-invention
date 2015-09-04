@@ -416,8 +416,8 @@ FEM_ObjectBroker::getNewElement(int classTag)
     case ELE_TAG_EightNodeBrickElastic:
         return new EightNodeBrickElastic();
 
-    case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
-        return new PenaltyElement();
+    // case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
+    //     return new PenaltyElement();
 
     case ELE_TAG_EightNodeBrickLT:            //Jose added on Oct 9, 2014
         return new EightNodeBrickLT();

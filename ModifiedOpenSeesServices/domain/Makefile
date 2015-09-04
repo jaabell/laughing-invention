@@ -49,7 +49,7 @@ wipe: spotless
 	@$(CD) pattern; $(MAKE) wipe;
 	@$(CD) groundMotion; $(MAKE) wipe;
 	@$(CD) partitioner; $(MAKE) wipe;
-	@$(CD) region; $(MAKE) wipe;
 	@$(CD) damping; $(MAKE) wipe;
 
+	# @$(CD) region; $(MAKE) wipe;
 # DO NOT DELETE THIS LINE -- make depend depends on it.

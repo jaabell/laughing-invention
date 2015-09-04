@@ -52,8 +52,6 @@ all:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_ltensor; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_elastic; $(MAKE);
-	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element; $(MAKE);
-	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element_apply_displacement; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/elastic_beam; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/rank_one_deficient_elastic_pinned_fixed_beam; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/shell_andes; $(MAKE);
@@ -62,6 +60,8 @@ all:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_variable_number_of_gauss_points; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes_variable_number_of_gauss_points; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/nonlinear_shear_beam; $(MAKE);
+	# $(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element; $(MAKE);
+	# $(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element_apply_displacement; $(MAKE);
 #	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p_large_deformation_brick_8_nodes; $(MAKE);
 #	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_large_deformation_total_Lagrangian_20_nodes; $(MAKE);
 
@@ -82,17 +82,17 @@ clean:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_ltensor; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_elastic; $(MAKE) clean;
-	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element; $(MAKE) clean;
-	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element_apply_displacement; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/elastic_beam; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/rank_one_deficient_elastic_pinned_fixed_beam; $(MAKE) clean;
-	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/shell_andes_3_nodes; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_variable_nodes_8_to_27; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_variable_number_of_gauss_points; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_variable_number_of_gauss_points; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes_variable_number_of_gauss_points; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/nonlinear_shear_beam; $(MAKE) clean;
 
+	# $(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element; $(MAKE) clean;
+	# $(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/shell_andes_3_nodes; $(MAKE) clean;
+	# $(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_ele1ment_apply_displacement; $(MAKE) clean;
 
 cleanall:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/Contact_Elements; $(MAKE) cleanall;
@@ -107,8 +107,6 @@ cleanall:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_ltensor; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_8_nodes_elastic; $(MAKE) cleanall;
-	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element; $(MAKE) cleanall;
-	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element_apply_displacement; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/elastic_beam; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/rank_one_deficient_elastic_pinned_fixed_beam; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/shell_andes; $(MAKE) cleanall;
@@ -119,3 +117,5 @@ cleanall:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/nonlinear_shear_beam; $(MAKE) cleanall;
 
 
+	# $(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element; $(MAKE) cleanall;
+	# $(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/penalty_element_apply_displacement; $(MAKE) cleanall;

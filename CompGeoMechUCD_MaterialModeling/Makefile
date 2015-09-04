@@ -4,7 +4,7 @@ include ../Makefile.Compilers
 
 
 
-OBJS       = Material.o \
+OBJS       = \
              NDMaterial.o \
              ElasticIsotropic3D.o \
              ElasticIsotropicMaterial.o \

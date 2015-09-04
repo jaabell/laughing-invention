@@ -532,25 +532,25 @@ CMD_add
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add nodes from file "string"  with <.> dofs;
-	| ADD NODES FROM FILE exp WITH exp TEXTDOFS
-	{
-		args.clear();
-		signature.clear();
-
-		args.push_back($5);   //File name
-		args.push_back($7);   //Numbdofs
-
-		// Create the command signature for input verification
-		signature.push_back(this_signature("filename", &isAdimensional));
-
-		// Create the DSL caller node.
-		//add_nodes_from_file(std::string inputnodesfile, int ndof)
-		$$ = new FeiDslCaller2<string, int>(&add_nodes_from_file, args, signature, "add_nodes_from_file");
-		nodes.pop();
-		nodes.pop();
-
-		nodes.push($$);
-	}
+	//	| ADD NODES FROM FILE exp WITH exp TEXTDOFS
+	//	{
+	//		args.clear();
+	//		signature.clear();
+	//
+	//		args.push_back($5);   //File name
+	//		args.push_back($7);   //Numbdofs
+	//
+	//		// Create the command signature for input verification
+	//		signature.push_back(this_signature("filename", &isAdimensional));
+	//
+	//		// Create the DSL caller node.
+	//		//add_nodes_from_file(std::string inputnodesfile, int ndof)
+	//		$$ = new FeiDslCaller2<string, int>(&add_nodes_from_file, args, signature, "add_nodes_from_file");
+	//		nodes.pop();
+	//		nodes.pop();
+	//
+	//		nodes.push($$);
+	//	}
 	| ADD ADD_material          { $$ = $2;} // Look in ADD_material rule to see the material commands
 	//!=========================================================================================================
 	//!
@@ -572,23 +572,23 @@ CMD_add
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add elements from file "string";
-	| ADD ELEMENTS FROM FILE exp
-	{
-		args.clear();
-		signature.clear();
-
-		args.push_back($5);   //File name
-
-		// Create the command signature for input verification
-		signature.push_back(this_signature("filename", &isAdimensional));
-
-		// Create the DSL caller node.
-		//add_nodes_from_file(std::string inputnodesfile, int ndof)
-		$$ = new FeiDslCaller1<std::string>(&add_elements_from_file, args, signature, "add_elements_from_file");
-		nodes.pop();
-
-		nodes.push($$);
-	}
+	//	| ADD ELEMENTS FROM FILE exp
+	//	{
+	//		args.clear();
+	//		signature.clear();
+	//
+	//		args.push_back($5);   //File name
+	//
+	//		// Create the command signature for input verification
+	//		signature.push_back(this_signature("filename", &isAdimensional));
+	//
+	//		// Create the DSL caller node.
+	//		//add_nodes_from_file(std::string inputnodesfile, int ndof)
+	//		$$ = new FeiDslCaller1<std::string>(&add_elements_from_file, args, signature, "add_elements_from_file");
+	//		nodes.pop();
+	//
+	//		nodes.push($$);
+	//	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add load # <.> to element # <.> type self_weight use acceleration field # <.>;
@@ -1279,44 +1279,44 @@ CMD_add
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add domain reduction method loading # <.> time_step = <T> scale_factor = <.> number_of_steps = <.> number_of_boundary_nodes = <.> number_of_exterior_nodes = <.> number_of_drm_elements = <.> element_file = <string> boundary_nodes_file = <string> exterior_nodes_file = <string> displacement_file = <string> acceleration_file = <string>;
-	| ADD DRM LOADING TEXTNUMBER 
-					  exp
-					  time_step '=' exp
-					  scale_factor '=' exp
-					  number_of_steps '=' exp
-					  number_of_boundary_nodes '=' exp
-					  number_of_exterior_nodes '=' exp
-					  number_of_drm_elements '=' exp
-					  element_file '=' exp
-					  boundary_nodes_file '=' exp
-					  exterior_nodes_file '=' exp
-					  displacement_file '=' exp
-					  acceleration_file '=' exp
-	{
-		args.clear(); signature.clear();
-
-		args.push_back($5); signature.push_back(this_signature("pattern_number",        &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("time_step",            &isTime));
-		args.push_back($11); signature.push_back(this_signature("scale_factor",         &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("number_of_steps",       &isAdimensional));
-		args.push_back($17); signature.push_back(this_signature("number_of_boundary_nodes",     &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("number_of_exterior_nodes",     &isAdimensional));
-		args.push_back($23); signature.push_back(this_signature("number_of_drm_elements",   &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("element_file",       &isAdimensional));
-		args.push_back($29); signature.push_back(this_signature("boundary_nodes_file",         &isAdimensional));
-		args.push_back($32); signature.push_back(this_signature("exterior_nodes_file",         &isAdimensional));
-		args.push_back($35); signature.push_back(this_signature("displacement_file",  &isAdimensional));
-		args.push_back($38); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
-
-		$$ = new FeiDslCaller12<int,
-		double,double,
-			int,int,int,int,
-			string,string,string,
-			string,string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
-
-		for(int i = 1; i <= 12; i++) nodes.pop();
-		nodes.push($$);
-	}
+	//	| ADD DRM LOADING TEXTNUMBER 
+	//					  exp
+	//					  time_step '=' exp
+	//					  scale_factor '=' exp
+	//					  number_of_steps '=' exp
+	//					  number_of_boundary_nodes '=' exp
+	//					  number_of_exterior_nodes '=' exp
+	//					  number_of_drm_elements '=' exp
+	//					  element_file '=' exp
+	//					  boundary_nodes_file '=' exp
+	//					  exterior_nodes_file '=' exp
+	//					  displacement_file '=' exp
+	//					  acceleration_file '=' exp
+	//	{
+	//		args.clear(); signature.clear();
+	//
+	//		args.push_back($5); signature.push_back(this_signature("pattern_number",        &isAdimensional));
+	//		args.push_back($8); signature.push_back(this_signature("time_step",            &isTime));
+	//		args.push_back($11); signature.push_back(this_signature("scale_factor",         &isAdimensional));
+	//		args.push_back($14); signature.push_back(this_signature("number_of_steps",       &isAdimensional));
+	//		args.push_back($17); signature.push_back(this_signature("number_of_boundary_nodes",     &isAdimensional));
+	//		args.push_back($20); signature.push_back(this_signature("number_of_exterior_nodes",     &isAdimensional));
+	//		args.push_back($23); signature.push_back(this_signature("number_of_drm_elements",   &isAdimensional));
+	//		args.push_back($26); signature.push_back(this_signature("element_file",       &isAdimensional));
+	//		args.push_back($29); signature.push_back(this_signature("boundary_nodes_file",         &isAdimensional));
+	//		args.push_back($32); signature.push_back(this_signature("exterior_nodes_file",         &isAdimensional));
+	//		args.push_back($35); signature.push_back(this_signature("displacement_file",  &isAdimensional));
+	//		args.push_back($38); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
+	//
+	//		$$ = new FeiDslCaller12<int,
+	//		double,double,
+	//			int,int,int,int,
+	//			string,string,string,
+	//			string,string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
+	//
+	//		for(int i = 1; i <= 12; i++) nodes.pop();
+	//		nodes.push($$);
+	//	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add domain reduction method loading # <.> hdf5_file = <string>;
@@ -4015,53 +4015,53 @@ ADD_element:
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type penalty_for_applying_generalized_displacement with node (<.>) stiffness = <corresponding unit to dof> dof [DOFTYPE];
-	| TEXTNUMBER exp TYPE penalty_for_applying_generalized_displacement WITH NODE  '(' exp  ')'
-		stiffness '=' exp
-		dof DOF
-	 {
-
-		args.clear(); signature.clear();
-
-		Expression* dof_number = dof2number(*$14);
-		UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*$14);
-
-		args.push_back($2); signature.push_back(this_signature("number",      &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("node",        &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("stiffness",  function_ptr));
-		args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
-
-
-		$$ = new FeiDslCaller4<int, int, double, int>(&add_element_penalty_for_applying_generalized_displacement, args, signature, "add_element_penalty_for_applying_generalized_displacement");
-
-		for(int ii = 1;ii <=3; ii++) nodes.pop();
-		nodes.push($$);
-	}
+	//	| TEXTNUMBER exp TYPE penalty_for_applying_generalized_displacement WITH NODE  '(' exp  ')'
+	//		stiffness '=' exp
+	//		dof DOF
+	//	 {
+	//
+	//		args.clear(); signature.clear();
+	//
+	//		Expression* dof_number = dof2number(*$14);
+	//		UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*$14);
+	//
+	//		args.push_back($2); signature.push_back(this_signature("number",      &isAdimensional));
+	//		args.push_back($8); signature.push_back(this_signature("node",        &isAdimensional));
+	//		args.push_back($12); signature.push_back(this_signature("stiffness",  function_ptr));
+	//		args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
+	//
+	//
+	//		$$ = new FeiDslCaller4<int, int, double, int>(&add_element_penalty_for_applying_generalized_displacement, args, signature, "add_element_penalty_for_applying_generalized_displacement");
+	//
+	//		for(int ii = 1;ii <=3; ii++) nodes.pop();
+	//		nodes.push($$);
+	//	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type penalty with nodes (<.> , <.>) stiffness = <corresponding unit to dof> dof to constrain <.>;
-	| TEXTNUMBER exp TYPE penalty WITH NODES  '(' exp ',' exp ')'
-		stiffness '=' exp
-		dof_to_constrain DOF
-	{
-		args.clear(); signature.clear();
-
-
-		Expression* dof_number = dof2number(*$16);
-		UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*$16);
-
-
-		args.push_back($2);  signature.push_back(this_signature("number",      &isAdimensional));
-		args.push_back($8);  signature.push_back(this_signature("node1",       &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2",       &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("stiffness",    function_ptr));
-		args.push_back(dof_number); signature.push_back(this_signature("dof",  isAdimensional));
-
-		 $$ = new FeiDslCaller5<int, int, int, double, int>(&add_element_penalty, args, signature, "add_element_penalty");
-
-
-		for(int i = 1; i <= 4; i++) nodes.pop();
-		nodes.push($$);
-	}
+	//	| TEXTNUMBER exp TYPE penalty WITH NODES  '(' exp ',' exp ')'
+	//		stiffness '=' exp
+	//		dof_to_constrain DOF
+	//	{
+	//		args.clear(); signature.clear();
+	//
+	//
+	//		Expression* dof_number = dof2number(*$16);
+	//		UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*$16);
+	//
+	//
+	//		args.push_back($2);  signature.push_back(this_signature("number",      &isAdimensional));
+	//		args.push_back($8);  signature.push_back(this_signature("node1",       &isAdimensional));
+	//		args.push_back($10); signature.push_back(this_signature("node2",       &isAdimensional));
+	//		args.push_back($14); signature.push_back(this_signature("stiffness",    function_ptr));
+	//		args.push_back(dof_number); signature.push_back(this_signature("dof",  isAdimensional));
+	//
+	//		 $$ = new FeiDslCaller5<int, int, int, double, int>(&add_element_penalty, args, signature, "add_element_penalty");
+	//
+	//
+	//		for(int i = 1; i <= 4; i++) nodes.pop();
+	//		nodes.push($$);
+	//	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type [beam_9dof_elastic] with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
@@ -4117,38 +4117,38 @@ ADD_element:
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type [contact] with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> friction_ratio = <.> maximum_gap = <L> contact_plane_vector = (<.>, <.>, <.> );
-	| TEXTNUMBER exp TYPE contact WITH NODES
-		'(' exp ',' exp ')'
-		normal_stiffness '=' exp
-		tangential_stiffness '=' exp
-		friction_ratio '=' exp
-		maximum_gap '=' exp
-		contact_plane_vector '=' '(' exp ','  exp ','  exp ')'
-	{
-		args.clear(); signature.clear();
-
-		args.push_back($2); signature.push_back(this_signature("number",                  &isAdimensional));
-
-		args.push_back($8); signature.push_back(this_signature("node1",                   &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2",                  &isAdimensional));
-
-		args.push_back($14); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
-		args.push_back($17); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
-		args.push_back($20); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
-		args.push_back($23); signature.push_back(this_signature("maximum_gap",            &isLength));
-
-		args.push_back($27); signature.push_back(this_signature("x_local_1",              &isAdimensional));
-		args.push_back($29); signature.push_back(this_signature("x_local_2",              &isAdimensional));
-		args.push_back($31); signature.push_back(this_signature("x_local_3",              &isAdimensional));
-
-
-		$$ = new FeiDslCaller10<int, int, int,
-							   double, double, double,
-							   double, double, double, double>(&add_element_contact_nonlinear_3dof_to_3dof, args, signature, "add_element_contact_nonlinear_3dof_to_3dof");
-
-		for(int ii = 1;ii <=10; ii++) nodes.pop();
-		nodes.push($$);
-	}
+	//	| TEXTNUMBER exp TYPE contact WITH NODES
+	//		'(' exp ',' exp ')'
+	//		normal_stiffness '=' exp
+	//		tangential_stiffness '=' exp
+	//		friction_ratio '=' exp
+	//		maximum_gap '=' exp
+	//		contact_plane_vector '=' '(' exp ','  exp ','  exp ')'
+	//	{
+	//		args.clear(); signature.clear();
+	//
+	//		args.push_back($2); signature.push_back(this_signature("number",                  &isAdimensional));
+	//
+	//		args.push_back($8); signature.push_back(this_signature("node1",                   &isAdimensional));
+	//		args.push_back($10); signature.push_back(this_signature("node2",                  &isAdimensional));
+	//
+	//		args.push_back($14); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
+	//		args.push_back($17); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
+	//		args.push_back($20); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
+	//		args.push_back($23); signature.push_back(this_signature("maximum_gap",            &isLength));
+	//
+	//		args.push_back($27); signature.push_back(this_signature("x_local_1",              &isAdimensional));
+	//		args.push_back($29); signature.push_back(this_signature("x_local_2",              &isAdimensional));
+	//		args.push_back($31); signature.push_back(this_signature("x_local_3",              &isAdimensional));
+	//
+	//
+	//		$$ = new FeiDslCaller10<int, int, int,
+	//							   double, double, double,
+	//							   double, double, double, double>(&add_element_contact_nonlinear_3dof_to_3dof, args, signature, "add_element_contact_nonlinear_3dof_to_3dof");
+	//
+	//		for(int ii = 1;ii <=10; ii++) nodes.pop();
+	//		nodes.push($$);
+	//	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type [FrictionalPenaltyContact] with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );

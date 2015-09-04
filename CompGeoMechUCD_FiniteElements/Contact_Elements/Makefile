@@ -5,12 +5,7 @@ include ../../Makefile.Includes
 include ../../Makefile.Compilers
 
 
-OBJS =  ContactElement_3DOF_3DOF.o \
-        ContactElement_3DOF_6DOF.o \
-        ContactElement_6DOF_6DOF.o \
-        ContactElement_Nonlinear_3DOF_3DOF.o \
-        ContactElement_Nonlinear_3DOF_7DOF.o \
-        FrictionalPenaltyContact.o
+OBJS =  FrictionalPenaltyContact.o
 
 
 

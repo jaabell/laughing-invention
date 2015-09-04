@@ -46,8 +46,8 @@
 #include "MODELING/add_load_selfweight_to_element.h"
 #include "MODELING/add_load_selfweight_to_node.h"
 #include "MODELING/add_load_to_brick_surface_from_contact_pore_pressure.h"
-#include "MODELING/add_load_pattern_domain_reduction_method_old_inputfiles_format.h"
-#include "MODELING/add_load_pattern_domain_reduction_method.h"
+// #include "MODELING/add_load_pattern_domain_reduction_method_old_inputfiles_format.h"
+// #include "MODELING/add_load_pattern_domain_reduction_method.h"
 #include "MODELING/add_load_pattern_domain_reduction_method_hdf5.h"
 // #include "MODELING/add_load_pattern_domain_reduction_method_save_forces.h"
 // #include "MODELING/add_load_pattern_domain_reduction_method_restore_forces.h"
@@ -64,9 +64,9 @@
 // Elements
 //--------------------------------------------------------------------------------------------------
 #include "MODELING/add_element_frictional_penalty_contact.h"
-#include "MODELING/add_element_contact_3dof_to_3dof.h"
-#include "MODELING/add_element_contact_nonlinear_3dof_to_7dof.h"
-#include "MODELING/add_element_contact_nonlinear_3dof_to_3dof.h"
+// #include "MODELING/add_element_contact_3dof_to_3dof.h"
+// #include "MODELING/add_element_contact_nonlinear_3dof_to_7dof.h"
+// #include "MODELING/add_element_contact_nonlinear_3dof_to_3dof.h"
 #include "MODELING/add_element_brick_8node.h"
 #include "MODELING/add_element_brick_8node_variable_number_of_gauss_points.h"
 #include "MODELING/add_element_brick_8node_elastic.h"
@@ -88,13 +88,13 @@
 #include "MODELING/add_element_rank_one_deficient_elastic_pinned_fixed_beam.h"  // Nima Tafazzoli (Dec. 2012)
 #include "MODELING/add_element_truss.h"
 #include "MODELING/add_element_beam_displacement_based.h"
-#include "MODELING/add_element_penalty.h"
-#include "MODELING/add_element_penalty_for_applying_generalized_displacement.h"
+// #include "MODELING/add_element_penalty.h"
+// #include "MODELING/add_element_penalty_for_applying_generalized_displacement.h"
 #include "MODELING/add_element_shell_MITC4.h"     // Jose Added July 3 2012
 #include "MODELING/add_element_shell_NewMITC4.h"     // Jose Added July 12 2012
 #include "MODELING/add_element_shell_andes_3node.h"     // Jose Added July 22 2012
 #include "MODELING/add_element_shell_andes_4node.h"     // Jose Added Sept 20 2012
-#include "MODELING/add_elements_from_GIDfile_27node_brick_elastic.h" //Added by Babak 5/29/14
+// #include "MODELING/add_elements_from_GIDfile_27node_brick_elastic.h" //Added by Babak 5/29/14
 
 
 // Materials
@@ -150,7 +150,7 @@
 #include "MODELING/remove_element.h"
 #include "MODELING/remove_load.h"
 #include "MODELING/remove_node.h"
-#include "MODELING/remove_support_from_node_by_fixity_number.h"
+// #include "MODELING/remove_support_from_node_by_fixity_number.h"
 #include "MODELING/remove_support_from_node.h"
 #include "MODELING/remove_equaldof_from_node.h"
 
@@ -183,12 +183,12 @@
 #include "SIMULATION/enable_output.h"
 #include "SIMULATION/output_every_nsteps.h"
 #include "SIMULATION/set_output_compression_level.h"
-#include "SIMULATION/define_output_to_binary.h"
+// #include "SIMULATION/define_output_to_binary.h"
 
 #include "MODELING/start_new_stage.h"
 #include "MODELING/define_model_name.h"
 
-#include "MODELING/write_domain_state_for_this_step.h"
+// #include "MODELING/write_domain_state_for_this_step.h"
 // #include "MODELING/StateWriter.h"
 #include "MODELING/output_of_node_to_screen.h"
 #include "MODELING/output_of_element_to_screen.h"
@@ -249,8 +249,8 @@
 
 // To add stuff from files (Deprecated)
 //--------------------------------------------------------------------------------------------------
-#include "MODELING/add_nodes_from_file.h"
-#include "MODELING/add_elements_from_file.h"
+// #include "MODELING/add_nodes_from_file.h"
+// #include "MODELING/add_elements_from_file.h"
 // #include "MODELING/add_elements_from_file_8node_brick.h"
 // #include "MODELING/add_elements_from_file_8node_brick_elastic.h"
 // #include "MODELING/add_elements_from_file_27node_brick.h"
@@ -293,5 +293,5 @@
 // #include "SIMULATION/parallel_analyze_static_multistep.h"
 // #include "MODELING/add_to_node_support.h"
 // #include "MODELING/add_support_to_node.h"
-#include "MODELING/add_support_from_file_to_nodes.h" //Babak added 5/29/14
+// #include "MODELING/add_support_from_file_to_nodes.h" //Babak added 5/29/14
 

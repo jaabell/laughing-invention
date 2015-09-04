@@ -1,30 +1,28 @@
-//===============================================================================
-//# COPYRIGHT (C): Woody's license (by BJ):
-//                 ``This    source  code is Copyrighted in
-//                 U.S.,  for  an  indefinite  period,  and anybody
-//                 caught  using it without our permission, will be
-//                 mighty good friends of ourn, cause we don't give
-//                 a  darn.  Hack it. Compile it. Debug it. Run it.
-//                 Yodel  it.  Enjoy it. We wrote it, that's all we
-//                 wanted to do.''
+///////////////////////////////////////////////////////////////////////////////
 //
-//# PROJECT:           Object Oriented Finite Element Program
-//# PURPOSE:           Elastic Cross Anisotropic Material implementation:
-//# CLASS:             ElasticIsotropic3D
-//#
-//# VERSION:           0.61803398874989 (golden section)
-//# LANGUAGE:          C++
-//# TARGET OS:         all...
-//# DESIGN:            Zhaohui Yang, Boris Jeremic (jeremic@ucdavis.edu)
-//# PROGRAMMER(S):     Zhaohui Yang, Yi Bian, Boris Jeremic
-//#
-//#
-//# DATE:              10Oct2002 Yi Bian
-//# UPDATE HISTORY:    March 20, 2003 Revised by Joey Yang & Boris Jeremic, UC Davis
-//#
-//#
-//===============================================================================
+// COPYRIGHT (C):      Version of a Creative Commons License,
+//                     for details contact Boris Jeremic, jeremic@ucdavis.edu
+// PROJECT:            Real ESSI Simulator
+// PROGRAMMER:         Zhaohui Yang, Yi Bian, Boris Jeremic
+// DATE:               10Oct2002 Yi Bian
+// UPDATE HISTORY:     Full update history in git repository.
+// QUALITY ASSURANCE:  Developers have worked really hard to develop
+//                     an extensive verification of developed implementation
+//                     and with that can claim quality and fitness for intended
+//                     purpose (modeling and simulation of Real ESSI Problems)
+//                     within confines of verification effort
 //
+// LEGACY/DEFUNCT COPYLEFT (C):
+//                     Woody's viral GPL-like license (adapted by BJ):
+//                     ``This    source  code is Copyrighted in
+//                     worldwide for  an  indefinite  period,  and anybody
+//                     caught  using it without our permission, will be
+//                     mighty good friends of ourn, cause we don't give
+//                     a  darn.  Hack it. Compile it. Debug it. Run it.
+//                     Yodel  it.  Enjoy it. We wrote it, that's all we
+//                     wanted to do.''
+//
+/////////////////////////////////////////////////////////////////////////////
 
 
 #include <ElasticCrossAnisotropic.h>
@@ -303,7 +301,7 @@ ElasticCrossAnisotropic::sendSelf(int commitTag, Channel& theChannel)
 
 int
 ElasticCrossAnisotropic::receiveSelf(int commitTag, Channel& theChannel,
-                                  FEM_ObjectBroker& theBroker)
+                                     FEM_ObjectBroker& theBroker)
 {
     int res = 0;
 

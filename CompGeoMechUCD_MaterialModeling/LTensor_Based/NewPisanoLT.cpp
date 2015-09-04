@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-//   COPYLEFT (C): Woody's viral GPL-like license (by BJ):
+// LEGACY/DEFUNCT COPYLEFT (C): Woody's viral GPL-like license (by BJ):
 //                 ``This    source  code is Copyrighted in
 //                 U.S.,  for  an  indefinite  period,  and anybody
 //                 caught  using it without our permission, will be
@@ -9,26 +9,14 @@
 //                 wanted to do.''
 //
 //
-// COPYRIGHT (C):     :-))
-// PROJECT:           Object Oriented Finite Element Program
-// FILE:
-// CLASS:
-// MEMBER FUNCTIONS:
-//
-// MEMBER VARIABLES
-//
-// PURPOSE:
-//
-// RETURN:
-// VERSION:
-// LANGUAGE:          C++
-// TARGET OS:
-// PROGRAMMER:        Jose Abell, Federico Pisano', Nima Tafazzoli, Boris Jeremic
-// DATE:              December 2013
-// UPDATE HISTORY:
-//
+// COPYRIGHT (C):  Version of Creative Commons (for details contact Boris Jeremic jeremic@ucdavis.edu)
+// PROJECT:        Real ESSI Simulator
+// PROGRAMMER:     Jose Abell, Federico Pisano', Nima Tafazzoli, Boris Jeremic
+// DATE:           December 2013
+// UPDATE HISTORY: Full update history in git repository.
 //
 /////////////////////////////////////////////////////////////////////////////
+
 
 // #define DEBUG_PISANO 1
 
@@ -1049,30 +1037,52 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
   unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
 
-  static fstream outstuff("unload.prod", std::ios::app);
-  outstuff << unload_prod << endl;
+  // static fstream outstuff("unload.prod", std::ios::app);
+  // outstuff << unload_prod;
 
-  if (unload_prod <= 0.0)
+  if (unload_prod < 0.0 )
   {
 
-    if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
+
+    if (eplcum_cr > 0.0)
     {
-      alpha0mem(i, j) = alpha0(i, j);
-      alpha0(i, j)    = alpha(i, j);
+      constexpr double b = 0.1;
+      double chi = 0.5 * (1 + tanh((eplcum / eplcum_cr - 0.5) / b)); // chi new scalar to be declared!!! tanh is the hyperbolic tangent, set b=0.1 (it governs the steepness of the step function)
+
+      // alpha0(i, j) = alpha0mem(i, j) + chi * (alpha0mem(i, j) - alpha(i, j)); // I think the use of alpha0mem is useless at this point, but improves readability
+      alpha0mem(i, j) = alpha0mem(i, j) + chi * (alpha0(i, j) - alpha0mem(i, j));
+      alpha0(i, j) = alpha0mem(i, j) + chi * (alpha(i, j) - alpha0mem(i, j)); // I think the use of alpha0mem is useless at this point, but improves readability
+
     }
-    else // the previous projection center is reset
+    else
     {
-      alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
-      unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
+      alpha0(i, j) = alpha(i, j);
     }
     strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+    // outstuff << " " << chi;
   }
 
-  // if (unload_prod <= 0.0)
+
+  // outstuff << endl;
+
+
+
+
+  // if (unload_prod < 0.0)
   // {
+
+  //   if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
+  //   {
+  //     alpha0mem(i, j) = alpha0(i, j);
+  //     alpha0(i, j)    = alpha(i, j);
+  //   }
+  //   else // the previous projection center is reset
+  //   {
+  //     alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
+  //     // unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
+  //   }
   //   strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
   // }
-
 
 
 //---------------------------------------------------------------------------------------------
