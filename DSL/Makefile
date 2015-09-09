@@ -18,7 +18,7 @@ makedocumentation: makedocumentation.o generate_command_patterns.o
 #	$(LINKER) command_suggestion.o -o command_suggestion
 #          command_suggestion.o
 
-document:
+document: makedocumentation
 	./makedocumentation
 # 	./generate_command_patterns
 
