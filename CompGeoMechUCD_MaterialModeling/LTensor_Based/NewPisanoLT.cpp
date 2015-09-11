@@ -938,24 +938,44 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
   double ep_stress_p            = 0.0;    //
   double strainplcum_vol        = 0.0;
 
-  DTensor2 mij(3, 3, 0.0);                // Unit vector normal to potential surface
-  DTensor2 incr_strain(3, 3, 0.0);        //
-  DTensor2 incr_stress(3, 3, 0.0);        //
-  DTensor2 incr_Pstrain(3, 3, 0.0);       //
-  DTensor2 ep_stress(3, 3, 0.0);          //
-  DTensor2 predicted_stress(3, 3, 0.0);   //
-  DTensor2 start_stress(3, 3, 0.0);       // Stress at start of step
-  DTensor2 start_strain(3, 3, 0.0);       // Strain at start of step
-  DTensor2 start_Pstrain(3, 3, 0.0);      // Plastic strain at start of step
-  DTensor2 s(3, 3, 0.0);                  // Deviatoric stress tensor (unused?)
-  DTensor2 incr_strain_dev(3, 3, 0.0);    // Incremental deviatoric strain
-  DTensor2 stress_incr_prev(3, 3, 0.0);   // Previous step stress increment
-  DTensor2 alpha_d(3, 3, 0.0);            //
-  DTensor2 alphad_alpha(3, 3, 0.0);       //
-  DTensor2 ep_stress_dev(3, 3, 0.0);      // Deviatoric elastoplastic stress
-  DTensor2 strainplcum_dev(3, 3, 0.0);
-  DTensor2 alpha_trial(3, 3, 0.0);
-  DTensor4 Ep(3, 3, 3, 3, 0.0);           // Elastoplastic tangent modulus tensor
+  static DTensor2 mij(3, 3, 0.0);                // Unit vector normal to potential surface
+  static DTensor2 incr_strain(3, 3, 0.0);        //
+  static DTensor2 incr_stress(3, 3, 0.0);        //
+  static DTensor2 incr_Pstrain(3, 3, 0.0);       //
+  static DTensor2 ep_stress(3, 3, 0.0);          //
+  static DTensor2 predicted_stress(3, 3, 0.0);   //
+  static DTensor2 start_stress(3, 3, 0.0);       // Stress at start of step
+  static DTensor2 start_strain(3, 3, 0.0);       // Strain at start of step
+  static DTensor2 start_Pstrain(3, 3, 0.0);      // Plastic strain at start of step
+  static DTensor2 s(3, 3, 0.0);                  // Deviatoric stress tensor (unused?)
+  static DTensor2 incr_strain_dev(3, 3, 0.0);    // Incremental deviatoric strain
+  static DTensor2 stress_incr_prev(3, 3, 0.0);   // Previous step stress increment
+  static DTensor2 alpha_d(3, 3, 0.0);            //
+  static DTensor2 alphad_alpha(3, 3, 0.0);       //
+  static DTensor2 ep_stress_dev(3, 3, 0.0);      // Deviatoric elastoplastic stress
+  static DTensor2 strainplcum_dev(3, 3, 0.0);
+  static DTensor2 alpha_trial(3, 3, 0.0);
+  static DTensor4 Ep(3, 3, 3, 3, 0.0);           // Elastoplastic tangent modulus tensor
+
+
+  mij *= 0;
+  incr_strain *= 0;
+  incr_stress *= 0;
+  incr_Pstrain *= 0;
+  ep_stress *= 0;
+  predicted_stress *= 0;
+  start_stress *= 0;
+  start_strain *= 0;
+  start_Pstrain *= 0;
+  s *= 0;
+  incr_strain_dev *= 0;
+  stress_incr_prev *= 0;
+  alpha_d *= 0;
+  alphad_alpha *= 0;
+  ep_stress_dev *= 0;
+  strainplcum_dev *= 0;
+  alpha_trial *= 0;
+  Ep *= 0;
 
   Index < 'p' > p;                        // Extra index for LTensor computations
   Index < 'q' > q;                        // Extra index for LTensor computations
@@ -1093,6 +1113,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
   {
     beta = get_distance_coeff(start_stress);    // this should be able to read alpha and alpha0
     alpha_d(i, j) = nij_dev(i, j) * (kd * sqrt(2.0 / 3.0));
+    // double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // Temporary change to show the effect of variable dilatancy.
+    // D = xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
     D = xi * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
   }
   else
