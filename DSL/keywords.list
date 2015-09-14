@@ -9,6 +9,7 @@ a1
 a2
 a3
 a4
+a_in
 acceleration
 acceleration_file
 acceleration_scale_unit
@@ -68,6 +69,7 @@ each
 eigen
 Elastic_Membrane_Plate
 elastic_modulus
+elastic_modulus_1atm
 elastic_modulus_horizontal
 elastic_modulus_vertical
 element
@@ -75,9 +77,11 @@ element_file
 elements
 else
 enable
+eplcum_cr_in
 equal
 equaldof
 every
+exp
 exterior_nodes_file
 factor
 field
@@ -146,6 +150,7 @@ motion
 mx
 my
 mz
+n_in
 name
 new
 node
