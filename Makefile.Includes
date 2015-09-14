@@ -247,7 +247,8 @@ SEQUENTIAL_MACHINE_LIBS =  \
       -lz \
       -lgfortran \
       -lieee \
-      -lc 
+      -lc \
+      -lrt
 
 PARALLEL_MACHINE_LIBS = -lm \
       -lgfortran \
