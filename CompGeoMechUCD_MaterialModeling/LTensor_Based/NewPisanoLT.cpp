@@ -1696,5 +1696,14 @@ int NewPisanoLT::getObjectSize()
   return size;
 }
 
+
+int NewPisanoLT::startNewStage()
+{
+
+  alpha0mem(i, j) = alpha0(i, j);
+  return 0;
+}
+
+
 #endif
 

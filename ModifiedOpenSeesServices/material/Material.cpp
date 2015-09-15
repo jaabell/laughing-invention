@@ -36,7 +36,7 @@
 #include <Material.h>
 
 Material::Material(int tag, int clasTag)
-    : TaggedObject(tag), MovableObject(clasTag)
+	: TaggedObject(tag), MovableObject(clasTag)
 {
 
 }
@@ -44,7 +44,7 @@ Material::Material(int tag, int clasTag)
 
 Material::~Material()
 {
-    // does nothing
+	// does nothing
 
 
 }
@@ -52,37 +52,44 @@ Material::~Material()
 int
 Material::setVariable(const char* argv)
 {
-    return -1;
+	return -1;
 }
 
 int
 Material::getVariable(int variableID, double& info)
 {
-    return -1;
+	return -1;
 }
 
 int
 Material::setParameter(const char** argv, int argc, Information& eleInformation)
 {
-    return -1;
+	return -1;
 }
 
 int
 Material::updateParameter(int responseID, Information& eleInformation)
 {
-    return -1;
+	return -1;
 }
 
 Response*
 Material::setResponse(const char** argv, int argc, Information& info)
 {
-    return 0;
+	return 0;
 }
 
 int
 Material::getResponse(int responseID, Information& info)
 {
-    return -1;
+	return -1;
 }
 
 
+// Informs material about starting a new stage.
+// Material may or may not do something with this information.
+int
+Material::startNewStage()
+{
+	return 0;
+}
