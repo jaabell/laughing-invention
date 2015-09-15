@@ -215,6 +215,7 @@ const DTensor2  &NewPisanoLT::getStressTensor(void)
 const DTensor2 &NewPisanoLT::getStrainTensor(void)
 {
 
+  // return this->alpha0;
   return this->TrialStrain;
 }
 
@@ -222,6 +223,7 @@ const DTensor2 &NewPisanoLT::getStrainTensor(void)
 const DTensor2 &NewPisanoLT::getPlasticStrainTensor(void)
 {
 
+  // return this->alpha0mem;
   return this->TrialPlastic_Strain;
 }
 
