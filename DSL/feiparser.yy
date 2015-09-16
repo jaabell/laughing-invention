@@ -377,81 +377,6 @@ dsl
 		nodes.pop();
 		nodes.push($$);
 		}
-	/*  MySQL Stuff out by Jose on Feb 5, 2014
-
-
-
-	//!=========================================================================================================
-	//!
-	//!FEIDOC save response of model type [mysql] databasename <.> host <.> username <.> password <.> port <.> socket <.>;
-	| CMD_save RESPONSE of MODEL TYPE mysql databasename exp host exp username exp password exp port exp socket exp
-	{
-		args.clear(); signature.clear();
-
-		args.push_back($8); signature.push_back(this_signature("databaseName", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("host", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("username", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("password", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("port", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("socket", &isAdimensional));
-
-
-		$$ = new FeiDslCaller6<string, string,
-							   string, string, unsigned int,
-							   string>(&save_response_of_model_mysql_format, args, signature,"save_response_of_model_mysql_format");
-
-		for(int ii = 1;ii <=6; ii++) nodes.pop();
-		nodes.push($$);
-		}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC save state of model type [mysql] databasename <.> host <.> username <.> password <.> port <.> socket <.>;
-	| CMD_save STATE of MODEL TYPE mysql databasename exp
-	host exp username exp password exp port exp socket exp
-	{
-		args.clear(); signature.clear();
-
-		args.push_back($8); signature.push_back(this_signature("databaseName", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("host", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("username", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("password", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("port", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("socket", &isAdimensional));
-
-
-		$$ = new FeiDslCaller6<string, string, string,
-							   string, unsigned int,
-							   string>(&save_state_of_model_mysql_format, args, signature,"save_state_of_model_mysql_format");
-
-		for(int ii = 1;ii <=6; ii++) nodes.pop();
-		nodes.push($$);
-		}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC restore state of model type [mysql] databasename <.> host <.> username <.> password <.> port <.> socket <.>;
-	| CMD_restore STATE of MODEL TYPE mysql databasename exp host exp username exp password exp port exp socket exp
-	{
-		args.clear(); signature.clear();
-qq
-		args.push_back($8); signature.push_back(this_signature("databaseName", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("host", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("username", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("password", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("port", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("socket", &isAdimensional));
-
-
-		$$ = new FeiDslCaller6<string, string, string,
-							   string, unsigned int,
-							   string>(&restore_state_of_model_mysql_format, args, signature,"restore_state_of_model_mysql_format");
-
-		for(int ii = 1;ii <=6; ii++) nodes.pop();
-		nodes.push($$);
-		}
-
-			End of MySQL stuff
-
-		*/
 	//!=========================================================================================================
 	//!
 	//!FEIDOC whos;
@@ -529,28 +454,6 @@ CMD_add
 		// Then add the new caller to the nodes!
 		nodes.push($$);
 	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add nodes from file "string"  with <.> dofs;
-	//	| ADD NODES FROM FILE exp WITH exp TEXTDOFS
-	//	{
-	//		args.clear();
-	//		signature.clear();
-	//
-	//		args.push_back($5);   //File name
-	//		args.push_back($7);   //Numbdofs
-	//
-	//		// Create the command signature for input verification
-	//		signature.push_back(this_signature("filename", &isAdimensional));
-	//
-	//		// Create the DSL caller node.
-	//		//add_nodes_from_file(std::string inputnodesfile, int ndof)
-	//		$$ = new FeiDslCaller2<string, int>(&add_nodes_from_file, args, signature, "add_nodes_from_file");
-	//		nodes.pop();
-	//		nodes.pop();
-	//
-	//		nodes.push($$);
-	//	}
 	| ADD ADD_material          { $$ = $2;} // Look in ADD_material rule to see the material commands
 	//!=========================================================================================================
 	//!
@@ -569,26 +472,6 @@ CMD_add
 		nodes.push($$);
 	}
 	| ADD ELEMENT ADD_element   { $$ = $3; }
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add elements from file "string";
-	//	| ADD ELEMENTS FROM FILE exp
-	//	{
-	//		args.clear();
-	//		signature.clear();
-	//
-	//		args.push_back($5);   //File name
-	//
-	//		// Create the command signature for input verification
-	//		signature.push_back(this_signature("filename", &isAdimensional));
-	//
-	//		// Create the DSL caller node.
-	//		//add_nodes_from_file(std::string inputnodesfile, int ndof)
-	//		$$ = new FeiDslCaller1<std::string>(&add_elements_from_file, args, signature, "add_elements_from_file");
-	//		nodes.pop();
-	//
-	//		nodes.push($$);
-	//	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add load # <.> to element # <.> type self_weight use acceleration field # <.>;
@@ -1040,80 +923,6 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add penalty displacement # <.> to element # <.>  [DOFTYPE] = <length> type linear;
-	//    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp DOF '=' exp TYPE TH_LINEAR
-	//    {
-	//
-	//        args.clear(); signature.clear();
-	//
-	//        Expression* dof_number = dof2number(*$9);
-	//
-	//        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
-	//        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
-	//        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-	//        args.push_back($11); signature.push_back(this_signature(*$9,   &isLength));
-	//
-	//
-	//       $$ = new FeiDslCaller4<int, int, int, double>(&add_penalty_displacement_time_history_linear, args,signature, "add_penalty_displacement_time_history_linear");
-	//
-	//
-	//        for(int i = 1; i <= 3; i++) nodes.pop();
-	//        nodes.push($$);
-	//    }
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add penalty displacement # <.> to element # <.> dof [DOFTYPE] type path_series time_step = <time> scale_factor = <.> series_file = "STRING";
-	//    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp dof DOF TYPE TH_PATH_SERIES
-	//      time_step '=' exp
-	//      scale_factor '=' exp
-	//      series_file '=' exp
-	//    {
-	//
-	//        args.clear(); signature.clear();
-	//
-	//        Expression* dof_number = dof2number(*$10);
-	//
-	//        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
-	//        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
-	//        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-	//        args.push_back($15); signature.push_back(this_signature("time_step",   &isTime));
-	//        args.push_back($18); signature.push_back(this_signature("scale_factor",   &isAdimensional));
-	//        args.push_back($21); signature.push_back(this_signature("series_file",   &isAdimensional));
-	//
-	//
-	//       $$ = new FeiDslCaller6<int, int, int, double, double, string>(&add_penalty_displacement_time_history_path_series, args,signature, "add_penalty_displacement_time_history_path_series");
-	//
-	//
-	//        for(int i = 1; i <= 5; i++) nodes.pop();
-	//        nodes.push($$);
-	//    }
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add penalty displacement # <.> to element # <.> dof [DOFTYPE] type path_time_series scale_factor = <.> series_file = "STRING";
-	//    | ADD PENALTYDISPLACEMENT TEXTNUMBER exp TO ELEMENT TEXTNUMBER exp dof DOF TYPE TH_PATH_TIME_SERIES
-	//      scale_factor '=' exp
-	//      series_file '=' exp
-	//    {
-	//
-	//        args.clear(); signature.clear();
-	//
-	//        Expression* dof_number = dof2number(*$10);
-	//
-	//        args.push_back($4); signature.push_back(this_signature("number",        &isAdimensional));
-	//        args.push_back($8); signature.push_back(this_signature("node",          &isAdimensional));
-	//        args.push_back(dof_number); signature.push_back(this_signature("dof",   &isAdimensional));
-	//        args.push_back($15); signature.push_back(this_signature("scale_factor",   &isAdimensional));
-	//        args.push_back($18); signature.push_back(this_signature("series_file",   &isAdimensional));
-	//
-	//
-	//       $$ = new FeiDslCaller5<int, int, int, double, string>(&add_penalty_displacement_time_history_path_time_series, args,signature, "add_penalty_displacement_time_history_path_time_series");
-	//
-	//
-	//        for(int i = 1; i <= 4; i++) nodes.pop();
-	//        nodes.push($$);
-	//    }
-	//!=========================================================================================================
-	//!
 	//!FEIDOC add damping # <.> type [Rayleigh] with a0 = <time> a1 = <1/time> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
 	| ADD DAMPING TEXTNUMBER exp TYPE DAMPING_RAYLEIGH WITH a0 '=' exp a1 '=' exp stiffness_to_use '=' stiffness_to_use_opt
 	{
@@ -1276,47 +1085,6 @@ CMD_add
 		for(int i = 1; i <= 2; i++) nodes.pop();
 		nodes.push($$);
 	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add domain reduction method loading # <.> time_step = <T> scale_factor = <.> number_of_steps = <.> number_of_boundary_nodes = <.> number_of_exterior_nodes = <.> number_of_drm_elements = <.> element_file = <string> boundary_nodes_file = <string> exterior_nodes_file = <string> displacement_file = <string> acceleration_file = <string>;
-	//	| ADD DRM LOADING TEXTNUMBER 
-	//					  exp
-	//					  time_step '=' exp
-	//					  scale_factor '=' exp
-	//					  number_of_steps '=' exp
-	//					  number_of_boundary_nodes '=' exp
-	//					  number_of_exterior_nodes '=' exp
-	//					  number_of_drm_elements '=' exp
-	//					  element_file '=' exp
-	//					  boundary_nodes_file '=' exp
-	//					  exterior_nodes_file '=' exp
-	//					  displacement_file '=' exp
-	//					  acceleration_file '=' exp
-	//	{
-	//		args.clear(); signature.clear();
-	//
-	//		args.push_back($5); signature.push_back(this_signature("pattern_number",        &isAdimensional));
-	//		args.push_back($8); signature.push_back(this_signature("time_step",            &isTime));
-	//		args.push_back($11); signature.push_back(this_signature("scale_factor",         &isAdimensional));
-	//		args.push_back($14); signature.push_back(this_signature("number_of_steps",       &isAdimensional));
-	//		args.push_back($17); signature.push_back(this_signature("number_of_boundary_nodes",     &isAdimensional));
-	//		args.push_back($20); signature.push_back(this_signature("number_of_exterior_nodes",     &isAdimensional));
-	//		args.push_back($23); signature.push_back(this_signature("number_of_drm_elements",   &isAdimensional));
-	//		args.push_back($26); signature.push_back(this_signature("element_file",       &isAdimensional));
-	//		args.push_back($29); signature.push_back(this_signature("boundary_nodes_file",         &isAdimensional));
-	//		args.push_back($32); signature.push_back(this_signature("exterior_nodes_file",         &isAdimensional));
-	//		args.push_back($35); signature.push_back(this_signature("displacement_file",  &isAdimensional));
-	//		args.push_back($38); signature.push_back(this_signature("acceleration_file",  &isAdimensional));
-	//
-	//		$$ = new FeiDslCaller12<int,
-	//		double,double,
-	//			int,int,int,int,
-	//			string,string,string,
-	//			string,string>(&add_load_pattern_domain_reduction_method, args, signature, "add_load_pattern_domain_reduction_method");
-	//
-	//		for(int i = 1; i <= 12; i++) nodes.pop();
-	//		nodes.push($$);
-	//	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add domain reduction method loading # <.> hdf5_file = <string>;
@@ -3063,82 +2831,6 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [pisano] elastic_modulus = <F/L^2> poisson_ratio = <.> M_in = <F/L^2> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> mass_density = <M/L^2> initial_confining_stress = <F/L^2> beta_min = <.>;
-	| MATERIAL TEXTNUMBER exp TYPE pisano
-						elastic_modulus '=' exp
-						poisson_ratio '=' exp
-						M_in '=' exp
-						kd_in '=' exp
-						xi_in '=' exp
-						h_in '=' exp
-						m_in '=' exp
-						mass_density '=' exp
-						initial_confining_stress '=' exp
-						beta_min '=' exp
-	  {
-		args.clear(); signature.clear();
-
-		args.push_back($3); signature.push_back(this_signature("number",                    &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("elastic_modulus",           &isPressure));
-		args.push_back($11); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("M_in",                     &isAdimensional));
-		args.push_back($17); signature.push_back(this_signature("kd_in",                    &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("xi_in",                    &isAdimensional));
-		args.push_back($23); signature.push_back(this_signature("h_in",                     &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("m_in",                     &isAdimensional));
-		args.push_back($29); signature.push_back(this_signature("mass_density",             &isDensity));
-		args.push_back($32); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-		args.push_back($35); signature.push_back(this_signature("beta_min",                 &isAdimensional));
-
-		$$ = new FeiDslCaller11<int,
-								double, double, double,
-								double, double, double,
-								double, double, double,
-								double>(&add_constitutive_model_NDMaterial_pisano, args, signature, "add_constitutive_model_NDMaterial_pisano");
-
-		for(int ii = 1;ii <=11; ii++) nodes.pop();
-		nodes.push($$);
-	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add material # <.> type [pisanoLT] elastic_modulus = <F/L^2> poisson_ratio = <.> M_in = <F/L^2> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> mass_density = <M/L^2> initial_confining_stress = <F/L^2> beta_min = <.>;
-	| MATERIAL TEXTNUMBER exp TYPE pisanoLT
-						elastic_modulus '=' exp
-						poisson_ratio '=' exp
-						M_in '=' exp
-						kd_in '=' exp
-						xi_in '=' exp
-						h_in '=' exp
-						m_in '=' exp
-						mass_density '=' exp
-						initial_confining_stress '=' exp
-						beta_min '=' exp
-	  {
-		args.clear(); signature.clear();
-
-		args.push_back($3); signature.push_back(this_signature("number",                    &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("elastic_modulus",           &isPressure));
-		args.push_back($11); signature.push_back(this_signature("poisson_ratio",            &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("M_in",                     &isAdimensional));
-		args.push_back($17); signature.push_back(this_signature("kd_in",                    &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("xi_in",                    &isAdimensional));
-		args.push_back($23); signature.push_back(this_signature("h_in",                     &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("m_in",                     &isAdimensional));
-		args.push_back($29); signature.push_back(this_signature("mass_density",             &isDensity));
-		args.push_back($32); signature.push_back(this_signature("initial_confining_stress", &isPressure));
-		args.push_back($35); signature.push_back(this_signature("beta_min",                 &isAdimensional));
-
-		$$ = new FeiDslCaller11<int,
-								double, double, double,
-								double, double, double,
-								double, double, double,
-								double>(&add_constitutive_model_NDMaterialLT_pisano, args, signature, "add_constitutive_model_NDMaterialLT_pisano");
-
-		for(int ii = 1;ii <=11; ii++) nodes.pop();
-		nodes.push($$);
-	}
-	//!=========================================================================================================
-	//!
 	//!FEIDOC add material # <.> type [linear_elastic_isotropic_3d_LT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.>;
 	| MATERIAL TEXTNUMBER exp TYPE linear_elastic_isotropic_3d_LT
 		mass_density '=' exp
@@ -3871,20 +3563,7 @@ ADD_element:
 		args.push_back($54); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
 		args.push_back($56); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
 		args.push_back($58); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
-		//
-		//int add_element_beam_elastic_3d(int ElementNumber,
-		//                 double A,
-		//                 double E,
-		//                 double G,
-		//                 double Jx,
-		//                 double Iy,
-		//                 double Iz,
-		//                 int iNode,
-		//                 int jNode,
-		//                 double rho,
-		//                 double vecxzPlane_X, double vecxzPlane_Y, double vecxzPlane_Z,
-		//                 double jntOffsetI_X, double jntOffsetI_Y, double jntOffsetI_Z,
-		//                 double jntOffsetJ_X, double jntOffsetJ_Y, double jntOffsetJ_Z)
+		
 		$$ = new FeiDslCaller19<int,
 								double, double, double, double, double, double,
 								int, int, double,
@@ -3935,20 +3614,7 @@ ADD_element:
 		args.push_back($54); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
 		args.push_back($56); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
 		args.push_back($58); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
-		//
-		//int add_element_beam_elastic_3d(int ElementNumber,
-		//                 double A,
-		//                 double E,
-		//                 double G,
-		//                 double Jx,
-		//                 double Iy,
-		//                 double Iz,
-		//                 int iNode,
-		//                 int jNode,
-		//                 double rho,
-		//                 double vecxzPlane_X, double vecxzPlane_Y, double vecxzPlane_Z,
-		//                 double jntOffsetI_X, double jntOffsetI_Y, double jntOffsetI_Z,
-		//                 double jntOffsetJ_X, double jntOffsetJ_Y, double jntOffsetJ_Z)
+	
 		$$ = new FeiDslCaller19<int,
 								double, double, double, double, double, double,
 								int, int, double,
@@ -4014,56 +3680,6 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type penalty_for_applying_generalized_displacement with node (<.>) stiffness = <corresponding unit to dof> dof [DOFTYPE];
-	//	| TEXTNUMBER exp TYPE penalty_for_applying_generalized_displacement WITH NODE  '(' exp  ')'
-	//		stiffness '=' exp
-	//		dof DOF
-	//	 {
-	//
-	//		args.clear(); signature.clear();
-	//
-	//		Expression* dof_number = dof2number(*$14);
-	//		UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*$14);
-	//
-	//		args.push_back($2); signature.push_back(this_signature("number",      &isAdimensional));
-	//		args.push_back($8); signature.push_back(this_signature("node",        &isAdimensional));
-	//		args.push_back($12); signature.push_back(this_signature("stiffness",  function_ptr));
-	//		args.push_back(dof_number); signature.push_back(this_signature("dof", &isAdimensional));
-	//
-	//
-	//		$$ = new FeiDslCaller4<int, int, double, int>(&add_element_penalty_for_applying_generalized_displacement, args, signature, "add_element_penalty_for_applying_generalized_displacement");
-	//
-	//		for(int ii = 1;ii <=3; ii++) nodes.pop();
-	//		nodes.push($$);
-	//	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add element # <.> type penalty with nodes (<.> , <.>) stiffness = <corresponding unit to dof> dof to constrain <.>;
-	//	| TEXTNUMBER exp TYPE penalty WITH NODES  '(' exp ',' exp ')'
-	//		stiffness '=' exp
-	//		dof_to_constrain DOF
-	//	{
-	//		args.clear(); signature.clear();
-	//
-	//
-	//		Expression* dof_number = dof2number(*$16);
-	//		UnitCheckerFunctionPointerType function_ptr = dof2stiffnesschecker(*$16);
-	//
-	//
-	//		args.push_back($2);  signature.push_back(this_signature("number",      &isAdimensional));
-	//		args.push_back($8);  signature.push_back(this_signature("node1",       &isAdimensional));
-	//		args.push_back($10); signature.push_back(this_signature("node2",       &isAdimensional));
-	//		args.push_back($14); signature.push_back(this_signature("stiffness",    function_ptr));
-	//		args.push_back(dof_number); signature.push_back(this_signature("dof",  isAdimensional));
-	//
-	//		 $$ = new FeiDslCaller5<int, int, int, double, int>(&add_element_penalty, args, signature, "add_element_penalty");
-	//
-	//
-	//		for(int i = 1; i <= 4; i++) nodes.pop();
-	//		nodes.push($$);
-	//	}
-	//!=========================================================================================================
-	//!
 	//!FEIDOC add element # <.> type [beam_9dof_elastic] with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
 	| TEXTNUMBER exp TYPE beam_9dof_elastic WITH NODES
 		'(' exp ',' exp ')'
@@ -4114,41 +3730,6 @@ ADD_element:
 		for(int ii = 1;ii <=19; ii++) nodes.pop();
 		nodes.push($$);
 	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add element # <.> type [contact] with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> friction_ratio = <.> maximum_gap = <L> contact_plane_vector = (<.>, <.>, <.> );
-	//	| TEXTNUMBER exp TYPE contact WITH NODES
-	//		'(' exp ',' exp ')'
-	//		normal_stiffness '=' exp
-	//		tangential_stiffness '=' exp
-	//		friction_ratio '=' exp
-	//		maximum_gap '=' exp
-	//		contact_plane_vector '=' '(' exp ','  exp ','  exp ')'
-	//	{
-	//		args.clear(); signature.clear();
-	//
-	//		args.push_back($2); signature.push_back(this_signature("number",                  &isAdimensional));
-	//
-	//		args.push_back($8); signature.push_back(this_signature("node1",                   &isAdimensional));
-	//		args.push_back($10); signature.push_back(this_signature("node2",                  &isAdimensional));
-	//
-	//		args.push_back($14); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
-	//		args.push_back($17); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
-	//		args.push_back($20); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
-	//		args.push_back($23); signature.push_back(this_signature("maximum_gap",            &isLength));
-	//
-	//		args.push_back($27); signature.push_back(this_signature("x_local_1",              &isAdimensional));
-	//		args.push_back($29); signature.push_back(this_signature("x_local_2",              &isAdimensional));
-	//		args.push_back($31); signature.push_back(this_signature("x_local_3",              &isAdimensional));
-	//
-	//
-	//		$$ = new FeiDslCaller10<int, int, int,
-	//							   double, double, double,
-	//							   double, double, double, double>(&add_element_contact_nonlinear_3dof_to_3dof, args, signature, "add_element_contact_nonlinear_3dof_to_3dof");
-	//
-	//		for(int ii = 1;ii <=10; ii++) nodes.pop();
-	//		nodes.push($$);
-	//	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type [FrictionalPenaltyContact] with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
@@ -4478,7 +4059,7 @@ ADD_element:
 // =====================================================================================
 
 // For each 'exp' there should be a nodes.pop() call and a null pointer guard.
-// Segfault ensues if this is not done. Al
+// Segfault ensues if this is not done. 
 
 
 prompt
