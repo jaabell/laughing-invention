@@ -1115,9 +1115,9 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
   {
     beta = get_distance_coeff(start_stress);    // this should be able to read alpha and alpha0
     alpha_d(i, j) = nij_dev(i, j) * (kd * sqrt(2.0 / 3.0));
-    // double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // Temporary change to show the effect of variable dilatancy.
-    // D = xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
-    D = xi * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
+    double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // Temporary change to show the effect of variable dilatancy.
+    D = xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
+    // D = xi * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
   }
   else
   {
