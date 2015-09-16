@@ -121,8 +121,15 @@ int start_new_stage(string CurrentStageName)
                               ModelName,
                               StageName,
                               numSteps);
-    // #endif
 
+
+    ElementIter &elements = theDomain. getElements();
+    Element *ele = 0;
+
+    while ((ele = elements()) != 0)
+    {
+        ele->startNewStage();
+    }
 
 
     return 0;
