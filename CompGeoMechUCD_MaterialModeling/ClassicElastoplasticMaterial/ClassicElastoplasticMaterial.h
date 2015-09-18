@@ -146,6 +146,7 @@ public:
 // Constructor... invokes copy constructor for base elastoplastic template parameters
     ClassicElastoplasticMaterial(int tag,
                                  double rho_,
+                                 double p0,
                                  const YieldFunctionType& yf_in,
                                  const ElasticityType& et_in,
                                  const PlasticFlowType& pf_in,
@@ -165,7 +166,15 @@ public:
           pf(pf_in),
           vars(vars_in)
     {
+        //Set initial stress to some value. Needed for models
+        // like Drucker-Prager which blow up at sigma_ii = 0 :)
+        TrialStress(0, 0) = -p0;
+        TrialStress(1, 1) = -p0;
+        TrialStress(2, 2) = -p0;
 
+        CommitStress(0, 0) = -p0;
+        CommitStress(1, 1) = -p0;
+        CommitStress(2, 2) = -p0;
     }
 
 
@@ -195,6 +204,12 @@ public:
     double getRho(void)
     {
         return rho;
+    }
+
+    double getPressure(void)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        return -CommitStress(i, i) / 3;
     }
 
 //==================================================================================================

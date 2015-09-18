@@ -31,12 +31,13 @@ int add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening(int Mater
         double nu,
         double k,
         double H_alpha,
-        double H_k)
+        double H_k,
+        double p0)
 {
 
     NDMaterialLT* theMaterial = 0;
 
-    theMaterial = new   DruckerPragerLinearHardening(MaterialNumber,  k,  H_alpha,  H_k,  E,  nu, rho);
+    theMaterial = new   DruckerPragerLinearHardening(MaterialNumber,  k,  H_alpha,  H_k,  E,  nu, rho, p0);
 
     if (theMaterial == NULL)
     {

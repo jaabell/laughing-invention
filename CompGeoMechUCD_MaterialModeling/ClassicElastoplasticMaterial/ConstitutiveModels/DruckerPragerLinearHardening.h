@@ -78,7 +78,7 @@ class DruckerPragerLinearHardening : public DPLHBase
 public:
 
 	//First constructor, creates a material at its "ground state" from its parameters.
-	DruckerPragerLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_) ;
+	DruckerPragerLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_, double p0) ;
 
 	// Second constructor is not called by the user, instead it is called when creating a copy of the
 	// material. This must provide an initialization for the state variables and link the components
