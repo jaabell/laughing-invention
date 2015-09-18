@@ -87,7 +87,9 @@ C++ "Rule of 5"
 
 
 
-
+// This anonymous namespace avoids multiple-definition name clashes.
+namespace
+{
 
 void printTensor(string name, const DTensor2 &v)
 {
@@ -100,6 +102,8 @@ void printTensor(string name, const DTensor2 &v)
               << v(0, 1) << " "
               << v(0, 2) << " "
               << v(1, 2) << " ]" << std::endl;
+}
+
 }
 
 

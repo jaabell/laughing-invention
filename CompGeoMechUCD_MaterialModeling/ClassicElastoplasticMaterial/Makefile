@@ -12,12 +12,17 @@ include ../../Makefile.Includes
 include ../../Makefile.Compilers
 
 #Will try to compile all .cpp files in current directory.
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard *.cpp) 
 OBJS = $(SRCS:.cpp=.o)
 TARGETS = $(patsubst %.cpp, % , $(SRCS))
 
 LIBSHERE = $(LIBS)
 CPPFLAGS=--std=c++11 -g -pg
+LIBRARY_Constitutive_Models  = ../../lib/libclassicelastoplasticmaterials.a
+
+
+ALLSRCS = $(SRCS) $(wildcard EvolvingVariables/*.cpp) $(wildcard ElasticityModels/*.cpp) $(wildcard ConstitutiveModels/*.cpp)
+ALLOBJS = $(ALLSRCS:.cpp=.o)
 
 #Rules
 %.o: %.cpp
@@ -25,7 +30,12 @@ CPPFLAGS=--std=c++11 -g -pg
 
 # all:  test_yield_surface_and_plastic_flow test_elasticity test_materialinternalvariables
 all:  ClassicElastoplasticityGlobals.o 
+	$(CD) EvolvingVariables; $(MAKE);
+	$(CD) ElasticityModels; $(MAKE);
+	$(CD) ConstitutiveModels; $(MAKE);
+	$(AR) $(ARFLAGS) $(LIBRARY_Constitutive_Models) $(ALLOBJS)
 tests:	all test_drucker test_vonmises 
+
 
 % : %.o
 	$(LINKER) $(LINKFLAGS) $< $(LIBS) -o $@
@@ -43,10 +53,13 @@ test_vonmises : test_vonmises.o
 
 ###########################################################################
 
+
+clean: cleanall
+
 cleanall:
 	$(RM) $(RMFLAGS) $(OBJS) *.o core* *.feioutput *.err
 	$(RM) $(RMFLAGS) $(TARGETS)
-
+	$(CD) ConstitutiveModels; $(MAKE);
 
 
 

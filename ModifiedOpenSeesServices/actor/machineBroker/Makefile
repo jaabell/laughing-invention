@@ -7,11 +7,13 @@ ModifiedOpenSeesServicesdir := $(current_directory)/../..
 include ../../../Makefile.Includes
 include ../../../Makefile.Compilers
 
-OBJS = MachineBroker.o \
-       AlphaMachineBroker.o \
-       DecMachineBroker.o \
-       MillMachineBroker.o \
-       MPI_MachineBroker.o
+OBJS = MachineBroker.o MPI_MachineBroker.o
+
+# OBJS = MachineBroker.o \
+#        AlphaMachineBroker.o \
+#        DecMachineBroker.o \
+#        MillMachineBroker.o \
+#        MPI_MachineBroker.o
 
 all: $(OBJS)
 

@@ -35,6 +35,7 @@
 
 #include "../../ltensor/LTensor.h"
 #include <iostream>
+using namespace std;
 
 //Forward declaration needed for declaring the operator overload << (friend)
 template<class VarType, class T>
@@ -43,7 +44,6 @@ class EvolvingVariable;
 //Forward declaration
 template<class VarType, class T>
 std::ostream& operator<<(std::ostream& os, const EvolvingVariable<VarType, T>& obj);
-
 
 
 

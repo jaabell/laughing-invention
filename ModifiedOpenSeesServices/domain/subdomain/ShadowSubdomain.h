@@ -38,177 +38,177 @@
 
 #include <Subdomain.h>
 #include <Shadow.h>
-#include <remote.h>
+// #include <remote.h>
 
 class ShadowSubdomain: public Shadow, public Subdomain
 {
-    public:
-        ShadowSubdomain(int tag,
-                        MachineBroker &theMachineBroker,
-                        FEM_ObjectBroker &theObjectBroker);
+public:
+    ShadowSubdomain(int tag,
+                    MachineBroker &theMachineBroker,
+                    FEM_ObjectBroker &theObjectBroker);
 
-        ShadowSubdomain(int tag,
-                        Channel &theChannel,
-                        FEM_ObjectBroker &theObjectBroker);
+    ShadowSubdomain(int tag,
+                    Channel &theChannel,
+                    FEM_ObjectBroker &theObjectBroker);
 
-        virtual  ~ShadowSubdomain();
+    virtual  ~ShadowSubdomain();
 
-        virtual int getRemoteData(void);
+    virtual int getRemoteData(void);
 
-        // Methods inherited from Domain, Subdomain and Element
-        // which must be rewritten
-        virtual bool addElement(Element *);
-        virtual bool addNode(Node *);
-        virtual bool addExternalNode(Node *);
-        virtual bool addSP_Constraint(SP_Constraint *);
-        virtual bool addMP_Constraint(MP_Constraint *);
-        virtual bool addLoadPattern(LoadPattern *);
-        virtual bool addNodalLoad(NodalLoad *, int loadPattern);
-        virtual bool addElementalLoad(ElementalLoad *, int loadPattern);
-        virtual bool addSP_Constraint(SP_Constraint *, int loadPattern);
+    // Methods inherited from Domain, Subdomain and Element
+    // which must be rewritten
+    virtual bool addElement(Element *);
+    virtual bool addNode(Node *);
+    virtual bool addExternalNode(Node *);
+    virtual bool addSP_Constraint(SP_Constraint *);
+    virtual bool addMP_Constraint(MP_Constraint *);
+    virtual bool addLoadPattern(LoadPattern *);
+    virtual bool addNodalLoad(NodalLoad *, int loadPattern);
+    virtual bool addElementalLoad(ElementalLoad *, int loadPattern);
+    virtual bool addSP_Constraint(SP_Constraint *, int loadPattern);
 
-        virtual bool hasNode(int tag);
-        virtual bool hasInternalNode(int tag);
-        virtual bool hasExternalNode(int tag);
-        virtual bool hasElement(int tag);
+    virtual bool hasNode(int tag);
+    virtual bool hasInternalNode(int tag);
+    virtual bool hasExternalNode(int tag);
+    virtual bool hasElement(int tag);
 
-        virtual  Element       *getElement(int tag);
-        virtual  Node          *getNode(int tag);
+    virtual  Element       *getElement(int tag);
+    virtual  Node          *getNode(int tag);
 
-        virtual Element        *removeElement(int tag);
-        virtual Node           *removeNode(int tag);
-        virtual SP_Constraint  *removeSP_Constraint(int tag);
-        virtual MP_Constraint  *removeMP_Constraint(int tag);
-        virtual LoadPattern    *removeLoadPattern(int tag);
-        virtual NodalLoad      *removeNodalLoad(int tag, int loadPattern);
-        virtual ElementalLoad  *removeElementalLoad(int tag, int loadPattern);
-        virtual SP_Constraint  *removeSP_Constraint(int tag, int loadPattern);
+    virtual Element        *removeElement(int tag);
+    virtual Node           *removeNode(int tag);
+    virtual SP_Constraint  *removeSP_Constraint(int tag);
+    virtual MP_Constraint  *removeMP_Constraint(int tag);
+    virtual LoadPattern    *removeLoadPattern(int tag);
+    virtual NodalLoad      *removeNodalLoad(int tag, int loadPattern);
+    virtual ElementalLoad  *removeElementalLoad(int tag, int loadPattern);
+    virtual SP_Constraint  *removeSP_Constraint(int tag, int loadPattern);
 
-        virtual  ElementIter   &getElements();
-        virtual  NodeIter      &getNodes();
-        virtual  NodeIter      &getInternalNodeIter(void);
-        virtual  NodeIter      &getExternalNodeIter(void);
+    virtual  ElementIter   &getElements();
+    virtual  NodeIter      &getNodes();
+    virtual  NodeIter      &getInternalNodeIter(void);
+    virtual  NodeIter      &getExternalNodeIter(void);
 
-        virtual  Element       *getElementPtr(int tag);
-        virtual  Node          *getNodePtr(int tag);
+    virtual  Element       *getElementPtr(int tag);
+    virtual  Node          *getNodePtr(int tag);
 
-        virtual int getNumElements(void) const;
-        virtual int getNumNodes(void) const;
-        virtual int getNumSPs(void) const;
-        virtual int getNumMPs(void) const;
-        virtual int getNumLoadPatterns(void) const;
+    virtual int getNumElements(void) const;
+    virtual int getNumNodes(void) const;
+    virtual int getNumSPs(void) const;
+    virtual int getNumMPs(void) const;
+    virtual int getNumLoadPatterns(void) const;
 
-        virtual  Graph *getElementGraph(void);
-        virtual  Graph &getNodeGraph(void);
+    virtual  Graph *getElementGraph(void);
+    virtual  Graph &getNodeGraph(void);
 
-        // methods to update the domain
-        virtual  void setCommitTag(int newTag);
-        virtual  void setCurrentTime(double newTime);
-        virtual  void setCommittedTime(double newTime);
-        virtual  void applyLoad(double pseudoTime);
-        virtual  void setLoadConstant(void);
+    // methods to update the domain
+    virtual  void setCommitTag(int newTag);
+    virtual  void setCurrentTime(double newTime);
+    virtual  void setCommittedTime(double newTime);
+    virtual  void applyLoad(double pseudoTime);
+    virtual  void setLoadConstant(void);
 
-        virtual  int update(void);
-        virtual  int update(double newTime, double dT);
-        virtual  int commit(void);
-        virtual  int revertToLastCommit(void);
-        virtual  int revertToStart(void);
-        virtual  int barrierCheckIN(void);
-        virtual  int barrierCheckOUT(int);
+    virtual  int update(void);
+    virtual  int update(double newTime, double dT);
+    virtual  int commit(void);
+    virtual  int revertToLastCommit(void);
+    virtual  int revertToStart(void);
+    virtual  int barrierCheckIN(void);
+    virtual  int barrierCheckOUT(int);
 
-        virtual void setDomainDecompAnalysis(DomainDecompositionAnalysis &theAnalysis);
-        virtual int setAnalysisAlgorithm(EquiSolnAlgo &theAlgorithm);
-        virtual int setAnalysisIntegrator(IncrementalIntegrator &theIntegrator);
-        virtual int setAnalysisLinearSOE(LinearSOE &theSOE);
-        virtual int setAnalysisConvergenceTest(ConvergenceTest &theTest);
-        virtual void clearAnalysis(void);
-        virtual void domainChange(void);
+    virtual void setDomainDecompAnalysis(DomainDecompositionAnalysis &theAnalysis);
+    virtual int setAnalysisAlgorithm(EquiSolnAlgo &theAlgorithm);
+    virtual int setAnalysisIntegrator(IncrementalIntegrator &theIntegrator);
+    virtual int setAnalysisLinearSOE(LinearSOE &theSOE);
+    virtual int setAnalysisConvergenceTest(ConvergenceTest &theTest);
+    virtual void clearAnalysis(void);
+    virtual void domainChange(void);
 
-        virtual int     getNumExternalNodes(void) const;
-        virtual const ID   &getExternalNodes(void);
-        virtual int     getNumDOF(void);
+    virtual int     getNumExternalNodes(void) const;
+    virtual const ID   &getExternalNodes(void);
+    virtual int     getNumDOF(void);
 
-        virtual const Matrix &getTang(void);
-        virtual const Vector &getResistingForce(void);
+    virtual const Matrix &getTang(void);
+    virtual const Vector &getResistingForce(void);
 
-        virtual int  computeTang(void);
-        virtual int  computeResidual(void);
+    virtual int  computeTang(void);
+    virtual int  computeResidual(void);
 
-        const Vector &getLastExternalSysResponse(void);
-        virtual int computeNodalResponse(void);
-        virtual int newStep(double deltaT);
+    const Vector &getLastExternalSysResponse(void);
+    virtual int computeNodalResponse(void);
+    virtual int newStep(double deltaT);
 
-        virtual int sendSelf(int commitTag, Channel &theChannel);
-        virtual int receiveSelf(int commitTag, Channel &theChannel,
-                                FEM_ObjectBroker &theBroker);
+    virtual int sendSelf(int commitTag, Channel &theChannel);
+    virtual int receiveSelf(int commitTag, Channel &theChannel,
+                            FEM_ObjectBroker &theBroker);
 
-        virtual double getCost(void);
+    virtual double getCost(void);
 
-        virtual  void Print(ostream &s, int flag = 0);
+    virtual  void Print(ostream &s, int flag = 0);
 
-        int swapNodeFromInternalToExternal(int nodeTag);
-
-
-        int partition(int numParts);
-        int repartition(int numParts);
-        int reDistributeData(int numParts);
-        int recvChangedNodes(const ID &nodeList, int numNodes);
-        int ChangeMPIChannel(int other);
-        int swapNodeFromExternalToInternal(int nodeTag, int dof);
-
-        int exportInternalNode(int nodeTag, int destination, int dof);
-        int restoreChannel(void);
-
-        int addNodeTag(int nodeTag, int dof);
-
-        virtual int resetSubMultipleSupport(const int loadPatternTag);
-
-        virtual int buildMap(void);
-        virtual int buildEleGraph(void);
-        virtual int buildNodeGraph(Graph *theNodeGraph);
+    int swapNodeFromInternalToExternal(int nodeTag);
 
 
-        // For output control
-        // virtual int setNumberOfOutputSteps(int nsteps);
-        // virtual int setOutputEveryNsteps(int output_every_nsteps);
+    int partition(int numParts);
+    int repartition(int numParts);
+    int reDistributeData(int numParts);
+    int recvChangedNodes(const ID &nodeList, int numNodes);
+    int ChangeMPIChannel(int other);
+    int swapNodeFromExternalToInternal(int nodeTag, int dof);
 
-        // virtual int enableOutput(bool is_output_enabled);
-        // virtual int enableElementOutput(bool is_element_output_enabled);
+    int exportInternalNode(int nodeTag, int destination, int dof);
+    int restoreChannel(void);
 
-        virtual int sendOutputOptionsToSubdomain();
+    int addNodeTag(int nodeTag, int dof);
 
-    private:
-        ID msgData;
-        ID theElements;
-        ID theNodes;
-        ID theExternalNodes;
-        ID theLoadCases;
+    virtual int resetSubMultipleSupport(const int loadPatternTag);
 
-        int numDOF;
-        int numElements;
-        int numNodes;
-        int numExternalNodes;
-        int numSPs;
-        int numMPs;
-        int numLoadPatterns;
+    virtual int buildMap(void);
+    virtual int buildEleGraph(void);
+    virtual int buildNodeGraph(Graph *theNodeGraph);
 
-        bool buildRemote;
-        bool gotRemoteData;
 
-        FE_Element *theFEele;
+    // For output control
+    // virtual int setNumberOfOutputSteps(int nsteps);
+    // virtual int setOutputEveryNsteps(int output_every_nsteps);
 
-        Node *theNod;
-        NodalLoad *theNodalLoad;
-        SP_Constraint *theSP;
+    // virtual int enableOutput(bool is_output_enabled);
+    // virtual int enableElementOutput(bool is_element_output_enabled);
 
-        Vector *theVector; // for storing residual info
-        Matrix *theMatrix; // for storing tangent info
+    virtual int sendOutputOptionsToSubdomain();
 
-        static char *shadowSubdomainProgram;
+private:
+    ID msgData;
+    ID theElements;
+    ID theNodes;
+    ID theExternalNodes;
+    ID theLoadCases;
 
-        static int count;
-        static int numShadowSubdomains;
-        static ShadowSubdomain **theShadowSubdomains;
+    int numDOF;
+    int numElements;
+    int numNodes;
+    int numExternalNodes;
+    int numSPs;
+    int numMPs;
+    int numLoadPatterns;
+
+    bool buildRemote;
+    bool gotRemoteData;
+
+    FE_Element *theFEele;
+
+    Node *theNod;
+    NodalLoad *theNodalLoad;
+    SP_Constraint *theSP;
+
+    Vector *theVector; // for storing residual info
+    Matrix *theMatrix; // for storing tangent info
+
+    static char *shadowSubdomainProgram;
+
+    static int count;
+    static int numShadowSubdomains;
+    static ShadowSubdomain **theShadowSubdomains;
 };
 
 #endif

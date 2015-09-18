@@ -31,31 +31,28 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef Linear_HardeningScalarV_H
-#define Linear_HardeningScalarV_H
+#include "LinearHardeningTensor_EV.h"
 
+DTensor2 LinearHardeningTensor_EV::derivative(3, 3, 0.0);
 
-#include "../EvolvingVariable.h"
-#include "../ClassicElastoplasticityGlobals.h" // Defines indices i,j,k,l,m,n,p,q,r,s and the kronecker_delta.
+LinearHardeningTensor_EV::LinearHardeningTensor_EV( double H_) : EvolvingVariable(DTensor2(3, 3, 0.0)), H(H_)
+{}
 
+LinearHardeningTensor_EV::LinearHardeningTensor_EV( double H_, DTensor2& alpha0) : EvolvingVariable(alpha0), H(H_)
+{}
 
-class LinearHardeningScalar_EV : public EvolvingVariable<double, LinearHardeningScalar_EV> //CRTP on LinearHardeningScalar_EV
+const DTensor2& LinearHardeningTensor_EV::getDerivative(const DTensor2 &depsilon,
+        const DTensor2 &m,
+        const DTensor2& stress) const
 {
-public:
+	using namespace ClassicElastoplasticityGlobals;
+	//Zero de static variable
+	derivative *= 0;
 
-	LinearHardeningScalar_EV( double H_);
+	//Compute the derivative (hardening function)
+	derivative(i, j) =  H * (m(i, j) - (m(k, k) / 3) * kronecker_delta(i, j));
 
-	LinearHardeningScalar_EV( double H_, double k0);
-
-	const double& getDerivative(const DTensor2 &depsilon,
-	                            const DTensor2 &m,
-	                            const DTensor2& stress) const;
-
-
-private:
-	double H;
-	static double derivative; //Must return a reference.
-};
+	return derivative;
+}
 
 
-#endif
