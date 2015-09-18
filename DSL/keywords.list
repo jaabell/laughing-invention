@@ -19,8 +19,6 @@ algorithm
 all
 alpha
 and
-armstrong_frederick_cr
-armstrong_frederick_ha
 at
 ax
 ay
@@ -41,7 +39,6 @@ control
 convergence
 cR1
 cR2
-critical_stress_ratio_M
 cross_section
 crushing_strength
 damping
@@ -57,7 +54,6 @@ dofs
 domain
 domain
 drained
-druckerprager_angle
 druckerprager_k
 dynamic
 e0
@@ -75,6 +71,7 @@ eplcum_cr_in
 equal
 equaldof
 every
+exp
 exp
 factor
 field
@@ -95,9 +92,7 @@ Imy
 Imz
 in
 increment
-initial_confining_strain
 initial_confining_stress
-initial_mean_pressure
 integration_points
 IntegrationRule
 integrator
@@ -109,7 +104,6 @@ K_s
 k_x
 k_y
 k_z
-kappa
 kd_in
 kinematic_hardening_rate
 lambda
@@ -131,7 +125,6 @@ mean
 Membrane_Plate_Fiber
 mesh
 method
-minimum_bulk_modulus
 minimum_time_step
 model
 motion
@@ -159,12 +152,10 @@ poisson_ratio_h_h
 poisson_ratio_h_v
 porosity
 pressure
-pressure_reference_p0
 print
 R0
 reaction
 reduction
-reference_void_ratio
 remove
 rho_f
 rho_s
@@ -286,17 +277,9 @@ beam_9dof_elastic
 beam_displacement_based
 beam_elastic
 beam_elastic_lumped_mass
-camclay
-camclay_accelerated
 Caughey3rd
 Caughey4th
 DOFTYPE
-druckerprager_isotropic_hardening
-druckerprager_isotropic_hardening_accelerated
-druckerprager_kinematic_hardening
-druckerprager_kinematic_hardening_accelerated
-druckerprager_perfectly_plastic
-druckerprager_perfectly_plastic_accelerated
 DruckerPragerLT
 Energy_Increment
 F_fluid_x
@@ -317,13 +300,13 @@ Modified_Newton
 Mx
 My
 Mz
-New_PisanoLT
 Newmark
 Newton
 Norm_Displacement_Increment
 Norm_Unbalance
 path_series
 path_time_series
+PisanoLT
 ProfileSPD
 Rayleigh
 sanisand2004
@@ -338,14 +321,5 @@ uniaxial_elastic
 uniaxial_steel01
 uniaxial_steel02
 variable transient
-vonmises_isotropic_hardening
-vonmises_isotropic_hardening_accelerated
-vonmises_kinematic_hardening
-vonmises_kinematic_hardening_accelerated
-vonmises_linear_kinematic_hardening
-vonmises_linear_kinematic_hardening_accelerated
-vonmises_perfectly_plastic
-vonmises_perfectly_plastic_accelerated
-vonmises_perfectly_plastic_LT
 VonMisesLT
 With_no_convergence_check
