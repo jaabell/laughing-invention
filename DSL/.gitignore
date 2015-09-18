@@ -11,3 +11,4 @@ fei.tags
 *.txt
 *.tex
 generate_command_patterns
+!available_commands.txt

@@ -10,7 +10,7 @@ OBJS = feiparser.lex.o feiparser.tab.o argcheck.o feiexceptions.o
 	@$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $< -o $@
 
 #  all:  makedocumentation document feiparser 
-all: essi 
+all: essi document
 
 makedocumentation: makedocumentation.o generate_command_patterns.o
 	$(LINKER) makedocumentation.o -o makedocumentation
