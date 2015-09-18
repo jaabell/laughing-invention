@@ -32,22 +32,24 @@ These are new things we would like to see on ESSI. Further subdivided into
 
 ###Material models
 
-* Template EP materials programmed using C++ templates and LTensor library. Curiously recurring template pattern can be used to achieve polymorphism.
+
 
 ###Elements
 
 * LTensor based u-p-U elements
 * Contact element
+* Surface-to-surface contact
 
 ###Parser
 
 * Better error reporting for runtime errors
 * Have vectors of quantities
 * Parallel parsing
+* Physical groups
 
 ###Output
 
-* Forces
+* Forces (not really needed)
 * Information on analysis options used
 
 ###SOE Solvers
@@ -59,6 +61,7 @@ These are new things we would like to see on ESSI. Further subdivided into
 ###Constitutive integrators
 
 * Have implicit integrators
+* Do automatic subincrementation
 
 
 Performance enhancements
@@ -67,7 +70,6 @@ Performance enhancements
 * Keep some elements in rank 0, to better use parallelism.
 * Take into account machine topology and performance for partitioning.
 * HDF5 mesh output can be done in parallel. 
-* Link to ATLAS-tuned BLAS and LAPACK. (PAPI - through HPCToolkit - is showing large ammouunt of L2 data-cache misses in the PETSc solver)
 * There is lots of room for tuning HDF5. Chunk sizes, filters (compression), using collective calls, are some of the things that could yield a performance increase.
 * About 50kb are used per element (8 node brick, with linear material). This is too much!
 * ParallelNumberer builds a graph of dofs and numbers them in P0, then distributing. This does not scale. (Might hurt performance for really large models, we haven't encountered these yet.)
@@ -89,18 +91,20 @@ Testing
 
 
 
-Done
-====
+What has been done
+=============================
 
 
 
 Features
 ---------
 
-
+* Template EP materials programmed using C++ templates and LTensor library. Curiously recurring template pattern can be used to achieve polymorphism.
 
 Performance enhancements
 ------------------------
+
+* Link to ATLAS-tuned BLAS and LAPACK. (PAPI - through HPCToolkit - is [was] showing large ammouunt of L2 data-cache misses in the PETSc solver)
 
 
 
