@@ -205,7 +205,24 @@ int add_imposed_motion(int GroundMotionNumber,
                        string accelerationfilename)
 {
 
-
+    fstream disfile(displacementfilename, ios::in);
+    if (not disfile.good())
+    {
+        cerr << "Error: (add_imposed_motion) : Displacements file \"" << displacementfilename << "\" not found or not readable.\n";
+        return -1;
+    }
+    fstream velfile(velocityfilename, ios::in);
+    if (not velfile.good())
+    {
+        cerr << "Error: (add_imposed_motion) : Velocities file \"" << velocityfilename << "\" not found or not readable.\n";
+        return -1;
+    }
+    fstream accfile(accelerationfilename, ios::in);
+    if (not accfile.good())
+    {
+        cerr << "Error: (add_imposed_motion) : Accelerations file \"" << accelerationfilename << "\" not found or not readable.\n";
+        return -1;
+    }
 
     LoadPattern* thePatternforMultiSupport = 0;
     MultiSupportPattern* theMultiSupportPattern = 0;
