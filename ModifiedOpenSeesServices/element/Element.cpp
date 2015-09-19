@@ -994,3 +994,11 @@ void  Element::setNumberOfBoundaryNodes(int n)
         numberOfBoundaryNodes = n;
     }
 }
+
+
+/// Informs element about starting a new stage.
+// Element may or may not do something with this info
+int Element::startNewStage()
+{
+    return 0;
+}

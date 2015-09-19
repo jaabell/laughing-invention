@@ -78,35 +78,15 @@ class DruckerPragerLinearHardening : public DPLHBase
 public:
 
 	//First constructor, creates a material at its "ground state" from its parameters.
-	DruckerPragerLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_) :
-		DPLHBase::ClassicElastoplasticMaterial(tag_in, rho_,
-		                                       DPLH_YFType(alpha, k),  		// Point YF to internal variables
-		                                       LinearIsotropic3D_EL(E, nu), // Create Elasticity
-		                                       DPLH_PFType(alpha, k),       // Point PF to the internal variables
-		                                       DPLHVarsType(alpha, k)),		// Declare the list of internal variables
-		alpha(H_alpha),
-		k(H_k, k0_in)
-	{
-
-	};
+	DruckerPragerLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_, double p0) ;
 
 	// Second constructor is not called by the user, instead it is called when creating a copy of the
 	// material. This must provide an initialization for the state variables and link the components
 	// to these variables appropriately.
-	DruckerPragerLinearHardening(int tag_in, double rho, DPLH_YFType &yf,
-	                             LinearIsotropic3D_EL &el,
-	                             DPLH_PFType &pf,
-	                             DPLHVarsType &vars) :
-		DPLHBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
-		                                       DPLH_YFType(alpha, k),    // Point YF to new internal variables
-		                                       LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
-		                                       DPLH_PFType(alpha, k),    // Point PF to the internal variables
-		                                       DPLHVarsType(alpha, k)),   // Declare the list of internal variables
-		alpha(0),
-		k(0, 0)
-	{
-
-	};
+	DruckerPragerLinearHardening(int tag_in, double rho, DPLH_YFType & yf,
+	                             LinearIsotropic3D_EL & el,
+	                             DPLH_PFType & pf,
+	                             DPLHVarsType & vars);
 
 	//The state variables.
 private:

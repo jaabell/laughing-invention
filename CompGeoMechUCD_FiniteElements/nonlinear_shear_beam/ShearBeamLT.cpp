@@ -908,7 +908,11 @@ const Vector &ShearBeamLT::getOutput() const
     return outputVector;
 }
 
-
+int ShearBeamLT::startNewStage()
+{
+    material_array[0]->startNewStage();
+    return 0;
+}
 
 #endif
 

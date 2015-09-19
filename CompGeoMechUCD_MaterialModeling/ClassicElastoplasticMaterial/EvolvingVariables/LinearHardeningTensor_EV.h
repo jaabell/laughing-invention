@@ -38,38 +38,23 @@
 #include "../ClassicElastoplasticityGlobals.h" // Defines indices i,j,k,l,m,n,p,q,r,s and the kronecker_delta.
 
 
+
 class LinearHardeningTensor_EV : public EvolvingVariable<DTensor2, LinearHardeningTensor_EV> //CRTP on LinearHardeningTensor_EV
 {
 public:
 
-	LinearHardeningTensor_EV( double H_) : EvolvingVariable(DTensor2(3, 3, 0.0)), H(H_)
-	{}
-
-	LinearHardeningTensor_EV( double H_, DTensor2& alpha0) : EvolvingVariable(alpha0), H(H_)
-	{}
+	LinearHardeningTensor_EV( double H_);
+	LinearHardeningTensor_EV( double H_, DTensor2& alpha0);
 
 	const DTensor2& getDerivative(const DTensor2 &depsilon,
 	                              const DTensor2 &m,
-	                              const DTensor2& stress) const
-	{
-		using namespace ClassicElastoplasticityGlobals;
-		//Zero de static variable
-		derivative *= 0;
-
-		//Compute the derivative (hardening function)
-		derivative(i, j) =  H * (m(i, j) - (m(k, k) / 3) * kronecker_delta(i, j));
-
-		return derivative;
-	}
-
+	                              const DTensor2& stress) const;
 
 
 private:
 	double H;
 	static DTensor2 derivative;		// Needs to be static so multiple instances only do one malloc call and we can return a const-reference
 };
-
-DTensor2 LinearHardeningTensor_EV::derivative(3, 3, 0.0);
 
 
 

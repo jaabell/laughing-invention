@@ -485,9 +485,6 @@ ACTOR_LIBS = ./actor/channel/Channel.o \
              ./actor/channel/MPI_Channel.o \
              ./actor/message/Message.o \
              ./actor/machineBroker/MachineBroker.o \
-             ./actor/machineBroker/AlphaMachineBroker.o \
-             ./actor/machineBroker/MillMachineBroker.o \
-             ./actor/machineBroker/DecMachineBroker.o \
              ./actor/objectBroker/FEM_ObjectBroker.o \
              ./actor/actor/Actor.o \
              ./actor/actor/MovableObject.o \
@@ -505,6 +502,9 @@ ACTOR_LIBS = ./actor/actor/MovableObject.o \
 endif
 
 
+# ./actor/machineBroker/AlphaMachineBroker.o \
+# ./actor/machineBroker/MillMachineBroker.o \
+# ./actor/machineBroker/DecMachineBroker.o \
 
 
 ###############################################################################

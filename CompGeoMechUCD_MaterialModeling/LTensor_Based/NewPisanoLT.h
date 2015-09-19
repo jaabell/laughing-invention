@@ -143,6 +143,7 @@ private:
     double get_lode_angle(DTensor2   s); // computes the Lode angle of a stress state
 
 
+    virtual int startNewStage();
 
 
 

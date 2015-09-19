@@ -154,7 +154,8 @@ public:
     int getNumberOfBoundaryNodes() const;
     void setNumberOfBoundaryNodes(int n) ;
 
-
+    // Informs element about starting a new stage.
+    virtual int startNewStage();
 
 protected:
     const Vector &getRayleighDampingForces(void);

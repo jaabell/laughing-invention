@@ -78,17 +78,7 @@ class VonMisesLinearHardening : public VMLHBase
 public:
 
 	//First constructor, creates a material at its "ground state" from its parameters.
-	VonMisesLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_) :
-		VMLHBase::ClassicElastoplasticMaterial(tag_in, rho_,
-		                                       VMLH_YFType(alpha, k),  		// Point YF to internal variables
-		                                       LinearIsotropic3D_EL(E, nu), // Create Elasticity
-		                                       VMLH_PFType(alpha, k),       // Point PF to the internal variables
-		                                       VMLHVarsType(alpha, k)),		// Declare the list of internal variables
-		alpha(H_alpha),
-		k(H_k, k0_in)
-	{
-
-	};
+	VonMisesLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_);
 
 	// Second constructor is not called by the user, instead it is called when creating a copy of the
 	// material. This must provide an initialization for the state variables and link the components
@@ -96,18 +86,7 @@ public:
 	VonMisesLinearHardening(int tag_in, double rho, VMLH_YFType &yf,
 	                        LinearIsotropic3D_EL &el,
 	                        VMLH_PFType &pf,
-	                        VMLHVarsType &vars) :
-		VMLHBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
-		                                       VMLH_YFType(alpha, k),    // Point YF to new internal variables
-		                                       LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
-		                                       VMLH_PFType(alpha, k),    // Point PF to the internal variables
-		                                       VMLHVarsType(alpha, k)),   // Declare the list of internal variables
-		alpha(0),
-		k(0, 0)
-	{
-
-	};
-
+	                        VMLHVarsType &vars);
 	//The state variables.
 private:
 	LinearHardeningTensor_EV alpha;	// Backstress

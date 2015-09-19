@@ -215,6 +215,7 @@ const DTensor2  &NewPisanoLT::getStressTensor(void)
 const DTensor2 &NewPisanoLT::getStrainTensor(void)
 {
 
+  // return this->alpha0;
   return this->TrialStrain;
 }
 
@@ -222,6 +223,7 @@ const DTensor2 &NewPisanoLT::getStrainTensor(void)
 const DTensor2 &NewPisanoLT::getPlasticStrainTensor(void)
 {
 
+  // return this->alpha0mem;
   return this->TrialPlastic_Strain;
 }
 
@@ -1060,27 +1062,27 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
   // static fstream outstuff("unload.prod", std::ios::app);
   // outstuff << unload_prod;
 
-  if (unload_prod < 0.0 )
-  {
+  // if (unload_prod < 0.0 )
+  // {
 
 
-    if (eplcum_cr > 0.0)
-    {
-      constexpr double b = 0.1;
-      double chi = 0.5 * (1 + tanh((eplcum / eplcum_cr - 0.5) / b)); // chi new scalar to be declared!!! tanh is the hyperbolic tangent, set b=0.1 (it governs the steepness of the step function)
+  //   if (eplcum_cr > 0.0)
+  //   {
+  //     constexpr double b = 0.1;
+  //     double chi = 0.5 * (1 + tanh((eplcum / eplcum_cr - 0.5) / b)); // chi new scalar to be declared!!! tanh is the hyperbolic tangent, set b=0.1 (it governs the steepness of the step function)
 
-      // alpha0(i, j) = alpha0mem(i, j) + chi * (alpha0mem(i, j) - alpha(i, j)); // I think the use of alpha0mem is useless at this point, but improves readability
-      alpha0mem(i, j) = alpha0mem(i, j) + chi * (alpha0(i, j) - alpha0mem(i, j));
-      alpha0(i, j) = alpha0mem(i, j) + chi * (alpha(i, j) - alpha0mem(i, j)); // I think the use of alpha0mem is useless at this point, but improves readability
+  //     // alpha0(i, j) = alpha0mem(i, j) + chi * (alpha0mem(i, j) - alpha(i, j)); // I think the use of alpha0mem is useless at this point, but improves readability
+  //     alpha0mem(i, j) = alpha0mem(i, j) + chi * (alpha0(i, j) - alpha0mem(i, j));
+  //     alpha0(i, j) = alpha0mem(i, j) + chi * (alpha(i, j) - alpha0mem(i, j)); // I think the use of alpha0mem is useless at this point, but improves readability
 
-    }
-    else
-    {
-      alpha0(i, j) = alpha(i, j);
-    }
-    strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
-    // outstuff << " " << chi;
-  }
+  //   }
+  //   else
+  //   {
+  //     alpha0(i, j) = alpha(i, j);
+  //   }
+  //   strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+  //   // outstuff << " " << chi;
+  // }
 
 
   // outstuff << endl;
@@ -1088,21 +1090,21 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
 
 
-  // if (unload_prod < 0.0)
-  // {
+  if (unload_prod < 0.0)
+  {
 
-  //   if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
-  //   {
-  //     alpha0mem(i, j) = alpha0(i, j);
-  //     alpha0(i, j)    = alpha(i, j);
-  //   }
-  //   else // the previous projection center is reset
-  //   {
-  //     alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
-  //     // unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
-  //   }
-  //   strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
-  // }
+    if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
+    {
+      alpha0mem(i, j) = alpha0(i, j);
+      alpha0(i, j)    = alpha(i, j);
+    }
+    else // the previous projection center is reset
+    {
+      alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
+      // unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
+    }
+    strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+  }
 
 
 //---------------------------------------------------------------------------------------------
@@ -1113,6 +1115,8 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
   {
     beta = get_distance_coeff(start_stress);    // this should be able to read alpha and alpha0
     alpha_d(i, j) = nij_dev(i, j) * (kd * sqrt(2.0 / 3.0));
+
+    //Flow rule
     // double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // Temporary change to show the effect of variable dilatancy.
     // D = xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
     D = xi * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
@@ -1693,6 +1697,16 @@ int NewPisanoLT::getObjectSize()
 
   return size;
 }
+
+
+int NewPisanoLT::startNewStage()
+{
+  // cout << "New stage\n";
+
+  alpha0mem(i, j) = alpha0(i, j) = alpha(i, j);
+  return 0;
+}
+
 
 #endif
 

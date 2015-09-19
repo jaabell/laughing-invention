@@ -351,8 +351,6 @@ EXP	([Ee][-+]?[0-9]+)
 "3NodeShell_ANDES"                  {return token::ThreeNodeShellANDES;}
 "4NodeShell_ANDES"                  {return token::FourNodeShellANDES;}
 "truss"                             {return token::truss;}
-"penalty"                           {return token::penalty;}
-  /* "penalty_for_applying_generalized_displacement" {return token::penalty_for_applying_generalized_displacement;} */
 "contact"                           {return token::contact;}
 "FrictionalPenaltyContact"          {return token::FrictionalPenaltyContact;}
 "variable_node_brick_8_to_27"       {return token::variable_node_brick_8_to_27;}
@@ -398,38 +396,21 @@ EXP	([Ee][-+]?[0-9]+)
 
  /* Material Names*/
 "linear_elastic_isotropic_3d"       {return token::linear_elastic_isotropic_3d;}
-"vonmises_perfectly_plastic"        {return token::vonmises_perfectly_plastic;}
 "VonMisesLT"        				{return token::VonMisesLT;}
 "DruckerPragerLT"        				{return token::DruckerPragerLT;}
-"vonmises_perfectly_plastic_accelerated"        {return token::vonmises_perfectly_plastic_accelerated;}
-"vonmises_isotropic_hardening"      {return token::vonmises_isotropic_hardening;}
-"vonmises_isotropic_hardening_accelerated"      {return token::vonmises_isotropic_hardening_accelerated;}
-"vonmises_kinematic_hardening"      {return token::vonmises_kinematic_hardening;}
-"vonmises_linear_kinematic_hardening"      {return token::vonmises_linear_kinematic_hardening;}
-"vonmises_kinematic_hardening_accelerated"      {return token::vonmises_kinematic_hardening_accelerated;}
-"vonmises_linear_kinematic_hardening_accelerated"      {return token::vonmises_linear_kinematic_hardening_accelerated;}
 "sanisand2008"                      {return token::sanisand2008;}
 "camclay"                           {return token::camclay;}
 "camclay_accelerated"               {return token::camclay_accelerated;}
 "sanisand2004"                      {return token::sanisand2004;}
-"druckerprager_isotropic_hardening" {return token::druckerprager_isotropic_hardening;}
-"druckerprager_isotropic_hardening_accelerated" {return token::druckerprager_isotropic_hardening_accelerated;}
-"druckerprager_kinematic_hardening" {return token::druckerprager_kinematic_hardening;}
-"druckerprager_kinematic_hardening_accelerated" {return token::druckerprager_kinematic_hardening_accelerated;}
-"druckerprager_perfectly_plastic"   {return token::druckerprager_perfectly_plastic;}
-"druckerprager_perfectly_plastic_accelerated"   {return token::druckerprager_perfectly_plastic_accelerated;}
 "linear_elastic_crossanisotropic"   {return token::linear_elastic_crossanisotropic;}
 "uniaxial_elastic"                  {return token::uniaxial_elastic_1d;}
 "uniaxial_steel01"                  {return token::uniaxial_steel01;}
 "uniaxial_steel02"                  {return token::uniaxial_steel02;}
 "uniaxial_concrete02"               {return token::uniaxial_concrete02;}
-"pisano"                            {return token::pisano;}
 
  /* LTensor based materials */
 "linear_elastic_isotropic_3d_LT"    {return token::linear_elastic_isotropic_3d_LT;}
-"vonmises_perfectly_plastic_LT"     {return token::vonmises_perfectly_plastic_LT;}
-"pisanoLT"                          {return token::pisanoLT;}
-"New_PisanoLT"                      {return token::New_PisanoLT;}
+"PisanoLT"                      	{return token::PisanoLT;}
 
 
  /* Material options */

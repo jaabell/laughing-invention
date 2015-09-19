@@ -47,29 +47,31 @@ class Response;
 
 class Material : public TaggedObject, public MovableObject
 {
-    public:
-        Material(int tag, int classTag);
-        virtual ~Material();
+public:
+    Material(int tag, int classTag);
+    virtual ~Material();
 
-        virtual int setVariable(const char* argv);
-        virtual int getVariable(int variableID, double& info);
+    virtual int setVariable(const char* argv);
+    virtual int getVariable(int variableID, double& info);
 
-        // methods for sensitivity studies
-        virtual int setParameter(const char** argv, int argc, Information& eleInformation);
-        virtual int updateParameter(int responseID, Information& eleInformation);
+    // methods for sensitivity studies
+    virtual int setParameter(const char** argv, int argc, Information& eleInformation);
+    virtual int updateParameter(int responseID, Information& eleInformation);
 
-        virtual Response* setResponse(const char** argv, int argc, Information& info);
-        virtual int getResponse(int responseID, Information& info);
+    virtual Response* setResponse(const char** argv, int argc, Information& info);
+    virtual int getResponse(int responseID, Information& info);
 
-        // method for this material to update itself according to its new parameters
-        virtual void update(void)
-        {
-            return;
-        }
+    virtual int startNewStage();  // Informs material about starting a new stage.
 
-    protected:
+    // method for this material to update itself according to its new parameters
+    virtual void update(void)
+    {
+        return;
+    }
 
-    private:
+protected:
+
+private:
 };
 
 

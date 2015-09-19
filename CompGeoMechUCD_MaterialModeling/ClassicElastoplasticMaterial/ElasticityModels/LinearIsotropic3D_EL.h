@@ -39,44 +39,13 @@
 
 #include <iostream>
 
+
 class LinearIsotropic3D_EL : public ElasticityBase<LinearIsotropic3D_EL> // CRTP on ElasticityBase
 {
 public:
-    LinearIsotropic3D_EL(double E, double nu) : ElasticityBase<LinearIsotropic3D_EL>::ElasticityBase()  // Note the full-qualification of ElasticityBase through the scope resolution operator (::)
-    {
-        lambda = ( nu * E ) / ( ( 1.0 + nu ) * ( 1.0 - 2.0 * nu ) );
-        mu = E / ( 2.0 * ( 1.0 + nu ) );
-        std::cout << "E  = " << E << std::endl;
-        std::cout << "nu = " << nu << std::endl;
-    }
+    LinearIsotropic3D_EL(double E, double nu);
 
-    DTensor4& operator()(const DTensor2 &strain, const DTensor2 &plastic_strain, const DTensor2& stress) //See note on base class
-    {
-        Ee *= 0; //Zero it. It may have values from another instance with different parameters;
-        Ee( 0, 0, 0, 0 ) = lambda + 2 * mu;
-        Ee( 0, 0, 1, 1 ) = lambda;
-        Ee( 0, 0, 2, 2 ) = lambda;
-        Ee( 0, 1, 0, 1 ) = mu;
-        Ee( 0, 1, 1, 0 ) = mu;
-        Ee( 0, 2, 0, 2 ) = mu;
-        Ee( 0, 2, 2, 0 ) = mu;
-        Ee( 1, 0, 0, 1 ) = mu;
-        Ee( 1, 0, 1, 0 ) = mu;
-        Ee( 1, 1, 0, 0 ) = lambda;
-        Ee( 1, 1, 1, 1 ) = lambda + 2 * mu;
-        Ee( 1, 1, 2, 2 ) = lambda;
-        Ee( 1, 2, 1, 2 ) = mu;
-        Ee( 1, 2, 2, 1 ) = mu;
-        Ee( 2, 0, 0, 2 ) = mu;
-        Ee( 2, 0, 2, 0 ) = mu;
-        Ee( 2, 1, 1, 2 ) = mu;
-        Ee( 2, 1, 2, 1 ) = mu;
-        Ee( 2, 2, 0, 0 ) = lambda;
-        Ee( 2, 2, 1, 1 ) = lambda;
-        Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
-
-        return Ee;
-    }
+    DTensor4& operator()(const DTensor2 &strain, const DTensor2 &plastic_strain, const DTensor2& stress); //See note on base class
 
 
 private:
@@ -87,7 +56,6 @@ private:
 
 };
 
-DTensor4 LinearIsotropic3D_EL::Ee(4, 4, 4, 4, 0.0);
 
 
 #endif

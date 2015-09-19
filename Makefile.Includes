@@ -190,6 +190,7 @@ ESSI_LIBS = -L$(RealESSI_SRC)/lib \
       -lnewtemplate3dep \
       -lbase_3dep \
       -lltensorbasedmaterials \
+      -lclassicelastoplasticmaterials \
       -lndarray \
       -lquantity \
       -lltensorutilities \
@@ -256,8 +257,8 @@ PARALLEL_MACHINE_LIBS = -lm \
       -ldl \
       -lz \
       -lgcc_s \
-      -lpthread 
+      -lpthread -lssl -lcrypto
 
 #\
-#-lssl -lcrypto
+#
 
