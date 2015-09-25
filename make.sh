@@ -5,7 +5,7 @@ rm ./bin/essi
 
 # building supporting libraries
 # 16 CPUs 
-cd nDarray         	 				 ;    time make -j 16   ;   cd ..
+cd nDarray                           ;    time make -j 16   ;   cd ..
 cd ModifiedOpenSeesServices          ;    time make -j 16   ;   cd ..
 cd CompGeoMechUCD_MaterialModeling   ;    time make -j 16   ;   cd ..
 cd CompGeoMechUCD_FiniteElements     ;    time make -j 16   ;   cd ..
