@@ -923,7 +923,7 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add damping # <.> type [Rayleigh] with a0 = <time> a1 = <1/time> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
+	//!FEIDOC add damping # <.> type [Rayleigh] with a0 = <1/time> a1 = <time> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
 	| ADD DAMPING TEXTNUMBER exp TYPE DAMPING_RAYLEIGH WITH a0 '=' exp a1 '=' exp stiffness_to_use '=' stiffness_to_use_opt
 	{
 		args.clear(); signature.clear();
