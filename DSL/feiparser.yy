@@ -71,7 +71,7 @@
 
 	// CompGeoMech API
 	typedef std::vector<Number*> VectorNumber;          // This hack gets rid of a collision between std::vector and Vector classes used within FEI
-	#include "../API/CPPIncludes.h"
+	#include "../API/ESSI_API.h"
 
 	using namespace std;
 
@@ -4170,7 +4170,7 @@ void set_outcppfile_name(string newfilename)
 		fstream *outputcppfile = new fstream(out_cpp_filename.c_str(), ios::out);
 		FeiDslCallerBase::cppfile = outputcppfile;
 
-		*outputcppfile << "#include \"CPPIncludes.h\"" << endl ;
+		*outputcppfile << "#include \"ESSI_API.h\"" << endl ;
 		*outputcppfile << endl;
 		*outputcppfile << endl;
 		*outputcppfile << "int main()" << endl;

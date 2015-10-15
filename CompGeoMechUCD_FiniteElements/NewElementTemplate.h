@@ -127,7 +127,7 @@ public:
 
 protected:
     //Implementation-specific member functions...
-    // Should be protected, cause they're not going to be called
+    // Should be protected, because they're not going to be called
     // from outside the class, but you might want to inherit them
 
 
