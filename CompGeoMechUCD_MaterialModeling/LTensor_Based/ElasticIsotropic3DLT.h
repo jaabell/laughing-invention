@@ -47,88 +47,88 @@ using namespace std;
 class ElasticIsotropic3DLT : public NDMaterialLT
 {
 
-    public:
+public:
 
 
-        ElasticIsotropic3DLT( int tag,
-                              double E_in,
-                              double v_in,
-                              double rho_in );
+    ElasticIsotropic3DLT( int tag,
+                          double E_in,
+                          double v_in,
+                          double rho_in );
 
-        ElasticIsotropic3DLT();
+    ElasticIsotropic3DLT();
 
-        ~ElasticIsotropic3DLT( void );
+    ~ElasticIsotropic3DLT( void );
 
-        const char *getClassType( void ) const
-        {
-            return "ElasticIsotropic3DLT";
-        };
-
-
-        // methods to set and retrieve state using the Tensor class
-        int setTrialStrain( const DTensor2 &v );
-        int setTrialStrainIncr( const DTensor2 &v );
+    const char *getClassType( void ) const
+    {
+        return "ElasticIsotropic3DLT";
+    };
 
 
-        const DTensor4 &getTangentTensor( void );
-        const DTensor2 &getStressTensor( void );
-        const DTensor2 &getStrainTensor( void );
-        const DTensor2 &getPlasticStrainTensor( void );
+    // methods to set and retrieve state using the Tensor class
+    int setTrialStrain( const DTensor2 &v );
+    int setTrialStrainIncr( const DTensor2 &v );
 
 
-        double YieldFunctionValue( const DTensor2 &Stre ) const; // Material calls
-        double getE();
-        double getv();
-        double getRho();
+    const DTensor4 &getTangentTensor( void );
+    const DTensor2 &getStressTensor( void );
+    const DTensor2 &getStrainTensor( void );
+    const DTensor2 &getPlasticStrainTensor( void );
 
 
-        int commitState( void );
-        int revertToLastCommit( void );
-        int revertToStart( void );
-
-        NDMaterialLT *getCopy( void );
-        //NDMaterialLT *getCopy( const char *code ); //probably not needed
-
-        const char *getType( void ) const; // probably not needed
-
-        int sendSelf( int commitTag, Channel &theChannel );
-        int receiveSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker );
-
-        void Print( ostream &s, int flag = 0 ); // used
-
-        int getObjectSize();
+    double YieldFunctionValue( const DTensor2 &Stre ) const; // Material calls
+    double getE();
+    double getv();
+    double getRho();
 
 
-    private:
+    int commitState( void );
+    int revertToLastCommit( void );
+    int revertToStart( void );
+
+    NDMaterialLT *getCopy( void );
+    //NDMaterialLT *getCopy( const char *code ); //probably not needed
+
+    const char *getType( void ) const; // probably not needed
+
+    int sendSelf( int commitTag, Channel &theChannel );
+    int receiveSelf( int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker );
+
+    void Print( ostream &s, int flag = 0 ); // used
+
+    int getObjectSize();
 
 
-        DTensor2 TrialStrain;
-        DTensor2 TrialStress;
-
-        DTensor2 ElasticStateStrain;
-        DTensor2 ElasticStateStress;
-
-        DTensor2 CommitStress;
-        DTensor2 CommitStrain;
-
-        // DTensor4 Stiffness;
+private:
 
 
-        double E;
-        double v;
-        double rho;
+    DTensor2 TrialStrain;
+    DTensor2 TrialStress;
+
+    DTensor2 ElasticStateStrain;
+    DTensor2 ElasticStateStress;
+
+    DTensor2 CommitStress;
+    DTensor2 CommitStrain;
+
+    // DTensor4 Stiffness;
+
+
+    double E;
+    double v;
+    double rho;
 
 
 
-        static const  DTensor2 ZeroStrain;
-        static const  DTensor2 ZeroStress;
+    static const  DTensor2 ZeroStrain;
+    static const  DTensor2 ZeroStress;
 
-        DTensor4 Ee;
+    DTensor4 Ee;
 
-        Index < 'i' > i;
-        Index < 'j' > j;
-        Index < 'k' > k;
-        Index < 'l' > l;
+    Index < 'i' > i;
+    Index < 'j' > j;
+    Index < 'k' > k;
+    Index < 'l' > l;
 
 };
 
