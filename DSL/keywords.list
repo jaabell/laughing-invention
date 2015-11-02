@@ -93,6 +93,7 @@ Imz
 in
 increment
 initial_confining_stress
+integration
 integration_points
 IntegrationRule
 integrator
@@ -118,6 +119,7 @@ mass
 mass_density
 master
 material
+maximum_iterations
 maximum_number_of_iterations
 maximum_strain
 maximum_time_step
@@ -133,6 +135,7 @@ my
 mz
 n_in
 name
+NDMaterialLT
 new
 node
 nodes
@@ -223,6 +226,7 @@ strain_at_crushing_strength
 strain_hardening_ratio
 strain_increment_size
 stress
+stress_relative_tolerance
 surface
 tangential_damping
 tangential_stiffness
@@ -255,6 +259,7 @@ whos
 with
 xi_in
 xz_plane_vector
+yield_function_relative_tolerance
 yield_strength
 
 
@@ -282,6 +287,7 @@ Caughey4th
 DOFTYPE
 DruckerPragerLT
 Energy_Increment
+Euler_One_Step|Euler_Multistep|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler
 F_fluid_x
 F_fluid_y
 F_fluid_z

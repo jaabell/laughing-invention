@@ -33,8 +33,9 @@
 
 #include <fstream>
 
-const  DTensor2 NewPisanoLT::ZeroStrain(3, 3, 0.0);
-const  DTensor2 NewPisanoLT::ZeroStress(3, 3, 0.0);
+
+constexpr double sqrt_two_three = sqrt(2.0 / 3.0);
+
 const double NewPisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::epsilon()); // used to check the variable nullity
 const double NewPisanoLT::beta_min = 1e-16;
 const double NewPisanoLT::beta_max = 1e+16;
@@ -77,55 +78,64 @@ NewPisanoLT::NewPisanoLT(int tag,
     TrialStrain( 3, 3, 0.0 ),
     TrialStress( 3, 3, 0.0 ),
     TrialPlastic_Strain( 3, 3, 0.0 ),
-    ElasticStateStrain( 3, 3, 0.0 ),
-    ElasticStateStress( 3, 3, 0.0 ),
     CommitStress( 3, 3, 0.0 ),
     CommitStrain( 3, 3, 0.0 ),
     CommitPlastic_Strain( 3, 3, 0.0 ),
-    alpha( 3, 3, 0.0 ),
-    alpha0( 3, 3, 0.0 ),
-    alpha0mem( 3, 3, 0.0 ),
-    strainpl0( 3, 3, 0.0 ),
-    Stress_n_minus_2( 3, 3, 0.0 ),
-    nij_dev( 3, 3, 0.0 ),
+    Trial_alpha( 3, 3, 0.0 ),
+    Trial_alpha0( 3, 3, 0.0 ),
+    Trial_alpha0mem( 3, 3, 0.0 ),
+    Trial_nij_dev( 3, 3, 0.0 ),
+    Commit_alpha( 3, 3, 0.0 ),
+    Commit_alpha0( 3, 3, 0.0 ),
+    Commit_alpha0mem( 3, 3, 0.0 ),
+    Commit_nij_dev( 3, 3, 0.0 ),
     Stiffness( 3, 3, 3, 3, 0.0 ),
     Ee(3, 3, 3, 3, 0.0)
 {
-
-  DTensor2 initialStress(3, 3, 0.0);
-  DTensor2 zeroT(3, 3, 0.0);
-
-  initialStress(0, 0) = -initialconfiningstress;
-  initialStress(1, 1) = -initialconfiningstress;
-  initialStress(2, 2) = -initialconfiningstress;
-
-#ifdef DEBUG_PISANO
-  LTensorDisplay::print(initialStress, "initialStress");
-#endif
-
-
-  ElasticStateStress = DTensor2(initialStress);
-  TrialPlastic_Strain(i, j) = ZeroStrain(i, j);
-
-  Stress_n_minus_2 = DTensor2(initialStress);
-
-  beta = beta_max;
-
-  nij_dev(0, 0) = 0.0;
-  nij_dev(1, 1) = 0.0;
-  nij_dev(2, 2) = 0.0;
-  nij_dev(0, 1) = 0.0;
-  nij_dev(1, 0) = 0.0;
-  nij_dev(0, 2) = -0.7071;
-  nij_dev(2, 0) = -0.7071;
-  nij_dev(1, 2) = 0.0;
-  nij_dev(2, 1) = 0.0;
-
 
   //Initialize identity matrix
   kronecker_delta(0, 0) = 1;
   kronecker_delta(1, 1) = 1;
   kronecker_delta(2, 2) = 1;
+
+  double K0 = v / (1 - v);
+  double sigma_z = -3 * initialconfiningstress / (2 * K0 + 1);
+
+  // TrialStress(0, 0) = -initialconfiningstress ;
+  // TrialStress(1, 1) = -initialconfiningstress ;
+  // TrialStress(2, 2) = -initialconfiningstress ;
+
+  TrialStress(0, 0) = K0 * sigma_z;
+  TrialStress(1, 1) = K0 * sigma_z;
+  TrialStress(2, 2) = sigma_z;
+//
+  CommitStress(0, 0) = TrialStress(0, 0);
+  CommitStress(1, 1) = TrialStress(1, 1);
+  CommitStress(2, 2) = TrialStress(2, 2);
+
+  // Compute alpha consistent with this initial state
+  DTensor2 TrialStress_dev(3, 3, 0);
+  double p_plastic;
+  TrialStress.compute_deviatoric_tensor(TrialStress_dev, p_plastic);
+  p_plastic = -TrialStress(i, i) / 3;
+  if (p_plastic > 0)
+  {
+    Trial_alpha(i, j) = TrialStress_dev(i, j);
+    Trial_alpha /= p_plastic;
+  }
+  else
+  {
+    Trial_alpha *= 0;
+  }
+
+
+  Trial_nij_dev(0, 0) = 0.40825;
+  Trial_nij_dev(1, 1) = 0.40825;
+  Trial_nij_dev(2, 2) = -0.8165;
+
+  Commit_nij_dev(0, 0) = 0.40825;
+  Commit_nij_dev(1, 1) = 0.40825;
+  Commit_nij_dev(2, 2) = -0.8165;
 
   this->revertToStart();
 
@@ -150,17 +160,17 @@ NewPisanoLT::NewPisanoLT()
     TrialStrain( 3, 3, 0.0 ),
     TrialStress( 3, 3, 0.0 ),
     TrialPlastic_Strain( 3, 3, 0.0 ),
-    ElasticStateStrain( 3, 3, 0.0 ),
-    ElasticStateStress( 3, 3, 0.0 ),
     CommitStress( 3, 3, 0.0 ),
     CommitStrain( 3, 3, 0.0 ),
     CommitPlastic_Strain( 3, 3, 0.0 ),
-    alpha( 3, 3, 0.0 ),
-    alpha0( 3, 3, 0.0 ),
-    alpha0mem( 3, 3, 0.0 ),
-    strainpl0( 3, 3, 0.0 ),
-    Stress_n_minus_2( 3, 3, 0.0 ),
-    nij_dev( 3, 3, 0.0 ),
+    Trial_alpha( 3, 3, 0.0 ),
+    Trial_alpha0( 3, 3, 0.0 ),
+    Trial_alpha0mem( 3, 3, 0.0 ),
+    Trial_nij_dev( 3, 3, 0.0 ),
+    Commit_alpha( 3, 3, 0.0 ),
+    Commit_alpha0( 3, 3, 0.0 ),
+    Commit_alpha0mem( 3, 3, 0.0 ),
+    Commit_nij_dev( 3, 3, 0.0 ),
     Stiffness( 3, 3, 3, 3, 0.0 ),
     Ee(3, 3, 3, 3, 0.0)
 {
@@ -193,12 +203,81 @@ int NewPisanoLT::setTrialStrain(const DTensor2 &v)
 
 int NewPisanoLT::setTrialStrainIncr(const DTensor2 &strain_increment)
 {
-  return this->Explicit(strain_increment);
+  int exitflag = 0;
+
+  //Check for quick return:
+  double eps_norm = strain_increment(i, j) * strain_increment(i, j);
+  if (eps_norm == 0)
+  {
+    return exitflag;
+  }
+
+  switch (this->constitutive_integration_method)
+  {
+  case NDMaterialLT_Constitutive_Integration_Method::Not_Set :
+    exitflag = -1;
+    cerr << "NewPisanoLT::setTrialStrainIncr - Integration method not set!\n" ;
+    break;
+  case NDMaterialLT_Constitutive_Integration_Method::Euler_One_Step :
+    exitflag = this->Euler_One_Step(strain_increment);
+    break;
+  case NDMaterialLT_Constitutive_Integration_Method::Euler_Multistep :
+    // exitflag = this->Euler_Multistep(strain_increment);
+    break;
+  case NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control :
+    exitflag = this->Modified_Euler_Error_Control(strain_increment);
+    break;
+  case NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control :
+    // exitflag = this->Runge_Kutta_45_Error_Control(strain_increment);;
+    break;
+  default:
+    cerr << "NewPisanoLT::setTrialStrainIncr - Integration method not available!\n" ;
+    exitflag = -1;
+  }
+
+  return exitflag;
 }
 
 
 const DTensor4 &NewPisanoLT::getTangentTensor(void)
 {
+
+  //---------------------------------------------------------------------------------------------
+  // Compute Elastic-Plastic stiffness
+  //---------------------------------------------------------------------------------------------
+  // To obtain Eep, at the last step
+  Index<'p'> p;
+  Index<'q'> q;
+  double E = getE();
+  double G = E / (2.0 * (1.0 + v));
+  double K = E / (3.0 * (1.0 - 2.0 * v));
+  double alpha_nijdev = Trial_alpha(i, j) * Trial_nij_dev(i, j);                          // scalar product alphaij:nij_dev
+  double H = getH(Trial_alpha0);
+  double D = getD();
+  double den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
+
+  Stiffness(p, q, i, j) =  Trial_nij_dev(i, j) * Trial_nij_dev(p, q) * (-4.0 * G * G / den) +
+                           kronecker_delta(i, j)      * Trial_nij_dev(p, q) * (2.0 * G * K * D / den) +
+                           Trial_nij_dev(i, j) * kronecker_delta(p, q)      * (-2.0 * G * K * alpha_nijdev / den) +
+                           kronecker_delta(i, j)      * kronecker_delta(p, q)      * (K - (2.0 / 3.0) * G + K * K * D * alpha_nijdev / den);
+
+  Stiffness(0, 0, 0, 0) = Stiffness(0, 0, 0, 0) + (2.0 * G);
+
+  Stiffness(0, 1, 0, 1) = Stiffness(0, 1, 0, 1) + (2.0 * G);
+
+  Stiffness(0, 2, 0, 2) = Stiffness(0, 2, 0, 2) + (2.0 * G);
+
+  Stiffness(1, 0, 1, 0) = Stiffness(1, 0, 1, 0) + (2.0 * G);
+
+  Stiffness(1, 1, 1, 1) = Stiffness(1, 1, 1, 1) + (2.0 * G);
+
+  Stiffness(1, 2, 1, 2) = Stiffness(1, 2, 1, 2) + (2.0 * G);
+
+  Stiffness(2, 0, 2, 0) = Stiffness(2, 0, 2, 0) + (2.0 * G);
+
+  Stiffness(2, 1, 2, 1) = Stiffness(2, 1, 2, 1) + (2.0 * G);
+
+  Stiffness(2, 2, 2, 2) = Stiffness(2, 2, 2, 2) + (2.0 * G);
 
   return this->Stiffness;
 }
@@ -248,6 +327,26 @@ const DTensor2 &NewPisanoLT::getCommittedPlasticStrainTensor(void)
   return this->CommitPlastic_Strain;
 }
 
+const DTensor2  &NewPisanoLT::getTrialStressTensor(void)
+{
+
+  return this->TrialStress;
+}
+
+
+
+const DTensor2 &NewPisanoLT::getTrialStrainTensor(void)
+{
+
+  return this->TrialStrain;
+}
+
+
+const DTensor2 &NewPisanoLT::getTrialPlasticStrainTensor(void)
+{
+
+  return this->TrialPlastic_Strain;
+}
 
 
 //================================================================================
@@ -255,10 +354,15 @@ const DTensor2 &NewPisanoLT::getCommittedPlasticStrainTensor(void)
 //================================================================================
 int NewPisanoLT::commitState(void)
 {
-  Stress_n_minus_2 = CommitStress; // before updating the CommitStress, we keep track of the previous one
-  CommitStress = TrialStress;
-  CommitStrain = TrialStrain;
-  CommitPlastic_Strain = TrialPlastic_Strain;
+
+
+  CommitStress(i, j)            = TrialStress(i, j);
+  CommitStrain(i, j)            = TrialStrain(i, j);
+  CommitPlastic_Strain(i, j)    = TrialPlastic_Strain(i, j);
+  Commit_alpha(i, j)            = Trial_alpha(i, j);
+  Commit_alpha0(i, j)           = Trial_alpha0(i, j);
+  Commit_alpha0mem(i, j)        = Trial_alpha0mem(i, j);
+  Commit_nij_dev(i, j)          = Trial_nij_dev(i, j);
 
 
   return 0;
@@ -271,6 +375,11 @@ int NewPisanoLT::revertToLastCommit(void)
   TrialStress = CommitStress;
   TrialStrain = CommitStrain;
   TrialPlastic_Strain = CommitPlastic_Strain;
+
+  Trial_alpha = Commit_alpha;
+  Trial_alpha0 = Commit_alpha0;
+  Trial_alpha0mem = Commit_alpha0mem;
+  Trial_nij_dev = Commit_nij_dev;
   return 0;
 }
 
@@ -278,38 +387,14 @@ int NewPisanoLT::revertToLastCommit(void)
 int NewPisanoLT::revertToStart(void)
 {
 
-  CommitStress = ElasticStateStress;
-  CommitStrain = ElasticStateStrain;
-  CommitPlastic_Strain = ZeroStrain;
+  // CommitStress = ElasticStateStress;
+  // CommitStrain = ElasticStateStrain;
+  CommitPlastic_Strain *= 0;// ZeroStrain;
 
   TrialStress = CommitStress;
   TrialStrain = CommitStrain;
 
-  double E = getE();
-  double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
-  double mu = E / ( 2 * ( 1 + v ) );
-
-  Ee( 0, 0, 0, 0 ) = lambda + 2 * mu;
-  Ee( 0, 0, 1, 1 ) = lambda;
-  Ee( 0, 0, 2, 2 ) = lambda;
-  Ee( 0, 1, 0, 1 ) = mu;
-  Ee( 0, 1, 1, 0 ) = mu;
-  Ee( 0, 2, 0, 2 ) = mu;
-  Ee( 0, 2, 2, 0 ) = mu;
-  Ee( 1, 0, 0, 1 ) = mu;
-  Ee( 1, 0, 1, 0 ) = mu;
-  Ee( 1, 1, 0, 0 ) = lambda;
-  Ee( 1, 1, 1, 1 ) = lambda + 2 * mu;
-  Ee( 1, 1, 2, 2 ) = lambda;
-  Ee( 1, 2, 1, 2 ) = mu;
-  Ee( 1, 2, 2, 1 ) = mu;
-  Ee( 2, 0, 0, 2 ) = mu;
-  Ee( 2, 0, 2, 0 ) = mu;
-  Ee( 2, 1, 1, 2 ) = mu;
-  Ee( 2, 1, 2, 1 ) = mu;
-  Ee( 2, 2, 0, 0 ) = lambda;
-  Ee( 2, 2, 1, 1 ) = lambda;
-  Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
+  getE();
 
   Stiffness = Ee;
 
@@ -400,106 +485,6 @@ const char *NewPisanoLT::getType(void) const
 int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 {
 
-  // Sending model_parameters (double data)
-  Vector model_parameters(14);
-  model_parameters(0) = beta;
-  model_parameters(1) = E0;
-  model_parameters(2) = v;
-  model_parameters(3) = M;
-  model_parameters(4) = kd;
-  model_parameters(5) = xi;
-  model_parameters(6) = h;
-  model_parameters(7) = m;
-  model_parameters(8) = rho;
-  model_parameters(9) = initialconfiningstress;
-  model_parameters(10) = n;
-  model_parameters(11) = a;
-  model_parameters(12) = eplcum_cr;
-  model_parameters(13) = eplcum;
-
-  theChannel.sendVector(0, 0, model_parameters);
-
-
-  //Tensor data
-
-  Matrix aux(3, 3);
-  // 1. Sending strainplcum
-  aux.setData(strainplcum.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 1. Sending    strainplcum
-  aux.setData(strainplcum.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 2. Sending TrialStrain
-  aux.setData(TrialStrain.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 3. Sending TrialStress
-  aux.setData(TrialStress.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 4. Sending TrialPlastic_Strain
-  aux.setData(TrialPlastic_Strain.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 5. Sending ElasticStateStrain
-  aux.setData(ElasticStateStrain.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 6. Sending ElasticStateStress
-  aux.setData(ElasticStateStress.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 7. Sending CommitStress
-  aux.setData(CommitStress.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 8. Sending CommitStrain
-  aux.setData(CommitStrain.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 9. Sending CommitPlastic_Strain
-  aux.setData(CommitPlastic_Strain.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 10. Sending alpha
-  aux.setData(alpha.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 11. Sending alpha0
-  aux.setData(alpha0.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 12. Sending alpha0mem
-  aux.setData(alpha0mem.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 13. Sending strainpl0
-  aux.setData(strainpl0.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 14. Sending Stress_n_minus_2
-  aux.setData(Stress_n_minus_2.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-  // 15. Sending nij_dev
-  aux.setData(nij_dev.data, 3, 3);
-  theChannel.sendMatrix(0, 0, aux);
-
-  //Send the stiffness tensors
-
-  // here we unwrap the stiffness tensors into a vector of 81 components to be sent to remotes
-  // remotes (receiveSelf) will have to re-wrap
-  Vector aux_stifftensor(81);
-  int comp = 0;
-  for (int ii = 0; ii < 3; ii++)
-    for (int jj = 0; jj < 3; jj++)
-      for (int kk = 0; kk < 3; kk++)
-        for (int ll = 0; ll < 3; ll++)
-        {
-          aux_stifftensor(comp++) = Stiffness(ii, jj, kk, ll);
-        }
-  theChannel.sendVector(0, 0, aux_stifftensor);
-
-  // Ee
-  comp = 0;
-  for (int ii = 0; ii < 3; ii++)
-    for (int jj = 0; jj < 3; jj++)
-      for (int kk = 0; kk < 3; kk++)
-        for (int ll = 0; ll < 3; ll++)
-        {
-          aux_stifftensor(comp++) = Ee(ii, jj, kk, ll);
-        }
-  theChannel.sendVector(0, 0, aux_stifftensor);
-
-
-
 
   return 0;
 }
@@ -507,306 +492,6 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 
 int NewPisanoLT::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
-  Vector model_parameters(14);
-
-  // Receive model_parameters (double data)
-
-
-  if ( theChannel.receiveVector( 0, commitTag, model_parameters ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive model_parameters\n";
-    return -1;
-  }
-
-  beta                   = model_parameters(0);
-  E0                     = model_parameters(1);
-  v                      = model_parameters(2);
-  M                      = model_parameters(3);
-  kd                     = model_parameters(4);
-  xi                     = model_parameters(5);
-  h                      = model_parameters(6);
-  m                      = model_parameters(7);
-  rho                    = model_parameters(8);
-  initialconfiningstress = model_parameters(9);
-  n                      = model_parameters(10);
-  a                      = model_parameters(11);
-  eplcum_cr              = model_parameters(12);
-  eplcum                 = model_parameters(13);
-
-  //Receive tensor data
-  Matrix aux(3, 3);
-
-
-  // 1. Receiving strainplcum
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive strainplcum\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      strainplcum(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 2. Receiving strainplcum
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive strainplcum\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      strainplcum(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 3. Receiving TrialStrain
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive TrialStrain\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      TrialStrain(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 4. Receiving TrialStress
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive TrialStress\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      TrialStress(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 5. Receiving TrialPlastic_Strain
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive TrialPlastic_Strain\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      TrialPlastic_Strain(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 6. Receiving ElasticStateStrain
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive ElasticStateStrain\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      ElasticStateStrain(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 7. Receiving ElasticStateStress
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive ElasticStateStress\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      ElasticStateStress(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 8. Receiving CommitStress
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive CommitStress\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      CommitStress(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 9. Receiving CommitStrain
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive CommitStrain\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      CommitStrain(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 10. Receiving CommitPlastic_Strain
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive CommitPlastic_Strain\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      CommitPlastic_Strain(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 11. Receiving alpha
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive alpha\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      alpha(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 12. Receiving alpha0
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive alpha0\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      alpha0(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 13. Receiving alpha0mem
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive alpha0mem\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      alpha0mem(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 14. Receiving strainpl0
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive strainpl0\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      strainpl0(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 15. Receiving Stress_n_minus_2
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive Stress_n_minus_2\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      Stress_n_minus_2(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  // 16. Receiving nij_dev
-  if ( theChannel.receiveMatrix( 0, commitTag, aux ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive nij_dev\n";
-    return -1;
-  }
-  for (int ii = 0; ii < 3; ii++)
-  {
-    for (int jj = 0; jj < 3; jj++)
-    {
-      nij_dev(ii, jj) = aux(ii, jj);
-    }
-  }
-
-
-  //Receive the stiffness tensors (through a vector and wrap it)
-  Vector aux_stifftensor(81);
-  if ( theChannel.receiveVector( 0, commitTag, aux_stifftensor ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive Stiffness\n";
-    return -1;
-  }
-  int comp = 0;
-  for (int ii = 0; ii < 3; ii++)
-    for (int jj = 0; jj < 3; jj++)
-      for (int kk = 0; kk < 3; kk++)
-        for (int ll = 0; ll < 3; ll++)
-        {
-          Stiffness(ii, jj, kk, ll) = aux_stifftensor(comp++);
-        }
-
-  if ( theChannel.receiveVector( 0, commitTag, aux_stifftensor ) < 0 )
-  {
-    cerr << "WARNING NewPisanoLT::receiveSelf() - failed to receive Stiffness\n";
-    return -1;
-  }
-  comp = 0;
-  for (int ii = 0; ii < 3; ii++)
-    for (int jj = 0; jj < 3; jj++)
-      for (int kk = 0; kk < 3; kk++)
-        for (int ll = 0; ll < 3; ll++)
-        {
-          Ee(ii, jj, kk, ll) = aux_stifftensor(comp++);
-        }
-
 
 
   return 0;
@@ -911,73 +596,47 @@ double NewPisanoLT::geteplcum_cr(void)
 DTensor2 &NewPisanoLT::getInternalTensor(void)
 {
 
-  return alpha;
+  return Trial_alpha;
 }
 
 //================================================================================
 //  Plasticity!
 //================================================================================
 
-int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
+int NewPisanoLT::compute_stress_increment(const DTensor2 &strain_incr, DTensor2& dsigma, DTensor2& depsilon_plastic)
 {
+
   //=============================================================================================
   // Some local definitions
   //=============================================================================================
-  int err = 0;
 
   double Delta_lambda           = 0.0;    // Plastic multiplier increment
   double G                      = 0.0;    // Shear mod
   double K                      = 0.0;    // Bulk mod
-  double pp                     = 0.0;    // Mean pressure current (compression = positive)
-  double incr_strain_vol        = 0.0;    // Volumetric incremental strain
-  double p_incr_prev            = 0.0;    // Mean pressure previous (compression = positive)
-  double pressure_ratio         = 0.0;    //
+  double depsilon_vol           = 0.0;    // Volumetric incremental strain
   double unload_prod            = 0.0;    //
   double H                      = 0.0;    // Hardening modulus
-  double D                      = 0.0;    //
-  double incr_strain_dev_nijdev = 0.0;    //
   double alpha_nijdev           = 0.0;    //
-  double ep_stress_p            = 0.0;    //
-  double strainplcum_vol        = 0.0;
+  double p_plastic              = 0.0;    //
 
-  static DTensor2 mij(3, 3, 0.0);                // Unit vector normal to potential surface
-  static DTensor2 incr_strain(3, 3, 0.0);        //
-  static DTensor2 incr_stress(3, 3, 0.0);        //
-  static DTensor2 incr_Pstrain(3, 3, 0.0);       //
-  static DTensor2 ep_stress(3, 3, 0.0);          //
-  static DTensor2 predicted_stress(3, 3, 0.0);   //
-  static DTensor2 start_stress(3, 3, 0.0);       // Stress at start of step
-  static DTensor2 start_strain(3, 3, 0.0);       // Strain at start of step
-  static DTensor2 start_Pstrain(3, 3, 0.0);      // Plastic strain at start of step
-  static DTensor2 s(3, 3, 0.0);                  // Deviatoric stress tensor (unused?)
-  static DTensor2 incr_strain_dev(3, 3, 0.0);    // Incremental deviatoric strain
-  static DTensor2 stress_incr_prev(3, 3, 0.0);   // Previous step stress increment
-  static DTensor2 alpha_d(3, 3, 0.0);            //
-  static DTensor2 alphad_alpha(3, 3, 0.0);       //
-  static DTensor2 ep_stress_dev(3, 3, 0.0);      // Deviatoric elastoplastic stress
+  static DTensor2 mij(3, 3, 0.0);                 // Unit vector normal to potential surface
+  static DTensor2 depsilon(3, 3, 0.0);            //
+  static DTensor2 sigma(3, 3, 0.0);               // Stress at start of step
+  static DTensor2 depsilon_dev(3, 3, 0.0);        // Incremental deviatoric strain
+  static DTensor2 alpha_0(3, 3, 0.0);             //
+  static DTensor2 TrialStress_dev(3, 3, 0.0);     // Deviatoric elastoplastic stress
   static DTensor2 strainplcum_dev(3, 3, 0.0);
-  static DTensor2 alpha_trial(3, 3, 0.0);
-  static DTensor4 Ep(3, 3, 3, 3, 0.0);           // Elastoplastic tangent modulus tensor
 
 
-  mij *= 0;
-  incr_strain *= 0;
-  incr_stress *= 0;
-  incr_Pstrain *= 0;
-  ep_stress *= 0;
-  predicted_stress *= 0;
-  start_stress *= 0;
-  start_strain *= 0;
-  start_Pstrain *= 0;
-  s *= 0;
-  incr_strain_dev *= 0;
-  stress_incr_prev *= 0;
-  alpha_d *= 0;
-  alphad_alpha *= 0;
-  ep_stress_dev *= 0;
-  strainplcum_dev *= 0;
-  alpha_trial *= 0;
-  Ep *= 0;
+  mij              *= 0;
+  depsilon         *= 0;
+  dsigma           *= 0;
+  depsilon_plastic *= 0;
+  sigma            *= 0;
+  depsilon_dev     *= 0;
+  alpha_0          *= 0;
+  TrialStress_dev  *= 0;
+  strainplcum_dev  *= 0;
 
   Index < 'p' > p;                        // Extra index for LTensor computations
   Index < 'q' > q;                        // Extra index for LTensor computations
@@ -989,259 +648,496 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
   // Get initial state
   //---------------------------------------------------------------------------------------------
 
-  start_stress  = getCommittedStressTensor();
-  start_strain  = getCommittedStrainTensor();
-  start_Pstrain = getCommittedPlasticStrainTensor();
+  sigma(i, j)  = TrialStress(i, j);
 
-  incr_strain(i, j) = strain_incr(i, j); //Its seems superficial to have incr_strain and stress_incr, but the reason is that strain_incr is "const" and member function "compute_deviatoric_tensor" does not work with const tensors... which is wrong but it is what we have........ LTensor's fault :( -J.Abell
+  depsilon(i, j) = strain_incr(i, j); //Its seems superficial to have depsilon and stress_incr, but the reason is that strain_incr is "const" and member function "compute_deviatoric_tensor" does not work with const tensors... which is wrong but it is what we have........ LTensor's fault :( -J.Abell
 
   double E = getE();
 
   G = E / (2.0 * (1.0 + v));
   K = E / (3.0 * (1.0 - 2.0 * v));
 
-  start_stress.compute_deviatoric_tensor(s, pp);
-  pp = -start_stress(i, i) / 3;
-  incr_strain.compute_deviatoric_tensor(incr_strain_dev, incr_strain_vol);
-  incr_strain_vol = incr_strain(i, i);
 
-  stress_incr_prev(i, j) = start_stress(i, j) - Stress_n_minus_2(i, j);
-  p_incr_prev = -stress_incr_prev(i, i) / 3;
+  depsilon.compute_deviatoric_tensor(depsilon_dev, depsilon_vol);
+  depsilon_vol = depsilon(i, i);
 
-  pressure_ratio = fabs(p_incr_prev / pp);
+  double dp = -K * depsilon_vol;
 
 
-
-
-  //---------------------------------------------------------------------------------------------
-  // Some healthy checkups
-  //---------------------------------------------------------------------------------------------
-  if ( (pressure_ratio < 1.0e-3) || (fabs(pp) < 1000) ) // this avoids the influence of very small pressure fluctuations on nij_dev
+  int count = 0;
+  do
   {
-    p_incr_prev = 0.0;
+
+    //---------------------------------------------------------------------------------------------
+    // Define normal to yield surface deviatoric strain increment (Hypoplastic model)
+    //---------------------------------------------------------------------------------------------
+
+    double norm_nij_dev;
+
+    Trial_nij_dev(i, j) = 2 * G * depsilon_dev(i, j) -  dp * Trial_alpha(i, j);
+    norm_nij_dev = sqrt(Trial_nij_dev(i, j) * Trial_nij_dev(i, j));
+
+    if (norm_nij_dev > 0)
+    {
+      Trial_nij_dev(i, j) = Trial_nij_dev(i, j) / norm_nij_dev;
+    }
+    else
+    {
+      Trial_nij_dev *= 0;
+    }
+
+
+    cout << "nij_dev = " << Trial_nij_dev << endl;
+
+    //---------------------------------------------------------------------------------------------
+    // Check for unloading!!! (which alpha0 to use)
+    //---------------------------------------------------------------------------------------------
+
+    unload_prod = Trial_nij_dev(i, j) * (Trial_alpha(i, j) -  Trial_alpha0(i, j)) ;
+
+    if (unload_prod < 0.0)
+    {
+      if (true)//eplcum >= eplcum_cr)
+      {
+        alpha_0(i, j)    = Trial_alpha(i, j);
+      }
+      else
+      {
+        alpha_0(i, j) = Trial_alpha0mem(i, j); // back stress is set as at the previous unloading
+      }
+    }
+    else
+    {
+      alpha_0(i, j) = Trial_alpha0(i, j);
+    }
+
+    H = getH(alpha_0);
+
+
+
+
+    //---------------------------------------------------------------------------------------------
+    // Compute plastic flow direction (mij)
+    //---------------------------------------------------------------------------------------------
+
+    double D = getD();
+
+    mij(i, j) = Trial_nij_dev(i, j);
+
+    mij(0, 0) = Trial_nij_dev(0, 0) - D / 3;
+    mij(1, 1) = Trial_nij_dev(1, 1) - D / 3;
+    mij(2, 2) = Trial_nij_dev(2, 2) - D / 3;
+
+    // double norm_mij = sqrt(mij(i, j) * mij(i, j));
+    // mij(i, j) = mij(i, j) / norm_mij;
+
+    //---------------------------------------------------------------------------------------------
+    // Compute plastic multiplier
+    //---------------------------------------------------------------------------------------------
+
+
+    // scalar product depsilon_dev:nij_dev
+    double depsilon_dev_nijdev = depsilon_dev(i, j) * Trial_nij_dev(i, j);
+
+    alpha_nijdev = Trial_alpha(i, j) * Trial_nij_dev(i, j);                          // scalar product alphaij:nij_dev
+
+    // Plastic muliplier;
+    double num =  (2.0 * G * depsilon_dev_nijdev + K * alpha_nijdev * depsilon_vol);
+    double den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
+
+    Delta_lambda = num / den;
+    if (Delta_lambda < 0.0)
+    {
+      Delta_lambda = 0.0;
+    }
+
+    cout << "Delta_lambda = " << Delta_lambda << ", dp = " << dp << endl;
+
+    //Check dp and iterate for it if necesary
+    double dp_predict = -K * (depsilon_vol + D * Delta_lambda);
+    double pp = -sigma(i, i) / 3;
+    double dp_error = fabs(dp - dp_predict) / (pp + dp_predict);
+    if (dp_error > NDMaterialLT::stress_relative_tol)
+    {
+      dp = dp_predict;
+    }
+    else
+    {
+      break;
+    }
+
+    count += 1;
+  }
+  while ( count < NDMaterialLT::n_max_iterations );
+
+  if (count >= NDMaterialLT::n_max_iterations)
+  {
+    cerr << "NewPisanoLT :: compute_stress_increment - Exceeded maximum number of iterations (" << NDMaterialLT::n_max_iterations << ")\n";
+    return -1;
   }
 
-
   //---------------------------------------------------------------------------------------------
-  // Define tangent to yield surface with the sign of the deviatoric strain increment
+  // Update internal variales and increments
   //---------------------------------------------------------------------------------------------
 
-  double norm_nij_dev;
+  // Plastic strain increment
+  depsilon_plastic(i, j) = mij(i, j) * (Delta_lambda);
+  dsigma(i, j)  = Ee(i, j, p, q) * (  depsilon(p, q) - depsilon_plastic(p, q) );
 
-  nij_dev(i, j) = 2 * G * incr_strain_dev(i, j) -  p_incr_prev * alpha(i, j); // and then normalization
-  norm_nij_dev = sqrt(nij_dev(i, j) * nij_dev(i, j));
+  cout << "dsigma = " << dsigma << endl;
 
-  if (norm_nij_dev > check_for_zero)
+  //update internal variable
+  sigma(i, j)  = TrialStress(i, j) + dsigma(i, j);
+  sigma.compute_deviatoric_tensor(TrialStress_dev, p_plastic);
+  p_plastic = -sigma(i, i) / 3;
+  if (p_plastic > 0)//1000 * check_for_zero)
   {
-    nij_dev(i, j) = nij_dev(i, j) / norm_nij_dev;
+    Trial_alpha(i, j) = TrialStress_dev(i, j);
+    Trial_alpha /= p_plastic;
   }
   else
   {
-    nij_dev(i, j) = ZeroStrain(i, j) ;
+    Trial_alpha *= 0;
   }
 
-  // if (fabs(incr_strain_dev(0, 2)) > check_for_zero)
-  // {
-  //     sign = incr_strain_dev(0, 2) / fabs(incr_strain_dev(0, 2));
-  // }
-  // else
-  // {
-  //     sign = 1.0;
-  // }
-
-  // nij_dev(0, 2) = sign * 0.7071;
-  // nij_dev(2, 0) = sign * 0.7071;
+  return 0;
+}
 
 
-  //---------------------------------------------------------------------------------------------
-  // Check for unloading!!!
-  //---------------------------------------------------------------------------------------------
+//
+// if (unload_prod < 0.0)
+// {
 
-  unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
-
-  // static fstream outstuff("unload.prod", std::ios::app);
-  // outstuff << unload_prod;
-
-  // if (unload_prod < 0.0 )
-  // {
-
-
-  //   if (eplcum_cr > 0.0)
-  //   {
-  //     constexpr double b = 0.1;
-  //     double chi = 0.5 * (1 + tanh((eplcum / eplcum_cr - 0.5) / b)); // chi new scalar to be declared!!! tanh is the hyperbolic tangent, set b=0.1 (it governs the steepness of the step function)
-
-  //     // alpha0(i, j) = alpha0mem(i, j) + chi * (alpha0mem(i, j) - alpha(i, j)); // I think the use of alpha0mem is useless at this point, but improves readability
-  //     alpha0mem(i, j) = alpha0mem(i, j) + chi * (alpha0(i, j) - alpha0mem(i, j));
-  //     alpha0(i, j) = alpha0mem(i, j) + chi * (alpha(i, j) - alpha0mem(i, j)); // I think the use of alpha0mem is useless at this point, but improves readability
-
-  //   }
-  //   else
-  //   {
-  //     alpha0(i, j) = alpha(i, j);
-  //   }
-  //   strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
-  //   // outstuff << " " << chi;
-  // }
+//   if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
+//   {
+//     Trial_alpha0mem(i, j) = Trial_alpha0(i, j);
+//     Trial_alpha0(i, j)    = Trial_alpha(i, j);
+//   }
+//   else // the previous projection center is reset
+//   {
+//     Trial_alpha0(i, j) = Trial_alpha0mem(i, j); // back stress is set as at the previous unloading
+//     // unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
+//   }
+//   strainplcum *=  0;//ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+// }
 
 
-  // outstuff << endl;
+// This part is now done only if the dsigma and depsilon_plastic are accepted
+//   TrialStress(i, j)  = sigma(i, j) + dsigma(i, j);
+
+// // Update all variables
+//   TrialPlastic_Strain(i, j) = epsilon_plastic(i, j);
+//   TrialPlastic_Strain(i, j) += depsilon_plastic(i, j);
+
+// //---------------------------------------------------------------------------------------------
+// // Overshooting Remediation
+// //---------------------------------------------------------------------------------------------
+//   strainplcum(i, j) += depsilon_plastic(i, j);
+
+//   strainplcum.compute_deviatoric_tensor(strainplcum_dev, strainplcum_vol); //check declaration!
+//   eplcum = sqrt((0.6666666) * strainplcum_dev(i, j) * strainplcum_dev(i, j));
+
+//   TrialStress.compute_deviatoric_tensor(TrialStress_dev, p_plastic);
+//   p_plastic = -TrialStress(i, i) / 3;
+
+// // this avoids weird alpha values...it is difficult to find a general rule for the checking factor..tests needed
+// // stress rapporto -> stress ratio
+
+//   if (p_plastic > 1000 * check_for_zero)
+//   {
+//     Trial_alpha(i, j) = TrialStress_dev(i, j);
+//     Trial_alpha /= p_plastic;
+//   }
+//   else
+//   {
+//     Trial_alpha *= 0;//ZeroStress(i, j);
+//   }
 
 
+//   return 0;
+// }
+
+int NewPisanoLT::Euler_One_Step(const DTensor2& depsilon)
+{
+
+  int errorflag = 0;
+
+  static DTensor2 dsigma(3, 3, 0.0);
+  static DTensor2 depsilon_pl(3, 3, 0.0);
+
+  errorflag = this->compute_stress_increment(depsilon, dsigma, depsilon_pl);
+
+  TrialStress(i, j) +=  dsigma(i, j);
+  TrialPlastic_Strain(i, j) += depsilon_pl(i, j);
 
 
+  double unload_prod = Trial_nij_dev(i, j) * (Trial_alpha(i, j) -  Trial_alpha0(i, j)) ;
   if (unload_prod < 0.0)
   {
 
-    if (eplcum >= eplcum_cr) // the projection center is first memorized and updated
+    if (true)//eplcum >= eplcum_cr) // the projection center is first memorized and updated
     {
-      alpha0mem(i, j) = alpha0(i, j);
-      alpha0(i, j)    = alpha(i, j);
+      Trial_alpha0mem(i, j) = Trial_alpha0(i, j);
+      Trial_alpha0(i, j)    = Trial_alpha(i, j);
     }
     else // the previous projection center is reset
     {
-      alpha0(i, j) = alpha0mem(i, j); // back stress is set as at the previous unloading
-      // unload_prod = nij_dev(i, j) * alpha(i, j) - nij_dev(i, j) * alpha0(i, j) ;
+      Trial_alpha0(i, j) = Trial_alpha0mem(i, j); // back stress is set as at the previous unloading
     }
-    strainplcum(i, j) =  ZeroStrain(i, j); //TrialPlastic_Strain(i, j); // the local cumulated plastic strain is restarted
+    strainplcum *=  0;
   }
 
+  //============================================
+  //Recompute nij_dev
+  //============================================
+  // double E = getE();
+  // double G = E / (2.0 * (1.0 + v));
 
-//---------------------------------------------------------------------------------------------
-// Compute distance and dilatancy coefficients
-//---------------------------------------------------------------------------------------------
+  // static DTensor2 depsilon_dev(3, 3, 0.0);        // Incremental deviatoric strain
+  // double depsilon_vol;
+  // double norm_nij_dev;
+  // depsilon.compute_deviatoric_tensor(depsilon_dev, depsilon_vol);
+  // double dp = -(dsigma1(i, i) + dsigma2(i, i)) / 3;
 
-  if ( abs(n) < check_for_zero)
+  // Trial_nij_dev(i, j) = 2 * G * depsilon_dev(i, j) -  dp * Trial_alpha(i, j);
+  // norm_nij_dev = sqrt(Trial_nij_dev(i, j) * Trial_nij_dev(i, j));
+
+  // if (norm_nij_dev > check_for_zero)
+  // {
+  //   Trial_nij_dev(i, j) = Trial_nij_dev(i, j) / norm_nij_dev;
+  // }
+  // else
+  // {
+  //   Trial_nij_dev *= 0;
+  // }
+  //============================================
+
+  return errorflag;
+}
+
+int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
+{
+  int errorflag;
+
+  double T = 0;
+  double dT = 1;
+  double q = 0;
+
+  static DTensor2 depsilon(3, 3, 0.0);
+  static DTensor2 depsilon_pl(3, 3, 0.0);
+
+  static DTensor2 dsigma1(3, 3, 0.0);
+  static DTensor2 dalpha1(3, 3, 0.0);
+  static DTensor2 dalpha01(3, 3, 0.0);
+  static DTensor2 nijdev1(3, 3, 0.0);
+
+  static DTensor2 dsigma2(3, 3, 0.0);
+  static DTensor2 dalpha2(3, 3, 0.0);
+  static DTensor2 dalpha02(3, 3, 0.0);
+  static DTensor2 nijdev2(3, 3, 0.0);
+
+  static DTensor2 sigma_error(3, 3, 0.0);
+
+  static DTensor2 TrialStress_dev(3, 3, 0.0);
+
+  static DTensor2 start_sigma(3, 3, 0.0);
+  static DTensor2 start_alpha(3, 3, 0.0);
+  static DTensor2 start_alpha0(3, 3, 0.0);
+
+  // static DTensor2 epsilon_applied(3, 3, 0.0);
+
+  depsilon *= 0;
+  dsigma1 *= 0;
+  dalpha1 *= 0;
+  dalpha01 *= 0;
+  depsilon_pl *= 0;
+  TrialStress_dev *= 0;
+  dsigma2 *= 0;
+  dalpha2 *= 0;
+  dalpha02 *= 0;
+  sigma_error *= 0;
+  start_sigma *= 0;
+  start_alpha *= 0;
+  start_alpha0 *= 0;
+  // epsilon_applied *= 0;
+
+  start_sigma(i, j) = TrialStress(i, j);
+  start_alpha(i, j) = Trial_alpha(i, j);
+  start_alpha0(i, j) = Trial_alpha0(i, j);
+  // start_alpha0(i, j) = Commit_alpha0(i, j);
+
+  int count = 0;
+
+  while (T < 1)
   {
-    beta = get_distance_coeff(start_stress);    // this should be able to read alpha and alpha0
-    alpha_d(i, j) = nij_dev(i, j) * (kd * sqrt(2.0 / 3.0));
 
-    //Flow rule
-    // double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // Temporary change to show the effect of variable dilatancy.
-    // D = xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
-    D = xi * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
+    double beta = getBeta(Trial_alpha0);
+    double H = getH(Trial_alpha0);
+
+    cout << "================\n" ;
+    cout << "T = " << T << ", q = " << q << ", dT = " << dT << ", beta = " << beta << ", H = " << H <<  endl;
+
+    depsilon(i, j) = dT * strain_increment(i, j);
+    cout << "depsilon = " << depsilon << endl;
+
+    cout << "dsigma1 = " << endl;
+    //First pass
+    errorflag = this->compute_stress_increment( depsilon, dsigma1, depsilon_pl);
+    if (errorflag < 0)
+    {
+      return errorflag;
+    }
+
+    TrialStress(i, j)  = start_sigma(i, j) + dsigma1(i, j);
+    dalpha1(i, j) = Trial_alpha(i, j) - start_alpha(i, j);
+    dalpha01(i, j) = Trial_alpha0(i, j) - start_alpha0(i, j);
+    nijdev1(i, j) = Trial_nij_dev(i, j);
+
+
+    //Second pass
+    cout << "dsigma2 = " << endl;
+    errorflag = this->compute_stress_increment(depsilon, dsigma2, depsilon_pl);
+    if (errorflag < 0)
+    {
+      return errorflag;
+    }
+
+    TrialStress(i, j)  = start_sigma(i, j) + (dsigma1(i, j) + dsigma2(i, j)) / 2;
+
+    dalpha2(i, j) = Trial_alpha(i, j) - (start_alpha(i, j) + dalpha1(i, j));
+    dalpha02(i, j) = Trial_alpha0(i, j) - (start_alpha0(i, j) + dalpha01(i, j));
+    nijdev2(i, j) = Trial_nij_dev(i, j);
+
+    // //Compute errors
+    // sigma_error(i, j) = (dsigma2(i, j) - dsigma1(i, j)) / 2;
+    // double Relative_Error = sqrt(sigma_error(i, j) * sigma_error(i, j)) / sqrt(TrialStress(i, j) * TrialStress(i, j));
+
+    //Compute the Pisano Error metric
+    static DTensor2 ds1(3, 3, 0.0);
+    static DTensor2 ds2(3, 3, 0.0);
+    static DTensor2 TrialS(3, 3, 0.0);
+    double dp1, dp2, Trial_p;
+    constexpr double a = 0.0;
+    constexpr double b = 1 - a;
+
+
+    TrialStress.compute_deviatoric_tensor(TrialS, dp1);
+    Trial_p = -TrialStress(i, i) / 3;
+
+    dsigma1.compute_deviatoric_tensor(ds1, dp1);
+    dp1 = -dsigma1(i, i) / 3;
+    dsigma2.compute_deviatoric_tensor(ds2, dp2);
+    dp2 = -dsigma2(i, i) / 3;
+    sigma_error(i, j) = (ds2(i, j) - ds1(i, j)) / 2;
+
+    double p_error = (dp2 - dp1) / 2;
+
+    //Pisano Error metric
+    double Relative_Error = a * sqrt(sigma_error(i, j) * sigma_error(i, j)) / sqrt(TrialS(i, j) * TrialS(i, j))
+                            + b * fabs(p_error) / fabs(Trial_p);
+
+
+    //Limit the relative error
+    Relative_Error = fmax(Relative_Error, std::numeric_limits<double>::epsilon());
+
+
+    if (Relative_Error < this-> stress_relative_tol) // Accept this step
+    {
+      T += dT;
+      cout << "Accept! R = " <<  Relative_Error << " T = " << T << endl;
+      cout << "T = " << T << ", dT = " << dT << ", q = " << q << endl;
+      // Trial_alpha(i, j) = start_alpha(i, j) + (dalpha1(i, j) + dalpha2(i, j)) / 2;
+
+      double p_plastic;
+      TrialStress.compute_deviatoric_tensor(TrialStress_dev, p_plastic);
+      p_plastic = -TrialStress(i, i) / 3;
+      if (p_plastic > 0)//1000 * check_for_zero)
+      {
+        Trial_alpha(i, j) = TrialStress_dev(i, j);
+        Trial_alpha /= p_plastic;
+      }
+      else
+      {
+        Trial_alpha *= 0;
+      }
+
+      // Trial_alpha0(i, j) = start_alpha0(i, j) + (dalpha01(i, j) + dalpha02(i, j)) / 2;
+      TrialPlastic_Strain(i, j) += depsilon_pl(i, j);
+      // Trial_nij_dev(i, j) = (nijdev1(i, j) + nijdev2(i, j)) / 2;
+      start_sigma(i, j) = TrialStress(i, j);
+      start_alpha(i, j) = Trial_alpha(i, j);
+      // start_alpha0(i, j) = Trial_alpha0(i, j);
+
+      cout << "Trial_nij_dev = " << Trial_nij_dev << endl;
+
+      q = fmin(0.8 * sqrt(this-> stress_relative_tol / Relative_Error), 2.0);
+      dT = q * dT;
+      dT = fmin(dT, 1.0 - T);
+
+      // //============================================
+      // //Recompute nij_dev
+      // //============================================
+      double E = getE();
+      double G = E / (2.0 * (1.0 + v));
+
+      static DTensor2 depsilon_dev(3, 3, 0.0);        // Incremental deviatoric strain
+      double depsilon_vol;
+      double norm_nij_dev;
+      depsilon.compute_deviatoric_tensor(depsilon_dev, depsilon_vol);
+      double dp = -(dsigma1(i, i) + dsigma2(i, i)) / 3;
+
+      Trial_nij_dev(i, j) = 2 * G * depsilon_dev(i, j) -  dp * Trial_alpha(i, j);
+      norm_nij_dev = sqrt(Trial_nij_dev(i, j) * Trial_nij_dev(i, j));
+
+      if (norm_nij_dev > 0)
+      {
+        Trial_nij_dev(i, j) = Trial_nij_dev(i, j) / norm_nij_dev;
+      }
+      else
+      {
+        Trial_nij_dev *= 0;
+      }
+      // //============================================
+
+      double unload_prod = Trial_nij_dev(i, j) * (Trial_alpha(i, j) -  Trial_alpha0(i, j)) ;
+      cout << "unload_prod = " << unload_prod << endl;
+      if (unload_prod < 0.0)
+      {
+
+        if (true)//eplcum >= eplcum_cr) // the projection center is first memorized and updated
+        {
+          Trial_alpha0mem(i, j) = Trial_alpha0(i, j);
+          Trial_alpha0(i, j)    = Trial_alpha(i, j);
+        }
+        else // the previous projection center is reset
+        {
+          Trial_alpha0(i, j) = Trial_alpha0mem(i, j); // back stress is set as at the previous unloading
+        }
+        strainplcum *=  0;
+      }
+      start_alpha0(i, j) = Trial_alpha0(i, j);
+      // epsilon_applied(i, j) += depsilon(i, j);
+
+    }
+    else //Reject step, take a smaller one!
+    {
+      cout << "Reject! R = " <<  Relative_Error << endl;
+      q = fmax(0.8 * sqrt(this-> stress_relative_tol / Relative_Error), 0.1);
+      dT = q * dT;
+      TrialStress(i, j) = start_sigma(i, j);
+      Trial_alpha(i, j) = start_alpha(i, j);
+      Trial_alpha0(i, j) = start_alpha0(i, j);
+    }
+
+
+    count += 1;
+
   }
-  else
-  {
-    beta = get_distance_coeff_lode(start_stress); // this should be able to read alpha and alpha0
-    D = get_dilatancy();
-  }
 
+  // cout << "    Number of Euler iterations = " << count << endl;
+  // cout << "    this-> stress_relative_tol = " << this-> stress_relative_tol << endl;
 
-
-//---------------------------------------------------------------------------------------------
-// Compute plastic modulus (H)
-//---------------------------------------------------------------------------------------------
-
-  if (m == 1.0)
-  {
-    H = pp * h * beta;
-  }
-  else
-  {
-    H = pp * h * (pow(beta, m));
-  }
-
-//---------------------------------------------------------------------------------------------
-// Compute plastic flow direction (mij)
-//---------------------------------------------------------------------------------------------
-
-  mij = nij_dev;
-
-  mij(0, 0) = nij_dev(0, 0) - 1.0 * D / 3.0;
-  mij(1, 1) = nij_dev(1, 1) - 1.0 * D / 3.0;
-  mij(2, 2) = nij_dev(2, 2) - 1.0 * D / 3.0;
-
-//---------------------------------------------------------------------------------------------
-// Compute plastic multiplier
-//---------------------------------------------------------------------------------------------
-// scalar product incr_strain_dev:nij_dev
-  incr_strain_dev_nijdev = incr_strain_dev(i, j) * nij_dev(i, j);
-
-  alpha_nijdev = alpha(i, j) * nij_dev(i, j);                          // scalar product alphaij:nij_dev
-
-// Plastic muliplier;
-  double num =  (2.0 * G * incr_strain_dev_nijdev + K * alpha_nijdev * incr_strain_vol);
-  double den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
-
-  Delta_lambda = num / den;
-  if (Delta_lambda < 0.0)
-  {
-    Delta_lambda = 0.0;
-  }
-
-//---------------------------------------------------------------------------------------------
-// Update internal variales and increments
-//---------------------------------------------------------------------------------------------
-
-// Plastic strain increment
-  incr_Pstrain(i, j) = mij(i, j) * (Delta_lambda);
-  incr_stress(i, j)  = Ee(i, j, p, q) * (  incr_strain(p, q) - incr_Pstrain(p, q) );
-  ep_stress(i, j)    = start_stress(i, j) + incr_stress(i, j);
-
-// Update all variables
-  TrialStress(i, j)         = ep_stress(i, j);            // try again Initiailize whenever you have tensor = tensor...
-  TrialPlastic_Strain(i, j) = start_Pstrain(i, j);
-  TrialPlastic_Strain(i, j) += incr_Pstrain(i, j);
-
-//---------------------------------------------------------------------------------------------
-// Overshooting Remediation
-//---------------------------------------------------------------------------------------------
-  strainplcum(i, j) += incr_Pstrain(i, j);
-
-  strainplcum.compute_deviatoric_tensor(strainplcum_dev, strainplcum_vol); //check declaration!
-  eplcum = sqrt((0.6666666) * strainplcum_dev(i, j) * strainplcum_dev(i, j));
-
-  ep_stress.compute_deviatoric_tensor(ep_stress_dev, ep_stress_p);
-  ep_stress_p = -ep_stress(i, i) / 3;
-
-// this avoids weird alpha values...it is difficult to find a general rule for the checking factor..tests needed
-// stress rapporto -> stress ratio
-
-  if (ep_stress_p > 1000 * check_for_zero)
-  {
-    alpha(i, j) = ep_stress_dev(i, j);
-    alpha /= ep_stress_p;
-  }
-  else
-  {
-    alpha(i, j) = ZeroStress(i, j);
-  };
-
-//---------------------------------------------------------------------------------------------
-// Compute Elastic-Plastic stiffness
-//---------------------------------------------------------------------------------------------
-// To obtain Eep, at the last step
-
-  Stiffness(p, q, i, j) =  nij_dev(i, j) * nij_dev(p, q) * (-4.0 * G * G / den) +
-                           kronecker_delta(i, j)      * nij_dev(p, q) * (2.0 * G * K * D / den) +
-                           nij_dev(i, j) * kronecker_delta(p, q)      * (-2.0 * G * K * alpha_nijdev / den) +
-                           kronecker_delta(i, j)      * kronecker_delta(p, q)      * (K - (2.0 / 3.0) * G + K * K * D * alpha_nijdev / den);
-
-  Stiffness(0, 0, 0, 0) = Stiffness(0, 0, 0, 0) + (2.0 * G);
-
-  Stiffness(0, 1, 0, 1) = Stiffness(0, 1, 0, 1) + (2.0 * G);
-
-  Stiffness(0, 2, 0, 2) = Stiffness(0, 2, 0, 2) + (2.0 * G);
-
-  Stiffness(1, 0, 1, 0) = Stiffness(1, 0, 1, 0) + (2.0 * G);
-
-  Stiffness(1, 1, 1, 1) = Stiffness(1, 1, 1, 1) + (2.0 * G);
-
-  Stiffness(1, 2, 1, 2) = Stiffness(1, 2, 1, 2) + (2.0 * G);
-
-  Stiffness(2, 0, 2, 0) = Stiffness(2, 0, 2, 0) + (2.0 * G);
-
-  Stiffness(2, 1, 2, 1) = Stiffness(2, 1, 2, 1) + (2.0 * G);
-
-  Stiffness(2, 2, 2, 2) = Stiffness(2, 2, 2, 2) + (2.0 * G);
-
-#ifdef DEBUG_PISANO
-  LTensorDisplay::print(Stiffness, "Stiffness", "\n\n\n", 1);
-#endif
-
-
-  return err;
+  return 0;
 }
 
 
@@ -1249,12 +1145,12 @@ int NewPisanoLT::Explicit(const DTensor2 &strain_incr)
 
 
 // Probably should be inlined
-double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
+double NewPisanoLT::get_distance_coeff(DTensor2 &alpha0)
 {
 
-  double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));
+  double nij_dev_norm = sqrt (Trial_nij_dev(i, j) * Trial_nij_dev(i, j));
 
-  if (nij_dev_norm > 1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
+  if (nij_dev_norm > 0)//1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
   {
 
     //coefficients 2nd order equation
@@ -1263,24 +1159,25 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
     double c;
     double Delta_equation;
 
-
+    // cout << "Trial_alpha = " << Trial_alpha << endl;
+    // cout << "alpha0 = " << alpha0 << endl;
 
     //// a
 
-    a = (alpha(i, j) - alpha0(i, j)) * (alpha(i, j) - alpha0(i, j));
+    a = (Trial_alpha(i, j) - alpha0(i, j)) * (Trial_alpha(i, j) - alpha0(i, j));
 
     //// b
 
-    b = 2 * alpha(i, j) * (alpha(i, j) - alpha0(i, j));
+    b = 2 * Trial_alpha(i, j) * (Trial_alpha(i, j) - alpha0(i, j));
 
     //// c
 
-    // c = alpha(i, j) * alpha(i, j) - (2.0 / 3.0) * M * M;
-    c = alpha(i, j) * alpha(i, j) - (0.6666666666666666666666666666666666666) * M * M;
+    // c = Trial_alpha(i, j) * Trial_alpha(i, j) - (2.0 / 3.0) * M * M;
+    c = Trial_alpha(i, j) * Trial_alpha(i, j) - (0.6666666666666666666666666666666666666) * M * M;
 
     //// solution
 
-    if ( a > check_for_zero)
+    if ( a > 0)
     {
       Delta_equation = b * b - 4.0 * a * c;
 
@@ -1325,14 +1222,14 @@ double NewPisanoLT::get_distance_coeff(DTensor2 &start_stress)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
+double NewPisanoLT::get_distance_coeff_lode(DTensor2 &alpha0)
 {
 
   // A NEW SOIL PARAMETER n NEEDS TO BE DEFINED FOR THE DEVIATORIC SECTION!!!
 
-  double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));
+  double nij_dev_norm = sqrt (Trial_nij_dev(i, j) * Trial_nij_dev(i, j));
 
-  if (nij_dev_norm > 1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
+  if (nij_dev_norm > 0)//1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
   {
     double sinphi;
     double beta_secdev;
@@ -1359,19 +1256,19 @@ double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
 
       //// a
 
-      a = (alpha(i, j) - alpha0(i, j)) * (alpha(i, j) - alpha0(i, j));
+      a = (Trial_alpha(i, j) - alpha0(i, j)) * (Trial_alpha(i, j) - alpha0(i, j));
 
       //// b
 
-      b = 2 * alpha(i, j) * (alpha(i, j) - alpha0(i, j));
+      b = 2 * Trial_alpha(i, j) * (Trial_alpha(i, j) - alpha0(i, j));
 
       //// c
 
-      c = alpha(i, j) * alpha(i, j) - (0.6666666666666666666666666666666666666) * M_lode * M_lode;
+      c = Trial_alpha(i, j) * Trial_alpha(i, j) - (0.6666666666666666666666666666666666666) * M_lode * M_lode;
 
       //// solution
 
-      if ( a > check_for_zero)
+      if ( a > 0)//check_for_zero)
       {
         Delta_equation = b * b - 4.0 * a * c;
 
@@ -1388,7 +1285,7 @@ double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
           DTensor2 alphab(3, 3, 0.0);
           double   lode_alphab;
 
-          alphab(i, j) = alpha(i, j) + beta * (alpha(i, j) - alpha0(i, j)); // bounding back stress
+          alphab(i, j) = Trial_alpha(i, j) + beta * (Trial_alpha(i, j) - alpha0(i, j)); // bounding back stress
 
           lode_alphab = get_lode_angle(alphab); //CHECK THIS
 
@@ -1444,7 +1341,7 @@ double NewPisanoLT::get_distance_coeff_lode(DTensor2 &start_stress)
 
 double NewPisanoLT::get_dilatancy()
 {
-  if (abs(xi) < check_for_zero)
+  if (fabs(xi) < check_for_zero)
   {
     return 0.0;
   }
@@ -1465,11 +1362,11 @@ double NewPisanoLT::get_dilatancy()
   beta_secdev  = (pow(arg, -1.0 / n) - 1.0) / (pow(arg, -1.0 / n) + 1.0);
 
 
-  double nij_dev_norm = sqrt (nij_dev(i, j) * nij_dev(i, j));
+  double nij_dev_norm = sqrt (Trial_nij_dev(i, j) * Trial_nij_dev(i, j));
 
-  if (nij_dev_norm > 1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
+  if (nij_dev_norm > 0)//1.0e3 * check_for_zero)  // FIXME 1.0e3 is arbitrary
   {
-    lode    = get_lode_angle(nij_dev);
+    lode    = get_lode_angle(Trial_nij_dev);
     R       = pow(((1 - beta_secdev * sin(3.0 * lode)) / (1 - beta_secdev)), n);
     kd_lode = kd * R; // shear strength at a given (assumed) lode angle
   }
@@ -1478,9 +1375,9 @@ double NewPisanoLT::get_dilatancy()
     kd_lode = kd;
   };
 
-  alphad(i, j) = (sqrt(2.0 / 3.0) * kd_lode) * nij_dev(i, j);
+  alphad(i, j) = (sqrt(2.0 / 3.0) * kd_lode) * Trial_nij_dev(i, j);
 
-  D = xi * (nij_dev(i, j) * (alphad(i, j) - alpha(i, j)));
+  D = xi * (Trial_nij_dev(i, j) * (alphad(i, j) - Trial_alpha(i, j)));
 
   return D;
 }
@@ -1502,7 +1399,7 @@ double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a
 
   //The input tensor s must be deviatoric (symmetric, nil trace)
 
-  if (abs(s(i, i)) > check_for_zero )
+  if (fabs(s(i, i)) > check_for_zero )
   {
     cerr << "NewPisanoLT::lode   Warning! Lode angle is being computed with a non-deviatoric tensor s.\n\n";
   }
@@ -1528,7 +1425,7 @@ double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a
        ) ;/// 3;
   //s.compute_Determinant(); // I need the determinant of the deviatoric stress tensor!!!
 
-  if (J2 > check_for_zero)
+  if (J2 > 0)//check_for_zero)
   {
     // arg = -2.598076211353316 * cbrt(J3) / sqrt(J2); // esta era la ueada!!!
     arg = -2.598076211353316 * J3 / sqrt(J2 * J2 * J2);
@@ -1561,19 +1458,51 @@ double NewPisanoLT::get_lode_angle(DTensor2   s) // computes the Lode angle of a
 double NewPisanoLT::getE()
 {
 
+  double E;
+
   if (a == 0)
   {
-    return E0;
+    // return E0;
+    E = E0;
   }
-  double p = -CommitStress(i, i) / 3.0;
+  double p = -TrialStress(i, i) / 3.0;
   if (p > patm / 2)
   {
-    return E0 * pow(p / patm, a);
+    E = E0 * pow(p / patm, a);
+    // return E0 * pow(p / patm, a);
   }
   else
   {
-    return E0 * pow(0.5, a);
+    E = E0 * pow(0.5, a);
+    // return E0 * pow(0.5, a);
   }
+
+  double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
+  double mu = E / ( 2 * ( 1 + v ) );
+
+  Ee( 0, 0, 0, 0 ) = lambda + 2 * mu;
+  Ee( 0, 0, 1, 1 ) = lambda;
+  Ee( 0, 0, 2, 2 ) = lambda;
+  Ee( 0, 1, 0, 1 ) = mu;
+  Ee( 0, 1, 1, 0 ) = mu;
+  Ee( 0, 2, 0, 2 ) = mu;
+  Ee( 0, 2, 2, 0 ) = mu;
+  Ee( 1, 0, 0, 1 ) = mu;
+  Ee( 1, 0, 1, 0 ) = mu;
+  Ee( 1, 1, 0, 0 ) = lambda;
+  Ee( 1, 1, 1, 1 ) = lambda + 2 * mu;
+  Ee( 1, 1, 2, 2 ) = lambda;
+  Ee( 1, 2, 1, 2 ) = mu;
+  Ee( 1, 2, 2, 1 ) = mu;
+  Ee( 2, 0, 0, 2 ) = mu;
+  Ee( 2, 0, 2, 0 ) = mu;
+  Ee( 2, 1, 1, 2 ) = mu;
+  Ee( 2, 1, 2, 1 ) = mu;
+  Ee( 2, 2, 0, 0 ) = lambda;
+  Ee( 2, 2, 1, 1 ) = lambda;
+  Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
+
+  return E;
 }
 
 
@@ -1583,33 +1512,31 @@ double   NewPisanoLT::get_eplcum() const
 {
   return eplcum;
 }
+
 DTensor2 NewPisanoLT::get_strainplcum() const
 {
   return strainplcum;
 }
+
 DTensor2 NewPisanoLT::get_alpha() const
 {
-  return alpha;
+  return Trial_alpha;
 }
+
 DTensor2 NewPisanoLT::get_alpha0() const
 {
-  return alpha0;
+  return Trial_alpha0;
 }
+
 DTensor2 NewPisanoLT::get_alpha0mem() const
 {
-  return alpha0mem;
+  return Trial_alpha0mem;
 }
-DTensor2 NewPisanoLT::get_strainpl0() const
-{
-  return strainpl0;
-}
-DTensor2 NewPisanoLT::get_Stress_n_minus_2() const
-{
-  return Stress_n_minus_2;
-}
+
+
 DTensor2 NewPisanoLT::get_nij_dev() const
 {
-  return nij_dev;
+  return Trial_nij_dev;
 }
 
 
@@ -1659,9 +1586,9 @@ int NewPisanoLT::getObjectSize()
   // DTensor2 TrialPlastic_Strain;
   size += sizeof(double) * TrialPlastic_Strain.get_size();
   // DTensor2 ElasticStateStrain;
-  size += sizeof(double) * ElasticStateStrain.get_size();
+  // size += sizeof(double) * ElasticStateStrain.get_size();
   // DTensor2 ElasticStateStress;
-  size += sizeof(double) * ElasticStateStress.get_size();
+  // size += sizeof(double) * ElasticStateStress.get_size();
   // DTensor2 CommitStress;
   size += sizeof(double) * CommitStress.get_size();
   // DTensor2 CommitStrain;
@@ -1669,17 +1596,16 @@ int NewPisanoLT::getObjectSize()
   // DTensor2 CommitPlastic_Strain;
   size += sizeof(double) * CommitPlastic_Strain.get_size();
   // DTensor2 alpha;             // back stress ratio tensor
-  size += sizeof(double) * alpha.get_size();
+  size += sizeof(double) * Trial_alpha.get_size();
   // DTensor2 alpha0;            // back stress ratio tensor
-  size += sizeof(double) * alpha0.get_size();
+  size += sizeof(double) * Trial_alpha0.get_size();
   // DTensor2 alpha0mem;         // back stress ratio tensor at last previous stress reversal
-  size += sizeof(double) * alpha0mem.get_size();
+  size += sizeof(double) * Trial_alpha0mem.get_size();
   // DTensor2 strainpl0;         // Plastic strain at stress reversal (for overshooting)
-  size += sizeof(double) * strainpl0.get_size();
+  // size += sizeof(double) * Trial_strainpl0.get_size();
   // DTensor2 Stress_n_minus_2;  // Stress tensor at step n-2
-  size += sizeof(double) * Stress_n_minus_2.get_size();
   // DTensor2 nij_dev;           // direction of deviatoric plastic strain increment(unit tensor)
-  size += sizeof(double) * nij_dev.get_size();
+  size += sizeof(double) * Trial_nij_dev.get_size();
 
 
   //Fourth order stiffness
@@ -1702,9 +1628,58 @@ int NewPisanoLT::getObjectSize()
 int NewPisanoLT::startNewStage()
 {
   // cout << "New stage\n";
-
-  alpha0mem(i, j) = alpha0(i, j) = alpha(i, j);
+  // cout << "Trial_alpha0mem = " << Trial_alpha0mem << endl;
+  // cout << "Trial_alpha0 = " << Trial_alpha0 << endl;
+  // cout << "Trial_alpha = " << Trial_alpha << endl;
+  // Trial_alpha0mem(i, j) = Trial_alpha0(i, j) = Trial_alpha(i, j);
   return 0;
+}
+
+//Returns hardening modulus for given alpha0
+double NewPisanoLT::getH(DTensor2 &alpha0)
+{
+  double beta = getBeta( alpha0);
+  double pp = -(TrialStress(i, i)) / 3;
+  if (m == 1.0)
+  {
+    return  pp * h * beta;
+  }
+  else
+  {
+    return pp * h * (pow(beta, m));
+  }
+}
+
+//Returns beta: the distance coeficient for a given alpha0
+double NewPisanoLT::getBeta(DTensor2& alpha0)
+{
+  if ( fabs(n) < check_for_zero)
+  {
+    return get_distance_coeff(alpha0);    // this should be able to read alpha and alpha0
+  }
+  else
+  {
+    return get_distance_coeff_lode(alpha0); // this should be able to read alpha and alpha0
+  }
+}
+
+//Returns the D parameter based on the current state
+double NewPisanoLT::getD()
+{
+  if ( fabs(n) < check_for_zero)
+  {
+    static DTensor2 alpha_d(3, 3, 0);
+    alpha_d(i, j) = Trial_nij_dev(i, j) * (kd * sqrt(2.0 / 3.0));
+
+    //Flow rule
+    // double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // Temporary change to show the effect of variable dilatancy.
+    // return \ xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
+    return xi * (alpha_d(i, j) - Trial_alpha(i, j) ) * Trial_nij_dev(i, j);
+  }
+  else
+  {
+    return get_dilatancy();
+  }
 }
 
 

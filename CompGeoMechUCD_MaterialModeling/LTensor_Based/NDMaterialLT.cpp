@@ -47,7 +47,10 @@ DTensor2 NDMaterialLT::errTensor2     (3, 3, 0.0);
 DTensor2 NDMaterialLT::errstresstensor(3, 3, 0.0);
 DTensor2 NDMaterialLT::errstraintensor(3, 3, 0.0);
 Vector  NDMaterialLT::errVectorVector(0.0);
-
+NDMaterialLT_Constitutive_Integration_Method NDMaterialLT::constitutive_integration_method(NDMaterialLT_Constitutive_Integration_Method::Not_Set);     //
+double NDMaterialLT::f_relative_tol(-1);
+double NDMaterialLT::stress_relative_tol(-1);
+int NDMaterialLT::n_max_iterations(0);
 
 NDMaterialLT::NDMaterialLT(int tag, int classTag)
     : Material(tag, classTag)
@@ -345,4 +348,29 @@ const char *NDMaterialLT::getType(void) const
 {
     cerr << "NDMaterialLT::getType -> Subclass responsability" << endl;
     return 0;
+}
+
+bool NDMaterialLT::set_constitutive_integration_method(int method, double f_relative_tol, double stress_relative_tol, int n_max_iterations)
+{
+    if ( method == (int) NDMaterialLT_Constitutive_Integration_Method::Not_Set
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Euler_One_Step
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Euler_Multistep
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler)
+    {
+        NDMaterialLT::constitutive_integration_method = (NDMaterialLT_Constitutive_Integration_Method) method ;
+        NDMaterialLT::f_relative_tol = f_relative_tol ;
+        NDMaterialLT::stress_relative_tol = stress_relative_tol ;
+        NDMaterialLT::n_max_iterations = n_max_iterations ;
+
+        cout << "Setting set_constitutive_integration_method = " << method << endl;
+
+        return true;
+    }
+    else
+    {
+        cerr << "NDMaterialLT::set_constitutive_integration_method - Unknown constitutive_integration_method\n";
+        return false;
+    }
 }

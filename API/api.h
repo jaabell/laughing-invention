@@ -200,6 +200,7 @@
 
 // Algorithms
 //--------------------------------------------------------------------------------------------------
+#include "SIMULATION/define_NDMaterialLT_constitutive_integration_algorithm.h"
 #include "SIMULATION/define_algorithm_with_no_convergence_check_for_analysis.h"
 #include "SIMULATION/define_algorithm_newton_for_analysis.h"
 #include "SIMULATION/define_algorithm_modifiednewton_for_analysis.h"

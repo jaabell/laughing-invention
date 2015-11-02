@@ -46,6 +46,7 @@
 	#include <vector>
 	#include <set>
 	#include <string>
+	#include <algorithm>
 	#include <stack>
 	#include <map>
 	#include <utility>
@@ -182,7 +183,7 @@
 %token ELEMENTNAME MATERIALNAME
 %token ACCELERATION_FIELD
 %token FIX FREE REMOVE
-%token DEFINE ALGORITHM ALGNAME CONVERGENCE_TEST TESTNAME SOLVER SOLVERNAME
+%token DEFINE ALGORITHM ALGNAME CONSTITUTIVE_ALGNAME CONVERGENCE_TEST TESTNAME SOLVER SOLVERNAME CONSTITUTIVE INTEGRATION
 %token DYNAMICINTEGRATOR DYNAMICINTEGRATOR_HHT DYNAMICINTEGRATOR_NEWMARK STATICINTEGRATOR STATICINTEGRATOR_DISPLACEMENT
 %token SIMULATE COMPUTE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations
 %token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY LEVEL
@@ -192,14 +193,14 @@
 %token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit 
 %token number_of_steps number_of_boundary_nodes number_of_exterior_nodes number_of_drm_elements 
 %token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file hdf5_file series_file time_series_file MAGNITUDES MAGNITUDE
-%token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain constitutive testing constant mean triaxial drained undrained simple shear
+%token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain  testing constant mean triaxial drained undrained simple shear
 %token number_of_subincrements maximum_number_of_iterations tolerance_1 tolerance_2 strain stress control Guass points Gauss each point single value
 // Additionally these tokens carry a string type (the above carry no type)
 // This is becuase there are several options to what this token may be
 // and the program branches depending on these.
 // ie. DOF may take the values {ux, uy, uz, Ux, Uy, Uz, rx, ry, rz, p} as
 // defined in the lexer file (feiparser.l).
-%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME TESTNAME SOLVERNAME FORCE
+%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FORCE
 %type <ident> DAMPINGTYPE
 
 
@@ -222,11 +223,12 @@
 %token thickness
 
 // Tokens for materials
-%token linear_elastic_isotropic_3d linear_elastic_isotropic_3d_LT
+%token NDMaterialLT linear_elastic_isotropic_3d linear_elastic_isotropic_3d_LT
 %token sanisand2008 camclay camclay_accelerated sanisand2004    
 %token linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
 %token PisanoLT 
 %token VonMisesLT DruckerPragerLT
+
 // Material options tokens
 %token mass_density elastic_modulus viscoelastic_modulus poisson_ratio von_mises_radius druckerprager_angle druckerprager_k
 %token armstrong_frederick_ha armstrong_frederick_cr initial_confining_stress isotropic_hardening_rate kinematic_hardening_rate poisson_ratio_h_v poisson_ratio_h_h shear_modulus_h_v elastic_modulus_horizontal elastic_modulus_vertical pressure_reference_p0
@@ -242,7 +244,8 @@
 %token ax ay az
 
 // Convergence test option tokens
-%token verbose_level maximum_iterations tolerance
+%token verbose_level maximum_iterations tolerance yield_function_relative_tolerance stress_relative_tolerance
+
 
 // Greek
 %token beta gamma kappa lambda delta
@@ -1332,6 +1335,68 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
+	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Euler_One_Step|Euler_Multistep|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
+	| DEFINE NDMaterialLT CONSTITUTIVE INTEGRATION ALGORITHM CONSTITUTIVE_ALGNAME 
+		yield_function_relative_tolerance  '=' exp
+		stress_relative_tolerance '=' exp
+		maximum_iterations '=' exp
+	{
+
+		string fname;       // name of the DSL called to report
+		args.clear(); signature.clear();
+		
+		//Read the string and turn into lower-case
+		string algname(*$6);
+		//std::transform(algname.begin(), algname.end(), algname.begin(), ::tolower);
+
+		int method = -1;
+		bool good = false;
+
+		if( algname.compare("Euler_One_Step") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Euler_One_Step;
+			good = true;
+		}
+		if( algname.compare("Euler_Multistep") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Euler_Multistep;
+			good = true;
+		}
+		if( algname.compare("Modified_Euler_Error_Control") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control;
+			good = true;
+		}
+		if( algname.compare("Runge_Kutta_45_Error_Control") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control;
+			good = true;
+		}
+		if( algname.compare("Backward_Euler") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler;
+			good = true;
+		}
+		else
+		{
+			$$ = new Number(-1, ESSIunits::unitless);
+		}
+
+		if(good)
+		{
+			args.push_back(new Number(method, ESSIunits::unitless)); signature.push_back(this_signature("method", &isAdimensional));
+			args.push_back($9); signature.push_back(this_signature("yield_function_relative_tolerance", &isAdimensional));
+			args.push_back($12); signature.push_back(this_signature("stress_relative_tolerance", &isAdimensional));
+			args.push_back($15); signature.push_back(this_signature("maximum_iterations", &isAdimensional));
+			$$ = new FeiDslCaller4<int, double, double, int>(&define_NDMaterialLT_constitutive_integration_algorithm,args, signature, "define_NDMaterialLT_constitutive_integration_algorithm");
+		}
+		
+		for(int i = 0; i < 3; i++)
+			nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
 	//!FEIDOC define algorithm [With_no_convergence_check] / [Newton] / [Modified_Newton];
 	| DEFINE ALGORITHM ALGNAME
 	{
@@ -1345,19 +1410,22 @@ CMD_define
 		int (*f)() = NULL;         // function poiner to the algorithm DSL
 		string fname;       // name of the DSL called to report
 
+		//Read the string and turn into lower-case
+		string algname(*$3);
+		std::transform(algname.begin(), algname.end(), algname.begin(), ::tolower);
 
 		args.clear(); signature.clear();
-		if((*$3).compare("With_no_convergence_check") == 0 || (*$3).compare("with_no_convergence_check") == 0)
+		if( algname.compare("with_no_convergence_check") == 0)
 		{
 			f = &define_algorithm_with_no_convergence_check_for_analysis;
 			fname = "define_algorithm_with_no_convergence_check_for_analysis";
 		}
-		else if((*$3).compare("Modified_Newton") == 0 || (*$3).compare("modified_newton") == 0)
+		else if( algname.compare("modified_newton") == 0)
 		{
 			f = &define_algorithm_modifiednewton_for_analysis;
 			fname = "define_algorithm_modifiednewton_for_analysis";
 		}
-		else if((*$3).compare("Newton") == 0 || (*$3).compare("newton") == 0)
+		else if( algname.compare("newton") == 0)
 		{
 			f = &define_algorithm_newton_for_analysis;
 			fname = "define_algorithm_newton_for_analysis";
@@ -1385,7 +1453,7 @@ CMD_define
 	{
 		args.clear(); signature.clear();
 
-		int (*f)(double, int, int);         // function poiner to the test DSL
+		int (*f)(double, int, int) = NULL;         // function poiner to the test DSL
 		string fname;       // name of the DSL called to report
 
 		args.clear(); signature.clear();
@@ -1410,8 +1478,14 @@ CMD_define
 		args.push_back($9); signature.push_back(this_signature("maximum_iterations", &isAdimensional));
 		args.push_back($12); signature.push_back(this_signature("verbose_level", &isAdimensional));
 
-		$$ = new FeiDslCaller3<double, int, int> (f, args, signature, fname);
-
+		if(f == NULL)
+		{
+			$$ = new Empty();
+		}
+		else
+		{
+			$$ = new FeiDslCaller3<double, int, int> (f, args, signature, fname);
+		}
 		for(int ii = 1;ii <=3; ii++) nodes.pop(); //pop 3 exps
 		nodes.push($$);
 	}
@@ -1420,7 +1494,7 @@ CMD_define
 	//!FEIDOC define solver [ProfileSPD] / [UMFPack];
 	| DEFINE SOLVER SOLVERNAME
 	{
-		int (*f)() = &define_solver_umfpack_for_analysis;         // function poiner to the algorithm DSL
+		int (*f)() = NULL;         // function poiner to the algorithm DSL
 		string fname;       // name of the DSL called to report
 
 		args.clear(); signature.clear();
@@ -1440,8 +1514,14 @@ CMD_define
 			 fname = "define_solver_parallel_for_analysis"; 
 		}
 
-		$$ = new FeiDslCaller0<>(f, args, signature, fname);
-
+		if(f == NULL)
+		{
+			$$ = new Empty();
+		}
+		else
+		{
+			$$ = new FeiDslCaller0<>(f, args, signature, fname);
+		}
 		nodes.push($$);
 	}
 	//!=========================================================================================================
@@ -1633,7 +1713,7 @@ CMD_misc
 	//!=========================================================================================================
 	//!
 	//!FEIDOC simulate constitutive testing constant mean pressure triaxial strain control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
-	| SIMULATE constitutive testing constant mean pressure triaxial strain control USE MATERIAL TEXTNUMBER exp
+	| SIMULATE CONSTITUTIVE testing constant mean pressure triaxial strain control USE MATERIAL TEXTNUMBER exp
 	  strain_increment_size '=' exp
 	  maximum_strain '=' exp
 	  number_of_times_reaching_maximum_strain '=' exp
@@ -1657,7 +1737,7 @@ CMD_misc
 	//!=========================================================================================================
 	//!
 	//!FEIDOC simulate constitutive testing drained triaxial strain control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
-	| SIMULATE constitutive testing drained triaxial strain control USE MATERIAL TEXTNUMBER exp
+	| SIMULATE CONSTITUTIVE testing drained triaxial strain control USE MATERIAL TEXTNUMBER exp
 	  strain_increment_size '=' exp
 	  maximum_strain '=' exp
 	  number_of_times_reaching_maximum_strain '=' exp
@@ -1681,7 +1761,7 @@ CMD_misc
 	//!=========================================================================================================
 	//!
 	//!FEIDOC simulate constitutive testing undrained triaxial stress control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
-	| SIMULATE constitutive testing undrained triaxial stress control USE MATERIAL TEXTNUMBER exp
+	| SIMULATE CONSTITUTIVE testing undrained triaxial stress control USE MATERIAL TEXTNUMBER exp
 	  strain_increment_size '=' exp
 	  maximum_strain '=' exp
 	  number_of_times_reaching_maximum_strain '=' exp
@@ -1705,7 +1785,7 @@ CMD_misc
 	//!=========================================================================================================
 	//!
 	//!FEIDOC simulate constitutive testing undrained simple shear use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
-	| SIMULATE constitutive testing undrained simple shear strain control USE MATERIAL TEXTNUMBER exp
+	| SIMULATE CONSTITUTIVE testing undrained simple shear strain control USE MATERIAL TEXTNUMBER exp
 	  strain_increment_size '=' exp
 	  maximum_strain '=' exp
 	  number_of_times_reaching_maximum_strain '=' exp
@@ -1729,7 +1809,7 @@ CMD_misc
 	//!=========================================================================================================
 	//!
 	//!FEIDOC simulate constitutive testing undrained triaxial use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
-	| SIMULATE constitutive testing undrained triaxial strain control USE MATERIAL TEXTNUMBER exp
+	| SIMULATE CONSTITUTIVE testing undrained triaxial strain control USE MATERIAL TEXTNUMBER exp
 	  strain_increment_size '=' exp
 	  maximum_strain '=' exp
 	  number_of_times_reaching_maximum_strain '=' exp

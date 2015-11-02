@@ -409,6 +409,8 @@ EXP	([Ee][-+]?[0-9]+)
 "uniaxial_concrete02"               {return token::uniaxial_concrete02;}
 
  /* LTensor based materials */
+
+"NDMaterialLT"    					{return token::NDMaterialLT;}
 "linear_elastic_isotropic_3d_LT"    {return token::linear_elastic_isotropic_3d_LT;}
 "PisanoLT"                      	{return token::PisanoLT;}
 
@@ -450,7 +452,7 @@ EXP	([Ee][-+]?[0-9]+)
 "critical_stress_ratio_M"           {return token::critical_stress_ratio_M;}
 "minimum_bulk_modulus"              {return token::minimum_bulk_modulus;}
 "initial_mean_pressure"             {return token::initial_mean_pressure;}
-"e0"                      {return token::e0;}
+"e0"                      			{return token::e0;}
 "sanisand2008_Pat"                      {return token::sanisand2008_Pat;}
 "sanisand2008_k_c"                      {return token::sanisand2008_k_c;}
 "sanisand2008_K0"                      {return token::sanisand2008_K0;}
@@ -507,7 +509,7 @@ EXP	([Ee][-+]?[0-9]+)
 "strain_increment_size"             {return token::strain_increment_size;}
 "maximum_strain"                      {return token::maximum_strain;}
 "number_of_times_reaching_maximum_strain" {return token::number_of_times_reaching_maximum_strain;}
-"constitutive"                      {return token::constitutive;}
+"constitutive"                      {return token::CONSTITUTIVE;}
 "testing"                           {return token::testing;}
 "constant"                          {return token::constant;}
 "mean"                              {return token::mean;}
@@ -645,10 +647,18 @@ EXP	([Ee][-+]?[0-9]+)
  /* Defineable things */
 "algorithm"                          {return token::ALGORITHM;}
 "convergence test"                   {return token::CONVERGENCE_TEST;}
+"integration"                   	 {return token::INTEGRATION;}
 "solver"                             {return token::SOLVER;}
 "dynamic integrator"                 {return token::DYNAMICINTEGRATOR;}
 "static integrator"                  {return token::STATICINTEGRATOR;}
 "output"                             {return token::OUTPUT;}
+
+ /* Constitutive algorithm options*/
+"Euler_One_Step"          				          |
+"Euler_Multistep"          						  |
+"Modified_Euler_Error_Control"                    |
+"Runge_Kutta_45_Error_Control"                    |
+"Backward_Euler"                     {yylval->ident = new string(yytext); return token::CONSTITUTIVE_ALGNAME;}
 
  /* Algorithm options*/
 "With_no_convergence_check"          |
@@ -660,6 +670,10 @@ EXP	([Ee][-+]?[0-9]+)
 										yylval->ident = new string(yytext);
 										return token::ALGNAME;
 									 }
+
+"yield_function_relative_tolerance"   	{return token::yield_function_relative_tolerance;}
+"stress_relative_tolerance" 		  	{return token::stress_relative_tolerance;}
+
  /* Test options */
 "Norm_Displacement_Increment"       |
 "Norm_Unbalance"                    |
@@ -677,7 +691,7 @@ EXP	([Ee][-+]?[0-9]+)
  /* define solver options */
 "ProfileSPD"                        |
 "profilespd"                        |
-"parallel"                           |
+"parallel"                          |
 "umfpack"                           |
 "UMFPack"                           {
 										yylval->ident = new string(yytext);

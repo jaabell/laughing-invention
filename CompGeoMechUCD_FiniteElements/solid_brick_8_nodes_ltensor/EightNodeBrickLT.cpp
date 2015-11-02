@@ -1801,6 +1801,7 @@ int EightNodeBrickLT::update( void )
         if ( ( material_array[gp]->setTrialStrain( trial_strain ) ) )
         {
             cerr << "EightNodeBrickLT::update (tag: " << this->getTag() << "), Update Failed\n";
+            return -1;
         }
     }
 

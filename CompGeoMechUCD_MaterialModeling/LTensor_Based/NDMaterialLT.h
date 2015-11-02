@@ -31,6 +31,15 @@ There are equivalents for int tensors (I) and float tensors (F).
 Just replace D for I or F.
 
 */
+enum struct NDMaterialLT_Constitutive_Integration_Method : int
+{
+    Not_Set,
+    Euler_One_Step,
+    Euler_Multistep,
+    Modified_Euler_Error_Control,
+    Runge_Kutta_45_Error_Control,
+    Backward_Euler
+};
 
 class NDMaterialLT : public Material
 {
@@ -110,8 +119,14 @@ public:
         return errVectorVector;
     }
 
+    static bool set_constitutive_integration_method(int method, double f_relative_tol, double stress_relative_tol, int n_max_iterations);
+
 
 protected:
+    static NDMaterialLT_Constitutive_Integration_Method constitutive_integration_method;     //
+    static double f_relative_tol;
+    static double stress_relative_tol;
+    static int n_max_iterations;
 
 private:
     static DTensor2 errMatrix;
@@ -123,7 +138,6 @@ private:
     static DTensor2 errstraintensor;
     static Vector errVectorVector;
     double volume;
-    static int constitutive_integration_method;
 
 };
 

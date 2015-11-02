@@ -86,6 +86,12 @@ public:
 
     const DTensor2 &getCommittedPlasticStrainTensor(void);
 
+    const DTensor2  &getTrialStressTensor(void);
+
+    const DTensor2 &getTrialStrainTensor(void);
+
+    const DTensor2 &getTrialPlasticStrainTensor(void);
+
 
     double getE0();
     double getv();
@@ -103,6 +109,9 @@ public:
     double geteplcum_cr();
 
     double getE();
+    double getH(DTensor2& alpha0);
+    double getBeta(DTensor2& alpha0);
+    double getD();
 
     int commitState(void);
     int revertToLastCommit(void);
@@ -127,18 +136,18 @@ public:
     DTensor2 get_alpha() const;
     DTensor2 get_alpha0() const;
     DTensor2 get_alpha0mem() const;
-    DTensor2 get_strainpl0() const;
-    DTensor2 get_Stress_n_minus_2() const;
     DTensor2 get_nij_dev() const;
 
     int getObjectSize();
 private:
 
 
-    int Explicit(const DTensor2 &strain_incr);
+    int compute_stress_increment(const DTensor2 &strain_incr, DTensor2& dsigma, DTensor2& depsilon_pl);
+    int Euler_One_Step(const DTensor2 &strain_incr);
+    int Modified_Euler_Error_Control(const DTensor2 &strain_incr);
 
-    double get_distance_coeff(DTensor2 &start_stress);
-    double get_distance_coeff_lode(DTensor2 &start_stress);
+    double get_distance_coeff(DTensor2 &alpha0);
+    double get_distance_coeff_lode(DTensor2 &alpha0);
     double get_dilatancy();
     double get_lode_angle(DTensor2   s); // computes the Lode angle of a stress state
 
@@ -172,19 +181,19 @@ private:
     DTensor2 TrialStress;
     DTensor2 TrialPlastic_Strain;
 
-    DTensor2 ElasticStateStrain;
-    DTensor2 ElasticStateStress;
-
     DTensor2 CommitStress;
     DTensor2 CommitStrain;
     DTensor2 CommitPlastic_Strain;
 
-    DTensor2 alpha;             // back stress ratio tensor
-    DTensor2 alpha0;            // back stress ratio tensor
-    DTensor2 alpha0mem;         // back stress ratio tensor at last previous stress reversal
-    DTensor2 strainpl0;         // Plastic strain at stress reversal (for overshooting)
-    DTensor2 Stress_n_minus_2;  // Stress tensor at step n-2
-    DTensor2 nij_dev;           // direction of deviatoric plastic strain increment(unit tensor)
+    DTensor2 Trial_alpha;             // back stress ratio tensor
+    DTensor2 Trial_alpha0;            // back stress ratio tensor
+    DTensor2 Trial_alpha0mem;         // back stress ratio tensor at last previous stress reversal
+    DTensor2 Trial_nij_dev;           // direction of deviatoric plastic strain increment(unit tensor)
+
+    DTensor2 Commit_alpha;             // back stress ratio tensor
+    DTensor2 Commit_alpha0;            // back stress ratio tensor
+    DTensor2 Commit_alpha0mem;         // back stress ratio tensor at last previous stress reversal
+    DTensor2 Commit_nij_dev;           // direction of deviatoric plastic strain increment(unit tensor)
 
 
     //Fourth order stiffness
@@ -195,8 +204,6 @@ private:
     static const double beta_max;
     static const double patm;                // In basic SI units (Pa = kg / s^-2 / m)
 
-    static const  DTensor2 ZeroStrain;
-    static const  DTensor2 ZeroStress;
     static const double check_for_zero;
     DTensor4 Ee;
 

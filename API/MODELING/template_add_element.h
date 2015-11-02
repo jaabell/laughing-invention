@@ -44,7 +44,7 @@ int add_element_[name_goes_here](int ElementNumber,
 
     //Create a new instance of the element
     Element* theElement = 0;
-    theElement = new EightNodeBrickLT(ElementNumber, parameters.....);  //Parameters might be different from input parameters
+    theElement = new NewElementTemplate(int tag, parameters.....);
 
     //Check if we got a pointer
     if (theElement == NULL)

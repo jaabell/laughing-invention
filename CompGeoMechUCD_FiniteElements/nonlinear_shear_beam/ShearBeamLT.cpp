@@ -855,8 +855,8 @@ int ShearBeamLT::update( void )
     if ( ( material_array[0]->setTrialStrain( trial_strain ) ) )
     {
         cerr << "ShearBeamLT::update (tag: " << this->getTag() << "), Update Failed\n";
+        return -1;
     }
-
     return 0;
 }
 
