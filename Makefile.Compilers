@@ -29,6 +29,8 @@ INLINING_OPTS = -finline \
 
 LOGFILE = "essi_compilation.log"
 
+GIT_VERSION := $(shell git describe  --tags --dirty)
+
 
 #  ==========================================
 #  Check if these variables are set
@@ -91,7 +93,7 @@ else ifeq ($(Compiler), PARALLEL)
 endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
-	C++FLAGS        = $(LTO_FLAGS) -Wall  \
+	C++FLAGS        = $(LTO_FLAGS) -Wall  -DVERSION=\"$(GIT_VERSION)\"\
 										-O2 -g \
 										$(INLINING_OPTS) \
 										-funroll-loops \
@@ -111,7 +113,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-ffast-math  \
 										-funroll-loops \
 										-fvariable-expansion-in-unroller 
-	CFLAGS          = $(LTO_FLAGS) -O2 \
+	CFLAGS          = $(LTO_FLAGS) -O2 -DVERSION=\"$(GIT_VERSION)\" \
 										-D_LINUX \
 										-D_UNIX \
 										-D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84
@@ -121,7 +123,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 	LINKFLAGS       = -O2 $(LTO_FLAGS) $(MORE_LINKFLAGS)
 
 else
-	C++FLAGS        = -Wall \
+	C++FLAGS        = -Wall -DVERSION=\"$(GIT_VERSION)\"\
 										-g \
 										-pg \
 										-D_G3DEBUG \
@@ -134,7 +136,7 @@ else
 										-std=c++11 \
 										-Wno-write-strings \
 										-fdiagnostics-color=auto 
-	CFLAGS          = -g -pg \
+	CFLAGS          = -g -pg -DVERSION=\"$(GIT_VERSION)\" \
 										-D_G3DEBUG \
 										-D_LINUX \
 										-D_UNIX -D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84 \

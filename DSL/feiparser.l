@@ -1342,6 +1342,7 @@ void welcome_msg()
 	cout << "  Sequential processing mode.                                " << endl;
 	#endif
 	cout << "                                                             " << endl;
+	cout << "Version : " << VERSION << endl;
 	cout << "Compiled: " << __DATE__ << " at " << __TIME__  << endl;
 	cout << "Time Now: " << timestring  << endl;
 	cout << "                                                               " << endl;
