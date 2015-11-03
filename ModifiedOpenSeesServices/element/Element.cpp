@@ -895,7 +895,9 @@ double Element::getPenaltyStiffness(void)
 int
 Element::CheckMesh(ofstream &checkmesh_file)
 {
-    return this->CheckMesh(checkmesh_file);
+    checkmesh_file << "Element::CheckMesh(ofstream &checkmesh_file) -- Base class! CheckMesh not implemented for element with tag " << this->getTag() << endl;
+    // return this->CheckMesh(checkmesh_file)
+    return 0;
 }
 
 

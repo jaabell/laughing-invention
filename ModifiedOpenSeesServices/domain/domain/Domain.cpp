@@ -4350,8 +4350,10 @@ Domain::eigenAnalysis( int nuMode )
 int Domain::CheckMesh( const char *check_mesh_file )
 {
 
-    // ************************** opening the file ***********************
-
+    // ************************** opening `the file ***********************
+    cout << "================================\n";
+    cout << "Beging mesh check procedure\n";
+    cout << "================================\n";
 
     ofstream checkmesh_file;
     checkmesh_file.open( check_mesh_file );
@@ -4366,15 +4368,18 @@ int Domain::CheckMesh( const char *check_mesh_file )
 
 
 
+    cout << "Checking elements....\n";
     // ************************** checking elements ***********************
 
     Element *theElement;
 
     ElementIter &theElements = this->getElements();
-
+    int count = 0;
     while ( ( theElement = theElements() ) != 0 )
     {
         theElement->CheckMesh( checkmesh_file );
+        count ++;
+        cout << "Verified " << count << " elements.\n";
     }
 
 
@@ -4384,10 +4389,14 @@ int Domain::CheckMesh( const char *check_mesh_file )
 
     NodeIter &theNodes = this->getNodes();
 
+    cout << "Checking nodes....\n";
+    count = 0;
     while ( ( theNode = theNodes() ) != 0 )
     {
         theNode->CheckMesh( checkmesh_file );
+        count ++;
     }
+    cout << "Verified " << count << " nodes.\n";
 
 
     // ******************** checking uniaxial constitutive models *****************
@@ -4396,10 +4405,14 @@ int Domain::CheckMesh( const char *check_mesh_file )
 
     UniaxialMaterialIter &theUniaxialMaterials = this->getUniaxialMaterials();
 
+    cout << "Checking uniaxial materials....\n";
+    count = 0;
     while ( ( theUniaxialMaterial = theUniaxialMaterials() ) != 0 )
     {
         theUniaxialMaterial->CheckMesh( checkmesh_file );
+        count ++;
     }
+    cout << "Verified " << count << " uniaxial materials.\n";
 
 
     // ******************** checking  constitutive models *****************
@@ -4408,19 +4421,26 @@ int Domain::CheckMesh( const char *check_mesh_file )
 
     NDMaterialIter &theNDMaterials = this->getNDMaterials();
 
+    cout << "Checking NDMaterials....\n";
+    count = 0;
     while ( ( theNDMaterial = theNDMaterials() ) != 0 )
     {
         theNDMaterial->CheckMesh( checkmesh_file );
+        count ++;
     }
+    cout << "Verified " << count << " uniaxial NDMaterials.\n";
 
     NDMaterialLT *theNDMaterialLT;
 
     NDMaterialLTIter &theNDMaterialLTs = this->getNDMaterialLTs();
-
+    cout << "Checking NDMaterialLTs....\n";
+    count = 0;
     while ( ( theNDMaterialLT = theNDMaterialLTs() ) != 0 )
     {
         theNDMaterialLT->CheckMesh( checkmesh_file );
+        count ++;
     }
+    cout << "Verified " << count << " uniaxial NDMaterialLTs.\n";
 
 
 
@@ -4429,9 +4449,12 @@ int Domain::CheckMesh( const char *check_mesh_file )
     checkmesh_file.close();
 
 
-
+    cout << "Outputting mesh. \n";
     this->commit();
 
+    cout << "\n\nDone checking mesh \n";
+    cout << "Output written to:" << check_mesh_file << endl;
+    cout << "================================\n";
 
     return 0;
 
