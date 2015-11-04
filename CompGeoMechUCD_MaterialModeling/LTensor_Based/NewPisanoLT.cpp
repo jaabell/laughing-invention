@@ -687,7 +687,7 @@ int NewPisanoLT::compute_stress_increment(const DTensor2 &strain_incr, DTensor2&
     }
 
 
-    cout << "nij_dev = " << Trial_nij_dev << endl;
+    // cout << "nij_dev = " << Trial_nij_dev << endl;
 
     //---------------------------------------------------------------------------------------------
     // Check for unloading!!! (which alpha0 to use)
@@ -751,7 +751,7 @@ int NewPisanoLT::compute_stress_increment(const DTensor2 &strain_incr, DTensor2&
       Delta_lambda = 0.0;
     }
 
-    cout << "Delta_lambda = " << Delta_lambda << ", dp = " << dp << endl;
+    // cout3 << "Delta_lambda = " << Delta_lambda << ", dp = " << dp << endl;
 
     //Check dp and iterate for it if necesary
     double dp_predict = -K * (depsilon_vol + D * Delta_lambda);
@@ -784,7 +784,7 @@ int NewPisanoLT::compute_stress_increment(const DTensor2 &strain_incr, DTensor2&
   depsilon_plastic(i, j) = mij(i, j) * (Delta_lambda);
   dsigma(i, j)  = Ee(i, j, p, q) * (  depsilon(p, q) - depsilon_plastic(p, q) );
 
-  cout << "dsigma = " << dsigma << endl;
+  // cout << "dsigma = " << dsigma << endl;
 
   //update internal variable
   sigma(i, j)  = TrialStress(i, j) + dsigma(i, j);
@@ -974,13 +974,13 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
     double beta = getBeta(Trial_alpha0);
     double H = getH(Trial_alpha0);
 
-    cout << "================\n" ;
-    cout << "T = " << T << ", q = " << q << ", dT = " << dT << ", beta = " << beta << ", H = " << H <<  endl;
+    // cout << "================\n" ;
+    // cout << "T = " << T << ", q = " << q << ", dT = " << dT << ", beta = " << beta << ", H = " << H <<  endl;
 
     depsilon(i, j) = dT * strain_increment(i, j);
-    cout << "depsilon = " << depsilon << endl;
+    // cout << "depsilon = " << depsilon << endl;
 
-    cout << "dsigma1 = " << endl;
+    // cout << "dsigma1 = " << endl;
     //First pass
     errorflag = this->compute_stress_increment( depsilon, dsigma1, depsilon_pl);
     if (errorflag < 0)
@@ -995,7 +995,7 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
 
 
     //Second pass
-    cout << "dsigma2 = " << endl;
+    // cout << "dsigma2 = " << endl;
     errorflag = this->compute_stress_increment(depsilon, dsigma2, depsilon_pl);
     if (errorflag < 0)
     {
@@ -1044,8 +1044,8 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
     if (Relative_Error < this-> stress_relative_tol) // Accept this step
     {
       T += dT;
-      cout << "Accept! R = " <<  Relative_Error << " T = " << T << endl;
-      cout << "T = " << T << ", dT = " << dT << ", q = " << q << endl;
+      // cout << "Accept! R = " <<  Relative_Error << " T = " << T << endl;
+      // cout << "T = " << T << ", dT = " << dT << ", q = " << q << endl;
       // Trial_alpha(i, j) = start_alpha(i, j) + (dalpha1(i, j) + dalpha2(i, j)) / 2;
 
       double p_plastic;
@@ -1068,7 +1068,7 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
       start_alpha(i, j) = Trial_alpha(i, j);
       // start_alpha0(i, j) = Trial_alpha0(i, j);
 
-      cout << "Trial_nij_dev = " << Trial_nij_dev << endl;
+      // cout << "Trial_nij_dev = " << Trial_nij_dev << endl;
 
       q = fmin(0.8 * sqrt(this-> stress_relative_tol / Relative_Error), 2.0);
       dT = q * dT;
@@ -1100,7 +1100,7 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
       // //============================================
 
       double unload_prod = Trial_nij_dev(i, j) * (Trial_alpha(i, j) -  Trial_alpha0(i, j)) ;
-      cout << "unload_prod = " << unload_prod << endl;
+      // cout << "unload_prod = " << unload_prod << endl;
       if (unload_prod < 0.0)
       {
 
@@ -1121,7 +1121,7 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
     }
     else //Reject step, take a smaller one!
     {
-      cout << "Reject! R = " <<  Relative_Error << endl;
+      // cout << "Reject! R = " <<  Relative_Error << endl;
       q = fmax(0.8 * sqrt(this-> stress_relative_tol / Relative_Error), 0.1);
       dT = q * dT;
       TrialStress(i, j) = start_sigma(i, j);
