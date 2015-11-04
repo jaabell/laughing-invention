@@ -90,7 +90,8 @@ NewPisanoLT::NewPisanoLT(int tag,
     Commit_alpha0mem( 3, 3, 0.0 ),
     Commit_nij_dev( 3, 3, 0.0 ),
     Stiffness( 3, 3, 3, 3, 0.0 ),
-    Ee(3, 3, 3, 3, 0.0)
+    Ee(3, 3, 3, 3, 0.0),
+    use_alternative_flow_rule(false)
 {
 
   //Initialize identity matrix
@@ -139,6 +140,14 @@ NewPisanoLT::NewPisanoLT(int tag,
 
   this->revertToStart();
 
+  //A negative kd means use the alternative flow rule. This should remain an undocumented feature
+  // since the alternative flow rule is for demonstration purposes only and is not physical.
+  if (kd < 0)
+  {
+    cout << "NewPisanoLT::NewPisanoLT() -- Warning, using alternative flow rule. This is not meant for actual analysis.\n";
+    use_alternative_flow_rule = true;
+    kd = -kd;
+  }
 
 }
 
@@ -172,7 +181,8 @@ NewPisanoLT::NewPisanoLT()
     Commit_alpha0mem( 3, 3, 0.0 ),
     Commit_nij_dev( 3, 3, 0.0 ),
     Stiffness( 3, 3, 3, 3, 0.0 ),
-    Ee(3, 3, 3, 3, 0.0)
+    Ee(3, 3, 3, 3, 0.0),
+    use_alternative_flow_rule(false)
 {
 
   //Initialize identity matrix
@@ -1009,36 +1019,36 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
     nijdev2(i, j) = Trial_nij_dev(i, j);
 
     // //Compute errors
-    // sigma_error(i, j) = (dsigma2(i, j) - dsigma1(i, j)) / 2;
-    // double Relative_Error = sqrt(sigma_error(i, j) * sigma_error(i, j)) / sqrt(TrialStress(i, j) * TrialStress(i, j));
+    sigma_error(i, j) = (dsigma2(i, j) - dsigma1(i, j)) / 2;
+    double Relative_Error = sqrt(sigma_error(i, j) * sigma_error(i, j)) / sqrt(TrialStress(i, j) * TrialStress(i, j));
 
     //Compute the Pisano Error metric
-    static DTensor2 ds1(3, 3, 0.0);
-    static DTensor2 ds2(3, 3, 0.0);
-    static DTensor2 TrialS(3, 3, 0.0);
-    double dp1, dp2, Trial_p;
-    constexpr double a = 0.0;
-    constexpr double b = 1 - a;
+    // static DTensor2 ds1(3, 3, 0.0);
+    // static DTensor2 ds2(3, 3, 0.0);
+    // static DTensor2 TrialS(3, 3, 0.0);
+    // double dp1, dp2, Trial_p;
+    // constexpr double a = 0.0;
+    // constexpr double b = 1 - a;
 
 
-    TrialStress.compute_deviatoric_tensor(TrialS, dp1);
-    Trial_p = -TrialStress(i, i) / 3;
+    // TrialStress.compute_deviatoric_tensor(TrialS, dp1);
+    // Trial_p = -TrialStress(i, i) / 3;
 
-    dsigma1.compute_deviatoric_tensor(ds1, dp1);
-    dp1 = -dsigma1(i, i) / 3;
-    dsigma2.compute_deviatoric_tensor(ds2, dp2);
-    dp2 = -dsigma2(i, i) / 3;
-    sigma_error(i, j) = (ds2(i, j) - ds1(i, j)) / 2;
+    // dsigma1.compute_deviatoric_tensor(ds1, dp1);
+    // dp1 = -dsigma1(i, i) / 3;
+    // dsigma2.compute_deviatoric_tensor(ds2, dp2);
+    // dp2 = -dsigma2(i, i) / 3;
+    // sigma_error(i, j) = (ds2(i, j) - ds1(i, j)) / 2;
 
-    double p_error = (dp2 - dp1) / 2;
+    // double p_error = (dp2 - dp1) / 2;
 
-    //Pisano Error metric
-    double Relative_Error = a * sqrt(sigma_error(i, j) * sigma_error(i, j)) / sqrt(TrialS(i, j) * TrialS(i, j))
-                            + b * fabs(p_error) / fabs(Trial_p);
+    // //Pisano Error metric
+    // double Relative_Error = a * sqrt(sigma_error(i, j) * sigma_error(i, j)) / sqrt(TrialS(i, j) * TrialS(i, j))
+    //                         + b * fabs(p_error) / fabs(Trial_p);
 
 
-    //Limit the relative error
-    Relative_Error = fmax(Relative_Error, std::numeric_limits<double>::epsilon());
+    // //Limit the relative error
+    // Relative_Error = fmax(Relative_Error, std::numeric_limits<double>::epsilon());
 
 
     if (Relative_Error < this-> stress_relative_tol) // Accept this step
@@ -1672,9 +1682,15 @@ double NewPisanoLT::getD()
     alpha_d(i, j) = Trial_nij_dev(i, j) * (kd * sqrt(2.0 / 3.0));
 
     //Flow rule
-    // double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // Temporary change to show the effect of variable dilatancy.
-    // return \ xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
-    return xi * (alpha_d(i, j) - Trial_alpha(i, j) ) * Trial_nij_dev(i, j);
+    if (use_alternative_flow_rule)
+    {
+      double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // ... to show the effect of variable dilatancy.
+      return xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
+    }
+    else  //Use the default, real flow rule.
+    {
+      return xi * (alpha_d(i, j) - Trial_alpha(i, j) ) * Trial_nij_dev(i, j);
+    }
   }
   else
   {

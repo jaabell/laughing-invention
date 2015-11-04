@@ -213,6 +213,7 @@ private:
     Index < 'i' > i;
     Index < 'j' > j;
 
+    bool use_alternative_flow_rule;
 
 };
 
