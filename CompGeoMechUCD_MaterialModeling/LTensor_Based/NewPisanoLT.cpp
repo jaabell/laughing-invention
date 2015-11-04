@@ -1684,8 +1684,8 @@ double NewPisanoLT::getD()
     //Flow rule
     if (use_alternative_flow_rule)
     {
-      double xi_star = xi * (1.0 - sqrt(alpha(i, j) * alpha(i, j)) / (2.0 / 3.0 * M));  // ... to show the effect of variable dilatancy.
-      return xi_star * (alpha_d(i, j) - alpha(i, j) ) * nij_dev(i, j);
+      double xi_star = xi * (1.0 - sqrt(Trial_alpha(i, j) * Trial_alpha(i, j)) / (2.0 / 3.0 * M));  // ... to show the effect of variable dilatancy.
+      return xi_star * (alpha_d(i, j) - Trial_alpha(i, j) ) * Trial_nij_dev(i, j);
     }
     else  //Use the default, real flow rule.
     {
