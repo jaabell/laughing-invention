@@ -1066,8 +1066,10 @@ void H5OutputWriter::writeMesh()
 	//Initialize datamembers
 	file_is_open = false;
 
-#ifdef _PARALLEL_PROCESSING
 	int numProcesses, processID;
+	numProcesses = 1;
+	processID = 1;
+#ifdef _PARALLEL_PROCESSING
 	MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 
@@ -1089,7 +1091,12 @@ void H5OutputWriter::writeMesh()
 		std::stringstream ss;
 		ss << ".";
 		ss << setfill('0') << setw(digits) << processID;
-		file_name += ss.str();
+
+		size_t f = file_name.find(".feioutput");
+		file_name.replace(f, std::string(".feioutput").length(), ss.str());
+
+		// file_name += ss.str();
+		file_name += ".feioutput";
 	}
 
 	cout << "Process " << processID << " filename = " << file_name << endl;
@@ -1164,6 +1171,9 @@ void H5OutputWriter::writeMesh()
 		id_number_of_elements   = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Elements", " ");
 		id_number_of_nodes      = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Nodes", " ");
 		id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
+
+		hsize_t id_my_proc_rank = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Process_Number", " ");
+		hsize_t id_number_of_procs = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Processes_Used", " ");
 
 		//Write time of creation
 		time_t current;
@@ -1295,6 +1305,30 @@ void H5OutputWriter::writeMesh()
 		                                &number_of_elements);
 
 
+		rank        = 1;
+		dims[0]     = 1;
+		data_dims[0] = 1;
+		offset[0]   = 0;
+		stride[0]   = 1;
+		count[0]    = 1;
+		block[0]    = 1;
+
+		writeConstantLengthIntegerArray(id_my_proc_rank, rank, dims, data_dims, offset, stride, count, block,
+		                                &processID);
+
+		rank        = 1;
+		dims[0]     = 1;
+		data_dims[0] = 1;
+		offset[0]   = 0;
+		stride[0]   = 1;
+		count[0]    = 1;
+		block[0]    = 1;
+
+		writeConstantLengthIntegerArray(id_number_of_procs, rank, dims, data_dims, offset, stride, count, block,
+		                                &numProcesses);
+
+		H5Dclose(id_my_proc_rank);
+		H5Dclose(id_number_of_procs);
 
 		// #ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
 		//     }

@@ -31,7 +31,7 @@ if ( -e $essiexecutable) then
 	echo "███████║╚██████╔╝╚██████╗╚██████╗███████╗███████║███████║██╗"
 	echo "╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝╚══════╝╚══════╝╚══════╝╚═╝"
 	echo "                                                            "
-	echo "ESSI execcutable can be found in "$PWD"/bin"
+	echo "ESSI exececutable can be found in "$PWD"/bin"
 else
 	echo "Compilation "
 	echo "  █████▒ ▄▄▄       ██▓ ██▓    ▓█████ ▓█████▄                "

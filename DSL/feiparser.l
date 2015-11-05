@@ -140,7 +140,9 @@
 	extern void set_profiling_results_filename(char* cstring);
 	extern void call_hdf5_flush_next_chance(void);
 
-
+#ifndef VERSION
+#define VERSION "--NOT FROM GIT REPO--"
+#endif
 %}
 
 /* float exponent */

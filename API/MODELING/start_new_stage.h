@@ -123,7 +123,7 @@ int start_new_stage(string CurrentStageName)
                               numSteps);
 
 
-    ElementIter &elements = theDomain. getElements();
+    ElementIter &elements = theDomain.getElements();
     Element *ele = 0;
 
     while ((ele = elements()) != 0)
