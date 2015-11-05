@@ -1068,7 +1068,7 @@ void H5OutputWriter::writeMesh()
 
 	int numProcesses, processID;
 	numProcesses = 1;
-	processID = 1;
+	processID = 0;
 #ifdef _PARALLEL_PROCESSING
 	MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
 	MPI_Comm_rank(MPI_COMM_WORLD, &processID);
