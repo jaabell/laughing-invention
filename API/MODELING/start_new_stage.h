@@ -50,20 +50,11 @@ int start_new_stage(string CurrentStageName)
     theDomain.setCurrentTime(newTime);
     theDomain.setCommittedTime(newTime);
 
-
-    //*****************************************************************************
-    // Nima Tafazzoli added March 29th
-    // At the beginning of each stage 2 load patterns will be defined by default
-    // i1 --> linear load pattern
-    // i2 --> multiple support load pattern
-
-
     if (theStaticAnalysis )
     {
         theStaticAnalysis->clearAll();
         delete theStaticAnalysis;
     }
-
 
     if (theTransientAnalysis )
     {
@@ -110,12 +101,6 @@ int start_new_stage(string CurrentStageName)
     string filename("");
     filename = ModelName + "_" + StageName + ".h5.feioutput";
 
-    // theDomain.setHDF5_Channel(filename,
-    //                           ModelName,
-    //                           StageName,
-    //                           numSteps);
-
-    // #ifndef _PARALLEL_PROCESSING
     int numSteps = 1;
     theDomain.setOutputWriter(filename,
                               ModelName,
@@ -123,13 +108,13 @@ int start_new_stage(string CurrentStageName)
                               numSteps);
 
 
-    ElementIter &elements = theDomain.getElements();
-    Element *ele = 0;
+    // ElementIter &elements = theDomain.getElements();
+    // Element *ele = 0;
 
-    while ((ele = elements()) != 0)
-    {
-        ele->startNewStage();
-    }
+    // while ((ele = elements()) != 0)
+    // {
+    //     ele->startNewStage();
+    // }
 
 
     return 0;

@@ -617,330 +617,330 @@ void H5OutputWriter::syncWriters()
 
 #ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
 
-	//For nodes ====================================================================================
-	//ID Number_of_DOFs;
-	length_send = Number_of_DOFs.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Number_of_DOFs.resize(length_send);
-	}
-	int_buffer = Number_of_DOFs.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+	// //For nodes ====================================================================================
+	// //ID Number_of_DOFs;
+	// length_send = Number_of_DOFs.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Number_of_DOFs.resize(length_send);
+	// }
+	// int_buffer = Number_of_DOFs.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
 
 
-	//Vector Coordinates;
-	length_send = Coordinates.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Coordinates.resize(length_send);
-	}
-	double_buffer = Coordinates.theData;
-	MPI_Bcast(double_buffer, length_send, MPI_DOUBLE,   root, MPI_COMM_WORLD);
+	// //Vector Coordinates;
+	// length_send = Coordinates.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Coordinates.resize(length_send);
+	// }
+	// double_buffer = Coordinates.theData;
+	// MPI_Bcast(double_buffer, length_send, MPI_DOUBLE,   root, MPI_COMM_WORLD);
 
 
-	//ID Index_to_Coordinates;
-	length_send = Index_to_Coordinates.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Index_to_Coordinates.resize(length_send);
-	}
-	int_buffer = Index_to_Coordinates.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+	// //ID Index_to_Coordinates;
+	// length_send = Index_to_Coordinates.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Index_to_Coordinates.resize(length_send);
+	// }
+	// int_buffer = Index_to_Coordinates.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
 
-	//ID Index_to_Generalized_Displacements;
-	length_send = Index_to_Generalized_Displacements.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Index_to_Generalized_Displacements.resize(length_send);
-	}
-	int_buffer = Index_to_Generalized_Displacements.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
-
-
-
-	//For Elements =================================================================================
-	//ID Number_of_Nodes;
-	length_send = Number_of_Nodes.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Number_of_Nodes.resize(length_send);
-	}
-	int_buffer = Number_of_Nodes.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
-
-
-	//ID Connectivity;
-	length_send = Connectivity.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Connectivity.resize(length_send);
-	}
-	int_buffer = Connectivity.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
-
-
-	//ID Index_to_Connectivity;
-	length_send = Index_to_Connectivity.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Index_to_Connectivity.resize(length_send);
-	}
-	int_buffer = Index_to_Connectivity.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
-
-
-	//ID Number_of_Output_Fields;
-	length_send = Number_of_Output_Fields.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Number_of_Output_Fields.resize(length_send);
-	}
-	int_buffer = Number_of_Output_Fields.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
-
-
-	//ID Index_to_Outputs;
-	length_send = Index_to_Outputs.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Index_to_Outputs.resize(length_send);
-	}
-	int_buffer = Index_to_Outputs.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
-
-
-	//ID Number_of_Gauss_Points;
-	length_send = Number_of_Gauss_Points.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Number_of_Gauss_Points.resize(length_send);
-	}
-	int_buffer = Number_of_Gauss_Points.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
-
-
-	//Vector Gauss_Point_Coordinates;
-	length_send = Gauss_Point_Coordinates.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Gauss_Point_Coordinates.resize(length_send);
-	}
-	double_buffer = Gauss_Point_Coordinates.theData;
-	MPI_Bcast(double_buffer, length_send, MPI_DOUBLE,   root, MPI_COMM_WORLD);
-
-
-	//ID Index_to_Gauss_Point_Coordinates;
-	length_send = Index_to_Gauss_Point_Coordinates.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Index_to_Gauss_Point_Coordinates.resize(length_send);
-	}
-	int_buffer = Index_to_Gauss_Point_Coordinates.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
-
-
-	//std::vector<std::string> Element_types;
+	// //ID Index_to_Generalized_Displacements;
 	// length_send = Index_to_Generalized_Displacements.Size();
 	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
 	// if (processID != 0)
 	// {
-	//     Index_to_Generalized_Displacements.resize(length_send);
+	// 	Index_to_Generalized_Displacements.resize(length_send);
 	// }
 	// int_buffer = Index_to_Generalized_Displacements.data;
 	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
 
 
-	//ID Material_tags;
-	length_send = Material_tags.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0 && (length_send > 0))
-	{
-		Material_tags.resize(length_send);
-	}
-	int_buffer = Material_tags.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
 
-	//ID Class_Tags;
-	length_send = Class_Tags.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Class_Tags.resize(length_send);
-	}
-	int_buffer = Class_Tags.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+	// //For Elements =================================================================================
+	// //ID Number_of_Nodes;
+	// length_send = Number_of_Nodes.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Number_of_Nodes.resize(length_send);
+	// }
+	// int_buffer = Number_of_Nodes.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
 
 
-	//ID Partition;
-	length_send = Partition.Size();
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID != 0)
-	{
-		Partition.resize(length_send);
-	}
-	int_buffer = Partition.data;
-	MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+	// //ID Connectivity;
+	// length_send = Connectivity.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Connectivity.resize(length_send);
+	// }
+	// int_buffer = Connectivity.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+	// //ID Index_to_Connectivity;
+	// length_send = Index_to_Connectivity.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Index_to_Connectivity.resize(length_send);
+	// }
+	// int_buffer = Index_to_Connectivity.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+	// //ID Number_of_Output_Fields;
+	// length_send = Number_of_Output_Fields.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Number_of_Output_Fields.resize(length_send);
+	// }
+	// int_buffer = Number_of_Output_Fields.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+	// //ID Index_to_Outputs;
+	// length_send = Index_to_Outputs.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Index_to_Outputs.resize(length_send);
+	// }
+	// int_buffer = Index_to_Outputs.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+	// //ID Number_of_Gauss_Points;
+	// length_send = Number_of_Gauss_Points.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Number_of_Gauss_Points.resize(length_send);
+	// }
+	// int_buffer = Number_of_Gauss_Points.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+	// //Vector Gauss_Point_Coordinates;
+	// length_send = Gauss_Point_Coordinates.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Gauss_Point_Coordinates.resize(length_send);
+	// }
+	// double_buffer = Gauss_Point_Coordinates.theData;
+	// MPI_Bcast(double_buffer, length_send, MPI_DOUBLE,   root, MPI_COMM_WORLD);
+
+
+	// //ID Index_to_Gauss_Point_Coordinates;
+	// length_send = Index_to_Gauss_Point_Coordinates.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Index_to_Gauss_Point_Coordinates.resize(length_send);
+	// }
+	// int_buffer = Index_to_Gauss_Point_Coordinates.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+	// //std::vector<std::string> Element_types;
+	// // length_send = Index_to_Generalized_Displacements.Size();
+	// // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// // if (processID != 0)
+	// // {
+	// //     Index_to_Generalized_Displacements.resize(length_send);
+	// // }
+	// // int_buffer = Index_to_Generalized_Displacements.data;
+	// // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+	// //ID Material_tags;
+	// length_send = Material_tags.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0 && (length_send > 0))
+	// {
+	// 	Material_tags.resize(length_send);
+	// }
+	// int_buffer = Material_tags.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+	// //ID Class_Tags;
+	// length_send = Class_Tags.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Class_Tags.resize(length_send);
+	// }
+	// int_buffer = Class_Tags.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
+
+
+	// //ID Partition;
+	// length_send = Partition.Size();
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID != 0)
+	// {
+	// 	Partition.resize(length_send);
+	// }
+	// int_buffer = Partition.data;
+	// MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
 
 
 
 
-	// =============================================================================================
-	// Send the filenames and model names to initialize H5OutputWriter on other processes
-	// =============================================================================================
-	char char_buffer[H5OUTPUTWRITER_MAX_STRING_SIZE];//   Preset size for all strings
-	string file_name_tmp, model_name_tmp, stage_name_tmp, previous_stage_name_tmp;
+	// // =============================================================================================
+	// // Send the filenames and model names to initialize H5OutputWriter on other processes
+	// // =============================================================================================
+	// char char_buffer[H5OUTPUTWRITER_MAX_STRING_SIZE];//   Preset size for all strings
+	// string file_name_tmp, model_name_tmp, stage_name_tmp, previous_stage_name_tmp;
 
 
-	if (model_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
-	{
-		cerr << "Model name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
-	}
-	if (file_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
-	{
-		cerr << "File name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
-	}
-	if (stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
-	{
-		cerr << "Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
-	}
-	if (previous_stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
-	{
-		cerr << "Previous_Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
-	}
+	// if (model_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
+	// {
+	// 	cerr << "Model name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+	// }
+	// if (file_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
+	// {
+	// 	cerr << "File name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+	// }
+	// if (stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
+	// {
+	// 	cerr << "Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+	// }
+	// if (previous_stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
+	// {
+	// 	cerr << "Previous_Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+	// }
 
-	// model_name
-	length_send  = model_name.size() + 1;
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID == 0)
-	{
-		strcpy(char_buffer, model_name.c_str());
-		char_buffer[length_send - 1] = '\0';
-	}
-	MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
-	model_name = std::string(char_buffer);
-
-	// file_name
-	length_send  = file_name.size() + 1;
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID == 0)
-	{
-		strcpy(char_buffer, file_name.c_str());
-		char_buffer[length_send - 1] = '\0';
-	}
-	MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
-	file_name = std::string(char_buffer);
-
-	// stage_name;
-	length_send  = stage_name.size() + 1;
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID == 0)
-	{
-		strcpy(char_buffer, stage_name.c_str());
-		char_buffer[length_send - 1] = '\0';
-	}
-	MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
-	stage_name = std::string(char_buffer);
-
-	// previous_stage_name;
-	length_send  = previous_stage_name.size() + 1;
-	MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
-	if (processID == 0)
-	{
-		strcpy(char_buffer, previous_stage_name.c_str());
-		char_buffer[length_send - 1] = '\0';
-	}
-	MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
-	previous_stage_name = std::string(char_buffer);
-
-
-	// nsteps;
-	//char_buffer = previous_stage_name.c_str();
-	//length_send = previous_stage_name.size();
-	MPI_Bcast(&number_of_time_steps, 1, MPI_CHAR,   root, MPI_COMM_WORLD);
-	// previous_stage_name = previous_stage_name_tmp;
-
-	MPI_Bcast(&length_nodes_displacements_output    , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&length_nodes_velocities_output       , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&length_nodes_accelerations_output    , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&length_nodes_reaction_forcess_output , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&length_element_output                , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&number_of_nodes                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&number_of_elements                   , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&max_node_tag                         , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&max_element_tag                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&number_of_dofs                       , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&number_of_outputs                    , 1 , MPI_INT , root , MPI_COMM_WORLD);
-
-	MPI_Bcast(&zlib_compression_level               , 1 , MPI_INT , root , MPI_COMM_WORLD);
-	MPI_Bcast(&flag_write_element_output            , 1 , MPI_INT , root , MPI_COMM_WORLD);
-
-
-	int number_of_load_patterns = LoadPattern_names.size();
-	// MPI_Bcast(&number_of_load_patterns            , 1 , MPI_INT , root , MPI_COMM_WORLD);
-
+	// // model_name
+	// length_send  = model_name.size() + 1;
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
 	// if (processID == 0)
 	// {
-	//     for (auto s : LoadPattern_names)
-	//     {
-	//         char_buffer = s.
-	//     }
+	// 	strcpy(char_buffer, model_name.c_str());
+	// 	char_buffer[length_send - 1] = '\0';
 	// }
-	// else
+	// MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
+	// model_name = std::string(char_buffer);
+
+	// // file_name
+	// length_send  = file_name.size() + 1;
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID == 0)
 	// {
+	// 	strcpy(char_buffer, file_name.c_str());
+	// 	char_buffer[length_send - 1] = '\0';
+	// }
+	// MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
+	// file_name = std::string(char_buffer);
 
+	// // stage_name;
+	// length_send  = stage_name.size() + 1;
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID == 0)
+	// {
+	// 	strcpy(char_buffer, stage_name.c_str());
+	// 	char_buffer[length_send - 1] = '\0';
+	// }
+	// MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
+	// stage_name = std::string(char_buffer);
+
+	// // previous_stage_name;
+	// length_send  = previous_stage_name.size() + 1;
+	// MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
+	// if (processID == 0)
+	// {
+	// 	strcpy(char_buffer, previous_stage_name.c_str());
+	// 	char_buffer[length_send - 1] = '\0';
+	// }
+	// MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
+	// previous_stage_name = std::string(char_buffer);
+
+
+	// // nsteps;
+	// //char_buffer = previous_stage_name.c_str();
+	// //length_send = previous_stage_name.size();
+	// MPI_Bcast(&number_of_time_steps, 1, MPI_CHAR,   root, MPI_COMM_WORLD);
+	// // previous_stage_name = previous_stage_name_tmp;
+
+	// MPI_Bcast(&length_nodes_displacements_output    , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&length_nodes_velocities_output       , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&length_nodes_accelerations_output    , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&length_nodes_reaction_forcess_output , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&length_element_output                , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&number_of_nodes                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&number_of_elements                   , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&max_node_tag                         , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&max_element_tag                      , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&number_of_dofs                       , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&number_of_outputs                    , 1 , MPI_INT , root , MPI_COMM_WORLD);
+
+	// MPI_Bcast(&zlib_compression_level               , 1 , MPI_INT , root , MPI_COMM_WORLD);
+	// MPI_Bcast(&flag_write_element_output            , 1 , MPI_INT , root , MPI_COMM_WORLD);
+
+
+	// int number_of_load_patterns = LoadPattern_names.size();
+	// // MPI_Bcast(&number_of_load_patterns            , 1 , MPI_INT , root , MPI_COMM_WORLD);
+
+	// // if (processID == 0)
+	// // {
+	// //     for (auto s : LoadPattern_names)
+	// //     {
+	// //         char_buffer = s.
+	// //     }
+	// // }
+	// // else
+	// // {
+
+	// // }
+
+	// //The slave processes must be initialized after all this stuff is transmitted.
+	// if (processID != 0)
+	// {
+	// 	// this->initialize(file_name, model_name, stage_name, number_of_time_steps);
+	// 	// if (previous_stage_name.compare("!!none") == 0)
+	// 	// {
+	// 	//     cout << "changing previous_stage_name from " << previous_stage_name << " to " << stage_name
+	// 	//          << endl;
+	// 	//     previous_stage_name = stage_name;
+	// 	// }
+	// 	// file_name = "";
+	// 	// model_name = "";
+	// 	// stage_name = "";
+	// 	// file_name += filename_in;
+	// 	// model_name += model_name_in;
+	// 	// stage_name += stage_name_in;
+
+	// 	current_time                         = 0.0;
+	// 	current_time_step                    = 0;
+
+	// 	pos_nodes_outputs                    = 0;
+	// 	pos_nodes_coordinates                = 0;
+	// 	pos_elements_outputs                 = 0;
+	// 	pos_elements_gausscoords             = 0;
+	// 	pos_elements_connectivity            = 0;
+
+	// 	create_nodeMeshData_arrays           = true;
+	// 	create_nodeDisplacements_arrays      = true;
+	// 	create_nodeVelocities_arrays         = true;
+	// 	create_nodeAccelerations_arrays      = true;
+	// 	create_nodeReactionForces_arrays     = true;
+	// 	create_elementMeshData_arrays        = true;
+	// 	create_elementOutput_arrays          = true;
 	// }
 
-	//The slave processes must be initialized after all this stuff is transmitted.
-	if (processID != 0)
-	{
-		// this->initialize(file_name, model_name, stage_name, number_of_time_steps);
-		// if (previous_stage_name.compare("!!none") == 0)
-		// {
-		//     cout << "changing previous_stage_name from " << previous_stage_name << " to " << stage_name
-		//          << endl;
-		//     previous_stage_name = stage_name;
-		// }
-		// file_name = "";
-		// model_name = "";
-		// stage_name = "";
-		// file_name += filename_in;
-		// model_name += model_name_in;
-		// stage_name += stage_name_in;
 
-		current_time                         = 0.0;
-		current_time_step                    = 0;
-
-		pos_nodes_outputs                    = 0;
-		pos_nodes_coordinates                = 0;
-		pos_elements_outputs                 = 0;
-		pos_elements_gausscoords             = 0;
-		pos_elements_connectivity            = 0;
-
-		create_nodeMeshData_arrays           = true;
-		create_nodeDisplacements_arrays      = true;
-		create_nodeVelocities_arrays         = true;
-		create_nodeAccelerations_arrays      = true;
-		create_nodeReactionForces_arrays     = true;
-		create_elementMeshData_arrays        = true;
-		create_elementOutput_arrays          = true;
-	}
-
-
-	dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);
-	// H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
-	H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_COLLECTIVE);
+	// dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);
+	// // H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_INDEPENDENT);
+	// H5Pset_dxpl_mpio(dataset_xfer_plist, H5FD_MPIO_COLLECTIVE);
 
 
 #endif

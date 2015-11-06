@@ -815,6 +815,8 @@ ActorSubdomain::run(void)
                 msgData(0) = -1;
             }
 
+            have_written_static_mesh_data = false;
+
             break;
 
         case ShadowActorSubdomain_setAnalysisAlgorithm:

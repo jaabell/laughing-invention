@@ -1182,73 +1182,12 @@ PartitionedDomain::setPartitioner(DomainPartitioner *thePartitioner)
 int
 PartitionedDomain::partition(int numPartitions)
 {
-    //Jose and Babak added for HDF5 output
-    //
-    // NOTE: This is done in Domain::Commit in the case of sequential processing.
-    //
-    //This outputs the mesh information to the HDF5 writer. This is important because it builds the
-    // arrays of indexes into node output data and element output data.
-
     cout << "\n\nPartitioning Mesh into " << numPartitions << " partitions. \n";
 
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
     Element *elePtr;
     ElementIter &theElemIter = this->getElements();
-
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
-
-    if (output_is_enabled)
-    {
-        // theHDF5_Channel.setTime(currentTime);/
-        // theOutputWriter.setTime(currentTime);
-
-        //Write out static mesh data once!
-        if (!have_populated_static_mesh_data)
-        {
-            cout << "\n  --> Writing mesh data into HDF5 file.\n";
-            //Write Node Mesh data!
-            // theOutputWriter.writeNumberOfNodes(this->getNumNodes());
-            theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
-                                                this->getNumElements(),
-                                                maxNodesTag,
-                                                maxElementsTag,
-                                                numberOfDomainNodeDOFs,
-                                                numberOfDomainElementOutputs);
-
-            while ( ( nodePtr = theNodeIter() ) != 0 )
-            {
-                theOutputWriter.writeNodeMeshData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
-            }
-
-            //Write Element Mesh data!
-            // theOutputWriter.writeNumberOfElements(this->getNumElements());
-            while ( ( elePtr = theElemIter() ) != 0 )
-            {
-                int eleTag           = elePtr->getTag();
-                std::string eleName  = elePtr->getElementName();
-                ID eleConnectivity   = elePtr->getExternalNodes();
-                int eleMaterialTag   = 0;       // To be implemented somehow
-                Matrix eleGaussCoord = elePtr->getGaussCoordinates();
-                int eleOutputSize    = elePtr->getOutputSize();
-                int classTag = elePtr->getElementclassTag();
-                if ( eleName.compare("Element") != 0  )  // If the type of the element is the base class, then dont add it! Needed for those fake elements that represent the partitioned domains... which are treated like elements :/
-                {
-                    theOutputWriter.writeElementMeshData( eleTag,
-                                                          eleName,
-                                                          eleConnectivity,
-                                                          eleMaterialTag ,
-                                                          eleGaussCoord,
-                                                          eleOutputSize,
-                                                          classTag);
-                }
-                ;
-            }
-            cout << "\n  --> Done writing mesh into HDF5 file.\n";
-        }
-        have_populated_static_mesh_data = true;
-    }
-#endif
 
     // need to create element graph before create new subdomains
     // DO NOT REMOVE THIS LINE __ EVEN IF COMPILER WARNING ABOUT UNUSED VARIABLE
@@ -2011,3 +1950,35 @@ int PartitionedDomain::sendOutputOptionsToSubdomains()
     // cout  << "PartitionedDomain::sendOutputOptionsToSubdomains() - End\n";
     return 0;
 }
+
+// int
+// PartitionedDomain::setOutputWriter(std::string filename_in,
+//                                    std::string model_name_in,
+//                                    std::string stage_name_in,
+//                                    int nsteps)
+// {
+//     theOutputWriter.initialize(filename_in, model_name_in, stage_name_in, nsteps);
+//     have_written_static_mesh_data = false;
+
+//     while ((theSub = theSubdomains()) != 0)
+//     {
+//         // Output options
+//         // butput_is_enabled;
+//         // bool element_output_is_enabled;
+//         // bool have_written_static_mesh_data;
+//         // int  output_every_nsteps;
+//         // int  countdown_til_output;
+
+//         theSub->setNumberOfOutputSteps(theOutputWriter.get_number_of_time_steps());
+//         theSub->enableOutput(output_is_enabled);
+//         theSub->enableElementOutput(element_output_is_enabled);
+//         theSub->setOutputEveryNsteps(output_every_nsteps);
+//         theSub->setOutputCompressionLevel(theOutputWriter.get_zlib_compression_level());
+//         theSub->sendOutputOptionsToSubdomain();
+
+//     }
+
+
+//     return 0;
+// }
+

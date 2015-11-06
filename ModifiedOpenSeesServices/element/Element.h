@@ -165,12 +165,13 @@ protected:
     string damping_type;
     Matrix *Kc; // pointer to hold last committed matrix if needed for rayleigh damping
 
-private:
-
-    int classTag;
     Matrix *SizedMatrix;
     Vector *SizedVector1;
     Vector *SizedVector2;
+
+private:
+
+    int classTag;
     int index_sized_matrix_vector;
 
     int numberOfBoundaryNodes;

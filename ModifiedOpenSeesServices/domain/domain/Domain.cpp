@@ -1447,6 +1447,7 @@ Domain::addElementalLoad( ElementalLoad *load, int pattern )
 void
 Domain::clearAll( void )
 {
+    // cout << "Domain::clearAll( void )" << endl;
     // clear the loads and constraints from any load pattern
     LoadPatternIter &thePatterns = this->getLoadPatterns();
     LoadPattern *thePattern;
@@ -1499,8 +1500,8 @@ Domain::clearAll( void )
     hasDomainChangedFlag = false;
     nodeGraphBuiltFlag = false;
     eleGraphBuiltFlag = false;
-
-
+    have_written_static_mesh_data = false;
+    countdown_til_output = 0;
 
 #ifndef _PARALLEL_PROCESSING //Done in PartitionedDomain::clearAll for parallel case
     theOutputWriter.finalize();
