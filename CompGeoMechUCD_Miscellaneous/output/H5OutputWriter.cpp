@@ -29,6 +29,8 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <limits>
+
 #include <ID.h>
 #include <Vector.h>
 #include <H5OutputWriter.h>
@@ -1175,6 +1177,20 @@ void H5OutputWriter::writeMesh()
 		hsize_t id_my_proc_rank = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Process_Number", " ");
 		hsize_t id_number_of_procs = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Processes_Used", " ");
 
+
+		//================================================================================
+		// Model bounds
+		//================================================================================
+		rank = 1;
+		dims[0] = 6;
+		maxdims[0] = 6;
+		hsize_t id_model_bounds = createConstantLengthDoubleArray(id_model_group, rank, dims, maxdims, "Model_Bounds", " ");
+		dims[0] = 1;
+		maxdims[0] = 1;
+
+
+
+		//================================================================================
 		//Write time of creation
 		time_t current;
 		time(&current);
@@ -1330,9 +1346,56 @@ void H5OutputWriter::writeMesh()
 		H5Dclose(id_my_proc_rank);
 		H5Dclose(id_number_of_procs);
 
-		// #ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
-		//     }
-		// #endif
+
+
+		// =============================================================================================
+		//Determine the bounds
+		// =============================================================================================
+		double bounds[6];//, xmax, ymin, ymax, zmin, zmax;
+		bounds[0] = -std::numeric_limits<double>::infinity();
+		bounds[1] = std::numeric_limits<double>::infinity();
+		bounds[2] = -std::numeric_limits<double>::infinity();
+		bounds[3] = std::numeric_limits<double>::infinity();
+		bounds[4] = -std::numeric_limits<double>::infinity();
+		bounds[5] = std::numeric_limits<double>::infinity();
+		for (int n = 0; n < number_of_nodes; n++)
+		{
+			double x = Coordinates[3 * n];
+			double y = Coordinates[3 * n + 1];
+			double z = Coordinates[3 * n + 2];
+			if (x > bounds[0])
+				bounds[0] = x;
+			if (x < bounds[1])
+				bounds[1] = x;
+			if (y > bounds[2])
+				bounds[2] = y;
+			if (y < bounds[3])
+				bounds[3] = y;
+			if (z > bounds[4])
+				bounds[4] = z;
+			if (z < bounds[5])
+				bounds[5] = z;
+		}
+		cout << processID <<  ": Model bounds ("
+		     << bounds[0] << ", "
+		     << bounds[1] << ", "
+		     << bounds[2] << ", "
+		     << bounds[3] << ", "
+		     << bounds[4] << ", "
+		     << bounds[5] << ")\n";
+		//Write them
+		rank        = 1;
+		dims[0]     = 6;
+		data_dims[0] = 6;
+		offset[0]   = 0;
+		stride[0]   = 1;
+		count[0]    = 6;
+		block[0]    = 1;
+
+		writeConstantLengthDoubleArray(id_model_bounds, rank, dims, data_dims, offset, stride, count, block,
+		                               bounds);
+		cout << processID <<  "Wrote bounds!\n";
+		H5Dclose(id_model_bounds);
 		H5OUTPUTWRITER_COUNT_OBJS;
 
 		// =============================================================================================
@@ -1575,6 +1638,13 @@ void H5OutputWriter::writeMesh()
 		}
 
 		// if (processID > 0)
+		// if (length_element_output <= 0)
+		// {
+		// 	length_element_output = 1;
+		// }
+
+
+		if (length_element_output > 0)
 		{
 			int rank = 2;
 			hsize_t dims[2];
@@ -1584,7 +1654,7 @@ void H5OutputWriter::writeMesh()
 			maxdims[0] = (hsize_t)  length_element_output;
 			maxdims[1] = number_of_time_steps + 1;
 
-			if (flag_write_element_output == 1)
+			if (flag_write_element_output == 1  )
 			{
 				// dims[1] = 1;
 				// maxdims[1] = 1;

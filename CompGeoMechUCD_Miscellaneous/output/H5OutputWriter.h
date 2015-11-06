@@ -381,7 +381,6 @@ private:
 	int numof_CHUNK_COLLECTIVE_calls;
 	int numof_CHUNK_MIXED_calls;
 
-
 };
 
 void call_hdf5_flush_next_chance(void);

@@ -283,12 +283,12 @@ Domain::Domain()
         exit( -1 );
     }
 
-    theBounds( 0 ) = std::numeric_limits<double>::infinity;
-    theBounds( 1 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 2 ) = std::numeric_limits<double>::infinity;
-    theBounds( 3 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 4 ) = std::numeric_limits<double>::infinity;
-    theBounds( 5 ) = -std::numeric_limits<double>::infinity;
+    theBounds( 0 ) = std::numeric_limits<double>::infinity();
+    theBounds( 1 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 2 ) = std::numeric_limits<double>::infinity();
+    theBounds( 3 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 4 ) = std::numeric_limits<double>::infinity();
+    theBounds( 5 ) = -std::numeric_limits<double>::infinity();
 
     maxElementsTag = 0;
     maxNodesTag = 0;
@@ -373,12 +373,12 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
         cerr << ( "Domain::Domain(int, int, ...) - out of memory\n" );
     }
 
-    theBounds( 0 ) = std::numeric_limits<double>::infinity;
-    theBounds( 1 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 2 ) = std::numeric_limits<double>::infinity;
-    theBounds( 3 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 4 ) = std::numeric_limits<double>::infinity;
-    theBounds( 5 ) = -std::numeric_limits<double>::infinity;
+    theBounds( 0 ) = std::numeric_limits<double>::infinity();
+    theBounds( 1 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 2 ) = std::numeric_limits<double>::infinity();
+    theBounds( 3 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 4 ) = std::numeric_limits<double>::infinity();
+    theBounds( 5 ) = -std::numeric_limits<double>::infinity();
 }
 
 
@@ -460,12 +460,12 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
         exit( -1 );
     }
 
-    theBounds( 0 ) = std::numeric_limits<double>::infinity;
-    theBounds( 1 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 2 ) = std::numeric_limits<double>::infinity;
-    theBounds( 3 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 4 ) = std::numeric_limits<double>::infinity;
-    theBounds( 5 ) = -std::numeric_limits<double>::infinity;
+    theBounds( 0 ) = std::numeric_limits<double>::infinity();
+    theBounds( 1 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 2 ) = std::numeric_limits<double>::infinity();
+    theBounds( 3 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 4 ) = std::numeric_limits<double>::infinity();
+    theBounds( 5 ) = -std::numeric_limits<double>::infinity();
 }
 
 
@@ -532,12 +532,12 @@ Domain::Domain( TaggedObjectStorage &theStorage )
         cerr << ( "Domain::Domain(ObjectStorage &) - out of memory\n" );
     }
 
-    theBounds( 0 ) = std::numeric_limits<double>::infinity;
-    theBounds( 1 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 2 ) = std::numeric_limits<double>::infinity;
-    theBounds( 3 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 4 ) = std::numeric_limits<double>::infinity;
-    theBounds( 5 ) = -std::numeric_limits<double>::infinity;
+    theBounds( 0 ) = std::numeric_limits<double>::infinity();
+    theBounds( 1 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 2 ) = std::numeric_limits<double>::infinity();
+    theBounds( 3 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 4 ) = std::numeric_limits<double>::infinity();
+    theBounds( 5 ) = -std::numeric_limits<double>::infinity();
 
     // dbEle = 0;
     // dbNod = 0;
@@ -1485,12 +1485,12 @@ Domain::clearAll( void )
     dT = 0.0;
 
     // reset the bounds
-    theBounds( 0 ) = std::numeric_limits<double>::infinity;
-    theBounds( 1 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 2 ) = std::numeric_limits<double>::infinity;
-    theBounds( 3 ) = -std::numeric_limits<double>::infinity;
-    theBounds( 4 ) = std::numeric_limits<double>::infinity;
-    theBounds( 5 ) = -std::numeric_limits<double>::infinity;
+    theBounds( 0 ) = std::numeric_limits<double>::infinity();
+    theBounds( 1 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 2 ) = std::numeric_limits<double>::infinity();
+    theBounds( 3 ) = -std::numeric_limits<double>::infinity();
+    theBounds( 4 ) = std::numeric_limits<double>::infinity();
+    theBounds( 5 ) = -std::numeric_limits<double>::infinity();
 
     // currentGeoTag = 0;
     // lastGeoSendTag = -1;
