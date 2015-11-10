@@ -2313,7 +2313,7 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [PisanoLT] mass_density '=' exp elastic_modulus_1atm = <F/L^2> poisson_ratio = <.> M_in = <.> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> initial_confining_stress = <F/L^2> n_in = <.> a_in = <.> eplcum_cr_in = <.>;
+	//!FEIDOC add material # <.> type [PisanoLT] mass_density = <.> elastic_modulus_1atm = <F/L^2> poisson_ratio = <.> M_in = <.> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> initial_confining_stress = <F/L^2> n_in = <.> a_in = <.> eplcum_cr_in = <.>;
 	| MATERIAL TEXTNUMBER exp TYPE PisanoLT
 						mass_density '=' exp
 						elastic_modulus_1atm '=' exp
