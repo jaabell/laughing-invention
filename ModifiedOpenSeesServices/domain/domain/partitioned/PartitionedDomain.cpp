@@ -491,6 +491,16 @@ PartitionedDomain::addElementalLoad(ElementalLoad *load, int pattern)
 {
     //Guanzhou out cerr << "PartitionedDomain::addElementalLoad - not yet implemented\n";
     //Guanzhou out return false;
+    SubdomainIter &theSubdomains = this->getSubdomains();
+    Subdomain *theSub;
+
+    while ((theSub = theSubdomains()) != 0)
+    {
+
+        return theSub->addElementalLoad(load, pattern);
+
+    }
+
     return this->Domain::addElementalLoad(load, pattern);
 
 }

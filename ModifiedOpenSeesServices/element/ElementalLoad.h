@@ -36,29 +36,32 @@ class Element;
 
 class ElementalLoad : public Load
 {
-    public:
-        ElementalLoad(int tag, int classTag, const ID& theElementTags);
-        ElementalLoad(int tag, int classTag);
-        ElementalLoad(int classTag);
-        ~ElementalLoad();
+public:
+    ElementalLoad(int tag, int classTag, const ID& theElementTags);
+    ElementalLoad(int tag, int classTag);
+    ElementalLoad(int classTag);
+    ~ElementalLoad();
 
-        virtual void setDomain(Domain* theDomain);
-        virtual void applyLoad(double loadfactor);
-        virtual const Vector& getData(int& type, double loadFactor) = 0;
+    virtual void setDomain(Domain* theDomain);
+    virtual void applyLoad(double loadfactor);
+    virtual const Vector& getData(int& type, double loadFactor) = 0;
 
-        virtual const ID& getElementTags(void);
-        virtual int removeElement(int tag); // returns -1 if fails,
-        // numElements left if removed
-        virtual int addElement(int tag);//Guanzhou added for PDD
-        virtual bool hasElement(int tag);
+    virtual const ID& getElementTags(void);
+    virtual int removeElement(int tag); // returns -1 if fails,
+    // numElements left if removed
+    virtual int addElement(int tag);//Guanzhou added for PDD
+    virtual bool hasElement(int tag);
 
-    protected:
-        int setElementTags(ID& theEleTags);
-        ID* theElementTags;     // copy of element tags, removed in setDomain
+    int sendSelf(int commitTag, Channel& theChannel);
+    int receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker);
 
-    private:
-        Element** theElements;  // pointer to associated elements
-        int numElements;        // number of associated elements
+protected:
+    int setElementTags(ID& theEleTags);
+    ID* theElementTags;     // copy of element tags, removed in setDomain
+
+private:
+    Element** theElements;  // pointer to associated elements
+    int numElements;        // number of associated elements
 };
 
 #endif

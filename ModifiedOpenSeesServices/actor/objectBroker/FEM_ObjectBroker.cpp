@@ -293,6 +293,7 @@
 
 
 
+#include <BrickSurfaceLoad.h>
 #include <Linear_Force_TimeHistory.h>
 #include <PathSeries_Force_TimeHistory.h>
 #include <PathTimeSeries_Force_TimeHistory.h>
@@ -520,6 +521,8 @@ FEM_ObjectBroker::getNewElementalLoad(int classTag)
     switch (classTag)
     {
 
+    case LOAD_TAG_BrickSurfaceLoad:
+        return new BrickSurfaceLoad();
 
     case LOAD_TAG_Beam3dUniformLoad:
         return new Beam3dUniformLoad();

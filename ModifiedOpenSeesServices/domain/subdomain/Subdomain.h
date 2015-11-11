@@ -245,17 +245,9 @@ public:
 
     virtual int sendOutputOptionsToSubdomain();
 
-    int getOutputSize() const
-    {
-        cerr << "Subdomain::getOutputSize() -- Subclass responsability.\n\n";
-        return 0;
-    }
+    int getOutputSize() const;
 
-    const Vector &getOutput() const
-    {
-        cerr << "Subdomain::getOutput() -- Subclass responsability.\n\n";
-        return *Element::SizedVector1;
-    }
+    const Vector &getOutput() const;
 
 
 protected:

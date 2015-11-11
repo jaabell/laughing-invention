@@ -32,6 +32,7 @@
 #include <Element.h>
 #include <Domain.h>
 #include <iostream>
+#include <Channel.h>
 using namespace std;
 
 
@@ -186,4 +187,56 @@ ElementalLoad::hasElement(int tag)
         }
 
     return false;
+}
+
+
+int ElementalLoad::sendSelf(int commitTag, Channel& theChannel)
+{
+    cout << "int ElementalLoad::sendSelf()" << endl;
+    static ID data(2);
+    data(0) = this->getTag();
+    data(1) = numElements;
+
+    if (theChannel.sendID(0, 0, data))
+    {
+        cerr << "ElementalLoad - send data failed\n";
+        return -1;
+    }
+
+    // ID elements(numElements);
+
+    if (theChannel.sendID(0, 0, *theElementTags))
+    {
+        cerr << "ElementalLoad - send theElementTags failed\n";
+        return -1;
+    }
+
+    return 0;
+}
+
+int ElementalLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
+{
+    cout << "int ElementalLoad::receiveSelf()" << endl;
+    static ID data(2);
+
+    if (theChannel.receiveID(0, 0, data))
+    {
+        cerr << "ElementalLoad - receive data failed\n";
+        return -1;
+    }
+    this->setTag(data(0)) ;
+    numElements = data(1) ;
+
+    if ((theElementTags = new ID(numElements)) == 0)
+    {
+        cerr << "ElementalLoad - out of memory in receiveSelf.\n";
+    }
+
+    if (theChannel.receiveID(0, 0, *theElementTags))
+    {
+        cerr << "ElementalLoad - receive theElementTags failed\n";
+        return -1;
+    }
+
+    return 0;
 }

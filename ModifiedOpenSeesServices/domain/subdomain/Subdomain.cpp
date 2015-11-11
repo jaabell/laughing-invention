@@ -481,6 +481,7 @@ Subdomain::hasNode(int tag)
     }
 }
 
+
 bool //Guanzhou added
 Subdomain::hasInternalNode(int tag)
 {
@@ -1292,4 +1293,16 @@ int  Subdomain::sendOutputOptionsToSubdomain()
 {
     cerr << "Subdomain::sendOutputOptionsToSubdomain() - Nothing to do. Subclass maybe?\n";
     return 0;
+}
+
+int Subdomain::getOutputSize() const
+{
+    // cerr << "Subdomain::getOutputSize() -- Subclass responsability.\n\n";
+    return 0;
+}
+
+const Vector &Subdomain::getOutput() const
+{
+    // cerr << "Subdomain::getOutput() -- Subclass responsability.\n\n";
+    return *Element::SizedVector1;
 }

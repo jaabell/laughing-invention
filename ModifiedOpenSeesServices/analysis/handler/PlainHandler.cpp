@@ -303,10 +303,7 @@ PlainHandler::handle(const ID *nodesLast)
     }
 
     // set the number of eqn in the model
-#ifdef _BABAK_DEBUG
-    //Added by Babak Kamrani 05/28/2012:
-    cerr << "BABAK @ PlainHandler::handle(const ID *nodesLast)--PID # " << processID << "   countDOF : " << countDOF << endl;
-#endif
+
     theModel->setNumEqn(countDOF);
 
     // now see if we have to set any of the dof's to -3
@@ -461,8 +458,8 @@ PlainHandler::sendSelf(int cTag,
 
 int
 PlainHandler::receiveSelf(int cTag,
-                       Channel &theChannel,
-                       FEM_ObjectBroker &theBroker)
+                          Channel &theChannel,
+                          FEM_ObjectBroker &theBroker)
 {
     return 0;
 }

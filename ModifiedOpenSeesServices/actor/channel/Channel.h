@@ -27,7 +27,7 @@
 #define Channel_h
 
 #include <string>
-
+#include <LTensor.h>
 // Written: fmk
 // Created: 11/96
 // Revision: A
@@ -49,7 +49,6 @@ class Vector;
 class ID;
 class FEM_ObjectBroker;
 class nDarray;
-class LTensor;
 
 class Channel
 {
@@ -124,6 +123,22 @@ public:
   virtual int receiveString(int dbTag, int commitTag,
                             std::string &theString,
                             ChannelAddress *theAddress = 0) = 0;
+
+  virtual int sendDTensor2(int dbTag, int commitTag,
+                           const DTensor2 &theTensor,
+                           ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receiveDTensor2(int dbTag, int commitTag,
+                              DTensor2 &theTensor,
+                              ChannelAddress *theAddress = 0) = 0;
+  virtual int sendDTensor4(int dbTag, int commitTag,
+                           const DTensor4 &theTensor,
+                           ChannelAddress *theAddress = 0) = 0;
+
+  virtual int receiveDTensor4(int dbTag, int commitTag,
+                              DTensor4 &theTensor,
+                              ChannelAddress *theAddress = 0) = 0;
+
 
 
 

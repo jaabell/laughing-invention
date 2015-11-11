@@ -76,16 +76,16 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
                                    int Node_1, int Node_2, int Node_3, int Node_4,
                                    double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
                                    double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
-      node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
-      surface_load_magnitude1(SurfaceLoadMagnitude1),
-      surface_load_magnitude2(SurfaceLoadMagnitude2),
-      surface_load_magnitude3(SurfaceLoadMagnitude3),
-      surface_load_magnitude4(SurfaceLoadMagnitude4),
-      data(0)
+  : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+    node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
+    surface_load_magnitude1(SurfaceLoadMagnitude1),
+    surface_load_magnitude2(SurfaceLoadMagnitude2),
+    surface_load_magnitude3(SurfaceLoadMagnitude3),
+    surface_load_magnitude4(SurfaceLoadMagnitude4),
+    data(0)
 {
 
-    data = &dataV8;
+  data = &dataV8;
 
 }
 
@@ -99,21 +99,21 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
                                    double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4,
                                    double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
                                    double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
-      node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
-      node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8),
-      surface_load_magnitude1(SurfaceLoadMagnitude1),
-      surface_load_magnitude2(SurfaceLoadMagnitude2),
-      surface_load_magnitude3(SurfaceLoadMagnitude3),
-      surface_load_magnitude4(SurfaceLoadMagnitude4),
-      surface_load_magnitude5(SurfaceLoadMagnitude5),
-      surface_load_magnitude6(SurfaceLoadMagnitude6),
-      surface_load_magnitude7(SurfaceLoadMagnitude7),
-      surface_load_magnitude8(SurfaceLoadMagnitude8),
-      data(0)
+  : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+    node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
+    node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8),
+    surface_load_magnitude1(SurfaceLoadMagnitude1),
+    surface_load_magnitude2(SurfaceLoadMagnitude2),
+    surface_load_magnitude3(SurfaceLoadMagnitude3),
+    surface_load_magnitude4(SurfaceLoadMagnitude4),
+    surface_load_magnitude5(SurfaceLoadMagnitude5),
+    surface_load_magnitude6(SurfaceLoadMagnitude6),
+    surface_load_magnitude7(SurfaceLoadMagnitude7),
+    surface_load_magnitude8(SurfaceLoadMagnitude8),
+    data(0)
 {
 
-    data = &dataV16;
+  data = &dataV16;
 
 }
 
@@ -129,29 +129,29 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
                                    double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
                                    double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8,
                                    double SurfaceLoadMagnitude9)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
-      node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
-      node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8), node9(Node_9),
-      surface_load_magnitude1(SurfaceLoadMagnitude1),
-      surface_load_magnitude2(SurfaceLoadMagnitude2),
-      surface_load_magnitude3(SurfaceLoadMagnitude3),
-      surface_load_magnitude4(SurfaceLoadMagnitude4),
-      surface_load_magnitude5(SurfaceLoadMagnitude5),
-      surface_load_magnitude6(SurfaceLoadMagnitude6),
-      surface_load_magnitude7(SurfaceLoadMagnitude7),
-      surface_load_magnitude8(SurfaceLoadMagnitude8),
-      surface_load_magnitude9(SurfaceLoadMagnitude9),
-      data(0)
+  : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+    node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
+    node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8), node9(Node_9),
+    surface_load_magnitude1(SurfaceLoadMagnitude1),
+    surface_load_magnitude2(SurfaceLoadMagnitude2),
+    surface_load_magnitude3(SurfaceLoadMagnitude3),
+    surface_load_magnitude4(SurfaceLoadMagnitude4),
+    surface_load_magnitude5(SurfaceLoadMagnitude5),
+    surface_load_magnitude6(SurfaceLoadMagnitude6),
+    surface_load_magnitude7(SurfaceLoadMagnitude7),
+    surface_load_magnitude8(SurfaceLoadMagnitude8),
+    surface_load_magnitude9(SurfaceLoadMagnitude9),
+    data(0)
 {
 
-    data = &dataV18;
+  data = &dataV18;
 
 }
 
 
 
 BrickSurfaceLoad::BrickSurfaceLoad()
-    : ElementalLoad(LOAD_TAG_BrickSurfaceLoad)
+  : ElementalLoad(LOAD_TAG_BrickSurfaceLoad)
 {
 
 }
@@ -166,151 +166,182 @@ BrickSurfaceLoad::~BrickSurfaceLoad()
 const Vector&
 BrickSurfaceLoad::getData(int& type, double loadFactor)
 {
-    type = LOAD_TAG_BrickSurfaceLoad;
+  type = LOAD_TAG_BrickSurfaceLoad;
 
-    if ( (*data).Size() == 8 )
-    {
-        (*data)(0) = node1;
-        (*data)(1) = node2;
-        (*data)(2) = node3;
-        (*data)(3) = node4;
-        (*data)(4) = surface_load_magnitude1;
-        (*data)(5) = surface_load_magnitude2;
-        (*data)(6) = surface_load_magnitude3;
-        (*data)(7) = surface_load_magnitude4;
+  if ( (*data).Size() == 8 )
+  {
+    (*data)(0) = node1;
+    (*data)(1) = node2;
+    (*data)(2) = node3;
+    (*data)(3) = node4;
+    (*data)(4) = surface_load_magnitude1;
+    (*data)(5) = surface_load_magnitude2;
+    (*data)(6) = surface_load_magnitude3;
+    (*data)(7) = surface_load_magnitude4;
 
-    }
-    else if ( (*data).Size() == 16 )
-    {
-        (*data)(0)  = node1;
-        (*data)(1)  = node2;
-        (*data)(2)  = node3;
-        (*data)(3)  = node4;
-        (*data)(4)  = node5;
-        (*data)(5)  = node6;
-        (*data)(6)  = node7;
-        (*data)(7)  = node8;
-        (*data)(8)  = surface_load_magnitude1;
-        (*data)(9)  = surface_load_magnitude2;
-        (*data)(10) = surface_load_magnitude3;
-        (*data)(11) = surface_load_magnitude4;
-        (*data)(12) = surface_load_magnitude5;
-        (*data)(13) = surface_load_magnitude6;
-        (*data)(14) = surface_load_magnitude7;
-        (*data)(15) = surface_load_magnitude8;
+  }
+  else if ( (*data).Size() == 16 )
+  {
+    (*data)(0)  = node1;
+    (*data)(1)  = node2;
+    (*data)(2)  = node3;
+    (*data)(3)  = node4;
+    (*data)(4)  = node5;
+    (*data)(5)  = node6;
+    (*data)(6)  = node7;
+    (*data)(7)  = node8;
+    (*data)(8)  = surface_load_magnitude1;
+    (*data)(9)  = surface_load_magnitude2;
+    (*data)(10) = surface_load_magnitude3;
+    (*data)(11) = surface_load_magnitude4;
+    (*data)(12) = surface_load_magnitude5;
+    (*data)(13) = surface_load_magnitude6;
+    (*data)(14) = surface_load_magnitude7;
+    (*data)(15) = surface_load_magnitude8;
 
-    }
-    else if ( (*data).Size() == 18 )
-    {
-        (*data)(0) = node1;
-        (*data)(1) = node2;
-        (*data)(2) = node3;
-        (*data)(3) = node4;
-        (*data)(4) = node5;
-        (*data)(5) = node6;
-        (*data)(6) = node7;
-        (*data)(7) = node8;
-        (*data)(8) = node9;
-        (*data)(9)  = surface_load_magnitude1;
-        (*data)(10) = surface_load_magnitude2;
-        (*data)(11) = surface_load_magnitude3;
-        (*data)(12) = surface_load_magnitude4;
-        (*data)(13) = surface_load_magnitude5;
-        (*data)(14) = surface_load_magnitude6;
-        (*data)(15) = surface_load_magnitude7;
-        (*data)(16) = surface_load_magnitude8;
-        (*data)(17) = surface_load_magnitude9;
-    }
+  }
+  else if ( (*data).Size() == 18 )
+  {
+    (*data)(0) = node1;
+    (*data)(1) = node2;
+    (*data)(2) = node3;
+    (*data)(3) = node4;
+    (*data)(4) = node5;
+    (*data)(5) = node6;
+    (*data)(6) = node7;
+    (*data)(7) = node8;
+    (*data)(8) = node9;
+    (*data)(9)  = surface_load_magnitude1;
+    (*data)(10) = surface_load_magnitude2;
+    (*data)(11) = surface_load_magnitude3;
+    (*data)(12) = surface_load_magnitude4;
+    (*data)(13) = surface_load_magnitude5;
+    (*data)(14) = surface_load_magnitude6;
+    (*data)(15) = surface_load_magnitude7;
+    (*data)(16) = surface_load_magnitude8;
+    (*data)(17) = surface_load_magnitude9;
+  }
 
 
-    return *data;
+  return *data;
 
 }
 
 int
 BrickSurfaceLoad::sendSelf(int commitTag, Channel& theChannel)
 {
-    // (Nima) SHOULD BE CHECKED IN PARALLEL VERSION
+  cerr << "BrickSurfaceLoad::sendSelf() \n";
+  this->ElementalLoad::sendSelf(commitTag, theChannel);
 
-    //   int dbTag = this->getDbTag();
-    //   int myTag = this->getTag();
-    //   const ID &theElements = this->getElementTags();
-    //
-    //   static ID idData(10);
-    //   idData(0) = theElements.Size();
-    //   idData(1) = myTag;
-    //   idData(2) = node1;
-    //   idData(3) = node2;
-    //   idData(4) = node3;
-    //   idData(5) = node4;
-    //   idData(6) = surface_load_magnitude1;
-    //   idData(7) = surface_load_magnitude2;
-    //   idData(8) = surface_load_magnitude3;
-    //   idData(9) = surface_load_magnitude4;
-    //
-    //
-    //   int result = theChannel.sendID(dbTag, commitTag, idData);
-    //   if (result < 0) {
-    //     cerr << "BrickSurfaceLoad::sendSelf() - failed to send data\n";
-    //     return result;
-    //   }
-    //
-    //   result = theChannel.sendID(dbTag, commitTag, theElements);
-    //   if (result < 0) {
-    //     cerr << "BrickSurfaceLoad::sendSelf() - failed to send element tags\n";
-    //     return result;
-    //   }
-    //
-    //   return 0;
+  static ID nodes(9);
+  static Vector magnitudes(9);
+
+  nodes(0) = node1;
+  nodes(1) = node2;
+  nodes(2) = node3;
+  nodes(3) = node4;
+  nodes(4) = node5;
+  nodes(5) = node6;
+  nodes(6) = node7;
+  nodes(7) = node8;
+  nodes(8) = node9;
+
+
+  magnitudes(0) = surface_load_magnitude1;
+  magnitudes(1) = surface_load_magnitude2;
+  magnitudes(2) = surface_load_magnitude3;
+  magnitudes(3) = surface_load_magnitude4;
+  magnitudes(4) = surface_load_magnitude5;
+  magnitudes(5) = surface_load_magnitude6;
+  magnitudes(6) = surface_load_magnitude7;
+  magnitudes(7) = surface_load_magnitude8;
+  magnitudes(8) = surface_load_magnitude9;
+
+
+  int result = theChannel.sendID(0, commitTag, nodes);
+  if (result < 0)
+  {
+    cerr << "BrickSurfaceLoad::sendSelf() - failed to nodes\n";
+    return result;
+  }
+
+  result = theChannel.sendVector(0, commitTag, magnitudes);
+  if (result < 0)
+  {
+    cerr << "BrickSurfaceLoad::sendSelf() - magnitudes\n";
+    return result;
+  }
+  cout << "Send = ";
+  for (int i = 0; i < 9; i++)
+  {
+    cout << nodes(i) << "(" << magnitudes(i) << ") ";
+  }
+  cout << endl;
+
+  return 0;
 }
 
 int
 BrickSurfaceLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
 {
-    // (Nima) SHOULD BE CHECKED IN PARALLEL VERSION
 
-    //   int dbTag = this->getDbTag();
-    //   static ID idData(10);
-    //
-    //   int result = theChannel.receiveID(dbTag, commitTag, idData);
-    //   if (result < 0) {
-    //     cerr << "BrickSurfaceLoad::receiveSelf() - failed to recv data\n";
-    //     return result;
-    //   }
-    //
-    //   int numEle = idData(0);
-    //   int myTag = idData(1);
-    //
-    //   node1 = idData(2);
-    //   node2 = idData(3);
-    //   node3 = idData(4);
-    //   node4 = idData(5);
-    //   surface_load_magnitude1 = idData(6);
-    //   surface_load_magnitude2 = idData(7);
-    //   surface_load_magnitude3 = idData(8);
-    //   surface_load_magnitude4 = idData(9);
-    //
-    //
-    //   ID *NewTags = new ID(numEle);
-    //
-    //   result = theChannel.receiveID(dbTag, commitTag, *NewTags);
-    //   if (result < 0) {
-    //     cerr << "BrickSurfaceLoad::receiveSelf() - failed to recv element tags\n";
-    //     return result;
-    //   }
-    //
-    //   this->setTag(myTag);
-    //   this->setElementTags(*NewTags);
-    //   delete NewTags;
-    //
-    //   return 0;
+  cout << "BrickSurfaceLoad::receiveSelf(...)" << endl;
+  this->ElementalLoad::receiveSelf(commitTag, theChannel, theBroker);
+
+  static ID nodes(9);
+  static Vector magnitudes(9);
+
+  int result = theChannel.receiveID(0, commitTag, nodes);
+  if (result < 0)
+  {
+    cerr << "BrickSurfaceLoad::receiveSelf() - failed to nodes\n";
+    return result;
+  }
+
+  result = theChannel.receiveVector(0, commitTag, magnitudes);
+  if (result < 0)
+  {
+    cerr << "BrickSurfaceLoad::receiveSelf() - magnitudes\n";
+    return result;
+  }
+
+  node1 = nodes(0);
+  node2 = nodes(1);
+  node3 = nodes(2);
+  node4 = nodes(3);
+  node5 = nodes(4);
+  node6 = nodes(5);
+  node7 = nodes(6);
+  node8 = nodes(7);
+  node9 = nodes(8);
+
+
+  surface_load_magnitude1 = magnitudes(0);
+  surface_load_magnitude2 = magnitudes(1);
+  surface_load_magnitude3 = magnitudes(2);
+  surface_load_magnitude4 = magnitudes(3);
+  surface_load_magnitude5 = magnitudes(4);
+  surface_load_magnitude6 = magnitudes(5);
+  surface_load_magnitude7 = magnitudes(6);
+  surface_load_magnitude8 = magnitudes(7);
+  surface_load_magnitude9 = magnitudes(8);
+
+  cout << "Receive = ";
+  for (int i = 0; i < 9; i++)
+  {
+    cout << nodes(i) << "(" << magnitudes(i) << ") ";
+  }
+  cout << endl;
+
+  return 0;
+
 }
 
 void
 BrickSurfaceLoad::Print(ostream& s, int flag)
 {
-    s << "BrickSurfaceLoad...";
-    s << "Elements acted on: " << this->getElementTags();
+  s << "BrickSurfaceLoad...";
+  s << "Elements acted on: " << this->getElementTags();
 }
 
 #endif

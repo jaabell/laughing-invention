@@ -38,6 +38,8 @@
 #include <MovableObject.h>
 #include <nDarray.h>//Guanzhou added
 #include <iostream>
+#include <LTensor.h>
+
 using namespace std;
 
 
@@ -756,3 +758,191 @@ int MPI_Channel::receiveString(int dbTag, int commitTag,
     cout << "Turned it into string: " << theString << endl;
     return 0;
 }
+
+
+
+
+int
+MPI_Channel::receiveDTensor2(int dbTag, int commitTag, DTensor2 &theDTensor2, ChannelAddress *theAddress)
+
+{
+    // first check address is the only address a MPI_Channel can send to
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
+
+    if (theAddress != 0)
+    {
+        if (theAddress->getType() == MPI_TYPE)
+        {
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
+            otherTag = theMPI_ChannelAddress->otherTag;
+            otherComm = theMPI_ChannelAddress->otherComm;
+        }
+        else
+        {
+            cerr << "MPI_Channel::receiveDTensor2() - a MPI_Channel ";
+            cerr << "can only communicate with a MPI_Channel";
+            cerr << " address given is not of type MPI_ChannelAddress\n";
+            return -1;
+        }
+    }
+
+    // if o.k. get a ponter to the data in the DTensor2 and
+    // place the incoming data there
+    int nleft;//, nread;
+    double *data = theDTensor2.data;
+    char *gMsg = (char *) data;;
+    nleft =  theDTensor2.get_size();
+
+    MPI_Status status;
+    MPI_Recv((void *)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG,
+             otherComm, &status);
+    int count = 0;
+    MPI_Get_count(&status, MPI_DOUBLE, &count);
+
+    if (count != nleft)
+    {
+        cerr << "MPI_Channel::receiveDTensor2() -";
+        cerr << " incorrect number of entries for DTensor2 received: " << count << "\n";
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
+// void Send(DTensor2 &):
+//  Method to send a DTensor2 to an address given by other_Addr.
+
+int
+MPI_Channel::sendDTensor2(int dbTag, int commitTag, const DTensor2 &theDTensor2, ChannelAddress *theAddress)
+{
+    // first check address is the only address a MPI_Channel can send to
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
+
+    if (theAddress != 0)
+    {
+        if (theAddress->getType() == MPI_TYPE)
+
+        {
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
+            otherTag = theMPI_ChannelAddress->otherTag;
+            otherComm = theMPI_ChannelAddress->otherComm;
+        }
+        else
+        {
+            cerr << "MPI_Channel::sendDTensor2() - a MPI_Channel ";
+            cerr << "can only communicate with a MPI_Channel";
+            cerr << " address given is not of type MPI_ChannelAddress\n";
+            return -1;
+        }
+    }
+    // TinyArray_base* base = static_cast<TinyArray_base*>(&theDTensor2);
+    // if o.k. get a ponter to the data in the DTensor2 and
+    // place the incoming data there
+    int  nleft;
+    double *data = theDTensor2.data;
+    // double &data = (*base)(0, 0);
+    char *gMsg = (char *)data;
+    nleft =  theDTensor2.get_size();
+
+    MPI_Send((void *)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm);
+
+    return 0;
+}
+
+
+
+
+int
+MPI_Channel::receiveDTensor4(int dbTag, int commitTag, DTensor4 &theDTensor4, ChannelAddress *theAddress)
+
+{
+    // first check address is the only address a MPI_Channel can send to
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
+
+    if (theAddress != 0)
+    {
+        if (theAddress->getType() == MPI_TYPE)
+        {
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
+            otherTag = theMPI_ChannelAddress->otherTag;
+            otherComm = theMPI_ChannelAddress->otherComm;
+        }
+        else
+        {
+            cerr << "MPI_Channel::receiveDTensor4() - a MPI_Channel ";
+            cerr << "can only communicate with a MPI_Channel";
+            cerr << " address given is not of type MPI_ChannelAddress\n";
+            return -1;
+        }
+    }
+
+    // if o.k. get a ponter to the data in the DTensor4 and
+    // place the incoming data there
+    int nleft;//, nread;
+    double *data = theDTensor4.data;
+    char *gMsg = (char *) data;;
+    nleft =  theDTensor4.get_size();
+
+    MPI_Status status;
+    MPI_Recv((void *)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG,
+             otherComm, &status);
+    int count = 0;
+    MPI_Get_count(&status, MPI_DOUBLE, &count);
+
+    if (count != nleft)
+    {
+        cerr << "MPI_Channel::receiveDTensor4() -";
+        cerr << " incorrect number of entries for DTensor4 received: " << count << "\n";
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
+// void Send(DTensor4 &):
+//  Method to send a DTensor4 to an address given by other_Addr.
+
+int
+MPI_Channel::sendDTensor4(int dbTag, int commitTag, const DTensor4 &theDTensor4, ChannelAddress *theAddress)
+{
+    // first check address is the only address a MPI_Channel can send to
+    MPI_ChannelAddress *theMPI_ChannelAddress = 0;
+
+    if (theAddress != 0)
+    {
+        if (theAddress->getType() == MPI_TYPE)
+
+        {
+            theMPI_ChannelAddress = (MPI_ChannelAddress *)theAddress;
+            otherTag = theMPI_ChannelAddress->otherTag;
+            otherComm = theMPI_ChannelAddress->otherComm;
+        }
+        else
+        {
+            cerr << "MPI_Channel::sendDTensor4() - a MPI_Channel ";
+            cerr << "can only communicate with a MPI_Channel";
+            cerr << " address given is not of type MPI_ChannelAddress\n";
+            return -1;
+        }
+    }
+    // TinyArray_base* base = static_cast<TinyArray_base*>(&theDTensor4);
+    // if o.k. get a ponter to the data in the DTensor4 and
+    // place the incoming data there
+    int  nleft;
+    double *data = theDTensor4.data;
+    // double &data = (*base)(0, 0);
+    char *gMsg = (char *)data;
+    nleft =  theDTensor4.get_size();
+
+    MPI_Send((void *)gMsg, nleft, MPI_DOUBLE, otherTag, GLOBAL_MSG_TAG, otherComm);
+
+    return 0;
+}
+
+
