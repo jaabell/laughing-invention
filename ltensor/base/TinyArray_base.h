@@ -282,7 +282,6 @@ public:
 		dataCount = 0;
 		for (int i = 0; i < rank; i++)
 			size[i] = 0;
-
 	}
 
 

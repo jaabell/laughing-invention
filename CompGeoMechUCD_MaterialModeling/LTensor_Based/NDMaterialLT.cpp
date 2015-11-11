@@ -296,11 +296,6 @@ void NDMaterialLT::setVolume(double vol)
     volume = vol;
 }
 
-int NDMaterialLT::describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel)
-{
-    cerr << "NDMaterialLT::describeSelf -> Subclass responsability" << endl;
-    return -1;
-}
 
 int NDMaterialLT::sendSelf(int commitTag, Channel &theChannel)
 {

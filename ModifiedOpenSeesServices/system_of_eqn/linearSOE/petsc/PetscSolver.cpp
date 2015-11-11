@@ -201,9 +201,9 @@ PetscSolver::solve(void)
 
     if (processID_world > 0)
     {
-        cout << "Process " <<  processID_world << " calling KSPSolve()\n";
+        // cout << "Process " <<  processID_world << " calling KSPSolve()\n";
         ierr = KSPSolve(ksp, theSOE->b, theSOE->x);
-        cout << "        " <<  processID_world << " done calling KSPSolve()\n";
+        // cout << "        " <<  processID_world << " done calling KSPSolve()\n";
         CHKERRQ(ierr);
         theSOE->isFactored = 1;
     }
@@ -349,7 +349,7 @@ PetscSolver::setLinearSOE(PetscSOE &theSys)
 int
 PetscSolver::sendSelf(int cTag, Channel &theChannel)
 {
-    cout << "PetscSolver::sendSelf()\n";
+    // cout << "PetscSolver::sendSelf()\n";
     // static ID idData(4);
     // idData(0) = maxIts;
     // //if (method == KSPCG)
@@ -502,7 +502,7 @@ int
 PetscSolver::receiveSelf(int cTag, Channel &theChannel,
                          FEM_ObjectBroker &theBroker)
 {
-    cout << "PetscSolver::receiveSelf() \n";
+    // cout << "PetscSolver::receiveSelf() \n";
     // static ID idData(4);
     // theChannel.receiveID(0, cTag, idData);
     // maxIts = idData(0);

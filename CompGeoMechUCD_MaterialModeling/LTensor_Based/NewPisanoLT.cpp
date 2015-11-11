@@ -494,6 +494,133 @@ const char *NewPisanoLT::getType(void) const
 
 int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 {
+  constexpr int size = 18;
+  static Vector material_parameters(size);
+
+  //Send material parameters
+  material_parameters(0) = beta;
+  material_parameters(1) = E0;
+  material_parameters(2) = v;
+  material_parameters(3) = M;
+  material_parameters(4) = kd;
+  material_parameters(5) = xi;
+  material_parameters(6) = h;
+  material_parameters(7) = m;
+  material_parameters(8) = rho;
+  material_parameters(9) = initialconfiningstress;
+  material_parameters(10) = n;
+  material_parameters(11) = a;
+  material_parameters(12) = eplcum_cr;
+  material_parameters(13) = eplcum;
+  material_parameters(14) = f_relative_tol;
+  material_parameters(15) = stress_relative_tol;
+  material_parameters(16) = n_max_iterations;
+  material_parameters(17) = (double) constitutive_integration_method;
+
+
+// DTensor2 material_parameters;
+  if ( theChannel.sendVector( 0, commitTag, material_parameters ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to receive material_parameters\n";
+    return -1;
+  }
+
+  // DTensor2 strainplcum;
+  if ( theChannel.sendDTensor2( 0, commitTag, strainplcum ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send strainplcum\n";
+    return -1;
+  }
+
+  // DTensor2 TrialStrain
+  if ( theChannel.sendDTensor2( 0, commitTag, TrialStrain ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send TrialStrain\n";
+    return -1;
+  }
+  // DTensor2 TrialStress
+  if ( theChannel.sendDTensor2( 0, commitTag, TrialStress ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send TrialStress\n";
+    return -1;
+  }
+  // DTensor2 TrialPlastic_Strain
+  if ( theChannel.sendDTensor2( 0, commitTag, TrialPlastic_Strain ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send TrialPlastic_Strain\n";
+    return -1;
+  }
+
+  // DTensor2 CommitStress
+  if ( theChannel.sendDTensor2( 0, commitTag, CommitStress ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send CommitStress\n";
+    return -1;
+  }
+  // DTensor2 CommitStrain
+  if ( theChannel.sendDTensor2( 0, commitTag, CommitStrain ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send CommitStrain\n";
+    return -1;
+  }
+  // DTensor2 CommitPlastic_Strain
+  if ( theChannel.sendDTensor2( 0, commitTag, CommitPlastic_Strain ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send CommitPlastic_Strain\n";
+    return -1;
+  }
+
+  // DTensor2 Trial_alpha
+  if ( theChannel.sendDTensor2( 0, commitTag, Trial_alpha ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send Trial_alpha\n";
+    return -1;
+  }
+  // DTensor2 Trial_alpha0
+  if ( theChannel.sendDTensor2( 0, commitTag, Trial_alpha0 ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send Trial_alpha0\n";
+    return -1;
+  }
+  // DTensor2 Trial_alpha0mem
+  if ( theChannel.sendDTensor2( 0, commitTag, Trial_alpha0mem ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send Trial_alpha0mem\n";
+    return -1;
+  }
+  // DTensor2 Trial_nij_dev
+  if ( theChannel.sendDTensor2( 0, commitTag, Trial_nij_dev ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send Trial_nij_dev\n";
+    return -1;
+  }
+
+  // DTensor2 Commit_alpha
+  if ( theChannel.sendDTensor2( 0, commitTag, Commit_alpha ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send Commit_alpha\n";
+    return -1;
+  }
+  // DTensor2 Commit_alpha0
+  if ( theChannel.sendDTensor2( 0, commitTag, Commit_alpha0 ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send Commit_alpha0\n";
+    return -1;
+  }
+  // DTensor2 Commit_alpha0mem
+  if ( theChannel.sendDTensor2( 0, commitTag, Commit_alpha0mem) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send Commit_alpha0mem\n";
+    return -1;
+  }
+  // DTensor2 Commit_nij_dev
+  if ( theChannel.sendDTensor2( 0, commitTag, Commit_nij_dev ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::sendSelf() - " << this->getTag() << " failed to send Commit_nij_dev\n";
+    return -1;
+  }
+
+  getE();
 
 
   return 0;
@@ -502,7 +629,136 @@ int NewPisanoLT::sendSelf(int commitTag, Channel &theChannel)
 
 int NewPisanoLT::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
+  constexpr int size = 18;
+  static Vector material_parameters(size);
 
+  //Receive material parameters
+
+
+  // DTensor2 material_parameters;
+  if ( theChannel.receiveVector( 0, commitTag, material_parameters ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive material_parameters\n";
+    return -1;
+  }
+
+  beta                   = material_parameters(0);
+  E0                     = material_parameters(1);
+  v                      = material_parameters(2);
+  M                      = material_parameters(3);
+  kd                     = material_parameters(4);
+  xi                     = material_parameters(5);
+  h                      = material_parameters(6);
+  m                      = material_parameters(7);
+  rho                    = material_parameters(8);
+  initialconfiningstress = material_parameters(9);
+  n                      = material_parameters(10);
+  a                      = material_parameters(11);
+  eplcum_cr              = material_parameters(12);
+  eplcum                 = material_parameters(13);
+  NDMaterialLT::f_relative_tol         = material_parameters(14) ;
+  NDMaterialLT::stress_relative_tol    = material_parameters(15) ;
+  NDMaterialLT::n_max_iterations       = material_parameters(16) ;
+  NDMaterialLT::constitutive_integration_method       = (NDMaterialLT_Constitutive_Integration_Method) material_parameters(17) ;
+
+
+
+  // DTensor2 strainplcum;
+  if ( theChannel.receiveDTensor2( 0, commitTag, strainplcum ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive strainplcum\n";
+    return -1;
+  }
+
+  // DTensor2 TrialStrain
+  if ( theChannel.receiveDTensor2( 0, commitTag, TrialStrain ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive TrialStrain\n";
+    return -1;
+  }
+  // DTensor2 TrialStress
+  if ( theChannel.receiveDTensor2( 0, commitTag, TrialStress ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive TrialStress\n";
+    return -1;
+  }
+  // DTensor2 TrialPlastic_Strain
+  if ( theChannel.receiveDTensor2( 0, commitTag, TrialPlastic_Strain ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive TrialPlastic_Strain\n";
+    return -1;
+  }
+
+  // DTensor2 CommitStress
+  if ( theChannel.receiveDTensor2( 0, commitTag, CommitStress ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive CommitStress\n";
+    return -1;
+  }
+  // DTensor2 CommitStrain
+  if ( theChannel.receiveDTensor2( 0, commitTag, CommitStrain ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive CommitStrain\n";
+    return -1;
+  }
+  // DTensor2 CommitPlastic_Strain
+  if ( theChannel.receiveDTensor2( 0, commitTag, CommitPlastic_Strain ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive CommitPlastic_Strain\n";
+    return -1;
+  }
+
+  // DTensor2 Trial_alpha
+  if ( theChannel.receiveDTensor2( 0, commitTag, Trial_alpha ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive Trial_alpha\n";
+    return -1;
+  }
+  // DTensor2 Trial_alpha0
+  if ( theChannel.receiveDTensor2( 0, commitTag, Trial_alpha0 ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive Trial_alpha0\n";
+    return -1;
+  }
+  // DTensor2 Trial_alpha0mem
+  if ( theChannel.receiveDTensor2( 0, commitTag, Trial_alpha0mem ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive Trial_alpha0mem\n";
+    return -1;
+  }
+  // DTensor2 Trial_nij_dev
+  if ( theChannel.receiveDTensor2( 0, commitTag, Trial_nij_dev ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive Trial_nij_dev\n";
+    return -1;
+  }
+
+  // DTensor2 Commit_alpha
+  if ( theChannel.receiveDTensor2( 0, commitTag, Commit_alpha ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive Commit_alpha\n";
+    return -1;
+  }
+  // DTensor2 Commit_alpha0
+  if ( theChannel.receiveDTensor2( 0, commitTag, Commit_alpha0 ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive Commit_alpha0\n";
+    return -1;
+  }
+  // DTensor2 Commit_alpha0mem
+  if ( theChannel.receiveDTensor2( 0, commitTag, Commit_alpha0mem) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive Commit_alpha0mem\n";
+    return -1;
+  }
+  // DTensor2 Commit_nij_dev
+  if ( theChannel.receiveDTensor2( 0, commitTag, Commit_nij_dev ) < 0 )
+  {
+    cerr << "WARNING NewPisanoLT::receiveSelf() - " << this->getTag() << " failed to receive Commit_nij_dev\n";
+    return -1;
+  }
+
+  getE();
 
   return 0;
 }
@@ -1141,7 +1397,15 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
 
 
     count += 1;
-
+    if (count > this-> n_max_iterations)
+    {
+      cerr << "NewPisanoLT -- Modified euler failed to converge after " << count << " iterations with : \n"
+           << "  Relative_Error = " << Relative_Error  << endl
+           << "  q = " << q  << endl
+           << "  dT = " << dT  << endl
+           << "  T = " << T  << endl;
+      return -1;
+    }
   }
 
   // cout << "    Number of Euler iterations = " << count << endl;

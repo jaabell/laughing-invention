@@ -94,7 +94,7 @@ public:
         return 1;
     };
 
-    virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
+
     virtual int sendSelf(int commitTag, Channel &theChannel);
     virtual int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 

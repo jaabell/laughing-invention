@@ -159,7 +159,8 @@ ESSI_INCLUDES  = -I$(RealESSI_SRC)/ModifiedOpenSeesServices/matrix \
             -I$(RealESSI_SRC)/UCB_Elements/zeroLength \
             -I$(RealESSI_SRC)/UCB_Elements/shell \
             -I$(RealESSI_SRC)/API \
-            -I$(RealESSI_SRC)/small_utility_programs/ltensor_utilities
+            -I$(RealESSI_SRC)/small_utility_programs/ltensor_utilities \
+            -I$(RealESSI_SRC)/ltensor
 
 
 ESSI_LIBS = -L$(RealESSI_SRC)/lib \
