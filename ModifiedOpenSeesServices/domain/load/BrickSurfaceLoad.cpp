@@ -151,7 +151,19 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
 
 
 BrickSurfaceLoad::BrickSurfaceLoad()
-  : ElementalLoad(LOAD_TAG_BrickSurfaceLoad)
+  : ElementalLoad(LOAD_TAG_BrickSurfaceLoad),
+    node1(0), node2(0), node3(0), node4(0),
+    node5(0), node6(0), node7(0), node8(0), node9(0),
+    surface_load_magnitude1(0.0),
+    surface_load_magnitude2(0.0),
+    surface_load_magnitude3(0.0),
+    surface_load_magnitude4(0.0),
+    surface_load_magnitude5(0.0),
+    surface_load_magnitude6(0.0),
+    surface_load_magnitude7(0.0),
+    surface_load_magnitude8(0.0),
+    surface_load_magnitude9(0.0),
+    data(0)
 {
   // data = &dataV18;
 }

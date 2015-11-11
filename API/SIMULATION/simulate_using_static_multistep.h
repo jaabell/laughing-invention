@@ -196,6 +196,7 @@ int simulate_using_static_multistep(int numSteps)
 
         if ( OPS_REDEFINE_ANALYSIS == true )
         {
+
             DomainDecompositionAnalysis *theSubAnalysis;
             SubdomainIter &theSubdomains = theDomain.getSubdomains();
             Subdomain *theSub = 0;

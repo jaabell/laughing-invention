@@ -78,6 +78,7 @@ int start_new_stage(string CurrentStageName)
 
     //Set numberer and check that it is correctly set
 #ifdef _PARALLEL_PROCESSING
+    OPS_REDEFINE_ANALYSIS = true;
     theNumberer = new ParallelNumberer();
 #else
     theNumberer = new DOF_Numberer(*theRCM);

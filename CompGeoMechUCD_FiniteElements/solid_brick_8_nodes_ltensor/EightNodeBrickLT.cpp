@@ -1202,6 +1202,10 @@ int EightNodeBrickLT::addLoad( ElementalLoad *theLoad, double loadFactor )
         Q.addVector( 1.0, Fsurface, 1.0);
 
     }
+    else if (type < 0)
+    {
+        //Do nothing
+    }
     else
     {
         cerr << "EightNodeBrickLT::addLoad() - 8NodeBrickLT " << this->getTag() << ",load type " << type << "unknown\n";
