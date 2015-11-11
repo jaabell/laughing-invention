@@ -161,10 +161,8 @@ int parallel_analyze_static_multistep(int numSteps)
         // cout << "#\n#          nelems = " << theDomain.getNumElements() << "\n#\n";
         double start_time = MPI_Wtime();
 
-        int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
+        int numIncr = 1;
         result = theStaticAnalysis->analyze(numIncr);
-
-        // cout << "#\n#          nelems = " << theDomain.getNumElements() << "\n#\n";
         double end_time = MPI_Wtime();
         cout << "\nAnalysis step " << i << " finished!\n";
 

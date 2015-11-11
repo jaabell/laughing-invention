@@ -182,9 +182,9 @@
 #include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/umfGEN/UmfpackGenLinSOE.h"
 #include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/umfGEN/UmfpackGenLinSolver.h"
 #ifdef _PARALLEL_PROCESSING
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSolver.h" //Babak added
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSOE.h"   //Babak added
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSparseSeqSolver.h"//Babak added
+#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSolver.h"
+#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSOE.h"
+#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSparseSeqSolver.h"
 #endif
 
 
@@ -412,7 +412,7 @@ Domain theDomain;
 #endif
 
 
-LoadPattern *DRM_LOAD_PATTERN      = 0 ; //Pointer to DRM Load pattern to be available ftom everywhere ... added by Babak
+LoadPattern *DRM_LOAD_PATTERN      = 0 ; //Pointer to DRM Load pattern to be available ftom everywhere ...
 Channel          **OPS_theChannels = 0;
 
 std::string profiling_results_filename = ""; //Where to put timing results
