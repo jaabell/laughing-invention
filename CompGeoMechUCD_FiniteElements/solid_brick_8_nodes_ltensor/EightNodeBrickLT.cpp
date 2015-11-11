@@ -36,15 +36,17 @@
 #include "EightNodeBrickLT.h"
 #include <LTensorDisplay.h>
 #include <HDF5_Channel.h>
+#include <ESSITimer.h>
 
 
 
 double EightNodeBrickLT::SurfaceLoadValues_in_function;         // Nima added for surface load (July 2012)
+// double EightNodeBrickLT::update_time_taken;         // Nima added for surface load (July 2012)
 
 DTensor2 EightNodeBrickLT::gp_coords(8, 3, 0.0);
 DTensor1 EightNodeBrickLT::gp_weight(8, 0.0);
 Matrix EightNodeBrickLT::gauss_points(8, 3);
-Vector EightNodeBrickLT::outputVector(EightNodeBrickLT_OUTPUT_SIZE);
+Vector EightNodeBrickLT::outputVector(EightNodeBrickLT_OUTPUT_SIZE );
 
 
 Vector EightNodeBrickLT::ShapeFunctionValues_in_function( 4 );  // Nima added for surface load (July 2012)
@@ -1760,6 +1762,8 @@ void EightNodeBrickLT::ComputeVolume()
 
 int EightNodeBrickLT::update( void )
 {
+    // cout << "Updating brick #" << this->getTag() << endl;
+
     double r  = 0.0;
     double s  = 0.0;
     double t  = 0.0;
@@ -1778,6 +1782,8 @@ int EightNodeBrickLT::update( void )
     //Debug
     // cout << endl << endl << "EightNodeBrickLT::update()" << endl;
     // LTensorDisplay::print(trial_disp, "trial_disp");
+
+    ESSITimer::tic();
 
     for ( short gp = 0; gp < 8; gp++ )
     {
@@ -1800,10 +1806,17 @@ int EightNodeBrickLT::update( void )
 
         if ( ( material_array[gp]->setTrialStrain( trial_strain ) ) )
         {
-            cerr << "EightNodeBrickLT::update (tag: " << this->getTag() << "), Update Failed\n";
+            Matrix &gps = getGaussCoordinates();
+            cerr << "EightNodeBrickLT::update (tag: " << this->getTag()
+                 << "), Update Failed on Gauss Point # " << gp
+                 << " located @ ( " << gps(gp, 0) << ","
+                 << gps(gp, 1) << ","
+                 << gps(gp, 2) << ")\n";
             return -1;
         }
     }
+
+    update_time_taken = ESSITimer::toc(); // :)
 
     return 0;
 }
@@ -1944,7 +1957,7 @@ Matrix &EightNodeBrickLT::getGaussCoordinates(void)
 
 int EightNodeBrickLT::getOutputSize() const
 {
-    return EightNodeBrickLT_OUTPUT_SIZE + material_array[0]->getOutputSize() * 8;
+    return EightNodeBrickLT_OUTPUT_SIZE ;
 }
 
 
@@ -1984,19 +1997,9 @@ const Vector &EightNodeBrickLT::getOutput() const
         outputVector(ii++) = stress(0, 1);
         outputVector(ii++) = stress(0, 2);
         outputVector(ii++) = stress(1, 2);
-
-        //Cycle material outputs and place them appropriately
-        int nmaterial_output = material_array[0]->getOutputSize();
-        if (nmaterial_output > 0)
-        {
-            const Vector & matOutput = material_array[gp]->getOutput();
-            for (int jj = 0; jj < nmaterial_output ; jj++)
-            {
-                outputVector(ii++) = matOutput(jj);
-            }
-        }
     }
 
+    outputVector(ii++) = update_time_taken;
     return outputVector;
 }
 
