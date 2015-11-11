@@ -299,7 +299,7 @@ ParMetis::partition(Graph *theGraph, int numPart)
 int
 ParMetis::repartition(Graph *theGraph, int numPart)
 {
-    return 0;
+    // return 0;
 # ifdef _PDD
     int npes, mype;
     int nvtxs;
