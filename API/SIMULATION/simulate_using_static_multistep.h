@@ -226,7 +226,7 @@ int simulate_using_static_multistep(int numSteps)
         int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
         result = theStaticAnalysis->analyze(numIncr);
         // double end_time = MPI_Wtime();
-        cout << "\nAnalysis step " << i << " finished!\n";
+        // cout << "\nAnalysis step " << i << " finished!\n";
 
     }
 

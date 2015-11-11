@@ -31,6 +31,8 @@
 // #include <ESSITimer.h>
 #include "ESSITimer.h"
 
+ESSITimePoint ESSITimer::before;
+
 ESSITimer globalESSITimer;
 
 ESSITimer::ESSITimer():
@@ -142,4 +144,17 @@ void ESSITimer::remove(std::string timername)
 }
 
 
+
+//To measure time intervals in a simple way.
+void ESSITimer::tic()
+{
+	before = ESSIClock::now();
+}
+
+double ESSITimer::toc()
+{
+	auto now = ESSIClock::now();
+	ESSIDuration d = now - before;
+	return std::chrono::duration_cast<ESSIDuration>(d).count();
+}
 

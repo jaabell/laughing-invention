@@ -58,6 +58,9 @@ public:
     void clearAll();
     void remove(std::string timername);
 
+    //To measure time intervals in a simple way.
+    static void tic();
+    static double toc();
 
 private:
     std::string reportfilename;
@@ -66,9 +69,12 @@ private:
     ESSITimePointList timepoints;
     ESSITimerList timers;
 
+    static ESSITimePoint before;
+
     bool activated;
 };
 
 extern ESSITimer globalESSITimer;
+
 
 #endif
