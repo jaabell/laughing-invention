@@ -651,6 +651,7 @@ DomainPartitioner::partition(int numParts)
             {
                 if ( theLoad->hasElement(eleTag) )
                 {
+                    // cout << "  --->>> !!!! Moving load # " << theLoad->getTag() << " to domain number " << theSubdomain->getTag() << endl;
                     theLoadPattern->removeElementalLoad(theLoad->getTag());
                     theSubdomain->addElementalLoad(theLoad, loadPatternTag);
                     numTotalElementalLoads++;

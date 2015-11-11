@@ -192,7 +192,7 @@ ElementalLoad::hasElement(int tag)
 
 int ElementalLoad::sendSelf(int commitTag, Channel& theChannel)
 {
-    cout << "int ElementalLoad::sendSelf()" << endl;
+    // cout << "int ElementalLoad::sendSelf()" << endl;
     static ID data(2);
     data(0) = this->getTag();
     data(1) = numElements;
@@ -216,7 +216,7 @@ int ElementalLoad::sendSelf(int commitTag, Channel& theChannel)
 
 int ElementalLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
 {
-    cout << "int ElementalLoad::receiveSelf()" << endl;
+    // cout << "int ElementalLoad::receiveSelf()" << endl;
     static ID data(2);
 
     if (theChannel.receiveID(0, 0, data))

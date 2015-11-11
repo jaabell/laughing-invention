@@ -85,7 +85,7 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
     data(0)
 {
 
-  data = &dataV8;
+  data = &dataV8; // Why would anyone do this??????
 
 }
 
@@ -153,7 +153,7 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
 BrickSurfaceLoad::BrickSurfaceLoad()
   : ElementalLoad(LOAD_TAG_BrickSurfaceLoad)
 {
-
+  // data = &dataV18;
 }
 
 
@@ -179,6 +179,12 @@ BrickSurfaceLoad::getData(int& type, double loadFactor)
     (*data)(6) = surface_load_magnitude3;
     (*data)(7) = surface_load_magnitude4;
 
+    cout << "data = ";
+    for (int i = 0; i < 8; i++)
+    {
+      cout << (*data)[i] << " ";
+    }
+    cout << endl;
   }
   else if ( (*data).Size() == 16 )
   {
@@ -287,6 +293,25 @@ BrickSurfaceLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBro
 
   cout << "BrickSurfaceLoad::receiveSelf(...)" << endl;
   this->ElementalLoad::receiveSelf(commitTag, theChannel, theBroker);
+
+  const ID & elementtags = this->getElementTags();
+
+  int nelem = elementtags.Size();
+  cerr << "BrickSurfaceLoad::sendSelf() - nelem = " << nelem << " \n";
+
+  if (nelem = 4)
+  {
+    data = &dataV8;
+  }
+  else if (nelem = 8)
+  {
+    data = &dataV16;
+  }
+  else if (nelem = 9)
+
+  {
+    data = &dataV18;
+  }
 
   static ID nodes(9);
   static Vector magnitudes(9);
