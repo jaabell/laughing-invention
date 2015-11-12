@@ -288,13 +288,30 @@ ParMetis::partition(Graph *theGraph, int numPart)
         // delete [] xadj_METIS;
         // delete [] adjncy_METIS;
 
+        //Store for use with ParMETIS
         gnvtxs = numVertex_METIS;
         globalXadj = xadj_METIS;
         globalAdjncy = adjncy_METIS;
 
+        //Now share this info with everyone!!!
+        MPI_Bcast(&gnvtxs, 1 , MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast((void *)globalXadj, gnvtxs + 2, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast((void *)globalAdjncy, 2 * gnvtxs, MPI_INT, 0, MPI_COMM_WORLD);
+
+
         return 0;
         //exit(1);
         //------------------------------------------------------------------------------------------------------------------------------------------
+    }
+    else
+    {
+        //Getting global number of vertices from P0
+        MPI_Bcast(&gnvtxs, 1 , MPI_INT, 0, MPI_COMM_WORLD);
+        globalXadj = new int[gnvtxs + 2];
+        globalAdjncy = new int[ 2 * gnvtxs];
+        MPI_Bcast((void *)globalXadj, gnvtxs + 2, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast((void *)globalAdjncy, 2 * gnvtxs, MPI_INT, 0, MPI_COMM_WORLD);
+
     }
 
 # endif
