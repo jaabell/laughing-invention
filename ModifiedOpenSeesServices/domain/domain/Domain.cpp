@@ -2948,11 +2948,14 @@ Domain::update( void )
 
         if ( vertexPtr != 0 )
         {
-            double start_time = MPI_Wtime();
+            // double start_time = MPI_Wtime();  // MPI WTime is not assured to be a hi-res clock, and isn't in Ubuntu14.04 when OpenMPI is installed from repos. Must build by hand to get this feature!!
+            ESSITimer::tic();
             ok += theEle->update();
-            double end_time = MPI_Wtime();
+            double duration = ESSITimer::toc();
+            // double end_time = MPI_Wtime();
             double oldweight = vertexPtr->getWeight();
-            vertexPtr->setWeight(oldweight + 100.0 * (end_time - start_time)); //to be milisecond unit
+            // vertexPtr->setWeight(oldweight + 100.0 * (end_time - start_time)); //to be milisecond unit
+            vertexPtr->setWeight(oldweight + 100.0 * duration); //to be milisecond unit
         }
         else
         {
