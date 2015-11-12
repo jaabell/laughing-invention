@@ -1263,7 +1263,7 @@ PartitionedDomain::partition(int numPartitions)
 int
 PartitionedDomain::repartition(int numPartitions)
 {
-    cout << "PartitionedDomain::repartition()!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11\n";
+    cout << "PartitionedDomain::repartition() !! - Start\n";
     if (theSubdomains != 0)
     {
         for (int i = 1; i <= numPartitions; i++)
@@ -1272,7 +1272,7 @@ PartitionedDomain::repartition(int numPartitions)
 
             if (theObject == 0)
             {
-                cerr << "PartitionedDomain::repartition, can NOT retrieve subdomains!!!\n";
+                cerr << "PartitionedDomain::repartition, cannot retrieve subdomains!!!\n";
                 return -1;
             }
         }
@@ -1291,6 +1291,7 @@ PartitionedDomain::repartition(int numPartitions)
         cerr << "PartitionedDomain::repartition - no associated partitioner\n";
         return -1;
     }
+    cout << "PartitionedDomain::repartition() !! - End\n";
 }
 # endif
 
