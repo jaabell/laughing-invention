@@ -80,11 +80,27 @@ DomainPartitioner::DomainPartitioner(GraphPartitioner &theGraphPartitioner)
       ChangedNodeList(0)
 {
     // set primes to handle up to 8 partitions, can enlarge if needed
-    primes(1) = 2; primes(2) = 3; primes(3) = 5; primes(4) = 7; primes(5) = 11;
-    primes(6) = 13; primes(7) = 17; primes(8) = 19; primes(9) = 23;
-    primes(10) = 29; primes(11) = 31; primes(12) = 37; primes(13) = 41;
-    primes(14) = 43; primes(15) = 47; primes(16) = 53; primes(17) = 59;
-    primes(18) = 61; primes(19) = 67; primes(20) = 71; primes(21) = 73;
+    primes(1) = 2;
+    primes(2) = 3;
+    primes(3) = 5;
+    primes(4) = 7;
+    primes(5) = 11;
+    primes(6) = 13;
+    primes(7) = 17;
+    primes(8) = 19;
+    primes(9) = 23;
+    primes(10) = 29;
+    primes(11) = 31;
+    primes(12) = 37;
+    primes(13) = 41;
+    primes(14) = 43;
+    primes(15) = 47;
+    primes(16) = 53;
+    primes(17) = 59;
+    primes(18) = 61;
+    primes(19) = 67;
+    primes(20) = 71;
+    primes(21) = 73;
 
     cerr << "DomainPartitioner::DomainPartitioner - ";
     cerr << "does not deal with ele loads or mp_constraints yet\n";
@@ -109,11 +125,27 @@ DomainPartitioner::DomainPartitioner(GraphPartitioner &theGraphPartitioner,
       ChangedNodeList(0)
 {
     // set primes to handle up to 8 partitions, can enlarge if needed
-    primes(1) = 2; primes(2) = 3; primes(3) = 5; primes(4) = 7; primes(5) = 11;
-    primes(6) = 13; primes(7) = 17; primes(8) = 23; primes(9) = 31;
-    primes(10) = 29; primes(11) = 31; primes(12) = 37; primes(13) = 41;
-    primes(14) = 43; primes(15) = 47; primes(16) = 53; primes(17) = 59;
-    primes(18) = 61; primes(19) = 67; primes(20) = 71; primes(21) = 73;
+    primes(1) = 2;
+    primes(2) = 3;
+    primes(3) = 5;
+    primes(4) = 7;
+    primes(5) = 11;
+    primes(6) = 13;
+    primes(7) = 17;
+    primes(8) = 23;
+    primes(9) = 31;
+    primes(10) = 29;
+    primes(11) = 31;
+    primes(12) = 37;
+    primes(13) = 41;
+    primes(14) = 43;
+    primes(15) = 47;
+    primes(16) = 53;
+    primes(17) = 59;
+    primes(18) = 61;
+    primes(19) = 67;
+    primes(20) = 71;
+    primes(21) = 73;
 
     // set the links the loadBalancer needs
     theLoadBalancer.setLinks(*this);
@@ -1365,6 +1397,7 @@ DomainPartitioner::repartition(int numParts)
     ParCount = newParCount;
     newParCount = NULL;
 
+    delete subdomainPtrs;
     // double end_time = MPI_Wtime();
 
 

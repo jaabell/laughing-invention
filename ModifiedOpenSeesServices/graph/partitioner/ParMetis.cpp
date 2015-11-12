@@ -285,8 +285,12 @@ ParMetis::partition(Graph *theGraph, int numPart)
 
         delete [] options_METIS;
         delete [] partition_METIS;
-        delete [] xadj_METIS;
-        delete [] adjncy_METIS;
+        // delete [] xadj_METIS;
+        // delete [] adjncy_METIS;
+
+        gnvtxs = numVertex_METIS;
+        globalXadj = xadj_METIS;
+        globalAdjncy = adjncy_METIS;
 
         return 0;
         //exit(1);
@@ -356,11 +360,12 @@ ParMetis::repartition(Graph *theGraph, int numPart)
         MPI_Send((void *)&nvtxs, 1, MPI_INT, 0, mype, comm);
     }
     else
+    {
         for (int i = 1; i <= npes; i++)
         {
             MPI_Recv((void *)(vtxdist + i), 1, MPI_INT, i, i, comm, &stat);
         }
-
+    }
     if ( mype == 0 )
     {
         for (int i = 1; i <= npes; i++)

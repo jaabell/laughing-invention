@@ -3,8 +3,8 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:         Nima Tafazzoli, Boris Jeremic
-// DATE:               Babak Kamrani, Boris Jeremic
+// PROGRAMMER:         Jose Abell, Nima Tafazzoli, Boris Jeremic
+// DATE:
 // UPDATE HISTORY:     June 2010
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation
@@ -186,7 +186,6 @@ int simulate_using_static_multistep(int numSteps)
         theDomain.partition(OPS_NUM_SUBDOMAINS);
 
         OPS_PARTITIONED = true;
-
     }
 
 
