@@ -1777,7 +1777,7 @@ int EightNodeBrickLT::update( void )
 
     if (this->getTag() == 1)
     {
-        sleep(1);
+        sleep(10);
     }
 
     DTensor2 dh( 8, 3, 0.0 );
