@@ -837,6 +837,7 @@ DomainPartitioner::getNumPartitions(void) const
 int
 DomainPartitioner::repartition(int numParts)
 {
+    cout << "DomainPartitioner::repartition( " << numParts << ")" << endl;
     // double start_time = MPI_Wtime();
     // first we ensure the partitioned domain has numpart subdomains
     // with tags 1 through numparts
@@ -854,6 +855,7 @@ DomainPartitioner::repartition(int numParts)
         }
         subdomainPtrs[i - 1]->repartition(numParts);
     }
+    cout << "DomainPartitioner::repartition( " << numParts << ")  ---  1" << endl;
     // we get the ele graph from the domain and partition it
     Graph *theEleGraph = myDomain->getElementGraph();
     //Guanzhou: we have to keep the original graph theElementGraph = new Graph(myDomain->getElementGraph());
@@ -885,6 +887,7 @@ DomainPartitioner::repartition(int numParts)
         }
     }
 
+    cout << "DomainPartitioner::repartition( " << numParts << ")  ---  2" << endl;
     if ( !repartitioned )
     {
         return 0;    //quick return
@@ -901,6 +904,7 @@ DomainPartitioner::repartition(int numParts)
         delete elementPlace;
     }
 
+    cout << "DomainPartitioner::repartition( " << numParts << ")  ---  3" << endl;
     elementPlace = new ID(theElementGraph->getNumVertex());
 
     while ((verPtr1 = VerIter1()) != 0)
@@ -922,6 +926,7 @@ DomainPartitioner::repartition(int numParts)
         return -1;
     }
 
+    cout << "DomainPartitioner::repartition( " << numParts << ")  ---  4" << endl;
 
     for (int m = minNodeTag; m <= maxNodeTag; m++)
     {
@@ -932,14 +937,21 @@ DomainPartitioner::repartition(int numParts)
         }
     }
 
-    char *theCount = new char [2];
-    sprintf(theCount, "%d", Repartition_Count);
+    // char *theCount = new char [2];
+    // sprintf(theCount, "%d", Repartition_Count);
+    cout << " Number of repartitions = " << Repartition_Count << endl;
 
-    char *filename = new char [10];
-    strcpy (filename, "repart");
-    strcat(filename, theCount);
+    // char *filename = new char [10];
+    // strcpy (filename, "repart");
+    // strcat(filename, theCount);
+    string filename("repart_");
+    stringstream ss;
+    ss << filename;
+    ss << Repartition_Count;
+    filename = ss.str();
+    cout << "DomainPartitioner::repartition( " << numParts << ")  ---  5" << endl;
 
-    ofstream partfile(filename, ios::out);
+    ofstream partfile(filename.c_str(), ios::out);
     const int eleNum = theElementGraph->getNumVertex();
     int *where = new int[eleNum];
 
@@ -1037,8 +1049,8 @@ DomainPartitioner::repartition(int numParts)
     delete [] where;
     partfile.close();
 
-    delete [] filename;
-    delete [] theCount;
+    // delete [] filename;
+    // delete [] theCount;
     Repartition_Count++;
 
     cout << "DomainPartitioner::repartition, starting data redistribution!!!\n";
