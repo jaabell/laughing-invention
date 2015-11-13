@@ -431,10 +431,16 @@ ParMetis::repartition(Graph *theGraph, int numPart)
         MPI_Request *req = new MPI_Request [nvtxs];
         MPI_Status *stats = new MPI_Status [nvtxs];
 
+        int weight_factor = 1;
+
+        if (mype == 1)
+        {
+            weight_factor = 10;
+        }
         for (int i = 0; i < nvtxs; i++)
         {
             Vertex *vertexPtr = theGraph->getVertexPtr(i);
-            vwgt[i] = (int)(vertexPtr->getWeight());
+            vwgt[i] = (int)(vertexPtr->getWeight()) * weight_factor;
             vsize[i] = vertexPtr->getVertexSize();
             const int eleTag = vertexPtr->getRef();
             const int oldVertexTag = eleTag - 1;

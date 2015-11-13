@@ -1775,11 +1775,6 @@ int EightNodeBrickLT::update( void )
     double s  = 0.0;
     double t  = 0.0;
 
-    if (this->getTag() == 1)
-    {
-        sleep(10);
-    }
-
     DTensor2 dh( 8, 3, 0.0 );
     //DTensor2 Jacobian(3,3,0.0);
     DTensor2 JacobianINV(3, 3, 0.0);

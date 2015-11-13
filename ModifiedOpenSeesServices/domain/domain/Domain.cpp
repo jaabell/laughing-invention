@@ -2937,14 +2937,16 @@ Domain::update( void )
     {
         int eleTag = theEle->getTag();
 
-        while ( ( vertexPtr = theVertexIter() ) != 0 )
-        {
-            if ( vertexPtr->getRef() == eleTag )
-            {
-                theVertexIter.reset();
-                break;
-            }
-        }
+        // while ( ( vertexPtr = theVertexIter() ) != 0 )
+        // {
+        //     if ( vertexPtr->getRef() == eleTag )
+        //     {
+        //         theVertexIter.reset();
+        //         break;
+        //     }
+        // }
+        // Vertex *
+        vertexPtr = theEleGraph->getVertexPtr(eleTag);
 
         if ( vertexPtr != 0 )
         {
