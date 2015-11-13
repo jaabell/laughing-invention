@@ -35,9 +35,7 @@
 #include <iostream>
 using namespace std;
 
-#ifdef _BABAK_DEBUG
-#include <mpi.h>
-#endif
+
 
 int ID::ID_NOT_VALID_ENTRY = 0;
 
