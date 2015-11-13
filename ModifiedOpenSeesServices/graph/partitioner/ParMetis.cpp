@@ -290,13 +290,15 @@ ParMetis::partition(Graph *theGraph, int numPart)
 
         //Store for use with ParMETIS
         gnvtxs = numVertex_METIS;
+        gnedge = numEdge_METIS;
         globalXadj = xadj_METIS;
         globalAdjncy = adjncy_METIS;
 
         //Now share this info with everyone!!!
         MPI_Bcast(&gnvtxs, 1 , MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&gnedge, 1 , MPI_INT, 0, MPI_COMM_WORLD);
         MPI_Bcast((void *)globalXadj, gnvtxs + 2, MPI_INT, 0, MPI_COMM_WORLD);
-        MPI_Bcast((void *)globalAdjncy, 2 * gnvtxs, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast((void *)globalAdjncy, 2 * gnedge, MPI_INT, 0, MPI_COMM_WORLD);
 
 
         return 0;
@@ -307,10 +309,11 @@ ParMetis::partition(Graph *theGraph, int numPart)
     {
         //Getting global number of vertices from P0
         MPI_Bcast(&gnvtxs, 1 , MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&gnedge, 1 , MPI_INT, 0, MPI_COMM_WORLD);
         globalXadj = new int[gnvtxs + 2];
-        globalAdjncy = new int[ 2 * gnvtxs];
+        globalAdjncy = new int[ 2 * gnedge];
         MPI_Bcast((void *)globalXadj, gnvtxs + 2, MPI_INT, 0, MPI_COMM_WORLD);
-        MPI_Bcast((void *)globalAdjncy, 2 * gnvtxs, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast((void *)globalAdjncy, 2 * gnedge, MPI_INT, 0, MPI_COMM_WORLD);
 
     }
 
@@ -471,7 +474,6 @@ ParMetis::repartition(Graph *theGraph, int numPart)
     //    }
     //}
 
-    int mypwgt = 0;
     int max_wgt = 0, min_wgt = 0, sum_wgt = 0;
 
     int *edge_weight; //test for edge weight
@@ -487,11 +489,12 @@ ParMetis::repartition(Graph *theGraph, int numPart)
     }
 
 
+    int mypwgt = 0;
     if ( mype != 0 )
     {
         for (int i = 0; i < nvtxs; i++)
         {
-            mypwgt = mypwgt + vwgt[i];
+            mypwgt += vwgt[i];
         }
 
         MPI_Allreduce((void *)&mypwgt, (void *)&max_wgt, 1, MPI_INT, MPI_MAX, worker);

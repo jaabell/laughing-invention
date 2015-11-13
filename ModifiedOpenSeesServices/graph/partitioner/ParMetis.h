@@ -106,7 +106,7 @@ private:
 
     float itr;
 
-    int gnvtxs;//, nvtxs;
+    int gnvtxs, gnedge;//, nvtxs;
 
     //int *eleList, *vertexList;
 
