@@ -560,7 +560,6 @@ ParMetis::repartition(Graph *theGraph, int numPart)
     numflag = 0;
     ncon = 1;
     nobj = 0;
-    part = new int [nvtxs];
     options[0] = 1;
     options[1] = 2;
     options[2] = 15;
@@ -569,6 +568,7 @@ ParMetis::repartition(Graph *theGraph, int numPart)
     //if ( mype == 2 ) vwgt[1] = 30000;
     if ( mype != 0 )
     {
+        part = new int [nvtxs];
         //test for edge weightParMETIS_V3_AdaptiveRepart(vtxdist, xadj, adjncy, vwgt,
         //test for edge weight  vsize, NULL, &wgtflag, &numflag, &ncon, &numPart, tpwgts, ubvec, &itr,
         //test for edge weight  options, &edgecut, part, &worker);
@@ -667,9 +667,9 @@ ParMetis::repartition(Graph *theGraph, int numPart)
         delete [] vwgt;
         delete [] vsize;
         delete [] edge_weight;
+        delete [] part;
     }
 
-    delete [] part;
     delete [] OldToNewLabel;
     //cerr << "ParMetis::partition() -9\n";
 
