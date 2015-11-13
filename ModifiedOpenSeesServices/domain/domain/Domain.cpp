@@ -1407,33 +1407,51 @@ Domain::addNodalLoad( NodalLoad *load, int pattern )
 bool
 Domain::addElementalLoad( ElementalLoad *load, int pattern )
 {
-    // now add it to the pattern
-    TaggedObject *thePattern = theLoadPatterns->getComponentPtr( pattern );
-
-    if ( thePattern == 0 )
+    bool element_exists_in_this_domain = false;
+    ID &elements = load->getElementTags();
+    for (int i = 0; i < ID.Size(); i++)
     {
-        cerr << "Domain::addNodalLoad() - no pattern with tag " << pattern <<
-             "exits in  the model, not adding the ele load " << endln;
-        //  "exits in  the model, not adding the ele load " << *load << endln;
-
-        return false;
+        if ( this->getElement(elements(i)) != 0)
+        {
+            element_exists_in_this_domain = true;
+            break;
+        }
     }
 
-    LoadPattern *theLoadPattern = ( LoadPattern *)thePattern;
-    bool result = theLoadPattern->addElementalLoad( load );
-
-    if ( result == false )
+    if (element_exists_in_this_domain)
     {
-        cerr << "Domain::addNodalLoad() - no pattern with tag" <<
-             pattern << "in  the model, not adding the ele load" << endln;
-        //  pattern << "in  the model, not adding the ele load" << *load << endln;
-        return false;
+        // now add it to the pattern
+        TaggedObject *thePattern = theLoadPatterns->getComponentPtr( pattern );
+
+        if ( thePattern == 0 )
+        {
+            cerr << "Domain::addNodalLoad() - no pattern with tag " << pattern <<
+                 "exits in  the model, not adding the ele load " << endln;
+            //  "exits in  the model, not adding the ele load " << *load << endln;
+
+            return false;
+        }
+
+        LoadPattern *theLoadPattern = ( LoadPattern *)thePattern;
+        bool result = theLoadPattern->addElementalLoad( load );
+
+        if ( result == false )
+        {
+            cerr << "Domain::addNodalLoad() - no pattern with tag" <<
+                 pattern << "in  the model, not adding the ele load" << endln;
+            //  pattern << "in  the model, not adding the ele load" << *load << endln;
+            return false;
+        }
+
+
+        // load->setDomain(this); // done in LoadPattern::addElementalLoad()
+        this->domainChange();
+        return result;
     }
-
-
-    // load->setDomain(this); // done in LoadPattern::addElementalLoad()
-    this->domainChange();
-    return result;
+    else
+    {
+        return true;
+    }
 }
 
 
