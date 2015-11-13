@@ -890,6 +890,7 @@ DomainPartitioner::repartition(int numParts)
     cout << "DomainPartitioner::repartition( " << numParts << ")  ---  2" << endl;
     if ( !repartitioned )
     {
+        cout << "DomainPartitioner::repartition( " << numParts << ")  - It was not necessary to repartition this step. " << endl;
         return 0;    //quick return
     }
 
