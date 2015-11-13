@@ -893,6 +893,10 @@ DomainPartitioner::repartition(int numParts)
         cout << "DomainPartitioner::repartition( " << numParts << ")  - It was not necessary to repartition this step. " << endl;
         return 0;    //quick return
     }
+    else
+    {
+        cout << "DomainPartitioner::repartition( " << numParts << ")  - Rebalancing domain. " << endl;
+    }
 
     //The domain is repartitioned!!!!
     //record the new element place
