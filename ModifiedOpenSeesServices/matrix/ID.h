@@ -116,9 +116,6 @@ ID::operator()(int x)
     if (x < 0 || x >= sz)
     {
         std::cerr << "ID::(loc) - loc " << x << " outside range 0 - " <<  sz - 1 << endln;
-#ifdef _BABAK_DEBUG
-        abort();
-#endif
         return ID_NOT_VALID_ENTRY;
     }
 
@@ -136,9 +133,6 @@ ID::operator()(int x) const
     if (x < 0 || x >= sz)
     {
         cerr << "ID::(loc) - loc " << x << " outside range 0 - " <<  sz - 1 << endln;
-#ifdef _BABAK_DEBUG
-        abort();
-#endif
         return ID_NOT_VALID_ENTRY;
     }
 
