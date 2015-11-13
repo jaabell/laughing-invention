@@ -2954,11 +2954,15 @@ Domain::update( void )
             double duration = ESSITimer::toc();
             // double end_time = MPI_Wtime();
             double oldweight = vertexPtr->getWeight();
+            double newweight = oldweight + 100.0 * duration;
             // vertexPtr->setWeight(oldweight + 100.0 * (end_time - start_time)); //to be milisecond unit
-            vertexPtr->setWeight(oldweight + 100.0 * duration); //to be milisecond unit
+            vertexPtr->setWeight(newweight); //to be milisecond unit
+
+            // cout << eleTag <<  ": oldweight = " << oldweight << ", newweight = " << newweight << endl;
         }
         else
         {
+            // cout << eleTag <<  ": no weighting info!" << endl;
             ok += theEle->update();
         }
     }

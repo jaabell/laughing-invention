@@ -301,6 +301,7 @@ ParMetis::partition(Graph *theGraph, int numPart)
         MPI_Bcast((void *)globalAdjncy, 2 * gnedge, MPI_INT, 0, MPI_COMM_WORLD);
 
 
+
         return 0;
         //exit(1);
         //------------------------------------------------------------------------------------------------------------------------------------------
@@ -315,6 +316,31 @@ ParMetis::partition(Graph *theGraph, int numPart)
         MPI_Bcast((void *)globalXadj, gnvtxs + 2, MPI_INT, 0, MPI_COMM_WORLD);
         MPI_Bcast((void *)globalAdjncy, 2 * gnedge, MPI_INT, 0, MPI_COMM_WORLD);
 
+
+        if ( PID != 0 )
+        {
+            //Initialize these arrays needed later in ParMeTiS
+            int edgecut;
+            wgtflag = 2;
+            numflag = 0;
+            ncon = 1;
+            nobj = 0;
+
+            tpwgts = new float [ncon * numPart];
+
+            for ( int i = 0; i < ncon * numPart; i++)
+            {
+                tpwgts[i] = 1.0 / (float)numPart;
+            }
+
+            ubvec = new float [ncon];//unbalance vector
+
+            for (int i = 0; i < ncon ; i++)
+            {
+                ubvec[i] = 1.05;
+            }
+
+        }
     }
 
 # endif
@@ -619,6 +645,7 @@ ParMetis::repartition(Graph *theGraph, int numPart)
 
     MPI_Comm_free(&worker);
     MPI_Comm_free(&comm);
+
 
 # endif
 

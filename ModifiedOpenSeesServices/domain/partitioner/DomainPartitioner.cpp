@@ -855,11 +855,12 @@ DomainPartitioner::repartition(int numParts)
         subdomainPtrs[i - 1]->repartition(numParts);
     }
     // we get the ele graph from the domain and partition it
-    //    Graph &theEleGraph = myDomain->getElementGraph();
+    Graph *theEleGraph = myDomain->getElementGraph();
     //Guanzhou: we have to keep the original graph theElementGraph = new Graph(myDomain->getElementGraph());
 
     //    int theError = thePartitioner.repartition(theElementGraph, numParts); /*Out  by B. Kamrani September 3dr 2010 */
-    int theError = thePartitioner.repartition(theElementGraph, numParts); /*Replaced by B. Kamrani September 3dr 2010 */
+    int theError = thePartitioner.repartition(theEleGraph, numParts); /*Replaced by B. Kamrani September 3dr 2010 */
+    // int theError = thePartitioner.repartition(theElementGraph, numParts); /*Replaced by B. Kamrani September 3dr 2010 */
 
     if (theError < 0)
     {
