@@ -120,10 +120,6 @@ PlainHandler::handle(const ID *nodesLast)
     numFE = theDomain->getNumElements();
     numDOF = theDomain->getNumNodes();
 
-#ifdef _BABAK_DEBUG
-    //Added by Babak Kamrani 05/28/2012:
-    cerr << "BABAK @ PlainHandler::handle(const ID *nodesLast)--PID # " << processID << "   NumElements in : " << numFE << "      and NumNodes in :" << numDOF << endl;
-#endif
 
     // create an array for the FE_elements and zero it
     if ((numFE <= 0) || ((theFEs  = new FE_Element *[numFE]) == 0))

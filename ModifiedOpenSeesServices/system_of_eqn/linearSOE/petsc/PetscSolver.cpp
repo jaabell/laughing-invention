@@ -57,10 +57,6 @@
 using namespace std;
 //-------------------------------------
 
-#ifdef _BABAK_DEBUG
-extern    int g_Step_Number ;
-#endif
-
 PetscSolver::PetscSolver()
     : LinearSOESolver(SOLVER_TAGS_PetscSolver),
       rTol(PETSC_DEFAULT), aTol(PETSC_DEFAULT), dTol(PETSC_DEFAULT), maxIts(PETSC_DEFAULT), matType(MATMPIAIJ),

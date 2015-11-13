@@ -49,10 +49,6 @@ using namespace std;
 
 #define GLOBAL_MSG_TAG 99 //Guanzhou added for point-to-point msg communication
 
-#ifdef _BABAK_DEBUG
-#include <LoadPattern.h>
-extern LoadPattern *DRM_LOAD_PATTERN ;
-#endif
 
 MPI_Channel::MPI_Channel(int other)
     : otherTag(other), otherComm(MPI_COMM_WORLD)
@@ -137,10 +133,7 @@ MPI_Channel::sendObj(int commitTag,
         }
     }
 
-#ifdef _BABAK_DEBUG
-    //  cerr << "MPI_Channel::sendObj BEFORE theObject.sendSelf(commitTag, *this) -- DRM INFORMATION:\n" ;
-    //    DRM_LOAD_PATTERN->Print(cerr);
-#endif
+
     return theObject.sendSelf(commitTag, *this);
 }
 
@@ -453,16 +446,6 @@ int
 MPI_Channel::receiveID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress)
 {
 
-#ifdef _BABAK_DEBUG
-
-    if (theID(1) == 7001)
-    {
-        cerr << "Babak@ MPI_Channel::receiveID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress) ... ClassTag " << theID << "\n";
-        cerr << "Babak@ MPI_Channel::receiveID(int dbTag, int commitTag, ID &theID, ChannelAddress *theAddress) ... IDSize " << theID.sz << "\n";
-
-    }
-
-#endif
     // first check address is the only address a MPI_Channel can send to
     MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 
@@ -518,12 +501,7 @@ MPI_Channel::receiveID(int dbTag, int commitTag, ID &theID, ChannelAddress *theA
 int
 MPI_Channel::sendID(int dbTag, int commitTag, const ID &theID, ChannelAddress *theAddress)
 {
-    //     #ifdef _BABAK_DEBUG
-    //     if (theID(1) == 7001)
-    //     {
-    //       cerr << "Babak@ MPI_Channel::sendID(int dbTag, int commitTag, const ID &theID, ChannelAddress *theAddress) ... sending ... ClassTag " << theID << "\n";
-    //     }
-    //     #endif
+
     // first check address is the only address a MPI_Channel can send to
     MPI_ChannelAddress *theMPI_ChannelAddress = 0;
 

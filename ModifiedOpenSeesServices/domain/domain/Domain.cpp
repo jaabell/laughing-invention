@@ -193,7 +193,6 @@ using namespace std;
 # include <VertexIter.h>
 # endif
 
-//#ifdef _BABAK_DEBUG
 #ifdef _PARALLEL_PROCESSING
 #include <mpi.h>
 #endif
@@ -201,7 +200,6 @@ using namespace std;
 #include <string.h>
 #include <sstream>
 #include <fstream>
-//#endif
 
 Domain *ops_TheActiveDomain = 0;
 

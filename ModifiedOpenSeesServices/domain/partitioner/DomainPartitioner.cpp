@@ -69,9 +69,6 @@ using std::ios;
 using std::ofstream;
 extern ofstream timingfile;
 
-#ifdef _BABAK_DEBUG
-extern LoadPattern *DRM_LOAD_PATTERN ;
-#endif
 
 DomainPartitioner::DomainPartitioner(GraphPartitioner &theGraphPartitioner)
     : myDomain(0), thePartitioner(theGraphPartitioner), theBalancer(0),

@@ -38,11 +38,6 @@
 #include <iostream>
 using namespace std;
 
-//#ifdef _BABAK_DEBUG
-#ifdef _PARALLEL_PROCESSING
-#include <mpi.h>
-#endif
-
 
 Vertex::Vertex()
     : TaggedObject(-1), myRef(-1), myWeight(-1), myColor(-1),

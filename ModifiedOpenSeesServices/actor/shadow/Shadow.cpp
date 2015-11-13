@@ -45,10 +45,6 @@
 using namespace std;
 
 
-#ifdef _BABAK_DEBUG
-#include <LoadPattern.h>
-extern LoadPattern* DRM_LOAD_PATTERN ;
-#endif
 Shadow::Shadow(Channel& theChan,
                FEM_ObjectBroker& myBroker)
     : theChannel(&theChan), theBroker(&myBroker), theRemoteActorsAddress(0), commitTag(0)
@@ -95,10 +91,7 @@ Shadow::~Shadow()
 int
 Shadow::sendObject(MovableObject& theObject)
 {
-    #ifdef _BABAK_DEBUG
-    //cerr << "Shadow::sendObject--BEFORE theSubdomain->addLoadPattern(newLoadPattern) -- DRM INFORMATION:\n";
-    //DRM_LOAD_PATTERN->Print(cerr);
-    #endif
+
     return theChannel->sendObj(commitTag, theObject, theRemoteActorsAddress);
 }
 
@@ -148,28 +141,12 @@ Shadow::receiveVector(Vector& theVector)
 int
 Shadow::sendID(const ID& theID)
 {
-    #ifdef _BABAK_DEBUG
-
-    if (theID(1) == 14)
-    {
-        cerr << "Babak@ Shadow::sendID(const ID &theID) ... theID " << theID << "\n";
-    }
-
-    #endif
     return theChannel->sendID(0, commitTag, theID, theRemoteActorsAddress);
 }
 
 int
 Shadow::receiveID(ID& theID)
 {
-    #ifdef _BABAK_DEBUG
-
-    if (theID(1) == 14)
-    {
-        cerr << "Babak@ Shadow::receiveID(ID &theID) ... theID " << theID << "\n";
-    }
-
-    #endif
     return theChannel->receiveID(0, commitTag, theID, theRemoteActorsAddress);
 }
 

@@ -319,12 +319,6 @@ DOF_Group::setID(int index, int value)
     if ((index >= 0) && (index < numDOF))
     {
         myID(index) = value;
-#ifdef _BABAK_DEBUG
-        int numProcesses, processID;
-        MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-        MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-        cerr << "BABAK @ DOF_Group::setID(int index, int value):--PID # " << processID << "  myID set to #" << myID(index) << "   and the Index is" << index << "\n";
-#endif
     }
     else
     {
@@ -340,15 +334,6 @@ void
 DOF_Group::setID(const ID &copy)
 {
     myID = copy;
-#ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-
-    cerr << "BABAK @ DOF_Group::setID:--PID # " << processID << "  myID set to #" << myID << "\n";
-
-#endif
 }
 
 
@@ -358,15 +343,6 @@ DOF_Group::setID(const ID &copy)
 const ID &
 DOF_Group::getID(void) const
 {
-#ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-
-    cerr << "BABAK @ DOF_Group::getID:--PID # " << processID << "  myID is #" << myID << "\n";
-
-#endif
     return myID;
 }
 

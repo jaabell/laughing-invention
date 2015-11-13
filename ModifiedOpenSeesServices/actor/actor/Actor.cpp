@@ -184,11 +184,11 @@ Actor::sendObject(MovableObject &theObject,
 
 int
 Actor::receiveObject(MovableObject &theObject,
-                  ChannelAddress *theAddress )
+                     ChannelAddress *theAddress )
 {
     if (theAddress == 0)
         return theChannel->receiveObj(commitTag, theObject, *theBroker,
-                                   theRemoteShadowsAddress);
+                                      theRemoteShadowsAddress);
     else
     {
         return theChannel->receiveObj(commitTag, theObject, *theBroker, theAddress);
@@ -294,28 +294,10 @@ Actor::receiveID(ID &theID, ChannelAddress *theAddress )
 {
     if (theAddress == 0)
     {
-
-#ifdef _BABAK_DEBUG
-
-        if (theID(1) == 7001)
-        {
-            cerr << "Babak@ Actor::receiveID(ID &theID, ChannelAddress *theAddress ) - theAddress =0... theID " << theID << "\n";
-        }
-
-#endif
         return theChannel->receiveID(0, commitTag, theID, theRemoteShadowsAddress);
     }
     else
     {
-
-#ifdef _BABAK_DEBUG
-
-        if (theID(1) == 7001)
-        {
-            cerr << "Babak@ Actor::receiveID(ID &theID, ChannelAddress *theAddress ) ... theID " << theID << "\n";
-        }
-
-#endif
         return theChannel->receiveID(0, commitTag, theID, theAddress);
     }
 }

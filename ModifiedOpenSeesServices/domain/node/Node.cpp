@@ -875,22 +875,6 @@ Node::getUnbalancedLoad(void)
         }
     }
 
-#ifdef _BABAK_DEBUG
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-    //  if(this->getTag() ==49)
-    //  {
-    cerr << "BABAK @ Node::getUnbalancedLoad:--PID # " << processID << "  Node #" << this->getTag() << "unbalanceLoad:" << *unbalLoad << "\n";
-    //  }
-#endif
-    // return the unbalanced load
-
-    //Guanzhou added for debug
-    //cerr << "Node " << this->getTag() << "\n";
-    //cerr << "Node::getUnbalancedLoad: " << *unbalLoad << "\n";
-
     return *unbalLoad;
 }
 

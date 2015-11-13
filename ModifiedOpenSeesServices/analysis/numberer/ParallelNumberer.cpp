@@ -46,10 +46,6 @@
 #include <iostream>
 using namespace std;
 
-#ifdef _BABAK_DEBUG
-#include <mpi.h>
-#endif
-
 ParallelNumberer::ParallelNumberer(int dTag, int numSub, Channel** theC)
     : DOF_Numberer(NUMBERER_TAG_ParallelNumberer),
       processID(dTag), numChannels(numSub)
