@@ -224,7 +224,8 @@ DomainPartitioner::partition(int numParts)
 
     // we get the ele graph from the domain and partition it
 
-    theElementGraph = new Graph(*(myDomain->getElementGraph()));
+    // theElementGraph = new Graph(*(myDomain->getElementGraph()));
+    theElementGraph = myDomain->getElementGraph();
     int theError = thePartitioner.partition(theElementGraph, numParts);
 
     if (theError < 0)
