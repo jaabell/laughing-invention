@@ -1408,8 +1408,8 @@ bool
 Domain::addElementalLoad( ElementalLoad *load, int pattern )
 {
     bool element_exists_in_this_domain = false;
-    ID &elements = load->getElementTags();
-    for (int i = 0; i < ID.Size(); i++)
+    const ID &elements = load->getElementTags();
+    for (int i = 0; i < elements.Size(); i++)
     {
         if ( this->getElement(elements(i)) != 0)
         {
