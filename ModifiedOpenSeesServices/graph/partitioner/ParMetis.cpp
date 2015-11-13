@@ -622,20 +622,27 @@ ParMetis::repartition(Graph *theGraph, int numPart)
     if (mype == 0)
     {
         // This is old... P0 has nothing.... Thu 12 Nov 2015 05:08:38 PM PST - Jaabell
-        for (int vert = 0; vert < gnvtxs; vert++)
-        {
-            Vertex *vertexPtr;
-            vertexPtr = theGraph->getVertexPtr(vert + START_VERTEX_NUM);
-            vertexPtr->setColor(partitions[vert] + 1); // start colors at 1!!!
-        }
+        // for (int vert = 0; vert < gnvtxs; vert++)
+        // {
+        //     Vertex *vertexPtr;
+        //     vertexPtr = theGraph->getVertexPtr(vert + START_VERTEX_NUM);
+        //     vertexPtr->setColor(partitions[vert] + 1); // start colors at 1!!!
+        // }
     }
     else
     {
         for (int i = 0; i < nvtxs; i++)
         {
+            int newcolor = part[i] + 1;
             Vertex *vertex;
             vertex = theGraph->getVertexPtr(i + START_VERTEX_NUM);
-            vertex->setColor(part[i] + 1);
+            int oldcolor = vertex->getColor();
+            if (oldcolor != newcolor)
+            {
+                cout << "Vertex " << vertex->getRef() <<  " changed color !\n";
+                cout << "   old color = " << oldcolor << ", new color = " << newcolor << endl;
+                vertex->setColor(newcolor);
+            }
         }
     }
 

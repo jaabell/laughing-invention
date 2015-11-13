@@ -68,7 +68,7 @@ check element # <.>;
 check mesh filename;
 compute reaction forces;
 define algorithm With_no_convergence_check / Newton / Modified_Newton;
-define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Unbalance tolerance = <length> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
+define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Unbalance tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
 define dynamic integrator Hilber_Hughes_Taylor with alpha = <.>;
 define dynamic integrator Newmark with gamma = <.> beta = <.>;
 define load factor increment <.>;
