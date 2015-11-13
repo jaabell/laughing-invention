@@ -552,9 +552,11 @@ ParMetis::repartition(Graph *theGraph, int numPart)
         //test for edge weightParMETIS_V3_AdaptiveRepart(vtxdist, xadj, adjncy, vwgt,
         //test for edge weight  vsize, NULL, &wgtflag, &numflag, &ncon, &numPart, tpwgts, ubvec, &itr,
         //test for edge weight  options, &edgecut, part, &worker);
+        cout << " --- Calling ParMETIS --- " << endl;
         ParMETIS_V3_AdaptiveRepart(vtxdist, xadj, adjncy, vwgt,
                                    vsize, edge_weight, &wgtflag, &numflag, &ncon, &numPart, tpwgts, ubvec, &itr,
                                    options, &edgecut, part, &worker);
+        cout << " --- End     ParMETIS --- " << endl;
 
         //ParMETIS_V3_PartKway(vtxdist, xadj, adjncy, vwgt, NULL, &wgtflag,
         //  &numflag, &ncon, &numPart, tpwgts, ubvec, options, &edgecut, part, &worker);
