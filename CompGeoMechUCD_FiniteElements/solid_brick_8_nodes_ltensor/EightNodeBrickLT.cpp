@@ -38,6 +38,9 @@
 #include <HDF5_Channel.h>
 #include <ESSITimer.h>
 
+#include <unistd.h>
+
+
 
 
 double EightNodeBrickLT::SurfaceLoadValues_in_function;         // Nima added for surface load (July 2012)
@@ -1772,6 +1775,10 @@ int EightNodeBrickLT::update( void )
     double s  = 0.0;
     double t  = 0.0;
 
+    if (this->getTag() == 1)
+    {
+        sleep(1);
+    }
 
     DTensor2 dh( 8, 3, 0.0 );
     //DTensor2 Jacobian(3,3,0.0);
