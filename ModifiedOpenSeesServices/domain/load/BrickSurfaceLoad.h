@@ -60,69 +60,69 @@
 
 class BrickSurfaceLoad : public ElementalLoad
 {
-    public:
-        BrickSurfaceLoad(int tag, const ID& theElementTags,
-                         int Node_1, int Node_2, int Node_3, int Node_4,
-                         double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
-                         double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4);
+public:
+    BrickSurfaceLoad(int tag, const ID& theElementTags,
+                     int Node_1, int Node_2, int Node_3, int Node_4,
+                     double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
+                     double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4);
 
-        BrickSurfaceLoad(int tag, const ID& theElementTags,
-                         int Node_1, int Node_2, int Node_3, int Node_4,
-                         int Node_5, int Node_6, int Node_7, int Node_8,
-                         double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
-                         double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4,
-                         double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
-                         double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8);
+    BrickSurfaceLoad(int tag, const ID& theElementTags,
+                     int Node_1, int Node_2, int Node_3, int Node_4,
+                     int Node_5, int Node_6, int Node_7, int Node_8,
+                     double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
+                     double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4,
+                     double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
+                     double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8);
 
-        BrickSurfaceLoad(int tag, const ID& theElementTags,
-                         int Node_1, int Node_2, int Node_3, int Node_4,
-                         int Node_5, int Node_6, int Node_7, int Node_8, int Node_9,
-                         double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
-                         double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4,
-                         double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
-                         double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8,
-                         double SurfaceLoadMagnitude9);
-
-
+    BrickSurfaceLoad(int tag, const ID& theElementTags,
+                     int Node_1, int Node_2, int Node_3, int Node_4,
+                     int Node_5, int Node_6, int Node_7, int Node_8, int Node_9,
+                     double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
+                     double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4,
+                     double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
+                     double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8,
+                     double SurfaceLoadMagnitude9);
 
 
 
-        BrickSurfaceLoad();
-        ~BrickSurfaceLoad();
 
-        const Vector& getData(int& type, double loadFactor);
 
-        int sendSelf(int commitTag, Channel& theChannel);
-        int receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker);
-        void Print(ostream& s, int flag = 0);
+    BrickSurfaceLoad();
+    ~BrickSurfaceLoad();
 
-    protected:
+    const Vector& getData(int& type, double loadFactor);
 
-    private:
-        Vector* data;
-        static Vector dataV8;
-        static Vector dataV16;
-        static Vector dataV18;
+    virtual int sendSelf(int commitTag, Channel& theChannel);
+    virtual int receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker);
+    virtual void Print(ostream& s, int flag = 0);
 
-        int node1;
-        int node2;
-        int node3;
-        int node4;
-        int node5;
-        int node6;
-        int node7;
-        int node8;
-        int node9;
+protected:
 
-        double surface_load_magnitude1;
-        double surface_load_magnitude2;
-        double surface_load_magnitude3;
-        double surface_load_magnitude4;
-        double surface_load_magnitude5;
-        double surface_load_magnitude6;
-        double surface_load_magnitude7;
-        double surface_load_magnitude8;
-        double surface_load_magnitude9;
+private:
+    Vector* data;
+    static Vector dataV8;
+    static Vector dataV16;
+    static Vector dataV18;
+
+    int node1;
+    int node2;
+    int node3;
+    int node4;
+    int node5;
+    int node6;
+    int node7;
+    int node8;
+    int node9;
+
+    double surface_load_magnitude1;
+    double surface_load_magnitude2;
+    double surface_load_magnitude3;
+    double surface_load_magnitude4;
+    double surface_load_magnitude5;
+    double surface_load_magnitude6;
+    double surface_load_magnitude7;
+    double surface_load_magnitude8;
+    double surface_load_magnitude9;
 };
 
 #endif

@@ -52,8 +52,8 @@ public:
     virtual int addElement(int tag);//Guanzhou added for PDD
     virtual bool hasElement(int tag);
 
-    int sendSelf(int commitTag, Channel& theChannel);
-    int receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker);
+    virtual int sendSelf(int commitTag, Channel& theChannel);
+    virtual int receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker);
 
 protected:
     int setElementTags(ID& theEleTags);

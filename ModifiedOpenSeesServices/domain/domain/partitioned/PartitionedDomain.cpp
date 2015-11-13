@@ -1262,7 +1262,7 @@ PartitionedDomain::partition(int numPartitions)
 int
 PartitionedDomain::repartition(int numPartitions)
 {
-    cout << "PartitionedDomain::repartition() !! - Start\n";
+    // cout << "PartitionedDomain::repartition() !! - Start\n";
     if (theSubdomains != 0)
     {
         for (int i = 1; i <= numPartitions; i++)
@@ -1290,7 +1290,7 @@ PartitionedDomain::repartition(int numPartitions)
         cerr << "PartitionedDomain::repartition - no associated partitioner\n";
         return -1;
     }
-    cout << "PartitionedDomain::repartition() !! - End\n";
+    // cout << "PartitionedDomain::repartition() !! - End\n";
 }
 # endif
 

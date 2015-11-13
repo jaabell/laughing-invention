@@ -838,7 +838,7 @@ DomainPartitioner::getNumPartitions(void) const
 int
 DomainPartitioner::repartition(int numParts)
 {
-    cout << "DomainPartitioner::repartition( " << numParts << ")" << endl;
+    // cout << "DomainPartitioner::repartition( " << numParts << ")" << endl;
     // double start_time = MPI_Wtime();
     // first we ensure the partitioned domain has numpart subdomains
     // with tags 1 through numparts
@@ -856,7 +856,7 @@ DomainPartitioner::repartition(int numParts)
         }
         subdomainPtrs[i - 1]->repartition(numParts);
     }
-    cout << "DomainPartitioner::repartition( " << numParts << ")  ---  1" << endl;
+    // cout << "DomainPartitioner::repartition( " << numParts << ")  ---  1" << endl;
     // we get the ele graph from the domain and partition it
     Graph *theEleGraph = myDomain->getElementGraph();
     //Guanzhou: we have to keep the original graph theElementGraph = new Graph(myDomain->getElementGraph());
@@ -888,15 +888,15 @@ DomainPartitioner::repartition(int numParts)
         }
     }
 
-    cout << "DomainPartitioner::repartition( " << numParts << ")  ---  2" << endl;
+    // cout << "DomainPartitioner::repartition( " << numParts << ")  ---  2" << endl;
     if ( !repartitioned )
     {
-        cout << "DomainPartitioner::repartition( " << numParts << ")  - It was not necessary to repartition this step. " << endl;
+        // cout << "DomainPartitioner::repartition( " << numParts << ")  - It was not necessary to repartition this step. " << endl;
         return 0;    //quick return
     }
     else
     {
-        cout << "DomainPartitioner::repartition( " << numParts << ")  - Rebalancing domain. " << endl;
+        // cout << "DomainPartitioner::repartition( " << numParts << ")  - Rebalancing domain. " << endl;
     }
 
     //The domain is repartitioned!!!!
