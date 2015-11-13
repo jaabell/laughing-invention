@@ -339,7 +339,6 @@ ParMetis::partition(Graph *theGraph, int numPart)
             {
                 ubvec[i] = 1.05;
             }
-
         }
     }
 
@@ -349,7 +348,7 @@ ParMetis::partition(Graph *theGraph, int numPart)
 int
 ParMetis::repartition(Graph *theGraph, int numPart)
 {
-    // return 0;
+    return 0;
 # ifdef _PDD
     int npes, mype;
     int nvtxs;
@@ -657,7 +656,6 @@ ParMetis::repartition(Graph *theGraph, int numPart)
 
     // clean up the space and return
 
-    delete [] partitions;
     delete [] vtxdist;
 
     if (mype != 0)
@@ -668,6 +666,10 @@ ParMetis::repartition(Graph *theGraph, int numPart)
         delete [] vsize;
         delete [] edge_weight;
         delete [] part;
+    }
+    else
+    {
+        delete [] partitions;
     }
 
     delete [] OldToNewLabel;
