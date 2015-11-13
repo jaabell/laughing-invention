@@ -585,7 +585,6 @@ ParMetis::repartition(Graph *theGraph, int numPart)
         cerr << "ParMETIS_V3_AdaptiveRepart reported a cut of " << edgecut << "\n";
     }
 
-    partitions = new int [gnvtxs];
 
     if ( mype != 0 )
     {
@@ -608,6 +607,7 @@ ParMetis::repartition(Graph *theGraph, int numPart)
     {
         MPI_Request *req = new MPI_Request [gnvtxs];
         MPI_Status *stats = new MPI_Status [gnvtxs];
+        partitions = new int [gnvtxs];
 
         for (int i = 0; i < gnvtxs; i++)
         {
@@ -622,12 +622,12 @@ ParMetis::repartition(Graph *theGraph, int numPart)
     if (mype == 0)
     {
         // This is old... P0 has nothing.... Thu 12 Nov 2015 05:08:38 PM PST - Jaabell
-        // for (int vert = 0; vert < gnvtxs; vert++)
-        // {
-        //     Vertex *vertexPtr;
-        //     vertexPtr = theGraph->getVertexPtr(vert + START_VERTEX_NUM);
-        //     vertexPtr->setColor(partitions[vert] + 1); // start colors at 1!!!
-        // }
+        for (int vert = 0; vert < gnvtxs; vert++)
+        {
+            Vertex *vertexPtr;
+            vertexPtr = theGraph->getVertexPtr(vert + START_VERTEX_NUM);
+            vertexPtr->setColor(partitions[vert] + 1); // start colors at 1!!!
+        }
     }
     else
     {
