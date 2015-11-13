@@ -1448,7 +1448,7 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC define convergence test [Norm_Displacement_Increment] / [Energy_Increment] / [Norm_Unbalance] tolerance = <length> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
+	//!FEIDOC define convergence test [Norm_Displacement_Increment] / [Energy_Increment] / [Norm_Unbalance] tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
 	| DEFINE CONVERGENCE_TEST TESTNAME tolerance '=' exp maximum_iterations '=' exp verbose_level '=' exp
 	{
 		args.clear(); signature.clear();
@@ -1461,19 +1461,19 @@ CMD_define
 		{
 			f = &define_convergence_test_normdisplacementincrement_for_analysis;
 			fname = "define_convergence_test_normdisplacementincrement_for_analysis";
-			args.push_back($6); signature.push_back(this_signature("tolerance", &isLength));
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
 		}
 		if($3->compare("Energy_Increment") == 0)
 		{
 			f = &define_convergence_test_energyincrement_for_analysis;
 			fname = "define_convergence_test_energyincrement_for_analysis";
-			args.push_back($6); signature.push_back(this_signature("tolerance", &isEnergy));
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
 		}
 		if($3->compare("Norm_Unbalance") == 0)
 		{
 			f = &define_convergence_test_normunbalance_for_analysis;
 			fname = "define_convergence_test_normunbalance_for_analysis";
-			args.push_back($6); signature.push_back(this_signature("tolerance", &isForce));
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
 		}
 		args.push_back($9); signature.push_back(this_signature("maximum_iterations", &isAdimensional));
 		args.push_back($12); signature.push_back(this_signature("verbose_level", &isAdimensional));

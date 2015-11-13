@@ -1848,19 +1848,19 @@ namespace yy {
 		{
 			f = &define_convergence_test_normdisplacementincrement_for_analysis;
 			fname = "define_convergence_test_normdisplacementincrement_for_analysis";
-			args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isLength));
+			args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isAdimensional));
 		}
 		if((yystack_[9].value.ident)->compare("Energy_Increment") == 0)
 		{
 			f = &define_convergence_test_energyincrement_for_analysis;
 			fname = "define_convergence_test_energyincrement_for_analysis";
-			args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isEnergy));
+			args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isAdimensional));
 		}
 		if((yystack_[9].value.ident)->compare("Norm_Unbalance") == 0)
 		{
 			f = &define_convergence_test_normunbalance_for_analysis;
 			fname = "define_convergence_test_normunbalance_for_analysis";
-			args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isForce));
+			args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("tolerance", &isAdimensional));
 		}
 		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("maximum_iterations", &isAdimensional));
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("verbose_level", &isAdimensional));
