@@ -2954,7 +2954,7 @@ Domain::update( void )
             double duration = ESSITimer::toc();
             // double end_time = MPI_Wtime();
             double oldweight = vertexPtr->getWeight();
-            double newweight = oldweight + 100.0 * duration;
+            double newweight = oldweight + 1.0e6 * duration;
             // vertexPtr->setWeight(oldweight + 100.0 * (end_time - start_time)); //to be milisecond unit
             vertexPtr->setWeight(newweight); //to be milisecond unit
 
