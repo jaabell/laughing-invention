@@ -435,12 +435,24 @@ ParMetis::repartition(Graph *theGraph, int numPart)
 
         if (mype == 1)
         {
-            weight_factor = 10;
+            weight_factor = 100;
         }
         for (int i = 0; i < nvtxs; i++)
         {
             Vertex *vertexPtr = theGraph->getVertexPtr(i);
             vwgt[i] = (int)(vertexPtr->getWeight()) * weight_factor;
+
+            if (vwgt[i] <= 0)
+            {
+                cerr << "ParMetis::repartition() -- Found negative weight!! for ";
+                cerr << "          i      = " << i << "\n";
+                cerr << "          Ref    = " << vertexPtr->getRef() << "\n";
+                cerr << "          Weight = " << vertexPtr->getWeight() << "\n";
+                cerr << "          Color  = " << vertexPtr->getColor() << "\n";
+                cerr << "          Tmp    = " << vertexPtr->getTmp() << endl;
+                return -1;
+            }
+
             vsize[i] = vertexPtr->getVertexSize();
             const int eleTag = vertexPtr->getRef();
             const int oldVertexTag = eleTag - 1;
