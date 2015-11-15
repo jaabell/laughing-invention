@@ -497,11 +497,15 @@ PartitionedDomain::addElementalLoad(ElementalLoad *load, int pattern)
     while ((theSub = theSubdomains()) != 0)
     {
 
-        theSub->addElementalLoad(load, pattern);
-        // if (theSub->hasElement())
-        // {
-        //     return theSub->addElementalLoad(load, pattern);
-        // }
+        // theSub->addElementalLoad(load, pattern);
+        const ID& loadedElements = load->getElementTags();
+        for (int i = 0; i < loadedElements.Size(); i++)
+        {
+            if (theSub->hasElement(loadedElements(i)))
+            {
+                return theSub->addElementalLoad(load, pattern);
+            }
+        }
     }
     this->domainChange();
     return this->Domain::addElementalLoad(load, pattern);
