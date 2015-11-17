@@ -175,6 +175,8 @@ CTestNormUnbalance::test(void)
     {
         cerr << "WARNING: CTestNormUnbalance::test() - failed to converge \n";
         cerr << "after: " << currentIter << " iterations\n";
+        cerr << " current Norm: " << norm << " (max: " << tol << ")\n";
+        cerr << " Norm deltaX: " << (theSOE->getX()).Norm() << "  Norm deltaR: " << x.Norm() << endln;
         currentIter++;  // we increment in case analysis does not check for convergence
         return -2;
     }
@@ -249,7 +251,7 @@ CTestNormUnbalance::sendSelf(int cTag, Channel& theChannel)
 
 int
 CTestNormUnbalance::receiveSelf(int cTag, Channel& theChannel,
-                             FEM_ObjectBroker& theBroker)
+                                FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     Vector x(2);
