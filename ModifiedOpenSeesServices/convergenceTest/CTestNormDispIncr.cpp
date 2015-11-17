@@ -175,6 +175,8 @@ CTestNormDispIncr::test(void)
     else if (currentIter >= maxNumIter)   // failes to converge
     {
         cerr << "WARNING: CTestDispIncr::test() - failed to converge \n";
+        cerr << " current Norm: " << norm << " (max: " << tol;
+        cerr << " residual Norm: " << theSOE->getB().Norm() << ")\n";
         cerr << "after: " << currentIter << " iterations\n";
         currentIter++;
         return -2;
@@ -253,7 +255,7 @@ CTestNormDispIncr::sendSelf(int cTag, Channel &theChannel)
 
 int
 CTestNormDispIncr::receiveSelf(int cTag, Channel &theChannel,
-                            FEM_ObjectBroker &theBroker)
+                               FEM_ObjectBroker &theBroker)
 {
     int res = 0;
     Vector x(4);
