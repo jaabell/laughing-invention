@@ -414,7 +414,8 @@ EXP	([Ee][-+]?[0-9]+)
 
 "NDMaterialLT"    					{return token::NDMaterialLT;}
 "linear_elastic_isotropic_3d_LT"    {return token::linear_elastic_isotropic_3d_LT;}
-"PisanoLT"                      	{return token::PisanoLT;}
+"PisanoLT"                      	|
+"FTSModel"                          {return token::PisanoLT;}
 
 
  /* Material options */

@@ -149,6 +149,7 @@ TwentySevenNodeBrick::TwentySevenNodeBrick(int element_number,
     {
         theNodes[i] = 0;
     }
+    this->setNumberOfBoundaryNodes(4);
 
 }
 
@@ -164,6 +165,7 @@ TwentySevenNodeBrick::TwentySevenNodeBrick (): Element(0, ELE_TAG_TwentySevenNod
     {
         theNodes[i] = 0;
     }
+    this->setNumberOfBoundaryNodes(4);
 }
 
 
