@@ -183,6 +183,13 @@ UmfpackGenLinSolver::solve(void)
         {
             cerr << "WARNING UmfpackGenLinSolver::solve(void)- ";
             cerr << status << " returned in umfpack_numeric()\n";
+            //             • umfpack * report status:
+            // Prints the status (return value) of other umfpack * routines.
+            // • umfpack * report info:
+            cout << "==== From UMFPACK: umfpack_di_report_info() ====\n";
+            umfpack_di_report_status(Control, status);
+            umfpack_di_report_info(Control, Info);
+            cout << "======== END: umfpack_di_report_info() ========\n";
             return -status;
         }
 
@@ -201,6 +208,10 @@ UmfpackGenLinSolver::solve(void)
     {
         cerr << "WARNING UmfpackGenLinSolver::solve(void)- ";
         cerr << status << " returned in umpack_solve()\n";
+        cout << "==== From UMFPACK: umfpack_di_report_info() ====\n";
+        umfpack_di_report_status(Control, status);
+        umfpack_di_report_info(Control, Info);
+        cout << "======== END: umfpack_di_report_info() ========\n";
         return -status;
     }
 
@@ -254,8 +265,8 @@ UmfpackGenLinSolver::sendSelf(int cTag, Channel& theChannel)
 
 int
 UmfpackGenLinSolver::receiveSelf(int ctag,
-                              Channel& theChannel,
-                              FEM_ObjectBroker& theBroker)
+                                 Channel& theChannel,
+                                 FEM_ObjectBroker& theBroker)
 {
     // nothing to do
     return 0;

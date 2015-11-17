@@ -627,7 +627,7 @@ UmfpackGenLinSOE::sendSelf(int cTag, Channel& theChannel)
 
 int
 UmfpackGenLinSOE::receiveSelf(int cTag, Channel& theChannel,
-                           FEM_ObjectBroker& theBroker)
+                              FEM_ObjectBroker& theBroker)
 {
     return 0;
 }
