@@ -199,8 +199,8 @@ PlainNumberer::sendSelf(int cTag, Channel& theChannel)
 
 int
 PlainNumberer::receiveSelf(int cTag,
-                        Channel& theChannel,
-                        FEM_ObjectBroker& theBroker)
+                           Channel& theChannel,
+                           FEM_ObjectBroker& theBroker)
 {
     return 0;
 }
@@ -272,6 +272,7 @@ PlainNumberer::numberDOF(ID& lastDOFs)
             if (theID(i) == -4)
             {
                 have4s = 1;
+                break;
             }
 
         if (have4s == 1)
