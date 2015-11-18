@@ -58,7 +58,7 @@ MachineBroker::~MachineBroker()
 int
 MachineBroker::shutdown(void)
 {
-    cerr << " MachineBroker::shutdown()\n";
+    // cerr << " MachineBroker::shutdown()\n";
 
     // send the termination notice to all machineBrokers running actorProcesses
     for (int i = 0; i < numActorChannels; i++)
@@ -72,14 +72,14 @@ MachineBroker::shutdown(void)
             cerr << "MachineBroker::run(void) - failed to send ID\n";
         }
 
-        cerr << " MachineBroker::shutdown() 2\n";
+        // cerr << " MachineBroker::shutdown() 2\n";
 
         if (theChannel->receiveID(0, 0, idData) < 0)
         {
             cerr << "MachineBroker::run(void) - failed to send ID\n";
         }
 
-        cerr << " MachineBroker::shutdown 3()\n";
+        // cerr << " MachineBroker::shutdown 3()\n";
         this->freeProcess(theChannel);
     }
 
