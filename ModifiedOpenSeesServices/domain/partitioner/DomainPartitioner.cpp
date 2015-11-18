@@ -99,8 +99,8 @@ DomainPartitioner::DomainPartitioner(GraphPartitioner &theGraphPartitioner)
     primes(20) = 71;
     primes(21) = 73;
 
-    cerr << "DomainPartitioner::DomainPartitioner - ";
-    cerr << "does not deal with ele loads or mp_constraints yet\n";
+    // cerr << "DomainPartitioner::DomainPartitioner - ";
+    // cerr << "does not deal with ele loads or mp_constraints yet\n";
 
     Repartition_Count = 1;
     nodePartition = NULL;
