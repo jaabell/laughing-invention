@@ -31,7 +31,7 @@ int define_NDMaterialLT_constitutive_integration_algorithm(int algorithm,
     int errorflag = -1;
     cout << "define_NDMaterialLT_constitutive_integration_algorithm() - Setting method to " << algorithm << endl;
 
-    if (errorflag = NDMaterialLT::set_constitutive_integration_method(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations))
+    if ((errorflag = NDMaterialLT::set_constitutive_integration_method(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations)))
     {
         errorflag = 0;
     }
