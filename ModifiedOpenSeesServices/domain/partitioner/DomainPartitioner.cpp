@@ -414,25 +414,8 @@ DomainPartitioner::partition(int numParts)
 
     }
 
-    // //Guanzhou added
-    // for (int i = 1; i <= eleNum; i++)
-    // {
-    //     partfile << i << " " << *(where + i - 1) << '\n';
-
-    // }
-
-    // delete [] where;
-    // partfile.close();
-
-
-    // ofstream graphfile("graph.dat", ios::out);
-    // int flag = 4;  // 4= print a lot!
-    // graphfile << " Weight Color Tmp vsize myDegree\n";
-    // theElementGraph->Print(graphfile, 4);
-    // graphfile.close();
-
     // now go through the MP_Constraints and ensure:
-    //   1. if=-0987654321`in different partitions both on boundary
+    //  1. if in different partitions both on boundary
     //  2. if constrained on boundary - retained also on boundary
     MP_ConstraintIter &theMPs = myDomain->getMPs();
     MP_Constraint *mpPtr;
@@ -547,14 +530,6 @@ DomainPartitioner::partition(int numParts)
     cout << "       Total Number of External Nodes = " << numExternalNodes << "\n";
     cout << "    Done Sending Nodes.\n";
 
-    // ofstream parcountfile("parcount.dat", ios::out);
-    // for (int index = 0; index < maxNodeTag; index++)
-    // {
-    //     parcountfile << ParCount[index] << "\n";
-    // }
-
-    // parcountfile.close();
-
 
 
     //Guanzhou moved codes here after the Subdomain->addExternalNode, which does numDOF increment
@@ -565,7 +540,6 @@ DomainPartitioner::partition(int numParts)
     while ((theLoadPattern = theLoadPatterns()) != 0)
     {
         int loadPatternTag = theLoadPattern->getTag();
-        // cout << "   Sending Load Pattern with tag " << loadPatternTag << "\n";
 
         // check that each subdomain has a loadPattern with a similar tag and class tag
         //add LoadPattern to all subdomains
@@ -608,7 +582,6 @@ DomainPartitioner::partition(int numParts)
                     {
                         cerr << "DomainPartitioner::partition() - failed to add Nodal Load\n";
                     }
-                    // cout << "   Sending load " << *theNodalLoad;
                 }
                 number_of_nodal_loads++;
             }
@@ -761,12 +734,27 @@ DomainPartitioner::partition(int numParts)
     cout << "   Done sending Single Point constraints!\n";
 
 
+
+    cout << "   Sending Multi-Point (MP) constraints!\n";
+    SubdomainIter &theSubDomains1 = myDomain->getSubdomains();
+    Subdomain *theSubDomain;
+    while ((theSubDomain = theSubDomains1()) != 0)
+    {
+        MP_ConstraintIter &theMPs = myDomain->getMPs();
+        MP_Constraint *mpPtr;
+        while ((mpPtr = theMPs()) != 0)
+        {
+            theSubDomain->addMP_Constraint(mpPtr);
+        }
+    }
+    cout << "   Done sending Multi-Point constraints!\n";
+
+
     cout << "   Updating subdomains!\n";
     // now we go through all the subdomains and tell them to update
     // their analysis for the new layouts
-    SubdomainIter &theSubDomains = myDomain->getSubdomains();
-    Subdomain *theSubDomain;
-    while ((theSubDomain = theSubDomains()) != 0)
+    SubdomainIter &theSubDomains2 = myDomain->getSubdomains();
+    while ((theSubDomain = theSubDomains2()) != 0)
     {
         //theSubDomain->resetRecorders();
         theSubDomain->domainChange();

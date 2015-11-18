@@ -44,6 +44,10 @@
 #include <FE_Element.h>
 #include <FE_EleIter.h>
 #include <iostream>
+#include <Node.h>
+#include <MP_Constraint.h>
+#include <MP_ConstraintIter.h>
+
 using namespace std;
 
 ParallelNumberer::ParallelNumberer(int dTag, int numSub, Channel** theC)
@@ -170,15 +174,15 @@ ParallelNumberer::numberDOF(int lastDOF)
 
         cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving ID from process 0\n";
         // recv iD
-        ID theID(2 * numVertex);
-        theChannel->receiveID(0, 0, theID);
+        ID vertexTags(2 * numVertex);
+        theChannel->receiveID(0, 0, vertexTags);
 
         cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Numbering local graph\n";
         // set vertex numbering based on ID received
         for (int i = 0; i < numVertex; i ++)
         {
-            int vertexTag = theID(i);
-            int startID = theID(i + numVertex);
+            int vertexTag = vertexTags(i);
+            int startID = vertexTags(i + numVertex);
 
             int dofTag = vertexTag;
             DOF_Group* dofPtr;
@@ -206,8 +210,27 @@ ParallelNumberer::numberDOF(int lastDOF)
             const ID& theDOFID = dofPtr->getID();
         }
 
-        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending ID\n";
-        theChannel->sendID(0, 0, theID);
+        ID theMPnodeTags(100);
+        ID theMPdofCs(100);
+        ID theMPdofIDs(100);
+        theChannel->receiveID(0, 0, theMPnodeTags);
+        theChannel->receiveID(0, 0, theMPdofCs);
+        theChannel->receiveID(0, 0, theMPdofIDs);
+
+        for (int pos = 0; pos < theMPnodeTags.Size(); pos++)
+        {
+            Node* nodePtr = theDomain->getNode(theMPnodeTags[pos]);
+            if (nodePtr != 0)
+            {
+                DOF_Group* dof = nodePtr->getDOF_GroupPtr();
+                dof->setID(theMPdofCs[pos], theMPdofIDs[pos]);
+            }
+        }
+
+        {
+            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending ID\n";
+        }
+        theChannel->sendID(0, 0, numVertex);
     }
 
     // if main domain, collect graphs from all subdomains,
@@ -356,8 +379,8 @@ ParallelNumberer::numberDOF(int lastDOF)
 
             if (dofPtr == 0)
             {
-                cerr << "WARNING ParallelNumberer::numberDOF - ";
-                cerr << "DOF_Group (P0) " << dofTag << "not in AnalysisModel!\n";
+                cerr << "WARNING ParallelNumberer::numberDOF - 1 ";
+                cerr << "DOF_Group (P0) " << dofTag << " not in AnalysisModel!\n";
                 result = -4;
             }
             else
@@ -372,6 +395,98 @@ ParallelNumberer::numberDOF(int lastDOF)
                     }
             }
         }
+
+        // For Equal-DOF constraints!
+        cout << "Looking for EQUALDOFS: ";
+
+        ID theMPnodeTags(100);
+        ID theMPdofCs(100);
+        ID theMPdofIDs(100);
+        int pos = 0;
+        for (int i = 0; i < numVertexP0; i++  )
+        {
+            int have4s = 0;  //This is set to 1 if we hace some MP constraints
+
+
+            int vertexTag = vertexTags(i);
+            Vertex* vertexPtr = theGraph.getVertexPtr(vertexTag);
+
+            int startID = vertexPtr->getTmp();
+            int dofTag = vertexTag;
+            DOF_Group* dofPtr;
+            dofPtr = theModel->getDOF_GroupPtr(dofTag);
+
+            if (dofPtr == 0)
+            {
+                cerr << "WARNING ParallelNumberer::numberDOF - 2 ";
+                cerr << "DOF_Group (P0) " << dofTag << " not in AnalysisModel!\n";
+                result = -4;
+            }
+            else
+            {
+                // const ID& theID = dofPtr->getID();
+                const ID& theDOFID = dofPtr->getID();
+                int idSize = theDOFID.Size();
+
+                //Check whether there are -4s
+                for (int j = 0; j < theDOFID.Size(); j++)
+                    if (theDOFID(j) == -4)
+                    {
+                        have4s = 1;
+                        break;
+                    }
+                if (have4s == 1)
+                {
+                    int nodeID = dofPtr->getNodeTag();
+
+                    cout << "\nFound EQUALDOF! Node " << nodeID << " is slave where node ";
+
+                    // loop through the MP_Constraints to see if any of the
+                    // DOFs are constrained, note constraint matrix must be diagonal
+                    // with 1's on the diagonal
+                    MP_ConstraintIter& theMPs = theDomain->getMPs();
+                    MP_Constraint* mpPtr;
+
+                    while ((mpPtr = theMPs()) != 0 )
+                    {
+                        // note keep looping over all in case multiple constraints
+                        // are used to constrain a node -- can't assume intelli user
+                        if (mpPtr->getNodeConstrained() == nodeID)
+                        {
+                            int nodeRetained = mpPtr->getNodeRetained();
+                            Node* nodeRetainedPtr = theDomain->getNode(nodeRetained);
+                            cout << nodeRetainedPtr->getTag() << " is the master! DOF-List = [ ";
+                            DOF_Group* retainedDOF = nodeRetainedPtr->getDOF_GroupPtr();
+                            const ID& retainedDOFIDs = retainedDOF->getID();
+                            const ID& constrainedDOFs = mpPtr->getConstrainedDOFs();
+                            const ID& retainedDOFs = mpPtr->getRetainedDOFs();
+
+                            for (int i = 0; i < constrainedDOFs.Size(); i++)
+                            {
+                                int dofC = constrainedDOFs(i);
+                                int dofR = retainedDOFs(i);
+                                int dofID = retainedDOFIDs(dofR);
+                                dofPtr->setID(dofC, dofID);
+                                theMPnodeTags(pos) = nodeID;
+                                theMPdofCs(pos) = dofC;
+                                theMPdofIDs(pos) = dofID;
+                                pos++;
+                                cout << dofC << " ";
+                            }
+                            cout << "]\n";
+                        }
+                    }
+                    cout << "\nLooking for more EQUALDOFS: ";
+                }
+                else
+                {
+                    cout << ".";
+                }
+            }
+        }
+
+
+
 
         // now given the ordered refs we determine the mapping for each subdomain
         // and send the id with the information back to the subdomain, which it uses to order
@@ -392,6 +507,11 @@ ParallelNumberer::numberDOF(int lastDOF)
 
             cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending channel " << theChannel->getTag() << " its startdof\n";
             theChannel->sendID(0, 0, theSubdomain);
+
+            //Also send these for the MP constraints
+            theChannel->sendID(0, 0, theMPnodeTags);
+            theChannel->sendID(0, 0, theMPdofCs);
+            theChannel->sendID(0, 0, theMPdofIDs);
             cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Waiting for channel " << theChannel->getTag() << " to be done.\n";
             theChannel->receiveID(0, 0, theSubdomain);
             delete theSubdomainIDs[k];

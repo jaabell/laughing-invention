@@ -93,7 +93,7 @@ ActorSubdomain::~ActorSubdomain()
     }
 
 #endif
-    cerr << "ActorSubdomain DIED: " << endln;
+    // cerr << "ActorSubdomain DIED: " << endln;
 }
 
 

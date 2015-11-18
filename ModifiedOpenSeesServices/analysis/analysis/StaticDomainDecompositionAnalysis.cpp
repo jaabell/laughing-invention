@@ -317,9 +317,10 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
     // causes the creation of FE_Element and DOF_Group objects
     // and their addition to the AnalysisModel.
 
+    cout << "   * Handling constraints\n";
+
     result = theConstraintHandler->handle();
 
-    cout << "   * Handling constraints\n";
 
     if (result < 0)
     {
