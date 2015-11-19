@@ -397,7 +397,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         }
 
         // For Equal-DOF constraints!
-        cout << "Looking for EQUALDOFS: ";
+        // cout << "Looking for EQUALDOFS: ";
 
         ID theMPnodeTags(100);
         ID theMPdofCs(100);
@@ -439,7 +439,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                 {
                     int nodeID = dofPtr->getNodeTag();
 
-                    cout << "\nFound EQUALDOF! Node " << nodeID << " is slave where node ";
+                    // cout << "\nFound EQUALDOF! Node " << nodeID << " is slave where node ";
 
                     // loop through the MP_Constraints to see if any of the
                     // DOFs are constrained, note constraint matrix must be diagonal
@@ -455,7 +455,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                         {
                             int nodeRetained = mpPtr->getNodeRetained();
                             Node* nodeRetainedPtr = theDomain->getNode(nodeRetained);
-                            cout << nodeRetainedPtr->getTag() << " is the master! DOF-List = [ ";
+                            // cout << nodeRetainedPtr->getTag() << " is the master! DOF-List = [ ";
                             DOF_Group* retainedDOF = nodeRetainedPtr->getDOF_GroupPtr();
                             const ID& retainedDOFIDs = retainedDOF->getID();
                             const ID& constrainedDOFs = mpPtr->getConstrainedDOFs();
@@ -471,17 +471,17 @@ ParallelNumberer::numberDOF(int lastDOF)
                                 theMPdofCs(pos) = dofC;
                                 theMPdofIDs(pos) = dofID;
                                 pos++;
-                                cout << dofC << " ";
+                                // cout << dofC << " ";
                             }
-                            cout << "]\n";
+                            // cout << "]\n";
                         }
                     }
-                    cout << "\nLooking for more EQUALDOFS: ";
+                    // cout << "\nLooking for more EQUALDOFS: ";
                 }
-                else
-                {
-                    cout << ".";
-                }
+                // else
+                // {
+                //     cout << ".";
+                // }
             }
         }
 

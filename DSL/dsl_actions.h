@@ -47,6 +47,7 @@
 #include <set>
 
 #include "feiast.h"
+#include "feivector.h"
 
 /*
 
@@ -137,10 +138,17 @@ public:
             }
 
             FeiString *feistring_ptr = dynamic_cast<FeiString *>(exp);
+            FeiVector *feivector_ptr = dynamic_cast<FeiVector *>(exp);
 
             if (feistring_ptr != 0)
             {
                 cout << feistring_ptr->Getstring();
+            }
+            else if (feivector_ptr != 0)
+            {
+                cout << "[";
+                feivector_ptr->print_vector();
+                cout << "]" << endl;
             }
             else
             {

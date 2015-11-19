@@ -639,7 +639,6 @@ DomainPartitioner::partition(int numParts)
         theSubdomain->addElement(elePtr);
 
 
-
         /*********** ELEMENT LOADS ***************************************/
         // if any corresponding elemental loads in the load patterns .. move the load as well
         LoadPatternIter &theLoadPatterns = myDomain->getLoadPatterns();
@@ -662,7 +661,7 @@ DomainPartitioner::partition(int numParts)
             }
         }
         /********************* ELEMENT LOADS ****************************/
-
+        // cout << endl;
         numTotalElements++;
     }
     cout << "       Total Number of Elements          = " << numTotalElements << "\n";

@@ -62,6 +62,21 @@ public:
     virtual ~Expression () {}
     virtual Expression* clone () = 0;
     virtual Quantity value () = 0;
+    virtual Quantity value (int i )
+    {
+        return this->value();
+    }
+
+    //For vector expressions
+    virtual void select_component(int i) {}
+    virtual int size()
+    {
+        return 1;
+    }
+    virtual Quantity sum()
+    {
+        return this->value();
+    }
 };
 
 // Numbers are the most basic of expressions. They just hold a Quantity.
@@ -101,6 +116,7 @@ public:
         return qty;
     }
 };
+
 
 // Numbers are the most basic of expressions. They just hold a Quantity.
 class FeiString : public Expression

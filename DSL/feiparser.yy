@@ -61,6 +61,7 @@
 
 	// Own
 	#include "feiast.h"
+	#include "feivector.h"
 	#include "dsl_actions.h"
 	#include "siunit.h"
 	#include "quantity.h"
@@ -148,14 +149,14 @@
 }
 
 // Basic tokens
-%token IDENT NUMBER STRING EOL ISUNITTYPE FUNCTION
+%token IDENT NUMBER STRING VECTOR EOL ISUNITTYPE FUNCTION
 %token IF THEN ELSE WHILE DO LET EXITSAFEMODE CONTINUE BYE IN REQUIRE
 %token PLUSEQUAL MINUSEQUAL TIMESEQUAL DIVIDEEQUAL MODULUSEQUAL POWEQUAL
 %token NUMBER_OF_NODES NUMBER_OF_ELEMENTS CURRENT_TIME NUMBER_OF_SP_CONSTRAINTS NUMBER_OF_MP_CONSTRAINTS NUMBER_OF_LOADS IS_PARALLEL
 
 // Inform Bison about the type of each terminal and non-terminal (rule or token)
 %type <exp>     exp stmt list cpd_stmt dsl CMD_add CMD_fix CMD_misc CMD_define CMD_remove
-%type <exp>     ADD_material ADD_element
+%type <exp>     ADD_material ADD_element explist
 %type <errcode> prompt
 %type <value>   NUMBER
 %type <ident>   IDENT STRING ISUNITTYPE FUNCTION BYE
@@ -493,7 +494,22 @@ CMD_add
 		for(int ii = 1;ii <=3; ii++) nodes.pop();
 		nodes.push($$);
 	}
-		//!=========================================================================================================
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add load # <.> to all elements type self_weight use acceleration field # <.>;
+	| ADD LOAD TEXTNUMBER exp TO ALL ELEMENTS TYPE self_weight USE ACCELERATION_FIELD TEXTNUMBER exp
+	{
+		args.clear(); signature.clear();
+
+		args.push_back($4);    signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($13);   signature.push_back(this_signature("accelerationfieldnumber", &isAdimensional));
+
+		$$ = new FeiDslCaller2<int, int>(&add_load_selfweight_to_all_elements, args, signature, "add_load_selfweight_to_all_elements");
+
+		for(int ii = 1;ii <=2; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
 	//!
 	//!FEIDOC add load # <.> to node # <.> type self_weight use acceleration field # <.>;
 	| ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE self_weight
@@ -1265,6 +1281,19 @@ dofchain
 						}
 	| DOF dofchain      {
 							dofchain_holder.push_back(dof2number(*$1));
+						}
+
+explist
+	: exp 				{
+							$$ = new FeiVector();
+							dynamic_cast<FeiVector*>($$)->add_component($1->value());
+							nodes.pop();
+							nodes.push($$);
+						}
+	| explist ',' exp   {
+							dynamic_cast<FeiVector*>($1)->add_component($3->value());
+							$$ = $1;
+							nodes.pop();
 						}
 
 
@@ -3817,6 +3846,11 @@ exp
 		temp.erase(temp.length()-1, temp.length());     //remove quotes
 		$$ = new FeiString(temp);
 		nodes.push($$);
+	}
+	| VECTOR '(' explist ')'
+	{
+		$$ = $3;//new FeiVector($3);
+		//nodes.push($$);
 	}
 	| NUMBER_OF_NODES
 	{

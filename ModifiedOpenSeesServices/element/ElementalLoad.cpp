@@ -172,7 +172,8 @@ ElementalLoad::setElementTags(ID& theEleTags)
 int
 ElementalLoad::addElement(int tag)
 {
-    theElementTags[numElements] = tag;
+    theElementTags[tag] = tag;
+    (*theElementTags)(tag) == tag;
     numElements++;
     return numElements;
 }
@@ -180,6 +181,16 @@ ElementalLoad::addElement(int tag)
 bool
 ElementalLoad::hasElement(int tag)
 {
+    if ((*theElementTags)(tag) == tag)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    // cout << ".";
+    //Slow search :/
     for (int i = 0; i < numElements; i++)
         if ( (*theElementTags)(i) == tag)
         {

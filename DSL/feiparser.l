@@ -280,6 +280,7 @@ EXP	([Ee][-+]?[0-9]+)
 "floor"                     |
 "log"                       { yylval->ident = new string(yytext); return token::FUNCTION; }
 
+"vector"                    {return token::VECTOR;}
 
  /* ================================================================================================= */
  /* ========              INITIAL COMMANDS (VERBS)                                          ========= */

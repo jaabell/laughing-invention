@@ -106,3 +106,164 @@ int add_load_selfweight_to_element(int SelfWeightNumber,
 
     return 0;
 };
+
+
+
+int add_load_selfweight_to_elements(int SelfWeightNumber,
+                                    std::vector<int> &ElementNumbers, int AccelerationFieldNumber)
+{
+
+    // New load number is the same as pattern number
+    // int LoadPatternNumber = SelfWeightNumber;
+    int LoadPatternNumber = SelfWeightNumber;//theDomain.getNumLoadPatterns( ) + 1;
+
+    // Linear time series for the self-weight application on current stage
+    TimeSeries* theSeries = 0;
+    theSeries =  new LinearSeries();
+
+    if (theSeries == NULL)
+    {
+        cerr << "Error: (add_load_selfweight_to_element) memory allocation problem for theSeries!" << endl;
+        return -1;
+    }
+
+    LoadPattern* theLoadPattern = 0;
+    theLoadPattern = new LoadPattern(LoadPatternNumber);
+
+    if (theLoadPattern == NULL)
+    {
+        cerr << "Error: (add_load_selfweight_to_element) memory allocation problem for theLoadPattern!" << endl;
+        return -1;
+    }
+
+    theLoadPattern->setTimeSeries(theSeries);
+
+    if ( theDomain.addLoadPattern(theLoadPattern) == false )
+    {
+        cerr << "Error: (add_load_selfweight_to_element) LoadPattern " << LoadPatternNumber << " could not be added to the domain " << endl;
+        return -1;
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    AccelerationField* theaccelerationfield = 0;
+    theaccelerationfield = theDomain.getAccelerationField(AccelerationFieldNumber);
+
+    if (theaccelerationfield == NULL)
+    {
+        cerr << "Error: (add_load_selfweight_to_element) memory allocation problem for theaccelerationfield!" << endl;
+        return -1;
+    }
+
+
+    Vector accelerationfield(3);
+    accelerationfield = theaccelerationfield->getAccelerationFieldVector();
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    for (const int& tag : ElementNumbers)
+    {
+        ID theEleTags (0, 1);
+        theEleTags [0] = tag;
+        ElementalLoad* theLoad = 0;
+        // SelfWeightNumber =  tag;
+        theLoad = new ElementSelfWeight (tag , theEleTags, accelerationfield);
+
+        if (theLoad == NULL)
+        {
+            cerr << "Error: (add_load_selfweight_to_element) memory allocating theLoad!" << endl;
+            return -1;
+        }
+
+
+        if ( theDomain.addElementalLoad(theLoad, LoadPatternNumber) == false )
+        {
+            cerr << "Error: (add_load_selfweight_to_element) Elemental load could not be added to the domain " << endl;
+            return -1;
+        }
+    }
+    return 0;
+};
+
+int add_load_selfweight_to_all_elements(int SelfWeightNumber, int AccelerationFieldNumber)
+{
+
+    // New load number is the same as pattern number
+    // int LoadPatternNumber = SelfWeightNumber;
+    int LoadPatternNumber = SelfWeightNumber;//theDomain.getNumLoadPatterns( ) + 1;
+
+    // Linear time series for the self-weight application on current stage
+    TimeSeries* theSeries = 0;
+    theSeries =  new LinearSeries();
+
+    if (theSeries == NULL)
+    {
+        cerr << "Error: (add_load_selfweight_to_element) memory allocation problem for theSeries!" << endl;
+        return -1;
+    }
+
+    LoadPattern* theLoadPattern = 0;
+    theLoadPattern = new LoadPattern(LoadPatternNumber);
+
+    if (theLoadPattern == NULL)
+    {
+        cerr << "Error: (add_load_selfweight_to_element) memory allocation problem for theLoadPattern!" << endl;
+        return -1;
+    }
+
+    theLoadPattern->setTimeSeries(theSeries);
+
+    if ( theDomain.addLoadPattern(theLoadPattern) == false )
+    {
+        cerr << "Error: (add_load_selfweight_to_element) LoadPattern " << LoadPatternNumber << " could not be added to the domain " << endl;
+        return -1;
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    AccelerationField* theaccelerationfield = 0;
+    theaccelerationfield = theDomain.getAccelerationField(AccelerationFieldNumber);
+
+    if (theaccelerationfield == NULL)
+    {
+        cerr << "Error: (add_load_selfweight_to_element) memory allocation problem for theaccelerationfield!" << endl;
+        return -1;
+    }
+
+
+    Vector accelerationfield(3);
+    accelerationfield = theaccelerationfield->getAccelerationFieldVector();
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    // for (const int& tag : ElementNumbers)
+    ElementIter &element_iter = theDomain.getElements();
+    Element * ele = 0;
+    while ((ele = element_iter()) != 0)
+    {
+        int tag = ele->getTag();
+        ID theEleTags (0, 1);
+        theEleTags [0] = tag;
+        ElementalLoad* theLoad = 0;
+        // SelfWeightNumber =  tag;
+        theLoad = new ElementSelfWeight (tag , theEleTags, accelerationfield);
+
+        if (theLoad == NULL)
+        {
+            cerr << "Error: (add_load_selfweight_to_element) memory allocating theLoad!" << endl;
+            return -1;
+        }
+
+
+        if ( theDomain.addElementalLoad(theLoad, LoadPatternNumber) == false )
+        {
+            cerr << "Error: (add_load_selfweight_to_element) Elemental load could not be added to the domain " << endl;
+            return -1;
+        }
+    }
+    return 0;
+};
