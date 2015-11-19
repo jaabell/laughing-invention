@@ -243,27 +243,29 @@ int add_load_selfweight_to_all_elements(int SelfWeightNumber, int AccelerationFi
     // for (const int& tag : ElementNumbers)
     ElementIter &element_iter = theDomain.getElements();
     Element * ele = 0;
+    ID theEleTags (theDomain.getNumElements());
+    int i = 0;
     while ((ele = element_iter()) != 0)
     {
         int tag = ele->getTag();
-        ID theEleTags (0, 1);
-        theEleTags [0] = tag;
-        ElementalLoad* theLoad = 0;
-        // SelfWeightNumber =  tag;
-        theLoad = new ElementSelfWeight (tag , theEleTags, accelerationfield);
-
-        if (theLoad == NULL)
-        {
-            cerr << "Error: (add_load_selfweight_to_element) memory allocating theLoad!" << endl;
-            return -1;
-        }
-
-
-        if ( theDomain.addElementalLoad(theLoad, LoadPatternNumber) == false )
-        {
-            cerr << "Error: (add_load_selfweight_to_element) Elemental load could not be added to the domain " << endl;
-            return -1;
-        }
+        theEleTags [i] = tag;
+        i++;
     }
+
+    ElementalLoad* theLoad = new ElementSelfWeight (SelfWeightNumber , theEleTags, accelerationfield);
+
+    if (theLoad == NULL)
+    {
+        cerr << "Error: (add_load_selfweight_to_element) memory allocating theLoad!" << endl;
+        return -1;
+    }
+
+
+    if ( theDomain.addElementalLoad(theLoad, LoadPatternNumber) == false )
+    {
+        cerr << "Error: (add_load_selfweight_to_element) Elemental load could not be added to the domain " << endl;
+        return -1;
+    }
+
     return 0;
 };
