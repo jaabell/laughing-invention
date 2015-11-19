@@ -100,12 +100,17 @@ ElementalLoad::setDomain(Domain* theDomain)
 
         for (int i = 0; i < size; i++)
         {
-            theElements[i] = theDomain->getElement((*theElementTags)(i));
+            int eleTag = (*theElementTags)(i);
+            theElements[i] = theDomain->getElement(eleTag);
 
             if (theElements[i] == 0)
             {
-                cerr << "WARNING - ElementalLoad::setDomain - ele with tag ";
-                cerr << (*theElementTags)(i) << " does not exist in the domain\n";
+                // cerr << "WARNING - ElementalLoad::setDomain - ele with tag ";
+                // cerr << (*theElementTags)(i) << " does not exist in the domain\n";
+            }
+            else
+            {
+                numElements++;
             }
         }
     }

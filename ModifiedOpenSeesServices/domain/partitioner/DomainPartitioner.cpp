@@ -651,13 +651,13 @@ DomainPartitioner::partition(int numParts)
             ElementalLoad *theLoad;
             while ((theLoad = theLoads()) != 0)
             {
-                if ( theLoad->hasElement(eleTag) )
-                {
-                    // cout << "  --->>> !!!! Moving load # " << theLoad->getTag() << " to domain number " << theSubdomain->getTag() << endl;
-                    theLoadPattern->removeElementalLoad(theLoad->getTag());
-                    theSubdomain->addElementalLoad(theLoad, loadPatternTag);
-                    numTotalElementalLoads++;
-                }
+                // if ( theLoad->hasElement(eleTag) )
+                // {
+                // cout << "  --->>> !!!! Moving load # " << theLoad->getTag() << " to domain number " << theSubdomain->getTag() << endl;
+                theLoadPattern->removeElementalLoad(theLoad->getTag());
+                theSubdomain->addElementalLoad(theLoad, loadPatternTag);
+                numTotalElementalLoads++;
+                // }
             }
         }
         /********************* ELEMENT LOADS ****************************/
