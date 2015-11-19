@@ -361,7 +361,7 @@ ShadowSubdomain::addElementalLoad(ElementalLoad *theLoad, int loadPattern)
     this->sendID(msgData);
     this->sendObject(*theLoad);
 
-    delete theLoad;
+    // delete theLoad;
 
     return true;
 }
@@ -1362,98 +1362,19 @@ ShadowSubdomain::reDistributeData(int numParts)
         switch (action)
         {
 
-            case Master_addSP_Constraint:
-                theType = msgData(1);
-                dbTag = msgData(2);
+        case Master_addSP_Constraint:
+            theType = msgData(1);
+            dbTag = msgData(2);
 
-                theSP = OPS_OBJECT_BROKER->getNewSP(theType);
+            theSP = OPS_OBJECT_BROKER->getNewSP(theType);
 
-                if (theSP != 0)
-                {
-                    theSP->setDbTag(dbTag);
-                    this->receiveObject(*theSP);
-                    bool result = theDomain.addSP_Constraint(theSP);
+            if (theSP != 0)
+            {
+                theSP->setDbTag(dbTag);
+                this->receiveObject(*theSP);
+                bool result = theDomain.addSP_Constraint(theSP);
 
-                    if (result == true)
-                    {
-                        msgData(0) = 0;
-                    }
-                    else
-                    {
-                        msgData(0) = -1;
-                    }
-                }
-                else
-                {
-                    msgData(0) = -1;
-                }
-
-                break;
-
-            case Master_addNodalLoadToPattern:
-                theType = msgData(1);
-                dbTag = msgData(2);
-                loadPatternTag = msgData(3);
-
-                theNodalLoad = OPS_OBJECT_BROKER->getNewNodalLoad(theType);
-
-                if (theNodalLoad != 0)
-                {
-                    theNodalLoad->setDbTag(dbTag);
-                    this->receiveObject(*theNodalLoad);
-                    bool result = theDomain.addNodalLoad(theNodalLoad, loadPatternTag);
-
-                    if (result == true)
-                    {
-                        msgData(0) = 0;
-                    }
-                    else
-                    {
-                        msgData(0) = -1;
-                    }
-                }
-                else
-                {
-                    msgData(0) = -1;
-                }
-
-                break;
-
-            case Master_addSP_ConstraintToPattern:
-                theType = msgData(1);
-                dbTag = msgData(2);
-                loadPatternTag = msgData(3);
-
-                theSP = OPS_OBJECT_BROKER->getNewSP(theType);
-
-                if (theSP != 0)
-                {
-                    theSP->setDbTag(dbTag);
-                    this->receiveObject(*theSP);
-                    bool result = theDomain.addSP_Constraint(theSP, loadPatternTag);
-
-                    if (result == true)
-                    {
-                        msgData(0) = 0;
-                    }
-                    else
-                    {
-                        msgData(0) = -1;
-                    }
-                }
-                else
-                {
-                    msgData(0) = -1;
-                }
-
-                break;
-
-            case Master_hasNode:
-                theType = msgData(1);
-
-                //bool res = theDomain.hasNode(theType);
-                //if (res == true)
-                if ( theDomain.getNode(theType) != 0)
+                if (result == true)
                 {
                     msgData(0) = 0;
                 }
@@ -1461,19 +1382,98 @@ ShadowSubdomain::reDistributeData(int numParts)
                 {
                     msgData(0) = -1;
                 }
-
-                this->sendID(msgData);
-
-                break;
-
-            case Subdomain_Redistribution_DONE:
-                done = true;
-                break;
-
-            default:
-                cerr << "ShadowSubdomain::invalid action " << action << "received\n";
+            }
+            else
+            {
                 msgData(0) = -1;
-                break;
+            }
+
+            break;
+
+        case Master_addNodalLoadToPattern:
+            theType = msgData(1);
+            dbTag = msgData(2);
+            loadPatternTag = msgData(3);
+
+            theNodalLoad = OPS_OBJECT_BROKER->getNewNodalLoad(theType);
+
+            if (theNodalLoad != 0)
+            {
+                theNodalLoad->setDbTag(dbTag);
+                this->receiveObject(*theNodalLoad);
+                bool result = theDomain.addNodalLoad(theNodalLoad, loadPatternTag);
+
+                if (result == true)
+                {
+                    msgData(0) = 0;
+                }
+                else
+                {
+                    msgData(0) = -1;
+                }
+            }
+            else
+            {
+                msgData(0) = -1;
+            }
+
+            break;
+
+        case Master_addSP_ConstraintToPattern:
+            theType = msgData(1);
+            dbTag = msgData(2);
+            loadPatternTag = msgData(3);
+
+            theSP = OPS_OBJECT_BROKER->getNewSP(theType);
+
+            if (theSP != 0)
+            {
+                theSP->setDbTag(dbTag);
+                this->receiveObject(*theSP);
+                bool result = theDomain.addSP_Constraint(theSP, loadPatternTag);
+
+                if (result == true)
+                {
+                    msgData(0) = 0;
+                }
+                else
+                {
+                    msgData(0) = -1;
+                }
+            }
+            else
+            {
+                msgData(0) = -1;
+            }
+
+            break;
+
+        case Master_hasNode:
+            theType = msgData(1);
+
+            //bool res = theDomain.hasNode(theType);
+            //if (res == true)
+            if ( theDomain.getNode(theType) != 0)
+            {
+                msgData(0) = 0;
+            }
+            else
+            {
+                msgData(0) = -1;
+            }
+
+            this->sendID(msgData);
+
+            break;
+
+        case Subdomain_Redistribution_DONE:
+            done = true;
+            break;
+
+        default:
+            cerr << "ShadowSubdomain::invalid action " << action << "received\n";
+            msgData(0) = -1;
+            break;
         }
     }
 
