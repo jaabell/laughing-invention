@@ -641,25 +641,25 @@ DomainPartitioner::partition(int numParts)
 
         /*********** ELEMENT LOADS ***************************************/
         // if any corresponding elemental loads in the load patterns .. move the load as well
-        LoadPatternIter &theLoadPatterns = myDomain->getLoadPatterns();
-        LoadPattern *theLoadPattern;
+        // LoadPatternIter &theLoadPatterns = myDomain->getLoadPatterns();
+        // LoadPattern *theLoadPattern;
 
-        while ((theLoadPattern = theLoadPatterns()) != 0)
-        {
-            int loadPatternTag = theLoadPattern->getTag();
-            ElementalLoadIter &theLoads = theLoadPattern->getElementalLoads();
-            ElementalLoad *theLoad;
-            while ((theLoad = theLoads()) != 0)
-            {
-                // if ( theLoad->hasElement(eleTag) )
-                // {
-                // cout << "  --->>> !!!! Moving load # " << theLoad->getTag() << " to domain number " << theSubdomain->getTag() << endl;
-                theLoadPattern->removeElementalLoad(theLoad->getTag());
-                theSubdomain->addElementalLoad(theLoad, loadPatternTag);
-                numTotalElementalLoads++;
-                // }
-            }
-        }
+        // while ((theLoadPattern = theLoadPatterns()) != 0)
+        // {
+        //     int loadPatternTag = theLoadPattern->getTag();
+        //     ElementalLoadIter &theLoads = theLoadPattern->getElementalLoads();
+        //     ElementalLoad *theLoad;
+        //     while ((theLoad = theLoads()) != 0)
+        //     {
+        //         // if ( theLoad->hasElement(eleTag) )
+        //         // {
+        //         // cout << "  --->>> !!!! Moving load # " << theLoad->getTag() << " to domain number " << theSubdomain->getTag() << endl;
+        //         theLoadPattern->removeElementalLoad(theLoad->getTag());
+        //         theSubdomain->addElementalLoad(theLoad, loadPatternTag);
+        //         numTotalElementalLoads++;
+        //         // }
+        //     }
+        // }
         /********************* ELEMENT LOADS ****************************/
         // cout << endl;
         numTotalElements++;
@@ -676,6 +676,26 @@ DomainPartitioner::partition(int numParts)
 
     cout << "   Done sending elements!\n";
 
+    cout << "   Sending Elemental Loads!\n";
+    SubdomainIter &theSubDomains3 = myDomain->getSubdomains();
+    Subdomain *theSubDomain1;
+    LoadPatternIter &theLoadPatterns1 = myDomain->getLoadPatterns();
+
+    while ((theLoadPattern = theLoadPatterns1()) != 0)
+    {
+        ElementalLoadIter &theLoads = theLoadPattern->getElementalLoads();
+        ElementalLoad *theLoad;
+        int loadPatternTag = theLoadPattern->getTag();
+        while ((theLoad = theLoads()) != 0)
+        {
+            while ((theSubDomain1 = theSubDomains3()) != 0)
+            {
+                theSubDomain1->addElementalLoad(theLoad, loadPatternTag);
+            }
+            theLoadPattern->removeElementalLoad(theLoad->getTag());
+        }
+    }
+    cout << "   Done sending Elemental Loads!\n";
 
     cout << "   Sending Single Point (SP) constraints!\n";
     //Guanzhou changed below
