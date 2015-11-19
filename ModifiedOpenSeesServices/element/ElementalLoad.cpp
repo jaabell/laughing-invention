@@ -108,10 +108,10 @@ ElementalLoad::setDomain(Domain* theDomain)
                 // cerr << "WARNING - ElementalLoad::setDomain - ele with tag ";
                 // cerr << (*theElementTags)(i) << " does not exist in the domain\n";
             }
-            else
-            {
-                numElements++;
-            }
+            // else
+            // {
+            //     numElements++;
+            // }
         }
     }
 }
