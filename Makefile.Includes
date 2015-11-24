@@ -228,8 +228,10 @@ PARALLEL_NUMERIC_INCLUDES = -I$(RealESSI_Dependencies)/petsc-3.6.0/include \
          -I$(RealESSI_Dependencies)/petsc-3.6.0/arch-linux2-c-opt/include \
          -I$(RealESSI_Dependencies)/parmetis-4.0.2_install/include \
          -I$(RealESSI_Dependencies)/metis-4.0.2_install/include \
-         -I$(RealESSI_Dependencies)/hdf5_parallel/include \
-         -I$(RealESSI_Dependencies)/include 
+         -I$(RealESSI_Dependencies)/include \
+         -I$(RealESSI_Dependencies)/hdf5_sequential/include 
+
+#         -I$(RealESSI_Dependencies)/hdf5_parallel/include \
          
 PARALLEL_NUMERIC_LIBS = -L$(RealESSI_Dependencies)/lib/ \
       -lpetsc \
@@ -241,7 +243,9 @@ PARALLEL_NUMERIC_LIBS = -L$(RealESSI_Dependencies)/lib/ \
       -lfblas \
       -lparmetis \
       -lmetis \
-      $(RealESSI_Dependencies)/hdf5_parallel/lib/libhdf5.a
+      $(RealESSI_Dependencies)/hdf5_sequential/lib/libhdf5.a 
+
+#      $(RealESSI_Dependencies)/hdf5_parallel/lib/libhdf5.a
       
 SEQUENTIAL_MACHINE_LIBS =  \
       -lm \

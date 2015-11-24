@@ -104,7 +104,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     hid_t file_access_plist   = H5Pcreate(H5P_FILE_ACCESS);
 
 #ifdef _PARALLEL_PROCESSING
-    H5Pset_fapl_mpio(file_access_plist, MPI_COMM_WORLD, MPI_INFO_NULL);
+    // H5Pset_fapl_mpio(file_access_plist, MPI_COMM_WORLD, MPI_INFO_NULL);
 #endif
 
 
@@ -384,7 +384,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     id_xfer_plist = H5Pcreate( H5P_DATASET_XFER);
 
 #ifdef _PARALLEL_PROCESSING
-    H5Pset_dxpl_mpio( id_xfer_plist, H5FD_MPIO_INDEPENDENT );
+    // H5Pset_dxpl_mpio( id_xfer_plist, H5FD_MPIO_INDEPENDENT );
 #endif
 
     //===========================================================================
@@ -459,6 +459,7 @@ void Domain_Reduction_Method_HDF5_input::clean_all_data()
     hsize_t n_obj_open = 10;
     while (n_obj_open > 0)
     {
+        int n_objects_closed = 0;
         n_obj_open = H5Fget_obj_count(id_drm_file, H5F_OBJ_DATASET | H5F_OBJ_GROUP | H5F_OBJ_ATTR | H5F_OBJ_LOCAL );
         cout << "Domain_Reduction_Method_HDF5_input -- N of HDF5 objects open = " << n_obj_open << endl;
 
@@ -471,23 +472,45 @@ void Domain_Reduction_Method_HDF5_input::clean_all_data()
 
         //Close datasets
         number_of_open_objects = H5Fget_obj_ids( id_drm_file, H5F_OBJ_DATASET | H5F_OBJ_LOCAL, DRMHDF5_MAX_RETURN_OPEN_OBJS, obj_id_list );
+        if (number_of_open_objects > 0)
+        {
+            cout << "                                   - Closing " <<  number_of_open_objects << " datasets.\n";
+        }
         for (int i = 0; i < std::min(number_of_open_objects, DRMHDF5_MAX_RETURN_OPEN_OBJS) ; i++ )
         {
             H5Dclose(obj_id_list[i]);
+            n_objects_closed++;
         }
 
         //Close groups
         number_of_open_objects = H5Fget_obj_ids( id_drm_file, H5F_OBJ_GROUP | H5F_OBJ_LOCAL, DRMHDF5_MAX_RETURN_OPEN_OBJS, obj_id_list );
+        if (number_of_open_objects > 0)
+        {
+            cout << "                                   - Closing " <<  number_of_open_objects << " groups.\n";
+        }
         for (int i = 0; i < std::min(number_of_open_objects, DRMHDF5_MAX_RETURN_OPEN_OBJS) ; i++ )
         {
             H5Gclose(obj_id_list[i]);
+            n_objects_closed++;
         }
 
         //Close groups
         number_of_open_objects = H5Fget_obj_ids( id_drm_file, H5F_OBJ_ATTR | H5F_OBJ_LOCAL, DRMHDF5_MAX_RETURN_OPEN_OBJS, obj_id_list );
+        if (number_of_open_objects > 0)
+        {
+            cout << "                                   - Closing " <<  number_of_open_objects << " attributes.\n";
+        }
         for (int i = 0; i < std::min(number_of_open_objects, DRMHDF5_MAX_RETURN_OPEN_OBJS) ; i++ )
         {
             H5Aclose(obj_id_list[i]);
+            n_objects_closed++;
+        }
+
+        if (n_objects_closed == 0)
+        {
+            //This guards against the possibility of H5Fget_obj_count misbehaving.
+            // ot that the open objects are not datasets, groups or attributes.
+            break;
         }
 
     }

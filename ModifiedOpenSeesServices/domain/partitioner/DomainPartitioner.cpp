@@ -677,8 +677,6 @@ DomainPartitioner::partition(int numParts)
     cout << "   Done sending elements!\n";
 
     cout << "   Sending Elemental Loads!\n";
-    SubdomainIter &theSubDomains3 = myDomain->getSubdomains();
-    Subdomain *theSubDomain1;
     LoadPatternIter &theLoadPatterns1 = myDomain->getLoadPatterns();
 
     while ((theLoadPattern = theLoadPatterns1()) != 0)
@@ -688,13 +686,16 @@ DomainPartitioner::partition(int numParts)
         int loadPatternTag = theLoadPattern->getTag();
         while ((theLoad = theLoads()) != 0)
         {
-            while ((theSubDomain1 = theSubDomains3()) != 0)
+            Subdomain *theSubDomain3;
+            SubdomainIter &theSubDomains3 = myDomain->getSubdomains();
+            while ((theSubDomain3 = theSubDomains3()) != 0)
             {
-                theSubDomain1->addElementalLoad(theLoad, loadPatternTag);
+                theSubDomain3->addElementalLoad(theLoad, loadPatternTag);
             }
             theLoadPattern->removeElementalLoad(theLoad->getTag());
         }
     }
+
     cout << "   Done sending Elemental Loads!\n";
 
     cout << "   Sending Single Point (SP) constraints!\n";

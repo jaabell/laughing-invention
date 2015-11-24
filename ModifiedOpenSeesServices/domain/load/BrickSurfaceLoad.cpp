@@ -309,7 +309,7 @@ BrickSurfaceLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBro
     const ID & elementtags = this->getElementTags();
 
     int nelem = elementtags.Size();
-    cerr << "BrickSurfaceLoad::sendSelf() - nelem = " << nelem << " \n";
+    cerr << "BrickSurfaceLoad::receiveSelf() - nelem = " << nelem << " \n";
 
     if (nelem = 4)
     {
