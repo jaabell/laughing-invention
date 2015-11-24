@@ -200,8 +200,6 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
         }
     }
 
-    std::cout << "TransientDomainDecompositionAnalysis -- Analysis Starting. \n";
-
     // result = theAnalysisModel->newStepDomain();
     if (result < 0)
     {
@@ -214,7 +212,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
     }
 
 
-    std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Calling NewStep() on integrator. \n ";
+    // std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Calling NewStep() on integrator. \n ";
 
 
     result = theIntegrator->newStep(dT);
@@ -305,6 +303,9 @@ TransientDomainDecompositionAnalysis::initialize(void)
 int
 TransientDomainDecompositionAnalysis::domainChanged(void)
 {
+
+    cout << "TransientDomainDecompositionAnalysis - The domain has changed. (Re)Creating model.\n";
+
 #ifdef _PARALLEL_PROCESSING
     int rank, size;
     MPI_Comm_rank (MPI_COMM_WORLD, &rank);
@@ -322,7 +323,7 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
     theAnalysisModel->clearAll();
     theConstraintHandler->clearAll();
 
-    //std::cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- I PID #" << rank << "\n";
+    cout << "   * Handling constraints\n";
 
     result = theConstraintHandler->handle();
 
@@ -333,15 +334,8 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
         return -1;
     }
 
-    //cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- II  PID #" << rank << "\n";
 
-    // we now invoke number() on the numberer which causes
-    // equation numbers to be assigned to all the DOFs in the
-    // AnalysisModel.
-    // #ifdef _BDEBUG
-    //     init = clock();
-
-    // #endif
+    cout << "   * Numbering DOFS\n";
 
     result = theDOF_Numberer->numberDOF();
 
@@ -352,37 +346,21 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
         return -2;
     }
 
-    // #ifdef _BDEBUG
-    //     final = clock() - init;
-    //     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- III  PID #" << rank << "\n";
-    //     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) ---  PID #" << rank << "  TIME ELAPSED II --- III (theDOF_Numberer->numberDOF()) is " << (double)final / ((double)CLOCKS_PER_SEC) << "sec.\n";
-    // #endif
 
 
+    cout << "   * Forming DOF Graph\n";
+    Graph &theGraph = theAnalysisModel->getDOFGraph();
 
-    // #ifdef _BDEBUG
-    //     init = clock();
-
-    // #endif
-    // we invoke setSize() on the LinearSOE which
-    // causes that object to determine its size
-    //Graph &theGraph = theAnalysisModel->getDOFGraph(); //Out by Babak 6/4/13
-    int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-    // #ifdef _BDEBUG
-    //     final = clock() - init;
-    //     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- IV  PID #" << rank << "\n";
-    //     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) ---  PID #" << rank << "  TIME ELAPSED III --- IV (theAnalysisModel->getDOFGraph() ) is " << (double)final / ((double)CLOCKS_PER_SEC) << "sec.\n";
-    //     //exit(EXIT_SUCCESS);
-    // #endif
+    cout << "   * Setting SOE Size\n";
+    result = theSOE->setSize(theGraph);
+    if (result < 0)
+    {
+        cerr << "TransientDomainDecompositionAnalysis::handle() - ";
+        cerr << "LinearSOE::setSize() failed";
+        return -3;
+    }
 
 
-
-
-    // #ifdef _BDEBUG
-    //     init = clock();
-    //     cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- I PID #" << rank << "\n";
-    // #endif
-    result = theSOE->setSize(MaxDOFtag);
 
     if (result < 0)
     {
@@ -391,13 +369,7 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
         return -3;
     }
 
-    //cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- V  PID #" << rank << "\n";
-
-    // finally we invoke domainChanged on the Integrator and Algorithm
-    // objects .. informing them that the model has changed
-    // #ifdef _BDEBUG
-    //     init = clock();
-    // #endif
+    cout << "   * Setting up integrator\n";
 
     result = theIntegrator->domainChanged();
 
@@ -408,11 +380,8 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
         return -4;
     }
 
-    //cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- VI  PID #" << rank << "\n";
+    cout << "   * Setting up algorithm\n";
 
-    // #ifdef _BDEBUG
-    //     init = clock();
-    // #endif
     result = theAlgorithm->domainChanged();
 
     if (result < 0)
@@ -422,8 +391,15 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
         return -5;
     }
 
-    // if get here successfull
-    //cerr << "BABAK@TransientDomainDecompositionAnalysis::domainChanged(void) --- END  PID #" << rank << "\n";
+    if (result < 0)
+    {
+        cerr << "TransientDomainDecompositionAnalysis::setAlgorithm() - ";
+        cerr << "Algorithm::domainChanged() failed";
+        return -5;
+    }
+
+    cout << "   * Done with domain change\n";
+
     return 0;
 }
 
