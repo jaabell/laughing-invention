@@ -182,8 +182,6 @@ StaticDomainDecompositionAnalysis::analyze(double dT)
     int result = 0;
     Domain* the_Domain = this->getDomainPtr();
 
-    //   cerr << " StaticDomainDecompositionAnalysis::analyze() - 1\n";
-
     // check for change in Domain since last step. As a change can
     // occur in a commit() in a domaindecomp with load balancing
     // this must now be inside the loop
@@ -242,7 +240,6 @@ StaticDomainDecompositionAnalysis::analyze(double dT)
         return -3;
     }
 
-    //   cerr << " StaticDomainDecompositionAnalysis::analyze() - done ALGO\n";
 
 
 
@@ -335,6 +332,7 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
     // AnalysisModel.
 
     cout << "   * Numbering DOFS\n";
+
     result = theDOF_Numberer->numberDOF();
 
     if (result < 0)
@@ -343,6 +341,7 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
         cerr << "DOF_Numberer::numberDOF() failed";
         return -2;
     }
+
 
 
     cout << "   * Forming DOF Graph\n";
@@ -373,6 +372,7 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
     }
 
     cout << "   * Setting up algorithm\n";
+
     result = theAlgorithm->domainChanged();
 
     if (result < 0)
@@ -383,6 +383,7 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
     }
 
     cout << "   * Done with domain change\n";
+
     // if get here successfull
     return 0;
 }

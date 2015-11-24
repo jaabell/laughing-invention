@@ -44,6 +44,7 @@
 #include <FEM_ObjectBroker.h>
 
 
+
 #include <FE_Element.h>
 #include <DOF_Group.h>
 #include <FE_EleIter.h>
@@ -111,6 +112,8 @@ TransientDomainDecompositionAnalysis::TransientDomainDecompositionAnalysis(Subdo
         theAlgorithm->setConvergenceTest(theTest);
     }
 
+
+
 }
 
 
@@ -130,12 +133,16 @@ TransientDomainDecompositionAnalysis::clearAll(void)
         delete theAnalysisModel;
     }
 
-    // Nima Tafazzoli took out (hardcoded in CPPIncludes.cpp)
-    // March 30th, 2012
-    //   if (theConstraintHandler != 0)
-    //     delete theConstraintHandler;
-    //   if (theDOF_Numberer != 0)
-    //     delete theDOF_Numberer;
+    if (theConstraintHandler != 0)
+    {
+        delete theConstraintHandler;
+    }
+
+    if (theDOF_Numberer != 0)
+    {
+        delete theDOF_Numberer;
+    }
+
     if (theIntegrator != 0)
     {
         delete theIntegrator;
@@ -156,13 +163,12 @@ TransientDomainDecompositionAnalysis::clearAll(void)
         delete theTest;
     }
 
+
+
     // now set the pointers to NULL
     theAnalysisModel = 0;
-
-    // Nima Tafazzoli took out (hardcoded in CPPIncludes.cpp)
-    // March 30th, 2012
-    //   theConstraintHandler =0;
-    //   theDOF_Numberer =0;
+    theConstraintHandler = 0;
+    theDOF_Numberer = 0;
     theIntegrator = 0;
     theAlgorithm = 0;
     theSOE = 0;
@@ -186,12 +192,14 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
     // check for change in Domain since last step. As a change can
     // occur in a commit() in a domaindecomp with load balancing
     // this must now be inside the loop
+
     int stamp = the_Domain->hasDomainChanged();
 
     if (stamp != domainStamp)
     {
         domainStamp = stamp;
         result = this->domainChanged();
+        std::cerr << "TransientDomainDecompositionAnalysis::analyze(double dT) -- after result = this->domainChanged();\n" ;
 
         if (result < 0)
         {
@@ -199,6 +207,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
             return -1;
         }
     }
+
 
     // result = theAnalysisModel->newStepDomain();
     if (result < 0)
@@ -212,9 +221,6 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
     }
 
 
-    // std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Calling NewStep() on integrator. \n ";
-
-
     result = theIntegrator->newStep(dT);
 
     if (result < 0)
@@ -226,10 +232,6 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
 
         return -2;
     }
-
-
-    std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Solving Current SOE \n";
-
 
     result = theAlgorithm->solveCurrentStep();
 
@@ -305,17 +307,9 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
 {
 
     cout << "TransientDomainDecompositionAnalysis - The domain has changed. (Re)Creating model.\n";
-
-#ifdef _PARALLEL_PROCESSING
-    int rank, size;
-    MPI_Comm_rank (MPI_COMM_WORLD, &rank);
-    MPI_Comm_size (MPI_COMM_WORLD, &size);
-    clock_t init, final;
-#endif
-    //Guanzhou
-    cerr << "TransientDomainDecompositionAnalysis::domainChanged(void)\n";
-    Domain *the_Domain = this->getDomainPtr();
+    Domain* the_Domain = this->getDomainPtr();
     int stamp = the_Domain->hasDomainChanged();
+
     domainStamp = stamp;
 
     int result = 0;
@@ -323,9 +317,15 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
     theAnalysisModel->clearAll();
     theConstraintHandler->clearAll();
 
+
+    // now we invoke handle() on the constraint handler which
+    // causes the creation of FE_Element and DOF_Group objects
+    // and their addition to the AnalysisModel.
+
     cout << "   * Handling constraints\n";
 
     result = theConstraintHandler->handle();
+
 
     if (result < 0)
     {
@@ -334,6 +334,10 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
         return -1;
     }
 
+
+    // we now invoke number() on the numberer which causes
+    // equation numbers to be assigned to all the DOFs in the
+    // AnalysisModel.
 
     cout << "   * Numbering DOFS\n";
 
@@ -362,13 +366,8 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
 
 
 
-    if (result < 0)
-    {
-        cerr << "TransientDomainDecompositionAnalysis::handle() - ";
-        cerr << "LinearSOE::setSize() failed";
-        return -3;
-    }
-
+    // finally we invoke domainChanged on the Integrator and Algorithm
+    // objects .. informing them that the model has changed
     cout << "   * Setting up integrator\n";
 
     result = theIntegrator->domainChanged();
@@ -391,15 +390,9 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
         return -5;
     }
 
-    if (result < 0)
-    {
-        cerr << "TransientDomainDecompositionAnalysis::setAlgorithm() - ";
-        cerr << "Algorithm::domainChanged() failed";
-        return -5;
-    }
-
     cout << "   * Done with domain change\n";
 
+    // if get here successfull
     return 0;
 }
 
