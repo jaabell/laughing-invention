@@ -188,6 +188,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
     if (number_of_local_elements == 0)
     {
+        is_initialized = true;
         return; // No use doing anything else.
     }
 
