@@ -185,6 +185,13 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     }
     DRMout << "Found " << number_of_local_elements << " elements\n";
 
+
+    if (number_of_local_elements == 0)
+    {
+        return; // No use doing anything else.
+    }
+
+
     // Now create the elements array (one copy per subdomain in case of parallel) and
     // assign elements which belong here.
     Elements = new ID(number_of_local_elements);
@@ -276,6 +283,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
         {
             (*Nodes)[n] = all_DRM_nodes_list[i];
             (*IsBoundary)[n] = all_DRM_is_boundary_list[i];
+            nodetag2hdf5_pos.inset(std::pair<int, int>((*Nodes)[i], i));
             n++;
 
             if (all_DRM_nodes_list[i] > maxnodetag)
@@ -433,6 +441,7 @@ void Domain_Reduction_Method_HDF5_input::clean_all_data()
     }
 
     nodetag2index.clear();
+    nodetag2hdf5_pos.clear();
 
     if (H5Dclose(id_displacements) < 0)
     {
@@ -840,7 +849,8 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
                 {
                     // cout << ".";
                     int nodeTag = elementNodes(n);
-                    int pos = nodetag2index[nodeTag];
+                    // int pos = nodetag2index[nodeTag];
+                    int pos = nodetag2hdf5_pos[nodeTag];
 
                     hsize_t start[2]  = {(hsize_t) 3 * pos , (hsize_t)step1};
                     hsize_t stride[2] = {1       , 1};
