@@ -541,112 +541,116 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
         intitialize();
     }
 
-    Domain *theDomain = this->getDomain();
-
-    if (theDomain == 0)
+    //If we don't have elements, no point in doing anything :/
+    if (number_of_local_elements > 0)
     {
-        return;
-    }
+        Domain *theDomain = this->getDomain();
 
-    if (time > tfinal)
-    {
-        return;
-    }
-
-    if (Elements->Size() == 0)
-    {
-        return;
-    }
-
-    t = time;
-    if ( (t < t1) or (t2 < t) )
-    {
-        this->ComputeDRMLoads();
-    }
-
-
-    Node *theNode;
-    Vector *load = new Vector(3);
-
-    int use_this_step = 0;
-    // cout << "Searching for timestep to use: ";
-    double macheps = std::numeric_limits<double>::epsilon() * (t2 - t1);
-    for (int i = step1; i < step2; i++)
-    {
-        // cout << "                               " << i << " (" << (*times)[i] - time << ") ";
-        if ((*times)[i] >= time or abs((*times)[i] - time) <= 10 * macheps)
+        if (theDomain == 0)
         {
-            // cout << "!\n";
-            use_this_step -= 1;
-            break;
-        }
-        // cout << ".\n";
-        use_this_step++;
-    }
-    if (use_this_step < 0)
-    {
-        use_this_step = 0;
-    }
-    // cout << endl;
-    // cout << " > DRM (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
-
-    double time1 =  (*times)[use_this_step + step1];
-    double time2 =  (*times)[use_this_step + step1 + 1];
-    double tau = (time - time1) / (time2 - time1);
-
-    if ( abs(time1 - time) <= 10 * macheps)
-    {
-        tau = 0;
-    }
-    if ( abs(time2 - time) <= 10 * macheps)
-    {
-        tau = 1;
-    }
-
-    // cout << ", tau = " << tau  << endl;
-
-    // ofstream fout("drmforces.txt", ios::app);
-    // fout << time << " ";
-
-    for (int i = 0; i < Nodes->Size(); i++)
-    {
-
-        int tag = (*Nodes)[i] ;
-        theNode = theDomain->getNode( tag );
-
-        if ( theNode == 0 )
-        {
-            continue;
+            return;
         }
 
-        // load = this->getNodalLoad((*Nodes)[i], time);
-
-        int pos = nodetag2index[tag];
-        for (int i = 0; i < 3; i++)
+        if (time > tfinal)
         {
-            // (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step);
-            (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step) * (1 - tau);
-            (*load)(i) += (*DRMForces)(3 * pos + i, use_this_step + 1) * tau;
-            // fout << (*load)(i) << " ";
+            return;
+        }
 
-            if (std::isnan((*load)(i)))
+        if (Elements->Size() == 0)
+        {
+            return;
+        }
+
+        t = time;
+        if ( (t < t1) or (t2 < t) )
+        {
+            this->ComputeDRMLoads();
+        }
+
+
+        Node *theNode;
+        Vector *load = new Vector(3);
+
+        int use_this_step = 0;
+        // cout << "Searching for timestep to use: ";
+        double macheps = std::numeric_limits<double>::epsilon() * (t2 - t1);
+        for (int i = step1; i < step2; i++)
+        {
+            // cout << "                               " << i << " (" << (*times)[i] - time << ") ";
+            if ((*times)[i] >= time or abs((*times)[i] - time) <= 10 * macheps)
             {
-                cerr << "DRM HDF5:   NAN encountered!! \n";
-                cerr << "    (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
-                cerr << "\n  load(i) = " << (*load)(i) << ", i = " << i << endl;
+                // cout << "!\n";
+                use_this_step -= 1;
+                break;
             }
+            // cout << ".\n";
+            use_this_step++;
         }
-
-        //Take care of the minus sign in the effective seismic force for boundary nodes
-        if ((*IsBoundary)[i])
+        if (use_this_step < 0)
         {
-            (*load) = (*load) * (-1.0);
+            use_this_step = 0;
+        }
+        // cout << endl;
+        // cout << " > DRM (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
+
+        double time1 =  (*times)[use_this_step + step1];
+        double time2 =  (*times)[use_this_step + step1 + 1];
+        double tau = (time - time1) / (time2 - time1);
+
+        if ( abs(time1 - time) <= 10 * macheps)
+        {
+            tau = 0;
+        }
+        if ( abs(time2 - time) <= 10 * macheps)
+        {
+            tau = 1;
         }
 
-        theNode->addUnbalancedLoad(*load);
+        // cout << ", tau = " << tau  << endl;
+
+        // ofstream fout("drmforces.txt", ios::app);
+        // fout << time << " ";
+
+        for (int i = 0; i < Nodes->Size(); i++)
+        {
+
+            int tag = (*Nodes)[i] ;
+            theNode = theDomain->getNode( tag );
+
+            if ( theNode == 0 )
+            {
+                continue;
+            }
+
+            // load = this->getNodalLoad((*Nodes)[i], time);
+
+            int pos = nodetag2index[tag];
+            for (int i = 0; i < 3; i++)
+            {
+                // (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step);
+                (*load)(i) = (*DRMForces)(3 * pos + i, use_this_step) * (1 - tau);
+                (*load)(i) += (*DRMForces)(3 * pos + i, use_this_step + 1) * tau;
+                // fout << (*load)(i) << " ";
+
+                if (std::isnan((*load)(i)))
+                {
+                    cerr << "DRM HDF5:   NAN encountered!! \n";
+                    cerr << "    (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
+                    cerr << "\n  load(i) = " << (*load)(i) << ", i = " << i << endl;
+                }
+            }
+
+            //Take care of the minus sign in the effective seismic force for boundary nodes
+            if ((*IsBoundary)[i])
+            {
+                (*load) = (*load) * (-1.0);
+            }
+
+            theNode->addUnbalancedLoad(*load);
+        }
+        // fout << endl;
+        delete load;
     }
-    // fout << endl;
-    delete load;
 }
 
 int
@@ -699,204 +703,207 @@ Domain_Reduction_Method_HDF5_input::getCopy(void)
 void
 Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
 {
-
-    // clock_t init, final;
-
-    // init = clock();
-
-    Domain *theDomain = this->getDomain();
-
-    Element *theElement = theDomain->getElement( (*Elements)[0] );
-    int NIE = theElement->getNumExternalNodes();
-
-
-    t1 = t2 = 0;
-    step1 = step2 = 0;
-    for (int i = 0; i < number_of_timesteps; i++)
+//If we don't have elements, no point in doing anything :/
+    if (number_of_local_elements > 0)
     {
-        if ((*times)[i] < t)
+        // clock_t init, final;
+
+        // init = clock();
+
+        Domain *theDomain = this->getDomain();
+
+        Element *theElement = theDomain->getElement( (*Elements)[0] );
+        int NIE = theElement->getNumExternalNodes();
+
+
+        t1 = t2 = 0;
+        step1 = step2 = 0;
+        for (int i = 0; i < number_of_timesteps; i++)
         {
-            step1 = i;
-        }
-        else
-        {
-            break;
-        }
-    }
-    t1 = (*times)[step1];
-    step2 = step1 + DRM_NUM_OF_PRECOMPUTED_TIMESTEPS;
-
-    int Nt = DRM_NUM_OF_PRECOMPUTED_TIMESTEPS;
-    if (step2 > number_of_timesteps)
-    {
-        step2 = number_of_timesteps;
-        Nt = step2 - step1;
-    }
-    t2 = (*times)[step2 - 1];
-
-
-
-    // DRMout << "step1 = " << step1 << ", step2 = " << step2 << endl;
-    // DRMout << "t1 = " << t1 << " <= t = " << t << " <= t2 = "  << t2 << endl;
-
-    int NDOF = 3;
-
-    // for (int i = 0; i < Nodes->Size(); i++)
-    // {
-    //     int tag = (*Nodes)[i];
-    //     cout << i << " : " << tag << " -> " << nodetag2index[tag];
-    //     if ((*IsBoundary)[i])
-    //     {
-    //         cout << " b" << endl;
-    //     }
-    //     else
-    //     {
-    //         cout << " e" << endl;
-    //     }
-    // }
-
-
-    Matrix *Fm = new Matrix(NIE * NDOF, DRM_NUM_OF_PRECOMPUTED_TIMESTEPS);
-    Matrix *Fk  = new Matrix(NIE * NDOF, DRM_NUM_OF_PRECOMPUTED_TIMESTEPS);
-    Matrix *u_e = new Matrix(NIE * NDOF, DRM_NUM_OF_PRECOMPUTED_TIMESTEPS);
-    Matrix *udd_e = new Matrix(NIE * NDOF, DRM_NUM_OF_PRECOMPUTED_TIMESTEPS);
-
-    double d[NIE * 3][DRM_NUM_OF_PRECOMPUTED_TIMESTEPS];
-    double a[NIE * 3][DRM_NUM_OF_PRECOMPUTED_TIMESTEPS];
-
-    DRMForces->Zero();
-
-    for (int e = 0; e < Elements->Size(); e++)
-    {
-        int eleTag = (*Elements)[e];
-
-        // cout << "eleTag = " << eleTag << " (" << e << " of " << Elements->Size()  << ") " << endl;
-
-        //Pointer to current element
-        theElement = theDomain->getElement(eleTag);
-
-        //List of current element nodes
-        const ID &elementNodes = theElement->getExternalNodes();
-
-        //Identify boundary and exterior nodes for this element
-        ID B_node(NIE);
-        ID E_node(NIE);
-        int nB = 0, nE = 0;
-        // bool bdnode;
-
-        for ( int ii = 0; ii < NIE; ii++)
-        {
-            int nodeTag = elementNodes(ii);
-
-            if ( (*IsBoundary)[nodetag2index[nodeTag]] == 1 )
+            if ((*times)[i] < t)
             {
-                B_node(nB) = ii;
-                nB ++;
+                step1 = i;
             }
             else
             {
-                E_node(nE) = ii;
-                nE ++;
+                break;
             }
         }
+        t1 = (*times)[step1];
+        step2 = step1 + DRM_NUM_OF_PRECOMPUTED_TIMESTEPS;
 
-        if ( nB != 0 and nE != 0 )
+        int Nt = DRM_NUM_OF_PRECOMPUTED_TIMESTEPS;
+        if (step2 > number_of_timesteps)
         {
-            // DRMout << "Element # " << eleTag << ", nB = " << nB << ", nE = " << nE << endl;
-            //Mass and stiffness matrices
-            Matrix Me = theElement->getMass();
-            Matrix Ke = theElement->getTangentStiff();
+            step2 = number_of_timesteps;
+            Nt = step2 - step1;
+        }
+        t2 = (*times)[step2 - 1];
 
 
-            //Zero out the diagonal block of Boundary nodes
-            for (int m = 0; m < nB; m++)
-                for (int n = 0; n < nB; n++)
-                    for (int d = 0; d < NDOF; d++)
-                        for (int e = 0; e < NDOF; e++)
-                        {
-                            Me( B_node(m)*NDOF + d, B_node(n)*NDOF + e ) = 0.0;
-                            Ke( B_node(m)*NDOF + d, B_node(n)*NDOF + e ) = 0.0;
-                        }
+
+        // DRMout << "step1 = " << step1 << ", step2 = " << step2 << endl;
+        // DRMout << "t1 = " << t1 << " <= t = " << t << " <= t2 = "  << t2 << endl;
+
+        int NDOF = 3;
+
+        // for (int i = 0; i < Nodes->Size(); i++)
+        // {
+        //     int tag = (*Nodes)[i];
+        //     cout << i << " : " << tag << " -> " << nodetag2index[tag];
+        //     if ((*IsBoundary)[i])
+        //     {
+        //         cout << " b" << endl;
+        //     }
+        //     else
+        //     {
+        //         cout << " e" << endl;
+        //     }
+        // }
 
 
-            //Zero out the diagonal block of Exterior nodes
-            for (int m = 0; m < nE; m++)
-                for (int n = 0; n < nE; n++)
-                    for (int d = 0; d < NDOF; d++)
-                        for (int e = 0; e < NDOF; e++)
-                        {
-                            Me( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
-                            Ke( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
-                        }
+        Matrix *Fm = new Matrix(NIE * NDOF, DRM_NUM_OF_PRECOMPUTED_TIMESTEPS);
+        Matrix *Fk  = new Matrix(NIE * NDOF, DRM_NUM_OF_PRECOMPUTED_TIMESTEPS);
+        Matrix *u_e = new Matrix(NIE * NDOF, DRM_NUM_OF_PRECOMPUTED_TIMESTEPS);
+        Matrix *udd_e = new Matrix(NIE * NDOF, DRM_NUM_OF_PRECOMPUTED_TIMESTEPS);
 
-            // cout <<
-            for (int n = 0; n < NIE; n++)
+        double d[NIE * 3][DRM_NUM_OF_PRECOMPUTED_TIMESTEPS];
+        double a[NIE * 3][DRM_NUM_OF_PRECOMPUTED_TIMESTEPS];
+
+        DRMForces->Zero();
+
+        for (int e = 0; e < Elements->Size(); e++)
+        {
+            int eleTag = (*Elements)[e];
+
+            // cout << "eleTag = " << eleTag << " (" << e << " of " << Elements->Size()  << ") " << endl;
+
+            //Pointer to current element
+            theElement = theDomain->getElement(eleTag);
+
+            //List of current element nodes
+            const ID &elementNodes = theElement->getExternalNodes();
+
+            //Identify boundary and exterior nodes for this element
+            ID B_node(NIE);
+            ID E_node(NIE);
+            int nB = 0, nE = 0;
+            // bool bdnode;
+
+            for ( int ii = 0; ii < NIE; ii++)
             {
-                // cout << ".";
-                int nodeTag = elementNodes(n);
-                int pos = nodetag2index[nodeTag];
+                int nodeTag = elementNodes(ii);
 
-                hsize_t start[2]  = {(hsize_t) 3 * pos , (hsize_t)step1};
-                hsize_t stride[2] = {1       , 1};
-                hsize_t count[2]  = {1       , 1};
-                hsize_t block[2]  = {3       , (hsize_t) Nt};
-
-                H5Sselect_hyperslab(
-                    id_displacements_dataspace,
-                    H5S_SELECT_SET, start, stride, count, block );
-
-                H5Sselect_hyperslab(
-                    id_accelerations_dataspace,
-                    H5S_SELECT_SET, start, stride, count, block );
-
-                start[0] = start[1] = 0;
-
-                H5Sselect_hyperslab(
-                    id_one_node_memspace,
-                    H5S_SELECT_SET, start, stride, count, block );
-
-
-                H5Dread( id_displacements, H5T_NATIVE_DOUBLE, id_one_node_memspace,
-                         id_displacements_dataspace, id_xfer_plist,  d );
-
-                H5Dread( id_accelerations, H5T_NATIVE_DOUBLE, id_one_node_memspace,
-                         id_accelerations_dataspace, id_xfer_plist,  a );
-
-                //This can be optimized by using the arrays directly and also BLAS-2 kernels for matmul
-                for (int j = 0 ; j < Nt; j++)
-                    for (int i = 0 ; i < 3; i++)
-                    {
-                        (*u_e)(3 * n + i, j) = d[i][j];
-                        (*udd_e)(3 * n + i, j) = a[i][j];
-                    }
-            }
-            // cout << endl;
-
-            Fm->addMatrixProduct(0.0, Me, (*udd_e), 1.0);
-            Fk->addMatrixProduct(0.0, Ke, (*u_e), 1.0);
-
-
-            for (int k = 0; k < NIE; k++)
-            {
-                int r = nodetag2index[elementNodes(k)];
-                for (int d = 0; d < NDOF; d++)
+                if ( (*IsBoundary)[nodetag2index[nodeTag]] == 1 )
                 {
+                    B_node(nB) = ii;
+                    nB ++;
+                }
+                else
+                {
+                    E_node(nE) = ii;
+                    nE ++;
+                }
+            }
+
+            if ( nB != 0 and nE != 0 )
+            {
+                // DRMout << "Element # " << eleTag << ", nB = " << nB << ", nE = " << nE << endl;
+                //Mass and stiffness matrices
+                Matrix Me = theElement->getMass();
+                Matrix Ke = theElement->getTangentStiff();
+
+
+                //Zero out the diagonal block of Boundary nodes
+                for (int m = 0; m < nB; m++)
+                    for (int n = 0; n < nB; n++)
+                        for (int d = 0; d < NDOF; d++)
+                            for (int e = 0; e < NDOF; e++)
+                            {
+                                Me( B_node(m)*NDOF + d, B_node(n)*NDOF + e ) = 0.0;
+                                Ke( B_node(m)*NDOF + d, B_node(n)*NDOF + e ) = 0.0;
+                            }
+
+
+                //Zero out the diagonal block of Exterior nodes
+                for (int m = 0; m < nE; m++)
+                    for (int n = 0; n < nE; n++)
+                        for (int d = 0; d < NDOF; d++)
+                            for (int e = 0; e < NDOF; e++)
+                            {
+                                Me( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
+                                Ke( E_node(m)*NDOF + d, E_node(n)*NDOF + e ) = 0.0;
+                            }
+
+                // cout <<
+                for (int n = 0; n < NIE; n++)
+                {
+                    // cout << ".";
+                    int nodeTag = elementNodes(n);
+                    int pos = nodetag2index[nodeTag];
+
+                    hsize_t start[2]  = {(hsize_t) 3 * pos , (hsize_t)step1};
+                    hsize_t stride[2] = {1       , 1};
+                    hsize_t count[2]  = {1       , 1};
+                    hsize_t block[2]  = {3       , (hsize_t) Nt};
+
+                    H5Sselect_hyperslab(
+                        id_displacements_dataspace,
+                        H5S_SELECT_SET, start, stride, count, block );
+
+                    H5Sselect_hyperslab(
+                        id_accelerations_dataspace,
+                        H5S_SELECT_SET, start, stride, count, block );
+
+                    start[0] = start[1] = 0;
+
+                    H5Sselect_hyperslab(
+                        id_one_node_memspace,
+                        H5S_SELECT_SET, start, stride, count, block );
+
+
+                    H5Dread( id_displacements, H5T_NATIVE_DOUBLE, id_one_node_memspace,
+                             id_displacements_dataspace, id_xfer_plist,  d );
+
+                    H5Dread( id_accelerations, H5T_NATIVE_DOUBLE, id_one_node_memspace,
+                             id_accelerations_dataspace, id_xfer_plist,  a );
+
+                    //This can be optimized by using the arrays directly and also BLAS-2 kernels for matmul
                     for (int j = 0 ; j < Nt; j++)
+                        for (int i = 0 ; i < 3; i++)
+                        {
+                            (*u_e)(3 * n + i, j) = d[i][j];
+                            (*udd_e)(3 * n + i, j) = a[i][j];
+                        }
+                }
+                // cout << endl;
+
+                Fm->addMatrixProduct(0.0, Me, (*udd_e), 1.0);
+                Fk->addMatrixProduct(0.0, Ke, (*u_e), 1.0);
+
+
+                for (int k = 0; k < NIE; k++)
+                {
+                    int r = nodetag2index[elementNodes(k)];
+                    for (int d = 0; d < NDOF; d++)
                     {
-                        (*DRMForces)( r * NDOF + d, j) +=  (*Fk)(k * NDOF + d, j) + (*Fm)(k * NDOF + d, j);
+                        for (int j = 0 ; j < Nt; j++)
+                        {
+                            (*DRMForces)( r * NDOF + d, j) +=  (*Fk)(k * NDOF + d, j) + (*Fm)(k * NDOF + d, j);
+                        }
                     }
                 }
             }
-        }
-    } // For elements
+        } // For elements
 
 
-    // cout << "DRMFORCES = " << *DRMForces << endl;
+        // cout << "DRMFORCES = " << *DRMForces << endl;
 
-    delete Fm;
-    delete Fk;
-    delete u_e;
-    delete udd_e;
+        delete Fm;
+        delete Fk;
+        delete u_e;
+        delete udd_e;
+    }
 
 }
 
