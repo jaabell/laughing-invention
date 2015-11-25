@@ -171,7 +171,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     DRMout << "Dataset \"" << HDF5filename << "\" has " << number_of_DRM_elements << " DRM elements on layer.\n";
     // Find out whether the elements have been defined in current model. In parallel, subdomain might not
     // contain all the defined elements, so keep only those that are local.
-    int number_of_local_elements = 0;
+    number_of_local_elements = 0;
     for (int i = 0; i < number_of_DRM_elements; i++)
     {
         if (theDomain->getElement(all_DRM_elements_list[i]) != 0)
