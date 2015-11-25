@@ -247,7 +247,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
     }
 
 
-    std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Commiting results. \n";
+    // std::cout << "TransientDomainDecompositionAnalysis::analyze() -- Commiting results. \n";
 
     result = theIntegrator->commit();
 
@@ -264,7 +264,7 @@ TransientDomainDecompositionAnalysis::analyze(double dT)
     }
 
 
-    std::cerr << "TransientDomainDecompositionAnalysis::analyze() --  Step end.\n";
+    // std::cerr << "TransientDomainDecompositionAnalysis::analyze() --  Step end.\n";
 
     return 0;
 }
