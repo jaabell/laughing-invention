@@ -283,7 +283,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
         {
             (*Nodes)[n] = all_DRM_nodes_list[i];
             (*IsBoundary)[n] = all_DRM_is_boundary_list[i];
-            nodetag2hdf5_pos.inset(std::pair<int, int>((*Nodes)[i], i));
+            nodetag2hdf5_pos.insert(std::pair<int, int>((*Nodes)[i], i));
             n++;
 
             if (all_DRM_nodes_list[i] > maxnodetag)
