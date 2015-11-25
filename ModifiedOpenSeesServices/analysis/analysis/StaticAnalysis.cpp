@@ -339,11 +339,6 @@ StaticAnalysis::domainChanged(void)
     theAnalysisModel->clearAll();
     theConstraintHandler->clearAll();
 
-    // theTimer.pause();
-    // cout <<  "StaticAnalysis::clearAll() " << theTimer.getReal();
-    // cout << theTimer.getCPU() << endln;
-    // theTimer.start();
-
     // now we invoke handle() on the constraint handler which
     // causes the creation of FE_Element and DOF_Group objects
     // and their addition to the AnalysisModel.
@@ -385,14 +380,12 @@ StaticAnalysis::domainChanged(void)
 
 
 #ifdef _PARALLEL_PROCESSING
-    // int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-    // result = theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
-    Graph &theGraph = theAnalysisModel->getDOFGroupGraph();//Out by Babak 06/4/13
-    result = theSOE->setSize(theGraph);//Out by Babak 06/4/13
+    Graph &theGraph = theAnalysisModel->getDOFGroupGraph();
+    result = theSOE->setSize(theGraph);
 
 #else
-    Graph &theGraph = theAnalysisModel->getDOFGraph();//Out by Babak 06/4/13
-    result = theSOE->setSize(theGraph);//Out by Babak 06/4/13
+    Graph &theGraph = theAnalysisModel->getDOFGraph();
+    result = theSOE->setSize(theGraph);
 #endif
 
 

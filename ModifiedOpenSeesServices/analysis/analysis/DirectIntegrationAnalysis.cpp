@@ -238,16 +238,23 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             cout << "\n";
         }
 
-        // cout << "       theAnalysisModel->newStepDomain(dT)\n";//Jdebug
-        if (theAnalysisModel->newStepDomain(dT) < 0)
+        globalESSITimer.start("Domain_Step");
+        result = theAnalysisModel->newStepDomain(dT);
+        globalESSITimer.stop("Domain_Step");
+
+        if (result < 0)
         {
             cerr << "DirectIntegrationAnalysis::analyze() - the AnalysisModel failed";
             cerr << " at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
+
             return -2;
         }
 
-        // check if domain has undergone change
+        // check for change in Domain since last step. As a change can
+        // occur in a commit() in a domaindecomp with load balancing
+        // this must now be inside the loop
+
         int stamp = the_Domain->hasDomainChanged();
 
         if (stamp != domainStamp)
@@ -263,8 +270,10 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         }
 
 
-        // cout << "       theIntegrator->newStep(dT) \n";//Jdebug
-        if (theIntegrator->newStep(dT) < 0)
+        globalESSITimer.start("Integrator_Step");
+        result = theIntegrator->newStep(dT) ;
+        globalESSITimer.stop("Integrator_Step");
+        if (result < 0)
         {
             cerr << "DirectIntegrationAnalysis::analyze() - the Integrator failed";
             cerr << " at time " << the_Domain->getCurrentTime() << endln;
@@ -272,8 +281,9 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             return -2;
         }
 
-        // cout << "       theAlgorithm->solveCurrentStep() \n";//Jdebug
+        globalESSITimer.start("SOE_Solution");
         result = theAlgorithm->solveCurrentStep();
+        globalESSITimer.stop("SOE_Solution");
 
         if (result < 0)
         {
@@ -286,9 +296,9 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
 
 
-        // cout << "       theIntegrator->commit() \n";  //Jdebug
+        globalESSITimer.start("Output");
         result = theIntegrator->commit();
-
+        globalESSITimer.stop("Output");
         if (result < 0)
         {
             cerr << "DirectIntegrationAnalysis::analyze() - ";
@@ -323,65 +333,68 @@ DirectIntegrationAnalysis::domainChanged(void)
     // causes the creation of FE_Element and DOF_Group objects
     // and their addition to the AnalysisModel.
 
-    theConstraintHandler->handle();
+    result = theConstraintHandler->handle();
+
+    if (result < 0)
+    {
+        cerr << "DirectIntegrationAnalysis::handle() - ";
+        cerr << "ConstraintHandler::handle() failed";
+        return -1;
+    }
+
     // we now invoke number() on the numberer which causes
     // equation numbers to be assigned to all the DOFs in the
     // AnalysisModel.
 
-    // cerr << theAnalysisModel->getDOFGroupGraph();
-
-    /*
-    DOF_GrpIter &theDOFs = theAnalysisModel->getDOFs();
-    DOF_Group *dofPtr;
-    while ((dofPtr = theDOFs()) != 0)
-      cerr << dofPtr->getID();
-    */
 
     theDOF_Numberer->numberDOF();
 
 
     theConstraintHandler->doneNumberingDOF();
 
-    // cerr << theAnalysisModel->getDOFGraph();
-
-    /*
-    DOF_GrpIter &theDOFs1 = theAnalysisModel->getDOFs();
-    while ((dofPtr = theDOFs1()) != 0)
-      cerr << dofPtr->getID();
-
-
-    FE_EleIter &theEles = theAnalysisModel->getFEs();
-    FE_Element *elePtr;
-    while((elePtr = theEles()) != 0)
-       cerr << elePtr->getID();
-    */
 
     // we invoke setGraph() on the LinearSOE which
     // causes that object to determine its size
 
 
 #ifdef _PARALLEL_PROCESSING
-    int MaxDOFtag = theAnalysisModel->getMaxDOFtag(); //Added by Babak 6/4/13
-    theSOE->setSize(MaxDOFtag); //Added by Babak 6/4/13
+    Graph &theGraph = theAnalysisModel->getDOFGroupGraph();
+    result = theSOE->setSize(theGraph);
 #else
-    theSOE->setSize(theAnalysisModel->getDOFGraph()); //Out by Babak 06/4/13
-
-    // Nima Tafazzoli added for eigen analysis, June 2012
-    if (theEigenSOE != 0)
-    {
-        theEigenSOE->setSize(theAnalysisModel->getDOFGraph());
-    }
+    Graph &theGraph = theAnalysisModel->getDOFGraph();
+    result = theSOE->setSize(theGraph);
 #endif
 
 
+    if (result < 0)
+    {
+        cerr << "DirectIntegrationAnalysis::handle() - ";
+        cerr << "LinearSOE::setSize() failed";
+        return -3;
+    }
 
 
 
-    // we invoke domainChange() on the integrator and algorithm
-    theIntegrator->domainChanged();
-    theAlgorithm->domainChanged();
+    // finally we invoke domainChanged on the Integrator and Algorithm
+    // objects .. informing them that the model has changed
 
+    result = theIntegrator->domainChanged();
 
+    if (result < 0)
+    {
+        cerr << "DirectIntegrationAnalysis::setAlgorithm() - ";
+        cerr << "Integrator::domainChanged() failed";
+        return -4;
+    }
+
+    result = theAlgorithm->domainChanged();
+
+    if (result < 0)
+    {
+        cerr << "DirectIntegrationAnalysis::setAlgorithm() - ";
+        cerr << "Algorithm::domainChanged() failed";
+        return -5;
+    }
     return 0;
 }
 
@@ -529,23 +542,23 @@ DirectIntegrationAnalysis::setLinearSOE(LinearSOE &theNewSOE)
     }
     else
     {
-#ifdef _PARALLEL_PROCESSING
-        int MaxDOFtag = theAnalysisModel->getMaxDOFtag();
-        if (theSOE->setSize(MaxDOFtag) < 0); //Added by Babak 6/4/13
-        {
-            cerr << "DirectIntegrationAnalysis::setAlgorithm() - ";
-            cerr << "LinearSOE::setSize() failed";
-            return -2;
-        }
+// #ifdef _PARALLEL_PROCESSING
+//         int MaxDOFtag = theAnalysisModel->getMaxDOFtag();
+//         if (theSOE->setSize(MaxDOFtag) < 0); //Added by Babak 6/4/13
+//         {
+//             cerr << "DirectIntegrationAnalysis::setAlgorithm() - ";
+//             cerr << "LinearSOE::setSize() failed";
+//             return -2;
+//         }
 
-#else
+// #else
 
-        Graph &theGraph = theAnalysisModel->getDOFGraph(); //Out by Babak 06/4/13
-        if (theSOE->setSize(theGraph) < 0) //Out by Babak 06/4/13
-        {
-            theAnalysisModel->getMaxDOFtag();    //Added by Babak 6/4/13
-        }
-#endif
+//         Graph &theGraph = theAnalysisModel->getDOFGraph(); //Out by Babak 06/4/13
+//         if (theSOE->setSize(theGraph) < 0) //Out by Babak 06/4/13
+//         {
+//             theAnalysisModel->getMaxDOFtag();    //Added by Babak 6/4/13
+//         }
+// #endif
 
     }
 
