@@ -122,6 +122,8 @@ private:
 
     bool is_initialized;
 
+    int number_of_local_elements;
+
     std::map<int, int> nodetag2index;
 
     //HDF5 handles
