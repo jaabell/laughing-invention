@@ -125,6 +125,7 @@ private:
     int number_of_local_elements;
 
     std::map<int, int> nodetag2index;
+    std::map<int, int> nodetag2hdf5_pos;
 
     //HDF5 handles
     hid_t id_drm_file;
