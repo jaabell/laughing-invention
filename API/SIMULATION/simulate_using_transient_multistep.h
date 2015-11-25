@@ -3,9 +3,9 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:         Nima Tafazzoli, Boris Jeremic
-// DATE:               Nima Tafazzoli, Boris Jeremic
-// UPDATE HISTORY:     October 2009
+// PROGRAMMER:         Jose Abell, Nima Tafazzoli, Boris Jeremic
+// DATE:
+// UPDATE HISTORY:     June 2010
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation
 //                     and with that can claim quality and fitness for intended
@@ -99,6 +99,7 @@ int simulate_using_transient_multistep(double dT,
     cout << "Pass!\n";
 
 
+    theDomain.setNumberOfOutputSteps(numSteps);
 
 
     cout << "Setting up the DirectIntegrationAnalysis.......................................................";
@@ -118,7 +119,15 @@ int simulate_using_transient_multistep(double dT,
     }
     cout << "Done!\n";
 
-    theDomain.setNumberOfOutputSteps(numSteps);
+	if (profiling_results_filename.length() > 4)
+    {
+        globalESSITimer.setReportFileName(profiling_results_filename, ModelName + "_" + StageName);
+        // theStaticAnalysis->setTimer(profiling_results_filename, ModelName + "_" + StageName);
+    }
+    else if (profiling_results_filename.length() > 0)
+    {
+        cout << "Profiling filename needs to have more than 4 characters. Currently: " << profiling_results_filename << endl;
+    }
 
     //=====================================================================================
     // Parallel Dynamic Analysis
@@ -185,11 +194,13 @@ int simulate_using_transient_multistep(double dT,
         // create a partitioner & partition the domain
         if (OPS_DOMAIN_PARTITIONER == 0)
         {
+
             OPS_GRAPH_PARTITIONER  = new ParMetis;
             OPS_DOMAIN_PARTITIONER = new DomainPartitioner(*OPS_GRAPH_PARTITIONER);
             theDomain.setPartitioner(OPS_DOMAIN_PARTITIONER);
         }
         theDomain.partition(OPS_NUM_SUBDOMAINS);
+
         OPS_PARTITIONED = true;
         cout << "Done!\n";
     }
@@ -200,8 +211,11 @@ int simulate_using_transient_multistep(double dT,
 
     for (int i = 1; i <= numSteps; i++)
     {
+
+
         if ( OPS_REDEFINE_ANALYSIS == true )
         {
+
             DomainDecompositionAnalysis *theSubAnalysis;
             SubdomainIter &theSubdomains = theDomain.getSubdomains();
             Subdomain *theSub = 0;
@@ -228,7 +242,7 @@ int simulate_using_transient_multistep(double dT,
 
         result = theTransientAnalysis->analyze(1, dT);
 
-        cout << "Analysis step # " << i  << " of " << numSteps << "\n";
+        // cout << "Analysis step # " << i  << " of " << numSteps << "\n";
     }
     cout << "> Analysis End -------------------------------------------------------------------------------";
 

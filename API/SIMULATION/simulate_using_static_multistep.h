@@ -135,6 +135,7 @@ int simulate_using_static_multistep(int numSteps)
 
 #ifdef _PARALLEL_PROCESSING
 
+    cout << "Setting domain decomposition analysis..........................................................";
     if (OPS_PARTITIONED == true && OPS_NUM_SUBDOMAINS > 1)
     {
         DomainDecompositionAnalysis *theSubAnalysis;
@@ -154,12 +155,23 @@ int simulate_using_static_multistep(int numSteps)
                     theConvergenceTest,
                     false);
 
+            if (theSubAnalysis == NULL)
+            {
+                cout << "Fail!\n";
+                return -1;
+            }
+
             theSub->setDomainDecompAnalysis(*theSubAnalysis);
         }
     }
+    cout << "Done!\n";
+
 
     if (OPS_PARTITIONED == false && OPS_NUM_SUBDOMAINS > 1)
     {
+        cout << "Creating subdomains............................................................................";
+        cout << "\n";
+
         if (OPS_theChannels != 0)
         {
             delete [] OPS_theChannels;
@@ -173,8 +185,14 @@ int simulate_using_static_multistep(int numSteps)
             ShadowSubdomain *theSubdomain = new ShadowSubdomain(i, *OPS_MACHINE, *OPS_OBJECT_BROKER);
             theDomain.addSubdomain(theSubdomain);
             OPS_theChannels[i - 1] = theSubdomain->getChannelPtr();
+            cout << "  Subdomain # " << i << " created. \n";
         }
+        cout << "...............................................................................................";
+        cout << "Done!\n";
 
+
+
+        cout << "Partitioning domain into subdomains............................................................";
         // create a partitioner & partition the domain
         if (OPS_DOMAIN_PARTITIONER == 0)
         {
@@ -186,8 +204,12 @@ int simulate_using_static_multistep(int numSteps)
         theDomain.partition(OPS_NUM_SUBDOMAINS);
 
         OPS_PARTITIONED = true;
+        cout << "Done!\n";
     }
 
+
+    cout << "\n\n\n";
+    cout << "> Analysis Start -----------------------------------------------------------------------------";
 
     for (int i = 1; i <= numSteps; i++)
     {
@@ -221,14 +243,14 @@ int simulate_using_static_multistep(int numSteps)
             OPS_REDEFINE_ANALYSIS = false;
         }
 
-        // double start_time = MPI_Wtime();
 
         int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
         result = theStaticAnalysis->analyze(numIncr);
-        // double end_time = MPI_Wtime();
+
         // cout << "\nAnalysis step " << i << " finished!\n";
 
     }
+    cout << "> Analysis End -------------------------------------------------------------------------------";
 
     //  if (theStaticAnalysis != 0)
     //  {
@@ -246,7 +268,7 @@ int simulate_using_static_multistep(int numSteps)
     // StateWriter output_writer(ModelName, StageName, isTheAnalysisDynamic);
 
     result = theStaticAnalysis->analyze(numSteps);
-
+    cout << "> Analysis End -------------------------------------------------------------------------------\n";
 
 #endif
 
@@ -256,6 +278,6 @@ int simulate_using_static_multistep(int numSteps)
 
     return result;
 
-}
+};
 
 
