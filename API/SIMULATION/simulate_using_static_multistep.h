@@ -215,33 +215,33 @@ int simulate_using_static_multistep(int numSteps)
     // {
 
 
-    //     if ( OPS_REDEFINE_ANALYSIS == true )
-    //     {
+    if ( OPS_REDEFINE_ANALYSIS == true )
+    {
 
-    //         DomainDecompositionAnalysis *theSubAnalysis;
-    //         SubdomainIter &theSubdomains = theDomain.getSubdomains();
-    //         Subdomain *theSub = 0;
+        DomainDecompositionAnalysis *theSubAnalysis;
+        SubdomainIter &theSubdomains = theDomain.getSubdomains();
+        Subdomain *theSub = 0;
 
-    //         while ((theSub = theSubdomains()) != 0)
-    //         {
+        while ((theSub = theSubdomains()) != 0)
+        {
 
-    //             // create the appropriate domain decomposition analysis
+            // create the appropriate domain decomposition analysis
 
-    //             theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
-    //                     *theHandler,
-    //                     *theNumberer,
-    //                     *theAnalysisModel,
-    //                     *theAlgorithm,
-    //                     *theSOE,
-    //                     *theStaticIntegrator,
-    //                     theConvergenceTest,
-    //                     false);
+            theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
+                    *theHandler,
+                    *theNumberer,
+                    *theAnalysisModel,
+                    *theAlgorithm,
+                    *theSOE,
+                    *theStaticIntegrator,
+                    theConvergenceTest,
+                    false);
 
 
-    //             theSub->setDomainDecompAnalysis(*theSubAnalysis);
-    //         }
-    //         OPS_REDEFINE_ANALYSIS = false;
-    //     }
+            theSub->setDomainDecompAnalysis(*theSubAnalysis);
+        }
+        OPS_REDEFINE_ANALYSIS = false;
+    }
 
 
     int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011

@@ -213,32 +213,32 @@ int simulate_using_transient_multistep(double dT,
     // {
 
 
-    //     if ( OPS_REDEFINE_ANALYSIS == true )
-    //     {
+    if ( OPS_REDEFINE_ANALYSIS == true )
+    {
 
-    //         DomainDecompositionAnalysis *theSubAnalysis;
-    //         SubdomainIter &theSubdomains = theDomain.getSubdomains();
-    //         Subdomain *theSub = 0;
+        DomainDecompositionAnalysis *theSubAnalysis;
+        SubdomainIter &theSubdomains = theDomain.getSubdomains();
+        Subdomain *theSub = 0;
 
-    //         while ((theSub = theSubdomains()) != 0)
-    //         {
+        while ((theSub = theSubdomains()) != 0)
+        {
 
-    //             // create the appropriate domain decomposition analysis
+            // create the appropriate domain decomposition analysis
 
-    //             theSubAnalysis = new TransientDomainDecompositionAnalysis(*theSub,
-    //                     *theHandler,
-    //                     *theNumberer,
-    //                     *theAnalysisModel,
-    //                     *theAlgorithm,
-    //                     *theSOE,
-    //                     *theTransientIntegrator,
-    //                     theConvergenceTest,
-    //                     false);
+            theSubAnalysis = new TransientDomainDecompositionAnalysis(*theSub,
+                    *theHandler,
+                    *theNumberer,
+                    *theAnalysisModel,
+                    *theAlgorithm,
+                    *theSOE,
+                    *theTransientIntegrator,
+                    theConvergenceTest,
+                    false);
 
-    //             theSub->setDomainDecompAnalysis(*theSubAnalysis);
-    //         }
-    //         OPS_REDEFINE_ANALYSIS = false;
-    //     }
+            theSub->setDomainDecompAnalysis(*theSubAnalysis);
+        }
+        OPS_REDEFINE_ANALYSIS = false;
+    }
 
     // result = theTransientAnalysis->analyze(1, dT);
     result = theTransientAnalysis->analyze(numSteps, dT);
