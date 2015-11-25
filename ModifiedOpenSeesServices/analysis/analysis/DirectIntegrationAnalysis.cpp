@@ -322,6 +322,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 int
 DirectIntegrationAnalysis::domainChanged(void)
 {
+    int result = 0;
     Domain *the_Domain = this->getDomainPtr();
     int stamp = the_Domain->hasDomainChanged();
     domainStamp = stamp;
