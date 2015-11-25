@@ -119,7 +119,7 @@ int simulate_using_transient_multistep(double dT,
     }
     cout << "Done!\n";
 
-	if (profiling_results_filename.length() > 4)
+    if (profiling_results_filename.length() > 4)
     {
         globalESSITimer.setReportFileName(profiling_results_filename, ModelName + "_" + StageName);
         // theStaticAnalysis->setTimer(profiling_results_filename, ModelName + "_" + StageName);
@@ -209,41 +209,42 @@ int simulate_using_transient_multistep(double dT,
     cout << "\n\n\n";
     cout << "> Analysis Start -----------------------------------------------------------------------------";
 
-    for (int i = 1; i <= numSteps; i++)
-    {
+    // for (int i = 1; i <= numSteps; i++)
+    // {
 
 
-        if ( OPS_REDEFINE_ANALYSIS == true )
-        {
+    //     if ( OPS_REDEFINE_ANALYSIS == true )
+    //     {
 
-            DomainDecompositionAnalysis *theSubAnalysis;
-            SubdomainIter &theSubdomains = theDomain.getSubdomains();
-            Subdomain *theSub = 0;
+    //         DomainDecompositionAnalysis *theSubAnalysis;
+    //         SubdomainIter &theSubdomains = theDomain.getSubdomains();
+    //         Subdomain *theSub = 0;
 
-            while ((theSub = theSubdomains()) != 0)
-            {
+    //         while ((theSub = theSubdomains()) != 0)
+    //         {
 
-                // create the appropriate domain decomposition analysis
+    //             // create the appropriate domain decomposition analysis
 
-                theSubAnalysis = new TransientDomainDecompositionAnalysis(*theSub,
-                        *theHandler,
-                        *theNumberer,
-                        *theAnalysisModel,
-                        *theAlgorithm,
-                        *theSOE,
-                        *theTransientIntegrator,
-                        theConvergenceTest,
-                        false);
+    //             theSubAnalysis = new TransientDomainDecompositionAnalysis(*theSub,
+    //                     *theHandler,
+    //                     *theNumberer,
+    //                     *theAnalysisModel,
+    //                     *theAlgorithm,
+    //                     *theSOE,
+    //                     *theTransientIntegrator,
+    //                     theConvergenceTest,
+    //                     false);
 
-                theSub->setDomainDecompAnalysis(*theSubAnalysis);
-            }
-            OPS_REDEFINE_ANALYSIS = false;
-        }
+    //             theSub->setDomainDecompAnalysis(*theSubAnalysis);
+    //         }
+    //         OPS_REDEFINE_ANALYSIS = false;
+    //     }
 
-        result = theTransientAnalysis->analyze(1, dT);
+    // result = theTransientAnalysis->analyze(1, dT);
+    result = theTransientAnalysis->analyze(numSteps, dT);
 
-        // cout << "Analysis step # " << i  << " of " << numSteps << "\n";
-    }
+    // cout << "Analysis step # " << i  << " of " << numSteps << "\n";
+    // }
     cout << "> Analysis End -------------------------------------------------------------------------------";
 
 

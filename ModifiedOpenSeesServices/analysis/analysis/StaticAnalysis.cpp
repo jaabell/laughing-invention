@@ -378,11 +378,9 @@ StaticAnalysis::domainChanged(void)
     // causes that object to determine its size
 
 
-
 #ifdef _PARALLEL_PROCESSING
     Graph &theGraph = theAnalysisModel->getDOFGroupGraph();
     result = theSOE->setSize(theGraph);
-
 #else
     Graph &theGraph = theAnalysisModel->getDOFGraph();
     result = theSOE->setSize(theGraph);

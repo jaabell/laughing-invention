@@ -587,8 +587,8 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
     {
         use_this_step = 0;
     }
-    cout << endl;
-    cout << " > DRM (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
+    // cout << endl;
+    // cout << " > DRM (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
 
     double time1 =  (*times)[use_this_step + step1];
     double time2 =  (*times)[use_this_step + step1 + 1];
@@ -603,7 +603,7 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
         tau = 1;
     }
 
-    cout << ", tau = " << tau  << endl;
+    // cout << ", tau = " << tau  << endl;
 
     // ofstream fout("drmforces.txt", ios::app);
     // fout << time << " ";

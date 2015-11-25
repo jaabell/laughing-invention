@@ -211,45 +211,47 @@ int simulate_using_static_multistep(int numSteps)
     cout << "\n\n\n";
     cout << "> Analysis Start -----------------------------------------------------------------------------";
 
-    for (int i = 1; i <= numSteps; i++)
-    {
+    // for (int i = 1; i <= numSteps; i++)
+    // {
 
 
-        if ( OPS_REDEFINE_ANALYSIS == true )
-        {
+    //     if ( OPS_REDEFINE_ANALYSIS == true )
+    //     {
 
-            DomainDecompositionAnalysis *theSubAnalysis;
-            SubdomainIter &theSubdomains = theDomain.getSubdomains();
-            Subdomain *theSub = 0;
+    //         DomainDecompositionAnalysis *theSubAnalysis;
+    //         SubdomainIter &theSubdomains = theDomain.getSubdomains();
+    //         Subdomain *theSub = 0;
 
-            while ((theSub = theSubdomains()) != 0)
-            {
+    //         while ((theSub = theSubdomains()) != 0)
+    //         {
 
-                // create the appropriate domain decomposition analysis
+    //             // create the appropriate domain decomposition analysis
 
-                theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
-                        *theHandler,
-                        *theNumberer,
-                        *theAnalysisModel,
-                        *theAlgorithm,
-                        *theSOE,
-                        *theStaticIntegrator,
-                        theConvergenceTest,
-                        false);
-
-
-                theSub->setDomainDecompAnalysis(*theSubAnalysis);
-            }
-            OPS_REDEFINE_ANALYSIS = false;
-        }
+    //             theSubAnalysis = new StaticDomainDecompositionAnalysis(*theSub,
+    //                     *theHandler,
+    //                     *theNumberer,
+    //                     *theAnalysisModel,
+    //                     *theAlgorithm,
+    //                     *theSOE,
+    //                     *theStaticIntegrator,
+    //                     theConvergenceTest,
+    //                     false);
 
 
-        int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
-        result = theStaticAnalysis->analyze(numIncr);
+    //             theSub->setDomainDecompAnalysis(*theSubAnalysis);
+    //         }
+    //         OPS_REDEFINE_ANALYSIS = false;
+    //     }
 
-        // cout << "\nAnalysis step " << i << " finished!\n";
 
-    }
+    int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
+    // result = theStaticAnalysis->analyze(numIncr);
+
+    result = theStaticAnalysis->analyze(numSteps);
+
+    // cout << "\nAnalysis step " << i << " finished!\n";
+
+    // }
     cout << "> Analysis End -------------------------------------------------------------------------------";
 
     //  if (theStaticAnalysis != 0)
