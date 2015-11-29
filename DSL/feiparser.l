@@ -336,6 +336,7 @@ EXP	([Ee][-+]?[0-9]+)
  /* Element names */
 "8NodeBrick"                        {return token::EightNodeBrick;}
 "8NodeBrickLT"                      {return token::EightNodeBrickLT;}
+"8NodeBrickLTNoOutput"              {return token::EightNodeBrickLTNoOutput;}
 "20NodeBrick"                       {return token::TwentyNodeBrick;}
 "27NodeBrick"                       {return token::TwentySevenNodeBrick;}
 "27NodeBrickLT"                     {return token::TwentySevenNodeBrickLT;}

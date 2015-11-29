@@ -270,9 +270,9 @@
 #define LOAD_TAG_BrickSurfaceLoad                               8
 #define LOAD_TAG_BrickSurfaceLoad_from_Contact_Pore_Pressure    9
 #define PATTERN_TAG_PBowlLoading                                26
-#define PATTERN_TAG_Domain_Reduction_Method                 	11
+#define PATTERN_TAG_Domain_Reduction_Method                     11
 #define PATTERN_TAG_Domain_Reduction_Method_Modified_Input      12
-#define PATTERN_TAG_Domain_Reduction_Method_HDF5_Input      	31
+#define PATTERN_TAG_Domain_Reduction_Method_HDF5_Input          31
 #define PATTERN_TAG_Domain_Reduction_Method_Save_Forces         15
 #define PATTERN_TAG_Domain_Reduction_Method_Restore_Forces      16
 #define Load_TAG_AccelerationField                              13
@@ -373,6 +373,7 @@
 #define ELE_TAG_EightNodeBrickLT   8001
 #define ELE_TAG_TwentySevenNodeBrickLT   8002
 #define ELE_TAG_ShearBeamLT 8003
+#define ELE_TAG_EightNodeBrickLT_NoOutput   8004
 
 
 

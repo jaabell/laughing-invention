@@ -210,7 +210,7 @@
 %token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
 %token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact FrictionalPenaltyContact
-%token EightNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT
+%token EightNodeBrickLT EightNodeBrickLTNoOutput TwentySevenNodeBrickLT ShearBeamLT
 
 // Element options tokens
 %token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule number_of_integration_points stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
@@ -2442,6 +2442,31 @@ ADD_element:
 		for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 10 exps
 		nodes.push($$);
 	}    
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [EightNodeBrickLTNoOutput] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	| TEXTNUMBER exp TYPE EightNodeBrickLTNoOutput WITH NODES
+		'(' exp ',' exp ',' exp ',' exp ','
+			exp ',' exp ',' exp ',' exp ')'
+			USE MATERIAL TEXTNUMBER exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($27); signature.push_back(this_signature("material", &isAdimensional));
+
+		$$ = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_ltensor_no_output, args, signature, "add_element_brick_8node_ltensor_no_output");
+
+		for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 10 exps
+		nodes.push($$);
+	} 
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type [ShearBeamLT] with nodes (<.>, <.>) cross_section = <l^2> use material # <.>;

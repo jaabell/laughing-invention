@@ -423,6 +423,9 @@ FEM_ObjectBroker::getNewElement(int classTag)
     case ELE_TAG_EightNodeBrickLT:            //Jose added on Oct 9, 2014
         return new EightNodeBrickLT();
 
+    case ELE_TAG_EightNodeBrickLT_NoOutput:            //Jose added on Oct 9, 2014
+        return new EightNodeBrickLT_NoOutput();
+
     case ELE_TAG_TwentySevenNodeBrickLT:            //Jose added on Oct 9, 2014
         return new TwentySevenNodeBrickLT();
 

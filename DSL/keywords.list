@@ -287,6 +287,7 @@ Caughey3rd
 Caughey4th
 DOFTYPE
 DruckerPragerLT
+EightNodeBrickLTNoOutput
 Energy_Increment
 Euler_One_Step|Euler_Multistep|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler
 F_fluid_x

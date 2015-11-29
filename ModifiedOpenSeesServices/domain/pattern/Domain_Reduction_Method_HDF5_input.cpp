@@ -400,7 +400,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     // Set status to initialized and ready to compute loads
     //===========================================================================
 
-
+    cout << "DRM initialization done!\n";
     is_initialized = true;
 }
 
