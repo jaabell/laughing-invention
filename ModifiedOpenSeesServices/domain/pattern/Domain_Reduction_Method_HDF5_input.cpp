@@ -417,7 +417,8 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
 
     //Get the MPI world
-    MPI_Comm world_group, worker_comm;
+    MPI_Group world_group, worker_group;
+    MPI_Comm worker_comm;
     MPI_Comm_group(MPI_COMM_WORLD, &world_group);
     MPI_Group_incl(world_group, numProcesses_world - 1, worker_ranks, &worker_group);
 
