@@ -398,13 +398,13 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
 
-    numProcesses = numProcesses_world - 1;
+    int numProcesses = numProcesses_world - 1;
 
     //Fork a new group of processes with its own communicator
     // so that SOE solution can be done un a subset of all MPI processes.
 
     //Ranks 1 through numProcesses are assigned to worker_world... since rank 0 has no elements!
-    worker_ranks = new int[numProcesses_world - 1];
+    int *worker_ranks = new int[numProcesses_world - 1];
     if (worker_ranks == NULL)
     {
         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
@@ -417,6 +417,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
 
     //Get the MPI world
+    MPI_Comm world_group, worker_comm;
     MPI_Comm_group(MPI_COMM_WORLD, &world_group);
     MPI_Group_incl(world_group, numProcesses_world - 1, worker_ranks, &worker_group);
 
