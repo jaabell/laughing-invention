@@ -393,6 +393,8 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     id_xfer_plist = H5Pcreate( H5P_DATASET_XFER);
 
 #ifdef _PARALLEL_PROCESSING
+    int numProcesses_world;
+    int processID_world;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
 
@@ -423,7 +425,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
     MPI_Comm_create(MPI_COMM_WORLD, worker_group, &worker_comm);
     int all_elements = 0;
-    int MPI_Reduce(&number_of_local_elements, &all_elements, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
+    MPI_Reduce(&number_of_local_elements, &all_elements, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
 
     if (all_elements != number_of_DRM_elements)
     {
@@ -432,7 +434,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     }
 
     int all_nodes = 0;
-    int MPI_Reduce(&number_of_local_nodes, &all_nodes, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
+    MPI_Reduce(&number_of_local_nodes, &all_nodes, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
 
     if (all_nodes != number_of_DRM_nodes)
     {
