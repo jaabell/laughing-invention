@@ -392,59 +392,59 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
     id_xfer_plist = H5Pcreate( H5P_DATASET_XFER);
 
-#ifdef _PARALLEL_PROCESSING
-    int numProcesses_world;
-    int processID_world;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
+    // #ifdef _PARALLEL_PROCESSING
+    //     int numProcesses_world;
+    //     int processID_world;
+    //     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
+    //     MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
 
-    int numProcesses = numProcesses_world - 1;
+    //     int numProcesses = numProcesses_world - 1;
 
-    //Fork a new group of processes with its own communicator
-    // so that SOE solution can be done un a subset of all MPI processes.
+    //     //Fork a new group of processes with its own communicator
+    //     // so that SOE solution can be done un a subset of all MPI processes.
 
-    //Ranks 1 through numProcesses are assigned to worker_world... since rank 0 has no elements!
-    int *worker_ranks = new int[numProcesses_world - 1];
-    if (worker_ranks == NULL)
-    {
-        cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
-    }
+    //     //Ranks 1 through numProcesses are assigned to worker_world... since rank 0 has no elements!
+    //     int *worker_ranks = new int[numProcesses_world - 1];
+    //     if (worker_ranks == NULL)
+    //     {
+    //         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
+    //     }
 
-    for (int rank = 1; rank < numProcesses_world ; rank++)
-    {
-        worker_ranks[rank - 1] = rank;
-    }
-
-
-    //Get the MPI world
-    MPI_Group world_group, worker_group;
-    MPI_Comm worker_comm;
-    MPI_Comm_group(MPI_COMM_WORLD, &world_group);
-    MPI_Group_incl(world_group, numProcesses_world - 1, worker_ranks, &worker_group);
+    //     for (int rank = 1; rank < numProcesses_world ; rank++)
+    //     {
+    //         worker_ranks[rank - 1] = rank;
+    //     }
 
 
-    /* Create new communicator and then perform collective communications */
+    //     //Get the MPI world
+    //     MPI_Group world_group, worker_group;
+    //     MPI_Comm worker_comm;
+    //     MPI_Comm_group(MPI_COMM_WORLD, &world_group);
+    //     MPI_Group_incl(world_group, numProcesses_world - 1, worker_ranks, &worker_group);
 
-    MPI_Comm_create(MPI_COMM_WORLD, worker_group, &worker_comm);
-    int all_elements = 0;
-    MPI_Reduce(&number_of_local_elements, &all_elements, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
 
-    if (all_elements != number_of_DRM_elements)
-    {
-        cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not find all elements in domain.  " << numProcesses <<  " \n";
-        exit(-1);
-    }
+    //     /* Create new communicator and then perform collective communications */
 
-    int all_nodes = 0;
-    MPI_Reduce(&number_of_local_nodes, &all_nodes, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
+    //     MPI_Comm_create(MPI_COMM_WORLD, worker_group, &worker_comm);
+    //     int all_elements = 0;
+    //     MPI_Reduce(&number_of_local_elements, &all_elements, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
 
-    if (all_nodes != number_of_DRM_nodes)
-    {
-        cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not find all nodes in domain.  " << numProcesses <<  " \n";
-        exit(-1);
-    }
-    // MPI_reduce()
-#endif
+    //     if (all_elements != number_of_DRM_elements)
+    //     {
+    //         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not find all elements in domain.  " << numProcesses <<  " \n";
+    //         exit(-1);
+    //     }
+
+    //     int all_nodes = 0;
+    //     MPI_Reduce(&number_of_local_nodes, &all_nodes, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
+
+    //     if (all_nodes != number_of_DRM_nodes)
+    //     {
+    //         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not find all nodes in domain.  " << numProcesses <<  " \n";
+    //         exit(-1);
+    //     }
+    //     // MPI_reduce()
+    // #endif
 
     //===========================================================================
     // Set status to initialized and ready to compute loads
