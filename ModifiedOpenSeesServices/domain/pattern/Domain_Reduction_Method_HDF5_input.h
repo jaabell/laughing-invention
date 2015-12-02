@@ -52,9 +52,13 @@
 
 #define DRM_NUM_OF_PRECOMPUTED_TIMESTEPS 50
 
-#define DRMerror std::cerr << std::endl << __PRETTY_FUNCTION__ << " - ERROR: \n"
-#define DRMwarning std::cout << std::endl <<  __PRETTY_FUNCTION__ << " - Warning: \n"
-#define DRMout std::cout << std::endl << __PRETTY_FUNCTION__ << " : \n"
+// #define DRMerror std::cerr << std::endl << __PRETTY_FUNCTION__ << " - ERROR: \n"
+// #define DRMwarning std::cout << std::endl <<  __PRETTY_FUNCTION__ << " - Warning: \n"
+// #define DRMout std::cout << std::endl << __PRETTY_FUNCTION__ << " : \n"
+
+#define DRMerror std::cerr << std::endl << "DRMHDF5" << " - ERROR: \n"
+#define DRMwarning std::cout << std::endl <<  "DRMHDF5" << " - Warning: \n"
+#define DRMout std::cout << std::endl << "DRMHDF5" << " : \n"
 
 #define DRMHDF5_MAX_RETURN_OPEN_OBJS 100
 

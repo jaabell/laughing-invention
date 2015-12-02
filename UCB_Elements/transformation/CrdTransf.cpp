@@ -15,75 +15,117 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// Written: Remo Magalhaes de Souza
-// Created: 10/98
+// $Revision: 1.5 $
+// $Date: 2009-08-19 17:53:01 $
+// $Source: /usr/local/cvs/OpenSees/SRC/coordTransformation/CrdTransf.cpp,v $
 
+// Written: Remo Magalhaes de Souza (rmsouza@ce.berkeley.edu)
+// Created: 04/2000
+// Revision: A
 //
-// Description: This file contains the class definition for
-// Fiber. Fiber is an abstract base class and thus no objects of
-// it's type can be instatiated. It has pure virtual functions which
-// must be implemented in it's derived classes.
-//
-// What: "@(#) Fiber.h, revA"
+// Description: This file contains the implementation for the CrdTransf class.
+// CrdTransf provides the abstraction of a frame
+// coordinate transformation. It is an abstract base class and
+// thus no objects of  it's type can be instatiated.
 
-
-#ifndef Fiber_h
-#define Fiber_h
-
-#include <DomainComponent.h>
-#include <MovableObject.h>
+#include <CrdTransf.h>
 #include <Vector.h>
 
-class Matrix;
-class ID;
-class UniaxialMaterial;
-class NDMaterial;
-class Information;
-class Response;
+#include <TaggedObject.h>
+#include <MapOfTaggedObjects.h>
 
-class Fiber : public TaggedObject, public MovableObject
+static MapOfTaggedObjects theCrdTransfObjects;
+
+bool OPS_AddCrdTransf(CrdTransf *newComponent)
 {
-public:
-    Fiber (int tag, int classTag);
-    virtual ~Fiber();
+    return theCrdTransfObjects.addComponent(newComponent);
+}
 
-    virtual int    setTrialFiberStrain(const Vector &vs) = 0;
-    virtual Vector &getFiberStressResultants(void) = 0;
-    virtual Matrix &getFiberTangentStiffContr(void) = 0;
+CrdTransf *OPS_GetCrdTransf(int tag)
+{
 
-    virtual int    commitState(void) = 0;
-    virtual int    revertToLastCommit(void) = 0;
-    virtual int    revertToStart(void) = 0;
-
-    virtual Fiber *getCopy(void) = 0;
-    virtual int getOrder(void) = 0;
-    virtual const ID &getType(void) = 0;
-
-    virtual Response *setResponse(const char **argv, int argc, ostream &s);
-    virtual int getResponse(int responseID, Information &info);
-
-    virtual void getFiberLocation(double &y, double &z) = 0;
-    virtual double getArea(void) = 0;
-
-    virtual UniaxialMaterial *getMaterial(void)
+    TaggedObject *theResult = theCrdTransfObjects.getComponentPtr(tag);
+    if (theResult == 0)
     {
+        std::cerr << "CrdTransf *getCrdTransf(int tag) - none found with tag: " << tag << endln;
         return 0;
     }
-    virtual NDMaterial *getNDMaterial(void)
-    {
-        return 0;
-    }
+    CrdTransf *theSeries = (CrdTransf *)theResult;
 
-    virtual const Vector &getFiberSensitivity(int gradNumber, bool cond);
-    virtual int commitSensitivity(const Vector &dedh, int gradNumber,
-                                  int numGrads);
+    return theSeries;
+}
 
-protected:
-    Vector *sDefault;
-    Matrix *fDefault;
+void OPS_ClearAllCrdTransf(void)
+{
+    theCrdTransfObjects.clearAll();
+}
 
-private:
-};
+
+// constructor:
+CrdTransf::CrdTransf(int tag, int classTag): TaggedObject(tag), MovableObject(classTag)
+{
+}
+
+// destructor:
+CrdTransf::~CrdTransf()
+{
+}
+
+// const Vector &
+// CrdTransf::getBasicDisplSensitivity(int gradNumber)
+// {
+//     std::cerr << "WARNING CrdTransf::getBasicDisplSensitivity() - this method "
+//               << " should not be called." << endln;
+
+//     static Vector dummy(1);
+//     return dummy;
+// }
+
+// const Vector &
+// CrdTransf::getGlobalResistingForceShapeSensitivity(const Vector &pb,
+//         const Vector &p0,
+//         int gradNumber)
+// {
+//     std::cerr << "ERROR CrdTransf::getGlobalResistingForceSensitivity() - has not been"
+//               << " implemented yet for the chosen transformation." << endln;
+
+//     static Vector dummy(1);
+//     return dummy;
+// }
+
+// const Vector &
+// CrdTransf::getGlobalResistingForceShapeSensitivity(const Vector &pb,
+//         const Vector &p0)
+// {
+//     std::cerr << "ERROR CrdTransf::getGlobalResistingForceSensitivity() - has not been"
+//               << " implemented yet for the chosen transformation." << endln;
+
+//     static Vector dummy(1);
+//     return dummy;
+// }
+
+// const Vector &
+// CrdTransf::getBasicTrialDispShapeSensitivity(void)
+// {
+//     std::cerr << "ERROR CrdTransf::getBasicTrialDispShapeSensitivity() - has not been"
+//               << " implemented yet for the chosen transformation." << endln;
+
+//     static Vector dummy(1);
+//     return dummy;
+// }
+
+
+
+// // --Quan
+// const Vector &
+// CrdTransf::getBasicDisplSensitivity(int gradNumber, int)
+// {
+//     std::cerr << "WARNING CrdTransf::getBasicDisplSensitivity() - this method "
+//               << " should not be called." << endln;
+
+//     static Vector dummy(1);
+//     return dummy;
+// }
 
 /*
 Copyright @ 1999,2000 The Regents of the University of California (The Regents).
@@ -122,5 +164,3 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE
 ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS PROVIDED "AS IS". REGENTS HAS
 NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 */
-
-#endif

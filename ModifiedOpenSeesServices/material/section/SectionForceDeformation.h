@@ -18,16 +18,14 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Revision: 1.9 $
-// $Date: 2003/03/04 00:48:16 $
+// $Revision: 1.14 $
+// $Date: 2008-08-26 16:45:44 $
 // $Source: /usr/local/cvs/OpenSees/SRC/material/section/SectionForceDeformation.h,v $
 
 
 #ifndef SectionForceDeformation_h
 #define SectionForceDeformation_h
 
-// File: ~/material/SectionForceDeformation.h
-//
 // Written: MHS
 // Created: Feb 2000
 // Revision: A
@@ -45,7 +43,7 @@
 #include <ID.h>
 
 class Information;
-// class Response;
+class Response;
 
 #define MAX_SECTION_RESPONSE_ID 10000
 
@@ -55,45 +53,72 @@ class Information;
 #define SECTION_RESPONSE_MY     4
 #define SECTION_RESPONSE_VZ     5
 #define SECTION_RESPONSE_T      6
+#define SECTION_RESPONSE_R      7
+#define SECTION_RESPONSE_Q      8
 
 class SectionForceDeformation : public Material
 {
-    public:
-        SectionForceDeformation (int tag, int classTag);
-        SectionForceDeformation ();
-        virtual ~SectionForceDeformation ();
+public:
+    SectionForceDeformation (int tag, int classTag);
+    SectionForceDeformation ();
+    virtual ~SectionForceDeformation ();
 
-        virtual int setTrialSectionDeformation (const Vector &) = 0;
-        virtual const Vector &getSectionDeformation (void) = 0;
+    //virtual int setTrialSectionDeformation (const Vector&) = 0;
+    virtual int setTrialSectionDeformation (const Vector&) ; //the default valuoe 0 is removeed byJZ ,UoE
+    virtual const Vector &getSectionDeformation (void) = 0;
 
-        virtual const Vector &getStressResultant (void) = 0;
-        virtual const Matrix &getSectionTangent (void) = 0;
-        virtual const Matrix &getInitialTangent (void) = 0;
-        virtual const Matrix &getSectionFlexibility (void);
-        virtual const Matrix &getInitialFlexibility (void);
+    virtual const Vector &getStressResultant (void) = 0;
+    virtual const Matrix &getSectionTangent (void) = 0;
+    virtual const Matrix &getInitialTangent (void) = 0;
+    virtual const Matrix &getSectionFlexibility (void);
+    virtual const Matrix &getInitialFlexibility (void);
 
-        virtual double getRho(void);
+    virtual double getRho(void);
 
-        virtual int commitState (void) = 0;
-        virtual int revertToLastCommit (void) = 0;
-        virtual int revertToStart (void) = 0;
+    virtual int commitState (void) = 0;
+    virtual int revertToLastCommit (void) = 0;
+    virtual int revertToStart (void) = 0;
 
-        virtual SectionForceDeformation *getCopy (void) = 0;
-        virtual const ID &getType (void) = 0;
-        virtual int getOrder (void) const = 0;
+    virtual SectionForceDeformation *getCopy (void) = 0;
+    virtual const ID &getType (void) = 0;
+    virtual int getOrder (void) const = 0;
 
-        // virtual Response* setResponse(const char** argv, int argc, Information& info);
-        // virtual int getResponse(int responseID, Information& info);
+    // virtual Response *setResponse(const char **argv, int argc, ostream &s);
+    // virtual int getResponse(int responseID, Information &info);
+
+    // virtual int getResponseSensitivity(int responseID, int gradIndex,
+    //                                    Information &info);
 
 
-        // Nima Tafazzoli (Nov. 2012)
-        virtual double getArea();
 
-    protected:
-        Matrix *fDefault;   // Default flexibility matrix
+    // AddingSensitivity:BEGIN //////////////////////////////////////////
+    // virtual const Vector &getStressResultantSensitivity(int gradIndex,
+    //         bool conditional);
+    // virtual const Vector &getSectionDeformationSensitivity(int gradIndex);
+    // virtual const Matrix &getSectionTangentSensitivity(int gradIndex);
+    // virtual const Matrix &getSectionFlexibilitySensitivity(int gradIndex);
+    // virtual const Matrix &getInitialTangentSensitivity(int gradIndex);
+    // virtual const Matrix &getInitialFlexibilitySensitivity(int gradIndex);
+    // virtual double getRhoSensitivity(int gradIndex);
+    // virtual int commitSensitivity(const Vector& sectionDeformationGradient,
+    //                               int gradIndex, int numGrads);
+    // AddingSensitivity:END ///////////////////////////////////////////
 
-    private:
+    //--- Adding Thermal Materials:[BEGIN]   by UoE OpenSees Group ----//
+    virtual int setTrialSectionDeformation(const Vector&, const Vector &); //JZ
+    virtual const Vector &getTemperatureStress(const Vector &tData);//27 is for 'FireLoadPattern'
+    //--- Adding Thermal Functions:[END]   by UoE OpenSees Group ----//
+
+protected:
+    Matrix *fDefault; // Default flexibility matrix
+    Vector *sDefault;
+
+private:
+
 };
 
+extern bool OPS_addSectionForceDeformation(SectionForceDeformation *newComponent);
+extern SectionForceDeformation *OPS_getSectionForceDeformation(int tag);
+extern void OPS_clearAllSectionForceDeformation(void);
 
 #endif

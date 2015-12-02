@@ -18,11 +18,6 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Revision: 1.7 $
-// $Date: 2003/02/25 23:33:36 $
-// $Source: /usr/local/cvs/OpenSees/SRC/material/section/fiber/UniaxialFiber3d.h,v $
-
-
 // File: ~/fiber/UniaxialFiber3d.h
 //
 // Written: Remo Magalhaes de Souza
@@ -43,61 +38,58 @@
 
 #include <Matrix.h>
 #include <Fiber.h>
-#include <iostream>
-using namespace std;
-
 
 class UniaxialMaterial;
-// class Response;
+class Response;
 
 class UniaxialFiber3d: public Fiber
 {
-    public:
-        UniaxialFiber3d ();
-        UniaxialFiber3d (int tag, UniaxialMaterial &theMat, double Area,
-                         const Vector &position);
+public:
+    UniaxialFiber3d ();
+    UniaxialFiber3d (int tag, UniaxialMaterial &theMat, double Area,
+                     const Vector &position);
 
-        ~UniaxialFiber3d();
+    ~UniaxialFiber3d();
 
-        int   setTrialFiberStrain(const Vector &vs);
-        Vector &getFiberStressResultants (void);
-        Matrix &getFiberTangentStiffContr (void);
+    int   setTrialFiberStrain(const Vector &vs);
+    Vector &getFiberStressResultants (void);
+    Matrix &getFiberTangentStiffContr (void);
 
-        int   commitState(void);
-        int   revertToLastCommit(void);
-        int   revertToStart(void);
+    int   commitState(void);
+    int   revertToLastCommit(void);
+    int   revertToStart(void);
 
-        Fiber *getCopy(void);
-        int getOrder(void);
-        const ID &getType(void);
+    Fiber *getCopy(void);
+    int getOrder(void);
+    const ID &getType(void);
 
-        int sendSelf(int cTag, Channel &theChannel);
-        int receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
-        void Print(ostream &s, int flag = 0);
+    int sendSelf(int cTag, Channel &theChannel);
+    int receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+    void Print(ostream &s, int flag = 0);
 
-        // Response *setResponse(const char **argv, int argc, Information &info);
-        // int getResponse(int responseID, Information &info);
+    Response *setResponse(const char **argv, int argc, ostream &S);
+    int getResponse(int responseID, Information &info);
 
-        void getFiberLocation(double &y, double &z);
-        UniaxialMaterial *getMaterial(void)
-        {
-            return theMaterial;
-        };
-        double getArea(void)
-        {
-            return area;
-        };
+    void getFiberLocation(double &y, double &z);
+    UniaxialMaterial *getMaterial(void)
+    {
+        return theMaterial;
+    };
+    double getArea(void)
+    {
+        return area;
+    };
 
-    protected:
+protected:
 
-    private:
-        UniaxialMaterial *theMaterial;   // pointer to a material
-        double area;                          // area of the fiber
-        double as[2];                            // matrix that transforms
-        // section deformations into fiber strain
-        static Matrix ks;       // static class wide matrix object for returns
-        static Vector fs;       // static class wide vector object for returns
-        static ID code;
+private:
+    UniaxialMaterial *theMaterial;   // pointer to a material
+    double area;                          // area of the fiber
+    double as[2];                            // matrix that transforms
+    // section deformations into fiber strain
+    static Matrix ks;       // static class wide matrix object for returns
+    static Vector fs;       // static class wide vector object for returns
+    static ID code;
 };
 
 

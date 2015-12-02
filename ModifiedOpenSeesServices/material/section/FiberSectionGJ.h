@@ -18,8 +18,8 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Revision: 1.3 $
-// $Date: 2003/02/25 23:33:34 $
+// $Revision: 1.6 $
+// $Date: 2007-02-02 01:18:13 $
 // $Source: /usr/local/cvs/OpenSees/SRC/material/section/FiberSectionGJ.h,v $
 
 // Written: fmk
@@ -37,72 +37,68 @@
 #include <Vector.h>
 #include <Matrix.h>
 
-#include <iostream>
-using namespace std;
-
 class UniaxialMaterial;
 class Fiber;
-// class Response;
+class Response;
 
 class FiberSectionGJ : public SectionForceDeformation
 {
-    public:
-        FiberSectionGJ();
-        FiberSectionGJ(int tag, int numFibers, Fiber **fibers, double GJ = 1.0e10);
-        ~FiberSectionGJ();
+public:
+    FiberSectionGJ();
+    FiberSectionGJ(int tag, int numFibers, Fiber **fibers, double GJ = 1.0e10);
+    ~FiberSectionGJ();
 
-        int   setTrialSectionDeformation(const Vector &deforms);
-        const Vector &getSectionDeformation(void);
+    const char *getClassType(void) const
+    {
+        return "FiberSectionGJ";
+    };
 
-        const Vector &getStressResultant(void);
-        const Matrix &getSectionTangent(void);
-        const Matrix &getInitialTangent(void);
+    int   setTrialSectionDeformation(const Vector &deforms);
+    const Vector &getSectionDeformation(void);
 
-        int   commitState(void);
-        int   revertToLastCommit(void);
-        int   revertToStart(void);
+    const Vector &getStressResultant(void);
+    const Matrix &getSectionTangent(void);
+    const Matrix &getInitialTangent(void);
 
-        SectionForceDeformation *getCopy(void);
-        const ID &getType (void);
-        int getOrder (void) const;
+    int   commitState(void);
+    int   revertToLastCommit(void);
+    int   revertToStart(void);
 
-        int sendSelf(int cTag, Channel &theChannel);
-        int receiveSelf(int cTag, Channel &theChannel,
-                     FEM_ObjectBroker &theBroker);
-        void Print(ostream &s, int flag = 0);
+    SectionForceDeformation *getCopy(void);
+    const ID &getType (void);
+    int getOrder (void) const;
 
-        // Response *setResponse(const char **argv, int argc, Information &info);
-        // int getResponse(int responseID, Information &info);
+    int sendSelf(int cTag, Channel &theChannel);
+    int receiveSelf(int cTag, Channel &theChannel,
+                    FEM_ObjectBroker &theBroker);
+    void Print(ostream &s, int flag = 0);
 
-        int addFiber(Fiber &theFiber);
+    Response *setResponse(const char **argv, int argc, ostream &s);
+    int getResponse(int responseID, Information &info);
 
+    int addFiber(Fiber &theFiber);
 
-        double getArea();
+    int setParameter(const char **argv, int argc, Parameter &param);
 
-    protected:
+protected:
 
-    private:
-        int numFibers;                   // number of fibers in the section
-        UniaxialMaterial **theMaterials; // array of pointers to materials
-        double *matData;               // data for the materials [yloc and area]
-        double kData[6];               // data for ks matrix
-        double sData[3];               // data for s vector
+private:
+    int numFibers;                   // number of fibers in the section
+    UniaxialMaterial **theMaterials; // array of pointers to materials
+    double *matData;               // data for the materials [yloc and area]
+    double kData[6];               // data for ks matrix
+    double sData[3];               // data for s vector
 
-        double yBar;       // Section centroid
-        double zBar;
+    double yBar;       // Section centroid
+    double zBar;
 
-        Vector e;          // trial section deformations
-        Vector eCommit;    // committed section deformations
+    Vector e;          // trial section deformations
 
-        static ID code;
-        static Vector s;         // section resisting forces
-        static Matrix ks;        // section stiffness
+    static ID code;
+    static Vector s;         // section resisting forces
+    static Matrix ks;        // section stiffness
 
-        double GJ;
-
-        // Nima Tafazzoli (Nov. 2012)
-        double SectionArea;
-
+    double GJ;
 };
 
 #endif

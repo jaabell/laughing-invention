@@ -18,8 +18,8 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Revision: 1.4 $
-// $Date: 2003/02/25 23:33:34 $
+// $Revision: 1.8 $
+// $Date: 2007-11-30 23:34:45 $
 // $Source: /usr/local/cvs/OpenSees/SRC/material/section/FiberSectionGJ.cpp,v $
 
 // Written: fmk
@@ -28,21 +28,22 @@
 // Description: This file contains the class implementation of FiberSection2d.
 
 #include <stdlib.h>
+#include <math.h>
 
 #include <Channel.h>
 #include <Vector.h>
 #include <Matrix.h>
-// #include <MatrixUtil.h>
+#include <MatrixUtil.h>
 #include <Fiber.h>
 #include <classTags.h>
 #include <FiberSectionGJ.h>
 #include <ID.h>
 #include <FEM_ObjectBroker.h>
 #include <Information.h>
-// #include <MaterialResponse.h>
+#include <MaterialResponse.h>
 #include <UniaxialMaterial.h>
-#include <iostream>
-using namespace std;
+
+#include <string.h>
 
 ID FiberSectionGJ::code(4);
 Vector FiberSectionGJ::s(4);
@@ -52,7 +53,7 @@ Matrix FiberSectionGJ::ks(4, 4);
 FiberSectionGJ::FiberSectionGJ(int tag, int num, Fiber **fibers, double gj):
     SectionForceDeformation(tag, SEC_TAG_FiberSectionGJ),
     numFibers(num), theMaterials(0), matData(0),
-    yBar(0.0), zBar(0.0), e(4), eCommit(4), GJ(gj), SectionArea(0)
+    yBar(0.0), zBar(0.0), e(4), GJ(gj)
 {
     if (numFibers != 0)
     {
@@ -60,7 +61,7 @@ FiberSectionGJ::FiberSectionGJ(int tag, int num, Fiber **fibers, double gj):
 
         if (theMaterials == 0)
         {
-            cerr << "FiberSectionGJ::FiberSectionGJ -- failed to allocate Material pointers\n";
+            std::cerr << "FiberSectionGJ::FiberSectionGJ -- failed to allocate Material pointers\n";
             exit(-1);
         }
 
@@ -68,10 +69,9 @@ FiberSectionGJ::FiberSectionGJ(int tag, int num, Fiber **fibers, double gj):
 
         if (matData == 0)
         {
-            cerr << "FiberSectionGJ::FiberSectionGJ -- failed to allocate double array for material data\n";
+            std::cerr << "FiberSectionGJ::FiberSectionGJ -- failed to allocate double array for material data\n";
             exit(-1);
         }
-
         double Qz = 0.0;
         double Qy = 0.0;
         double A  = 0.0;
@@ -95,18 +95,13 @@ FiberSectionGJ::FiberSectionGJ(int tag, int num, Fiber **fibers, double gj):
 
             if (theMaterials[i] == 0)
             {
-                cerr << "FiberSectionGJ::FiberSectionGJ -- failed to get copy of a Material\n";
+                std::cerr << "FiberSectionGJ::FiberSectionGJ -- failed to get copy of a Material\n";
                 exit(-1);
             }
         }
 
         yBar = -Qz / A;
         zBar = Qy / A;
-
-
-        // Nima Tafazzoli (Nov. 2012)
-        SectionArea = A;
-
     }
 
     sData[0] = 0.0;
@@ -128,7 +123,7 @@ FiberSectionGJ::FiberSectionGJ(int tag, int num, Fiber **fibers, double gj):
 FiberSectionGJ::FiberSectionGJ():
     SectionForceDeformation(0, SEC_TAG_FiberSectionGJ),
     numFibers(0), theMaterials(0), matData(0),
-    yBar(0.0), zBar(0.0), e(4), eCommit(4), GJ(1.0), SectionArea(0)
+    yBar(0.0), zBar(0.0), e(4), GJ(1.0)
 {
     sData[0] = 0.0;
     sData[1] = 0.0;
@@ -156,13 +151,12 @@ FiberSectionGJ::addFiber(Fiber &newFiber)
 
     if (newArray == 0 || newMatData == 0)
     {
-        cerr << "FiberSectionGJ::addFiber -- failed to allocate Fiber pointers\n";
+        std::cerr << "FiberSectionGJ::addFiber -- failed to allocate Fiber pointers\n";
         return -1;
     }
 
     // copy the old pointers
     int i;
-
     for (i = 0; i < numFibers; i++)
     {
         newArray[i] = theMaterials[i];
@@ -170,7 +164,6 @@ FiberSectionGJ::addFiber(Fiber &newFiber)
         newMatData[3 * i + 1] = matData[3 * i + 1];
         newMatData[3 * i + 2] = matData[3 * i + 2];
     }
-
     // set the new pointers
     double yLoc, zLoc, Area;
     newFiber.getFiberLocation(yLoc, zLoc);
@@ -183,7 +176,7 @@ FiberSectionGJ::addFiber(Fiber &newFiber)
 
     if (newArray[numFibers] == 0)
     {
-        cerr << "FiberSectionGJ::addFiber -- failed to get copy of a Material\n";
+        std::cerr << "FiberSectionGJ::addFiber -- failed to get copy of a Material\n";
 
 
         delete [] newArray;
@@ -219,10 +212,6 @@ FiberSectionGJ::addFiber(Fiber &newFiber)
 
     yBar = -Qz / A;
     zBar = Qy / A;
-
-
-    // Nima Tafazzoli (Nov. 2012)
-    SectionArea = A;
 
     return 0;
 }
@@ -307,7 +296,7 @@ FiberSectionGJ::setTrialSectionDeformation (const Vector &deforms)
     return res;
 }
 
-const Matrix &
+const Matrix&
 FiberSectionGJ::getInitialTangent(void)
 {
     kData[0] = 0.0;
@@ -355,13 +344,13 @@ FiberSectionGJ::getInitialTangent(void)
     return ks;
 }
 
-const Vector &
+const Vector&
 FiberSectionGJ::getSectionDeformation(void)
 {
     return e;
 }
 
-const Matrix &
+const Matrix&
 FiberSectionGJ::getSectionTangent(void)
 {
     ks(0, 0) = kData[0];
@@ -376,7 +365,7 @@ FiberSectionGJ::getSectionTangent(void)
     return ks;
 }
 
-const Vector &
+const Vector&
 FiberSectionGJ::getStressResultant(void)
 {
     s(0) = sData[0];
@@ -388,7 +377,7 @@ FiberSectionGJ::getStressResultant(void)
     return s;
 }
 
-SectionForceDeformation *
+SectionForceDeformation*
 FiberSectionGJ::getCopy(void)
 {
     FiberSectionGJ *theCopy = new FiberSectionGJ();
@@ -402,7 +391,7 @@ FiberSectionGJ::getCopy(void)
 
         if (theCopy->theMaterials == 0)
         {
-            cerr << "FiberSectionGJ::FiberSectionGJ -- failed to allocate Material pointers\n";
+            std::cerr << "FiberSectionGJ::FiberSectionGJ -- failed to allocate Material pointers\n";
             exit(-1);
         }
 
@@ -410,10 +399,9 @@ FiberSectionGJ::getCopy(void)
 
         if (theCopy->matData == 0)
         {
-            cerr << "FiberSectionGJ::FiberSectionGJ -- failed to allocate double array for material data\n";
+            std::cerr << "FiberSectionGJ::FiberSectionGJ -- failed to allocate double array for material data\n";
             exit(-1);
         }
-
         for (int i = 0; i < numFibers; i++)
         {
             theCopy->matData[i * 3] = matData[i * 3];
@@ -423,19 +411,15 @@ FiberSectionGJ::getCopy(void)
 
             if (theCopy->theMaterials[i] == 0)
             {
-                cerr << "FiberSectionGJ::getCopy -- failed to get copy of a Material\n";
+                std::cerr << "FiberSectionGJ::getCopy -- failed to get copy of a Material\n";
                 exit(-1);
             }
         }
     }
 
-    theCopy->eCommit = eCommit;
     theCopy->e = e;
     theCopy->yBar = yBar;
     theCopy->zBar = zBar;
-
-    // Nima Tafazzoli (Nov. 2012)
-    theCopy->SectionArea = SectionArea;
 
     for (int i = 0; i < 6; i++)
     {
@@ -451,7 +435,7 @@ FiberSectionGJ::getCopy(void)
     return theCopy;
 }
 
-const ID &
+const ID&
 FiberSectionGJ::getType ()
 {
     return code;
@@ -473,8 +457,6 @@ FiberSectionGJ::commitState(void)
         err += theMaterials[i]->commitState();
     }
 
-    eCommit = e;
-
     return err;
 }
 
@@ -482,9 +464,6 @@ int
 FiberSectionGJ::revertToLastCommit(void)
 {
     int err = 0;
-
-    // Last committed section deformations
-    e = eCommit;
 
     kData[0] = 0.0;
     kData[1] = 0.0;
@@ -603,10 +582,9 @@ FiberSectionGJ::sendSelf(int commitTag, Channel &theChannel)
     data(2) = GJ;
     int dbTag = this->getDbTag();
     res += theChannel.sendVector(dbTag, commitTag, data);
-
     if (res < 0)
     {
-        cerr << "FiberSection2d::sendSelf - failed to send ID data\n";
+        std::cerr << "FiberSection2d::sendSelf - failed to send ID data\n";
         return res;
     }
 
@@ -615,41 +593,35 @@ FiberSectionGJ::sendSelf(int commitTag, Channel &theChannel)
 
         // create an id containingg classTag and dbTag for each material & send it
         ID materialData(2 * numFibers);
-
         for (int i = 0; i < numFibers; i++)
         {
             UniaxialMaterial *theMat = theMaterials[i];
             materialData(2 * i) = theMat->getClassTag();
             int matDbTag = theMat->getDbTag();
-
             if (matDbTag == 0)
             {
                 matDbTag = theChannel.getDbTag();
-
                 if (matDbTag != 0)
                 {
                     theMat->setDbTag(matDbTag);
                 }
             }
-
             materialData(2 * i + 1) = matDbTag;
         }
 
         res += theChannel.sendID(dbTag, commitTag, materialData);
-
         if (res < 0)
         {
-            cerr << "FiberSection2d::sendSelf- failed to send material data\n";
+            std::cerr << "FiberSection2d::sendSelf- failed to send material data\n";
             return res;
         }
 
         // send the fiber data, i.e. area and loc
         Vector fiberData(matData, 3 * numFibers);
         res += theChannel.sendVector(dbTag, commitTag, fiberData);
-
         if (res < 0)
         {
-            cerr << "FiberSection2d::sendSelf - failed to send material data\n";
+            std::cerr << "FiberSection2d::sendSelf - failed to send material data\n";
             return res;
         }
 
@@ -665,7 +637,7 @@ FiberSectionGJ::sendSelf(int commitTag, Channel &theChannel)
 
 int
 FiberSectionGJ::receiveSelf(int commitTag, Channel &theChannel,
-                         FEM_ObjectBroker &theBroker)
+                            FEM_ObjectBroker &theBroker)
 {
     int res = 0;
 
@@ -673,27 +645,23 @@ FiberSectionGJ::receiveSelf(int commitTag, Channel &theChannel,
 
     int dbTag = this->getDbTag();
     res += theChannel.receiveVector(dbTag, commitTag, data);
-
     if (res < 0)
     {
-        cerr << "FiberSection2d::receiveSelf - failed to recv ID data\n";
+        std::cerr << "FiberSection2d::receiveSelf - failed to receive ID data\n";
         return res;
     }
-
     this->setTag((int)data(0));
     GJ = data(2);
 
-    // recv data about materials objects, classTag and dbTag
+    // receive data about materials objects, classTag and dbTag
     numFibers = (int)data(1);
-
     if (numFibers != 0)
     {
         ID materialData(2 * numFibers);
         res += theChannel.receiveID(dbTag, commitTag, materialData);
-
         if (res < 0)
         {
-            cerr << "FiberSection2d::receiveSelf - failed to send material data\n";
+            std::cerr << "FiberSection2d::receiveSelf - failed to send material data\n";
             return res;
         }
 
@@ -707,14 +675,11 @@ FiberSectionGJ::receiveSelf(int commitTag, Channel &theChannel,
                 {
                     delete theMaterials[i];
                 }
-
                 delete [] theMaterials;
-
                 if (matData != 0)
                 {
                     delete [] matData;
                 }
-
                 matData = 0;
                 theMaterials = 0;
             }
@@ -727,7 +692,7 @@ FiberSectionGJ::receiveSelf(int commitTag, Channel &theChannel,
 
                 if (theMaterials == 0)
                 {
-                    cerr << "FiberSection2d::receiveSelf -- failed to allocate Material pointers\n";
+                    std::cerr << "FiberSection2d::receiveSelf -- failed to allocate Material pointers\n";
                     exit(-1);
                 }
 
@@ -741,7 +706,7 @@ FiberSectionGJ::receiveSelf(int commitTag, Channel &theChannel,
 
                 if (matData == 0)
                 {
-                    cerr << "FiberSection2d::receiveSelf -- failed to allocate double array for material data\n";
+                    std::cerr << "FiberSection2d::receiveSelf -- failed to allocate double array for material data\n";
                     exit(-1);
                 }
             }
@@ -749,16 +714,14 @@ FiberSectionGJ::receiveSelf(int commitTag, Channel &theChannel,
 
         Vector fiberData(matData, 3 * numFibers);
         res += theChannel.receiveVector(dbTag, commitTag, fiberData);
-
         if (res < 0)
         {
-            cerr << "FiberSection2d::receiveSelf - failed to send material data\n";
+            std::cerr << "FiberSection2d::receiveSelf - failed to send material data\n";
 
             return res;
         }
 
         int i;
-
         for (i = 0; i < numFibers; i++)
         {
             int classTag = materialData(2 * i);
@@ -778,7 +741,7 @@ FiberSectionGJ::receiveSelf(int commitTag, Channel &theChannel,
 
             if (theMaterials[i] == 0)
             {
-                cerr << "FiberSection2d::receiveSelf -- failed to allocate double array for material data\n";
+                std::cerr << "FiberSection2d::receiveSelf -- failed to allocate double array for material data\n";
                 exit(-1);
             }
 
@@ -821,154 +784,170 @@ FiberSectionGJ::Print(ostream &s, int flag)
     if (flag == 1)
     {
         int loc = 0;
-
         for (int i = 0; i < numFibers; i++)
         {
-            s << "\nLocation (y, z) = (" << -matData[loc++] << ", " << matData[loc++] << ")";
-            s << "\nArea = " << matData[loc++] << endln;
+            s << "\nLocation (y, z) = (" << -matData[loc] << ", " << matData[loc + 1] << ")";
+            s << "\nArea = " << matData[loc + 2] << endln;
             theMaterials[i]->Print(s, flag);
+            loc += 3;
         }
     }
 }
 
-// Response *
-// FiberSectionGJ::setResponse(const char **argv, int argc, Information &sectInfo)
-// {
-//     // See if the response is one of the defaults
-//     Response *res = SectionForceDeformation::setResponse(argv, argc, sectInfo);
-
-//     if (res != 0)
-//     {
-//         return res;
-//     }
-
-//     // Check if fiber response is requested
-//     else if (strcmp(argv[0], "fiber") == 0)
-//     {
-//         int key = numFibers;
-//         int passarg = 2;
-
-//         if (argc <= 2)          // not enough data input
-//         {
-//             return 0;
-//         }
-
-//         if (argc <= 3)        // fiber number was input directly
-//         {
-//             key = atoi(argv[1]);
-//         }
-
-//         if (argc > 4)           // find fiber closest to coord. with mat tag
-//         {
-//             int matTag = atoi(argv[3]);
-//             double yCoord = atof(argv[1]);
-//             double zCoord = atof(argv[2]);
-//             double closestDist;
-//             double ySearch, zSearch, dy, dz;
-//             double distance;
-//             int j;
-
-//             // Find first fiber with specified material tag
-//             for (j = 0; j < numFibers; j++)
-//             {
-//                 if (matTag == theMaterials[j]->getTag())
-//                 {
-//                     ySearch = -matData[3 * j];
-//                     zSearch =  matData[3 * j + 1];
-//                     dy = ySearch - yCoord;
-//                     dz = zSearch - zCoord;
-//                     closestDist = sqrt(dy * dy + dz * dz);
-//                     key = j;
-//                     break;
-//                 }
-//             }
-
-//             // Search the remaining fibers
-//             for ( ; j < numFibers; j++)
-//             {
-//                 if (matTag == theMaterials[j]->getTag())
-//                 {
-//                     ySearch = -matData[3 * j];
-//                     zSearch =  matData[3 * j + 1];
-//                     dy = ySearch - yCoord;
-//                     dz = zSearch - zCoord;
-//                     distance = sqrt(dy * dy + dz * dz);
-
-//                     if (distance < closestDist)
-//                     {
-//                         closestDist = distance;
-//                         key = j;
-//                     }
-//                 }
-//             }
-
-//             passarg = 4;
-//         }
-
-//         else                    // fiber near-to coordinate specified
-//         {
-//             double yCoord = atof(argv[1]);
-//             double zCoord = atof(argv[2]);
-//             double closestDist;
-//             double ySearch, zSearch, dy, dz;
-//             double distance;
-//             ySearch = -matData[0];
-//             zSearch =  matData[1];
-//             dy = ySearch - yCoord;
-//             dz = zSearch - zCoord;
-//             closestDist = sqrt(dy * dy + dz * dz);
-//             key = 0;
-
-//             for (int j = 1; j < numFibers; j++)
-//             {
-//                 ySearch = -matData[3 * j];
-//                 zSearch =  matData[3 * j + 1];
-//                 dy = ySearch - yCoord;
-//                 dz = zSearch - zCoord;
-//                 distance = sqrt(dy * dy + dz * dz);
-
-//                 if (distance < closestDist)
-//                 {
-//                     closestDist = distance;
-//                     key = j;
-//                 }
-//             }
-
-//             passarg = 3;
-//         }
-
-//         if (key < numFibers)
-//         {
-//             return theMaterials[key]->setResponse(&argv[passarg], argc - passarg, sectInfo);
-//         }
-//         else
-//         {
-//             return 0;
-//         }
-//     }
-
-//     // otherwise response quantity is unknown for the FiberSection class
-//     else
-//     {
-//         return 0;
-//     }
-// }
-
-
-// int
-// FiberSectionGJ::getResponse(int responseID, Information &sectInfo)
-// {
-//     // Just call the base class method ... don't need to define
-//     // this function, but keeping it here just for clarity
-//     return SectionForceDeformation::getResponse(responseID, sectInfo);
-// }
-
-
-
-// Nima Tafazzoli (Nov. 2012)
-double
-FiberSectionGJ::getArea()
+Response*
+FiberSectionGJ::setResponse(const char **argv, int argc, ostream &output)
 {
-    return SectionArea;
+
+    // See if the response is one of the defaults
+    Response *theResponse = SectionForceDeformation::setResponse(argv, argc, output);
+    if (theResponse != 0)
+    {
+        return theResponse;
+    }
+
+
+    if (argc <= 2 || strcmp(argv[0], "fiber") != 0)
+    {
+        return 0;
+    }
+
+    int key = numFibers;
+    int passarg = 2;
+
+
+    if (argc <= 3)       // fiber number was input directly
+    {
+
+        key = atoi(argv[1]);
+
+    }
+    else if (argc > 4)             // find fiber closest to coord. with mat tag
+    {
+        int matTag = atoi(argv[3]);
+        double yCoord = atof(argv[1]);
+        double zCoord = atof(argv[2]);
+        double closestDist = 0.0;
+        double ySearch, zSearch, dy, dz;
+        double distance;
+        int j;
+
+        // Find first fiber with specified material tag
+        for (j = 0; j < numFibers; j++)
+        {
+            if (matTag == theMaterials[j]->getTag())
+            {
+                ySearch = -matData[3 * j];
+                zSearch =  matData[3 * j + 1];
+                dy = ySearch - yCoord;
+                dz = zSearch - zCoord;
+                closestDist = sqrt(dy * dy + dz * dz);
+                key = j;
+                break;
+            }
+        }
+
+        // Search the remaining fibers
+        for ( ; j < numFibers; j++)
+        {
+            if (matTag == theMaterials[j]->getTag())
+            {
+                ySearch = -matData[3 * j];
+                zSearch =  matData[3 * j + 1];
+                dy = ySearch - yCoord;
+                dz = zSearch - zCoord;
+                distance = sqrt(dy * dy + dz * dz);
+                if (distance < closestDist)
+                {
+                    closestDist = distance;
+                    key = j;
+                }
+            }
+        }
+        passarg = 4;
+    }
+
+    else                    // fiber near-to coordinate specified
+    {
+        double yCoord = atof(argv[1]);
+        double zCoord = atof(argv[2]);
+        double closestDist;
+        double ySearch, zSearch, dy, dz;
+        double distance;
+        ySearch = -matData[0];
+        zSearch =  matData[1];
+        dy = ySearch - yCoord;
+        dz = zSearch - zCoord;
+        closestDist = sqrt(dy * dy + dz * dz);
+        key = 0;
+        for (int j = 1; j < numFibers; j++)
+        {
+            ySearch = -matData[3 * j];
+            zSearch =  matData[3 * j + 1];
+            dy = ySearch - yCoord;
+            dz = zSearch - zCoord;
+            distance = sqrt(dy * dy + dz * dz);
+            if (distance < closestDist)
+            {
+                closestDist = distance;
+                key = j;
+            }
+        }
+        passarg = 3;
+    }
+
+    if (key < numFibers && key >= 0)
+    {
+        output.tag("FiberOutput");
+        output.attr("yLoc", -matData[2 * key]);
+        output.attr("zLoc", matData[2 * key + 1]);
+        output.attr("area", matData[2 * key + 2]);
+
+        theResponse =  theMaterials[key]->setResponse(&argv[passarg], argc - passarg, output);
+
+        output.endTag();
+    }
+
+    return theResponse;
 }
 
+
+int
+FiberSectionGJ::getResponse(int responseID, Information &sectInfo)
+{
+    // Just call the base class method ... don't need to define
+    // this function, but keeping it here just for clarity
+    return SectionForceDeformation::getResponse(responseID, sectInfo);
+}
+
+int
+FiberSectionGJ::setParameter (const char **argv, int argc, Parameter &param)
+{
+    if (argc < 3)
+    {
+        return 0;
+    }
+
+    int result = -1;
+
+    // A material parameter
+    if (strstr(argv[0], "material") != 0)
+    {
+
+        // Get the tag of the material
+        int paramMatTag = atoi(argv[1]);
+
+        // Loop over fibers to find the right material(s)
+        int ok = 0;
+        for (int i = 0; i < numFibers; i++)
+            if (paramMatTag == theMaterials[i]->getTag())
+            {
+                ok = theMaterials[i]->setParameter(&argv[2], argc - 2, param);
+                if (ok != -1)
+                {
+                    result = ok;
+                }
+            }
+    }
+
+    return result;
+}

@@ -34,6 +34,7 @@ UCB_ELEMENTS =  ./dispBeamColumn/DispBeamColumn3d.o \
 
 
 
+
 all:    
 	@$(CD) truss; $(MAKE);
 	@$(CD) zeroLength; $(MAKE);

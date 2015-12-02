@@ -17,44 +17,21 @@
 **   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
 **                                                                    **
 ** ****************************************************************** */
-
+                                                                        
 // $Revision: 1.2 $
-// $Date: 2003-06-10 00:36:09 $
-// $Source: /usr/local/cvs/OpenSees/SRC/element/forceBeamColumn/LobattoBeamIntegration.h,v $
+// $Date: 2003-04-04 16:55:03 $
+// $Source: /usr/local/cvs/OpenSees/SRC/element/nonlinearBeamColumn/matrixutil/MatrixUtil.h,v $
+                                                                        
+                                                                        
+#ifndef MatrixUtil_h
+#define MatrixUtil_h
 
-#ifndef LobattoBeamIntegration_h
-#define LobattoBeamIntegration_h
+#include <Matrix.h>
 
-#include <BeamIntegration.h>
-
-class Matrix;
-class ElementalLoad;
-class Channel;
-class FEM_ObjectBroker;
-
-class LobattoBeamIntegration : public BeamIntegration
-{
-public:
-    LobattoBeamIntegration();
-    virtual ~LobattoBeamIntegration();
-
-    void getSectionLocations(int nIP, double L, double *xi);
-    void getSectionWeights(int nIP, double L, double *wt);
-
-    BeamIntegration *getCopy(void);
-
-    // These two methods do nothing
-    int sendSelf(int cTag, Channel &theChannel)
-    {
-        return 0;
-    }
-    int receiveSelf(int cTag, Channel &theChannel,
-                    FEM_ObjectBroker &theBroker)
-    {
-        return 0;
-    }
-
-    void Print(ostream &s, int flag = 0);
-};
+double invert2by2Matrix(const Matrix &a, Matrix &b);
+double invert3by3Matrix(const Matrix &a, Matrix &b);
+void   invertMatrix(int n, const Matrix &a, Matrix &b);
+void   getCBDIinfluenceMatrix(int nIntegrPts, const Matrix &xi_pt, double L, Matrix &ls);
+void   getCBDIinfluenceMatrix(int nIntegrPts, double *pts, double L, Matrix &ls);
 
 #endif

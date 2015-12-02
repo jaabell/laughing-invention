@@ -6,10 +6,7 @@
 ** (C) Copyright 1999, The Regents of the University of California    **
 ** All Rights Reserved.                                               **
 **                                                                    **
-** Commercial use of this program without express permission of the   **
-** University of California, Berkeley, is strictly prohibited.  See   **
-** file 'COPYRIGHT'  in main directory for information on usage and   **
-** redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           **
+** See Copyright end of file.                                         **
 **                                                                    **
 ** Developed by:                                                      **
 **   Frank McKenna (fmckenna@ce.berkeley.edu)                         **
@@ -17,10 +14,6 @@
 **   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
 **                                                                    **
 ** ****************************************************************** */
-
-// $Revision: 1.14 $
-// $Date: 2007/10/13 00:03:31 $
-// $Source: /usr/local/cvs/OpenSees/SRC/element/dispBeamColumn/DispBeamColumn3d.h,v $
 
 // Written: MHS
 // Created: Feb 2001
@@ -32,133 +25,152 @@
 #ifndef DispBeamColumn3d_h
 #define DispBeamColumn3d_h
 
-#ifndef _bool_h
-#include "bool.h"
-#endif
-
 #include <Element.h>
 #include <Matrix.h>
 #include <Vector.h>
 #include <ID.h>
 
+using namespace std;
+#include <string>
+#define DispBeamColumn3d_OUTPUT_SIZE 12
+
+
 class Node;
 class SectionForceDeformation;
+class CrdTransf;
 class BeamIntegration;
-// class Response;
+class Response;
+
+// #define ostream std::cout;
+// #define std::cerr std::cerr;
 
 class DispBeamColumn3d : public Element
 {
-    public:
-        DispBeamColumn3d(int tag, int nd1, int nd2,
-                         int numSections, SectionForceDeformation **s,
-                         BeamIntegration &bi, double rho,
-                         double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
-                         double rigJntOffset1_x = 0, double rigJntOffset1_y = 0, double rigJntOffset1_z = 0,
-                         double rigJntOffset2_x = 0, double rigJntOffset2_y = 0, double rigJntOffset2_z = 0);
+public:
+    DispBeamColumn3d(int tag, int nd1, int nd2,
+                     int numSections, SectionForceDeformation **s,
+                     BeamIntegration &bi, CrdTransf &coordTransf,
+                     double rho = 0.0, int cMass = 0);
+    DispBeamColumn3d();
+    ~DispBeamColumn3d();
 
+    std::string getElementName() const
+    {
+        return "DispBeamColumn3d";
+    }
 
-        DispBeamColumn3d();
-        ~DispBeamColumn3d();
+    const char *getClassType(void) const
+    {
+        return "DispBeamColumn3d";
+    };
 
-        const char *getClassType(void) const
-        {
-            return "DispBeamColumn3d";
-        };
+    int getNumExternalNodes(void) const;
+    const ID &getExternalNodes(void);
+    Node **getNodePtrs(void);
 
-        int getNumExternalNodes(void) const;
-        const ID &getExternalNodes(void);
-        Node **getNodePtrs(void);
+    int getNumDOF(void);
+    void setDomain(Domain *theDomain);
 
-        int getNumDOF(void);
-        void setDomain(Domain *theDomain);
+    // public methods to set the state of the element
+    int commitState(void);
+    int revertToLastCommit(void);
+    int revertToStart(void);
 
-        // public methods to set the state of the element
-        int commitState(void);
-        int revertToLastCommit(void);
-        int revertToStart(void);
+    // public methods to obtain stiffness, mass, damping and residual information
+    int update(void);
+    const Matrix &getTangentStiff(void);
+    const Matrix &getInitialStiff(void);
+    const Matrix &getMass(void);
 
-        // public methods to obtain stiffness, mass, damping and residual information
-        int update(void);
-        const Matrix &getTangentStiff(void);
-        const Matrix &getInitialStiff(void);
-        const Matrix &getMass(void);
+    void zeroLoad();
+    int addLoad(ElementalLoad *theLoad, double loadFactor);
+    int addInertiaLoadToUnbalance(const Vector &accel);
 
-        void zeroLoad();
-        int addLoad(ElementalLoad *theLoad, double loadFactor);
-        int addInertiaLoadToUnbalance(const Vector &accel);
+    const Vector &getResistingForce(void);
+    const Vector &getResistingForceIncInertia(void);
 
-        const Vector &getResistingForce(void);
-        const Vector &getResistingForceIncInertia(void);
+    // public methods for element output
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker
+                    &theBroker);
 
-        // public methods for element output
-        int sendSelf(int commitTag, Channel &theChannel);
-        int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker
-                     &theBroker);
-        //     int displaySelf(Renderer &theViewer, int displayMode, float fact);
-        void Print(ostream &s, int flag = 0);
+    void Print(ostream &s, int flag = 0);
 
-        // Response* setResponse(const char** argv, int argc, Information& eleInfo);
-        // int getResponse(int responseID, Information& eleInfo);
+    int getOutputSize() const;
+    const Vector &getOutput();
+    Matrix &getGaussCoordinates(void);
 
+protected:
 
+private:
+    const Matrix &getInitialBasicStiff(void);
 
-        // Nima Tafazzoli moved from transformation (Nov. 2012)
-        int getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis);
-        int computeElemtLengthAndOrient();
-        int initialize();
-        const Vector &getGlobalResistingForce(const Vector &pb, const Vector &p0);
-        const Matrix &getInitialGlobalStiffMatrix (const Matrix &KB);
-        const Matrix &getGlobalStiffMatrix (const Matrix &KB, const Vector &pb);
-        const Vector &getBasicTrialDisp (void);
-        Vector *getForce(void);
+    int numSections;
+    SectionForceDeformation **theSections;
+    CrdTransf *crdTransf;
 
-        std::string getElementName() const
-        {
-            return "DispBeamColumn3d";
-        }
+    BeamIntegration *beamInt;
 
-    protected:
+    ID connectedExternalNodes;
 
-    private:
-        const Matrix &getInitialBasicStiff(void);
+    Node *theNodes[2];
 
-        int numSections;
-        SectionForceDeformation **theSections; // pointer to the ND material objects
+    static Matrix K;
+    static Vector P;
 
-        BeamIntegration *beamInt;
+    Vector Q;      // Applied nodal loads
+    Vector q;      // Basic force
+    double q0[5];  // Fixed end forces in basic system (no torsion)
+    double p0[5];  // Reactions in basic system (no torsion)
 
-        ID connectedExternalNodes; // Tags of quad nodes
+    double rho;    // Mass density per unit length
+    int cMass;     // consistent mass flag
 
-        Node *theNodes[2];
+    int parameterID;
 
-        static Matrix K;        // Element stiffness, damping, and mass Matrix
-        static Vector P;        // Element resisting force vector
+    enum {maxNumSections = 20};
 
-        Vector Q;       // Applied nodal loads
-        Vector q;       // Basic force
-        double q0[5];  // Fixed end forces in basic system (no torsion)
-        double p0[5];  // Reactions in basic system (no torsion)
-
-        double rho;  // Mass density per volume
-
-        int parameterID;
-
-        enum {maxNumSections = 20};
-
-        static double workArea[];
-
-
-        // Nima Tafazzoli (Nov. 2012) moved from transformation
-        double R[3][3];  // Transformation matrix
-        double L;           // undeformed element length
-        double *nodeIInitialDisp, *nodeJInitialDisp;
-        bool initialDispChecked;
-        double *nodeIOffset, *nodeJOffset;  // rigid joint offsets
-        double A; // undeformed section area
-
-
-
+    static double workArea[];
+    static Vector outputVector;
 };
+
+/*
+Copyright @ 1999,2000 The Regents of the University of California (The Regents).
+All Rights Reserved.
+
+The Regents grants permission, without fee and without a written license agreement,
+for (a) use, reproduction, modification, and distribution of this software and its
+documentation by educational, research, and non-profit entities for noncommercial
+purposes only; and (b) use, reproduction and modification of this software by other
+entities for internal purposes only. The above copyright notice, this paragraph and
+the following three paragraphs must appear in all copies and modifications of the
+software and/or documentation.
+
+Permission to incorporate this software into products for commercial distribution
+may be obtained
+by contacting the University of California
+Office of Technology Licensing
+2150 Shattuck Avenue #510,
+Berkeley, CA 94720-1620,
+(510) 643-7201.
+
+This software program and documentation are copyrighted by The Regents of the University
+of California. The Regents does not warrant that the operation of the program will be
+uninterrupted or error-free. The end-user understands that the program was developed
+for research purposes and is advised not to rely exclusively on the program for any reason.
+
+IN NO EVENT SHALL REGENTS BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE
+AND ITS DOCUMENTATION, EVEN IF REGENTS HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+REGENTS GRANTS NO EXPRESS OR IMPLIED LICENSE IN ANY PATENT RIGHTS OF REGENTS BUT HAS
+IMPLEMENTED AN INDIVIDUAL CONTRIBUTOR LICENSE AGREEMENT FOR THE OPENSEES PROJECT AT THE
+UNIVERISTY OF CALIFORNIA, BERKELEY TO BENEFIT THE END USER.
+
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE AND
+ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS PROVIDED "AS IS". REGENTS HAS
+NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+*/
 
 #endif
 

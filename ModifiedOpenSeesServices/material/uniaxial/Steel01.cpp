@@ -6,10 +6,7 @@
 ** (C) Copyright 1999, The Regents of the University of California    **
 ** All Rights Reserved.                                               **
 **                                                                    **
-** Commercial use of this program without express permission of the   **
-** University of California, Berkeley, is strictly prohibited.  See   **
-** file 'COPYRIGHT'  in main directory for information on usage and   **
-** redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           **
+** See Copyright end of file.                                         **
 **                                                                    **
 ** Developed by:                                                      **
 **   Frank McKenna (fmckenna@ce.berkeley.edu)                         **
@@ -18,8 +15,8 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Revision: 1.14 $
-// $Date: 2005/01/25 21:55:36 $
+// $Revision: 1.20 $
+// $Date: 2008-08-26 16:35:21 $
 // $Source: /usr/local/cvs/OpenSees/SRC/material/uniaxial/Steel01.cpp,v $
 
 // Written: MHS
@@ -37,11 +34,16 @@
 #include <Matrix.h>
 #include <Channel.h>
 #include <Information.h>
+// #include <Parameter.h>
+
+#include <string.h>
+
 #include <math.h>
 #include <float.h>
-#include <iostream>
-using namespace std;
 
+
+// #include <elementAPI.h>
+#include <OPS_Globals.h>
 
 Steel01::Steel01
 (int tag, double FY, double E, double B,
@@ -72,20 +74,31 @@ Steel01::Steel01
     Tstress = 0.0;
     Ttangent = E0;
 
-
+// AddingSensitivity:BEGIN /////////////////////////////////////
+    parameterID = 0;
+    SHVs = 0;
+// AddingSensitivity:END //////////////////////////////////////
 }
 
 Steel01::Steel01(): UniaxialMaterial(0, MAT_TAG_Steel01),
     fy(0.0), E0(0.0), b(0.0), a1(0.0), a2(0.0), a3(0.0), a4(0.0)
 {
 
-
+// AddingSensitivity:BEGIN /////////////////////////////////////
+    parameterID = 0;
+    SHVs = 0;
+// AddingSensitivity:END //////////////////////////////////////
 
 }
 
 Steel01::~Steel01 ()
 {
-
+// AddingSensitivity:BEGIN /////////////////////////////////////
+    if (SHVs != 0)
+    {
+        delete SHVs;
+    }
+// AddingSensitivity:END //////////////////////////////////////
 }
 
 int Steel01::setTrialStrain (double strain, double strainRate)
@@ -96,23 +109,27 @@ int Steel01::setTrialStrain (double strain, double strainRate)
     TshiftP = CshiftP;
     TshiftN = CshiftN;
     Tloading = Cloading;
-
-    // Set trial strain
-    Tstrain = strain;
+    Tstrain = Cstrain;
+    Tstress = Cstress;
+    Ttangent = Ctangent;
 
     // Determine change in strain from last converged state
-    double dStrain = Tstrain - Cstrain;
+    double dStrain = strain - Cstrain;
 
-    // Calculate the trial state given the trial strain
     if (fabs(dStrain) > DBL_EPSILON)
     {
+        // Set trial strain
+        Tstrain = strain;
+
+        // Calculate the trial state given the trial strain
         determineTrialState (dStrain);
+
     }
 
     return 0;
 }
 
-int Steel01::setTrial (double strain, double& stress, double& tangent, double strainRate)
+int Steel01::setTrial (double strain, double &stress, double &tangent, double strainRate)
 {
     // Reset history variables to last converged state
     TminStrain = CminStrain;
@@ -120,18 +137,21 @@ int Steel01::setTrial (double strain, double& stress, double& tangent, double st
     TshiftP = CshiftP;
     TshiftN = CshiftN;
     Tloading = Cloading;
-
-    // Set trial strain
-    Tstrain = strain;
+    Tstrain = Cstrain;
+    Tstress = Cstress;
+    Ttangent = Ctangent;
 
     // Determine change in strain from last converged state
-    double dStrain;
-    dStrain = Tstrain - Cstrain;
+    double dStrain = strain - Cstrain;
 
-    // Calculate the trial state given the trial strain
     if (fabs(dStrain) > DBL_EPSILON)
     {
+        // Set trial strain
+        Tstrain = strain;
+
+        // Calculate the trial state given the trial strain
         determineTrialState (dStrain);
+
     }
 
     stress = Tstress;
@@ -218,12 +238,10 @@ void Steel01::determineTrialState (double dStrain)
     if (Tloading == 1 && dStrain < 0.0)
     {
         Tloading = -1;
-
         if (Cstrain > TmaxStrain)
         {
             TmaxStrain = Cstrain;
         }
-
         TshiftN = 1 + a1 * pow((TmaxStrain - TminStrain) / (2.0 * a2 * epsy), 0.8);
     }
 
@@ -232,12 +250,10 @@ void Steel01::determineTrialState (double dStrain)
     if (Tloading == -1 && dStrain > 0.0)
     {
         Tloading = 1;
-
         if (Cstrain < TminStrain)
         {
             TminStrain = Cstrain;
         }
-
         TshiftP = 1 + a3 * pow((TmaxStrain - TminStrain) / (2.0 * a4 * epsy), 0.8);
     }
 }
@@ -264,12 +280,10 @@ void Steel01::detectLoadReversal (double dStrain)
     if (Tloading == 1 && dStrain < 0.0)
     {
         Tloading = -1;
-
         if (Cstrain > TmaxStrain)
         {
             TmaxStrain = Cstrain;
         }
-
         TshiftN = 1 + a1 * pow((TmaxStrain - TminStrain) / (2.0 * a2 * epsy), 0.8);
     }
 
@@ -278,12 +292,10 @@ void Steel01::detectLoadReversal (double dStrain)
     if (Tloading == -1 && dStrain > 0.0)
     {
         Tloading = 1;
-
         if (Cstrain < TminStrain)
         {
             TminStrain = Cstrain;
         }
-
         TshiftP = 1 + a3 * pow((TmaxStrain - TminStrain) / (2.0 * a4 * epsy), 0.8);
     }
 }
@@ -361,6 +373,12 @@ int Steel01::revertToStart ()
     Tstress = 0.0;
     Ttangent = E0;
 
+// AddingSensitivity:BEGIN /////////////////////////////////
+    if (SHVs != 0)
+    {
+        SHVs->Zero();
+    }
+// AddingSensitivity:END //////////////////////////////////
 
     return 0;
 }
@@ -428,17 +446,16 @@ int Steel01::sendSelf (int commitTag, Channel& theChannel)
     // need to be sent through data vector
 
     res = theChannel.sendVector(this->getDbTag(), commitTag, data);
-
     if (res < 0)
     {
-        cerr << "Steel01::sendSelf() - failed to send data\n";
+        std::cerr << "Steel01::sendSelf() - failed to send data\n";
     }
 
     return res;
 }
 
 int Steel01::receiveSelf (int commitTag, Channel& theChannel,
-                       FEM_ObjectBroker& theBroker)
+                          FEM_ObjectBroker& theBroker)
 {
     int res = 0;
     static Vector data(16);
@@ -446,7 +463,7 @@ int Steel01::receiveSelf (int commitTag, Channel& theChannel,
 
     if (res < 0)
     {
-        cerr << "Steel01::receiveSelf() - failed to receive data\n";
+        std::cerr << "Steel01::receiveSelf() - failed to receive data\n";
         this->setTag(0);
     }
     else
@@ -503,4 +520,318 @@ void Steel01::Print (ostream& s, int flag)
     s << "  a4: " << a4 << " ";
 }
 
+
+
+
+// // AddingSensitivity:BEGIN ///////////////////////////////////
+// int
+// Steel01::setParameter(const char **argv, int argc, Parameter &param)
+// {
+
+//     if (strcmp(argv[0], "sigmaY") == 0 || strcmp(argv[0], "fy") == 0 || strcmp(argv[0], "Fy") == 0)
+//     {
+//         param.setValue(fy);
+//         return param.addObject(1, this);
+//     }
+//     if (strcmp(argv[0], "E") == 0)
+//     {
+//         param.setValue(E0);
+//         return param.addObject(2, this);
+//     }
+//     if (strcmp(argv[0], "b") == 0)
+//     {
+//         param.setValue(b);
+//         return param.addObject(3, this);
+//     }
+//     if (strcmp(argv[0], "a1") == 0)
+//     {
+//         param.setValue(a1);
+//         return param.addObject(4, this);
+//     }
+//     if (strcmp(argv[0], "a2") == 0)
+//     {
+//         param.setValue(a2);
+//         return param.addObject(5, this);
+//     }
+//     if (strcmp(argv[0], "a3") == 0)
+//     {
+//         param.setValue(a3);
+//         return param.addObject(6, this);
+//     }
+//     if (strcmp(argv[0], "a4") == 0)
+//     {
+//         param.setValue(a4);
+//         return param.addObject(7, this);
+//     }
+
+//     return -1;
+// }
+
+
+
+// int
+// Steel01::updateParameter(int parameterID, Information &info)
+// {
+//     switch (parameterID)
+//     {
+//     case -1:
+//         return -1;
+//     case 1:
+//         this->fy = info.theDouble;
+//         break;
+//     case 2:
+//         this->E0 = info.theDouble;
+//         break;
+//     case 3:
+//         this->b = info.theDouble;
+//         break;
+//     case 4:
+//         this->a1 = info.theDouble;
+//         break;
+//     case 5:
+//         this->a2 = info.theDouble;
+//         break;
+//     case 6:
+//         this->a3 = info.theDouble;
+//         break;
+//     case 7:
+//         this->a4 = info.theDouble;
+//         break;
+//     default:
+//         return -1;
+//     }
+
+//     Ttangent = E0;          // Initial stiffness
+
+//     return 0;
+// }
+
+
+
+
+// int
+// Steel01::activateParameter(int passedParameterID)
+// {
+//     parameterID = passedParameterID;
+
+//     return 0;
+// }
+
+
+
+// double
+// Steel01::getStressSensitivity(int gradIndex, bool conditional)
+// {
+//     // Initialize return value
+//     double gradient = 0.0;
+
+
+//     // Pick up sensitivity history variables
+//     double CstrainSensitivity = 0.0;
+//     double CstressSensitivity = 0.0;
+//     if (SHVs != 0)
+//     {
+//         CstrainSensitivity = (*SHVs)(0, gradIndex);
+//         CstressSensitivity = (*SHVs)(1, gradIndex);
+//     }
+
+
+//     // Assign values to parameter derivatives (depending on what's random)
+//     double fySensitivity = 0.0;
+//     double E0Sensitivity = 0.0;
+//     double bSensitivity = 0.0;
+//     if (parameterID == 1)
+//     {
+//         fySensitivity = 1.0;
+//     }
+//     else if (parameterID == 2)
+//     {
+//         E0Sensitivity = 1.0;
+//     }
+//     else if (parameterID == 3)
+//     {
+//         bSensitivity = 1.0;
+//     }
+
+
+//     // Compute min and max stress
+//     double Tstress;
+//     double dStrain = Tstrain - Cstrain;
+//     double sigmaElastic = Cstress + E0 * dStrain;
+//     double fyOneMinusB = fy * (1.0 - b);
+//     double Esh = b * E0;
+//     double c1 = Esh * Tstrain;
+//     double c2 = TshiftN * fyOneMinusB;
+//     double c3 = TshiftP * fyOneMinusB;
+//     double sigmaMax = c1 + c3;
+//     double sigmaMin = c1 - c2;
+
+
+//     // Evaluate stress sensitivity
+//     if ( (sigmaMax < sigmaElastic) && (fabs(sigmaMax - sigmaElastic) > 1e-5) )
+//     {
+//         Tstress = sigmaMax;
+//         gradient = E0Sensitivity * b * Tstrain
+//                    + E0 * bSensitivity * Tstrain
+//                    + TshiftP * (fySensitivity * (1 - b) - fy * bSensitivity);
+//     }
+//     else
+//     {
+//         Tstress = sigmaElastic;
+//         gradient = CstressSensitivity
+//                    + E0Sensitivity * (Tstrain - Cstrain)
+//                    - E0 * CstrainSensitivity;
+//     }
+//     if (sigmaMin > Tstress)
+//     {
+//         gradient = E0Sensitivity * b * Tstrain
+//                    + E0 * bSensitivity * Tstrain
+//                    - TshiftN * (fySensitivity * (1 - b) - fy * bSensitivity);
+//     }
+
+//     return gradient;
+// }
+
+
+
+
+// double
+// Steel01::getInitialTangentSensitivity(int gradIndex)
+// {
+//     // For now, assume that this is only called for initial stiffness
+//     if (parameterID == 2)
+//     {
+//         return 1.0;
+//     }
+//     else
+//     {
+//         return 0.0;
+//     }
+// }
+
+
+// int
+// Steel01::commitSensitivity(double TstrainSensitivity, int gradIndex, int numGrads)
+// {
+//     if (SHVs == 0)
+//     {
+//         SHVs = new Matrix(2, numGrads);
+//     }
+
+
+//     // Initialize unconditaional stress sensitivity
+//     double gradient = 0.0;
+
+
+//     // Pick up sensitivity history variables
+//     double CstrainSensitivity = 0.0;
+//     double CstressSensitivity    = 0.0;
+//     if (SHVs != 0)
+//     {
+//         CstrainSensitivity = (*SHVs)(0, gradIndex);
+//         CstressSensitivity = (*SHVs)(1, gradIndex);
+//     }
+
+
+//     // Assign values to parameter derivatives (depending on what's random)
+//     double fySensitivity = 0.0;
+//     double E0Sensitivity = 0.0;
+//     double bSensitivity = 0.0;
+//     if (parameterID == 1)
+//     {
+//         fySensitivity = 1.0;
+//     }
+//     else if (parameterID == 2)
+//     {
+//         E0Sensitivity = 1.0;
+//     }
+//     else if (parameterID == 3)
+//     {
+//         bSensitivity = 1.0;
+//     }
+
+
+//     // Compute min and max stress
+//     double Tstress;
+//     double dStrain = Tstrain - Cstrain;
+//     double sigmaElastic = Cstress + E0 * dStrain;
+//     double fyOneMinusB = fy * (1.0 - b);
+//     double Esh = b * E0;
+//     double c1 = Esh * Tstrain;
+//     double c2 = TshiftN * fyOneMinusB;
+//     double c3 = TshiftP * fyOneMinusB;
+//     double sigmaMax = c1 + c3;
+//     double sigmaMin = c1 - c2;
+
+
+//     // Evaluate stress sensitivity ('gradient')
+//     if ( (sigmaMax < sigmaElastic) && (fabs(sigmaMax - sigmaElastic) > 1e-5) )
+//     {
+//         Tstress = sigmaMax;
+//         gradient = E0Sensitivity * b * Tstrain
+//                    + E0 * bSensitivity * Tstrain
+//                    + E0 * b * TstrainSensitivity
+//                    + TshiftP * (fySensitivity * (1 - b) - fy * bSensitivity);
+//     }
+//     else
+//     {
+//         Tstress = sigmaElastic;
+//         gradient = CstressSensitivity
+//                    + E0Sensitivity * (Tstrain - Cstrain)
+//                    + E0 * (TstrainSensitivity - CstrainSensitivity);
+//     }
+//     if (sigmaMin > Tstress)
+//     {
+//         gradient = E0Sensitivity * b * Tstrain
+//                    + E0 * bSensitivity * Tstrain
+//                    + E0 * b * TstrainSensitivity
+//                    - TshiftN * (fySensitivity * (1 - b) - fy * bSensitivity);
+//     }
+
+
+//     // Commit history variables
+//     (*SHVs)(0, gradIndex) = TstrainSensitivity;
+//     (*SHVs)(1, gradIndex) = gradient;
+
+//     return 0;
+// }
+
+// AddingSensitivity:END /////////////////////////////////////////////
+/*
+Copyright @ 1999,2000 The Regents of the University of California (The Regents).
+All Rights Reserved.
+
+The Regents grants permission, without fee and without a written license agreement,
+for (a) use, reproduction, modification, and distribution of this software and its
+documentation by educational, research, and non-profit entities for noncommercial
+purposes only; and (b) use, reproduction and modification of this software by other
+entities for internal purposes only. The above copyright notice, this paragraph and
+the following three paragraphs must appear in all copies and modifications of the
+software and/or documentation.
+
+Permission to incorporate this software into products for commercial distribution
+may be obtained
+by contacting the University of California
+Office of Technology Licensing
+2150 Shattuck Avenue #510,
+Berkeley, CA 94720-1620,
+(510) 643-7201.
+
+This software program and documentation are copyrighted by The Regents of the University
+of California. The Regents does not warrant that the operation of the program will be
+uninterrupted or error-free. The end-user understands that the program was developed
+for research purposes and is advised not to rely exclusively on the program for any reason.
+
+IN NO EVENT SHALL REGENTS BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE
+AND ITS DOCUMENTATION, EVEN IF REGENTS HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+REGENTS GRANTS NO EXPRESS OR IMPLIED LICENSE IN ANY PATENT RIGHTS OF REGENTS BUT HAS
+IMPLEMENTED AN INDIVIDUAL CONTRIBUTOR LICENSE AGREEMENT FOR THE OPENSEES PROJECT AT THE
+UNIVERISTY OF CALIFORNIA, BERKELEY TO BENEFIT THE END USER.
+
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE AND
+ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS PROVIDED "AS IS". REGENTS HAS
+NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+*/
 

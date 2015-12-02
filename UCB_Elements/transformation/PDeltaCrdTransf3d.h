@@ -15,74 +15,98 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// Written: Remo Magalhaes de Souza
-// Created: 10/98
+// $Revision: 1.7 $
+// $Date: 2005-12-15 00:30:38 $
+// $Source: /usr/local/cvs/OpenSees/SRC/coordTransformation/PDeltaCrdTransf3d.h,v $
 
+// Written: Remo Magalhaes de Souza (rmsouza@ce.berkeley.edu)
+// Created: 04/2000
+// Revision: A
 //
 // Description: This file contains the class definition for
-// Fiber. Fiber is an abstract base class and thus no objects of
-// it's type can be instatiated. It has pure virtual functions which
-// must be implemented in it's derived classes.
-//
-// What: "@(#) Fiber.h, revA"
+// PDeltaCrdTransf3d.h. PDeltaCrdTransf3d provides the
+// abstraction of a linear transformation for a spatial frame
+// between the global and basic coordinate systems
 
+// What: "@(#) PDeltaCrdTransf3d.h, revA"
 
-#ifndef Fiber_h
-#define Fiber_h
+#ifndef PDeltaCrdTransf3d_h
+#define PDeltaCrdTransf3d_h
 
-#include <DomainComponent.h>
-#include <MovableObject.h>
+#include <CrdTransf.h>
 #include <Vector.h>
+#include <Matrix.h>
 
-class Matrix;
-class ID;
-class UniaxialMaterial;
-class NDMaterial;
-class Information;
-class Response;
-
-class Fiber : public TaggedObject, public MovableObject
+class PDeltaCrdTransf3d: public CrdTransf
 {
 public:
-    Fiber (int tag, int classTag);
-    virtual ~Fiber();
+    PDeltaCrdTransf3d(int tag, const Vector &vecInLocXZPlane);
+    PDeltaCrdTransf3d(int tag, const Vector &vecInLocXZPlane,
+                      const Vector &rigJntOffsetI,
+                      const Vector &rigJntOffsetJ);
 
-    virtual int    setTrialFiberStrain(const Vector &vs) = 0;
-    virtual Vector &getFiberStressResultants(void) = 0;
-    virtual Matrix &getFiberTangentStiffContr(void) = 0;
+    PDeltaCrdTransf3d();
+    ~PDeltaCrdTransf3d();
 
-    virtual int    commitState(void) = 0;
-    virtual int    revertToLastCommit(void) = 0;
-    virtual int    revertToStart(void) = 0;
-
-    virtual Fiber *getCopy(void) = 0;
-    virtual int getOrder(void) = 0;
-    virtual const ID &getType(void) = 0;
-
-    virtual Response *setResponse(const char **argv, int argc, ostream &s);
-    virtual int getResponse(int responseID, Information &info);
-
-    virtual void getFiberLocation(double &y, double &z) = 0;
-    virtual double getArea(void) = 0;
-
-    virtual UniaxialMaterial *getMaterial(void)
+    const char *getClassType() const
     {
-        return 0;
-    }
-    virtual NDMaterial *getNDMaterial(void)
-    {
-        return 0;
-    }
+        return "PDeltaCrdTransf3d";
+    };
 
-    virtual const Vector &getFiberSensitivity(int gradNumber, bool cond);
-    virtual int commitSensitivity(const Vector &dedh, int gradNumber,
-                                  int numGrads);
+    int initialize(Node *node1Pointer, Node *node2Pointer);
+    int update(void);
+    double getInitialLength(void);
+    double getDeformedLength(void);
 
-protected:
-    Vector *sDefault;
-    Matrix *fDefault;
+    int commitState(void);
+    int revertToLastCommit(void);
+    int revertToStart(void);
+
+    const Vector &getBasicTrialDisp(void);
+    const Vector &getBasicIncrDisp(void);
+    const Vector &getBasicIncrDeltaDisp(void);
+    const Vector &getBasicTrialVel(void);
+    const Vector &getBasicTrialAccel(void);
+
+    const Vector &getGlobalResistingForce(const Vector &basicForce, const Vector &p0);
+    const Matrix &getGlobalStiffMatrix(const Matrix &basicStiff, const Vector &basicForce);
+    const Matrix &getInitialGlobalStiffMatrix(const Matrix &basicStiff);
+
+    CrdTransf *getCopy3d(void);
+
+    int sendSelf(int cTag, Channel &theChannel);
+    int receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+
+    void Print(ostream &s, int flag = 0);
+
+    // method used to rotate consistent mass matrix
+    const Matrix &getGlobalMatrixFromLocal(const Matrix &local);
+
+    // methods used in post-processing only
+    const Vector &getPointGlobalCoordFromLocal(const Vector &localCoords);
+    const Vector &getPointGlobalDisplFromBasic(double xi, const Vector &basicDisps);
+
+    int getLocalAxes(Vector &xAxis, Vector &yAxis, Vector &zAxis);
 
 private:
+    int computeElemtLengthAndOrient(void);
+    void compTransfMatrixLocalGlobal(Matrix &Tlg);
+
+    // internal data
+    Node *nodeIPtr, *nodeJPtr;  // pointers to the element two endnodes
+
+    double *nodeIOffset, *nodeJOffset;  // rigid joint offsets
+
+    double R[3][3]; // rotation matrix
+    double L;       // undeformed element length
+    double ul17;    // Transverse local displacement offsets of P-Delta
+    double ul28;
+
+    static Matrix Tlg;  // matrix that transforms from global to local coordinates
+    static Matrix kg;   // global stiffness matrix
+
+    double *nodeIInitialDisp, *nodeJInitialDisp;
+    bool initialDispChecked;
 };
 
 /*

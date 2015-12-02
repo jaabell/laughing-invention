@@ -6,10 +6,7 @@
 ** (C) Copyright 1999, The Regents of the University of California    **
 ** All Rights Reserved.                                               **
 **                                                                    **
-** Commercial use of this program without express permission of the   **
-** University of California, Berkeley, is strictly prohibited.  See   **
-** file 'COPYRIGHT'  in main directory for information on usage and   **
-** redistribution,  and for a DISCLAIMER OF ALL WARRANTIES.           **
+** See Copyright end of file.                                         **
 **                                                                    **
 ** Developed by:                                                      **
 **   Frank McKenna (fmckenna@ce.berkeley.edu)                         **
@@ -18,16 +15,9 @@
 **                                                                    **
 ** ****************************************************************** */
 
-//============================================================
-// Nima Tafazzoli (Nov. 2012)
-// Moving linear transformation functions inside the
-// DispBeamColumn3d class
-//============================================================
-
-
-// $Revision: 1.25 $
-// $Date: 2008/11/04 21:32:05 $
-// $Source: /usr/local/cvs/OpenSees/SRC/element/dispBeamColumn/DispBeamColumn3d.cpp,v $
+// $Revision: 6049 $
+// $Date: 2015-07-16 21:56:36 -0700 (Thu, 16 Jul 2015) $
+// $URL: svn://peera.berkeley.edu/usr/local/svn/OpenSees/trunk/SRC/element/dispBeamColumn/DispBeamColumn3d.cpp $
 
 // Written: MHS
 // Created: Feb 2001
@@ -37,41 +27,42 @@
 #include <DispBeamColumn3d.h>
 #include <Node.h>
 #include <SectionForceDeformation.h>
+#include <CrdTransf.h>
 #include <Matrix.h>
 #include <Vector.h>
 #include <ID.h>
+// #include <Renderer.h>
 #include <Domain.h>
 #include <string.h>
 #include <Information.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
-// #include <ElementResponse.h>
 #include <ElementalLoad.h>
 #include <BeamIntegration.h>
-
+// #include <Parameter.h>
+#include <math.h>
 
 Matrix DispBeamColumn3d::K(12, 12);
 Vector DispBeamColumn3d::P(12);
 double DispBeamColumn3d::workArea[200];
 
+Vector DispBeamColumn3d::outputVector(DispBeamColumn3d_OUTPUT_SIZE);
+
 DispBeamColumn3d::DispBeamColumn3d(int tag, int nd1, int nd2,
                                    int numSec, SectionForceDeformation **s,
-                                   BeamIntegration &bi, double r,
-                                   double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
-                                   double rigJntOffset1_x,   double rigJntOffset1_y,   double rigJntOffset1_z,
-                                   double rigJntOffset2_x,   double rigJntOffset2_y,   double rigJntOffset2_z)
+                                   BeamIntegration &bi,
+                                   CrdTransf &coordTransf, double r, int cm)
     : Element (tag, ELE_TAG_DispBeamColumn3d),
-      numSections(numSec), theSections(0), beamInt(0),
-      connectedExternalNodes(2), nodeIOffset(0), nodeJOffset(0), L(0), A(0),
-      Q(12), q(6), rho(r), parameterID(0),
-      nodeIInitialDisp(0), nodeJInitialDisp(0)
+      numSections(numSec), theSections(0), crdTransf(0), beamInt(0),
+      connectedExternalNodes(2),
+      Q(12), q(6), rho(r), cMass(cm), parameterID(0)
 {
     // Allocate arrays of pointers to SectionForceDeformations
     theSections = new SectionForceDeformation *[numSections];
 
     if (theSections == 0)
     {
-        cerr << "DispBeamColumn3d::DispBeamColumn3d - failed to allocate section model pointer\n";
+        std::cerr << "DispBeamColumn3d::DispBeamColumn3d - failed to allocate section model pointer\n";
         exit(-1);
     }
 
@@ -84,7 +75,7 @@ DispBeamColumn3d::DispBeamColumn3d(int tag, int nd1, int nd2,
         // Check allocation
         if (theSections[i] == 0)
         {
-            cerr << "DispBeamColumn3d::DispBeamColumn3d -- failed to get a copy of section model\n";
+            std::cerr << "DispBeamColumn3d::DispBeamColumn3d -- failed to get a copy of section model\n";
             exit(-1);
         }
     }
@@ -93,38 +84,17 @@ DispBeamColumn3d::DispBeamColumn3d(int tag, int nd1, int nd2,
 
     if (beamInt == 0)
     {
-        cerr << "DispBeamColumn3d::DispBeamColumn3d - failed to copy beam integration\n";
+        std::cerr << "DispBeamColumn3d::DispBeamColumn3d - failed to copy beam integration\n";
         exit(-1);
     }
 
+    crdTransf = coordTransf.getCopy3d();
 
-
-    //==========================================================================================
-    // Nima Tafazzoli, Nov. 2012, storing the area of section to be used for lumped mass matrix
-
-    A = theSections[0]->getArea();
-
-    //==========================================================================================
-
-
-
-    R[2][0] = vecInLocXZPlane_x;
-    R[2][1] = vecInLocXZPlane_y;
-    R[2][2] = vecInLocXZPlane_z;
-
-
-    nodeIOffset = new double[3];
-    nodeIOffset[0] = rigJntOffset1_x;
-    nodeIOffset[1] = rigJntOffset1_y;
-    nodeIOffset[2] = rigJntOffset1_z;
-
-
-    nodeJOffset = new double[3];
-    nodeJOffset[0] = rigJntOffset2_x;
-    nodeJOffset[1] = rigJntOffset2_y;
-    nodeJOffset[2] = rigJntOffset2_z;
-
-
+    if (crdTransf == 0)
+    {
+        std::cerr << "DispBeamColumn3d::DispBeamColumn3d - failed to copy coordinate transformation\n";
+        exit(-1);
+    }
 
     // Set connected external node IDs
     connectedExternalNodes(0) = nd1;
@@ -149,10 +119,9 @@ DispBeamColumn3d::DispBeamColumn3d(int tag, int nd1, int nd2,
 
 DispBeamColumn3d::DispBeamColumn3d()
     : Element (0, ELE_TAG_DispBeamColumn3d),
-      numSections(0), theSections(0), beamInt(0),
-      connectedExternalNodes(2), nodeIOffset(0), nodeJOffset(0), L(0), A(0),
-      Q(12), q(6), rho(0.0), parameterID(0),
-      nodeIInitialDisp(0), nodeJInitialDisp(0)
+      numSections(0), theSections(0), crdTransf(0), beamInt(0),
+      connectedExternalNodes(2),
+      Q(12), q(6), rho(0.0), cMass(0), parameterID(0)
 {
     q0[0] = 0.0;
     q0[1] = 0.0;
@@ -168,15 +137,7 @@ DispBeamColumn3d::DispBeamColumn3d()
 
     theNodes[0] = 0;
     theNodes[1] = 0;
-
-
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 3; j++)
-        {
-            R[i][j] = 0.0;
-        }
 }
-
 
 DispBeamColumn3d::~DispBeamColumn3d()
 {
@@ -194,31 +155,15 @@ DispBeamColumn3d::~DispBeamColumn3d()
         delete [] theSections;
     }
 
+    if (crdTransf)
+    {
+        delete crdTransf;
+    }
+
     if (beamInt != 0)
     {
         delete beamInt;
     }
-
-    if (nodeIOffset)
-    {
-        delete [] nodeIOffset;
-    }
-
-    if (nodeJOffset)
-    {
-        delete [] nodeJOffset;
-    }
-
-    if (nodeIInitialDisp != 0)
-    {
-        delete [] nodeIInitialDisp;
-    }
-
-    if (nodeJInitialDisp != 0)
-    {
-        delete [] nodeJInitialDisp;
-    }
-
 }
 
 int
@@ -227,7 +172,7 @@ DispBeamColumn3d::getNumExternalNodes() const
     return 2;
 }
 
-const ID &
+const ID&
 DispBeamColumn3d::getExternalNodes()
 {
     return connectedExternalNodes;
@@ -265,7 +210,7 @@ DispBeamColumn3d::setDomain(Domain *theDomain)
 
     if (theNodes[0] == 0 || theNodes[1] == 0)
     {
-        //cerr << "FATAL ERROR DispBeamColumn3d (tag: %d), node not found in domain",
+        //std::cerr << "FATAL ERROR DispBeamColumn3d (tag: %d), node not found in domain",
         //  this->getTag());
 
         return;
@@ -276,19 +221,23 @@ DispBeamColumn3d::setDomain(Domain *theDomain)
 
     if (dofNd1 != 6 || dofNd2 != 6)
     {
-        //cerr << "FATAL ERROR DispBeamColumn3d (tag: %d), has differing number of DOFs at its nodes",
+        //std::cerr << "FATAL ERROR DispBeamColumn3d (tag: %d), has differing number of DOFs at its nodes",
         //  this->getTag());
 
         return;
     }
 
-
-    if (this->initialize() != 0)
+    if (crdTransf->initialize(theNodes[0], theNodes[1]))
     {
-        cerr << "DispBeamColumn3d::setDomain -- Error initializing coordinate transformation\n";
-        exit(-1);
+        // Add some error check
     }
 
+    double L = crdTransf->getInitialLength();
+
+    if (L == 0.0)
+    {
+        // Add some error check
+    }
 
     this->DomainComponent::setDomain(theDomain);
 
@@ -303,7 +252,7 @@ DispBeamColumn3d::commitState()
     // call element commitState to do any base class stuff
     if ((retVal = this->Element::commitState()) != 0)
     {
-        cerr << "DispBeamColumn3d::commitState () - failed in base class";
+        std::cerr << "DispBeamColumn3d::commitState () - failed in base class";
     }
 
     // Loop over the integration points and commit the material states
@@ -312,6 +261,7 @@ DispBeamColumn3d::commitState()
         retVal += theSections[i]->commitState();
     }
 
+    retVal += crdTransf->commitState();
 
     return retVal;
 }
@@ -327,6 +277,7 @@ DispBeamColumn3d::revertToLastCommit()
         retVal += theSections[i]->revertToLastCommit();
     }
 
+    retVal += crdTransf->revertToLastCommit();
 
     return retVal;
 }
@@ -342,6 +293,7 @@ DispBeamColumn3d::revertToStart()
         retVal += theSections[i]->revertToStart();
     }
 
+    retVal += crdTransf->revertToStart();
 
     return retVal;
 }
@@ -351,10 +303,13 @@ DispBeamColumn3d::update(void)
 {
     int err = 0;
 
+    // Update the transformation
+    crdTransf->update();
 
     // Get basic deformations
-    const Vector &v = this->getBasicTrialDisp();
+    const Vector &v = crdTransf->getBasicTrialDisp();
 
+    double L = crdTransf->getInitialLength();
     double oneOverL = 1.0 / L;
 
     //const Matrix &pts = quadRule.getIntegrPointCoords(numSections);
@@ -373,30 +328,25 @@ DispBeamColumn3d::update(void)
         double xi6 = 6.0 * xi[i];
 
         int j;
-
         for (j = 0; j < order; j++)
         {
             switch (code(j))
             {
-                case SECTION_RESPONSE_P:
-                    e(j) = oneOverL * v(0);
-                    break;
-
-                case SECTION_RESPONSE_MZ:
-                    e(j) = oneOverL * ((xi6 - 4.0) * v(1) + (xi6 - 2.0) * v(2));
-                    break;
-
-                case SECTION_RESPONSE_MY:
-                    e(j) = oneOverL * ((xi6 - 4.0) * v(3) + (xi6 - 2.0) * v(4));
-                    break;
-
-                case SECTION_RESPONSE_T:
-                    e(j) = oneOverL * v(5);
-                    break;
-
-                default:
-                    e(j) = 0.0;
-                    break;
+            case SECTION_RESPONSE_P:
+                e(j) = oneOverL * v(0);
+                break;
+            case SECTION_RESPONSE_MZ:
+                e(j) = oneOverL * ((xi6 - 4.0) * v(1) + (xi6 - 2.0) * v(2));
+                break;
+            case SECTION_RESPONSE_MY:
+                e(j) = oneOverL * ((xi6 - 4.0) * v(3) + (xi6 - 2.0) * v(4));
+                break;
+            case SECTION_RESPONSE_T:
+                e(j) = oneOverL * v(5);
+                break;
+            default:
+                e(j) = 0.0;
+                break;
             }
         }
 
@@ -406,14 +356,13 @@ DispBeamColumn3d::update(void)
 
     if (err != 0)
     {
-        cerr << "DispBeamColumn3d::update() - failed setTrialSectionDeformations()\n";
+        std::cerr << "DispBeamColumn3d::update() - failed setTrialSectionDeformations()\n";
         return err;
     }
-
     return 0;
 }
 
-const Matrix &
+const Matrix&
 DispBeamColumn3d::getTangentStiff()
 {
     static Matrix kb(6, 6);
@@ -422,6 +371,7 @@ DispBeamColumn3d::getTangentStiff()
     kb.Zero();
     q.Zero();
 
+    double L = crdTransf->getInitialLength();
     double oneOverL = 1.0 / L;
 
     //const Matrix &pts = quadRule.getIntegrPointCoords(numSections);
@@ -452,126 +402,102 @@ DispBeamColumn3d::getTangentStiff()
         double wti = wt[i] * oneOverL;
         double tmp;
         int j, k;
-
         for (j = 0; j < order; j++)
         {
             switch (code(j))
             {
-                case SECTION_RESPONSE_P:
-                    for (k = 0; k < order; k++)
-                    {
-                        ka(k, 0) += ks(k, j) * wti;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_MZ:
-                    for (k = 0; k < order; k++)
-                    {
-                        tmp = ks(k, j) * wti;
-                        ka(k, 1) += (xi6 - 4.0) * tmp;
-                        ka(k, 2) += (xi6 - 2.0) * tmp;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_MY:
-                    for (k = 0; k < order; k++)
-                    {
-                        tmp = ks(k, j) * wti;
-                        ka(k, 3) += (xi6 - 4.0) * tmp;
-                        ka(k, 4) += (xi6 - 2.0) * tmp;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_T:
-                    for (k = 0; k < order; k++)
-                    {
-                        ka(k, 5) += ks(k, j) * wti;
-                    }
-
-                    break;
-
-                default:
-                    break;
+            case SECTION_RESPONSE_P:
+                for (k = 0; k < order; k++)
+                {
+                    ka(k, 0) += ks(k, j) * wti;
+                }
+                break;
+            case SECTION_RESPONSE_MZ:
+                for (k = 0; k < order; k++)
+                {
+                    tmp = ks(k, j) * wti;
+                    ka(k, 1) += (xi6 - 4.0) * tmp;
+                    ka(k, 2) += (xi6 - 2.0) * tmp;
+                }
+                break;
+            case SECTION_RESPONSE_MY:
+                for (k = 0; k < order; k++)
+                {
+                    tmp = ks(k, j) * wti;
+                    ka(k, 3) += (xi6 - 4.0) * tmp;
+                    ka(k, 4) += (xi6 - 2.0) * tmp;
+                }
+                break;
+            case SECTION_RESPONSE_T:
+                for (k = 0; k < order; k++)
+                {
+                    ka(k, 5) += ks(k, j) * wti;
+                }
+                break;
+            default:
+                break;
             }
         }
-
         for (j = 0; j < order; j++)
         {
             switch (code(j))
             {
-                case SECTION_RESPONSE_P:
-                    for (k = 0; k < 6; k++)
-                    {
-                        kb(0, k) += ka(j, k);
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_MZ:
-                    for (k = 0; k < 6; k++)
-                    {
-                        tmp = ka(j, k);
-                        kb(1, k) += (xi6 - 4.0) * tmp;
-                        kb(2, k) += (xi6 - 2.0) * tmp;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_MY:
-                    for (k = 0; k < 6; k++)
-                    {
-                        tmp = ka(j, k);
-                        kb(3, k) += (xi6 - 4.0) * tmp;
-                        kb(4, k) += (xi6 - 2.0) * tmp;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_T:
-                    for (k = 0; k < 6; k++)
-                    {
-                        kb(5, k) += ka(j, k);
-                    }
-
-                    break;
-
-                default:
-                    break;
+            case SECTION_RESPONSE_P:
+                for (k = 0; k < 6; k++)
+                {
+                    kb(0, k) += ka(j, k);
+                }
+                break;
+            case SECTION_RESPONSE_MZ:
+                for (k = 0; k < 6; k++)
+                {
+                    tmp = ka(j, k);
+                    kb(1, k) += (xi6 - 4.0) * tmp;
+                    kb(2, k) += (xi6 - 2.0) * tmp;
+                }
+                break;
+            case SECTION_RESPONSE_MY:
+                for (k = 0; k < 6; k++)
+                {
+                    tmp = ka(j, k);
+                    kb(3, k) += (xi6 - 4.0) * tmp;
+                    kb(4, k) += (xi6 - 2.0) * tmp;
+                }
+                break;
+            case SECTION_RESPONSE_T:
+                for (k = 0; k < 6; k++)
+                {
+                    kb(5, k) += ka(j, k);
+                }
+                break;
+            default:
+                break;
             }
         }
 
         //q.addMatrixTransposeVector(1.0, *B, s, wts(i));
         double si;
-
         for (j = 0; j < order; j++)
         {
             si = s(j) * wt[i];
-
             switch (code(j))
             {
-                case SECTION_RESPONSE_P:
-                    q(0) += si;
-                    break;
-
-                case SECTION_RESPONSE_MZ:
-                    q(1) += (xi6 - 4.0) * si;
-                    q(2) += (xi6 - 2.0) * si;
-                    break;
-
-                case SECTION_RESPONSE_MY:
-                    q(3) += (xi6 - 4.0) * si;
-                    q(4) += (xi6 - 2.0) * si;
-                    break;
-
-                case SECTION_RESPONSE_T:
-                    q(5) += si;
-                    break;
-
-                default:
-                    break;
+            case SECTION_RESPONSE_P:
+                q(0) += si;
+                break;
+            case SECTION_RESPONSE_MZ:
+                q(1) += (xi6 - 4.0) * si;
+                q(2) += (xi6 - 2.0) * si;
+                break;
+            case SECTION_RESPONSE_MY:
+                q(3) += (xi6 - 4.0) * si;
+                q(4) += (xi6 - 2.0) * si;
+                break;
+            case SECTION_RESPONSE_T:
+                q(5) += si;
+                break;
+            default:
+                break;
             }
         }
 
@@ -584,12 +510,14 @@ DispBeamColumn3d::getTangentStiff()
     q(4) += q0[4];
 
     // Transform to global stiffness
-    K = this->getGlobalStiffMatrix(kb, q);
+    K = crdTransf->getGlobalStiffMatrix(kb, q);
+
+    // cout << K << endl;
 
     return K;
 }
 
-const Matrix &
+const Matrix&
 DispBeamColumn3d::getInitialBasicStiff()
 {
     static Matrix kb(6, 6);
@@ -597,6 +525,7 @@ DispBeamColumn3d::getInitialBasicStiff()
     // Zero for integral
     kb.Zero();
 
+    double L = crdTransf->getInitialLength();
     double oneOverL = 1.0 / L;
 
     //const Matrix &pts = quadRule.getIntegrPointCoords(numSections);
@@ -626,94 +555,76 @@ DispBeamColumn3d::getInitialBasicStiff()
         double wti = wt[i] * oneOverL;
         double tmp;
         int j, k;
-
         for (j = 0; j < order; j++)
         {
             switch (code(j))
             {
-                case SECTION_RESPONSE_P:
-                    for (k = 0; k < order; k++)
-                    {
-                        ka(k, 0) += ks(k, j) * wti;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_MZ:
-                    for (k = 0; k < order; k++)
-                    {
-                        tmp = ks(k, j) * wti;
-                        ka(k, 1) += (xi6 - 4.0) * tmp;
-                        ka(k, 2) += (xi6 - 2.0) * tmp;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_MY:
-                    for (k = 0; k < order; k++)
-                    {
-                        tmp = ks(k, j) * wti;
-                        ka(k, 3) += (xi6 - 4.0) * tmp;
-                        ka(k, 4) += (xi6 - 2.0) * tmp;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_T:
-                    for (k = 0; k < order; k++)
-                    {
-                        ka(k, 5) += ks(k, j) * wti;
-                    }
-
-                    break;
-
-                default:
-                    break;
+            case SECTION_RESPONSE_P:
+                for (k = 0; k < order; k++)
+                {
+                    ka(k, 0) += ks(k, j) * wti;
+                }
+                break;
+            case SECTION_RESPONSE_MZ:
+                for (k = 0; k < order; k++)
+                {
+                    tmp = ks(k, j) * wti;
+                    ka(k, 1) += (xi6 - 4.0) * tmp;
+                    ka(k, 2) += (xi6 - 2.0) * tmp;
+                }
+                break;
+            case SECTION_RESPONSE_MY:
+                for (k = 0; k < order; k++)
+                {
+                    tmp = ks(k, j) * wti;
+                    ka(k, 3) += (xi6 - 4.0) * tmp;
+                    ka(k, 4) += (xi6 - 2.0) * tmp;
+                }
+                break;
+            case SECTION_RESPONSE_T:
+                for (k = 0; k < order; k++)
+                {
+                    ka(k, 5) += ks(k, j) * wti;
+                }
+                break;
+            default:
+                break;
             }
         }
-
         for (j = 0; j < order; j++)
         {
             switch (code(j))
             {
-                case SECTION_RESPONSE_P:
-                    for (k = 0; k < 6; k++)
-                    {
-                        kb(0, k) += ka(j, k);
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_MZ:
-                    for (k = 0; k < 6; k++)
-                    {
-                        tmp = ka(j, k);
-                        kb(1, k) += (xi6 - 4.0) * tmp;
-                        kb(2, k) += (xi6 - 2.0) * tmp;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_MY:
-                    for (k = 0; k < 6; k++)
-                    {
-                        tmp = ka(j, k);
-                        kb(3, k) += (xi6 - 4.0) * tmp;
-                        kb(4, k) += (xi6 - 2.0) * tmp;
-                    }
-
-                    break;
-
-                case SECTION_RESPONSE_T:
-                    for (k = 0; k < 6; k++)
-                    {
-                        kb(5, k) += ka(j, k);
-                    }
-
-                    break;
-
-                default:
-                    break;
+            case SECTION_RESPONSE_P:
+                for (k = 0; k < 6; k++)
+                {
+                    kb(0, k) += ka(j, k);
+                }
+                break;
+            case SECTION_RESPONSE_MZ:
+                for (k = 0; k < 6; k++)
+                {
+                    tmp = ka(j, k);
+                    kb(1, k) += (xi6 - 4.0) * tmp;
+                    kb(2, k) += (xi6 - 2.0) * tmp;
+                }
+                break;
+            case SECTION_RESPONSE_MY:
+                for (k = 0; k < 6; k++)
+                {
+                    tmp = ka(j, k);
+                    kb(3, k) += (xi6 - 4.0) * tmp;
+                    kb(4, k) += (xi6 - 2.0) * tmp;
+                }
+                break;
+            case SECTION_RESPONSE_T:
+                for (k = 0; k < 6; k++)
+                {
+                    kb(5, k) += ka(j, k);
+                }
+                break;
+            default:
+                break;
             }
         }
 
@@ -722,18 +633,18 @@ DispBeamColumn3d::getInitialBasicStiff()
     return kb;
 }
 
-const Matrix &
+const Matrix&
 DispBeamColumn3d::getInitialStiff()
 {
     const Matrix &kb = this->getInitialBasicStiff();
 
     // Transform to global stiffness
-    K = this->getInitialGlobalStiffMatrix(kb);
+    K = crdTransf->getInitialGlobalStiffMatrix(kb);
 
     return K;
 }
 
-const Matrix &
+const Matrix&
 DispBeamColumn3d::getMass()
 {
     K.Zero();
@@ -743,12 +654,44 @@ DispBeamColumn3d::getMass()
         return K;
     }
 
+    double L = crdTransf->getInitialLength();
+    if (cMass == 0)
+    {
+        // lumped mass matrix
+        double m = 0.5 * rho * L;
+        K(0, 0) = K(1, 1) = K(2, 2) = K(6, 6) = K(7, 7) = K(8, 8) = m;
+    }
+    else
+    {
+        // consistent mass matrix
+        static Matrix ml(12, 12);
+        double m = rho * L / 420.0;
+        ml(0, 0) = ml(6, 6) = m * 140.0;
+        ml(0, 6) = ml(6, 0) = m * 70.0;
+        //ml(3,3) = ml(9,9) = m*(Jx/A)*140.0;  // CURRENTLY NO TORSIONAL MASS
+        //ml(3,9) = ml(9,3) = m*(Jx/A)*70.0;   // CURRENTLY NO TORSIONAL MASS
 
-    // Nima Tafazzoli (Nov. 2012)
-    // changing density from per length to per volume
-    double m = 0.5 * rho * L * A;
+        ml(2, 2) = ml(8, 8) = m * 156.0;
+        ml(2, 8) = ml(8, 2) = m * 54.0;
+        ml(4, 4) = ml(10, 10) = m * 4.0 * L * L;
+        ml(4, 10) = ml(10, 4) = -m * 3.0 * L * L;
+        ml(2, 4) = ml(4, 2) = -m * 22.0 * L;
+        ml(8, 10) = ml(10, 8) = -ml(2, 4);
+        ml(2, 10) = ml(10, 2) = m * 13.0 * L;
+        ml(4, 8) = ml(8, 4) = -ml(2, 10);
 
-    K(0, 0) = K(1, 1) = K(2, 2) = K(6, 6) = K(7, 7) = K(8, 8) = m;
+        ml(1, 1) = ml(7, 7) = m * 156.0;
+        ml(1, 7) = ml(7, 1) = m * 54.0;
+        ml(5, 5) = ml(11, 11) = m * 4.0 * L * L;
+        ml(5, 11) = ml(11, 5) = -m * 3.0 * L * L;
+        ml(1, 5) = ml(5, 1) = m * 22.0 * L;
+        ml(7, 11) = ml(11, 7) = -ml(1, 5);
+        ml(1, 11) = ml(11, 1) = -m * 13.0 * L;
+        ml(5, 7) = ml(7, 5) = -ml(1, 11);
+
+        // transform local mass matrix to global system
+        K = crdTransf->getGlobalMatrixFromLocal(ml);
+    }
 
     return K;
 }
@@ -778,6 +721,7 @@ DispBeamColumn3d::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
     int type;
     const Vector &data = theLoad->getData(type, loadFactor);
+    double L = crdTransf->getInitialLength();
 
     if (type == LOAD_TAG_Beam3dUniformLoad)
     {
@@ -850,8 +794,8 @@ DispBeamColumn3d::addLoad(ElementalLoad *theLoad, double loadFactor)
     }
     else
     {
-        cerr << "DispBeamColumn3d::addLoad() -- load type unknown for element with tag: " <<
-             this->getTag() << endln;
+        std::cerr << "DispBeamColumn3d::addLoad() -- load type unknown for element with tag: " <<
+                  this->getTag() << endln;
         return -1;
     }
 
@@ -873,30 +817,43 @@ DispBeamColumn3d::addInertiaLoadToUnbalance(const Vector &accel)
 
     if (6 != Raccel1.Size() || 6 != Raccel2.Size())
     {
-        cerr << "DispBeamColumn3d::addInertiaLoadToUnbalance matrix and vector sizes are incompatable\n";
+        std::cerr << "DispBeamColumn3d::addInertiaLoadToUnbalance matrix and vector sizes are incompatable\n";
         return -1;
     }
 
+    // want to add ( - fact * M R * accel ) to unbalance
+    if (cMass == 0)
+    {
+        // take advantage of lumped mass matrix
+        double L = crdTransf->getInitialLength();
+        double m = 0.5 * rho * L;
 
-    // Nima Tafazzoli (Nov. 2012)
-    // changing density from per length to per volume
-    double m = 0.5 * rho * L * A;
-
-    // Want to add ( - fact * M R * accel ) to unbalance
-    // Take advantage of lumped mass matrix
-    Q(0) -= m * Raccel1(0);
-    Q(1) -= m * Raccel1(1);
-    Q(2) -= m * Raccel1(2);
-    Q(6) -= m * Raccel2(0);
-    Q(7) -= m * Raccel2(1);
-    Q(8) -= m * Raccel2(2);
+        Q(0) -= m * Raccel1(0);
+        Q(1) -= m * Raccel1(1);
+        Q(2) -= m * Raccel1(2);
+        Q(6) -= m * Raccel2(0);
+        Q(7) -= m * Raccel2(1);
+        Q(8) -= m * Raccel2(2);
+    }
+    else
+    {
+        // use matrix vector multip. for consistent mass matrix
+        static Vector Raccel(12);
+        for (int i = 0; i < 6; i++)
+        {
+            Raccel(i)   = Raccel1(i);
+            Raccel(i + 6) = Raccel2(i);
+        }
+        Q.addMatrixVector(1.0, this->getMass(), Raccel, -1.0);
+    }
 
     return 0;
 }
 
-const Vector &
+const Vector&
 DispBeamColumn3d::getResistingForce()
 {
+    double L = crdTransf->getInitialLength();
 
     //const Matrix &pts = quadRule.getIntegrPointCoords(numSections);
     //const Vector &wts = quadRule.getIntegrPointWeights(numSections);
@@ -924,33 +881,27 @@ DispBeamColumn3d::getResistingForce()
         //q.addMatrixTransposeVector(1.0, *B, s, wts(i));
 
         double si;
-
         for (int j = 0; j < order; j++)
         {
             si = s(j) * wt[i];
-
             switch (code(j))
             {
-                case SECTION_RESPONSE_P:
-                    q(0) += si;
-                    break;
-
-                case SECTION_RESPONSE_MZ:
-                    q(1) += (xi6 - 4.0) * si;
-                    q(2) += (xi6 - 2.0) * si;
-                    break;
-
-                case SECTION_RESPONSE_MY:
-                    q(3) += (xi6 - 4.0) * si;
-                    q(4) += (xi6 - 2.0) * si;
-                    break;
-
-                case SECTION_RESPONSE_T:
-                    q(5) += si;
-                    break;
-
-                default:
-                    break;
+            case SECTION_RESPONSE_P:
+                q(0) += si;
+                break;
+            case SECTION_RESPONSE_MZ:
+                q(1) += (xi6 - 4.0) * si;
+                q(2) += (xi6 - 2.0) * si;
+                break;
+            case SECTION_RESPONSE_MY:
+                q(3) += (xi6 - 4.0) * si;
+                q(4) += (xi6 - 2.0) * si;
+                break;
+            case SECTION_RESPONSE_T:
+                q(5) += si;
+                break;
+            default:
+                break;
             }
         }
 
@@ -964,43 +915,57 @@ DispBeamColumn3d::getResistingForce()
 
     // Transform forces
     Vector p0Vec(p0, 5);
-    P = this->getGlobalResistingForce(q, p0Vec);
+    P = crdTransf->getGlobalResistingForce(q, p0Vec);
 
-    // Subtract other external nodal loads ... P_res = P_int - P_ext
-    P.addVector(1.0, Q, -1.0);
+    // cout << "P = " << P << endl;
 
     return P;
 }
 
-const Vector &
+const Vector&
 DispBeamColumn3d::getResistingForceIncInertia()
 {
-    this->getResistingForce();
+    P = this->getResistingForce();
+
+    // Subtract other external nodal loads ... P_res = P_int - P_ext
+    P.addVector(1.0, Q, -1.0);
 
     if (rho != 0.0)
     {
         const Vector &accel1 = theNodes[0]->getTrialAccel();
         const Vector &accel2 = theNodes[1]->getTrialAccel();
 
-        // Compute the current resisting force
-        this->getResistingForce();
+        if (cMass == 0)
+        {
+            // take advantage of lumped mass matrix
+            double L = crdTransf->getInitialLength();
+            double m = 0.5 * rho * L;
 
-
-        // Nima Tafazzoli (Nov. 2012)
-        // changing density from per length to per volume
-        double m = 0.5 * rho * L * A;
-
-        P(0) += m * accel1(0);
-        P(1) += m * accel1(1);
-        P(2) += m * accel1(2);
-        P(6) += m * accel2(0);
-        P(7) += m * accel2(1);
-        P(8) += m * accel2(2);
+            P(0) += m * accel1(0);
+            P(1) += m * accel1(1);
+            P(2) += m * accel1(2);
+            P(6) += m * accel2(0);
+            P(7) += m * accel2(1);
+            P(8) += m * accel2(2);
+        }
+        else
+        {
+            // use matrix vector multip. for consistent mass matrix
+            static Vector accel(12);
+            for (int i = 0; i < 6; i++)
+            {
+                accel(i)   = accel1(i);
+                accel(i + 6) = accel2(i);
+            }
+            P.addMatrixVector(1.0, this->getMass(), accel, 1.0);
+        }
 
         // add the damping forces if rayleigh damping
+
+        // if (alphaM != 0.0 || betaK != 0.0 || betaK0 != 0.0 || betaKc != 0.0)
         if (a0 != 0.0 || a1 != 0.0 || a2 != 0.0 || a3 != 0.0)
         {
-            P += this->getRayleighDampingForces();
+            P.addVector(1.0, this->getRayleighDampingForces(), 1.0);
         }
 
     }
@@ -1008,9 +973,10 @@ DispBeamColumn3d::getResistingForceIncInertia()
     {
 
         // add the damping forces if rayleigh damping
+        // if (betaK != 0.0 || betaK0 != 0.0 || betaKc != 0.0)
         if (a1 != 0.0 || a2 != 0.0 || a3 != 0.0)
         {
-            P += this->getRayleighDampingForces();
+            P.addVector(1.0, this->getRayleighDampingForces(), 1.0);
         }
     }
 
@@ -1026,58 +992,66 @@ DispBeamColumn3d::sendSelf(int commitTag, Channel &theChannel)
     int i, j;
     int loc = 0;
 
-    static ID idData(7);  // one bigger than needed so no clash later
-    idData(0) = this->getTag();
-    idData(1) = connectedExternalNodes(0);
-    idData(2) = connectedExternalNodes(1);
-    idData(3) = numSections;
-    //   idData(4) = crdTransf->getClassTag();
-    //   int crdTransfDbTag  = crdTransf->getDbTag();
-    //   if (crdTransfDbTag  == 0) {
-    //     crdTransfDbTag = theChannel.getDbTag();
-    //     if (crdTransfDbTag  != 0)
-    //       crdTransf->setDbTag(crdTransfDbTag);
-    //   }
-    //   idData(5) = crdTransfDbTag;
-
-    if (a0 != 0 || a1 != 0 || a2 != 0 || a3 != 0)
+    static Vector data(14);
+    data(0) = this->getTag();
+    data(1) = connectedExternalNodes(0);
+    data(2) = connectedExternalNodes(1);
+    data(3) = numSections;
+    data(4) = crdTransf->getClassTag();
+    int crdTransfDbTag  = crdTransf->getDbTag();
+    if (crdTransfDbTag  == 0)
     {
-        idData(6) = 1;
+        crdTransfDbTag = theChannel.getDbTag();
+        if (crdTransfDbTag  != 0)
+        {
+            crdTransf->setDbTag(crdTransfDbTag);
+        }
     }
-    else
+    data(5) = crdTransfDbTag;
+    data(6) = beamInt->getClassTag();
+    int beamIntDbTag  = beamInt->getDbTag();
+    if (beamIntDbTag  == 0)
     {
-        idData(6) = 0;
+        beamIntDbTag = theChannel.getDbTag();
+        if (beamIntDbTag  != 0)
+        {
+            beamInt->setDbTag(beamIntDbTag);
+        }
     }
+    data(7) = beamIntDbTag;
+    data(8) = rho;
+    data(9) = cMass;
 
 
-    if (theChannel.sendID(dbTag, commitTag, idData) < 0)
+    data(10) =     a0 ;
+    data(11) =     a1 ;
+    data(12) =     a2 ;
+    data(13) =     a3 ;
+
+    // data(10) = alphaM;
+    // data(11) = betaK;
+    // data(12) = betaK0;
+    // data(13) = betaKc;
+
+    if (theChannel.sendVector(dbTag, commitTag, data) < 0)
     {
-        cerr << "DispBeamColumn3d::sendSelf() - failed to send ID data\n";
+        std::cerr << "DispBeamColumn3d::sendSelf() - failed to send data Vector\n";
         return -1;
     }
 
-    if (idData(6) == 1)
+    // send the coordinate transformation
+    if (crdTransf->sendSelf(commitTag, theChannel) < 0)
     {
-        // send damping coefficients
-        static Vector dData(4);
-        dData(0) = a0;
-        dData(1) = a1;
-        dData(2) = a2;
-        dData(3) = a3;
-
-        if (theChannel.sendVector(dbTag, commitTag, dData) < 0)
-        {
-            cerr << "DispBeamColumn3d::sendSelf() - failed to send double data\n";
-            return -1;
-        }
+        std::cerr << "DispBeamColumn3d::sendSelf() - failed to send crdTranf\n";
+        return -1;
     }
 
-    // send the coordinate transformation
-    //   if (crdTransf->sendSelf(commitTag, theChannel) < 0) {
-    //      cerr << "DispBeamColumn3d::sendSelf() - failed to send crdTranf\n";
-    //      return -1;
-    //   }
-
+    // send the beam integration
+    if (beamInt->sendSelf(commitTag, theChannel) < 0)
+    {
+        std::cerr << "DispBeamColumn3d::sendSelf() - failed to send beamInt\n";
+        return -1;
+    }
 
     //
     // send an ID for the sections containing each sections dbTag and classTag
@@ -1086,12 +1060,10 @@ DispBeamColumn3d::sendSelf(int commitTag, Channel &theChannel)
 
     ID idSections(2 * numSections);
     loc = 0;
-
     for (i = 0; i < numSections; i++)
     {
         int sectClassTag = theSections[i]->getClassTag();
         int sectDbTag = theSections[i]->getDbTag();
-
         if (sectDbTag == 0)
         {
             sectDbTag = theChannel.getDbTag();
@@ -1105,7 +1077,7 @@ DispBeamColumn3d::sendSelf(int commitTag, Channel &theChannel)
 
     if (theChannel.sendID(dbTag, commitTag, idSections) < 0)
     {
-        cerr << "DispBeamColumn3d::sendSelf() - failed to send ID data\n";
+        std::cerr << "DispBeamColumn3d::sendSelf() - failed to send ID data\n";
         return -1;
     }
 
@@ -1117,7 +1089,7 @@ DispBeamColumn3d::sendSelf(int commitTag, Channel &theChannel)
     {
         if (theSections[j]->sendSelf(commitTag, theChannel) < 0)
         {
-            cerr << "DispBeamColumn3d::sendSelf() - section " << j << "failed to send itself\n";
+            std::cerr << "DispBeamColumn3d::sendSelf() - section " << j << "failed to send itself\n";
             return -1;
         }
     }
@@ -1127,7 +1099,7 @@ DispBeamColumn3d::sendSelf(int commitTag, Channel &theChannel)
 
 int
 DispBeamColumn3d::receiveSelf(int commitTag, Channel &theChannel,
-                           FEM_ObjectBroker &theBroker)
+                              FEM_ObjectBroker &theBroker)
 {
     //
     // receive the integer data containing tag, numSections and coord transformation info
@@ -1135,71 +1107,103 @@ DispBeamColumn3d::receiveSelf(int commitTag, Channel &theChannel,
     int dbTag = this->getDbTag();
     int i;
 
-    static ID idData(7); // one bigger than needed so no clash with section ID
+    static Vector data(14);
 
-    if (theChannel.receiveID(dbTag, commitTag, idData) < 0)
+    if (theChannel.receiveVector(dbTag, commitTag, data) < 0)
     {
-        cerr << "DispBeamColumn3d::receiveSelf() - failed to recv ID data\n";
+        std::cerr << "DispBeamColumn3d::receiveSelf() - failed to receive data Vector\n";
         return -1;
     }
 
-    this->setTag(idData(0));
-    connectedExternalNodes(0) = idData(1);
-    connectedExternalNodes(1) = idData(2);
+    this->setTag((int)data(0));
+    connectedExternalNodes(0) = (int)data(1);
+    connectedExternalNodes(1) = (int)data(2);
+    int nSect = (int)data(3);
+    int crdTransfClassTag = (int)data(4);
+    int crdTransfDbTag = (int)data(5);
 
-    //   int crdTransfClassTag = idData(4);
-    //   int crdTransfDbTag = idData(5);
+    int beamIntClassTag = (int)data(6);
+    int beamIntDbTag = (int)data(7);
 
-    if (idData(6) == 1)
-    {
-        // recv damping coefficients
-        static Vector dData(4);
+    rho = data(8);
+    cMass = (int)data(9);
 
-        if (theChannel.receiveVector(dbTag, commitTag, dData) < 0)
-        {
-            cerr << "DispBeamColumn3d::sendSelf() - failed to recv double data\n";
-            return -1;
-        }
+    // alphaM = data(10);
+    // betaK = data(11);
+    // betaK0 = data(12);
+    // betaKc = data(13);
 
-        a0 = dData(0);
-        a1 = dData(1);
-        a2 = dData(2);
-        a3 = dData(3);
-    }
+    a0 = data(10);
+    a1 = data(11);
+    a2 = data(12);
+    a3 = data(13);
 
     // create a new crdTransf object if one needed
-    //   if (crdTransf == 0 || crdTransf->getClassTag() != crdTransfClassTag) {
-    //       if (crdTransf != 0)
-    //    delete crdTransf;
+    if (crdTransf == 0 || crdTransf->getClassTag() != crdTransfClassTag)
+    {
+        if (crdTransf != 0)
+        {
+            delete crdTransf;
+        }
 
-    //       crdTransf = theBroker.getNewCrdTransf3d(crdTransfClassTag);
+        cout << "NOTE- put getNewCrdTransf() back in\n";
+        // crdTransf = theBroker.getNewCrdTransf(crdTransfClassTag);
 
-    //       if (crdTransf == 0) {
-    //  cerr << "DispBeamColumn3d::receiveSelf() - " <<
-    //    "failed to obtain a CrdTrans object with classTag" <<
-    //    crdTransfClassTag << endln;
-    //  return -2;
-    //       }
-    //   }
+        if (crdTransf == 0)
+        {
+            std::cerr << "DispBeamColumn3d::receiveSelf() - " <<
+                      "failed to obtain a CrdTrans object with classTag" <<
+                      crdTransfClassTag << endln;
+            return -2;
+        }
+    }
 
-    //   crdTransf->setDbTag(crdTransfDbTag);
+    crdTransf->setDbTag(crdTransfDbTag);
 
     // invoke receiveSelf on the crdTransf object
-    //   if (crdTransf->receiveSelf(commitTag, theChannel, theBroker) < 0) {
-    //     cerr << "DispBeamColumn3d::sendSelf() - failed to recv crdTranf\n";
-    //     return -3;
-    //   }
+    if (crdTransf->receiveSelf(commitTag, theChannel, theBroker) < 0)
+    {
+        std::cerr << "DispBeamColumn3d::sendSelf() - failed to receive crdTranf\n";
+        return -3;
+    }
+
+    // create a new beamInt object if one needed
+    if (beamInt == 0 || beamInt->getClassTag() != beamIntClassTag)
+    {
+        if (beamInt != 0)
+        {
+            delete beamInt;
+        }
+
+        beamInt = theBroker.getNewBeamIntegration(beamIntClassTag);
+
+        if (beamInt == 0)
+        {
+            std::cerr << "DispBeamColumn3d::receiveSelf() - failed to obtain the beam integration object with classTag" <<
+                      beamIntClassTag << endln;
+            exit(-1);
+        }
+    }
+
+    beamInt->setDbTag(beamIntDbTag);
+
+    // invoke receiveSelf on the beamInt object
+    if (beamInt->receiveSelf(commitTag, theChannel, theBroker) < 0)
+    {
+        std::cerr << "DispBeamColumn3d::sendSelf() - failed to receive beam integration\n";
+        return -3;
+    }
 
     //
-    // recv an ID for the sections containing each sections dbTag and classTag
+    // receive an ID for the sections containing each sections dbTag and classTag
     //
 
-    ID idSections(2 * idData(3));
+    ID idSections(2 * nSect);
     int loc = 0;
 
     if (theChannel.receiveID(dbTag, commitTag, idSections) < 0)
     {
-        cerr << "DispBeamColumn3d::receiveSelf() - failed to recv ID data\n";
+        std::cerr << "DispBeamColumn3d::receiveSelf() - failed to receive ID data\n";
         return -1;
     }
 
@@ -1207,7 +1211,7 @@ DispBeamColumn3d::receiveSelf(int commitTag, Channel &theChannel,
     // now receive the sections
     //
 
-    if (numSections != idData(3))
+    if (numSections != nSect)
     {
 
         //
@@ -1222,22 +1226,20 @@ DispBeamColumn3d::receiveSelf(int commitTag, Channel &theChannel,
             {
                 delete theSections[i];
             }
-
             delete [] theSections;
         }
 
         // create a new array to hold pointers
-        theSections = new SectionForceDeformation *[idData(3)];
-
+        theSections = new SectionForceDeformation *[nSect];
         if (theSections == 0)
         {
-            cerr << "DispBeamColumn3d::receiveSelf() - out of memory creating sections array of size" <<
-                 idData(3) << endln;
+            std::cerr << "DispBeamColumn3d::receiveSelf() - out of memory creating sections array of size" <<
+                      nSect << endln;
             exit(-1);
         }
 
         // create a section and receiveSelf on it
-        numSections = idData(3);
+        numSections = nSect;
         loc = 0;
 
         for (i = 0; i < numSections; i++)
@@ -1246,20 +1248,17 @@ DispBeamColumn3d::receiveSelf(int commitTag, Channel &theChannel,
             int sectDbTag = idSections(loc + 1);
             loc += 2;
             theSections[i] = theBroker.getNewSection(sectClassTag);
-
             if (theSections[i] == 0)
             {
-                cerr << "DispBeamColumn3d::receiveSelf() - Broker could not create Section of class type" <<
-                     sectClassTag << endln;
+                std::cerr << "DispBeamColumn3d::receiveSelf() - Broker could not create Section of class type" <<
+                          sectClassTag << endln;
                 exit(-1);
             }
-
             theSections[i]->setDbTag(sectDbTag);
-
             if (theSections[i]->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "DispBeamColumn3d::receiveSelf() - section " <<
-                     i << "failed to recv itself\n";
+                std::cerr << "DispBeamColumn3d::receiveSelf() - section " <<
+                          i << "failed to receive itself\n";
                 return -1;
             }
         }
@@ -1274,7 +1273,6 @@ DispBeamColumn3d::receiveSelf(int commitTag, Channel &theChannel,
         //
 
         loc = 0;
-
         for (i = 0; i < numSections; i++)
         {
             int sectClassTag = idSections(loc);
@@ -1287,22 +1285,20 @@ DispBeamColumn3d::receiveSelf(int commitTag, Channel &theChannel,
                 // delete the old section[i] and create a new one
                 delete theSections[i];
                 theSections[i] = theBroker.getNewSection(sectClassTag);
-
                 if (theSections[i] == 0)
                 {
-                    cerr << "DispBeamColumn3d::receiveSelf() - Broker could not create Section of class type" <<
-                         sectClassTag << endln;
+                    std::cerr << "DispBeamColumn3d::receiveSelf() - Broker could not create Section of class type" <<
+                              sectClassTag << endln;
                     exit(-1);
                 }
             }
 
             // receiveSelf on it
             theSections[i]->setDbTag(sectDbTag);
-
             if (theSections[i]->receiveSelf(commitTag, theChannel, theBroker) < 0)
             {
-                cerr << "DispBeamColumn3d::receiveSelf() - section " <<
-                     i << "failed to recv itself\n";
+                std::cerr << "DispBeamColumn3d::receiveSelf() - section " <<
+                          i << "failed to receive itself\n";
                 return -1;
             }
         }
@@ -1316,10 +1312,11 @@ DispBeamColumn3d::Print(ostream &s, int flag)
 {
     s << "\nDispBeamColumn3d, element id:  " << this->getTag() << endln;
     s << "\tConnected external nodes:  " << connectedExternalNodes;
-    s << "\tmass density:  " << rho << endln;
+    s << "\tCoordTransf: " << crdTransf->getTag() << endln;
+    s << "\tmass density:  " << rho << ", cMass: " << cMass << endln;
 
     double N, Mz1, Mz2, Vy, My1, My2, Vz, T;
-
+    double L = crdTransf->getInitialLength();
     double oneOverL = 1.0 / L;
 
     N   = q(0);
@@ -1341,889 +1338,102 @@ DispBeamColumn3d::Print(ostream &s, int flag)
 }
 
 
-// int
-// DispBeamColumn3d::displaySelf(Renderer &theViewer, int displayMode, float fact)
-// {
-//   // first determine the end points of the quad based on
-//   // the display factor (a measure of the distorted image)
-//   const Vector &end1Crd = theNodes[0]->getCrds();
-//   const Vector &end2Crd = theNodes[1]->getCrds();
-//
-//   static Vector v1(3);
-//   static Vector v2(3);
-//
-//   if (displayMode >= 0) {
-//     const Vector &end1Disp = theNodes[0]->getDisp();
-//     const Vector &end2Disp = theNodes[1]->getDisp();
-//
-//     for (int i = 0; i < 3; i++) {
-//       v1(i) = end1Crd(i) + end1Disp(i)*fact;
-//       v2(i) = end2Crd(i) + end2Disp(i)*fact;
-//     }
-//   } else {
-//     int mode = displayMode * -1;
-//     const Matrix &eigen1 = theNodes[0]->getEigenvectors();
-//     const Matrix &eigen2 = theNodes[1]->getEigenvectors();
-//     if (eigen1.noCols() >= mode) {
-//       for (int i = 0; i < 3; i++) {
-//  v1(i) = end1Crd(i) + eigen1(i,mode-1)*fact;
-//  v2(i) = end2Crd(i) + eigen2(i,mode-1)*fact;
-//       }
-//
-//     } else {
-//       for (int i = 0; i < 3; i++) {
-//  v1(i) = end1Crd(i);
-//  v2(i) = end2Crd(i);
-//       }
-//     }
-//   }
-//   return theViewer.drawLine (v1, v2, 1.0, 1.0);
-// }
 
-// Response*
-// DispBeamColumn3d::setResponse(const char** argv, int argc, Information& eleInfo)
-// {
-//     // global force -
-//     if (strcmp(argv[0], "forces") == 0 || strcmp(argv[0], "force") == 0
-//             || strcmp(argv[0], "globalForce") == 0 || strcmp(argv[0], "globalForces") == 0)
-//     {
-//         return new ElementResponse(this, 1, P);
-//     }
-
-//     // local force -
-//     else if (strcmp(argv[0], "localForce") == 0 || strcmp(argv[0], "localForces") == 0)
-//     {
-//         return new ElementResponse(this, 2, P);
-//     }
-
-//     // chord rotation -
-//     else if (strcmp(argv[0], "chordRotation") == 0 || strcmp(argv[0], "chordDeformation") == 0
-//              || strcmp(argv[0], "basicDeformation") == 0)
-//     {
-//         return new ElementResponse(this, 3, Vector(6));
-//     }
-
-//     // plastic rotation -
-//     else if (strcmp(argv[0], "plasticRotation") == 0 || strcmp(argv[0], "plasticDeformation") == 0)
-//     {
-//         return new ElementResponse(this, 4, Vector(6));
-//     }
-
-//     // section response -
-//     else if (strcmp(argv[0], "section") == 0 || strcmp(argv[0], "-section") == 0)
-//     {
-//         if (argc <= 2)
-//         {
-//             return 0;
-//         }
-
-//         int sectionNum = atoi(argv[1]);
-
-//         if (sectionNum > 0 && sectionNum <= numSections)
-//         {
-//             return theSections[sectionNum - 1]->setResponse(&argv[2], argc - 2, eleInfo);
-//         }
-//         else
-//         {
-//             return 0;
-//         }
-//     }
-
-//     else
-//     {
-//         return 0;
-//     }
-// }
-
-// int
-// DispBeamColumn3d::getResponse(int responseID, Information& eleInfo)
-// {
-//     double N, V, M1, M2, T;
-//     double oneOverL = 1.0 / L;
-
-//     if (responseID == 1)
-//     {
-//         return eleInfo.setVector(this->getResistingForce());
-//     }
-
-//     else if (responseID == 2)
-//     {
-//         // Axial
-//         N = q(0);
-//         P(6) =  N;
-//         P(0) = -N + p0[0];
-
-//         // Torsion
-//         T = q(5);
-//         P(9) =  T;
-//         P(3) = -T;
-
-//         // Moments about z and shears along y
-//         M1 = q(1);
-//         M2 = q(2);
-//         P(5)  = M1;
-//         P(11) = M2;
-//         V = (M1 + M2) * oneOverL;
-//         P(1) =  V + p0[1];
-//         P(7) = -V + p0[2];
-
-//         // Moments about y and shears along z
-//         M1 = q(3);
-//         M2 = q(4);
-//         P(4)  = M1;
-//         P(10) = M2;
-//         V = -(M1 + M2) * oneOverL;
-//         P(2) = -V + p0[3];
-//         P(8) =  V + p0[4];
-
-//         return eleInfo.setVector(P);
-//     }
-
-//     // Chord rotation
-//     else if (responseID == 3)
-//     {
-//         return eleInfo.setVector(this->getBasicTrialDisp());
-//     }
-
-//     // Plastic rotation
-//     else if (responseID == 4)
-//     {
-//         static Vector vp(6);
-//         static Vector ve(6);
-//         const Matrix& kb = this->getInitialBasicStiff();
-//         kb.Solve(q, ve);
-//         vp = this->getBasicTrialDisp();
-//         vp -= ve;
-//         return eleInfo.setVector(vp);
-//     }
-
-//     else
-//     {
-//         return -1;
-//     }
-// }
-
-
-
-
-//====================================================================
-// Nima Tafazzoli (Nov. 2012) Moving from transformation ro element
-
-int
-DispBeamColumn3d::initialize()
+Matrix &
+DispBeamColumn3d::getGaussCoordinates(void)
 {
-    int error;
-
-    // see if there is some initial displacements at nodes
-    if (initialDispChecked == false)
+    static Matrix gaussPoints(2, 3);
+    const Vector &crd1 = theNodes[0]->getCrds();
+    const Vector &crd2 = theNodes[1]->getCrds();
+    for (int i = 0; i < 2; i++)
     {
-        const Vector &nodeIDisp = theNodes[0]->getDisp();
-        const Vector &nodeJDisp = theNodes[1]->getDisp();
-
-        for (int i = 0; i < 6; i++)
-            if (nodeIDisp(i) != 0.0)
-            {
-                nodeIInitialDisp = new double [6];
-
-                for (int j = 0; j < 6; j++)
-                {
-                    nodeIInitialDisp[j] = nodeIDisp(j);
-                }
-
-                i = 6;
-            }
-
-        for (int j = 0; j < 6; j++)
-            if (nodeJDisp(j) != 0.0)
-            {
-                nodeJInitialDisp = new double [6];
-
-                for (int i = 0; i < 6; i++)
-                {
-                    nodeJInitialDisp[i] = nodeJDisp(i);
-                }
-
-                j = 6;
-            }
-
-        initialDispChecked = true;
+        const Vector &crds = theNodes[i]->getCrds();
+        gaussPoints(i, 0) = crds(0);
+        gaussPoints(i, 1) = crds(1);
+        gaussPoints(i, 2) = crds(2);
     }
-
-    // get element length and orientation
-    if ((error = this->computeElemtLengthAndOrient()))
-    {
-        return error;
-    }
-
-    static Vector XAxis(3);
-    static Vector YAxis(3);
-    static Vector ZAxis(3);
-
-    // get 3by3 rotation matrix
-    if ((error = this->getLocalAxes(XAxis, YAxis, ZAxis)))
-    {
-        return error;
-    }
-
-    return 0;
+    return gaussPoints;
 }
 
-
-
-
 int
-DispBeamColumn3d::computeElemtLengthAndOrient()
+DispBeamColumn3d::getOutputSize() const
 {
-    // element projection
-    static Vector dx(3);
-
-    const Vector &ndICoords = theNodes[0]->getCrds();
-    const Vector &ndJCoords = theNodes[1]->getCrds();
-
-    dx(0) = ndJCoords(0) - ndICoords(0);
-    dx(1) = ndJCoords(1) - ndICoords(1);
-    dx(2) = ndJCoords(2) - ndICoords(2);
-
-    if (nodeJOffset != 0)
-    {
-        dx(0) += nodeJOffset[0];
-        dx(1) += nodeJOffset[1];
-        dx(2) += nodeJOffset[2];
-    }
-
-    if (nodeIOffset != 0)
-    {
-        dx(0) -= nodeIOffset[0];
-        dx(1) -= nodeIOffset[1];
-        dx(2) -= nodeIOffset[2];
-    }
-
-    if (nodeIInitialDisp != 0)
-    {
-        dx(0) -= nodeIInitialDisp[0];
-        dx(1) -= nodeIInitialDisp[1];
-        dx(2) -= nodeIInitialDisp[2];
-    }
-
-    if (nodeJInitialDisp != 0)
-    {
-        dx(0) += nodeJInitialDisp[0];
-        dx(1) += nodeJInitialDisp[1];
-        dx(2) += nodeJInitialDisp[2];
-    }
-
-    // calculate the element length
-    L = dx.Norm();
-
-    if (L == 0.0)
-    {
-        cerr << "DispBeamColumn3d::computeElemtLengthAndOrien: 0 length\n";
-        return -2;
-    }
-
-    // calculate the element local x axis components (direction cossines)
-    // wrt to the global coordinates
-    R[0][0] = dx(0) / L;
-    R[0][1] = dx(1) / L;
-    R[0][2] = dx(2) / L;
-
-    return 0;
+    return DispBeamColumn3d_OUTPUT_SIZE;
 }
-
-
-
-
-int
-DispBeamColumn3d::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
-{
-    // Compute y = v cross x
-    // Note: v(i) is stored in R[2][i]
-    static Vector vAxis(3);
-    vAxis(0) = R[2][0];
-    vAxis(1) = R[2][1];
-    vAxis(2) = R[2][2];
-
-    static Vector xAxis(3);
-    xAxis(0) = R[0][0];
-    xAxis(1) = R[0][1];
-    xAxis(2) = R[0][2];
-    XAxis(0) = xAxis(0);
-    XAxis(1) = xAxis(1);
-    XAxis(2) = xAxis(2);
-
-    static Vector yAxis(3);
-    yAxis(0) = vAxis(1) * xAxis(2) - vAxis(2) * xAxis(1);
-    yAxis(1) = vAxis(2) * xAxis(0) - vAxis(0) * xAxis(2);
-    yAxis(2) = vAxis(0) * xAxis(1) - vAxis(1) * xAxis(0);
-
-    double ynorm = yAxis.Norm();
-
-    if (ynorm == 0)
-    {
-        cerr << "DispBeamColumn3d::getLocalAxes";
-        cerr << "\nvector v that defines plane xz is parallel to x axis\n";
-        return -3;
-    }
-
-    yAxis /= ynorm;
-
-    YAxis(0) = yAxis(0);
-    YAxis(1) = yAxis(1);
-    YAxis(2) = yAxis(2);
-
-    // Compute z = x cross y
-    static Vector zAxis(3);
-
-    zAxis(0) = xAxis(1) * yAxis(2) - xAxis(2) * yAxis(1);
-    zAxis(1) = xAxis(2) * yAxis(0) - xAxis(0) * yAxis(2);
-    zAxis(2) = xAxis(0) * yAxis(1) - xAxis(1) * yAxis(0);
-    ZAxis(0) = zAxis(0);
-    ZAxis(1) = zAxis(1);
-    ZAxis(2) = zAxis(2);
-
-    // Fill in transformation matrix
-    R[1][0] = yAxis(0);
-    R[1][1] = yAxis(1);
-    R[1][2] = yAxis(2);
-
-    R[2][0] = zAxis(0);
-    R[2][1] = zAxis(1);
-    R[2][2] = zAxis(2);
-
-    return 0;
-}
-
-
-
 
 const Vector &
-DispBeamColumn3d::getBasicTrialDisp (void)
+DispBeamColumn3d::getOutput()
 {
-    // determine global displacements
-    const Vector &disp1 = theNodes[0]->getTrialDisp();
-    const Vector &disp2 = theNodes[1]->getTrialDisp();
+    double N = q(0);
+    outputVector(6) =  N;
+    outputVector(0) = -N + p0[0];
 
-    static double ug[12];
+    // Torsion
+    double T = q(5);
+    outputVector(9) =  T;
+    outputVector(3) = -T;
 
-    for (int i = 0; i < 6; i++)
-    {
-        ug[i]   = disp1(i);
-        ug[i + 6] = disp2(i);
-    }
-
-    if (nodeIInitialDisp != 0)
-    {
-        for (int j = 0; j < 6; j++)
-        {
-            ug[j] -= nodeIInitialDisp[j];
-        }
-    }
-
-    if (nodeJInitialDisp != 0)
-    {
-        for (int j = 0; j < 6; j++)
-        {
-            ug[j + 6] -= nodeJInitialDisp[j];
-        }
-    }
-
+    // Moments about z and shears along y
+    double M1 = q(1);
+    double M2 = q(2);
+    double L = crdTransf->getInitialLength();
     double oneOverL = 1.0 / L;
+    outputVector(5)  = M1;
+    outputVector(11) = M2;
+    double V = (M1 + M2) * oneOverL;
+    outputVector(1) =  V + p0[1];
+    outputVector(7) = -V + p0[2];
 
-    static Vector ub(6);
+    // Moments about y and shears along z
+    M1 = q(3);
+    M2 = q(4);
+    outputVector(4)  = M1;
+    outputVector(10) = M2;
+    V = (M1 + M2) * oneOverL;
+    outputVector(2) = -V + p0[3];
+    outputVector(8) =  V + p0[4];
 
-    static double ul[12];
-
-    ul[0]  = R[0][0] * ug[0] + R[0][1] * ug[1] + R[0][2] * ug[2];
-    ul[1]  = R[1][0] * ug[0] + R[1][1] * ug[1] + R[1][2] * ug[2];
-    ul[2]  = R[2][0] * ug[0] + R[2][1] * ug[1] + R[2][2] * ug[2];
-
-    ul[3]  = R[0][0] * ug[3] + R[0][1] * ug[4] + R[0][2] * ug[5];
-    ul[4]  = R[1][0] * ug[3] + R[1][1] * ug[4] + R[1][2] * ug[5];
-    ul[5]  = R[2][0] * ug[3] + R[2][1] * ug[4] + R[2][2] * ug[5];
-
-    ul[6]  = R[0][0] * ug[6] + R[0][1] * ug[7] + R[0][2] * ug[8];
-    ul[7]  = R[1][0] * ug[6] + R[1][1] * ug[7] + R[1][2] * ug[8];
-    ul[8]  = R[2][0] * ug[6] + R[2][1] * ug[7] + R[2][2] * ug[8];
-
-    ul[9]  = R[0][0] * ug[9] + R[0][1] * ug[10] + R[0][2] * ug[11];
-    ul[10] = R[1][0] * ug[9] + R[1][1] * ug[10] + R[1][2] * ug[11];
-    ul[11] = R[2][0] * ug[9] + R[2][1] * ug[10] + R[2][2] * ug[11];
-
-    static double Wu[3];
-
-    if (nodeIOffset)
-    {
-        Wu[0] =  nodeIOffset[2] * ug[4] - nodeIOffset[1] * ug[5];
-        Wu[1] = -nodeIOffset[2] * ug[3] + nodeIOffset[0] * ug[5];
-        Wu[2] =  nodeIOffset[1] * ug[3] - nodeIOffset[0] * ug[4];
-
-        ul[0] += R[0][0] * Wu[0] + R[0][1] * Wu[1] + R[0][2] * Wu[2];
-        ul[1] += R[1][0] * Wu[0] + R[1][1] * Wu[1] + R[1][2] * Wu[2];
-        ul[2] += R[2][0] * Wu[0] + R[2][1] * Wu[1] + R[2][2] * Wu[2];
-    }
-
-    if (nodeJOffset)
-    {
-        Wu[0] =  nodeJOffset[2] * ug[10] - nodeJOffset[1] * ug[11];
-        Wu[1] = -nodeJOffset[2] * ug[9]  + nodeJOffset[0] * ug[11];
-        Wu[2] =  nodeJOffset[1] * ug[9]  - nodeJOffset[0] * ug[10];
-
-        ul[6] += R[0][0] * Wu[0] + R[0][1] * Wu[1] + R[0][2] * Wu[2];
-        ul[7] += R[1][0] * Wu[0] + R[1][1] * Wu[1] + R[1][2] * Wu[2];
-        ul[8] += R[2][0] * Wu[0] + R[2][1] * Wu[1] + R[2][2] * Wu[2];
-    }
-
-    ub(0) = ul[6] - ul[0];
-    double tmp;
-    tmp = oneOverL * (ul[1] - ul[7]);
-    ub(1) = ul[5] + tmp;
-    ub(2) = ul[11] + tmp;
-    tmp = oneOverL * (ul[8] - ul[2]);
-    ub(3) = ul[4] + tmp;
-    ub(4) = ul[10] + tmp;
-    ub(5) = ul[9] - ul[3];
-
-    return ub;
+    return outputVector;
 }
 
 
 
-
-const Matrix &
-DispBeamColumn3d::getGlobalStiffMatrix (const Matrix &KB, const Vector &pb)
-{
-    static Matrix kg(12, 12);   // Global stiffness for return
-    static double kb[6][6];     // Basic stiffness
-    static double kl[12][12];   // Local stiffness
-    static double tmp[12][12];  // Temporary storage
-
-    double oneOverL = 1.0 / L;
-
-    int i, j;
-
-    for (i = 0; i < 6; i++)
-        for (j = 0; j < 6; j++)
-        {
-            kb[i][j] = KB(i, j);
-        }
-
-    // Transform basic stiffness to local system
-    // First compute kb*T_{bl}
-    for (i = 0; i < 6; i++)
-    {
-        tmp[i][0]  = -kb[i][0];
-        tmp[i][1]  =  oneOverL * (kb[i][1] + kb[i][2]);
-        tmp[i][2]  = -oneOverL * (kb[i][3] + kb[i][4]);
-        tmp[i][3]  = -kb[i][5];
-        tmp[i][4]  =  kb[i][3];
-        tmp[i][5]  =  kb[i][1];
-        tmp[i][6]  =  kb[i][0];
-        tmp[i][7]  = -tmp[i][1];
-        tmp[i][8]  = -tmp[i][2];
-        tmp[i][9]  =  kb[i][5];
-        tmp[i][10] =  kb[i][4];
-        tmp[i][11] =  kb[i][2];
-    }
-
-    // Now compute T'_{bl}*(kb*T_{bl})
-    for (i = 0; i < 12; i++)
-    {
-        kl[0][i]  = -tmp[0][i];
-        kl[1][i]  =  oneOverL * (tmp[1][i] + tmp[2][i]);
-        kl[2][i]  = -oneOverL * (tmp[3][i] + tmp[4][i]);
-        kl[3][i]  = -tmp[5][i];
-        kl[4][i]  =  tmp[3][i];
-        kl[5][i]  =  tmp[1][i];
-        kl[6][i]  =  tmp[0][i];
-        kl[7][i]  = -kl[1][i];
-        kl[8][i]  = -kl[2][i];
-        kl[9][i]  =  tmp[5][i];
-        kl[10][i] =  tmp[4][i];
-        kl[11][i] =  tmp[2][i];
-    }
-
-    static double RWI[3][3];
-
-    if (nodeIOffset)
-    {
-        // Compute RWI
-        RWI[0][0] = -R[0][1] * nodeIOffset[2] + R[0][2] * nodeIOffset[1];
-        RWI[1][0] = -R[1][1] * nodeIOffset[2] + R[1][2] * nodeIOffset[1];
-        RWI[2][0] = -R[2][1] * nodeIOffset[2] + R[2][2] * nodeIOffset[1];
-
-        RWI[0][1] =  R[0][0] * nodeIOffset[2] - R[0][2] * nodeIOffset[0];
-        RWI[1][1] =  R[1][0] * nodeIOffset[2] - R[1][2] * nodeIOffset[0];
-        RWI[2][1] =  R[2][0] * nodeIOffset[2] - R[2][2] * nodeIOffset[0];
-
-        RWI[0][2] = -R[0][0] * nodeIOffset[1] + R[0][1] * nodeIOffset[0];
-        RWI[1][2] = -R[1][0] * nodeIOffset[1] + R[1][1] * nodeIOffset[0];
-        RWI[2][2] = -R[2][0] * nodeIOffset[1] + R[2][1] * nodeIOffset[0];
-    }
-
-    static double RWJ[3][3];
-
-    if (nodeJOffset)
-    {
-        // Compute RWJ
-        RWJ[0][0] = -R[0][1] * nodeJOffset[2] + R[0][2] * nodeJOffset[1];
-        RWJ[1][0] = -R[1][1] * nodeJOffset[2] + R[1][2] * nodeJOffset[1];
-        RWJ[2][0] = -R[2][1] * nodeJOffset[2] + R[2][2] * nodeJOffset[1];
-
-        RWJ[0][1] =  R[0][0] * nodeJOffset[2] - R[0][2] * nodeJOffset[0];
-        RWJ[1][1] =  R[1][0] * nodeJOffset[2] - R[1][2] * nodeJOffset[0];
-        RWJ[2][1] =  R[2][0] * nodeJOffset[2] - R[2][2] * nodeJOffset[0];
-
-        RWJ[0][2] = -R[0][0] * nodeJOffset[1] + R[0][1] * nodeJOffset[0];
-        RWJ[1][2] = -R[1][0] * nodeJOffset[1] + R[1][1] * nodeJOffset[0];
-        RWJ[2][2] = -R[2][0] * nodeJOffset[1] + R[2][1] * nodeJOffset[0];
-    }
-
-    // Transform local stiffness to global system
-    // First compute kl*T_{lg}
-    int m;
-
-    for (m = 0; m < 12; m++)
-    {
-        tmp[m][0] = kl[m][0] * R[0][0] + kl[m][1] * R[1][0]  + kl[m][2] * R[2][0];
-        tmp[m][1] = kl[m][0] * R[0][1] + kl[m][1] * R[1][1]  + kl[m][2] * R[2][1];
-        tmp[m][2] = kl[m][0] * R[0][2] + kl[m][1] * R[1][2]  + kl[m][2] * R[2][2];
-
-        tmp[m][3] = kl[m][3] * R[0][0] + kl[m][4] * R[1][0]  + kl[m][5] * R[2][0];
-        tmp[m][4] = kl[m][3] * R[0][1] + kl[m][4] * R[1][1]  + kl[m][5] * R[2][1];
-        tmp[m][5] = kl[m][3] * R[0][2] + kl[m][4] * R[1][2]  + kl[m][5] * R[2][2];
-
-        if (nodeIOffset)
-        {
-            tmp[m][3]  += kl[m][0] * RWI[0][0]  + kl[m][1] * RWI[1][0]  + kl[m][2] * RWI[2][0];
-            tmp[m][4]  += kl[m][0] * RWI[0][1]  + kl[m][1] * RWI[1][1]  + kl[m][2] * RWI[2][1];
-            tmp[m][5]  += kl[m][0] * RWI[0][2]  + kl[m][1] * RWI[1][2]  + kl[m][2] * RWI[2][2];
-        }
-
-        tmp[m][6] = kl[m][6] * R[0][0] + kl[m][7] * R[1][0]  + kl[m][8] * R[2][0];
-        tmp[m][7] = kl[m][6] * R[0][1] + kl[m][7] * R[1][1]  + kl[m][8] * R[2][1];
-        tmp[m][8] = kl[m][6] * R[0][2] + kl[m][7] * R[1][2]  + kl[m][8] * R[2][2];
-
-        tmp[m][9]  = kl[m][9] * R[0][0] + kl[m][10] * R[1][0] + kl[m][11] * R[2][0];
-        tmp[m][10] = kl[m][9] * R[0][1] + kl[m][10] * R[1][1] + kl[m][11] * R[2][1];
-        tmp[m][11] = kl[m][9] * R[0][2] + kl[m][10] * R[1][2] + kl[m][11] * R[2][2];
-
-        if (nodeJOffset)
-        {
-            tmp[m][9]   += kl[m][6] * RWJ[0][0]  + kl[m][7] * RWJ[1][0]  + kl[m][8] * RWJ[2][0];
-            tmp[m][10]  += kl[m][6] * RWJ[0][1]  + kl[m][7] * RWJ[1][1]  + kl[m][8] * RWJ[2][1];
-            tmp[m][11]  += kl[m][6] * RWJ[0][2]  + kl[m][7] * RWJ[1][2]  + kl[m][8] * RWJ[2][2];
-        }
-
-    }
-
-    // Now compute T'_{lg}*(kl*T_{lg})
-    for (m = 0; m < 12; m++)
-    {
-        kg(0, m) = R[0][0] * tmp[0][m] + R[1][0] * tmp[1][m]  + R[2][0] * tmp[2][m];
-        kg(1, m) = R[0][1] * tmp[0][m] + R[1][1] * tmp[1][m]  + R[2][1] * tmp[2][m];
-        kg(2, m) = R[0][2] * tmp[0][m] + R[1][2] * tmp[1][m]  + R[2][2] * tmp[2][m];
-
-        kg(3, m) = R[0][0] * tmp[3][m] + R[1][0] * tmp[4][m]  + R[2][0] * tmp[5][m];
-        kg(4, m) = R[0][1] * tmp[3][m] + R[1][1] * tmp[4][m]  + R[2][1] * tmp[5][m];
-        kg(5, m) = R[0][2] * tmp[3][m] + R[1][2] * tmp[4][m]  + R[2][2] * tmp[5][m];
-
-        if (nodeIOffset)
-        {
-            kg(3, m) += RWI[0][0] * tmp[0][m]  + RWI[1][0] * tmp[1][m] + RWI[2][0] * tmp[2][m];
-            kg(4, m) += RWI[0][1] * tmp[0][m]  + RWI[1][1] * tmp[1][m] + RWI[2][1] * tmp[2][m];
-            kg(5, m) += RWI[0][2] * tmp[0][m]  + RWI[1][2] * tmp[1][m] + RWI[2][2] * tmp[2][m];
-        }
-
-        kg(6, m) = R[0][0] * tmp[6][m] + R[1][0] * tmp[7][m]  + R[2][0] * tmp[8][m];
-        kg(7, m) = R[0][1] * tmp[6][m] + R[1][1] * tmp[7][m]  + R[2][1] * tmp[8][m];
-        kg(8, m) = R[0][2] * tmp[6][m] + R[1][2] * tmp[7][m]  + R[2][2] * tmp[8][m];
-
-        kg(9, m)  = R[0][0] * tmp[9][m] + R[1][0] * tmp[10][m] + R[2][0] * tmp[11][m];
-        kg(10, m) = R[0][1] * tmp[9][m] + R[1][1] * tmp[10][m] + R[2][1] * tmp[11][m];
-        kg(11, m) = R[0][2] * tmp[9][m] + R[1][2] * tmp[10][m] + R[2][2] * tmp[11][m];
-
-        if (nodeJOffset)
-        {
-            kg(9, m)  += RWJ[0][0] * tmp[6][m]  + RWJ[1][0] * tmp[7][m] + RWJ[2][0] * tmp[8][m];
-            kg(10, m) += RWJ[0][1] * tmp[6][m]  + RWJ[1][1] * tmp[7][m] + RWJ[2][1] * tmp[8][m];
-            kg(11, m) += RWJ[0][2] * tmp[6][m]  + RWJ[1][2] * tmp[7][m] + RWJ[2][2] * tmp[8][m];
-        }
-    }
-
-    return kg;
-}
-
-
-
-
-
-const Matrix &
-DispBeamColumn3d::getInitialGlobalStiffMatrix (const Matrix &KB)
-{
-    static Matrix kg(12, 12); // Global stiffness for return
-    static double kb[6][6];   // Basic stiffness
-    static double kl[12][12]; // Local stiffness
-    static double tmp[12][12];    // Temporary storage
-
-    double oneOverL = 1.0 / L;
-
-    int i, j;
-
-    for (i = 0; i < 6; i++)
-        for (j = 0; j < 6; j++)
-        {
-            kb[i][j] = KB(i, j);
-        }
-
-    // Transform basic stiffness to local system
-    // First compute kb*T_{bl}
-    for (i = 0; i < 6; i++)
-    {
-        tmp[i][0]  = -kb[i][0];
-        tmp[i][1]  =  oneOverL * (kb[i][1] + kb[i][2]);
-        tmp[i][2]  = -oneOverL * (kb[i][3] + kb[i][4]);
-        tmp[i][3]  = -kb[i][5];
-        tmp[i][4]  =  kb[i][3];
-        tmp[i][5]  =  kb[i][1];
-        tmp[i][6]  =  kb[i][0];
-        tmp[i][7]  = -tmp[i][1];
-        tmp[i][8]  = -tmp[i][2];
-        tmp[i][9]  =  kb[i][5];
-        tmp[i][10] =  kb[i][4];
-        tmp[i][11] =  kb[i][2];
-    }
-
-    // Now compute T'_{bl}*(kb*T_{bl})
-    for (i = 0; i < 12; i++)
-    {
-        kl[0][i]  = -tmp[0][i];
-        kl[1][i]  =  oneOverL * (tmp[1][i] + tmp[2][i]);
-        kl[2][i]  = -oneOverL * (tmp[3][i] + tmp[4][i]);
-        kl[3][i]  = -tmp[5][i];
-        kl[4][i]  =  tmp[3][i];
-        kl[5][i]  =  tmp[1][i];
-        kl[6][i]  =  tmp[0][i];
-        kl[7][i]  = -kl[1][i];
-        kl[8][i]  = -kl[2][i];
-        kl[9][i]  =  tmp[5][i];
-        kl[10][i] =  tmp[4][i];
-        kl[11][i] =  tmp[2][i];
-    }
-
-    static double RWI[3][3];
-
-    if (nodeIOffset)
-    {
-        // Compute RWI
-        RWI[0][0] = -R[0][1] * nodeIOffset[2] + R[0][2] * nodeIOffset[1];
-        RWI[1][0] = -R[1][1] * nodeIOffset[2] + R[1][2] * nodeIOffset[1];
-        RWI[2][0] = -R[2][1] * nodeIOffset[2] + R[2][2] * nodeIOffset[1];
-
-        RWI[0][1] =  R[0][0] * nodeIOffset[2] - R[0][2] * nodeIOffset[0];
-        RWI[1][1] =  R[1][0] * nodeIOffset[2] - R[1][2] * nodeIOffset[0];
-        RWI[2][1] =  R[2][0] * nodeIOffset[2] - R[2][2] * nodeIOffset[0];
-
-        RWI[0][2] = -R[0][0] * nodeIOffset[1] + R[0][1] * nodeIOffset[0];
-        RWI[1][2] = -R[1][0] * nodeIOffset[1] + R[1][1] * nodeIOffset[0];
-        RWI[2][2] = -R[2][0] * nodeIOffset[1] + R[2][1] * nodeIOffset[0];
-    }
-
-    static double RWJ[3][3];
-
-    if (nodeJOffset)
-    {
-        // Compute RWJ
-        RWJ[0][0] = -R[0][1] * nodeJOffset[2] + R[0][2] * nodeJOffset[1];
-        RWJ[1][0] = -R[1][1] * nodeJOffset[2] + R[1][2] * nodeJOffset[1];
-        RWJ[2][0] = -R[2][1] * nodeJOffset[2] + R[2][2] * nodeJOffset[1];
-
-        RWJ[0][1] =  R[0][0] * nodeJOffset[2] - R[0][2] * nodeJOffset[0];
-        RWJ[1][1] =  R[1][0] * nodeJOffset[2] - R[1][2] * nodeJOffset[0];
-        RWJ[2][1] =  R[2][0] * nodeJOffset[2] - R[2][2] * nodeJOffset[0];
-
-        RWJ[0][2] = -R[0][0] * nodeJOffset[1] + R[0][1] * nodeJOffset[0];
-        RWJ[1][2] = -R[1][0] * nodeJOffset[1] + R[1][1] * nodeJOffset[0];
-        RWJ[2][2] = -R[2][0] * nodeJOffset[1] + R[2][1] * nodeJOffset[0];
-    }
-
-    // Transform local stiffness to global system
-    // First compute kl*T_{lg}
-    int m;
-
-    for (m = 0; m < 12; m++)
-    {
-        tmp[m][0] = kl[m][0] * R[0][0] + kl[m][1] * R[1][0]  + kl[m][2] * R[2][0];
-        tmp[m][1] = kl[m][0] * R[0][1] + kl[m][1] * R[1][1]  + kl[m][2] * R[2][1];
-        tmp[m][2] = kl[m][0] * R[0][2] + kl[m][1] * R[1][2]  + kl[m][2] * R[2][2];
-
-        tmp[m][3] = kl[m][3] * R[0][0] + kl[m][4] * R[1][0]  + kl[m][5] * R[2][0];
-        tmp[m][4] = kl[m][3] * R[0][1] + kl[m][4] * R[1][1]  + kl[m][5] * R[2][1];
-        tmp[m][5] = kl[m][3] * R[0][2] + kl[m][4] * R[1][2]  + kl[m][5] * R[2][2];
-
-        if (nodeIOffset)
-        {
-            tmp[m][3]  += kl[m][0] * RWI[0][0]  + kl[m][1] * RWI[1][0]  + kl[m][2] * RWI[2][0];
-            tmp[m][4]  += kl[m][0] * RWI[0][1]  + kl[m][1] * RWI[1][1]  + kl[m][2] * RWI[2][1];
-            tmp[m][5]  += kl[m][0] * RWI[0][2]  + kl[m][1] * RWI[1][2]  + kl[m][2] * RWI[2][2];
-        }
-
-        tmp[m][6] = kl[m][6] * R[0][0] + kl[m][7] * R[1][0]  + kl[m][8] * R[2][0];
-        tmp[m][7] = kl[m][6] * R[0][1] + kl[m][7] * R[1][1]  + kl[m][8] * R[2][1];
-        tmp[m][8] = kl[m][6] * R[0][2] + kl[m][7] * R[1][2]  + kl[m][8] * R[2][2];
-
-        tmp[m][9]  = kl[m][9] * R[0][0] + kl[m][10] * R[1][0] + kl[m][11] * R[2][0];
-        tmp[m][10] = kl[m][9] * R[0][1] + kl[m][10] * R[1][1] + kl[m][11] * R[2][1];
-        tmp[m][11] = kl[m][9] * R[0][2] + kl[m][10] * R[1][2] + kl[m][11] * R[2][2];
-
-        if (nodeJOffset)
-        {
-            tmp[m][9]   += kl[m][6] * RWJ[0][0]  + kl[m][7] * RWJ[1][0]  + kl[m][8] * RWJ[2][0];
-            tmp[m][10]  += kl[m][6] * RWJ[0][1]  + kl[m][7] * RWJ[1][1]  + kl[m][8] * RWJ[2][1];
-            tmp[m][11]  += kl[m][6] * RWJ[0][2]  + kl[m][7] * RWJ[1][2]  + kl[m][8] * RWJ[2][2];
-        }
-
-    }
-
-    // Now compute T'_{lg}*(kl*T_{lg})
-    for (m = 0; m < 12; m++)
-    {
-        kg(0, m) = R[0][0] * tmp[0][m] + R[1][0] * tmp[1][m]  + R[2][0] * tmp[2][m];
-        kg(1, m) = R[0][1] * tmp[0][m] + R[1][1] * tmp[1][m]  + R[2][1] * tmp[2][m];
-        kg(2, m) = R[0][2] * tmp[0][m] + R[1][2] * tmp[1][m]  + R[2][2] * tmp[2][m];
-
-        kg(3, m) = R[0][0] * tmp[3][m] + R[1][0] * tmp[4][m]  + R[2][0] * tmp[5][m];
-        kg(4, m) = R[0][1] * tmp[3][m] + R[1][1] * tmp[4][m]  + R[2][1] * tmp[5][m];
-        kg(5, m) = R[0][2] * tmp[3][m] + R[1][2] * tmp[4][m]  + R[2][2] * tmp[5][m];
-
-        if (nodeIOffset)
-        {
-            kg(3, m) += RWI[0][0] * tmp[0][m]  + RWI[1][0] * tmp[1][m] + RWI[2][0] * tmp[2][m];
-            kg(4, m) += RWI[0][1] * tmp[0][m]  + RWI[1][1] * tmp[1][m] + RWI[2][1] * tmp[2][m];
-            kg(5, m) += RWI[0][2] * tmp[0][m]  + RWI[1][2] * tmp[1][m] + RWI[2][2] * tmp[2][m];
-        }
-
-        kg(6, m) = R[0][0] * tmp[6][m] + R[1][0] * tmp[7][m]  + R[2][0] * tmp[8][m];
-        kg(7, m) = R[0][1] * tmp[6][m] + R[1][1] * tmp[7][m]  + R[2][1] * tmp[8][m];
-        kg(8, m) = R[0][2] * tmp[6][m] + R[1][2] * tmp[7][m]  + R[2][2] * tmp[8][m];
-
-        kg(9, m)  = R[0][0] * tmp[9][m] + R[1][0] * tmp[10][m] + R[2][0] * tmp[11][m];
-        kg(10, m) = R[0][1] * tmp[9][m] + R[1][1] * tmp[10][m] + R[2][1] * tmp[11][m];
-        kg(11, m) = R[0][2] * tmp[9][m] + R[1][2] * tmp[10][m] + R[2][2] * tmp[11][m];
-
-        if (nodeJOffset)
-        {
-            kg(9, m)  += RWJ[0][0] * tmp[6][m]  + RWJ[1][0] * tmp[7][m] + RWJ[2][0] * tmp[8][m];
-            kg(10, m) += RWJ[0][1] * tmp[6][m]  + RWJ[1][1] * tmp[7][m] + RWJ[2][1] * tmp[8][m];
-            kg(11, m) += RWJ[0][2] * tmp[6][m]  + RWJ[1][2] * tmp[7][m] + RWJ[2][2] * tmp[8][m];
-        }
-    }
-
-    return kg;
-}
-
-
-
-
-
-
-const Vector &
-DispBeamColumn3d::getGlobalResistingForce(const Vector &pb, const Vector &p0)
-{
-    // transform resisting forces from the basic system to local coordinates
-    static double pl[12];
-
-    double q0 = pb(0);
-    double q1 = pb(1);
-    double q2 = pb(2);
-    double q3 = pb(3);
-    double q4 = pb(4);
-    double q5 = pb(5);
-
-    double oneOverL = 1.0 / L;
-
-    pl[0]  = -q0;
-    pl[1]  =  oneOverL * (q1 + q2);
-    pl[2]  = -oneOverL * (q3 + q4);
-    pl[3]  = -q5;
-    pl[4]  =  q3;
-    pl[5]  =  q1;
-    pl[6]  =  q0;
-    pl[7]  = -pl[1];
-    pl[8]  = -pl[2];
-    pl[9]  =  q5;
-    pl[10] =  q4;
-    pl[11] =  q2;
-
-    pl[0] += p0(0);
-    pl[1] += p0(1);
-    pl[7] += p0(2);
-    pl[2] += p0(3);
-    pl[8] += p0(4);
-
-    // transform resisting forces  from local to global coordinates
-    static Vector pg(12);
-
-    pg(0)  = R[0][0] * pl[0] + R[1][0] * pl[1] + R[2][0] * pl[2];
-    pg(1)  = R[0][1] * pl[0] + R[1][1] * pl[1] + R[2][1] * pl[2];
-    pg(2)  = R[0][2] * pl[0] + R[1][2] * pl[1] + R[2][2] * pl[2];
-
-    pg(3)  = R[0][0] * pl[3] + R[1][0] * pl[4] + R[2][0] * pl[5];
-    pg(4)  = R[0][1] * pl[3] + R[1][1] * pl[4] + R[2][1] * pl[5];
-    pg(5)  = R[0][2] * pl[3] + R[1][2] * pl[4] + R[2][2] * pl[5];
-
-    pg(6)  = R[0][0] * pl[6] + R[1][0] * pl[7] + R[2][0] * pl[8];
-    pg(7)  = R[0][1] * pl[6] + R[1][1] * pl[7] + R[2][1] * pl[8];
-    pg(8)  = R[0][2] * pl[6] + R[1][2] * pl[7] + R[2][2] * pl[8];
-
-    pg(9)  = R[0][0] * pl[9] + R[1][0] * pl[10] + R[2][0] * pl[11];
-    pg(10) = R[0][1] * pl[9] + R[1][1] * pl[10] + R[2][1] * pl[11];
-    pg(11) = R[0][2] * pl[9] + R[1][2] * pl[10] + R[2][2] * pl[11];
-
-    if (nodeIOffset)
-    {
-        pg(3) += -nodeIOffset[2] * pg(1) + nodeIOffset[1] * pg(2);
-        pg(4) +=  nodeIOffset[2] * pg(0) - nodeIOffset[0] * pg(2);
-        pg(5) += -nodeIOffset[1] * pg(0) + nodeIOffset[0] * pg(1);
-    }
-
-    if (nodeJOffset)
-    {
-        pg(9)  += -nodeJOffset[2] * pg(7) + nodeJOffset[1] * pg(8);
-        pg(10) +=  nodeJOffset[2] * pg(6) - nodeJOffset[0] * pg(8);
-        pg(11) += -nodeJOffset[1] * pg(6) + nodeJOffset[0] * pg(7);
-    }
-
-    return pg;
-}
-
-
-
-Vector *
-DispBeamColumn3d::getForce(void)
-{
-    Vector *elementForces = new Vector(12);
-    Vector tempForces(12);
-
-    tempForces = this->getResistingForceIncInertia();
-
-
-    (*elementForces)(0)  = tempForces(0);
-    (*elementForces)(1)  = tempForces(1);
-    (*elementForces)(2)  = tempForces(2);
-    (*elementForces)(3)  = tempForces(3);
-    (*elementForces)(4)  = tempForces(4);
-    (*elementForces)(5)  = tempForces(5);
-    (*elementForces)(6)  = tempForces(6);
-    (*elementForces)(7)  = tempForces(7);
-    (*elementForces)(8)  = tempForces(8);
-    (*elementForces)(9)  = tempForces(9);
-    (*elementForces)(10) = tempForces(10);
-    (*elementForces)(11) = tempForces(11);
-
-
-    return elementForces;
-}
-
-
-
-
+// AddingSensitivity:END /////////////////////////////////////////////
+
+/*
+Copyright @ 1999,2000 The Regents of the University of California (The Regents).
+All Rights Reserved.
+
+The Regents grants permission, without fee and without a written license agreement,
+for (a) use, reproduction, modification, and distribution of this software and its
+documentation by educational, research, and non-profit entities for noncommercial
+purposes only; and (b) use, reproduction and modification of this software by other
+entities for internal purposes only. The above copyright notice, this paragraph and
+the following three paragraphs must appear in all copies and modifications of the
+software and/or documentation.
+
+Permission to incorporate this software into products for commercial distribution
+may be obtained
+by contacting the University of California
+Office of Technology Licensing
+2150 Shattuck Avenue #510,
+Berkeley, CA 94720-1620,
+(510) 643-7201.
+
+This software program and documentation are copyrighted by The Regents of the University
+of California. The Regents does not warrant that the operation of the program will be
+uninterrupted or error-free. The end-user understands that the program was developed
+for research purposes and is advised not to rely exclusively on the program for any reason.
+
+IN NO EVENT SHALL REGENTS BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE
+AND ITS DOCUMENTATION, EVEN IF REGENTS HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+REGENTS GRANTS NO EXPRESS OR IMPLIED LICENSE IN ANY PATENT RIGHTS OF REGENTS BUT HAS
+IMPLEMENTED AN INDIVIDUAL CONTRIBUTOR LICENSE AGREEMENT FOR THE OPENSEES PROJECT AT THE
+UNIVERISTY OF CALIFORNIA, BERKELEY TO BENEFIT THE END USER.
+
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE AND
+ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS PROVIDED "AS IS". REGENTS HAS
+NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+*/

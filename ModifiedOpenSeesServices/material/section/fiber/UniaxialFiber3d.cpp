@@ -18,8 +18,8 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Revision: 1.7 $
-// $Date: 2003/05/08 22:56:41 $
+// $Revision: 1.9 $
+// $Date: 2007-02-02 01:18:42 $
 // $Source: /usr/local/cvs/OpenSees/SRC/material/section/fiber/UniaxialFiber3d.cpp,v $
 
 
@@ -40,6 +40,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <string.h>
+
 #include <UniaxialMaterial.h>
 #include <UniaxialFiber3d.h>
 #include <Vector.h>
@@ -49,12 +51,13 @@
 #include <SectionForceDeformation.h>
 #include <Information.h>
 // #include <FiberResponse.h>
-#include <iostream>
-using namespace std;
+// #include <elementAPI.h>
 
 Matrix UniaxialFiber3d::ks(3, 3);
 Vector UniaxialFiber3d::fs(3);
 ID UniaxialFiber3d::code(3);
+
+static int numUniaxialFiber3d = 0;
 
 // constructor:
 UniaxialFiber3d::UniaxialFiber3d()
@@ -82,7 +85,7 @@ UniaxialFiber3d::UniaxialFiber3d(int tag,
 
     if (theMaterial == 0)
     {
-        cerr << "UniaxialFiber3d::UniaxialFiber2d -- failed to get copy of UniaxialMaterial\n";
+        std::cerr << "UniaxialFiber3d::UniaxialFiber2d -- failed to get copy of UniaxialMaterial\n";
         exit(-1);
     }
 
@@ -118,7 +121,7 @@ UniaxialFiber3d::setTrialFiberStrain(const Vector &vs)
     }
     else
     {
-        cerr << "UniaxialFiber3d::setTrialFiberStrain() - no material!\n";
+        std::cerr << "UniaxialFiber3d::setTrialFiberStrain() - no material!\n";
         return -1; // in case fatal does not exit
     }
 }
@@ -169,7 +172,7 @@ UniaxialFiber3d::getFiberTangentStiffContr(void)
     return ks;
 }
 
-Fiber *
+Fiber*
 UniaxialFiber3d::getCopy (void)
 {
     // make a copy of the fiber
@@ -190,7 +193,7 @@ UniaxialFiber3d::getOrder(void)
     return 3;
 }
 
-const ID &
+const ID&
 UniaxialFiber3d::getType(void)
 {
     return code;
@@ -228,22 +231,19 @@ UniaxialFiber3d::sendSelf(int commitTag, Channel &theChannel)
     idData(0) = this->getTag();
     idData(1) = theMaterial->getClassTag();
     int matDbTag = theMaterial->getDbTag();
-
     if (matDbTag == 0)
     {
         matDbTag = theChannel.getDbTag();
-
         if (matDbTag != 0)
         {
             theMaterial->setDbTag(matDbTag);
         }
     }
-
     idData(2) = matDbTag;
 
     if (theChannel.sendID(dbTag, commitTag, idData) < 0)
     {
-        cerr << "UniaxialFiber3d::sendSelf() -  failed to send ID data\n";
+        std::cerr << "UniaxialFiber3d::sendSelf() -  failed to send ID data\n";
         return -1;
     }
 
@@ -255,17 +255,16 @@ UniaxialFiber3d::sendSelf(int commitTag, Channel &theChannel)
     dData(0) = area;
     dData(1) = as[0];
     dData(2) = as[1];
-
     if (theChannel.sendVector(dbTag, commitTag, dData) < 0)
     {
-        cerr << "UniaxialFiber3d::sendSelf() -  failed to send Vector data\n";
+        std::cerr << "UniaxialFiber3d::sendSelf() -  failed to send Vector data\n";
         return -2;
     }
 
     // now invoke sendSelf on the material
     if (theMaterial->sendSelf(commitTag, theChannel) < 0)
     {
-        cerr << "UniaxialFiber3d::sendSelf() -  the material failed in sendSelf()\n";
+        std::cerr << "UniaxialFiber3d::sendSelf() -  the material failed in sendSelf()\n";
         return -3;
     }
 
@@ -275,7 +274,7 @@ UniaxialFiber3d::sendSelf(int commitTag, Channel &theChannel)
 
 int
 UniaxialFiber3d::receiveSelf(int commitTag, Channel &theChannel,
-                          FEM_ObjectBroker &theBroker)
+                             FEM_ObjectBroker &theBroker)
 {
     //
     // get tag and material info from an ID
@@ -286,7 +285,7 @@ UniaxialFiber3d::receiveSelf(int commitTag, Channel &theChannel,
 
     if (theChannel.receiveID(dbTag, commitTag, idData) < 0)
     {
-        cerr << "UniaxialFiber3d::receiveSelf() -  failed to recv ID data\n";
+        std::cerr << "UniaxialFiber3d::receiveSelf() -  failed to receive ID data\n";
         return -1;
     }
 
@@ -297,13 +296,11 @@ UniaxialFiber3d::receiveSelf(int commitTag, Channel &theChannel,
     //
 
     static Vector dData(3);
-
     if (theChannel.receiveVector(dbTag, commitTag, dData) < 0)
     {
-        cerr << "UniaxialFiber3d::receiveSelf() -  failed to recv Vector data\n";
+        std::cerr << "UniaxialFiber3d::receiveSelf() -  failed to receive Vector data\n";
         return -2;
     }
-
     area = dData(0);
     as[0] = dData(1);
     as[1] = dData(2);
@@ -329,11 +326,10 @@ UniaxialFiber3d::receiveSelf(int commitTag, Channel &theChannel,
     if (theMaterial == 0)
     {
         theMaterial = theBroker.getNewUniaxialMaterial(matClassTag);
-
         if (theMaterial == 0)
         {
-            cerr << "UniaxialFiber3d::receiveSelf() - " <<
-                 "failed to get a UniaxialMaterial of type " << matClassTag << endln;
+            std::cerr << "UniaxialFiber3d::receiveSelf() - " <<
+                      "failed to get a UniaxialMaterial of type " << matClassTag << endln;
             return -3;
         }
     }
@@ -344,7 +340,7 @@ UniaxialFiber3d::receiveSelf(int commitTag, Channel &theChannel,
     // now invoke receiveSelf on the material
     if (theMaterial->receiveSelf(commitTag, theChannel, theBroker) < 0)
     {
-        cerr << "UniaxialFiber3d::receiveSelf() -  the material failed in receiveSelf()\n";
+        std::cerr << "UniaxialFiber3d::receiveSelf() -  the material failed in receiveSelf()\n";
         return -4;
     }
 
@@ -360,8 +356,8 @@ void UniaxialFiber3d::Print(ostream &s, int flag)
     s << "\tMaterial, tag: " << theMaterial->getTag() << endln;
 }
 
-// Response *
-// UniaxialFiber3d::setResponse(const char **argv, int argc, Information &info)
+// Response*
+// UniaxialFiber3d::setResponse(const char **argv, int argc, ostream &s)
 // {
 //     if (argc == 0)
 //     {
@@ -375,7 +371,7 @@ void UniaxialFiber3d::Print(ostream &s, int flag)
 
 //     else
 //     {
-//         return theMaterial->setResponse(argv, argc, info);
+//         return theMaterial->setResponse(argv, argc, s);
 //     }
 // }
 
@@ -384,11 +380,11 @@ void UniaxialFiber3d::Print(ostream &s, int flag)
 // {
 //     switch (responseID)
 //     {
-//         case 1:
-//             return fibInfo.setVector(this->getFiberStressResultants());
+//     case 1:
+//         return fibInfo.setVector(this->getFiberStressResultants());
 
-//         default:
-//             return -1;
+//     default:
+//         return -1;
 //     }
 // }
 

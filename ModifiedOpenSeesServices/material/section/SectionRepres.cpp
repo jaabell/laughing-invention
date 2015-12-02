@@ -17,69 +17,64 @@
 **   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
 **                                                                    **
 ** ****************************************************************** */
+                                                                        
+// $Revision: 1.1.1.1 $
+// $Date: 2000-09-15 08:23:22 $
+// $Source: /usr/local/cvs/OpenSees/SRC/material/section/repres/section/SectionRepres.cpp,v $
+                                                                        
+                                                                        
+// File: SectionRepres.C
+//
+// Written by Remo M. de Souza
+// November 1998
 
-// $Revision: 1.4 $
-// $Date: 2006-09-05 22:57:11 $
-// $Source: /usr/local/cvs/OpenSees/SRC/element/forceBeamColumn/BeamIntegration.cpp,v $
-
-#include <BeamIntegration.h>
-#include <Matrix.h>
-
+#include <SectionRepres.h>
+#include <TaggedObject.h>
 #include <MapOfTaggedObjects.h>
 
-static MapOfTaggedObjects theBeamIntegrationRuleObjects;
+static MapOfTaggedObjects theSectionRepresObjects;
 
-bool OPS_addBeamIntegrationRule(BeamIntegrationRule *newComponent)
+bool OPS_addSectionRepres(SectionRepres *newComponent)
 {
-    return theBeamIntegrationRuleObjects.addComponent(newComponent);
+    return theSectionRepresObjects.addComponent(newComponent);
 }
 
-BeamIntegrationRule *OPS_getBeamIntegrationRule(int tag)
+SectionRepres *OPS_getSectionRepres(int tag)
 {
-
-    TaggedObject *theResult = theBeamIntegrationRuleObjects.getComponentPtr(tag);
-    if (theResult == 0)
-    {
-        std::cerr << "BeamIntegrationRule - none found with tag: " << tag << endln;
-        return 0;
+    TaggedObject *theResult = theSectionRepresObjects.getComponentPtr(tag);
+    if(theResult == 0) {
+	return 0;
     }
-    BeamIntegrationRule *theMat = (BeamIntegrationRule *)theResult;
+    SectionRepres *theRep = (SectionRepres *)theResult;
 
-    return theMat;
+    return theRep;
 }
 
-void OPS_clearAllBeamIntegrationRule(void)
+void OPS_clearAllSectionRepres(void)
 {
-    theBeamIntegrationRuleObjects.clearAll();
+    theSectionRepresObjects.clearAll();
 }
 
-BeamIntegration::BeamIntegration(int classTag):
-    MovableObject(classTag)
+SectionRepres::SectionRepres(int tag):
+                 TaggedObject(tag)
 {
-    // Nothing to do
+   
+}
+   
+SectionRepres::~SectionRepres(void)
+{
+
 }
 
-BeamIntegration::~BeamIntegration()
-{
-    // Nothing to do
-}
 
-void
-BeamIntegration::getLocationsDeriv(int nIP, double L, double dLdh,
-                                   double *dptsdh)
-{
-    for (int i = 0; i < nIP; i++)
-    {
-        dptsdh[i] = 0.0;
-    }
-}
 
-void
-BeamIntegration::getWeightsDeriv(int nIP, double L, double dLdh,
-                                 double *dwtsdh)
-{
-    for (int i = 0; i < nIP; i++)
-    {
-        dwtsdh[i] = 0.0;
-    }
-}
+
+
+
+
+
+
+
+
+
+

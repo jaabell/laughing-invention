@@ -19,67 +19,38 @@
 ** ****************************************************************** */
 
 // $Revision: 1.4 $
-// $Date: 2006-09-05 22:57:11 $
-// $Source: /usr/local/cvs/OpenSees/SRC/element/forceBeamColumn/BeamIntegration.cpp,v $
+// $Date: 2010-09-13 21:30:39 $
+// $Source: /usr/local/cvs/OpenSees/SRC/material/section/integration/SectionIntegration.h,v $
 
-#include <BeamIntegration.h>
-#include <Matrix.h>
+#ifndef SectionIntegration_h
+#define SectionIntegration_h
 
-#include <MapOfTaggedObjects.h>
+#include <OPS_Globals.h>
+#include <MovableObject.h>
 
-static MapOfTaggedObjects theBeamIntegrationRuleObjects;
+class Information;
 
-bool OPS_addBeamIntegrationRule(BeamIntegrationRule *newComponent)
+enum FiberType {all, concrete, steel, wood};
+
+class SectionIntegration : public MovableObject
 {
-    return theBeamIntegrationRuleObjects.addComponent(newComponent);
-}
+public:
+    SectionIntegration(int classTag);
+    virtual ~SectionIntegration();
 
-BeamIntegrationRule *OPS_getBeamIntegrationRule(int tag)
-{
+    virtual int getNumFibers(FiberType type = all) = 0;
 
-    TaggedObject *theResult = theBeamIntegrationRuleObjects.getComponentPtr(tag);
-    if (theResult == 0)
-    {
-        std::cerr << "BeamIntegrationRule - none found with tag: " << tag << endln;
-        return 0;
-    }
-    BeamIntegrationRule *theMat = (BeamIntegrationRule *)theResult;
+    virtual void getFiberLocations(int nFibers, double *yi, double *zi = 0) = 0;
+    virtual void getFiberWeights(int nFibers, double *wt) = 0;
 
-    return theMat;
-}
+    virtual SectionIntegration *getCopy(void) = 0;
 
-void OPS_clearAllBeamIntegrationRule(void)
-{
-    theBeamIntegrationRuleObjects.clearAll();
-}
+    virtual void getLocationsDeriv(int nFibers, double *dyidh, double *dzidh = 0);
+    virtual void getWeightsDeriv(int nFibers, double *dwtdh);
 
-BeamIntegration::BeamIntegration(int classTag):
-    MovableObject(classTag)
-{
-    // Nothing to do
-}
+    virtual void Print(ostream &s, int flag = 0) = 0;
 
-BeamIntegration::~BeamIntegration()
-{
-    // Nothing to do
-}
 
-void
-BeamIntegration::getLocationsDeriv(int nIP, double L, double dLdh,
-                                   double *dptsdh)
-{
-    for (int i = 0; i < nIP; i++)
-    {
-        dptsdh[i] = 0.0;
-    }
-}
+};
 
-void
-BeamIntegration::getWeightsDeriv(int nIP, double L, double dLdh,
-                                 double *dwtsdh)
-{
-    for (int i = 0; i < nIP; i++)
-    {
-        dwtsdh[i] = 0.0;
-    }
-}
+#endif

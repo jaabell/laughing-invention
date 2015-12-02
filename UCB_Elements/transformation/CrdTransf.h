@@ -15,75 +15,101 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// Written: Remo Magalhaes de Souza
-// Created: 10/98
+// $Revision: 1.6 $
+// $Date: 2009-08-19 17:53:01 $
+// $Source: /usr/local/cvs/OpenSees/SRC/coordTransformation/CrdTransf.h,v $
 
+// Written: Remo Magalhaes de Souza (rmsouza@ce.berkeley.edu)
+// Created: 04/2000
+// Revision: A
 //
 // Description: This file contains the class definition for
-// Fiber. Fiber is an abstract base class and thus no objects of
-// it's type can be instatiated. It has pure virtual functions which
-// must be implemented in it's derived classes.
+// CrdTransf.h. CrdTransf provides the abstraction of a frame
+// coordinate transformation. It is an abstract base class and
+// thus no objects of  it's type can be instatiated. It has pure
+// virtual functions which  must be implemented in it's derived classes.
 //
-// What: "@(#) Fiber.h, revA"
+// What: "@(#) CrdTransf.h, revA"
 
+#ifndef CrdTransf_h
+#define CrdTransf_h
 
-#ifndef Fiber_h
-#define Fiber_h
-
-#include <DomainComponent.h>
 #include <MovableObject.h>
-#include <Vector.h>
+#include <TaggedObject.h>
 
+class Vector;
 class Matrix;
-class ID;
-class UniaxialMaterial;
-class NDMaterial;
-class Information;
-class Response;
+class Node;
 
-class Fiber : public TaggedObject, public MovableObject
+// class definition
+
+class CrdTransf: public TaggedObject, public MovableObject
 {
 public:
-    Fiber (int tag, int classTag);
-    virtual ~Fiber();
+    CrdTransf(int tag, int classTag);
+    CrdTransf();
+    virtual ~CrdTransf();
 
-    virtual int    setTrialFiberStrain(const Vector &vs) = 0;
-    virtual Vector &getFiberStressResultants(void) = 0;
-    virtual Matrix &getFiberTangentStiffContr(void) = 0;
-
-    virtual int    commitState(void) = 0;
-    virtual int    revertToLastCommit(void) = 0;
-    virtual int    revertToStart(void) = 0;
-
-    virtual Fiber *getCopy(void) = 0;
-    virtual int getOrder(void) = 0;
-    virtual const ID &getType(void) = 0;
-
-    virtual Response *setResponse(const char **argv, int argc, ostream &s);
-    virtual int getResponse(int responseID, Information &info);
-
-    virtual void getFiberLocation(double &y, double &z) = 0;
-    virtual double getArea(void) = 0;
-
-    virtual UniaxialMaterial *getMaterial(void)
+    virtual CrdTransf *getCopy2d(void)
     {
         return 0;
-    }
-    virtual NDMaterial *getNDMaterial(void)
+    };
+    virtual CrdTransf *getCopy3d(void)
     {
         return 0;
-    }
+    };
+    virtual int getLocalAxes(Vector &xAxis, Vector &yAxis, Vector &zAxis)
+    {
+        return -1;
+    };
 
-    virtual const Vector &getFiberSensitivity(int gradNumber, bool cond);
-    virtual int commitSensitivity(const Vector &dedh, int gradNumber,
-                                  int numGrads);
+    virtual int    initialize(Node *node1Pointer, Node *node2Pointer) = 0;
+    virtual int    update(void) = 0;
+    virtual double getInitialLength(void) = 0;
+    virtual double getDeformedLength(void) = 0;
+
+    virtual int commitState(void) = 0;
+    virtual int revertToLastCommit(void) = 0;
+    virtual int revertToStart(void) = 0;
+
+    virtual const Vector &getBasicTrialDisp(void) = 0;
+    virtual const Vector &getBasicIncrDisp(void) = 0;
+    virtual const Vector &getBasicIncrDeltaDisp(void) = 0;
+    virtual const Vector &getBasicTrialVel(void) = 0;
+    virtual const Vector &getBasicTrialAccel(void) = 0;
+
+    // AddingSensitivity:BEGIN //////////////////////////////////
+    // virtual const Vector &getBasicDisplSensitivity(int gradNumber);
+    // virtual const Vector &getBasicDisplSensitivity(int gradNumber,int); // used by Quan
+    // //virtual const Vector &getGlobalResistingForceShapeSensitivity(const Vector &basicForce, const Vector &uniformLoad);
+    // virtual const Vector &getGlobalResistingForceShapeSensitivity(const Vector &pb, const Vector &p0, int gradNumber);
+    // virtual const Vector &getGlobalResistingForceShapeSensitivity(const Vector &pb, const Vector &p0);
+    // virtual const Vector &getBasicTrialDispShapeSensitivity(void);
+    // virtual bool isShapeSensitivity(void) {return false;}
+    // virtual double getdLdh(void) {return 0.0;}
+    // virtual double getd1overLdh(void) {return 0.0;}
+    // AddingSensitivity:END //////////////////////////////////
+
+    virtual const Vector &getGlobalResistingForce(const Vector &basicForce, const Vector &uniformLoad) = 0;
+    virtual const Matrix &getGlobalStiffMatrix(const Matrix &basicStiff, const Vector &basicForce) = 0;
+    virtual const Matrix &getInitialGlobalStiffMatrix(const Matrix &basicStiff) = 0;
+
+    // method used to rotate consistent mass matrix
+    virtual const Matrix &getGlobalMatrixFromLocal(const Matrix &local) = 0;
+
+    // methods used in post-processing only
+    virtual const Vector &getPointGlobalCoordFromLocal(const Vector &localCoords) = 0;
+    virtual const Vector &getPointGlobalDisplFromBasic(double xi, const Vector &basicDisps) = 0;
 
 protected:
-    Vector *sDefault;
-    Matrix *fDefault;
 
 private:
 };
+
+// some additional methods related to prototypes created for copy constructors
+extern bool       OPS_AddCrdTransf(CrdTransf *newComponent);
+extern CrdTransf *OPS_GetCrdTransf(int tag);
+extern void       OPS_ClearAllCrdTransf(void);
 
 /*
 Copyright @ 1999,2000 The Regents of the University of California (The Regents).
