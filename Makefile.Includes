@@ -130,6 +130,7 @@ ESSI_INCLUDES  = -I$(RealESSI_SRC)/ModifiedOpenSeesServices/matrix \
             -I$(RealESSI_SRC)/UCB_Elements/shell \
             -I$(RealESSI_SRC)/UCB_Elements/joint \
             -I$(RealESSI_SRC)/UCB_Elements/truss \
+            -I$(RealESSI_SRC)/UCB_Elements/transformation \
             -I$(RealESSI_SRC)/UCB_Elements/zeroLength \
             -I$(RealESSI_SRC)/UCB_Elements/shell \
             -I$(RealESSI_SRC)/API \
