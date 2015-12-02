@@ -7,15 +7,16 @@ include ../../Makefile.Compilers
 
 
 OBJS       = BeamIntegration.o \
-             LobattoBeamIntegration.o \
-             LegendreBeamIntegration.o \
-             RadauBeamIntegration.o \
-             NewtonCotesBeamIntegration.o \
-             HingeMidpointBeamIntegration3d.o \
-             HingeRadauBeamIntegration3d.o \
-             HingeRadauTwoBeamIntegration3d.o
-#              UserDefinedHingeIntegration3d.o
-#              UserDefinedBeamIntegration.o \
+		LegendreBeamIntegration.o \
+		UserDefinedBeamIntegration.o \
+		HingeMidpointBeamIntegration3d.o \
+		LobattoBeamIntegration.o \
+		UserDefinedHingeIntegration3d.o \
+		HingeRadauBeamIntegration3d.o \
+		NewtonCotesBeamIntegration.o \
+		HingeRadauTwoBeamIntegration3d.o \
+		RadauBeamIntegration.o 
+
              
 ################### TARGETS ########################
 all:         $(OBJS)
