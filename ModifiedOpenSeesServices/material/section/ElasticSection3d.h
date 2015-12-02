@@ -67,12 +67,12 @@ public:
 
     void Print(ostream &s, int flag = 0);
 
-    int setParameter(const char **argv, int argc, Parameter &param);
-    int updateParameter(int parameterID, Information &info);
-    int activateParameter(int parameterID);
-    const Vector& getStressResultantSensitivity(int gradIndex,
-            bool conditional);
-    const Matrix& getInitialTangentSensitivity(int gradIndex);
+    // int setParameter(const char **argv, int argc, Parameter &param);
+    // int updateParameter(int parameterID, Information &info);
+    // int activateParameter(int parameterID);
+    // const Vector& getStressResultantSensitivity(int gradIndex,
+    //         bool conditional);
+    // const Matrix& getInitialTangentSensitivity(int gradIndex);
 
 protected:
 

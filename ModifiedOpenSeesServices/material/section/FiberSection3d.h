@@ -74,9 +74,9 @@ public:
                     FEM_ObjectBroker &theBroker);
     void Print(ostream &s, int flag = 0);
 
-    Response *setResponse(const char **argv, int argc,
-                          ostream &s);
-    int getResponse(int responseID, Information &info);
+    // Response *setResponse(const char **argv, int argc,
+    //                       ostream &s);
+    // int getResponse(int responseID, Information &info);
 
     int addFiber(Fiber &theFiber);
 

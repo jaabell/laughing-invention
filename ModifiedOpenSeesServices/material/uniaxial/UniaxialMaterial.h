@@ -69,6 +69,10 @@ public:
         return false;
     }
 
+
+    int CheckMesh( ofstream &checkmesh_file );
+
+
     // // AddingSensitivity:BEGIN //////////////////////////////////////////
     // virtual double getStressSensitivity     (int gradIndex, bool conditional);
     // virtual double getStrainSensitivity     (int gradIndex);

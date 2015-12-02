@@ -40,7 +40,7 @@
 #include <ID.h>
 #include <FEM_ObjectBroker.h>
 #include <Information.h>
-#include <MaterialResponse.h>
+// #include <MaterialResponse.h>
 #include <UniaxialMaterial.h>
 
 #include <string.h>
@@ -794,160 +794,160 @@ FiberSectionGJ::Print(ostream &s, int flag)
     }
 }
 
-Response*
-FiberSectionGJ::setResponse(const char **argv, int argc, ostream &output)
-{
+// Response*
+// FiberSectionGJ::setResponse(const char **argv, int argc, ostream &output)
+// {
 
-    // See if the response is one of the defaults
-    Response *theResponse = SectionForceDeformation::setResponse(argv, argc, output);
-    if (theResponse != 0)
-    {
-        return theResponse;
-    }
-
-
-    if (argc <= 2 || strcmp(argv[0], "fiber") != 0)
-    {
-        return 0;
-    }
-
-    int key = numFibers;
-    int passarg = 2;
+//     // See if the response is one of the defaults
+//     Response *theResponse = SectionForceDeformation::setResponse(argv, argc, output);
+//     if (theResponse != 0)
+//     {
+//         return theResponse;
+//     }
 
 
-    if (argc <= 3)       // fiber number was input directly
-    {
+//     if (argc <= 2 || strcmp(argv[0], "fiber") != 0)
+//     {
+//         return 0;
+//     }
 
-        key = atoi(argv[1]);
-
-    }
-    else if (argc > 4)             // find fiber closest to coord. with mat tag
-    {
-        int matTag = atoi(argv[3]);
-        double yCoord = atof(argv[1]);
-        double zCoord = atof(argv[2]);
-        double closestDist = 0.0;
-        double ySearch, zSearch, dy, dz;
-        double distance;
-        int j;
-
-        // Find first fiber with specified material tag
-        for (j = 0; j < numFibers; j++)
-        {
-            if (matTag == theMaterials[j]->getTag())
-            {
-                ySearch = -matData[3 * j];
-                zSearch =  matData[3 * j + 1];
-                dy = ySearch - yCoord;
-                dz = zSearch - zCoord;
-                closestDist = sqrt(dy * dy + dz * dz);
-                key = j;
-                break;
-            }
-        }
-
-        // Search the remaining fibers
-        for ( ; j < numFibers; j++)
-        {
-            if (matTag == theMaterials[j]->getTag())
-            {
-                ySearch = -matData[3 * j];
-                zSearch =  matData[3 * j + 1];
-                dy = ySearch - yCoord;
-                dz = zSearch - zCoord;
-                distance = sqrt(dy * dy + dz * dz);
-                if (distance < closestDist)
-                {
-                    closestDist = distance;
-                    key = j;
-                }
-            }
-        }
-        passarg = 4;
-    }
-
-    else                    // fiber near-to coordinate specified
-    {
-        double yCoord = atof(argv[1]);
-        double zCoord = atof(argv[2]);
-        double closestDist;
-        double ySearch, zSearch, dy, dz;
-        double distance;
-        ySearch = -matData[0];
-        zSearch =  matData[1];
-        dy = ySearch - yCoord;
-        dz = zSearch - zCoord;
-        closestDist = sqrt(dy * dy + dz * dz);
-        key = 0;
-        for (int j = 1; j < numFibers; j++)
-        {
-            ySearch = -matData[3 * j];
-            zSearch =  matData[3 * j + 1];
-            dy = ySearch - yCoord;
-            dz = zSearch - zCoord;
-            distance = sqrt(dy * dy + dz * dz);
-            if (distance < closestDist)
-            {
-                closestDist = distance;
-                key = j;
-            }
-        }
-        passarg = 3;
-    }
-
-    if (key < numFibers && key >= 0)
-    {
-        output.tag("FiberOutput");
-        output.attr("yLoc", -matData[2 * key]);
-        output.attr("zLoc", matData[2 * key + 1]);
-        output.attr("area", matData[2 * key + 2]);
-
-        theResponse =  theMaterials[key]->setResponse(&argv[passarg], argc - passarg, output);
-
-        output.endTag();
-    }
-
-    return theResponse;
-}
+//     int key = numFibers;
+//     int passarg = 2;
 
 
-int
-FiberSectionGJ::getResponse(int responseID, Information &sectInfo)
-{
-    // Just call the base class method ... don't need to define
-    // this function, but keeping it here just for clarity
-    return SectionForceDeformation::getResponse(responseID, sectInfo);
-}
+//     if (argc <= 3)       // fiber number was input directly
+//     {
 
-int
-FiberSectionGJ::setParameter (const char **argv, int argc, Parameter &param)
-{
-    if (argc < 3)
-    {
-        return 0;
-    }
+//         key = atoi(argv[1]);
 
-    int result = -1;
+//     }
+//     else if (argc > 4)             // find fiber closest to coord. with mat tag
+//     {
+//         int matTag = atoi(argv[3]);
+//         double yCoord = atof(argv[1]);
+//         double zCoord = atof(argv[2]);
+//         double closestDist = 0.0;
+//         double ySearch, zSearch, dy, dz;
+//         double distance;
+//         int j;
 
-    // A material parameter
-    if (strstr(argv[0], "material") != 0)
-    {
+//         // Find first fiber with specified material tag
+//         for (j = 0; j < numFibers; j++)
+//         {
+//             if (matTag == theMaterials[j]->getTag())
+//             {
+//                 ySearch = -matData[3 * j];
+//                 zSearch =  matData[3 * j + 1];
+//                 dy = ySearch - yCoord;
+//                 dz = zSearch - zCoord;
+//                 closestDist = sqrt(dy * dy + dz * dz);
+//                 key = j;
+//                 break;
+//             }
+//         }
 
-        // Get the tag of the material
-        int paramMatTag = atoi(argv[1]);
+//         // Search the remaining fibers
+//         for ( ; j < numFibers; j++)
+//         {
+//             if (matTag == theMaterials[j]->getTag())
+//             {
+//                 ySearch = -matData[3 * j];
+//                 zSearch =  matData[3 * j + 1];
+//                 dy = ySearch - yCoord;
+//                 dz = zSearch - zCoord;
+//                 distance = sqrt(dy * dy + dz * dz);
+//                 if (distance < closestDist)
+//                 {
+//                     closestDist = distance;
+//                     key = j;
+//                 }
+//             }
+//         }
+//         passarg = 4;
+//     }
 
-        // Loop over fibers to find the right material(s)
-        int ok = 0;
-        for (int i = 0; i < numFibers; i++)
-            if (paramMatTag == theMaterials[i]->getTag())
-            {
-                ok = theMaterials[i]->setParameter(&argv[2], argc - 2, param);
-                if (ok != -1)
-                {
-                    result = ok;
-                }
-            }
-    }
+//     else                    // fiber near-to coordinate specified
+//     {
+//         double yCoord = atof(argv[1]);
+//         double zCoord = atof(argv[2]);
+//         double closestDist;
+//         double ySearch, zSearch, dy, dz;
+//         double distance;
+//         ySearch = -matData[0];
+//         zSearch =  matData[1];
+//         dy = ySearch - yCoord;
+//         dz = zSearch - zCoord;
+//         closestDist = sqrt(dy * dy + dz * dz);
+//         key = 0;
+//         for (int j = 1; j < numFibers; j++)
+//         {
+//             ySearch = -matData[3 * j];
+//             zSearch =  matData[3 * j + 1];
+//             dy = ySearch - yCoord;
+//             dz = zSearch - zCoord;
+//             distance = sqrt(dy * dy + dz * dz);
+//             if (distance < closestDist)
+//             {
+//                 closestDist = distance;
+//                 key = j;
+//             }
+//         }
+//         passarg = 3;
+//     }
 
-    return result;
-}
+//     if (key < numFibers && key >= 0)
+//     {
+//         output.tag("FiberOutput");
+//         output.attr("yLoc", -matData[2 * key]);
+//         output.attr("zLoc", matData[2 * key + 1]);
+//         output.attr("area", matData[2 * key + 2]);
+
+//         theResponse =  theMaterials[key]->setResponse(&argv[passarg], argc - passarg, output);
+
+//         output.endTag();
+//     }
+
+//     return theResponse;
+// }
+
+
+// int
+// FiberSectionGJ::getResponse(int responseID, Information &sectInfo)
+// {
+//     // Just call the base class method ... don't need to define
+//     // this function, but keeping it here just for clarity
+//     return SectionForceDeformation::getResponse(responseID, sectInfo);
+// }
+
+// int
+// FiberSectionGJ::setParameter (const char **argv, int argc, Parameter &param)
+// {
+//     if (argc < 3)
+//     {
+//         return 0;
+//     }
+
+//     int result = -1;
+
+//     // A material parameter
+//     if (strstr(argv[0], "material") != 0)
+//     {
+
+//         // Get the tag of the material
+//         int paramMatTag = atoi(argv[1]);
+
+//         // Loop over fibers to find the right material(s)
+//         int ok = 0;
+//         for (int i = 0; i < numFibers; i++)
+//             if (paramMatTag == theMaterials[i]->getTag())
+//             {
+//                 ok = theMaterials[i]->setParameter(&argv[2], argc - 2, param);
+//                 if (ok != -1)
+//                 {
+//                     result = ok;
+//                 }
+//             }
+//     }
+
+//     return result;
+// }

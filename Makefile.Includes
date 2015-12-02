@@ -21,6 +21,31 @@ ESSI_INCLUDES  = -I$(RealESSI_SRC)/ModifiedOpenSeesServices/matrix \
             -I$(RealESSI_SRC)/ModifiedOpenSeesServices/actor/address \
             -I$(RealESSI_SRC)/ModifiedOpenSeesServices/tagged/storage \
             -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/uniaxial \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/uniaxial/fedeas \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/backbone \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/state \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/state/stiffness \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/state/unloading \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/state/strength \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/nD \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/nD/soil \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/nD/feap \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/nD/FiniteDeformation \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/nD/FiniteDeformation/fdFlow \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/nD/FiniteDeformation/fdYield \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/nD/FiniteDeformation/fdEvolution \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/section \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/section/repres/cell \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/section/repres/patch \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/section/repres/reinfBar \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/section/repres/reinfLayer \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/section/repres/section \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/section/fiber \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/section/yieldSurface \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/yieldSurface/evolution \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/yieldSurface/plasticHardeningMaterial \
+            -I$(RealESSI_SRC)/ModifiedOpenSeesServices/material/yieldSurface/yieldSurfaceBC \
             -I$(RealESSI_SRC)/ModifiedOpenSeesServices/domain \
             -I$(RealESSI_SRC)/ModifiedOpenSeesServices/domain/domain \
             -I$(RealESSI_SRC)/ModifiedOpenSeesServices/domain/domain/single \

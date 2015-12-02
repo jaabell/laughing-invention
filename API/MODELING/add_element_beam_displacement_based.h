@@ -129,28 +129,28 @@ int add_element_beam_displacement_based(int ElementNumber,
         beamIntegr = new NewtonCotesBeamIntegration();
     }
 
+    //Revise!!
+    // theElement = new DispBeamColumn3d(ElementNumber, iNode, jNode, numberofintegrationpoints, sections,
+    //                                   *beamIntegr, rho,
+    //                                   vecInLocXZPlane_x, vecInLocXZPlane_y, vecInLocXZPlane_z,
+    //                                   rigJntOffset1_x,   rigJntOffset1_y,   rigJntOffset1_z,
+    //                                   rigJntOffset2_x,   rigJntOffset2_y,   rigJntOffset2_z);
 
-    theElement = new DispBeamColumn3d(ElementNumber, iNode, jNode, numberofintegrationpoints, sections,
-                                      *beamIntegr, rho,
-                                      vecInLocXZPlane_x, vecInLocXZPlane_y, vecInLocXZPlane_z,
-                                      rigJntOffset1_x,   rigJntOffset1_y,   rigJntOffset1_z,
-                                      rigJntOffset2_x,   rigJntOffset2_y,   rigJntOffset2_z);
 
 
+    // if (theElement == 0)
+    // {
+    //     cerr << "WARNING: (add_element_beam_displacement_based) ran out of memory creating element\n";
+    //     cerr << "dispBeamColumn element: " << ElementNumber << endln;
+    //     return -1;
+    // }
 
-    if (theElement == 0)
-    {
-        cerr << "WARNING: (add_element_beam_displacement_based) ran out of memory creating element\n";
-        cerr << "dispBeamColumn element: " << ElementNumber << endln;
-        return -1;
-    }
-
-    if (theDomain.addElement(theElement) == false)
-    {
-        cerr << "WARNING: (add_element_beam_displacement_based) could not add element to the domain\n";
-        cerr << "dispBeamColumn element number: " << ElementNumber << endln;
-        return -1;
-    }
+    // if (theDomain.addElement(theElement) == false)
+    // {
+    //     cerr << "WARNING: (add_element_beam_displacement_based) could not add element to the domain\n";
+    //     cerr << "dispBeamColumn element number: " << ElementNumber << endln;
+    //     return -1;
+    // }
 
     return 0;
 

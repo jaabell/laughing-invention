@@ -9,28 +9,35 @@ include ../Makefile.Includes
 LIBRARY_UCB_Elements  = ../lib/libucbelements.a
 
 
-UCB_ELEMENTS =  ./dispBeamColumn/DispBeamColumn3d.o \
-                ./elasticBeamLumpedMass/ElasticBeamLumpedMass.o \
-                ./joint/BeamColumnJoint3d.o \
-                ./joint/Joint3D.o \
-                ./joint/MP_Joint3D.o \
-                ./shell/ShellMITC4.o \
-                ./shell/NewShellMITC4.o \
-                ./shell/R3vectors.o \
-                ./truss/CorotTruss.o \
-                ./truss/CorotTrussSection.o \
-                ./truss/Truss.o \
-                ./truss/TrussSection.o \
-                ./zeroLength/ZeroLength.o \
-                ./integration/BeamIntegration.o \
-                ./integration/HingeMidpointBeamIntegration3d.o \
-                ./integration/HingeRadauBeamIntegration3d.o \
-                ./integration/HingeRadauTwoBeamIntegration3d.o \
-                ./integration/LegendreBeamIntegration.o \
-                ./integration/LobattoBeamIntegration.o \
-                ./integration/NewtonCotesBeamIntegration.o \
-                ./integration/RadauBeamIntegration.o \
-                ./beamWithHinges/BeamWithHinges3d.o
+UCB_ELEMENTS =  ./shell/R3vectors.o \
+		./shell/NewShellMITC4.o \
+		./shell/ShellMITC4.o \
+		./dispBeamColumn/DispBeamColumn3d.o \
+		./transformation/PDeltaCrdTransf3d.o \
+		./transformation/CorotCrdTransf3d.o \
+		./transformation/LinearCrdTransf3d.o \
+		./transformation/CrdTransf.o \
+		./truss/TrussSection.o \
+		./truss/CorotTrussSection.o \
+		./truss/CorotTruss.o \
+		./truss/Truss.o \
+		./elasticBeamLumpedMass/ElasticBeamLumpedMass.o \
+		./integration/BeamIntegration.o \
+		./integration/HingeMidpointBeamIntegration3d.o \
+		./integration/LobattoBeamIntegration.o \
+		./integration/UserDefinedBeamIntegration.o \
+		./integration/LegendreBeamIntegration.o \
+		./integration/HingeRadauBeamIntegration3d.o \
+		./integration/RadauBeamIntegration.o \
+		./integration/HingeRadauTwoBeamIntegration3d.o \
+		./integration/NewtonCotesBeamIntegration.o \
+		./integration/UserDefinedHingeIntegration3d.o \
+		./zeroLength/ZeroLength.o \
+		./joint/BeamColumnJoint3d.o \
+		./joint/MP_Joint3D.o \
+		./joint/Joint3D.o \
+		./beamWithHinges/BeamWithHinges3d.o 
+
 
 
 

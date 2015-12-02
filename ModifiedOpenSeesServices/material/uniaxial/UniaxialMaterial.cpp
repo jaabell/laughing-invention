@@ -343,6 +343,13 @@ UniaxialMaterial::getInitialTangent (void)
     return 0.0;
 }
 
+
+
+int
+UniaxialMaterial::CheckMesh( ofstream &checkmesh_file )
+{
+    return 0;
+}
 // AddingSensitivity:END //////////////////////////////////////////
 
 /*

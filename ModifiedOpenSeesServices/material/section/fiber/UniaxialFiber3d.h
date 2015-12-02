@@ -67,8 +67,8 @@ public:
     int receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
     void Print(ostream &s, int flag = 0);
 
-    Response *setResponse(const char **argv, int argc, ostream &S);
-    int getResponse(int responseID, Information &info);
+    // Response *setResponse(const char **argv, int argc, ostream &S);
+    // int getResponse(int responseID, Information &info);
 
     void getFiberLocation(double &y, double &z);
     UniaxialMaterial *getMaterial(void)
