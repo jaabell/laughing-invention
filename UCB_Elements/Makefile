@@ -43,6 +43,7 @@ all:
 	@$(CD) joint; $(MAKE);
 	@$(CD) dispBeamColumn; $(MAKE);
 	@$(CD) elasticBeamLumpedMass; $(MAKE);
+	@$(CD) transformation; $(MAKE);
 	@$(CD) integration; $(MAKE);
 	$(AR) $(ARFLAGS) $(LIBRARY_UCB_Elements) $(UCB_ELEMENTS)
 
@@ -56,6 +57,7 @@ clean:
 	@$(CD) joint; $(MAKE) clean;
 	@$(CD) dispBeamColumn; $(MAKE) clean;
 	@$(CD) elasticBeamLumpedMass; $(MAKE) clean;
+	@$(CD) transformation; $(MAKE) clean;
 	@$(CD) integration; $(MAKE) clean;
 	@$(RM) $(RMFLAGS) $(OBJS) *.o
 
@@ -68,6 +70,7 @@ cleanall:
 	@$(CD) joint; $(MAKE) clean;
 	@$(CD) dispBeamColumn; $(MAKE) clean;
 	@$(CD) elasticBeamLumpedMass; $(MAKE) clean;
+	@$(CD) transformation; $(MAKE) clean;
 	@$(CD) integration; $(MAKE) clean;
 	$(RM) $(RMFLAGS)  *.o *.bak
 	$(RM) $(RMFLAGS) $(LIBRARY_UCB_Elements)
