@@ -161,8 +161,8 @@ protected:
     const Vector &getRayleighDampingForces(void);
 
     double a0, a1, a2, a3;
-    string stiffness_type;
-    string damping_type;
+    static string stiffness_type;
+    static string damping_type;
     Matrix *Kc; // pointer to hold last committed matrix if needed for rayleigh damping
 
     Matrix *SizedMatrix;
