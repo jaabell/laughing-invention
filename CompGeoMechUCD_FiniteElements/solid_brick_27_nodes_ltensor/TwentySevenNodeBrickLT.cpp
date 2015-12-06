@@ -2952,7 +2952,7 @@ int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FE
     // cout << "TwentySevenNodeBrickLT::receiveSelf() materialclasstag = " << idData(4) << "\n";
 
 
-    Vector floatData(4);
+    Vector floatData(8);
     if ( theChannel.receiveVector( 0, commitTag, floatData ) < 0 )
     {
         cerr << "WARNING TwentySevenNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
