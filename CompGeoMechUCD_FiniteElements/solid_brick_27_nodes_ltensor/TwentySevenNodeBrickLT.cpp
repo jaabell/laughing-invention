@@ -2839,11 +2839,15 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     }
 
     // send double data
-    Vector floatData(4);
+    Vector floatData(8);
     floatData(0) = Volume;
     floatData(1) = e_p;
     floatData(2) = determinant_of_Jacobian;
     floatData(3) = rho;
+    floatData(4) = a0;
+    floatData(5) = a1;
+    floatData(6) = a2;
+    floatData(7) = a3;
 
     if ( theChannel.sendVector( 0, commitTag, floatData ) < 0 )
     {
@@ -2851,6 +2855,18 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
         return -1;
     }
 
+
+    if ( theChannel.sendString( 0, commitTag, stiffness_type ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String stiffness_type\n";
+        return -1;
+    }
+
+    if ( theChannel.sendString( 0, commitTag, damping_type ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String damping_type\n";
+        return -1;
+    }
 
     // Send the nodes
 
@@ -2941,11 +2957,25 @@ int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FE
     e_p                     = floatData(1) ;
     determinant_of_Jacobian = floatData(2) ;
     rho                     = floatData(3) ;
+    a0 = floatData(4);
+    a1 = floatData(5);
+    a2 = floatData(6);
+    a3 = floatData(7);
 
-    // cout << "TwentySevenNodeBrickLT::receiveSelf() Volume                  = " << Volume << "\n";
-    // cout << "TwentySevenNodeBrickLT::receiveSelf() e_p                     = " << e_p << "\n";
-    // cout << "TwentySevenNodeBrickLT::receiveSelf() determinant_of_Jacobian = " << determinant_of_Jacobian << "\n";
-    // cout << "TwentySevenNodeBrickLT::receiveSelf() rho                     = " << rho << "\n";
+    if ( theChannel.receiveString( 0, commitTag, stiffness_type ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String stiffness_type\n";
+        return -1;
+    }
+
+    if ( theChannel.receiveString( 0, commitTag, damping_type ) < 0 )
+    {
+        cerr << "WARNING TwentySevenNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String damping_type\n";
+        return -1;
+    }
+
+
+
 
 
     // Recieve the nodes

@@ -160,6 +160,7 @@ public:
 protected:
     const Vector &getRayleighDampingForces(void);
 
+
     double a0, a1, a2, a3;
     static string stiffness_type;
     static string damping_type;

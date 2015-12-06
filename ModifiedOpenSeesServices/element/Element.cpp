@@ -53,8 +53,8 @@ using namespace std;
 // Element(int tag, int noExtNodes);
 //  constructor that takes the element's unique tag and the number
 //  of external nodes for the element.
-string Element::stiffness_type();
-string Element::damping_type();
+string Element::stiffness_type;
+string Element::damping_type;
 
 Matrix Element::zero_gauss_coordinates(0, 0);
 

@@ -673,12 +673,12 @@ int MPI_Channel::sendString(int dbTag, int commitTag,
     // int rank =  (theNDarray.pc_nDarray_rep)->nDarray_rank;
     // int elem =   (theNDarray.pc_nDarray_rep)->total_numb;
 
-    cout << "Sending string of size: " << nchars << endl;
+    // cout << "Sending string of size: " << nchars << endl;
 
     MPI_Send(&nchars, 1, MPI_INT, otherTag, GLOBAL_MSG_TAG, otherComm);
 
 
-    cout << "Sending string: " << theString << endl;
+    // cout << "Sending string: " << theString << endl;
     MPI_Send((void *)gmsg, nchars, MPI_CHAR, otherTag, GLOBAL_MSG_TAG, otherComm);
 
     return 0;
@@ -713,7 +713,7 @@ int MPI_Channel::receiveString(int dbTag, int commitTag,
     MPI_Status status;
     MPI_Recv(&nchar, 1, MPI_INT, otherTag, GLOBAL_MSG_TAG, otherComm, &status);
 
-    cout << "Receiving string of size " << nchar << endl;
+    // cout << "Receiving string of size " << nchar << endl;
 
 
     char *gmsg = new char[nchar];
@@ -729,11 +729,11 @@ int MPI_Channel::receiveString(int dbTag, int commitTag,
         return -1;
     }
 
-    cout << "Got string: " << gmsg << endl;
+    // cout << "Got string: " << gmsg << endl;
 
     theString = std::string(gmsg);
 
-    cout << "Turned it into string: " << theString << endl;
+    // cout << "Turned it into string: " << theString << endl;
     return 0;
 }
 
