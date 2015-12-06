@@ -717,7 +717,7 @@ int
 Domain_Reduction_Method_HDF5_input::sendSelf(int commitTag, Channel & theChannel)
 {
 
-    DRMout << "sending filename: " << HDF5filename << endl;
+    // DRMout << "sending filename: " << HDF5filename << endl;
 
     if (theChannel.sendString(0, 0, HDF5filename) < 0)
     {
@@ -732,7 +732,7 @@ int
 Domain_Reduction_Method_HDF5_input::receiveSelf(int commitTag, Channel & theChannel,
         FEM_ObjectBroker & theBroker)
 {
-    DRMout << "receiving...\n";
+    // DRMout << "receiving...\n";
 
     if (theChannel.receiveString(0, 0, HDF5filename) < 0)
     {
@@ -740,7 +740,7 @@ Domain_Reduction_Method_HDF5_input::receiveSelf(int commitTag, Channel & theChan
         return -1;
     }
 
-    DRMout << "got filename: " << HDF5filename << endl;
+    // DRMout << "got filename: " << HDF5filename << endl;
 
     return 0;
 }

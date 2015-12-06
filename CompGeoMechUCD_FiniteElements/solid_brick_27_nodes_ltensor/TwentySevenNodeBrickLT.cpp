@@ -2856,17 +2856,22 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     }
 
 
-    if ( theChannel.sendString( 0, commitTag, stiffness_type ) < 0 )
+    string tmp_string;
+
+    tmp_string = stiffness_type;
+    if ( theChannel.sendString( 0, commitTag, tmp_string ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String stiffness_type\n";
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String stiffness_type\n";
         return -1;
     }
 
+    tmp_string = damping_type;
     if ( theChannel.sendString( 0, commitTag, damping_type ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String damping_type\n";
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String damping_type\n";
         return -1;
     }
+
 
     // Send the nodes
 
@@ -2962,18 +2967,20 @@ int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FE
     a2 = floatData(6);
     a3 = floatData(7);
 
-    if ( theChannel.receiveString( 0, commitTag, stiffness_type ) < 0 )
+    string tmp_string;
+    if ( theChannel.receiveString( 0, commitTag,  tmp_string) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String stiffness_type\n";
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String stiffness_type\n";
         return -1;
     }
+    stiffness_type = tmp_string;
 
-    if ( theChannel.receiveString( 0, commitTag, damping_type ) < 0 )
+    if ( theChannel.receiveString( 0, commitTag, tmp_string ) < 0 )
     {
-        cerr << "WARNING TwentySevenNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String damping_type\n";
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String damping_type\n";
         return -1;
     }
-
+    damping_type = tmp_string;
 
 
 

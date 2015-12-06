@@ -1439,12 +1439,16 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     }
 
 
-    if ( theChannel.sendString( 0, commitTag, stiffness_type ) < 0 )
+    string tmp_string;
+
+    tmp_string = stiffness_type;
+    if ( theChannel.sendString( 0, commitTag, tmp_string ) < 0 )
     {
         cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String stiffness_type\n";
         return -1;
     }
 
+    tmp_string = damping_type;
     if ( theChannel.sendString( 0, commitTag, damping_type ) < 0 )
     {
         cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String damping_type\n";
@@ -1547,17 +1551,21 @@ int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_Obje
     a2 = floatData(6);
     a3 = floatData(7);
 
-    if ( theChannel.receiveString( 0, commitTag, stiffness_type ) < 0 )
+
+    string tmp_string;
+    if ( theChannel.receiveString( 0, commitTag,  tmp_string) < 0 )
     {
         cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String stiffness_type\n";
         return -1;
     }
+    stiffness_type = tmp_string;
 
-    if ( theChannel.receiveString( 0, commitTag, damping_type ) < 0 )
+    if ( theChannel.receiveString( 0, commitTag, tmp_string ) < 0 )
     {
         cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String damping_type\n";
         return -1;
     }
+    damping_type = tmp_string;
 
     // cout << "EightNodeBrickLT::receiveSelf() Volume                  = " << Volume << "\n";
     // cout << "EightNodeBrickLT::receiveSelf() e_p                     = " << e_p << "\n";
