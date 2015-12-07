@@ -29,7 +29,7 @@ INLINING_OPTS = -finline \
 
 LOGFILE = "essi_compilation.log"
 
-GIT_VERSION := $(shell git describe  --tags --dirty)
+GIT_VERSION := $(shell git describe  --tags)
 
 
 #  ==========================================
