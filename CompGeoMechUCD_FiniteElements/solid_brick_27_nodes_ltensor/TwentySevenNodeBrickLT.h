@@ -171,7 +171,7 @@ private:
     // ===================================================================================================================
 private:
     bool initialized;
-    bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
+    bool produces_output;
 
     int numDOF;
     int nodes_in_brick;
@@ -194,13 +194,13 @@ private:
     //MatPoint3D ** matpoint;
 
 
-    Vector Q;
     Vector bf;
+    Vector Q;
+    Vector P;
 
     static double SurfaceLoadValues_in_function;
-    Matrix K;
-    Matrix M;
-    Vector P;
+    static Matrix K;
+    static Matrix M;
     static Vector ShapeFunctionValues_in_function;
     static Vector J_vector_in_function;
 
@@ -211,8 +211,8 @@ private:
     static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
     static DTensor2 gp_weight; //Weights of 1D Gaussian quadrature rule
 
-    Matrix gauss_points;
-    Vector outputVector;
+    static Matrix gauss_points;
+    static Vector outputVector;
 
     Index < 'i' > i;
     Index < 'j' > j;

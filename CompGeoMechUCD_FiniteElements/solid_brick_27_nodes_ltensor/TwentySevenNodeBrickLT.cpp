@@ -49,6 +49,10 @@ Vector TwentySevenNodeBrickLT::J_vector_in_function( 3 );             // Nima ad
 Vector TwentySevenNodeBrickLT::Info_Stress(27 * 6 + 1); // Stress 8*6+1  2X2X2
 Vector TwentySevenNodeBrickLT::Info_GaussCoordinates(27 * 3 + 1);      //Gauss point coordinates
 Vector TwentySevenNodeBrickLT::Info_Strain(27 * 6 + 1);
+Matrix TwentySevenNodeBrickLT::gauss_points(27, 3);
+Vector TwentySevenNodeBrickLT::outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE);
+Matrix TwentySevenNodeBrickLT::K(81, 81);
+Matrix TwentySevenNodeBrickLT::M( 81, 81);
 
 //====================================================================
 // Constructor
@@ -66,11 +70,11 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
 
     : Element( element_number, ELE_TAG_TwentySevenNodeBrickLT ),
       rho( 0.0 ), connectedExternalNodes( 27 ),
-      Ki( 0 ), Q( 81 ), bf(3),
-      K(81, 81), M( 81, 81), P( 81 ),
-      gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
+      Ki( 0 ),
+      bf(3), Q( 81 ), P( 81 )
 {
 
+    produces_output = true;
 
     rho = Globalmmodel->getRho();
     //     bf = bodyforce->getBodyForceVector();
@@ -195,7 +199,6 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
     // =============================================================================
 
 
-    is_mass_computed = false;
 
     connectedExternalNodes( 0 ) = node_numb_1;
     connectedExternalNodes( 1 ) = node_numb_2;
@@ -247,12 +250,10 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
 //====================================================================
 TwentySevenNodeBrickLT::TwentySevenNodeBrickLT(): Element( 0, ELE_TAG_TwentySevenNodeBrickLT ),
     rho( 0.0 ), connectedExternalNodes( 27 ) , Ki( 0 ), mmodel( 0 ),
-    Q( 81 ), bf(3),
-    K(81, 81), M( 81, 81), P( 81 ),
-    gauss_points(27, 3), outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE)
+    bf(3), Q( 81 ), P( 81 )
 {
 
-
+    produces_output = true;
     //GP coordinates and weights. ====================================================
     // This initializes class wide members gp_coords and gp_weights .
     // Since LTensor does not provide initializer lists, this is the only way to
@@ -363,7 +364,6 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT(): Element( 0, ELE_TAG_TwentySeve
     // =============================================================================
 
 
-    is_mass_computed = false;
 
     nodes_in_brick = 27;
 
@@ -790,14 +790,22 @@ const DTensor4 &TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
     double weight = 0.0;
 
     // static DTensor2 incremental_strain(3, 3, 0.0);
-    DTensor2 dh_drst( 27, 3, 0.0 );
-    DTensor2 dhGlobal( 27, 3, 0.0 );
-    DTensor2 Jacobian(3, 3, 0.0);
-    DTensor2 JacobianINV(3, 3, 0.0);
+    static DTensor2 dh_drst( 27, 3, 0.0 );
+    static DTensor2 dhGlobal( 27, 3, 0.0 );
+    static DTensor2 Jacobian(3, 3, 0.0);
+    static DTensor2 JacobianINV(3, 3, 0.0);
 
-    DTensor4 Constitutive(3, 3, 3, 3, 0.0);
+    static DTensor4 Constitutive(3, 3, 3, 3, 0.0);
     static DTensor4 Kk( 27, 3, 3, 27, 0.0);
-    DTensor4 Kkt( 27, 3, 3, 27, 0.0);
+    static DTensor4 Kkt( 27, 3, 3, 27, 0.0);
+
+    dh_drst *= 0;
+    dhGlobal *= 0;
+    Jacobian *= 0;
+    JacobianINV *= 0;
+    Constitutive *= 0;
+    Kk *= 0;
+    Kkt *= 0;
 
     Index < 'a' > a;
     Index < 'b' > b;
@@ -837,9 +845,6 @@ const DTensor4 &TwentySevenNodeBrickLT::getStiffnessTensor( void ) const
         Kkt(i, a, c, j) = dhGlobal(i, b) * Constitutive(a, b, c, d) * dhGlobal(j, d) * weight;
 
         Kk(i, a, c, j) = Kk(i, a, c, j) + Kkt(i, a, c, j);
-
-
-
     }
 
     return Kk;
@@ -2003,8 +2008,11 @@ int TwentySevenNodeBrickLT::revertToStart ()
 //=============================================================================
 const Matrix &TwentySevenNodeBrickLT::getTangentStiff()
 {
-    DTensor4 stifftensor(27, 3, 3, 27, 0.0);
+    static DTensor4 stifftensor(27, 3, 3, 27, 0.0);
+    stifftensor *= 0;
     stifftensor = getStiffnessTensor();
+
+    K *= 0;
 
     int Ki = 0;
     int Kj = 0;
@@ -2052,49 +2060,50 @@ const Matrix &TwentySevenNodeBrickLT::getInitialStiff ()
 const Matrix &TwentySevenNodeBrickLT::getMass ()
 {
 
-    if (not is_mass_computed)
+
+    double r   = 0.0;
+    double s   = 0.0;
+    double t   = 0.0;
+    double w_r = 0.0;
+    double w_s = 0.0;
+    double w_t = 0.0;
+    double weight = 0.0;
+    double det_of_Jacobian = 0.0;
+
+    static DTensor2 dh( 27, 3, 0.0 );
+    static DTensor2 H(81, 3, 0.0 );
+    static DTensor2 Mm( 81, 81, 0.0 );
+    static DTensor2 Jacobian(3, 3);
+    dh *= 0;
+    H *= 0;
+    Mm *= 0;
+    Jacobian *= 0;
+
+
+    for ( short gp = 0; gp < 27; gp++ )
     {
-        double r   = 0.0;
-        double s   = 0.0;
-        double t   = 0.0;
-        double w_r = 0.0;
-        double w_s = 0.0;
-        double w_t = 0.0;
-        double weight = 0.0;
-        double det_of_Jacobian = 0.0;
+        r = gp_coords(gp, 0);
+        s = gp_coords(gp, 1);
+        t = gp_coords(gp, 2);
+        w_r = gp_weight(gp, 0);
+        w_s = gp_weight(gp, 1);
+        w_t = gp_weight(gp, 2);
+        dh = dh_drst_at( r, s, t );
+        Jacobian = Jacobian_3D( dh );
+        det_of_Jacobian  = Jacobian.compute_Determinant();
+        H = H_3D( r, s, t );
 
-        DTensor2 dh( 27, 3, 0.0 );
-        DTensor2 H(81, 3, 0.0 );
-        DTensor2 Mm( 81, 81, 0.0 );
-        DTensor2 Jacobian(3, 3);
+        weight = w_r * w_s * w_t * rho * det_of_Jacobian;
+        Mm(i, j) = Mm(i, j) + H(i, k) * H(j, k) * weight;
+    }
 
-        for ( short gp = 0; gp < 27; gp++ )
+    for ( int ii = 1 ; ii <= 81 ; ii++ )
+    {
+        for ( int jj = 1 ; jj <= 81 ; jj++ )
         {
-            r = gp_coords(gp, 0);
-            s = gp_coords(gp, 1);
-            t = gp_coords(gp, 2);
-            w_r = gp_weight(gp, 0);
-            w_s = gp_weight(gp, 1);
-            w_t = gp_weight(gp, 2);
-            dh = dh_drst_at( r, s, t );
-            Jacobian = Jacobian_3D( dh );
-            det_of_Jacobian  = Jacobian.compute_Determinant();
-            H = H_3D( r, s, t );
-
-            weight = w_r * w_s * w_t * rho * det_of_Jacobian;
-            Mm(i, j) = Mm(i, j) + H(i, k) * H(j, k) * weight;
+            M( ii - 1 , jj - 1 ) = Mm( ii - 1 , jj - 1 );
         }
 
-        for ( int ii = 1 ; ii <= 81 ; ii++ )
-        {
-            for ( int jj = 1 ; jj <= 81 ; jj++ )
-            {
-                M( ii - 1 , jj - 1 ) = Mm( ii - 1 , jj - 1 );
-            }
-
-        }
-
-        is_mass_computed = true;
     }
 
     //LTensorDisplay::print(Mm, "Mm", "", 1);
@@ -2543,7 +2552,8 @@ int TwentySevenNodeBrickLT::addInertiaLoadToUnbalance( const Vector &accel )
 //=============================================================================
 const Vector TwentySevenNodeBrickLT::FormEquiBodyForce(const Vector &data)
 {
-    Vector bforce( 81 );
+    static Vector bforce( 81 );
+    bforce.Zero();
 
     // Check for a quick return
     if ( rho == 0.0 )
@@ -2648,7 +2658,8 @@ const Vector TwentySevenNodeBrickLT::FormEquiBodyForce(const Vector &data)
 //=============================================================================
 const Vector &TwentySevenNodeBrickLT::getResistingForce()
 {
-    DTensor2 nodalforces( 27, 3, 0.0 );
+    static DTensor2 nodalforces( 27, 3, 0.0 );
+    nodalforces *= 0;
     nodalforces = nodal_forces();
 
     //converting nodalforce tensor to vector
@@ -3146,8 +3157,11 @@ void TwentySevenNodeBrickLT::ComputeVolume()
     double weight = 0.0;
     double det_of_Jacobian = 0.0;
 
-    DTensor2 dh( 27, 3, 0.0 );
-    DTensor2 Jacobian(3, 3, 0.0);
+    static DTensor2 dh( 27, 3, 0.0 );
+    static DTensor2 Jacobian(3, 3, 0.0);
+
+    dh *= 0;
+    Jacobian *= 0;
 
     for ( short gp = 0; gp < 27; gp++ )
     {
@@ -3181,13 +3195,20 @@ int TwentySevenNodeBrickLT::update( void )
     double t  = 0.0;
 
 
-    DTensor2 dh( 27, 3, 0.0 );
-    //DTensor2 Jacobian(3,3,0.0);
-    DTensor2 JacobianINV(3, 3, 0.0);
-    DTensor2 dhGlobal( 27, 3, 0.0 );
-    DTensor2 trial_disp( 27, 3, 0.0  );
-    DTensor2 total_strain(3, 3, 0.0);
-    DTensor2 trial_strain(3, 3, 0.0);
+    static DTensor2 dh( 27, 3, 0.0 );
+    static DTensor2 JacobianINV(3, 3, 0.0);
+    static DTensor2 dhGlobal( 27, 3, 0.0 );
+    static DTensor2 trial_disp( 27, 3, 0.0  );
+    static DTensor2 total_strain(3, 3, 0.0);
+    static DTensor2 trial_strain(3, 3, 0.0);
+
+
+    dh *= 0;
+    JacobianINV *= 0;
+    dhGlobal *= 0;
+    trial_disp *= 0;
+    total_strain *= 0;
+    trial_strain *= 0;
 
     trial_disp = total_disp();
 
@@ -3244,8 +3265,8 @@ Vector &TwentySevenNodeBrickLT::Direction_Weight( double Xi , double Eta, Vector
         Vector coord6, Vector coord7, Vector coord8,
         Vector coord9 )
 {
-    Vector J1( 3 );
-    Vector J2( 3 );
+    static Vector J1( 3 );
+    static Vector J2( 3 );
 
     J1( 0 ) = 0.25 * ( (1 + Eta) + (1 + Eta) * 2 * Xi - (1 - Eta * Eta) - 2 * Xi * (1 - Eta * Eta) ) * coord1(0)
               + 0.25 * ( -(1 + Eta) + (1 + Eta) * 2 * Xi + (1 - Eta * Eta) - 2 * Xi * (1 - Eta * Eta) ) * coord2(0)
@@ -3357,8 +3378,10 @@ TwentySevenNodeBrickLT::CheckMesh( ofstream &checkmesh_file )
     double t  = 0.0;
     double det_of_Jacobian = 0.0;
 
-    DTensor2 dh( 27, 3, 0.0 );
-    DTensor2 Jacobian(3, 3, 0.0);
+    static DTensor2 dh( 27, 3, 0.0 );
+    static DTensor2 Jacobian(3, 3, 0.0);
+    dh *= 0;
+    Jacobian *= 0;
 
     for ( short gp = 0; gp < 27; gp++ )
     {
@@ -3422,12 +3445,20 @@ TwentySevenNodeBrickLT::getStress( void )
 
 Matrix &TwentySevenNodeBrickLT::getGaussCoordinates(void)
 {
+    computeGaussPoint();
     return gauss_points;
 }
 
 int TwentySevenNodeBrickLT::getOutputSize() const
 {
-    return TwentySevenNodeBrickLT_OUTPUT_SIZE;
+    if (produces_output)
+    {
+        return TwentySevenNodeBrickLT_OUTPUT_SIZE;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 
