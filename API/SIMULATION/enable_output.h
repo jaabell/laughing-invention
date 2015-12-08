@@ -26,20 +26,35 @@
 
 int enable_output()
 {
-	return theDomain.enableOutput(true);
+    return theDomain.enableOutput(true);
 }
 
 int disable_output()
 {
-	return theDomain.enableOutput(false);
+    return theDomain.enableOutput(false);
 }
 
 int enable_element_output()
 {
-	return theDomain.enableElementOutput(true);
+    return theDomain.enableElementOutput(true);
 }
 
 int disable_element_output()
 {
-	return theDomain.enableElementOutput(false);
+    return theDomain.enableElementOutput(false);
+}
+
+int disable_element_output(int tag)
+{
+    Element* ele = theDomain.getElement(tag);
+    if (ele != 0)
+    {
+        ele->setProducesOutputFlag(false)   ;
+        return 0;
+    }
+    else
+    {
+        cerr << "disable_element_output : Element with tag " << tag << " not found. \n";
+    }
+    return -1;
 }

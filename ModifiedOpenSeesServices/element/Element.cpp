@@ -64,10 +64,7 @@ Element::Element(int tag, int cTag)
       SizedMatrix(0), SizedVector1(0), SizedVector2(0),  index_sized_matrix_vector(0)
       //   , nodeIndex(-1), index(0)
 {
-    // Nima added July 2011
-    // Nima removed May 2012
-    //     classTag = cTag;
-
+    produces_output = true;
 }
 
 
@@ -1005,4 +1002,9 @@ void  Element::setNumberOfBoundaryNodes(int n)
 int Element::startNewStage()
 {
     return 0;
+}
+
+void Element::setProducesOutputFlag(bool truthvalue)
+{
+    produces_output = truthvalue;
 }

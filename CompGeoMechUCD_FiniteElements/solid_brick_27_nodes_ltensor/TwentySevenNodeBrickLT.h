@@ -171,7 +171,6 @@ private:
     // ===================================================================================================================
 private:
     bool initialized;
-    bool produces_output;
 
     int numDOF;
     int nodes_in_brick;

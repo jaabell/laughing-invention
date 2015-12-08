@@ -74,8 +74,6 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
       bf(3), Q( 81 ), P( 81 )
 {
 
-    produces_output = true;
-
     rho = Globalmmodel->getRho();
     //     bf = bodyforce->getBodyForceVector();
 
@@ -253,7 +251,6 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT(): Element( 0, ELE_TAG_TwentySeve
     bf(3), Q( 81 ), P( 81 )
 {
 
-    produces_output = true;
     //GP coordinates and weights. ====================================================
     // This initializes class wide members gp_coords and gp_weights .
     // Since LTensor does not provide initializer lists, this is the only way to
@@ -2834,7 +2831,7 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
 {
     //Copied from EightNodeBrickLT (with modifications)    ID idData( 5 );
 
-    ID idData( 5 );
+    ID idData( 6 );
 
 
     idData( 0 ) = this->getTag();
@@ -2842,6 +2839,7 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
     idData( 2 ) = nodes_in_brick;
     idData( 3 ) = order;
     idData( 4 ) = material_array[0]->getClassTag();
+    idData( 5 ) = produces_output;
 
     if ( theChannel.sendID( 0, commitTag, idData ) < 0 )
     {
@@ -2942,7 +2940,7 @@ int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FE
 {
     //Copied from EightNodeBrickLT (with modifications)    // cout << "TwentySevenNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
 
-    ID idData( 5 );
+    ID idData(6 );
 
     if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
     {
@@ -2955,6 +2953,7 @@ int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FE
     nodes_in_brick = idData(2);
     order = idData(3);
     int matClassTag = idData( 4 );
+    produces_output = idData( 5 );
 
 
     // cout << "TwentySevenNodeBrickLT::receiveSelf() numDOF           = " << numDOF << "\n";

@@ -157,11 +157,14 @@ public:
     // Informs element about starting a new stage.
     virtual int startNewStage();
 
+    virtual void setProducesOutputFlag(bool truthvalue);
+
 protected:
     const Vector &getRayleighDampingForces(void);
 
 
     double a0, a1, a2, a3;
+    bool produces_output;
     static string stiffness_type;
     static string damping_type;
     Matrix *Kc; // pointer to hold last committed matrix if needed for rayleigh damping

@@ -1341,11 +1341,23 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC disable output;
+	//!FEIDOC disable element output;
 	| DISABLE  ELEMENT OUTPUT 
 	{
 		args.clear(); signature.clear();
 		$$ = new FeiDslCaller0<>(&disable_element_output,args,signature,"disable_element_output");
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC disable element # <.> output;
+	| DISABLE  ELEMENT TEXTNUMBER exp OUTPUT 
+	{
+		args.clear(); signature.clear();
+		args.push_back($4); signature.push_back(this_signature("tag", &isAdimensional));
+
+		$$ = new FeiDslCaller1<int>(&disable_element_output,args,signature,"disable_element_output");
+		nodes.pop();
 		nodes.push($$);
 	}
 
