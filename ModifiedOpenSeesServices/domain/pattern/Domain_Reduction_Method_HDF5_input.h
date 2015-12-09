@@ -56,9 +56,9 @@
 // #define DRMwarning std::cout << std::endl <<  __PRETTY_FUNCTION__ << " - Warning: \n"
 // #define DRMout std::cout << std::endl << __PRETTY_FUNCTION__ << " : \n"
 
-#define DRMerror std::cerr << std::endl << "DRMHDF5" << " - ERROR: \n"
-#define DRMwarning std::cout << std::endl <<  "DRMHDF5" << " - Warning: \n"
-#define DRMout std::cout << std::endl << "DRMHDF5" << " : \n"
+#define DRMerror std::cerr << std::endl << "DRMHDF5(" << myrank << ") - ERROR: \n"
+#define DRMwarning std::cout << std::endl <<  "DRMHDF5(" << myrank << ") - Warning: \n"
+#define DRMout std::cout << std::endl << "DRMHDF5(" << myrank << ") : \n"
 
 #define DRMHDF5_MAX_RETURN_OPEN_OBJS 100
 
@@ -141,6 +141,8 @@ private:
     hid_t id_one_node_memspace;
 
     hid_t id_xfer_plist;
+
+    int myrank;
 };
 
 #endif

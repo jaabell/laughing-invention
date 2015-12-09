@@ -66,6 +66,12 @@ Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input()
     t =  t1 =  t2 =  tfinal = 0;
     cFactor = 0;
     step = step1 = step2 = 0;
+
+    myrank = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+#endif
+
 }
 
 Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input
@@ -86,6 +92,10 @@ Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input
     t =  t1 =  t2 =  tfinal = 0;
     cFactor = 0;
     step = step1 = step2 = 0;
+    myrank = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+#endif
 }
 
 void Domain_Reduction_Method_HDF5_input::intitialize()
@@ -364,6 +374,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     //===========================================================================
     // Open Displacements and Accelerations arrays for reading
     //===========================================================================
+    DRMout << "Dataset Opening accelerations and displacement datasets for reading.\n";
 
     id_displacements = H5Dopen(id_drm_file, "Displacements", H5P_DEFAULT);
 
@@ -452,6 +463,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
 
     is_initialized = true;
+    DRMout << "DRM initialization done!\n";
 }
 
 
