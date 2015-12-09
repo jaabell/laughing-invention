@@ -89,10 +89,10 @@ ElasticIsotropic3DLT::~ElasticIsotropic3DLT()
 }
 
 //================================================================================
-int ElasticIsotropic3DLT::setTrialStrain( const DTensor2 &v )
+int ElasticIsotropic3DLT::setTrialStrain( const DTensor2 &strain )
 {
     // compute_tangent_tensor();
-    TrialStrain(i, j) = v(i, j);
+    TrialStrain(i, j) = strain(i, j);
     // TrialStress(i, j) = Ee(i, j, k, l) * TrialStrain(k, l);
     //      \sigma_{ij}
     // =\lambda \delta_{ij} \varepsilon_{kk}+2\mu\varepsilon_{ij}
