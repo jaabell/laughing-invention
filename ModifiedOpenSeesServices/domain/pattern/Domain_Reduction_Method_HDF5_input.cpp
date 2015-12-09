@@ -777,6 +777,7 @@ void
 Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
 {
 //If we don't have elements, no point in doing anything :/
+    DRMout << "ComputeDRMLoads....";
     if (number_of_local_elements > 0)
     {
         // clock_t init, final;
@@ -978,7 +979,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
         delete u_e;
         delete udd_e;
     }
-
+    cout << "Done!\n";
 }
 
 
