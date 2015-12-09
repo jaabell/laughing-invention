@@ -56,9 +56,9 @@
 // #define DRMwarning std::cout << std::endl <<  __PRETTY_FUNCTION__ << " - Warning: \n"
 // #define DRMout std::cout << std::endl << __PRETTY_FUNCTION__ << " : \n"
 
-#define DRMerror std::cerr << std::endl << "DRMHDF5(" << myrank << ") - ERROR: \n"
-#define DRMwarning std::cout << std::endl <<  "DRMHDF5(" << myrank << ") - Warning: \n"
-#define DRMout std::cout << std::endl << "DRMHDF5(" << myrank << ") : \n"
+#define DRMerror std::cerr  << "DRMHDF5(" << myrank << ") - ERROR: "
+#define DRMwarning std::cout  <<  "DRMHDF5(" << myrank << ") - Warning: "
+#define DRMout std::cout  << "DRMHDF5(" << myrank << ") : "
 
 #define DRMHDF5_MAX_RETURN_OPEN_OBJS 100
 
