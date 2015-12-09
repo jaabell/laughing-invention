@@ -23,15 +23,12 @@
 // VERSION:
 // LANGUAGE:          C++
 // TARGET OS:
-// PROGRAMMER:        Nima Tafazzoli, Boris Jeremic
+// PROGRAMMER:        Jose Abell, Nima Tafazzoli, Boris Jeremic
 // DATE:              January 2010
-// UPDATE HISTORY:
+// UPDATE HISTORY:    Dec 2015, Optimized memory usage.
 //
 //
 /////////////////////////////////////////////////////////////////////////////
-
-// ElasticIsotropic3DLT is another form of NewTemplate3Dep which has all
-// the functions embeded here for efficiency.
 
 #include "ElasticIsotropic3DLT.h"
 #include <Channel.h>
@@ -42,7 +39,8 @@
 
 const  DTensor2 ElasticIsotropic3DLT::ZeroStrain( 3, 3, 0.0 );
 const  DTensor2 ElasticIsotropic3DLT::ZeroStress( 3, 3, 0.0 );
-//DTensor4 ElasticIsotropic3DLT::Ee( 3, 3, 3, 3, 0.0 );
+DTensor4 ElasticIsotropic3DLT::Ee( 3, 3, 3, 3, 0.0 );
+
 
 
 //================================================================================
@@ -53,14 +51,11 @@ ElasticIsotropic3DLT::ElasticIsotropic3DLT( int tag,
     : NDMaterialLT( tag, ND_TAG_ElasticIsotropic3DLT ),
       TrialStrain( 3, 3, 0.0 ),
       TrialStress( 3, 3, 0.0 ),
-      ElasticStateStrain( 3, 3, 0.0 ),
-      ElasticStateStress( 3, 3, 0.0 ),
       CommitStress( 3, 3, 0.0 ),
       CommitStrain( 3, 3, 0.0 ),
       E( E_in ),
       v( v_in ),
-      rho( rho_in ),
-      Ee(3, 3, 3, 3, 0.0)
+      rho( rho_in )
 {
 
 
@@ -73,14 +68,11 @@ ElasticIsotropic3DLT::ElasticIsotropic3DLT( )
     : NDMaterialLT( 0, ND_TAG_ElasticIsotropic3DLT ),
       TrialStrain( 3, 3, 0.0 ),
       TrialStress( 3, 3, 0.0 ),
-      ElasticStateStrain( 3, 3, 0.0 ),
-      ElasticStateStress( 3, 3, 0.0 ),
       CommitStress( 3, 3, 0.0 ),
       CommitStrain( 3, 3, 0.0 ),
       E( 0 ),
       v( 0 ),
-      rho( 0 ),
-      Ee(3, 3, 3, 3, 0.0)
+      rho( 0 )
 {
 
 
@@ -99,17 +91,15 @@ ElasticIsotropic3DLT::~ElasticIsotropic3DLT()
 //================================================================================
 int ElasticIsotropic3DLT::setTrialStrain( const DTensor2 &v )
 {
-    // DTensor2 result( 3, 3, 0.0 );
-    // result( i, j ) = v( i, j ) - TrialStrain( i, j );
+    compute_tangent_tensor();
     TrialStrain(i, j) = v(i, j);
     TrialStress(i, j) = Ee(i, j, k, l) * TrialStrain(k, l);
-    return 0;//setTrialStrainIncr( result );
+    return 0;
 }
 
 //================================================================================
 int ElasticIsotropic3DLT::setTrialStrainIncr( const DTensor2 &strain_increment )
 {
-
     return 0;
 }
 
@@ -117,8 +107,43 @@ int ElasticIsotropic3DLT::setTrialStrainIncr( const DTensor2 &strain_increment )
 //================================================================================
 const DTensor4 &ElasticIsotropic3DLT::getTangentTensor( void )
 {
+
+    compute_tangent_tensor();
+
     return Ee;
 }
+
+
+void ElasticIsotropic3DLT::compute_tangent_tensor(void)
+{
+    Ee *= 0;
+
+    double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
+    double mu = E / ( 2 * ( 1 + v ) );
+
+    Ee( 0, 0, 0, 0 ) = lambda + 2 * mu;
+    Ee( 0, 0, 1, 1 ) = lambda;
+    Ee( 0, 0, 2, 2 ) = lambda;
+    Ee( 0, 1, 0, 1 ) = mu;
+    Ee( 0, 1, 1, 0 ) = mu;
+    Ee( 0, 2, 0, 2 ) = mu;
+    Ee( 0, 2, 2, 0 ) = mu;
+    Ee( 1, 0, 0, 1 ) = mu;
+    Ee( 1, 0, 1, 0 ) = mu;
+    Ee( 1, 1, 0, 0 ) = lambda;
+    Ee( 1, 1, 1, 1 ) = lambda + 2 * mu;
+    Ee( 1, 1, 2, 2 ) = lambda;
+    Ee( 1, 2, 1, 2 ) = mu;
+    Ee( 1, 2, 2, 1 ) = mu;
+    Ee( 2, 0, 0, 2 ) = mu;
+    Ee( 2, 0, 2, 0 ) = mu;
+    Ee( 2, 1, 1, 2 ) = mu;
+    Ee( 2, 1, 2, 1 ) = mu;
+    Ee( 2, 2, 0, 0 ) = lambda;
+    Ee( 2, 2, 1, 1 ) = lambda;
+    Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
+}
+
 
 //================================================================================
 const DTensor2  &ElasticIsotropic3DLT::getStressTensor( void )
@@ -161,39 +186,12 @@ int ElasticIsotropic3DLT::revertToLastCommit( void )
 //================================================================================
 int ElasticIsotropic3DLT::revertToStart( void )
 {
-    CommitStress = ElasticStateStress;
-    CommitStrain = ElasticStateStrain;
+    CommitStress *= 0;
+    CommitStrain *= 0;
 
 
-    TrialStress = CommitStress;
-    TrialStrain = CommitStrain;
-
-    double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
-    double mu = E / ( 2 * ( 1 + v ) );
-
-    Ee( 0, 0, 0, 0 ) = lambda + 2 * mu;
-    Ee( 0, 0, 1, 1 ) = lambda;
-    Ee( 0, 0, 2, 2 ) = lambda;
-    Ee( 0, 1, 0, 1 ) = mu;
-    Ee( 0, 1, 1, 0 ) = mu;
-    Ee( 0, 2, 0, 2 ) = mu;
-    Ee( 0, 2, 2, 0 ) = mu;
-    Ee( 1, 0, 0, 1 ) = mu;
-    Ee( 1, 0, 1, 0 ) = mu;
-    Ee( 1, 1, 0, 0 ) = lambda;
-    Ee( 1, 1, 1, 1 ) = lambda + 2 * mu;
-    Ee( 1, 1, 2, 2 ) = lambda;
-    Ee( 1, 2, 1, 2 ) = mu;
-    Ee( 1, 2, 2, 1 ) = mu;
-    Ee( 2, 0, 0, 2 ) = mu;
-    Ee( 2, 0, 2, 0 ) = mu;
-    Ee( 2, 1, 1, 2 ) = mu;
-    Ee( 2, 1, 2, 1 ) = mu;
-    Ee( 2, 2, 0, 0 ) = lambda;
-    Ee( 2, 2, 1, 1 ) = lambda;
-    Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
-
-    // Stiffness = Ee;
+    TrialStress *= 0;
+    TrialStrain *= 0;
 
     return 0;
 }
@@ -209,27 +207,6 @@ NDMaterialLT *ElasticIsotropic3DLT::getCopy( void )
     return tmp;
 }
 
-
-//================================================================================
-// NDMaterialLT *ElasticIsotropic3DLT::getCopy( const char *code )
-// {
-//     if ( strcmp( code, "ThreeDimensional" ) == 0 )
-//     {
-//         ElasticIsotropic3DLT *tmp = new ElasticIsotropic3DLT( this->getTag(),
-//                 this->getE(),
-//                 this->getv(),
-//                 this->getRho());
-
-//         return tmp;
-//     }
-//     else
-//     {
-//         cout << "ElasticIsotropic3DLT::getCopy failed to get model: " <<  code << endln;
-//         exit( 1 );
-//     }
-
-//     return 0;
-// }
 
 //================================================================================
 const char *ElasticIsotropic3DLT::getType( void ) const
@@ -335,31 +312,7 @@ int ElasticIsotropic3DLT::receiveSelf( int commitTag, Channel &theChannel, FEM_O
             CommitStrain(ii, jj) = a(ii, jj);
         }
 
-
-    double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
-    double mu = E / ( 2 * ( 1 + v ) );
-
-    Ee( 0, 0, 0, 0 ) = lambda + 2 * mu;
-    Ee( 0, 0, 1, 1 ) = lambda;
-    Ee( 0, 0, 2, 2 ) = lambda;
-    Ee( 0, 1, 0, 1 ) = mu;
-    Ee( 0, 1, 1, 0 ) = mu;
-    Ee( 0, 2, 0, 2 ) = mu;
-    Ee( 0, 2, 2, 0 ) = mu;
-    Ee( 1, 0, 0, 1 ) = mu;
-    Ee( 1, 0, 1, 0 ) = mu;
-    Ee( 1, 1, 0, 0 ) = lambda;
-    Ee( 1, 1, 1, 1 ) = lambda + 2 * mu;
-    Ee( 1, 1, 2, 2 ) = lambda;
-    Ee( 1, 2, 1, 2 ) = mu;
-    Ee( 1, 2, 2, 1 ) = mu;
-    Ee( 2, 0, 0, 2 ) = mu;
-    Ee( 2, 0, 2, 0 ) = mu;
-    Ee( 2, 1, 1, 2 ) = mu;
-    Ee( 2, 1, 2, 1 ) = mu;
-    Ee( 2, 2, 0, 0 ) = lambda;
-    Ee( 2, 2, 1, 1 ) = lambda;
-    Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
+    compute_tangent_tensor();
 
 
     return 0;
@@ -399,10 +352,6 @@ int ElasticIsotropic3DLT::getObjectSize()
     size += sizeof(double) * TrialStrain.get_size();
     // DTensor2 TrialStress;
     size += sizeof(double) * TrialStress.get_size();
-    // DTensor2 ElasticStateStrain;
-    size += sizeof(double) * ElasticStateStrain.get_size();
-    // DTensor2 ElasticStateStress;
-    size += sizeof(double) * ElasticStateStress.get_size();
     // DTensor2 CommitStress;
     size += sizeof(double) * CommitStress.get_size();
     // DTensor2 CommitStrain;

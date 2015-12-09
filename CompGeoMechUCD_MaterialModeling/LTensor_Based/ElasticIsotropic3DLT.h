@@ -87,7 +87,6 @@ public:
     int revertToStart( void );
 
     NDMaterialLT *getCopy( void );
-    //NDMaterialLT *getCopy( const char *code ); //probably not needed
 
     const char *getType( void ) const; // probably not needed
 
@@ -98,38 +97,30 @@ public:
 
     int getObjectSize();
 
+    void compute_tangent_tensor(void);
+
 
 private:
-
 
     DTensor2 TrialStrain;
     DTensor2 TrialStress;
 
-    DTensor2 ElasticStateStrain;
-    DTensor2 ElasticStateStress;
-
     DTensor2 CommitStress;
     DTensor2 CommitStrain;
-
-    // DTensor4 Stiffness;
-
 
     double E;
     double v;
     double rho;
 
-
-
     static const  DTensor2 ZeroStrain;
     static const  DTensor2 ZeroStress;
 
-    DTensor4 Ee;
+    static DTensor4 Ee;
 
     Index < 'i' > i;
     Index < 'j' > j;
     Index < 'k' > k;
     Index < 'l' > l;
-
 };
 
 
