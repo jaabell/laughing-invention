@@ -199,6 +199,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     if (number_of_local_elements == 0)
     {
         is_initialized = true;
+        DRMout << "DRM initialization done with 0 elements!\n";
         return; // No use doing anything else.
     }
 
