@@ -97,7 +97,7 @@ PetscSolver::solve(void)
     int processID_world = theSOE->processID_world;
     int ierr;
 
-    if (ComputeDRMLoads....Done > 0)
+    if (processID_world > 0)
     {
 
         //MatSetType(theSOE->A, matType);
