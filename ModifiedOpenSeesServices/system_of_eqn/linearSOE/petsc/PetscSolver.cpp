@@ -97,15 +97,17 @@ PetscSolver::solve(void)
     int processID_world = theSOE->processID_world;
     int ierr;
 
-    if (processID_world > 0)
+    if (ComputeDRMLoads....Done > 0)
     {
 
         //MatSetType(theSOE->A, matType);
+        cout << "PetscSolver::solve (" << processID_world << ") MatAssemblyBegin\n";
         ierr = MatAssemblyBegin(theSOE->A, MAT_FINAL_ASSEMBLY);
         CHKERRQ(ierr);
 
         ierr = MatAssemblyEnd(theSOE->A, MAT_FINAL_ASSEMBLY);
         CHKERRQ(ierr);
+        cout << "PetscSolver::solve (" << processID_world << ") MatAssemblyEnd\n";
 
 
         if (not is_KSP_initialized)
