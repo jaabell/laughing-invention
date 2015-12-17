@@ -45,6 +45,7 @@ all:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p-U_brick_20_nodes; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p-U_brick_8_nodes; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes; $(MAKE);
+	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_ltensor; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_elastic; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes; $(MAKE);
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes_elastic; $(MAKE);
@@ -75,6 +76,7 @@ clean:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p-U_brick_20_nodes; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p-U_brick_8_nodes; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes; $(MAKE) clean;
+	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_ltensor; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_elastic; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes; $(MAKE) clean;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes_elastic; $(MAKE) clean;
@@ -100,6 +102,7 @@ cleanall:
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p-U_brick_20_nodes; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/coupled_u-p-U_brick_8_nodes; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes; $(MAKE) cleanall;
+	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_ltensor; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_20_nodes_elastic; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes; $(MAKE) cleanall;
 	$(CD) $(PATH_TO_CompGeoMechUCD_FiniteElements)/solid_brick_27_nodes_elastic; $(MAKE) cleanall;

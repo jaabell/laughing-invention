@@ -1445,6 +1445,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 || eleClassTag == ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF
                 || eleClassTag == ELE_TAG_Truss
                 || eleClassTag == ELE_TAG_EightNodeBrickLT
+                || eleClassTag == ELE_TAG_TwentyNodeBrickLT
                 || eleClassTag == ELE_TAG_TwentySevenNodeBrickLT
            )
         {
@@ -1504,6 +1505,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_Truss                                        // Babak added on January  22 2013
                 && eleClassTag != ELE_TAG_FourNodeAndesShell                           // Babak added sometime
                 && eleClassTag != ELE_TAG_EightNodeBrickLT                             // Jose Added Oct 2014
+                && eleClassTag != ELE_TAG_TwentyNodeBrickLT                             
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                             // Jose Added Oct 2014
            )
         {
@@ -1631,6 +1633,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_Truss                                        // Babak added on January  22 2013
                 && eleClassTag != ELE_TAG_FourNodeAndesShell
                 && eleClassTag != ELE_TAG_EightNodeBrickLT
+                && eleClassTag != ELE_TAG_TwentyNodeBrickLT
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT
            )
         {

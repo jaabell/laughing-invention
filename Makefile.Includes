@@ -129,6 +129,7 @@ ESSI_INCLUDES  = -I$(RealESSI_SRC)/ModifiedOpenSeesServices/matrix \
             -I$(RealESSI_SRC)/CompGeoMechUCD_FiniteElements/coupled_u-p-U_brick_20_nodes \
             -I$(RealESSI_SRC)/CompGeoMechUCD_FiniteElements/coupled_u-p-U_brick_8_nodes \
             -I$(RealESSI_SRC)/CompGeoMechUCD_FiniteElements/solid_brick_20_nodes \
+            -I$(RealESSI_SRC)/CompGeoMechUCD_FiniteElements/solid_brick_20_nodes_ltensor \
             -I$(RealESSI_SRC)/CompGeoMechUCD_FiniteElements/solid_brick_20_nodes_elastic \
             -I$(RealESSI_SRC)/CompGeoMechUCD_FiniteElements/solid_brick_27_nodes \
             -I$(RealESSI_SRC)/CompGeoMechUCD_FiniteElements/solid_brick_27_nodes_elastic \
@@ -168,6 +169,7 @@ ESSI_LIBS = -L$(RealESSI_SRC)/lib \
       -lsolid_brick_27_nodes_elastic \
       -lsolid_brick_27_nodes_ltensor \
       -lsolid_brick_20_nodes_elastic \
+      -lsolid_brick_20_nodes_ltensor \
       -lsolid_brick_20_nodes \
       -lsolid_brick_8_nodes \
       -lsolid_brick_8_nodes_ltensor \

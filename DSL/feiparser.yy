@@ -208,7 +208,7 @@
 %token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
 %token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact FrictionalPenaltyContact
-%token EightNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT
+%token EightNodeBrickLT TwentyNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT
 
 // Element options tokens
 %token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule number_of_integration_points stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
@@ -2681,6 +2681,47 @@ ADD_element:
 		$$ = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
 								int,int,int,int,int,int,int,int,int,int,
 								int,int>(&add_element_brick_20node, args, signature, "add_element_brick_20node");
+
+		for(int ii = 1;ii <=22; ii++) nodes.pop();
+		nodes.push($$);
+	}
+
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [20NodeBrickLT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	| TEXTNUMBER exp TYPE TwentyNodeBrickLT WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2);  signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8);  signature.push_back(this_signature("node1",  &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2",  &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("node3",  &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node4",  &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node5",  &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node6",  &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node7",  &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node8",  &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node9",  &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($51); signature.push_back(this_signature("material", &isAdimensional));
+
+		$$ = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int>(&add_element_brick_20node_ltensor, args, signature, "add_element_brick_20node_ltensor");
 
 		for(int ii = 1;ii <=22; ii++) nodes.pop();
 		nodes.push($$);
