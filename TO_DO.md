@@ -44,8 +44,8 @@ These are new things we would like to see on ESSI. Further subdivided into
 
 * Better error reporting for runtime errors
 * Have vectors of quantities
-* Parallel parsing
-* Physical groups
+* Parallel parsing (pre-partition mesh and instruct sub-parsers to read certain files with nodes, elements and such)
+* Physical groups and associated semantics. 
 
 ###Output
 
@@ -67,13 +67,11 @@ These are new things we would like to see on ESSI. Further subdivided into
 Performance enhancements
 ------------------------
 
-* Keep some elements in rank 0, to better use parallelism.
 * Take into account machine topology and performance for partitioning.
-* HDF5 mesh output can be done in parallel. 
-* There is lots of room for tuning HDF5. Chunk sizes, filters (compression), using collective calls, are some of the things that could yield a performance increase.
 * About 50kb are used per element (8 node brick, with linear material). This is too much!
 * ParallelNumberer builds a graph of dofs and numbers them in P0, then distributing. This does not scale. (Might hurt performance for really large models, we haven't encountered these yet.)
 * Partitioning (graph construction) is also done in P0. 
+* 8NodeBrickLT and 27NodeBrickLT are generating material copies on P0... bad bad
 
 Bug fixes
 ---------
