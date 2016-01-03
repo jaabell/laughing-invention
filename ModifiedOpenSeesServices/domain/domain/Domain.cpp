@@ -4658,3 +4658,44 @@ int Domain::receiveOutputOptionsToSubdomains()
     cerr << "Domain::receiveOutputOptionsToSubdomains() - Should be done by subdomains";
     return 0;
 }
+
+int  Domain::zeroDisplacements()
+{
+    Node *nodePtr;
+    NodeIter &theNodeIter = this->getNodes();
+
+    while ( ( nodePtr = theNodeIter() ) != 0 )
+    {
+        nodePtr->zeroDisplacements();
+    }
+
+    return 0;
+}
+
+int Domain::setConstitutiveIntegrationMethod(int algorithm,
+        double f_relative_tol, double stress_relative_tol, int n_max_iterations)
+{
+    int errorflag = -1;
+    int rank = 0;
+
+
+// #ifdef _PARALLEL_PROCESSING
+//     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+//     cout << "setConstitutiveIntegrationMethod(" << rank << ") - \n";
+//     cout << "algorithm = " << algorithm << endl;
+//     cout << "f_relative_tol = " << f_relative_tol << endl;
+//     cout << "stress_relative_tol = " << stress_relative_tol << endl;
+//     cout << "n_max_iterations = " << n_max_iterations << endl;
+// #endif
+
+
+    if ((errorflag = NDMaterialLT::set_constitutive_integration_method(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations)))
+    {
+        errorflag = 0;
+    }
+    else
+    {
+        cerr << "define_NDMaterialLT_constitutive_integration_algorithm() - Error. Constitutive algorithm not available.\n";
+    }
+    return errorflag;
+}

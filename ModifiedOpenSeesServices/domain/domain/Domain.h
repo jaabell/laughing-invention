@@ -1,4 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////
 //
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
@@ -381,6 +380,9 @@ public:
     virtual int sendOutputOptionsToSubdomains();
     virtual int receiveOutputOptionsToSubdomains();
 
+    virtual int zeroDisplacements();
+    virtual int setConstitutiveIntegrationMethod(int algorithm,
+            double f_relative_tol, double stress_relative_tol, int n_max_iterations);
 
 protected:
     virtual int buildEleGraph(Graph *theEleGraph);
