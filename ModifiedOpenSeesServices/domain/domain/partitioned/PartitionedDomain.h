@@ -52,124 +52,125 @@ class SingleDomEleIter;
 
 class PartitionedDomain: public Domain
 {
-    public:
-        PartitionedDomain();
-        PartitionedDomain(DomainPartitioner &thePartitioner);
+public:
+    PartitionedDomain();
+    PartitionedDomain(DomainPartitioner &thePartitioner);
 
-        PartitionedDomain(int numNodes, int numElements,
-                          int numSPs, int numMPs, int numLoadPatterns,
-                          int numUniaxialMat, int numNDMaterial, int numNDMaterialLT, int numSections, //Added by Babak on December 2012
-                          int numofSectionRepresents, int num3dGeomTransfs,//Added by Babak on December 2012
-                          int nummultipleexcitation, int numBodyForces, int numDamping,//Added by Babak on December 2012
-                          int numSubdomains,
-                          DomainPartitioner &thePartitioner);
+    PartitionedDomain(int numNodes, int numElements,
+                      int numSPs, int numMPs, int numLoadPatterns,
+                      int numUniaxialMat, int numNDMaterial, int numNDMaterialLT, int numSections, //Added by Babak on December 2012
+                      int numofSectionRepresents, int num3dGeomTransfs,//Added by Babak on December 2012
+                      int nummultipleexcitation, int numBodyForces, int numDamping,//Added by Babak on December 2012
+                      int numSubdomains,
+                      DomainPartitioner &thePartitioner);
 
-        virtual  ~PartitionedDomain();
+    virtual  ~PartitionedDomain();
 
-        // public methods to populate a domain
-        virtual  bool addElement(Element *elePtr);
-        virtual  bool addNode(Node *nodePtr);
+    // public methods to populate a domain
+    virtual  bool addElement(Element *elePtr);
+    virtual  bool addNode(Node *nodePtr);
 
-        virtual  bool addLoadPattern(LoadPattern *);
-        virtual  bool addSP_Constraint(SP_Constraint *);
-        virtual  bool addMP_Constraint(MP_Constraint *); //Guanzhou added
-        virtual  bool addSP_Constraint(SP_Constraint *, int loadPatternTag);
-        virtual  bool addNodalLoad(NodalLoad *, int loadPatternTag);
-        virtual  bool addElementalLoad(ElementalLoad *, int loadPatternTag);
+    virtual  bool addLoadPattern(LoadPattern *);
+    virtual  bool addSP_Constraint(SP_Constraint *);
+    virtual  bool addMP_Constraint(MP_Constraint *); //Guanzhou added
+    virtual  bool addSP_Constraint(SP_Constraint *, int loadPatternTag);
+    virtual  bool addNodalLoad(NodalLoad *, int loadPatternTag);
+    virtual  bool addElementalLoad(ElementalLoad *, int loadPatternTag);
 
-        // methods to remove the components
-        virtual void clearAll(void);
-        virtual Element *removeElement(int tag);
-        virtual Node *removeNode(int tag);
-        virtual SP_Constraint *removeSP_Constraint(int tag);
-        virtual MP_Constraint *removeMP_Constraint(int tag);
-        virtual LoadPattern *removeLoadPattern(int tag);
+    // methods to remove the components
+    virtual void clearAll(void);
+    virtual Element *removeElement(int tag);
+    virtual Node *removeNode(int tag);
+    virtual SP_Constraint *removeSP_Constraint(int tag);
+    virtual MP_Constraint *removeMP_Constraint(int tag);
+    virtual LoadPattern *removeLoadPattern(int tag);
 
-        // methods to access the elements
-        virtual  ElementIter       &getElements();
-        virtual  Element           *getElement(int tag);
+    // methods to access the elements
+    virtual  ElementIter       &getElements();
+    virtual  Element           *getElement(int tag);
 
-        virtual  Node              *getNode(int tag);
+    virtual  Node              *getNode(int tag);
 
-        virtual  int        getNumElements(void) const;
+    virtual  int        getNumElements(void) const;
 
-        // public methods to update the domain
-        virtual  void setCommitTag(int newTag);
-        virtual  void setCurrentTime(double newTime);
-        virtual  void setCommittedTime(double newTime);
-        virtual  void applyLoad(double pseudoTime);
-        virtual  void setLoadConstant(void);
+    // public methods to update the domain
+    virtual  void setCommitTag(int newTag);
+    virtual  void setCurrentTime(double newTime);
+    virtual  void setCommittedTime(double newTime);
+    virtual  void applyLoad(double pseudoTime);
+    virtual  void setLoadConstant(void);
 
-        virtual  int commit(void);
-        virtual  int revertToLastCommit(void);
-        virtual  int revertToStart(void);
-        virtual  int update(void);
-        virtual  int update(double newTime, double dT);
-        virtual  int newStep(double dT);
+    virtual  int commit(void);
+    virtual  int revertToLastCommit(void);
+    virtual  int revertToStart(void);
+    virtual  int update(void);
+    virtual  int update(double newTime, double dT);
+    virtual  int newStep(double dT);
 
 
-        // virtual int  addRecorder(Recorder& theRecorder);
-        // virtual int  removeRecorders(void);
+    // virtual int  addRecorder(Recorder& theRecorder);
+    // virtual int  removeRecorders(void);
 
-        virtual  void Print(ostream &s, int flag = 0);
+    virtual  void Print(ostream &s, int flag = 0);
 
-        // public member functions in addition to the standard domain
-        virtual int setPartitioner(DomainPartitioner *thePartitioner);
-        virtual int partition(int numPartitions);
+    // public member functions in addition to the standard domain
+    virtual int setPartitioner(DomainPartitioner *thePartitioner);
+    virtual int partition(int numPartitions);
 
 # ifdef _PDD
-        virtual int repartition(int numPartitions);
+    virtual int repartition(int numPartitions);
 # endif
 #ifdef _PARALLEL_PROCESSING
-        //Guanzhou added this func
-        virtual int resetMultipleSupport(const int loadPatternTag);
+    //Guanzhou added this func
+    virtual int resetMultipleSupport(const int loadPatternTag);
 #endif
-        //Guanzhou added
-        virtual bool addSubdomain(Subdomain *theSubdomain);
-        virtual int getNumSubdomains(void);
-        virtual Subdomain *getSubdomainPtr(int tag);
-        virtual SubdomainIter &getSubdomains(void);
-        virtual Node *removeExternalNode(int tag);
-        virtual Graph &getSubdomainGraph(void);
-        virtual Node *getOutsideNode(int tag);
-        /*    virtual BodyForce  *removeBodyForce(int tag); //Added by Babak on October 2012 (it is Domain and should be implemented in all of inhereted classes)
-            virtual Damping  *removeDamping(int tag); */ //Added by Babak on October 2012 (it is Domain and should be implemented in all of inhereted classes)
-        virtual  int return_element_numberofNodes(int);
+    //Guanzhou added
+    virtual bool addSubdomain(Subdomain *theSubdomain);
+    virtual int getNumSubdomains(void);
+    virtual Subdomain *getSubdomainPtr(int tag);
+    virtual SubdomainIter &getSubdomains(void);
+    virtual Node *removeExternalNode(int tag);
+    virtual Graph &getSubdomainGraph(void);
+    virtual Node *getOutsideNode(int tag);
+    /*    virtual BodyForce  *removeBodyForce(int tag); //Added by Babak on October 2012 (it is Domain and should be implemented in all of inhereted classes)
+        virtual Damping  *removeDamping(int tag); */ //Added by Babak on October 2012 (it is Domain and should be implemented in all of inhereted classes)
+    virtual  int return_element_numberofNodes(int);
 
-        // friend classes
-        friend class PartitionedDomainEleIter;
-
-
-        // For output control
-        // virtual int setNumberOfOutputSteps(int nsteps);
-        // virtual int setOutputEveryNsteps(int output_every_nsteps);
-
-        // virtual int enableOutput(bool is_output_enabled);
-        // virtual int enableElementOutput(bool is_element_output_enabled);
+    // friend classes
+    friend class PartitionedDomainEleIter;
 
 
-        virtual int sendOutputOptionsToSubdomains();
+    // For output control
+    // virtual int setNumberOfOutputSteps(int nsteps);
+    // virtual int setOutputEveryNsteps(int output_every_nsteps);
+
+    // virtual int enableOutput(bool is_output_enabled);
+    // virtual int enableElementOutput(bool is_element_output_enabled);
 
 
-    protected:
-        int barrierCheck(int result);
-        DomainPartitioner *getPartitioner(void) const;
-        virtual int buildEleGraph(Graph *theEleGraph);
+    virtual int sendOutputOptionsToSubdomains();
+    virtual int setConstitutiveIntegrationMethod(int algorithm,
+            double f_relative_tol, double stress_relative_tol, int n_max_iterations);
 
-    private:
-        TaggedObjectStorage  *elements;
-        ArrayOfTaggedObjects *theSubdomains;
-        DomainPartitioner    *theDomainPartitioner;
+protected:
+    int barrierCheck(int result);
+    DomainPartitioner *getPartitioner(void) const;
+    virtual int buildEleGraph(Graph *theEleGraph);
 
-        SingleDomEleIter           *mainEleIter;  // for ele that belong to elements
-        PartitionedDomainSubIter   *theSubdomainIter;
-        PartitionedDomainEleIter   *theEleIter;
+private:
+    TaggedObjectStorage  *elements;
+    ArrayOfTaggedObjects *theSubdomains;
+    DomainPartitioner    *theDomainPartitioner;
 
-        Graph *mySubdomainGraph;    // a graph of subdomain connectivity
-        int *Element_Node_Number_List; // store the number of each element's node added by babak at 2/25/13 Element_Node_Number_List(eleTag) = Number of nodes for the element  # EleTag-1
-        int numberofDomainElements;   // store the number elements added by babak at 2/25/13
+    SingleDomEleIter           *mainEleIter;  // for ele that belong to elements
+    PartitionedDomainSubIter   *theSubdomainIter;
+    PartitionedDomainEleIter   *theEleIter;
 
-        bool have_populated_static_mesh_data;
+    Graph *mySubdomainGraph;    // a graph of subdomain connectivity
+    int *Element_Node_Number_List; // store the number of each element's node added by babak at 2/25/13 Element_Node_Number_List(eleTag) = Number of nodes for the element  # EleTag-1
+    int numberofDomainElements;   // store the number elements added by babak at 2/25/13
+
+    bool have_populated_static_mesh_data;
 
 };
 

@@ -963,7 +963,7 @@ int Element::getOutputSize() const
     return 0;
 }
 
-const Vector &Element::getOutput() const
+const Vector &Element::getOutput()
 {
     cerr << "Element::getOutput() -- Subclass responsability.\n\n";
     return *SizedVector1;

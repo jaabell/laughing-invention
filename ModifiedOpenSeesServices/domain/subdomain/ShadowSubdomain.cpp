@@ -1647,3 +1647,35 @@ int ShadowSubdomain::sendOutputOptionsToSubdomain()
 }
 
 
+
+int ShadowSubdomain::setConstitutiveIntegrationMethod(int algorithm,
+        double f_relative_tol, double stress_relative_tol, int n_max_iterations)
+{
+
+    // cout << "ShadowSubdomain # " << this->getTag() << " sending info\n";
+
+    msgData(0) = ShadowActorSubdomain_setConstitutiveIntegrationMethod;
+
+    this->sendID(msgData);
+
+    Vector dbl_data(4);
+    dbl_data(0) = algorithm;
+    dbl_data(1) = f_relative_tol;
+    dbl_data(2) = stress_relative_tol;
+    dbl_data(3) = n_max_iterations;
+
+    this->sendVector(dbl_data);
+
+    return 0;
+
+    // int errorflag = -1;
+    // if ((errorflag = NDMaterialLT::set_constitutive_integration_method(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations)))
+    // {
+    //     errorflag = 0;
+    // }
+    // else
+    // {
+    //     cerr << "define_NDMaterialLT_constitutive_integration_algorithm() - Error. Constitutive algorithm not available.\n";
+    // }
+    // return errorflag;
+}

@@ -137,7 +137,7 @@ public:
 
 
     virtual int getOutputSize() const;
-    virtual const Vector &getOutput() const;
+    virtual const Vector &getOutput();
 
     //virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
     virtual int sendSelf ( int commitTag, Channel &theChannel );

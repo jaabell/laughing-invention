@@ -1306,3 +1306,4 @@ const Vector &Subdomain::getOutput() const
     // cerr << "Subdomain::getOutput() -- Subclass responsability.\n\n";
     return *Element::SizedVector1;
 }
+

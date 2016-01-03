@@ -1968,34 +1968,21 @@ int PartitionedDomain::sendOutputOptionsToSubdomains()
     return 0;
 }
 
-// int
-// PartitionedDomain::setOutputWriter(std::string filename_in,
-//                                    std::string model_name_in,
-//                                    std::string stage_name_in,
-//                                    int nsteps)
-// {
-//     theOutputWriter.initialize(filename_in, model_name_in, stage_name_in, nsteps);
-//     have_written_static_mesh_data = false;
 
-//     while ((theSub = theSubdomains()) != 0)
-//     {
-//         // Output options
-//         // butput_is_enabled;
-//         // bool element_output_is_enabled;
-//         // bool have_written_static_mesh_data;
-//         // int  output_every_nsteps;
-//         // int  countdown_til_output;
+int PartitionedDomain::setConstitutiveIntegrationMethod(int algorithm,
+        double f_relative_tol, double stress_relative_tol, int n_max_iterations)
+{
 
-//         theSub->setNumberOfOutputSteps(theOutputWriter.get_number_of_time_steps());
-//         theSub->enableOutput(output_is_enabled);
-//         theSub->enableElementOutput(element_output_is_enabled);
-//         theSub->setOutputEveryNsteps(output_every_nsteps);
-//         theSub->setOutputCompressionLevel(theOutputWriter.get_zlib_compression_level());
-//         theSub->sendOutputOptionsToSubdomain();
+    SubdomainIter &theSubdomains = this->getSubdomains();
+    Subdomain *theSub;
 
-//     }
+    while ((theSub = theSubdomains()) != 0)
+    {
+        cout << "Sending to subdomain " << theSub->getTag() << endl;
+        theSub->setConstitutiveIntegrationMethod( algorithm,
+                f_relative_tol,  stress_relative_tol,  n_max_iterations);
+    }
 
-
-//     return 0;
-// }
-
+    return Domain::setConstitutiveIntegrationMethod( algorithm,
+            f_relative_tol,  stress_relative_tol,  n_max_iterations);
+}

@@ -131,7 +131,12 @@ ActorSubdomain::run(void)
         LinearSOESolver              *theSolver;
         ConvergenceTest              *theTest;
         ID                           options(7);
-        bool res;
+        Vector                       dbl_options(4);
+        int                           algorithm;
+        double                        f_relative_tol;
+        double                        stress_relative_tol;
+        int                           n_max_iterations;
+        bool                          res;
         DOF_Group *pDOF_Group;
 
         const ID *theID;
@@ -998,9 +1003,6 @@ ActorSubdomain::run(void)
             break;
 
 
-
-#ifdef _PDD
-
         case ShadowActorSubdomain_Partition: //Guanzhou added
             this->partition(msgData(1));
             break;
@@ -1084,7 +1086,24 @@ ActorSubdomain::run(void)
 
             break;
 
-#endif
+        case ShadowActorSubdomain_setConstitutiveIntegrationMethod:
+            // dbl_options(4);
+
+            this->receiveVector(dbl_options);
+            algorithm             = dbl_options(0) ;
+            f_relative_tol     = dbl_options(1) ;
+            stress_relative_tol = dbl_options(2) ;
+            n_max_iterations           = dbl_options(3) ;
+            // cout << "  + ActorSubdomain # " << this->getTag() << " got\n";
+            // cout << "    algorithm = " << algorithm << endl;
+            // cout << "    f_relative_tol = " << f_relative_tol << endl;
+            // cout << "    stress_relative_tol = " << stress_relative_tol << endl;
+            // cout << "    n_max_iterations = " << n_max_iterations << endl;
+
+            Domain::setConstitutiveIntegrationMethod( algorithm,
+                    f_relative_tol,  stress_relative_tol,  n_max_iterations);
+
+            break;
 
         default:
             cerr << "ActorSubdomain::invalid action " << action << "received\n";

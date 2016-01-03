@@ -104,5 +104,6 @@ static const int ShadowActorSubdomain_swapNodeFromInternalToExternal = 70;
 static const int ShadowActorSubdomain_update                         = 71;
 static const int ShadowActorSubdomain_updateTimeDt                   = 72;
 static const int Subdomain_Redistribution_DONE                       = 73;
+static const int ShadowActorSubdomain_setConstitutiveIntegrationMethod  = 74;
 
 

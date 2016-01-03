@@ -196,6 +196,8 @@ public:
     virtual int setAnalysisIntegrator(IncrementalIntegrator &theIntegrator);
     virtual int setAnalysisLinearSOE(LinearSOE &theSOE);
     virtual int setAnalysisConvergenceTest(ConvergenceTest &theTest);
+    // virtual int setConstitutiveIntegrationMethod(int algorithm,
+    // double f_relative_tol, double stress_relative_tol, int n_max_iterations);
     virtual int invokeChangeOnAnalysis(void);
 
     // Element methods which must be written
@@ -248,6 +250,9 @@ public:
     int getOutputSize() const;
 
     const Vector &getOutput() const;
+
+    // virtual int setConstitutiveIntegrationMethod(int algorithm,
+    // double f_relative_tol, double stress_relative_tol, int n_max_iterations);
 
 
 protected:

@@ -121,6 +121,9 @@ public:
     virtual int setAnalysisIntegrator(IncrementalIntegrator &theIntegrator);
     virtual int setAnalysisLinearSOE(LinearSOE &theSOE);
     virtual int setAnalysisConvergenceTest(ConvergenceTest &theTest);
+    virtual int setConstitutiveIntegrationMethod(int algorithm,
+            double f_relative_tol, double stress_relative_tol, int n_max_iterations);
+
     virtual void clearAnalysis(void);
     virtual void domainChange(void);
 

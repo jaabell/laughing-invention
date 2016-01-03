@@ -29,16 +29,28 @@ int define_NDMaterialLT_constitutive_integration_algorithm(int algorithm,
         double f_relative_tol, double stress_relative_tol, int n_max_iterations)
 {
     int errorflag = -1;
-    cout << "define_NDMaterialLT_constitutive_integration_algorithm() - Setting method to " << algorithm << endl;
 
-    if ((errorflag = NDMaterialLT::set_constitutive_integration_method(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations)))
-    {
-        errorflag = 0;
-    }
-    else
-    {
-        cerr << "define_NDMaterialLT_constitutive_integration_algorithm() - Error. Constitutive algorithm not available.\n";
-    }
+    theDomain.setConstitutiveIntegrationMethod(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations);
+//     cout << "define_NDMaterialLT_constitutive_integration_algorithm() - Setting method to " << algorithm << endl;
+
+//     if ((errorflag = NDMaterialLT::set_constitutive_integration_method(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations)))
+//     {
+//         errorflag = 0;
+//     }
+//     else
+//     {
+//         cerr << "define_NDMaterialLT_constitutive_integration_algorithm() - Error. Constitutive algorithm not available.\n";
+//     }
+
+// #ifdef _PARALLEL_PROCESSING
+//     SubdomainIter &theSubdomains = theDomain.getSubdomains();
+//     Subdomain *theSub = 0;
+
+//     while ((theSub = theSubdomains()) != 0)
+//     {
+//         theSub->setConstitutiveIntegrationMethod(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations);
+//     }
+// #endif
 
     return errorflag;
 };
