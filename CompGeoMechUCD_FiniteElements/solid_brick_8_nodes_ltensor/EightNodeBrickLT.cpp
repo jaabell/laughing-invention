@@ -2001,7 +2001,7 @@ Matrix &EightNodeBrickLT::getGaussCoordinates(void)
     return gauss_points;
 }
 
-int EightNodeBrickLT::getOutputSize()
+int EightNodeBrickLT::getOutputSize() const
 {
     return EightNodeBrickLT_OUTPUT_SIZE ;
 }
