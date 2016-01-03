@@ -5,7 +5,7 @@
 // PROJECT:            Real ESSI Simulator
 // PROGRAMMER:         Jose Abell
 // DATE:               Nov 2014
-// UPDATE HISTORY:     Full update history in git repository.
+// comTE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation
 //                     and with that can claim quality and fitness for intended
@@ -788,6 +788,12 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
 
         Element *theElement = theDomain->getElement( (*Elements)[0] );
         int NIE = theElement->getNumExternalNodes();
+
+        if (t >= tfinal)
+        {
+            DRMForces->Zero();
+            return;
+        }
 
 
         t1 = t2 = 0;
