@@ -597,14 +597,6 @@ const DTensor1 &TwentySevenNodeBrickLT::interp_poli_at( double r1, double r2, do
     h( 25 ) = ( 1.0 ) * ( 1.0 ) * ( 1.0 + r3 ) * (r3) / 2.0;
     h( 26 ) = ( 1.0 ) * ( 1.0 ) * ( 1.0 - r3 ) * (-r3) / 2.0;
 
-
-
-
-
-
-
-
-
     return h;
 }
 
@@ -1385,24 +1377,31 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
     NodalCoord( 0, 0 ) = nd1Crds( 0 );
     NodalCoord( 1, 0 ) = nd1Crds( 1 );
     NodalCoord( 2, 0 ) = nd1Crds( 2 );
+
     NodalCoord( 0, 1 ) = nd2Crds( 0 );
     NodalCoord( 1, 1 ) = nd2Crds( 1 );
     NodalCoord( 2, 1 ) = nd2Crds( 2 );
+
     NodalCoord( 0, 2 ) = nd3Crds( 0 );
     NodalCoord( 1, 2 ) = nd3Crds( 1 );
     NodalCoord( 2, 2 ) = nd3Crds( 2 );
+
     NodalCoord( 0, 3 ) = nd4Crds( 0 );
     NodalCoord( 1, 3 ) = nd4Crds( 1 );
     NodalCoord( 2, 3 ) = nd4Crds( 2 );
+
     NodalCoord( 0, 4 ) = nd5Crds( 0 );
     NodalCoord( 1, 4 ) = nd5Crds( 1 );
     NodalCoord( 2, 4 ) = nd5Crds( 2 );
+
     NodalCoord( 0, 5 ) = nd6Crds( 0 );
     NodalCoord( 1, 5 ) = nd6Crds( 1 );
     NodalCoord( 2, 5 ) = nd6Crds( 2 );
+
     NodalCoord( 0, 6 ) = nd7Crds( 0 );
     NodalCoord( 1, 6 ) = nd7Crds( 1 );
     NodalCoord( 2, 6 ) = nd7Crds( 2 );
+
     NodalCoord( 0, 7 ) = nd8Crds( 0 );
     NodalCoord( 1, 7 ) = nd8Crds( 1 );
     NodalCoord( 2, 7 ) = nd8Crds( 2 );
@@ -1410,12 +1409,15 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
     NodalCoord(0, 8) = nd9Crds( 0);
     NodalCoord(1, 8) = nd9Crds( 1);
     NodalCoord(2, 8) = nd9Crds( 2);
+
     NodalCoord(0, 9) = nd10Crds(0);
     NodalCoord(1, 9) = nd10Crds(1);
     NodalCoord(2, 9) = nd10Crds(2);
+
     NodalCoord(0, 10) = nd11Crds(0);
     NodalCoord(1, 10) = nd11Crds(1);
     NodalCoord(2, 10) = nd11Crds(2);
+
     NodalCoord(0, 11) = nd12Crds(0);
     NodalCoord(1, 11) = nd12Crds(1);
     NodalCoord(2, 11) = nd12Crds(2);
@@ -1423,12 +1425,15 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
     NodalCoord(0, 12) = nd13Crds(0);
     NodalCoord(1, 12) = nd13Crds(1);
     NodalCoord(2, 12) = nd13Crds(2);
+
     NodalCoord(0, 13) = nd14Crds(0);
     NodalCoord(1, 13) = nd14Crds(1);
     NodalCoord(2, 13) = nd14Crds(2);
+
     NodalCoord(0, 14) = nd15Crds(0);
     NodalCoord(1, 14) = nd15Crds(1);
     NodalCoord(2, 14) = nd15Crds(2);
+
     NodalCoord(0, 15) = nd16Crds(0);
     NodalCoord(1, 15) = nd16Crds(1);
     NodalCoord(2, 15) = nd16Crds(2);
@@ -1436,12 +1441,15 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
     NodalCoord(0, 16) = nd17Crds(0);
     NodalCoord(1, 16) = nd17Crds(1);
     NodalCoord(2, 16) = nd17Crds(2);
+
     NodalCoord(0, 17) = nd18Crds(0);
     NodalCoord(1, 17) = nd18Crds(1);
     NodalCoord(2, 17) = nd18Crds(2);
+
     NodalCoord(0, 18) = nd19Crds(0);
     NodalCoord(1, 18) = nd19Crds(1);
     NodalCoord(2, 18) = nd19Crds(2);
+
     NodalCoord(0, 19) = nd20Crds(0);
     NodalCoord(1, 19) = nd20Crds(1);
     NodalCoord(2, 19) = nd20Crds(2);
@@ -1449,21 +1457,27 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
     NodalCoord(0, 20) = nd21Crds(0);
     NodalCoord(1, 20) = nd21Crds(1);
     NodalCoord(2, 20) = nd21Crds(2);
+
     NodalCoord(0, 21) = nd22Crds(0);
     NodalCoord(1, 21) = nd22Crds(1);
     NodalCoord(2, 21) = nd22Crds(2);
+
     NodalCoord(0, 22) = nd23Crds(0);
     NodalCoord(1, 22) = nd23Crds(1);
     NodalCoord(2, 22) = nd23Crds(2);
+
     NodalCoord(0, 23) = nd24Crds(0);
     NodalCoord(1, 23) = nd24Crds(1);
     NodalCoord(2, 23) = nd24Crds(2);
+
     NodalCoord(0, 24) = nd25Crds(0);
     NodalCoord(1, 24) = nd25Crds(1);
     NodalCoord(2, 24) = nd25Crds(2);
+
     NodalCoord(0, 25) = nd26Crds(0);
     NodalCoord(1, 25) = nd26Crds(1);
     NodalCoord(2, 25) = nd26Crds(2);
+
     NodalCoord(0, 26) = nd27Crds(0);
     NodalCoord(1, 26) = nd27Crds(1);
     NodalCoord(2, 26) = nd27Crds(2);
@@ -1475,7 +1489,6 @@ void TwentySevenNodeBrickLT::computeGaussPoint()
         s = gp_coords(gp, 1);
         t = gp_coords(gp, 2);
 
-        // derivatives of local coordinates with respect to local coordinates
         H = H_3D( r, s, t );
 
         for ( int encount = 0 ; encount < 27 ; encount++ )
@@ -1919,9 +1932,6 @@ int TwentySevenNodeBrickLT::commitState ()
     {
         retVal += material_array[ii]->commitState();
     }
-
-    formOutput();
-
 
     return retVal;
 }
@@ -3462,8 +3472,9 @@ int TwentySevenNodeBrickLT::getOutputSize() const
 
 
 
-const Vector &TwentySevenNodeBrickLT::getOutput() const
+const Vector &TwentySevenNodeBrickLT::getOutput()
 {
+    formOutput();
     return outputVector;
 }
 
