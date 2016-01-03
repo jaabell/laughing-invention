@@ -249,7 +249,7 @@ public:
 
     int getOutputSize() const;
 
-    const Vector &getOutput() const;
+    const Vector &getOutput() ;
 
     // virtual int setConstitutiveIntegrationMethod(int algorithm,
     // double f_relative_tol, double stress_relative_tol, int n_max_iterations);

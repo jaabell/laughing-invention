@@ -149,7 +149,7 @@ public:
 
     Matrix &getGaussCoordinates(void);
     virtual int getOutputSize() const;
-    virtual const Vector &getOutput() const;
+    virtual const Vector &getOutput() ;
 
     std::string getElementName() const
     {

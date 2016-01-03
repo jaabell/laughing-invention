@@ -1657,7 +1657,7 @@ int EightNodeBrick_u_p_U::getOutputSize() const
 
 
 
-const Vector &EightNodeBrick_u_p_U::getOutput() const
+const Vector &EightNodeBrick_u_p_U::getOutput()
 {
 
 

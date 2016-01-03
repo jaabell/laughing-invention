@@ -120,7 +120,7 @@ public:
 
     // Output interface functions
     int getOutputSize() const;
-    const Vector &getOutput() const;
+    const Vector &getOutput() ;
     Matrix &getGaussCoordinates(void);
 
 

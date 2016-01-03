@@ -306,9 +306,6 @@ Truss::commitState()
 
     retVal = theMaterial->commitState();
 
-    outputVector(0) = theMaterial->getStrain() * L;
-    outputVector(1) = theMaterial->getStress() * A;
-
 
     return retVal;
 }
@@ -1001,7 +998,11 @@ int Truss::getOutputSize() const
     return Truss_OUTPUT_SIZE;
 }
 
-const Vector &Truss::getOutput() const
+const Vector &Truss::getOutput()
 {
+    outputVector(0) = theMaterial->getStrain() * L;
+    outputVector(1) = theMaterial->getStress() * A;
+
+
     return outputVector;
 }

@@ -496,7 +496,7 @@ int NewElementTemplate::getOutputSize() const
 // Output interface functions
 //   * Input: void
 //   * Output: Vector (array of doubles) with the element output.
-const Vector &NewElementTemplate::getOutput() const
+const Vector &NewElementTemplate::getOutput()
 {
     you must implement
 }

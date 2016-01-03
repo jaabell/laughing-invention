@@ -234,7 +234,7 @@ int ShearBeamLT::commitState ()
     retVal += material_array[0]->commitState();
 
 
-    formOutput();
+    // formOutput();
 
     return retVal;
 }
@@ -903,8 +903,9 @@ int ShearBeamLT::getOutputSize() const
 }
 
 
-const Vector &ShearBeamLT::getOutput() const
+const Vector &ShearBeamLT::getOutput()
 {
+    formOutput();
     return outputVector;
 }
 

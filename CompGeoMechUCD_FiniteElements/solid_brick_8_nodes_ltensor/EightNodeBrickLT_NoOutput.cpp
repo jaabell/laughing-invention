@@ -63,7 +63,7 @@ int EightNodeBrickLT_NoOutput::getOutputSize() const
 
 
 
-const Vector &EightNodeBrickLT_NoOutput::getOutput() const
+const Vector &EightNodeBrickLT_NoOutput::getOutput()
 {
     return *Element::SizedVector1;
 }

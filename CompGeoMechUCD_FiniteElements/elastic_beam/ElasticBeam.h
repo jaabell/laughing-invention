@@ -90,7 +90,7 @@ public:
     const Vector &getResistingForceIncInertia(void);
 
     virtual int getOutputSize() const;
-    virtual const Vector &getOutput() const;
+    virtual const Vector &getOutput() ;
 
 
     // int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);

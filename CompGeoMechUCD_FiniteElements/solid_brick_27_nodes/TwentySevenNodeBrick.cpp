@@ -3855,7 +3855,7 @@ int TwentySevenNodeBrick::getOutputSize() const
 
 
 
-const Vector &TwentySevenNodeBrick::getOutput() const
+const Vector &TwentySevenNodeBrick::getOutput()
 {
 
 

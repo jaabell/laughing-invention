@@ -365,7 +365,7 @@ void FourNodeAndesShell::setDomain(Domain *theDomain)
 
 int FourNodeAndesShell::commitState ()
 {
-    compute_internal_forces();  //writes output vector too!
+    // compute_internal_forces();  //writes output vector too!
 
     return 0;
 }
@@ -1039,8 +1039,9 @@ int FourNodeAndesShell::getOutputSize() const
 
 
 
-const Vector &FourNodeAndesShell::getOutput() const
+const Vector &FourNodeAndesShell::getOutput()
 {
+    compute_internal_forces();
     return outputVector;
 }
 

@@ -7251,7 +7251,7 @@ int TwentySevenNodeBrickElastic::getOutputSize() const
 
 
 
-const Vector &TwentySevenNodeBrickElastic::getOutput() const
+const Vector &TwentySevenNodeBrickElastic::getOutput()
 {
 
 

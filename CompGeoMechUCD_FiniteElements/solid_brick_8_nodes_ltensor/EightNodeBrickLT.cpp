@@ -2001,14 +2001,14 @@ Matrix &EightNodeBrickLT::getGaussCoordinates(void)
     return gauss_points;
 }
 
-int EightNodeBrickLT::getOutputSize() const
+int EightNodeBrickLT::getOutputSize()
 {
     return EightNodeBrickLT_OUTPUT_SIZE ;
 }
 
 
 
-const Vector &EightNodeBrickLT::getOutput() const
+const Vector &EightNodeBrickLT::getOutput()
 {
 
     //Form the output vector

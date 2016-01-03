@@ -1188,7 +1188,7 @@ int rank_one_deficient_elastic_pinned_fixed_beam::getOutputSize() const
 
 
 
-const Vector &rank_one_deficient_elastic_pinned_fixed_beam::getOutput() const
+const Vector &rank_one_deficient_elastic_pinned_fixed_beam::getOutput()
 {
     return outputVector;
 }

@@ -167,7 +167,7 @@ public:
 
     Matrix &getGaussCoordinates(void);
     virtual int getOutputSize() const;
-    virtual const Vector &getOutput() const;
+    virtual const Vector &getOutput() ;
 
     //     int getDampingTag(void);
     //     double getDamping_a0(void);

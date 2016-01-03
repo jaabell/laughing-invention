@@ -6118,7 +6118,6 @@ Matrix &EightNodeBrickElastic::getGaussCoordinates(void)
 }
 
 
-
 int EightNodeBrickElastic::getOutputSize() const
 {
     return EightNodeBrickElastic_OUTPUT_SIZE;
@@ -6126,7 +6125,7 @@ int EightNodeBrickElastic::getOutputSize() const
 
 
 
-const Vector &EightNodeBrickElastic::getOutput() const
+const Vector &EightNodeBrickElastic::getOutput()
 {
 
 

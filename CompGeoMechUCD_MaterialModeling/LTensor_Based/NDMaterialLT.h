@@ -114,7 +114,7 @@ public:
         return 0; // Can be overloaded for material point output
     }
 
-    const Vector & getOutput() const
+    const Vector & getOutput()
     {
         return errVectorVector;
     }

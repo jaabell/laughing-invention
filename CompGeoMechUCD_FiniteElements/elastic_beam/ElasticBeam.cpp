@@ -224,10 +224,6 @@ ElasticBeam::commitState()
 {
     int retVal = 0;
 
-    formOutputVector();
-
-
-
     // call element commitState to do any base class stuff
     if ((retVal = this->Element::commitState()) != 0)
     {
@@ -1304,8 +1300,9 @@ int ElasticBeam::getOutputSize() const
     return ELASTIC_BEAM_OUTPUT_SIZE;
 }
 
-const Vector &ElasticBeam::getOutput() const
+const Vector &ElasticBeam::getOutput()
 {
+    formOutputVector();
     return outputVector;
 }
 

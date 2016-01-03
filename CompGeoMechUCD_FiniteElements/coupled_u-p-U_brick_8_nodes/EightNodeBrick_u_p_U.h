@@ -189,7 +189,7 @@ private:
     //Jose Added for output
     Matrix &getGaussCoordinates(void);
     virtual int getOutputSize() const;
-    virtual const Vector &getOutput() const;
+    virtual const Vector &getOutput() ;
 
 private:
     ID  connectedExternalNodes;    // tags of nodes
