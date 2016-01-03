@@ -156,6 +156,7 @@ public:
 
     virtual bool operator==(const Node &rhs) const;
 
+    virtual int zeroDisplacements();
 
 
 private:

@@ -2183,3 +2183,31 @@ Node::operator==(const Node &rhs) const
 
 
 
+int Node::zeroDisplacements()
+{
+    if (commitDisp != 0)
+    {
+        commitDisp->Zero();
+    }
+    if (commitVel != 0)
+    {
+        commitVel->Zero();
+    }
+    if (commitAccel != 0)
+    {
+        commitAccel->Zero();
+    }
+    if (trialDisp != 0)
+    {
+        trialDisp->Zero();
+    }
+    if (trialVel != 0)
+    {
+        trialVel->Zero();
+    }
+    if (trialAccel != 0)
+    {
+        trialAccel->Zero();
+    }
+    return 0;
+}
