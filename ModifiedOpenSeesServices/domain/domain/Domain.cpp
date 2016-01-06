@@ -3294,7 +3294,49 @@ Domain::buildEleGraph( Graph * theEleGraph )
         }
     }
 
+    //Consider MP constraints (equal dof)
+    //=================================================== By J. Abell
+    // cycle over MP constraints, determine constrained and retained nodes
+    // assume these nodes are clones of each other, therefore
+    // add the adjacency of the retained node into the constrained node and
+    // vice versa
+    //
+    // This assumes that the nodes are equal even if only 1-dof is constrained.
+    //
 
+    int rank = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+
+    cout << "MP begin (" << rank << ")\n";
+    MP_Constraint *theMP = 0;
+    MP_ConstraintIter &theMPIter = this->getMPs();
+
+    while ( ( theMP = theMPIter() ) != 0 )
+    {
+        int cNode = theMP->getNodeConstrained();
+        int rNode = theMP->getNodeRetained();
+
+        cout << "MP(" << rank << ") c: " << cNode << " -> r: " << rNode << endl;
+
+        const ID &adj_c = theNodeTagVertices[cNode]->getAdjacency();
+        const ID &adj_r = theNodeTagVertices[rNode]->getAdjacency();
+
+        //Add constrained node adjacency into the retained one
+        for (int i = 0; i < adj_c.Size(); i++)
+        {
+            int eleTag = adj_c(i);
+            theNodeTagVertices[rNode]->addEdge(eleTag);
+        }
+        //Add retained node adjacency into the constrained one
+        for (int i = 0; i < adj_r.Size(); i++)
+        {
+            int eleTag = adj_r(i);
+            theNodeTagVertices[cNode]->addEdge(eleTag);
+        }
+    }
+    cout << "MP(" << rank << ") end\n";
 
     // now add the edges to the vertices of our element graph;
     // this is done by looping over the Node vertices, getting their

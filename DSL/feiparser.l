@@ -65,6 +65,9 @@
 	//#include <../boost/boost/lexical_cast.hpp>
 	#include <boost/lexical_cast.hpp>
 
+    #ifdef _PARALLEL_PROCESSING
+    #include <mpi.h>
+    #endif
 
 	int yycolumn = 1;
 	#define YY_DECL int yylex(yy::feiparser::semantic_type *yylval, \
@@ -1176,6 +1179,11 @@ int start_parser(int argc, char**argv)
 
 void signalHandler(int signum)
 {
+    #ifdef _PARALLEL_PROCESSING
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    cout << "(" << rank << ") ";
+    #endif
 	if(signum == SIGINT)
 	{
 		cout << "Caught SIGINT! Program ending." << endl;

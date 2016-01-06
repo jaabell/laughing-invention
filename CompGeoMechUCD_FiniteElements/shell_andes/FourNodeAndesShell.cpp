@@ -126,6 +126,7 @@ FourNodeAndesShell::FourNodeAndesShell()
         exit(-1);
     }
 
+    this->setNumberOfBoundaryNodes(2);
 
     //--------
 }
@@ -178,6 +179,9 @@ FourNodeAndesShell::FourNodeAndesShell(int element_number,
     triangle2 = new ThreeNodeAndesShell(element_number, node_numb_1, node_numb_3,  node_numb_4, t, theMaterial);
     triangle3 = new ThreeNodeAndesShell(element_number, node_numb_1, node_numb_2,  node_numb_4, t, theMaterial);
     triangle4 = new ThreeNodeAndesShell(element_number, node_numb_2, node_numb_3,  node_numb_4, t, theMaterial);
+
+    this->setNumberOfBoundaryNodes(2);
+
 
 }
 
