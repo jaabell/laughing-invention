@@ -36,6 +36,6 @@ essi:  $(OBJS)
 cleanall:
 	$(RM) $(RMFLAGS) $(OBJS) *.o core* *.out *.output 
 	$(RM) $(RMFLAGS) $(OBJS) *.tex *.txt fei.tags 
-	$(RM) $(RMFLAGS)  makedocumentation feiparser ../bin/essi 
+	$(RM) $(RMFLAGS)  makedocumentation feiparser 
 	
 clean: cleanall
