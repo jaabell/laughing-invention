@@ -1679,3 +1679,17 @@ int ShadowSubdomain::setConstitutiveIntegrationMethod(int algorithm,
     // }
     // return errorflag;
 }
+
+
+int ShadowSubdomain::getOutputSize() const
+{
+    // cerr << "ShadowSubdomain::getOutputSize() -- Subclass responsability.\n\n";
+    return 0;
+}
+
+const Vector &ShadowSubdomain::getOutput()
+{
+    // cerr << "ShadowSubdomain::getOutput() -- Subclass responsability.\n\n";
+    return *Element::SizedVector1;
+}
+

@@ -101,13 +101,13 @@ PetscSolver::solve(void)
     {
 
         //MatSetType(theSOE->A, matType);
-        cout << "PetscSolver::solve (" << processID_world << ") MatAssemblyBegin\n";
+        // cout << "PetscSolver::solve (" << processID_world << ") MatAssemblyBegin\n";
         ierr = MatAssemblyBegin(theSOE->A, MAT_FINAL_ASSEMBLY);
         CHKERRQ(ierr);
 
         ierr = MatAssemblyEnd(theSOE->A, MAT_FINAL_ASSEMBLY);
         CHKERRQ(ierr);
-        cout << "PetscSolver::solve (" << processID_world << ") MatAssemblyEnd\n";
+        // cout << "PetscSolver::solve (" << processID_world << ") MatAssemblyEnd\n";
 
 
         if (not is_KSP_initialized)

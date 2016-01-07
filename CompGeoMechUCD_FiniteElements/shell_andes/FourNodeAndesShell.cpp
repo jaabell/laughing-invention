@@ -1050,7 +1050,62 @@ const Vector &FourNodeAndesShell::getOutput()
 }
 
 
+int FourNodeAndesShell::getObjectSize()
+{
+    //Copied from EightNodeBrickLT (with modifications)
 
+    int size = sizeof(*this);
+    // ID  connectedExternalNodes;     // Tags of  nodes
+    size += 4 * sizeof(int); ///
+    // Node *theNodes[4];              // pointers to 3 nodes
+    size += 4 * sizeof(Node*); ///
+
+    // Pointers to other Domain components
+    // NDMaterial **theMaterial;        // pointer to the ND material object at Gauss point (considered constant throughout the element)
+    size +=  (*theMaterial)->getObjectSize();
+
+    // Finite element matrices
+    // Matrix K;                       // Element stiffness Matrix
+    size += 24 * 24 * sizeof(double);
+    // Matrix M;                       // Element mass matrix
+    size += 24 * 24 * sizeof(double);
+    // Vector P;                       // Element resisting force vector
+    size += 24 * sizeof(double);
+    // Vector Q;                       // Applied nodal loads
+    size += 24 * sizeof(double);
+    // Vector internal_forces;         // Forces and moment fields "stresses" for plate bending
+    size += 6 * sizeof(double);
+    // Vector bf;                      // Body forces
+    size += 3 * sizeof(double);
+
+    //Vector xl1,  xl2, xl3;          // This shell's local x and y coordinates (z = 0)
+    // double thickness;               // Element thickness -- Added by Babak to hold the thickness of teh element 12/27/12
+    // double Area;
+    size += 2 * sizeof(double);
+    // Vector x0;                      // Centroid in global coordinates
+    size += 3 * sizeof(double);
+    // Matrix T_lg;                    // Local-to-global transformation matrix T_lg = [x_l, y_l, z_l]
+    size += 3 * 3 * sizeof(double);
+
+    // ThreeNodeAndesShell *triangle1;
+    // ThreeNodeAndesShell *triangle2;
+    // ThreeNodeAndesShell *triangle3;
+    // ThreeNodeAndesShell *triangle4;
+    // size += 3 * 3 * sizeof(double);
+
+    // static unsigned int number_of_four_node_andes_shells;
+    // static const unsigned int pl[4][18];
+
+    // bool is_stiffness_calculated;
+    // bool is_mass_calculated;
+    size += 2 * sizeof(bool);
+
+    // Matrix gauss_points;
+    // size += 3 * FourNodeAndesShell_NUMBER_OF_GAUSSPOINTS * sizeof(double);
+    // Vector outputVector;
+    // size += FourNodeAndesShell_OUTPUT_SIZE*
+    return size;
+}
 
 
 #endif

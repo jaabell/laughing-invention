@@ -153,6 +153,7 @@ public:
 
     const Vector &getResistingForce ();
     const Vector &getResistingForceIncInertia ();
+    int getObjectSize();
 
     int sendSelf (int commitTag, Channel &theChannel);
     int receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);

@@ -48,6 +48,7 @@
 #include <Node.h>
 #include <SP_Constraint.h>
 #include <MP_Constraint.h>
+#include <MP_ConstraintIter.h>
 #include <ArrayOfTaggedObjects.h>
 #include <ArrayOfTaggedObjectsIter.h>
 #include <Subdomain.h>
@@ -1609,12 +1610,67 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
             theNodeTagVertices[id(i)]->addEdge(eleTag);
         }
     }
+//Consider MP constraints (equal dof)
+    //=================================================== By J. Abell
+    // cycle over MP constraints, determine constrained and retained nodes
+    // assume these nodes are clones of each other, therefore
+    // add the adjacency of the retained node into the constrained node and
+    // vice versa
+    //
+    // This assumes that the nodes are equal even if only 1-dof is constrained.
+    //
+
+    int rank = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+
+    // cout << "MP begin (" << rank << ")\n";
+    MP_Constraint *theMP = 0;
+    MP_ConstraintIter &theMPIter = this->getMPs();
+
+    while ( ( theMP = theMPIter() ) != 0 )
+    {
+        int cNode = theMP->getNodeConstrained();
+        int rNode = theMP->getNodeRetained();
+
+        // cout << "MP(" << rank << ") c: " << cNode << " -> r: " << rNode << endl;
+
+        const ID &adj_c = theNodeTagVertices[cNode]->getAdjacency();
+        const ID &adj_r = theNodeTagVertices[rNode]->getAdjacency();
+        int nc = adj_c.Size();
+        int nr = adj_r.Size();
+
+        //Add constrained node adjacency into the retained one
+        // cout << "adj_c = ";
+        for (int i = 0; i < nc; i++)
+        {
+            int eleTag = adj_c(i);
+            // cout << eleTag << " ";
+            theNodeTagVertices[rNode]->addEdge(eleTag);
+        }
+        // cout << endl;
+        //Add retained node adjacency into the constrained one
+        // cout << "adj_r = ";
+        for (int i = 0; i < nr; i++)
+        {
+            int eleTag = adj_r(i);
+            // cout << eleTag << " ";
+            theNodeTagVertices[cNode]->addEdge(eleTag);
+        }
+        // cout << endl;
+    }
+    // cout << "MP(" << rank << ") end\n";
+
+
+
+
 
     // now add the edges to the vertices of our element graph;
     // this is done by looping over the Node vertices, getting their
     // Adjacenecy and adding edges between elements with common nodes
     //GZ # ifdef _PDD
-    Vertex *vertexPtr;
+    Vertex *vertexPtr = 0;
 
     for (int k = 0; k <= maxNodNum; k++)
         if ((vertexPtr = theNodeTagVertices[k]) != 0)
@@ -1629,12 +1685,12 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
             {
                 int Element1 = id(i);
 
-                Element *ele1 = this->getElement(Element1);
+                // Element *ele1 = this->getElement(Element1);
 
-                const ID &nodes1 = ele1->getExternalNodes();
-                int num1 = nodes1.Size();
+                // const ID &nodes1 = ele1->getExternalNodes();
+                // int num1 = nodes1.Size();
 
-                int Num1_Boundary_Nodes = ele1->getNumberOfBoundaryNodes();
+                // int Num1_Boundary_Nodes = ele1->getNumberOfBoundaryNodes();
 
 
                 int vertexTag1 = theElementTagVertices[Element1];
@@ -1646,47 +1702,62 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                         int Element2 = id(j);
                         int vertexTag2 = theElementTagVertices[Element2];
 
-                        Element *ele2 = this->getElement(Element2);
+                        // Element *ele2 = this->getElement(Element2);
 
-                        const ID &nodes2 = ele2->getExternalNodes();
-                        int num2 = nodes2.Size();
-
-
-                        int Num2_Boundary_Nodes =  ele2->getNumberOfBoundaryNodes();
+                        // const ID &nodes2 = ele2->getExternalNodes();
+                        // int num2 = nodes2.Size();
 
 
-                        int num_comm = Num1_Boundary_Nodes;
+                        // int Num2_Boundary_Nodes =  ele2->getNumberOfBoundaryNodes();
 
-                        if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
-                        {
-                            num_comm = Num2_Boundary_Nodes;
-                        }
 
-                        int common = 0;
+                        // int num_comm = Num1_Boundary_Nodes;
 
-                        for (int k = 0; k < num1; k++)
-                        {
-                            for (int l = 0; l < num2; l++)
-                            {
-                                if ( nodes1(k) == nodes2(l) )
-                                {
-                                    common++;
-                                }
-                            }
-                        }
+                        // if ( Num1_Boundary_Nodes > Num2_Boundary_Nodes)
+                        // {
+                        //     num_comm = Num2_Boundary_Nodes;
+                        // }
+
+                        // int common = 0;
+
+                        // for (int k = 0; k < num1; k++)
+                        // {
+                        //     for (int l = 0; l < num2; l++)
+                        //     {
+                        //         if ( nodes1(k) == nodes2(l) )
+                        //         {
+                        //             common++;
+                        //         }
+                        //     }
+                        // }
 
                         // addEdge() adds for both vertices - do only once
 
                         //Based on the talk which I had with Boris, any common node is considered as an edge in the element graph ... //Babak on Dec 14 2012
-                        if ( (vertexTag1 > vertexTag2) && (common == num_comm) ) //Added by Babak on 12/12/12
+                        if ( (vertexTag1 > vertexTag2))// && (common == num_comm) ) //Added by Babak on 12/12/12
                         {
                             theEleGraph->addEdge(vertexTag1, vertexTag2);
-                            theEleGraph->addEdge(vertexTag2, vertexTag1);
+                            // theEleGraph->addEdge(vertexTag2, vertexTag1);
                         }
                     }
             }
         }
 
+    // Vertex* element_as_vtx_ptr;
+    // VertexIter& iter = theEleGraph->getVertices();
+    // while ((element_as_vtx_ptr = iter()) != 0)
+    // {
+    //     const ID &id = element_as_vtx_ptr->getAdjacency();
+    //     int size = id.Size();
+
+    //     // cout << element_as_vtx_ptr->getRef() << " -> ";
+    //     for (int ii = 0; ii < size; ii++)
+    //     {
+    //         Vertex* vptr = theEleGraph->getVertexPtr(id(ii));
+    //         cout << vptr->getRef() << " ";
+    //     }
+    //     // cout << endl;
+    // }
 
     // done now delete theElementTagVertices, the node Vertices and
     // theNodeTagVertices

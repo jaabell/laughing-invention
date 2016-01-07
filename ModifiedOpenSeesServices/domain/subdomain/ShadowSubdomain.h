@@ -179,6 +179,8 @@ public:
     // virtual int enableElementOutput(bool is_element_output_enabled);
 
     virtual int sendOutputOptionsToSubdomain();
+    virtual int getOutputSize() const;
+    virtual const Vector &getOutput();
 
 private:
     ID msgData;
