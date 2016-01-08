@@ -536,13 +536,13 @@ PetscSOE::setSize(Graph &theGraph)
                 if ( startRow_vec[processID_world] <= col && col <= endRow_vec[processID_world]   )
                 {
                     int row = col - startRow_vec[processID_world];
-                    if ( startRow_vec[processID_world] <= row && row <= endRow_vec[processID_world]   )
+                    if ( startRow_vec[processID_world] <= dof && dof <= endRow_vec[processID_world]   )
                     {
-                        d_nnz[col ] += 1;
+                        d_nnz[row ] += 1;
                     }
                     else
                     {
-                        o_nnz[col ] += 1;
+                        o_nnz[row ] += 1;
                     }
                 }
             }
