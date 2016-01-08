@@ -509,20 +509,18 @@ PetscSOE::setSize(Graph &theGraph)
         while ((theVertex = theVertices()) != 0)
         {
             int dof = theVertex->getTag();
-
-            // If the dof number belongs to this processor
-            if ( startRow_vec[processID_world] <= dof && dof <= endRow_vec[processID_world]   )
+            const ID& adj = theVertex->getAdjacency();
+            //Iterate over adjacent dofs and determine whether they are in the "diagonal" block of the PETSc matrix
+            //  or not....
+            // Diagonal here means that the adjacent dof also belongs to this processor
+            for (int i = 0; i < adj.Size(); i++)
             {
-                int row = dof - startRow_vec[processID_world];
-                ID adj = theVertex->getAdjacency();
+                int col = adj(i);
 
-                //Iterate over adjacent dofs and determine whether they are in the "diagonal" block of the PETSc matrix
-                //  or not....
-                // Diagonal here means that the adjacent dof also belongs to this processor
-                for (int i = 0; i < adj.Size(); i++)
+                // If the dof number belongs to this processor
+                if ( startRow_vec[processID_world] <= dof && dof <= endRow_vec[processID_world]   )
                 {
-                    int col = adj(i);
-
+                    int row = dof - startRow_vec[processID_world];
                     if ( startRow_vec[processID_world] <= col && col <= endRow_vec[processID_world]   )
                     {
                         d_nnz[row ] += 1;
@@ -531,7 +529,13 @@ PetscSOE::setSize(Graph &theGraph)
                     {
                         o_nnz[row ] += 1;
                     }
+                }
 
+                // Check the symmetric condition of this (dofs are symmetricly connected!)
+                // If the dof number belongs to this processor
+                if ( startRow_vec[processID_world] <= col && col <= endRow_vec[processID_world]   )
+                {
+                    int row = col - startRow_vec[processID_world];
                     if ( startRow_vec[processID_world] <= row && row <= endRow_vec[processID_world]   )
                     {
                         d_nnz[col ] += 1;
