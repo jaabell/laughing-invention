@@ -466,7 +466,8 @@ PetscSOE::setSize(Graph &theGraph)
         CHKERRQ(ierr);
 
 
-        ierr = MatSetType(A, MATMPIAIJ); CHKERRQ(ierr);
+        ierr = MatSetType(A, MATMPIAIJ);
+        CHKERRQ(ierr);
 
 
         int ndofs = nlocaldofs[processID_world];
@@ -529,6 +530,15 @@ PetscSOE::setSize(Graph &theGraph)
                     else
                     {
                         o_nnz[row ] += 1;
+                    }
+
+                    if ( startRow_vec[processID_world] <= row && row <= endRow_vec[processID_world]   )
+                    {
+                        d_nnz[col ] += 1;
+                    }
+                    else
+                    {
+                        o_nnz[col ] += 1;
                     }
                 }
             }

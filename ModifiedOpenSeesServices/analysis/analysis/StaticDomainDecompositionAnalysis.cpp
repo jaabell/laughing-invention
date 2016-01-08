@@ -59,6 +59,9 @@
 #include <iostream>
 using namespace std;
 
+#ifdef _PARALLEL_PROCESSING
+#include <mpi.h>
+#endif
 
 StaticDomainDecompositionAnalysis::StaticDomainDecompositionAnalysis(Subdomain& the_Domain)
     : DomainDecompositionAnalysis(ANALYSIS_TAGS_StaticDomainDecompositionAnalysis, the_Domain),
@@ -298,7 +301,16 @@ StaticDomainDecompositionAnalysis::initialize(void)
 int
 StaticDomainDecompositionAnalysis::domainChanged(void)
 {
-    cout << "StaticDomainDecompositionAnalysis - The domain has changed. (Re)Creating model.\n";
+    int rank = 0;
+#ifdef _PARALLEL_PROCESSING
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+
+    if (rank == 0)
+    {
+        cout << "StaticDomainDecompositionAnalysis - The domain has changed. (Re)Creating model.\n";
+    }
     Domain* the_Domain = this->getDomainPtr();
     int stamp = the_Domain->hasDomainChanged();
 
@@ -314,7 +326,10 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
     // causes the creation of FE_Element and DOF_Group objects
     // and their addition to the AnalysisModel.
 
-    cout << "   * Handling constraints\n";
+    if (rank == 0)
+    {
+        cout << "   * Handling constraints\n";
+    }
 
     result = theConstraintHandler->handle();
 
@@ -331,7 +346,10 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
     // equation numbers to be assigned to all the DOFs in the
     // AnalysisModel.
 
-    cout << "   * Numbering DOFS\n";
+    if (rank == 0)
+    {
+        cout << "   * Numbering DOFS\n";
+    }
 
     result = theDOF_Numberer->numberDOF();
 
@@ -344,10 +362,16 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
 
 
 
-    cout << "   * Forming DOF Graph\n";
+    if (rank == 0)
+    {
+        cout << "   * Forming DOF Graph\n";
+    }
     Graph &theGraph = theAnalysisModel->getDOFGraph();
 
-    cout << "   * Setting SOE Size\n";
+    if (rank == 0)
+    {
+        cout << "   * Setting SOE Size\n";
+    }
     result = theSOE->setSize(theGraph);
     if (result < 0)
     {
@@ -360,7 +384,10 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
 
     // finally we invoke domainChanged on the Integrator and Algorithm
     // objects .. informing them that the model has changed
-    cout << "   * Setting up integrator\n";
+    if (rank == 0)
+    {
+        cout << "   * Setting up integrator\n";
+    }
 
     result = theIntegrator->domainChanged();
 
@@ -371,7 +398,10 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
         return -4;
     }
 
-    cout << "   * Setting up algorithm\n";
+    if (rank == 0)
+    {
+        cout << "   * Setting up algorithm\n";
+    }
 
     result = theAlgorithm->domainChanged();
 
@@ -382,7 +412,10 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
         return -5;
     }
 
-    cout << "   * Done with domain change\n";
+    if (rank == 0)
+    {
+        cout << "   * Done with domain change\n";
+    }
 
     // if get here successfull
     return 0;
