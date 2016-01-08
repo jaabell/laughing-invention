@@ -579,7 +579,7 @@ PetscSOE::setSize(Graph &theGraph)
                 d_nnz[proc],
                 d_nnz_global,
                 nlocaldofs[proc],
-                MPI_DOUBLE,
+                MPI_INT,
                 MPI_SUM,
                 proc - 1, // Because this is the process number in the petsc_comm communicator
                 petsc_comm);
@@ -587,7 +587,7 @@ PetscSOE::setSize(Graph &theGraph)
                 o_nnz[proc],
                 o_nnz_global,
                 nlocaldofs[proc],
-                MPI_DOUBLE,
+                MPI_INT,
                 MPI_SUM,
                 proc - 1, // Because this is the process number in the petsc_comm communicator
                 petsc_comm);
