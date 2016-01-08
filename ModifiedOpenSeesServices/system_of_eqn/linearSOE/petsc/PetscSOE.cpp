@@ -489,19 +489,37 @@ PetscSOE::setSize(Graph &theGraph)
 
         //MatSetOption(A, MAT_SYMMETRIC);
         //MatSetOption(A, MAT_SYMMETRY_ETERNAL);
+        PetscInt* d_nnz[numProcesses_world];
+        PetscInt* o_nnz[numProcesses_world];
+        PetscInt d_nnz_global[ndofs];
+        PetscInt o_nnz_global[ndofs];
 
-
-        PetscInt d_nnz[ndofs];
-        PetscInt o_nnz[ndofs];
-
-        // Initialize diagonal to at least one nonzero element (the diagonal)
-        // Initialize off-diagonal to zero
-        for (int row = 0; row < nlocaldofs[processID_world]; row++)
+        for (int proc = 1; proc < numProcesses_world; proc++)
         {
-            d_nnz[row] = 1;
-            o_nnz[row] = 0;
+            int ndofs_proc = nlocaldofs[proc];
+            d_nnz[proc] = new PetscInt[ndofs_proc];
+            o_nnz[proc] = new PetscInt[ndofs_proc];
         }
 
+        // PetscInt d_nnz[ndofs];
+        // PetscInt o_nnz[ndofs];
+
+        // Initialize diagonal to at least one nonzero element (the diagonal) for current proc
+        // Initialize off-diagonal to zero
+        for (int proc = 1; proc < numProcesses_world; proc++)
+        {
+            PetscInt dval = 0;
+            if (proc == processID_world)
+            {
+                dval = 1;
+            }
+
+            for (int row = 0; row < nlocaldofs[proc]; row++)
+            {
+                d_nnz[proc][row] = dval;
+                o_nnz[proc][row] = 0;
+            }
+        }
         //Iterate the vertices again to determine the number of nonzeros at each dof....
         Vertex* theVertex;
         VertexIter& theVertices = theGraph.getVertices();
@@ -517,47 +535,76 @@ PetscSOE::setSize(Graph &theGraph)
             {
                 int col = adj(i);
 
-                // If the dof number belongs to this processor
-                if ( startRow_vec[processID_world] <= dof && dof <= endRow_vec[processID_world]   )
+                for (int proc = 1; proc < numProcesses_world; proc++)
                 {
-                    int row = dof - startRow_vec[processID_world];
-                    if ( startRow_vec[processID_world] <= col && col <= endRow_vec[processID_world]   )
+                    // If the dof number belongs to this processor
+                    if ( startRow_vec[proc] <= dof && dof <= endRow_vec[proc]   )
                     {
-                        d_nnz[row ] += 1;
+                        int row = dof - startRow_vec[proc];
+                        if ( startRow_vec[proc] <= col && col <= endRow_vec[proc]   )
+                        {
+                            d_nnz[proc][row ] += 1;
+                        }
+                        else
+                        {
+                            o_nnz[proc][row ] += 1;
+                        }
                     }
-                    else
-                    {
-                        o_nnz[row ] += 1;
-                    }
-                }
 
-                // Check the symmetric condition of this (dofs are symmetricly connected!)
-                // If the dof number belongs to this processor
-                if ( startRow_vec[processID_world] <= col && col <= endRow_vec[processID_world]   )
-                {
-                    int row = col - startRow_vec[processID_world];
-                    if ( startRow_vec[processID_world] <= dof && dof <= endRow_vec[processID_world]   )
+                    // Check the symmetric condition of this (dofs are symmetricly connected!)
+                    // If the dof number belongs to this processor
+                    if ( startRow_vec[proc] <= col && col <= endRow_vec[proc]   )
                     {
-                        d_nnz[row ] += 1;
-                    }
-                    else
-                    {
-                        o_nnz[row ] += 1;
+                        int row = col - startRow_vec[proc];
+                        if ( startRow_vec[proc] <= dof && dof <= endRow_vec[proc]   )
+                        {
+                            d_nnz[proc][row ] += 1;
+                        }
+                        else
+                        {
+                            o_nnz[proc][row ] += 1;
+                        }
                     }
                 }
             }
         }
+// int MPI_Reduce (void *sendbuf, void
+// *recvbuf, int count, MPI_Datatype
+// datatype, MPI_Op op, int root, MPI_Comm
+// comm)
+        // Now reduce the arrays to one global one in the local processor
+        for (int proc = 1; proc < numProcesses_world; proc++)
+        {
+            MPI_Reduce(
+                d_nnz[proc],
+                d_nnz_global,
+                nlocaldofs[proc],
+                MPI_DOUBLE,
+                MPI_SUM,
+                proc,
+                petsc_comm);
+            MPI_Reduce(
+                o_nnz[proc],
+                o_nnz_global,
+                nlocaldofs[proc],
+                MPI_DOUBLE,
+                MPI_SUM,
+                proc,
+                petsc_comm);
+        }
+
+
 
 
         for (int row = 0; row < nlocaldofs[processID_world]; row++)
         {
-            if (d_nnz[row] < PETSCSOE_MIN_DNNZ)
+            if (d_nnz_global[row] < PETSCSOE_MIN_DNNZ)
             {
-                d_nnz[row] =  PETSCSOE_MIN_DNNZ;
+                d_nnz_global[row] =  PETSCSOE_MIN_DNNZ;
             }
-            if (o_nnz[row] < PETSCSOE_MIN_ONNZ)
+            if (o_nnz_global[row] < PETSCSOE_MIN_ONNZ)
             {
-                o_nnz[row] =  PETSCSOE_MIN_ONNZ;
+                o_nnz_global[row] =  PETSCSOE_MIN_ONNZ;
             }
         }
 
@@ -572,7 +619,7 @@ PetscSOE::setSize(Graph &theGraph)
         // o_nz    - number of nonzeros per row in the OFF-DIAGONAL portion of local submatrix (same value is used for all local rows).
         // o_nnz   - array containing the number of nonzeros in the various rows of the OFF-DIAGONAL portion of the local submatrix (possibly different for each row) or NULL (PETSC_NULL_INTEGER in Fortran), if o_nz is used to specify the nonzero structure. The size of this array is equal to the number of local rows, i.e 'm'.
 
-        MatMPIAIJSetPreallocation(A, 0, d_nnz, 0, o_nnz);
+        MatMPIAIJSetPreallocation(A, 0, d_nnz_global, 0, o_nnz_global);
 
         // ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
         // ierr = MatMPIAIJSetPreallocation(A, 650, PETSC_NULL, 650, PETSC_NULL);
@@ -591,13 +638,20 @@ PetscSOE::setSize(Graph &theGraph)
         ierr = VecCreateMPIWithArray(PETSC_COMM_WORLD, blockSize, ndofs , size, &B[startRow], &b);
         CHKERRQ(ierr);
 
+        for (int proc = 1; proc < numProcesses_world; proc++)
+        {
+            delete [] d_nnz[proc];
+            delete [] o_nnz[proc];
+        }
+
+        cout << "Preallocation done! " << endl;
     }
     else
     {
         cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
     }
 
-    // invoke setSize() on the Solver
+// invoke setSize() on the Solver
     LinearSOESolver *tSolver = this->getSolver();
     int solverOK = tSolver->setSize();
 
@@ -608,10 +662,10 @@ PetscSOE::setSize(Graph &theGraph)
         return solverOK;
     }
 
-    // MatGetOwnershipRange(A, &startRow, &endRow);
+// MatGetOwnershipRange(A, &startRow, &endRow);
 
 
-    // cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
+// cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
 
 
 
