@@ -401,9 +401,17 @@ ParallelNumberer::numberDOF(int lastDOF)
         }
 
         // For Equal-DOF constraints!
-        // cout << "Looking for EQUALDOFS: ";
-        int numMP = theDomain->getNumMPs();
-        ID theMPnodeTags(numMP);
+
+        // Figure out the number of dofs which are constrained
+        int numMP = 0;// = theDomain->getNumMPs();
+        MP_ConstraintIter& theMPs = theDomain->getMPs();
+        MP_Constraint* mpPtr;
+        while ((mpPtr = theMPs()) != 0 )
+        {
+            const ID& constrainedDOFs = mpPtr->getConstrainedDOFs();
+            numMP += constrainedDOFs.Size();
+        }
+
         ID theMPdofCs(numMP);
         ID theMPdofIDs(numMP);
         int pos = 0;
