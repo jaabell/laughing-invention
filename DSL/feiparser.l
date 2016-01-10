@@ -127,7 +127,8 @@
 	int FLAG_execute_apis        = 1;
 	int FLAG_inclusion_mode      = 0;
 	int FLAG_run_file            = 0;
-	int FLAG_binary_output       = 0;
+    int FLAG_binary_output       = 0;
+	int FLAG_debug_attach        = 0;
 
 	/* EXTERNS - All defined in feiparser.yy */
 	extern const string thePrompt;
@@ -1071,7 +1072,8 @@ int start_parser(int argc, char**argv)
 			{"set-variable",     required_argument, 0, 's'},
 			{"no-cpp-output",    no_argument,       0, 'x'},
 			{"dry-run",          no_argument,       0, 'd'},
-			{"profile-report",   required_argument, 0, 'p'},
+            {"profile-report",   required_argument, 0, 'p'},
+			{"debug-attach",     no_argument      , 0, 'a'},
 			{0, 0, 0, 0}
 		};
 
@@ -1079,7 +1081,7 @@ int start_parser(int argc, char**argv)
 		int option_index = 0;
 
 		//This is the command line option parser
-		c = getopt_long(argc, argv, "cf:hns:xm:dp:", long_options, &option_index);
+		c = getopt_long(argc, argv, "cf:hns:xm:dp:a", long_options, &option_index);
 
 		/* Detect the end of the options. */
 		if (c == -1)
@@ -1124,6 +1126,9 @@ int start_parser(int argc, char**argv)
 				//cout << "Setting report file to:" << optarg << endl;
 				set_profiling_results_filename(optarg);
 				break;
+            case 'a': // Debugger attach loop
+                FLAG_debug_attach = 1;
+                break;
 			default:
 				print_usage();
 				return (0);
@@ -1148,6 +1153,17 @@ int start_parser(int argc, char**argv)
 		set_outcppfile_name(string(filename_from_command_line));
 		prompt = "";
 	}
+
+    if(FLAG_debug_attach)
+    {       
+            int i = 0;
+            char hostname[256];
+            gethostname(hostname, sizeof(hostname));
+            printf("PID %d on %s ready for attach\n", getpid(), hostname);
+            fflush(stdout);
+            while (0 == i)
+                sleep(5);
+    }
 
 #ifdef _PARALLEL_PROCESSING
 	//Kill other processes in case of dry run... parallel is not needed.
@@ -1245,6 +1261,7 @@ int main (int argc, char**argv)
 
    if (rank != 0) //If this is the main machine
    {
+
 		exitflag = theMachine.runActors();
    } 
    else  // Or if it is a slave node

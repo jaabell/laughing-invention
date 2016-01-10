@@ -173,6 +173,10 @@ ParallelNumberer::numberDOF(int lastDOF)
         theGraph.sendSelf(0, *theChannel);
 
         cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving ID from process 0\n";
+
+        ID numMP_ID(1);
+        theChannel->receiveID(0, 0, numMP_ID);
+        int numMP = numMP_ID(0);
         // recv iD
         ID vertexTags(2 * numVertex);
         theChannel->receiveID(0, 0, vertexTags);
@@ -210,9 +214,9 @@ ParallelNumberer::numberDOF(int lastDOF)
             const ID& theDOFID = dofPtr->getID();
         }
 
-        ID theMPnodeTags(100);
-        ID theMPdofCs(100);
-        ID theMPdofIDs(100);
+        ID theMPnodeTags(numMP);
+        ID theMPdofCs(numMP);
+        ID theMPdofIDs(numMP);
         theChannel->receiveID(0, 0, theMPnodeTags);
         theChannel->receiveID(0, 0, theMPdofCs);
         theChannel->receiveID(0, 0, theMPdofIDs);
@@ -398,10 +402,10 @@ ParallelNumberer::numberDOF(int lastDOF)
 
         // For Equal-DOF constraints!
         // cout << "Looking for EQUALDOFS: ";
-
-        ID theMPnodeTags(100);
-        ID theMPdofCs(100);
-        ID theMPdofIDs(100);
+        int numMP = theDomain->getNumMPs();
+        ID theMPnodeTags(numMP);
+        ID theMPdofCs(numMP);
+        ID theMPdofIDs(numMP);
         int pos = 0;
         for (int i = 0; i < numVertexP0; i++  )
         {
@@ -505,7 +509,11 @@ ParallelNumberer::numberDOF(int lastDOF)
                 theSubdomain[i + numVertexSubdomain] = startDOF;
             }
 
-            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending channel " << theChannel->getTag() << " its startdof\n";
+            cout << "        + ParallelNumberer::numberDO/F() [" << processID <<  "] : Sending channel " << theChannel->getTag() << " its startdof\n";
+            ID numMP_ID(1);
+            numMP_ID(0) = numMP;
+            theChannel->sendID(0, 0, numMP_ID);
+            theChannel->sendID(0, 0, theSubdomain);
             theChannel->sendID(0, 0, theSubdomain);
 
             //Also send these for the MP constraints
