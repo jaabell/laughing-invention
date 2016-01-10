@@ -522,7 +522,6 @@ ParallelNumberer::numberDOF(int lastDOF)
             numMP_ID(0) = numMP;
             theChannel->sendID(0, 0, numMP_ID);
             theChannel->sendID(0, 0, theSubdomain);
-            theChannel->sendID(0, 0, theSubdomain);
 
             //Also send these for the MP constraints
             theChannel->sendID(0, 0, theMPnodeTags);
