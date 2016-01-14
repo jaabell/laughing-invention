@@ -34,6 +34,7 @@
 #define EvolvingVariable_H
 
 #include "../../ltensor/LTensor.h"
+#include <Channel.h>
 #include <iostream>
 using namespace std;
 
@@ -52,61 +53,101 @@ class EvolvingVariable
 {
 public:
 
-	EvolvingVariable(VarType a_): a(a_) {}
+    EvolvingVariable(VarType a_): a(a_), a_committed(a_)
+    {
+        // cout << "EvolvingVariable::EvolvingVariable(a) a_ = " << a_ << endl;
+        // cout << "EvolvingVariable::EvolvingVariable(a) a_committed = " << a_committed << endl;
+    }
 
-	const VarType &getDerivative(const DTensor2 &depsilon,
-	                             const DTensor2 &m,
-	                             const DTensor2& sigma) const
-	{
-		return static_cast<const T*>(this)->getDerivative(depsilon,  m,  sigma);
-	};
+    const VarType &getDerivative(const DTensor2 &depsilon,
+                                 const DTensor2 &m,
+                                 const DTensor2& sigma) const
+    {
+        return static_cast<const T*>(this)->getDerivative(depsilon,  m,  sigma);
+    };
 
-	EvolvingVariable<VarType, T> & operator= ( const EvolvingVariable<VarType, T> & other)
-	{
-		//Check self-assignment
-		if (&other == this)
-		{
-			return *this;
-		}
+    EvolvingVariable<VarType, T> & operator= ( const EvolvingVariable<VarType, T> & other)
+    {
+        //Check self-assignment
+        if (&other == this)
+        {
+            return *this;
+        }
 
-		a = other.a;
+        a = other.a;
+        a_committed = other.a_committed;
 
-		return *this;
-	}
+        return *this;
+    }
 
-	void evolve(double dlambda,
-	            const DTensor2& depsilon,
-	            const DTensor2& m,
-	            const DTensor2& sigma)
-	{
-		const VarType& h = getDerivative(depsilon, m, sigma);
-		tmp = h;
-		tmp *= dlambda;
+    void evolve(double dlambda,
+                const DTensor2& depsilon,
+                const DTensor2& m,
+                const DTensor2& sigma)
+    {
+        const VarType& h = getDerivative(depsilon, m, sigma);
+        tmp = h;
+        tmp *= dlambda;
 
-		cout << "a = " << a << endl;
+        // cout << "a = " << a << endl;
+        // cout << "h = " << a << endl;
+        // cout << "dLambda = " << dlambda << endl;
+        a +=  tmp;
+        // cout << "     EVOOOOOLVE to a = " << a << endl;
+    }
 
-		a +=  tmp;
-		cout << "     EVOOOOOLVE to a = " << a << endl;
-	}
+    const VarType& getVariableConstReference() const
+    {
+        return a;
+    }
 
-	const VarType& getVariableConstReference() const
-	{
-		return a;
-	}
+    const VarType& getCommittedVariableConstReference() const
+    {
+        return a_committed;
+    }
 
-	void setVar(VarType v)
-	{
-		a = v;
-	}
+    void setVar(VarType& v)
+    {
+        a = v;
+    }
 
-	//Overloaded operators.
-	operator VarType () { return a; }  // Convert into variable type
-	friend std::ostream& operator<< <>(std::ostream& os, const EvolvingVariable<VarType, T>& obj);
+    void setCommittedVar(VarType& v)
+    {
+        a_committed = v;
+    }
+
+    void commit()
+    {
+        a_committed = a;
+    }
+
+    void revert()
+    {
+        a = a_committed;
+    }
+
+    //Overloaded operators.
+    operator VarType ()
+    {
+        return a;    // Convert into variable type
+    }
+    friend std::ostream& operator<< <>(std::ostream& os, const EvolvingVariable<VarType, T>& obj);
+
+    int sendSelf(int commitTag, Channel &theChannel)
+    {
+        return static_cast<T*>(this)->sendSelf(commitTag, theChannel);
+    }
+
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+    {
+        return static_cast<T*>(this)->receiveSelf(commitTag, theChannel, theBroker);
+    }
 
 
 private:
-	VarType a;
-	static VarType tmp;
+    VarType a;
+    VarType a_committed;
+    static VarType tmp;
 };
 
 
@@ -117,8 +158,8 @@ private:
 template<class VarType, class T>
 std::ostream& operator<<(std::ostream& os, const EvolvingVariable<VarType, T>& obj)
 {
-	os << obj.a;
-	return os;
+    os << obj.a;
+    return os;
 }
 
 template<class VarType, class T>

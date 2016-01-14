@@ -31,6 +31,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "LinearIsotropic3D_EL.h"
+#include "Vector.h"
 
 DTensor4 LinearIsotropic3D_EL::Ee(4, 4, 4, 4, 0.0);
 
@@ -39,12 +40,12 @@ LinearIsotropic3D_EL::LinearIsotropic3D_EL(double E, double nu) : ElasticityBase
 {
     lambda = ( nu * E ) / ( ( 1.0 + nu ) * ( 1.0 - 2.0 * nu ) );
     mu = E / ( 2.0 * ( 1.0 + nu ) );
-    std::cout << "E  = " << E << std::endl;
-    std::cout << "nu = " << nu << std::endl;
+    // std::cout << "E  = " << E << std::endl;
+    // std::cout << "nu = " << nu << std::endl;
 }
 
 
-DTensor4& LinearIsotropic3D_EL::operator()(const DTensor2 &strain, const DTensor2 &plastic_strain, const DTensor2& stress) //See note on base class
+DTensor4& LinearIsotropic3D_EL::operator()(const DTensor2& stress) //See note on base class
 {
     Ee *= 0; //Zero it. It may have values from another instance with different parameters;
     Ee( 0, 0, 0, 0 ) = lambda + 2 * mu;
@@ -70,4 +71,35 @@ DTensor4& LinearIsotropic3D_EL::operator()(const DTensor2 &strain, const DTensor
     Ee( 2, 2, 2, 2 ) = lambda + 2 * mu;
 
     return Ee;
+}
+
+int LinearIsotropic3D_EL::sendSelf(int commitTag, Channel &theChannel)
+{
+    static Vector data(2);
+    data(0) = lambda;
+    data(1) = mu;
+
+    if (theChannel.sendVector(0, commitTag, data) != 0)
+    {
+        cerr << "LinearIsotropic3D_EL::sendSelf() - Failed to send data. " << endl;
+        return -1;
+    }
+
+    return 0;
+}
+
+int LinearIsotropic3D_EL::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+{
+    static Vector data(2);
+
+    if (theChannel.receiveVector(0, commitTag, data) != 0)
+    {
+        cerr << "LinearIsotropic3D_EL::receiveSelf() - Failed to receive data. " << endl;
+        return -1;
+    }
+
+    lambda = data(0);
+    mu = data(1);
+
+    return 0;
 }

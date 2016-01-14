@@ -45,8 +45,10 @@ class LinearIsotropic3D_EL : public ElasticityBase<LinearIsotropic3D_EL> // CRTP
 public:
     LinearIsotropic3D_EL(double E, double nu);
 
-    DTensor4& operator()(const DTensor2 &strain, const DTensor2 &plastic_strain, const DTensor2& stress); //See note on base class
+    DTensor4& operator()(const DTensor2& stress); //See note on base class
 
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
 private:
 

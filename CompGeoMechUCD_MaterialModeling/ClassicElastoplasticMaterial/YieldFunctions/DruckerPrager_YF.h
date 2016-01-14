@@ -51,101 +51,101 @@ class DruckerPrager_YF : public YieldFunctionBase<DruckerPrager_YF<AlphaHardenin
 {
 public:
 
-	typedef EvolvingVariable<DTensor2, AlphaHardeningType> AlphaType;
-	typedef EvolvingVariable<double, KHardeningType> KType;
+    typedef EvolvingVariable<DTensor2, AlphaHardeningType> AlphaType;
+    typedef EvolvingVariable<double, KHardeningType> KType;
 
 
-	DruckerPrager_YF( AlphaType &alpha_in, KType& k_in):
-		YieldFunctionBase<DruckerPrager_YF<AlphaHardeningType, KHardeningType>>::YieldFunctionBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
-		        alpha_(alpha_in), k_(k_in)
-	{
-		std::cout << "k_in = " << &k_in << std::endl;
-	}
+    DruckerPrager_YF( AlphaType &alpha_in, KType& k_in):
+        YieldFunctionBase<DruckerPrager_YF<AlphaHardeningType, KHardeningType>>::YieldFunctionBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
+                alpha_(alpha_in), k_(k_in)
+    {
+        // std::cout << "k_in = " << &k_in << std::endl;
+    }
 
-	double operator()(const DTensor2& sigma) const
-	{
-		double p;
-		static DTensor2 s(3, 3, 0.0);
-		const DTensor2 &alpha = alpha_.getVariableConstReference();
-		const double &k = k_.getVariableConstReference();
-		sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+    double operator()(const DTensor2& sigma) const
+    {
+        double p;
+        static DTensor2 s(3, 3, 0.0);
+        const DTensor2 &alpha = alpha_.getVariableConstReference();
+        const double &k = k_.getVariableConstReference();
+        sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
 
-		return sqrt( (s(i, j) + p * alpha(i, j)) * (s(i, j) + p * alpha(i, j)) ) + SQRT_2_over_3 * k * p;  // This one assumes p positive in tension
-	}
+        return sqrt( (s(i, j) + p * alpha(i, j)) * (s(i, j) + p * alpha(i, j)) ) + SQRT_2_over_3 * k * p;  // This one assumes p positive in tension
+    }
 
-	const DTensor2& df_dsigma_ij(const DTensor2& sigma)
-	{
+    const DTensor2& df_dsigma_ij(const DTensor2& sigma)
+    {
 
-		const DTensor2 &alpha = alpha_.getVariableConstReference();
-		const double &k = k_.getVariableConstReference();
+        const DTensor2 &alpha = alpha_.getVariableConstReference();
+        const double &k = k_.getVariableConstReference();
 
-		// cout << "     --> YF alpha = " << alpha << endl;
-		// cout << "     --> YF k     = " << k << endl;
+        // cout << "     --> YF alpha = " << alpha << endl;
+        // cout << "     --> YF k     = " << k << endl;
 
 
-		//Zero these tensors
-		s *= 0;
-		result *= 0;
+        //Zero these tensors
+        s *= 0;
+        result *= 0;
 
-		double p;
+        double p;
 
-		sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
-		p = -p;
+        sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+        p = -p;
 
-		// cout << "     --> YF p     = " << p << endl;
-		// cout << "     --> YF s     = " << s << endl;
+        // cout << "     --> YF p     = " << p << endl;
+        // cout << "     --> YF s     = " << s << endl;
 
-		double den = sqrt((s(i, j) - p * alpha(i, j)) * (s(i, j) - p * alpha(i, j)));
-		// cout << "     --> YF den     = " << den << endl;
+        double den = sqrt((s(i, j) - p * alpha(i, j)) * (s(i, j) - p * alpha(i, j)));
+        // cout << "     --> YF den     = " << den << endl;
 
-		result(i, j) =
-		    (
-		        (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n))
-		    )
-		    / den;
-		result(i, j) += SQRT_2_over_27 * k * kronecker_delta(i, j);
-		// DTensor2 bshit(3, 3, 0.0);
-		// bshit(i, j) = SQRT_2_over_27 * k * kronecker_delta(i, j);
-		// cout << "     --> YF result     = " << result << endl;
-		// cout << "     --> YF bshit     = " << bshit << endl;
-		return result;
+        result(i, j) =
+            (
+                (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n))
+            )
+            / den;
+        result(i, j) += SQRT_2_over_27 * k * kronecker_delta(i, j);
+        // DTensor2 bshit(3, 3, 0.0);
+        // bshit(i, j) = SQRT_2_over_27 * k * kronecker_delta(i, j);
+        // cout << "     --> YF result     = " << result << endl;
+        // cout << "     --> YF bshit     = " << bshit << endl;
+        return result;
 
-	}
+    }
 
-	double xi_star_h_star(const DTensor2& depsilon, const DTensor2& depsilon_pl, const DTensor2& sigma)
-	{
-		double dbl_result = 0.0;
+    double xi_star_h_star(const DTensor2& depsilon, const DTensor2& depsilon_pl, const DTensor2& sigma)
+    {
+        double dbl_result = 0.0;
 
-		const DTensor2 &alpha = alpha_.getVariableConstReference();
-		// const double &k = k_.getVariableConstReference();
+        const DTensor2 &alpha = alpha_.getVariableConstReference();
+        // const double &k = k_.getVariableConstReference();
 
-		//Zero the stress deviator
-		s *= 0;
+        //Zero the stress deviator
+        s *= 0;
 
-		//Compute stress deviator (s) and mean pressure (p)
-		double p;
-		sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension, so flip the sign
-		p = -p;
+        //Compute stress deviator (s) and mean pressure (p)
+        double p;
+        sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension, so flip the sign
+        p = -p;
 
-		//
-		double den = sqrt((s(i, j) - p * alpha(i, j)) * (s(i, j) - p * alpha(i, j)));
+        //
+        double den = sqrt((s(i, j) - p * alpha(i, j)) * (s(i, j) - p * alpha(i, j)));
 
-		// This is for the hardening of k
-		double df_dk = -SQRT_2_over_3 * p;
-		dbl_result +=  df_dk * k_.getDerivative(depsilon, depsilon_pl, sigma);
+        // This is for the hardening of k
+        double df_dk = -SQRT_2_over_3 * p;
+        dbl_result +=  df_dk * k_.getDerivative(depsilon, depsilon_pl, sigma);
 
-		//This is for the hardening of alpha
-		dbl_result +=  (-p * (s(i, j) - p * alpha(i, j)) / den) * alpha_.getDerivative(depsilon, depsilon_pl, sigma)(i, j);
+        //This is for the hardening of alpha
+        dbl_result +=  (-p * (s(i, j) - p * alpha(i, j)) / den) * alpha_.getDerivative(depsilon, depsilon_pl, sigma)(i, j);
 
-		return dbl_result;
-	}
+        return dbl_result;
+    }
 
 private:
 
-	AlphaType &alpha_;
-	KType &k_;
-	static DTensor2 s; //Stress deviator
-	static DTensor2 result; //For returning Dtensor2's
+    AlphaType &alpha_;
+    KType &k_;
+    static DTensor2 s; //Stress deviator
+    static DTensor2 result; //For returning Dtensor2's
 
 };
 

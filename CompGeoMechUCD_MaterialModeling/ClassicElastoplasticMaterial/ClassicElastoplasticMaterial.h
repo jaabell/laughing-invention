@@ -160,12 +160,12 @@ public:
           CommitStress(3, 3, 0.0),
           CommitStrain(3, 3, 0.0),
           CommitPlastic_Strain(3, 3, 0.0),
-          Stiffness(3, 3, 3, 3, 0.0),
           yf(yf_in),
           et(et_in),
           pf(pf_in),
           vars(vars_in)
     {
+        // cout << "Copy ctor in CEP" << endl;
         //Set initial stress to some value. Needed for models
         // like Drucker-Prager which blow up at sigma_ii = 0 :)
         TrialStress(0, 0) = -p0;
@@ -268,16 +268,42 @@ public:
 
     const DTensor4 &getTangentTensor( void )
     {
+        using namespace ClassicElastoplasticityGlobals;
+
+        double yf_val = yf(TrialStress);
+
+        DTensor4& Eelastic = et(TrialStress);
+
+
+        if (yf_val <= 0.0)
+        {
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
+        }
+        else
+        {
+            const DTensor2& n = yf.df_dsigma_ij(intersection_stress);
+            const DTensor2& m = pf(depsilon_elpl, intersection_stress);
+
+            double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, depsilon_elpl,  intersection_stress);
+            double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+
+            //Compute tangent stiffness
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
+        }
+
         return Stiffness;
     }
+
     const DTensor2 &getStressTensor( void )
     {
         return TrialStress;
     }
+
     const DTensor2 &getStrainTensor( void )
     {
         return TrialStrain;
     }
+
     const DTensor2 &getPlasticStrainTensor( void )
     {
         return TrialPlastic_Strain;
@@ -336,7 +362,12 @@ public:
 
     NDMaterialLT *getCopy(void)
     {
-        ClassicElastoplasticMaterial< ElasticityType, YieldFunctionType, PlasticFlowType, MaterialInternalVariablesType,  thisClassTag, T > * newmaterial = new T( this->getTag(), rho, yf, et, pf, vars);
+        ClassicElastoplasticMaterial< ElasticityType,
+                                      YieldFunctionType,
+                                      PlasticFlowType,
+                                      MaterialInternalVariablesType,
+                                      thisClassTag,
+                                      T > * newmaterial = new T( this->getTag(), rho, yf, et, pf, vars);
         newmaterial->vars.setVars(this->vars);
         newmaterial->TrialStrain = (this->TrialStrain);
         newmaterial->TrialStress = (this->TrialStress);
@@ -344,7 +375,7 @@ public:
         newmaterial->CommitStress = (this->CommitStress);
         newmaterial->CommitStrain = (this->CommitStrain);
         newmaterial->CommitPlastic_Strain = (this->CommitPlastic_Strain);
-        newmaterial->Stiffness = (this->Stiffness);
+        // newmaterial->Stiffness = (this->Stiffness);
         return newmaterial;
     }
 
@@ -353,10 +384,138 @@ public:
 
     int sendSelf(int commitTag, Channel &theChannel)
     {
+        int pos = 0;
+        static Vector data(1 + 9 * 6); // rho and all the DTensors2 get packed into one vector
+
+        // double rho;
+        data(pos++) = rho;
+        // DTensor2 TrialStrain;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                data(pos++) = TrialStrain(i, j);
+            }
+        // DTensor2 TrialStress;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                data(pos++) = TrialStress(i, j);
+            }
+        // DTensor2 TrialPlastic_Strain;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                data(pos++) = TrialPlastic_Strain(i, j);
+            }
+        // DTensor2 CommitStress;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                data(pos++) = CommitStress(i, j);
+            }
+        // DTensor2 CommitStrain;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                data(pos++) = CommitStrain(i, j);
+            }
+        // DTensor2 CommitPlastic_Strain;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                data(pos++) = CommitPlastic_Strain(i, j);
+            }
+
+        cout << "Sending data" << endl;
+        if (theChannel.sendVector(0, commitTag, data) != 0)
+        {
+            cerr << "ClassicElastoplasticMaterial::sendSelf() - Failed sending data" << endl;
+            return -1;
+        }
+
+        cout << "Sending elasticity" << endl;
+        // ElasticityType    et;
+        if (et.sendSelf(commitTag, theChannel) != 0)
+        {
+            cerr << "ClassicElastoplasticMaterial::sendSelf() - Failed sending elasticity data" << endl;
+            return -1;
+        }
+
+        cout << "Sending variables" << endl;
+        // MaterialInternalVariablesType vars;
+        if (vars.sendSelf(commitTag, theChannel) != 0)
+        {
+            cerr << "ClassicElastoplasticMaterial::sendSelf() - Failed sending internal variables data" << endl;
+            return -1;
+        }
+
         return 0;
     }
     int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
     {
+        cout << "Receiving data" << endl;
+        static Vector data(1 + 9 * 6); // rho and all the DTensors2 get packed into one vector
+        if (theChannel.receiveVector(0, commitTag, data) != 0)
+        {
+            cerr << "ClassicElastoplasticMaterial::receiveSelf() - Failed receiving data" << endl;
+            return -1;
+        }
+
+        int pos = 0;
+        // double rho;
+        rho = data(pos++);
+        // DTensor2 TrialStrain;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                TrialStrain(i, j) = data(pos++);
+            }
+        // DTensor2 TrialStress;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                TrialStress(i, j) = data(pos++);
+            }
+        // DTensor2 TrialPlastic_Strain;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                TrialPlastic_Strain(i, j) = data(pos++);
+            }
+        // DTensor2 CommitStress;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                CommitStress(i, j) = data(pos++);
+            }
+        // DTensor2 CommitStrain;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                CommitStrain(i, j) = data(pos++);
+            }
+        // DTensor2 CommitPlastic_Strain;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+            {
+                CommitPlastic_Strain(i, j) = data(pos++);
+            }
+
+        cout << "Receiving elasticity" << endl;
+        // ElasticityType    et;
+        if (et.receiveSelf(commitTag, theChannel, theBroker) != 0)
+        {
+            cerr << "ClassicElastoplasticMaterial::receiveSelf() - Failed receiving elasticity data" << endl;
+            return -1;
+        }
+        cout << "Receiving variables" << endl;
+        // MaterialInternalVariablesType vars;
+        if (vars.receiveSelf(commitTag, theChannel, theBroker) != 0)
+        {
+            cerr << "ClassicElastoplasticMaterial::receiveSelf() - Failed receiving internal variables data" << endl;
+            return -1;
+        }
+
         return 0;
     }
     void Print(ostream &s, int flag = 0)
@@ -396,14 +555,14 @@ private:
 
         const DTensor2& sigma = CommitStress;
         const DTensor2& epsilon = CommitStrain;
-        const DTensor2& epsilon_pl = CommitPlastic_Strain;
+        // const DTensor2& epsilon_pl = CommitPlastic_Strain;
 
 
         dsigma *= 0;//Zero-out the stress increment tensor
         intersection_stress *= 0; //Zero-out these intersection stress and strain tensors
         intersection_strain *= 0;
 
-        DTensor4& Eelastic = et(epsilon, epsilon_pl, sigma);
+        DTensor4& Eelastic = et(sigma);
         dsigma(i, j) = Eelastic(i, j, k, l) * strain_incr(k, l);
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + strain_incr(i, j);
@@ -413,18 +572,18 @@ private:
         double yf_val_start = yf(sigma);
         double yf_val_end = yf(TrialStress);
 
-        printTensor("   * depsilon", strain_incr);
-        printTensor("   * sigma", sigma);
-        printTensor("   * dsigma", dsigma);
-        std::cout << "   * yf start = " << yf_val_start << std::endl;
-        std::cout << "   * yf end   = " << yf_val_end << std::endl;
+        // printTensor("   * depsilon", strain_incr);
+        // printTensor("   * sigma", sigma);
+        // printTensor("   * dsigma", dsigma);
+        // std::cout << "   * yf start = " << yf_val_start << std::endl;
+        // std::cout << "   * yf end   = " << yf_val_end << std::endl;
 
         DTensor2& start_stress = CommitStress;
         DTensor2& end_stress = TrialStress;
 
         intersection_stress(i, j) = start_stress(i, j);
 
-        if ((yf_val_start < 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
+        if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
         {
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
         }
@@ -440,13 +599,16 @@ private:
                 depsilon_elpl(i, j) = (1 - intersection_factor) * strain_incr(i, j);
                 TrialStress(i, j) = intersection_stress(i, j);
 
-                Eelastic = et(epsilon, epsilon_pl, intersection_stress);
+                Eelastic = et(intersection_stress);
                 TrialStress(i, j)  += Eelastic(i, j, k, l) * depsilon_elpl(k, l);
             }
 
             //Compute normal to YF (n) and Plastic Flow direction (m)
             const DTensor2& n = yf.df_dsigma_ij(intersection_stress);
             const DTensor2& m = pf(depsilon_elpl, intersection_stress);
+
+            // printTensor("intersection_stress", intersection_stress);
+
 
             double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, depsilon_elpl,  intersection_stress);
             double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
@@ -455,9 +617,6 @@ private:
             double dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
             dLambda /= den;
 
-            //Compute tangent stiffness
-            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
-
             //Update the trial plastic strain.
             TrialPlastic_Strain(i, j) += dLambda * m(i, j);
 
@@ -465,9 +624,9 @@ private:
             TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
 
-            std::cout << "   * dLambda = " << dLambda << std::endl;
-            std::cout << "   * xi_star_h_star = " << xi_star_h_star << std::endl;
-            std::cout << "   * den = " << den << std::endl;
+            // std::cout << "   * dLambda = " << dLambda << std::endl;
+            // std::cout << "   * xi_star_h_star = " << xi_star_h_star << std::endl;
+            // std::cout << "   * den = " << den << std::endl;
 
             vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
         }
@@ -653,7 +812,6 @@ private:
     DTensor2 CommitStrain;
     DTensor2 CommitPlastic_Strain;
 
-    DTensor4 Stiffness;
 
     YieldFunctionType yf;
     ElasticityType    et;
@@ -664,6 +822,7 @@ private:
     static DTensor2 depsilon_elpl;    //Elastoplastic strain increment : For a strain increment that causes first yield, the step is divided into an elastic one (until yield) and an elastoplastic one.
     static DTensor2 intersection_stress;
     static DTensor2 intersection_strain;
+    static DTensor4 Stiffness;
     // static DTensor2 m;
 
 };
@@ -678,6 +837,8 @@ template < class E, class Y, class P, class M, int tag, class T >
 DTensor2 ClassicElastoplasticMaterial< E,  Y,  P,  M,  tag,  T >::intersection_stress(3, 3, 0.0);  //Used to compute the yield surface intersection.
 template < class E, class Y, class P, class M, int tag, class T >
 DTensor2 ClassicElastoplasticMaterial< E,  Y,  P,  M,  tag,  T >::intersection_strain(3, 3, 0.0);  //Used to compute the yield surface intersection.
+template < class E, class Y, class P, class M, int tag, class T >
+DTensor4 ClassicElastoplasticMaterial< E,  Y,  P,  M,  tag,  T >::Stiffness(3, 3, 3, 3, 0.0);  //Used to compute the yield surface intersection.
 
 
 #endif

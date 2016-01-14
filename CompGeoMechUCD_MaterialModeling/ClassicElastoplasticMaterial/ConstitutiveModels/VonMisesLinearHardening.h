@@ -77,19 +77,21 @@ class VonMisesLinearHardening : public VMLHBase
 {
 public:
 
-	//First constructor, creates a material at its "ground state" from its parameters.
-	VonMisesLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_);
+    //First constructor, creates a material at its "ground state" from its parameters.
+    VonMisesLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_);
 
-	// Second constructor is not called by the user, instead it is called when creating a copy of the
-	// material. This must provide an initialization for the state variables and link the components
-	// to these variables appropriately.
-	VonMisesLinearHardening(int tag_in, double rho, VMLH_YFType &yf,
-	                        LinearIsotropic3D_EL &el,
-	                        VMLH_PFType &pf,
-	                        VMLHVarsType &vars);
-	//The state variables.
+    // Second constructor is not called by the user, instead it is called when creating a copy of the
+    // material. This must provide an initialization for the state variables and link the components
+    // to these variables appropriately.
+    VonMisesLinearHardening(int tag_in, double rho, VMLH_YFType &yf,
+                            LinearIsotropic3D_EL &el,
+                            VMLH_PFType &pf,
+                            VMLHVarsType &vars);
+
+    VonMisesLinearHardening();
+    //The state variables.
 private:
-	LinearHardeningTensor_EV alpha;	// Backstress
-	LinearHardeningScalar_EV k;		// Critical stress ratio (k = M under this formulation)
+    LinearHardeningTensor_EV alpha; // Backstress
+    LinearHardeningScalar_EV k;     // Critical stress ratio (k = M under this formulation)
 };
 

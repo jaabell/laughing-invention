@@ -43,17 +43,18 @@ class LinearHardeningTensor_EV : public EvolvingVariable<DTensor2, LinearHardeni
 {
 public:
 
-	LinearHardeningTensor_EV( double H_);
-	LinearHardeningTensor_EV( double H_, DTensor2& alpha0);
+    LinearHardeningTensor_EV( double H_);
+    LinearHardeningTensor_EV( double H_, DTensor2& alpha0);
 
-	const DTensor2& getDerivative(const DTensor2 &depsilon,
-	                              const DTensor2 &m,
-	                              const DTensor2& stress) const;
-
+    const DTensor2& getDerivative(const DTensor2 &depsilon,
+                                  const DTensor2 &m,
+                                  const DTensor2& stress) const;
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
 private:
-	double H;
-	static DTensor2 derivative;		// Needs to be static so multiple instances only do one malloc call and we can return a const-reference
+    double H;
+    static DTensor2 derivative;     // Needs to be static so multiple instances only do one malloc call and we can return a const-reference
 };
 
 

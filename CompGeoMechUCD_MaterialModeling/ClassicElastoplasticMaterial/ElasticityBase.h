@@ -35,6 +35,7 @@
 
 #include "../../ltensor/LTensor.h"
 #include "EvolvingVariable.h"
+#include <Channel.h>
 
 
 template <class T>
@@ -42,23 +43,32 @@ class ElasticityBase
 {
 public:
 
-	ElasticityBase()
-	{
-		// Derived classes will have custom constructors.
-	}
+    ElasticityBase()
+    {
+        // Derived classes will have custom constructors.
+    }
 
-	// Note the use of the Curiously-recurring-template-pattern
-	// Operator () retunrs a const-reference. Thereforce, implementation must provide
-	// a reference to a persistent data member. Usually this one is declared static
-	// so that storage and be reused across instances, and we avoid calls to malloc.
-	DTensor4& operator()(const DTensor2 &strain, const DTensor2 &plastic_strain, const DTensor2& stress) // Best practise here would be to return a const reference. But we can't due to LTensor design limitation. Hopefully this will be solved in the future.... by us. -J.Abell
-	{
-		return static_cast<T*>(this)->operator()( strain, plastic_strain,  stress);
-	}
+    // Note the use of the Curiously-recurring-template-pattern
+    // Operator () retunrs a const-reference. Thereforce, implementation must provide
+    // a reference to a persistent data member. Usually this one is declared static
+    // so that storage and be reused across instances, and we avoid calls to malloc.
+    DTensor4& operator()(const DTensor2& stress) // Best practise here would be to return a const reference. But we can't due to LTensor design limitation. Hopefully this will be solved in the future.... by us. -J.Abell
+    {
+        return static_cast<T*>(this)->operator()(stress);
+    }
 
+    int sendSelf(int commitTag, Channel &theChannel)
+    {
+        return static_cast<T*>(this)->sendSelf(commitTag, theChannel);
+    }
+
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+    {
+        return static_cast<T*>(this)->receiveSelf( commitTag, theChannel, theBroker);
+    }
 
 private:
-	// Derived classes will store their parameters and such.
+    // Derived classes will store their parameters and such.
 };
 
 

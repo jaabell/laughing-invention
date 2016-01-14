@@ -43,18 +43,20 @@ class LinearHardeningScalar_EV : public EvolvingVariable<double, LinearHardening
 {
 public:
 
-	LinearHardeningScalar_EV( double H_);
+    LinearHardeningScalar_EV( double H_);
 
-	LinearHardeningScalar_EV( double H_, double k0);
+    LinearHardeningScalar_EV( double H_, double k0);
 
-	const double& getDerivative(const DTensor2 &depsilon,
-	                            const DTensor2 &m,
-	                            const DTensor2& stress) const;
+    const double& getDerivative(const DTensor2 &depsilon,
+                                const DTensor2 &m,
+                                const DTensor2& stress) const;
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 
 
 private:
-	double H;
-	static double derivative; //Must return a reference.
+    double H;
+    static double derivative; //Must return a reference.
 };
 
 

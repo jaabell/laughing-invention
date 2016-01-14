@@ -35,61 +35,87 @@
 
 #include <iostream>
 #include "../../ltensor/LTensor.h"
+#include <Channel.h>
+
 
 template <class... Qs> struct MaterialInternalVariables
 {
-	void evolve(double dlambda,
-	            const DTensor2& depsilon,
-	            const DTensor2& m,
-	            const DTensor2& sigma)
-	{
-		// Last guy does nothing, as it holds nothing.
-		// Probably gets optimized out. (Empty struct optimization)
-		// Needed to stop template recursion.
-	}
+    void evolve(double dlambda,
+                const DTensor2& depsilon,
+                const DTensor2& m,
+                const DTensor2& sigma)
+    {
+        // Last guy does nothing, as it holds nothing.
+        // Probably gets optimized out. (Empty struct optimization)
+        // Needed to stop template recursion.
+    }
 
-	void setVars(const MaterialInternalVariables<>& vars)
-	{
-		//Does nothing.
-	}
+    void setVars(const MaterialInternalVariables<>& vars) {}
+
+    int sendSelf(int commitTag, Channel &theChannel)
+    {
+        return 0;
+    }
+
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+    {
+        return 0;
+    }
+
+    void commit() { }
+    void revert() { }
 };
 
 template <class Q, class... Qs>
 struct MaterialInternalVariables<Q, Qs...> : MaterialInternalVariables<Qs...>
 {
-	MaterialInternalVariables(Q &q, Qs&... qs) : MaterialInternalVariables<Qs...>(qs...), q_i(q)
-	{
-		std::cout << "q_i  = " << &q_i << std::endl;
-	}
+    MaterialInternalVariables(Q &q, Qs&... qs) : MaterialInternalVariables<Qs...>(qs...), q_i(q) {}
 
-	void setVars(const MaterialInternalVariables<Q, Qs...>& vars)
-	{
-		std::cout << "   --> Setting q_i =  "
-		          << vars.q_i
-		          << "   ("
-		          << &q_i
-		          << ") coming from ("
-		          << &vars.q_i << ")" <<  std::endl;
-		q_i = vars.q_i;
-		std::cout << "  q_i is now " << q_i << "   ("
-		          << &q_i
-		          << ")" <<  endl;
-		const MaterialInternalVariables<Qs...>* morevars = static_cast<const MaterialInternalVariables<Qs...>*>(&vars);
+    void setVars(const MaterialInternalVariables<Q, Qs...>& vars)
+    {
+        q_i = vars.q_i;
+        const MaterialInternalVariables<Qs...>* morevars = static_cast<const MaterialInternalVariables<Qs...>*>(&vars);
 
-		static_cast<MaterialInternalVariables<Qs...>*>(this)->setVars(*morevars);
-	}
+        static_cast<MaterialInternalVariables<Qs...>*>(this)->setVars(*morevars);
+    }
 
-	//Recurse, calling evolve on each internal variable.
-	void evolve(double dlambda,
-	            const DTensor2& depsilon,
-	            const DTensor2& m,
-	            const DTensor2& sigma)
-	{
-		q_i.evolve( dlambda,  depsilon,  m,  sigma);
-		static_cast<MaterialInternalVariables<Qs...>*>(this)->evolve(dlambda,  depsilon,  m,  sigma);
-	}
+    //Recurse, calling evolve on each internal variable.
+    void evolve(double dlambda,
+                const DTensor2& depsilon,
+                const DTensor2& m,
+                const DTensor2& sigma)
+    {
+        q_i.evolve( dlambda,  depsilon,  m,  sigma);
+        static_cast<MaterialInternalVariables<Qs...>*>(this)->evolve(dlambda,  depsilon,  m,  sigma);
+    }
 
-	Q& q_i;
+    int sendSelf(int commitTag, Channel &theChannel)
+    {
+        q_i.sendSelf(commitTag, theChannel);
+        static_cast<MaterialInternalVariables<Qs...>*>(this)->sendSelf(commitTag, theChannel);
+        return 0;
+    }
+
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+    {
+        q_i.receiveSelf(commitTag, theChannel, theBroker);
+        static_cast<MaterialInternalVariables<Qs...>*>(this)->receiveSelf(commitTag, theChannel, theBroker);
+        return 0;
+    }
+
+    void commit()
+    {
+        q_i.commit();
+        static_cast<MaterialInternalVariables<Qs...>*>(this)->commit();
+    }
+
+    void revert()
+    {
+        q_i.revert();
+        static_cast<MaterialInternalVariables<Qs...>*>(this)->revert();
+    }
+
+    Q& q_i;
 };
 
 

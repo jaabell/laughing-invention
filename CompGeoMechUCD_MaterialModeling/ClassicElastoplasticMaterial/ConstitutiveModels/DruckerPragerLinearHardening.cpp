@@ -34,13 +34,13 @@
 
 //First constructor, creates a material at its "ground state" from its parameters.
 DruckerPragerLinearHardening::DruckerPragerLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_, double p0) :
-	DPLHBase::ClassicElastoplasticMaterial(tag_in, rho_, p0,
-	                                       DPLH_YFType(alpha, k),  		// Point YF to internal variables
-	                                       LinearIsotropic3D_EL(E, nu), // Create Elasticity
-	                                       DPLH_PFType(alpha, k),       // Point PF to the internal variables
-	                                       DPLHVarsType(alpha, k)),		// Declare the list of internal variables
-	alpha(H_alpha),
-	k(H_k, k0_in)
+    DPLHBase::ClassicElastoplasticMaterial(tag_in, rho_, p0,
+                                           DPLH_YFType(alpha, k),       // Point YF to internal variables
+                                           LinearIsotropic3D_EL(E, nu), // Create Elasticity
+                                           DPLH_PFType(alpha, k),       // Point PF to the internal variables
+                                           DPLHVarsType(alpha, k)),     // Declare the list of internal variables
+    alpha(H_alpha),
+    k(H_k, k0_in)
 {
 
 };
@@ -52,14 +52,26 @@ DruckerPragerLinearHardening::DruckerPragerLinearHardening(int tag_in, double rh
         LinearIsotropic3D_EL &el,
         DPLH_PFType &pf,
         DPLHVarsType &vars) :
-	DPLHBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
-	                                       this->getPressure(),		//Sets p0
-	                                       DPLH_YFType(alpha, k),    // Point YF to new internal variables
-	                                       LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
-	                                       DPLH_PFType(alpha, k),    // Point PF to the internal variables
-	                                       DPLHVarsType(alpha, k)),   // Declare the list of internal variables
-	alpha(0),
-	k(0, 0)
+    DPLHBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
+                                           this->getPressure(),     //Sets p0
+                                           DPLH_YFType(alpha, k),    // Point YF to new internal variables
+                                           LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
+                                           DPLH_PFType(alpha, k),    // Point PF to the internal variables
+                                           DPLHVarsType(alpha, k)),   // Declare the list of internal variables
+    alpha(0),
+    k(0, 0)
 {
 
 };
+
+DruckerPragerLinearHardening::DruckerPragerLinearHardening() :
+    DPLHBase::ClassicElastoplasticMaterial(0, 0, 0,
+                                           DPLH_YFType(alpha, k),       // Point YF to internal variables
+                                           LinearIsotropic3D_EL(0, 0), // Create Elasticity
+                                           DPLH_PFType(alpha, k),       // Point PF to the internal variables
+                                           DPLHVarsType(alpha, k)),     // Declare the list of internal variables
+    alpha(0),
+    k(0, 0)
+{
+
+}

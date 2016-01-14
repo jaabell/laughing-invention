@@ -34,20 +34,21 @@
 #define PlasticFlowBase_H
 
 #include "../../ltensor/LTensor.h"
+#include <Channel.h>
 
 template <class T>
 class PlasticFlowBase
 {
 public:
-	PlasticFlowBase()
-	{
+    PlasticFlowBase()
+    {
 
-	}
+    }
 
-	const DTensor2& operator()(const DTensor2 &depsilon, const DTensor2& sigma)
-	{
-		return static_cast<T*>(this)->operator()( depsilon,  sigma);
-	}
+    const DTensor2& operator()(const DTensor2 &depsilon, const DTensor2& sigma)
+    {
+        return static_cast<T*>(this)->operator()( depsilon,  sigma);
+    }
 
 
 private:
