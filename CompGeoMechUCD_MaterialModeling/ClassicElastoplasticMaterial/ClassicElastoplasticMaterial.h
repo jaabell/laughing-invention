@@ -540,7 +540,7 @@ public:
         size += sizeof(vars);//vars->getObjectSize();
         size += sizeof(NDMaterialLT);
 
-        size += static_cast<T*>(this)->getObjectSize();
+        // size += static_cast<T*>(this)->getObjectSize();
 
         return size;
     }
