@@ -755,12 +755,12 @@ FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
         return new ElasticIsotropic3DLT();
         break;
 
-    case ND_TAG_vonMisesPPLT :
-        return new vonMisesPPLT();
+    case ND_TAG_CEM_DruckerPragerLinearHardening :
+        return new DruckerPragerLinearHardening();
         break;
 
-    case ND_TAG_PisanoLT :
-        return new PisanoLT();
+    case ND_TAG_CEM_VonMisesLinearHardening :
+        return new VonMisesLinearHardening();
         break;
 
     case ND_TAG_NewPisanoLT :
