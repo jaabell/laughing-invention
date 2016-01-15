@@ -823,7 +823,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
 
 
         // DRMout << "step1 = " << step1 << ", step2 = " << step2 << endl;
-        // DRMout << "t1 = " << t1 << " <= t = " << t << " <= t2 = "  << t2 << endl;
+        DRMout << "t1 = " << t1 << " <= t = " << t << " <= t2 = "  << t2;// << endl;
 
         int NDOF = 3;
 
@@ -985,7 +985,7 @@ Domain_Reduction_Method_HDF5_input::ComputeDRMLoads()
         delete u_e;
         delete udd_e;
     }
-    cout << "Done!\n";
+    cout << "  .... Done!\n";
 }
 
 
