@@ -847,6 +847,8 @@ DomainPartitioner::repartition(int numParts)
     // double start_time = MPI_Wtime();
     // first we ensure the partitioned domain has numpart subdomains
     // with tags 1 through numparts
+    return 0;
+
     Subdomain **subdomainPtrs = new Subdomain * [numParts];
 
     for (int i = 1; i <= numParts; i++)
