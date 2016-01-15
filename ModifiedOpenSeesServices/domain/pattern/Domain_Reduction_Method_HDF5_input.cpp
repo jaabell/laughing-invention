@@ -684,6 +684,7 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
         // ofstream fout("drmforces.txt", ios::app);
         // fout << time << " ";
 
+        double load_mag = 0;
         for (int i = 0; i < Nodes->Size(); i++)
         {
 
@@ -711,6 +712,8 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
                     cerr << "    (t = " << t << ") Using offset # " << use_this_step << " step = " << step1 + use_this_step << ", time = " << (*times)[use_this_step + step1];
                     cerr << "\n  load(i) = " << (*load)(i) << ", i = " << i << endl;
                 }
+
+                load_mag += (*load)[i] * (*load)[i];
             }
 
             //Take care of the minus sign in the effective seismic force for boundary nodes
@@ -721,6 +724,7 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
 
             theNode->addUnbalancedLoad(*load);
         }
+        cout << " load mag = " << load_mag << endl;
         // fout << endl;
         delete load;
     }
