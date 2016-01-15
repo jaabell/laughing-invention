@@ -2017,7 +2017,7 @@ ADD_material
 	}
 		//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [DruckerPragerLT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <F/L^2> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
+	//!FEIDOC add material # <.> type [DruckerPragerLT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
 	| MATERIAL TEXTNUMBER exp TYPE DruckerPragerLT
 		mass_density '=' exp
 		elastic_modulus '=' exp
@@ -2033,7 +2033,7 @@ ADD_material
 		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));  // 2
 		args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));  // 3
 		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));  // 4
-		args.push_back($17); signature.push_back(this_signature("druckerprager_k",  &isPressure));  // 5
+		args.push_back($17); signature.push_back(this_signature("druckerprager_k",  &isAdimensional));  // 5
 		args.push_back($20); signature.push_back(this_signature("kinematic_hardening_rate",   &isPressure));  // 6
 		args.push_back($23); signature.push_back(this_signature("isotropic_hardening_rate",   &isPressure));  // 7
 		args.push_back($26); signature.push_back(this_signature("initial_confining_stress",   &isPressure));  // 7

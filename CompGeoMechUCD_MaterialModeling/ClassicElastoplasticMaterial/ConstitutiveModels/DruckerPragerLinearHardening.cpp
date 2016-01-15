@@ -48,12 +48,12 @@ DruckerPragerLinearHardening::DruckerPragerLinearHardening(int tag_in, double k0
 // Second constructor is not called by the user, instead it is called when creating a copy of the
 // material. This must provide an initialization for the state variables and link the components
 // to these variables appropriately.
-DruckerPragerLinearHardening::DruckerPragerLinearHardening(int tag_in, double rho, DPLH_YFType &yf,
+DruckerPragerLinearHardening::DruckerPragerLinearHardening(int tag_in, double rho, double p0, DPLH_YFType &yf,
         LinearIsotropic3D_EL &el,
         DPLH_PFType &pf,
         DPLHVarsType &vars) :
     DPLHBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
-                                           this->getPressure(),     //Sets p0
+                                           p0,     //Sets p0
                                            DPLH_YFType(alpha, k),    // Point YF to new internal variables
                                            LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
                                            DPLH_PFType(alpha, k),    // Point PF to the internal variables

@@ -83,7 +83,7 @@ public:
     // Second constructor is not called by the user, instead it is called when creating a copy of the
     // material. This must provide an initialization for the state variables and link the components
     // to these variables appropriately.
-    DruckerPragerLinearHardening(int tag_in, double rho, DPLH_YFType & yf,
+    DruckerPragerLinearHardening(int tag_in, double rho, double p0, DPLH_YFType & yf,
                                  LinearIsotropic3D_EL & el,
                                  DPLH_PFType & pf,
                                  DPLHVarsType & vars);

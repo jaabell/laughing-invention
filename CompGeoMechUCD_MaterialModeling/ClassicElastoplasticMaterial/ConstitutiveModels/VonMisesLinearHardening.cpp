@@ -58,11 +58,11 @@ VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double k0_in, doubl
 // Second constructor is not called by the user, instead it is called when creating a copy of the
 // material. This must provide an initialization for the state variables and link the components
 // to these variables appropriately.
-VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double rho, VMLH_YFType &yf,
+VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double p0, double rho, VMLH_YFType &yf,
         LinearIsotropic3D_EL &el,
         VMLH_PFType &pf,
         VMLHVarsType &vars) :
-    VMLHBase::ClassicElastoplasticMaterial(tag_in, this->getRho(), 0.0, // Initial confinement can be 0 for this model
+    VMLHBase::ClassicElastoplasticMaterial(tag_in, this->getRho(), p0, // Initial confinement can be 0 for this model
                                            VMLH_YFType(alpha, k),     // Point YF to new internal variables
                                            LinearIsotropic3D_EL(el),  // Create Elasticity -- use copy constructor here
                                            VMLH_PFType(alpha, k),     // Point PF to the internal variables

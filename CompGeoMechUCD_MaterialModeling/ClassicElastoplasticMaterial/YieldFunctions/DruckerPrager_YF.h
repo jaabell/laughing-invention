@@ -104,12 +104,8 @@ public:
             )
             / den;
         result(i, j) += SQRT_2_over_27 * k * kronecker_delta(i, j);
-        // DTensor2 bshit(3, 3, 0.0);
-        // bshit(i, j) = SQRT_2_over_27 * k * kronecker_delta(i, j);
-        // cout << "     --> YF result     = " << result << endl;
-        // cout << "     --> YF bshit     = " << bshit << endl;
-        return result;
 
+        return result;
     }
 
     double xi_star_h_star(const DTensor2& depsilon, const DTensor2& depsilon_pl, const DTensor2& sigma)

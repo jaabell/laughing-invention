@@ -367,7 +367,7 @@ public:
                                       PlasticFlowType,
                                       MaterialInternalVariablesType,
                                       thisClassTag,
-                                      T > * newmaterial = new T( this->getTag(), rho, yf, et, pf, vars);
+                                      T > * newmaterial = new T( this->getTag(), rho, this->getPressure(), yf, et, pf, vars);
         newmaterial->vars.setVars(this->vars);
         newmaterial->TrialStrain = (this->TrialStrain);
         newmaterial->TrialStress = (this->TrialStress);
@@ -426,14 +426,14 @@ public:
                 data(pos++) = CommitPlastic_Strain(i, j);
             }
 
-        cout << "Sending data" << endl;
+        // cout << "Sending data" << endl;
         if (theChannel.sendVector(0, commitTag, data) != 0)
         {
             cerr << "ClassicElastoplasticMaterial::sendSelf() - Failed sending data" << endl;
             return -1;
         }
 
-        cout << "Sending elasticity" << endl;
+        // cout << "Sending elasticity" << endl;
         // ElasticityType    et;
         if (et.sendSelf(commitTag, theChannel) != 0)
         {
@@ -441,7 +441,7 @@ public:
             return -1;
         }
 
-        cout << "Sending variables" << endl;
+        // cout << "Sending variables" << endl;
         // MaterialInternalVariablesType vars;
         if (vars.sendSelf(commitTag, theChannel) != 0)
         {
@@ -453,7 +453,7 @@ public:
     }
     int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
     {
-        cout << "Receiving data" << endl;
+        // cout << "Receiving data" << endl;
         static Vector data(1 + 9 * 6); // rho and all the DTensors2 get packed into one vector
         if (theChannel.receiveVector(0, commitTag, data) != 0)
         {
@@ -501,14 +501,14 @@ public:
                 CommitPlastic_Strain(i, j) = data(pos++);
             }
 
-        cout << "Receiving elasticity" << endl;
+        // cout << "Receiving elasticity" << endl;
         // ElasticityType    et;
         if (et.receiveSelf(commitTag, theChannel, theBroker) != 0)
         {
             cerr << "ClassicElastoplasticMaterial::receiveSelf() - Failed receiving elasticity data" << endl;
             return -1;
         }
-        cout << "Receiving variables" << endl;
+        // cout << "Receiving variables" << endl;
         // MaterialInternalVariablesType vars;
         if (vars.receiveSelf(commitTag, theChannel, theBroker) != 0)
         {

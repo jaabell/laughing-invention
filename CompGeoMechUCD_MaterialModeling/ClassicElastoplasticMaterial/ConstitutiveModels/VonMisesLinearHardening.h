@@ -83,7 +83,7 @@ public:
     // Second constructor is not called by the user, instead it is called when creating a copy of the
     // material. This must provide an initialization for the state variables and link the components
     // to these variables appropriately.
-    VonMisesLinearHardening(int tag_in, double rho, VMLH_YFType &yf,
+    VonMisesLinearHardening(int tag_in, double rho, double p0, VMLH_YFType &yf,
                             LinearIsotropic3D_EL &el,
                             VMLH_PFType &pf,
                             VMLHVarsType &vars);
