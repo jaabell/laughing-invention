@@ -160,8 +160,9 @@ PetscSolver::solve(void)
         theChannel->sendVector(0, 0, *vectB);
         theChannel->receiveVector(0, 0, *vectB);
 
+        cout << "norm(vectB) = " << vectB->norm() << endl;
     }
-    else //Master process assembles v vector. This is a bottleneck and can be improved with
+    else //Master process assembles b vector. This is a bottleneck and can be improved with
         //a collective reduction
     {
 
