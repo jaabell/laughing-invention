@@ -160,7 +160,13 @@ PetscSolver::solve(void)
         theChannel->sendVector(0, 0, *vectB);
         theChannel->receiveVector(0, 0, *vectB);
 
-        cout << "norm(vectB) = " << vectB->Norm() << endl;
+        double vectBNorm  = vectB->Norm();
+        if (std::isnan(rvNorm))
+        {
+            cout << "norm(vectB) = " << vectBNorm << endl;
+            return -1;
+        }
+
     }
     else //Master process assembles b vector. This is a bottleneck and can be improved with
         //a collective reduction
@@ -178,7 +184,12 @@ PetscSolver::solve(void)
             theChannel->receiveVector(0, 0, receiveVector);
             *vectB += receiveVector;
 
-            cout << "norm(receiveVector) = " << receiveVector.Norm() << endl;
+            double rvNorm  = receiveVector.Norm() ;
+            if (std::isnan(rvNorm))
+            {
+                cout << "norm(receiveVector) = " << rvNorm << endl;
+                return -1;
+            }
         }
 
         //Better done with a BCast
