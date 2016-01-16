@@ -217,7 +217,7 @@ DomainPartitioner::partition(int numParts)
 
     }
 
-    cout << "    Creating Element Graph\n";
+    // cout << "    Creating Element Graph\n";
 
     // we get the ele graph from the domain and partition it
 
@@ -232,9 +232,9 @@ DomainPartitioner::partition(int numParts)
         cerr << "element graph\n";
         return -10 + theError;
     }
-    cout << "       Done! Creating Element Graph\n";
+    // cout << "       Done! Creating Element Graph\n";
 
-    cout << "    Partitioning Domain\n";
+    // cout << "    Partitioning Domain\n";
     // we create empty graphs for the numParts subdomains,
     // in the graphs we place the vertices for the elements on the boundaries
 

@@ -1199,7 +1199,7 @@ PartitionedDomain::setPartitioner(DomainPartitioner *thePartitioner)
 int
 PartitionedDomain::partition(int numPartitions)
 {
-    cout << "\n\nPartitioning Mesh into " << numPartitions << " partitions. \n";
+    // cout << "\n\nPartitioning Mesh into " << numPartitions << " partitions. \n";
 
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
@@ -1245,7 +1245,7 @@ PartitionedDomain::partition(int numPartitions)
     VertexIter &theVertexIter = coloredGraph->getVertices();
     Vertex *vertexPtr;
 
-    cout << "\n  --> Writing partition data into HDF5 file.\n";
+    // cout << "\n  --> Writing partition data into HDF5 file.\n";
 
     while ((vertexPtr = theVertexIter()) != 0)
     {
@@ -1254,8 +1254,8 @@ PartitionedDomain::partition(int numPartitions)
         theOutputWriter.writeElementPartitionData( eleTag, vertexColor);
     }
 
-    cout << "\n  --> Done writing partition data into HDF5 file.\n";
-    cout << "\n\n === Finished partitioning ===\n";
+    // cout << "\n  --> Done writing partition data into HDF5 file.\n";
+    // cout << "\n\n === Finished partitioning ===\n";
 
     return 0;
 

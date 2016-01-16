@@ -401,7 +401,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         }
 
         // For Equal-DOF constraints!
-        cout << "Looking for EQUALDOFS: ";
+        // cout << "Looking for EQUALDOFS: ";
         int numMP = 0;// = theDomain->getNumMPs();
         MP_ConstraintIter& theMPs = theDomain->getMPs();
         MP_Constraint* mpPtr;
@@ -451,7 +451,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                 {
                     int nodeID = dofPtr->getNodeTag();
 
-                    cout << "\nFound EQUALDOF! Node " << nodeID << " is slave where node ";
+                    // cout << "\nFound EQUALDOF! Node " << nodeID << " is slave where node ";
 
                     // loop through the MP_Constraints to see if any of the
                     // DOFs are constrained, note constraint matrix must be diagonal
@@ -467,7 +467,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                         {
                             int nodeRetained = mpPtr->getNodeRetained();
                             Node* nodeRetainedPtr = theDomain->getNode(nodeRetained);
-                            cout << nodeRetainedPtr->getTag() << " is the master! DOF-List = [ ";
+                            // cout << nodeRetainedPtr->getTag() << " is the master! DOF-List = [ ";
                             DOF_Group* retainedDOF = nodeRetainedPtr->getDOF_GroupPtr();
                             const ID& retainedDOFIDs = retainedDOF->getID();
                             const ID& constrainedDOFs = mpPtr->getConstrainedDOFs();
@@ -483,16 +483,16 @@ ParallelNumberer::numberDOF(int lastDOF)
                                 theMPdofCs(pos) = dofC;
                                 theMPdofIDs(pos) = dofID;
                                 pos++;
-                                cout << dofC << " ";
+                                // cout << dofC << " ";
                             }
-                            cout << "]\n";
+                            // cout << "]\n";
                         }
                     }
-                    cout << "\nLooking for more EQUALDOFS: ";
+                    // cout << "\nLooking for more EQUALDOFS: ";
                 }
                 // else
                 // {
-                cout << ".";
+                // cout << ".";
                 // }
             }
         }
@@ -570,7 +570,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
     // the linear time search done in ID::getLocation() which is repeated in a loop an raises, uncesessarily, the
     //  complexity of the merging process.
 
-    cout << "Building vertexRefsIndex" << endl;
+    // cout << "Building vertexRefsIndex" << endl;
 
     int maxref = 0;
     for (int loc = 0; loc < vertexRefs.Size(); loc++)
@@ -587,7 +587,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         vertexRefsIndex[vertexRefs[loc]] = loc;
     }
 
-    cout << "Merging vertices (maxref = " << maxref << ")" <<  endl;
+    // cout << "Merging vertices (maxref = " << maxref << ")" <<  endl;
 
     int max_vertextagsub = 0;
     while ((subVertexPtr = theSubGraphIter1()) != 0)
@@ -651,7 +651,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         count++;
     }
 
-    cout << "Building theSubdomainMapIndex" << endl;
+    // cout << "Building theSubdomainMapIndex" << endl;
 
     int N_theSubdomainMap = theSubdomainMap.Size() / 2;
     ID theSubdomainMapIndex(max_vertextagsub, max_vertextagsub, -1);
@@ -661,7 +661,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
     }
 
 
-    cout << "Merging edges" << endl;
+    // cout << "Merging edges" << endl;
     // for each vertex in subgraph, we add it's adjacenecy into the merged graph
     VertexIter & theSubGraphIter2 = theSubGraph.getVertices();
 

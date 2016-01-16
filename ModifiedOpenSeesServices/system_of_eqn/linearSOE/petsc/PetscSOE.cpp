@@ -207,7 +207,10 @@ PetscSOE::setSize(Graph &theGraph)
             if (FILE *file = fopen(PETSCSOE_PETSCOPTIONS_FILENAME, "r"))
             {
                 fclose(file);
-                cout << "PetscSOE is using options from file: " << PETSCSOE_PETSCOPTIONS_FILENAME << endl;
+                if (processID_world == 1)
+                {
+                    cout << "PetscSOE is using options from file: " << PETSCSOE_PETSCOPTIONS_FILENAME << endl;
+                }
                 PetscInitialize(0, PETSC_NULL, PETSCSOE_PETSCOPTIONS_FILENAME, "ESSI Simulator is using PETSc");
             }
             else
