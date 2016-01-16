@@ -22,10 +22,10 @@ static inline void print_stacktrace(FILE *out = stderr, unsigned int max_frames 
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #endif
 
-    fprintf(out, "=================================================:\n");
-    fprintf(out, "RealESSI Stack Trace:\n");
-    fprintf(out, "=================================================:\n");
-    fprintf(out, "ProcessID %d:\n", rank);
+    fprintf(out, "![%d]=================================================:\n", rank);
+    fprintf(out, "![%d]RealESSI Stack Trace:\n", rank);
+    fprintf(out, "![%d]=================================================:\n", rank);
+    fprintf(out, "![%d]ProcessID %d:\n", rank, rank);
 
 
     // storage array for stack trace address data
@@ -36,7 +36,7 @@ static inline void print_stacktrace(FILE *out = stderr, unsigned int max_frames 
 
     if (addrlen == 0)
     {
-        fprintf(out, "  <empty, possibly corrupt>\n");
+        fprintf(out, "![%d]  <empty, possibly corrupt>\n", rank);
         return;
     }
 
@@ -90,24 +90,24 @@ static inline void print_stacktrace(FILE *out = stderr, unsigned int max_frames 
             if (status == 0)
             {
                 funcname = ret; // use possibly realloc()-ed string
-                fprintf(out, "  %s : %s+%s\n",
+                fprintf(out, "![%d]  %s : %s+%s\n", rank,
                         symbollist[i], funcname, begin_offset);
             }
             else
             {
                 // demangling failed. Output function name as a C function with
                 // no arguments.
-                fprintf(out, "  %s : %s()+%s\n",
+                fprintf(out, "![%d]  %s : %s()+%s\n", rank,
                         symbollist[i], begin_name, begin_offset);
             }
         }
         else
         {
             // couldn't parse the line? print the whole line.
-            fprintf(out, "  %s\n", symbollist[i]);
+            fprintf(out, "![%d]  %s\n", rank, symbollist[i]);
         }
     }
-    fprintf(out, "=================================================:\n");
+    fprintf(out, "![%d]=================================================:\n", rank);
     free(funcname);
     free(symbollist);
 }
