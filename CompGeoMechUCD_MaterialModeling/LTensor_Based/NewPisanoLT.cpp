@@ -102,13 +102,13 @@ NewPisanoLT::NewPisanoLT(int tag,
     double K0 = v / (1 - v);
     double sigma_z = -3 * initialconfiningstress / (2 * K0 + 1);
 
-    TrialStress(0, 0) = -initialconfiningstress ;
-    TrialStress(1, 1) = -initialconfiningstress ;
-    TrialStress(2, 2) = -initialconfiningstress ;
+    // TrialStress(0, 0) = -initialconfiningstress ;
+    // TrialStress(1, 1) = -initialconfiningstress ;
+    // TrialStress(2, 2) = -initialconfiningstress ;
 
-    // TrialStress(0, 0) = K0 * sigma_z;
-    // TrialStress(1, 1) = K0 * sigma_z;
-    // TrialStress(2, 2) = sigma_z;
+    TrialStress(0, 0) = K0 * sigma_z;
+    TrialStress(1, 1) = K0 * sigma_z;
+    TrialStress(2, 2) = sigma_z;
 //
     CommitStress(0, 0) = TrialStress(0, 0);
     CommitStress(1, 1) = TrialStress(1, 1);

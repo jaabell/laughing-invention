@@ -214,6 +214,7 @@ private:
     Index < 'j' > j;
 
     bool use_alternative_flow_rule;
+    bool below_min_confinement;
 
 };
 
