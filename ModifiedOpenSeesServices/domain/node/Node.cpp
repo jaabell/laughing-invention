@@ -1819,11 +1819,19 @@ int
 Node::createDisp(void)
 {
     // trial , committed, incr = (committed-trial)
+
+    if (numberDOF < 1)
+    {
+        cerr << "WARNING - Node::createDisp() numberDOF = " <<  numberDOF << endl;
+
+        return -1;
+    }
+
     disp = new double[4 * numberDOF];
 
     if (disp == 0)
     {
-        cerr << "WARNING - Node::createDisp() ran out of memory for array of size " << 2 * numberDOF << endln;
+        cerr << "WARNING - Node::createDisp() ran out of memory for array of size " << 2 * numberDOF << endl;
 
         return -1;
     }
