@@ -9,6 +9,10 @@
 #include <execinfo.h>
 #include <cxxabi.h>
 
+#ifdef _PARALLEL_PROCESSING
+#include <mpi.h>
+#endif
+
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
 static inline void print_stacktrace(FILE *out = stderr, unsigned int max_frames = 63)
 {
