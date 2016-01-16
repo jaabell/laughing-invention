@@ -1226,6 +1226,23 @@ void signalHandler(int signum)
 	else if(signum == SIGFPE)
 	{
 		cout << "Caught SIGFPE! Program ending." << endl;
+        if(fetestexcept(FE_INVALID))
+        {
+            cout << "   Floating point error -- (FE_INVALID) - Undefined operation (0/0, 0/1, sqrt(-1), inf - int, etc.)\n" << endl;
+        }
+        if(fetestexcept(FE_DIVBYZERO))
+        {
+            cout << "   Floating point error -- (FE_DIVBYZERO) - 0/0\n" << endl;
+        }
+        if(fetestexcept(FE_OVERFLOW))
+        {
+            cout << "   Floating point error -- (FE_OVERFLOW) - Result is larger than the largest representable number at current accuracy. \n" << endl;
+        }
+        if(fetestexcept(FE_UNDERFLOW))
+        {
+            cout << "   Floating point error -- (FE_UNDERFLOW) - Result too small (but not zero) to be represented as a number at current accuracy. \n" << endl;
+        }
+
 	}
 	else if(signum == SIGUSR1 || signum == SIGUSR2)
 	{
