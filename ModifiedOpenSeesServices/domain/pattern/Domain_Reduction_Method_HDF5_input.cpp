@@ -713,7 +713,7 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
                     cerr << "\n  load(i) = " << (*load)(i) << ", i = " << i << endl;
                 }
 
-                load_mag += (*load)[i] * (*load)[i];
+                // load_mag += (*load)[i] * (*load)[i];
             }
 
             //Take care of the minus sign in the effective seismic force for boundary nodes
