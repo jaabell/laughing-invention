@@ -1226,19 +1226,21 @@ void signalHandler(int signum)
 	else if(signum == SIGFPE)
 	{
 		cout << "Caught SIGFPE! Program ending." << endl;
-        if(fetestexcept(FE_INVALID))
+        int exceptions;
+        exceptions = fetestexcept(FE_INVALID | FE_DIVBYZERO| FE_OVERFLOW);
+        if(exceptions & FE_INVALID)
         {
             cout << "   Floating point error -- (FE_INVALID) - Undefined operation (0/0, 0/1, sqrt(-1), inf - int, etc.)\n" << endl;
         }
-        if(fetestexcept(FE_DIVBYZERO))
+        if(exceptions & FE_DIVBYZERO)
         {
             cout << "   Floating point error -- (FE_DIVBYZERO) - 0/0\n" << endl;
         }
-        if(fetestexcept(FE_OVERFLOW))
+        if(exceptions & FE_OVERFLOW)
         {
             cout << "   Floating point error -- (FE_OVERFLOW) - Result is larger than the largest representable number at current accuracy. \n" << endl;
         }
-        if(fetestexcept(FE_UNDERFLOW))
+        if(exceptions & FE_UNDERFLOW)
         {
             cout << "   Floating point error -- (FE_UNDERFLOW) - Result too small (but not zero) to be represented as a number at current accuracy. \n" << endl;
         }
@@ -1261,8 +1263,7 @@ int main (int argc, char**argv)
 
     feenableexcept(FE_INVALID   | 
                    FE_DIVBYZERO | 
-                   FE_OVERFLOW  | 
-                   FE_UNDERFLOW);
+                   FE_OVERFLOW);
 
 	signal(SIGINT, signalHandler);
 	signal(SIGABRT, signalHandler);
