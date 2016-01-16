@@ -684,7 +684,7 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
         // ofstream fout("drmforces.txt", ios::app);
         // fout << time << " ";
 
-        double load_mag = 0;
+        // double load_mag = 0;
         for (int i = 0; i < Nodes->Size(); i++)
         {
 
@@ -724,7 +724,7 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
 
             theNode->addUnbalancedLoad(*load);
         }
-        cout << " load mag = " << load_mag << endl;
+        // cout << " load mag = " << load_mag << endl;
         // fout << endl;
         delete load;
     }
