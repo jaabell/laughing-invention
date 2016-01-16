@@ -1233,11 +1233,7 @@ void signalHandler(int signum)
 		call_hdf5_flush_next_chance();
 		return; // Do not quit on these signals.
 	}
-    cerr << "========================================================";
-    cerr << "Stack trace";
-    cerr << "========================================================";
     print_stacktrace();
-    cerr << "========================================================";
 	exit(signum);
 }
 

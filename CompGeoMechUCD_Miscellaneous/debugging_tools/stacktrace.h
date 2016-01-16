@@ -12,7 +12,17 @@
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
 static inline void print_stacktrace(FILE *out = stderr, unsigned int max_frames = 63)
 {
-    fprintf(out, "stack trace:\n");
+
+    int rank = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
+
+    fprintf(out, "=================================================:\n");
+    fprintf(out, "RealESSI Stack Trace:\n");
+    fprintf(out, "=================================================:\n");
+    fprintf(out, "ProcessID %d:\n", rank);
+
 
     // storage array for stack trace address data
     void* addrlist[max_frames + 1];
@@ -93,7 +103,7 @@ static inline void print_stacktrace(FILE *out = stderr, unsigned int max_frames 
             fprintf(out, "  %s\n", symbollist[i]);
         }
     }
-
+    fprintf(out, "=================================================:\n");
     free(funcname);
     free(symbollist);
 }
