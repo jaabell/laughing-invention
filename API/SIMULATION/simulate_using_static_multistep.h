@@ -90,7 +90,7 @@ int simulate_using_static_multistep(int numSteps)
     }
     cout << "Pass!\n";
 
-    cout << "Checking transient integration handler.........................................................";
+    cout << "Checking static integration handler.........................................................";
     if (theStaticIntegrator == NULL)
     {
         cout << "Fail!\n";
@@ -185,7 +185,7 @@ int simulate_using_static_multistep(int numSteps)
             ShadowSubdomain *theSubdomain = new ShadowSubdomain(i, *OPS_MACHINE, *OPS_OBJECT_BROKER);
             theDomain.addSubdomain(theSubdomain);
             OPS_theChannels[i - 1] = theSubdomain->getChannelPtr();
-            cout << "  Subdomain # " << i << " created. \n";
+            // cout << "  Subdomain # " << i << " created. \n";
         }
         cout << "...............................................................................................";
         cout << "Done!\n";

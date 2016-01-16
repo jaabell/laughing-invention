@@ -131,7 +131,7 @@ ParallelNumberer::numberDOF(int lastDOF)
 {
 
 
-    cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Begin numbering\n";
+    // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Begin numbering\n";
 
     int result = 0;
 
@@ -158,7 +158,7 @@ ParallelNumberer::numberDOF(int lastDOF)
     }
 
 
-    cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Getting DOF group\n";
+    // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Getting DOF group\n";
     Graph& theGraph = theModel->getDOFGroupGraph();
 
     // if subdomain, collect graph, send it off, get
@@ -169,10 +169,10 @@ ParallelNumberer::numberDOF(int lastDOF)
         Channel* theChannel = theChannels[0];
         int numVertex = theGraph.getNumVertex();
 
-        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending local graph\n";
+        // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending local graph\n";
         theGraph.sendSelf(0, *theChannel);
 
-        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving ID from process 0\n";
+        // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving ID from process 0\n";
 
         ID numMP_ID(1);
         theChannel->receiveID(0, 0, numMP_ID);
@@ -181,7 +181,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         ID vertexTags(2 * numVertex);
         theChannel->receiveID(0, 0, vertexTags);
 
-        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Numbering local graph\n";
+        // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Numbering local graph\n";
         // set vertex numbering based on ID received
         for (int i = 0; i < numVertex; i ++)
         {
@@ -232,7 +232,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         }
 
         {
-            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending ID\n";
+            // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending ID\n";
         }
         theChannel->sendID(0, 0, numVertex);
     }
@@ -278,12 +278,12 @@ ParallelNumberer::numberDOF(int lastDOF)
             theChannel->sendID(0, 0, test);
             */
 
-            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving graph from Channel " << theChannel->getTag() << "\n";
+            // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Receiving graph from Channel " << theChannel->getTag() << "\n";
             theSubGraph->receiveSelf(0, *theChannel, theBroker);
 
             theSubdomainIDs[j] = new ID(theSubGraph->getNumVertex() * 2, theSubGraph->getNumVertex() * 2, -1);
 
-            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Merging graph received from Channel " << theChannel->getTag() << "\n";
+            // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Merging graph received from Channel " << theChannel->getTag() << "\n";
             this->mergeSubGraph(theGraph, *theSubGraph, vertexTags, vertexRefs, *theSubdomainIDs[j]);
 
             delete theSubGraph;
@@ -295,7 +295,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         //    GraphNumberer *theNumberer = this->getGraphNumbererPtr();
 
 
-        cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Numbering the big merged graph\n";
+        // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Numbering the big merged graph\n";
         ID* theOrderedRefs = new ID(theGraph.getNumVertex());
         ID* theOrderedRefsIndex = new ID(theGraph.getNumVertex(), theGraph.getNumVertex(), -1);  // Use the 'fill' constructor here to set all values to -1. Jose adds this array to speedup searching for the location of element in teh 'theOrderedRefs' array. Used to use the ID::getLocation() function which does linear search and is super slow.
 
@@ -303,7 +303,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         {
 
             // use the supplied graph numberer to number the merged graph
-            cout << "ParallelNumberer::number() - Warning - using user-provided numberer. Untested.\n";
+            // cout << "ParallelNumberer::number() - Warning - using user-provided numberer. Untested.\n";
 
             *theOrderedRefs = theNumberer->number(theGraph, lastDOF);
             // cerr << "Must use the "
@@ -401,7 +401,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         }
 
         // For Equal-DOF constraints!
-        // cout << "Looking for EQUALDOFS: ";
+        cout << "Looking for EQUALDOFS: ";
         int numMP = 0;// = theDomain->getNumMPs();
         MP_ConstraintIter& theMPs = theDomain->getMPs();
         MP_Constraint* mpPtr;
@@ -451,7 +451,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                 {
                     int nodeID = dofPtr->getNodeTag();
 
-                    // cout << "\nFound EQUALDOF! Node " << nodeID << " is slave where node ";
+                    cout << "\nFound EQUALDOF! Node " << nodeID << " is slave where node ";
 
                     // loop through the MP_Constraints to see if any of the
                     // DOFs are constrained, note constraint matrix must be diagonal
@@ -467,7 +467,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                         {
                             int nodeRetained = mpPtr->getNodeRetained();
                             Node* nodeRetainedPtr = theDomain->getNode(nodeRetained);
-                            // cout << nodeRetainedPtr->getTag() << " is the master! DOF-List = [ ";
+                            cout << nodeRetainedPtr->getTag() << " is the master! DOF-List = [ ";
                             DOF_Group* retainedDOF = nodeRetainedPtr->getDOF_GroupPtr();
                             const ID& retainedDOFIDs = retainedDOF->getID();
                             const ID& constrainedDOFs = mpPtr->getConstrainedDOFs();
@@ -483,16 +483,16 @@ ParallelNumberer::numberDOF(int lastDOF)
                                 theMPdofCs(pos) = dofC;
                                 theMPdofIDs(pos) = dofID;
                                 pos++;
-                                // cout << dofC << " ";
+                                cout << dofC << " ";
                             }
-                            // cout << "]\n";
+                            cout << "]\n";
                         }
                     }
-                    // cout << "\nLooking for more EQUALDOFS: ";
+                    cout << "\nLooking for more EQUALDOFS: ";
                 }
                 // else
                 // {
-                //     cout << ".";
+                cout << ".";
                 // }
             }
         }
@@ -517,7 +517,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                 theSubdomain[i + numVertexSubdomain] = startDOF;
             }
 
-            cout << "        + ParallelNumberer::numberDO/F() [" << processID <<  "] : Sending channel " << theChannel->getTag() << " its startdof\n";
+            // cout << "        + ParallelNumberer::numberDO/F() [" << processID <<  "] : Sending channel " << theChannel->getTag() << " its startdof\n";
             ID numMP_ID(1);
             numMP_ID(0) = numMP;
             theChannel->sendID(0, 0, numMP_ID);
@@ -527,7 +527,7 @@ ParallelNumberer::numberDOF(int lastDOF)
             theChannel->sendID(0, 0, theMPnodeTags);
             theChannel->sendID(0, 0, theMPdofCs);
             theChannel->sendID(0, 0, theMPdofIDs);
-            cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Waiting for channel " << theChannel->getTag() << " to be done.\n";
+            // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Waiting for channel " << theChannel->getTag() << " to be done.\n";
             theChannel->receiveID(0, 0, theSubdomain);
             delete theSubdomainIDs[k];
         }
@@ -535,7 +535,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         delete [] theSubdomainIDs;
     }
 
-    cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Setting FEs\n";
+    // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Setting FEs\n";
     // iterate through the FE_Element getting them to set their IDs
     FE_EleIter& theEle = theModel->getFEs();
     FE_Element* elePtr;
@@ -545,7 +545,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         elePtr->setID();
     }
 
-    cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : End numbering!\n";
+    // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : End numbering!\n";
     return result;
 }
 

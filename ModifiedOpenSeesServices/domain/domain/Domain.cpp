@@ -3190,9 +3190,9 @@ Domain::buildEleGraph( Graph * theEleGraph )
         theElementTagVertices[j] = -1;
     }
 
-    cout << "Building element graph............\n";
-    cout << "     numVertex = " << numVertex << "\n";
-    cout << "     maxEleNum = " << maxEleNum << "\n\n";
+    // cout << "Building element graph............\n";
+    // cout << "     numVertex = " << numVertex << "\n";
+    // cout << "     maxEleNum = " << maxEleNum << "\n\n";
 
 
     // now create the vertices with a reference equal to the element number.
@@ -3437,7 +3437,7 @@ Domain::buildEleGraph( Graph * theEleGraph )
 
     delete [] theNodeTagVertices;
 
-    cout << "Done building ele graph.\n";
+    // cout << "Done building ele graph.\n";
 
 
     return 0;

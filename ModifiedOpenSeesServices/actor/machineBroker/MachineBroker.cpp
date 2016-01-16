@@ -129,7 +129,7 @@ MachineBroker::runActors(void)
         }
         else
         {
-            cout << "    Spawning new actor domain - actorType: " << actorType << endln;;
+            // cout << "    Spawning new actor domain - actorType: " << actorType << endln;;
 
             // create an actor of approriate type
             Actor *theActor = theObjectBroker->getNewActor(actorType, theChannel);

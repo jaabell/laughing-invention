@@ -167,7 +167,7 @@ PetscSOE::setSize(Graph &theGraph)
         MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
         MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
 
-        cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Initializing\n";
+        // cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Initializing\n";
 
         numProcesses = numProcesses_world - 1;
 
@@ -200,7 +200,7 @@ PetscSOE::setSize(Graph &theGraph)
         if (processID_world > 0)
         {
             MPI_Group_rank (petsc_group, &processID);
-            cout << " Process " << processID_world << " calling PetscInitialize\n";
+            // cout << " Process " << processID_world << " calling PetscInitialize\n";
             //
 
             //Check if petsc_options.txt is present
@@ -234,7 +234,7 @@ PetscSOE::setSize(Graph &theGraph)
     // first determine system size
     //
 
-    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Getting local max dof tag\n";
+    // cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Getting local max dof tag\n";
 
     // Size of the system is the maximum DOF tag + 1
     //
@@ -269,7 +269,7 @@ PetscSOE::setSize(Graph &theGraph)
 
     // Then, all maximumg tags (size) are sent to P0 which gets the global maximum.
 
-    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Determining global maximum dof tag\n";
+    // cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Determining global maximum dof tag\n";
     isFactored = 0;
     static ID data(1);
     if (processID_world != 0)
@@ -307,10 +307,10 @@ PetscSOE::setSize(Graph &theGraph)
 
     size = size + 1; // vertices numbered 0 through n-1, and n is the size of the system. therefore, add 1
 
-    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : size = "  << size << "\n";
+    // cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : size = "  << size << "\n";
 
 
-    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Allocating memory\n";
+    // cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Allocating memory\n";
 
     // invoke the petsc destructors
     if (A != 0)
@@ -392,7 +392,7 @@ PetscSOE::setSize(Graph &theGraph)
     // Determine start and end rows for each processor
     // ================================================
 
-    cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Distributing SOE rows amongst processors\n";
+    // cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Distributing SOE rows amongst processors\n";
 
     // Create array to store number of dofs in each processor (allgather)
     int nlocaldofs[numProcesses_world];
@@ -407,7 +407,7 @@ PetscSOE::setSize(Graph &theGraph)
     nlocaldofs[processID_world] = theGraph.getNumVertex();
 
     int my_nlocaldofs = nlocaldofs[processID_world];
-    cout << "Processor " << processID_world << " owns " << nlocaldofs[processID_world] << " DOFS.\n";
+    // cout << "Processor " << processID_world << " owns " << nlocaldofs[processID_world] << " DOFS.\n";
 
     //Now gather across all processes so we can determine a reasonable partition of
     MPI_Allgather(&my_nlocaldofs, 1, MPI_INT, &nlocaldofs, 1, MPI_INT,
@@ -459,7 +459,7 @@ PetscSOE::setSize(Graph &theGraph)
     if (processID_world > 0)
     {
 
-        cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Initializing PETSc\n";
+        // cout << "        + PetscSOE::setSize() [" << processID_world <<  "] : Initializing PETSc\n";
         // PetscOptionsGetInt(PETSC_NULL, "-n", &size, PETSC_NULL);
 
         ierr = MatCreate(PETSC_COMM_WORLD, &A);
@@ -481,7 +481,7 @@ PetscSOE::setSize(Graph &theGraph)
 
         // MatGetOwnershipRange(A, &startRow, &endRow);
 
-        cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
+        // cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
 
         //      ierr = MatSetType(A,MATAIJ);CHKERRQ(ierr);
         // ierr = MatSetFromOptions(A);
@@ -644,11 +644,11 @@ PetscSOE::setSize(Graph &theGraph)
             delete [] o_nnz[proc];
         }
 
-        cout << "Preallocation done! " << endl;
+        // cout << "Preallocation done! " << endl;
     }
     else
     {
-        cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
+        // cout << "Process " << processID << " owns rows from " << startRow << " to " << endRow << endl;
     }
 
 // invoke setSize() on the Solver

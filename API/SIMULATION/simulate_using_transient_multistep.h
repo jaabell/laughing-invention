@@ -183,7 +183,7 @@ int simulate_using_transient_multistep(double dT,
             ShadowSubdomain *theSubdomain = new ShadowSubdomain(i, *OPS_MACHINE, *OPS_OBJECT_BROKER);
             theDomain.addSubdomain(theSubdomain);
             OPS_theChannels[i - 1] = theSubdomain->getChannelPtr();
-            cout << "  Subdomain # " << i << " created. \n";
+            // cout << "  Subdomain # " << i << " created. \n";
         }
         cout << "...............................................................................................";
         cout << "Done!\n";
