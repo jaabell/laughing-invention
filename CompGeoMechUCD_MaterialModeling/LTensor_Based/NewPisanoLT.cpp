@@ -91,7 +91,8 @@ NewPisanoLT::NewPisanoLT(int tag,
       Commit_nij_dev( 3, 3, 0.0 ),
       Stiffness( 3, 3, 3, 3, 0.0 ),
       Ee(3, 3, 3, 3, 0.0),
-      use_alternative_flow_rule(false)
+      use_alternative_flow_rule(false),
+      below_min_confinement(false)
 {
 
     //Initialize identity matrix
@@ -182,7 +183,8 @@ NewPisanoLT::NewPisanoLT()
       Commit_nij_dev( 3, 3, 0.0 ),
       Stiffness( 3, 3, 3, 3, 0.0 ),
       Ee(3, 3, 3, 3, 0.0),
-      use_alternative_flow_rule(false)
+      use_alternative_flow_rule(false),
+      below_min_confinement(false)
 {
 
     //Initialize identity matrix
@@ -256,38 +258,47 @@ const DTensor4 &NewPisanoLT::getTangentTensor(void)
     // Compute Elastic-Plastic stiffness
     //---------------------------------------------------------------------------------------------
     // To obtain Eep, at the last step
+
     Index<'p'> p;
     Index<'q'> q;
     double E = getE();
     double G = E / (2.0 * (1.0 + v));
     double K = E / (3.0 * (1.0 - 2.0 * v));
-    double alpha_nijdev = Trial_alpha(i, j) * Trial_nij_dev(i, j);                          // scalar product alphaij:nij_dev
-    double H = getH(Trial_alpha0);
-    double D = getD();
-    double den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
 
-    Stiffness(p, q, i, j) =  Trial_nij_dev(i, j) * Trial_nij_dev(p, q) * (-4.0 * G * G / den) +
-                             kronecker_delta(i, j)      * Trial_nij_dev(p, q) * (2.0 * G * K * D / den) +
-                             Trial_nij_dev(i, j) * kronecker_delta(p, q)      * (-2.0 * G * K * alpha_nijdev / den) +
-                             kronecker_delta(i, j)      * kronecker_delta(p, q)      * (K - (2.0 / 3.0) * G + K * K * D * alpha_nijdev / den);
+    if (below_min_confinement)
+    {
+        Stiffness(i, j, k, l) = Ee(i, j, k, l) / 1.0e4;
+    }
+    else
+    {
+        double alpha_nijdev = Trial_alpha(i, j) * Trial_nij_dev(i, j);                          // scalar product alphaij:nij_dev
+        double H = getH(Trial_alpha0);
+        double D = getD();
+        double den =   2.0 * G + (2.0 / 3.0) * H - K * D * alpha_nijdev;
 
-    Stiffness(0, 0, 0, 0) = Stiffness(0, 0, 0, 0) + (2.0 * G);
+        Stiffness(p, q, i, j) =  Trial_nij_dev(i, j) * Trial_nij_dev(p, q) * (-4.0 * G * G / den) +
+                                 kronecker_delta(i, j)      * Trial_nij_dev(p, q) * (2.0 * G * K * D / den) +
+                                 Trial_nij_dev(i, j) * kronecker_delta(p, q)      * (-2.0 * G * K * alpha_nijdev / den) +
+                                 kronecker_delta(i, j)      * kronecker_delta(p, q)      * (K - (2.0 / 3.0) * G + K * K * D * alpha_nijdev / den);
 
-    Stiffness(0, 1, 0, 1) = Stiffness(0, 1, 0, 1) + (2.0 * G);
+        Stiffness(0, 0, 0, 0) = Stiffness(0, 0, 0, 0) + (2.0 * G);
 
-    Stiffness(0, 2, 0, 2) = Stiffness(0, 2, 0, 2) + (2.0 * G);
+        Stiffness(0, 1, 0, 1) = Stiffness(0, 1, 0, 1) + (2.0 * G);
 
-    Stiffness(1, 0, 1, 0) = Stiffness(1, 0, 1, 0) + (2.0 * G);
+        Stiffness(0, 2, 0, 2) = Stiffness(0, 2, 0, 2) + (2.0 * G);
 
-    Stiffness(1, 1, 1, 1) = Stiffness(1, 1, 1, 1) + (2.0 * G);
+        Stiffness(1, 0, 1, 0) = Stiffness(1, 0, 1, 0) + (2.0 * G);
 
-    Stiffness(1, 2, 1, 2) = Stiffness(1, 2, 1, 2) + (2.0 * G);
+        Stiffness(1, 1, 1, 1) = Stiffness(1, 1, 1, 1) + (2.0 * G);
 
-    Stiffness(2, 0, 2, 0) = Stiffness(2, 0, 2, 0) + (2.0 * G);
+        Stiffness(1, 2, 1, 2) = Stiffness(1, 2, 1, 2) + (2.0 * G);
 
-    Stiffness(2, 1, 2, 1) = Stiffness(2, 1, 2, 1) + (2.0 * G);
+        Stiffness(2, 0, 2, 0) = Stiffness(2, 0, 2, 0) + (2.0 * G);
 
-    Stiffness(2, 2, 2, 2) = Stiffness(2, 2, 2, 2) + (2.0 * G);
+        Stiffness(2, 1, 2, 1) = Stiffness(2, 1, 2, 1) + (2.0 * G);
+
+        Stiffness(2, 2, 2, 2) = Stiffness(2, 2, 2, 2) + (2.0 * G);
+    }
 
     return this->Stiffness;
 }
@@ -875,6 +886,7 @@ int NewPisanoLT::compute_stress_increment(const DTensor2 &strain_incr, DTensor2&
     //=============================================================================================
     // Some local definitions
     //=============================================================================================
+    below_min_confinement = false;
 
     double Delta_lambda           = 0.0;    // Plastic multiplier increment
     double G                      = 0.0;    // Shear mod
@@ -929,6 +941,22 @@ int NewPisanoLT::compute_stress_increment(const DTensor2 &strain_incr, DTensor2&
 
     double dp = -K * depsilon_vol;
 
+    double p_trial = -TrialStress(i, i) / 3 + dp;
+
+    if (p_trial < 1000)
+    {
+        TrialStress *= 0;
+        TrialStress(0, 0) = -1000;
+        TrialStress(1, 1) = -1000;
+        TrialStress(2, 2) = -1000;
+        Trial_alpha *= 0;
+        dsigma *= 0;
+        depsilon_plastic *= 0;
+
+        below_min_confinement = true;
+
+        return 10;
+    }
 
     int count = 0;
     do
@@ -1133,6 +1161,11 @@ int NewPisanoLT::Euler_One_Step(const DTensor2& depsilon)
 
     errorflag = this->compute_stress_increment(depsilon, dsigma, depsilon_pl);
 
+    if (errorflag == 10)
+    {
+        return 0;
+    }
+
     TrialStress(i, j) +=  dsigma(i, j);
     TrialPlastic_Strain(i, j) += depsilon_pl(i, j);
 
@@ -1253,6 +1286,10 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
         {
             return errorflag;
         }
+        if (errorflag == 10)
+        {
+            return 0;
+        }
 
         TrialStress(i, j)  = start_sigma(i, j) + dsigma1(i, j);
         dalpha1(i, j) = Trial_alpha(i, j) - start_alpha(i, j);
@@ -1266,6 +1303,10 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
         if (errorflag < 0)
         {
             return errorflag;
+        }
+        if (errorflag == 10)
+        {
+            return 0;
         }
 
         TrialStress(i, j)  = start_sigma(i, j) + (dsigma1(i, j) + dsigma2(i, j)) / 2;
