@@ -790,7 +790,7 @@ Domain::addElement( Element *element )
     if ( result == true )
     {
         element->setDomain( this );
-        element->update();
+        // element->update();   // Jose asks: Why is this necessary?
 
         // finally check the ele has correct number of dof
 #ifdef _G3DEBUG
