@@ -1045,6 +1045,11 @@ PetscSOE::addB(const Vector &v, const ID &id, double fact)
                 if (pos < size && pos >= 0)
                 {
                     B[pos] += v(i);
+                    if (B[pos] != B[pos])
+                    {
+                        cerr << "PetscSOE::addB() - NaN found! At pos=" << pos << endl;
+                        return -1;
+                    }
                 }
             }
         }
