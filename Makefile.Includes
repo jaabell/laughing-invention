@@ -148,6 +148,7 @@ ESSI_INCLUDES  = -I$(RealESSI_SRC)/ModifiedOpenSeesServices/matrix \
             -I$(RealESSI_SRC)/CompGeoMechUCD_Miscellaneous/units \
             -I$(RealESSI_SRC)/CompGeoMechUCD_Miscellaneous/output \
             -I$(RealESSI_SRC)/CompGeoMechUCD_Miscellaneous/timing \
+            -I$(RealESSI_SRC)/CompGeoMechUCD_Miscellaneous/debugging_tools \
             -I$(RealESSI_SRC)/UCB_Elements/beamWithHinges \
             -I$(RealESSI_SRC)/UCB_Elements/dispBeamColumn \
             -I$(RealESSI_SRC)/UCB_Elements/elasticBeamLumpedMass \
@@ -283,6 +284,7 @@ SEQUENTIAL_MACHINE_LIBS =  \
       -lgfortran \
       -lieee \
       -lc \
+      -lsupc++ \
       -lrt
 
 PARALLEL_MACHINE_LIBS = -lm \
@@ -291,6 +293,7 @@ PARALLEL_MACHINE_LIBS = -lm \
       -ldl \
       -lz \
       -lgcc_s \
+      -lsupc++ \
       -lpthread -lssl -lcrypto
 
 #\

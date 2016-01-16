@@ -57,6 +57,9 @@
 	#include "dsl_actions.h"
 	#include "siunit.h"
 	#include "quantity.h"
+    #include <fenv.h>  // For feenableexcept()
+    #include <stacktrace.h>
+
 
 	//From the parser generator
 	#include "feiparser.tab.hh"
@@ -1230,6 +1233,11 @@ void signalHandler(int signum)
 		call_hdf5_flush_next_chance();
 		return; // Do not quit on these signals.
 	}
+    cerr << "========================================================";
+    cerr << "Stack trace";
+    cerr << "========================================================";
+    print_stacktrace();
+    cerr << "========================================================";
 	exit(signum);
 }
 
@@ -1238,6 +1246,11 @@ void signalHandler(int signum)
 int main (int argc, char**argv)
 {
 
+    feenableexcept(FE_INVALID   | 
+                   FE_DIVBYZERO | 
+                   FE_OVERFLOW  | 
+                   FE_UNDERFLOW);
+
 	signal(SIGINT, signalHandler);
 	signal(SIGABRT, signalHandler);
 	signal(SIGSEGV, signalHandler);
@@ -1245,7 +1258,7 @@ int main (int argc, char**argv)
 	signal(SIGILL, signalHandler);
 	signal(SIGFPE, signalHandler);
 	signal(SIGUSR1, signalHandler);
-	signal(SIGUSR2, signalHandler);
+    signal(SIGUSR2, signalHandler);
 
 
 	int exitflag = -1;

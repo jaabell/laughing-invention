@@ -113,10 +113,6 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
     hid_t file_access_plist   = H5Pcreate(H5P_FILE_ACCESS);
 
-#ifdef _PARALLEL_PROCESSING
-    // H5Pset_fapl_mpio(file_access_plist, MPI_COMM_WORLD, MPI_INFO_NULL);
-#endif
-
 
     unsigned flags = H5F_ACC_RDONLY;
     id_drm_file = H5Fopen(HDF5filename.c_str(), flags, file_access_plist);
@@ -195,6 +191,24 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     }
     DRMout << "Found " << number_of_local_elements << " elements\n";
 
+    int elements_accounted_for = 0;
+
+    int myrank = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+    MPI_Reduce (&number_of_local_elements, &elements_accounted_for, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+#endif
+
+    if (myrank == 0)
+    {
+        DRMout << " Number of elements accounted for: " << number_of_DRM_elements << " of " << number_of_DRM_elements << endl;
+    }
+
+    if (elements_accounted_for != number_of_DRM_elements)
+    {
+        DRMout << "Not all elements accounted for!\n";
+        exit(-1);
+    }
 
     if (number_of_local_elements == 0)
     {
@@ -204,8 +218,8 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     }
 
 
-    // Now create the elements array (one copy per subdomain in case of parallel) and
-    // assign elements which belong here.
+// Now create the elements array (one copy per subdomain in case of parallel) and
+// assign elements which belong here.
     Elements = new ID(number_of_local_elements);
     int e = 0;
     for (int i = 0; i < number_of_DRM_elements; i++)
@@ -247,7 +261,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
         return;
     }
 
-    //Open dataspace and get number of elements from it
+//Open dataspace and get number of elements from it
     id_dataspace = H5Dget_space(id_nodes);
     ndims =  H5Sget_simple_extent_ndims( id_dataspace );
 
@@ -260,18 +274,18 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     H5Sget_simple_extent_dims(id_dataspace, data_dims, data_maxdims );
     number_of_DRM_nodes = data_dims[0];
 
-    //Temporary array to hold DRM element ids
+//Temporary array to hold DRM element ids
     int* all_DRM_nodes_list = new int[number_of_DRM_nodes];
     int* all_DRM_is_boundary_list = new int[number_of_DRM_nodes];
 
-    //Now read the array and report number of elements found
+//Now read the array and report number of elements found
     id_memspace  = H5Screate_simple(rank_one_array, data_dims, data_maxdims);       // create dataspace of memory
     H5Dread(id_nodes, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, all_DRM_nodes_list);
     H5Dread(id_is_boundary, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, all_DRM_is_boundary_list);
     DRMout << "Dataset \"" << HDF5filename  << "\" has " <<  number_of_DRM_nodes << " DRM nodes on layer.\n";
 
 
-    //Figure out if the nodes are defined in current domain
+//Figure out if the nodes are defined in current domain
     int number_of_local_nodes = 0;
     for (int i = 0; i < number_of_DRM_nodes; i++)
     {
@@ -356,7 +370,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
     id_memspace  = H5Screate_simple(rank_one_array, data_dims, data_maxdims);       // create dataspace of memory
 
-    // cout << "Reading HDF5 dataset \n";
+// cout << "Reading HDF5 dataset \n";
     H5Dread(id_time, H5T_NATIVE_DOUBLE, id_memspace, id_dataspace, H5P_DEFAULT, all_timesteps);
 
 
@@ -366,15 +380,15 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
     tfinal = (*times)[number_of_timesteps - 1];
 
-    // delete all_timesteps;
+// delete all_timesteps;
     H5Dclose(id_time);
     H5Sclose(id_dataspace);
     H5Sclose(id_memspace);
 
 
-    //===========================================================================
-    // Open Displacements and Accelerations arrays for reading
-    //===========================================================================
+//===========================================================================
+// Open Displacements and Accelerations arrays for reading
+//===========================================================================
     DRMout << "Dataset Opening accelerations and displacement datasets for reading.\n";
 
     id_displacements = H5Dopen(id_drm_file, "Displacements", H5P_DEFAULT);
@@ -404,63 +418,63 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
     id_xfer_plist = H5Pcreate( H5P_DATASET_XFER);
 
-    // #ifdef _PARALLEL_PROCESSING
-    //     int numProcesses_world;
-    //     int processID_world;
-    //     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
-    //     MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
+// #ifdef _PARALLEL_PROCESSING
+//     int numProcesses_world;
+//     int processID_world;
+//     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
+//     MPI_Comm_rank(MPI_COMM_WORLD, &processID_world);
 
-    //     int numProcesses = numProcesses_world - 1;
+//     int numProcesses = numProcesses_world - 1;
 
-    //     //Fork a new group of processes with its own communicator
-    //     // so that SOE solution can be done un a subset of all MPI processes.
+//     //Fork a new group of processes with its own communicator
+//     // so that SOE solution can be done un a subset of all MPI processes.
 
-    //     //Ranks 1 through numProcesses are assigned to worker_world... since rank 0 has no elements!
-    //     int *worker_ranks = new int[numProcesses_world - 1];
-    //     if (worker_ranks == NULL)
-    //     {
-    //         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
-    //     }
+//     //Ranks 1 through numProcesses are assigned to worker_world... since rank 0 has no elements!
+//     int *worker_ranks = new int[numProcesses_world - 1];
+//     if (worker_ranks == NULL)
+//     {
+//         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not allocate new ranks vector of size " << numProcesses <<  " \n";
+//     }
 
-    //     for (int rank = 1; rank < numProcesses_world ; rank++)
-    //     {
-    //         worker_ranks[rank - 1] = rank;
-    //     }
-
-
-    //     //Get the MPI world
-    //     MPI_Group world_group, worker_group;
-    //     MPI_Comm worker_comm;
-    //     MPI_Comm_group(MPI_COMM_WORLD, &world_group);
-    //     MPI_Group_incl(world_group, numProcesses_world - 1, worker_ranks, &worker_group);
+//     for (int rank = 1; rank < numProcesses_world ; rank++)
+//     {
+//         worker_ranks[rank - 1] = rank;
+//     }
 
 
-    //     /* Create new communicator and then perform collective communications */
+//     //Get the MPI world
+//     MPI_Group world_group, worker_group;
+//     MPI_Comm worker_comm;
+//     MPI_Comm_group(MPI_COMM_WORLD, &world_group);
+//     MPI_Group_incl(world_group, numProcesses_world - 1, worker_ranks, &worker_group);
 
-    //     MPI_Comm_create(MPI_COMM_WORLD, worker_group, &worker_comm);
-    //     int all_elements = 0;
-    //     MPI_Reduce(&number_of_local_elements, &all_elements, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
 
-    //     if (all_elements != number_of_DRM_elements)
-    //     {
-    //         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not find all elements in domain.  " << numProcesses <<  " \n";
-    //         exit(-1);
-    //     }
+//     /* Create new communicator and then perform collective communications */
 
-    //     int all_nodes = 0;
-    //     MPI_Reduce(&number_of_local_nodes, &all_nodes, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
+//     MPI_Comm_create(MPI_COMM_WORLD, worker_group, &worker_comm);
+//     int all_elements = 0;
+//     MPI_Reduce(&number_of_local_elements, &all_elements, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
 
-    //     if (all_nodes != number_of_DRM_nodes)
-    //     {
-    //         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not find all nodes in domain.  " << numProcesses <<  " \n";
-    //         exit(-1);
-    //     }
-    //     // MPI_reduce()
-    // #endif
+//     if (all_elements != number_of_DRM_elements)
+//     {
+//         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not find all elements in domain.  " << numProcesses <<  " \n";
+//         exit(-1);
+//     }
 
-    //===========================================================================
-    // Set status to initialized and ready to compute loads
-    //===========================================================================
+//     int all_nodes = 0;
+//     MPI_Reduce(&number_of_local_nodes, &all_nodes, 1, MPI_INTEGER, MPI_SUM, 0, worker_comm);
+
+//     if (all_nodes != number_of_DRM_nodes)
+//     {
+//         cerr << "DRMHDF5::setSize(int MaxDOFtag) - could not find all nodes in domain.  " << numProcesses <<  " \n";
+//         exit(-1);
+//     }
+//     // MPI_reduce()
+// #endif
+
+//===========================================================================
+// Set status to initialized and ready to compute loads
+//===========================================================================
 
 
     is_initialized = true;

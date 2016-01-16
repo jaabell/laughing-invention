@@ -105,6 +105,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-Wno-write-strings \
 										-static \
 										-static-libgcc \
+										-rdynamic \
 										-static-libstdc++ \
 										-march=native \
 										-fdiagnostics-color=auto \
@@ -120,7 +121,7 @@ ifeq ($(DEBUG_MODE), NO_DEBUG)
 										-march=native $(MORE_CFLAGS)
 
 	FFLAGS          = -O2 $(MORE_FFLAGS)
-	LINKFLAGS       = -O2 $(LTO_FLAGS) $(MORE_LINKFLAGS)
+	LINKFLAGS       = -O2 $(LTO_FLAGS) $(MORE_LINKFLAGS) -rdynamic \
 
 else
 	C++FLAGS        = -Wall -DVERSION=\"$(GIT_VERSION)\"\
@@ -130,7 +131,8 @@ else
 										-D_DEBUG_CONTACT \
 										-D_LINUX \
 										-D_UNIX \
-										 $(PROGRAMMING_FLAG) \
+										$(PROGRAMMING_FLAG) \
+										-rdynamic \
 										-DBrzi_nDarray_val \
 										-D_TEACHING_MODE \
 										-std=c++11 \
@@ -142,7 +144,7 @@ else
 										-D_UNIX -D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84 \
 										$(MORE_CFLAGS)
 	FFLAGS          = -march=native -funroll-loops -O3 $(MORE_FFLAGS)
-	LINKFLAGS       = -g -pg $(MORE_LINKFLAGS)
+	LINKFLAGS       = -rdynamic -g -pg $(MORE_LINKFLAGS)
 endif
 
 
