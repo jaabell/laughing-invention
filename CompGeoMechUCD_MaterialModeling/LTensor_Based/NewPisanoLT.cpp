@@ -267,7 +267,7 @@ const DTensor4 &NewPisanoLT::getTangentTensor(void)
 
     if (below_min_confinement)
     {
-        Stiffness(i, j, k, l) = Ee(i, j, k, l) / 1.0e4;
+        Stiffness(i, j, p, q) = Ee(i, j, p, q) / 1.0e4;
     }
     else
     {
