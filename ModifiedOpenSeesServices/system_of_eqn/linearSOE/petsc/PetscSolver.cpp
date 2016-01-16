@@ -161,7 +161,7 @@ PetscSolver::solve(void)
         theChannel->receiveVector(0, 0, *vectB);
 
         double vectBNorm  = vectB->Norm();
-        if (std::isnan(rvNorm))
+        if (std::isnan(vectBNorm))
         {
             cout << "norm(vectB) = " << vectBNorm << endl;
             return -1;
