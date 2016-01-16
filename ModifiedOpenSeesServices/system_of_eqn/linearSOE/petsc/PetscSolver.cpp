@@ -177,6 +177,8 @@ PetscSolver::solve(void)
             Channel *theChannel = theChannels[j];
             theChannel->receiveVector(0, 0, receiveVector);
             *vectB += receiveVector;
+
+            cout << "norm(receiveVector) = " << receiveVector.Norm() << endl;
         }
 
         //Better done with a BCast
