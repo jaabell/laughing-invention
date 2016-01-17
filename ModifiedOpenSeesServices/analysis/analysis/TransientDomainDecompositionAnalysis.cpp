@@ -339,7 +339,7 @@ TransientDomainDecompositionAnalysis::domainChanged(void)
     // equation numbers to be assigned to all the DOFs in the
     // AnalysisModel.
 
-    cout << "   * Numbering DOFS\n";
+    // cout << "   * Numbering DOFS\n";
 
     result = theDOF_Numberer->numberDOF();
 

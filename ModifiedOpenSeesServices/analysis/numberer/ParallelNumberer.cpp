@@ -654,7 +654,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
     // cout << "Building theSubdomainMapIndex" << endl;
 
     int N_theSubdomainMap = theSubdomainMap.Size() / 2;
-    ID theSubdomainMapIndex(max_vertextagsub, max_vertextagsub, -1);
+    ID theSubdomainMapIndex(max_vertextagsub + 1, max_vertextagsub + 1, -1);
     for (int loc = 0; loc < N_theSubdomainMap; loc++)
     {
         theSubdomainMapIndex[theSubdomainMap[loc]] = loc;
@@ -670,7 +670,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
         int vertexTagSub = subVertexPtr->getTag();
         // int loc = theSubdomainMap.getLocation(vertexTagSub);
         int loc;
-        if (vertexTagSub < max_vertextagsub)
+        if (vertexTagSub <= max_vertextagsub)
         {
             loc = theSubdomainMapIndex[vertexTagSub];
         }
@@ -692,7 +692,7 @@ ParallelNumberer::mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexT
             // int loc = theSubdomainMapIndex[vertexTagSubAdjacent];
 
             int loc;
-            if (vertexTagSubAdjacent < max_vertextagsub)
+            if (vertexTagSubAdjacent <= max_vertextagsub)
             {
                 loc = theSubdomainMapIndex[vertexTagSubAdjacent];
             }

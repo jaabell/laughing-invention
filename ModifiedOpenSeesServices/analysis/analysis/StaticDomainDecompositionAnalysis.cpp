@@ -346,10 +346,10 @@ StaticDomainDecompositionAnalysis::domainChanged(void)
     // equation numbers to be assigned to all the DOFs in the
     // AnalysisModel.
 
-    if (rank == 0)
-    {
-        cout << "   * Numbering DOFS\n";
-    }
+    // if (rank == 0)
+    // {
+    //     cout << "   * Numbering DOFS\n";
+    // }
 
     result = theDOF_Numberer->numberDOF();
 

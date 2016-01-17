@@ -30,6 +30,7 @@
 #include <string>
 #include <sstream>
 #include <limits>
+#include <stacktrace.h>
 
 #include <ID.h>
 #include <Vector.h>
@@ -629,7 +630,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Number_of_DOFs.resize(length_send);
+    //  Number_of_DOFs.resize(length_send);
     // }
     // int_buffer = Number_of_DOFs.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -640,7 +641,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Coordinates.resize(length_send);
+    //  Coordinates.resize(length_send);
     // }
     // double_buffer = Coordinates.theData;
     // MPI_Bcast(double_buffer, length_send, MPI_DOUBLE,   root, MPI_COMM_WORLD);
@@ -651,7 +652,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Index_to_Coordinates.resize(length_send);
+    //  Index_to_Coordinates.resize(length_send);
     // }
     // int_buffer = Index_to_Coordinates.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -661,7 +662,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Index_to_Generalized_Displacements.resize(length_send);
+    //  Index_to_Generalized_Displacements.resize(length_send);
     // }
     // int_buffer = Index_to_Generalized_Displacements.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -674,7 +675,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Number_of_Nodes.resize(length_send);
+    //  Number_of_Nodes.resize(length_send);
     // }
     // int_buffer = Number_of_Nodes.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -685,7 +686,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Connectivity.resize(length_send);
+    //  Connectivity.resize(length_send);
     // }
     // int_buffer = Connectivity.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -696,7 +697,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Index_to_Connectivity.resize(length_send);
+    //  Index_to_Connectivity.resize(length_send);
     // }
     // int_buffer = Index_to_Connectivity.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -707,7 +708,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Number_of_Output_Fields.resize(length_send);
+    //  Number_of_Output_Fields.resize(length_send);
     // }
     // int_buffer = Number_of_Output_Fields.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -718,7 +719,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Index_to_Outputs.resize(length_send);
+    //  Index_to_Outputs.resize(length_send);
     // }
     // int_buffer = Index_to_Outputs.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -729,7 +730,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Number_of_Gauss_Points.resize(length_send);
+    //  Number_of_Gauss_Points.resize(length_send);
     // }
     // int_buffer = Number_of_Gauss_Points.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -740,7 +741,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Gauss_Point_Coordinates.resize(length_send);
+    //  Gauss_Point_Coordinates.resize(length_send);
     // }
     // double_buffer = Gauss_Point_Coordinates.theData;
     // MPI_Bcast(double_buffer, length_send, MPI_DOUBLE,   root, MPI_COMM_WORLD);
@@ -751,7 +752,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Index_to_Gauss_Point_Coordinates.resize(length_send);
+    //  Index_to_Gauss_Point_Coordinates.resize(length_send);
     // }
     // int_buffer = Index_to_Gauss_Point_Coordinates.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -773,7 +774,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0 && (length_send > 0))
     // {
-    // 	Material_tags.resize(length_send);
+    //  Material_tags.resize(length_send);
     // }
     // int_buffer = Material_tags.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -783,7 +784,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Class_Tags.resize(length_send);
+    //  Class_Tags.resize(length_send);
     // }
     // int_buffer = Class_Tags.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -794,7 +795,7 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID != 0)
     // {
-    // 	Partition.resize(length_send);
+    //  Partition.resize(length_send);
     // }
     // int_buffer = Partition.data;
     // MPI_Bcast(int_buffer, length_send, MPI_INT,   root, MPI_COMM_WORLD);
@@ -811,19 +812,19 @@ void H5OutputWriter::syncWriters()
 
     // if (model_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
     // {
-    // 	cerr << "Model name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+    //  cerr << "Model name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
     // }
     // if (file_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
     // {
-    // 	cerr << "File name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+    //  cerr << "File name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
     // }
     // if (stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
     // {
-    // 	cerr << "Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+    //  cerr << "Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
     // }
     // if (previous_stage_name.size() >  H5OUTPUTWRITER_MAX_STRING_SIZE)
     // {
-    // 	cerr << "Previous_Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
+    //  cerr << "Previous_Stage name is larger than " << H5OUTPUTWRITER_MAX_STRING_SIZE << "!!! \n";
     // }
 
     // // model_name
@@ -831,8 +832,8 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID == 0)
     // {
-    // 	strcpy(char_buffer, model_name.c_str());
-    // 	char_buffer[length_send - 1] = '\0';
+    //  strcpy(char_buffer, model_name.c_str());
+    //  char_buffer[length_send - 1] = '\0';
     // }
     // MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
     // model_name = std::string(char_buffer);
@@ -842,8 +843,8 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID == 0)
     // {
-    // 	strcpy(char_buffer, file_name.c_str());
-    // 	char_buffer[length_send - 1] = '\0';
+    //  strcpy(char_buffer, file_name.c_str());
+    //  char_buffer[length_send - 1] = '\0';
     // }
     // MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
     // file_name = std::string(char_buffer);
@@ -853,8 +854,8 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID == 0)
     // {
-    // 	strcpy(char_buffer, stage_name.c_str());
-    // 	char_buffer[length_send - 1] = '\0';
+    //  strcpy(char_buffer, stage_name.c_str());
+    //  char_buffer[length_send - 1] = '\0';
     // }
     // MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
     // stage_name = std::string(char_buffer);
@@ -864,8 +865,8 @@ void H5OutputWriter::syncWriters()
     // MPI_Bcast(&length_send, 1, MPI_INT,   root, MPI_COMM_WORLD);
     // if (processID == 0)
     // {
-    // 	strcpy(char_buffer, previous_stage_name.c_str());
-    // 	char_buffer[length_send - 1] = '\0';
+    //  strcpy(char_buffer, previous_stage_name.c_str());
+    //  char_buffer[length_send - 1] = '\0';
     // }
     // MPI_Bcast(char_buffer, length_send, MPI_CHAR,   root, MPI_COMM_WORLD);
     // previous_stage_name = std::string(char_buffer);
@@ -911,36 +912,36 @@ void H5OutputWriter::syncWriters()
     // //The slave processes must be initialized after all this stuff is transmitted.
     // if (processID != 0)
     // {
-    // 	// this->initialize(file_name, model_name, stage_name, number_of_time_steps);
-    // 	// if (previous_stage_name.compare("!!none") == 0)
-    // 	// {
-    // 	//     cout << "changing previous_stage_name from " << previous_stage_name << " to " << stage_name
-    // 	//          << endl;
-    // 	//     previous_stage_name = stage_name;
-    // 	// }
-    // 	// file_name = "";
-    // 	// model_name = "";
-    // 	// stage_name = "";
-    // 	// file_name += filename_in;
-    // 	// model_name += model_name_in;
-    // 	// stage_name += stage_name_in;
+    //  // this->initialize(file_name, model_name, stage_name, number_of_time_steps);
+    //  // if (previous_stage_name.compare("!!none") == 0)
+    //  // {
+    //  //     cout << "changing previous_stage_name from " << previous_stage_name << " to " << stage_name
+    //  //          << endl;
+    //  //     previous_stage_name = stage_name;
+    //  // }
+    //  // file_name = "";
+    //  // model_name = "";
+    //  // stage_name = "";
+    //  // file_name += filename_in;
+    //  // model_name += model_name_in;
+    //  // stage_name += stage_name_in;
 
-    // 	current_time                         = 0.0;
-    // 	current_time_step                    = 0;
+    //  current_time                         = 0.0;
+    //  current_time_step                    = 0;
 
-    // 	pos_nodes_outputs                    = 0;
-    // 	pos_nodes_coordinates                = 0;
-    // 	pos_elements_outputs                 = 0;
-    // 	pos_elements_gausscoords             = 0;
-    // 	pos_elements_connectivity            = 0;
+    //  pos_nodes_outputs                    = 0;
+    //  pos_nodes_coordinates                = 0;
+    //  pos_elements_outputs                 = 0;
+    //  pos_elements_gausscoords             = 0;
+    //  pos_elements_connectivity            = 0;
 
-    // 	create_nodeMeshData_arrays           = true;
-    // 	create_nodeDisplacements_arrays      = true;
-    // 	create_nodeVelocities_arrays         = true;
-    // 	create_nodeAccelerations_arrays      = true;
-    // 	create_nodeReactionForces_arrays     = true;
-    // 	create_elementMeshData_arrays        = true;
-    // 	create_elementOutput_arrays          = true;
+    //  create_nodeMeshData_arrays           = true;
+    //  create_nodeDisplacements_arrays      = true;
+    //  create_nodeVelocities_arrays         = true;
+    //  create_nodeAccelerations_arrays      = true;
+    //  create_nodeReactionForces_arrays     = true;
+    //  create_elementMeshData_arrays        = true;
+    //  create_elementOutput_arrays          = true;
     // }
 
 
@@ -1663,7 +1664,7 @@ void H5OutputWriter::writeMesh()
         // if (processID > 0)
         // if (length_element_output <= 0)
         // {
-        // 	length_element_output = 1;
+        //  length_element_output = 1;
         // }
 
 
@@ -2506,13 +2507,13 @@ hid_t H5OutputWriter::writeVariableLengthDoubleArray(hid_t id_array,
     switch (actual_io_mode)
     {
 
-    case H5D_MPIO_NO_COLLECTIVE: //	 	No collective I/O was performed. Collective I/O was not requested or collective I/O isn't possible on this dataset.
+    case H5D_MPIO_NO_COLLECTIVE: //     No collective I/O was performed. Collective I/O was not requested or collective I/O isn't possible on this dataset.
         numof_NO_COLLECTIVE_calls++;
         break;
-    case H5D_MPIO_CHUNK_INDEPENDENT:	 	// HDF5 performed one the chunk collective optimization schemes and each chunk was accessed independently.
+    case H5D_MPIO_CHUNK_INDEPENDENT:        // HDF5 performed one the chunk collective optimization schemes and each chunk was accessed independently.
         numof_CHUNK_INDEPENDENT_calls++;
         break;
-    case H5D_MPIO_CHUNK_COLLECTIVE:	 	// HDF5 performed one the chunk collective optimization schemes and each chunk was accessed collectively.
+    case H5D_MPIO_CHUNK_COLLECTIVE:     // HDF5 performed one the chunk collective optimization schemes and each chunk was accessed collectively.
         numof_CHUNK_COLLECTIVE_calls++;
         break;
     case H5D_MPIO_CHUNK_MIXED:            // HDF5 performed one the chunk collective optimization schemes and some chunks were accessed independently, some collectively.
@@ -2881,5 +2882,7 @@ inline void hdf5_check_error(herr_t status)
     if (status < 0)
     {
         cout << "status = " << status << endl;
+        print_stacktrace();
+        exit(-1);
     }
 }
