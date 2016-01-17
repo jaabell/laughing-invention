@@ -201,7 +201,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
 
     if (myrank == 0)
     {
-        DRMout << " Number of elements accounted for: " << number_of_DRM_elements << " of " << number_of_DRM_elements << endl;
+        DRMout << " Number of elements accounted for: " << elements_accounted_for << " of " << number_of_DRM_elements << endl;
     }
 
     if (elements_accounted_for != number_of_DRM_elements)
