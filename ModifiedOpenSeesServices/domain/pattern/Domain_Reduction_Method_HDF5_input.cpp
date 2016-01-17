@@ -196,13 +196,15 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     int myrank = 0;
 #ifdef _PARALLEL_PROCESSING
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-    MPI_Reduce (&number_of_local_elements, &elements_accounted_for, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce (&number_of_local_elements, &elements_accounted_for, 1, MPI_INT, MPI_SUM,  MPI_COMM_WORLD);
+#else
+    elements_accounted_for = number_of_local_elements;
 #endif
 
-    if (myrank == 0)
-    {
-        DRMout << " Number of elements accounted for: " << elements_accounted_for << " of " << number_of_DRM_elements << endl;
-    }
+    // if (myrank == 0)
+    // {
+    DRMout << " Number of elements accounted for: " << elements_accounted_for << " of " << number_of_DRM_elements << endl;
+    // }
 
     if (elements_accounted_for != number_of_DRM_elements)
     {
