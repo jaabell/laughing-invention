@@ -109,10 +109,10 @@ void printTensor4(string name, const DTensor4 &v)
 
 
     std::cout << name << " = [ " ;
-    for (int ii = 0, ii < 3; ii++)
-        for (int jj = 0, jj < 3; jj++)
-            for (int kk = 0, kk < 3; kk++)
-                for (int ll = 0, ll < 3; ll++)
+    for (int ii = 0; ii < 3; ii++)
+        for (int jj = 0; jj < 3; jj++)
+            for (int kk = 0; kk < 3; kk++)
+                for (int ll = 0; ll < 3; ll++)
                 {
                     std::cout << v(ii, jj, kk, ll ) << " ";
                 }
