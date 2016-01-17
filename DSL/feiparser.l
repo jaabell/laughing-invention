@@ -40,7 +40,7 @@
 
 
 	//Old C libraries are used in lexer....
-	#include <cfenv>  // For feenableexcept()
+	#include <fenv.h>  // For feenableexcept()
     #include <cmath>
     #include <cerrno>
     #pragma STDC FENV_ACCESS ON
@@ -1233,7 +1233,7 @@ void signalHandler(int signum)
 	{
 		cout << "Caught SIGFPE! Program ending." << endl;
         int exceptions;
-        exceptions = std::fetestexcept(FE_INVALID | FE_DIVBYZERO| FE_OVERFLOW);
+        exceptions = fetestexcept(FE_INVALID | FE_DIVBYZERO| FE_OVERFLOW);
         if(exceptions & FE_INVALID)
         {
             cout << "   Floating point error -- (FE_INVALID) - Undefined operation (0/0, 0/1, sqrt(-1), inf - int, etc.)\n" << endl;
@@ -1266,11 +1266,11 @@ void signalHandler(int signum)
 
 int main (int argc, char**argv)
 {
-    std::feclearexcept(FE_ALL_EXCEPT);
+    feclearexcept(FE_ALL_EXCEPT);
 
-//    std::feenableexcept(FE_INVALID   | 
-//                   FE_DIVBYZERO | 
-//                   FE_OVERFLOW);
+    feenableexcept(FE_INVALID   | 
+                   FE_DIVBYZERO | 
+                   FE_OVERFLOW);
 
 	signal(SIGINT, signalHandler);
 	signal(SIGABRT, signalHandler);
