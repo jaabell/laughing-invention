@@ -614,6 +614,11 @@ private:
             double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
 
             //Compute the plastic multiplier
+            if (den == 0)
+            {
+                cerr << "CEP - den = 0\n";
+                return -1;
+            }
             double dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
             dLambda /= den;
 
