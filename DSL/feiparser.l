@@ -40,7 +40,12 @@
 
 
 	//Old C libraries are used in lexer....
-	#include <cstdlib>
+	#include <cfenv>  // For feenableexcept()
+    #include <cmath>
+    #include <cerrno>
+    #pragma STDC FENV_ACCESS ON
+    #include <stacktrace.h>
+    #include <cstdlib>
 	#include <cstring>
 	#include <csignal>
 	#include <stdio.h>                         // Provides printf, etc.
@@ -57,8 +62,9 @@
 	#include "dsl_actions.h"
 	#include "siunit.h"
 	#include "quantity.h"
-    #include <fenv.h>  // For feenableexcept()
-    #include <stacktrace.h>
+    //#define __USE_GNU
+
+    
 
 
 	//From the parser generator
@@ -1227,7 +1233,7 @@ void signalHandler(int signum)
 	{
 		cout << "Caught SIGFPE! Program ending." << endl;
         int exceptions;
-        exceptions = fetestexcept(FE_INVALID | FE_DIVBYZERO| FE_OVERFLOW);
+        exceptions = std::fetestexcept(FE_INVALID | FE_DIVBYZERO| FE_OVERFLOW);
         if(exceptions & FE_INVALID)
         {
             cout << "   Floating point error -- (FE_INVALID) - Undefined operation (0/0, 0/1, sqrt(-1), inf - int, etc.)\n" << endl;
@@ -1260,10 +1266,11 @@ void signalHandler(int signum)
 
 int main (int argc, char**argv)
 {
+    std::feclearexcept(FE_ALL_EXCEPT);
 
-    feenableexcept(FE_INVALID   | 
-                   FE_DIVBYZERO | 
-                   FE_OVERFLOW);
+//    std::feenableexcept(FE_INVALID   | 
+//                   FE_DIVBYZERO | 
+//                   FE_OVERFLOW);
 
 	signal(SIGINT, signalHandler);
 	signal(SIGABRT, signalHandler);

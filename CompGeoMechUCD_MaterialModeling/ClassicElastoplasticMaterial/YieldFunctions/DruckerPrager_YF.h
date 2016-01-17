@@ -98,11 +98,18 @@ public:
         double den = sqrt((s(i, j) - p * alpha(i, j)) * (s(i, j) - p * alpha(i, j)));
         // cout << "     --> YF den     = " << den << endl;
 
-        result(i, j) =
-            (
-                (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n))
-            )
-            / den;
+        if (den == 0)
+        {
+            return -10; //Elastic
+        }
+        else
+        {
+            result(i, j) =
+                (
+                    (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n))
+                )
+                / den;
+        }
         result(i, j) += SQRT_2_over_27 * k * kronecker_delta(i, j);
 
         return result;
