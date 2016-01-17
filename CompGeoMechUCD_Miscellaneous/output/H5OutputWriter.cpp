@@ -1171,6 +1171,7 @@ void H5OutputWriter::writeMesh()
         int rank = 1;
         dims[0] = number_of_time_steps;
         maxdims[0] = H5S_UNLIMITED;
+
         id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
 
         cout << "id_time_vector = " << id_time_vector << endl;
@@ -1979,6 +1980,7 @@ int H5OutputWriter::setTime(double t)
     hsize_t count[1]     = {1};
     hsize_t block[1]     = {1};
 
+    id_time_vector = H5Dopen( id_file, "/time" );
     writeVariableLengthDoubleArray(id_time_vector,
                                    1, //datarank
                                    dims,
