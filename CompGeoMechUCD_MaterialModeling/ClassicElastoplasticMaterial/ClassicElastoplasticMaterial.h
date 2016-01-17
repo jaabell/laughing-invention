@@ -101,7 +101,10 @@ void printTensor(string name, const DTensor2 &v)
               << v(2, 2) << " "
               << v(0, 1) << " "
               << v(0, 2) << " "
-              << v(1, 2) << " ]" << std::endl;
+              << v(1, 2) << " "
+              << v(1, 0) << " "
+              << v(2, 0) << " "
+              << v(2, 1) << " ]" << std::endl;
 }
 
 void printTensor4(string name, const DTensor4 &v)
@@ -116,7 +119,7 @@ void printTensor4(string name, const DTensor4 &v)
                 {
                     std::cout << v(ii, jj, kk, ll ) << " ";
                 }
-    std::cout << std::endl;
+    std::cout << "]" << std::endl;
 }
 
 }
