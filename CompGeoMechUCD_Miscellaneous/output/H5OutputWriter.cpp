@@ -2002,6 +2002,8 @@ int H5OutputWriter::setTime(double t)
 
     status =  H5Dset_extent( id_nodes_displacements, dims_new );
 
+    hdf5_check_error(status);
+
     int processID = 1; //
 
 #ifdef _PARALLEL_PROCESSING
@@ -2015,6 +2017,7 @@ int H5OutputWriter::setTime(double t)
         status =  H5Dset_extent( id_elements_output, dims_new );
     }
 
+    hdf5_check_error(status);
 
     return 0;
 }
