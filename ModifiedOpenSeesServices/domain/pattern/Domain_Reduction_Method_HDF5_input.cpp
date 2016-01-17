@@ -196,7 +196,19 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
     int myrank = 0;
 #ifdef _PARALLEL_PROCESSING
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-    MPI_AllReduce (&number_of_local_elements, &elements_accounted_for, 1, MPI_INT, MPI_SUM,  MPI_COMM_WORLD);
+// MPI_Allreduce(
+//     void* send_data,
+//     void* recv_data,
+//     int count,
+//     MPI_Datatype datatype,
+//     MPI_Op op,
+//     MPI_Comm communicator)
+    MPI_Allreduce (&number_of_local_elements,
+                   &elements_accounted_for,
+                   1,
+                   MPI_INT,
+                   MPI_SUM,
+                   MPI_COMM_WORLD);
 #else
     elements_accounted_for = number_of_local_elements;
 #endif
