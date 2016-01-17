@@ -244,8 +244,7 @@ void Domain_Reduction_Method_HDF5_input::intitialize()
             e++;
         }
     }
-    // TODO: Do a MPI_reduce to find out whether all elements specified in file are present in
-    // the whole model.
+
 
     //Cleanup
     delete all_DRM_elements_list;

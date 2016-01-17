@@ -195,7 +195,6 @@ StaticDomainDecompositionAnalysis::analyze(double dT)
     {
         domainStamp = stamp;
         result = this->domainChanged();
-        std::cerr << "StaticDomainDecompositionAnalysis::analyze(double dT) -- after result = this->domainChanged();\n" ;
 
         if (result < 0)
         {
