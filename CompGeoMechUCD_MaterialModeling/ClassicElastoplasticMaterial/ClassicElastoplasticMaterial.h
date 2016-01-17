@@ -589,7 +589,7 @@ private:
 
         printTensor("   * depsilon", strain_incr);
         printTensor("   * sigma", sigma);
-        printTensor("   * Eelastic", Eelastic);
+        printTensor4("   * Eelastic", Eelastic);
         printTensor("   * dsigma", dsigma);
         std::cout << "   * yf start = " << yf_val_start << std::endl;
         std::cout << "   * yf end   = " << yf_val_end << std::endl;
