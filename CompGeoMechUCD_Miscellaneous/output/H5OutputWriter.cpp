@@ -1980,7 +1980,7 @@ int H5OutputWriter::setTime(double t)
     hsize_t count[1]     = {1};
     hsize_t block[1]     = {1};
 
-    id_time_vector = H5Dopen( id_file, "/time" );
+    id_time_vector = H5Dopen( id_file, "/time", H5P_DEFAULT);
     writeVariableLengthDoubleArray(id_time_vector,
                                    1, //datarank
                                    dims,
