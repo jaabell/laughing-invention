@@ -572,11 +572,11 @@ private:
         double yf_val_start = yf(sigma);
         double yf_val_end = yf(TrialStress);
 
-        // printTensor("   * depsilon", strain_incr);
-        // printTensor("   * sigma", sigma);
-        // printTensor("   * dsigma", dsigma);
-        // std::cout << "   * yf start = " << yf_val_start << std::endl;
-        // std::cout << "   * yf end   = " << yf_val_end << std::endl;
+        printTensor("   * depsilon", strain_incr);
+        printTensor("   * sigma", sigma);
+        printTensor("   * dsigma", dsigma);
+        std::cout << "   * yf start = " << yf_val_start << std::endl;
+        std::cout << "   * yf end   = " << yf_val_end << std::endl;
 
         DTensor2& start_stress = CommitStress;
         DTensor2& end_stress = TrialStress;
@@ -629,9 +629,9 @@ private:
             TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
 
-            // std::cout << "   * dLambda = " << dLambda << std::endl;
-            // std::cout << "   * xi_star_h_star = " << xi_star_h_star << std::endl;
-            // std::cout << "   * den = " << den << std::endl;
+            std::cout << "   * dLambda = " << dLambda << std::endl;
+            std::cout << "   * xi_star_h_star = " << xi_star_h_star << std::endl;
+            std::cout << "   * den = " << den << std::endl;
 
             vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
         }
