@@ -104,6 +104,21 @@ void printTensor(string name, const DTensor2 &v)
               << v(1, 2) << " ]" << std::endl;
 }
 
+void printTensor4(string name, const DTensor4 &v)
+{
+
+
+    std::cout << name << " = [ " ;
+    for (int ii = 0, ii < 3; ii++)
+        for (int jj = 0, jj < 3; jj++)
+            for (int kk = 0, kk < 3; kk++)
+                for (int ll = 0, ll < 3; ll++)
+                {
+                    std::cout << v(ii, jj, kk, ll ) << " ";
+                }
+    std::cout << std::endl;
+}
+
 }
 
 
@@ -574,6 +589,7 @@ private:
 
         printTensor("   * depsilon", strain_incr);
         printTensor("   * sigma", sigma);
+        printTensor("   * Eelastic", Eelastic);
         printTensor("   * dsigma", dsigma);
         std::cout << "   * yf start = " << yf_val_start << std::endl;
         std::cout << "   * yf end   = " << yf_val_end << std::endl;
