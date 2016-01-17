@@ -584,12 +584,23 @@ private:
         intersection_strain *= 0;
 
         DTensor4& Eelastic = et(sigma);
-        dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
 
-        TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
-        TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
-        TrialPlastic_Strain(i, j) = CommitPlastic_Strain(i, j);
-
+        for (int ii = 0; ii < 3; ii++)
+        {
+            for (int jj = 0; jj < 3; jj++)
+            {
+                for (int kk = 0; kk < 3; kk++)
+                {
+                    for (int ll = 0; ll < 3; ll++)
+                    {
+                        dsigma(ii, jj) = Eelastic(ii, jj, k, l) * depsilon(k, l);
+                    }
+                }
+                TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
+                TrialStrain(ii, jj) = CommitStrain(ii, jj) + depsilon(ii, jj);
+                TrialPlastic_Strain(ii, jj) = CommitPlastic_Strain(ii, jj);
+            }
+        }
 
         double yf_val_start = yf(sigma);
         double yf_val_end = yf(TrialStress);
