@@ -1173,6 +1173,7 @@ void H5OutputWriter::writeMesh()
         maxdims[0] = H5S_UNLIMITED;
         id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
 
+        cout << "id_time_vector = " << id_time_vector << endl;
 
 
 
@@ -2017,7 +2018,6 @@ int H5OutputWriter::setTime(double t)
         status =  H5Dset_extent( id_elements_output, dims_new );
     }
 
-    hdf5_check_error(status);
 
     return 0;
 }
@@ -2336,6 +2336,7 @@ hid_t H5OutputWriter::createVariableLengthArray(hid_t here,
                                 H5P_DEFAULT,
                                 dataset_creation_plist,
                                 dataset_access_plist);
+    // hdf5_check_error(status);
     setAttribute(id_array, attribute);
 
     H5Sclose(id_dataspace);
