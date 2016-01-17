@@ -571,6 +571,9 @@ private:
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
 
+        static DTensor2 depsilon(3, 3, 0);
+        depsilon *= 0;
+        depsilon(i, j) = strain_incr(i, j);
         const DTensor2& sigma = CommitStress;
         const DTensor2& epsilon = CommitStrain;
         // const DTensor2& epsilon_pl = CommitPlastic_Strain;
@@ -581,16 +584,17 @@ private:
         intersection_strain *= 0;
 
         DTensor4& Eelastic = et(sigma);
-        dsigma(i, j) = Eelastic(i, j, k, l) * strain_incr(k, l);
-        TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
-        TrialStrain(i, j) = CommitStrain(i, j) + strain_incr(i, j);
-        TrialPlastic_Strain(i, j) = CommitPlastic_Strain(i, j);
+        dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
+
+        TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
+        TrialStrain(ii, jj) = CommitStrain(ii, jj) + depsilon(ii, jj);
+        TrialPlastic_Strain(ii, jj) = CommitPlastic_Strain(ii, jj);
 
 
         double yf_val_start = yf(sigma);
         double yf_val_end = yf(TrialStress);
 
-        printTensor("   * depsilon", strain_incr);
+        printTensor("   * depsilon", depsilon);
         printTensor("   * sigma", sigma);
         printTensor4("   * Eelastic", Eelastic);
         printTensor("   * dsigma", dsigma);
@@ -608,14 +612,14 @@ private:
         }
         else  //Plasticity
         {
-            depsilon_elpl(i, j) = strain_incr(i, j);
+            depsilon_elpl(i, j) = depsilon(i, j);
             if (yf_val_start < 0)
             {
                 double intersection_factor = zbrentstress( start_stress, end_stress, 0.0, 1.0, TOLERANCE1 );
 
                 intersection_stress(i, j) = start_stress(i, j) * (1 - intersection_factor) + end_stress(i, j) * intersection_factor;
-                intersection_strain(i, j) = epsilon(i, j)  + strain_incr(i, j) * intersection_factor;
-                depsilon_elpl(i, j) = (1 - intersection_factor) * strain_incr(i, j);
+                intersection_strain(i, j) = epsilon(i, j)  + depsilon(i, j) * intersection_factor;
+                depsilon_elpl(i, j) = (1 - intersection_factor) * depsilon(i, j);
                 TrialStress(i, j) = intersection_stress(i, j);
 
                 Eelastic = et(intersection_stress);
