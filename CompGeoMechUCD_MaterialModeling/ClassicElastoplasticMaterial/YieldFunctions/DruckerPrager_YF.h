@@ -100,7 +100,7 @@ public:
 
         if (den == 0)
         {
-            return -10; //Elastic
+            return result; //Elastic
         }
         else
         {
