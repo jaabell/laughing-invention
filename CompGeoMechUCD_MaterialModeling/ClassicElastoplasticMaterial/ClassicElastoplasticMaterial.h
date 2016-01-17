@@ -593,7 +593,7 @@ private:
                 {
                     for (int ll = 0; ll < 3; ll++)
                     {
-                        dsigma(ii, jj) = Eelastic(ii, jj, k, l) * depsilon(k, l);
+                        dsigma(ii, jj) = Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
                     }
                 }
                 TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
