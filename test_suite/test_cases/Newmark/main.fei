@@ -1,0 +1,97 @@
+model name "veri_newmark";
+
+dt=0.01*s;
+
+// Period of structure
+TargetPeriod 	= 1*s;
+
+// Initial displacement
+d0 				= 0.1*m;
+
+// System parameters
+L 				= 1*m;
+m_add 			= 10E3*N*s^2/m;
+nu 				= 0.0;
+Abeam 			= 1*m^2;
+Ibeam 			= 1*m^4;
+Jbeam 			= 1*m^4;
+rho_beam 		= 0*kg/m^3;
+
+Ebeam 			= (2*pi/TargetPeriod)^2*m_add*L^3 / (12 * Ibeam);
+Gbeam 			= Ebeam/2/(1+nu);
+stiffness_ 		= 12*Ebeam*Ibeam/(L^3);
+
+Force 			= stiffness_*d0;
+
+xi=0.0;
+
+wn=2*pi/TargetPeriod;
+wd = wn*sqrt(1 - xi^2);
+c = 2*xi*wn*m_add;
+
+
+// nodal  Coordinates
+add node # 1  at (0*m, 0*m ,  0*m) with 6 dofs;      
+add node # 2  at (0*m, 0*m ,  L) with 6 dofs;
+add node # 3  at (1*m, 0*m ,  L) with 6 dofs;
+// Constrains
+fix node # 1 dofs all;
+fix node # 2 dofs uy uz rx ry rz ;
+// fix node # 2 dofs uy uz rx ry rz;
+fix node # 3 dofs all;
+
+// Elements
+
+add element # 1 type beam_elastic with nodes  (1, 2)
+    cross_section = Abeam
+    elastic_modulus =    Ebeam
+    shear_modulus = Gbeam
+    torsion_Jx = Jbeam
+    bending_Iy = Ibeam
+    bending_Iz = Ibeam
+    mass_density = rho_beam
+    xz_plane_vector = (1, 0, 1 ) 
+    joint_1_offset = (0*m, 0*m, 0*m) 
+    joint_2_offset = (0*m, 0*m, 0*m);
+    
+    
+// add material # 2 type uniaxial_elastic elastic_modulus = 0*Ebeam viscoelastic_modulus = c /(3*m);
+// add element # 2 type truss with nodes (2, 3) use material # 2 cross_section = 1*m^2 mass_density = 0*rho_beam ;
+    
+
+add mass to node # 2  mx = m_add my = 0*kg  mz = 0*kg Imx = 0*kg*m^2  Imy = m_add*L^2  Imz = 0*kg*m^2;
+
+// Static case to impose initial displacement
+new loading stage "static";
+
+
+// Load which generates initial condition
+add load # 1 to node # 2 type linear 
+		Fx = Force ;
+
+		
+define load factor increment 1;
+define algorithm With_no_convergence_check;
+define solver ProfileSPD;
+
+simulate 1 steps using static algorithm;
+
+remove load # 1;
+
+
+
+// Dynamic case
+new loading stage "dynamic";
+
+gamma_val=0.6;
+beta_val= 0.25*(0.5 + gamma_val)^2;
+define dynamic integrator Newmark with 	gamma =  gamma_val	beta = beta_val ;
+
+
+define algorithm With_no_convergence_check;
+define solver ProfileSPD;
+
+Nsteps = ceil(10*s/dt);
+simulate (Nsteps) steps using transient algorithm time_step = dt;
+bye;
+

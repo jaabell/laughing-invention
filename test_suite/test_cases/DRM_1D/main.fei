@@ -1,0 +1,42 @@
+model name "8NodeBrick_DRM" ;
+
+//Material for soil
+add material # 1 type linear_elastic_isotropic_3d_LT
+  mass_density = 2000*kg/m^3
+  elastic_modulus = 1300*MPa
+  poisson_ratio = 0.3;
+
+//Material for DRM layer
+add material # 2 type linear_elastic_isotropic_3d_LT
+  mass_density = 2000*kg/m^3
+  elastic_modulus = 1300*MPa
+  poisson_ratio = 0.3;
+
+//Material for exterior layer
+add material # 3 type linear_elastic_isotropic_3d_LT
+  mass_density = 2000*kg/m^3
+  elastic_modulus = 1300*MPa
+  poisson_ratio = 0.3;
+
+include "node.fei";
+include "elementLT.fei";
+include "constraint.fei"';
+
+new loading stage "1D";
+
+
+define algorithm With_no_convergence_check ;
+define solver ProfileSPD;
+define dynamic integrator Newmark with 
+  gamma = 0.5050 
+  beta = 0.2525;
+add domain reduction method loading #  1
+	hdf5_file = "input.hdf5";
+
+simulate 999 steps using transient algorithm 
+	time_step = 0.01*s;
+
+
+bye;
+
+

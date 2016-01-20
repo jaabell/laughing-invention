@@ -1,0 +1,45 @@
+// ESSI Test Suite
+// ---------------------------------------------------------------------
+
+
+model name "8nodebrick";
+
+
+
+add material # 1 type linear_elastic_isotropic_3d mass_density=0.0*kg/m^3 elastic_modulus = 1.0*N/m^2 poisson_ratio=0.0;
+
+
+// Nodal  Coordinates
+add node No 1  at (2*m, 2*m , 2*m) with 3 dofs;      
+add node No 2  at (0*m, 2*m , 2*m) with 3 dofs;
+add node No 3  at (0*m, 0*m , 2*m) with 3 dofs;
+add node No 4  at (2*m, 0*m , 2*m) with 3 dofs;
+add node No 5  at (2*m, 2*m , 0*m) with 3 dofs;      
+add node No 6  at (0*m, 2*m , 0*m) with 3 dofs;
+add node No 7  at (0*m, 0*m , 0*m) with 3 dofs;
+add node No 8  at (2*m, 0*m , 0*m) with 3 dofs;
+
+
+
+// Elements
+add element # 1 type 8NodeBrick with nodes (1,2,3,4,5,6,7,8) use material # 1;
+
+
+// Constrains
+fix node No 5 dofs all;
+fix node No 6 dofs all;
+fix node No 7 dofs all;
+fix node No 8 dofs all;
+
+new loading stage "surfaceload";
+// Load
+add load # 1 to element # 1 type surface at nodes (1,2,3,4) with magnitude 1*N/m^2;
+
+define load factor increment 1.0;
+define algorithm With_no_convergence_check;
+define solver ProfileSPD;
+
+simulate 1 steps using static algorithm;
+
+
+bye;

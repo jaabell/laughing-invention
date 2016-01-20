@@ -1,0 +1,14 @@
+// add acceleration field # <.> ax = <accel> ay = <accel> az = <aaccel> ;
+add acceleration field # 1 
+	ax = 0*g
+	ay = 0*g 
+	az = 1*g ;
+
+
+add load # 1 to element # 1 type self_weight use acceleration field # 1 ;
+add load # 2 to element # 2 type self_weight use acceleration field # 1 ;
+add load # 3 to element # 3 type self_weight use acceleration field # 1 ;
+add load # 4 to element # 4 type self_weight use acceleration field # 1 ;
+add load # 5 to element # 5 type self_weight use acceleration field # 1 ;
+add load # 6 to element # 6 type self_weight use acceleration field # 1 ;
+

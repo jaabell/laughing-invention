@@ -1,0 +1,2 @@
+1.888889e+00
+brick_8node_elastic_1.h5.feioutput

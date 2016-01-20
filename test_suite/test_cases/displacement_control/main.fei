@@ -1,0 +1,59 @@
+// ESSI Test Suite
+// ---------------------------------------------------------------------
+
+
+model name "truss";
+new loading stage "imposed_displacement";
+
+
+add material # 1 type uniaxial_elastic elastic_modulus = 1.0*N/m^2 viscoelastic_modulus = 0.0*kg/m/s;
+
+
+// Nodal  Coordinates
+add node No 1  at (0*m, 0*m ,  0*m) with 3 dofs;      
+add node No 2  at (1*m, 0*m ,  0*m) with 3 dofs;
+add node No 3  at (2*m, 0*m ,  0*m) with 3 dofs;
+
+
+// Elements
+add element # 1 type truss with nodes (1, 2) use material # 1 cross_section=1.0*m^2 mass_density=0.0*kg/m^3;
+add element # 2 type truss with nodes (2, 3) use material # 1 cross_section=1.0*m^2 mass_density=0.0*kg/m^3;
+
+
+// Constrains
+fix node No 1 dofs all;
+fix node No 2 dofs uy uz;
+fix node No 3 dofs uy uz;
+
+
+
+
+// // IMPOSED MOTIONS
+// add imposed motion # 1 to node # 3 dof ux 
+// displacement_file = 
+// velocity_file = 
+// acceleration_file = 
+
+// add imposed motion # <.> to node # <.> dof DOFTYPE time_step = <t> displacement_scale_unit = <length> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
+add imposed motion # 1 to node #  3 dof ux 
+	displacement_scale_unit =  1*m 
+	displacement_file =  "pathtimeseries_displacement.feimotion" 
+	velocity_scale_unit =  1*m/s 
+	velocity_file =  "pathtimeseries_velocity.feimotion" 
+	acceleration_scale_unit =  1*m/s^2 
+	acceleration_file = "pathtimeseries_acceleration.feimotion";
+
+
+	
+
+dt = 0.01*s;
+
+
+define dynamic integrator Newmark with gamma = 0.5 beta = 0.25;
+define algorithm With_no_convergence_check;                                                                            
+define solver ProfileSPD;                                                                           
+
+                                                                                                    
+simulate 8 steps using transient algorithm time_step = dt;
+
+bye;

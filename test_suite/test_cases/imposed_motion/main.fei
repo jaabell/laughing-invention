@@ -1,0 +1,75 @@
+model name "imposed" ;
+
+//Material for soil
+add material # 1 type linear_elastic_isotropic_3d_LT
+  mass_density = 2000*kg/m^3
+  elastic_modulus = 1300*MPa
+  poisson_ratio = 0.3;
+
+//Material for DRM layer
+add material # 2 type linear_elastic_isotropic_3d_LT
+  mass_density = 2000*kg/m^3
+  elastic_modulus = 1300*MPa
+  poisson_ratio = 0.3;
+
+//Material for exterior layer
+add material # 3 type linear_elastic_isotropic_3d_LT
+  mass_density = 2000*kg/m^3
+  elastic_modulus = 1300*MPa
+  poisson_ratio = 0.3;
+
+include "node.fei";
+include "elementLT.fei";
+include "constraint.fei"';
+
+new loading stage "motion";
+
+
+add imposed motion # 100 to node # 45 dof ux 
+  displacement_scale_unit = 1*m 
+  displacement_file       = "dis.txt" 
+  velocity_scale_unit     = 1*m/s 
+  velocity_file           = "vel.txt" 
+  acceleration_scale_unit = 1*m/s^2 
+  acceleration_file       = "acc.txt";
+
+add imposed motion # 101 to node # 47 dof ux 
+  displacement_scale_unit = 1*m 
+  displacement_file       = "dis.txt" 
+  velocity_scale_unit     = 1*m/s 
+  velocity_file           = "vel.txt" 
+  acceleration_scale_unit = 1*m/s^2 
+  acceleration_file       = "acc.txt";
+
+add imposed motion # 102 to node # 49 dof ux 
+  displacement_scale_unit = 1*m 
+  displacement_file       = "dis.txt" 
+  velocity_scale_unit     = 1*m/s 
+  velocity_file           = "vel.txt" 
+  acceleration_scale_unit = 1*m/s^2 
+  acceleration_file       = "acc.txt";
+
+add imposed motion # 103 to node # 51 dof ux 
+  displacement_scale_unit = 1*m 
+  displacement_file       = "dis.txt" 
+  velocity_scale_unit     = 1*m/s 
+  velocity_file           = "vel.txt" 
+  acceleration_scale_unit = 1*m/s^2 
+  acceleration_file       = "acc.txt";
+
+
+
+define algorithm With_no_convergence_check ;
+define solver ProfileSPD;
+define dynamic integrator Newmark with 
+	gamma = 0.5050 
+	beta = 0.2525;
+
+
+simulate 20 steps using transient algorithm 
+	time_step = 0.01*s;
+
+
+bye;
+
+

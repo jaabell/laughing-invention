@@ -1,0 +1,42 @@
+// ESSI Test Suite
+// ---------------------------------------------------------------------
+
+
+model name "12dof_beam";
+new loading stage "Static";
+
+
+// Nodal  Coordinates
+add node No 1  at (0*m, 0*m , 0*m) with 6 dofs;      
+add node No 2  at (2*m, 0*m , 0*m) with 6 dofs;
+
+// Constrains
+fix node No 2 dofs all;
+
+// Elements
+add element # 1 type beam_elastic 
+            with nodes (1, 2)
+	    cross_section=2.0*m^2
+	    elastic_modulus=5*N/m^2
+	    shear_modulus=8*N/m^2
+	    torsion_Jx=20*m^4
+	    bending_Iy=12*m^4
+	    bending_Iz=16*m^4
+	    mass_density=0.0*kg/m^3
+	    xz_plane_vector = (0, 0, 1)
+	    joint_1_offset = (0.0*m, 0.0*m, 0.0*m)
+	    joint_2_offset = (0.0*m, 0.0*m, 0.0*m);
+
+
+
+// Load
+add load # 1 to node # 1 type linear Fx=1*N;
+
+
+define load factor increment 1;
+define algorithm With_no_convergence_check;
+define solver ProfileSPD;
+
+simulate 1 steps using static algorithm;
+
+bye;

@@ -1,0 +1,14 @@
+add node #      1 at (          0.000000*m,          0.000000*m,          0.000000*m) with 6 dofs;
+add node #      2 at (          6.000000*m,          0.000000*m,          0.000000*m) with 6 dofs;
+add node #      3 at (          1.000000*m,          0.000000*m,          0.000000*m) with 6 dofs;
+add node #      4 at (          2.000000*m,          0.000000*m,          0.000000*m) with 6 dofs;
+add node #      5 at (          3.000000*m,          0.000000*m,          0.000000*m) with 6 dofs;
+add node #      6 at (          4.000000*m,          0.000000*m,          0.000000*m) with 6 dofs;
+add node #      7 at (          5.000000*m,          0.000000*m,          0.000000*m) with 6 dofs;
+add node #      8 at (          6.000000*m,          1.000000*m,          0.000000*m) with 6 dofs;
+add node #      9 at (          0.000000*m,          1.000000*m,          0.000000*m) with 6 dofs;
+add node #     10 at (          5.000000*m,          1.000000*m,          0.000000*m) with 6 dofs;
+add node #     11 at (          4.000000*m,          1.000000*m,          0.000000*m) with 6 dofs;
+add node #     12 at (          3.000000*m,          1.000000*m,          0.000000*m) with 6 dofs;
+add node #     13 at (          2.000000*m,          1.000000*m,          0.000000*m) with 6 dofs;
+add node #     14 at (          1.000000*m,          1.000000*m,          0.000000*m) with 6 dofs;

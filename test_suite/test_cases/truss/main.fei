@@ -1,0 +1,36 @@
+// ESSI Test Suite
+// ---------------------------------------------------------------------
+
+
+model name "truss";
+new loading stage "Static";
+
+
+add material # 1 type uniaxial_elastic elastic_modulus = 1.0e4*N/m^2 viscoelastic_modulus = 0.0*kg/m/s;
+
+
+// Nodal  Coordinates
+add node No 1  at (0*m, 0*m ,  0*m) with 3 dofs;      
+add node No 2  at (1*m, 0*m ,  0*m) with 3 dofs;
+
+
+// Elements
+add element # 1 type truss with nodes (1, 2) use material # 1 cross_section=1.0*m^2 mass_density=0.0*kg/m^3;
+
+
+// Constrains
+fix node No 1 dofs all;
+fix node No 2 dofs uy uz;
+
+
+// Load
+add load # 1 to node # 2 type linear Fx=10*N;
+
+
+define load factor increment 1;
+define algorithm With_no_convergence_check;
+define solver ProfileSPD;
+
+simulate 1 steps using static algorithm;
+
+bye;

@@ -1,0 +1,26 @@
+model name "t" ;
+
+h     = 1*m;       
+Eshell  = 1e8*N/m^2; 
+nu    = 0.3;        // Poisson's ratio
+rho   = 1e2*kg/m^3;     // Mass density
+
+add material # 1 type linear_elastic_isotropic_3d
+  mass_density = rho
+  elastic_modulus = Eshell
+  poisson_ratio = nu;
+
+include "node.fei";
+include "element.fei";
+include "constraint.fei"';
+	
+
+new loading stage "1";
+include "load.fei";
+	
+define algorithm With_no_convergence_check ;
+define solver ProfileSPD;
+
+define load factor increment 1;
+simulate 1 steps using static algorithm;
+bye;

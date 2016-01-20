@@ -1,0 +1,52 @@
+model name "t" ;
+
+h     = 1*m;       
+Eshell  = 1e8*N/m^2; 
+nu    = 0.0;        // Poisson's ratio
+rho   = 0*kg/m^3;     // Mass density
+
+add material # 1 type linear_elastic_isotropic_3d
+  mass_density = rho
+  elastic_modulus = Eshell
+  poisson_ratio = nu;
+
+include "add_node.fei";
+include "element.fei";
+include "constraint.fei"';
+	
+
+new loading stage "1";
+//NODE 6 & 19 26 12  IN THE middle 3 meters
+add load # 1 to node #   3 type linear Fz=25*N;
+add load # 2 to node #   9 type linear Fz=25*N;
+add load # 3 to node #  16 type linear Fz=25*N;
+add load # 4 to node #  22 type linear Fz=25*N;
+
+define algorithm With_no_convergence_check ;
+define solver ProfileSPD;
+
+define load factor increment 1;
+simulate 1 steps using static algorithm;
+
+
+// new loading stage "Fy";
+// remove load # 1;
+// remove load # 2;
+// remove load # 3;
+// remove load # 4;
+
+// add load # 5 to node #   3 type linear Fy=25*N;
+// add load # 6 to node #   9 type linear Fy=25*N;
+// add load # 7 to node #  16 type linear Fy=25*N;
+// add load # 8 to node #  22 type linear Fy=25*N;
+
+// define algorithm With_no_convergence_check ;
+// define solver UMFPack;
+
+// define load factor increment 1;
+// simulate 1 steps using static algorithm;
+
+
+
+
+bye;
