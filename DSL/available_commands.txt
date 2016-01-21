@@ -1,4 +1,5 @@
 add acceleration field # <.> ax = <accel> ay = <accel> az = <aaccel> ;
+add constraint equal dof with master node # <.> and slave node # <.> dof to constrain <.> and <.>;
 add constraint equal dof with master node # <.> and slave node # <.> dof to constrain <.>;
 add damping # <.> to element # <.>;
 add damping # <.> to node # <.>;

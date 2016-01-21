@@ -1106,6 +1106,23 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
+	//!FEIDOC add constraint equal dof with master node # <.> and slave node # <.> dof to constrain <.> and <.>;
+	| ADD CONSTRAINT equaldof WITH NODE TEXTNUMBER exp dof DOF master AND NODE TEXTNUMBER exp dof DOF slave
+	{
+		args.clear(); signature.clear();
+
+		args.push_back($7); signature.push_back(this_signature("master",           &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("slave",           &isAdimensional));
+		args.push_back(dof2number(*$9)); signature.push_back(this_signature("masterdof",           &isAdimensional));
+		args.push_back(dof2number(*$16)); signature.push_back(this_signature("slavedof",           &isAdimensional));
+
+		$$ = new FeiDslCaller4<int, int, int, int>(&add_equaldof_to_two_nodes_two_dofs, args, signature, "add_equaldof_to_two_nodes_two_dofs");
+		
+		for(int i = 1; i <= 2; i++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
 	//!FEIDOC add domain reduction method loading # <.> hdf5_file = <string>;
 	| ADD DRM LOADING TEXTNUMBER 
 					  exp

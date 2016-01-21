@@ -6372,7 +6372,7 @@ void signalHandler(int signum)
 	exit(signum);
 }
 
-/* END SIGNALS */
+ /* END SIGNALS */
 
 int main (int argc, char**argv)
 {

@@ -36,6 +36,7 @@
 #include "MODELING/add_support_to_node.h"
 #include "MODELING/add_support_to_all_dofs_of_node.h"
 #include "MODELING/add_equaldof_to_two_nodes.h"
+#include "MODELING/add_equaldof_to_two_nodes_two_dofs.h"
 
 
 // Loading related
