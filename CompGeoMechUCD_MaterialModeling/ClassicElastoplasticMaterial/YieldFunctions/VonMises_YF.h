@@ -92,6 +92,11 @@ public:
 
         double den = sqrt((s(i, j) - alpha(i, j)) * (s(i, j) - alpha(i, j)));
 
+        if (den == 0)
+        {
+            return result;
+        }
+
         result(i, j) = (s(i, j) - alpha(i, j)) / den;
 
         return result;
@@ -114,6 +119,11 @@ public:
 
         //Denominator of the expression
         double den = sqrt((s(i, j) - alpha(i, j)) * (s(i, j) - alpha(i, j)));
+
+        if (den == 0)
+        {
+            return 0;
+        }
 
         // This is for the hardening of k
         constexpr double df_dk = -SQRT_2_over_3;
