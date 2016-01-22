@@ -1106,7 +1106,7 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add constraint equal dof with master node # <.> and slave node # <.> dof to constrain <.> and <.>;
+	//!FEIDOC add constraint equal dof with node # <.> dof <.> master and node # <.> dof <.> slave;
 	| ADD CONSTRAINT equaldof WITH NODE TEXTNUMBER exp dof DOF master AND NODE TEXTNUMBER exp dof DOF slave
 	{
 		args.clear(); signature.clear();

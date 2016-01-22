@@ -6523,7 +6523,7 @@ void welcome_msg()
 	cout << "Static startup tips:                                           " << endl;
 	cout << " * Remember: Every command ends with a semicolon ';'.          " << endl;
 	cout << " * Type 'quit;' or 'exit;' to finish.                          " << endl;
-	cout << " * Run 'essi -h to see available command line options.        " << endl;
+	cout << " * Run 'essi -h' to see available command line options.        " << endl;
 	cout << "                                                               " << endl;
 }
 
