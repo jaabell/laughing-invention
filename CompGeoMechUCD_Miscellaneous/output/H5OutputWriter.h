@@ -38,22 +38,22 @@
 #ifndef H5OutputWriter_H
 #define H5OutputWriter_H
 
-#define HDF5_CREATE_CHECK
+// #define HDF5_CREATE_CHECK
 // #define HDF5_CHECK_ERROR  {if(status < 0){cout << "status = " << status << endl; }}//return(-1);}}
 inline void hdf5_check_error(herr_t status);
 // {
-// 	if (status < 0)
-// 	{
-// 		cout << "status = " << status << endl;
-// 	}
+//  if (status < 0)
+//  {
+//      cout << "status = " << status << endl;
+//  }
 // }
 
 #define H5OUTPUTWRITER_RANDOMSTRNG_LEN 16
 #define H5OUTPUTWRITER_CHECK_DEFINITION_MODE if (inElementDefinitionMode | inNodeDefinitionMode) \
-		{ \
-				std::cerr << "H5OutputWriter::send##() -> still in definition mode. Element or node must end definition mode by calling endElementDescription() or endNodeDescription() before exiting! " << endl;  \
-				return -1; \
-		}
+        { \
+                std::cerr << "H5OutputWriter::send##() -> still in definition mode. Element or node must end definition mode by calling endElementDescription() or endNodeDescription() before exiting! " << endl;  \
+                return -1; \
+        }
 #define H5OUTPUTWRITER_MAX_STRING_SIZE 1024
 
 //Comment to untoggle
@@ -61,7 +61,7 @@ inline void hdf5_check_error(herr_t status);
 
 #ifdef _DEBUG_H5OUTPUTWRITER
 #define H5OUTPUTWRITER_COUNT_OBJS  nobjects = H5Fget_obj_count( id_file, H5F_OBJ_ALL ); \
-		cout << "Objects open = "  << nobjects << endl;
+        cout << "Objects open = "  << nobjects << endl;
 #else
 #define H5OUTPUTWRITER_COUNT_OBJS
 #endif
@@ -72,7 +72,7 @@ ssize_t nobjects;
 
 
 #define H5OUTPUTWRITER_CLEAN if(stack_length == 0) \
-		{ H5Oclose(id_current_object); }
+        { H5Oclose(id_current_object); }
 
 //These control the efficiency access to HDF5 file (tuning knobs)
 #define H5OUTPUTWRITER_CHUNK_NSLOTS 10007                        // Good if it is a prime number 101 1009  10007 (http://primes.utm.edu/lists/small/100000.txt)
