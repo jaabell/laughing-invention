@@ -212,10 +212,12 @@ PetscSOE::setSize(Graph &theGraph)
                     cout << "PetscSOE is using options from file: " << PETSCSOE_PETSCOPTIONS_FILENAME << endl;
                 }
                 PetscInitialize(0, PETSC_NULL, PETSCSOE_PETSCOPTIONS_FILENAME, "ESSI Simulator is using PETSc");
+                PetscPopSignalHandler();
             }
             else
             {
                 PetscInitialize(0, PETSC_NULL, (char *)0, "ESSI Simulator is using PETSc");
+                PetscPopSignalHandler();
             }
 
             PetscLogBegin();
