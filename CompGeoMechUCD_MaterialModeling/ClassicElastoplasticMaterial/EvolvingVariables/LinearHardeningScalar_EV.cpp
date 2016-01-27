@@ -50,7 +50,7 @@ const double& LinearHardeningScalar_EV::getDerivative(const DTensor2 &depsilon,
     derivative = 0;
 
     //Now compute the equivalent m
-    double m_eq = sqrt(2 * m(i, j) * m(i, j) / 3);
+    double m_eq = sqrt((2 * m(i, j) * m(i, j)) / 3);
 
     //Compute the derivative.
     derivative = H * m_eq;

@@ -6376,11 +6376,11 @@ void signalHandler(int signum)
 
 int main (int argc, char**argv)
 {
-    feclearexcept(FE_ALL_EXCEPT);
+    ; feclearexcept(FE_ALL_EXCEPT);
 
-    feenableexcept(FE_INVALID   | 
-                   FE_DIVBYZERO | 
-                   FE_OVERFLOW);
+    ; feenableexcept(FE_INVALID   | 
+    ;                FE_DIVBYZERO | 
+    ;                FE_OVERFLOW);
 
 	signal(SIGINT, signalHandler);
 	signal(SIGABRT, signalHandler);
