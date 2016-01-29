@@ -257,6 +257,7 @@
 //Classic Elastoplastic Materials
 #define ND_TAG_CEM_DruckerPragerLinearHardening 5001
 #define ND_TAG_CEM_VonMisesLinearHardening 5002
+#define ND_TAG_CEM_DruckerPragerVonMisesLinearHardening 5003
 
 
 

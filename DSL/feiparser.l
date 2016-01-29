@@ -414,7 +414,8 @@ EXP	([Ee][-+]?[0-9]+)
  /* Material Names*/
 "linear_elastic_isotropic_3d"       {return token::linear_elastic_isotropic_3d;}
 "VonMisesLT"        				{return token::VonMisesLT;}
-"DruckerPragerLT"        				{return token::DruckerPragerLT;}
+"DruckerPragerLT"                   {return token::DruckerPragerLT;}
+"DruckerPragerVonMisesLT"        	{return token::DruckerPragerVonMisesLT;}
 "sanisand2008"                      {return token::sanisand2008;}
 "camclay"                           {return token::camclay;}
 "camclay_accelerated"               {return token::camclay_accelerated;}
@@ -1267,10 +1268,9 @@ void signalHandler(int signum)
 int main (int argc, char**argv)
 {
     //feclearexcept(FE_ALL_EXCEPT);
-//
     //feenableexcept(FE_INVALID   | 
-                   //FE_DIVBYZERO | 
-                   //FE_OVERFLOW);
+    //FE_DIVBYZERO | 
+    //FE_OVERFLOW);
 
 	signal(SIGINT, signalHandler);
 	signal(SIGABRT, signalHandler);

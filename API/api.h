@@ -131,6 +131,7 @@
 #include "MODELING/add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_vonmises.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager.h"
+#include "MODELING/add_constitutive_model_NDMaterialLT_druckerpragervonmises.h"
 
 // Uniaxial
 #include "MODELING/add_constitutive_model_uniaxial_elastic.h"
