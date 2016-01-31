@@ -261,12 +261,8 @@ IncrementalIntegrator::formElementResidual(void)
 
     FE_EleIter& theEles2 = theAnalysisModel->getFEs();
 
-    int ielem = 0;//Added by Babak KAmrani 04/09/2012
-
     while ((elePtr = theEles2()) != 0)
     {
-        ielem = ielem + 1; //Added by Babak KAmrani 04/09/2012
-
         if (theSOE->addB(elePtr->getResidual(this), elePtr->getID()) < 0)
         {
             cerr << "WARNING IncrementalIntegrator::formElementResidual -";
