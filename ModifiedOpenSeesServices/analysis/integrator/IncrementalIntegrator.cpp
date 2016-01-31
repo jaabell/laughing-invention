@@ -236,7 +236,6 @@ IncrementalIntegrator::formNodalUnbalance(void)
     DOF_GrpIter& theDOFs = theAnalysisModel->getDOFs();
     DOF_Group* dofPtr;
     int res = 0;
-    int counter = 0; //Added by Babak Kamrani forr debugging purposes
 
     while ((dofPtr = theDOFs()) != 0)
     {
