@@ -241,7 +241,8 @@ CTestNormDispIncr::sendSelf(int cTag, Channel &theChannel)
     Vector x(4);
     x(0) = tol;
     x(1) = maxNumIter;
-    x(2) = printFlag;
+    // x(2) = printFlag;
+    x(2) = 0; // Only processor 0 prints info, whatever it is
     x(3) = norms.Size();
     res = theChannel.sendVector(this->getDbTag(), cTag, x);
 
