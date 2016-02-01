@@ -51,7 +51,8 @@ const DTensor2& LinearHardeningTensor_EV::getDerivative(const DTensor2 &depsilon
     derivative *= 0;
 
     //Compute the derivative (hardening function)
-    derivative(i, j) =  H * (m(i, j) - (m(k, k) / 3) * kronecker_delta(i, j));
+    double mkk = - (m(k, k) / 3);
+    derivative(i, j) =  H * (m(i, j) + mkk * kronecker_delta(i, j));
 
     return derivative;
 }

@@ -118,7 +118,10 @@ public:
 
     void commit()
     {
+        // cout << "a = " << a << endl;
+        // cout << "a_committed = " << a_committed << endl;
         a_committed = a;
+        // cout << "a_committed = " << a_committed << endl;
     }
 
     void revert()

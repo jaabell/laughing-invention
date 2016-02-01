@@ -261,7 +261,9 @@ public:
     int setTrialStrain( const DTensor2 &v )
     {
         using namespace ClassicElastoplasticityGlobals;
-        DTensor2 result( 3, 3, 0.0 );
+        static DTensor2 result( 3, 3, 0.0 );
+        result *= 0;
+
         TrialStrain(i, j) = v(i, j);
         result( i, j ) = v( i, j ) - CommitStrain( i, j );
 
@@ -272,7 +274,7 @@ public:
     // Returns a flag depending on the result of the step.
     int setTrialStrainIncr( const DTensor2 &v )
     {
-        TrialStrain += v;
+        // TrialStrain += v;
         return this->explicitStep(v);
         //
         // or
@@ -286,28 +288,28 @@ public:
 
     const DTensor4 &getTangentTensor( void )
     {
-        using namespace ClassicElastoplasticityGlobals;
+        // using namespace ClassicElastoplasticityGlobals;
 
-        double yf_val = yf(TrialStress);
+        // double yf_val = yf(TrialStress);
 
-        DTensor4& Eelastic = et(TrialStress);
+        // DTensor4& Eelastic = et(TrialStress);
 
 
-        if (yf_val <= 0.0)
-        {
-            Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
-        }
-        else
-        {
-            const DTensor2& n = yf.df_dsigma_ij(intersection_stress);
-            const DTensor2& m = pf(depsilon_elpl, intersection_stress);
+        // if (yf_val <= 0.0)
+        // {
+        //     Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
+        // }
+        // else
+        // {
+        //     const DTensor2& n = yf.df_dsigma_ij(intersection_stress);
+        //     const DTensor2& m = pf(depsilon_elpl, intersection_stress);
 
-            double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, depsilon_elpl,  intersection_stress);
-            double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+        //     double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, depsilon_elpl,  intersection_stress);
+        //     double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
 
-            //Compute tangent stiffness
-            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
-        }
+        //     //Compute tangent stiffness
+        //     Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
+        // }
 
         return Stiffness;
     }
@@ -352,11 +354,15 @@ public:
     // BET classes
     int commitState(void)
     {
+        cout << "commit!\n";
+
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
         CommitStress(i, j) = TrialStress(i, j);
         CommitStrain(i, j) = TrialStrain(i, j);
         CommitPlastic_Strain(i, j) = TrialPlastic_Strain(i, j);
+
+        vars.commit();
 
         return errorcode;
     }
@@ -369,6 +375,8 @@ public:
         TrialStress(i, j) = CommitStress(i, j);
         TrialStrain(i, j) = CommitStrain(i, j);
         TrialPlastic_Strain(i, j) = CommitPlastic_Strain(i, j);
+
+        vars.commit();
 
         return errorcode;
     }
@@ -577,7 +585,7 @@ private:
         const DTensor2& sigma = CommitStress;
         const DTensor2& epsilon = CommitStrain;
         // const DTensor2& epsilon_pl = CommitPlastic_Strain;
-
+        vars.revert();
 
         dsigma *= 0;//Zero-out the stress increment tensor
         intersection_stress *= 0; //Zero-out these intersection stress and strain tensors
@@ -593,7 +601,7 @@ private:
                 {
                     for (int ll = 0; ll < 3; ll++)
                     {
-                        dsigma(ii, jj) = Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
+                        dsigma(ii, jj) += Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
                     }
                 }
                 TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
@@ -644,7 +652,7 @@ private:
             // printTensor("intersection_stress", intersection_stress);
 
 
-            double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, depsilon_elpl,  intersection_stress);
+            double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  intersection_stress);
             double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
 
             //Compute the plastic multiplier
@@ -668,6 +676,7 @@ private:
             // std::cout << "   * den = " << den << std::endl;
 
             vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
         }
 
 

@@ -48,47 +48,53 @@ class VonMises_PF : public PlasticFlowBase<VonMises_PF<AlphaHardeningType, KHard
 {
 public:
 
-	typedef EvolvingVariable<DTensor2, AlphaHardeningType> AlphaType;
-	typedef EvolvingVariable<double, KHardeningType> KType;
+    typedef EvolvingVariable<DTensor2, AlphaHardeningType> AlphaType;
+    typedef EvolvingVariable<double, KHardeningType> KType;
 
 
-	// PlasticFlowBase<VonMises_PF<HardeningType>>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
-	VonMises_PF( AlphaType &alpha_in, KType &k_in):
-		PlasticFlowBase<VonMises_PF<AlphaHardeningType , KHardeningType >>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
-		        alpha_(alpha_in), k_(k_in)
-	{
+    // PlasticFlowBase<VonMises_PF<HardeningType>>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
+    VonMises_PF( AlphaType &alpha_in, KType &k_in):
+        PlasticFlowBase<VonMises_PF<AlphaHardeningType , KHardeningType >>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
+                alpha_(alpha_in), k_(k_in)
+    {
 
-	}
+    }
 
 
-	const DTensor2& operator()(const DTensor2 &depsilon, const DTensor2& sigma)
-	{
-		//Identical to derivative of VonMises_YF wrt sigma (a.k.a nij)
-		const DTensor2 &alpha = alpha_.getVariableConstReference();
-		// const double &k = k_.getVariableConstReference();
+    const DTensor2& operator()(const DTensor2 &depsilon, const DTensor2& sigma)
+    {
+        //Identical to derivative of VonMises_YF wrt sigma (a.k.a nij)
+        const DTensor2 &alpha = alpha_.getVariableConstReference();
 
-		//Zero these tensors
-		s *= 0;
-		result *= 0;
+        //Zero these tensors
+        s *= 0;
+        result *= 0;
 
-		double p;
+        double p = -sigma(i, i) / 3;
 
-		sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+        s(i, j) = sigma(i, j) + p * kronecker_delta(i, j);
+        result(i, j) = s(i, j) - alpha(i, j);
+        double den = sqrt(result(i, j) * result(i, j));
 
-		double den = sqrt((s(i, j) -  alpha(i, j)) * (s(i, j) -  alpha(i, j)));
+        if (den == 0)
+        {
+            return result;
+        }
+        else
+        {
+            result(i, j) = result(i, j) / den;
+        }
 
-		result(i, j) = (s(i, j) - alpha(i, j)) / den;
-
-		return result;
-	}
+        return result;
+    }
 
 private:
 
-	AlphaType &alpha_;
-	KType &k_;
+    AlphaType &alpha_;
+    KType &k_;
 
-	static DTensor2 s; //sigma deviator
-	static DTensor2 result; //For returning Dtensor2s
+    static DTensor2 s; //sigma deviator
+    static DTensor2 result; //For returning Dtensor2s
 
 };
 

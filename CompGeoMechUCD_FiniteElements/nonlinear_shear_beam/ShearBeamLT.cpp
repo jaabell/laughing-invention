@@ -242,11 +242,14 @@ int ShearBeamLT::commitState ()
 
 void ShearBeamLT::formOutput()
 {
-    DTensor2 stress(3, 3);
-    DTensor2 strain(3, 3);
-    DTensor2 plstrain(3, 3);
-
     int ii = 0;
+    static DTensor2 stress(3, 3);
+    static DTensor2 strain(3, 3);
+    static DTensor2 plstrain(3, 3);
+
+    stress *= 0;
+    strain *= 0;
+    plstrain *= 0;
 
     strain = material_array[0]->getStrainTensor();
     plstrain = material_array[0]->getPlasticStrainTensor();
@@ -303,10 +306,15 @@ int ShearBeamLT::revertToStart ()
 //=============================================================================
 const Matrix &ShearBeamLT::getTangentStiff()
 {
-    DTensor4 stifftensor(2, 3, 3, 2, 0.0);
-    DTensor4 E_elpl(2, 3, 3, 2, 0.0);
-    DTensor4 Kkt( 2, 3, 3, 2, 0.0);
-    DTensor2 dhGlobal( 2, 3, 0.0 );
+    static DTensor4 stifftensor(2, 3, 3, 2, 0.0);
+    static DTensor4 E_elpl(2, 3, 3, 2, 0.0);
+    static DTensor4 Kkt( 2, 3, 3, 2, 0.0);
+    static DTensor2 dhGlobal( 2, 3, 0.0 );
+
+    stifftensor *= 0;
+    E_elpl *= 0;
+    Kkt *= 0;
+    dhGlobal *= 0;
 
     dhGlobal(0, 2) = -1 / length;
     dhGlobal(1, 2) = 1 / length;
@@ -532,15 +540,17 @@ const Vector &ShearBeamLT::getResistingForce()
 {
     //P.Zero();
 
-    DTensor2 stress = material_array[0]->getStressTensor();
+    const DTensor2& stress = material_array[0]->getStressTensor();
+    static DTensor2 dhGlobal( 2, 3, 0.0 );
+    static DTensor2 nodal_forces( 2, 3, 0.0 );
 
-
-    DTensor2 dhGlobal( 2, 3, 0.0 );
+    // stress *= 0;
+    dhGlobal *= 0;
+    nodal_forces *= 0;
 
     dhGlobal(0, 2) = -1 / length;
     dhGlobal(1, 2) = 1 / length;
 
-    DTensor2 nodal_forces( 2, 3, 0.0 );
     nodal_forces(i, j) = Area * length * (dhGlobal( i, k ) * stress( j, k ) );
 
     for ( int i = 0; i < 2; i++ )
@@ -833,9 +843,13 @@ void ShearBeamLT::Print( ostream &s, int flag )
 int ShearBeamLT::update( void )
 {
 
-    DTensor2 trial_disp( 2, 3, 0.0  );
-    DTensor2 trial_strain(3, 3, 0.0);
-    DTensor2 dhGlobal( 2, 3, 0.0 );
+    static DTensor2 trial_disp( 2, 3, 0.0  );
+    static DTensor2 trial_strain(3, 3, 0.0);
+    static DTensor2 dhGlobal( 2, 3, 0.0 );
+
+    trial_disp *= 0;
+    trial_strain *= 0;
+    dhGlobal *= 0;
 
     const Vector &TotDis1 = theNodes[0]->getTrialDisp();
     const Vector &TotDis2 = theNodes[1]->getTrialDisp();
@@ -877,18 +891,19 @@ Vector *
 ShearBeamLT::getStress( void )
 {
     cout << "ShearBeamLT::getStress( void ) got called!\n\n";
-    DTensor2 stress;//(3,3,0.0);
-    Vector *stresses = new Vector( 6 );   // FIXME: Who deallocates this guy???
+    // DTensor2 stress;//(3,3,0.0);
+    // Vector *stresses = new Vector( 6 );   // FIXME: Who deallocates this guy???
 
-    stress = material_array[0]->getStressTensor();
-    ( *stresses )( 0 ) = stress( 0, 0 );
-    ( *stresses )( 1 ) = stress( 1, 1 );
-    ( *stresses )( 2 ) = stress( 2, 2 );
-    ( *stresses )( 3 ) = stress( 0, 1 );
-    ( *stresses )( 4 ) = stress( 0, 2 );
-    ( *stresses )( 5 ) = stress( 0, 2 );
+    // stress = material_array[0]->getStressTensor();
+    // ( *stresses )( 0 ) = stress( 0, 0 );
+    // ( *stresses )( 1 ) = stress( 1, 1 );
+    // ( *stresses )( 2 ) = stress( 2, 2 );
+    // ( *stresses )( 3 ) = stress( 0, 1 );
+    // ( *stresses )( 4 ) = stress( 0, 2 );
+    // ( *stresses )( 5 ) = stress( 0, 2 );
 
-    return stresses;
+    // return stresses;
+    return 0;
 }
 
 

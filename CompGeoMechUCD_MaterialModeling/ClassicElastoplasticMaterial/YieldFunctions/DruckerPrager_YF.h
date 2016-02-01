@@ -115,7 +115,7 @@ public:
         return result;
     }
 
-    double xi_star_h_star(const DTensor2& depsilon, const DTensor2& depsilon_pl, const DTensor2& sigma)
+    double xi_star_h_star(const DTensor2& depsilon, const DTensor2& m, const DTensor2& sigma)
     {
         double dbl_result = 0.0;
 
@@ -135,10 +135,10 @@ public:
 
         // This is for the hardening of k
         double df_dk = -SQRT_2_over_3 * p;
-        dbl_result +=  df_dk * k_.getDerivative(depsilon, depsilon_pl, sigma);
+        dbl_result +=  df_dk * k_.getDerivative(depsilon, m, sigma);
 
         //This is for the hardening of alpha
-        dbl_result +=  (-p * (s(i, j) - p * alpha(i, j)) / den) * alpha_.getDerivative(depsilon, depsilon_pl, sigma)(i, j);
+        dbl_result +=  (-p * (s(i, j) - p * alpha(i, j)) / den) * alpha_.getDerivative(depsilon, m, sigma)(i, j);
 
         return dbl_result;
     }
