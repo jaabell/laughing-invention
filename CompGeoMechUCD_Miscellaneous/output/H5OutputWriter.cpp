@@ -1031,7 +1031,7 @@ void H5OutputWriter::syncWriters()
     //length_send = previous_stage_name.size();
     MPI_Bcast(&number_of_time_steps, 1, MPI_INT,   root, MPI_COMM_WORLD);
     int rank = 0;
-    cout << "H5OutputWriter::syncWriters (" << rank << ") number_of_time_steps = " << number_of_time_steps << endl;
+    // cout << "H5OutputWriter::syncWriters (" << rank << ") number_of_time_steps = " << number_of_time_steps << endl;
 
     current_time                         = 0.0;
     current_time_step                    = 0;
@@ -1113,7 +1113,7 @@ void H5OutputWriter::writeMesh()
         file_name += ".feioutput";
     }
 
-    cout << "Process " << processID << " filename = " << file_name << endl;
+    // cout << "Process " << processID << " filename = " << file_name << endl;
 
 #endif
 
@@ -1174,7 +1174,7 @@ void H5OutputWriter::writeMesh()
 
         id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
 
-        cout << "id_time_vector = " << id_time_vector << endl;
+        // cout << "id_time_vector = " << id_time_vector << endl;
 
 
 
@@ -1402,13 +1402,13 @@ void H5OutputWriter::writeMesh()
                 bounds[5] = z;
             }
         }
-        cout << processID <<  ": Model bounds ("
-             << bounds[0] << ", "
-             << bounds[1] << ", "
-             << bounds[2] << ", "
-             << bounds[3] << ", "
-             << bounds[4] << ", "
-             << bounds[5] << ")\n";
+        // cout << processID <<  ": Model bounds ("
+        //      << bounds[0] << ", "
+        //      << bounds[1] << ", "
+        //      << bounds[2] << ", "
+        //      << bounds[3] << ", "
+        //      << bounds[4] << ", "
+        //      << bounds[5] << ")\n";
         //Write them
         rank        = 1;
         dims[0]     = 6;
@@ -1420,7 +1420,7 @@ void H5OutputWriter::writeMesh()
 
         writeConstantLengthDoubleArray(id_model_bounds, rank, dims, data_dims, offset, stride, count, block,
                                        bounds);
-        cout << processID <<  "Wrote bounds!\n";
+        // cout << processID <<  "Wrote bounds!\n";
         H5Dclose(id_model_bounds);
         H5OUTPUTWRITER_COUNT_OBJS;
 
