@@ -354,7 +354,6 @@ public:
     // BET classes
     int commitState(void)
     {
-        cout << "commit!\n";
 
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
