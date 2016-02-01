@@ -486,18 +486,18 @@ const DTensor2 &EightNodeBrickLT::nodal_forces( void ) const
     double weight = 0.0;
 
     static DTensor2 nodal_forces( 8, 3, 0.0 );
-    DTensor2 dh( 8, 3 , 0.0 );
-    DTensor2 stress_at_GP( 3, 3, 0.0 );
-    DTensor2 Jacobian( 3, 3, 0.0 );
-    DTensor2 JacobianINV( 3, 3, 0.0 );
-    DTensor2 dhGlobal( 8, 3 , 0.0 );
+    static DTensor2 dh( 8, 3 , 0.0 );
+    static DTensor2 stress_at_GP( 3, 3, 0.0 );
+    static DTensor2 Jacobian( 3, 3, 0.0 );
+    static DTensor2 JacobianINV( 3, 3, 0.0 );
+    static DTensor2 dhGlobal( 8, 3 , 0.0 );
 
-    //Set nodal_forces to zero (it is only done once since it's a static varible)
-    for (DTensor2::literator it = nodal_forces.begin(); it != nodal_forces.end(); it++)
-    {
-        *it = 0;
-    }
-
+    nodal_forces *= 0;
+    dh *= 0;
+    stress_at_GP *= 0;
+    Jacobian *= 0;
+    JacobianINV *= 0;
+    dhGlobal *= 0;
 
     for ( short gp = 0; gp < 8; gp++ )
     {
@@ -840,13 +840,21 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
     double det_of_Jacobian = 0.0;
     double weight = 0.0;
 
-    DTensor2 incremental_strain(3, 3, 0.0);
-    DTensor2 dh_drst( 8, 3, 0.0 );
-    DTensor2 dhGlobal( 8, 3, 0.0 );
-    DTensor2 Jacobian(3, 3, 0.0);
-    DTensor2 JacobianINV(3, 3, 0.0);
-    DTensor4 E_elpl(3, 3, 3, 3, 0.0);
-    DTensor4 Kkt( 8, 3, 3, 8, 0.0);
+    static DTensor2 incremental_strain(3, 3, 0.0);
+    static DTensor2 dh_drst( 8, 3, 0.0 );
+    static DTensor2 dhGlobal( 8, 3, 0.0 );
+    static DTensor2 Jacobian(3, 3, 0.0);
+    static DTensor2 JacobianINV(3, 3, 0.0);
+    static DTensor4 E_elpl(3, 3, 3, 3, 0.0);
+    static DTensor4 Kkt( 8, 3, 3, 8, 0.0);
+
+    incremental_strain *= 0;
+    dh_drst *= 0;
+    dhGlobal *= 0;
+    Jacobian *= 0;
+    JacobianINV *= 0;
+    E_elpl *= 0;
+    Kkt *= 0;
 
     Index < 'a' > a;
     Index < 'b' > b;
@@ -1779,8 +1787,11 @@ void EightNodeBrickLT::ComputeVolume()
     double weight = 0.0;
     double det_of_Jacobian = 0.0;
 
-    DTensor2 dh( 8, 3, 0.0 );
-    DTensor2 Jacobian(3, 3, 0.0);
+    static DTensor2 dh( 8, 3, 0.0 );
+    static DTensor2 Jacobian(3, 3, 0.0);
+
+    dh *= 0;
+    Jacobian *= 0;
 
     for ( short gp = 0; gp < 8; gp++ )
     {
@@ -1815,13 +1826,20 @@ int EightNodeBrickLT::update( void )
     double s  = 0.0;
     double t  = 0.0;
 
-    DTensor2 dh( 8, 3, 0.0 );
     //DTensor2 Jacobian(3,3,0.0);
-    DTensor2 JacobianINV(3, 3, 0.0);
-    DTensor2 dhGlobal( 8, 3, 0.0 );
-    DTensor2 trial_disp( 8, 3, 0.0  );
-    DTensor2 total_strain(3, 3, 0.0);
-    DTensor2 trial_strain(3, 3, 0.0);
+    static DTensor2 dh( 8, 3, 0.0 );
+    static DTensor2 JacobianINV(3, 3, 0.0);
+    static DTensor2 dhGlobal( 8, 3, 0.0 );
+    static DTensor2 trial_disp( 8, 3, 0.0  );
+    static DTensor2 total_strain(3, 3, 0.0);
+    static DTensor2 trial_strain(3, 3, 0.0);
+
+    dh *= 0;
+    JacobianINV *= 0;
+    dhGlobal *= 0;
+    trial_disp *= 0;
+    total_strain *= 0;
+    trial_strain *= 0;
 
     trial_disp = total_disp();
 
