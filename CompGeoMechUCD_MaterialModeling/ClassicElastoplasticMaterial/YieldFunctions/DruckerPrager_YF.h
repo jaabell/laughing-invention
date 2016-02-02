@@ -73,7 +73,7 @@ public:
 
         if (p <= 0)
         {
-            cout << "p = " << p << endl;
+            cout << "p = " << p << ", yf = " << sqrt( (s(i, j) + p * alpha(i, j)) * (s(i, j) + p * alpha(i, j)) ) + SQRT_2_over_3 * k * p << endl;
             return 10;
         }
 
