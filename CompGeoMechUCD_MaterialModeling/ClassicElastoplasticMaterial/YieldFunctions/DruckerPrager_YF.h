@@ -71,7 +71,7 @@ public:
         sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
         p = -p;
 
-        if (p >= 0)
+        if (p <= 0)
         {
             cout << "p = " << p << endl;
             return 10;
