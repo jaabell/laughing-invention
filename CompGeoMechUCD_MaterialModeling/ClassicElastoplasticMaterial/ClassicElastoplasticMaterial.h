@@ -193,6 +193,8 @@ public:
         CommitStress(0, 0) = -p0;
         CommitStress(1, 1) = -p0;
         CommitStress(2, 2) = -p0;
+
+        first_step = true;
     }
 
 
@@ -288,7 +290,7 @@ public:
 
     const DTensor4 &getTangentTensor( void )
     {
-        // using namespace ClassicElastoplasticityGlobals;
+        using namespace ClassicElastoplasticityGlobals;
 
         // double yf_val = yf(TrialStress);
 
@@ -310,6 +312,13 @@ public:
         //     //Compute tangent stiffness
         //     Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
         // }
+
+        if (first_step)
+        {
+            DTensor4& Eelastic = et(TrialStress);
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
+            first_step = false;
+        }
 
         return Stiffness;
     }
@@ -363,6 +372,11 @@ public:
 
         vars.commit();
 
+        // if (first_step)
+        // {
+        //     first_step = false;
+        // }
+
         return errorcode;
     }
 
@@ -382,6 +396,7 @@ public:
 
     int revertToStart(void)
     {
+        first_step = true;
         return 0;
     }
 
@@ -865,12 +880,15 @@ private:
     PlasticFlowType   pf;
     MaterialInternalVariablesType vars;
 
+    bool first_step;
+
     static DTensor2 dsigma;
     static DTensor2 depsilon_elpl;    //Elastoplastic strain increment : For a strain increment that causes first yield, the step is divided into an elastic one (until yield) and an elastoplastic one.
     static DTensor2 intersection_stress;
     static DTensor2 intersection_strain;
     static DTensor4 Stiffness;
     // static DTensor2 m;
+
 
 };
 

@@ -916,6 +916,18 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
         }
     }
 
+    for (int ii = 0; ii < 24; ii++)
+    {
+        if (K(ii, ii) <= 0)
+        {
+            cerr << "Element " << this->getTag() << " - Negative Diagonal at i = " << ii << endl;
+
+            cout << "K = " << K << endl;
+
+            exit(-1);
+        }
+    }
+
     return K;
 }
 
