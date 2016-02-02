@@ -69,6 +69,13 @@ public:
         const DTensor2 &alpha = alpha_.getVariableConstReference();
         const double &k = k_.getVariableConstReference();
         sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+        p = -p;
+
+        if (p >= 0)
+        {
+            cout << "p = " << p << endl;
+            return 10;
+        }
 
         return sqrt( (s(i, j) + p * alpha(i, j)) * (s(i, j) + p * alpha(i, j)) ) + SQRT_2_over_3 * k * p;  // This one assumes p positive in tension
     }
