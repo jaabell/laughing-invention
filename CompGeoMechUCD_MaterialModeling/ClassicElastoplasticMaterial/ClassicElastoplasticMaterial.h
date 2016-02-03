@@ -645,7 +645,7 @@ private:
 
         if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
         {
-            DTensor4& Eelastic = et(sigma);
+            DTensor4& Eelastic = et(TrialStress);
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
         }
         else  //Plasticity
