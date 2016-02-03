@@ -42,7 +42,7 @@
 #include "../PlasticFlowDirections/DruckerPrager_PF.h"
 
 //Elasticity Models
-#include "../ElasticityModels/LinearIsotropic3D_EL.h"
+#include "../ElasticityModels/NoTensionLinearIsotropic3D_EL.h"
 
 //Evolving variables
 #include "../EvolvingVariables/LinearHardeningTensor_EV.h"
@@ -65,7 +65,7 @@ typedef DruckerPrager_YF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> D
 typedef DruckerPrager_PF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLH_PFType;
 
 //Create a helpful typedef for the base class from which we will inherit to create the new material.
-typedef ClassicElastoplasticMaterial <LinearIsotropic3D_EL,
+typedef ClassicElastoplasticMaterial <NoTensionLinearIsotropic3D_EL,
         DPLH_YFType,
         DPLH_PFType,
         DPLHVarsType,
@@ -84,7 +84,7 @@ public:
     // material. This must provide an initialization for the state variables and link the components
     // to these variables appropriately.
     DruckerPragerLinearHardening(int tag_in, double rho, double p0, DPLH_YFType & yf,
-                                 LinearIsotropic3D_EL & el,
+                                 NoTensionLinearIsotropic3D_EL & el,
                                  DPLH_PFType & pf,
                                  DPLHVarsType & vars);
 

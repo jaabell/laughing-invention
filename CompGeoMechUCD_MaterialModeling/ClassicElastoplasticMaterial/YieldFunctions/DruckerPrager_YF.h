@@ -69,15 +69,17 @@ public:
         const DTensor2 &alpha = alpha_.getVariableConstReference();
         const double &k = k_.getVariableConstReference();
         sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
-        p = -p;
+        // p = -p;
 
-        if (p <= 0)
+        double yf = sqrt( (s(i, j) + p * alpha(i, j)) * (s(i, j) + p * alpha(i, j)) ) + SQRT_2_over_3 * k * p; // This one assumes p positive in tension
+
+        if (p >= 0) // p here is positive in tension
         {
-            cout << "p = " << p << ", yf = " << sqrt( (s(i, j) + p * alpha(i, j)) * (s(i, j) + p * alpha(i, j)) ) + SQRT_2_over_3 * k * p << endl;
-            return 10;
+            // cout << "p = " << p << ", yf = " << yf << endl;
+            return -1;  // Pretend its elastic.
         }
 
-        return sqrt( (s(i, j) + p * alpha(i, j)) * (s(i, j) + p * alpha(i, j)) ) + SQRT_2_over_3 * k * p;  // This one assumes p positive in tension
+        return yf;
     }
 
     const DTensor2& df_dsigma_ij(const DTensor2& sigma)
