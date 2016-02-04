@@ -737,6 +737,14 @@ private:
         return errorcode;
     }
 
+    // int retval = this->pre_integration_callback(depsilon, dsigma, TrialStress, yf1, yf2);
+    int pre_integration_callback(DTensor2 &depsilon, DTensor2 &dsigma, DTensor2 &TrialStress, double yf1, double yf2, bool & returns)
+    {
+        returns = false;
+        return 0;
+    }
+
+
 private:
 // Routine used by yield_surface_cross to find the stresstensor at cross point
 //================================================================================
@@ -874,12 +882,6 @@ private:
         return 0.0;
     }
 
-    // int retval = this->pre_integration_callback(depsilon, dsigma, TrialStress, yf1, yf2);
-    int pre_integration_callback(DTensor2 &depsilon, DTensor2 &dsigma, DTensor2 &TrialStress, double yf1, double yf2, bool & returns)
-    {
-        returns = false;
-        return 0;
-    }
 
 private:
 
