@@ -43,8 +43,8 @@
 #include <Channel.h>
 #include <limits>
 
+#include "CEPTraits.h"
 #include "ClassicElastoplasticityGlobals.h"
-
 
 #define ClassicElastoplasticMaterial_MAXITER_BRENT 20
 #define TOLERANCE1 1e-6
@@ -607,23 +607,23 @@ private:
 
         DTensor4& Eelastic = et(sigma);
 
-        for (int ii = 0; ii < 3; ii++)
-        {
-            for (int jj = 0; jj < 3; jj++)
-            {
-                for (int kk = 0; kk < 3; kk++)
-                {
-                    for (int ll = 0; ll < 3; ll++)
-                    {
-                        dsigma(ii, jj) += Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
-                    }
-                }
-                // TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
-                // TrialStrain(ii, jj) = CommitStrain(ii, jj) + depsilon(ii, jj);
-                // TrialPlastic_Strain(ii, jj) = CommitPlastic_Strain(ii, jj);
-            }
-        }
-        // dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
+        // for (int ii = 0; ii < 3; ii++)
+        // {
+        //     for (int jj = 0; jj < 3; jj++)
+        //     {
+        //         for (int kk = 0; kk < 3; kk++)
+        //         {
+        //             for (int ll = 0; ll < 3; ll++)
+        //             {
+        //                 dsigma(ii, jj) += Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
+        //             }
+        //         }
+        //         // TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
+        //         // TrialStrain(ii, jj) = CommitStrain(ii, jj) + depsilon(ii, jj);
+        //         // TrialPlastic_Strain(ii, jj) = CommitPlastic_Strain(ii, jj);
+        //     }
+        // }
+        dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
         TrialPlastic_Strain(i, j) = CommitPlastic_Strain(i, j);
@@ -642,6 +642,13 @@ private:
         DTensor2& end_stress = TrialStress;
 
         intersection_stress(i, j) = start_stress(i, j);
+
+        bool returns = false;
+        int retval = static_cast<T*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness, returns);
+        if (returns)
+        {
+            return retval;
+        }
 
         if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
         {
@@ -670,7 +677,6 @@ private:
 
             // printTensor("intersection_stress", intersection_stress);
 
-
             double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  intersection_stress);
             double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
 
@@ -689,13 +695,29 @@ private:
             //Correct the trial stress
             TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
-
             // std::cout << "   * dLambda = " << dLambda << std::endl;
             // std::cout << "   * xi_star_h_star = " << xi_star_h_star << std::endl;
             // std::cout << "   * den = " << den << std::endl;
 
             vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
-            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
+
+
+            //Stress correction
+            double yc = yf(TrialStress);
+            while (abs(yc) > 1e-2)
+            {
+                const DTensor2& n = yf.df_dsigma_ij(TrialStress);
+                const DTensor2& m = pf(depsilon_elpl, TrialStress);
+                double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  TrialStress);
+                double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+                double dLambda_correction = yc / den;
+                TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
+                yc = yf(TrialStress);
+            }
+
+            const DTensor2& nf = yf.df_dsigma_ij(intersection_stress);
+            const DTensor2& mf = pf(depsilon_elpl, intersection_stress);
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / den;
         }
 
 
@@ -852,20 +874,12 @@ private:
         return 0.0;
     }
 
-//================================================================================
-    // double func(const DTensor2& start_stress,
-    //             const DTensor2& end_stress,
-    //             double alfa ) const
-    // {
-    //     DTensor2 alfa_stress(3, 3, 0.0);
-    //     alfa_stress(i, j) =  start_stress(i, j) * (1.0 - alfa) ) +  end_stress(i, j) * alfa ;
-
-    //     double f = ;
-
-    //     return yf( alfa_stress );
-    // }
-
-
+    // int retval = this->pre_integration_callback(depsilon, dsigma, TrialStress, yf1, yf2);
+    int pre_integration_callback(DTensor2 &depsilon, DTensor2 &dsigma, DTensor2 &TrialStress, double yf1, double yf2, bool & returns)
+    {
+        returns = false;
+        return 0;
+    }
 
 private:
 
