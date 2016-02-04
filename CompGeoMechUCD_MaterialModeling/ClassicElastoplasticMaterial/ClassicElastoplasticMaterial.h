@@ -643,12 +643,12 @@ private:
 
         intersection_stress(i, j) = start_stress(i, j);
 
-        bool returns = false;
-        int retval = static_cast<T*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness, returns);
-        if (returns)
-        {
-            return retval;
-        }
+        // bool returns = false;
+        // int retval = static_cast<T*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness, returns);
+        // if (returns)
+        // {
+        //     return retval;
+        // }
 
         if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
         {
