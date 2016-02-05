@@ -1,2 +1,0 @@
-1.000000e-03
-truss_Static.h5.feioutput

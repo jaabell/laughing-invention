@@ -1,2 +1,0 @@
-2.000000e-01
-12dof_beam_Static.h5.feioutput

@@ -1,2 +1,0 @@
-1.769668e+00
-20nodebrick_1.h5.feioutput

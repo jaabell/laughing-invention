@@ -1,2 +1,0 @@
-2.988189e-06
-beam_element_presentation_Fz.h5.feioutput
