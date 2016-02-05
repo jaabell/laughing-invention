@@ -25,7 +25,7 @@ MACRO(ADD_SUBDIR subdir)
     set(COMP_ERRS ${COMP_ERRS})
     set(COMP_ERRS_LOG "${COMP_ERRS_LOG}")
     
-    message("scanning ${subdir} module...")
+    message(STATUS "-> scanning ${subdir} module...")
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${subdir}")
         add_subdirectory(${subdir})
     else()

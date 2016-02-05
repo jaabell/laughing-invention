@@ -1,0 +1,33 @@
+# updated by:
+# Nima Tafazzoli, November 2009, UCD
+
+current_directory := $(shell pwd)
+ModifiedOpenSeesServicesdir := $(current_directory)/../../..
+
+include ../../../../Makefile.Includes
+include ../../../../Makefile.Compilers
+
+OBJS       = BandSPDLinSOE.o \
+             BandSPDLinSolver.o \
+             BandSPDLinLapackSolver.o \
+             DistributedBandSPDLinSOE.o \
+             BandSPDLinSOE.o \
+             BandSPDLinSolver.o
+
+PROGRAM = go
+
+all:         $(OBJS)
+
+# Miscellaneous
+tidy:	
+	@$(RM) $(RMFLAGS) Makefile.bak *~ #*# core
+
+clean: tidy
+	@$(RM) $(RMFLAGS) $(OBJS) *.o
+
+spotless: clean
+	@$(RM) $(RMFLAGS)
+
+wipe: spotless
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

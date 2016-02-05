@@ -1,6 +1,8 @@
 string(TOLOWER ${PROGRAMMING_MODE} p_mode)
-FIND_PACKAGE(BLAS REQUIRED)
-FIND_PACKAGE(LAPACK REQUIRED)
+
+FIND_PACKAGE(LAPACK)
+# FIND_PACKAGE(BLAS)
+
 message(STATUS "Checking external dependencies")
 if(NOT EXISTS "${RealESSI_DEP}")
     if(NOT EXISTS "${CMAKE_SOURCE_DIR}/../RealESSI_Dependencies.tgz")

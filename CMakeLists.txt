@@ -1,4 +1,5 @@
-#cmake -G "Unix Makefiles" -DBaseName:STRING=mybase -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_C_COMPILER=/usr/bin/clang
+#cmake -G "Unix Makefiles" -DBaseName:STRING=mybase -DCMAKE_CXX_COMPILER=/usr/bin/clang++ 
+# -DCMAKE_C_COMPILER=/usr/bin/clang
 
 cmake_minimum_required(VERSION 2.8.9)
 project (RealESSI)
@@ -47,6 +48,7 @@ SYSTEM_LIBS("z" MACHINE_LIBS)
 set(MACHINE_LIBS ${MACHINE_LIBS} "gfortran")
 # Include external headers
 list(APPEND EXT_INCLUDE "${RealESSI_DEP}/include")
+message(STATUS "Programming mode='${PROGRAMMING_MODE}'")
 if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     set(IS_PARALLEL ON)
     set(PROGRAMMING_FLAG  "-D_PDD ")
@@ -83,7 +85,7 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
 
 else()  # sequential
     list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
-        
+    
     list(APPEND NUMERIC_LIBS "lapack")
     list(APPEND NUMERIC_LIBS "arpack")
     list(APPEND NUMERIC_LIBS "umfpack")
@@ -107,6 +109,22 @@ endif()
 
 # Checks that the prerequisites are available
 include(${CMAKE_SOURCE_DIR}/CMake/Modules/reqs.cmake)
+
+if(LAPACK_FOUND)
+    # message(STATUS "LAPACK installed.")
+    # TODO: which are the lapack equivalent in parallel
+    list(REMOVE_ITEM NUMERIC_LIBS "lapack")
+    list(REMOVE_ITEM NUMERIC_LIBS "scalapack")
+    list(REMOVE_ITEM NUMERIC_LIBS "flapack")
+endif()
+if(BLAS_FOUND)
+    # message(STATUS "BLAS installed.")
+    # TODO: which are the lapack equivalent in parallel
+    list(REMOVE_ITEM NUMERIC_LIBS "f77blas")
+    list(REMOVE_ITEM NUMERIC_LIBS "cblas")
+    list(REMOVE_ITEM NUMERIC_LIBS "fblas")
+endif()
+# message(STATUS "num libs: ${NUMERIC_LIBS}")
 
 INCLUDE_DIRS(EXT_INCLUDE)
 # generate the cmake external libraries to later link
