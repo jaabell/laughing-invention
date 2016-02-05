@@ -7,3 +7,4 @@ el-pl-test.cpp
 F2C.cpp
 JeremyLea.cpp
 math_tst.cpp
+elast_tst.cpp
