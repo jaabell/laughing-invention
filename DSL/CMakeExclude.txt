@@ -1,0 +1,5 @@
+command_patterns.cpp
+command_suggestion.cpp
+create_feidslcaller.cpp
+generate_command_patterns.cpp
+makedocumentation.cpp
