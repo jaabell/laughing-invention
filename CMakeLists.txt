@@ -32,6 +32,7 @@ set(PROGRAMMING_FLAG  "")
 
 set(COMP_ERRS OFF)
 set(COMP_ERRS_LOG "")
+set(EXTRA_INCLUDE "")
 
 # Load modules
 include(${CMAKE_SOURCE_DIR}/CMake/Modules/essi.cmake)
@@ -136,6 +137,7 @@ endif()
 
 # Generate the list of folders containing .h files
 HEADER_DIRECTORIES(INCLUDE_PATHS)
+SET(${INCLUDE_PATHS} ${INCLUDE_PATHS} ${EXTRA_INCLUDE})
 include_directories(${INCLUDE_PATHS})
 # message("Include dirs: ${INCLUDE_PATHS}")
 # Create internal libraries
