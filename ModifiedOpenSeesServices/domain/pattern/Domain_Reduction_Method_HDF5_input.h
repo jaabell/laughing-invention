@@ -69,7 +69,7 @@ class Domain_Reduction_Method_HDF5_input : public LoadPattern
 {
 public:
     Domain_Reduction_Method_HDF5_input();
-    Domain_Reduction_Method_HDF5_input(int tag, std::string HDF5filename_);
+    Domain_Reduction_Method_HDF5_input(int tag, std::string HDF5filename_, double cFactor_ = 1.0);
     ~Domain_Reduction_Method_HDF5_input();
     void clean_all_data(); // Called by destructor and if domain changes
 

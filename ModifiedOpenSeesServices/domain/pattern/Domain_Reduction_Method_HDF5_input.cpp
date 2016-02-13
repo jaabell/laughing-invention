@@ -64,7 +64,7 @@ Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input()
 {
     is_initialized = false;
     t =  t1 =  t2 =  tfinal = 0;
-    cFactor = 0;
+    cFactor = 1;
     step = step1 = step2 = 0;
 
     myrank = 0;
@@ -77,7 +77,8 @@ Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input()
 Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input
 (
     int tag,
-    std::string HDF5filename_
+    std::string HDF5filename_,
+    double cFactor_
 )
     : LoadPattern(tag, PATTERN_TAG_Domain_Reduction_Method_HDF5_Input),
       HDF5filename(HDF5filename_),
@@ -90,7 +91,7 @@ Domain_Reduction_Method_HDF5_input::Domain_Reduction_Method_HDF5_input
 {
     is_initialized = false;
     t =  t1 =  t2 =  tfinal = 0;
-    cFactor = 0;
+    cFactor = cFactor_;
     step = step1 = step2 = 0;
     myrank = 0;
 #ifdef _PARALLEL_PROCESSING
@@ -749,6 +750,9 @@ Domain_Reduction_Method_HDF5_input::applyLoad(double time)
                 (*load) = (*load) * (-1.0);
             }
 
+            //Apply a factor
+            (*load) = (*load) * (cFactor);
+
             theNode->addUnbalancedLoad(*load);
         }
         // cout << " load mag = " << load_mag << endl;
@@ -763,11 +767,21 @@ Domain_Reduction_Method_HDF5_input::sendSelf(int commitTag, Channel & theChannel
 
     // DRMout << "sending filename: " << HDF5filename << endl;
 
+    static Vector data(1);
+    data(0) = cFactor;
+
     if (theChannel.sendString(0, 0, HDF5filename) < 0)
     {
         cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send HDF5filename\n";
         return -1;
     }
+
+    if (theChannel.sendVector(0, 0, data) < 0)
+    {
+        cerr << "Domain_Reduction_Method_HDF5_input::sendSelf -- failed to send cFactor\n";
+        return -1;
+    }
+
 
     return 0;
 }
@@ -777,12 +791,20 @@ Domain_Reduction_Method_HDF5_input::receiveSelf(int commitTag, Channel & theChan
         FEM_ObjectBroker & theBroker)
 {
     // DRMout << "receiving...\n";
-
+    static Vector data(1);
     if (theChannel.receiveString(0, 0, HDF5filename) < 0)
     {
         cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to receive HDF5filename\n";
         return -1;
     }
+
+    if (theChannel.receiveVector(0, 0, data) < 0)
+    {
+        cerr << "Domain_Reduction_Method_HDF5_input::receiveSelf -- failed to receive cFactor\n";
+        return -1;
+    }
+    cFactor = data(0);
+
 
     // DRMout << "got filename: " << HDF5filename << endl;
 
