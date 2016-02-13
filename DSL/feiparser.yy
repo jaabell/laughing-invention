@@ -1140,6 +1140,25 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
+	//!FEIDOC add domain reduction method loading # <.> hdf5_file = <string> scale_factor = <.>;
+	| ADD DRM LOADING TEXTNUMBER 
+					  exp
+					  hdf5_file '=' exp
+					  scale_factor '=' exp
+	{
+		args.clear(); signature.clear();
+
+		args.push_back($5); signature.push_back(this_signature("pattern_number",        &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("hdf5_file",            &isAdimensional));
+		args.push_back($11); signature.push_back(this_signature("scale_factor",            &isAdimensional));
+
+		$$ = new FeiDslCaller3<int, string, double>(&add_load_pattern_domain_reduction_method_hdf5, args, signature, "add_load_pattern_domain_reduction_method_hdf5");
+
+		for(int i = 1; i <= 3; i++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
 	//!FEIDOC add section # <.> type Membrane_Plate_Fiber thickness = <length> use material # <.>;
 	| ADD SECTION TEXTNUMBER exp TYPE MembranePlateFiber thickness '=' exp USE MATERIAL TEXTNUMBER exp
 	{

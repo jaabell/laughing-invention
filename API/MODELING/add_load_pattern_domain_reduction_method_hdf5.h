@@ -57,6 +57,38 @@ int add_load_pattern_domain_reduction_method_hdf5(
 
 
 
+int add_load_pattern_domain_reduction_method_hdf5(
+    int PatternNumber,
+    string hdf5_file,
+    double scale_factor)
+{
+
+
+    LoadPattern *theDRMPattern = 0;
+    theDRMPattern = new Domain_Reduction_Method_HDF5_input(
+        PatternNumber,
+        hdf5_file,
+        scale_factor);
+
+    if (theDRMPattern == 0)
+    {
+        cerr << "WARNING: (add_load_pattern_domain_reduction_method_hdf5) ran out of memory creating load pattern - pattern PBowlLoading ";
+        cerr << PatternNumber << endln;
+        return -1;
+    }
+
+    if (theDomain.addLoadPattern(theDRMPattern) == false)
+    {
+        cerr << "WARNING: (add_load_pattern_domain_reduction_method_hdf5) could not add load pattern to the domain " << endl;
+        return -1;
+    }
+
+    return 0;
+};
+
+
+
+
 
 
 
