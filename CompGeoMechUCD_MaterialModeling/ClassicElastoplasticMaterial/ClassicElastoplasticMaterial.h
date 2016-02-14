@@ -704,7 +704,8 @@ private:
 
             //Stress correction
             double yc = yf(TrialStress);
-            while (abs(yc) > 1e-2)
+            int count = 0;
+            while (abs(yc) > 1e-2 && count < 100)
             {
                 const DTensor2& n = yf.df_dsigma_ij(TrialStress);
                 const DTensor2& m = pf(depsilon_elpl, TrialStress);
@@ -713,6 +714,7 @@ private:
                 double dLambda_correction = yc / den;
                 TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
                 yc = yf(TrialStress);
+                count++;
             }
 
             const DTensor2& nf = yf.df_dsigma_ij(intersection_stress);
