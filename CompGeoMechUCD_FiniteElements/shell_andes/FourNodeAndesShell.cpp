@@ -285,6 +285,8 @@ void FourNodeAndesShell::setDomain(Domain *theDomain)
         p3 = theNodes[2]->getCrds();
         p4 = theNodes[3]->getCrds();
 
+        x0 = (p1 + p2 + p3 + p4) / 4;
+
         // Local x axis points parallel to 1-2 side
         e1a = p2 - p1;
         e2a = p4 - p1;
