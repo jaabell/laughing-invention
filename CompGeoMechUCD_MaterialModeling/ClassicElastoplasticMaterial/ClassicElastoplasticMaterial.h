@@ -763,6 +763,28 @@ private:
             const DTensor2& nf = yf.df_dsigma_ij(intersection_stress);
             const DTensor2& mf = pf(depsilon_elpl, intersection_stress);
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / den;
+
+            int norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
+            if (norm_trial_stress != norm_trial_stress) //check for nan
+            {
+                cout << "Nan Detected!\n";
+                printTensor("TrialStress = " , TrialStress);
+                printTensor("CommitStress = " , CommitStress);
+                printTensor("depsilon = " , depsilon);
+                printTensor("intersection_stress = " , intersection_stress);
+                printTensor4("Eelastic = " , Eelastic);
+                cout << "yf_val_start = " << yf_val_start << endl;
+                cout << "yf_val_end = " << yf_val_end << endl;
+                printTensor("n = " , n );
+                printTensor("m = " , m );
+                cout << "xi_star_h_star  = " << xi_star_h_star << endl;
+                cout << "den = " << den << endl;
+                cout << "dLambda = " << dLambda << endl;
+                cout << "count = " << count << endl;
+
+                errorcode = -1;
+            }
+
         }
 
 
