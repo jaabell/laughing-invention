@@ -42,13 +42,13 @@
 #include "../PlasticFlowDirections/VonMises_PF.h"
 
 //Elasticity Models
-#include "../ElasticityModels/NoTensionLinearIsotropic3D_EL.h"
+#include "../ElasticityModels/LinearIsotropic3D_EL.h"
 
 //Evolving variables
 #include "../EvolvingVariables/LinearHardeningTensor_EV.h"
 #include "../EvolvingVariables/LinearHardeningScalar_EV.h"
 
-
+// #include "../CEPTraits.h"
 
 #include <classTags.h>
 
@@ -59,13 +59,20 @@
 //Drucker Prager Model with linear hardening (DPLH)
 class DruckerPragerVonMisesLinearHardening;  //This model we will define
 
+//Activate pre_integration_callback to handle tension case
+template< >
+struct supports_pre_integration_callback<DruckerPragerVonMisesLinearHardening>
+{
+    static const bool value = true;
+};
+
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLHVarsType;
 typedef DruckerPrager_YF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLH_YFType;
 typedef VonMises_PF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> VMLH_PFType;
 
 //Create a helpful typedef for the base class from which we will inherit to create the new material.
-typedef ClassicElastoplasticMaterial <NoTensionLinearIsotropic3D_EL,
+typedef ClassicElastoplasticMaterial <LinearIsotropic3D_EL,
         DPLH_YFType,
         VMLH_PFType,
         DPLHVarsType,
@@ -84,12 +91,14 @@ public:
     // material. This must provide an initialization for the state variables and link the components
     // to these variables appropriately.
     DruckerPragerVonMisesLinearHardening(int tag_in, double rho, double p0, DPLH_YFType & yf,
-                                         NoTensionLinearIsotropic3D_EL & el,
+                                         LinearIsotropic3D_EL & el,
                                          VMLH_PFType & pf,
                                          DPLHVarsType & vars);
 
     // Empty constructor for parallel
     DruckerPragerVonMisesLinearHardening() ;
+
+    int pre_integration_callback(const DTensor2&, const DTensor2&, const DTensor2&, const DTensor4&, double, double, bool&);
 
     //The state variables.
 private:

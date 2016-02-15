@@ -38,6 +38,16 @@ struct supports_pre_integration_callback
     static const bool value = false;
 };
 
+// struct defines_pre_integration_callback
+// {};
+
+// template<>
+// struct supports_pre_integration_callback<defines_pre_integration_callback>
+// {
+//     static const bool value = true;
+// };
+
+
 template< typename T >
 struct supports_post_integration_callback
 {

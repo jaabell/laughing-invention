@@ -44,6 +44,8 @@
 #include <limits>
 
 #include "CEPTraits.h"
+#include <type_traits>
+
 #include "ClassicElastoplasticityGlobals.h"
 
 #define ClassicElastoplasticMaterial_MAXITER_BRENT 20
@@ -585,6 +587,44 @@ public:
         return size;
     }
 
+protected:
+    void setTrialStress(const DTensor2& stress)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        TrialStress(i, j) = stress(i, j);
+    }
+
+
+    void setTrialPlastic_Strain(const DTensor2& strain)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        TrialPlastic_Strain(i, j) = strain(i, j);
+    }
+
+    void setCommitStress(const DTensor2& stress)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        CommitStress(i, j) = stress(i, j);
+    }
+
+    void setCommitStrain(const DTensor2& strain)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        CommitStrain(i, j) = strain(i, j);
+    }
+
+    void setCommitPlastic_Strain(const DTensor2& strain)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        CommitPlastic_Strain(i, j) = strain(i, j);
+    }
+
+    void setStiffness(const DTensor4& stiff)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        Stiffness(i, j, k, l) = stiff(i, j, k, l);
+    }
+
 private:
 
 
@@ -606,6 +646,7 @@ private:
         intersection_strain *= 0;
 
         DTensor4& Eelastic = et(sigma);
+        Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
 
         // for (int ii = 0; ii < 3; ii++)
         // {
@@ -643,17 +684,18 @@ private:
 
         intersection_stress(i, j) = start_stress(i, j);
 
-        // bool returns = false;
-        // int retval = static_cast<T*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness, returns);
-        // if (returns)
-        // {
-        //     return retval;
-        // }
+        bool returns = false;
+        // pre_integration_callback(const DTensor2 &depsilon, const DTensor2 &dsigma, const DTensor2 &TrialStress, double yf1, double yf2, bool & returns)
+        int retval = pre_integration_callback_(depsilon, dsigma, TrialStress, Stiffness, yf_val_start, yf_val_end,  returns);
+
+        if (returns)
+        {
+            return retval;
+        }
 
         if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
         {
             DTensor4& Eelastic = et(TrialStress);
-            Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
         }
         else  //Plasticity
         {
@@ -739,12 +781,23 @@ private:
         return errorcode;
     }
 
-    // int retval = this->pre_integration_callback(depsilon, dsigma, TrialStress, yf1, yf2);
-    int pre_integration_callback(DTensor2 &depsilon, DTensor2 &dsigma, DTensor2 &TrialStress, double yf1, double yf2, bool & returns)
+    template <typename U = T>
+    typename std::enable_if < !supports_pre_integration_callback<U>::value, int >::type
+    // typename std::enable_if < !std::is_base_of<defines_pre_integration_callback, U>::value, int >::type
+    pre_integration_callback_(const DTensor2 &depsilon, const DTensor2 &dsigma,  const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
     {
         returns = false;
         return 0;
     }
+
+    template <typename U = T>
+    typename std::enable_if<supports_pre_integration_callback<U>::value, int>::type
+    // typename std::enable_if<std::is_base_of<defines_pre_integration_callback, U>::value, int>::type
+    pre_integration_callback_(const DTensor2 &depsilon, const DTensor2 &dsigma, const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
+    {
+        return static_cast<U*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
+    }
+
 
 
 private:
