@@ -622,7 +622,7 @@ protected:
     void setStiffness(const DTensor4& stiff)
     {
         using namespace ClassicElastoplasticityGlobals;
-        Stiffness(i, j, k, l) = stiff(i, j, k, l);
+        Stiffness = stiff;
     }
 
 private:
@@ -696,6 +696,7 @@ private:
         if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
         {
             DTensor4& Eelastic = et(TrialStress);
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
         }
         else  //Plasticity
         {
