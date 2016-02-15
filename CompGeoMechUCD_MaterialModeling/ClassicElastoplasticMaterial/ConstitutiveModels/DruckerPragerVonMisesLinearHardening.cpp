@@ -101,6 +101,7 @@ int DruckerPragerVonMisesLinearHardening::pre_integration_callback(const DTensor
         stiff = Stiffness;// / 10000;
         stiff *= 1. / 10000.;
         this->setTrialStress(str);
+        this->setStiffness(stiff);
 
         returns = true;
     }
