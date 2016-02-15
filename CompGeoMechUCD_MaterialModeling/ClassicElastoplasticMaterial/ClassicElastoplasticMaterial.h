@@ -764,7 +764,7 @@ private:
             const DTensor2& mf = pf(depsilon_elpl, intersection_stress);
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / den;
 
-            int norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
+            double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
             if (norm_trial_stress != norm_trial_stress) //check for nan
             {
                 cout << "Nan Detected!\n";
