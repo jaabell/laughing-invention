@@ -919,6 +919,7 @@ private:
             while (Tau < 1)
             {
                 sub_depsilon_elpl(i, j) = dT * depsilon_elpl(i, j);
+
                 Eelastic = et(TrialStress);
                 dsigma1(i, j)  = Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l);
 
@@ -978,6 +979,7 @@ private:
                     dLambda = (dLambda1 + dLambda2) / 2;
                     TrialStress(i, j) += (dsigma1(i, j) + dsigma2(i, j)) / 2;
                     vars.evolve(dLambda, sub_depsilon_elpl, m1, TrialStress);
+                    vars.commit_tmp();
                     start_stress(i, j) = TrialStress(i, j);
 
                     //Update the trial plastic strain.
@@ -1028,7 +1030,7 @@ private:
             double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
             if (norm_trial_stress != norm_trial_stress) //check for nan
             {
-                cout << "Nan Detected!\n";
+                cout << "Nan Detected in Modified_Euler !\n";
                 printTensor("TrialStress = " , TrialStress);
                 printTensor("CommitStress = " , CommitStress);
                 printTensor("depsilon = " , depsilon);
