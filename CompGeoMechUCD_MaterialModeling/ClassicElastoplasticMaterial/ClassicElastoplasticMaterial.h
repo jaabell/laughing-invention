@@ -976,6 +976,10 @@ private:
                 if (Relative_Error < this-> stress_relative_tol) // Accept this step
                 {
                     Tau += dT;
+                    q = fmin(0.8 * sqrt(this-> stress_relative_tol / Relative_Error), 2.0);
+                    dT = q * dT;
+                    dT = fmin(dT, 1.0 - T);
+
                     dLambda = (dLambda1 + dLambda2) / 2;
                     TrialStress(i, j) += (dsigma1(i, j) + dsigma2(i, j)) / 2;
                     vars.evolve(dLambda, sub_depsilon_elpl, m1, TrialStress);
