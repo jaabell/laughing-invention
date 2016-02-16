@@ -982,6 +982,9 @@ private:
 
                     dLambda = (dLambda1 + dLambda2) / 2;
                     TrialStress(i, j) += (dsigma1(i, j) + dsigma2(i, j)) / 2;
+
+                    m1(i, j) = (m1(i, j) + m2(i, j)) / 2;
+
                     vars.evolve(dLambda, sub_depsilon_elpl, m1, TrialStress);
                     vars.commit_tmp();
                     start_stress(i, j) = TrialStress(i, j);
@@ -1008,11 +1011,13 @@ private:
                          << "  T = " << Tau  << endl;
                     printTensor("TrialStress = " , TrialStress);
                     printTensor("CommitStress = " , CommitStress);
+                    printTensor("depsilon = " , depsilon);
+                    printTensor("depsilon_elpl = " , depsilon_elpl);
+                    printTensor("sub_depsilon_elpl = " , sub_depsilon_elpl);
                     printTensor("dsigma1 = " , dsigma1);
                     printTensor("dsigma2 = " , dsigma2);
-                    printTensor("dsigma2 = " , dsigma2);
-                    printTensor("dsigma2 = " , dsigma2);
-                    printTensor("depsilon = " , depsilon);
+                    printTensor("sigma_error = " , sigma_error);
+                    printTensor("start_stress = " , start_stress);
                     printTensor("intersection_stress = " , intersection_stress);
                     return -1;
                 }
