@@ -86,14 +86,10 @@ public:
                 const DTensor2& sigma)
     {
         const VarType& h = getDerivative(depsilon, m, sigma);
-        tmp = h;
-        tmp *= dlambda;
-
-        // cout << "a = " << a << endl;
-        // cout << "h = " << a << endl;
-        // cout << "dLambda = " << dlambda << endl;
-        a +=  tmp;
-        // cout << "     EVOOOOOLVE to a = " << a << endl;
+        static VarType aux;
+        aux = h;
+        aux *= dlambda;
+        a +=  aux;
     }
 
     const VarType& getVariableConstReference() const
@@ -118,15 +114,22 @@ public:
 
     void commit()
     {
-        // cout << "a = " << a << endl;
-        // cout << "a_committed = " << a_committed << endl;
         a_committed = a;
-        // cout << "a_committed = " << a_committed << endl;
     }
 
     void revert()
     {
         a = a_committed;
+    }
+
+    void commit_tmp()
+    {
+        a_tmp = a;
+    }
+
+    void revert_tmp()
+    {
+        a = a_tmp;
     }
 
     //Overloaded operators.
@@ -150,7 +153,7 @@ public:
 private:
     VarType a;
     VarType a_committed;
-    static VarType tmp;
+    static VarType a_tmp;
 };
 
 
@@ -166,6 +169,6 @@ std::ostream& operator<<(std::ostream& os, const EvolvingVariable<VarType, T>& o
 }
 
 template<class VarType, class T>
-VarType EvolvingVariable<VarType, T>::tmp;
+VarType EvolvingVariable<VarType, T>::a_tmp;
 
 #endif
