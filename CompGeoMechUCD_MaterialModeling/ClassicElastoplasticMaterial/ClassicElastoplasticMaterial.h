@@ -997,6 +997,7 @@ private:
                 {
                     cerr << "ClassicElastoplasticMaterial -- Modified euler failed to converge after " << count << " iterations with : \n"
                          << "  Relative_Error = " << Relative_Error  << endl
+                         << "  Relative Tolerance = " << this-> stress_relative_tol  << endl
                          << "  q = " << q  << endl
                          << "  dT = " << dT  << endl
                          << "  T = " << Tau  << endl;
