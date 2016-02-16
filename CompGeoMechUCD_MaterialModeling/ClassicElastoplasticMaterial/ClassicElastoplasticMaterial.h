@@ -986,12 +986,12 @@ private:
 
                     m(i, j) = (m1(i, j) + m2(i, j)) / 2;
 
-                    vars.evolve(dLambda, sub_depsilon_elpl, m1, TrialStress);
+                    vars.evolve(dLambda, sub_depsilon_elpl, m, TrialStress);
                     vars.commit_tmp();
                     start_stress(i, j) = TrialStress(i, j);
 
                     //Update the trial plastic strain.
-                    TrialPlastic_Strain(i, j) += dLambda * m1(i, j);
+                    TrialPlastic_Strain(i, j) += dLambda * m(i, j);
                 }
                 else //Reject step, take a smaller one!
                 {
