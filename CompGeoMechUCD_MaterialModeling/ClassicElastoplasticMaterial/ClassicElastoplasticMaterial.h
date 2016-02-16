@@ -456,7 +456,7 @@ public:
     int sendSelf(int commitTag, Channel &theChannel)
     {
         int pos = 0;
-        static Vector data(1 + 9 * 6); // rho and all the DTensors2 get packed into one vector
+        static Vector data(1 + 9 * 6 + 4); // rho and all the DTensors2 get packed into one vector
 
         // double rho;
         data(pos++) = rho;
@@ -497,6 +497,15 @@ public:
                 data(pos++) = CommitPlastic_Strain(i, j);
             }
 
+        data(pos++)  = NDMaterialLT::f_relative_tol        ;
+        data(pos++)  = NDMaterialLT::stress_relative_tol   ;
+        data(pos++)  = NDMaterialLT::n_max_iterations      ;
+        data(pos++)  = (double) NDMaterialLT::constitutive_integration_method ;
+
+
+
+
+
         // cout << "Sending data" << endl;
         if (theChannel.sendVector(0, commitTag, data) != 0)
         {
@@ -525,7 +534,7 @@ public:
     int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
     {
         // cout << "Receiving data" << endl;
-        static Vector data(1 + 9 * 6); // rho and all the DTensors2 get packed into one vector
+        static Vector data(1 + 9 * 6 + 4); // rho and all the DTensors2 get packed into one vector
         if (theChannel.receiveVector(0, commitTag, data) != 0)
         {
             cerr << "ClassicElastoplasticMaterial::receiveSelf() - Failed receiving data" << endl;
@@ -571,6 +580,13 @@ public:
             {
                 CommitPlastic_Strain(i, j) = data(pos++);
             }
+
+        NDMaterialLT::f_relative_tol         = data(pos++) ;
+        NDMaterialLT::stress_relative_tol    = data(pos++) ;
+        NDMaterialLT::n_max_iterations       = data(pos++) ;
+        NDMaterialLT::constitutive_integration_method       = (NDMaterialLT_Constitutive_Integration_Method) data(pos++) ;
+
+
 
         // cout << "Receiving elasticity" << endl;
         // ElasticityType    et;
