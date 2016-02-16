@@ -905,6 +905,7 @@ private:
             static DTensor2 dsigma1(3, 3, 0);
             static DTensor2 dsigma2(3, 3, 0);
             static DTensor2 sigma_error(3, 3, 0);
+            static DTensor2 m(3, 3, 0);
             sub_depsilon_elpl *= 0;
             start_stress *= 0;
             dsigma1 *= 0;
@@ -983,7 +984,7 @@ private:
                     dLambda = (dLambda1 + dLambda2) / 2;
                     TrialStress(i, j) += (dsigma1(i, j) + dsigma2(i, j)) / 2;
 
-                    m1(i, j) = (m1(i, j) + m2(i, j)) / 2;
+                    m(i, j) = (m1(i, j) + m2(i, j)) / 2;
 
                     vars.evolve(dLambda, sub_depsilon_elpl, m1, TrialStress);
                     vars.commit_tmp();
