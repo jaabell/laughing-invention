@@ -1000,7 +1000,16 @@ private:
                          << "  Relative Tolerance = " << this-> stress_relative_tol  << endl
                          << "  q = " << q  << endl
                          << "  dT = " << dT  << endl
+                         << "  dLambda = " << dLambda  << endl
                          << "  T = " << Tau  << endl;
+                    printTensor("TrialStress = " , TrialStress);
+                    printTensor("CommitStress = " , CommitStress);
+                    printTensor("dsigma1 = " , dsigma1);
+                    printTensor("dsigma2 = " , dsigma2);
+                    printTensor("dsigma2 = " , dsigma2);
+                    printTensor("dsigma2 = " , dsigma2);
+                    printTensor("depsilon = " , depsilon);
+                    printTensor("intersection_stress = " , intersection_stress);
                     return -1;
                 }
             }
