@@ -281,9 +281,9 @@ int EightNodeBrick_u_p_U::commitState (void)
 
 
     //Forming output
-    stresstensor stress;
-    straintensor strain;
-    straintensor plstrain;
+    // stresstensor stress;
+    // straintensor strain;
+    // straintensor plstrain;
     int ii = 0;
     int gp = 0;
     for ( short GP_c_r = 1 ; GP_c_r <= Num_IntegrationPts ; GP_c_r++ )
@@ -294,9 +294,9 @@ int EightNodeBrick_u_p_U::commitState (void)
             {
                 // i = ((GP_c_r - 1) * Num_IntegrationPts + GP_c_s - 1) * Num_IntegrationPts + GP_c_t - 1;
 
-                stress = theMaterial[gp]->getStressTensor();
-                strain = theMaterial[gp]->getStrainTensor();
-                plstrain = theMaterial[gp]->getPlasticStrainTensor();
+                const stresstensor &stress = theMaterial[gp]->getStressTensor();
+                const straintensor &strain = theMaterial[gp]->getStrainTensor();
+                const straintensor &plstrain = theMaterial[gp]->getPlasticStrainTensor();
 
                 //Write strain
                 outputVector(ii++) = strain.cval(1, 1);
