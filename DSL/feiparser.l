@@ -347,6 +347,7 @@ EXP	([Ee][-+]?[0-9]+)
 "8NodeBrick_up"                     {return token::EightNodeBrick_up;}
 "20NodeBrick_upU"                   {return token::TwentyNodeBrick_uPU;}
 "beam_displacement_based"           {return token::beam_displacement_based;}
+"BeamColumnDispFiber3d"           	{return token::BeamColumnDispFiber3d;}
 "beam_elastic"                      {return token::beam_elastic;}
 "beam_9dof_elastic"                 {return token::beam_9dof_elastic;}
 "beam_elastic_lumped_mass"          {return token::beam_elastic_lumped_mass;}
@@ -394,9 +395,20 @@ EXP	([Ee][-+]?[0-9]+)
  /* section types */
 "Membrane_Plate_Fiber"              {return token::MembranePlateFiber;}
 "Elastic_Membrane_Plate"            {return token::ElasticMembranePlate;}
+"elastic3d"            				{return token::elastic3d;}
+"FiberSection"            			{return token::FiberSection;}
 
  /* section options */
 "thickness"                         {return token::thickness;}
+"number_of_integration_points"		{return token::number_of_integration_points;}
+"section_number"					{return token::section_number;}
+"fiber_cross_section"				{return token::fiber_cross_section;}
+"fiber_location_Y"					{return token::fiber_location_Y;}
+"fiber_location_Z"					{return token::fiber_location_Z;}
+"fiber_location"					{return token::fiber_location;}
+"maxNumPatches"						{return token::maxNumPatches;}
+"maxNumReinfLayers"					{return token::maxNumReinfLayers;}
+"fiber"								{return token::FIBER;}
 
  /* Material Names*/
 "linear_elastic_isotropic_3d"       {return token::linear_elastic_isotropic_3d;}
