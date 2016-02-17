@@ -75,3 +75,38 @@ DruckerPragerLinearHardening::DruckerPragerLinearHardening() :
 {
 
 }
+
+//Checks whether predicted stress is less than zero, in which case sets stress to low confinement
+//value and gives a reduced stiffness.
+int DruckerPragerLinearHardening::pre_integration_callback(const DTensor2 &depsilon,
+        const DTensor2 &dsigma,
+        const DTensor2 &TrialStress,
+        const DTensor4 &Stiffness,
+        double yf1,
+        double yf2,
+        bool & returns)
+{
+    using namespace ClassicElastoplasticityGlobals;
+    static DTensor2 str(3, 3, 0);
+    static DTensor4 stiff(3, 3, 3, 3, 0);
+    double p = -(TrialStress(0, 0) + TrialStress(1, 1) + TrialStress(2, 2)) / 3;
+    if (p < 0)
+    {
+        str *= 0;
+        stiff *= 0;
+        str(0, 0) = -0.1;
+        str(1, 1) = -0.1;
+        str(2, 2) = -0.1;
+        stiff = Stiffness;// / 10000;
+        stiff *= 1. / 10000.;
+        this->setTrialStress(str);
+        this->setStiffness(stiff);
+
+        returns = true;
+    }
+    else
+    {
+        returns = false;
+    }
+    return 0;
+}

@@ -52,12 +52,21 @@
 
 #include <classTags.h>
 
+
+
 // New materials are created by subclassing instances of the ClassicElastoplasticMaterial<.,.,.,.,>
 // template class, with the appropriate components as template parameters.
 // Heavy use of templating is made, therefore typedeffing is a friend in helping clear up the mess.
 
 //Drucker Prager Model with linear hardening (DPLH)
 class DruckerPragerLinearHardening;  //This model we will define
+
+//Activate pre_integration_callback to handle tension case
+template< >
+struct supports_pre_integration_callback<DruckerPragerLinearHardening>
+{
+    static const bool value = true;
+};
 
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLHVarsType;
@@ -90,6 +99,9 @@ public:
 
     // Empty constructor for parallel
     DruckerPragerLinearHardening() ;
+
+    int pre_integration_callback(const DTensor2&, const DTensor2&, const DTensor2&, const DTensor4&, double, double, bool&);
+
 
     //The state variables.
 private:
