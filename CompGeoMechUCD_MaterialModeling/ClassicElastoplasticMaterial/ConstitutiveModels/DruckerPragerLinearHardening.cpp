@@ -98,7 +98,33 @@ int DruckerPragerLinearHardening::pre_integration_callback(const DTensor2 &depsi
         str(1, 1) = -0.1;
         str(2, 2) = -0.1;
         stiff = Stiffness;// / 10000;
-        stiff *= 1. / 10000.;
+        double mu = stiff(0, 1, 0, 1);
+        double mu_reduced = mu / 10000;
+
+        //Reduce only the shear components of the stiffness tensor.
+        stiff( 0, 0, 0, 0 ) += -2 * mu + 2 * mu_reduced; // lambda + 2 * mu;
+        // stiff( 0, 0, 1, 1 ) += -mu + mu_reduced;// lambda;
+        // stiff( 0, 0, 2, 2 ) += -mu + mu_reduced;// lambda;
+        stiff( 0, 1, 0, 1 ) += -mu + mu_reduced;// mu;
+        stiff( 0, 1, 1, 0 ) += -mu + mu_reduced;// mu;
+        stiff( 0, 2, 0, 2 ) += -mu + mu_reduced;// mu;
+        stiff( 0, 2, 2, 0 ) += -mu + mu_reduced;// mu;
+        stiff( 1, 0, 0, 1 ) += -mu + mu_reduced;// mu;
+        stiff( 1, 0, 1, 0 ) += -mu + mu_reduced;// mu;
+        // stiff( 1, 1, 0, 0 ) += -mu + mu_reduced;// lambda;
+        stiff( 1, 1, 1, 1 ) += -2 * mu + 2 * mu_reduced; // lambda + 2 * mu;
+        // stiff( 1, 1, 2, 2 ) += -mu + mu_reduced;// lambda;
+        stiff( 1, 2, 1, 2 ) += -mu + mu_reduced;// mu;
+        stiff( 1, 2, 2, 1 ) += -mu + mu_reduced;// mu;
+        stiff( 2, 0, 0, 2 ) += -mu + mu_reduced;// mu;
+        stiff( 2, 0, 2, 0 ) += -mu + mu_reduced;// mu;
+        stiff( 2, 1, 1, 2 ) += -mu + mu_reduced;// mu;
+        stiff( 2, 1, 2, 1 ) += -mu + mu_reduced;// mu;
+        // stiff( 2, 2, 0, 0 ) += -mu + mu_reduced;// lambda;
+        // stiff( 2, 2, 1, 1 ) += -mu + mu_reduced;// lambda;
+        stiff( 2, 2, 2, 2 ) += -2 * mu + 2 * mu_reduced; // lambda + 2 * mu;
+
+
         this->setTrialStress(str);
         this->setStiffness(stiff);
 

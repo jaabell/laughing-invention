@@ -766,7 +766,7 @@ private:
             // printTensor("intersection_stress", intersection_stress);
 
             double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  intersection_stress);
-            double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+            double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) + xi_star_h_star;
 
             //Compute the plastic multiplier
             if (den == 0)
@@ -793,20 +793,23 @@ private:
             //Stress correction
             double yc = yf(TrialStress);
             int count = 0;
-            while (abs(yc) > 1e-2 && count < 100)
+
+            while (yc > this-> f_relative_tol && count < this-> n_max_iterations)
             {
                 const DTensor2& n = yf.df_dsigma_ij(TrialStress);
                 const DTensor2& m = pf(depsilon_elpl, TrialStress);
                 double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  TrialStress);
-                double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+                double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) + xi_star_h_star;
                 double dLambda_correction = yc / den;
                 TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
                 yc = yf(TrialStress);
                 count++;
             }
 
-            const DTensor2& nf = yf.df_dsigma_ij(intersection_stress);
-            const DTensor2& mf = pf(depsilon_elpl, intersection_stress);
+            const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
+            const DTensor2& mf = pf(depsilon_elpl, TrialStress);
+            xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  intersection_stress);
+            den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) + xi_star_h_star;
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / den;
 
             double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
@@ -929,7 +932,7 @@ private:
                 const DTensor2& n1 = yf.df_dsigma_ij(TrialStress);
                 const DTensor2& m1 = pf(sub_depsilon_elpl, TrialStress);
                 double xi_star_h_star1 = yf.xi_star_h_star( sub_depsilon_elpl, m1,  TrialStress);
-                double den1 = n1(p, q) * Eelastic(p, q, r, s) * m1(r, s) - xi_star_h_star1;
+                double den1 = n1(p, q) * Eelastic(p, q, r, s) * m1(r, s) + xi_star_h_star1;
 
                 //Compute the plastic multiplier
                 if (den1 == 0)
@@ -952,7 +955,7 @@ private:
                 const DTensor2& n2 = yf.df_dsigma_ij(TrialStress);
                 const DTensor2& m2 = pf(sub_depsilon_elpl, TrialStress);
                 double xi_star_h_star2 = yf.xi_star_h_star( sub_depsilon_elpl, m2,  TrialStress);
-                double den2 = n2(p, q) * Eelastic(p, q, r, s) * m2(r, s) - xi_star_h_star2;
+                double den2 = n2(p, q) * Eelastic(p, q, r, s) * m2(r, s) + xi_star_h_star2;
 
                 //Compute the plastic multiplier
                 if (den2 == 0)
@@ -1028,7 +1031,7 @@ private:
             const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
             const DTensor2& mf = pf(depsilon_elpl, TrialStress);
             double xi_star_h_star_f = yf.xi_star_h_star( depsilon_elpl, mf,  TrialStress);
-            double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star_f;
+            double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) + xi_star_h_star_f;
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denf;
 
             //Stress correction back to the yield surface
@@ -1039,7 +1042,7 @@ private:
                 const DTensor2& n = yf.df_dsigma_ij(TrialStress);
                 const DTensor2& m = pf(depsilon_elpl, TrialStress);
                 double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  TrialStress);
-                double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+                double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) + xi_star_h_star;
                 double dLambda_correction = yc / den;
                 TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
                 yc = yf(TrialStress);
