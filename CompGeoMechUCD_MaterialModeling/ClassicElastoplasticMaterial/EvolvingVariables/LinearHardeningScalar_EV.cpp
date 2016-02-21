@@ -89,7 +89,6 @@ int LinearHardeningScalar_EV::receiveSelf(int commitTag, Channel &theChannel, FE
     }
 
     //Extract data from vector
-    int pos = 0;
     double tmp_a;
     double tmp_a_committed;
     H = data(0);

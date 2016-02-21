@@ -55,6 +55,7 @@ public:
 
     EvolvingVariable(VarType a_): a(a_), a_committed(a_)
     {
+        a_tmp = a_;
         // cout << "EvolvingVariable::EvolvingVariable(a) a_ = " << a_ << endl;
         // cout << "EvolvingVariable::EvolvingVariable(a) a_committed = " << a_committed << endl;
     }
@@ -86,7 +87,7 @@ public:
                 const DTensor2& sigma)
     {
         const VarType& h = getDerivative(depsilon, m, sigma);
-        static VarType aux;
+        static VarType aux(a);
         aux = h;
         aux *= dlambda;
         a +=  aux;
@@ -114,6 +115,7 @@ public:
 
     void commit()
     {
+        // cout << "Final commit state from " << a_committed << " to " << a << endl;
         a_committed = a;
     }
 
@@ -124,11 +126,13 @@ public:
 
     void commit_tmp()
     {
+        // cout << "Commiting from " << a_tmp << " to " << a << endl;
         a_tmp = a;
     }
 
     void revert_tmp()
     {
+        // cout << "Reverting from " << a << " to " << a_tmp << endl;
         a = a_tmp;
     }
 
@@ -154,6 +158,8 @@ private:
     VarType a;
     VarType a_committed;
     static VarType a_tmp;
+    static VarType da_1;
+    static VarType da_2;
 };
 
 

@@ -62,11 +62,11 @@
 class DruckerPragerLinearHardening;  //This model we will define
 
 //Activate pre_integration_callback to handle tension case
-// template< >
-// struct supports_pre_integration_callback<DruckerPragerLinearHardening>
-// {
-//     static const bool value = true;
-// };
+template< >
+struct supports_pre_integration_callback<DruckerPragerLinearHardening>
+{
+    static const bool value = true;
+};
 
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLHVarsType;
