@@ -1113,7 +1113,7 @@ private:
 
 
             //Detect a NAN result and print diagnostics if one is found
-            double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
+            // double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
             if (true)//norm_trial_stress != norm_trial_stress) //check for nan
             {
                 // cout << "Nan Detected in Modified_Euler !\n";

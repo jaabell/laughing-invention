@@ -31,6 +31,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "ConstitutiveModels/DruckerPragerLinearHardening.h"
 #include "ConstitutiveModels/VonMisesLinearHardening.h"
+#include "ConstitutiveModels/DruckerPragerLinearHardening.h"
 #include "ConstitutiveModels/DruckerPragerVonMisesLinearHardening.h"
+#include "ConstitutiveModels/DruckerPragerArmstrongFrederick.h"

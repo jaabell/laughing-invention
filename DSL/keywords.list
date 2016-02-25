@@ -20,6 +20,8 @@ all
 all
 alpha
 and
+armstrong_frederick_cr
+armstrong_frederick_ha
 at
 ax
 ay
@@ -288,6 +290,7 @@ beam_elastic_lumped_mass
 Caughey3rd
 Caughey4th
 DOFTYPE
+DruckerPragerArmstrongFrederickLT
 DruckerPragerLT
 DruckerPragerVonMisesLT
 EightNodeBrickLTNoOutput

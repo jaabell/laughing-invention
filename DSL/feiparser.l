@@ -415,7 +415,8 @@ EXP	([Ee][-+]?[0-9]+)
 "linear_elastic_isotropic_3d"       {return token::linear_elastic_isotropic_3d;}
 "VonMisesLT"        				{return token::VonMisesLT;}
 "DruckerPragerLT"                   {return token::DruckerPragerLT;}
-"DruckerPragerVonMisesLT"        	{return token::DruckerPragerVonMisesLT;}
+"DruckerPragerVonMisesLT"           {return token::DruckerPragerVonMisesLT;}
+"DruckerPragerArmstrongFrederickLT"   {return token::DruckerPragerArmstrongFrederickLT;}
 "sanisand2008"                      {return token::sanisand2008;}
 "camclay"                           {return token::camclay;}
 "camclay_accelerated"               {return token::camclay_accelerated;}
