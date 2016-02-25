@@ -259,6 +259,7 @@
 #define ND_TAG_CEM_DruckerPragerLinearHardening 5001
 #define ND_TAG_CEM_VonMisesLinearHardening 5002
 #define ND_TAG_CEM_DruckerPragerVonMisesLinearHardening 5003
+#define ND_TAG_CEM_DruckerPragerArmstrongFrederick 5004
 
 
 

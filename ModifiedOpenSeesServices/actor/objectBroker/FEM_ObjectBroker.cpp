@@ -763,6 +763,10 @@ FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
         return new VonMisesLinearHardening();
         break;
 
+    case ND_TAG_CEM_DruckerPragerArmstrongFrederick :
+        return new DruckerPragerArmstrongFrederick();
+        break;
+
     case ND_TAG_NewPisanoLT :
         return new NewPisanoLT();
         break;
