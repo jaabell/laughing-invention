@@ -36,7 +36,7 @@
 DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, double k0_in, double ha_alpha, double cr_alpha, double H_k, double E, double nu, double rho_, double p0) :
     DPAFBase::ClassicElastoplasticMaterial(tag_in, rho_, p0,
                                            DPAF_YFType(alpha, k),       // Point YF to internal variables
-                                           NoTensionLinearIsotropic3D_EL(E, nu), // Create Elasticity
+                                           LinearIsotropic3D_EL(E, nu), // Create Elasticity
                                            DPAF_PFType(alpha, k),       // Point PF to the internal variables
                                            DPAFVarsType(alpha, k)),     // Declare the list of internal variables
     alpha(ha_alpha, cr_alpha),
@@ -49,13 +49,13 @@ DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, dou
 // material. This must provide an initialization for the state variables and link the components
 // to these variables appropriately.
 DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, double rho, double p0, DPAF_YFType &yf,
-        NoTensionLinearIsotropic3D_EL &el,
+        LinearIsotropic3D_EL &el,
         DPAF_PFType &pf,
         DPAFVarsType &vars) :
     DPAFBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
                                            p0,     //Sets p0
                                            DPAF_YFType(alpha, k),    // Point YF to new internal variables
-                                           NoTensionLinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
+                                           LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
                                            DPAF_PFType(alpha, k),    // Point PF to the internal variables
                                            DPAFVarsType(alpha, k)),   // Declare the list of internal variables
     alpha(0, ND_TAG_CEM_DruckerPragerArmstrongFrederick),
@@ -67,7 +67,7 @@ DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, dou
 DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick() :
     DPAFBase::ClassicElastoplasticMaterial(0, 0, 0,
                                            DPAF_YFType(alpha, k),       // Point YF to internal variables
-                                           NoTensionLinearIsotropic3D_EL(0, 0), // Create Elasticity
+                                           LinearIsotropic3D_EL(0, 0), // Create Elasticity
                                            DPAF_PFType(alpha, k),       // Point PF to the internal variables
                                            DPAFVarsType(alpha, k)),     // Declare the list of internal variables
     alpha(0, 0),
