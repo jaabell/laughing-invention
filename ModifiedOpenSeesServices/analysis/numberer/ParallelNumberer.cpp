@@ -234,7 +234,7 @@ ParallelNumberer::numberDOF(int lastDOF)
         {
             // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending ID\n";
         }
-        theChannel->sendID(0, 0, numVertex);
+        //theChannel->sendID(0, 0, numVertex);  //This creates an ID with size numVertex (ctor. ID::ID(int size) gets called. ) and sends that. It has no use.
     }
 
     // if main domain, collect graphs from all subdomains,
@@ -528,7 +528,7 @@ ParallelNumberer::numberDOF(int lastDOF)
             theChannel->sendID(0, 0, theMPdofCs);
             theChannel->sendID(0, 0, theMPdofIDs);
             // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Waiting for channel " << theChannel->getTag() << " to be done.\n";
-            theChannel->receiveID(0, 0, theSubdomain);
+            // theChannel->receiveID(0, 0, theSubdomain);  // This receive was removed, as well as the corresponding send. They serve no purpose.
             delete theSubdomainIDs[k];
         }
 
