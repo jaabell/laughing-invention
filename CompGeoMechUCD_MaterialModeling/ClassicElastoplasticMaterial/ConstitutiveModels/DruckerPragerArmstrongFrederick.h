@@ -41,7 +41,7 @@
 //Plastic flow directions
 #include "../PlasticFlowDirections/VonMises_PF.h"
 
-//Elasticity Models
+//Elasticity
 #include "../ElasticityModels/LinearIsotropic3D_EL.h"
 
 //Evolving variables
@@ -73,7 +73,7 @@ typedef MaterialInternalVariables < ArmstrongFrederickTensor_EV, LinearHardening
 typedef DruckerPrager_YF < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> DPAF_YFType;
 typedef VonMises_PF < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> DPAF_PFType;
 
-//Create a helpful typedef for the base class from which we will inherit to create the new material.
+//Create a helpful typedef for the base class from which we will inherit to create the n
 typedef ClassicElastoplasticMaterial <LinearIsotropic3D_EL,
         DPAF_YFType,
         DPAF_PFType,
@@ -93,7 +93,8 @@ public:
     // material. This must provide an initialization for the state variables and link the components
     // to these variables appropriately.
     DruckerPragerArmstrongFrederick(int tag_in, double rho, double p0, DPAF_YFType & yf,
-                                    NoTensionLinearIsotropic3D_EL                                  DPAF_PFType & pf,
+                                    LinearIsotropic3D_EL & el,
+                                    DPAF_PFType & pf,
                                     DPAFVarsType & vars);
 
     // Empty constructor for parallel
