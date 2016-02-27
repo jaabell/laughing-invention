@@ -30,21 +30,22 @@
 #include "CorotCrdTransf3d.h"
 
 int add_element_DispBeamColumn3d(int ElementNumber,
-                                        int iNode,
-                                        int jNode,
-                                        int number_of_integration_points,
-                                        int section_number,
-                                        double rho,
-                                        double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
-                                        double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
-                                        double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
+                                 int iNode,
+                                 int jNode,
+                                 int number_of_integration_points,
+                                 int section_number,
+                                 double rho,
+                                 double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
+                                 double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
+                                 double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
 {
 
 
     // for the section
     SectionForceDeformation **theSections = new SectionForceDeformation *[number_of_integration_points];
-    for(short i=0;i<number_of_integration_points;++i){
-         theSections[i] = theDomain.getSection(section_number);
+    for (short i = 0; i < number_of_integration_points; ++i)
+    {
+        theSections[i] = theDomain.getSection(section_number);
     }
 
 
@@ -80,7 +81,7 @@ int add_element_DispBeamColumn3d(int ElementNumber,
 
     // for a matched integration rule
     // const char* integrationrule_char = integrationrule.c_str();
-    // 
+    //
     BeamIntegration* beamIntegr = new LobattoBeamIntegration();
     // if (strcmp(integrationrule_char, "Lobatto") == 0){
     //     beamIntegr = new LobattoBeamIntegration();
@@ -93,18 +94,23 @@ int add_element_DispBeamColumn3d(int ElementNumber,
     // }
 
     // cMass !=0 . Not lumped mass in calculation.
-    int cMass=1;
+    int cMass = 1;
     // for the element call.
     Element* theElement = 0;
     theElement = new DispBeamColumn3d(ElementNumber, iNode, jNode, number_of_integration_points, theSections,
                                       *beamIntegr, *crdTransf, rho, cMass);
-
-
     // check the element status
     if (theElement == 0)
     {
         cerr << "WARNING: (add_element_DispBeamColumn3d) ran out of memory creating element\n";
         cerr << "dispBeamColumn element: " << ElementNumber << endln;
+        return -1;
+    }
+
+    if (theDomain.addElement(theElement) == false)
+    {
+        cerr << "WARNING: (add_element_DispBeamColumn3d) could not add element to the domain\n";
+        cerr << "element number: " << ElementNumber << endln;
         return -1;
     }
 
