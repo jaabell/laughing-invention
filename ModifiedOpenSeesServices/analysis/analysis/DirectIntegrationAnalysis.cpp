@@ -243,7 +243,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         globalESSITimer.stop("Domain_Step");
 
         
-        if (theAnalysisModel->newStepDomain(dT) < 0)  //revert back from if (result < 0)  --Yuan
+        if (result< 0)  //call "theAnalysisModel->newStepDomain(dT)" only once and move that call above for globalESSITimer  --Yuan
         {
             cerr << "DirectIntegrationAnalysis::analyze() - the AnalysisModel failed";
             cerr << " at time " << the_Domain->getCurrentTime() << endln;
@@ -274,7 +274,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         globalESSITimer.start("Integrator_Step");
         result = theIntegrator->newStep(dT) ;
         globalESSITimer.stop("Integrator_Step");
-        if (theIntegrator->newStep(dT) < 0) //revert back from if (result < 0)  --Yuan
+        if (result < 0) //call "theIntegrator->newStepDomain(dT)" only once and move that call above for globalESSITimer  --Yuan
         {
             cerr << "DirectIntegrationAnalysis::analyze() - the Integrator failed";
             cerr << " at time " << the_Domain->getCurrentTime() << endln;
