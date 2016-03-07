@@ -39,7 +39,7 @@
 #include "../YieldFunctions/DruckerPrager_YF.h"
 
 //Plastic flow directions
-#include "../PlasticFlowDirections/VonMises_PF.h"
+#include "../PlasticFlowDirections/DruckerPragerDeviatoric_PF.h"
 
 //Elasticity Models
 #include "../ElasticityModels/LinearIsotropic3D_EL.h"
@@ -69,12 +69,12 @@ struct supports_pre_integration_callback<DruckerPragerVonMisesLinearHardening>
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLHVarsType;
 typedef DruckerPrager_YF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLH_YFType;
-typedef VonMises_PF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> VMLH_PFType;
+typedef DruckerPragerDeviatoric_PF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPDLHLH_PFType;
 
 //Create a helpful typedef for the base class from which we will inherit to create the new material.
 typedef ClassicElastoplasticMaterial <LinearIsotropic3D_EL,
         DPLH_YFType,
-        VMLH_PFType,
+        DPDLHLH_PFType,
         DPLHVarsType,
         ND_TAG_CEM_DruckerPragerVonMisesLinearHardening,
         DruckerPragerVonMisesLinearHardening > DPVMLHBase;
@@ -92,7 +92,7 @@ public:
     // to these variables appropriately.
     DruckerPragerVonMisesLinearHardening(int tag_in, double rho, double p0, DPLH_YFType & yf,
                                          LinearIsotropic3D_EL & el,
-                                         VMLH_PFType & pf,
+                                         DPDLHLH_PFType & pf,
                                          DPLHVarsType & vars);
 
     // Empty constructor for parallel

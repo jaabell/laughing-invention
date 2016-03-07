@@ -69,9 +69,9 @@ public:
         const DTensor2 &alpha = alpha_.getVariableConstReference();
         const double &k = k_.getVariableConstReference();
         sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
-        // p = -p;
+        p = -p;
 
-        double yf = sqrt( (s(i, j) + p * alpha(i, j)) * (s(i, j) + p * alpha(i, j)) ) + SQRT_2_over_3 * k * p; // This one assumes p positive in tension
+        double yf = sqrt( (s(i, j) - p * alpha(i, j)) * (s(i, j) - p * alpha(i, j)) ) - SQRT_2_over_3 * k * p; // This one assumes p positive in tension
 
         return yf;
     }
@@ -109,11 +109,26 @@ public:
         {
             result(i, j) =
                 (
-                    (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n))
+                    (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n) / 3)
                 )
                 / den;
         }
         result(i, j) += SQRT_2_over_27 * k * kronecker_delta(i, j);
+
+        // cout << "n = [";
+        // for (int ii = 0; ii < 3; ii++)
+        //     for (int jj = 0; jj < 3; jj++)
+        //     {
+        //         cout << result(ii, jj) << " ";
+        //     }
+        // cout << "]\n";
+        // cout << "alpha = [";
+        // for (int ii = 0; ii < 3; ii++)
+        //     for (int jj = 0; jj < 3; jj++)
+        //     {
+        //         cout << alpha(ii, jj) << " ";
+        //     }
+        // cout << "]\n";
 
         return result;
     }

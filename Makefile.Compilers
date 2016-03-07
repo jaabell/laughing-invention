@@ -93,7 +93,7 @@ else ifeq ($(Compiler), PARALLEL)
 endif
 
 ifeq ($(DEBUG_MODE), NO_DEBUG)
-	C++FLAGS        = $(LTO_FLAGS) -Wall  -DVERSION=\"$(GIT_VERSION)\"\
+	C++FLAGS        = $(LTO_FLAGS) -Wall -pedantic -DVERSION=\"$(GIT_VERSION)\"\
 										-O2 -g \
 										$(INLINING_OPTS) \
 										-funroll-loops \

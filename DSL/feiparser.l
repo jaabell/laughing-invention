@@ -336,6 +336,7 @@ EXP	([Ee][-+]?[0-9]+)
 "time history"                      {return token::TIMEHISTORY;}
 "mass"                              {return token::MASS;}
 "imposed motion"                    {return token::IMPOSEDMOTION;}
+"uniform acceleration"              {return token::UNIFORMACCELERATION;}
 "damping"                           {return token::DAMPING;}
 "constraint"                        {return token::CONSTRAINT;}
 "reaction"                          {return token::REACTION;}
@@ -605,6 +606,7 @@ EXP	([Ee][-+]?[0-9]+)
 "max_time"                          {return token::MaxTime;}
 "magnitudes"                        {return token::MAGNITUDES;}
 "magnitude"                         {return token::MAGNITUDE;}
+"initial_velocity"                  {return token::initial_velocity;}
 
  /* Mass options */
 "mx"                                {return token::mx;}

@@ -30,8 +30,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef VonMises_PF_H
-#define VonMises_PF_H
+#ifndef DruckerPragerDeviatoric_PF_H
+#define DruckerPragerDeviatoric_PF_H
 
 #include "../../../ltensor/LTensor.h"
 #include "../PlasticFlowBase.h"
@@ -44,7 +44,7 @@
 
 
 template<class AlphaHardeningType, class KHardeningType>
-class VonMises_PF : public PlasticFlowBase<VonMises_PF<AlphaHardeningType, KHardeningType>> // CRTP
+class DruckerPragerDeviatoric_PF : public PlasticFlowBase<DruckerPragerDeviatoric_PF<AlphaHardeningType, KHardeningType>> // CRTP
 {
 public:
 
@@ -52,9 +52,9 @@ public:
     typedef EvolvingVariable<double, KHardeningType> KType;
 
 
-    // PlasticFlowBase<VonMises_PF<HardeningType>>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
-    VonMises_PF( AlphaType &alpha_in, KType &k_in):
-        PlasticFlowBase<VonMises_PF<AlphaHardeningType , KHardeningType >>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
+    // PlasticFlowBase<DruckerPragerDeviatoric_PF<HardeningType>>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
+    DruckerPragerDeviatoric_PF( AlphaType &alpha_in, KType &k_in):
+        PlasticFlowBase<DruckerPragerDeviatoric_PF<AlphaHardeningType , KHardeningType >>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
                 alpha_(alpha_in), k_(k_in)
     {
 
@@ -73,7 +73,7 @@ public:
         double p = -sigma(i, i) / 3;
 
         s(i, j) = sigma(i, j) + p * kronecker_delta(i, j);
-        result(i, j) = s(i, j) - alpha(i, j);
+        result(i, j) = s(i, j) - p * alpha(i, j);
         double den = sqrt(result(i, j) * result(i, j));
 
         if (den == 0)
@@ -115,8 +115,8 @@ private:
 
 
 template<class AlphaHardeningType, class KHardeningType>
-DTensor2 VonMises_PF<AlphaHardeningType , KHardeningType >::s(3, 3, 0.0);
+DTensor2 DruckerPragerDeviatoric_PF<AlphaHardeningType , KHardeningType >::s(3, 3, 0.0);
 template<class AlphaHardeningType, class KHardeningType>
-DTensor2 VonMises_PF<AlphaHardeningType , KHardeningType >::result(3, 3, 0.0);
+DTensor2 DruckerPragerDeviatoric_PF<AlphaHardeningType , KHardeningType >::result(3, 3, 0.0);
 
 #endif

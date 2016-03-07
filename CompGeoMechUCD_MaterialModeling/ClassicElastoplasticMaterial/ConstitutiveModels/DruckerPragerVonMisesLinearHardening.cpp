@@ -37,13 +37,13 @@ DruckerPragerVonMisesLinearHardening::DruckerPragerVonMisesLinearHardening(int t
     DPVMLHBase::ClassicElastoplasticMaterial(tag_in, rho_, p0,
             DPLH_YFType(alpha, k),       // Point YF to internal variables
             LinearIsotropic3D_EL(E, nu), // Create Elasticity
-            VMLH_PFType(alpha, k),       // Point PF to the internal variables
+            DPDLHLH_PFType(alpha, k),       // Point PF to the internal variables
             DPLHVarsType(alpha, k)),     // Declare the list of internal variables
     alpha(H_alpha),
     k(H_k, k0_in)
 {
 
-};
+}
 
 // Second constructor is not called by the user, instead it is called when creating a copy of the
 // material. This must provide an initialization for the state variables and link the components
@@ -51,25 +51,25 @@ DruckerPragerVonMisesLinearHardening::DruckerPragerVonMisesLinearHardening(int t
 DruckerPragerVonMisesLinearHardening::DruckerPragerVonMisesLinearHardening(int tag_in, double rho, double p0,
         DPLH_YFType &yf,
         LinearIsotropic3D_EL &el,
-        VMLH_PFType &pf,
+        DPDLHLH_PFType &pf,
         DPLHVarsType &vars) :
     DPVMLHBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
             p0,     //Sets p0
             DPLH_YFType(alpha, k),    // Point YF to new internal variables
             LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
-            VMLH_PFType(alpha, k),    // Point PF to the internal variables
+            DPDLHLH_PFType(alpha, k),    // Point PF to the internal variables
             DPLHVarsType(alpha, k)),   // Declare the list of internal variables
     alpha(0),
     k(0, 0)
 {
 
-};
+}
 
 DruckerPragerVonMisesLinearHardening::DruckerPragerVonMisesLinearHardening() :
     DPVMLHBase::ClassicElastoplasticMaterial(0, 0, 0,
             DPLH_YFType(alpha, k),       // Point YF to internal variables
             LinearIsotropic3D_EL(0, 0), // Create Elasticity
-            VMLH_PFType(alpha, k),       // Point PF to the internal variables
+            DPDLHLH_PFType(alpha, k),       // Point PF to the internal variables
             DPLHVarsType(alpha, k)),     // Declare the list of internal variables
     alpha(0),
     k(0, 0)

@@ -50,12 +50,17 @@ const DTensor2& ArmstrongFrederickTensor_EV::getDerivative(const DTensor2 &depsi
     //Zero de static variable
     derivative *= 0;
 
+
+
     //Compute the derivative (hardening function)
     const DTensor2 &alpha = this->getVariableConstReference();
     static DTensor2 mdev(3, 3, 0);
     mdev *= 0;
     mdev(i, j) = m(i, j) - m(k, k) / 3 * kronecker_delta(i, j);
     derivative(i, j) =  (2. / 3.) * ha * m(i, j) - cr * sqrt((2. / 3.) * m(k, l) * m(k, l)) * alpha(i, j);
+
+
+
 
     return derivative;
 }

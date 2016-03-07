@@ -39,7 +39,7 @@
 #include "../YieldFunctions/DruckerPrager_YF.h"
 
 //Plastic flow directions
-#include "../PlasticFlowDirections/VonMises_PF.h"
+#include "../PlasticFlowDirections/DruckerPragerDeviatoric_PF.h"
 
 //Elasticity
 #include "../ElasticityModels/LinearIsotropic3D_EL.h"
@@ -71,7 +71,7 @@ struct supports_pre_integration_callback<DruckerPragerArmstrongFrederick>
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> DPAFVarsType;
 typedef DruckerPrager_YF < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> DPAF_YFType;
-typedef VonMises_PF < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> DPAF_PFType;
+typedef DruckerPragerDeviatoric_PF < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> DPAF_PFType;
 
 //Create a helpful typedef for the base class from which we will inherit to create the n
 typedef ClassicElastoplasticMaterial <LinearIsotropic3D_EL,
@@ -79,7 +79,8 @@ typedef ClassicElastoplasticMaterial <LinearIsotropic3D_EL,
         DPAF_PFType,
         DPAFVarsType,
         ND_TAG_CEM_DruckerPragerArmstrongFrederick,
-        DruckerPragerArmstrongFrederick > DPAFBase;
+        DruckerPragerArmstrongFrederick
+        > DPAFBase;
 
 //Define the new class. We must provide two constructor and the evolving variables as data-members.
 class DruckerPragerArmstrongFrederick : public DPAFBase

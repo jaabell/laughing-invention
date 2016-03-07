@@ -43,7 +43,7 @@ DruckerPragerLinearHardening::DruckerPragerLinearHardening(int tag_in, double k0
     k(H_k, k0_in)
 {
 
-};
+}
 
 // Second constructor is not called by the user, instead it is called when creating a copy of the
 // material. This must provide an initialization for the state variables and link the components
@@ -62,7 +62,7 @@ DruckerPragerLinearHardening::DruckerPragerLinearHardening(int tag_in, double rh
     k(0, 0)
 {
 
-};
+}
 
 DruckerPragerLinearHardening::DruckerPragerLinearHardening() :
     DPLHBase::ClassicElastoplasticMaterial(0, 0, 0,

@@ -180,7 +180,7 @@
 %token CMD_print CMD_help CMD_whos CMD_check CMD_save CMD_restore
 
 %token MODEL NAME RESTART MESH
-%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION DAMPING DAMPINGTYPE CONSTRAINT DRM  SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE SET REACTION FORCES
+%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION UNIFORMACCELERATION DAMPING DAMPINGTYPE CONSTRAINT DRM  SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE SET REACTION FORCES
 %token ELEMENTNAME MATERIALNAME
 %token ACCELERATION_FIELD
 %token FIX FREE REMOVE
@@ -193,7 +193,7 @@
 %token self_weight surface load_value
 %token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit 
 %token number_of_steps number_of_boundary_nodes number_of_exterior_nodes number_of_drm_elements 
-%token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file hdf5_file series_file time_series_file MAGNITUDES MAGNITUDE
+%token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file hdf5_file series_file time_series_file MAGNITUDES MAGNITUDE initial_velocity
 %token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain  testing constant mean triaxial drained undrained simple shear
 %token number_of_subincrements maximum_number_of_iterations tolerance_1 tolerance_2 strain stress control Guass points Gauss each point single value
 // Additionally these tokens carry a string type (the above carry no type)
@@ -938,6 +938,48 @@ CMD_add
 
 
 		for(int i = 1; i <= 8; i++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add uniform acceleration # <.> to all nodes dof <.> time_step = <T> scale_factor = <.> initial_velocity = <L/S> acceleration_file = <string>;
+	| ADD UNIFORMACCELERATION TEXTNUMBER exp TO ALL NODES dof DOF
+			time_step '=' exp
+			scale_factor '=' exp
+			initial_velocity '=' exp
+			acceleration_file '=' exp
+	{
+
+		args.clear(); signature.clear();
+
+
+		args.push_back($4); signature.push_back(this_signature("number",    &isAdimensional));
+
+
+		args.push_back($12); signature.push_back(this_signature("time_step",    &isTime));
+		args.push_back($15); signature.push_back(this_signature("scale_factor",    &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("initial_velocity",    &isVelocity));
+
+
+		//Add acceleration_file file.
+		args.push_back( $21);                                          // Add to arguments of call signature
+		signature.push_back(this_signature("acceleration_file", &isAdimensional));                            // Specify signature
+		Expression* dof_number = dof2number(*$9);
+		args.push_back(dof_number); signature.push_back(this_signature("dof",    &isAdimensional));
+
+
+		//	add_time_history_of_ground_motion_for_uniform_excitation(
+		//        int ExcitationNumber,
+		//        double timestep,
+		//        double scale,
+		//        double vel0,
+		//        string inputfilename_string,
+		//        int direction)
+		// Generate one command
+	   $$ = new FeiDslCaller6<int, double,  double, double, string, int>(&add_time_history_of_ground_motion_for_uniform_excitation, args,signature, "add_time_history_of_ground_motion_for_uniform_excitation");
+
+
+		for(int i = 1; i <= 5; i++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================

@@ -710,7 +710,7 @@ private:
                 // TrialPlastic_Strain(ii, jj) = CommitPlastic_Strain(ii, jj);
             }
         }
-        // dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
+        // dsigma(i, j) = Eelastic(i, j, k, l) * depsPgiilon(k, l);
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
         TrialPlastic_Strain(i, j) = CommitPlastic_Strain(i, j);
@@ -771,11 +771,27 @@ private:
             //Compute the plastic multiplier
             if (den == 0)
             {
-                cerr << "CEP - den = 0\n";
+                cout << "CEP - den = 0\n";
+                printTensor("m", m);
+                printTensor("n", n);
+                cout << "xi_star_h_star" << xi_star_h_star << endl;
+                cout << "den" << den << endl;
+                printTensor("depsilon_elpl", depsilon_elpl);
                 return -1;
             }
             double dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
             dLambda /= den;
+
+            if (dLambda <= 0)
+            {
+                cout << "CEP - dLambda = " << dLambda << " <= 0\n";
+                printTensor("m", m);
+                printTensor("n", n);
+                cout << "xi_star_h_star = " << xi_star_h_star << endl;
+                cout << "den = " << den << endl;
+                printTensor("depsilon_elpl", depsilon_elpl);
+                // return -1;
+            }
 
             //Update the trial plastic strain.
             TrialPlastic_Strain(i, j) += dLambda * m(i, j);
@@ -820,10 +836,11 @@ private:
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denf;
             // Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
 
+
             double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
-            if (norm_trial_stress != norm_trial_stress) //check for nan
+            if (norm_trial_stress != norm_trial_stress || denf <= 0 ) //check for nan
             {
-                cout << "Nan Detected!\n";
+                cout << "Numeric error!\n";
                 printTensor("TrialStress = " , TrialStress);
                 printTensor("CommitStress = " , CommitStress);
                 printTensor("depsilon = " , depsilon);
@@ -1154,7 +1171,7 @@ private:
 
     template <typename U = T>
     typename std::enable_if < !supports_pre_integration_callback<U>::value, int >::type
-    // typename std::enable_if < !std::is_base_of<defines_pre_integration_callback, U>::value, int >::type
+// typename std::enable_if < !std::is_base_of<defines_pre_integration_callback, U>::value, int >::type
     pre_integration_callback_(const DTensor2 &depsilon, const DTensor2 &dsigma,  const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
     {
         returns = false;
@@ -1163,7 +1180,7 @@ private:
 
     template <typename U = T>
     typename std::enable_if<supports_pre_integration_callback<U>::value, int>::type
-    // typename std::enable_if<std::is_base_of<defines_pre_integration_callback, U>::value, int>::type
+// typename std::enable_if<std::is_base_of<defines_pre_integration_callback, U>::value, int>::type
     pre_integration_callback_(const DTensor2 &depsilon, const DTensor2 &dsigma, const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
     {
         return static_cast<U*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
@@ -1336,7 +1353,7 @@ private:
     static DTensor2 intersection_stress;
     static DTensor2 intersection_strain;
     static DTensor4 Stiffness;
-    // static DTensor2 m;
+// static DTensor2 m;
 
 
 };

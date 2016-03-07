@@ -70,6 +70,7 @@ add node # <.> at (<length>,<length>,<length>)  with <.> dofs;
 add section # <.> type Elastic_Membrane_Plate elastic_modulus = <F/L^2> poisson_ratio = <.> thickness = <length> mass_density = <M/L^3>;
 add section # <.> type Membrane_Plate_Fiber thickness = <length> use material # <.>;
 add single point constraint to node # <.> dof to constrain <dof_type> constraint value of <corresponding unit>;
+add uniform acceleration # <.> to all nodes dof <.> time_step = <T> scale_factor = <.> initial_velocity = <L/S> acceleration_file = <string>;
 check element # <.>;
 check mesh filename;
 compute reaction forces;

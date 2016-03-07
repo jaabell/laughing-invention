@@ -53,7 +53,7 @@ VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double k0_in, doubl
     // cout << "yf  = " << yf(getStressTensor()) << endl;
 
 
-};
+}
 
 // Second constructor is not called by the user, instead it is called when creating a copy of the
 // material. This must provide an initialization for the state variables and link the components
@@ -70,7 +70,7 @@ VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double p0, double r
     alpha(0),
     k(0, 0)
 {
-};
+}
 
 VonMisesLinearHardening::VonMisesLinearHardening() :
     VMLHBase::ClassicElastoplasticMaterial(0, 0, 0.0, //Initial confinement can be 0 for this model
@@ -80,5 +80,5 @@ VonMisesLinearHardening::VonMisesLinearHardening() :
                                            VMLHVarsType(alpha, k)),     // Declare the list of internal variables
     alpha(0),
     k(0, 0)
-{};
+{}
 

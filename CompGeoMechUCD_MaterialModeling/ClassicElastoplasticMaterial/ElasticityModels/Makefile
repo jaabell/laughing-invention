@@ -13,3 +13,7 @@ clean:
 cleanall:
 	$(RM) $(RMFLAGS)  *.o *.bak
 	$(RM) $(RMFLAGS) $(LIBRARY_Constitutive_Models)
+
+test:
+	$(LINKER) $(LINKFLAGS) $(OBJS) $(LIBS) -o test_elast
+	./test_elast

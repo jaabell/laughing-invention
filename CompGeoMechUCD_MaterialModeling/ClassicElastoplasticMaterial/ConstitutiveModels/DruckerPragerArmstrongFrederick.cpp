@@ -43,7 +43,7 @@ DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, dou
     k(H_k, k0_in)
 {
 
-};
+}
 
 // Second constructor is not called by the user, instead it is called when creating a copy of the
 // material. This must provide an initialization for the state variables and link the components
@@ -62,7 +62,7 @@ DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, dou
     k(0, 0)
 {
 
-};
+}
 
 DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick() :
     DPAFBase::ClassicElastoplasticMaterial(0, 0, 0,
