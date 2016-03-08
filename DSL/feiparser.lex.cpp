@@ -6697,31 +6697,40 @@ void welcome_msg()
 void set_known_units()
 {
 	//Base units*/
-	global_variables["m"] = Quantity(1.0, ESSIunits::m);
-	global_variables["kg"] = Quantity(1.0, ESSIunits::kg);
-	global_variables["s"] = Quantity(1.0, ESSIunits::s);
+    global_variables["m"] = Quantity(1.0, ESSIunits::m);
+    global_variables["kg"] = Quantity(1.0, ESSIunits::kg);
+    global_variables["s"] = Quantity(1.0, ESSIunits::s);
 
-	// Length
-	global_variables["cm"] = Quantity(1.0, ESSIunits::cm);
-	global_variables["mm"] = Quantity(1.0, ESSIunits::mm);
-	global_variables["Km"] = Quantity(1.0, ESSIunits::km);
+    // Length
+    global_variables["cm"] = Quantity(1.0, ESSIunits::cm);
+    global_variables["mm"] = Quantity(1.0, ESSIunits::mm);
+    global_variables["Km"] = Quantity(1.0, ESSIunits::km);
 
-	//Time
-	global_variables["Hz"] = Quantity(1.0, ESSIunits::Hz);
-	global_variables["ms"] = Quantity(1.0, ESSIunits::ms);
-	global_variables["ns"] = Quantity(1.0, ESSIunits::ns);
+    //Time
+    global_variables["Hz"] = Quantity(1.0, ESSIunits::Hz);
+    global_variables["ms"] = Quantity(1.0, ESSIunits::ms);
+    global_variables["ns"] = Quantity(1.0, ESSIunits::ns);
 
-	//Force
-	global_variables["N"] = Quantity(1.0, ESSIunits::N);
-	global_variables["kN"] = Quantity(1.0, ESSIunits::kN);
+    //Force
+    global_variables["N"] = Quantity(1.0, ESSIunits::N);
+    global_variables["kN"] = Quantity(1.0, ESSIunits::kN);
 
-	//Pressure
-	global_variables["Pa"] = Quantity(1.0, ESSIunits::Pa);
-	global_variables["kPa"] = Quantity(1.0, ESSIunits::kPa);
-	global_variables["MPa"] = Quantity(1.0, ESSIunits::MPa);
-	global_variables["GPa"] = Quantity(1.0, ESSIunits::GPa);
+    //Pressure
+    global_variables["Pa"] = Quantity(1.0, ESSIunits::Pa);
+    global_variables["kPa"] = Quantity(1.0, ESSIunits::kPa);
+    global_variables["MPa"] = Quantity(1.0, ESSIunits::MPa);
+    global_variables["GPa"] = Quantity(1.0, ESSIunits::GPa);
 
-	//Constants
+    //Imperial units
+    global_variables["pound"] = Quantity(0.453592 , ESSIunits::N);
+    global_variables["inch"] = Quantity(0.0254 , ESSIunits::m);
+    global_variables["feet"] = Quantity(0.3048 , ESSIunits::m);
+    global_variables["yard"] = Quantity(0.9144 , ESSIunits::m);
+    global_variables["mile"] = Quantity(1.60934e3 , ESSIunits::m);
+    global_variables["psi"] = Quantity(6.89476e3 , ESSIunits::Pa);
+	global_variables["ksi"] = Quantity(6.89476e6 , ESSIunits::Pa);
+
+    //Constants
 	global_variables["g"] = ESSIunits::g;  // gravitational acceleration on Earth at sea level and 45degrees of latitude
 	global_variables["pi"] = Quantity(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986, ESSIunits::unitless); // pi to a useless ammount of significant digits
 
