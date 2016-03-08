@@ -30,11 +30,13 @@ add element # <.> type beam_9dof_elastic with nodes (<.>, <.>) cross_section = <
 add element # <.> type beam_displacement_based with nodes (<.>, <.>) with # <.> integration_points use section # <.> mass_density = <M/L^3> IntegrationRule = "" xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
 add element # <.> type beam_elastic with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
 add element # <.> type beam_elastic_lumped_mass with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
+add element # <.> type BeamColumnDispFiber3d with nodes (<.>, <.>) number_of_integration_points = <.> section_number = <.> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
 add element # <.> type EightNodeBrickLTNoOutput with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 add element # <.> type FrictionalPenaltyContact with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
 add element # <.> type ShearBeamLT with nodes (<.>, <.>) cross_section = <l^2> use material # <.>;
 add element # <.> type truss with nodes (<.>, <.>) use material # <.> cross_section = <length^2> mass_density = <M/L^3> ;
 add element # <.> type variable_node_brick_8_to_27 using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add fiber # <.> using material # <.> to section # <.>  fiber_cross_section = <area> fiber_location = (<L>,<L>);
 add imposed motion # <.> to node # <.> dof DOFTYPE displacement_scale_unit = <displacement> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
 add imposed motion # <.> to node # <.> dof DOFTYPE time_step = <t> displacement_scale_unit = <length> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
 add load # <.> to all elements type self_weight use acceleration field # <.>;
@@ -67,7 +69,9 @@ add material # <.> type uniaxial_steel01 yield_strength = <F/L^2> elastic_modulu
 add material # <.> type uniaxial_steel02 yield_strength = <F/L^2> elastic_modulus = <F/L^2> strain_hardening_ratio = <.> R0 = <.> cR1 = <.> cR2 = <.>  a1 = <.>  a2 = <.>  a3 = <>  a4 = <.> ;
 add material # <.> type VonMisesLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> von_mises_radius = <F/L^2> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> ;
 add node # <.> at (<length>,<length>,<length>)  with <.> dofs;
+add section # <.> type elastic3d elastic_modulus = <F/L^2> cross_section = <L^2> bending_Iz = <L^4> bending_Iy=<L^4> torsion_Jx=<L^4> ;
 add section # <.> type Elastic_Membrane_Plate elastic_modulus = <F/L^2> poisson_ratio = <.> thickness = <length> mass_density = <M/L^3>;
+add section # <.> type FiberSection maxNumPatches = <.> maxNumReinfLayers = <.> 
 add section # <.> type Membrane_Plate_Fiber thickness = <length> use material # <.>;
 add single point constraint to node # <.> dof to constrain <dof_type> constraint value of <corresponding unit>;
 add uniform acceleration # <.> to all nodes dof <.> time_step = <T> scale_factor = <.> initial_velocity = <L/S> acceleration_file = <string>;

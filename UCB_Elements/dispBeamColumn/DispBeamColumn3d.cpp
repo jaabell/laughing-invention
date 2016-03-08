@@ -1362,7 +1362,7 @@ DispBeamColumn3d::getOutputSize() const
 }
 
 const Vector &
-DispBeamColumn3d::getOutput()
+DispBeamColumn3d::getOutput() const
 {
     double N = q(0);
     outputVector(6) =  N;
@@ -1395,6 +1395,8 @@ DispBeamColumn3d::getOutput()
 
     return outputVector;
 }
+
+
 
 
 

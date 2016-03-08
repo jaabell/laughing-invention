@@ -62,6 +62,7 @@ dynamic
 e0
 each
 eigen
+elastic3d
 Elastic_Membrane_Plate
 elastic_modulus
 elastic_modulus_1atm
@@ -77,6 +78,10 @@ equaldof
 every
 exp
 factor
+fiber
+fiber_cross_section
+fiber_location
+FiberSection
 field
 filename
 fix
@@ -127,6 +132,8 @@ maximum_iterations
 maximum_number_of_iterations
 maximum_strain
 maximum_time_step
+maxNumPatches
+maxNumReinfLayers
 mean
 Membrane_Plate_Fiber
 mesh
@@ -145,6 +152,7 @@ node
 nodes
 normal_damping
 normal_stiffness
+number_of_integration_points
 number_of_iterations
 number_of_modes
 number_of_subincrements
@@ -210,6 +218,7 @@ sanisand2008_xi
 sanisand2008_z_max
 scale_factor
 section
+section_number
 self_weight
 set
 shear
@@ -289,6 +298,7 @@ beam_9dof_elastic
 beam_displacement_based
 beam_elastic
 beam_elastic_lumped_mass
+BeamColumnDispFiber3d
 Caughey3rd
 Caughey4th
 DOFTYPE

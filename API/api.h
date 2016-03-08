@@ -99,6 +99,8 @@
 #include "MODELING/add_element_shell_andes_4node.h"     // Jose Added Sept 20 2012
 // #include "MODELING/add_elements_from_GIDfile_27node_brick_elastic.h" //Added by Babak 5/29/14
 
+#include "MODELING/add_element_DispBeamColumn3d.h" // Yuan (Feb.2016)
+
 
 // Materials
 //--------------------------------------------------------------------------------------------------

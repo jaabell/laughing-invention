@@ -208,20 +208,20 @@
 
 // Tokens for elements
 %token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
-%token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
+%token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based BeamColumnDispFiber3d beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact FrictionalPenaltyContact
 %token EightNodeBrickLT EightNodeBrickLTNoOutput TwentySevenNodeBrickLT ShearBeamLT
 
 // Element options tokens
-%token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule number_of_integration_points stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
+%token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
 %token friction_ratio maximum_gap
 %token xz_plane_vector joint_1_offset joint_2_offset direction contact_plane_vector
 
 // Tokens for sections
-%token MembranePlateFiber ElasticMembranePlate
+%token MembranePlateFiber ElasticMembranePlate elastic3d FIBER FiberSection Section fiber_cross_section fiber_location_Y fiber_location_Z fiber_location maxNumPatches maxNumReinfLayers 
 
 // Section options tokens
-%token thickness
+%token thickness integration_rule section_number number_of_integration_points
 
 // Tokens for materials
 %token NDMaterialLT linear_elastic_isotropic_3d linear_elastic_isotropic_3d_LT
@@ -1237,6 +1237,47 @@ CMD_add
 		for(int i = 1; i <= 5; i++) nodes.pop();
 		nodes.push($$);
 	}
+	//!=========================================================================================================
+	//! adding elastic section3d -- Yuan
+	//!FEIDOC add section # <.> type elastic3d elastic_modulus = <F/L^2> cross_section = <L^2> bending_Iz = <L^4> bending_Iy=<L^4> torsion_Jx=<L^4> ;
+	| ADD SECTION TEXTNUMBER exp TYPE elastic3d 
+		elastic_modulus '=' exp 
+		cross_section '=' exp 
+		bending_Iz '=' exp 
+		bending_Iy '='exp 
+		shear_modulus '='exp 
+		torsion_Jx '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($4); signature.push_back(this_signature("section_number",          &isAdimensional));
+		args.push_back($9); signature.push_back(this_signature("elastic_modulus",         &isPressure));
+		args.push_back($12); signature.push_back(this_signature("cross_section",           &isArea));
+		args.push_back($15); signature.push_back(this_signature("bending_Iz",           &isAreaMomentOfInertia));
+		args.push_back($18); signature.push_back(this_signature("bending_Iy",           &isAreaMomentOfInertia));
+		args.push_back($21); signature.push_back(this_signature("shear_modulus",           &isPressure));
+		args.push_back($24); signature.push_back(this_signature("torsion_Jx",           &isAreaMomentOfInertia));
+		$$ = new FeiDslCaller7<int, double, double, double, double, double, double>(&add_section_elastic_to_beam, args, signature, "add_section_elastic_to_beam");
+		for(int i = 1; i <= 7; i++) nodes.pop();
+		nodes.push($$);
+	}
+
+	//!=========================================================================================================
+	//! adding fiber section3d -- Yuan
+	//!FEIDOC add section # <.> type FiberSection maxNumPatches = <.> maxNumReinfLayers = <.> 
+	| ADD SECTION TEXTNUMBER exp TYPE FiberSection
+		maxNumPatches '=' exp 
+		maxNumReinfLayers '=' exp 
+	{
+		args.clear(); signature.clear();
+		args.push_back($4); signature.push_back(this_signature("section_number",          &isAdimensional));
+		args.push_back($9); signature.push_back(this_signature("maxNumPatches",         &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("maxNumReinfLayers",           &isAdimensional));
+
+		$$ = new FeiDslCaller3<int, int, int>(&add_section_to_model, args, signature, "add_section_to_model");
+		for(int i = 1; i <= 3; i++) nodes.pop();
+		nodes.push($$);
+	}
+
 	;
 
 
@@ -2469,6 +2510,37 @@ ADD_material
 		for(int ii = 1;ii <=8; ii++) nodes.pop();
 		nodes.push($$);
 	}
+
+
+
+
+	//!=========================================================================================================
+	//! adding uniaxial_fiber3d  -Yuan
+	//!FEIDOC add fiber # <.> using material # <.> to section # <.>  fiber_cross_section = <area> fiber_location = (<L>,<L>);
+	| FIBER TEXTNUMBER exp USING MATERIAL TEXTNUMBER exp TO SECTION TEXTNUMBER exp
+		fiber_cross_section '=' exp
+		fiber_location '=' '(' exp ',' exp ')'
+	  {
+		args.clear(); signature.clear();
+		args.push_back($3); signature.push_back(this_signature("number",                    &isAdimensional));
+
+		// change the argument order for API
+		args.push_back($11); signature.push_back(this_signature("material_number",            &isAdimensional));
+		args.push_back($7); signature.push_back(this_signature("section_number",            &isAdimensional));
+		
+		args.push_back($14); signature.push_back(this_signature("fiber_cross_section",          &isArea));
+		args.push_back($18); signature.push_back(this_signature("fiber_location_Y",   &isLength));
+		args.push_back($20); signature.push_back(this_signature("fiber_location_Z",   &isLength));
+
+		$$ = new FeiDslCaller6<int, int, int, double, double, double>(&add_single_fiber_to_section, args, signature, "add_single_fiber_to_section");
+		for(int ii = 1;ii <=6; ii++) nodes.pop();
+		nodes.push($$);
+	}
+
+
+
+
+
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add material # <.> type [linear_elastic_isotropic_3d_LT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.>;
@@ -3188,6 +3260,64 @@ ADD_element:
 		for(int ii = 1;ii <=31; ii++) nodes.pop();
 		nodes.push($$);
 	}
+
+
+
+
+		//!=========================================================================================================
+	//! adding element DispBeamColumn3d -- Yuan
+	//!FEIDOC add element # <.> type [BeamColumnDispFiber3d] with nodes (<.>, <.>) number_of_integration_points = <.> section_number = <.> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
+	| TEXTNUMBER exp TYPE BeamColumnDispFiber3d WITH NODES
+		'(' exp ',' exp ')'
+		number_of_integration_points '=' exp
+		section_number  '=' exp 
+		mass_density '=' exp
+		xz_plane_vector '=' '(' exp ','  exp ','  exp ')'
+		joint_1_offset '=' '(' exp ','  exp ','  exp ')'
+		joint_2_offset '=' '(' exp ','  exp ','  exp ')'
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
+
+		args.push_back($14); signature.push_back(this_signature("number_of_integration_points", &isAdimensional));
+		args.push_back($17); signature.push_back(this_signature("section_number", &isAdimensional));
+		
+		args.push_back($20); signature.push_back(this_signature("mass_density", &isDensity));
+
+		args.push_back($24); signature.push_back(this_signature("vecxzPlane_X",     &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("vecxzPlane_Y",    &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("vecxzPlane_Z",    &isAdimensional));
+
+		args.push_back($33); signature.push_back(this_signature("jntOffsetI_X",    &isLength));
+		args.push_back($35); signature.push_back(this_signature("jntOffsetI_Y",    &isLength));
+		args.push_back($37); signature.push_back(this_signature("jntOffsetI_Z",    &isLength));
+
+		args.push_back($42); signature.push_back(this_signature("jntOffsetJ_X",    &isLength));
+		args.push_back($44); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
+		args.push_back($46); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
+		
+		$$ = new FeiDslCaller15<int, int, int, 
+								int, int, 
+								double, double, double, double,
+								double, double, double, double, double, double>(&add_element_DispBeamColumn3d, args, signature, "add_element_DispBeamColumn3d");
+
+		for(int ii = 1;ii <=15; ii++) nodes.pop(); 
+		nodes.push($$);
+	}
+
+
+
+
+
+
+
+
+// DispBeamColumn3d_lumped_mass
+
+
+
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type [beam_elastic] with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );

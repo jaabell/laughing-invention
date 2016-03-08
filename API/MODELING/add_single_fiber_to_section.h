@@ -25,7 +25,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-int add_single_fiber_to_section(int SectionNumber,
+int add_single_fiber_to_section(int FiberNumber,
+                                int SectionNumber,
                                 int MaterialNumber,
                                 double yLocation,
                                 double zLocation,
