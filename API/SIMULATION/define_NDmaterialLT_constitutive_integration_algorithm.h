@@ -25,31 +25,22 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-int define_solver_profilespd_for_analysis()
+int define_NDMaterialLT_constitutive_integration_algorithm(int algorithm,
+        double f_relative_tol, double stress_relative_tol, int n_max_iterations)
 {
-#ifdef _PARALLEL_PROCESSING
-    cerr << "ProfileSPD solver not available in parallel processing mode. " << endl;
-    return -1;
-#else
-    ProfileSPDLinSolver *theSolver = 0;
-    theSolver = new ProfileSPDLinDirectSolver();
+    int errorflag = -1;
+    cout << "define_NDMaterialLT_constitutive_integration_algorithm() - Setting method to " << algorithm << endl;
 
-    if (theSolver == NULL)
+    if ((errorflag = NDMaterialLT::set_constitutive_integration_method(algorithm, f_relative_tol, stress_relative_tol, n_max_iterations)))
     {
-        cerr << "Error: (define_solver_profilnespd_for_analysis) memory allocation problem for theSolver!" << endl;
-        return -1;
+        errorflag = 0;
+    }
+    else
+    {
+        cerr << "define_NDMaterialLT_constitutive_integration_algorithm() - Error. Constitutive algorithm not available.\n";
     }
 
-    theSOE = new ProfileSPDLinSOE(*theSolver);
-
-    if (theSOE == NULL)
-    {
-        cerr << "Error: (define_solver_profilespd_for_analysis) memory allocation problem for theSOE!" << endl;
-        return -1;
-    }
-
-    return 0;
-#endif
+    return errorflag;
 };
 
 

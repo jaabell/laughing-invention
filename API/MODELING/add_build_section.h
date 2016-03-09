@@ -445,7 +445,7 @@ int add_build_section(int SectionNumber,
     SectionForceDeformation* section = 0;
 
 
-    section = new FiberSection3d(SectionNumber, numFibers, fiber);
+    //section = new FiberSection3d(SectionNumber, numFibers, fiber);
 
 
     for (i = 0; i < numFibers; i++)

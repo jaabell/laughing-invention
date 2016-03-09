@@ -1,0 +1,32 @@
+# updated by:
+# Nima Tafazzoli, November 2009, UCD
+
+current_directory := $(shell pwd)
+ModifiedOpenSeesServicesdir := $(current_directory)/..
+
+include ../../Makefile.Includes
+include ../../Makefile.Compilers
+
+OBJS       = TaggedObject.o
+
+# Compilation control
+
+all:         $(OBJS)
+	@$(CD) storage; $(MAKE);
+
+# Miscellaneous
+tidy:	
+	@$(RM) $(RMFLAGS) Makefile.bak *~ #*# core
+
+clean: tidy
+	@$(RM) $(RMFLAGS) $(OBJS) *.o
+
+spotless: clean
+	@$(CD) storage; $(MAKE) clean;
+
+wipe: spotless
+	@$(CD) storage; $(MAKE) wipe;
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+

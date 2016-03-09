@@ -8,7 +8,7 @@ makedocumentation
 *.out
 *~
 fei.tags
-*.txt
+#*.txt
 *.tex
 generate_command_patterns
 !available_commands.txt
