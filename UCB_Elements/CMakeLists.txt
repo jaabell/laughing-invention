@@ -10,6 +10,7 @@ ADD_SUBDIR(joint)
 ADD_SUBDIR(dispBeamColumn)
 ADD_SUBDIR(elasticBeamLumpedMass)
 ADD_SUBDIR(integration)
+ADD_SUBDIR(transformation)
 
 BUILD_LIB("ucbelements" ESSI_LIBS UCBE_SRC)
 

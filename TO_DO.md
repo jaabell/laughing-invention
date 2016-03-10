@@ -30,6 +30,13 @@ Features
 
 These are new things we would like to see on ESSI. Further subdivided into
 
+
+###Analysis level
+
+* Remove the need for equaldof by making elements with different DOF numbers at nodes
+play nicely with each-other.  (Expand stiffness matrices when needed).
+
+
 ###Material models
 
 
@@ -37,8 +44,8 @@ These are new things we would like to see on ESSI. Further subdivided into
 ###Elements
 
 * LTensor based u-p-U elements
-* Contact element
-* Surface-to-surface contact
+* Contact element (Sumeet)
+* Surface-to-surface contact 
 
 ###Parser
 

@@ -42,10 +42,11 @@ int add_element_DispBeamColumn3d(int ElementNumber,
 
 
     // for the section
-    SectionForceDeformation **theSections = new SectionForceDeformation *[number_of_integration_points];
+    // SectionForceDeformation **theSections = new SectionForceDeformation *[number_of_integration_points];
+    SectionRepres **theSections = new SectionRepres *[number_of_integration_points];
     for (short i = 0; i < number_of_integration_points; ++i)
     {
-        theSections[i] = theDomain.getSection(section_number);
+        theSections[i] = theDomain.getSectionRepres(section_number);
     }
 
 
@@ -97,8 +98,8 @@ int add_element_DispBeamColumn3d(int ElementNumber,
     int cMass = 1;
     // for the element call.
     Element* theElement = 0;
-    theElement = new DispBeamColumn3d(ElementNumber, iNode, jNode, number_of_integration_points, theSections,
-                                      *beamIntegr, *crdTransf, rho, cMass);
+    // theElement = new DispBeamColumn3d(ElementNumber, iNode, jNode, number_of_integration_points, theSections,
+    // *beamIntegr, *crdTransf, rho, cMass);
     // check the element status
     if (theElement == 0)
     {
