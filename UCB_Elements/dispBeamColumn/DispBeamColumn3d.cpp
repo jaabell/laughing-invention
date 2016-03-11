@@ -68,16 +68,17 @@ DispBeamColumn3d::DispBeamColumn3d(int tag, int nd1, int nd2,
 
     for (int i = 0; i < numSections; i++)
     {
+      if (s[i] != 0) {
+	theSections[i] = s[i]->getCopy();
+      } else {
+	theSections[i] = 0;
+      }
 
-        // Get copies of the material model for each integration point
-        theSections[i] = s[i]->getCopy();
-
-        // Check allocation
-        if (theSections[i] == 0)
-        {
-            std::cerr << "DispBeamColumn3d::DispBeamColumn3d -- failed to get a copy of section model\n";
-            exit(-1);
-        }
+      // Check allocation
+      if (theSections[i] == 0) {
+	std::cerr << "DispBeamColumn3d::DispBeamColumn3d -- failed to get a copy of section model: "  << i << "\n";
+	exit(-1);
+      }
     }
 
     beamInt = bi.getCopy();
@@ -512,7 +513,7 @@ DispBeamColumn3d::getTangentStiff()
     // Transform to global stiffness
     K = crdTransf->getGlobalStiffMatrix(kb, q);
 
-    // cout << K << endl;
+    cout << K << endl;
 
     return K;
 }
@@ -1395,8 +1396,6 @@ DispBeamColumn3d::getOutput() const
 
     return outputVector;
 }
-
-
 
 
 

@@ -420,8 +420,7 @@ EXP	([Ee][-+]?[0-9]+)
 "fiber_location_Y"					{return token::fiber_location_Y;}
 "fiber_location_Z"					{return token::fiber_location_Z;}
 "fiber_location"					{return token::fiber_location;}
-"maxNumPatches"						{return token::maxNumPatches;}
-"maxNumReinfLayers"					{return token::maxNumReinfLayers;}
+"TorsionConstant_GJ"				{return token::TorsionConstant_GJ;}
 "fiber"								{return token::FIBER;}
 
  /* Material Names*/

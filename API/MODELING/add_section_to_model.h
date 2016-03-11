@@ -32,26 +32,24 @@
 
 
 int add_section_to_model(int SectionNumber,
-                         int maxNumPatches,
-                         int maxNumReinfLayers)
+                         double GJ)
 {
-    SectionRepres* fiberSectionRepr = 0;
-    fiberSectionRepr = new FiberSectionRepr(SectionNumber, maxNumPatches, maxNumReinfLayers);
+    SectionForceDeformation* theSection = 0;
+    theSection = new FiberSectionGJ(SectionNumber, 0, 0, GJ); //1e10);
 
-    if (fiberSectionRepr == NULL)
+    if (theSection == 0)
     {
-        cerr << "Error: (add_section_to_model) memory allocation problem for fiberSectionRepr!" << endl;
+        cerr <<  "WARNING: (add_section_to_model) - cannot construct section\n";
         return -1;
     }
 
-    if ( theDomain.addSectionRepres(*fiberSectionRepr) != 0 )
+    if (theDomain.addSection (*theSection) < 0)
     {
-        cerr << "Error: (add_section_to_model) Section " << SectionNumber << " could not be added to the domain " << endl;
+        cerr <<  "WARNING: (add_build_section) - cannot add section\n";
         return -1;
     }
 
     return 0;
-
 };
 
 

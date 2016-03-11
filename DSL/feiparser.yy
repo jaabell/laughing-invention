@@ -218,7 +218,7 @@
 %token xz_plane_vector joint_1_offset joint_2_offset direction contact_plane_vector
 
 // Tokens for sections
-%token MembranePlateFiber ElasticMembranePlate elastic3d FIBER FiberSection Section fiber_cross_section fiber_location_Y fiber_location_Z fiber_location maxNumPatches maxNumReinfLayers 
+%token MembranePlateFiber ElasticMembranePlate elastic3d FIBER FiberSection Section fiber_cross_section fiber_location_Y fiber_location_Z fiber_location TorsionConstant_GJ 
 
 // Section options tokens
 %token thickness integration_rule section_number number_of_integration_points
@@ -1263,18 +1263,16 @@ CMD_add
 
 	//!=========================================================================================================
 	//! adding fiber section3d -- Yuan
-	//!FEIDOC add section # <.> type FiberSection maxNumPatches = <.> maxNumReinfLayers = <.> 
+	//!FEIDOC add section # <.> type FiberSection TorsionConstant_GJ = <F*L^2>
 	| ADD SECTION TEXTNUMBER exp TYPE FiberSection
-		maxNumPatches '=' exp 
-		maxNumReinfLayers '=' exp 
+		TorsionConstant_GJ '=' exp 
 	{
 		args.clear(); signature.clear();
 		args.push_back($4); signature.push_back(this_signature("section_number",          &isAdimensional));
-		args.push_back($9); signature.push_back(this_signature("maxNumPatches",         &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("maxNumReinfLayers",           &isAdimensional));
+		args.push_back($9); signature.push_back(this_signature("TorsionConstant_GJ",           &isThisUnit< 1, 3,-2>));
 
-		$$ = new FeiDslCaller3<int, int, int>(&add_section_to_model, args, signature, "add_section_to_model");
-		for(int i = 1; i <= 3; i++) nodes.pop();
+		$$ = new FeiDslCaller2<int, double>(&add_section_to_model, args, signature, "add_section_to_model");
+		for(int i = 1; i <= 2; i++) nodes.pop();
 		nodes.push($$);
 	}
 

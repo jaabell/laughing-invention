@@ -28,29 +28,18 @@
 int add_single_fiber_to_section(int FiberNumber,
                                 int SectionNumber,
                                 int MaterialNumber,
+                                double Area,
                                 double yLocation,
-                                double zLocation,
-                                double Area)
+                                double zLocation)
 {
-
-    SectionRepres* sectionRepres = 0;
-    sectionRepres = theDomain.getSectionRepres(SectionNumber);
-
-
-    FiberSectionRepr* fiberSectionRepr = (FiberSectionRepr*) sectionRepres;
-    int numFibers = fiberSectionRepr->getNumFibers();
-
-
     UniaxialMaterial* uniaxialmaterial = theDomain.getUniaxialMaterial(MaterialNumber);
-
 
     static Vector fiberPosition(2);
     fiberPosition(0) = yLocation;
     fiberPosition(1) = zLocation;
 
-
     Fiber* theFiber = 0;
-    theFiber = new UniaxialFiber3d(numFibers, *uniaxialmaterial, Area, fiberPosition);
+    theFiber = new UniaxialFiber3d(FiberNumber, *uniaxialmaterial, Area, fiberPosition);
 
     if (theFiber == 0)
     {
@@ -58,18 +47,20 @@ int add_single_fiber_to_section(int FiberNumber,
         return -1;
     }
 
-
-    int error = fiberSectionRepr->addFiber(*theFiber);
-
-    if (error)
-    {
-        cerr.flush() <<  "add_single_fiber_to_section: WARNING cannot add patch to section\n";
+    SectionForceDeformation *theSection = theDomain.getSection(SectionNumber);
+    if (theSection == 0) {
+        cerr.flush() <<  "add_single_fiber_to_section: WARNING section does not exist \n";
         return -1;
     }
 
+    if (theSection->getClassTag() != SEC_TAG_FiberSectionGJ) {
+        cerr.flush() <<  "add_single_fiber_to_section: WARNING section must be a fiber section \n";
+        return -1;
+    }      
+    FiberSectionGJ *theFiberSection = (FiberSectionGJ *)theSection;
+    theFiberSection->addFiber(*theFiber);
 
     return 0;
-
 };
 
 
