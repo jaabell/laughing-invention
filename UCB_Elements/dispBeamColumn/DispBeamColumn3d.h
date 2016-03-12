@@ -97,7 +97,7 @@ public:
     void Print(ostream &s, int flag = 0);
 
     int getOutputSize() const;
-    const Vector &getOutput() const ;
+    const Vector &getOutput();// const ;
     Matrix &getGaussCoordinates(void);
 
 protected:

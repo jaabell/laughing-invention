@@ -200,11 +200,10 @@ FiberSectionGJ::addFiber(Fiber &newFiber)
     double A  = 0.0;
 
     // Recompute centroid
-    for (i = 0; i < numFibers; i++)
-    {
-        yLoc = -matData[2 * i];
-        zLoc = matData[2 * i + 1];
-        Area = matData[2 * i + 2];
+  for (i = 0; i < numFibers; i++) {
+    yLoc = -matData[3*i];
+    zLoc = matData[3*i+1];
+    Area = matData[3*i+2];
         A  += Area;
         Qz += yLoc * Area;
         Qy += zLoc * Area;

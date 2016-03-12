@@ -10,6 +10,7 @@ bin/essi
 *.layout
 *.h5
 *.hdf5
+build_*
 make_debug.sh
 libs_compiled
 sftp-config.json

@@ -68,17 +68,21 @@ DispBeamColumn3d::DispBeamColumn3d(int tag, int nd1, int nd2,
 
     for (int i = 0; i < numSections; i++)
     {
-      if (s[i] != 0) {
-	theSections[i] = s[i]->getCopy();
-      } else {
-	theSections[i] = 0;
-      }
+        if (s[i] != 0)
+        {
+            theSections[i] = s[i]->getCopy();
+        }
+        else
+        {
+            theSections[i] = 0;
+        }
 
-      // Check allocation
-      if (theSections[i] == 0) {
-	std::cerr << "DispBeamColumn3d::DispBeamColumn3d -- failed to get a copy of section model: "  << i << "\n";
-	exit(-1);
-      }
+        // Check allocation
+        if (theSections[i] == 0)
+        {
+            std::cerr << "DispBeamColumn3d::DispBeamColumn3d -- failed to get a copy of section model: "  << i << "\n";
+            exit(-1);
+        }
     }
 
     beamInt = bi.getCopy();
@@ -1363,7 +1367,7 @@ DispBeamColumn3d::getOutputSize() const
 }
 
 const Vector &
-DispBeamColumn3d::getOutput() const
+DispBeamColumn3d::getOutput() //const
 {
     double N = q(0);
     outputVector(6) =  N;
