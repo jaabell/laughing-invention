@@ -81,53 +81,53 @@ int add_element_beam_displacement_based(int ElementNumber,
                                         double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
 {
 
-    Element* theElement = 0;
+    // Element* theElement = 0;
 
-    SectionForceDeformation* theSection = 0;
-    theSection = theDomain.getSection(SectionNumber);
+    // SectionForceDeformation* theSection = 0;
+    // theSection = theDomain.getSection(SectionNumber);
 
-    if (theSection == 0)
-    {
-        cerr << "WARNING: (add_element_beam_displacement_based) section not found\n";
-        cerr << "Section: " << SectionNumber;
-        cerr << "\ndispBeamColumn element: " << ElementNumber << endln;
-        return -1;
-    }
-
-
-
-    SectionForceDeformation** sections = new SectionForceDeformation *[numberofintegrationpoints];
-
-    for (int i = 0; i < numberofintegrationpoints; i++)
-    {
-        sections[i] = theSection;
-    }
+    // if (theSection == 0)
+    // {
+    //     cerr << "WARNING: (add_element_beam_displacement_based) section not found\n";
+    //     cerr << "Section: " << SectionNumber;
+    //     cerr << "\ndispBeamColumn element: " << ElementNumber << endln;
+    //     return -1;
+    // }
 
 
-    const char* integrationrule_char = integrationrule.c_str();
+
+    // SectionForceDeformation** sections = new SectionForceDeformation *[numberofintegrationpoints];
+
+    // for (int i = 0; i < numberofintegrationpoints; i++)
+    // {
+    //     sections[i] = theSection;
+    // }
 
 
-    BeamIntegration* beamIntegr = 0;
+    // const char* integrationrule_char = integrationrule.c_str();
 
-    if (strcmp(integrationrule_char, "Lobatto") == 0)
-    {
-        beamIntegr = new LobattoBeamIntegration();
-    }
 
-    if (strcmp(integrationrule_char, "Legendre") == 0)
-    {
-        beamIntegr = new LegendreBeamIntegration();
-    }
+    // BeamIntegration* beamIntegr = 0;
 
-    if (strcmp(integrationrule_char, "Radau") == 0)
-    {
-        beamIntegr = new RadauBeamIntegration();
-    }
+    // if (strcmp(integrationrule_char, "Lobatto") == 0)
+    // {
+    //     beamIntegr = new LobattoBeamIntegration();
+    // }
 
-    if (strcmp(integrationrule_char, "NewtonCotes") == 0)
-    {
-        beamIntegr = new NewtonCotesBeamIntegration();
-    }
+    // if (strcmp(integrationrule_char, "Legendre") == 0)
+    // {
+    //     beamIntegr = new LegendreBeamIntegration();
+    // }
+
+    // if (strcmp(integrationrule_char, "Radau") == 0)
+    // {
+    //     beamIntegr = new RadauBeamIntegration();
+    // }
+
+    // if (strcmp(integrationrule_char, "NewtonCotes") == 0)
+    // {
+    //     beamIntegr = new NewtonCotesBeamIntegration();
+    // }
 
     //Revise!!
     // theElement = new DispBeamColumn3d(ElementNumber, iNode, jNode, numberofintegrationpoints, sections,

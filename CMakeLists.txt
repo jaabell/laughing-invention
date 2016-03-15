@@ -1,6 +1,6 @@
 #cmake -G "Unix Makefiles" -DBaseName:STRING=mybase -DCMAKE_CXX_COMPILER=/usr/bin/clang++ 
 # -DCMAKE_C_COMPILER=/usr/bin/clang -DEXTRA_INCLUDE=<path>
-
+# For parallel:  cmake -DCMAKE_CXX_COMPILER=/usr/bin/mpic++ -DPROGRAMMING_MODE=PARALLEL ..
 cmake_minimum_required(VERSION 2.8.9)
 project (RealESSI)
 #Generates a Release version
@@ -15,7 +15,8 @@ set(LIB_MOD "STATIC")       # options ${LIB_MOD} | STATIC
 set(FINAL_SUMMARY OFF)
 set(RealESSI_SRC "${CMAKE_SOURCE_DIR}")
 set(RealESSI_DEP "${CMAKE_SOURCE_DIR}/../RealESSI_Dependencies")
-set(ESSI_LIB "${RealESSI_SRC}/lib")
+# set(ESSI_LIB "${RealESSI_SRC}/lib")
+set(ESSI_LIB "${CMAKE_BINARY_DIR}/lib")
 set(NUMERIC_LIBS_DIR "${RealESSI_DEP}/lib")
 
 set(INCLUDE_PATHS "")       # Will contain the path to all the .h files

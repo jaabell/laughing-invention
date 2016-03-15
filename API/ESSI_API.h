@@ -169,33 +169,15 @@
 
 // System of Equations (SOE) Solvers
 //--------------------------------------------------------------------------------------------------
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/profileSPD/ProfileSPDLinDirectThreadSolver.h"
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/profileSPD/ProfileSPDLinDirectSkypackSolver.h"
 #include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/profileSPD/ProfileSPDLinSolver.h"
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/profileSPD/ProfileSPDLinDirectSolver.h"
 #include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/profileSPD/ProfileSPDLinSOE.h"
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/bandSPD/BandSPDLinSolver.h"
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/bandSPD/BandSPDLinSOE.h"
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/bandSPD/BandSPDLinLapackSolver.h"
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/umfGEN3.1/UmfpackGenLinSOE.h"
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/umfGEN3.1/UmfpackGenLinSolver.h"
+#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/profileSPD/ProfileSPDLinDirectSolver.h"
 #include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/umfGEN/UmfpackGenLinSOE.h"
 #include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/umfGEN/UmfpackGenLinSolver.h"
 #ifdef _PARALLEL_PROCESSING
 #include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSolver.h"
 #include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSOE.h"
-#include "../ModifiedOpenSeesServices/system_of_eqn/linearSOE/petsc/PetscSparseSeqSolver.h"
 #endif
-
-
-// Recorders
-//--------------------------------------------------------------------------------------------------
-// #include "../ModifiedOpenSeesServices/recorder/NodeRecorder.h"
-// #include "../ModifiedOpenSeesServices/recorder/ElementRecorder.h"
-
-// #include "../ModifiedOpenSeesServices/handler/DataOutputHandler.h"
-// #include "../ModifiedOpenSeesServices/handler/DataOutputFileHandler.h"
-
 
 // Utilities
 //--------------------------------------------------------------------------------------------------
@@ -214,10 +196,7 @@
 #include "../ModifiedOpenSeesServices/domain/node/NodalLoad.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/PBowlLoading.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method.h"
-// #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method_Modified_Input.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method_HDF5_input.h"
-// #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method_Save_Forces.h"
-// #include "../ModifiedOpenSeesServices/domain/pattern/Domain_Reduction_Method_Restore_Forces.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/UniformExcitation.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/MultiSupportPattern.h"
 #include "../ModifiedOpenSeesServices/domain/pattern/Linear_Force_TimeHistory.h"
@@ -247,18 +226,8 @@
 
 // Eigen
 //--------------------------------------------------------------------------------------------------
-#include "FrequencyAlgo.h"
-#include "SymBandEigenSolver.h"
-#include "EigenIntegrator.h"
 #include "FullGenEigenSolver.h"
 #include "FullGenEigenSOE.h"
-
-
-// Database
-//--------------------------------------------------------------------------------------------------
-// #include <../ModifiedOpenSeesServices/database/FileDatastore.h>
-// #include <../ModifiedOpenSeesServices/database/MySqlDatastore.h>
-// #include <../ModifiedOpenSeesServices/database/MySqlDataRecorder.h>
 
 
 // MOSSy Elements

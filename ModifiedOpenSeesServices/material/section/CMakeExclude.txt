@@ -1,5 +1,4 @@
 FiberSection.cpp
-FiberSection3d.cpp
 FiberSectionRepr.cpp
 GenericSectionNd.cpp
 TclModelBuilderSectionCommand.cpp
