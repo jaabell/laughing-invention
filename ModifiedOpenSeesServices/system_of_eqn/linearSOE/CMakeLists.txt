@@ -14,8 +14,6 @@
 if(IS_PARALLEL)
     ADD_SUBDIR(petsc)
 else()
-    ADD_SUBDIR(bandSPD)
-    ADD_SUBDIR(bandGEN)
     ADD_SUBDIR(profileSPD)
     ADD_SUBDIR(umfGEN)
 endif()

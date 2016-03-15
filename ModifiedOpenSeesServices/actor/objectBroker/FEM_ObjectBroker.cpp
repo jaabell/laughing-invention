@@ -242,32 +242,15 @@
 
 
 #ifdef _PARALLEL_PROCESSING
-#include <DistributedDisplacementControl.h>
 #include <PetscSOE.h>
 #include <PetscSolver.h>
-#include <SparseGenColLinSOE.h>
-#include <PetscSparseSeqSolver.h>
-#include <DistributedBandSPDLinSOE.h>
-#include <DistributedProfileSPDLinSOE.h>
-#include <DistributedSparseGenColLinSOE.h>
-#include <DistributedBandGenLinSOE.h>
 #include <ParallelNumberer.h>
 #include <StaticDomainDecompositionAnalysis.h>
 #include <TransientDomainDecompositionAnalysis.h>
 
 #else
 
-#include <FullGenLinSOE.h>
-#include <FullGenLinLapackSolver.h>
-#include <BandGenLinSOE.h>
-#include <BandGenLinLapackSolver.h>
-#include <BandSPDLinSOE.h>
-#include <BandSPDLinLapackSolver.h>
 #include <ProfileSPDLinSOE.h>
-#include <ProfileSPDLinDirectSolver.h>
-#include <ProfileSPDLinSubstrSolver.h>
-#include <SparseGenColLinSOE.h>
-// #include <SuperLU.h>
 #include <UmfpackGenLinSOE.h> //Guanzhou added
 #include <UmfpackGenLinSolver.h> //Guanzhou added
 #endif
@@ -1350,11 +1333,11 @@ FEM_ObjectBroker::getNewStaticIntegrator(int classTag)
     case INTEGRATOR_TAGS_LoadControl:
         return new LoadControl(1.0, 1, 1.0, .10); // must receiveSelf
 
-#ifdef _PARALLEL_PROCESSING
+// #ifdef _PARALLEL_PROCESSING
 
-    case INTEGRATOR_TAGS_DistributedDisplacementControl:
-        return new DistributedDisplacementControl(); // must receiveSelf
-#endif
+//     case INTEGRATOR_TAGS_DistributedDisplacementControl:
+//         return new DistributedDisplacementControl(); // must receiveSelf
+// #endif
 
     case INTEGRATOR_TAGS_ArcLength:
         return new ArcLength(1.0);      // must receiveSelf
@@ -1405,11 +1388,11 @@ FEM_ObjectBroker::getNewIncrementalIntegrator(int classTag)
     case INTEGRATOR_TAGS_Newmark:
         return new Newmark();
 
-#ifdef _PARALLEL_PROCESSING
+// #ifdef _PARALLEL_PROCESSING
 
-    case INTEGRATOR_TAGS_DistributedDisplacementControl:
-        return new DistributedDisplacementControl(); // must receiveSelf
-#endif
+//     case INTEGRATOR_TAGS_DistributedDisplacementControl:
+//         return new DistributedDisplacementControl(); // must receiveSelf
+// #endif
 
     default:
         cerr << "FEM_ObjectBroker::getNewIncrementalIntegrator - ";
@@ -1470,7 +1453,6 @@ FEM_ObjectBroker::getNewLinearSOE(int classTagSOE,
 
     }
 }
-
 
 
 

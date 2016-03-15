@@ -99,92 +99,92 @@ class Actor;
 
 class FEM_ObjectBroker
 {
-    public:
-        FEM_ObjectBroker();
-        virtual ~FEM_ObjectBroker();
+public:
+    FEM_ObjectBroker();
+    virtual ~FEM_ObjectBroker();
 
-        virtual Actor *getNewActor(int classTag, Channel *theChannel);
+    virtual Actor *getNewActor(int classTag, Channel *theChannel);
 
-        virtual PartitionedModelBuilder *
-        getPtrNewPartitionedModelBuilder(Subdomain &theSub,
-                                         int classTag);
+    virtual PartitionedModelBuilder *
+    getPtrNewPartitionedModelBuilder(Subdomain &theSub,
+                                     int classTag);
 
-        virtual GraphNumberer *getPtrNewGraphNumberer(int classTag);
+    virtual GraphNumberer *getPtrNewGraphNumberer(int classTag);
 
-        // methods to get new modelling class objects
-        virtual Element       *getNewElement(int classTag);
-        virtual Node          *getNewNode(int classTag);
-        virtual MP_Constraint *getNewMP(int classTag);
-        virtual SP_Constraint *getNewSP(int classTag);
-        virtual NodalLoad     *getNewNodalLoad(int classTag);
-        virtual ElementalLoad *getNewElementalLoad(int classTag);
+    // methods to get new modelling class objects
+    virtual Element       *getNewElement(int classTag);
+    virtual Node          *getNewNode(int classTag);
+    virtual MP_Constraint *getNewMP(int classTag);
+    virtual SP_Constraint *getNewSP(int classTag);
+    virtual NodalLoad     *getNewNodalLoad(int classTag);
+    virtual ElementalLoad *getNewElementalLoad(int classTag);
 
-        virtual BeamIntegration *getNewBeamIntegration(int classTag);
+    virtual BeamIntegration *getNewBeamIntegration(int classTag);
 
-        virtual UniaxialMaterial  *getNewUniaxialMaterial(int classTag);
-        virtual SectionForceDeformation  *getNewSection(int classTag);
-        virtual NDMaterial *getNewNDMaterial(int classTag);
-        virtual NDMaterialLT *getNewNDMaterialLT(int classTag);
-        virtual Fiber *getNewFiber(int classTag);
+    virtual UniaxialMaterial  *getNewUniaxialMaterial(int classTag);
+    virtual SectionForceDeformation  *getNewSection(int classTag);
+    virtual NDMaterial *getNewNDMaterial(int classTag);
+    virtual NDMaterialLT *getNewNDMaterialLT(int classTag);
+    virtual Fiber *getNewFiber(int classTag);
 
-        virtual ConvergenceTest *getNewConvergenceTest(int classTag);
-        virtual LoadPattern *getNewLoadPattern(int classTag);
-        virtual GroundMotion *getNewGroundMotion(int classTag);
-        virtual TimeSeries  *getNewTimeSeries(int classTag);
-        virtual TimeSeriesIntegrator  *getNewTimeSeriesIntegrator(int classTag);
+    virtual ConvergenceTest *getNewConvergenceTest(int classTag);
+    virtual LoadPattern *getNewLoadPattern(int classTag);
+    virtual GroundMotion *getNewGroundMotion(int classTag);
+    virtual TimeSeries  *getNewTimeSeries(int classTag);
+    virtual TimeSeriesIntegrator  *getNewTimeSeriesIntegrator(int classTag);
 
-        // matrix vector and id objects
-        virtual Matrix    *getPtrNewMatrix(int classTag, int noRows, int noCols);
-        virtual Vector    *getPtrNewVector(int classTag, int size);
-        virtual ID            *getPtrNewID(int classTag, int size);
+    // matrix vector and id objects
+    virtual Matrix    *getPtrNewMatrix(int classTag, int noRows, int noCols);
+    virtual Vector    *getPtrNewVector(int classTag, int size);
+    virtual ID            *getPtrNewID(int classTag, int size);
 
-        // methods for ouput objects
-        //virtual DataOutputHandler* getPtrNewDataOutputHandler(int classTag);
-        // virtual Recorder *getPtrNewRecorder(int classTag);
-
-
-        // methods to get new analysis objects
-        virtual ConstraintHandler   *getNewConstraintHandler(int classTag);
-        virtual DOF_Numberer        *getNewNumberer(int classTag);
-        virtual AnalysisModel       *getNewAnalysisModel(int classTag);
-        virtual EquiSolnAlgo        *getNewEquiSolnAlgo(int classTag);
-        virtual DomainDecompAlgo    *getNewDomainDecompAlgo(int classTag);
-        virtual StaticIntegrator    *getNewStaticIntegrator(int classTag);
-        virtual TransientIntegrator *getNewTransientIntegrator(int classTag);
-        virtual IncrementalIntegrator *getNewIncrementalIntegrator(int classTag);
-
-        virtual LinearSOE *getNewLinearSOE(int classTagSOE, int classTagSolver);
-        virtual LinearSOESolver *getNewLinearSolver(void);
-
-        virtual LinearSOE *getPtrNewDDLinearSOE(int classTagSOE,
-                                                int classTagDDSolver);
-        virtual DomainSolver *getNewDomainSolver(void);
-
-        virtual DomainDecompositionAnalysis *
-        getNewDomainDecompAnalysis(int classTag, Subdomain &theDomain);
-
-        virtual Subdomain  *getSubdomainPtr(int classTag);
-
-        //Guanzhou added Template3D/NewTemplate3D classes
-        virtual MaterialParameter *getNewMaterialParameterPtr(void);
-        virtual ElasticState *getNewElasticStatePtr(int classTag);
-        virtual YieldFunction *getNewYieldFunctionPtr(int classTag);
-        virtual PlasticFlow *getNewPlasticFlowPtr(int classTag);
-        virtual ScalarEvolution *getNewScalarEvolutionPtr(int classTag);
-        virtual TensorEvolution *getNewTensorEvolutionPtr(int classTag);
+    // methods for ouput objects
+    //virtual DataOutputHandler* getPtrNewDataOutputHandler(int classTag);
+    // virtual Recorder *getPtrNewRecorder(int classTag);
 
 
-        virtual YieldSurface  *getYieldSurfacePtr(int clsTag);
-        virtual PotentialSurface *getPotentialSurfacePtr(int clsTag);
+    // methods to get new analysis objects
+    virtual ConstraintHandler   *getNewConstraintHandler(int classTag);
+    virtual DOF_Numberer        *getNewNumberer(int classTag);
+    virtual AnalysisModel       *getNewAnalysisModel(int classTag);
+    virtual EquiSolnAlgo        *getNewEquiSolnAlgo(int classTag);
+    virtual DomainDecompAlgo    *getNewDomainDecompAlgo(int classTag);
+    virtual StaticIntegrator    *getNewStaticIntegrator(int classTag);
+    virtual TransientIntegrator *getNewTransientIntegrator(int classTag);
+    virtual IncrementalIntegrator *getNewIncrementalIntegrator(int classTag);
 
-        virtual EvolutionLaw_S *getEL_S(int clsTag);
-        virtual EvolutionLaw_T *getEL_T(int clsTag);
+    virtual LinearSOE *getNewLinearSOE(int classTagSOE, int classTagSolver);
+    virtual LinearSOESolver *getNewLinearSolver(void);
 
-    protected:
+    virtual LinearSOE *getPtrNewDDLinearSOE(int classTagSOE,
+                                            int classTagDDSolver);
+    virtual DomainSolver *getNewDomainSolver(void);
 
-    private:
-        LinearSOESolver *lastLinearSolver;
-        DomainSolver *lastDomainSolver;
+    virtual DomainDecompositionAnalysis *
+    getNewDomainDecompAnalysis(int classTag, Subdomain &theDomain);
+
+    virtual Subdomain  *getSubdomainPtr(int classTag);
+
+    //Guanzhou added Template3D/NewTemplate3D classes
+    virtual MaterialParameter *getNewMaterialParameterPtr(void);
+    virtual ElasticState *getNewElasticStatePtr(int classTag);
+    virtual YieldFunction *getNewYieldFunctionPtr(int classTag);
+    virtual PlasticFlow *getNewPlasticFlowPtr(int classTag);
+    virtual ScalarEvolution *getNewScalarEvolutionPtr(int classTag);
+    virtual TensorEvolution *getNewTensorEvolutionPtr(int classTag);
+
+
+    virtual YieldSurface  *getYieldSurfacePtr(int clsTag);
+    virtual PotentialSurface *getPotentialSurfacePtr(int clsTag);
+
+    virtual EvolutionLaw_S *getEL_S(int clsTag);
+    virtual EvolutionLaw_T *getEL_T(int clsTag);
+
+protected:
+
+private:
+    LinearSOESolver *lastLinearSolver;
+    DomainSolver *lastDomainSolver;
 
 };
 
