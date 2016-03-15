@@ -153,18 +153,9 @@
 //--------------------------------------------------------------------------------------------------
 #include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/Linear.h"
 #include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/NewtonRaphson.h"
-#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/NewtonLineSearch.h"
 #include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/ModifiedNewton.h"
-#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/BFGS.h"
-#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/KrylovNewton.h"
 
 
-// Line Searchers
-//--------------------------------------------------------------------------------------------------
-#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/BisectionLineSearch.h"
-#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/InitialInterpolatedLineSearch.h"
-#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/RegulaFalsiLineSearch.h"
-#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/SecantLineSearch.h"
 
 
 // System of Equations (SOE) Solvers

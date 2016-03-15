@@ -585,6 +585,7 @@ class ExpressionList : public Expression
 
 public:
 
+    ExpressionList (): m_left (0), m_right (0) {}
     ExpressionList (Expression* left, Expression* right): m_left (left), m_right (right) {}
 
     // Copy constructor

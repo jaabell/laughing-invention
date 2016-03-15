@@ -211,9 +211,6 @@ int simulate_using_static_multistep(int numSteps)
     cout << "\n\n\n";
     cout << "> Analysis Start -----------------------------------------------------------------------------";
 
-    // for (int i = 1; i <= numSteps; i++)
-    // {
-
 
     if ( OPS_REDEFINE_ANALYSIS == true )
     {
@@ -244,30 +241,16 @@ int simulate_using_static_multistep(int numSteps)
     }
 
 
-    int numIncr = 1; // Number of increments in each step. added by Babak KAmrani 10/042011
-    // result = theStaticAnalysis->analyze(numIncr);
 
     result = theStaticAnalysis->analyze(numSteps);
 
-    // cout << "\nAnalysis step " << i << " finished!\n";
-
-    // }
     cout << "> Analysis End -------------------------------------------------------------------------------";
-
-    //  if (theStaticAnalysis != 0)
-    //  {
-    //      theStaticAnalysis->clearAll();
-    //      delete theStaticAnalysis;
-    //  }
 
 
     //=====================================================================================
     // Sequential Static Analysis
     //=====================================================================================
 #else
-    // // bool isOutputBinary = false;
-    // bool isTheAnalysisDynamic = false;
-    // StateWriter output_writer(ModelName, StageName, isTheAnalysisDynamic);
 
     result = theStaticAnalysis->analyze(numSteps);
     cout << "> Analysis End -------------------------------------------------------------------------------\n";
@@ -276,7 +259,6 @@ int simulate_using_static_multistep(int numSteps)
 
 
     globalESSITimer.report();
-    // delete channel;
 
     return result;
 
