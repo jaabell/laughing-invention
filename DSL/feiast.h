@@ -623,8 +623,12 @@ public:
 
     virtual Quantity value ()
     {
-        m_left -> value();
-        return m_right->value ();
+        if (m_left != 0 && m_right != 0)
+        {
+            m_left -> value();
+            return m_right->value ();
+        }
+        return 0;
     }
 
 };

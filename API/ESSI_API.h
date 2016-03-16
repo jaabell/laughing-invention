@@ -372,7 +372,7 @@ Domain theDomain;
 #endif
 
 
-LoadPattern *DRM_LOAD_PATTERN      = 0 ; //Pointer to DRM Load pattern to be available ftom everywhere ...
+// LoadPattern *DRM_LOAD_PATTERN      = 0 ; //Pointer to DRM Load pattern to be available ftom everywhere ...
 Channel          **OPS_theChannels = 0;
 
 std::string profiling_results_filename = ""; //Where to put timing results
