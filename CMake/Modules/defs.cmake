@@ -155,7 +155,7 @@ endif()
 #     IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
 # endif()
 IMPORT_NATIVE_LIB("" HDF5 "${RealESSI_DEP}/hdf5_sequential/lib")
-IMPORT_NATIVE_LIB("" PETSc "${RealESSI_DEP}/hdf5_sequential/lib")
+IMPORT_NATIVE_LIB("" PETSC "")
 
 
 
