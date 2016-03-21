@@ -66,21 +66,22 @@ ENDMACRO()
 # Macro to add a single external library
 MACRO(IMPORT_NATIVE_LIB lib_dir lib_name alt_dir)
     FIND_PACKAGE(${lib_name})
-    message(STATUS "HDF5_LIBRARY_DIRS = ${HDF5_LIBRARY_DIRS}")
-    message(STATUS "HDF5_INCLUDE_DIRS = ${HDF5_INCLUDE_DIRS}") # - Location of the hdf5 includes
-    message(STATUS "HDF5_INCLUDE_DIR = ${HDF5_INCLUDE_DIR}") # - Location of the hdf5 includes (deprecated)
-    message(STATUS "HDF5_DEFINITIONS = ${HDF5_DEFINITIONS}") # - Required compiler definitions for HDF5
-    message(STATUS "HDF5_C_LIBRARIES = ${HDF5_C_LIBRARIES}") # - Required libraries for the HDF5 C bindings.
-    message(STATUS "HDF5_CXX_LIBRARIES = ${HDF5_CXX_LIBRARIES}") # - Required libraries for the HDF5 C++ bindings
-    message(STATUS "HDF5_Fortran_LIBRARIES = ${HDF5_Fortran_LIBRARIES}") # - Required libraries for the HDF5 Fortran bindings
-    message(STATUS "HDF5_HL_LIBRARIES = ${HDF5_HL_LIBRARIES}") # - Required libraries for the HDF5 high level API
-    message(STATUS "HDF5_Fortran_HL_LIBRARIES = ${HDF5_Fortran_HL_LIBRARIES}") # - Required libraries for the high level Fortran                            bindings.
-    message(STATUS "HDF5_LIBRARIES = ${HDF5_LIBRARIES}") # - Required libraries for all requested bindings
-    message(STATUS "HDF5_FOUND = ${HDF5_FOUND}") # - true if HDF5 was found on the system
+    message(STATUS "${lib_name}_LIBRARY_DIRS = ${${lib_name}_LIBRARY_DIRS}")
+    message(STATUS "${lib_name}_INCLUDE_DIRS = ${${lib_name}_INCLUDE_DIRS}") # - Location of the ${lib_name} includes
+    message(STATUS "${lib_name}_INCLUDE_DIR = ${${lib_name}_INCLUDE_DIR}") # - Location of the ${lib_name} includes (deprecated)
+    message(STATUS "${lib_name}_DEFINITIONS = ${${lib_name}_DEFINITIONS}") # - Required compiler definitions for ${lib_name}
+    message(STATUS "${lib_name}_C_LIBRARIES = ${${lib_name}_C_LIBRARIES}") # - Required libraries for the ${lib_name} C bindings.
+    message(STATUS "${lib_name}_CXX_LIBRARIES = ${${lib_name}_CXX_LIBRARIES}") # - Required libraries for the ${lib_name} C++ bindings
+    message(STATUS "${lib_name}_Fortran_LIBRARIES = ${${lib_name}_Fortran_LIBRARIES}") # - Required libraries for the ${lib_name} Fortran bindings
+    message(STATUS "${lib_name}_HL_LIBRARIES = ${${lib_name}_HL_LIBRARIES}") # - Required libraries for the ${lib_name} high level API
+    message(STATUS "${lib_name}_Fortran_HL_LIBRARIES = ${${lib_name}_Fortran_HL_LIBRARIES}") # - Required libraries for the high level Fortran                            bindings.
+    message(STATUS "${lib_name}_LIBRARIES = ${${lib_name}_LIBRARIES}") # - Required libraries for all requested bindings
+    message(STATUS "${lib_name}_FOUND = ${${lib_name}_FOUND}") # - true if HDF5 was found on the system
     if(${lib_name}_FOUND)
         message(STATUS ${${lib_name}_LIBRARIES})
         add_library(${lib_name}_LIBRARIES SHARED IMPORTED)
         set_property(TARGET ${lib_name}_LIBRARIES PROPERTY IMPORTED_LOCATION ${${lib_name}_LIBRARIES})
+        list(APPEND EXT_INCLUDE ${${lib_name}_INCLUDE_DIRS})
     else()
         IMPORT_LIB(${alt_dir} ${lib_name})
     endif()
