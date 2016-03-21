@@ -191,6 +191,8 @@ int simulate_using_static_multistep(int numSteps)
         cout << "Done!\n";
 
 
+        measure_machine_topology(OPS_theChannels);
+
 
         cout << "Partitioning domain into subdomains............................................................";
         // create a partitioner & partition the domain

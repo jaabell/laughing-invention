@@ -3,8 +3,10 @@
 # For parallel:  cmake -DCMAKE_CXX_COMPILER=/usr/bin/mpic++ -DPROGRAMMING_MODE=PARALLEL ..
 cmake_minimum_required(VERSION 2.8.9)
 project (RealESSI)
+
 #Generates a Release version
 set(CMAKE_BUILD_TYPE Release)
+
 # set version number
 set(RealESSI_VERSION_MAJOR 1)
 set(RealESSI_VERSION_MINOR 0)
@@ -35,6 +37,14 @@ set(COMP_ERRS OFF)
 set(COMP_ERRS_LOG "")
 
 # Load modules
+
+FIND_PACKAGE(HDF5)
+
+if(HDF5_FOUND)
+    message(STATUS "Found HDF5 - :)")
+endif()
+
+
 include(${CMAKE_SOURCE_DIR}/CMake/Modules/essi.cmake)
 # Add the modules required by the make process
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
