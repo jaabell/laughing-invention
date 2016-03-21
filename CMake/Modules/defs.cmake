@@ -86,7 +86,7 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     list(APPEND EXT_INCLUDE "${RealESSI_DEP}/include")
     # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/parmetis-4.0.2_install/include")
     # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/metis-4.0.2_install/include")
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
+    # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
     # set( EXT_INCLUDE "${EXT_INCLUDE} ${RealESSI_DEP}/hdf5_parallel/include")
 
     list(APPEND NUMERIC_LIBS "petsc")
@@ -123,7 +123,7 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
 
 else()  # sequential
     message(STATUS "YES! SEQUENTIAL")
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
+    # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
     
     list(APPEND NUMERIC_LIBS "lapack")
     list(APPEND NUMERIC_LIBS "arpack")
@@ -155,6 +155,7 @@ endif()
 #     IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
 # endif()
 IMPORT_NATIVE_LIB("" HDF5 "${RealESSI_DEP}/hdf5_sequential/lib")
+IMPORT_NATIVE_LIB("" PETSc "${RealESSI_DEP}/hdf5_sequential/lib")
 
 
 

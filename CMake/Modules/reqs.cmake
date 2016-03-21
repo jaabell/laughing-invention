@@ -7,7 +7,7 @@ message(STATUS "Checking external dependencies")
 if(NOT EXISTS "${RealESSI_DEP}")
     if(NOT EXISTS "${CMAKE_SOURCE_DIR}/../RealESSI_Dependencies.tgz")
         LOG_ERR("RealESSI dependencies missing!! ...\nPlease request the RealESSI_Dependencies.tgz file from developers and place it in ${CMAKE_SOURCE_DIR}/..")
-        FAIL() 
+        #FAIL() 
     else()
         # unzip
         message(STATUS "Extracting dependencies...  This will take a while! Grab a coffee...")
