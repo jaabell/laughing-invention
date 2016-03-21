@@ -151,7 +151,7 @@ FIND_PACKAGE(HDF5)
 
 if(HDF5_FOUND)
     message(STATUS ${HDF5_LIBRARY_DIRS})
-    # IMPORT_LIB()
+    IMPORT_LIB(${HDF5_LIBRARY_DIRS} HDF5)
 else()
     IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
 endif()
