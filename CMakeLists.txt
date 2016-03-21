@@ -37,14 +37,6 @@ set(COMP_ERRS OFF)
 set(COMP_ERRS_LOG "")
 
 # Load modules
-
-FIND_PACKAGE(HDF5)
-
-if(HDF5_FOUND)
-    message(STATUS "Found HDF5 - :)")
-endif()
-
-
 include(${CMAKE_SOURCE_DIR}/CMake/Modules/essi.cmake)
 # Add the modules required by the make process
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
