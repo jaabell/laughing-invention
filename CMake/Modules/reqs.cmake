@@ -2,6 +2,7 @@ string(TOLOWER ${PROGRAMMING_MODE} p_mode)
 
 #FIND_PACKAGE(LAPACK)
 # FIND_PACKAGE(BLAS)
+FIND_PACKAGE(HDF5)
 
 message(STATUS "Checking external dependencies")
 if(NOT EXISTS "${RealESSI_DEP}")
