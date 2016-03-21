@@ -147,15 +147,14 @@ else()  # sequential
 endif()
 
 
-FIND_PACKAGE(HDF5 REQUIRED STATIC)
-
-if(HDF5_FOUND)
-    message(STATUS ${HDF5_LIBRARY_DIRS})
-    IMPORT_LIB(${HDF5_LIBRARY_DIRS} HDF5)
-else()
-    IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
-endif()
-
+# FIND_PACKAGE(HDF5 REQUIRED static)
+# if(HDF5_FOUND)
+#     message(STATUS ${HDF5_LIBRARY_DIRS})
+#     IMPORT_LIB(${HDF5_LIBRARY_DIRS} HDF5)
+# else()
+#     IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
+# endif()
+IMPORT_NATIVE_LIB("" HDF5 "${RealESSI_DEP}/hdf5_sequential/lib")
 
 
 
