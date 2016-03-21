@@ -4,6 +4,10 @@ string(TOLOWER ${PROGRAMMING_MODE} p_mode)
 # FIND_PACKAGE(BLAS)
 FIND_PACKAGE(HDF5)
 
+if(HDF5_FOUND)
+    message(STATUS "Found HDF5 - :)")
+endif()
+
 message(STATUS "Checking external dependencies")
 if(NOT EXISTS "${RealESSI_DEP}")
     if(NOT EXISTS "${CMAKE_SOURCE_DIR}/../RealESSI_Dependencies.tgz")
