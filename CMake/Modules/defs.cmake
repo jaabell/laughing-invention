@@ -147,7 +147,7 @@ else()  # sequential
 endif()
 
 
-FIND_PACKAGE(HDF5)
+FIND_PACKAGE(HDF5 REQUIRED STATIC)
 
 if(HDF5_FOUND)
     message(STATUS ${HDF5_LIBRARY_DIRS})
