@@ -86,7 +86,9 @@ MACRO(IMPORT_LIB lib_dir lib_name)
     else()
         LOG_ERR("lib${lib_name}.a not found in ${lib_dir}")
     endif()
-ENDMACR
+ENDMACRO()
+
+
 
 # Macro to add multiple external libraries
 MACRO(IMPORT_LIBS lib_dir lib_names)
