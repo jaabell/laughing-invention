@@ -64,20 +64,6 @@ MACRO(HEADER_DIRECTORIES return_list)
 ENDMACRO()
 
 # Macro to add a single external library
-MACRO(IMPORT_NATIVE_LIB lib_dir lib_name alt_dir)
-    FIND_PACKAGE(${lib_name})
-    #message(STATUS ${HDF5_LIBRARY_DIRS})
-    if(${lib_name}_FOUND)
-        message(STATUS ${${lib_name}_LIBRARY_DIRS})
-        add_library(${lib_dir} SHARED IMPORTED)
-        set_property(TARGET ${lib_name} PROPERTY IMPORTED_LOCATION ${lib_dir})
-    else()
-        IMPORT_LIB(${alt_dir} ${lib_name})
-    endif()
-
-ENDMACRO()
-
-# Macro to add a single external library
 MACRO(IMPORT_LIB lib_dir lib_name)
     # message(STATUS "Looking for: ${lib_dir}/lib${lib_name}.a")
     if(EXISTS "${lib_dir}/lib${lib_name}.a")
@@ -86,7 +72,7 @@ MACRO(IMPORT_LIB lib_dir lib_name)
     else()
         LOG_ERR("lib${lib_name}.a not found in ${lib_dir}")
     endif()
-ENDMACR
+ENDMACRO()
 
 # Macro to add multiple external libraries
 MACRO(IMPORT_LIBS lib_dir lib_names)

@@ -1458,7 +1458,6 @@ void set_known_units()
     global_variables["MPa"] = Quantity(1.0, ESSIunits::MPa);
     global_variables["GPa"] = Quantity(1.0, ESSIunits::GPa);
 
-
     //Imperial units
     global_variables["pound"] = Quantity(4.448221615255 , ESSIunits::N);
     global_variables["inch"] = Quantity(0.0254 , ESSIunits::m);

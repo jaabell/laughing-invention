@@ -3,10 +3,8 @@
 # For parallel:  cmake -DCMAKE_CXX_COMPILER=/usr/bin/mpic++ -DPROGRAMMING_MODE=PARALLEL ..
 cmake_minimum_required(VERSION 2.8.9)
 project (RealESSI)
-
 #Generates a Release version
 set(CMAKE_BUILD_TYPE Release)
-
 # set version number
 set(RealESSI_VERSION_MAJOR 1)
 set(RealESSI_VERSION_MINOR 0)
@@ -21,12 +19,12 @@ set(RealESSI_DEP "${CMAKE_SOURCE_DIR}/../RealESSI_Dependencies")
 set(ESSI_LIB "${CMAKE_BINARY_DIR}/lib")
 set(NUMERIC_LIBS_DIR "${RealESSI_DEP}/lib")
 
-set(INCLUDE_PATHS "")                   # Will contain the path to all the .h files
+set(INCLUDE_PATHS "")       # Will contain the path to all the .h files
 set(PROGRAMMING_FLAG "")    # Will contain the value that will be added to the compiling flags
-set(COMPILER_FLAGS "")              # Will contain compiling flags
-set(LINKER_FLAGS "")                    # Will contain the flags for the linker
+set(COMPILER_FLAGS "")      # Will contain compiling flags
+set(LINKER_FLAGS "")        # Will contain the flags for the linker
 set(EXT_INCLUDE "")         # List of external
-set(ESSI_LIBS "")                   # List of internal libs to be included
+set(ESSI_LIBS "")           # List of internal libs to be included
 set(NUMERIC_LIBS "")        # List of external libs to be included
 set(MACHINE_LIBS "")        # List of standard libs to be included
 

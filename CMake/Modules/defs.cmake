@@ -111,6 +111,9 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     list(APPEND NUMERIC_LIBS "f77blas")
     list(APPEND NUMERIC_LIBS "atlas")
     list(APPEND NUMERIC_LIBS "suitesparseconfig")
+
+    # IMPORT_LIB("${RealESSI_DEP}/hdf5_parallel/lib" hdf5)
+    IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
     
     # SYSTEM_LIBS("quadmath" MACHINE_LIBS)
     # SYSTEM_LIBS("gcc_s" MACHINE_LIBS)
@@ -139,21 +142,12 @@ else()  # sequential
     list(APPEND NUMERIC_LIBS "atlas")
     list(APPEND NUMERIC_LIBS "suitesparseconfig")
     
+    IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
     
     SYSTEM_LIBS("ieee" MACHINE_LIBS)
     SYSTEM_LIBS("c" MACHINE_LIBS)
     SYSTEM_LIBS("pthread" MACHINE_LIBS)
     SYSTEM_LIBS("rt" MACHINE_LIBS)
-endif()
-
-
-FIND_PACKAGE(HDF5)
-
-if(HDF5_FOUND)
-    message(STATUS ${HDF5_LIBRARY_DIRS})
-    IMPORT_LIB(${HDF5_LIBRARY_DIRS} HDF5)
-else()
-    IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
 endif()
 
 
