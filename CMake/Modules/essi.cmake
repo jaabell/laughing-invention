@@ -69,12 +69,8 @@ MACRO(IMPORT_NATIVE_LIB lib_dir lib_name alt_dir)
     message(STATUS "${lib_name}_LIBRARY_DIRS = ${${lib_name}_LIBRARY_DIRS}")
     message(STATUS "${lib_name}_INCLUDE_DIRS = ${${lib_name}_INCLUDE_DIRS}") # - Location of the ${lib_name} includes
     message(STATUS "${lib_name}_INCLUDE_DIR = ${${lib_name}_INCLUDE_DIR}") # - Location of the ${lib_name} includes (deprecated)
-    message(STATUS "${lib_name}_DEFINITIONS = ${${lib_name}_DEFINITIONS}") # - Required compiler definitions for ${lib_name}
     message(STATUS "${lib_name}_C_LIBRARIES = ${${lib_name}_C_LIBRARIES}") # - Required libraries for the ${lib_name} C bindings.
     message(STATUS "${lib_name}_CXX_LIBRARIES = ${${lib_name}_CXX_LIBRARIES}") # - Required libraries for the ${lib_name} C++ bindings
-    message(STATUS "${lib_name}_Fortran_LIBRARIES = ${${lib_name}_Fortran_LIBRARIES}") # - Required libraries for the ${lib_name} Fortran bindings
-    message(STATUS "${lib_name}_HL_LIBRARIES = ${${lib_name}_HL_LIBRARIES}") # - Required libraries for the ${lib_name} high level API
-    message(STATUS "${lib_name}_Fortran_HL_LIBRARIES = ${${lib_name}_Fortran_HL_LIBRARIES}") # - Required libraries for the high level Fortran                            bindings.
     message(STATUS "${lib_name}_LIBRARIES = ${${lib_name}_LIBRARIES}") # - Required libraries for all requested bindings
     message(STATUS "${lib_name}_FOUND = ${${lib_name}_FOUND}") # - true if HDF5 was found on the system
     if(${lib_name}_FOUND)
