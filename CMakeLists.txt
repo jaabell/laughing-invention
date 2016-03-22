@@ -28,6 +28,8 @@ set(ESSI_LIBS "")           # List of internal libs to be included
 set(NUMERIC_LIBS "")        # List of external libs to be included
 set(MACHINE_LIBS "")        # List of standard libs to be included
 
+set(NO_BLASLAPACK "FALSE")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
+
 set(IS_PARALLEL OFF)
 set(PROGRAMMING_FLAG  "")
 
