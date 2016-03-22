@@ -86,7 +86,7 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     list(APPEND EXT_INCLUDE "${RealESSI_DEP}/include")
     # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/parmetis-4.0.2_install/include")
     # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/metis-4.0.2_install/include")
-    # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
+    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
     # set( EXT_INCLUDE "${EXT_INCLUDE} ${RealESSI_DEP}/hdf5_parallel/include")
 
     list(APPEND NUMERIC_LIBS "petsc")
@@ -111,6 +111,9 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     list(APPEND NUMERIC_LIBS "f77blas")
     list(APPEND NUMERIC_LIBS "atlas")
     list(APPEND NUMERIC_LIBS "suitesparseconfig")
+
+    # IMPORT_LIB("${RealESSI_DEP}/hdf5_parallel/lib" hdf5)
+    IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
     
     # SYSTEM_LIBS("quadmath" MACHINE_LIBS)
     # SYSTEM_LIBS("gcc_s" MACHINE_LIBS)
@@ -123,7 +126,7 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
 
 else()  # sequential
     message(STATUS "YES! SEQUENTIAL")
-    # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
+    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
     
     list(APPEND NUMERIC_LIBS "lapack")
     list(APPEND NUMERIC_LIBS "arpack")
@@ -139,6 +142,7 @@ else()  # sequential
     list(APPEND NUMERIC_LIBS "atlas")
     list(APPEND NUMERIC_LIBS "suitesparseconfig")
     
+    IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
     
     SYSTEM_LIBS("ieee" MACHINE_LIBS)
     SYSTEM_LIBS("c" MACHINE_LIBS)
@@ -146,18 +150,6 @@ else()  # sequential
     SYSTEM_LIBS("rt" MACHINE_LIBS)
 endif()
 
-
-# FIND_PACKAGE(HDF5 REQUIRED static)
-# if(HDF5_FOUND)
-#     message(STATUS ${HDF5_LIBRARY_DIRS})
-#     IMPORT_LIB(${HDF5_LIBRARY_DIRS} HDF5)
-# else()
-#     IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
-# endif()
-IMPORT_NATIVE_LIB("" HDF5 "${RealESSI_DEP}/hdf5_sequential/lib")
-IMPORT_NATIVE_LIB("" METIS "")
-IMPORT_NATIVE_LIB("" ParMETIS "")
-IMPORT_NATIVE_LIB("" PETSc "")
 
 
 

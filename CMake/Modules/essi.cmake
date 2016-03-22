@@ -64,27 +64,6 @@ MACRO(HEADER_DIRECTORIES return_list)
 ENDMACRO()
 
 # Macro to add a single external library
-MACRO(IMPORT_NATIVE_LIB lib_dir lib_name alt_dir)
-    FIND_PACKAGE(${lib_name})
-    message(STATUS "${lib_name}_LIBRARY_DIRS = ${${lib_name}_LIBRARY_DIRS}")
-    message(STATUS "${lib_name}_INCLUDE_DIRS = ${${lib_name}_INCLUDE_DIRS}") # - Location of the ${lib_name} includes
-    message(STATUS "${lib_name}_INCLUDE_DIR = ${${lib_name}_INCLUDE_DIR}") # - Location of the ${lib_name} includes (deprecated)
-    message(STATUS "${lib_name}_C_LIBRARIES = ${${lib_name}_C_LIBRARIES}") # - Required libraries for the ${lib_name} C bindings.
-    message(STATUS "${lib_name}_CXX_LIBRARIES = ${${lib_name}_CXX_LIBRARIES}") # - Required libraries for the ${lib_name} C++ bindings
-    message(STATUS "${lib_name}_LIBRARIES = ${${lib_name}_LIBRARIES}") # - Required libraries for all requested bindings
-    message(STATUS "${lib_name}_FOUND = ${${lib_name}_FOUND}") # - true if HDF5 was found on the system
-    if(${lib_name}_FOUND)
-        message(STATUS ${${lib_name}_LIBRARIES})
-        add_library(${lib_name}_LIBRARIES SHARED IMPORTED)
-        set_property(TARGET ${lib_name}_LIBRARIES PROPERTY IMPORTED_LOCATION ${${lib_name}_LIBRARIES})
-        list(APPEND EXT_INCLUDE ${${lib_name}_INCLUDE_DIRS})
-    else()
-        IMPORT_LIB(${alt_dir} ${lib_name})
-    endif()
-
-ENDMACRO()
-
-# Macro to add a single external library
 MACRO(IMPORT_LIB lib_dir lib_name)
     # message(STATUS "Looking for: ${lib_dir}/lib${lib_name}.a")
     if(EXISTS "${lib_dir}/lib${lib_name}.a")
@@ -94,8 +73,6 @@ MACRO(IMPORT_LIB lib_dir lib_name)
         LOG_ERR("lib${lib_name}.a not found in ${lib_dir}")
     endif()
 ENDMACRO()
-
-
 
 # Macro to add multiple external libraries
 MACRO(IMPORT_LIBS lib_dir lib_names)

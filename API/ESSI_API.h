@@ -302,7 +302,6 @@
 #include <../ModifiedOpenSeesServices/analysis/analysis/StaticDomainDecompositionAnalysis.h>
 #include <../ModifiedOpenSeesServices/analysis/analysis/TransientDomainDecompositionAnalysis.h>
 #include <../ModifiedOpenSeesServices/analysis/numberer/ParallelNumberer.h>
-#include <../CompGeoMechUCD_Miscellaneous/MachineTopology/MachineTopology.h>
 
 #endif
 
@@ -365,7 +364,7 @@ FEM_ObjectBroker   *OPS_OBJECT_BROKER;
 MachineBroker      *OPS_MACHINE;
 Element            *ops_TheActiveElement   = 0;
 MPI_MachineBroker  *theMachineBroker       = 0;
-MachineTopology    *theMachineTopology     = 0;
+
 #else // If not _PARALLEL_PROCESSING
 
 Domain theDomain;

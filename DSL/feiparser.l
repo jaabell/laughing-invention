@@ -1279,7 +1279,7 @@ void signalHandler(int signum)
 
  /* END SIGNALS */
 
-int main(int argc, char**argv)
+int main (int argc, char**argv)
 {
     //feclearexcept(FE_ALL_EXCEPT);
     //feenableexcept(FE_INVALID   | 
@@ -1465,8 +1465,7 @@ void set_known_units()
     global_variables["yard"] = Quantity(0.9144 , ESSIunits::m);
     global_variables["mile"] = Quantity(1.60934e3 , ESSIunits::m);
     global_variables["psi"] = Quantity(6.89476e3 , ESSIunits::Pa);
-    global_variables["ksi"] = Quantity(6.89476e6 , ESSIunits::Pa);
-	global_variables["kips"] = Quantity(453.59200000 , ESSIunits::N);
+	global_variables["ksi"] = Quantity(6.89476e6 , ESSIunits::Pa);
 
     //Constants
 	global_variables["g"] = ESSIunits::g;  // gravitational acceleration on Earth at sea level and 45degrees of latitude
