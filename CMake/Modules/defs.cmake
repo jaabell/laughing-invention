@@ -195,7 +195,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}" )
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LINKER_FLAGS}" )
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE ON)
-set(CMAKE_AR "gcc-ar")
+# set(CMAKE_AR "gcc-ar")
 # Set the location where all the libraries will be created
 set(LIBRARY_OUTPUT_PATH ${ESSI_LIB})
 
