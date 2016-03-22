@@ -5,9 +5,9 @@ ADD_SUBDIR(units)
 ADD_SUBDIR(output)
 ADD_SUBDIR(timing)
 
-if(IS_PARALLEL)
-    ADD_SUBDIR(MachineTopology)
-endif()
+# if(IS_PARALLEL)
+#     ADD_SUBDIR(MachineTopology)
+# endif()
 
 # ADD_SUBDIR(system_tests)
 
