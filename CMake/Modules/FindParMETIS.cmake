@@ -13,19 +13,19 @@
   FIND_PATH(ParMETIS_INCLUDE_DIRS ParMETIS.h
     /usr/local/include
     /usr/include
-    $(ParMETIS)
+    $(PARMETIS_DIR)/include
   )
   
   FIND_LIBRARY(ParMETIS_LIBRARY ParMETIS
     /usr/local/lib
     /usr/lib
-    $(ParMETIS_DIR)
+    $(PARMETIS_DIR)/lib
   )
   
   FIND_LIBRARY(METIS_LIBRARY metis
     /usr/local/lib
     /usr/lib
-    $(METIS_DIR)
+    $(METIS_DIR)/lib
   )
   
   IF(ParMETIS_INCLUDE_DIRS)
