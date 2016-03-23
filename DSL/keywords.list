@@ -282,6 +282,7 @@ yield_strength
 20NodeBrick
 20NodeBrick_elastic
 20NodeBrick_upU
+20NodeBrickLT
 27NodeBrick
 27NodeBrick_elastic
 27NodeBrickLT

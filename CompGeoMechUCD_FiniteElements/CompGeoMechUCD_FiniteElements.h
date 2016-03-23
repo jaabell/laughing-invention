@@ -53,4 +53,5 @@
 #include "./solid_brick_large_deformation_total_Lagrangian_20_nodes/TotalLagrangianFD20NodeBrick.h"
 
 #include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT.h"
+#include "./solid_brick_20_nodes_ltensor/TwentyNodeBrickLT.h"
 #include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT_NoOutput.h"

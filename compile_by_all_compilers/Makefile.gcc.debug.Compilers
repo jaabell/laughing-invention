@@ -1,0 +1,202 @@
+Compiler = GNU
+#Compiler = CLANG
+# Compiler = PARALLEL
+
+DEBUG_MODE = DEBUG
+# DEBUG_MODE = NO_DEBUG
+
+PROGRAMMING_MODE = SEQUENTIAL
+# PROGRAMMING_MODE = PARALLEL
+
+LTO_FLAGS = 
+# LTO_FLAGS = -flto
+
+INLINING_OPTS = -finline \
+				-finline-functions \
+				-fkeep-inline-functions \
+				-fdefault-inline 
+
+
+# INLINING_OPTS = -finline \
+# 				-Winline \
+# 				-finline-functions \
+# 				-finline-limit=10000 \
+# 				-ftemplate-depth=100000 \
+# 				--param inline-unit-growth=10000 \
+# 				--param large-function-growth=10000 \
+# 				-fkeep-inline-functions \
+# 				-fdefault-inline
+
+LOGFILE = "essi_compilation.log"
+
+
+#  ==========================================
+#  Check if these variables are set
+#  ==========================================
+ifndef Compiler
+$(error Compiler is not set)
+endif
+
+ifndef DEBUG_MODE
+$(error DEBUG_MODE is not set)
+endif
+
+ifndef PROGRAMMING_MODE
+$(error PROGRAMMING_MODE is not set)
+endif
+
+# Show the values of the variables
+# $(info Compiler = $(Compiler))
+# $(info DEBUG_MODE = $(DEBUG_MODE))
+$(info )
+$(info )
+$(info =========================================================================================)
+$(info =========================================================================================)
+
+
+ifeq ($(PROGRAMMING_MODE), PARALLEL)
+	PROGRAMMING_FLAG = -D_PDD -D_PARALLEL_PROCESSING -D_TIMING -D_PETSC -D_BDEBUG -DPETSC_USE_BOPT_O -DPETSC_USE_EXTERN_CXX  
+	MACHINE_INCLUDES  = 
+	INCLUDES = $(ESSI_INCLUDES) $(PARALLEL_NUMERIC_INCLUDES) 
+	LIBS = $(ESSI_LIBS) $(PARALLEL_NUMERIC_LIBS) $(PARALLEL_MACHINE_LIBS)
+else
+	PROGRAMMING_FLAG =
+	MACHINE_INCLUDES  = 
+	INCLUDES = $(ESSI_INCLUDES) $(SEQUENTIAL_NUMERIC_INCLUDES) 
+	LIBS = $(ESSI_LIBS) $(SEQUENTIAL_NUMERIC_LIBS) $(SEQUENTIAL_MACHINE_LIBS)
+endif
+
+
+ifeq ($(Compiler), GNU)
+	CC++            =  g++
+	CC              =  gcc
+	FC              =  gfortran
+	FORTRAN         =  gfortran
+	F90             =
+	LINKER          =  g++
+else ifeq ($(Compiler), CLANG)
+	CC++            =  clang++
+	CC              =  clang
+	FC              =  gfortran
+	FORTRAN         =  gfortran
+	F90             =
+	LINKER          =  clang++
+else ifeq ($(Compiler), PARALLEL)
+	CC++            =  mpic++
+	CC              =  mpicc
+	FC              =  mpif77
+	FORTRAN         =  mpif77
+	F90             =
+	LINKER          =  mpic++
+endif
+
+ifeq ($(DEBUG_MODE), NO_DEBUG)
+	C++FLAGS        = $(LTO_FLAGS) -Wall  \
+										-O2 -g \
+										$(INLINING_OPTS) \
+										-funroll-loops \
+										-D_LINUX \
+										-D_UNIX \
+										$(PROGRAMMING_FLAG) \
+										-DBrzi_nDarray_val \
+										-std=c++11 \
+										-Wno-write-strings \
+										-static \
+										-static-libgcc \
+										-static-libstdc++ \
+										-march=native \
+										-fdiagnostics-color=auto \
+										-ftree-vectorize \
+										-ftree-slp-vectorize \
+										-ffast-math  \
+										-funroll-loops \
+										-fvariable-expansion-in-unroller 
+	CFLAGS          = $(LTO_FLAGS) -O2 \
+										-D_LINUX \
+										-D_UNIX \
+										-D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84
+										-march=native $(MORE_CFLAGS)
+
+	FFLAGS          = -O2 $(MORE_FFLAGS)
+	LINKFLAGS       = -O2 $(LTO_FLAGS) $(MORE_LINKFLAGS)
+
+else
+	C++FLAGS        = -Wall \
+										-g \
+										-pg \
+										-D_G3DEBUG \
+										-D_DEBUG_CONTACT \
+										-D_LINUX \
+										-D_UNIX \
+										 $(PROGRAMMING_FLAG) \
+										-DBrzi_nDarray_val \
+										-D_TEACHING_MODE \
+										-std=c++11 \
+										-Wno-write-strings \
+										-fdiagnostics-color=auto 
+	CFLAGS          = -g -pg \
+										-D_G3DEBUG \
+										-D_LINUX \
+										-D_UNIX -D_NOGRAPHICS $(PROGRAMMING_FLAG) -D_TCL84 \
+										$(MORE_CFLAGS)
+	FFLAGS          = -march=native -funroll-loops -O3 $(MORE_FFLAGS)
+	LINKFLAGS       = -g -pg $(MORE_LINKFLAGS)
+endif
+
+
+AR          = gcc-ar 
+ARFLAGS       = cqls
+MAKE            = make
+CD              = cd
+ECHO            = echo
+RM              = rm
+RMFLAGS         = -fr
+SHELL           = /bin/sh
+
+
+
+
+.SUFFIXES:
+.SUFFIXES:  .C .c .f .f90 .cpp .o .cpp
+
+#
+# %------------------%
+# | Default command. |
+# %------------------%
+#
+.DEFAULT:
+	@$(ECHO) "Unknown target $@, try:  make help"
+#
+# %-----------------------------------------------%
+# |  Command to build .o files from source files. |
+# %-----------------------------------------------%
+#
+
+
+%.o : %.cpp 
+	@$(ECHO) Compiling $@
+	$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $<
+
+
+%.o : %.C 
+# @$(ECHO) Making $@ from $<
+	$(CC++) $(C++FLAGS) $(INCLUDES) $(MACHINE_INCLUDES) -c $<
+
+%.o : %.c 
+# @$(ECHO) Making $@ from $<
+	$(CC) $(CFLAGS) $(MACHINE_INCLUDES) -c  $< 
+
+%.o : %.f 
+# @$(ECHO) Making $@ from $<
+	$(FC) $(FFLAGS) -c  $< 
+
+%.o : %.f77 
+# @$(ECHO) Making $@ from $<
+	$(FC) $(FFLAGS) -c $< 
+
+%.o : %.f90 
+# @$(ECHO) Making $@ from $<
+	$(FC90) $(FFLAGS) -c $<
+
+
+

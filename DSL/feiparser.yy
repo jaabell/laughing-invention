@@ -194,7 +194,7 @@
 %token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit 
 %token number_of_steps number_of_boundary_nodes number_of_exterior_nodes number_of_drm_elements 
 %token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file hdf5_file series_file time_series_file MAGNITUDES MAGNITUDE initial_velocity
-%token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain  testing constant mean triaxial drained undrained simple shear
+%token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain constitutive testing constant mean triaxial drained undrained simple shear
 %token number_of_subincrements maximum_number_of_iterations tolerance_1 tolerance_2 strain stress control Guass points Gauss each point single value
 // Additionally these tokens carry a string type (the above carry no type)
 // This is becuase there are several options to what this token may be
@@ -210,10 +210,10 @@
 %token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
 %token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based BeamColumnDispFiber3d beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact FrictionalPenaltyContact
-%token EightNodeBrickLT EightNodeBrickLTNoOutput TwentySevenNodeBrickLT ShearBeamLT
+%token EightNodeBrickLT EightNodeBrickLTNoOutput TwentyNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT
 
 // Element options tokens
-%token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
+%token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule number_of_integration_points stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
 %token friction_ratio maximum_gap
 %token xz_plane_vector joint_1_offset joint_2_offset direction contact_plane_vector
 
@@ -2560,7 +2560,7 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [PisanoLT] mass_density = <.> elastic_modulus_1atm = <F/L^2> poisson_ratio = <.> M_in = <.> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> initial_confining_stress = <F/L^2> n_in = <.> a_in = <.> eplcum_cr_in = <.>;
+	//!FEIDOC add material # <.> type [PisanoLT] mass_density = <M/L^3> elastic_modulus_1atm = <F/L^2> poisson_ratio = <.> M_in = <.> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> initial_confining_stress = <F/L^2> n_in = <.> a_in = <.> eplcum_cr_in = <.>;
 	| MATERIAL TEXTNUMBER exp TYPE PisanoLT
 						mass_density '=' exp
 						elastic_modulus_1atm '=' exp
@@ -3033,6 +3033,47 @@ ADD_element:
 		$$ = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
 								int,int,int,int,int,int,int,int,int,int,
 								int,int>(&add_element_brick_20node, args, signature, "add_element_brick_20node");
+
+		for(int ii = 1;ii <=22; ii++) nodes.pop();
+		nodes.push($$);
+	}
+
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [20NodeBrickLT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	| TEXTNUMBER exp TYPE TwentyNodeBrickLT WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2);  signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8);  signature.push_back(this_signature("node1",  &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2",  &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("node3",  &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node4",  &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node5",  &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node6",  &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node7",  &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node8",  &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node9",  &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($51); signature.push_back(this_signature("material", &isAdimensional));
+
+		$$ = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int>(&add_element_brick_20node_ltensor, args, signature, "add_element_brick_20node_ltensor");
 
 		for(int ii = 1;ii <=22; ii++) nodes.pop();
 		nodes.push($$);

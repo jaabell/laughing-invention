@@ -409,6 +409,9 @@ FEM_ObjectBroker::getNewElement(int classTag)
     case ELE_TAG_EightNodeBrickLT_NoOutput:            //Jose added on Oct 9, 2014
         return new EightNodeBrickLT_NoOutput();
 
+    case ELE_TAG_TwentyNodeBrickLT:           
+        return new TwentyNodeBrickLT();				//Yuan added 
+
     case ELE_TAG_TwentySevenNodeBrickLT:            //Jose added on Oct 9, 2014
         return new TwentySevenNodeBrickLT();
 
@@ -738,6 +741,10 @@ FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
         return new ElasticIsotropic3DLT();
         break;
 
+    case ND_TAG_vonMisesPPLT :
+        return new vonMisesPPLT();
+        break;
+
     case ND_TAG_CEM_DruckerPragerLinearHardening :
         return new DruckerPragerLinearHardening();
         break;
@@ -748,6 +755,9 @@ FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
 
     case ND_TAG_CEM_DruckerPragerArmstrongFrederick :
         return new DruckerPragerArmstrongFrederick();
+
+    case ND_TAG_PisanoLT :
+        return new PisanoLT();
         break;
 
     case ND_TAG_NewPisanoLT :
@@ -1453,6 +1463,7 @@ FEM_ObjectBroker::getNewLinearSOE(int classTagSOE,
 
     }
 }
+
 
 
 

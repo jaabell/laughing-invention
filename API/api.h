@@ -84,6 +84,7 @@
 #include "MODELING/add_element_brick_variable_node_8_to_27.h"
 #include "MODELING/add_element_brick_8node_ltensor.h"
 #include "MODELING/add_element_brick_8node_ltensor_no_output.h"
+#include "MODELING/add_element_brick_20node_ltensor.h"
 #include "MODELING/add_element_brick_27node_ltensor.h"
 #include "MODELING/add_element_shear_beam_ltensor.h"
 #include "MODELING/add_element_beam_elastic_lumped_mass.h"
@@ -301,5 +302,5 @@
 // #include "SIMULATION/parallel_analyze_static_multistep.h"
 // #include "MODELING/add_to_node_support.h"
 // #include "MODELING/add_support_to_node.h"
-// #include "MODELING/add_support_from_file_to_nodes.h"
+// #include "MODELING/add_support_from_file_to_nodes.h" //Babak added 5/29/14
 

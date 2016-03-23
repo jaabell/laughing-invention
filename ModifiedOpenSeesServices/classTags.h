@@ -376,6 +376,7 @@
 #define ELE_TAG_TwentySevenNodeBrickLT   8002
 #define ELE_TAG_ShearBeamLT 8003
 #define ELE_TAG_EightNodeBrickLT_NoOutput   8004
+#define ELE_TAG_TwentyNodeBrickLT 8005
 
 
 

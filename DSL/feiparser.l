@@ -352,6 +352,7 @@ EXP	([Ee][-+]?[0-9]+)
 "8NodeBrickLT"                      {return token::EightNodeBrickLT;}
 "8NodeBrickLTNoOutput"              {return token::EightNodeBrickLTNoOutput;}
 "20NodeBrick"                       {return token::TwentyNodeBrick;}
+"20NodeBrickLT"                     {return token::TwentyNodeBrickLT;}
 "27NodeBrick"                       {return token::TwentySevenNodeBrick;}
 "27NodeBrickLT"                     {return token::TwentySevenNodeBrickLT;}
 "8NodeBrick_elastic"                {return token::EightNodeBrickElastic;}
@@ -466,7 +467,6 @@ EXP	([Ee][-+]?[0-9]+)
 "strain"                            {return token::strain;}
 "stress"                            {return token::stress;}
 "control"                           {return token::control;}
-
 "explicit"                          {
 										yylval->value = new Quantity(0.0,ESSIunits::unitless);
 										return token::NUMBER;
