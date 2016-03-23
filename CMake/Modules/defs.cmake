@@ -155,6 +155,7 @@ else()  # sequential
 endif()
 
 
+list(APPEND EXT_INCLUDE "$ENV{BOOST_ROOT}/include")
 
 
 ## Common flags for goth debug and no debug
