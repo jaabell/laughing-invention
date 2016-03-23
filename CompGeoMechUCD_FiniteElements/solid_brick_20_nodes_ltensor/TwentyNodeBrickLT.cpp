@@ -3031,7 +3031,7 @@ int TwentyNodeBrickLT::getOutputSize() const
 
 
 
-const Vector &TwentyNodeBrickLT::getOutput() const
+const Vector &TwentyNodeBrickLT::getOutput() 
 {
 
 
