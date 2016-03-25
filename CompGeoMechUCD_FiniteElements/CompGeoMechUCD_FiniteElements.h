@@ -54,3 +54,6 @@
 
 #include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT.h"
 #include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT_NoOutput.h"
+
+
+#include "./coupled_u-p-U_bricks_LT/EightNodeBrick_u_p_U_LT.h"

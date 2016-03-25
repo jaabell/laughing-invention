@@ -155,7 +155,9 @@ else()  # sequential
 endif()
 
 
-list(APPEND EXT_INCLUDE "$ENV{BOOST_ROOT}/include")
+if(NOT $ENV{BOOST_ROOT} STREQUAL "")
+    list(APPEND EXT_INCLUDE "$ENV{BOOST_ROOT}/include")
+endif()
 
 
 ## Common flags for goth debug and no debug
