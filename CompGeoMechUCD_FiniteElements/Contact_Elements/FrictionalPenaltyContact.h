@@ -98,7 +98,7 @@ public:
 
     // Output interface functions
     int getOutputSize() const;
-    const Vector &getOutput() ;
+    const Vector &getOutput();
     Matrix &getGaussCoordinates(void);
 
 
@@ -111,26 +111,32 @@ protected:
 
 
 private:
+    void cross_product(double vect1[],double vect2[],double vect3[]); // Finds cross product -> vect3[] = vect1[] X vect2[] 
+    void norm(double vect[],double* norm); // Finds the norm of the vector ->  norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
     double kn;     // Normal penalty stiffness
     double kt;     // Tangential penalty stiffness
-    double cn;
-    double ct;
+    double cn;     // Normal penalty damping stiffness
+    double ct;     // Tangential penalty daping stiffness 
     double mu;     // Coeficient of friction
-    bool is_in_contact;
-    bool is_in_contact_prev;
     Matrix B;      // Global to local (incremental gap) matrix
-    // Vector *d_ij0; // Distance from node i to j at last contact. If the pointer is NULL, it means there was no contact in previous step!
-    // Vector *d_ij0_prev; // Distance from node i to j at last contact. If the pointer is NULL, it means there was no contact in previous step!
-    Vector *tA;     // Current commitred local forces  t = [t_T1, t_T2, t_N]
-    Vector *tC;     // Current trial local forces  t = [t_T1, t_T2, t_N]
-    Vector *R;     // Current resisting forces
-    Vector *g;     // Current gap
-    Vector *g_prev;// Previous gap
-    Matrix *C;     // Current local stiffness
-
     ID external_nodes;
     Node* nodes[2];
 
+    // current state variables
+    bool is_in_contact;      // whether slave is in contact with master
+    bool is_in_contact_prev; // whetehr slave was in contact with master
+    Vector *tC;     // Current trial local forces  t = [t_T1, t_T2, t_N]
+    Vector *R;      // Current resisting forces
+    Vector *g;      // Current gap
+    Vector *g_prev; // Previous gap
+    Matrix *C;      // Current local stiffness
+
+    // commit state variables
+    bool is_in_contact_commit;      // whether slave is in contact with master
+    bool is_in_contact_prev_commit; // whetehr slave was in contact with master
+    Vector *tA;     // Current committed local forces  t = [t_T1, t_T2, t_N]
+    Vector *g_commit;      // Current gap
+    Vector *g_prev_commit; // Previous gap
 };
 
 #endif
