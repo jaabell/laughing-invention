@@ -145,6 +145,10 @@ private:
     bool initialDispChecked;
 
     Node *theNodes[2];
+
+    // temporary
+    int Node1=0;
+    int Node2=0;
 };
 
 #endif

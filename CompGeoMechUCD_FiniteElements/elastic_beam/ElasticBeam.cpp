@@ -93,6 +93,9 @@ ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
     (*nodeJOffset)(0) = rigJntOffset2_x;
     (*nodeJOffset)(1) = rigJntOffset2_y;
     (*nodeJOffset)(2) = rigJntOffset2_z;
+
+    Node1=Nd1;
+    Node2=Nd2;
 }
 
 
@@ -135,6 +138,9 @@ ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *sec
     (*nodeJOffset)(0) = rigJntOffset2_x;
     (*nodeJOffset)(1) = rigJntOffset2_y;
     (*nodeJOffset)(2) = rigJntOffset2_z;
+
+    Node1=Nd1;
+    Node2=Nd2;
 }
 
 ElasticBeam::~ElasticBeam()
@@ -901,7 +907,7 @@ ElasticBeam::computeElemtLengthAndOrient()
 
     if (L == 0.0)
     {
-        cerr.flush() << "\ElasticBeam::computeElemtLengthAndOrien: 0 length\n";
+        cerr.flush() << "ElasticBeam::computeElemtLengthAndOrien: 0 length\n";
         return -2;
     }
 
@@ -922,12 +928,12 @@ ElasticBeam::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
 {
     // Compute y = v cross x
     // Note: v(i) is stored in R(2,i]
-    static Vector vAxis(3);
+    Vector vAxis(3);
     vAxis(0) = R(2, 0);
     vAxis(1) = R(2, 1);
     vAxis(2) = R(2, 2);
 
-    static Vector xAxis(3);
+    Vector xAxis(3);
     xAxis(0) = R(0, 0);
     xAxis(1) = R(0, 1);
     xAxis(2) = R(0, 2);
@@ -935,7 +941,7 @@ ElasticBeam::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
     XAxis(1) = xAxis(1);
     XAxis(2) = xAxis(2);
 
-    static Vector yAxis(3);
+    Vector yAxis(3);
     yAxis(0) = vAxis(1) * xAxis(2) - vAxis(2) * xAxis(1);
     yAxis(1) = vAxis(2) * xAxis(0) - vAxis(0) * xAxis(2);
     yAxis(2) = vAxis(0) * xAxis(1) - vAxis(1) * xAxis(0);
@@ -944,7 +950,7 @@ ElasticBeam::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
 
     if (ynorm == 0)
     {
-        cerr.flush() << "\ElasticBeam::getLocalAxes";
+        cerr.flush() << "\nElasticBeam::getLocalAxes";
         cerr.flush() << "\nvector v that defines plane xz is parallel to x axis\n";
         return -3;
     }
@@ -956,7 +962,7 @@ ElasticBeam::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
     YAxis(2) = yAxis(2);
 
     // Compute z = x cross y
-    static Vector zAxis(3);
+    Vector zAxis(3);
 
     zAxis(0) = xAxis(1) * yAxis(2) - xAxis(2) * yAxis(1);
     zAxis(1) = xAxis(2) * yAxis(0) - xAxis(0) * yAxis(2);
@@ -973,6 +979,8 @@ ElasticBeam::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
     R(2, 0) = zAxis(0);
     R(2, 1) = zAxis(1);
     R(2, 2) = zAxis(2);
+
+    // cout << "Local_Transformation_Matrix=> " << R ; 
 
     return 0;
 }
@@ -1120,6 +1128,41 @@ ElasticBeam::getGlobalStiffnessMatrix(const Matrix &KB)
 
     }
 
+    for (int i=0; i<12 ;i++)
+        for(int j=0; j<12 ; j++)
+            tmp(i,j)=kg(j,i);
+
+    for (int i=0; i<12 ;i++)
+        for(int j=0; j<12 ; j++)
+            kg(i,j)=0.5*( tmp(j,i) + tmp(i,j) );
+
+
+    // cout.precision(30);
+
+    // cout << "Node1 " << Node1 << " Node2 " << Node2 ;
+
+
+    ///chceking if the Global Stiffness Matrix is Symmetric/////////
+
+    // for (int i=0; i<12 ;i++){
+    //     for(int j=0; j<12 ; j++){
+    //         if(kg(i,j)!=kg(j,i)){
+    //             cout << " -> Its not a Symmetric matrix \n";
+    //             cout << kg(i,j)  << " and " << kg(j,i) <<endl;
+    //             // cout << "\n Local Stiffness Matrix " << kl;
+    //             cout << "\n Transformation Matrix " << R;
+    //             cout << "\n Global Stiffness Matrix " << kg;
+    //             return kg;
+    //         }
+    //     }
+    // }
+    // cout << " -> Its a Symmetric matrix \n";
+
+    // // cout << "\n Local Stiffness Matrix " << kl;
+    // cout << "\n Transformation Matrix " << R;
+    // cout << "\n Global Stiffness Matrix " << kg;
+
+
     return kg;
 
 
@@ -1266,6 +1309,40 @@ ElasticBeam::getGlobalConsistentMassMatrix(const Matrix &KB)
         }
 
     }
+
+    for (int i=0; i<12 ;i++)
+        for(int j=0; j<12 ; j++)
+            tmp(i,j)=mg(j,i);
+
+    for (int i=0; i<12 ;i++)
+        for(int j=0; j<12 ; j++)
+            mg(i,j)=0.5*( tmp(j,i) + tmp(i,j) );
+
+
+    // cout.precision(30);
+
+    // cout << "Node1 " << Node1 << " Node2 " << Node2 ;
+
+
+    ///chceking if the Global Stiffness Matrix is Symmetric/////////
+
+    // for (int i=0; i<12 ;i++){
+    //     for(int j=0; j<12 ; j++){
+    //         if(mg(i,j)!=mg(j,i)){
+    //             cout << " -> Its not a Symmetric matrix \n";
+    //             cout << mg(i,j)  << " and " << mg(j,i) <<endl;
+    //             // cout << "\n Local Stiffness Matrix " << kl;
+    //             cout << "\n Transformation Matrix " << R;
+    //             cout << "\n Global Stiffness Matrix " << mg;
+    //             return mg;
+    //         }
+    //     }
+    // }
+    // cout << " -> Its a Symmetric matrix \n";
+
+    // // cout << "\n Local Stiffness Matrix " << kl;
+    // cout << "\n Transformation Matrix " << R;
+    // cout << "\n Global Stiffness Matrix " << kg;
 
     return mg;
 }
