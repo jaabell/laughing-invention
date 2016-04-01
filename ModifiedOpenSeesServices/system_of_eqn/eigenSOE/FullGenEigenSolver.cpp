@@ -187,6 +187,36 @@ int FullGenEigenSolver::solve(int nEigen)
     // output information
     int info = 0;
 
+    /////////////////////// Checking for consistency By Sumeet ///////////////////////////////////
+
+    // cout << "size of stiffness matrix " << n << endl;
+    //checking if stiffness matrix is symmetric
+    // for (int i = 0; i < n; i++){
+    //     for (int j = 0; j < n; j++){
+    //         if (*(Kptr+n*i+j) != *(Kptr+n*j+i)){
+    //             cerr << "Not a Symmetric Global Total Stiffness Matrix" << -info << " passed to LAPACK dggev routine\n";
+    //             return info;
+    //         }
+    //     }
+    // }
+
+    // for (int i = 0; i < n; i++){
+    //     for (int j = 0; j < n; j++){
+    //         if (*(Mptr+n*i+j) != *(Mptr+n*j+i)){
+    //             cerr << "Not a Symmetric Global Total Mass Matrix" << -info << " passed to LAPACK dggev routine\n";
+    //             return info;
+    //         }
+    //     }
+    // }
+
+    // for (int i = 0; i < n; i++){
+    //     for (int j = 0; j < n; j++)
+    //         cout << *(Mptr+n*i+j) << "\t";
+    //     cout << "\n";
+    // }
+
+    ///////////////////////////////////////////////////////////////////////////////
+
     // call the LAPACK eigenvalue subroutine
     #ifdef _WIN32
     DGGEV(jobvl, jobvr, &n, Kptr, &ldK, Mptr, &ldM, alphaR, alphaI, beta,
@@ -214,11 +244,14 @@ int FullGenEigenSolver::solve(int nEigen)
 
     for (int i = 0; i < n; i++)
     {
+
         double mag = sqrt(alphaR[i] * alphaR[i] + alphaI[i] * alphaI[i]);
+
+        // cout << alphaR[i] << " " << alphaI[i] << " " << beta[i] << endl;
 
         if (mag * DBL_EPSILON < fabs(beta[i]))
         {
-            if (alphaI[i] == 0.0)
+            if (round(alphaI[i]) == 0.0)     // Sumeet AlphaI[i] should always be zeros. Numerical errors can make it negative but its round off should not be negative or positive)
             {
                 eigenvalue[i] = alphaR[i] / beta[i];
             }
