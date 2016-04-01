@@ -154,21 +154,39 @@ TwentyNodeBrickLT::TwentyNodeBrickLT(int element_number,
     connectedExternalNodes( 5) = node_numb_6;
     connectedExternalNodes( 6) = node_numb_7;
     connectedExternalNodes( 7) = node_numb_8;
-
     connectedExternalNodes( 8) = node_numb_9;
     connectedExternalNodes( 9) = node_numb_10;
     connectedExternalNodes(10) = node_numb_11;
     connectedExternalNodes(11) = node_numb_12;
-
     connectedExternalNodes(12) = node_numb_13;
     connectedExternalNodes(13) = node_numb_14;
     connectedExternalNodes(14) = node_numb_15;
     connectedExternalNodes(15) = node_numb_16;
-
     connectedExternalNodes(16) = node_numb_17;
     connectedExternalNodes(17) = node_numb_18;
     connectedExternalNodes(18) = node_numb_19;
     connectedExternalNodes(19) = node_numb_20;
+
+    Global_to_Local_Node_Mapping[node_numb_1] =0;
+    Global_to_Local_Node_Mapping[node_numb_2] =1;
+    Global_to_Local_Node_Mapping[node_numb_3] =2;
+    Global_to_Local_Node_Mapping[node_numb_4] =3;
+    Global_to_Local_Node_Mapping[node_numb_5] =4;
+    Global_to_Local_Node_Mapping[node_numb_6] =5;
+    Global_to_Local_Node_Mapping[node_numb_7] =6;
+    Global_to_Local_Node_Mapping[node_numb_8] =7;
+    Global_to_Local_Node_Mapping[node_numb_9] =8;
+    Global_to_Local_Node_Mapping[node_numb_10] =9;
+    Global_to_Local_Node_Mapping[node_numb_11] =10;
+    Global_to_Local_Node_Mapping[node_numb_12] =11;
+    Global_to_Local_Node_Mapping[node_numb_13] =12;
+    Global_to_Local_Node_Mapping[node_numb_14] =13;
+    Global_to_Local_Node_Mapping[node_numb_15] =14;
+    Global_to_Local_Node_Mapping[node_numb_16] =15;
+    Global_to_Local_Node_Mapping[node_numb_17] =16;
+    Global_to_Local_Node_Mapping[node_numb_18] =17;
+    Global_to_Local_Node_Mapping[node_numb_19] =18;
+    Global_to_Local_Node_Mapping[node_numb_20] =19;
 
     for (int i = 0; i < 20; i++)
     {
@@ -176,7 +194,6 @@ TwentyNodeBrickLT::TwentyNodeBrickLT(int element_number,
     }
 
     this->setNumberOfBoundaryNodes(8);
-
 
 }
 
@@ -1827,52 +1844,65 @@ const Vector &TwentyNodeBrickLT::getBodyForce(double loadFactor, const Vector &d
 //======================================================================
 const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector &data)
 {
-    int node_exist = 0;
-    Vector node_local(8);
-
-    // check if the nodes of the surface belong to the element
-    for (int i = 0; i < 8; i++)
-    {
-
-        for (int j = 0; j < 20; j++)
-        {
-            if (data(i) == connectedExternalNodes(j))
-            {
-                node_exist = 1;
-                node_local(i) = j;
-                break;
-            }
+    map<int,int> local_nodes_map; int local_nodes[8];
+    //note -> the user at least should start with a node on the corner edge (sumeet)
+    
+    /////////////////////////////////////////// Edited by Sumeet 30/03/2016 //////////////////////////////
+    // checking if node exists in the element
+    for ( int i =0; i<8 ;i++){
+        std::map<int,int>::iterator it;
+        it=Global_to_Local_Node_Mapping.find(data(i));
+        if (it == Global_to_Local_Node_Mapping.end()){
+            cerr << "\nERROR: Node " <<  data(i) << " defined for the BrickSurfaceLoad does not belong to element \n" ;
+            exit( 1 );
         }
-
-        if (node_exist != 1)
-        {
-            cerr << "\nERROR: Node " << data(i) << " defined for the BrickSurfaceLoad does not belong to element " << this->getTag() << endl;
-            exit(1);
-        }
+        local_nodes_map[it->second]=i;
+        local_nodes[i]=it->second;
     }
 
-
-    int node1_local = node_local(0);
-    int node2_local = node_local(1);
-    int node3_local = node_local(2);
-    int node4_local = node_local(3);
-    int node5_local = node_local(4);
-    int node6_local = node_local(5);
-    int node7_local = node_local(6);
-    int node8_local = node_local(7);
-
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    static const int Node_to_Surface[8][21]={{1,2,3,8 ,9 ,10,11,3,7,4,11,19,15,16,4,5,1,16,12,17,8 },
+                                             {2,3,0,9 ,10,11,8 ,0,4,5,8 ,16,12,17,5,6,2,17,13,18,9 },
+                                             {3,0,1,10,11,8 ,9 ,6,7,3,18,14,19,10,1,5,6,9 ,17,13,18},
+                                             {0,1,2,11,8 ,9 ,10,2,6,7,10,18,14,19,7,4,0,19,15,16,11},
+                                             {7,6,5,15,14,13,12,5,1,0,12,17,8 ,16,0,3,7,16,11,19,15},
+                                             {4,7,6,12,15,14,13,1,0,4,17,8 ,16,12,6,2,1,13,18,9 ,17},
+                                             {5,4,7,13,12,15,14,2,1,5,18,9 ,17,13,7,3,2,14,19,10,8 },
+                                             {6,5,4,14,13,12,15,4,0,3,15,16,11,19,3,2,6,19,10,18,14}};
+    ////////////////////////////////////// Edited by Sumeet 30/3/2016 /////////////////////////////////////
+    //  Finding the correct surface nodes order
+    int success =0; int surface_nodes_order[8]={0,0,0,0,0,0,0,0};
+    for ( int i =0; i<3 ;i++){
+        for( int j=0; j<7;j++){
+            std::map<int,int>::iterator it;
+            int node=Node_to_Surface[local_nodes[0]][7*i+j];
+            it=local_nodes_map.find(node);
+            if (it == local_nodes_map.end()){
+                success=0;break;
+            }
+            success=success+1;
+            surface_nodes_order[j]= it->second;         
+        }
+        if(success==7) break;
+    }
+    if (success == 0){
+        cerr << "\nERROR: Nodes  defined for the BrickSurfaceLoad does not belong to elements surface  \n" ;
+        exit( 1 );
+    }      
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    // cout << "local Nodes " << local_nodes[0] << " " << local_nodes[1]  << " " << local_nodes[2]  << " " << local_nodes[3] << endl;
+    // cout << "surface_nodes_order " << surface_nodes_order[0] << " " << surface_nodes_order[1] << " " << surface_nodes_order[2] << " " << surface_nodes_order[3] << endl;
+    // cout << "surface_nodes_order " << local_nodes[surface_nodes_order[0]] << " " << local_nodes[surface_nodes_order[1]] << " " << local_nodes[surface_nodes_order[2]] << " " << local_nodes[surface_nodes_order[3]] << endl;
 
     // get the surface nodal coordinates
-    const Vector &coordnode1 = theNodes[node1_local]->getCrds();
-    const Vector &coordnode2 = theNodes[node2_local]->getCrds();
-    const Vector &coordnode3 = theNodes[node3_local]->getCrds();
-    const Vector &coordnode4 = theNodes[node4_local]->getCrds();
-    const Vector &coordnode5 = theNodes[node5_local]->getCrds();
-    const Vector &coordnode6 = theNodes[node6_local]->getCrds();
-    const Vector &coordnode7 = theNodes[node7_local]->getCrds();
-    const Vector &coordnode8 = theNodes[node8_local]->getCrds();
-
-
+    const Vector &coordnode1 = theNodes[local_nodes[(surface_nodes_order[0])]]->getCrds();
+    const Vector &coordnode2 = theNodes[local_nodes[(surface_nodes_order[1])]]->getCrds();
+    const Vector &coordnode3 = theNodes[local_nodes[(surface_nodes_order[2])]]->getCrds();
+    const Vector &coordnode4 = theNodes[local_nodes[(surface_nodes_order[3])]]->getCrds();
+    const Vector &coordnode5 = theNodes[local_nodes[(surface_nodes_order[4])]]->getCrds();
+    const Vector &coordnode6 = theNodes[local_nodes[(surface_nodes_order[5])]]->getCrds();
+    const Vector &coordnode7 = theNodes[local_nodes[(surface_nodes_order[6])]]->getCrds();
+    const Vector &coordnode8 = theNodes[local_nodes[(surface_nodes_order[7])]]->getCrds();
 
     double ShapeFunctionValues;
     Vector J_vector(3);
@@ -1880,24 +1910,20 @@ const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector
     double LoadValue;
 
 
-    Pressure(0) = data(8)  * loadFactor;
-    Pressure(1) = data(9)  * loadFactor;
-    Pressure(2) = data(10) * loadFactor;
-    Pressure(3) = data(11) * loadFactor;
-    Pressure(4) = data(12) * loadFactor;
-    Pressure(5) = data(13) * loadFactor;
-    Pressure(6) = data(14) * loadFactor;
-    Pressure(7) = data(15) * loadFactor;
-
-
+    Pressure(0) = data(surface_nodes_order[0]+8) * loadFactor;
+    Pressure(1) = data(surface_nodes_order[1]+8) * loadFactor;
+    Pressure(2) = data(surface_nodes_order[2]+8) * loadFactor;
+    Pressure(3) = data(surface_nodes_order[3]+8) * loadFactor;
+    Pressure(4) = data(surface_nodes_order[4]+8) * loadFactor;
+    Pressure(5) = data(surface_nodes_order[5]+8) * loadFactor;
+    Pressure(6) = data(surface_nodes_order[6]+8) * loadFactor;
+    Pressure(7) = data(surface_nodes_order[7]+8) * loadFactor;
 
     static Vector NodalForces(60);
 
     for (int m = 0; m < 60; m++){
         NodalForces(m) = 0;
     }
-
-
 
     double Root3Over5 = sqrt(3.0 / 5.0);
     double W5Over9 = 5.0 / 9.0;
@@ -1961,16 +1987,7 @@ const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector
         // loop over nodes
         for (int j = 0; j < 8; j++)
         {
-
-            for (int v = 0; v < 20; v++)
-            {
-                if (data(j) == connectedExternalNodes(v))
-                {
-                    r = v;
-                    break;
-                }
-            }
-
+            r = local_nodes[(surface_nodes_order[j])] ;
             // loop over Gauss points
             for (int i = 0; i < 9; i++)
             {
@@ -1982,6 +1999,9 @@ const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector
             }
         }
     }
+
+    // cout.precision(2);
+    // cout << "Normal_Forces " << NodalForces;
 
     return NodalForces;
 }

@@ -31,6 +31,7 @@
 
 #include <Element.h>
 #include <Node.h>
+#include <map>
 #include <Matrix.h>
 #include <Vector.h>
 #include <NDMaterialLT.h>
@@ -187,6 +188,8 @@ private:
     double e_p;
     double determinant_of_Jacobian;
     double rho;
+
+    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet
 
     ID  connectedExternalNodes; // Tags of quad nodes
     
