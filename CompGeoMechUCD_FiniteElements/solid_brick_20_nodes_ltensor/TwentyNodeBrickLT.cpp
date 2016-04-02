@@ -1861,21 +1861,25 @@ const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    static const int Node_to_Surface[8][21]={{1,2,3,8 ,9 ,10,11,3,7,4,11,19,15,16,4,5,1,16,12,17,8 },
-                                             {2,3,0,9 ,10,11,8 ,0,4,5,8 ,16,12,17,5,6,2,17,13,18,9 },
-                                             {3,0,1,10,11,8 ,9 ,6,7,3,18,14,19,10,1,5,6,9 ,17,13,18},
-                                             {0,1,2,11,8 ,9 ,10,2,6,7,10,18,14,19,7,4,0,19,15,16,11},
-                                             {7,6,5,15,14,13,12,5,1,0,12,17,8 ,16,0,3,7,16,11,19,15},
-                                             {4,7,6,12,15,14,13,1,0,4,17,8 ,16,12,6,2,1,13,18,9 ,17},
-                                             {5,4,7,13,12,15,14,2,1,5,18,9 ,17,13,7,3,2,14,19,10,8 },
-                                             {6,5,4,14,13,12,15,4,0,3,15,16,11,19,3,2,6,19,10,18,14}};
+    static const int Node_to_Surface_Number[20][4]={{3,0,2,4},{3,0,2,5},{3,0,3,5},{3,0,3,4},
+                                                    {3,1,2,4},{3,1,2,5},{3,1,3,5},{3,1,3,4},
+                                                    {2,0,2,0},{2,0,5,0},{2,0,3,0},{2,0,4,0},
+                                                    {2,1,2,0},{2,1,5,0},{2,1,3,0},{2,1,4,0}};
+    static const int Surface_Number_to_Node_order[6][8]={{1,2,3,0,9 ,10,11,8 },
+                                                         {5,4,7,6,12,15,14,13},
+                                                         {5,1,0,4,17,8 ,16,12},
+                                                         {2,6,7,3,18,14,19,10},
+                                                         {0,3,7,4,11,19,15,16},
+                                                         {1,5,6,2,17,13,18,9 }};    
     ////////////////////////////////////// Edited by Sumeet 30/3/2016 /////////////////////////////////////
     //  Finding the correct surface nodes order
     int success =0; int surface_nodes_order[8]={0,0,0,0,0,0,0,0};
-    for ( int i =0; i<3 ;i++){
-        for( int j=0; j<7;j++){
+    int number_of_surfaces = Node_to_Surface_Number[local_nodes[0]][0];
+    for ( int i =0; i<number_of_surfaces ;i++){
+        int surface_no = Node_to_Surface_Number[local_nodes[0]][i+1];
+        for( int j=0; j<8;j++){
             std::map<int,int>::iterator it;
-            int node=Node_to_Surface[local_nodes[0]][7*i+j];
+            int node=Surface_Number_to_Node_order[surface_no][j];
             it=local_nodes_map.find(node);
             if (it == local_nodes_map.end()){
                 success=0;break;
@@ -1883,16 +1887,22 @@ const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector
             success=success+1;
             surface_nodes_order[j]= it->second;         
         }
-        if(success==7) break;
+        if(success==8) break;
     }
     if (success == 0){
         cerr << "\nERROR: Nodes  defined for the BrickSurfaceLoad does not belong to elements surface  \n" ;
         exit( 1 );
     }      
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    // cout << "local Nodes " << local_nodes[0] << " " << local_nodes[1]  << " " << local_nodes[2]  << " " << local_nodes[3] << endl;
-    // cout << "surface_nodes_order " << surface_nodes_order[0] << " " << surface_nodes_order[1] << " " << surface_nodes_order[2] << " " << surface_nodes_order[3] << endl;
-    // cout << "surface_nodes_order " << local_nodes[surface_nodes_order[0]] << " " << local_nodes[surface_nodes_order[1]] << " " << local_nodes[surface_nodes_order[2]] << " " << local_nodes[surface_nodes_order[3]] << endl;
+    ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // cout << "surface_nodes_order ";
+    // for ( int i =0; i < 8 ; i++)
+    //     cout << local_nodes[i] << " ";
+    //     // cout << surface_nodes_order[i] << " ";
+    // cout << "\n";
+    // for ( int i =0; i < 8 ; i++)
+    //     cout << local_nodes[surface_nodes_order[i]] << " ";
+    // cout << "\n";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // get the surface nodal coordinates
     const Vector &coordnode1 = theNodes[local_nodes[(surface_nodes_order[0])]]->getCrds();
@@ -2000,9 +2010,11 @@ const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector
         }
     }
 
-    // cout.precision(2);
-    // cout << "Normal_Forces " << NodalForces;
-
+    // ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // for ( int i =0; i < 20 ; i++)
+    //     cout << NodalForces(3*i)<< " " << NodalForces(3*i+1) << " " << NodalForces(3*i+2) <<   "\n";
+    // cout << "\n\n******************************************************************************\n\n";
+    // /////////////////////////////////////////////////////////////////////////////////////////////////
     return NodalForces;
 }
 

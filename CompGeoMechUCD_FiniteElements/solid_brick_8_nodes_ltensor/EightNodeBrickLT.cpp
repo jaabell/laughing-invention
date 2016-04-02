@@ -1125,10 +1125,17 @@ const Vector &EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
         cerr << "\nERROR: Nodes  defined for the BrickSurfaceLoad does not belong to elements surface  \n" ;
         exit( 1 );
     }    
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    // cout << "local Nodes " << local_nodes[0]+1 << " " << local_nodes[1]+1  << " " << local_nodes[2]+1  << " " << local_nodes[3]+1<< endl;
-    // cout << "surface_nodes_order " << surface_nodes_order[0] << " " << surface_nodes_order[1] << " " << surface_nodes_order[2] << " " << surface_nodes_order[3] << endl;
-    // cout << "surface_nodes_order " << local_nodes[surface_nodes_order[0]]+1 << " " << local_nodes[surface_nodes_order[1]]+1 << " " << local_nodes[surface_nodes_order[2]]+1 << " " << local_nodes[surface_nodes_order[3]]+1 << endl;
+
+    ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // cout << "surface_nodes_order ";
+    // for ( int i =0; i < 8 ; i++)
+    //     cout << local_nodes[i] << " ";
+    //     // cout << surface_nodes_order[i] << " ";
+    // cout << "\n";
+    // for ( int i =0; i < 8 ; i++)
+    //     cout << local_nodes[surface_nodes_order[i]] << " ";
+    // cout << "\n";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // get the surface nodal coordinates
     const Vector &coordnode1 = theNodes[local_nodes[(surface_nodes_order[0])]]->getCrds();
@@ -1184,9 +1191,11 @@ const Vector &EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
     }
 
 
-    // cout.precision(2);
-    // cout << "Normal_Forces " << NodalForces;
-
+    // ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // for ( int i =0; i < 8 ; i++)
+    //     cout << NodalForces(3*i)<< " " << NodalForces(3*i+1) << " " << NodalForces(3*i+2) <<   "\n";
+    // cout << "\n\n******************************************************************************\n\n";
+    // /////////////////////////////////////////////////////////////////////////////////////////////////
     return NodalForces;
 }
 
