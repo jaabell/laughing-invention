@@ -2276,7 +2276,7 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
 
     map<int,int> local_nodes_map; int local_nodes[9];
     //note -> the user at least should start with a node on the corner edge (sumeet)
-  
+    
     /////////////////////////////////////////// Edited by Sumeet 30/03/2016 //////////////////////////////
     // checking if node exists in the element
     for ( int i =0; i<9 ;i++){
@@ -2289,39 +2289,53 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
         local_nodes_map[it->second]=i;
         local_nodes[i]=it->second;
     }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    static const int Node_to_Surface[8][24]={{1,2,3,8 ,9 ,10,11,25,3,7,4,11,19,15,16,24,4,5,1,16,12,17,8 ,21},
-                                             {2,3,0,9 ,10,11,8 ,25,0,4,5,8 ,16,12,17,21,5,6,2,17,13,18,9 ,22},
-                                             {3,0,1,10,11,8 ,9 ,25,6,7,3,18,14,19,10,23,1,5,6,9 ,17,13,18,22},
-                                             {0,1,2,11,8 ,9 ,10,25,2,6,7,10,18,14,19,23,7,4,0,19,15,16,11,24},
-                                             {7,6,5,15,14,13,12,26,5,1,0,12,17,8 ,16,21,0,3,7,16,11,19,15,24},
-                                             {4,7,6,12,15,14,13,26,1,0,4,17,8 ,16,12,21,6,2,1,13,18,9 ,17,22},
-                                             {5,4,7,13,12,15,14,26,2,1,5,18,9 ,17,13,22,7,3,2,14,19,10,8 ,23},
-                                             {6,5,4,14,13,12,15,26,4,0,3,15,16,11,19,24,3,2,6,19,10,18,14,23}};
+    static const int Node_to_Surface_Number[27][4]={{3,0,2,4},{3,0,2,5},{3,0,3,5},{3,0,3,4},
+                                                    {3,1,2,4},{3,1,2,5},{3,1,3,5},{3,1,3,4},
+                                                    {2,0,2,0},{2,0,5,0},{2,0,3,0},{2,0,4,0},
+                                                    {2,1,2,0},{2,1,5,0},{2,1,3,0},{2,1,4,0},
+                                                    {0,0,0,0},{1,2,0,0},{1,5,0,0},{1,3,0,0},
+                                                    {1,4,0,0},{1,0,0,0},{1,1,0,0}};
+    static const int Surface_Number_to_Node_order[6][9]={{1,2,3,0,9 ,10,11,8 ,25},
+                                                         {5,4,7,6,12,15,14,13,26},
+                                                         {5,1,0,4,17,8 ,16,12,21},
+                                                         {2,6,7,3,18,14,19,10,23},
+                                                         {0,3,7,4,11,19,15,16,24},
+                                                         {1,5,6,2,17,13,18,9 ,22}};                                            
     ////////////////////////////////////// Edited by Sumeet 30/3/2016 /////////////////////////////////////
     //  Finding the correct surface nodes order
     int success =0; int surface_nodes_order[9]={0,0,0,0,0,0,0,0,0};
-    for ( int i =0; i<3 ;i++){
-        for( int j=0; j<8;j++){
+    int number_of_surfaces = Node_to_Surface_Number[local_nodes[0]][0];
+ 
+    for ( int i =0; i<number_of_surfaces ;i++){
+        int surface_no = Node_to_Surface_Number[local_nodes[0]][i+1];
+        for( int j=0; j<9;j++){
             std::map<int,int>::iterator it;
-            int node=Node_to_Surface[local_nodes[0]][8*i+j];
+            int node=Surface_Number_to_Node_order[surface_no][j];
             it=local_nodes_map.find(node);
             if (it == local_nodes_map.end()){
                 success=0;break;
             }
             success=success+1;
-            surface_nodes_order[j]= it->second;         
+            surface_nodes_order[j]= it->second;
         }
-        if(success==8) break;
+        if(success==9) break;
     }
     if (success == 0){
         cerr << "\nERROR: Nodes  defined for the BrickSurfaceLoad does not belong to elements surface  \n" ;
         exit( 1 );
     }      
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    // cout << "local Nodes " << local_nodes[0] << " " << local_nodes[1]  << " " << local_nodes[2]  << " " << local_nodes[3] << endl;
-    // cout << "surface_nodes_order " << surface_nodes_order[0] << " " << surface_nodes_order[1] << " " << surface_nodes_order[2] << " " << surface_nodes_order[3] << endl;
-    // cout << "surface_nodes_order " << local_nodes[surface_nodes_order[0]] << " " << local_nodes[surface_nodes_order[1]] << " " << local_nodes[surface_nodes_order[2]] << " " << local_nodes[surface_nodes_order[3]] << endl;
+    // //////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // cout << "surface_nodes_order ";
+    // for ( int i =0; i < 9 ; i++)
+    //     cout << local_nodes[i] << " ";
+    //     // cout << surface_nodes_order[i] << " ";
+    // cout << "\n";
+    // for ( int i =0; i < 9 ; i++)
+    //     cout << local_nodes[surface_nodes_order[i]] << " ";
+    // cout << "\n";
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     // get the surface nodal coordinates
     const Vector &coordnode1 = theNodes[local_nodes[(surface_nodes_order[0])]]->getCrds();
@@ -2347,7 +2361,7 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
     Pressure(5) = data(surface_nodes_order[5]+9) * loadFactor;
     Pressure(6) = data(surface_nodes_order[6]+9) * loadFactor;
     Pressure(7) = data(surface_nodes_order[7]+9) * loadFactor;
-    Pressure(7) = data(surface_nodes_order[8]+9) * loadFactor;
+    Pressure(8) = data(surface_nodes_order[8]+9) * loadFactor;
 
     static Vector NodalForces( 81 );
 
@@ -2357,7 +2371,10 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
     }
 
     double Root3Over5 = sqrt(3.0 / 5.0);
-    Matrix GsPts( 9, 2 );
+    double W5Over9 = 5.0 / 9.0;
+    double W8Over9 = 8.0 / 9.0;
+    Matrix GsPts(9, 2);
+    Matrix Weight(9, 2);
 
     GsPts(0, 0) =  Root3Over5;
     GsPts(0, 1) =  Root3Over5;
@@ -2378,6 +2395,26 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
     GsPts(8, 0) =  0.0;
     GsPts(8, 1) =  0.0;
 
+    Weight(0, 0) = W5Over9;
+    Weight(0, 1) = W5Over9;
+    Weight(1, 0) = W5Over9;
+    Weight(1, 1) = W5Over9;
+    Weight(2, 0) = W5Over9;
+    Weight(2, 1) = W5Over9;
+    Weight(3, 0) = W5Over9;
+    Weight(3, 1) = W5Over9;
+    Weight(4, 0) = W8Over9;
+    Weight(4, 1) = W5Over9;
+    Weight(5, 0) = W5Over9;
+    Weight(5, 1) = W8Over9;
+    Weight(6, 0) = W8Over9;
+    Weight(6, 1) = W5Over9;
+    Weight(7, 0) = W5Over9;
+    Weight(7, 1) = W8Over9;
+    Weight(8, 0) = W8Over9;
+    Weight(8, 1) = W8Over9;
+
+
     int r = 0;
 
     // loop over dof
@@ -2387,6 +2424,7 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
         for ( int j = 0; j < 9; j++ )
         {
             r = local_nodes[(surface_nodes_order[j])] ;
+            cout << r << " " ;
             // loop over Gauss points
             for ( int i = 0; i < 9; i++ )
             {
@@ -2394,13 +2432,16 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
                 ShapeFunctionValues = SurfaceShapeFunctionValues( GsPts( i, 0 ) , GsPts( i, 1 ), j );
                 J_vector = Direction_Weight( GsPts( i, 0 ) , GsPts( i, 1 ), coordnode1, coordnode2, coordnode3, coordnode4, coordnode5, coordnode6, coordnode7, coordnode8, coordnode9 );
                 LoadValue = SurfaceLoadValues( GsPts( i, 0 ) , GsPts( i, 1 ), Pressure );
-                NodalForces( r * 3 + k ) = NodalForces( r * 3 + k ) + LoadValue * J_vector( k ) * ShapeFunctionValues;
+                NodalForces( r * 3 + k ) = NodalForces( r * 3 + k ) + LoadValue * J_vector( k ) * ShapeFunctionValues * Weight(i, 0) * Weight(i, 1);
             }
         }
     }
 
-    // cout.precision(2);
-    // cout << "Normal_Forces " << NodalForces;
+    // ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // for ( int i =0; i < 27 ; i++)
+    //     cout << NodalForces(3*i)<< " " << NodalForces(3*i+1) << " " << NodalForces(3*i+2) <<   "\n";
+    // cout << "\n\n******************************************************************************\n\n";
+    // /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     return NodalForces;
@@ -3278,10 +3319,10 @@ int TwentySevenNodeBrickLT::update( void )
 //NOTE: Can me templatized to improve performance
 double TwentySevenNodeBrickLT::SurfaceShapeFunctionValues( double Xi , double Eta, int whichcomponent )
 {
-    ShapeFunctionValues_in_function( 0 ) = 0.25 * ( 1 + Xi ) * ( 1 + Eta );
-    ShapeFunctionValues_in_function( 1 ) = 0.25 * ( 1 - Xi ) * ( 1 + Eta );
-    ShapeFunctionValues_in_function( 2 ) = 0.25 * ( 1 - Xi ) * ( 1 - Eta );
-    ShapeFunctionValues_in_function( 3 ) = 0.25 * ( 1 + Xi ) * ( 1 - Eta );
+    ShapeFunctionValues_in_function(0) = 0.25 * (1 + Xi) * (1 + Eta) - 0.25 * (1 - Xi * Xi) * (1 + Eta)  - 0.25 * (1 - Eta * Eta) * (1 + Xi)  + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
+    ShapeFunctionValues_in_function(1) = 0.25 * (1 - Xi) * (1 + Eta) - 0.25 * (1 - Xi * Xi) * (1 + Eta)  - 0.25 * (1 - Eta * Eta) * (1 - Xi)  + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
+    ShapeFunctionValues_in_function(2) = 0.25 * (1 - Xi) * (1 - Eta) - 0.25 * (1 - Eta * Eta) * (1 - Xi) - 0.25 * (1 - Xi * Xi) * (1 - Eta)   + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
+    ShapeFunctionValues_in_function(3) = 0.25 * (1 + Xi) * (1 - Eta) - 0.25 * (1 - Xi * Xi) * (1 - Eta)  - 0.25 * (1 - Eta * Eta) * (1 + Xi) + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
     ShapeFunctionValues_in_function(4) = 0.5 * (1 - Xi * Xi) * (1 + Eta)  - 0.5 * (1 - Eta * Eta) * (1 - Xi * Xi);
     ShapeFunctionValues_in_function(5) = 0.5 * (1 - Eta * Eta) * (1 - Xi) - 0.5 * (1 - Eta * Eta) * (1 - Xi * Xi);
     ShapeFunctionValues_in_function(6) = 0.5 * (1 - Xi * Xi) * (1 - Eta)  - 0.5 * (1 - Eta * Eta) * (1 - Xi * Xi);
@@ -3500,18 +3541,6 @@ const Vector &TwentySevenNodeBrickLT::getOutput()
     formOutput();
     return outputVector;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #endif

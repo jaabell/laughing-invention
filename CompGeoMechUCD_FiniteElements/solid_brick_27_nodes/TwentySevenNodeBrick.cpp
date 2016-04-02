@@ -2498,6 +2498,11 @@ const Vector &TwentySevenNodeBrick::getSurfaceForce(double loadFactor, const Vec
     int node8_local = node_local(7);
     int node9_local = node_local(8);
 
+    // for ( int i =0; i < 9 ; i++)
+    //     cout << node_local[i] << " ";
+    //     // cout << surface_nodes_order[i] << " ";
+    //     // cout << local_nodes[i] << " ";
+    // cout << "\n";
 
     // get the surface nodal coordinates
     const Vector &coordnode1 = theNodes[node1_local]->getCrds();
@@ -2621,6 +2626,14 @@ const Vector &TwentySevenNodeBrick::getSurfaceForce(double loadFactor, const Vec
             }
         }
     }
+
+    // ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // for ( int i =0; i < 27 ; i++)
+    //     cout << NodalForces(3*i)<< " " << NodalForces(3*i+1) << " " << NodalForces(3*i+2) <<   "\n";
+    // cout << "\n\n******************************************************************************\n\n";
+    // /////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     return NodalForces;
 }
 
