@@ -81,61 +81,29 @@ TwentyNodeBrickLT::TwentyNodeBrickLT(int element_number,
 
     // 20NodeBrick also has 27 Gauss Points, like 27NodeBrick. 
     short where = 0;
-
-    for ( short ii = 0 ; ii < 3 ; ii++ )
-    {
-        for ( short jj = 0 ; jj < 3 ; jj++ )
-        {
-            for ( short kk = 0 ; kk < 3 ; kk++ )
-            {
-                if (ii == 0)
-                {
-                    gp_coords(where, 0) = -0.774596669241483;
-                    gp_weight(where, 0) = 0.555555555555556;
+    for (short ii = 0 ; ii < 3 ; ++ii ){
+        for (short jj = 0 ; jj < 3 ; ++jj ){
+            for (short kk = 0 ; kk < 3 ; ++kk ){
+                std::vector<short> axis={ii,jj,kk};
+                for(short rst=0;rst<3;++rst){
+                    switch(axis[rst]){
+                        case 0:{
+                            gp_coords(where, rst) = -0.774596669241483;
+                            gp_weight(where, rst) = 0.555555555555556;
+                            break;
+                        }
+                        case 1:{
+                            gp_coords(where, rst) = 0.0;
+                            gp_weight(where, rst) = 0.888888888888889;
+                            break;
+                        }
+                        case 2:{
+                            gp_coords(where, rst) = 0.774596669241483;
+                            gp_weight(where, rst) = 0.555555555555556;
+                            break;
+                        }
+                    }
                 }
-                else if (ii == 1)
-                {
-                    gp_coords(where, 0) = 0.0;
-                    gp_weight(where, 0) = 0.888888888888889;
-                }
-                else
-                {
-                    gp_coords(where, 0) = 0.774596669241483;
-                    gp_weight(where, 0) = 0.555555555555556;
-                }
-
-                if (jj == 0)
-                {
-                    gp_coords(where, 1) = -0.774596669241483;
-                    gp_weight(where, 1) = 0.555555555555556;
-                }
-                else if (jj == 1)
-                {
-                    gp_coords(where, 1) = 0.0;
-                    gp_weight(where, 1) = 0.888888888888889;
-                }
-                else
-                {
-                    gp_coords(where, 1) = 0.774596669241483;
-                    gp_weight(where, 1) = 0.555555555555556;
-                }
-
-                if (kk == 0)
-                {
-                    gp_coords(where, 2) = -0.774596669241483;
-                    gp_weight(where, 2) = 0.555555555555556;
-                }
-                else if (kk == 1)
-                {
-                    gp_coords(where, 2) = 0.0;
-                    gp_weight(where, 2) = 0.888888888888889;
-                }
-                else
-                {
-                    gp_coords(where, 2) = 0.774596669241483;
-                    gp_weight(where, 2) = 0.555555555555556;
-                }
-
                 where ++;
             }
         }
@@ -216,61 +184,29 @@ TwentyNodeBrickLT::TwentyNodeBrickLT (): Element(0, ELE_TAG_TwentyNodeBrickLT ),
 
         // 20NodeBrick also has 27 Gauss Points, like 27NodeBrick. 
     short where = 0;
-
-    for ( short ii = 0 ; ii < 3 ; ii++ )
-    {
-        for ( short jj = 0 ; jj < 3 ; jj++ )
-        {
-            for ( short kk = 0 ; kk < 3 ; kk++ )
-            {
-                if (ii == 0)
-                {
-                    gp_coords(where, 0) = -0.774596669241483;
-                    gp_weight(where, 0) = 0.555555555555556;
+    for (short ii = 0 ; ii < 3 ; ++ii ){
+        for (short jj = 0 ; jj < 3 ; ++jj ){
+            for (short kk = 0 ; kk < 3 ; ++kk ){
+                std::vector<short> axis={ii,jj,kk};
+                for(short rst=0;rst<3;++rst){
+                    switch(axis[rst]){
+                        case 0:{
+                            gp_coords(where, rst) = -0.774596669241483;
+                            gp_weight(where, rst) = 0.555555555555556;
+                            break;
+                        }
+                        case 1:{
+                            gp_coords(where, rst) = 0.0;
+                            gp_weight(where, rst) = 0.888888888888889;
+                            break;
+                        }
+                        case 2:{
+                            gp_coords(where, rst) = 0.774596669241483;
+                            gp_weight(where, rst) = 0.555555555555556;
+                            break;
+                        }
+                    }
                 }
-                else if (ii == 1)
-                {
-                    gp_coords(where, 0) = 0.0;
-                    gp_weight(where, 0) = 0.888888888888889;
-                }
-                else
-                {
-                    gp_coords(where, 0) = 0.774596669241483;
-                    gp_weight(where, 0) = 0.555555555555556;
-                }
-
-                if (jj == 0)
-                {
-                    gp_coords(where, 1) = -0.774596669241483;
-                    gp_weight(where, 1) = 0.555555555555556;
-                }
-                else if (jj == 1)
-                {
-                    gp_coords(where, 1) = 0.0;
-                    gp_weight(where, 1) = 0.888888888888889;
-                }
-                else
-                {
-                    gp_coords(where, 1) = 0.774596669241483;
-                    gp_weight(where, 1) = 0.555555555555556;
-                }
-
-                if (kk == 0)
-                {
-                    gp_coords(where, 2) = -0.774596669241483;
-                    gp_weight(where, 2) = 0.555555555555556;
-                }
-                else if (kk == 1)
-                {
-                    gp_coords(where, 2) = 0.0;
-                    gp_weight(where, 2) = 0.888888888888889;
-                }
-                else
-                {
-                    gp_coords(where, 2) = 0.774596669241483;
-                    gp_weight(where, 2) = 0.555555555555556;
-                }
-
                 where ++;
             }
         }
@@ -630,96 +566,13 @@ const DTensor2 &TwentyNodeBrickLT::Jacobian_3Dinv(const DTensor2 &dh) const
 const DTensor2 &TwentyNodeBrickLT::Nodal_Coordinates(void) const
 {
     static DTensor2 N_coord( 20, 3, 0.0 );
-
-    //Zhaohui using node pointers, which come from the Domain
-    const Vector &nd1Crds = theNodes[0]->getCrds();
-    const Vector &nd2Crds = theNodes[1]->getCrds();
-    const Vector &nd3Crds = theNodes[2]->getCrds();
-    const Vector &nd4Crds = theNodes[3]->getCrds();
-    const Vector &nd5Crds = theNodes[4]->getCrds();
-    const Vector &nd6Crds = theNodes[5]->getCrds();
-    const Vector &nd7Crds = theNodes[6]->getCrds();
-    const Vector &nd8Crds = theNodes[7]->getCrds();
-
-    const Vector &nd9Crds  = theNodes[8]->getCrds();
-    const Vector &nd10Crds = theNodes[9]->getCrds();
-    const Vector &nd11Crds = theNodes[10]->getCrds();
-    const Vector &nd12Crds = theNodes[11]->getCrds();
-
-    const Vector &nd13Crds = theNodes[12]->getCrds();
-    const Vector &nd14Crds = theNodes[13]->getCrds();
-    const Vector &nd15Crds = theNodes[14]->getCrds();
-    const Vector &nd16Crds = theNodes[15]->getCrds();
-
-
-    const Vector &nd17Crds = theNodes[16]->getCrds();
-    const Vector &nd18Crds = theNodes[17]->getCrds();
-    const Vector &nd19Crds = theNodes[18]->getCrds();
-    const Vector &nd20Crds = theNodes[19]->getCrds();
-
-    N_coord( 0, 0 ) = nd1Crds(0);
-    N_coord( 0, 1 ) = nd1Crds(1);
-    N_coord( 0, 2 ) = nd1Crds(2);
-    N_coord( 1, 0 ) = nd2Crds(0);
-    N_coord( 1, 1 ) = nd2Crds(1);
-    N_coord( 1, 2 ) = nd2Crds(2);
-    N_coord( 2, 0 ) = nd3Crds(0);
-    N_coord( 2, 1 ) = nd3Crds(1);
-    N_coord( 2, 2 ) = nd3Crds(2);
-    N_coord( 3, 0 ) = nd4Crds(0);
-    N_coord( 3, 1 ) = nd4Crds(1);
-    N_coord( 3, 2 ) = nd4Crds(2);
-    N_coord( 4, 0 ) = nd5Crds(0);
-    N_coord( 4, 1 ) = nd5Crds(1);
-    N_coord( 4, 2 ) = nd5Crds(2);
-    N_coord( 5, 0 ) = nd6Crds(0);
-    N_coord( 5, 1 ) = nd6Crds(1);
-    N_coord( 5, 2 ) = nd6Crds(2);
-    N_coord( 6, 0 ) = nd7Crds(0);
-    N_coord( 6, 1 ) = nd7Crds(1);
-    N_coord( 6, 2 ) = nd7Crds(2);
-    N_coord( 7, 0 ) = nd8Crds(0);
-    N_coord( 7, 1 ) = nd8Crds(1);
-    N_coord( 7, 2 ) = nd8Crds(2);
-
-    N_coord( 8 , 0 ) = nd9Crds(0);
-    N_coord( 8 , 1 ) = nd9Crds(1);
-    N_coord( 8 , 2 ) = nd9Crds(2);
-    N_coord( 9, 0 ) = nd10Crds(0);
-    N_coord( 9, 1 ) = nd10Crds(1);
-    N_coord( 9, 2 ) = nd10Crds(2);
-    N_coord( 10, 0 ) = nd11Crds(0);
-    N_coord( 10, 1 ) = nd11Crds(1);
-    N_coord( 10, 2 ) = nd11Crds(2);
-    N_coord( 11, 0 ) = nd12Crds(0);
-    N_coord( 11, 1 ) = nd12Crds(1);
-    N_coord( 11, 2 ) = nd12Crds(2);
-
-    N_coord( 12, 0 ) = nd13Crds(0);
-    N_coord( 12, 1 ) = nd13Crds(1);
-    N_coord( 12, 2 ) = nd13Crds(2);
-    N_coord( 13, 0 ) = nd14Crds(0);
-    N_coord( 13, 1 ) = nd14Crds(1);
-    N_coord( 13, 2 ) = nd14Crds(2);
-    N_coord( 14, 0 ) = nd15Crds(0);
-    N_coord( 14, 1 ) = nd15Crds(1);
-    N_coord( 14, 2 ) = nd15Crds(2);
-    N_coord( 15, 0 ) = nd16Crds(0);
-    N_coord( 15, 1 ) = nd16Crds(1);
-    N_coord( 15, 2 ) = nd16Crds(2);
-
-    N_coord( 16, 0 ) = nd17Crds(0);
-    N_coord( 16, 1 ) = nd17Crds(1);
-    N_coord( 16, 2 ) = nd17Crds(2);
-    N_coord( 17, 0 ) = nd18Crds(0);
-    N_coord( 17, 1 ) = nd18Crds(1);
-    N_coord( 17, 2 ) = nd18Crds(2);
-    N_coord( 18, 0 ) = nd19Crds(0);
-    N_coord( 18, 1 ) = nd19Crds(1);
-    N_coord( 18, 2 ) = nd19Crds(2);
-    N_coord( 19, 0 ) = nd20Crds(0);
-    N_coord( 19, 1 ) = nd20Crds(1);
-    N_coord( 19, 2 ) = nd20Crds(2);
+    for (int i = 0; i < 20; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            N_coord( i, j ) = (theNodes[i]->getCrds())(j);
+        }
+    }
 
     return N_coord;
 
@@ -730,94 +583,13 @@ const DTensor2 &TwentyNodeBrickLT::incr_disp(void) const
 {
     static DTensor2 increment_disp( 20, 3, 0.0 );
 
-
-    const Vector &IncrDis1 = theNodes[0]->getIncrDeltaDisp();
-    const Vector &IncrDis2 = theNodes[1]->getIncrDeltaDisp();
-    const Vector &IncrDis3 = theNodes[2]->getIncrDeltaDisp();
-    const Vector &IncrDis4 = theNodes[3]->getIncrDeltaDisp();
-    const Vector &IncrDis5 = theNodes[4]->getIncrDeltaDisp();
-    const Vector &IncrDis6 = theNodes[5]->getIncrDeltaDisp();
-    const Vector &IncrDis7 = theNodes[6]->getIncrDeltaDisp();
-    const Vector &IncrDis8 = theNodes[7]->getIncrDeltaDisp();
-
-    const Vector &IncrDis9  = theNodes[8]->getIncrDeltaDisp();
-    const Vector &IncrDis10 = theNodes[9]->getIncrDeltaDisp();
-    const Vector &IncrDis11 = theNodes[10]->getIncrDeltaDisp();
-    const Vector &IncrDis12 = theNodes[11]->getIncrDeltaDisp();
-
-    const Vector &IncrDis13 = theNodes[12]->getIncrDeltaDisp();
-    const Vector &IncrDis14 = theNodes[13]->getIncrDeltaDisp();
-    const Vector &IncrDis15 = theNodes[14]->getIncrDeltaDisp();
-    const Vector &IncrDis16 = theNodes[15]->getIncrDeltaDisp();
-
-    const Vector &IncrDis17 = theNodes[16]->getIncrDeltaDisp();
-    const Vector &IncrDis18 = theNodes[17]->getIncrDeltaDisp();
-    const Vector &IncrDis19 = theNodes[18]->getIncrDeltaDisp();
-    const Vector &IncrDis20 = theNodes[19]->getIncrDeltaDisp();
-
-    increment_disp( 0, 0) = IncrDis1(0);
-    increment_disp( 0, 1) = IncrDis1(1);
-    increment_disp( 0, 2) = IncrDis1(2);
-    increment_disp( 1, 0) = IncrDis2(0);
-    increment_disp( 1, 1) = IncrDis2(1);
-    increment_disp( 1, 2) = IncrDis2(2);
-    increment_disp( 2, 0) = IncrDis3(0);
-    increment_disp( 2, 1) = IncrDis3(1);
-    increment_disp( 2, 2) = IncrDis3(2);
-    increment_disp( 3, 0) = IncrDis4(0);
-    increment_disp( 3, 1) = IncrDis4(1);
-    increment_disp( 3, 2) = IncrDis4(2);
-    increment_disp( 4, 0) = IncrDis5(0);
-    increment_disp( 4, 1) = IncrDis5(1);
-    increment_disp( 4, 2) = IncrDis5(2);
-    increment_disp( 5, 0) = IncrDis6(0);
-    increment_disp( 5, 1) = IncrDis6(1);
-    increment_disp( 5, 2) = IncrDis6(2);
-    increment_disp( 6, 0) = IncrDis7(0);
-    increment_disp( 6, 1) = IncrDis7(1);
-    increment_disp( 6, 2) = IncrDis7(2);
-    increment_disp( 7, 0) = IncrDis8(0);
-    increment_disp( 7, 1) = IncrDis8(1);
-    increment_disp( 7, 2) = IncrDis8(2);
-
-    increment_disp( 8 , 0) = IncrDis9(0);
-    increment_disp( 8 , 1) = IncrDis9(1);
-    increment_disp( 8 , 2) = IncrDis9(2);
-    increment_disp( 9, 0) = IncrDis10(0);
-    increment_disp( 9, 1) = IncrDis10(1);
-    increment_disp( 9, 2) = IncrDis10(2);
-    increment_disp( 10, 0) = IncrDis11(0);
-    increment_disp( 10, 1) = IncrDis11(1);
-    increment_disp( 10, 2) = IncrDis11(2);
-    increment_disp( 11, 0) = IncrDis12(0);
-    increment_disp( 11, 1) = IncrDis12(1);
-    increment_disp( 11, 2) = IncrDis12(2);
-
-    increment_disp( 12, 0) = IncrDis13(0);
-    increment_disp( 12, 1) = IncrDis13(1);
-    increment_disp( 12, 2) = IncrDis13(2);
-    increment_disp( 13, 0) = IncrDis14(0);
-    increment_disp( 13, 1) = IncrDis14(1);
-    increment_disp( 13, 2) = IncrDis14(2);
-    increment_disp( 14, 0) = IncrDis15(0);
-    increment_disp( 14, 1) = IncrDis15(1);
-    increment_disp( 14, 2) = IncrDis15(2);
-    increment_disp( 15, 0) = IncrDis16(0);
-    increment_disp( 15, 1) = IncrDis16(1);
-    increment_disp( 15, 2) = IncrDis16(2);
-
-    increment_disp( 16, 0) = IncrDis17(0);
-    increment_disp( 16, 1) = IncrDis17(1);
-    increment_disp( 16, 2) = IncrDis17(2);
-    increment_disp( 17, 0) = IncrDis18(0);
-    increment_disp( 17, 1) = IncrDis18(1);
-    increment_disp( 17, 2) = IncrDis18(2);
-    increment_disp( 18, 0) = IncrDis19(0);
-    increment_disp( 18, 1) = IncrDis19(1);
-    increment_disp( 18, 2) = IncrDis19(2);
-    increment_disp( 19, 0) = IncrDis20(0);
-    increment_disp( 19, 1) = IncrDis20(1);
-    increment_disp( 19, 2) = IncrDis20(2);
+    for (int i = 0; i < 20; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            increment_disp( i, j ) = (theNodes[i]->getIncrDeltaDisp())(j);
+        }
+    }
 
 
     return increment_disp;
@@ -830,97 +602,13 @@ const DTensor2 &TwentyNodeBrickLT::incr_disp(void) const
 const DTensor2 &TwentyNodeBrickLT::total_disp(void) const
 {
     static DTensor2 total_disp( 20, 3, 0.0 );
-    //Zhaohui using node pointers, which come from the Domain
-    const Vector &TotDis1 = theNodes[0]->getTrialDisp();
-    const Vector &TotDis2 = theNodes[1]->getTrialDisp();
-    const Vector &TotDis3 = theNodes[2]->getTrialDisp();
-    const Vector &TotDis4 = theNodes[3]->getTrialDisp();
-    const Vector &TotDis5 = theNodes[4]->getTrialDisp();
-    const Vector &TotDis6 = theNodes[5]->getTrialDisp();
-    const Vector &TotDis7 = theNodes[6]->getTrialDisp();
-    const Vector &TotDis8 = theNodes[7]->getTrialDisp();
-
-    const Vector &TotDis9 = theNodes[8]->getTrialDisp();
-    const Vector &TotDis10 = theNodes[9]->getTrialDisp();
-    const Vector &TotDis11 = theNodes[10]->getTrialDisp();
-    const Vector &TotDis12 = theNodes[11]->getTrialDisp();
-
-    const Vector &TotDis13 = theNodes[12]->getTrialDisp();
-    const Vector &TotDis14 = theNodes[13]->getTrialDisp();
-    const Vector &TotDis15 = theNodes[14]->getTrialDisp();
-    const Vector &TotDis16 = theNodes[15]->getTrialDisp();
-
-    const Vector &TotDis17 = theNodes[16]->getTrialDisp();
-    const Vector &TotDis18 = theNodes[17]->getTrialDisp();
-    const Vector &TotDis19 = theNodes[18]->getTrialDisp();
-    const Vector &TotDis20 = theNodes[19]->getTrialDisp();
-
-
-
-
-    total_disp( 0, 0 ) = TotDis1(0);
-    total_disp( 0, 1 ) = TotDis1(1);
-    total_disp( 0, 2 ) = TotDis1(2);
-    total_disp( 1, 0 ) = TotDis2(0);
-    total_disp( 1, 1 ) = TotDis2(1);
-    total_disp( 1, 2 ) = TotDis2(2);
-    total_disp( 2, 0 ) = TotDis3(0);
-    total_disp( 2, 1 ) = TotDis3(1);
-    total_disp( 2, 2 ) = TotDis3(2);
-    total_disp( 3, 0 ) = TotDis4(0);
-    total_disp( 3, 1 ) = TotDis4(1);
-    total_disp( 3, 2 ) = TotDis4(2);
-    total_disp( 4, 0 ) = TotDis5(0);
-    total_disp( 4, 1 ) = TotDis5(1);
-    total_disp( 4, 2 ) = TotDis5(2);
-    total_disp( 5, 0 ) = TotDis6(0);
-    total_disp( 5, 1 ) = TotDis6(1);
-    total_disp( 5, 2 ) = TotDis6(2);
-    total_disp( 6, 0 ) = TotDis7(0);
-    total_disp( 6, 1 ) = TotDis7(1);
-    total_disp( 6, 2 ) = TotDis7(2);
-    total_disp( 7, 0 ) = TotDis8(0);
-    total_disp( 7, 1 ) = TotDis8(1);
-    total_disp( 7, 2 ) = TotDis8(2);
-
-    total_disp( 8, 0 ) = TotDis9(0);
-    total_disp( 8, 1 ) = TotDis9(1);
-    total_disp( 8, 2 ) = TotDis9(2);
-    total_disp( 9, 0 ) = TotDis10(0);
-    total_disp( 9, 1 ) = TotDis10(1);
-    total_disp( 9, 2 ) = TotDis10(2);
-    total_disp( 10, 0 ) = TotDis11(0);
-    total_disp( 10, 1 ) = TotDis11(1);
-    total_disp( 10, 2 ) = TotDis11(2);
-    total_disp( 11, 0 ) = TotDis12(0);
-    total_disp( 11, 1 ) = TotDis12(1);
-    total_disp( 11, 2 ) = TotDis12(2);
-
-    total_disp( 12, 0 ) = TotDis13(0);
-    total_disp( 12, 1 ) = TotDis13(1);
-    total_disp( 12, 2 ) = TotDis13(2);
-    total_disp( 13, 0 ) = TotDis14(0);
-    total_disp( 13, 1 ) = TotDis14(1);
-    total_disp( 13, 2 ) = TotDis14(2);
-    total_disp( 14, 0 ) = TotDis15(0);
-    total_disp( 14, 1 ) = TotDis15(1);
-    total_disp( 14, 2 ) = TotDis15(2);
-    total_disp( 15, 0 ) = TotDis16(0);
-    total_disp( 15, 1 ) = TotDis16(1);
-    total_disp( 15, 2 ) = TotDis16(2);
-
-    total_disp( 16, 0 ) = TotDis17(0);
-    total_disp( 16, 1 ) = TotDis17(1);
-    total_disp( 16, 2 ) = TotDis17(2);
-    total_disp( 17, 0 ) = TotDis18(0);
-    total_disp( 17, 1 ) = TotDis18(1);
-    total_disp( 17, 2 ) = TotDis18(2);
-    total_disp( 18, 0 ) = TotDis19(0);
-    total_disp( 18, 1 ) = TotDis19(1);
-    total_disp( 18, 2 ) = TotDis19(2);
-    total_disp( 19, 0 ) = TotDis20(0);
-    total_disp( 19, 1 ) = TotDis20(1);
-    total_disp( 19, 2 ) = TotDis20(2);
+    for (int i = 0; i < 20; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            total_disp( i, j ) = (theNodes[i]->getTrialDisp())(j);
+        }
+    }
 
     return total_disp;
 }
@@ -973,7 +661,7 @@ const DTensor2 &TwentyNodeBrickLT::nodal_forces(void) const
     }
 
 
-    for ( short gp = 0; gp < 20; gp++ )
+    for ( short gp = 0; gp < 27; gp++ )
     {
         r = gp_coords(gp, 0);
         s = gp_coords(gp, 1);
@@ -1203,209 +891,19 @@ void TwentyNodeBrickLT::setDomain (Domain *theDomain)
 
     else
     {
-        int Nd1 = connectedExternalNodes(0);
-        int Nd2 = connectedExternalNodes(1);
-        int Nd3 = connectedExternalNodes(2);
-        int Nd4 = connectedExternalNodes(3);
 
-        int Nd5 = connectedExternalNodes(4);
-        int Nd6 = connectedExternalNodes(5);
-        int Nd7 = connectedExternalNodes(6);
-        int Nd8 = connectedExternalNodes(7);
-        int Nd9  = connectedExternalNodes( 8);
-        int Nd10 = connectedExternalNodes( 9);
-        int Nd11 = connectedExternalNodes(10);
-        int Nd12 = connectedExternalNodes(11);
-        int Nd13 = connectedExternalNodes(12);
-        int Nd14 = connectedExternalNodes(13);
-        int Nd15 = connectedExternalNodes(14);
-        int Nd16 = connectedExternalNodes(15);
-        int Nd17 = connectedExternalNodes(16);
-        int Nd18 = connectedExternalNodes(17);
-        int Nd19 = connectedExternalNodes(18);
-        int Nd20 = connectedExternalNodes(19);
-
-
-        theNodes[0] = theDomain->getNode( Nd1 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[0] == 0 )
+        for (int i = 0; i < 20; ++i)
         {
-            theNodes[0] = theDomain->getOutsideNode( Nd1 );
+            theNodes[i] = theDomain->getNode( connectedExternalNodes(i) );
+
+# ifdef _PARALLEL_PROCESSING
+            if ( theNodes[i] == 0 ){
+                theNodes[i] = theDomain->getOutsideNode( connectedExternalNodes(i) );
+            }
+# endif
         }
 
-# endif
-        theNodes[1] = theDomain->getNode( Nd2 );
-# ifdef _PARALLEL_PROCESSING
 
-        if ( theNodes[1] == 0 )
-        {
-            theNodes[1] = theDomain->getOutsideNode( Nd2 );
-        }
-
-# endif
-        theNodes[2] = theDomain->getNode( Nd3 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[2] == 0 )
-        {
-            theNodes[2] = theDomain->getOutsideNode( Nd3 );
-        }
-
-# endif
-        theNodes[3] = theDomain->getNode( Nd4 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[3] == 0 )
-        {
-            theNodes[3] = theDomain->getOutsideNode( Nd4 );
-        }
-
-# endif
-
-        theNodes[4] = theDomain->getNode( Nd5 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[4] == 0 )
-        {
-            theNodes[4] = theDomain->getOutsideNode( Nd5 );
-        }
-
-# endif
-        theNodes[5] = theDomain->getNode( Nd6 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[5] == 0 )
-        {
-            theNodes[5] = theDomain->getOutsideNode( Nd6 );
-        }
-
-# endif
-        theNodes[6] = theDomain->getNode( Nd7 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[6] == 0 )
-        {
-            theNodes[6] = theDomain->getOutsideNode( Nd7 );
-        }
-
-# endif
-        theNodes[7] = theDomain->getNode( Nd8 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[7] == 0 )
-        {
-            theNodes[7] = theDomain->getOutsideNode( Nd8 );
-        }
-
-# endif
-        theNodes[8] = theDomain->getNode( Nd9 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[8] == 0 )
-        {
-            theNodes[8] = theDomain->getOutsideNode( Nd9 );
-        }
-
-# endif
-        theNodes[9] = theDomain->getNode( Nd10 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[9] == 0 )
-        {
-            theNodes[9] = theDomain->getOutsideNode( Nd10 );
-        }
-
-# endif
-        theNodes[10] = theDomain->getNode( Nd11 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[10] == 0 )
-        {
-            theNodes[10] = theDomain->getOutsideNode( Nd11 );
-        }
-
-# endif
-        theNodes[11] = theDomain->getNode( Nd12 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[11] == 0 )
-        {
-            theNodes[11] = theDomain->getOutsideNode( Nd12 );
-        }
-
-# endif
-        theNodes[12] = theDomain->getNode( Nd13 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[12] == 0 )
-        {
-            theNodes[12] = theDomain->getOutsideNode( Nd13 );
-        }
-
-# endif
-        theNodes[13] = theDomain->getNode( Nd14 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[13] == 0 )
-        {
-            theNodes[13] = theDomain->getOutsideNode( Nd14 );
-        }
-
-# endif
-        theNodes[14] = theDomain->getNode( Nd15 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[14] == 0 )
-        {
-            theNodes[14] = theDomain->getOutsideNode( Nd15 );
-        }
-
-# endif
-        theNodes[15] = theDomain->getNode( Nd16 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[15] == 0 )
-        {
-            theNodes[15] = theDomain->getOutsideNode( Nd16 );
-        }
-
-# endif
-        theNodes[16] = theDomain->getNode( Nd17 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[16] == 0 )
-        {
-            theNodes[16] = theDomain->getOutsideNode( Nd17 );
-        }
-
-# endif
-        theNodes[17] = theDomain->getNode( Nd18 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[17] == 0 )
-        {
-            theNodes[17] = theDomain->getOutsideNode( Nd18 );
-        }
-
-# endif
-        theNodes[18] = theDomain->getNode( Nd19 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[18] == 0 )
-        {
-            theNodes[18] = theDomain->getOutsideNode( Nd19 );
-        }
-
-# endif
-        theNodes[19] = theDomain->getNode( Nd20 );
-# ifdef _PARALLEL_PROCESSING
-
-        if ( theNodes[19] == 0 )
-        {
-            theNodes[19] = theDomain->getOutsideNode( Nd20 );
-        }
-# endif
 
         if (theNodes[0]  == 0 || theNodes[1]  == 0 || theNodes[2]  == 0 || theNodes[3]  == 0 ||
                 theNodes[4]  == 0 || theNodes[5]  == 0 || theNodes[6]  == 0 || theNodes[7]  == 0 ||
