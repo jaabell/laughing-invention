@@ -739,6 +739,18 @@ ElasticBeam::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBro
         cerr.flush() << "ElasticBeam::receiveSelf -- could not receive data Vector\n";
         return res;
     }
+
+
+    if (nodeIOffset == 0)
+    {
+        nodeIOffset = new Vector(3);
+    }
+    if (nodeJOffset == 0)
+    {
+        nodeJOffset = new Vector(3);
+    }
+
+
     res += theChannel.receiveVector(this->getDbTag(), cTag, *nodeIOffset);
     if (res < 0)
     {
