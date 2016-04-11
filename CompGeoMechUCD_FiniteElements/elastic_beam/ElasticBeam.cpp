@@ -749,7 +749,14 @@ ElasticBeam::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBro
     {
         nodeJOffset = new Vector(3);
     }
-
+    if (nodeIInitialDisp == 0)
+    {
+        nodeIInitialDisp = new Vector(3);
+    }
+    if (nodeJInitialDisp == 0)
+    {
+        nodeJInitialDisp = new Vector(3);
+    }
 
     res += theChannel.receiveVector(this->getDbTag(), cTag, *nodeIOffset);
     if (res < 0)
