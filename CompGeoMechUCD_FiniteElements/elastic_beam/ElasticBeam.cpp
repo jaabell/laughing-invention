@@ -714,7 +714,7 @@ ElasticBeam::receiveSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBro
 {
     int res = 0;
 
-    static Vector data(12);
+    static Vector data(8);
 
     res += theChannel.receiveVector(this->getDbTag(), cTag, data);
 
