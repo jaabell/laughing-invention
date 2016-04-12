@@ -62,7 +62,7 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
 	nodes[0] = 0;
 	nodes[1] = 0;
 
-	cout << "FrictionalPenaltyContact Element " <<  tag << endl;
+	// cout << "FrictionalPenaltyContact Element " <<  tag << endl;
 	// B matrix is initialized now .
 	// This is to avoid storing the normal vector's components apart from B matrix
 	// which is redundant, 'cause the normal vector components are the elements
@@ -359,16 +359,16 @@ int FrictionalPenaltyContact::commitState(void)
 	R->addMatrixTransposeVector(1, B, *tA, 1.0);
 
 
-	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	cout.precision(10);
-	cout << "******************************************** Commit State *************************************\n";
-	cout << "*g_commit " <<  *g_commit;
-	cout << "*g_prev_commit " <<  *g_prev_commit;
-	cout << "is_in_contact_prev_commit " <<  is_in_contact_prev_commit << "\n";
-	cout << "is_in_contact_commit " <<  is_in_contact_commit << "\n";
-	cout << "*Commit Resisting Force -  " << *tA ;
-	cout << "###############################################################################################\n";
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+	// cout.precision(10);
+	// cout << "******************************************** Commit State *************************************\n";
+	// cout << "*g_commit " <<  *g_commit;
+	// cout << "*g_prev_commit " <<  *g_prev_commit;
+	// cout << "is_in_contact_prev_commit " <<  is_in_contact_prev_commit << "\n";
+	// cout << "is_in_contact_commit " <<  is_in_contact_commit << "\n";
+	// cout << "*Commit Resisting Force -  " << *tA ;
+	// cout << "###############################################################################################\n";
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return 0;
 }
@@ -424,12 +424,12 @@ int FrictionalPenaltyContact::update(void)
 	Vector del_tC(3);			// vector to hold current total step predicted forces
 	Vector delg(3);				// correct gap fucntion
 
-	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	cout << "************************************ Iteration Steps **********************************\n";
-	cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
-	cout << "is_in_contact " <<  is_in_contact << "\n";	
-	cout << "*g " <<  *g;
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+	// cout << "************************************ Iteration Steps **********************************\n";
+	// cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
+	// cout << "is_in_contact " <<  is_in_contact << "\n";	
+	// cout << "*g " <<  *g;
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (is_in_contact){
 
@@ -455,10 +455,10 @@ int FrictionalPenaltyContact::update(void)
 		Vector trial_tC(3); trial_tC= *tC + del_tC;				/// Predicted Forces ///
 
 
-		///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
-		cout << "*del_gap_trial " <<  delg;	
-		cout << "*trial_tC " <<  trial_tC;
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+		// cout << "*del_gap_trial " <<  delg;	
+		// cout << "*trial_tC " <<  trial_tC;
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 		/////////////////////////////////////////////////////////////////////////////////
@@ -467,20 +467,17 @@ int FrictionalPenaltyContact::update(void)
 		/////////////////////////////////////////////////////////////////////////////////
 
 		double yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
-		cout << "Yoeld function " << yf_B << endl;
 
 		if (yf_B > epsilon){ /////// Sliding Condition /////////
 
 			/////////////////////////////////// Finding the Loading direction //////////////////////////////////////////////////
 			Vector eta=delg;eta(2)=0;double norm_eta = eta.Norm();				// finding the loading direction
-	        cout.precision(10);cout << "norm_eta " << norm_eta << endl;
 	        if (norm_eta > epsilon)
 	            eta = eta / norm_eta;
 	        else{
 	            eta(0) = 1.0 / std::sqrt(2.0);
 	            eta(1) = 1.0 / std::sqrt(2.0);
 	        }
-	        cout << "eta " << eta ;
 	        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	        ////////////////////////////// Calculating the crossing increament force to yield surface /////////////////////////
@@ -489,8 +486,6 @@ int FrictionalPenaltyContact::update(void)
 	       	Vector zeta=trial_tC;												// zeta -> unit normal to yield surface
 	        del_tC = trial_tC - *tC;											// change in force to cross forces
 	        double norm_zeta = sqrt(zeta(0)*zeta(0)+zeta(1)*zeta(1));			// derivate of yield function tangential component 
-	        cout << "*trial_tC " <<  trial_tC;
-	        cout.precision(10);;cout << "norm_zeta " << norm_zeta << endl;;
 	        if (norm_zeta > epsilon){
 	            zeta = zeta / norm_zeta;
 	        	eta  = eta / norm_zeta; 
@@ -535,12 +530,12 @@ int FrictionalPenaltyContact::update(void)
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-			/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////
-			cout << "I am Sliding \n";
-			cout << "eta " << eta;
-			cout << "zeta " << zeta; 
-			cout << "New Code Stiffness During Sliding " << *C ;
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////
+			// cout << "I am Sliding \n";
+			// cout << "eta " << eta;
+			// cout << "zeta " << zeta; 
+			// cout << "New Code Stiffness During Sliding " << *C ;
+			// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		}
 	}
@@ -565,12 +560,12 @@ int FrictionalPenaltyContact::update(void)
 	*tC = *tC + del_tC ;			// correct local force
 	*g_prev = *g;					// defining the previous gap
 
-	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////	
-	cout.precision(10);
-	cout << "*del_gap " <<  delg;
-	cout << "del_tC " << del_tC;
-	cout << "tC " <<  *tC;
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////	
+	// cout.precision(10);
+	// cout << "*del_gap " <<  delg;
+	// cout << "del_tC " << del_tC;
+	// cout << "tC " <<  *tC;
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return 0;
 }
