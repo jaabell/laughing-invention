@@ -56,6 +56,9 @@ ElasticBeam::ElasticBeam()
 
     R.Zero();
 
+    this->setNumberOfBoundaryNodes(1);
+
+
 }
 
 ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
@@ -93,6 +96,8 @@ ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
     (*nodeJOffset)(0) = rigJntOffset2_x;
     (*nodeJOffset)(1) = rigJntOffset2_y;
     (*nodeJOffset)(2) = rigJntOffset2_z;
+
+    this->setNumberOfBoundaryNodes(1);
 }
 
 
@@ -135,6 +140,8 @@ ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *sec
     (*nodeJOffset)(0) = rigJntOffset2_x;
     (*nodeJOffset)(1) = rigJntOffset2_y;
     (*nodeJOffset)(2) = rigJntOffset2_z;
+
+    this->setNumberOfBoundaryNodes(1);
 }
 
 ElasticBeam::~ElasticBeam()
