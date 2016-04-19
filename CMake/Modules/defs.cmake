@@ -44,7 +44,6 @@ set(INLINING_OPTS "-finline -finline-functions -fkeep-inline-functions -fdefault
 set(LOGFILE  "essi_compilation.log" CACHE STRING "Log file for the compilation process")
 # --------------------------------------------------------
 
-
 # Check if any compiler is selected
 if((NOT IS_CLANG) AND (NOT IS_GNU) AND (NOT IS_INTEL))
     message(FATAL_ERROR "Compiler is not set.")
@@ -67,13 +66,11 @@ if(L_HAS_PROG EQUAL -1)
 endif()
 
 # Set compiling and linking options
-
-
 message(STATUS "Programming mode='${PROGRAMMING_MODE}'")
 if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     message(STATUS "YES! Parallel")
-    set(IS_PARALLEL ON)
-    set(PROGRAMMING_FLAG  "-D_PDD ")
+    set( IS_PARALLEL ON)
+    set( PROGRAMMING_FLAG "${PROGRAMMING_FLAG} -D_PDD ")
     set( PROGRAMMING_FLAG "${PROGRAMMING_FLAG} -D_PARALLEL_PROCESSING ")
     set( PROGRAMMING_FLAG "${PROGRAMMING_FLAG} -D_TIMING ")
     set( PROGRAMMING_FLAG "${PROGRAMMING_FLAG} -D_PETSC ")
@@ -81,42 +78,7 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     set( PROGRAMMING_FLAG "${PROGRAMMING_FLAG} -DPETSC_USE_BOPT_O ")
     set( PROGRAMMING_FLAG "${PROGRAMMING_FLAG} -DPETSC_USE_EXTERN_CXX ") 
     
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/petsc-3.6.0/include")
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/petsc-3.6.0/arch-linux2-c-opt/include")
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/include")
-    # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/parmetis-4.0.2_install/include")
-    # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/metis-4.0.2_install/include")
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
-    # set( EXT_INCLUDE "${EXT_INCLUDE} ${RealESSI_DEP}/hdf5_parallel/include")
-
-    list(APPEND NUMERIC_LIBS "petsc")
-    list(APPEND NUMERIC_LIBS "superlu_4.3")
-    list(APPEND NUMERIC_LIBS "superlu_dist_4.0")
-    list(APPEND NUMERIC_LIBS "spai")
-    list(APPEND NUMERIC_LIBS "scalapack")
-    list(APPEND NUMERIC_LIBS "parmetis")
-    list(APPEND NUMERIC_LIBS "metis")
-    
-    list(APPEND NUMERIC_LIBS "umfpack")
-    list(APPEND NUMERIC_LIBS "amd")
-    list(APPEND NUMERIC_LIBS "cholmod")
-    list(APPEND NUMERIC_LIBS "colamd")
-    list(APPEND NUMERIC_LIBS "camd")
-    list(APPEND NUMERIC_LIBS "ccolamd")
-    list(APPEND NUMERIC_LIBS "arpack")
-    if(NOT NO_BLASLAPACK)
-        message(STATUS "Requiring BLAS and LAPACK libs")
-        list(APPEND NUMERIC_LIBS "flapack")
-        list(APPEND NUMERIC_LIBS "fblas")
-        list(APPEND NUMERIC_LIBS "lapack")
-        list(APPEND NUMERIC_LIBS "cblas")
-        list(APPEND NUMERIC_LIBS "f77blas")
-        list(APPEND NUMERIC_LIBS "atlas")
-    endif(NO_BLASLAPACK)
-    list(APPEND NUMERIC_LIBS "suitesparseconfig")
-
-    # IMPORT_LIB("${RealESSI_DEP}/hdf5_parallel/lib" hdf5)
-    IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
+    LOAD_EXTERNAL_LIBS(INCLUDE_LIBS INCLUDE_LIBS_PATH INCLUDE_DEFAULTS "-p")
     
     # SYSTEM_LIBS("quadmath" MACHINE_LIBS)
     # SYSTEM_LIBS("gcc_s" MACHINE_LIBS)
@@ -126,42 +88,23 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     SYSTEM_LIBS("ieee" MACHINE_LIBS)
     SYSTEM_LIBS("c" MACHINE_LIBS)
     SYSTEM_LIBS("rt" MACHINE_LIBS)
-
 else()  # sequential
     message(STATUS "YES! SEQUENTIAL")
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
     
-
-    list(APPEND NUMERIC_LIBS "lapack")
-    list(APPEND NUMERIC_LIBS "arpack")
-    list(APPEND NUMERIC_LIBS "umfpack")
-    list(APPEND NUMERIC_LIBS "amd")
-    list(APPEND NUMERIC_LIBS "cholmod")
-    list(APPEND NUMERIC_LIBS "colamd")
-    list(APPEND NUMERIC_LIBS "camd")
-    list(APPEND NUMERIC_LIBS "ccolamd")
-    list(APPEND NUMERIC_LIBS "metis")
-    list(APPEND NUMERIC_LIBS "cblas")
-    list(APPEND NUMERIC_LIBS "f77blas")
-    list(APPEND NUMERIC_LIBS "atlas")
-    list(APPEND NUMERIC_LIBS "suitesparseconfig")
-    
-    IMPORT_LIB("${RealESSI_DEP}/hdf5_sequential/lib" hdf5)
-    
+    LOAD_EXTERNAL_LIBS(INCLUDE_LIBS INCLUDE_LIBS_PATH INCLUDE_DEFAULTS "-s")
+       
     SYSTEM_LIBS("ieee" MACHINE_LIBS)
     SYSTEM_LIBS("c" MACHINE_LIBS)
     SYSTEM_LIBS("pthread" MACHINE_LIBS)
     SYSTEM_LIBS("rt" MACHINE_LIBS)
 endif()
-
-
+    
 if(NOT $ENV{BOOST_ROOT} STREQUAL "")
     list(APPEND EXT_INCLUDE "$ENV{BOOST_ROOT}/include")
 endif()
 
-
 ## Common flags for goth debug and no debug
-set(COMPILER_FLAGS "-Wall")
+set(COMPILER_FLAGS "${COMPILER_FLAGS} -Wall")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -D_LINUX")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -D_UNIX")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} ${PROGRAMMING_FLAG}")
@@ -179,7 +122,7 @@ if(${DEBUG_MODE} STREQUAL "OPTIMIZED")
     set(COMPILER_FLAGS "${COMPILER_FLAGS} -ftree-slp-vectorize")
     set(COMPILER_FLAGS "${COMPILER_FLAGS} -fvariable-expansion-in-unroller")
     
-    set(LINKER_FLAGS "-O3")
+    set(LINKER_FLAGS "${LINKER_FLAGS} -O3")
     set(LINKER_FLAGS "${LINKER_FLAGS} ${LTO_FLAGS}")
     # set(LINKER_FLAGS "${LINKER_FLAGS} ${MORE_LINKFLAGS} ")
 else()
@@ -189,7 +132,7 @@ else()
     set(COMPILER_FLAGS "${COMPILER_FLAGS} -D_DEBUG_CONTACT")
     set(COMPILER_FLAGS "${COMPILER_FLAGS} -D_TEACHING_MODE")
     
-    set(LINKER_FLAGS "-g")
+    set(LINKER_FLAGS "${LINKER_FLAGS} -g")
     set(LINKER_FLAGS "${LINKER_FLAGS} -pg")
     # set(LINKER_FLAGS "${LINKER_FLAGS} ${MORE_LINKFLAGS} ")
 endif()
