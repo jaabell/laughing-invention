@@ -746,6 +746,7 @@ DomainPartitioner::partition(int numParts)
 
         numTotalSPs++;
     }
+
     cout << "       Total Number of SP constraints = " << numTotalSPs << "\n";
     for (int ipart = 0; ipart < numParts + 1 ; ipart++)
     {

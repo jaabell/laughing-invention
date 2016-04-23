@@ -3375,7 +3375,7 @@ Domain::buildEleGraph( Graph * theEleGraph )
                             // cout << "Element" << ele1->getTag() << " and element " << ele2->getTag() << " have " << common << " nodes in common.";
 
                             // Adde edge for both vertices
-                            if (  common == number_of_common_nodes  )
+                            if (  common >= number_of_common_nodes  )
                             {
                                 // cout << "  Vertex added!\n";
                                 theEleGraph->addEdge( vertexTag1, vertexTag2 );
