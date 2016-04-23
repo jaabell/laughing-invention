@@ -4,7 +4,8 @@
 cmake_minimum_required(VERSION 2.8.9)
 project (RealESSI)
 #Generates a Release version
-set(CMAKE_BUILD_TYPE Release)
+# set(CMAKE_BUILD_TYPE Release)
+
 # set version number
 set(RealESSI_VERSION_MAJOR 1)
 set(RealESSI_VERSION_MINOR 0)
