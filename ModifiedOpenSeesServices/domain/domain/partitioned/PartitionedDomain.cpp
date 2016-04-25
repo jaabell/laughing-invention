@@ -1606,8 +1606,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
 
         for (int i = 0; i < size; i++)
         {
-
-            theNodeTagVertices[id(i)]->addEdge(eleTag);
+            theNodeTagVertices[id(i)]->addEdge(eleTag);//, true);
         }
     }
 //Consider MP constraints (equal dof)
