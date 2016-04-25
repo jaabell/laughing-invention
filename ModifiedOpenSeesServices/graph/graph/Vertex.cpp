@@ -112,10 +112,10 @@ int
 Vertex::addEdge(int otherTag)
 {
     // don't allow itself to be added
-    if (otherTag == this->getTag())
-    {
-        return 0;
-    }
+    // if (otherTag == this->getTag())
+    // {
+    //     return 0;
+    // }
 
     // check the otherVertex has not already been added
 
