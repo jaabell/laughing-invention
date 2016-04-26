@@ -1633,6 +1633,38 @@ CMD_define
 			fname = "define_convergence_test_normunbalance_for_analysis";
 			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
 		}
+
+
+		if($3->compare("Relative_Norm_Displacement_Increment") == 0)
+		{
+			f = &define_convergence_test_RelativeNormdisplacementincrement_for_analysis;
+			fname = "define_convergence_test_RelativeNormdisplacementincrement_for_analysis";
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
+		}
+		if($3->compare("Relative_Energy_Increment") == 0)
+		{
+			f = &define_convergence_test_RelativeEnergyincrement_for_analysis;
+			fname = "define_convergence_test_RelativeEnergyincrement_for_analysis";
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
+		}
+		if($3->compare("Relative_Norm_Unbalance") == 0)
+		{
+			f = &define_convergence_test_RelativeNormunbalance_for_analysis;
+			fname = "define_convergence_test_RelativeNormunbalance_for_analysis";
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 		args.push_back($9); signature.push_back(this_signature("maximum_iterations", &isAdimensional));
 		args.push_back($12); signature.push_back(this_signature("verbose_level", &isAdimensional));
 

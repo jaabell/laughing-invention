@@ -84,7 +84,7 @@ public:
         {
             result(i, j) = 
                 (
-                    result(i, j)+ alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n) )/ 3
+                    result(i, j)+ alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n) )/ 3.0
                 )
                 / den;
         }
