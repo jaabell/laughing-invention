@@ -781,9 +781,75 @@ int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
 	// theChannel.sendID(0, 0, integer_data);  //  the first two parameters are deprecated
 	//
 	//  Check that error_flag is not < 0
-	// you must implement
+	
+    ID idData( 2 );
 
-	cerr << "FrictionalPenaltyContact::sendSelf() -- NOT IMPLEMENTED!!!\n";
+    idData( 0 ) = this->getTag();
+    idData( 1 ) = (int) is_in_contact_commit;
+
+    if ( theChannel.sendID( 0, commitTag, idData ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID idData\n";
+        return -1;
+    }
+
+    // send double data
+    Vector floatData(5);
+    floatData(0) = kn;
+    floatData(1) = kt;
+    floatData(2) = cn;
+    floatData(3) = ct;
+    floatData(4) = mu;
+
+    if ( theChannel.sendVector( 0, commitTag, floatData ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
+    ////////// Commited local Contact forces vector /////////////////////////////////
+
+    if ( theChannel.sendVector( 0, commitTag, *tA ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
+    if ( theChannel.sendVector( 0, commitTag, *g_commit ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
+    ///// Whether I should send the B matrix ???
+
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    string tmp_string;
+
+    tmp_string = stiffness_type;
+    if ( theChannel.sendString( 0, commitTag, tmp_string ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String stiffness_type\n";
+        return -1;
+    }
+
+    tmp_string = damping_type;
+    if ( theChannel.sendString( 0, commitTag, damping_type ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String damping_type\n";
+        return -1;
+    }
+
+    // Sending the nodes
+
+    if ( theChannel.sendID( 0, commitTag, external_nodes ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID connectedExternalNodes\n";
+        return -1;
+    }
+
 
 	return 0;
 }
@@ -806,9 +872,79 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
 	//  Check that error_flag is not < 0
 	// theChannel.receiveID(0, 0, integer_data);  //  the first two parameters are deprecated
 	//  Check that error_flag is not < 0
-	cerr << "FrictionalPenaltyContact::receiveSelf() -- NOT IMPLEMENTED!!!\n";
 
-	// you must implement
+    ID idData( 2 );
+
+    if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID idData\n";
+        return -1;
+    }
+
+    this->setTag(idData( 0 ));
+    is_in_contact_commit = (bool) idData( 1 );
+
+
+    Vector floatData(5);
+    if ( theChannel.receiveVector( 0, commitTag, floatData ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
+    kn = floatData(0);
+    kt = floatData(1);
+    cn = floatData(2);
+    ct = floatData(3);
+    mu = floatData(4);
+
+
+    ////////////////////// Commited local Contact forces vector /////////////////////////////////
+
+    if ( theChannel.receiveVector( 0, commitTag, *tA ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
+    *tC = *tA;
+
+    if ( theChannel.receiveVector( 0, commitTag, *g_commit ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
+    *g_prev = *g_commit;
+
+    ///// Whether I should send the B matrix ???
+
+    
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    string tmp_string;
+    if ( theChannel.receiveString( 0, commitTag,  tmp_string) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String stiffness_type\n";
+        return -1;
+    }
+    stiffness_type = tmp_string;
+
+    if ( theChannel.receiveString( 0, commitTag, tmp_string ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String damping_type\n";
+        return -1;
+    }
+    damping_type = tmp_string;
+
+    // Recieve the nodes
+
+    if ( theChannel.receiveID( 0, commitTag, external_nodes ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
+        return -1;
+    }
+
 	return 0;
 }
 
