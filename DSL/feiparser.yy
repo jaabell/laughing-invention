@@ -1606,7 +1606,7 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC define convergence test [Norm_Displacement_Increment] / [Energy_Increment] / [Norm_Unbalance] tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
+	//!FEIDOC define convergence test [Norm_Displacement_Increment] / [Energy_Increment] / [Norm_Unbalance]/[Relative_Norm_Displacement_Increment] / [Relative_Energy_Increment] / [Relative_Norm_Unbalance] tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
 	| DEFINE CONVERGENCE_TEST TESTNAME tolerance '=' exp maximum_iterations '=' exp verbose_level '=' exp
 	{
 		args.clear(); signature.clear();
