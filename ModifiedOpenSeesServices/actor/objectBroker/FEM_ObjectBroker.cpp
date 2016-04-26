@@ -967,6 +967,14 @@ FEM_ObjectBroker::getNewConvergenceTest(int classTag)
     case CONVERGENCE_TEST_CTestEnergyIncr:
         return new CTestEnergyIncr();
 
+    case CONVERGENCE_TEST_CTestNormUnbalance:
+        return new CTestRelativeNormUnbalance();
+
+    case CONVERGENCE_TEST_CTestNormDispIncr:
+        return new CTestRelativeNormDispIncr();
+
+    case CONVERGENCE_TEST_CTestEnergyIncr:
+        return new CTestRelativeEnergyIncr();
 
     default:
         cerr << "FEM_ObjectBroker::getNewConvergenceTest - ";
