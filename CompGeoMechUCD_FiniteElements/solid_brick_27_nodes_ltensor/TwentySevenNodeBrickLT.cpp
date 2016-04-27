@@ -2424,7 +2424,7 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
         for ( int j = 0; j < 9; j++ )
         {
             r = local_nodes[(surface_nodes_order[j])] ;
-            cout << r << " " ;
+            // cout << r << " " ;
             // loop over Gauss points
             for ( int i = 0; i < 9; i++ )
             {
