@@ -419,7 +419,7 @@ int FrictionalPenaltyContact::revertToStart(void)
 int FrictionalPenaltyContact::update(void)
 {
 	// cout << "Going To Calculate gap \n";
-	double epsilon = 1.0/kt/1000;
+	double epsilon = 1.0/kt/100;
 	computeGap();
 	Vector del_tC(3);			// vector to hold current total step predicted forces
 	Vector delg(3);				// correct gap fucntion
@@ -442,14 +442,19 @@ int FrictionalPenaltyContact::update(void)
 		// 3) Contact to Contact Penetration///////////////////////////
 		/////////////////////////////////////////////////////////////// 
 
-		/////////////////////// Setting elastic Tangent Stiffness ///////////////////////
-		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
-		//////////////////// Computing predictive forces (tB) ///////////////////////////
+		// /////////////////////// Setting elastic Tangent Stiffness ///////////////////////
+		// C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
+		// //////////////////// Computing predictive forces (tB) ///////////////////////////
 
-		if (is_in_contact_prev)
+		if (is_in_contact_prev){
 			delg = *g - *g_prev;	///// Contact to Contact ////
-		else
+		}
+		else{
 			delg = *g;				///// No Contact to Contact ////
+			/////////////////////// Setting elastic Tangent Stiffness ///////////////////////
+			C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
+			//////////////////// Computing predictive forces (tB) ///////////////////////////
+		}
 
 		del_tC.addMatrixVector(1.0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
 		Vector trial_tC(3); trial_tC= *tC + del_tC;				/// Predicted Forces ///
@@ -821,8 +826,11 @@ int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
         return -1;
     }
 
-    ///// Whether I should send the B matrix ???
-
+    if (theChannel.sendMatrix( 0,commitTag,	B ) < 0)
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -917,8 +925,11 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
 
     *g_prev = *g_commit;
 
-    ///// Whether I should send the B matrix ???
-
+    if (theChannel.receiveMatrix( 0,commitTag,	B ) < 0)
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
     
     /////////////////////////////////////////////////////////////////////////////////////
 
@@ -1069,7 +1080,7 @@ void FrictionalPenaltyContact::computeGap()
 
 	// Normal gap
 	double g_N = (*g)(2);
-	double epsilon = 1/kn/1000; epsilon=0;
+	double epsilon = 0;
 
 	is_in_contact_prev = is_in_contact;
 
