@@ -419,7 +419,7 @@ int FrictionalPenaltyContact::revertToStart(void)
 int FrictionalPenaltyContact::update(void)
 {
 	// cout << "Going To Calculate gap \n";
-	double epsilon = 1.0/kt/100;
+	double epsilon= 0;
 	computeGap();
 	Vector del_tC(3);			// vector to hold current total step predicted forces
 	Vector delg(3);				// correct gap fucntion
