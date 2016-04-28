@@ -687,6 +687,9 @@ EXP	([Ee][-+]?[0-9]+)
 "output"                             {return token::OUTPUT;}
 
  /* Constitutive algorithm options*/
+"Forward_Euler_One_Step"          				          |
+"Forward_Euler_Multistep"          						  |
+"Modified_Forward_Euler_Error_Control"                    |
 "Euler_One_Step"          				          |
 "Euler_Multistep"          						  |
 "Modified_Euler_Error_Control"                    |

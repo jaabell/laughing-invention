@@ -1493,7 +1493,7 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Euler_One_Step|Euler_Multistep|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
+	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Forward_Euler_One_Step|Forward_Euler_Multistep|Modified_Forward_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
 	| DEFINE NDMaterialLT CONSTITUTIVE INTEGRATION ALGORITHM CONSTITUTIVE_ALGNAME 
 		yield_function_relative_tolerance  '=' exp
 		stress_relative_tolerance '=' exp
@@ -1510,21 +1510,40 @@ CMD_define
 		int method = -1;
 		bool good = false;
 
+		if( algname.compare("Forward_Euler_One_Step") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step;
+			good = true;
+		}
+		if( algname.compare("Forward_Euler_Multistep") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep;
+			good = true;
+		}
+		if( algname.compare("Modified_Forward_Euler_Error_Control") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Forward_Euler_Error_Control;
+			good = true;
+		}
+
+		// make essi back compatible. Keep the old DSLs
 		if( algname.compare("Euler_One_Step") == 0)
 		{
-			method = (int) NDMaterialLT_Constitutive_Integration_Method::Euler_One_Step;
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step;
 			good = true;
 		}
 		if( algname.compare("Euler_Multistep") == 0)
 		{
-			method = (int) NDMaterialLT_Constitutive_Integration_Method::Euler_Multistep;
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep;
 			good = true;
 		}
 		if( algname.compare("Modified_Euler_Error_Control") == 0)
 		{
-			method = (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control;
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Forward_Euler_Error_Control;
 			good = true;
 		}
+
+
 		if( algname.compare("Runge_Kutta_45_Error_Control") == 0)
 		{
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control;

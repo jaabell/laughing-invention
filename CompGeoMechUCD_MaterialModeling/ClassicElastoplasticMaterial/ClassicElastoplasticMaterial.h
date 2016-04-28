@@ -295,14 +295,14 @@ public:
             exitflag = -1;
             cerr << "NewPisanoLT::setTrialStrainIncr - Integration method not set!\n" ;
             break;
-        case NDMaterialLT_Constitutive_Integration_Method::Euler_One_Step :
-            exitflag = this->Euler_One_Step(strain_increment);
+        case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step :
+            exitflag = this->Forward_Euler_One_Step(strain_increment);
             break;
-        case NDMaterialLT_Constitutive_Integration_Method::Euler_Multistep :
-            // exitflag = this->Euler_Multistep(strain_increment);
+        case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep :
+            // exitflag = this->Forward_Euler_Multistep(strain_increment);
             break;
-        case NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control :
-            exitflag = this->Modified_Euler_Error_Control(strain_increment);
+        case NDMaterialLT_Constitutive_Integration_Method::Modified_Forward_Euler_Error_Control :
+            exitflag = this->Modified_Forward_Euler_Error_Control(strain_increment);
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control :
             // exitflag = this->Runge_Kutta_45_Error_Control(strain_increment);;
@@ -673,7 +673,7 @@ protected:
 private:
 
 
-    int Euler_One_Step(const DTensor2 &strain_incr)
+    int Forward_Euler_One_Step(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
@@ -863,7 +863,7 @@ private:
         return errorcode;
     }
 
-    int Modified_Euler_Error_Control(const DTensor2 &strain_incr)
+    int Modified_Forward_Euler_Error_Control(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;  // Brings indexes i,j,k,l,m,n,p,q into current scope
 

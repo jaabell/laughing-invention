@@ -230,14 +230,14 @@ int NewPisanoLT::setTrialStrainIncr(const DTensor2 &strain_increment)
         exitflag = -1;
         cerr << "NewPisanoLT::setTrialStrainIncr - Integration method not set!\n" ;
         break;
-    case NDMaterialLT_Constitutive_Integration_Method::Euler_One_Step :
-        exitflag = this->Euler_One_Step(strain_increment);
+    case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step :
+        exitflag = this->Forward_Euler_One_Step(strain_increment);
         break;
-    case NDMaterialLT_Constitutive_Integration_Method::Euler_Multistep :
-        // exitflag = this->Euler_Multistep(strain_increment);
+    case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep :
+        // exitflag = this->Forward_Euler_Multistep(strain_increment);
         break;
-    case NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control :
-        exitflag = this->Modified_Euler_Error_Control(strain_increment);
+    case NDMaterialLT_Constitutive_Integration_Method::Modified_Forward_Euler_Error_Control :
+        exitflag = this->Modified_Forward_Euler_Error_Control(strain_increment);
         break;
     case NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control :
         // exitflag = this->Runge_Kutta_45_Error_Control(strain_increment);;
@@ -1151,7 +1151,7 @@ int NewPisanoLT::compute_stress_increment(const DTensor2 &strain_incr, DTensor2&
 //   return 0;
 // }
 
-int NewPisanoLT::Euler_One_Step(const DTensor2& depsilon)
+int NewPisanoLT::Forward_Euler_One_Step(const DTensor2& depsilon)
 {
 
     int errorflag = 0;
@@ -1214,7 +1214,7 @@ int NewPisanoLT::Euler_One_Step(const DTensor2& depsilon)
     return errorflag;
 }
 
-int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
+int NewPisanoLT::Modified_Forward_Euler_Error_Control(const DTensor2& strain_increment)
 {
     int errorflag;
 
