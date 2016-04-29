@@ -73,6 +73,8 @@ bool isAdimensional(const SIUnit& u);
 bool isMass     (const SIUnit& u);
 bool isLength   (const SIUnit& u);
 bool isTime     (const SIUnit& u);
+bool isTime3     (const SIUnit& u);
+bool isTime5     (const SIUnit& u);
 bool isFrequency(const SIUnit& u);
 bool isArea     (const SIUnit& u);
 bool isVolume   (const SIUnit& u);

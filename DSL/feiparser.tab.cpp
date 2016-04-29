@@ -1380,9 +1380,9 @@ namespace yy {
 		args.clear(); signature.clear();
 
 		args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("number",   &isAdimensional));
-		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("a0",      &isTime));
-		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a1",      &isFrequency));
-		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a2",      &isAdimensional));
+		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("a0",      &isFrequency));
+		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a1",      &isTime));
+		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a2",      &isTime3));
 		args.push_back(new FeiString(*(yystack_[0].value.ident))); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
 		(yylhs.value.exp) = new FeiDslCaller5<int,double,double,double,string>(&add_damping_caughey3rd, args, signature, "add_damping_caughey3rd");
@@ -1399,10 +1399,10 @@ namespace yy {
 		args.clear(); signature.clear();
 
 		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("number",   &isAdimensional));
-		args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("a0",      &isTime));
-		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("a1",      &isFrequency));
-		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a2",      &isAdimensional));
-		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a3",      &isAdimensional));
+		args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("a0",      &isFrequency));
+		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("a1",      &isTime));
+		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("a2",      &isTime3));
+		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("a3",      &isTime5));
 		args.push_back(new FeiString(*(yystack_[0].value.ident))); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
 		(yylhs.value.exp) = new FeiDslCaller6<int,double,double,double,double,string>(&add_damping_caughey4th, args, signature, "add_damping_caughey4th");

@@ -223,6 +223,8 @@ EXP	([Ee][-+]?[0-9]+)
 "isMass"                    |
 "isLength"                  |
 "isTime"                    |
+"isTime3"                   |
+"isTime5"                   |
 "isArea"                    |
 "isVolume"                  |
 "isForce"                   |

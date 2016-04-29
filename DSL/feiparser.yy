@@ -1001,16 +1001,16 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add damping # <.> type [Caughey3rd] with a0 = <time> a1 = <1/time> a2 = <.> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
+	//!FEIDOC add damping # <.> type [Caughey3rd] with a0 = <1/time> a1 = <time> a2 = <time^3> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
 	//WARNING: unit for a2 should be implemented
 	| ADD DAMPING TEXTNUMBER exp TYPE DAMPING_CAUGHEY3 WITH a0 '=' exp a1 '=' exp a2 '=' exp stiffness_to_use '=' stiffness_to_use_opt
 	{
 		args.clear(); signature.clear();
 
 		args.push_back($4); signature.push_back(this_signature("number",   &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("a0",      &isTime));
-		args.push_back($13); signature.push_back(this_signature("a1",      &isFrequency));
-		args.push_back($16); signature.push_back(this_signature("a2",      &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("a0",      &isFrequency));
+		args.push_back($13); signature.push_back(this_signature("a1",      &isTime));
+		args.push_back($16); signature.push_back(this_signature("a2",      &isTime3));
 		args.push_back(new FeiString(*$19)); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
 		$$ = new FeiDslCaller5<int,double,double,double,string>(&add_damping_caughey3rd, args, signature, "add_damping_caughey3rd");
@@ -1027,10 +1027,10 @@ CMD_add
 		args.clear(); signature.clear();
 
 		args.push_back($4); signature.push_back(this_signature("number",   &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("a0",      &isTime));
-		args.push_back($13); signature.push_back(this_signature("a1",      &isFrequency));
-		args.push_back($16); signature.push_back(this_signature("a2",      &isAdimensional));
-		args.push_back($19); signature.push_back(this_signature("a3",      &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("a0",      &isFrequency));
+		args.push_back($13); signature.push_back(this_signature("a1",      &isTime));
+		args.push_back($16); signature.push_back(this_signature("a2",      &isTime3));
+		args.push_back($19); signature.push_back(this_signature("a3",      &isTime5));
 		args.push_back(new FeiString(*$22)); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
 		$$ = new FeiDslCaller6<int,double,double,double,double,string>(&add_damping_caughey4th, args, signature, "add_damping_caughey4th");
