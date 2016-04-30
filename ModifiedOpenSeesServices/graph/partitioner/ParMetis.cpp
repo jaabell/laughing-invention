@@ -167,20 +167,20 @@ ParMetis::partition(Graph *theGraph, int numPart)
         //Metis Format:
         //--------------------------------------------------------------------------------
 
-        if (theGraph->getNumVertex() == numPart)
-        {
-            cerr << "METIS\n" << theGraph;
-            Vertex *vertex;
-            int current = 1;
-            VertexIter &theVertices = theGraph->getVertices();
+        // if (theGraph->getNumVertex() == numPart)
+        // {
+        //     cerr << "METIS\n" << theGraph;
+        //     Vertex *vertex;
+        //     int current = 1;
+        //     VertexIter &theVertices = theGraph->getVertices();
 
-            while ((vertex = theVertices()) != 0)
-            {
-                vertex->setColor(current++);
-            }
+        //     while ((vertex = theVertices()) != 0)
+        //     {
+        //         vertex->setColor(current++);
+        //     }
 
-            return 0;
-        }
+        //     return 0;
+        // }
 
         // first we check that the options are valid
         //     if (checkOptions() == false)
