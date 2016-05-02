@@ -479,7 +479,7 @@ bool isTime3(const Quantity& q)
 
 bool isTime5(const Quantity& q)
 {
-    return isTime3(q.Getunit());
+    return isTime5(q.Getunit());
 }
 
 
