@@ -301,14 +301,7 @@ ParallelNumberer::numberDOF(int lastDOF)
 
         if (theNumberer != 0)
         {
-
-            // use the supplied graph numberer to number the merged graph
-            // cout << "ParallelNumberer::number() - Warning - using user-provided numberer. Untested.\n";
-
             *theOrderedRefs = theNumberer->number(theGraph, lastDOF);
-            // cerr << "Must use the "
-
-
         }
         else
         {
@@ -337,17 +330,17 @@ ParallelNumberer::numberDOF(int lastDOF)
             }
 
             // now order those not yet ordered in p0
-            for (int j = 0; j < numVertexP0; j++)
-            {
-                int refTagP0 = vertexTags[j];
+            // for (int j = 0; j < numVertexP0; j++)
+            // {
+            //     int refTagP0 = vertexTags[j];
 
-                // if (theOrderedRefs->getLocation(refTagP0) == -1)
-                if ((*theOrderedRefsIndex)[refTagP0] == -1)
-                {
-                    (*theOrderedRefs)[loc++] = refTagP0;
-                    (*theOrderedRefsIndex)[refTagP0] = loc;
-                }
-            }
+            //     // if (theOrderedRefs->getLocation(refTagP0) == -1)
+            //     if ((*theOrderedRefsIndex)[refTagP0] == -1)
+            //     {
+            //         (*theOrderedRefs)[loc++] = refTagP0;
+            //         (*theOrderedRefsIndex)[refTagP0] = loc;
+            //     }
+            // }
 
         }
 
@@ -371,34 +364,34 @@ ParallelNumberer::numberDOF(int lastDOF)
         }
 
         // number own dof's
-        for (int i = 0; i < numVertexP0; i++  )
-        {
-            int vertexTag = vertexTags(i);
-            Vertex* vertexPtr = theGraph.getVertexPtr(vertexTag);
+        // for (int i = 0; i < numVertexP0; i++  )
+        // {
+        //     int vertexTag = vertexTags(i);
+        //     Vertex* vertexPtr = theGraph.getVertexPtr(vertexTag);
 
-            int startID = vertexPtr->getTmp();
-            int dofTag = vertexTag;
-            DOF_Group* dofPtr;
-            dofPtr = theModel->getDOF_GroupPtr(dofTag);
+        //     int startID = vertexPtr->getTmp();
+        //     int dofTag = vertexTag;
+        //     DOF_Group* dofPtr;
+        //     dofPtr = theModel->getDOF_GroupPtr(dofTag);
 
-            if (dofPtr == 0)
-            {
-                cerr << "WARNING ParallelNumberer::numberDOF - 1 ";
-                cerr << "DOF_Group (P0) " << dofTag << " not in AnalysisModel!\n";
-                result = -4;
-            }
-            else
-            {
-                const ID& theDOFID = dofPtr->getID();
-                int idSize = theDOFID.Size();
+        //     if (dofPtr == 0)
+        //     {
+        //         cerr << "WARNING ParallelNumberer::numberDOF - 1 ";
+        //         cerr << "DOF_Group (P0) " << dofTag << " not in AnalysisModel!\n";
+        //         result = -4;
+        //     }
+        //     else
+        //     {
+        //         const ID& theDOFID = dofPtr->getID();
+        //         int idSize = theDOFID.Size();
 
-                for (int j = 0; j < idSize; j++)
-                    if (theDOFID(j) == -2 || theDOFID(j) == -3)
-                    {
-                        dofPtr->setID(j, startID++);
-                    }
-            }
-        }
+        //         for (int j = 0; j < idSize; j++)
+        //             if (theDOFID(j) == -2 || theDOFID(j) == -3)
+        //             {
+        //                 dofPtr->setID(j, startID++);
+        //             }
+        //     }
+        // }
 
         // For Equal-DOF constraints!
         // cout << "Looking for EQUALDOFS: ";
