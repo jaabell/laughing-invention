@@ -410,9 +410,38 @@ Graph::merge(Graph &other)
 void
 Graph::Print(ostream &s, int flag)
 {
+
+    VertexIter theVertices = this->getVertices();
+    Vertex *v;
+    s << "Graph\n";
+    s << "numVertices = " << numVertices << endl;
+    s << "numEdges    = " << numEdges << endl;
+    //    1234567890 1234567890 12345 12345 12345
+    s << "tag       |ref       | weight   | col | tmp | deg  | adjacency \n";
+    while ((v = theVertices()) != 0)
+    {
+        int tag = v->getTag();
+        int ref = v->getRef();
+        double weight = v->getWeight();
+        int color = v->getColor();
+        int tmp = v->getTmp();
+        int degree = v->getDegree();
+        const ID &adj = v->getAdjacency();
+        s << setw(10) << tag << " "
+          << setw(10) << ref << " "
+          << setw(10) << weight << " "
+          << setw(5) << color << " "
+          << setw(5) << tmp << " "
+          << setw(5) << degree << " | ";
+        for (int i = 0; i < adj.Size(); i++)
+        {
+            s << adj(i) << " ";
+        }
+        s << endl;
+    }
     // myVertices->Print(s, flag);
-    s << "Graph::Print() -- not implemented.\n";
-    cout << "Graph::Print() -- not implemented.\n";
+    // s << "Graph::Print() -- not implemented.\n";
+    // cout << "Graph::Print() -- not implemented.\n";
 }
 
 
