@@ -47,6 +47,8 @@
 #include <Node.h>
 #include <MP_Constraint.h>
 #include <MP_ConstraintIter.h>
+#include <string_format.h>
+
 
 using namespace std;
 
@@ -159,7 +161,12 @@ ParallelNumberer::numberDOF(int lastDOF)
 
 
     // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Getting DOF group\n";
-    Graph& theGraph = theModel->getDOFGroupGraph();
+    // Graph& theGraph = (processID == 0) ? *(new Graph()) : theModel->getDOFGroupGraph();
+    Graph& theGraph =  theModel->getDOFGroupGraph();
+
+    // ofstream fid_local(string_format("graph_local_%d.txt", processID));
+    // theGraph.Print(fid_local);
+    // fid_local.close();
 
     // if subdomain, collect graph, send it off, get
     // ID back containing dof tags & start id numbers.
@@ -221,19 +228,25 @@ ParallelNumberer::numberDOF(int lastDOF)
         theChannel->receiveID(0, 0, theMPdofCs);
         theChannel->receiveID(0, 0, theMPdofIDs);
 
+        cout << "(" << processID << ") Received " << theMPnodeTags.Size() << "MP node tags.\n";
         for (int pos = 0; pos < theMPnodeTags.Size(); pos++)
         {
             Node* nodePtr = theDomain->getNode(theMPnodeTags[pos]);
             if (nodePtr != 0)
             {
+                // cout << "(" << processID << ") dof->setID( " << theMPdofCs[pos] << ", " << theMPdofIDs[pos] << ")\n";
                 DOF_Group* dof = nodePtr->getDOF_GroupPtr();
                 dof->setID(theMPdofCs[pos], theMPdofIDs[pos]);
             }
+            // else
+            // {
+            //     cout << "(" << processID << ") Pointer to node # " << theMPnodeTags[pos] << " not found \n";
+            // }
         }
 
-        {
-            // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending ID\n";
-        }
+        // {
+        // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : Sending ID\n";
+        // }
         //theChannel->sendID(0, 0, numVertex);  //This creates an ID with size numVertex (ctor. ID::ID(int size) gets called. ) and sends that. It has no use.
     }
 
@@ -301,7 +314,14 @@ ParallelNumberer::numberDOF(int lastDOF)
 
         if (theNumberer != 0)
         {
+
+            // use the supplied graph numberer to number the merged graph
+            // cout << "ParallelNumberer::number() - Warning - using user-provided numberer. Untested.\n";
+
             *theOrderedRefs = theNumberer->number(theGraph, lastDOF);
+            // cerr << "Must use the "
+
+
         }
         else
         {
@@ -330,17 +350,17 @@ ParallelNumberer::numberDOF(int lastDOF)
             }
 
             // now order those not yet ordered in p0
-            // for (int j = 0; j < numVertexP0; j++)
-            // {
-            //     int refTagP0 = vertexTags[j];
+            for (int j = 0; j < numVertexP0; j++)
+            {
+                int refTagP0 = vertexTags[j];
 
-            //     // if (theOrderedRefs->getLocation(refTagP0) == -1)
-            //     if ((*theOrderedRefsIndex)[refTagP0] == -1)
-            //     {
-            //         (*theOrderedRefs)[loc++] = refTagP0;
-            //         (*theOrderedRefsIndex)[refTagP0] = loc;
-            //     }
-            // }
+                // if (theOrderedRefs->getLocation(refTagP0) == -1)
+                if ((*theOrderedRefsIndex)[refTagP0] == -1)
+                {
+                    (*theOrderedRefs)[loc++] = refTagP0;
+                    (*theOrderedRefsIndex)[refTagP0] = loc;
+                }
+            }
 
         }
 
@@ -364,34 +384,34 @@ ParallelNumberer::numberDOF(int lastDOF)
         }
 
         // number own dof's
-        // for (int i = 0; i < numVertexP0; i++  )
-        // {
-        //     int vertexTag = vertexTags(i);
-        //     Vertex* vertexPtr = theGraph.getVertexPtr(vertexTag);
+        for (int i = 0; i < numVertexP0; i++  )
+        {
+            int vertexTag = vertexTags(i);
+            Vertex* vertexPtr = theGraph.getVertexPtr(vertexTag);
 
-        //     int startID = vertexPtr->getTmp();
-        //     int dofTag = vertexTag;
-        //     DOF_Group* dofPtr;
-        //     dofPtr = theModel->getDOF_GroupPtr(dofTag);
+            int startID = vertexPtr->getTmp();
+            int dofTag = vertexTag;
+            DOF_Group* dofPtr;
+            dofPtr = theModel->getDOF_GroupPtr(dofTag);
 
-        //     if (dofPtr == 0)
-        //     {
-        //         cerr << "WARNING ParallelNumberer::numberDOF - 1 ";
-        //         cerr << "DOF_Group (P0) " << dofTag << " not in AnalysisModel!\n";
-        //         result = -4;
-        //     }
-        //     else
-        //     {
-        //         const ID& theDOFID = dofPtr->getID();
-        //         int idSize = theDOFID.Size();
+            if (dofPtr == 0)
+            {
+                cerr << "WARNING ParallelNumberer::numberDOF - 1 ";
+                cerr << "DOF_Group (P0) " << dofTag << " not in AnalysisModel!\n";
+                result = -4;
+            }
+            else
+            {
+                const ID& theDOFID = dofPtr->getID();
+                int idSize = theDOFID.Size();
 
-        //         for (int j = 0; j < idSize; j++)
-        //             if (theDOFID(j) == -2 || theDOFID(j) == -3)
-        //             {
-        //                 dofPtr->setID(j, startID++);
-        //             }
-        //     }
-        // }
+                for (int j = 0; j < idSize; j++)
+                    if (theDOFID(j) == -2 || theDOFID(j) == -3)
+                    {
+                        dofPtr->setID(j, startID++);
+                    }
+            }
+        }
 
         // For Equal-DOF constraints!
         // cout << "Looking for EQUALDOFS: ";
@@ -408,7 +428,41 @@ ParallelNumberer::numberDOF(int lastDOF)
         ID theMPdofCs(numMP);
         ID theMPdofIDs(numMP);
         int pos = 0;
-        for (int i = 0; i < numVertexP0; i++  )
+
+
+
+        // while ((mpPtr = theMPs()) != 0 )
+        // {
+        //     // note keep looping over all in case multiple constraints
+        //     // are used to constrain a node -- can't assume intelli user
+        //     int nodeID = mpPtr->getNodeConstrained();
+
+        //     int nodeRetained = mpPtr->getNodeRetained();
+        //     Node* nodeRetainedPtr = theDomain->getNode(nodeRetained);
+        //     // cout << nodeRetainedPtr->getTag() << " is the master! DOF-List = [ ";
+        //     DOF_Group* retainedDOF = nodeRetainedPtr->getDOF_GroupPtr();
+        //     const ID& retainedDOFIDs = retainedDOF->getID();
+        //     const ID& constrainedDOFs = mpPtr->getConstrainedDOFs();
+        //     const ID& retainedDOFs = mpPtr->getRetainedDOFs();
+
+        //     for (int i = 0; i < constrainedDOFs.Size(); i++)
+        //     {
+        //         int dofC = constrainedDOFs(i);
+        //         int dofR = retainedDOFs(i);
+        //         int dofID = retainedDOFIDs(dofR);
+        //         // dofPtr->setID(dofC, dofID);
+        //         theMPnodeTags(pos) = nodeID;
+        //         theMPdofCs(pos) = dofC;
+        //         theMPdofIDs(pos) = dofID;
+        //         pos++;
+        //         // cout << dofC << " ";
+        //     }
+        //     // cout << "]\n";
+        // }
+
+
+
+        for (int i = 0; i < vertexTags.Size(); i++  )//numVertexP0; i++)//
         {
             int have4s = 0;  //This is set to 1 if we hace some MP constraints
 
@@ -537,6 +591,13 @@ ParallelNumberer::numberDOF(int lastDOF)
     {
         elePtr->setID();
     }
+
+    // if (processID == 0)
+    // {
+    //     ofstream fid_merged("graph_merged.txt");
+    //     theGraph.Print(fid_merged);
+    //     fid_merged.close();
+    // }
 
     // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : End numbering!\n";
     return result;

@@ -48,6 +48,7 @@
 #include <string.h>
 #include "petscksp.h"
 
+#include <string_format.h>
 
 #include <stdlib.h>
 #include <iostream>
@@ -223,36 +224,41 @@ PetscSolver::solve(void)
         //PETSc Diagnostics
         //----------------------------------------------
 
-        static bool view_once = true;
+        // static bool view_once = true;
 
-        if (view_once)
-        {
-            cout << "PetscSolver::solve()  ---------  Begin PetSC diagnostics\n";
-            KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD);
+        // if (view_once)
+        // {
+        //     cout << "PetscSolver::solve()  ---------  Begin PetSC diagnostics\n";
+        //     KSPView(ksp, PETSC_VIEWER_STDOUT_WORLD);
 
-            PetscViewer    viewer_A;
-            // PetscViewerASCIIOpen(theSOE->petsc_comm, "A.txt", &viewer_A);
-            PetscViewerASCIIOpen(PETSC_COMM_WORLD, "A.txt", &viewer_A);
-            PetscViewerSetFormat(viewer_A, PETSC_VIEWER_ASCII_MATLAB);
-            MatView(theSOE->A, viewer_A);
-
-
-            // // cout << "PetscSolver::solve() -- PID#    " << processID_world << "     writing right hand side in RHS.txt file ... " << endl;
-            PetscViewer    viewer_RHS;
-            // PetscViewerASCIIOpen(theSOE->petsc_comm, "RHS.txt", &viewer_RHS);
-            PetscViewerASCIIOpen(PETSC_COMM_WORLD, "RHS.txt", &viewer_RHS);
-            VecView(theSOE->b, viewer_RHS);
+        //     PetscViewer    viewer_A;
+        //     // PetscViewerASCIIOpen(theSOE->petsc_comm, "A.txt", &viewer_A);
+        //     PetscViewerASCIIOpen(PETSC_COMM_WORLD, "A.txt", &viewer_A);
+        //     PetscViewerSetFormat(viewer_A, PETSC_VIEWER_ASCII_MATLAB);
+        //     MatView(theSOE->A, viewer_A);
 
 
+        //     // // cout << "PetscSolver::solve() -- PID#    " << processID_world << "     writing right hand side in RHS.txt file ... " << endl;
+        //     PetscViewer    viewer_RHS;
+        //     // PetscViewerASCIIOpen(theSOE->petsc_comm, "RHS.txt", &viewer_RHS);
+        //     PetscViewerASCIIOpen(PETSC_COMM_WORLD, "RHS.txt", &viewer_RHS);
+        //     VecView(theSOE->b, viewer_RHS);
 
-            // // cout << "PetscSolver::solve() -- PID#    " << processID_world << " writing results ... " << endl;
-            PetscViewer    viewer_x;
-            PetscViewerASCIIOpen(theSOE->petsc_comm, "X.txt", &viewer_x);
-            VecView(theSOE->x, viewer_x);
-            cout << "PetscSolver::solve()  ---------  End PetSC diagnostics\n";
-            ////////////////////////////////////////
-            view_once = false;
-        }
+        //     ofstream fid_x(string_format("soe_X_%d.txt", processID_world));
+        //     ofstream fid_b(string_format("soe_B_%d.txt", processID_world));
+        //     fid_x << *vectX << endl;
+        //     fid_b << *vectB << endl;
+        //     fid_x.close();
+        //     fid_b.close();
+
+        //     // // cout << "PetscSolver::solve() -- PID#    " << processID_world << " writing results ... " << endl;
+        //     // PetscViewer    viewer_x;
+        //     // PetscViewerASCIIOpen(theSOE->petsc_comm, "X.txt", &viewer_x);
+        //     // VecView(theSOE->x, viewer_x);
+        //     // cout << "PetscSolver::solve()  ---------  End PetSC diagnostics\n";
+        //     ////////////////////////////////////////
+        //     view_once = false;
+        // }
 
     }
     //
