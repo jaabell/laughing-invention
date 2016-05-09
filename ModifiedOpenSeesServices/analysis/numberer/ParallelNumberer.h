@@ -42,34 +42,37 @@ class Graph;
 
 #include <DOF_Numberer.h>
 
+//This defines the maximum number of dofs possible for use in RealESSI. Can change eventually.
+#define ParallelNumberer_MAXDOFS 7
+
 class ParallelNumberer: public DOF_Numberer
 {
-    public:
-        ParallelNumberer(int domainTag, int numSubdomains, Channel** theChannel);
-        ParallelNumberer(GraphNumberer& theGraphNumberer);
-        ParallelNumberer();
+public:
+    ParallelNumberer(int domainTag, int numSubdomains, Channel** theChannel);
+    ParallelNumberer(GraphNumberer& theGraphNumberer);
+    ParallelNumberer();
 
-        ~ParallelNumberer();
+    ~ParallelNumberer();
 
-        int numberDOF(int lastDOF = -1);
-        int numberDOF(ID& lastDOFs);
+    int numberDOF(int lastDOF = -1);
+    int numberDOF(ID& lastDOFs);
 
-        virtual int sendSelf(int commitTag, Channel& theChannel);
-        virtual int receiveSelf(int commitTag, Channel& theChannel,
-                             FEM_ObjectBroker& theBroker);
+    virtual int sendSelf(int commitTag, Channel& theChannel);
+    virtual int receiveSelf(int commitTag, Channel& theChannel,
+                            FEM_ObjectBroker& theBroker);
 
-        virtual int setProcessID(int domainTag);
-        virtual int setChannels(int numChannels, Channel** theChannels);
+    virtual int setProcessID(int domainTag);
+    virtual int setChannels(int numChannels, Channel** theChannels);
 
-    protected:
-        int mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexTags, ID& vertexRefs, ID& theSubdomainMap);
+protected:
+    int mergeSubGraph(Graph& theGraph, Graph& theSubGraph, ID& vertexTags, ID& vertexRefs, ID& theSubdomainMap);
 
-    private:
-        GraphNumberer* theNumberer;
+private:
+    GraphNumberer* theNumberer;
 
-        int processID;
-        int numChannels;
-        Channel** theChannels;
+    int processID;
+    int numChannels;
+    Channel** theChannels;
 };
 
 #endif
