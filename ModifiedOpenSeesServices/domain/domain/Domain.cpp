@@ -1856,6 +1856,7 @@ Domain::removeLoadPattern( int tag )
     // if not there return 0
     if ( obj == 0 )
     {
+        cout << "Domain :: could not remove load pattern with tag " << tag << ".\n";
         return 0;
     }
 
