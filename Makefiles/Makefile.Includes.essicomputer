@@ -129,6 +129,7 @@ ESSI_INCLUDES  = -I$(FEIBASEDIR)/ModifiedOpenSeesServices/matrix \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/coupled_u-p-U_brick_20_nodes \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/coupled_u-p-U_brick_8_nodes \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_20_nodes \
+            -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_20_nodes_ltensor \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_20_nodes_elastic \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_27_nodes \
             -I$(FEIBASEDIR)/CompGeoMechUCD_FiniteElements/solid_brick_27_nodes_elastic \
@@ -171,6 +172,7 @@ ESSI_LIBS = $(FEIBASEDIR)/lib/libcontactelements.a \
       $(FEIBASEDIR)/lib/libsolid_brick_27_nodes_ltensor.a \
       $(FEIBASEDIR)/lib/libsolid_brick_20_nodes_elastic.a \
       $(FEIBASEDIR)/lib/libsolid_brick_20_nodes.a \
+      $(FEIBASEDIR)/lib/libsolid_brick_20_nodes_ltensor.a \
       $(FEIBASEDIR)/lib/libsolid_brick_8_nodes.a \
       $(FEIBASEDIR)/lib/libsolid_brick_8_nodes_ltensor.a \
       $(FEIBASEDIR)/lib/libsolid_brick_8_nodes_elastic.a \

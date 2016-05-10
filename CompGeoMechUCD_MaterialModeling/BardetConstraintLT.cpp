@@ -346,7 +346,7 @@ void BardetConstraintLT::applyIncrement(double Increment)
         exit(1);
     }
 
-    constexpr double sqrthalf = sqrt(0.5);
+    constexpr double sqrthalf = 0.707106781186548;
     d_epsilon_tensor(0, 0) = d_epsilon(0);
     d_epsilon_tensor(1, 1) = d_epsilon(1);
     d_epsilon_tensor(2, 2) = d_epsilon(2);

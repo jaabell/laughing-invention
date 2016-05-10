@@ -352,6 +352,7 @@ EXP	([Ee][-+]?[0-9]+)
 "8NodeBrickLT"                      {return token::EightNodeBrickLT;}
 "8NodeBrickLTNoOutput"              {return token::EightNodeBrickLTNoOutput;}
 "20NodeBrick"                       {return token::TwentyNodeBrick;}
+"20NodeBrickLT"                     {return token::TwentyNodeBrickLT;}
 "27NodeBrick"                       {return token::TwentySevenNodeBrick;}
 "27NodeBrickLT"                     {return token::TwentySevenNodeBrickLT;}
 "8NodeBrick_elastic"                {return token::EightNodeBrickElastic;}
@@ -466,7 +467,6 @@ EXP	([Ee][-+]?[0-9]+)
 "strain"                            {return token::strain;}
 "stress"                            {return token::stress;}
 "control"                           {return token::control;}
-
 "explicit"                          {
 										yylval->value = new Quantity(0.0,ESSIunits::unitless);
 										return token::NUMBER;
@@ -1279,7 +1279,7 @@ void signalHandler(int signum)
 
  /* END SIGNALS */
 
-int main (int argc, char**argv)
+int main(int argc, char**argv)
 {
     //feclearexcept(FE_ALL_EXCEPT);
     //feenableexcept(FE_INVALID   | 
@@ -1459,14 +1459,15 @@ void set_known_units()
     global_variables["GPa"] = Quantity(1.0, ESSIunits::GPa);
 
     //Imperial units
-    global_variables["pound"] = Quantity(0.453592 , ESSIunits::N);
+    global_variables["pound"] = Quantity(4.448221615255 , ESSIunits::N);
     global_variables["inch"] = Quantity(0.0254 , ESSIunits::m);
     global_variables["feet"] = Quantity(0.3048 , ESSIunits::m);
     global_variables["yard"] = Quantity(0.9144 , ESSIunits::m);
-    global_variables["mile"] = Quantity(1.60934e3 , ESSIunits::m);
-    global_variables["psi"] = Quantity(6.89476e3 , ESSIunits::Pa);
-	global_variables["ksi"] = Quantity(6.89476e6 , ESSIunits::Pa);
-
+    global_variables["mile"] = Quantity(1.60935e3 , ESSIunits::m);
+    global_variables["psi"] = Quantity(6894.757293178 , ESSIunits::Pa);
+	global_variables["ksi"] = Quantity(6894757.293178 , ESSIunits::Pa);
+	global_variables["kip"] = Quantity(4448.221615255 , ESSIunits::N);
+	
     //Constants
 	global_variables["g"] = ESSIunits::g;  // gravitational acceleration on Earth at sea level and 45degrees of latitude
 	global_variables["pi"] = Quantity(3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986, ESSIunits::unitless); // pi to a useless ammount of significant digits

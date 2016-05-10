@@ -91,7 +91,7 @@ class BJtensor : public nDarray
         BJtensor(int rank_of_BJtensor, const int* pdim, double* values);
         BJtensor(int rank_of_BJtensor, const int* pdim, double initvalue);
         BJtensor(char* flag, int rank_of_BJtensor, const int* pdim);  // create a unit nDarray
-        BJtensor(char* flag);   //this one used to send "NO" message
+        explicit BJtensor(char* flag);   //this one used to send "NO" message
         BJtensor(const BJtensor& x);   // instead of: "BJtensor(nDarray & x):"   :-)
         BJtensor(const nDarray& x);
 
