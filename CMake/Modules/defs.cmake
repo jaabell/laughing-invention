@@ -93,10 +93,29 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     list(APPEND NUMERIC_LIBS "superlu_4.3")
     list(APPEND NUMERIC_LIBS "superlu_dist_4.0")
     list(APPEND NUMERIC_LIBS "spai")
-    list(APPEND NUMERIC_LIBS "scalapack")
+
+    if(PETSC_HAS_MUMPS)
+        list(APPEND NUMERIC_LIBS "dmumps")
+        # list(APPEND NUMERIC_LIBS "cmumps")
+        # list(APPEND NUMERIC_LIBS "smumps")
+        # list(APPEND NUMERIC_LIBS "zmumps")
+        list(APPEND NUMERIC_LIBS "mumps_common")
+        list(APPEND NUMERIC_LIBS "ptesmumps")
+        
+        list(APPEND NUMERIC_LIBS "ptscotcherr")
+        list(APPEND NUMERIC_LIBS "ptscotcherrexit")
+        list(APPEND NUMERIC_LIBS "ptscotchparmetis")
+        list(APPEND NUMERIC_LIBS "ptscotch")
+        list(APPEND NUMERIC_LIBS "scotcherr")
+        list(APPEND NUMERIC_LIBS "scotcherrexit")
+        list(APPEND NUMERIC_LIBS "scotch")
+        list(APPEND NUMERIC_LIBS "pord")
+    endif(PETSC_HAS_MUMPS)
+    
     list(APPEND NUMERIC_LIBS "parmetis")
     list(APPEND NUMERIC_LIBS "metis")
     
+    list(APPEND NUMERIC_LIBS "scalapack")
     list(APPEND NUMERIC_LIBS "umfpack")
     list(APPEND NUMERIC_LIBS "amd")
     list(APPEND NUMERIC_LIBS "cholmod")
@@ -126,6 +145,11 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     SYSTEM_LIBS("ieee" MACHINE_LIBS)
     SYSTEM_LIBS("c" MACHINE_LIBS)
     SYSTEM_LIBS("rt" MACHINE_LIBS)
+    # SYSTEM_LIBS("mpif90" MACHINE_LIBS)   #Needed for MUMPS
+
+    if(PETSC_HAS_MUMPS)
+        SYSTEM_LIBS("mpi_f77" MACHINE_LIBS)   #Needed for MUMPS
+    endif(PETSC_HAS_MUMPS)
 
 else()  # sequential
     message(STATUS "YES! SEQUENTIAL")

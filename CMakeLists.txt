@@ -30,6 +30,7 @@ set(NUMERIC_LIBS "")        # List of external libs to be included
 set(MACHINE_LIBS "")        # List of standard libs to be included
 
 set(NO_BLASLAPACK FALSE CACHE BOOL "TRUE if BLAS and LAPACK are provided some other means. (eg. directly in the compiler wrapper)")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
+set(PETSC_HAS_MUMPS FALSE CACHE BOOL "TRUE if PETSc library was configured to use the MUMPS solver")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
 message(STATUS "NO_BLASLAPACK=${NO_BLASLAPACK}")
 
 set(IS_PARALLEL OFF)
