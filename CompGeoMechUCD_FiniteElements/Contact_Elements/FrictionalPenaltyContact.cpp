@@ -283,7 +283,7 @@ int FrictionalPenaltyContact::getNumDOF(void)
 //   * Output: void
 void FrictionalPenaltyContact::setDomain(Domain *theDomain)
 {
-
+    cout << "FrictionalPenaltyContact::setDomain(Domain *theDomain)\n";
     // Check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
     {
