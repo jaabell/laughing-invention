@@ -45,10 +45,10 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
     cn(cn_),
     ct(ct_),
     mu(mu_),
-    is_in_contact(false),
-    is_in_contact_prev(false),
     B(3, 6),
-    external_nodes(2)
+    external_nodes(2),
+    is_in_contact(false),
+    is_in_contact_prev(false)
 {
 
     tA = 0;
@@ -154,10 +154,10 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
     cn(0.0),
     ct(0.0),
     mu(0.0),
-    is_in_contact(false),
-    is_in_contact_prev(false),
     B(3, 6),
-    external_nodes(2)
+    external_nodes(2),
+    is_in_contact(false),
+    is_in_contact_prev(false)
 {
 
     tA = 0;
