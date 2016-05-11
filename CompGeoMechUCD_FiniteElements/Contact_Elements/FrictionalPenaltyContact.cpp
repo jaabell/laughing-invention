@@ -177,7 +177,7 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
     is_in_contact_prev_commit = false;
 
     this->setNumberOfBoundaryNodes(1);
-    this->initialize(); // Its ok to initialize memory once element is created on remote
+    this->initialize(); // Its ok to initialize memory once element is created on
 }
 
 
@@ -284,7 +284,7 @@ int FrictionalPenaltyContact::getNumDOF(void)
 //   * Output: void
 void FrictionalPenaltyContact::setDomain(Domain *theDomain)
 {
-    cout << "FrictionalPenaltyContact::setDomain(Domain *theDomain)\n";
+    // cout << "FrictionalPenaltyContact::setDomain(Domain *theDomain)\n";
     // Check Domain is not null - invoked when object removed from a domain
     if (theDomain == 0)
     {
@@ -1157,15 +1157,17 @@ void FrictionalPenaltyContact::computeGap()
 void FrictionalPenaltyContact::initialize()
 {
 
-    tA = new Vector(3);          // Current commitred local forces  t = [t_T1, t_T2, t_N]
-    tC = new Vector(3);          // Current trial local forces  t = [t_T1, t_T2, t_N]
-    R = new Vector(6);          // Current resisting forces
-    g = new Vector(3);
-    g_prev = new Vector(3);
-    g_commit = new Vector(3);
-    g_prev_commit = new Vector(3);
-    C = new Matrix(3, 3);
-
+    if (tA == 0)
+    {
+        tA = new Vector(3);          // Current commitred local forces  t = [t_T1, t_T2, t_N]
+        tC = new Vector(3);          // Current trial local forces  t = [t_T1, t_T2, t_N]
+        R = new Vector(6);          // Current resisting forces
+        g = new Vector(3);
+        g_prev = new Vector(3);
+        g_commit = new Vector(3);
+        g_prev_commit = new Vector(3);
+        C = new Matrix(3, 3);
+    }
     return ;
 }
 

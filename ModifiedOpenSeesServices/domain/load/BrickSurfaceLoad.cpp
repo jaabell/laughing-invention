@@ -364,11 +364,11 @@ BrickSurfaceLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBro
     surface_load_magnitude9 = magnitudes(8);
 
     // cout << "Receive = ";
-    for (int i = 0; i < 9; i++)
-    {
-        cout << nodes(i) << "(" << magnitudes(i) << ") ";
-    }
-    cout << endl;
+    // for (int i = 0; i < 9; i++)
+    // {
+    //     cout << nodes(i) << "(" << magnitudes(i) << ") ";
+    // }
+    // cout << endl;
 
     return 0;
 
