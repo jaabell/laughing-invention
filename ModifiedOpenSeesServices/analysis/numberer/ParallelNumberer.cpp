@@ -129,7 +129,7 @@ ParallelNumberer::setChannels(int nChannels, Channel** theC)
 int
 ParallelNumberer::numberDOF(int lastDOF)
 {
-
+#ifdef _PARALLEL_PROCESSING
     //Split-off a new communicator
     int numProcesses_world, processID_world;
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses_world);
@@ -678,6 +678,10 @@ ParallelNumberer::numberDOF(int lastDOF)
 
     // cout << "        + ParallelNumberer::numberDOF() [" << processID <<  "] : End numbering!\n";
     return result;
+#else
+    cerr << "ParallelNumberer::numberDOF : This numberer should not be used in sequential case.\n";
+    return -1;
+#endif _PARALLEL_PROCESSING
 }
 
 

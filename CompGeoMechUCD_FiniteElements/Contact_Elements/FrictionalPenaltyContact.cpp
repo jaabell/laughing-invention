@@ -39,110 +39,108 @@
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
 FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2, double kn_, double kt_, double cn_, double ct_,  double mu_, double e1_x, double e1_y, double e1_z):
-	Element(tag, ELE_TAG_FrictionalPenaltyContact),
-	kn(kn_),
-	kt(kt_),
-	cn(cn_),
-	ct(ct_),
-	mu(mu_),
-	is_in_contact(false),
-	is_in_contact_prev(false),
-	B(3, 6),
-	external_nodes(2)
+    Element(tag, ELE_TAG_FrictionalPenaltyContact),
+    kn(kn_),
+    kt(kt_),
+    cn(cn_),
+    ct(ct_),
+    mu(mu_),
+    is_in_contact(false),
+    is_in_contact_prev(false),
+    B(3, 6),
+    external_nodes(2)
 {
 
-	tA = 0;
-	tC = 0;
-	R = 0;
-	g = 0;
-	g_prev = 0;
-	C = 0;
-	external_nodes(0) = node1;
-	external_nodes(1) = node2;
-	nodes[0] = 0;
-	nodes[1] = 0;
+    tA = 0;
+    tC = 0;
+    R = 0;
+    g = 0;
+    g_prev = 0;
+    C = 0;
+    external_nodes(0) = node1;
+    external_nodes(1) = node2;
+    nodes[0] = 0;
+    nodes[1] = 0;
 
-	// cout << "FrictionalPenaltyContact Element " <<  tag << endl;
-	// B matrix is initialized now .
-	// This is to avoid storing the normal vector's components apart from B matrix
-	// which is redundant, 'cause the normal vector components are the elements
-	// B[0,3], B[0,4], B[0,5] of the B matrix.
+    // cout << "FrictionalPenaltyContact Element " <<  tag << endl;
+    // B matrix is initialized now .
+    // This is to avoid storing the normal vector's components apart from B matrix
+    // which is redundant, 'cause the normal vector components are the elements
+    // B[0,3], B[0,4], B[0,5] of the B matrix.
 
-	Vector x_local(3), y_local(3), z_local(3);
-	double e1_norm = sqrt(e1_x * e1_x + e1_y * e1_y + e1_z * e1_z );
-	z_local(0) = e1_x / e1_norm;
-	z_local(1) = e1_y / e1_norm;
-	z_local(2) = e1_z / e1_norm;
+    Vector x_local(3), y_local(3), z_local(3);
+    double e1_norm = sqrt(e1_x * e1_x + e1_y * e1_y + e1_z * e1_z );
+    z_local(0) = e1_x / e1_norm;
+    z_local(1) = e1_y / e1_norm;
+    z_local(2) = e1_z / e1_norm;
 
-	if ((abs(z_local(0)) < 1e-5) && (abs(z_local(1)) < 1e-5))  // Element is vertical, essentially
-	{
-		y_local(0) =  0.0;
-		y_local(1) =  1.0;
-		y_local(2) =  0.0;
+    if ((abs(z_local(0)) < 1e-5) && (abs(z_local(1)) < 1e-5))  // Element is vertical, essentially
+    {
+        y_local(0) =  0.0;
+        y_local(1) =  1.0;
+        y_local(2) =  0.0;
 
-		x_local(0) = y_local(1) * z_local(2) - y_local(2) * z_local(1);
-		x_local(1) = y_local(2) * z_local(0) - y_local(0) * z_local(2);
-		x_local(2) = y_local(0) * z_local(1) - y_local(1) * z_local(0);
-	}
-	else
-	{
-		// creating a temporary vector (global y axis)
-		Vector temp_vector(3);
-		temp_vector(0) =  0.0;
-		temp_vector(1) =  0.0;
-		temp_vector(2) =  1.0;
+        x_local(0) = y_local(1) * z_local(2) - y_local(2) * z_local(1);
+        x_local(1) = y_local(2) * z_local(0) - y_local(0) * z_local(2);
+        x_local(2) = y_local(0) * z_local(1) - y_local(1) * z_local(0);
+    }
+    else
+    {
+        // creating a temporary vector (global y axis)
+        Vector temp_vector(3);
+        temp_vector(0) =  0.0;
+        temp_vector(1) =  0.0;
+        temp_vector(2) =  1.0;
 
-		// creating the z_local axis from cross product of z_local and temp_vector
-		// which will be perpendicular to x_local
-		x_local(0) = z_local(1) * temp_vector(2) - z_local(2) * temp_vector(1);
-		x_local(1) = z_local(2) * temp_vector(0) - z_local(0) * temp_vector(2);
-		x_local(2) = z_local(0) * temp_vector(1) - z_local(1) * temp_vector(0);
+        // creating the z_local axis from cross product of z_local and temp_vector
+        // which will be perpendicular to x_local
+        x_local(0) = z_local(1) * temp_vector(2) - z_local(2) * temp_vector(1);
+        x_local(1) = z_local(2) * temp_vector(0) - z_local(0) * temp_vector(2);
+        x_local(2) = z_local(0) * temp_vector(1) - z_local(1) * temp_vector(0);
 
-		// creating the y_local axis from cross product of x_local and z_local
-		// which will be perpendicular to x_local and z_local
-		y_local(0) = z_local(1) * x_local(2) - z_local(2) * x_local(1);
-		y_local(1) = z_local(2) * x_local(0) - z_local(0) * x_local(2);
-		y_local(2) = z_local(0) * x_local(1) - z_local(1) * x_local(0);
-	}
+        // creating the y_local axis from cross product of x_local and z_local
+        // which will be perpendicular to x_local and z_local
+        y_local(0) = z_local(1) * x_local(2) - z_local(2) * x_local(1);
+        y_local(1) = z_local(2) * x_local(0) - z_local(0) * x_local(2);
+        y_local(2) = z_local(0) * x_local(1) - z_local(1) * x_local(0);
+    }
 
-	// compute length (norm) of vectors
-	double x_local_norm = sqrt(x_local(0) * x_local(0) + x_local(1) * x_local(1) + x_local(2) * x_local(2));
-	double y_local_norm = sqrt(y_local(0) * y_local(0) + y_local(1) * y_local(1) + y_local(2) * y_local(2));
-	double z_local_norm = sqrt(z_local(0) * z_local(0) + z_local(1) * z_local(1) + z_local(2) * z_local(2));
+    // compute length (norm) of vectors
+    double x_local_norm = sqrt(x_local(0) * x_local(0) + x_local(1) * x_local(1) + x_local(2) * x_local(2));
+    double y_local_norm = sqrt(y_local(0) * y_local(0) + y_local(1) * y_local(1) + y_local(2) * y_local(2));
+    double z_local_norm = sqrt(z_local(0) * z_local(0) + z_local(1) * z_local(1) + z_local(2) * z_local(2));
 
-	// find the normalized local vectors
-	for (int i = 0; i < 3; i++)
-	{
-		x_local(i) = x_local(i) / x_local_norm;
-		y_local(i) = y_local(i) / y_local_norm;
-		z_local(i) = z_local(i) / z_local_norm;
+    // find the normalized local vectors
+    for (int i = 0; i < 3; i++)
+    {
+        x_local(i) = x_local(i) / x_local_norm;
+        y_local(i) = y_local(i) / y_local_norm;
+        z_local(i) = z_local(i) / z_local_norm;
 
-		B(0, i) = -x_local(i);
-		B(1, i) = -y_local(i);
-		B(2, i) = -z_local(i);
-		B(0, i + 3) =  x_local(i);
-		B(1, i + 3) =  y_local(i);
-		B(2, i + 3) =  z_local(i);
-	}
+        B(0, i) = -x_local(i);
+        B(1, i) = -y_local(i);
+        B(2, i) = -z_local(i);
+        B(0, i + 3) =  x_local(i);
+        B(1, i + 3) =  y_local(i);
+        B(2, i + 3) =  z_local(i);
+    }
 
-	g_commit = 0;
-	g_prev_commit = 0;
-	is_in_contact_commit = false;
-	is_in_contact_prev_commit = false;
+    g_commit = 0;
+    g_prev_commit = 0;
+    is_in_contact_commit = false;
+    is_in_contact_prev_commit = false;
 
-	// cout << B(0,0) << " " << B(0,1) << " " << B(0,2) << " " << B(0,3) << " " << B(0,4) << " " << B(0,5) << "\n" << endl;
-	// cout << B(1,0) << " " << B(1,1) << " " << B(1,2) << " " << B(1,3) << " " << B(1,4) << " " << B(1,5) << "\n" << endl;
-	// cout << B(2,0) << " " << B(2,1) << " " << B(2,2) << " " << B(2,3) << " " << B(2,4) << " " << B(2,5) << "\n" << endl;
+    // cout << B(0,0) << " " << B(0,1) << " " << B(0,2) << " " << B(0,3) << " " << B(0,4) << " " << B(0,5) << "\n" << endl;
+    // cout << B(1,0) << " " << B(1,1) << " " << B(1,2) << " " << B(1,3) << " " << B(1,4) << " " << B(1,5) << "\n" << endl;
+    // cout << B(2,0) << " " << B(2,1) << " " << B(2,2) << " " << B(2,3) << " " << B(2,4) << " " << B(2,5) << "\n" << endl;
 
-	// double vect1[]={0,1,0}, vect2[] = {0.0864,-1.097,0} , vect3[]={0,0,0}, nrm = 0 ;
-	// cross_product(vect1,vect2,vect3); 
-	// cout << vect3[0] << " " << vect3[1] << " " << vect3[2] << endl;
-	// norm(vect3,&nrm);
-	// cout << "norm of vectoresetr fbf" << nrm << endl; 
+    // double vect1[]={0,1,0}, vect2[] = {0.0864,-1.097,0} , vect3[]={0,0,0}, nrm = 0 ;
+    // cross_product(vect1,vect2,vect3);
+    // cout << vect3[0] << " " << vect3[1] << " " << vect3[2] << endl;
+    // norm(vect3,&nrm);
+    // cout << "norm of vectoresetr fbf" << nrm << endl;
 
-
-	// cout << "Enteredd in The main Constructir \n" ;
-
+    this->setNumberOfBoundaryNodes(1);
 }
 
 //==================================================================================================
@@ -150,33 +148,35 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
 FrictionalPenaltyContact::FrictionalPenaltyContact():
-	Element(0, ELE_TAG_FrictionalPenaltyContact), //ATTENTION! Define the class tag in classTags.h
-	kn(0.0),
-	kt(0.0),
-	cn(0.0),
-	ct(0.0),
-	mu(0.0),
-	is_in_contact(false),
-	is_in_contact_prev(false),
-	B(3, 6),
-	external_nodes(2)
+    Element(0, ELE_TAG_FrictionalPenaltyContact), //ATTENTION! Define the class tag in classTags.h
+    kn(0.0),
+    kt(0.0),
+    cn(0.0),
+    ct(0.0),
+    mu(0.0),
+    is_in_contact(false),
+    is_in_contact_prev(false),
+    B(3, 6),
+    external_nodes(2)
 {
 
-	tA = 0;
-	tC = 0;
-	R = 0;
-	g = 0;
-	g_prev = 0;
-	C = 0;
-	external_nodes(0) = -1;
-	external_nodes(1) = -1;
-	nodes[0] = 0;
-	nodes[1] = 0;
+    tA = 0;
+    tC = 0;
+    R = 0;
+    g = 0;
+    g_prev = 0;
+    C = 0;
+    external_nodes(0) = -1;
+    external_nodes(1) = -1;
+    nodes[0] = 0;
+    nodes[1] = 0;
 
-	g_commit = 0;
-	g_prev_commit = 0;
-	is_in_contact_commit = false;
-	is_in_contact_prev_commit = false;
+    g_commit = 0;
+    g_prev_commit = 0;
+    is_in_contact_commit = false;
+    is_in_contact_prev_commit = false;
+
+    this->setNumberOfBoundaryNodes(1);
 }
 
 
@@ -189,41 +189,41 @@ FrictionalPenaltyContact::~FrictionalPenaltyContact()
 {
 
 
-	if ( tA != NULL )
-	{
-		delete tA;
-		tA = NULL;
-	}
-	if ( tC != NULL )
-	{
-		delete tC;
-		tC = NULL;
-	}
-	if ( R != NULL )
-	{
-		delete R;
-		R = NULL;
-	}
-	if ( g != NULL )
-	{
-		delete g;
-		g = NULL;
-	}
-	if ( g_prev != NULL )
-	{
-		delete g_prev;
-		g_prev = NULL;
-	}
-	if ( C != NULL )
-	{
-		delete C;
-		C = NULL;
-	}
-	if ( nodes != NULL )
-	{
-		nodes[0] = 0;
-		nodes[1] = 0;
-	}
+    if ( tA != NULL )
+    {
+        delete tA;
+        tA = NULL;
+    }
+    if ( tC != NULL )
+    {
+        delete tC;
+        tC = NULL;
+    }
+    if ( R != NULL )
+    {
+        delete R;
+        R = NULL;
+    }
+    if ( g != NULL )
+    {
+        delete g;
+        g = NULL;
+    }
+    if ( g_prev != NULL )
+    {
+        delete g_prev;
+        g_prev = NULL;
+    }
+    if ( C != NULL )
+    {
+        delete C;
+        C = NULL;
+    }
+    if ( nodes != NULL )
+    {
+        nodes[0] = 0;
+        nodes[1] = 0;
+    }
 }
 
 
@@ -234,9 +234,9 @@ FrictionalPenaltyContact::~FrictionalPenaltyContact()
 //   * Output: number of nodes
 int FrictionalPenaltyContact::getNumExternalNodes(void) const
 {
-	// cout << "tag = " << this->getTag() << endl;
-	// cout << "Number of node = 2\n";
-	return 2;
+    // cout << "tag = " << this->getTag() << endl;
+    // cout << "Number of node = 2\n";
+    return 2;
 }
 
 
@@ -247,8 +247,8 @@ int FrictionalPenaltyContact::getNumExternalNodes(void) const
 //   * Output: ID with tags of external nodes
 const ID &FrictionalPenaltyContact::getExternalNodes(void)
 {
-	// cout << "External nodes = " << external_nodes << endl;
-	return external_nodes;
+    // cout << "External nodes = " << external_nodes << endl;
+    return external_nodes;
 }
 
 
@@ -259,7 +259,7 @@ const ID &FrictionalPenaltyContact::getExternalNodes(void)
 //   * Output: node pointer array.
 Node **FrictionalPenaltyContact::getNodePtrs(void)
 {
-	return nodes;
+    return nodes;
 }
 
 
@@ -270,7 +270,7 @@ Node **FrictionalPenaltyContact::getNodePtrs(void)
 //   * Output: number of dofs (sum of dofs over all of element's nodes)
 int FrictionalPenaltyContact::getNumDOF(void)
 {
-	return 6;
+    return 6;
 }
 
 
@@ -284,56 +284,56 @@ int FrictionalPenaltyContact::getNumDOF(void)
 void FrictionalPenaltyContact::setDomain(Domain *theDomain)
 {
 
-	// Check Domain is not null - invoked when object removed from a domain
-	if (theDomain == 0)
-	{
-		//Set domain pointers to zero
-		nodes[0] = 0;
-		nodes[1] = 0;
-	}
-	else
-	{
-		int Nd1 = external_nodes( 0 );
-		int Nd2 = external_nodes( 1 );
+    // Check Domain is not null - invoked when object removed from a domain
+    if (theDomain == 0)
+    {
+        //Set domain pointers to zero
+        nodes[0] = 0;
+        nodes[1] = 0;
+    }
+    else
+    {
+        int Nd1 = external_nodes( 0 );
+        int Nd2 = external_nodes( 1 );
 
-		//Obtain the nodes pointers
-		nodes[0] = theDomain->getNode( Nd1 );
-		nodes[1] = theDomain->getNode( Nd2 );
+        //Obtain the nodes pointers
+        nodes[0] = theDomain->getNode( Nd1 );
+        nodes[1] = theDomain->getNode( Nd2 );
 
 # ifdef _PARALLEL_PROCESSING
 // In parallel case, check whether its really an outside node
 
-		if ( nodes[0] == 0 )
-		{
-			nodes[0] = theDomain->getOutsideNode( Nd1 );
-		}
-		if ( nodes[1] == 0 )
-		{
-			nodes[1] = theDomain->getOutsideNode( Nd2 );
-		}
+        if ( nodes[0] == 0 )
+        {
+            nodes[0] = theDomain->getOutsideNode( Nd1 );
+        }
+        if ( nodes[1] == 0 )
+        {
+            nodes[1] = theDomain->getOutsideNode( Nd2 );
+        }
 # endif
 
-		//Check  whether all nodes existed (we got a valid pointer)
-		if ( nodes[0] == 0 || nodes[1] == 0  )
-		{
-			cerr << "FATAL ERROR FrictionalPenaltyContact (tag: " << this->getTag() << "), node not found in domain\n";
-			return;
-		}
+        //Check  whether all nodes existed (we got a valid pointer)
+        if ( nodes[0] == 0 || nodes[1] == 0  )
+        {
+            cerr << "FATAL ERROR FrictionalPenaltyContact (tag: " << this->getTag() << "), node not found in domain\n";
+            return;
+        }
 
-		//Check we're connected to nodes of the right number of dofs
-		int dofNd1 = nodes[0]->getNumberDOF();
-		int dofNd2 = nodes[1]->getNumberDOF();
+        //Check we're connected to nodes of the right number of dofs
+        int dofNd1 = nodes[0]->getNumberDOF();
+        int dofNd2 = nodes[1]->getNumberDOF();
 
-		if ( dofNd1 != 3 || dofNd2 != 3 )
-		{
-			cerr << "FATAL ERROR FrictionalPenaltyContact (tag: " << this->getTag() << "), has differing number of DOFs at its nodes\n";
-			return;
-		}
+        if ( dofNd1 != 3 || dofNd2 != 3 )
+        {
+            cerr << "FATAL ERROR FrictionalPenaltyContact (tag: " << this->getTag() << "), has differing number of DOFs at its nodes\n";
+            return;
+        }
 
-		// All is good, we can set the domain.
-		this->DomainComponent::setDomain(theDomain);
-		initialize();
-	}
+        // All is good, we can set the domain.
+        this->DomainComponent::setDomain(theDomain);
+        initialize();
+    }
 }
 
 
@@ -348,29 +348,29 @@ void FrictionalPenaltyContact::setDomain(Domain *theDomain)
 //   * Output: error flag, 0 if success
 int FrictionalPenaltyContact::commitState(void)
 {
-	
-	*tA = *tC;
-	*g_commit = *g;
-	*g_prev_commit = *g_prev;
-	is_in_contact_commit = is_in_contact;
-	is_in_contact_prev_commit = is_in_contact_prev;
-	
-	R->Zero();
-	R->addMatrixTransposeVector(1, B, *tA, 1.0);
+
+    *tA = *tC;
+    *g_commit = *g;
+    *g_prev_commit = *g_prev;
+    is_in_contact_commit = is_in_contact;
+    is_in_contact_prev_commit = is_in_contact_prev;
+
+    R->Zero();
+    R->addMatrixTransposeVector(1, B, *tA, 1.0);
 
 
-	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	// cout.precision(10);
-	// cout << "******************************************** Commit State *************************************\n";
-	// cout << "*g_commit " <<  *g_commit;
-	// cout << "*g_prev_commit " <<  *g_prev_commit;
-	// cout << "is_in_contact_prev_commit " <<  is_in_contact_prev_commit << "\n";
-	// cout << "is_in_contact_commit " <<  is_in_contact_commit << "\n";
-	// cout << "*Commit Resisting Force -  " << *tA ;
-	// cout << "###############################################################################################\n";
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+    // cout.precision(10);
+    // cout << "******************************************** Commit State *************************************\n";
+    // cout << "*g_commit " <<  *g_commit;
+    // cout << "*g_prev_commit " <<  *g_prev_commit;
+    // cout << "is_in_contact_prev_commit " <<  is_in_contact_prev_commit << "\n";
+    // cout << "is_in_contact_commit " <<  is_in_contact_commit << "\n";
+    // cout << "*Commit Resisting Force -  " << *tA ;
+    // cout << "###############################################################################################\n";
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	return 0;
+    return 0;
 }
 
 
@@ -383,14 +383,14 @@ int FrictionalPenaltyContact::commitState(void)
 //   * Output: error flag, 0 if success
 int FrictionalPenaltyContact::revertToLastCommit(void)
 {
-	*tC = *tA;
-	*g = *g_commit;
-	*g_prev = *g_prev_commit;
-	is_in_contact = is_in_contact_commit;
-	is_in_contact_prev = is_in_contact_prev_commit;
-	// you must implement
-	// cout << "I am in Revert to Last Commit \n" ;
-	return 0;
+    *tC = *tA;
+    *g = *g_commit;
+    *g_prev = *g_prev_commit;
+    is_in_contact = is_in_contact_commit;
+    is_in_contact_prev = is_in_contact_prev_commit;
+    // you must implement
+    // cout << "I am in Revert to Last Commit \n" ;
+    return 0;
 }
 
 
@@ -403,8 +403,8 @@ int FrictionalPenaltyContact::revertToLastCommit(void)
 //   * Output: error flag, 0 if success
 int FrictionalPenaltyContact::revertToStart(void)
 {
-	// you must implement
-	return 0;
+    // you must implement
+    return 0;
 }
 
 
@@ -418,165 +418,190 @@ int FrictionalPenaltyContact::revertToStart(void)
 //   * Output: error flag, 0 if success
 int FrictionalPenaltyContact::update(void)
 {
-	// cout << "Going To Calculate gap \n";
-	double epsilon= 0;
-	computeGap();
-	Vector del_tC(3);			// vector to hold current total step predicted forces
-	Vector delg(3);				// correct gap fucntion
+    // cout << "Going To Calculate gap \n";
+    double epsilon = 0;
+    computeGap();
+    Vector del_tC(3);			// vector to hold current total step predicted forces
+    Vector delg(3);				// correct gap fucntion
 
-	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	// cout << "************************************ Iteration Steps **********************************\n";
-	// cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
-	// cout << "is_in_contact " <<  is_in_contact << "\n";	
-	// cout << "*g " <<  *g;
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+    // cout << "************************************ Iteration Steps **********************************\n";
+    // cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
+    // cout << "is_in_contact " <<  is_in_contact << "\n";
+    // cout << "*g " <<  *g;
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	if (is_in_contact){
+    if (is_in_contact)
+    {
 
-		// cout << "Entered is_in Conatct \n";
+        // cout << "Entered is_in Conatct \n";
 
-		////////////////// Editted by Sumeet //////////////////////////
-		// The situataions that can happen inside it are as follows ///
-		// 1) No Contact to Contact ///////////////////////////////////
-		// 2) Contact to Contact Relaxation////////////////////////////
-		// 3) Contact to Contact Penetration///////////////////////////
-		/////////////////////////////////////////////////////////////// 
+        ////////////////// Editted by Sumeet //////////////////////////
+        // The situataions that can happen inside it are as follows ///
+        // 1) No Contact to Contact ///////////////////////////////////
+        // 2) Contact to Contact Relaxation////////////////////////////
+        // 3) Contact to Contact Penetration///////////////////////////
+        ///////////////////////////////////////////////////////////////
 
-		// /////////////////////// Setting elastic Tangent Stiffness ///////////////////////
-		// C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
-		// //////////////////// Computing predictive forces (tB) ///////////////////////////
+        // /////////////////////// Setting elastic Tangent Stiffness ///////////////////////
+        // C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
+        // //////////////////// Computing predictive forces (tB) ///////////////////////////
 
-		if (is_in_contact_prev){
-			delg = *g - *g_prev;	///// Contact to Contact ////
-		}
-		else{
-			delg = *g;				///// No Contact to Contact ////
-			/////////////////////// Setting elastic Tangent Stiffness ///////////////////////
-			C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
-			//////////////////// Computing predictive forces (tB) ///////////////////////////
-		}
+        if (is_in_contact_prev)
+        {
+            delg = *g - *g_prev;	///// Contact to Contact ////
+        }
+        else
+        {
+            delg = *g;				///// No Contact to Contact ////
+            /////////////////////// Setting elastic Tangent Stiffness ///////////////////////
+            C->Zero();
+            (*C)(0, 0) = kt;
+            (*C)(1, 1) = kt;
+            (*C)(2, 2) = kn;
+            //////////////////// Computing predictive forces (tB) ///////////////////////////
+        }
 
-		del_tC.addMatrixVector(1.0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
-		Vector trial_tC(3); trial_tC= *tC + del_tC;				/// Predicted Forces ///
-
-
-		// ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
-		// cout << "*del_gap_trial " <<  delg;	
-		// cout << "*trial_tC " <<  trial_tC;
-		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-		/////////////////////////////////////////////////////////////////////////////////
-		//////////////////// Compute Yield function at prediction point /////////////////
-		///////////// checking if yf_B = (mu*N + Shear Force) >0  ///////////////////////
-		/////////////////////////////////////////////////////////////////////////////////
-
-		double yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
-
-		if (yf_B > epsilon){ /////// Sliding Condition /////////
-
-			/////////////////////////////////// Finding the Loading direction //////////////////////////////////////////////////
-			Vector eta=delg;eta(2)=0;double norm_eta = eta.Norm();				// finding the loading direction
-	        // cout.precision(10);cout << "norm_eta " << norm_eta << endl;
-	        if (norm_eta > epsilon)
-	            eta = eta / norm_eta;
-	        else{
-	            eta(0) = 1.0 / std::sqrt(2.0);
-	            eta(1) = 1.0 / std::sqrt(2.0);
-	        }
-	        // cout << "eta " << eta ;
-	        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	        ////////////////////////////// Calculating the crossing increament force to yield surface /////////////////////////
-	        trial_tC = trial_tC - yf_B*eta; 			    					// cross stress or force
-	        eta = trial_tC; eta(2)=0;											// eta -> unit plastic flow direction (non-associative)
-	       	Vector zeta=trial_tC;												// zeta -> unit normal to yield surface
-	        del_tC = trial_tC - *tC;											// change in force to cross forces
-	        double norm_zeta = sqrt(zeta(0)*zeta(0)+zeta(1)*zeta(1));			// derivate of yield function tangential component 
-	        // cout << "*trial_tC " <<  trial_tC;
-	        // cout.precision(10);;cout << "norm_zeta " << norm_zeta << endl;;
-	        if (norm_zeta > epsilon){
-	            zeta = zeta / norm_zeta;
-	        	eta  = eta / norm_zeta; 
-		        ///////////////////////////////// Updating the stiffness matrix ///////////////////////////////////////////////////////////
-	        	zeta(2)=mu;	zeta = zeta / zeta.Norm();								// unit normal to yield surface
-		        double Beta = 0;     												// Hardening parameter
-				Matrix Cplastic(3,3);
-				Cplastic(0,0) = eta(0)*zeta(0)*kt; 	Cplastic(0,1) = eta(0)*zeta(1)*kt; 	Cplastic(0,2) = eta(0)*zeta(2)*kn;
-				Cplastic(1,0) = eta(1)*zeta(0)*kt; 	Cplastic(1,1) = eta(1)*zeta(1)*kt;	Cplastic(1,2) = eta(1)*zeta(2)*kn;
-				*C  = *C - 1.0/( Beta + (eta(0)*zeta(0)+eta(1)*zeta(1)) ) * Cplastic;
-				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	        }
-	        else{
-	            // zeta(0) = 1.0 / std::sqrt(2.0);
-	            // zeta(1) = 1.0 / std::sqrt(2.0);
-	            // eta(0) = 1.0 / std::sqrt(2.0);
-	            // eta(1) = 1.0 / std::sqrt(2.0);
-	            (*C)(0,0)=0; (*C)(1,1)=0;
-	            del_tC(0) = -1*(*tC)(0);
-	            del_tC(1)=-1*(*tC)(1);
-
-	        }
-
-	        // zeta(2)=mu;	zeta = zeta / zeta.Norm();								// unit normal to yield surface
-	        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	       
-	        ///////////////////////////////// Updating the stiffness matrix ///////////////////////////////////////////////////////////
-	        // double Beta = 0;     												// Hardening parameter
-			// Matrix Cplastic(3,3);
-			// Cplastic(0,0) = eta(0)*zeta(0)*kt; 	Cplastic(0,1) = eta(0)*zeta(1)*kt; 	Cplastic(0,2) = eta(0)*zeta(2)*kn;
-			// Cplastic(1,0) = eta(1)*zeta(0)*kt; 	Cplastic(1,1) = eta(1)*zeta(1)*kt;	Cplastic(1,2) = eta(1)*zeta(2)*kn;
-			// *C  = *C - 1.0/( Beta + (eta(0)*zeta(0)+eta(1)*zeta(1)) ) * Cplastic;
-			// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        del_tC.addMatrixVector(1.0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
+        Vector trial_tC(3);
+        trial_tC = *tC + del_tC;				/// Predicted Forces ///
 
 
-			///////////////////////////////// Calculating The Actual Force Increament///////////////////////////////////////////////////
-			////////////////////////////////////////// In This case its Zero ///////////////////////////////////////////////////////////
-			////////////////////////////////////////// So Can Be commented Out /////////////////////////////////////////////////////////
-			// delg = yf_B/kt*eta;
-			// del_tC.addMatrixVector(1, *C, delg, 1.0);
-			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+        // cout << "*del_gap_trial " <<  delg;
+        // cout << "*trial_tC " <<  trial_tC;
+        // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-			// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////
-			// cout << "I am Sliding \n";
-			// cout << "eta " << eta;
-			// cout << "zeta " << zeta; 
-			// cout << "New Code Stiffness During Sliding " << *C ;
-			// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////
+        //////////////////// Compute Yield function at prediction point /////////////////
+        ///////////// checking if yf_B = (mu*N + Shear Force) >0  ///////////////////////
+        /////////////////////////////////////////////////////////////////////////////////
 
-		}
-	}
-	else{
+        double yf_B = sqrt(trial_tC(0) * trial_tC(0) + trial_tC(1) * trial_tC(1)) + mu * trial_tC(2);
 
-		////////////////// Editted by Sumeet //////////////////////////
-		// The situataions that can happen inside it are as follows ///
-		// 1) No Contact to No Contact ////////////////////////////////
-		// 2) Contact to No Contact ///////////////////////////////////
-		/////////////////////////////////////////////////////////////// 
+        if (yf_B > epsilon)  /////// Sliding Condition /////////
+        {
 
-		//////////////////// Computing predictive forces (del_tC) ///////////////////////////
+            /////////////////////////////////// Finding the Loading direction //////////////////////////////////////////////////
+            Vector eta = delg;
+            eta(2) = 0;
+            double norm_eta = eta.Norm();				// finding the loading direction
+            // cout.precision(10);cout << "norm_eta " << norm_eta << endl;
+            if (norm_eta > epsilon)
+            {
+                eta = eta / norm_eta;
+            }
+            else
+            {
+                eta(0) = 1.0 / std::sqrt(2.0);
+                eta(1) = 1.0 / std::sqrt(2.0);
+            }
+            // cout << "eta " << eta ;
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		if (is_in_contact_prev)
-			del_tC.addMatrixVector(0, *C, *(g_prev), -1.0); ///// Contact to No Contact ////
-		C->Zero();
-		del_tC=-1*(*tC);
-		/////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////// Calculating the crossing increament force to yield surface /////////////////////////
+            trial_tC = trial_tC - yf_B * eta; 			    					// cross stress or force
+            eta = trial_tC;
+            eta(2) = 0;											// eta -> unit plastic flow direction (non-associative)
+            Vector zeta = trial_tC;												// zeta -> unit normal to yield surface
+            del_tC = trial_tC - *tC;											// change in force to cross forces
+            double norm_zeta = sqrt(zeta(0) * zeta(0) + zeta(1) * zeta(1));			// derivate of yield function tangential component
+            // cout << "*trial_tC " <<  trial_tC;
+            // cout.precision(10);;cout << "norm_zeta " << norm_zeta << endl;;
+            if (norm_zeta > epsilon)
+            {
+                zeta = zeta / norm_zeta;
+                eta  = eta / norm_zeta;
+                ///////////////////////////////// Updating the stiffness matrix ///////////////////////////////////////////////////////////
+                zeta(2) = mu;
+                zeta = zeta / zeta.Norm();								// unit normal to yield surface
+                double Beta = 0;     												// Hardening parameter
+                Matrix Cplastic(3, 3);
+                Cplastic(0, 0) = eta(0) * zeta(0) * kt;
+                Cplastic(0, 1) = eta(0) * zeta(1) * kt;
+                Cplastic(0, 2) = eta(0) * zeta(2) * kn;
+                Cplastic(1, 0) = eta(1) * zeta(0) * kt;
+                Cplastic(1, 1) = eta(1) * zeta(1) * kt;
+                Cplastic(1, 2) = eta(1) * zeta(2) * kn;
+                *C  = *C - 1.0 / ( Beta + (eta(0) * zeta(0) + eta(1) * zeta(1)) ) * Cplastic;
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	}
+            }
+            else
+            {
+                // zeta(0) = 1.0 / std::sqrt(2.0);
+                // zeta(1) = 1.0 / std::sqrt(2.0);
+                // eta(0) = 1.0 / std::sqrt(2.0);
+                // eta(1) = 1.0 / std::sqrt(2.0);
+                (*C)(0, 0) = 0;
+                (*C)(1, 1) = 0;
+                del_tC(0) = -1 * (*tC)(0);
+                del_tC(1) = -1 * (*tC)(1);
 
-	*tC = *tC + del_tC ;			// correct local force
-	*g_prev = *g;					// defining the previous gap
+            }
 
-	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////	
-	// cout.precision(10);
-	// cout << "*del_gap " <<  delg;
-	// cout << "del_tC " << del_tC;
-	// cout << "tC " <<  *tC;
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // zeta(2)=mu;	zeta = zeta / zeta.Norm();								// unit normal to yield surface
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	return 0;
+            ///////////////////////////////// Updating the stiffness matrix ///////////////////////////////////////////////////////////
+            // double Beta = 0;     												// Hardening parameter
+            // Matrix Cplastic(3,3);
+            // Cplastic(0,0) = eta(0)*zeta(0)*kt; 	Cplastic(0,1) = eta(0)*zeta(1)*kt; 	Cplastic(0,2) = eta(0)*zeta(2)*kn;
+            // Cplastic(1,0) = eta(1)*zeta(0)*kt; 	Cplastic(1,1) = eta(1)*zeta(1)*kt;	Cplastic(1,2) = eta(1)*zeta(2)*kn;
+            // *C  = *C - 1.0/( Beta + (eta(0)*zeta(0)+eta(1)*zeta(1)) ) * Cplastic;
+            // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            ///////////////////////////////// Calculating The Actual Force Increament///////////////////////////////////////////////////
+            ////////////////////////////////////////// In This case its Zero ///////////////////////////////////////////////////////////
+            ////////////////////////////////////////// So Can Be commented Out /////////////////////////////////////////////////////////
+            // delg = yf_B/kt*eta;
+            // del_tC.addMatrixVector(1, *C, delg, 1.0);
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            // /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////
+            // cout << "I am Sliding \n";
+            // cout << "eta " << eta;
+            // cout << "zeta " << zeta;
+            // cout << "New Code Stiffness During Sliding " << *C ;
+            // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        }
+    }
+    else
+    {
+
+        ////////////////// Editted by Sumeet //////////////////////////
+        // The situataions that can happen inside it are as follows ///
+        // 1) No Contact to No Contact ////////////////////////////////
+        // 2) Contact to No Contact ///////////////////////////////////
+        ///////////////////////////////////////////////////////////////
+
+        //////////////////// Computing predictive forces (del_tC) ///////////////////////////
+
+        if (is_in_contact_prev)
+        {
+            del_tC.addMatrixVector(0, *C, *(g_prev), -1.0);    ///// Contact to No Contact ////
+        }
+        C->Zero();
+        del_tC = -1 * (*tC);
+        /////////////////////////////////////////////////////////////////////////////////
+
+    }
+
+    *tC = *tC + del_tC ;			// correct local force
+    *g_prev = *g;					// defining the previous gap
+
+    // /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////
+    // cout.precision(10);
+    // cout << "*del_gap " <<  delg;
+    // cout << "del_tC " << del_tC;
+    // cout << "tC " <<  *tC;
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    return 0;
 }
 
 
@@ -588,8 +613,8 @@ int FrictionalPenaltyContact::update(void)
 //   * Output: void
 void FrictionalPenaltyContact::zeroLoad(void)
 {
-	// optional to implement
-	return;
+    // optional to implement
+    return;
 }
 
 
@@ -606,17 +631,17 @@ void FrictionalPenaltyContact::zeroLoad(void)
 //    load factor (which is also the time-step of the analysis).
 int FrictionalPenaltyContact::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
-	// optional to implement
-	//
-	// Some code to get the type and data. Example is for self_weight.
-	// int type;
-	// const Vector &data = theLoad->getData(type, loadFactor);
-	//
-	// if (type == LOAD_TAG_ElementSelfWeight)  // Load tags are defined in classTags.h
-	// {
-	//     do something, like add a the forces to the resisting_force vector.
-	// }
-	return 0;
+    // optional to implement
+    //
+    // Some code to get the type and data. Example is for self_weight.
+    // int type;
+    // const Vector &data = theLoad->getData(type, loadFactor);
+    //
+    // if (type == LOAD_TAG_ElementSelfWeight)  // Load tags are defined in classTags.h
+    // {
+    //     do something, like add a the forces to the resisting_force vector.
+    // }
+    return 0;
 }
 
 
@@ -633,8 +658,8 @@ int FrictionalPenaltyContact::addLoad(ElementalLoad *theLoad, double loadFactor)
 // add this into the load unbalance (with negative sign, cause it is inertia)
 int FrictionalPenaltyContact::addInertiaLoadToUnbalance(const Vector &accel)
 {
-	//cout << "FrictionalPenaltyContact::addInertiaLoadToUnbalance()\n";
-	return 0;
+    //cout << "FrictionalPenaltyContact::addInertiaLoadToUnbalance()\n";
+    return 0;
 }
 
 
@@ -653,16 +678,16 @@ int FrictionalPenaltyContact::addInertiaLoadToUnbalance(const Vector &accel)
 //   memory.
 const Matrix &FrictionalPenaltyContact::getTangentStiff(void)
 {
-	static Matrix K(6, 6);
-	K.Zero();
-	if (is_in_contact)
-	{
-		K.addMatrixTripleProduct(0.0, B, *C, 1.0); // B' * C * B
-	}
+    static Matrix K(6, 6);
+    K.Zero();
+    if (is_in_contact)
+    {
+        K.addMatrixTripleProduct(0.0, B, *C, 1.0); // B' * C * B
+    }
 
-	// cout << "K = " << K << endl;
+    // cout << "K = " << K << endl;
 
-	return K;
+    return K;
 }
 
 
@@ -676,17 +701,17 @@ const Matrix &FrictionalPenaltyContact::getTangentStiff(void)
 //             where nDOF = FrictionalPenaltyContact::getNumDOF();
 const Matrix &FrictionalPenaltyContact::getInitialStiff(void)
 {
-	static Matrix Kinit(6, 6);
-	Kinit.Zero();
+    static Matrix Kinit(6, 6);
+    Kinit.Zero();
 
-	Matrix Celast(3, 3);
-	Celast(0, 0) = kt;
-	Celast(1, 1) = kt;
-	Celast(2, 2) = kn;
+    Matrix Celast(3, 3);
+    Celast(0, 0) = kt;
+    Celast(1, 1) = kt;
+    Celast(2, 2) = kn;
 
-	Kinit.addMatrixTripleProduct(0.0, B, Celast, 1.0); // B' * C * B
+    Kinit.addMatrixTripleProduct(0.0, B, Celast, 1.0); // B' * C * B
 
-	return Kinit;
+    return Kinit;
 }
 
 
@@ -701,17 +726,17 @@ const Matrix &FrictionalPenaltyContact::getInitialStiff(void)
 //             where nDOF = FrictionalPenaltyContact::getNumDOF();
 const Matrix &FrictionalPenaltyContact::getDamp(void)
 {
-	// cout << "FrictionalPenaltyContact::getDamp(void)\n";
-	static Matrix C(6, 6);
-	C.Zero();
+    // cout << "FrictionalPenaltyContact::getDamp(void)\n";
+    static Matrix C(6, 6);
+    C.Zero();
 
-	Matrix Clocal(3, 3);
-	Clocal(0, 0) = ct;
-	Clocal(1, 1) = ct;
-	Clocal(2, 2) = cn;
+    Matrix Clocal(3, 3);
+    Clocal(0, 0) = ct;
+    Clocal(1, 1) = ct;
+    Clocal(2, 2) = cn;
 
-	C.addMatrixTripleProduct(0.0, B, Clocal, 1.0); // B' * C * B
-	return C;
+    C.addMatrixTripleProduct(0.0, B, Clocal, 1.0); // B' * C * B
+    return C;
 }
 
 
@@ -726,8 +751,8 @@ const Matrix &FrictionalPenaltyContact::getDamp(void)
 //             where nDOF = FrictionalPenaltyContact::getNumDOF();
 const Matrix &FrictionalPenaltyContact::getMass(void)
 {
-	static Matrix Mzero(6, 6);
-	return Mzero;
+    static Matrix Mzero(6, 6);
+    return Mzero;
 }
 
 
@@ -742,9 +767,9 @@ const Matrix &FrictionalPenaltyContact::getMass(void)
 //             where nDOF = FrictionalPenaltyContact::getNumDOF();
 const Vector &FrictionalPenaltyContact::getResistingForce(void)
 {
-	R->Zero();
-	R->addMatrixTransposeVector(1, B, *tC, 1.0);
-	return *R;
+    R->Zero();
+    R->addMatrixTransposeVector(1, B, *tC, 1.0);
+    return *R;
 }
 
 
@@ -760,7 +785,7 @@ const Vector &FrictionalPenaltyContact::getResistingForce(void)
 //         adds inertial terms.
 const Vector &FrictionalPenaltyContact::getResistingForceIncInertia(void)
 {
-	return getResistingForce();
+    return getResistingForce();
 }
 
 
@@ -776,16 +801,16 @@ const Vector &FrictionalPenaltyContact::getResistingForceIncInertia(void)
 // Note2: setDomain(...) *might* not be called before using this function.
 int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
 {
-	// Useful constructs
-	// int error_flag;
-	// error_flag = theChannel.sendVector(0, 0, double_data);  // the first two parameters are deprecated
-	//
-	//  Check that error_flag is not < 0
-	//
-	// theChannel.sendID(0, 0, integer_data);  //  the first two parameters are deprecated
-	//
-	//  Check that error_flag is not < 0
-	
+    // Useful constructs
+    // int error_flag;
+    // error_flag = theChannel.sendVector(0, 0, double_data);  // the first two parameters are deprecated
+    //
+    //  Check that error_flag is not < 0
+    //
+    // theChannel.sendID(0, 0, integer_data);  //  the first two parameters are deprecated
+    //
+    //  Check that error_flag is not < 0
+
     ID idData( 2 );
 
     idData( 0 ) = this->getTag();
@@ -825,7 +850,7 @@ int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
         return -1;
     }
 
-    if (theChannel.sendMatrix( 0,commitTag,	B ) < 0)
+    if (theChannel.sendMatrix( 0, commitTag,	B ) < 0)
     {
         cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
@@ -858,7 +883,7 @@ int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
     }
 
 
-	return 0;
+    return 0;
 }
 
 
@@ -873,12 +898,12 @@ int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
 // Note: This function is called after setDomain() so all resources should be made available.
 int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
-	// Useful constructs
-	// int error_flag;
-	// theChannel.receiveVector(0, 0, double_data);  // the first two parameters are deprecated
-	//  Check that error_flag is not < 0
-	// theChannel.receiveID(0, 0, integer_data);  //  the first two parameters are deprecated
-	//  Check that error_flag is not < 0
+    // Useful constructs
+    // int error_flag;
+    // theChannel.receiveVector(0, 0, double_data);  // the first two parameters are deprecated
+    //  Check that error_flag is not < 0
+    // theChannel.receiveID(0, 0, integer_data);  //  the first two parameters are deprecated
+    //  Check that error_flag is not < 0
 
     ID idData( 2 );
 
@@ -924,12 +949,12 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
 
     *g_prev = *g_commit;
 
-    if (theChannel.receiveMatrix( 0,commitTag,	B ) < 0)
+    if (theChannel.receiveMatrix( 0, commitTag,	B ) < 0)
     {
         cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
     }
-    
+
     /////////////////////////////////////////////////////////////////////////////////////
 
     string tmp_string;
@@ -955,7 +980,7 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
         return -1;
     }
 
-	return 0;
+    return 0;
 }
 
 
@@ -970,11 +995,11 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
 // give increasing ammount of info.
 void FrictionalPenaltyContact::Print(ostream &s, int flag )
 {
-	// you must implement
-	if (flag >= 0)
-	{
-		s << " FrictionalPenaltyContact, tag =  " << this->getTag() << endl;
-	}
+    // you must implement
+    if (flag >= 0)
+    {
+        s << " FrictionalPenaltyContact, tag =  " << this->getTag() << endl;
+    }
 }
 
 
@@ -988,7 +1013,7 @@ void FrictionalPenaltyContact::Print(ostream &s, int flag )
 //  Note: be verbose print element tag, etc. Print out only if an error is encountered.
 int FrictionalPenaltyContact::CheckMesh(ofstream &)
 {
-	return 0;
+    return 0;
 }
 
 
@@ -1006,7 +1031,7 @@ int FrictionalPenaltyContact::CheckMesh(ofstream &)
 
 int FrictionalPenaltyContact::getOutputSize() const
 {
-	return  FRICTIONALPENALTYCONTACT_NOUTPUT;
+    return  FRICTIONALPENALTYCONTACT_NOUTPUT;
 }
 
 
@@ -1019,17 +1044,17 @@ int FrictionalPenaltyContact::getOutputSize() const
 //   * Output: Vector (array of doubles) with the element output.
 const Vector &FrictionalPenaltyContact::getOutput()
 {
-	static Vector output_vector(FRICTIONALPENALTYCONTACT_NOUTPUT);
+    static Vector output_vector(FRICTIONALPENALTYCONTACT_NOUTPUT);
 
-	output_vector(0) = (*g_commit)(0);
-	output_vector(1) = (*g_commit)(1);
-	output_vector(2) = (*g_commit)(2);
-	output_vector(3) = (*tA)(0);
-	output_vector(4) = (*tA)(1);
-	output_vector(5) = (*tA)(2);
+    output_vector(0) = (*g_commit)(0);
+    output_vector(1) = (*g_commit)(1);
+    output_vector(2) = (*g_commit)(2);
+    output_vector(3) = (*tA)(0);
+    output_vector(4) = (*tA)(1);
+    output_vector(5) = (*tA)(2);
 
 
-	return output_vector;
+    return output_vector;
 }
 
 
@@ -1044,9 +1069,9 @@ const Vector &FrictionalPenaltyContact::getOutput()
 //    gauss_coordinates[Ngauss,:] = [x_Ngauss,y_Ngauss,z_Ngauss]  -- Coordinates of Ngauss-th Gauss point
 Matrix &FrictionalPenaltyContact::getGaussCoordinates(void)
 {
-	// you must implement
-	static Matrix gauss_coordinates(2, 3);
-	return gauss_coordinates;
+    // you must implement
+    static Matrix gauss_coordinates(2, 3);
+    return gauss_coordinates;
 }
 
 
@@ -1059,65 +1084,69 @@ Matrix &FrictionalPenaltyContact::getGaussCoordinates(void)
 void FrictionalPenaltyContact::computeGap()
 {
 
-	// cout << "started Computing Gap \n";
+    // cout << "started Computing Gap \n";
 
-	Vector d_ij(3);							// Distance between nodes
-	const Vector &xi = nodes[0]->getCrds();	 //Coordinates vector of node i
-	const Vector &ui = nodes[0]->getTrialDisp(); //Displacement vector of node i
-	const Vector &xj = nodes[1]->getCrds(); //Coordinates vector of node j
-	const Vector &uj = nodes[1]->getTrialDisp(); //Displacement vector of node j
+    Vector d_ij(3);							// Distance between nodes
+    const Vector &xi = nodes[0]->getCrds();	 //Coordinates vector of node i
+    const Vector &ui = nodes[0]->getTrialDisp(); //Displacement vector of node i
+    const Vector &xj = nodes[1]->getCrds(); //Coordinates vector of node j
+    const Vector &uj = nodes[1]->getTrialDisp(); //Displacement vector of node j
 
-	g->Zero();
-	d_ij = (xj + uj) - (xi + ui);
+    g->Zero();
+    d_ij = (xj + uj) - (xi + ui);
 
-	for (int i = 0; i < 3; i++)
-	{
-		(*g)(0) += B(0, 3 + i) * ( d_ij(i));
-		(*g)(1) += B(1, 3 + i) * (d_ij(i));
-		(*g)(2) += B(2, 3 + i) * d_ij(i);
-	}
+    for (int i = 0; i < 3; i++)
+    {
+        (*g)(0) += B(0, 3 + i) * ( d_ij(i));
+        (*g)(1) += B(1, 3 + i) * (d_ij(i));
+        (*g)(2) += B(2, 3 + i) * d_ij(i);
+    }
 
-	// Normal gap
-	double g_N = (*g)(2);
-	double epsilon = 0;
+    // Normal gap
+    double g_N = (*g)(2);
+    double epsilon = 0;
 
-	is_in_contact_prev = is_in_contact;
+    is_in_contact_prev = is_in_contact;
 
-	// cout << "g_N " << g_N << endl;
-	if (g_N <= epsilon )
-		is_in_contact=true;
-	else
-		is_in_contact=false;
+    // cout << "g_N " << g_N << endl;
+    if (g_N <= epsilon )
+    {
+        is_in_contact = true;
+    }
+    else
+    {
+        is_in_contact = false;
+    }
 
-	// cout << "returning fron the compute gap function \n";
-	return;
+    // cout << "returning fron the compute gap function \n";
+    return;
 
-	// if (is_in_contact_prev)                    // If element was previously in contact...
-	// {
-	// 	if (g_N < epsilon )                    // ... and still is in contact
-	// 	{
-	// 		return;                            // ... proceed
-	// 	}
-	// 	else                                   // and now is no longer in contact
-	// 	{
-	// 		is_in_contact = false;             // set to not in contact
+    // if (is_in_contact_prev)                    // If element was previously in contact...
+    // {
+    // 	if (g_N < epsilon )                    // ... and still is in contact
+    // 	{
+    // 		return;                            // ... proceed
+    // 	}
+    // 	else                                   // and now is no longer in contact
+    // 	{
+    // 		is_in_contact = false;             // set to not in contact
 
-	// 		return;
-	// 	}
-	// }
-	// else                                   	   // If element was previously not in contact ...
-	// {
-	// 	if (g_N <= epsilon)                           // ... and now is in contact
-	// 	{
-	// 		is_in_contact = true;              // ... set to being in contact
-	// 		return;
-	// 	}
-	// 	else                                   // ... and is still not in contact
-	// 	{
-	// 		is_in_contact = false;             // set to not in contact
-	// 		return;
-	// 	}
-	// }
+    // 		return;
+    // 	}
+    // }
+    // else                                   	   // If element was previously not in contact ...
+    // {
+    // 	if (g_N <= epsilon)                           // ... and now is in contact
+    // 	{
+    // 		is_in_contact = true;              // ... set to being in contact
+    // 		return;
+    // 	}
+    // 	else                                   // ... and is still not in contact
+    // 	{
+    // 		is_in_contact = false;             // set to not in contact
+    // 		return;
+    // 	}
+    // }
 
 }
 
@@ -1127,33 +1156,35 @@ void FrictionalPenaltyContact::computeGap()
 void FrictionalPenaltyContact::initialize()
 {
 
-	tA = new Vector(3);          // Current commitred local forces  t = [t_T1, t_T2, t_N]
-	tC = new Vector(3);          // Current trial local forces  t = [t_T1, t_T2, t_N]
-	R = new Vector(6);          // Current resisting forces
-	g = new Vector(3);
-	g_prev = new Vector(3);
-	g_commit = new Vector(3);
-	g_prev_commit = new Vector(3);
-	C = new Matrix(3, 3);
+    tA = new Vector(3);          // Current commitred local forces  t = [t_T1, t_T2, t_N]
+    tC = new Vector(3);          // Current trial local forces  t = [t_T1, t_T2, t_N]
+    R = new Vector(6);          // Current resisting forces
+    g = new Vector(3);
+    g_prev = new Vector(3);
+    g_commit = new Vector(3);
+    g_prev_commit = new Vector(3);
+    C = new Matrix(3, 3);
 
-	return ;
+    return ;
 }
 
 //==================================================================================================
 // Finds the cross product of two vectors and stores in the third vector
-// vect3[] = vect1[] X vect2[] 
-void FrictionalPenaltyContact::cross_product(double vect1[],double vect2[],double vect3[]){
+// vect3[] = vect1[] X vect2[]
+void FrictionalPenaltyContact::cross_product(double vect1[], double vect2[], double vect3[])
+{
 
-	vect3[0] = vect1[1] * vect2[2] - vect1[2] * vect2[1];
-	vect3[1] = vect1[2] * vect2[0] - vect1[0] * vect2[2];
-	vect3[2] = vect1[0] * vect2[1] - vect1[1] * vect2[0];
+    vect3[0] = vect1[1] * vect2[2] - vect1[2] * vect2[1];
+    vect3[1] = vect1[2] * vect2[0] - vect1[0] * vect2[2];
+    vect3[2] = vect1[0] * vect2[1] - vect1[1] * vect2[0];
 }
 
 //==================================================================================================
 // Finds the norm of the vector and stores in the norm variable
 // norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
-void FrictionalPenaltyContact::norm(double vect[],double* nrm){
+void FrictionalPenaltyContact::norm(double vect[], double* nrm)
+{
 
-	*nrm = abs(sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2]));
-	// cout << "norm -" << "\n";
+    *nrm = abs(sqrt(vect[0] * vect[0] + vect[1] * vect[1] + vect[2] * vect[2]));
+    // cout << "norm -" << "\n";
 }
