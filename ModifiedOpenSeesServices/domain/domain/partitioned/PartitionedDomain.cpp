@@ -1465,6 +1465,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_EightNodeBrickLT                             // Jose Added Oct 2014
                 && eleClassTag != ELE_TAG_TwentyNodeBrickLT
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                             // Jose Added Oct 2014
+                && eleClassTag != ELE_TAG_FrictionalPenaltyContact
            )
         {
             cerr << "PartitionedDomain::buildEleGraph() -- (2) Unknown element classTag = " << eleClassTag << " \n";
@@ -1593,6 +1594,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_EightNodeBrickLT
                 && eleClassTag != ELE_TAG_TwentyNodeBrickLT
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT
+                && eleClassTag != ELE_TAG_FrictionalPenaltyContact
            )
         {
             cerr << "PartitionedDomain::buildEleGraph() -- (3) Unknown element class tag = " << eleClassTag << "\n";
