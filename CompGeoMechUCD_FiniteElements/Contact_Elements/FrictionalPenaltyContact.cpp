@@ -177,6 +177,7 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
     is_in_contact_prev_commit = false;
 
     this->setNumberOfBoundaryNodes(1);
+    this->initialize(); // Its ok to initialize memory once element is created on remote
 }
 
 
