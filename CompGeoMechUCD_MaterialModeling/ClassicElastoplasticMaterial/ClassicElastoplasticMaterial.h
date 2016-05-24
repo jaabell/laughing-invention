@@ -295,11 +295,11 @@ public:
             exitflag = -1;
             cerr << "NewPisanoLT::setTrialStrainIncr - Integration method not set!\n" ;
             break;
-        case NDMaterialLT_Constitutive_Integration_Method::Euler_One_Step :
-            exitflag = this->Euler_One_Step(strain_increment);
+        case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler :
+            exitflag = this->Forward_Euler(strain_increment);
             break;
-        case NDMaterialLT_Constitutive_Integration_Method::Euler_Multistep :
-            // exitflag = this->Euler_Multistep(strain_increment);
+        case NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler :
+            // exitflag = this->Multistep_Forward_Euler(strain_increment);
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control :
             exitflag = this->Modified_Euler_Error_Control(strain_increment);
@@ -673,7 +673,7 @@ protected:
 private:
 
 
-    int Euler_One_Step(const DTensor2 &strain_incr)
+    int Forward_Euler(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
@@ -782,16 +782,16 @@ private:
             double dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
             dLambda /= den;
 
-            if (dLambda <= 0)
-            {
-                cout << "CEP - dLambda = " << dLambda << " <= 0\n";
-                printTensor("m", m);
-                printTensor("n", n);
-                cout << "xi_star_h_star = " << xi_star_h_star << endl;
-                cout << "den = " << den << endl;
-                printTensor("depsilon_elpl", depsilon_elpl);
-                // return -1;
-            }
+            // if (dLambda <= 0)
+            // {
+            //     cout << "CEP - dLambda = " << dLambda << " <= 0\n";
+            //     printTensor("m", m);
+            //     printTensor("n", n);
+            //     cout << "xi_star_h_star = " << xi_star_h_star << endl;
+            //     cout << "den = " << den << endl;
+            //     printTensor("depsilon_elpl", depsilon_elpl);
+            //     // return -1;
+            // }
 
             //Update the trial plastic strain.
             TrialPlastic_Strain(i, j) += dLambda * m(i, j);

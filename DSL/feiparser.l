@@ -687,8 +687,8 @@ EXP	([Ee][-+]?[0-9]+)
 "output"                             {return token::OUTPUT;}
 
  /* Constitutive algorithm options*/
-"Euler_One_Step"          				          |
-"Euler_Multistep"          						  |
+"Forward_Euler"          				          |
+"Multistep_Forward_Euler"          						  |
 "Modified_Euler_Error_Control"                    |
 "Runge_Kutta_45_Error_Control"                    |
 "Backward_Euler"                     {yylval->ident = new string(yytext); return token::CONSTITUTIVE_ALGNAME;}
