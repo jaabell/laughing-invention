@@ -3,8 +3,8 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:		   Jose Abell, Boris Jeremic
-// DATE:			   Thu 21 May 2015 10:00:12 PM PDT
+// PROGRAMMER:         Jose Abell, Boris Jeremic
+// DATE:               Thu 21 May 2015 10:00:12 PM PDT
 // UPDATE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation
@@ -422,8 +422,11 @@ int FrictionalPenaltyContact::update(void)
     // cout << "Going To Calculate gap \n";
     double epsilon = 0;
     computeGap();
-    Vector del_tC(3);			// vector to hold current total step predicted forces
-    Vector delg(3);				// correct gap fucntion
+    static Vector del_tC(3);            // vector to hold current total step predicted forces
+    static Vector delg(3);              // correct gap fucntion
+
+    del_tC.Zero();
+    delg.Zero();
 
     // /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
     // cout << "************************************ Iteration Steps **********************************\n";
@@ -445,16 +448,16 @@ int FrictionalPenaltyContact::update(void)
         ///////////////////////////////////////////////////////////////
 
         // /////////////////////// Setting elastic Tangent Stiffness ///////////////////////
-        // C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
+        // C->Zero(); (*C)(0, 0) = kt;  (*C)(1, 1) = kt; (*C)(2, 2) = kn;
         // //////////////////// Computing predictive forces (tB) ///////////////////////////
 
         if (is_in_contact_prev)
         {
-            delg = *g - *g_prev;	///// Contact to Contact ////
+            delg = *g - *g_prev;    ///// Contact to Contact ////
         }
         else
         {
-            delg = *g;				///// No Contact to Contact ////
+            delg = *g;              ///// No Contact to Contact ////
             /////////////////////// Setting elastic Tangent Stiffness ///////////////////////
             C->Zero();
             (*C)(0, 0) = kt;
@@ -463,9 +466,10 @@ int FrictionalPenaltyContact::update(void)
             //////////////////// Computing predictive forces (tB) ///////////////////////////
         }
 
-        del_tC.addMatrixVector(1.0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
-        Vector trial_tC(3);
-        trial_tC = *tC + del_tC;				/// Predicted Forces ///
+        del_tC.addMatrixVector(1.0, *C, delg, 1.0);             /// Correct Normal change in Predicted Shear ///
+        static Vector trial_tC(3);
+        trial_tC.Zero();
+        trial_tC = *tC + del_tC;                /// Predicted Forces ///
 
 
         // ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
@@ -485,9 +489,10 @@ int FrictionalPenaltyContact::update(void)
         {
 
             /////////////////////////////////// Finding the Loading direction //////////////////////////////////////////////////
-            Vector eta = delg;
+            static Vector eta = delg;
+            eta.Zero();
             eta(2) = 0;
-            double norm_eta = eta.Norm();				// finding the loading direction
+            double norm_eta = eta.Norm();               // finding the loading direction
             // cout.precision(10);cout << "norm_eta " << norm_eta << endl;
             if (norm_eta > epsilon)
             {
@@ -502,12 +507,13 @@ int FrictionalPenaltyContact::update(void)
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             ////////////////////////////// Calculating the crossing increament force to yield surface /////////////////////////
-            trial_tC = trial_tC - yf_B * eta; 			    					// cross stress or force
+            trial_tC = trial_tC - yf_B * eta;                                   // cross stress or force
             eta = trial_tC;
-            eta(2) = 0;											// eta -> unit plastic flow direction (non-associative)
-            Vector zeta = trial_tC;												// zeta -> unit normal to yield surface
-            del_tC = trial_tC - *tC;											// change in force to cross forces
-            double norm_zeta = sqrt(zeta(0) * zeta(0) + zeta(1) * zeta(1));			// derivate of yield function tangential component
+            eta(2) = 0;                                         // eta -> unit plastic flow direction (non-associative)
+            static Vector zeta = trial_tC;                                             // zeta -> unit normal to yield surface
+            zeta.Zero();
+            del_tC = trial_tC - *tC;                                            // change in force to cross forces
+            double norm_zeta = sqrt(zeta(0) * zeta(0) + zeta(1) * zeta(1));         // derivate of yield function tangential component
             // cout << "*trial_tC " <<  trial_tC;
             // cout.precision(10);;cout << "norm_zeta " << norm_zeta << endl;;
             if (norm_zeta > epsilon)
@@ -516,9 +522,10 @@ int FrictionalPenaltyContact::update(void)
                 eta  = eta / norm_zeta;
                 ///////////////////////////////// Updating the stiffness matrix ///////////////////////////////////////////////////////////
                 zeta(2) = mu;
-                zeta = zeta / zeta.Norm();								// unit normal to yield surface
-                double Beta = 0;     												// Hardening parameter
-                Matrix Cplastic(3, 3);
+                zeta = zeta / zeta.Norm();                              // unit normal to yield surface
+                double Beta = 0;                                                    // Hardening parameter
+                static Matrix Cplastic(3, 3);
+
                 Cplastic(0, 0) = eta(0) * zeta(0) * kt;
                 Cplastic(0, 1) = eta(0) * zeta(1) * kt;
                 Cplastic(0, 2) = eta(0) * zeta(2) * kn;
@@ -542,14 +549,14 @@ int FrictionalPenaltyContact::update(void)
 
             }
 
-            // zeta(2)=mu;	zeta = zeta / zeta.Norm();								// unit normal to yield surface
+            // zeta(2)=mu;  zeta = zeta / zeta.Norm();                              // unit normal to yield surface
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             ///////////////////////////////// Updating the stiffness matrix ///////////////////////////////////////////////////////////
-            // double Beta = 0;     												// Hardening parameter
+            // double Beta = 0;                                                     // Hardening parameter
             // Matrix Cplastic(3,3);
-            // Cplastic(0,0) = eta(0)*zeta(0)*kt; 	Cplastic(0,1) = eta(0)*zeta(1)*kt; 	Cplastic(0,2) = eta(0)*zeta(2)*kn;
-            // Cplastic(1,0) = eta(1)*zeta(0)*kt; 	Cplastic(1,1) = eta(1)*zeta(1)*kt;	Cplastic(1,2) = eta(1)*zeta(2)*kn;
+            // Cplastic(0,0) = eta(0)*zeta(0)*kt;   Cplastic(0,1) = eta(0)*zeta(1)*kt;  Cplastic(0,2) = eta(0)*zeta(2)*kn;
+            // Cplastic(1,0) = eta(1)*zeta(0)*kt;   Cplastic(1,1) = eta(1)*zeta(1)*kt;  Cplastic(1,2) = eta(1)*zeta(2)*kn;
             // *C  = *C - 1.0/( Beta + (eta(0)*zeta(0)+eta(1)*zeta(1)) ) * Cplastic;
             // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -592,8 +599,8 @@ int FrictionalPenaltyContact::update(void)
 
     }
 
-    *tC = *tC + del_tC ;			// correct local force
-    *g_prev = *g;					// defining the previous gap
+    *tC = *tC + del_tC ;            // correct local force
+    *g_prev = *g;                   // defining the previous gap
 
     // /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////
     // cout.precision(10);
@@ -851,7 +858,7 @@ int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
         return -1;
     }
 
-    if (theChannel.sendMatrix( 0, commitTag,	B ) < 0)
+    if (theChannel.sendMatrix( 0, commitTag,    B ) < 0)
     {
         cerr << "WARNING FrictionalPenaltyContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
@@ -950,7 +957,7 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
 
     *g_prev = *g_commit;
 
-    if (theChannel.receiveMatrix( 0, commitTag,	B ) < 0)
+    if (theChannel.receiveMatrix( 0, commitTag, B ) < 0)
     {
         cerr << "WARNING FrictionalPenaltyContact::receiveSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
@@ -1087,8 +1094,9 @@ void FrictionalPenaltyContact::computeGap()
 
     // cout << "started Computing Gap \n";
 
-    Vector d_ij(3);							// Distance between nodes
-    const Vector &xi = nodes[0]->getCrds();	 //Coordinates vector of node i
+    static Vector d_ij(3);                         // Distance between nodes
+    d_ij.Zero();
+    const Vector &xi = nodes[0]->getCrds();  //Coordinates vector of node i
     const Vector &ui = nodes[0]->getTrialDisp(); //Displacement vector of node i
     const Vector &xj = nodes[1]->getCrds(); //Coordinates vector of node j
     const Vector &uj = nodes[1]->getTrialDisp(); //Displacement vector of node j
@@ -1124,29 +1132,29 @@ void FrictionalPenaltyContact::computeGap()
 
     // if (is_in_contact_prev)                    // If element was previously in contact...
     // {
-    // 	if (g_N < epsilon )                    // ... and still is in contact
-    // 	{
-    // 		return;                            // ... proceed
-    // 	}
-    // 	else                                   // and now is no longer in contact
-    // 	{
-    // 		is_in_contact = false;             // set to not in contact
+    //  if (g_N < epsilon )                    // ... and still is in contact
+    //  {
+    //      return;                            // ... proceed
+    //  }
+    //  else                                   // and now is no longer in contact
+    //  {
+    //      is_in_contact = false;             // set to not in contact
 
-    // 		return;
-    // 	}
+    //      return;
+    //  }
     // }
-    // else                                   	   // If element was previously not in contact ...
+    // else                                        // If element was previously not in contact ...
     // {
-    // 	if (g_N <= epsilon)                           // ... and now is in contact
-    // 	{
-    // 		is_in_contact = true;              // ... set to being in contact
-    // 		return;
-    // 	}
-    // 	else                                   // ... and is still not in contact
-    // 	{
-    // 		is_in_contact = false;             // set to not in contact
-    // 		return;
-    // 	}
+    //  if (g_N <= epsilon)                           // ... and now is in contact
+    //  {
+    //      is_in_contact = true;              // ... set to being in contact
+    //      return;
+    //  }
+    //  else                                   // ... and is still not in contact
+    //  {
+    //      is_in_contact = false;             // set to not in contact
+    //      return;
+    //  }
     // }
 
 }
