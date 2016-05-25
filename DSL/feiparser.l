@@ -223,6 +223,8 @@ EXP	([Ee][-+]?[0-9]+)
 "isMass"                    |
 "isLength"                  |
 "isTime"                    |
+"isTime3"                   |
+"isTime5"                   |
 "isArea"                    |
 "isVolume"                  |
 "isForce"                   |
@@ -687,6 +689,9 @@ EXP	([Ee][-+]?[0-9]+)
 "output"                             {return token::OUTPUT;}
 
  /* Constitutive algorithm options*/
+"Forward_Euler_One_Step"          				          |
+"Forward_Euler_Multistep"          						  |
+"Modified_Forward_Euler_Error_Control"                    |
 "Euler_One_Step"          				          |
 "Euler_Multistep"          						  |
 "Modified_Euler_Error_Control"                    |
@@ -708,12 +713,15 @@ EXP	([Ee][-+]?[0-9]+)
 "stress_relative_tolerance" 		  	{return token::stress_relative_tolerance;}
 
  /* Test options */
-"Norm_Displacement_Increment"       |
-"Norm_Unbalance"                    |
-"Energy_Increment"                  {
-										yylval->ident = new string(yytext);
-										return token::TESTNAME;
-									}
+"Norm_Displacement_Increment"                |
+"Norm_Unbalance"                             |
+"Energy_Increment"                           |
+"Relative_Norm_Displacement_Increment"       |
+"Relative_Norm_Unbalance"                    |
+"Relative_Energy_Increment"                  {
+										        yylval->ident = new string(yytext);
+										        return token::TESTNAME;
+									         }
 "tolerance"                         {return token::tolerance;}
 "maximum_iterations"                {return token::maximum_iterations;}
 "verbose_level"                     {return token::verbose_level;}

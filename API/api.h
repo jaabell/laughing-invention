@@ -219,7 +219,9 @@
 #include "SIMULATION/define_convergence_test_energyincrement_for_analysis.h"
 #include "SIMULATION/define_convergence_test_normdisplacementincrement_for_analysis.h"
 #include "SIMULATION/define_convergence_test_normunbalance_for_analysis.h"
-
+#include "SIMULATION/define_convergence_test_RelativeEnergyincrement_for_analysis.h"
+#include "SIMULATION/define_convergence_test_RelativeNormdisplacementincrement_for_analysis.h"
+#include "SIMULATION/define_convergence_test_RelativeNormunbalance_for_analysis.h"
 
 // Integrators
 //--------------------------------------------------------------------------------------------------

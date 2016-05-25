@@ -143,8 +143,8 @@ private:
 
 
     int compute_stress_increment(const DTensor2 &strain_incr, DTensor2& dsigma, DTensor2& depsilon_pl);
-    int Euler_One_Step(const DTensor2 &strain_incr);
-    int Modified_Euler_Error_Control(const DTensor2 &strain_incr);
+    int Forward_Euler_One_Step(const DTensor2 &strain_incr);
+    int Modified_Forward_Euler_Error_Control(const DTensor2 &strain_incr);
 
     double get_distance_coeff(DTensor2 &alpha0);
     double get_distance_coeff_lode(DTensor2 &alpha0);

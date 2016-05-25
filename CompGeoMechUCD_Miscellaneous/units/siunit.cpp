@@ -245,6 +245,20 @@ bool isTime(const SIUnit& u)
             ( u.Getdim_t() == 1 ) );
 }
 
+bool isTime3(const SIUnit& u)
+{
+    return (( u.Getdim_m() == 0 ) &
+            ( u.Getdim_l() == 0 ) &
+            ( u.Getdim_t() == 3 ) );
+}
+
+bool isTime5(const SIUnit& u)
+{
+    return (( u.Getdim_m() == 0 ) &
+            ( u.Getdim_l() == 0 ) &
+            ( u.Getdim_t() == 5 ) );
+}
+
 bool isFrequency(const SIUnit& u)
 {
     return (( u.Getdim_m() == 0 ) &

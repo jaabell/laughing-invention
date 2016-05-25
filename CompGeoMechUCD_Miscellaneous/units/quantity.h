@@ -74,6 +74,8 @@ bool isAdimensional(const Quantity& q);
 bool isMass(const Quantity& q);
 bool isLength(const Quantity& q);
 bool isTime(const Quantity& q);
+bool isTime3(const Quantity& q);
+bool isTime5(const Quantity& q);
 bool isFrequency(const Quantity& q);
 bool isArea(const Quantity& q);
 bool isVolume(const Quantity& q);

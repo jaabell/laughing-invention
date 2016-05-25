@@ -1001,16 +1001,16 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add damping # <.> type [Caughey3rd] with a0 = <time> a1 = <1/time> a2 = <.> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
+	//!FEIDOC add damping # <.> type [Caughey3rd] with a0 = <1/time> a1 = <time> a2 = <time^3> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
 	//WARNING: unit for a2 should be implemented
 	| ADD DAMPING TEXTNUMBER exp TYPE DAMPING_CAUGHEY3 WITH a0 '=' exp a1 '=' exp a2 '=' exp stiffness_to_use '=' stiffness_to_use_opt
 	{
 		args.clear(); signature.clear();
 
 		args.push_back($4); signature.push_back(this_signature("number",   &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("a0",      &isTime));
-		args.push_back($13); signature.push_back(this_signature("a1",      &isFrequency));
-		args.push_back($16); signature.push_back(this_signature("a2",      &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("a0",      &isFrequency));
+		args.push_back($13); signature.push_back(this_signature("a1",      &isTime));
+		args.push_back($16); signature.push_back(this_signature("a2",      &isTime3));
 		args.push_back(new FeiString(*$19)); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
 		$$ = new FeiDslCaller5<int,double,double,double,string>(&add_damping_caughey3rd, args, signature, "add_damping_caughey3rd");
@@ -1027,10 +1027,10 @@ CMD_add
 		args.clear(); signature.clear();
 
 		args.push_back($4); signature.push_back(this_signature("number",   &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("a0",      &isTime));
-		args.push_back($13); signature.push_back(this_signature("a1",      &isFrequency));
-		args.push_back($16); signature.push_back(this_signature("a2",      &isAdimensional));
-		args.push_back($19); signature.push_back(this_signature("a3",      &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("a0",      &isFrequency));
+		args.push_back($13); signature.push_back(this_signature("a1",      &isTime));
+		args.push_back($16); signature.push_back(this_signature("a2",      &isTime3));
+		args.push_back($19); signature.push_back(this_signature("a3",      &isTime5));
 		args.push_back(new FeiString(*$22)); signature.push_back(this_signature("stiffness_to_use",    &isAdimensional));
 
 		$$ = new FeiDslCaller6<int,double,double,double,double,string>(&add_damping_caughey4th, args, signature, "add_damping_caughey4th");
@@ -1493,7 +1493,7 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Euler_One_Step|Euler_Multistep|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
+	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Forward_Euler_One_Step|Forward_Euler_Multistep|Modified_Forward_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
 	| DEFINE NDMaterialLT CONSTITUTIVE INTEGRATION ALGORITHM CONSTITUTIVE_ALGNAME 
 		yield_function_relative_tolerance  '=' exp
 		stress_relative_tolerance '=' exp
@@ -1510,21 +1510,40 @@ CMD_define
 		int method = -1;
 		bool good = false;
 
+		if( algname.compare("Forward_Euler_One_Step") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step;
+			good = true;
+		}
+		if( algname.compare("Forward_Euler_Multistep") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep;
+			good = true;
+		}
+		if( algname.compare("Modified_Forward_Euler_Error_Control") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Forward_Euler_Error_Control;
+			good = true;
+		}
+
+		// make essi back compatible. Keep the old DSLs
 		if( algname.compare("Euler_One_Step") == 0)
 		{
-			method = (int) NDMaterialLT_Constitutive_Integration_Method::Euler_One_Step;
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step;
 			good = true;
 		}
 		if( algname.compare("Euler_Multistep") == 0)
 		{
-			method = (int) NDMaterialLT_Constitutive_Integration_Method::Euler_Multistep;
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep;
 			good = true;
 		}
 		if( algname.compare("Modified_Euler_Error_Control") == 0)
 		{
-			method = (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control;
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Forward_Euler_Error_Control;
 			good = true;
 		}
+
+
 		if( algname.compare("Runge_Kutta_45_Error_Control") == 0)
 		{
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control;
@@ -1606,7 +1625,7 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC define convergence test [Norm_Displacement_Increment] / [Energy_Increment] / [Norm_Unbalance] tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
+	//!FEIDOC define convergence test [Norm_Displacement_Increment] / [Energy_Increment] / [Norm_Unbalance]/[Relative_Norm_Displacement_Increment] / [Relative_Energy_Increment] / [Relative_Norm_Unbalance] tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
 	| DEFINE CONVERGENCE_TEST TESTNAME tolerance '=' exp maximum_iterations '=' exp verbose_level '=' exp
 	{
 		args.clear(); signature.clear();
@@ -1633,6 +1652,38 @@ CMD_define
 			fname = "define_convergence_test_normunbalance_for_analysis";
 			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
 		}
+
+
+		if($3->compare("Relative_Norm_Displacement_Increment") == 0)
+		{
+			f = &define_convergence_test_RelativeNormdisplacementincrement_for_analysis;
+			fname = "define_convergence_test_RelativeNormdisplacementincrement_for_analysis";
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
+		}
+		if($3->compare("Relative_Energy_Increment") == 0)
+		{
+			f = &define_convergence_test_RelativeEnergyincrement_for_analysis;
+			fname = "define_convergence_test_RelativeEnergyincrement_for_analysis";
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
+		}
+		if($3->compare("Relative_Norm_Unbalance") == 0)
+		{
+			f = &define_convergence_test_RelativeNormunbalance_for_analysis;
+			fname = "define_convergence_test_RelativeNormunbalance_for_analysis";
+			args.push_back($6); signature.push_back(this_signature("tolerance", &isAdimensional));
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 		args.push_back($9); signature.push_back(this_signature("maximum_iterations", &isAdimensional));
 		args.push_back($12); signature.push_back(this_signature("verbose_level", &isAdimensional));
 

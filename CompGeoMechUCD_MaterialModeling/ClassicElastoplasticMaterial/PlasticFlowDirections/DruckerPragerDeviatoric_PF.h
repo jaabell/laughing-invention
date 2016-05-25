@@ -65,7 +65,7 @@ public:
     {
         //Identical to derivative of VonMises_YF wrt sigma (a.k.a nij)
         const DTensor2 &alpha = alpha_.getVariableConstReference();
-
+        const double &k = k_.getVariableConstReference();
         //Zero these tensors
         s *= 0;
         result *= 0;
@@ -82,9 +82,13 @@ public:
         }
         else
         {
-            result(i, j) = result(i, j) / den;
+            result(i, j) = 
+                (
+                    result(i, j)+ alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n) )/ 3.0
+                )
+                / den;
         }
-
+        result(i, j) += SQRT_2_over_27 * k * kronecker_delta(i, j);
         // cout << "m = [";
         // for (int ii = 0; ii < 3; ii++)
         //     for (int jj = 0; jj < 3; jj++)

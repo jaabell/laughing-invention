@@ -90,7 +90,7 @@ public:
 
         result(i, j) =
             (
-                (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n))
+                (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n))/3.0
             )
             / den;
         result(i, j) += SQRT_2_over_27 * k * kronecker_delta(i, j);
