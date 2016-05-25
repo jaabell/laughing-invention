@@ -611,6 +611,14 @@ PetscSOE::setSize(Graph &theGraph)
             {
                 o_nnz_global[row] =  PETSCSOE_MIN_ONNZ;
             }
+            if (d_nnz_global[row] > ndofs)
+            {
+                d_nnz_global[row] =  ndofs;
+            }
+            if (o_nnz_global[row] > ndofs)
+            {
+                o_nnz_global[row] =  ndofs;
+            }
         }
 
 

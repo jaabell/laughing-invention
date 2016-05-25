@@ -22,6 +22,8 @@ ADD_SUBDIR(shell_andes)
 ADD_SUBDIR(solid_brick_variable_nodes_8_to_27)
 ADD_SUBDIR(elastic_beam)
 ADD_SUBDIR(rank_one_deficient_elastic_pinned_fixed_beam)
+# ADD_SUBDIR(coupled_u-p-U_bricks_LT)
+
 
 # ADD_SUBDIR(coupled_u-p_large_deformation_brick_8_nodes)
 # ADD_SUBDIR(solid_brick_large_deformation_total_Lagrangian_8_nodes)

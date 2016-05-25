@@ -746,6 +746,7 @@ DomainPartitioner::partition(int numParts)
 
         numTotalSPs++;
     }
+
     cout << "       Total Number of SP constraints = " << numTotalSPs << "\n";
     for (int ipart = 0; ipart < numParts + 1 ; ipart++)
     {
@@ -758,6 +759,7 @@ DomainPartitioner::partition(int numParts)
     cout << "   Sending Multi-Point (MP) constraints!\n";
     SubdomainIter &theSubDomains1 = myDomain->getSubdomains();
     Subdomain *theSubDomain;
+    int countSPs = 0;
     while ((theSubDomain = theSubDomains1()) != 0)
     {
         MP_ConstraintIter &theMPs = myDomain->getMPs();
@@ -765,8 +767,10 @@ DomainPartitioner::partition(int numParts)
         while ((mpPtr = theMPs()) != 0)
         {
             theSubDomain->addMP_Constraint(mpPtr);
+            countSPs++;
         }
     }
+    cout << "      Sent " << countSPs / numParts << " MP constraints. \n";
     cout << "   Done sending Multi-Point constraints!\n";
 
 

@@ -790,8 +790,7 @@ Domain::addElement( Element *element )
     if ( result == true )
     {
         element->setDomain( this );
-        element->update();   // Jose asks: Why is this necessary?
-                             // sumeet replies: It is needed for contact element.
+        // element->update();   // Jose asks: Why is this necessary?
 
         // finally check the ele has correct number of dof
 #ifdef _G3DEBUG
@@ -1367,8 +1366,8 @@ Domain::addNodalLoad( NodalLoad *load, int pattern )
     if ( res == 0 )
     {
         cerr << "Domain::addNodalLoad() HI - no node with tag " << nodTag <<
-             "exits in  the model, not adding the nodal load"  << endln;
-        //  "exits in  the model, not adding the nodal load"  << *load << endln;
+             "exits in  the model, not adding the nodal load"  << endl;
+        //  "exits in  the model, not adding the nodal load"  << *load << endl;
         return false;
     }
 
@@ -1378,8 +1377,8 @@ Domain::addNodalLoad( NodalLoad *load, int pattern )
     if ( thePattern == 0 )
     {
         cerr << "Domain::addNodalLoad() - no pattern with tag" <<
-             pattern << "in  the model, not adding the nodal load" << endln;
-        //  pattern << "in  the model, not adding the nodal load"  << *load << endln;
+             pattern << "in  the model, not adding the nodal load" << endl;
+        //  pattern << "in  the model, not adding the nodal load"  << *load << endl;
 
         return false;
     }
@@ -1390,8 +1389,8 @@ Domain::addNodalLoad( NodalLoad *load, int pattern )
     if ( result == false )
     {
         cerr << "Domain::addNodalLoad() - pattern with tag" <<
-             pattern << "could not add the load" << endln;
-        //  pattern << "could not add the load" << *load << endln;
+             pattern << "could not add the load" << endl;
+        //  pattern << "could not add the load" << *load << endl;
 
         return false;
     }
@@ -1425,8 +1424,8 @@ Domain::addElementalLoad( ElementalLoad *load, int pattern )
         if ( thePattern == 0 )
         {
             cerr << "Domain::addNodalLoad() - no pattern with tag " << pattern <<
-                 "exits in  the model, not adding the ele load " << endln;
-            //  "exits in  the model, not adding the ele load " << *load << endln;
+                 "exits in  the model, not adding the ele load " << endl;
+            //  "exits in  the model, not adding the ele load " << *load << endl;
 
             return false;
         }
@@ -1437,8 +1436,8 @@ Domain::addElementalLoad( ElementalLoad *load, int pattern )
         if ( result == false )
         {
             cerr << "Domain::addNodalLoad() - no pattern with tag" <<
-                 pattern << "in  the model, not adding the ele load" << endln;
-            //  pattern << "in  the model, not adding the ele load" << *load << endln;
+                 pattern << "in  the model, not adding the ele load" << endl;
+            //  pattern << "in  the model, not adding the ele load" << *load << endl;
             return false;
         }
 
@@ -1857,6 +1856,7 @@ Domain::removeLoadPattern( int tag )
     // if not there return 0
     if ( obj == 0 )
     {
+        cout << "Domain :: could not remove load pattern with tag " << tag << ".\n";
         return 0;
     }
 
@@ -3121,7 +3121,7 @@ Domain::Print( ostream & s, int flag )
 
     s << "Current Domain Information\n";
     s << "\tCurrent Time: " << currentTime;
-    s << "\ntCommitted Time: " << committedTime << endln;
+    s << "\ntCommitted Time: " << committedTime << endl;
 
     s << "\nNODE DATA: NumNodes: " << theNodes->getNumComponents() << "\n";
     //theNodes->Print(s, flag);
@@ -4000,7 +4000,7 @@ Domain::receiveSelf( int cTag, Channel & theChannel, FEM_ObjectBroker & theBroke
 
                 if ( theNode == 0 )
                 {
-                    cerr << "Domain::recv - cannot create node with classTag " << classTag << endln;
+                    cerr << "Domain::recv - cannot create node with classTag " << classTag << endl;
                     return -2;
                 }
 
@@ -4052,7 +4052,7 @@ Domain::receiveSelf( int cTag, Channel & theChannel, FEM_ObjectBroker & theBroke
 
                 if ( theEle == 0 )
                 {
-                    cerr << "Domain::recv - cannot create element with classTag " << classTag << endln;
+                    cerr << "Domain::recv - cannot create element with classTag " << classTag << endl;
                     return -2;
                 }
 
@@ -4103,7 +4103,7 @@ Domain::receiveSelf( int cTag, Channel & theChannel, FEM_ObjectBroker & theBroke
 
                 if ( theSP == 0 )
                 {
-                    cerr << "Domain::recv - cannot create SP_Constraint with classTag " << classTag << endln;
+                    cerr << "Domain::recv - cannot create SP_Constraint with classTag " << classTag << endl;
                     return -2;
                 }
 
@@ -4155,7 +4155,7 @@ Domain::receiveSelf( int cTag, Channel & theChannel, FEM_ObjectBroker & theBroke
 
                 if ( theMP == 0 )
                 {
-                    cerr << "Domain::recv - cannot create MP_Constraint with classTag " << classTag << endln;
+                    cerr << "Domain::recv - cannot create MP_Constraint with classTag " << classTag << endl;
                     return -2;
                 }
 
@@ -4206,7 +4206,7 @@ Domain::receiveSelf( int cTag, Channel & theChannel, FEM_ObjectBroker & theBroke
 
                 if ( theLP == 0 )
                 {
-                    cerr << "Domain::recv - cannot create MP_Constraint with classTag  " << classTag << endln;
+                    cerr << "Domain::recv - cannot create MP_Constraint with classTag  " << classTag << endl;
                     return -2;
                 }
 
@@ -4411,7 +4411,7 @@ int Domain::CheckMesh( const char *check_mesh_file )
     if ( checkmesh_file.bad() )
     {
         cerr << "WARNING - Domain::CheckMesh()";
-        cerr << " - could not open file " << checkmesh_file << endln;
+        cerr << " - could not open file " << check_mesh_file << endl;
         exit( 2 );
     }
 

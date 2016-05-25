@@ -1,0 +1,28 @@
+#Parallel libs
+petsc -p ../RealESSI_Dependencies/petsc-3.6.0/include
+#petsc -i ../RealESSI_Dependencies/petsc-3.6.0/arch-linux2-c-opt/include
+superlu_4.3 -p
+superlu_dist_4.0 -p
+spai -p
+scalapack -p
+flapack -p
+fblas -p
+parmetis -p
+hdf5 -p ../RealESSI_Dependencies/hdf5_parallel
+#Sequential
+hdf5 -s ../RealESSI_Dependencies/hdf5_sequential
+#Both
+lapack -b
+arpack -b
+umfpack -b
+amd -b
+cholmod -b
+colamd -b
+camd -b
+ccolamd -b
+cblas -b
+f77blas -b
+atlas -b
+suitesparseconfig -b
+metis -b
+metis -i

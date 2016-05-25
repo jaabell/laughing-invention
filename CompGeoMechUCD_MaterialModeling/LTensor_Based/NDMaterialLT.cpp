@@ -348,9 +348,9 @@ const char *NDMaterialLT::getType(void) const
 bool NDMaterialLT::set_constitutive_integration_method(int method, double f_relative_tol, double stress_relative_tol, int n_max_iterations)
 {
     if ( method == (int) NDMaterialLT_Constitutive_Integration_Method::Not_Set
-            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step
-            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep
-            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Forward_Euler_Error_Control
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler)
     {

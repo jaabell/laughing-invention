@@ -135,40 +135,40 @@ UmfpackGenLinSolver::solve(void)
     //**************************************************************************
     // Output the stiffness matrix into a different file for each step.
     // Must uncomment some headers above...
-    //    static unsigned int times_called = 0;
-    //    std::stringstream ss(std::stringstream::in | std::stringstream::out);
-    //    ss << "soe_step_" << ++times_called << ".out"; //
-    //    std::string fname(ss.str());
-    //    std::fstream fid(fname.c_str(), std::ios::out);
-    //
-    //    fid << "size of Ai is: " << Aisize2 << endl;
-    //    fid << "size of Ap is: " << Apsize2 << endl;
-    //    fid << "size of A is: " << Asize2 << endl;
-    //    fid << "size of B is: " << Bsize2 << endl;
-    //
-    //    cout.precision(dbl::digits10);
-    //
-    //    for (int w=0; w<Apsize2; w++)
-    //    {
-    //        fid << "Ap[" << w << "]" << "=" << (Ap)[w] << endl;
-    //    }
-    //
-    //    for (int w=0; w<Aisize2; w++)
-    //    {
-    //        fid << "Ai[" << w << "]" << "=" << (Ai)[w] << endl;
-    //    }
-    //
-    //    for (int w=0; w<Asize2; w++)
-    //    {
-    //        fid << "A[" << w << "]" << "=" << setprecision(dbl::digits10) << fixed <<  (Aptr)[w] << endl;
-    //    }
-    //
-    //    for (int w=0; w<Bsize2; w++)
-    //    {
-    //        fid << "B[" << w << "]" << "=" << setprecision(dbl::digits10) << fixed <<  (Bptr)[w] << endl;
-    //    }
-    //
-    //    fid.close();
+    // static unsigned int times_called = 0;
+    // std::stringstream ss(std::stringstream::in | std::stringstream::out);
+    // ss << "soe_step_" << ++times_called << ".out"; //
+    // std::string fname(ss.str());
+    // std::fstream fid(fname.c_str(), std::ios::out);
+
+    // fid << "size of Ai is: " << Aisize2 << endl;
+    // fid << "size of Ap is: " << Apsize2 << endl;
+    // fid << "size of A is: " << Asize2 << endl;
+    // fid << "size of B is: " << Bsize2 << endl;
+
+    // cout.precision(dbl::digits10);
+
+    // for (int w = 0; w < Apsize2; w++)
+    // {
+    //     fid << "Ap[" << w << "]" << "=" << (Ap)[w] << endl;
+    // }
+
+    // for (int w = 0; w < Aisize2; w++)
+    // {
+    //     fid << "Ai[" << w << "]" << "=" << (Ai)[w] << endl;
+    // }
+
+    // for (int w = 0; w < Asize2; w++)
+    // {
+    //     fid << "A[" << w << "]" << "=" << setprecision(dbl::digits10) << fixed <<  (Aptr)[w] << endl;
+    // }
+
+    // for (int w = 0; w < Bsize2; w++)
+    // {
+    //     fid << "B[" << w << "]" << "=" << setprecision(dbl::digits10) << fixed <<  (Bptr)[w] << endl;
+    // }
+
+    // fid.close();
     //**************************************************************************
 
 

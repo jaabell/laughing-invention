@@ -34,9 +34,9 @@ Just replace D for I or F.
 enum struct NDMaterialLT_Constitutive_Integration_Method : int
 {
     Not_Set,
-    Forward_Euler_One_Step,
-    Forward_Euler_Multistep,
-    Modified_Forward_Euler_Error_Control,
+    Forward_Euler,
+    Multistep_Forward_Euler,
+    Modified_Euler_Error_Control,
     Runge_Kutta_45_Error_Control,
     Backward_Euler
 };

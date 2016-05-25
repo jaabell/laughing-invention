@@ -58,6 +58,10 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
 
 }
 
+// feiparser.tab.cpp:(.text+0xabcd): undefined reference to
+// CMakeFiles/essi.dir/DSL/feiparse`add_element_rank_one_deficient_elastic_pinned_fixed_beam(int, double, double, double, double, double, double, int, int, double,      double, double, double, double, double, double, double, double, double)':
+//rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_fixed_beam(int, double, double, double, double, double, double, int, int, double, int, double, double, double, double, double, double, double, double, double)'
+//rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_fixed_beam(int, double, double, double, double, double, double, int, int, double, int, double, double, double, double, double, double, double, double, double)
 
 rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_fixed_beam(int tag, double a, double e, double g,
         double jx, double iy, double iz, int Nd1, int Nd2,

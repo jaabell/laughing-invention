@@ -93,23 +93,45 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     list(APPEND NUMERIC_LIBS "superlu_4.3")
     list(APPEND NUMERIC_LIBS "superlu_dist_4.0")
     list(APPEND NUMERIC_LIBS "spai")
-    list(APPEND NUMERIC_LIBS "scalapack")
-    list(APPEND NUMERIC_LIBS "flapack")
-    list(APPEND NUMERIC_LIBS "fblas")
+
+    if(PETSC_HAS_MUMPS)
+        list(APPEND NUMERIC_LIBS "dmumps")
+        # list(APPEND NUMERIC_LIBS "cmumps")
+        # list(APPEND NUMERIC_LIBS "smumps")
+        # list(APPEND NUMERIC_LIBS "zmumps")
+        list(APPEND NUMERIC_LIBS "mumps_common")
+        list(APPEND NUMERIC_LIBS "ptesmumps")
+        
+        list(APPEND NUMERIC_LIBS "ptscotcherr")
+        list(APPEND NUMERIC_LIBS "ptscotcherrexit")
+        list(APPEND NUMERIC_LIBS "ptscotchparmetis")
+        list(APPEND NUMERIC_LIBS "ptscotch")
+        list(APPEND NUMERIC_LIBS "scotcherr")
+        list(APPEND NUMERIC_LIBS "scotcherrexit")
+        list(APPEND NUMERIC_LIBS "scotch")
+        list(APPEND NUMERIC_LIBS "pord")
+    endif(PETSC_HAS_MUMPS)
+    
     list(APPEND NUMERIC_LIBS "parmetis")
     list(APPEND NUMERIC_LIBS "metis")
     
-    list(APPEND NUMERIC_LIBS "lapack")
-    list(APPEND NUMERIC_LIBS "arpack")
+    list(APPEND NUMERIC_LIBS "scalapack")
     list(APPEND NUMERIC_LIBS "umfpack")
     list(APPEND NUMERIC_LIBS "amd")
     list(APPEND NUMERIC_LIBS "cholmod")
     list(APPEND NUMERIC_LIBS "colamd")
     list(APPEND NUMERIC_LIBS "camd")
     list(APPEND NUMERIC_LIBS "ccolamd")
-    list(APPEND NUMERIC_LIBS "cblas")
-    list(APPEND NUMERIC_LIBS "f77blas")
-    list(APPEND NUMERIC_LIBS "atlas")
+    list(APPEND NUMERIC_LIBS "arpack")
+    if(NOT NO_BLASLAPACK)
+        message(STATUS "Requiring BLAS and LAPACK libs")
+        list(APPEND NUMERIC_LIBS "flapack")
+        list(APPEND NUMERIC_LIBS "fblas")
+        list(APPEND NUMERIC_LIBS "lapack")
+        list(APPEND NUMERIC_LIBS "cblas")
+        list(APPEND NUMERIC_LIBS "f77blas")
+        list(APPEND NUMERIC_LIBS "atlas")
+    endif(NOT NO_BLASLAPACK)
     list(APPEND NUMERIC_LIBS "suitesparseconfig")
 
     # IMPORT_LIB("${RealESSI_DEP}/hdf5_parallel/lib" hdf5)
@@ -123,11 +145,17 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     SYSTEM_LIBS("ieee" MACHINE_LIBS)
     SYSTEM_LIBS("c" MACHINE_LIBS)
     SYSTEM_LIBS("rt" MACHINE_LIBS)
+    # SYSTEM_LIBS("mpif90" MACHINE_LIBS)   #Needed for MUMPS
+
+    if(PETSC_HAS_MUMPS)
+        SYSTEM_LIBS("mpi_f77" MACHINE_LIBS)   #Needed for MUMPS
+    endif(PETSC_HAS_MUMPS)
 
 else()  # sequential
     message(STATUS "YES! SEQUENTIAL")
     list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
     
+
     list(APPEND NUMERIC_LIBS "lapack")
     list(APPEND NUMERIC_LIBS "arpack")
     list(APPEND NUMERIC_LIBS "umfpack")
@@ -151,6 +179,9 @@ else()  # sequential
 endif()
 
 
+if(NOT $ENV{BOOST_ROOT} STREQUAL "")
+    list(APPEND EXT_INCLUDE "$ENV{BOOST_ROOT}/include")
+endif()
 
 
 ## Common flags for goth debug and no debug
@@ -162,6 +193,7 @@ set(COMPILER_FLAGS "${COMPILER_FLAGS} -DBrzi_nDarray_val")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -std=c++11")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -Wno-write-strings")
 # set(COMPILER_FLAGS "${COMPILER_FLAGS} -fdiagnostics-color=auto ")
+message(STATUS "Debug mode='${DEBUG_MODE}'")
 if(${DEBUG_MODE} STREQUAL "OPTIMIZED")
     set(COMPILER_FLAGS "${COMPILER_FLAGS} ${LTO_FLAGS}")
     set(COMPILER_FLAGS "${COMPILER_FLAGS} -O3")
@@ -191,7 +223,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}" )
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LINKER_FLAGS}" )
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE ON)
-set(CMAKE_AR "gcc-ar")
+# set(CMAKE_AR "gcc-ar")
 # Set the location where all the libraries will be created
 set(LIBRARY_OUTPUT_PATH ${ESSI_LIB})
 

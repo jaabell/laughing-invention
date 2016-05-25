@@ -109,10 +109,10 @@ Vertex::getTmp(void) const
 }
 
 int
-Vertex::addEdge(int otherTag)
+Vertex::addEdge(int otherTag, bool allowself)
 {
     // don't allow itself to be added
-    if (otherTag == this->getTag())
+    if (otherTag == this->getTag() && not allowself)
     {
         return 0;
     }

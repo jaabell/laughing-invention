@@ -4,7 +4,8 @@
 cmake_minimum_required(VERSION 2.8.9)
 project (RealESSI)
 #Generates a Release version
-set(CMAKE_BUILD_TYPE Release)
+# set(CMAKE_BUILD_TYPE Release)
+
 # set version number
 set(RealESSI_VERSION_MAJOR 1)
 set(RealESSI_VERSION_MINOR 0)
@@ -27,6 +28,10 @@ set(EXT_INCLUDE "")         # List of external
 set(ESSI_LIBS "")           # List of internal libs to be included
 set(NUMERIC_LIBS "")        # List of external libs to be included
 set(MACHINE_LIBS "")        # List of standard libs to be included
+
+set(NO_BLASLAPACK FALSE CACHE BOOL "TRUE if BLAS and LAPACK are provided some other means. (eg. directly in the compiler wrapper)")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
+set(PETSC_HAS_MUMPS FALSE CACHE BOOL "TRUE if PETSc library was configured to use the MUMPS solver")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
+message(STATUS "NO_BLASLAPACK=${NO_BLASLAPACK}")
 
 set(IS_PARALLEL OFF)
 set(PROGRAMMING_FLAG  "")

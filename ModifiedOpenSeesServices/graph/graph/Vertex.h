@@ -65,7 +65,7 @@ public:
     virtual int getColor(void) const;
     virtual int getTmp(void) const;
 
-    virtual int addEdge(int otherTag);
+    virtual int addEdge(int otherTag, bool allowSelf = false);
     virtual int getDegree(void) const;
     virtual const ID &getAdjacency(void) const;
 

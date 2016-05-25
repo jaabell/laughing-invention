@@ -1894,6 +1894,7 @@ namespace yy {
 		int method = -1;
 		bool good = false;
 
+<<<<<<< HEAD
 		if( algname.compare("Forward_Euler_One_Step") == 0)
 		{
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step;
@@ -1914,11 +1915,20 @@ namespace yy {
 		if( algname.compare("Euler_One_Step") == 0)
 		{
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step;
+=======
+		if( algname.compare("Forward_Euler") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler;
+>>>>>>> master
 			good = true;
 		}
-		if( algname.compare("Euler_Multistep") == 0)
+		if( algname.compare("Multistep_Forward_Euler") == 0)
 		{
+<<<<<<< HEAD
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep;
+=======
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler;
+>>>>>>> master
 			good = true;
 		}
 		if( algname.compare("Modified_Euler_Error_Control") == 0)

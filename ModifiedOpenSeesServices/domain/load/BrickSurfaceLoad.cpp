@@ -248,7 +248,7 @@ BrickSurfaceLoad::getData(int& type, double loadFactor)
 int
 BrickSurfaceLoad::sendSelf(int commitTag, Channel& theChannel)
 {
-    cerr << "BrickSurfaceLoad::sendSelf() \n";
+    // cerr << "BrickSurfaceLoad::sendSelf() \n";
     this->ElementalLoad::sendSelf(commitTag, theChannel);
 
     static ID nodes(9);
@@ -289,12 +289,12 @@ BrickSurfaceLoad::sendSelf(int commitTag, Channel& theChannel)
         cerr << "BrickSurfaceLoad::sendSelf() - magnitudes\n";
         return result;
     }
-    cout << "Send = ";
-    for (int i = 0; i < 9; i++)
-    {
-        cout << nodes(i) << "(" << magnitudes(i) << ") ";
-    }
-    cout << endl;
+    // cout << "Send = ";
+    // for (int i = 0; i < 9; i++)
+    // {
+    //     cout << nodes(i) << "(" << magnitudes(i) << ") ";
+    // }
+    // cout << endl;
 
     return 0;
 }
@@ -303,13 +303,13 @@ int
 BrickSurfaceLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBroker& theBroker)
 {
 
-    cout << "BrickSurfaceLoad::receiveSelf(...)" << endl;
+    // cout << "BrickSurfaceLoad::receiveSelf(...)" << endl;
     this->ElementalLoad::receiveSelf(commitTag, theChannel, theBroker);
 
     const ID & elementtags = this->getElementTags();
 
     int nelem = elementtags.Size();
-    cerr << "BrickSurfaceLoad::receiveSelf() - nelem = " << nelem << " \n";
+    // cerr << "BrickSurfaceLoad::receiveSelf() - nelem = " << nelem << " \n";
 
     if (nelem = 4)
     {
@@ -363,12 +363,12 @@ BrickSurfaceLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBro
     surface_load_magnitude8 = magnitudes(7);
     surface_load_magnitude9 = magnitudes(8);
 
-    cout << "Receive = ";
-    for (int i = 0; i < 9; i++)
-    {
-        cout << nodes(i) << "(" << magnitudes(i) << ") ";
-    }
-    cout << endl;
+    // cout << "Receive = ";
+    // for (int i = 0; i < 9; i++)
+    // {
+    //     cout << nodes(i) << "(" << magnitudes(i) << ") ";
+    // }
+    // cout << endl;
 
     return 0;
 

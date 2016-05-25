@@ -295,14 +295,14 @@ public:
             exitflag = -1;
             cerr << "NewPisanoLT::setTrialStrainIncr - Integration method not set!\n" ;
             break;
-        case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_One_Step :
-            exitflag = this->Forward_Euler_One_Step(strain_increment);
+        case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler :
+            exitflag = this->Forward_Euler(strain_increment);
             break;
-        case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Multistep :
-            // exitflag = this->Forward_Euler_Multistep(strain_increment);
+        case NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler :
+            exitflag = this->Multistep_Forward_Euler(strain_increment);
             break;
-        case NDMaterialLT_Constitutive_Integration_Method::Modified_Forward_Euler_Error_Control :
-            exitflag = this->Modified_Forward_Euler_Error_Control(strain_increment);
+        case NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control :
+            exitflag = this->Modified_Euler_Error_Control(strain_increment);
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control :
             // exitflag = this->Runge_Kutta_45_Error_Control(strain_increment);;
@@ -673,7 +673,7 @@ protected:
 private:
 
 
-    int Forward_Euler_One_Step(const DTensor2 &strain_incr)
+    int Forward_Euler(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
@@ -782,16 +782,16 @@ private:
             double dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
             dLambda /= den;
 
-            if (dLambda <= 0)
-            {
-                cout << "CEP - dLambda = " << dLambda << " <= 0\n";
-                printTensor("m", m);
-                printTensor("n", n);
-                cout << "xi_star_h_star = " << xi_star_h_star << endl;
-                cout << "den = " << den << endl;
-                printTensor("depsilon_elpl", depsilon_elpl);
-                // return -1;
-            }
+            // if (dLambda <= 0)
+            // {
+            //     cout << "CEP - dLambda = " << dLambda << " <= 0\n";
+            //     printTensor("m", m);
+            //     printTensor("n", n);
+            //     cout << "xi_star_h_star = " << xi_star_h_star << endl;
+            //     cout << "den = " << den << endl;
+            //     printTensor("depsilon_elpl", depsilon_elpl);
+            //     // return -1;
+            // }
 
             //Update the trial plastic strain.
             TrialPlastic_Strain(i, j) += dLambda * m(i, j);
@@ -863,7 +863,170 @@ private:
         return errorcode;
     }
 
-    int Modified_Forward_Euler_Error_Control(const DTensor2 &strain_incr)
+
+
+    int Multistep_Forward_Euler(const DTensor2 &strain_incr)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        int errorcode = 0;
+
+        static DTensor2 depsilon(3, 3, 0);
+        depsilon *= 0;
+        depsilon(i, j) = strain_incr(i, j);
+        const DTensor2& sigma = CommitStress;
+        const DTensor2& epsilon = CommitStrain;
+        vars.revert();
+        vars.commit_tmp();
+
+        dsigma *= 0;//Zero-out the stress increment tensor
+        intersection_stress *= 0; //Zero-out these intersection stress and strain tensors
+        intersection_strain *= 0;
+
+        DTensor4& Eelastic = et(sigma);
+        Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
+
+        for (int ii = 0; ii < 3; ii++)
+        {
+            for (int jj = 0; jj < 3; jj++)
+            {
+                for (int kk = 0; kk < 3; kk++)
+                {
+                    for (int ll = 0; ll < 3; ll++)
+                    {
+                        dsigma(ii, jj) += Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
+                    }
+                }
+            }
+        }
+
+        TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
+        TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
+        TrialPlastic_Strain(i, j) = CommitPlastic_Strain(i, j);
+
+        double yf_val_start = yf(sigma);
+        double yf_val_end = yf(TrialStress);
+
+        DTensor2& start_stress = CommitStress;
+        DTensor2& end_stress = TrialStress;
+
+        intersection_stress(i, j) = start_stress(i, j);
+
+        bool returns = false;
+
+        int retval = pre_integration_callback_(depsilon, dsigma, TrialStress, Stiffness, yf_val_start, yf_val_end,  returns);
+
+        if (returns)
+        {
+            return retval;
+        }
+
+        if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
+        {
+            DTensor4& Eelastic = et(TrialStress);
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
+        }
+        else  //Plasticity
+        {
+            depsilon_elpl(i, j) = depsilon(i, j);
+            if (yf_val_start < 0)
+            {
+                double intersection_factor = zbrentstress( start_stress, end_stress, 0.0, 1.0, TOLERANCE1 );
+                // cout << " intersection_factor = " << intersection_factor << endl;
+                intersection_stress(i, j) = start_stress(i, j) * (1 - intersection_factor) + end_stress(i, j) * intersection_factor;
+                intersection_strain(i, j) = epsilon(i, j)  + depsilon(i, j) * intersection_factor;
+                depsilon_elpl(i, j) = (1 - intersection_factor) * depsilon(i, j);
+            }
+
+            TrialStress(i, j) = intersection_stress(i, j);
+
+
+            Eelastic = et(TrialStress);
+            int Niter = this-> n_max_iterations;
+            for (int iteration = 0; iteration < Niter; iteration++)
+            {
+                TrialStress(i, j)  += Eelastic(i, j, k, l) * depsilon_elpl(k, l) / Niter;
+
+                //Compute normal to YF (n) and Plastic Flow direction (m)
+                const DTensor2& n = yf.df_dsigma_ij(intersection_stress);
+                const DTensor2& m = pf(depsilon_elpl, intersection_stress);
+
+                double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  intersection_stress);
+                double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+
+                //Compute the plastic multiplier
+                if (den == 0)
+                {
+                    cout << "CEP - den = 0\n";
+                    printTensor("m", m);
+                    printTensor("n", n);
+                    cout << "xi_star_h_star" << xi_star_h_star << endl;
+                    cout << "den" << den << endl;
+                    printTensor("depsilon_elpl", depsilon_elpl);
+                    return -1;
+                }
+                double dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
+                dLambda /= den;
+
+                //Update the trial plastic strain.
+                TrialPlastic_Strain(i, j) += dLambda * m(i, j);
+
+                //Correct the trial stress
+                TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
+
+                vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
+                vars.commit_tmp();
+
+
+                //Stress correction back to the yield surface
+                double yc = yf(TrialStress);
+                int ys_correction_count = 0;
+
+                while (yc > this-> f_relative_tol && ys_correction_count < this-> n_max_iterations)
+                {
+                    const DTensor2& n = yf.df_dsigma_ij(TrialStress);
+                    const DTensor2& m = pf(depsilon_elpl, TrialStress);
+                    double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s);
+                    double dLambda_correction = yc / den;
+                    TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
+                    yc = yf(TrialStress);
+                    ys_correction_count++;
+                }
+
+                const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
+                const DTensor2& mf = pf(depsilon_elpl, TrialStress);
+                xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, mf,  TrialStress);
+                double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
+                Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denf;
+
+                double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
+                if (norm_trial_stress != norm_trial_stress || denf <= 0 ) //check for nan
+                {
+                    cout << "Numeric error!\n";
+                    printTensor("TrialStress = " , TrialStress);
+                    printTensor("CommitStress = " , CommitStress);
+                    printTensor("depsilon = " , depsilon);
+                    printTensor("intersection_stress = " , intersection_stress);
+                    printTensor4("Eelastic = " , Eelastic);
+                    printTensor4("Stiffness = " , Stiffness);
+                    cout << "yf_val_start = " << yf_val_start << endl;
+                    cout << "yf_val_end = " << yf_val_end << endl;
+                    printTensor("n = " , n );
+                    printTensor("m = " , m );
+                    cout << "xi_star_h_star  = " << xi_star_h_star << endl;
+                    cout << "den = " << den << endl;
+                    cout << "dLambda = " << dLambda << endl;
+
+                    errorcode = -1;
+                }
+            }
+
+        } // end plasticity
+
+        return errorcode;
+    }
+
+
+    int Modified_Euler_Error_Control(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;  // Brings indexes i,j,k,l,m,n,p,q into current scope
 

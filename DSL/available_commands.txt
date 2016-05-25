@@ -84,7 +84,7 @@ define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Un
 define dynamic integrator Hilber_Hughes_Taylor with alpha = <.>;
 define dynamic integrator Newmark with gamma = <.> beta = <.>;
 define load factor increment <.>;
-define NDMaterialLT constitutive integration algorithm Euler_One_Step|Euler_Multistep|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
+define NDMaterialLT constitutive integration algorithm Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
 define solver ProfileSPD / UMFPack;
 define static integrator displacement_control using node # <.> dof DOFTYPE increment <length>;
 disable element # <.> output;

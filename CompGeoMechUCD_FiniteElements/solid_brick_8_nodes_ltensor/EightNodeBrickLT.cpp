@@ -37,6 +37,7 @@
 #include <LTensorDisplay.h>
 #include <HDF5_Channel.h>
 #include <ESSITimer.h>
+
 #include <unistd.h>
 
 
@@ -114,25 +115,18 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 
     is_mass_computed = false;
 
-    connectedExternalNodes(0) = node_numb_1;
-    connectedExternalNodes(1) = node_numb_2;
-    connectedExternalNodes(2) = node_numb_3;
-    connectedExternalNodes(3) = node_numb_4;
-    connectedExternalNodes(4) = node_numb_5;
-    connectedExternalNodes(5) = node_numb_6;
-    connectedExternalNodes(6) = node_numb_7;
-    connectedExternalNodes(7) = node_numb_8;
+    connectedExternalNodes( 0 ) = node_numb_1;
+    connectedExternalNodes( 1 ) = node_numb_2;
+    connectedExternalNodes( 2 ) = node_numb_3;
+    connectedExternalNodes( 3 ) = node_numb_4;
 
-    Global_to_Local_Node_Mapping[node_numb_1]=0;
-    Global_to_Local_Node_Mapping[node_numb_2]=1;
-    Global_to_Local_Node_Mapping[node_numb_3]=2;
-    Global_to_Local_Node_Mapping[node_numb_4]=3;
-    Global_to_Local_Node_Mapping[node_numb_5]=4;
-    Global_to_Local_Node_Mapping[node_numb_6]=5;
-    Global_to_Local_Node_Mapping[node_numb_7]=6;
-    Global_to_Local_Node_Mapping[node_numb_8]=7;   
+    connectedExternalNodes( 4 ) = node_numb_5;
+    connectedExternalNodes( 5 ) = node_numb_6;
+    connectedExternalNodes( 6 ) = node_numb_7;
+    connectedExternalNodes( 7 ) = node_numb_8;
 
     nodes_in_brick = 8;
+
 
     for ( int i = 0; i < 8; i++ )
     {
@@ -389,6 +383,8 @@ const DTensor2 &EightNodeBrickLT::incr_disp( void ) const
     const Vector &IncrDis6 = theNodes[5]->getIncrDeltaDisp();
     const Vector &IncrDis7 = theNodes[6]->getIncrDeltaDisp();
     const Vector &IncrDis8 = theNodes[7]->getIncrDeltaDisp();
+
+
 
     increment_disp( 0, 0 ) = IncrDis1( 0 );
     increment_disp( 0, 1 ) = IncrDis1( 1 );
@@ -920,6 +916,18 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
         }
     }
 
+    // for (int ii = 0; ii < 24; ii++)
+    // {
+    //     if (K(ii, ii) <= 0)
+    //     {
+    //         cerr << "Element " << this->getTag() << " - Negative Diagonal at i = " << ii << endl;
+
+    //         cout << "K = " << K << endl;
+
+    //         exit(-1);
+    //     }
+    // }
+
     return K;
 }
 
@@ -1081,96 +1089,87 @@ const Vector &EightNodeBrickLT::getBodyForce( double loadFactor, const Vector &d
 const Vector &EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector &data )
 {
 
-    map<int,int> local_nodes_map; int local_nodes[4];
-  
-    /////////////////////////////////////////// Edited by Sumeet 30/03/2016 //////////////////////////////
-    // checking if node exists in the element
-    for ( int i =0; i<4 ;i++){
-        std::map<int,int>::iterator it;
-        it=Global_to_Local_Node_Mapping.find(data(i));
-        if (it == Global_to_Local_Node_Mapping.end()){
-            cerr << "\nERROR: Node " <<  data(i) << " defined for the BrickSurfaceLoad does not belong to element \n" ;
+    int node_exist = 0;
+    Vector node_local( 4 );
+
+    // check if the nodes of the surface belong to the element
+    for ( int i = 0; i < 4; i++ )
+    {
+
+        for ( int j = 0; j < 8; j++ )
+        {
+            if ( data( i ) == connectedExternalNodes( j ) )
+            {
+                node_exist = 1;
+                node_local( i ) = j;
+                break;
+            }
+        }
+
+        if ( node_exist != 1 )
+        {
+            cerr << "\nERROR: Node " << data( i ) << " defined for the BrickSurfaceLoad does not belong to element " << this->getTag() << endl;
             exit( 1 );
         }
-        local_nodes_map[it->second]=i;
-        local_nodes[i]=it->second;
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
-    static const int Node_to_Surface[8][9]={{1,2,3,4,5,1,3,7,4},
-                                            {2,3,0,0,4,5,5,6,2},
-                                            {3,0,1,6,7,3,1,5,6},
-                                            {0,1,2,2,6,7,7,4,0},
-                                            {7,6,5,5,1,0,0,3,7},
-                                            {4,7,6,1,0,4,6,2,1},
-                                            {5,4,7,7,3,2,2,1,5},
-                                            {6,5,4,4,0,3,3,2,6}};
-    ////////////////////////////////////// Edited by Sumeet 30/3/2016 /////////////////////////////////////
-    //  Finding the correct surface nodes order
-    int success =0; int surface_nodes_order[4]={0,0,0,0};
-    for ( int i =0; i<3 ;i++){
-        for( int j=0; j<3;j++){
-            std::map<int,int>::iterator it;
-            int node=Node_to_Surface[local_nodes[0]][3*i+j];
-            it=local_nodes_map.find(node);
-            if (it == local_nodes_map.end()){
-                success=0;break;
-            }
-            success=success+1;
-            surface_nodes_order[j]= it->second;         
-        }
-        if(success==3) break;
-    }
-    if (success == 0){
-        cerr << "\nERROR: Nodes  defined for the BrickSurfaceLoad does not belong to elements surface  \n" ;
-        exit( 1 );
-    }    
 
-    ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
-    // cout << "surface_nodes_order ";
-    // for ( int i =0; i < 8 ; i++)
-    //     cout << local_nodes[i] << " ";
-    //     // cout << surface_nodes_order[i] << " ";
-    // cout << "\n";
-    // for ( int i =0; i < 8 ; i++)
-    //     cout << local_nodes[surface_nodes_order[i]] << " ";
-    // cout << "\n";
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    int node1_local = node_local( 0 );
+    int node2_local = node_local( 1 );
+    int node3_local = node_local( 2 );
+    int node4_local = node_local( 3 );
+
 
     // get the surface nodal coordinates
-    const Vector &coordnode1 = theNodes[local_nodes[(surface_nodes_order[0])]]->getCrds();
-    const Vector &coordnode2 = theNodes[local_nodes[(surface_nodes_order[1])]]->getCrds();
-    const Vector &coordnode3 = theNodes[local_nodes[(surface_nodes_order[2])]]->getCrds();
-    const Vector &coordnode4 = theNodes[local_nodes[(surface_nodes_order[3])]]->getCrds();
+    const Vector &coordnode1 = theNodes[node1_local]->getCrds();
+    const Vector &coordnode2 = theNodes[node2_local]->getCrds();
+    const Vector &coordnode3 = theNodes[node3_local]->getCrds();
+    const Vector &coordnode4 = theNodes[node4_local]->getCrds();
+
+
 
     double ShapeFunctionValues;
     double LoadValue;
     Vector J_vector( 3 );
     Vector Pressure( 4 );
 
-    Pressure( 0 ) = data( surface_nodes_order[0]+4) * loadFactor;
-    Pressure( 1 ) = data( surface_nodes_order[1]+4) * loadFactor;
-    Pressure( 2 ) = data( surface_nodes_order[2]+4) * loadFactor;
-    Pressure( 3 ) = data( surface_nodes_order[3]+4) * loadFactor;
 
-    static Vector NodalForces(24);
-    for (int m = 0; m < 24; m++){
-        NodalForces(m) = 0;
+
+    Pressure( 0 ) = data( 4 ) * loadFactor;
+    Pressure( 1 ) = data( 5 ) * loadFactor;
+    Pressure( 2 ) = data( 6 ) * loadFactor;
+    Pressure( 3 ) = data( 7 ) * loadFactor;
+
+
+
+    static Vector NodalForces( 24 );
+
+    for ( int m = 0; m < 24; m++ )
+    {
+        NodalForces( m ) = 0;
     }
+
+
 
     double oneOverSquareRoot3 = 1.0 / sqrt( 3.0 );
     Matrix GsPts( 4, 2 );
 
     GsPts( 0, 0 ) =  oneOverSquareRoot3;
     GsPts( 0, 1 ) =  oneOverSquareRoot3;
+
     GsPts( 1, 0 ) = -oneOverSquareRoot3;
     GsPts( 1, 1 ) =  oneOverSquareRoot3;
+
     GsPts( 2, 0 ) = -oneOverSquareRoot3;
     GsPts( 2, 1 ) = -oneOverSquareRoot3;
+
     GsPts( 3, 0 ) =  oneOverSquareRoot3;
     GsPts( 3, 1 ) = -oneOverSquareRoot3;
 
+
+
     int r = 0;
+
 
     // loop over dof
     for ( int k = 0; k < 3; k++ )
@@ -1178,24 +1177,30 @@ const Vector &EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
         // loop over nodes
         for ( int j = 0; j < 4; j++ )
         {
-            r = local_nodes[(surface_nodes_order[j])] ;
+
+            for ( int v = 0; v < 8; v++ )
+            {
+                if ( data( j ) == connectedExternalNodes( v ) )
+                {
+                    r = v;
+                    break;
+                }
+            }
+
             // loop over Gauss points
             for ( int i = 0; i < 4; i++ )
             {
+
                 ShapeFunctionValues = SurfaceShapeFunctionValues( GsPts( i, 0 ) , GsPts( i, 1 ), j );
                 J_vector = Direction_Weight( GsPts( i, 0 ) , GsPts( i, 1 ), coordnode1, coordnode2, coordnode3, coordnode4 );
                 LoadValue = SurfaceLoadValues( GsPts( i, 0 ) , GsPts( i, 1 ), Pressure );
+
+
                 NodalForces( r * 3 + k ) = NodalForces( r * 3 + k ) + LoadValue * J_vector( k ) * ShapeFunctionValues;
             }
         }
     }
 
-
-    // ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
-    // for ( int i =0; i < 8 ; i++)
-    //     cout << NodalForces(3*i)<< " " << NodalForces(3*i+1) << " " << NodalForces(3*i+2) <<   "\n";
-    // cout << "\n\n******************************************************************************\n\n";
-    // /////////////////////////////////////////////////////////////////////////////////////////////////
     return NodalForces;
 }
 

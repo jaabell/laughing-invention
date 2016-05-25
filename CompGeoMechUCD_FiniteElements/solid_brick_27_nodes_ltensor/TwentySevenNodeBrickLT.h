@@ -36,7 +36,7 @@
 #include <NDMaterialLT.h>
 #include <Damping.h>
 #include <MatPoint3D.h>
-#include <map>
+
 #include <ID.h>
 #include <OPS_Globals.h>
 #include <Domain.h>
@@ -180,8 +180,6 @@ private:
     double e_p;
     double determinant_of_Jacobian;
     double rho;
-
-    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet
 
     ID  connectedExternalNodes;
 

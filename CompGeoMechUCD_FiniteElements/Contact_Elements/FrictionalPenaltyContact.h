@@ -34,10 +34,10 @@
 #include <Domain.h>
 #include <Node.h>
 
+#include <ID.h>
+#include <Channel.h>
 
 class Node;
-class Channel;
-
 
 class FrictionalPenaltyContact: public Element
 {
@@ -111,8 +111,10 @@ protected:
 
 
 private:
+
     void cross_product(double vect1[],double vect2[],double vect3[]); // Finds cross product -> vect3[] = vect1[] X vect2[] 
     void norm(double vect[],double* norm); // Finds the norm of the vector ->  norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
+
     double kn;     // Normal penalty stiffness
     double kt;     // Tangential penalty stiffness
     double cn;     // Normal penalty damping stiffness

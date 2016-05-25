@@ -340,6 +340,7 @@
 #define ELE_TAG_TwentyNodeBrickElastic   7017
 #define ELE_TAG_VariableNodeBrick   7018
 #define ELE_TAG_EightNodeBrick_u_p_U            7003
+#define ELE_TAG_EightNodeBrick_u_p_U_LT            7022
 #define ELE_TAG_TwentyNodeBrick_u_p_U            7004
 #define ELE_TAG_FourNodeQuadUP  7005
 #define ELE_TAG_TotalLagrangianFD20NodeBrick 7006 // ZC added
