@@ -132,8 +132,6 @@ maximum_iterations
 maximum_number_of_iterations
 maximum_strain
 maximum_time_step
-maxNumPatches
-maxNumReinfLayers
 mean
 Membrane_Plate_Fiber
 mesh
@@ -255,6 +253,7 @@ to
 tolerance_1
 tolerance_2
 torsion_Jx
+TorsionConstant_GJ
 triaxial
 type
 undrained
@@ -308,11 +307,11 @@ DruckerPragerLT
 DruckerPragerVonMisesLT
 EightNodeBrickLTNoOutput
 Energy_Increment
-Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler
 F_fluid_x
 F_fluid_y
 F_fluid_z
 FORCETYPE
+Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler
 FrictionalPenaltyContact
 from_reactions
 Fx

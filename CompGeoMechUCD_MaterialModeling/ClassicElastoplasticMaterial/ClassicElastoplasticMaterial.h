@@ -97,16 +97,16 @@ void printTensor(string name, const DTensor2 &v)
 {
 
 
-    std::cout << name << " = [ " ;
+    std::cout << name << " = [ (" ;
     std::cout << v(0, 0) << " "
               << v(1, 1) << " "
-              << v(2, 2) << " "
+              << v(2, 2) << ") ("
               << v(0, 1) << " "
               << v(0, 2) << " "
-              << v(1, 2) << " "
+              << v(1, 2) << ") ("
               << v(1, 0) << " "
               << v(2, 0) << " "
-              << v(2, 1) << " ]" << std::endl;
+              << v(2, 1) << ") ]" << std::endl;
 }
 
 void printTensor4(string name, const DTensor4 &v)
