@@ -810,21 +810,21 @@ private:
 
 
             //Stress correction back to the yield surface
-            double yc = yf(TrialStress);
-            int ys_correction_count = 0;
-            // printTensor("  TrialStress before correction", TrialStress);
-            while (yc > this-> f_relative_tol && ys_correction_count < this-> n_max_iterations)
-            {
-                // cout << "    +++ yf() = " << yc << endl;
-                const DTensor2& n = yf.df_dsigma_ij(TrialStress);
-                const DTensor2& m = pf(depsilon_elpl, TrialStress);
-                double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s);
-                double dLambda_correction = yc / den;
-                TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
-                // printTensor("    +++ TrialStress correction", TrialStress);
-                yc = yf(TrialStress);
-                ys_correction_count++;
-            }
+            // double yc = yf(TrialStress);
+            // int ys_correction_count = 0;
+            // // printTensor("  TrialStress before correction", TrialStress);
+            // while (yc > this-> f_relative_tol && ys_correction_count < this-> n_max_iterations)
+            // {
+            //     // cout << "    +++ yf() = " << yc << endl;
+            //     const DTensor2& n = yf.df_dsigma_ij(TrialStress);
+            //     const DTensor2& m = pf(depsilon_elpl, TrialStress);
+            //     double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s);
+            //     double dLambda_correction = yc / den;
+            //     TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
+            //     // printTensor("    +++ TrialStress correction", TrialStress);
+            //     yc = yf(TrialStress);
+            //     ys_correction_count++;
+            // }
             // printTensor("  TrialStress after correction", TrialStress);
 
 
@@ -841,9 +841,10 @@ private:
             if (norm_trial_stress != norm_trial_stress || denf <= 0 ) //check for nan
             {
                 cout << "Numeric error!\n";
-                printTensor("TrialStress = " , TrialStress);
                 printTensor("CommitStress = " , CommitStress);
                 printTensor("depsilon = " , depsilon);
+                printTensor("dsigma   = " , dsigma);
+                printTensor("TrialStress = " , TrialStress);
                 printTensor("intersection_stress = " , intersection_stress);
                 printTensor4("Eelastic = " , Eelastic);
                 printTensor4("Stiffness = " , Stiffness);
