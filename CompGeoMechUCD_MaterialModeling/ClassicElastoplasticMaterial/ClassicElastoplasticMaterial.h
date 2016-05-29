@@ -748,7 +748,7 @@ private:
             depsilon_elpl(i, j) = depsilon(i, j);
             if (yf_val_start < 0)
             {
-                double intersection_factor = zbrentstress( start_stress, end_stress, 0.0, 1.0, TOLERANCE1 );
+                double intersection_factor = zbrentstress( start_stress, end_stress, 0, 1.0, TOLERANCE1 );
                 // cout << " intersection_factor = " << intersection_factor << endl;
                 intersection_stress(i, j) = start_stress(i, j) * (1 - intersection_factor) + end_stress(i, j) * intersection_factor;
                 intersection_strain(i, j) = epsilon(i, j)  + depsilon(i, j) * intersection_factor;
@@ -829,16 +829,16 @@ private:
 
 
 
-            const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
-            const DTensor2& mf = pf(depsilon_elpl, TrialStress);
-            xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, mf,  TrialStress);
-            double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
-            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denf;
-            // Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
+            // const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
+            // const DTensor2& mf = pf(depsilon_elpl, TrialStress);
+            // xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, mf,  TrialStress);
+            // double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
+            // Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denf;
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
 
 
             double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
-            if (norm_trial_stress != norm_trial_stress || denf <= 0 ) //check for nan
+            if (norm_trial_stress != norm_trial_stress)// || denf <= 0 ) //check for nan
             {
                 cout << "Numeric error!\n";
                 printTensor("CommitStress = " , CommitStress);

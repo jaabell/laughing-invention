@@ -90,7 +90,7 @@ int simulate_using_static_multistep(int numSteps)
     }
     cout << "Pass!\n";
 
-    cout << "Checking static integration handler.........................................................";
+    cout << "Checking static integration handler............................................................";
     if (theStaticIntegrator == NULL)
     {
         cout << "Fail!\n";

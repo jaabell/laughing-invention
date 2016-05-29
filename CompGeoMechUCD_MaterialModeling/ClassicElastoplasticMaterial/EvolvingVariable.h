@@ -53,9 +53,9 @@ class EvolvingVariable
 {
 public:
 
-    EvolvingVariable(VarType a_): a(a_), a_committed(a_)
+    EvolvingVariable(VarType a_): a(a_), a_committed(a_), a_tmp(a_)
     {
-        a_tmp = a_;
+        // a_tmp = a_;
         // cout << "EvolvingVariable::EvolvingVariable(a) a_ = " << a_ << endl;
         // cout << "EvolvingVariable::EvolvingVariable(a) a_committed = " << a_committed << endl;
     }
@@ -76,6 +76,7 @@ public:
         }
 
         a = other.a;
+        a_tmp = other.a_tmp;
         a_committed = other.a_committed;
 
         return *this;
@@ -157,7 +158,7 @@ public:
 private:
     VarType a;
     VarType a_committed;
-    static VarType a_tmp;
+    VarType a_tmp;
     static VarType da_1;
     static VarType da_2;
 };
@@ -174,7 +175,7 @@ std::ostream& operator<<(std::ostream& os, const EvolvingVariable<VarType, T>& o
     return os;
 }
 
-template<class VarType, class T>
-VarType EvolvingVariable<VarType, T>::a_tmp;
+// template<class VarType, class T>
+// VarType EvolvingVariable<VarType, T>::a_tmp;
 
 #endif
