@@ -304,6 +304,9 @@ public:
         case NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control :
             exitflag = this->Modified_Euler_Error_Control(strain_increment);
             break;
+        case NDMaterialLT_Constitutive_Integration_Method::Backward_Euler :
+            exitflag = this->Backward_Euler(strain_increment);;
+            break;
         case NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control :
             // exitflag = this->Runge_Kutta_45_Error_Control(strain_increment);;
             break;
@@ -1323,15 +1326,135 @@ private:
     }
 
 
-    int implicitStep(const DTensor2 &strain_incr)
+    int Backward_Euler(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
 
-        //Magic happens here!
+        static DTensor2 depsilon(3, 3, 0);
+        static DTensor2 PredictorStress(3, 3, 0);
+        depsilon *= 0;
+        PredictorStress *= 0;
+        depsilon(i, j) = strain_incr(i, j);
+        const DTensor2& sigma = CommitStress;
+
+        vars.revert();
+        vars.commit_tmp();
+
+        dsigma *= 0;//Zero-out the stress increment tensor
+
+
+        DTensor4& Eelastic = et(sigma);
+        Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
+
+        dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
+        TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
+        PredictorStress(i, j) = TrialStress(i, j);
+        TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
+        TrialPlastic_Strain(i, j) = CommitPlastic_Strain(i, j);
+
+        double yf_val_start = yf(sigma);
+        double yf_val_end = yf(TrialStress);
+
+        bool returns = false;
+        // pre_integration_callback(const DTensor2 &depsilon, const DTensor2 &dsigma, const DTensor2 &TrialStress, double yf1, double yf2, bool & returns)
+        int retval = pre_integration_callback_(depsilon, dsigma, TrialStress, Stiffness, yf_val_start, yf_val_end,  returns);
+
+        if (returns)
+        {
+            return retval;
+        }
+
+        if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
+        {
+            DTensor4& Eelastic = et(TrialStress);
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
+        }
+        else  //Plasticity
+        {
+
+            static DTensor2 ResidualStress(3, 3, 0);
+            ResidualStress *= 0;
+            double normResidualStress = -1;
+            double Relative_Error = normResidualStress / sqrt(TrialStress(i, j) * TrialStress(i, j));
+            bool converged = false;
+            double dLambda = 0;
+            double den = 0;
+            int iteration_count = 0;
+            while (Relative_Error > this-> stress_relative_tol && iteration_count < this->n_max_iterations)
+            {
+
+                const DTensor2& n = yf.df_dsigma_ij(TrialStress);
+                const DTensor2& m = pf(depsilon_elpl, TrialStress);
+                double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  TrialStress);
+                den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+
+                //Compute the plastic multiplier
+                if (den == 0)
+                {
+                    cout << "CEP - denominator of plastic multiplier  \
+                                   n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star = 0\n";
+                    printTensor("m", m);
+                    printTensor("n", n);
+                    cout << "xi_star_h_star" << xi_star_h_star << endl;
+                    cout << "den" << den << endl;
+                    printTensor("depsilon_elpl", depsilon_elpl);
+                    return -1;
+                }
+                dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
+                dLambda /= den;
+
+                //Correct the trial stress
+                TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
+
+                //Check for NaN and report accordingly
+                double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
+                if (norm_trial_stress != norm_trial_stress)// || denf <= 0 ) //check for nan
+                {
+                    cout << "Numeric error!\n";
+                    printTensor("CommitStress = " , CommitStress);
+                    printTensor("depsilon = " , depsilon);
+                    printTensor("dsigma   = " , dsigma);
+                    printTensor("TrialStress = " , TrialStress);
+                    printTensor("intersection_stress = " , intersection_stress);
+                    printTensor4("Eelastic = " , Eelastic);
+                    printTensor4("Stiffness = " , Stiffness);
+                    cout << "yf_val_start = " << yf_val_start << endl;
+                    cout << "yf_val_end = " << yf_val_end << endl;
+                    printTensor("n = " , n );
+                    printTensor("m = " , m );
+                    cout << "xi_star_h_star  = " << xi_star_h_star << endl;
+                    cout << "den = " << den << endl;
+                    cout << "dLambda = " << dLambda << endl;
+
+                    errorcode = -1;
+                }
+
+
+            }
+            //Update the trial plastic strain. and internal variables
+            const DTensor2& n = yf.df_dsigma_ij(TrialStress);
+            const DTensor2& m = pf(depsilon_elpl, TrialStress);
+            TrialPlastic_Strain(i, j) += dLambda * m(i, j);
+            vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
+            vars.commit_tmp();
+
+            //Report inconsistent stiffness for now
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
+
+
+
+            if (not converged)
+            {
+                cout << "Failed to achieve convergend (exceeded maximum number of iterations!\n";
+            }
+
+        }
 
         return errorcode;
     }
+
+
 
     template <typename U = T>
     typename std::enable_if < !supports_pre_integration_callback<U>::value, int >::type
