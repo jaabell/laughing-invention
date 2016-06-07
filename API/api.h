@@ -304,3 +304,7 @@
 // #include "MODELING/add_support_to_node.h"
 // #include "MODELING/add_support_from_file_to_nodes.h"
 
+
+
+// For running tests
+#include "SIMULATION/run_test.h"

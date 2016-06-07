@@ -137,6 +137,13 @@ public:
         a = a_tmp;
     }
 
+    void print()
+    {
+        cout << "     > a           = " << a << endl;
+        cout << "     > a_tmp       = " << a << endl;
+        cout << "     > a_committed = " << a << endl;
+    }
+
     //Overloaded operators.
     operator VarType ()
     {

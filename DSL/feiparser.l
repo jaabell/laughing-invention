@@ -313,6 +313,7 @@ EXP	([Ee][-+]?[0-9]+)
 "check"                             {return token::CMD_check;}
 "mesh"                              {return token::MESH;}
 "require"                           {return token::REQUIRE;}
+"runTest"                           {return token::RUNTEST;}
 "set"                               {return token::SET;}
 
 
