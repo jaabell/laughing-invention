@@ -700,6 +700,7 @@ EXP	([Ee][-+]?[0-9]+)
 "Modified_Newton"                    |
 "modified_newton"                    |
 "newton"                             |
+"NewtonLineSearch"                   |
 "Newton"                             {
 										yylval->ident = new string(yytext);
 										return token::ALGNAME;

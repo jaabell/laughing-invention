@@ -1588,6 +1588,11 @@ CMD_define
 			f = &define_algorithm_newton_for_analysis;
 			fname = "define_algorithm_newton_for_analysis";
 		}
+		else if( algname.compare("newtonlinesearch") == 0)
+		{
+			f = &define_algorithm_newtonlinesearch_for_analysis;
+			fname = "define_algorithm_newtonlinesearch_for_analysis";
+		}
 		else
 		{
 			cerr << "Algorithm " << *$3 << " not recognized.\n\n";

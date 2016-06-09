@@ -225,6 +225,7 @@
 #include <Linear.h>
 #include <NewtonRaphson.h>
 #include <ModifiedNewton.h>
+#include <LineSearch.h>
 
 // domain decomp soln algo header files
 #include <DomainDecompAlgo.h>
@@ -1319,6 +1320,34 @@ FEM_ObjectBroker::getNewEquiSolnAlgo(int classTag)
 
     }
 }
+
+LineSearch *
+FEM_ObjectBroker::getNewLineSearch(int classTag)
+{
+    // switch (classTag)
+    // {
+    // case EquiALGORITHM_TAGS_Linear:
+    //     return new Linear();
+
+
+    // case EquiALGORITHM_TAGS_NewtonRaphson:
+    //     return new NewtonRaphson();
+
+
+    // case EquiALGORITHM_TAGS_ModifiedNewton:
+    //     return new ModifiedNewton();
+
+
+    // default:
+    //     cerr << "FEM_ObjectBroker::getNewEquiSolnAlgo - ";
+    //     cerr << " - no EquiSolnAlgo type exists for class tag ";
+    //     cerr << classTag << endln;
+    //     return 0;
+
+    // }
+    return 0;
+}
+
 
 
 DomainDecompAlgo *

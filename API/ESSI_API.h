@@ -151,9 +151,20 @@
 
 // Solution Algorithms
 //--------------------------------------------------------------------------------------------------
+// #include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/Linear.h"
+// #include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/NewtonRaphson.h"
+// #include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/ModifiedNewton.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/BisectionLineSearch.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/EquiSolnAlgo.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/InitialInterpolatedLineSearch.h"
 #include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/Linear.h"
-#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/NewtonRaphson.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/LineSearch.h"
 #include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/ModifiedNewton.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/NewtonLinesearch.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/NewtonLineSearch.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/NewtonRaphson.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/RegulaFalsiLineSearch.h"
+#include "../ModifiedOpenSeesServices/analysis/algorithm/equiSolnAlgo/SecantLineSearch.h"
 
 
 
