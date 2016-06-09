@@ -226,6 +226,7 @@
 #include <NewtonRaphson.h>
 #include <ModifiedNewton.h>
 #include <LineSearch.h>
+#include <NewtonLineSearch.h>
 #include <InitialInterpolatedLineSearch.h>
 #include <BisectionLineSearch.h>
 #include <RegulaFalsiLineSearch.h>
@@ -1316,6 +1317,9 @@ FEM_ObjectBroker::getNewEquiSolnAlgo(int classTag)
 
     case EquiALGORITHM_TAGS_ModifiedNewton:
         return new ModifiedNewton();
+
+    case EquiALGORITHM_TAGS_NewtonLineSearch:
+        return new NewtonLineSearch();
 
 
     default:
