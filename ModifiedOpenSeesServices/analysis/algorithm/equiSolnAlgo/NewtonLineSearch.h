@@ -3,7 +3,7 @@
 **          Pacific Earthquake Engineering Research Center            **
 **                                                                    **
 **                                                                    **
-** (C) Copyright 2001, The Regents of the University of California    **
+** (C) Copyright 1999, The Regents of the University of California    **
 ** All Rights Reserved.                                               **
 **                                                                    **
 ** Commercial use of this program without express permission of the   **
@@ -18,48 +18,52 @@
 **                                                                    **
 ** ****************************************************************** */
 
-// $Revision: 1.3 $
-// $Date: 2003-02-14 23:00:42 $
-// $Source: /usr/local/cvs/OpenSees/SRC/analysis/algorithm/equiSolnAlgo/LineSearch.h,v $
-
-#ifndef LineSearch_h
-#define LineSearch_h
+// $Revision: 1.4 $
+// $Date: 2005-11-29 22:42:42 $
+// $Source: /usr/local/cvs/OpenSees/SRC/analysis/algorithm/equiSolnAlgo/NewtonLineSearch.h,v $
 
 // Written: fmk
-// Created: 11/01
+// Created: 11/96
+// Modified: Ed "C++" Love 10/00 to perform the line search
+//
 
 // Description: This file contains the class definition for
-// LineSearch. LineSearch is an abstract base class,
-// i.e. no objects of it's type can be created.  Its subclasses seek
-// to find a better solution to R(U)=0 than the solution Ui-1 + delta Ui
-// would give, typically Ui = Ui-1 + factor * delta Ui.
+// NewtonLineSearch. NewtonLineSearch is a class which performs a Newton-Raphson
+// with line search solution algorithm in solving the equations as outline in
+// Crissfields book.
 //
-// What: "@(#)LineSearch.h, revA"
+// What: "@(#)NewtonLineSearch.h, revA"
 
-#include <MovableObject.h>
-#include <OPS_Globals.h>
+#ifndef NewtonLineSearch_h
+#define NewtonLineSearch_h
 
-class SolutionAlgorithm;
-class IncrementalIntegrator;
-class LinearSOE;
-//class std::ostream; //Jeremic@ucdavis.edu taken out since there is an include<istd::ostream.h> in LineSearch.h
+#include <EquiSolnAlgo.h>
+#include <Vector.h>
+#include <LineSearch.h>
 
-class LineSearch: public MovableObject
+class NewtonLineSearch: public EquiSolnAlgo
 {
 public:
-    LineSearch(int classTag);
-    virtual ~LineSearch();
+    NewtonLineSearch( );
+    NewtonLineSearch(ConvergenceTest &theTest, LineSearch *theLineSearch);
+    ~NewtonLineSearch( );
 
-    // virtual functions
-    virtual int newStep(LinearSOE &theSOE) = 0;
-    virtual int search(double s0,
-                       double s1,
-                       LinearSOE &theSOE,
-                       IncrementalIntegrator &theIntegrator) = 0;
-    virtual void Print(std::ostream &s, int flag = 0) = 0;
+    int solveCurrentStep(void);
+    int setConvergenceTest(ConvergenceTest *theNewTest);
+    ConvergenceTest *getConvergenceTest(void);
+
+    virtual int sendSelf(int commitTag, Channel &theChannel);
+    virtual int receiveSelf(int commitTag, Channel &theChannel,
+                            FEM_ObjectBroker &theBroker);
+
+    void Print(std::ostream &s, int flag = 0);
+
 protected:
 
 private:
+    ConvergenceTest *theTest;
+    ConvergenceTest *theOtherTest;
+    LineSearch *theLineSearch;
 };
 
 #endif

@@ -315,6 +315,7 @@ EXP	([Ee][-+]?[0-9]+)
 "check"                             {return token::CMD_check;}
 "mesh"                              {return token::MESH;}
 "require"                           {return token::REQUIRE;}
+"runTest"                           {return token::RUNTEST;}
 "set"                               {return token::SET;}
 
 
@@ -702,6 +703,7 @@ EXP	([Ee][-+]?[0-9]+)
 "Modified_Newton"                    |
 "modified_newton"                    |
 "newton"                             |
+"NewtonLineSearch"                   |
 "Newton"                             {
 										yylval->ident = new string(yytext);
 										return token::ALGNAME;

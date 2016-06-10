@@ -56,6 +56,7 @@ class ConstraintHandler;
 class DOF_Numberer;
 class AnalysisModel;
 class EquiSolnAlgo;
+class LineSearch;
 class DomainDecompAlgo;
 class StaticIntegrator;
 class TransientIntegrator;
@@ -148,6 +149,7 @@ public:
     virtual DOF_Numberer        *getNewNumberer(int classTag);
     virtual AnalysisModel       *getNewAnalysisModel(int classTag);
     virtual EquiSolnAlgo        *getNewEquiSolnAlgo(int classTag);
+    virtual LineSearch          *getNewLineSearch(int classTag);
     virtual DomainDecompAlgo    *getNewDomainDecompAlgo(int classTag);
     virtual StaticIntegrator    *getNewStaticIntegrator(int classTag);
     virtual TransientIntegrator *getNewTransientIntegrator(int classTag);

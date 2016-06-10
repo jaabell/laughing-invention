@@ -459,6 +459,7 @@
 #define EquiALGORITHM_TAGS_Linear       1
 #define EquiALGORITHM_TAGS_NewtonRaphson        2
 #define EquiALGORITHM_TAGS_ModifiedNewton   3
+#define EquiALGORITHM_TAGS_NewtonLineSearch   4
 
 
 #define ACCELERATOR_TAGS_Krylov     1
@@ -536,16 +537,6 @@
 #define SOLVER_TAGS_DiagonalDirectSolver 21
 #define SOLVER_TAGS_DistributedDiagonalSolver 22
 #define SOLVER_TAGS_PetscSparseSeqSolver 23
-
-#define RECORDER_TAGS_ElementRecorder       1
-#define RECORDER_TAGS_NodeRecorder      2
-#define RECORDER_TAGS_EnvelopeNodeRecorder  3
-#define RECORDER_TAGS_EnvelopeElementRecorder   4
-#define RECORDER_TAGS_DatastoreRecorder     5
-#define RECORDER_TAGS_MaxNodeDispRecorder   6
-#define RECORDER_TAGS_DriftRecorder     9
-#define RECORDER_TAGS_GSA_Recorder      10
-#define RECORDER_TAGS_PatternRecorder       13
 
 
 #define OPS_STREAM_TAGS_FileStream      1

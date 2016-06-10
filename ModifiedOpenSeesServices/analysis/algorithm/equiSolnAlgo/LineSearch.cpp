@@ -17,23 +17,23 @@
 **   Filip C. Filippou (filippou@ce.berkeley.edu)                     **
 **                                                                    **
 ** ****************************************************************** */
-
+                                                                        
 // $Revision: 1.1 $
-// $Date: 2001/12/07 01:02:09 $
+// $Date: 2001-12-07 01:02:09 $
 // $Source: /usr/local/cvs/OpenSees/SRC/analysis/algorithm/equiSolnAlgo/LineSearch.cpp,v $
-
-// Written: fmk
+                                                                        
+// Written: fmk 
 // Created: 11/01
 
-// Description: This file contains the class implementation for
-// LineSearch.
-//
+// Description: This file contains the class implementation for 
+// LineSearch. 
+// 
 // What: "@(#)LineSearch.C, revA"
 
 #include <LineSearch.h>
 
 LineSearch::LineSearch(int clasTag)
-    : MovableObject(clasTag)
+:MovableObject(clasTag)
 {
 
 }
@@ -43,5 +43,5 @@ LineSearch::~LineSearch()
 
 }
 
-
+    
 

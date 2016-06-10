@@ -211,6 +211,7 @@
 #include "SIMULATION/define_NDMaterialLT_constitutive_integration_algorithm.h"
 #include "SIMULATION/define_algorithm_with_no_convergence_check_for_analysis.h"
 #include "SIMULATION/define_algorithm_newton_for_analysis.h"
+#include "SIMULATION/define_algorithm_newtonlinesearch_for_analysis.h"
 #include "SIMULATION/define_algorithm_modifiednewton_for_analysis.h"
 
 
@@ -306,3 +307,7 @@
 // #include "MODELING/add_support_to_node.h"
 // #include "MODELING/add_support_from_file_to_nodes.h"
 
+
+
+// For running tests
+#include "SIMULATION/run_test.h"
