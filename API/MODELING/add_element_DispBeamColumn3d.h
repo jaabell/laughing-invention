@@ -31,58 +31,60 @@
 #include "LinearCrdTransf3d.h"
 
 int add_element_DispBeamColumn3d(int ElementNumber,
-				 int iNode,
-				 int jNode,
-				 int number_of_integration_points,
-				 int section_number,
-				 double rho,
-				 double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
-				 double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
-				 double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
+                                 int iNode,
+                                 int jNode,
+                                 int number_of_integration_points,
+                                 int section_number,
+                                 double rho,
+                                 double vecInLocXZPlane_x, double vecInLocXZPlane_y, double vecInLocXZPlane_z,
+                                 double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
+                                 double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
 {
-  int numIntegr = number_of_integration_points;
-  
-  // for the section
-  SectionForceDeformation **theSections = new SectionForceDeformation *[numIntegr];
-  for(int i=0;i<numIntegr;i++){
-    theSections[i] = theDomain.getSection(section_number);
-    if (theSections[i] == 0) {
-      cerr << "domain failed to get section: " << section_number << "\n";
-    } 
-  }
-  
-  // check the section status before the following operation.
-  if (theSections == 0)
+    int numIntegr = number_of_integration_points;
+
+    // for the section
+    SectionForceDeformation **theSections = new SectionForceDeformation *[numIntegr];
+    for (int i = 0; i < numIntegr; i++)
     {
-      cerr << "WARNING: (add_element_DispBeamColumn3d) section not found\n";
-      cerr << "Section: " << section_number;
-      cerr << "\ndispBeamColumn element: " << ElementNumber << endln;
-      return -1;
+        theSections[i] = theDomain.getSection(section_number);
+        if (theSections[i] == 0)
+        {
+            cerr << "domain failed to get section: " << section_number << "\n";
+        }
     }
-  
-  // for the transformation rule from section to element
-  Vector vecXZ(3);
-  vecXZ(0) = vecInLocXZPlane_x;
-  vecXZ(1) = vecInLocXZPlane_y;
-  vecXZ(2) = vecInLocXZPlane_z;
-  
-  Vector offset1(3);
-  offset1(0) = rigJntOffset1_x;
-  offset1(1) = rigJntOffset1_y;
-  offset1(2) = rigJntOffset1_z;
-  
-  Vector offset2(3);
-  offset2(0) = rigJntOffset2_x;
-  offset2(1) = rigJntOffset2_y;
-  offset2(2) = rigJntOffset2_z;
-  
-  CrdTransf *crdTransf = new CorotCrdTransf3d(1, vecXZ, offset1, offset2);
-  
-  // for a matched integration rule
-  // const char* integrationrule_char = integrationrule.c_str();
-  // 
-  BeamIntegration* beamIntegr = new LobattoBeamIntegration();
-  
+
+    // check the section status before the following operation.
+    if (theSections == 0)
+    {
+        cerr << "WARNING: (add_element_DispBeamColumn3d) section not found\n";
+        cerr << "Section: " << section_number;
+        cerr << "\ndispBeamColumn element: " << ElementNumber << endln;
+        return -1;
+    }
+
+    // for the transformation rule from section to element
+    Vector vecXZ(3);
+    vecXZ(0) = vecInLocXZPlane_x;
+    vecXZ(1) = vecInLocXZPlane_y;
+    vecXZ(2) = vecInLocXZPlane_z;
+
+    Vector offset1(3);
+    offset1(0) = rigJntOffset1_x;
+    offset1(1) = rigJntOffset1_y;
+    offset1(2) = rigJntOffset1_z;
+
+    Vector offset2(3);
+    offset2(0) = rigJntOffset2_x;
+    offset2(1) = rigJntOffset2_y;
+    offset2(2) = rigJntOffset2_z;
+
+    CrdTransf *crdTransf = new CorotCrdTransf3d(1, vecXZ, offset1, offset2);
+
+    // for a matched integration rule
+    // const char* integrationrule_char = integrationrule.c_str();
+    //
+    BeamIntegration* beamIntegr = new LobattoBeamIntegration();
+
     // if (strcmp(integrationrule_char, "Lobatto") == 0){
     //     beamIntegr = new LobattoBeamIntegration();
     // }else if (strcmp(integrationrule_char, "Legendre") == 0){
@@ -94,11 +96,11 @@ int add_element_DispBeamColumn3d(int ElementNumber,
     // }
 
     // cMass !=0 . Not lumped mass in calculation.
-    int cMass=1;
+    int cMass = 0;
     // for the element call.
     Element* theElement = 0;
-    theElement = new DispBeamColumn3d(ElementNumber, iNode, jNode, numIntegr, 
-				      theSections,
+    theElement = new DispBeamColumn3d(ElementNumber, iNode, jNode, numIntegr,
+                                      theSections,
                                       *beamIntegr, *crdTransf, rho, cMass);
 
     // check the element status
@@ -111,11 +113,11 @@ int add_element_DispBeamColumn3d(int ElementNumber,
 
 
     if (theDomain.addElement(theElement) == false)
-      {
+    {
         cerr << "WARNING: (add_element_DispBeamColumn3d) could not add element to the domain\n";
         cerr << "Element number: " << ElementNumber << endln;
         return -1;
-      }
+    }
 
 
     return 0;

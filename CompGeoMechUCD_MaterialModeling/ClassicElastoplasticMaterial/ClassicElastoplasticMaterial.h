@@ -1507,7 +1507,6 @@ private:
     }
 
 
-
     template <typename U = T>
     typename std::enable_if < !supports_pre_integration_callback<U>::value, int >::type
 // typename std::enable_if < !std::is_base_of<defines_pre_integration_callback, U>::value, int >::type
