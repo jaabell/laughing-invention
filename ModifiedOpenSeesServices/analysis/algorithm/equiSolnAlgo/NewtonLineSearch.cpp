@@ -40,6 +40,9 @@
 #include <ConvergenceTest.h>
 #include <ID.h>
 
+#ifdef _PARALLEL_PROCESSING
+#include <mpi.h>
+#endif
 
 //Null Constructor
 NewtonLineSearch::NewtonLineSearch( )
@@ -181,7 +184,7 @@ NewtonLineSearch::solveCurrentStep(void)
             // should be the same across all processes. Therefore, to compute s in parallel a reduction
             // operation is needed, summing up all values of 's' across all preocesses.
             double s_;
-            MPI_AllReduce(
+            MPI_Allreduce(
                 &s,
                 &s_,
                 1,

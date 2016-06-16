@@ -1339,7 +1339,7 @@ private:
     }
 
 
-    int Backward_Euler(const DTensor2 &strain_incr)
+    int Backward_Euler(const DTensor2 &strain_incr, bool debugrun = false)
     {
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
@@ -1463,10 +1463,11 @@ private:
 #else
                 //Otherwise  for NaN and report when one is found
                 double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
-                if (norm_trial_stress != norm_trial_stress)// || denf <= 0 ) //check for nan
+                if (norm_trial_stress != norm_trial_stress || debugrun)// || denf <= 0 ) //check for nan
 #endif
                 {
 
+                    cout <<      " ==========================================================" << endl;
                     printTensor (" CommitStress       " , CommitStress);
                     printTensor (" depsilon           " , depsilon);
                     printTensor (" dsigma             " , dsigma);
@@ -1485,8 +1486,10 @@ private:
                     cout <<      " Relative_Error      = " << Relative_Error << endl;
                     cout <<      " yf_RelativeErr      = " << abs(yf_TrialStress) / yf_PredictorStress << endl;
                     cout <<      " iteration_count     = " << iteration_count << endl;
-                    cout << "  Internal variables:" << endl;
+                    cout <<      " .........................................................." << endl;
+                    cout <<      "  Internal variables:" << endl;
                     vars.print();
+                    cout <<      " ==========================================================" << endl;
 
 #ifndef _DEBUG_TEMPLATE_ELASTOPLASTICITY
                     errorcode = -1;
@@ -1516,9 +1519,11 @@ private:
 
 
 
-            if (not converged)
+            if (not converged && !debugrun)
             {
                 cout << "Failed to achieve convergence (exceeded maximum number of iterations)!\n";
+                cout << "Running again in debug mode.\n";
+                Backward_Euler(strain_incr, true);
                 errorcode = -1;
             }
 
@@ -1533,6 +1538,7 @@ private:
 // typename std::enable_if < !std::is_base_of<defines_pre_integration_callback, U>::value, int >::type
     pre_integration_callback_(const DTensor2 &depsilon, const DTensor2 &dsigma,  const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
     {
+        // cout << "pre_integration_callback_ disabled\n";
         returns = false;
         return 0;
     }
@@ -1542,6 +1548,7 @@ private:
 // typename std::enable_if<std::is_base_of<defines_pre_integration_callback, U>::value, int>::type
     pre_integration_callback_(const DTensor2 &depsilon, const DTensor2 &dsigma, const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
     {
+        // cout << "pre_integration_callback_ enabled\n";
         return static_cast<U*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
     }
 
