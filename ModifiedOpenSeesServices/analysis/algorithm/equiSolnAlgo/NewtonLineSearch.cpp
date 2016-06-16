@@ -174,6 +174,22 @@ NewtonLineSearch::solveCurrentStep(void)
             //new value of s
             double s = - ( dx0 ^ Resid ) ;
 
+#ifdef _PARALLEL_PROCESSING
+            // In the case of parallel processing, residuals are computed locally at each processor and
+            // are different in general.
+            // On the other hand dx0 was computed once and for all at the invokation of solve() and
+            // should be the same across all processes. Therefore, to compute s in parallel a reduction
+            // operation is needed, summing up all values of 's' across all preocesses.
+            double s_;
+            MPI_AllReduce(
+                &s,
+                &s_,
+                1,
+                MPI_DOUBLE,
+                MPI_SUM,
+                MPI_COMM_WORLD);
+            s = s_;
+#endif
             if (theLineSearch != 0)
             {
                 theLineSearch->search(s0, s, *theSOE, *theIntegrator);
