@@ -1126,7 +1126,7 @@ bool FrictionalPenaltyContact::computeGap()
 
     // Normal gap
     double g_N = (*g)(2);
-    double epsilon = 1e-6;
+    double epsilon = 0;
 
     // cout << "g_N = " << g_N << endl;
     double du = ui.Norm() + uj.Norm();
