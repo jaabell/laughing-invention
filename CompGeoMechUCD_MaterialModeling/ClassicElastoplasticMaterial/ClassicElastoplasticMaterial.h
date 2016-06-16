@@ -188,13 +188,13 @@ public:
         // cout << "Copy ctor in CEP" << endl;
         //Set initial stress to some value. Needed for models
         // like Drucker-Prager which blow up at sigma_ii = 0 :)
-        TrialStress(0, 0) = -p0;
-        TrialStress(1, 1) = -p0;
-        TrialStress(2, 2) = -p0;
+        TrialStress(0, 0) = -0.9995 * p0;
+        TrialStress(1, 1) = -0.9995 * p0;
+        TrialStress(2, 2) = -1.001 * p0;
 
-        CommitStress(0, 0) = -p0;
-        CommitStress(1, 1) = -p0;
-        CommitStress(2, 2) = -p0;
+        CommitStress(0, 0) = -0.9995 * p0;
+        CommitStress(1, 1) = -0.9995 * p0;
+        CommitStress(2, 2) = -1.001 * p0;
 
         first_step = true;
     }
@@ -679,6 +679,11 @@ private:
     int Forward_Euler(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;
+
+        //Check for quick return
+        // if( strain_incr(i,i) < );
+
+
         int errorcode = 0;
 
         static DTensor2 depsilon(3, 3, 0);
@@ -697,23 +702,31 @@ private:
         DTensor4& Eelastic = et(sigma);
         Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
 
-        for (int ii = 0; ii < 3; ii++)
+        // for (int ii = 0; ii < 3; ii++)
+        // {
+        //     for (int jj = 0; jj < 3; jj++)
+        //     {
+        //         for (int kk = 0; kk < 3; kk++)
+        //         {
+        //             for (int ll = 0; ll < 3; ll++)
+        //             {
+        //                 dsigma(ii, jj) += Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
+        //             }
+        //         }
+        //         // TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
+        //         // TrialStrain(ii, jj) = CommitStrain(ii, jj) + depsilon(ii, jj);
+        //         // TrialPlastic_Strain(ii, jj) = CommitPlastic_Strain(ii, jj);
+        //     }
+        // }
+        dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
+
+        if (abs(dsigma(i, i)) < this->stress_relative_tol)
         {
-            for (int jj = 0; jj < 3; jj++)
-            {
-                for (int kk = 0; kk < 3; kk++)
-                {
-                    for (int ll = 0; ll < 3; ll++)
-                    {
-                        dsigma(ii, jj) += Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
-                    }
-                }
-                // TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
-                // TrialStrain(ii, jj) = CommitStrain(ii, jj) + depsilon(ii, jj);
-                // TrialPlastic_Strain(ii, jj) = CommitPlastic_Strain(ii, jj);
-            }
+            // If the elastic stress increment is below the stress tolerance
+            // exit, doing nothing.
+            return 0;
         }
-        // dsigma(i, j) = Eelastic(i, j, k, l) * depsPgiilon(k, l);
+
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
         TrialPlastic_Strain(i, j) = CommitPlastic_Strain(i, j);
@@ -1348,6 +1361,14 @@ private:
         Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
 
         dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
+
+        if (abs(dsigma(i, i)) < this->stress_relative_tol)
+        {
+            // If the elastic stress increment is below the stress tolerance
+            // exit, doing nothing.
+            return 0;
+        }
+
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         PredictorStress(i, j) = TrialStress(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);

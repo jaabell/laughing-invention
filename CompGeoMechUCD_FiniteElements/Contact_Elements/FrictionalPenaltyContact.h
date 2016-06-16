@@ -105,20 +105,20 @@ public:
 
 protected:
     //Implementation-specific member functions...
-    void computeGap();
+    bool computeGap();
     void initialize();
 
 
 
 private:
 
-    void cross_product(double vect1[],double vect2[],double vect3[]); // Finds cross product -> vect3[] = vect1[] X vect2[] 
-    void norm(double vect[],double* norm); // Finds the norm of the vector ->  norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
+    void cross_product(double vect1[], double vect2[], double vect3[]); // Finds cross product -> vect3[] = vect1[] X vect2[]
+    void norm(double vect[], double* norm); // Finds the norm of the vector ->  norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
 
     double kn;     // Normal penalty stiffness
     double kt;     // Tangential penalty stiffness
     double cn;     // Normal penalty damping stiffness
-    double ct;     // Tangential penalty daping stiffness 
+    double ct;     // Tangential penalty daping stiffness
     double mu;     // Coeficient of friction
     Matrix B;      // Global to local (incremental gap) matrix
     ID external_nodes;
