@@ -115,6 +115,7 @@ public:  // To meet with OutputWriter interfacec
     virtual int writeElementPartitionData(int tag  , int partition) ;
     virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
     virtual int writeLoadPatternData(int tag , std::string name) ;
+    virtual int writeSPConstraintsData(int nodetag , int dof) ;
 
     // Results for Nodes
     virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;

@@ -1002,7 +1002,8 @@ int
 PartitionedDomain::update(double newTime, double dT)
 {
     this->applyLoad(newTime);
-    int res = 0;//this->Domain::update();
+    int res = 0;
+    this->Domain::update();
 
     // do the same for all the subdomains
     if (theSubdomains != 0)
