@@ -597,7 +597,7 @@ int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
     return 0;
 }
 
-int H5OutputWriter::writeSPConstraintsData(int nodetag , int dof) ;
+int H5OutputWriter::writeSPConstraintsData(int nodetag , int dof)
 {
     // int ntags;
     // ntags = LoadPattern_names.Size();
