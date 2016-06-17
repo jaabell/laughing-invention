@@ -1001,9 +1001,9 @@ PartitionedDomain::barrierCheck(int res)
 int
 PartitionedDomain::update(double newTime, double dT)
 {
-    this->applyLoad(newTime,  dT);
+    // this->applyLoad(newTime,  dT);
     // int res = 0;
-    // this->Domain::update();
+    this->Domain::update(newTime,  dT);
 
     // do the same for all the subdomains
     // if (theSubdomains != 0)
