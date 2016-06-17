@@ -1001,7 +1001,7 @@ PartitionedDomain::barrierCheck(int res)
 int
 PartitionedDomain::update(double newTime, double dT)
 {
-    this->applyLoad(newTime, double dT);
+    this->applyLoad(newTime,  dT);
     // int res = 0;
     // this->Domain::update();
 
