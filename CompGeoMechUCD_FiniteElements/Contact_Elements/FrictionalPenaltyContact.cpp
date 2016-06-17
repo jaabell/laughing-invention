@@ -790,6 +790,7 @@ const Vector &FrictionalPenaltyContact::getResistingForce(void)
 {
     R->Zero();
     R->addMatrixTransposeVector(1, B, *tC, 1.0);
+    // cout << "tc = " << *tC << endl;
     return *R;
 }
 
@@ -1001,6 +1002,11 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
         return -1;
     }
 
+    C->Zero();
+    (*C)(0, 0) = kt;
+    (*C)(1, 1) = kt;
+    (*C)(2, 2) = kn;
+
     return 0;
 }
 
@@ -1126,7 +1132,7 @@ bool FrictionalPenaltyContact::computeGap()
 
     // Normal gap
     double g_N = (*g)(2);
-    double epsilon = 0;
+    double epsilon = 1e-6;
 
     // cout << "g_N = " << g_N << endl;
     double du = ui.Norm() + uj.Norm();
