@@ -597,6 +597,20 @@ int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
     return 0;
 }
 
+int H5OutputWriter::writeSPConstraintsData(int nodetag , int dof) ;
+{
+    // int ntags;
+    // ntags = LoadPattern_names.Size();
+    // int addzeros = tag - ntags;
+
+    // //Extend arrays
+    // for (int i = 0; i <= addzeros; i++)
+    // {
+    //     LoadPattern_names.push_back(" not defined ");
+    // }
+    // LoadPattern_names.push_back(name);
+    return 0;
+}
 
 void H5OutputWriter::syncWriters()
 {
