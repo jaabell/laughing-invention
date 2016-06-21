@@ -326,6 +326,8 @@ private:
     hid_t id_elements_materialtag;
     hid_t id_elements_classtag;
     hid_t id_elements_partition;
+    hid_t id_Constrained_Nodes;
+    hid_t id_Constrained_DOFs;
 
 
 
@@ -376,6 +378,8 @@ private:
     ID Material_tags;
     ID Class_Tags;
     ID Partition;
+    ID SPNodes;
+    ID SPDofs;
 
     int numof_NO_COLLECTIVE_calls;
     int numof_CHUNK_INDEPENDENT_calls;

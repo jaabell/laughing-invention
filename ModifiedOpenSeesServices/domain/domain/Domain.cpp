@@ -2751,6 +2751,17 @@ Domain::commit( void )
                                                      elePtr->getOutputSize(),
                                                      elePtr->getElementclassTag());
             }
+
+            SP_Constraint *sp_ptr = 0;
+            SP_ConstraintIter &theSP_Iter = this->getSPs();
+
+            while ( ( sp_ptr = theSP_Iter() ) != 0 )
+            {
+                int nodetag = sp_ptr->getNodeTag();
+                int dof = sp_ptr->getDOF_Number();
+
+                theOutputWriter.writeSPConstraintsData(nodetag, dof);
+            }
 #endif
 
             globalESSITimer.stop("HDF5_buffer_elements");
@@ -4676,10 +4687,10 @@ int Domain::setConstitutiveIntegrationMethod(int algorithm,
         double f_relative_tol, double stress_relative_tol, int n_max_iterations)
 {
     int errorflag = -1;
-    int rank = 0;
 
 
 // #ifdef _PARALLEL_PROCESSING
+//     int rank = 0;
 //     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 //     cout << "setConstitutiveIntegrationMethod(" << rank << ") - \n";
 //     cout << "algorithm = " << algorithm << endl;
@@ -4699,3 +4710,5 @@ int Domain::setConstitutiveIntegrationMethod(int algorithm,
     }
     return errorflag;
 }
+
+

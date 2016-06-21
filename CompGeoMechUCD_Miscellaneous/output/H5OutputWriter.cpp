@@ -1,4 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////
 //
 // COPYLEFT (C):     :-))
 //``This  source code is Copyrighted in U.S., by the The Regents of the University
@@ -331,9 +330,9 @@ void H5OutputWriter::initialize(std::string filename_in,
 
 void H5OutputWriter::set_number_of_time_steps(int nsteps)
 {
-    int rank = 0;
 
 #ifdef _PARALLEL_PROCESSING
+    int rank = 0;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #endif
 
@@ -446,8 +445,6 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
         Index_to_Generalized_Displacements[ntags + i] = -1;
         Index_to_Coordinates[ntags + i] = -1;
     }
-
-
 
     //Form Number_of_DOFs
     Number_of_DOFs[tag] = ndofs;
@@ -599,6 +596,8 @@ int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
 
 int H5OutputWriter::writeSPConstraintsData(int nodetag , int dof)
 {
+    int nsps = SPNodes.Size();
+
     // int ntags;
     // ntags = LoadPattern_names.Size();
     // int addzeros = tag - ntags;
@@ -609,6 +608,10 @@ int H5OutputWriter::writeSPConstraintsData(int nodetag , int dof)
     //     LoadPattern_names.push_back(" not defined ");
     // }
     // LoadPattern_names.push_back(name);
+
+    SPNodes[nsps] = nodetag;
+    SPDofs[nsps] = dof;
+
     return 0;
 }
 
@@ -1703,7 +1706,44 @@ void H5OutputWriter::writeMesh()
 
         }//    create_elementOutput_arrays = false;
 
-        // cout << "subgroupname" << subgroupname << endl;
+
+        //For SP Constraints
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = H5S_UNLIMITED;
+        id_Constrained_Nodes              = createVariableLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_Nodes", " ");
+        id_Constrained_DOFs               = createVariableLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_DOFs", " ");
+
+        //Write gauss coordinate values
+        dims[0]      = (hsize_t) SPNodes.Size();
+        data_dims[0] = (hsize_t) SPNodes.Size();
+        count[0]     = dims[0];
+        int_data_buffer = SPNodes.data;
+        writeVariableLengthIntegerArray(id_Constrained_Nodes,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+        H5OUTPUTWRITER_COUNT_OBJS;
+
+        //Write gauss coordinate values
+        dims[0]      = (hsize_t) SPDofs.Size();
+        data_dims[0] = (hsize_t) SPDofs.Size();
+        count[0]     = dims[0];
+        int_data_buffer = SPDofs.data;
+        writeVariableLengthIntegerArray(id_Constrained_DOFs,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
     }
     else  //Could not open file
     {
@@ -1711,6 +1751,7 @@ void H5OutputWriter::writeMesh()
     }
 
 
+    H5OUTPUTWRITER_COUNT_OBJS;
 }
 
 int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
