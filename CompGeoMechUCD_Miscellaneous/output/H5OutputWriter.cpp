@@ -1953,7 +1953,7 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
 
 
     double *data = reactionForces.theData;
-    writeVariableLengthDoubleArray(id_nodes_displacements,
+    writeVariableLengthDoubleArray(id_nodes_reaction_forces,
                                    datarank,
                                    dims,
                                    data_dims,
