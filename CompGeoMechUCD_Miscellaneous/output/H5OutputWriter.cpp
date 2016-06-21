@@ -90,7 +90,7 @@ H5OutputWriter::H5OutputWriter():
     create_elementMeshData_arrays        = true;
     create_elementOutput_arrays          = true;
 
-    zlib_compression_level = 0;
+    zlib_compression_level = 5;
     flag_write_element_output            = 1;
 
 #ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
@@ -152,7 +152,7 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
                stage_name_in,
                nsteps);
 
-    zlib_compression_level = 0;
+    zlib_compression_level = 5;
     flag_write_element_output = 1;
 
 #ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
