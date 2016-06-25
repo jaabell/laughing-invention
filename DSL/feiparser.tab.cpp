@@ -3717,7 +3717,7 @@ namespace yy {
 							   double, double, double, double, double,
 							   double, double, double>(&add_element_frictional_penalty_contact, args, signature, "add_element_frictional_penalty_contact");
 
-		for(int ii = 1;ii <=9; ii++) nodes.pop();
+		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
 #line 3724 "feiparser.tab.cc" // lalr1.cc:847
