@@ -41,6 +41,8 @@
 #include <NDMaterialLT.h>
 #include <Damping.h>
 #include <MatPoint3D.h>
+#include <map>
+#include <set>
 
 #include <ID.h>
 #include <OPS_Globals.h>
@@ -158,7 +160,6 @@ public:
 
     Vector *getStress( void );
 
-
     // ===================================================================================================================
     // Data members
     // ===================================================================================================================
@@ -173,6 +174,8 @@ private:
     double e_p;
     double determinant_of_Jacobian;
     double rho;
+
+    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet 
 
     ID  connectedExternalNodes;
 
