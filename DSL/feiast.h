@@ -895,62 +895,62 @@ public:
 
         if (test.compare("isAdimensional") == 0)
         {
-            theTruth = isAdimensional(m_right->value());
+            theTruth = isAdimensional("",m_right->value());
         }
 
         if (test.compare("isMass") == 0)
         {
-            theTruth = isMass(m_right->value());
+            theTruth = isMass("",m_right->value());
         }
 
         if (test.compare("isLength") == 0)
         {
-            theTruth = isLength(m_right->value());
+            theTruth = isLength("",m_right->value());
         }
 
         if (test.compare("isTime") == 0)
         {
-            theTruth = isTime(m_right->value());
+            theTruth = isTime("",m_right->value());
         }
 
         if (test.compare("isArea") == 0)
         {
-            theTruth = isArea(m_right->value());
+            theTruth = isArea("",m_right->value());
         }
 
         if (test.compare("isVolume") == 0)
         {
-            theTruth = isVolume(m_right->value());
+            theTruth = isVolume("",m_right->value());
         }
 
         if (test.compare("isForce") == 0)
         {
-            theTruth = isForce(m_right->value());
+            theTruth = isForce("",m_right->value());
         }
 
         if (test.compare("isEnergy") == 0)
         {
-            theTruth = isEnergy(m_right->value());
+            theTruth = isEnergy("",m_right->value());
         }
 
         if (test.compare("isTorque") == 0)
         {
-            theTruth = isTorque(m_right->value());
+            theTruth = isTorque("",m_right->value());
         }
 
         if (test.compare("isPressure") == 0)
         {
-            theTruth = isPressure(m_right->value());
+            theTruth = isPressure("",m_right->value());
         }
 
         if (test.compare("isBodyForce") == 0)
         {
-            theTruth = isBodyForce(m_right->value());
+            theTruth = isBodyForce("",m_right->value());
         }
 
         if (test.compare("isDensity") == 0)
         {
-            theTruth = isDensity(m_right->value());
+            theTruth = isDensity("",m_right->value());
         }
 
         cout << test << " " <<  theTruth << endl;

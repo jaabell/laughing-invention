@@ -188,7 +188,7 @@
 %token DYNAMICINTEGRATOR DYNAMICINTEGRATOR_HHT DYNAMICINTEGRATOR_NEWMARK STATICINTEGRATOR STATICINTEGRATOR_DISPLACEMENT
 %token SIMULATE COMPUTE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations RUNTEST
 %token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY LEVEL
-%token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT
+%token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT FUNCTION_TYPE FUNCTION_NAME
 %token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
 %token self_weight surface load_value
 %token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit 
@@ -201,8 +201,8 @@
 // and the program branches depending on these.
 // ie. DOF may take the values {ux, uy, uz, Ux, Uy, Uz, rx, ry, rz, p} as
 // defined in the lexer file (feiparser.l).
-%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FORCE
-%type <ident> DAMPINGTYPE
+%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FUNCTION_NAME FORCE 
+%type <ident> DAMPINGTYPE 
 
 
 
@@ -210,12 +210,12 @@
 %token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
 %token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based BeamColumnDispFiber3d beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact FrictionalPenaltyContact
-%token EightNodeBrickLT EightNodeBrickLTNoOutput TwentyNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT
+%token EightNodeBrickLT EightNodeBrickLTNoOutput TwentyNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT 
 
 // Element options tokens
-%token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule number_of_integration_points stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
+%token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
 %token friction_ratio maximum_gap
-%token xz_plane_vector joint_1_offset joint_2_offset direction contact_plane_vector
+%token xz_plane_vector joint_1_offset joint_2_offset direction contact_plane_vector power linear exponential factorial inverse
 
 // Tokens for sections
 %token MembranePlateFiber ElasticMembranePlate elastic3d FIBER FiberSection Section fiber_cross_section fiber_location_Y fiber_location_Z fiber_location TorsionConstant_GJ 
@@ -238,8 +238,6 @@
 %token reference_void_ratio critical_stress_ratio_M minimum_bulk_modulus initial_mean_pressure yield_strength strain_hardening_ratio compressive_strength strain_at_compressive_strength
 %token crushing_strength strain_at_crushing_strength tensile_strength tension_softening_stiffness
 %token M_in kd_in xi_in h_in m_in beta_min n_in a_in elastic_modulus_1atm eplcum_cr_in
-
-
 
 // For acceleration field
 %token ax ay az
@@ -3599,8 +3597,8 @@ ADD_element:
 
 		args.push_back($14); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
 		args.push_back($17); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
-		args.push_back($20); signature.push_back(this_signature("normal_damping",       &isThisUnit<1, 0, -1>));
-		args.push_back($23); signature.push_back(this_signature("tangential_damping",   &isThisUnit<1, 0, -1>));
+		args.push_back($20); signature.push_back(this_signature("normal_damping",         &isThisUnit<1, 0, -1>));
+		args.push_back($23); signature.push_back(this_signature("tangential_damping",     &isThisUnit<1, 0, -1>));
 		args.push_back($26); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
 
 		args.push_back($30); signature.push_back(this_signature("x_local_1",              &isAdimensional));
@@ -3612,9 +3610,99 @@ ADD_element:
 							   double, double, double, double, double,
 							   double, double, double>(&add_element_frictional_penalty_contact, args, signature, "add_element_frictional_penalty_contact");
 
-		for(int ii = 1;ii <=9; ii++) nodes.pop();
+		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push($$);
 	}
+	// //!=========================================================================================================
+	// //!
+	// //!FEIDOC add element # <.> type [FrictionalPenaltyContact] function [exponential] / [inverse] / [power] / [linear] / [factorial] (<.>,<.>) with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
+	// | TEXTNUMBER exp TYPE FrictionalPenaltyContact FUNCTION_TYPE FUNCTION_NAME '(' exp ',' exp ')' WITH NODES
+	// 	'(' exp ',' exp ')'
+	// 	normal_stiffness '=' exp
+	// 	tangential_stiffness '=' exp
+	// 	normal_damping '=' exp
+	// 	tangential_damping '=' exp
+	// 	friction_ratio '=' exp
+	// 	contact_plane_vector '=' '(' exp ','  exp ','  exp ')'
+	// {
+
+	// 	args.clear(); signature.clear();
+
+	// 	// FUNCTION_NAME contains a string to indicate which function to choose. 
+	// 	// Instead of having different tokens for each function, just have one 
+	// 	// and decide in the semantic action which DSL to call.
+	// 	// Usually different DSLs have different arguments, but in this
+	// 	// case all three take two arguments, which makes this approach easier.
+
+	// 	int (*f)() = NULL;         // function poiner to the function DSL
+	// 	string fname;              // name of the DSL called to report
+
+	// 	args.push_back($2); signature.push_back(this_signature("number",                  &isAdimensional));
+
+	// 	//Read the string and turn into lower-case
+	// 	string fun_name(*$6);std::transform(fun_name.begin(), fun_name.end(), fun_name.begin(), ::tolower);
+
+	// 	args.push_back($8 ); signature.push_back(this_signature("a",                      &isAdimensional));
+	// 	args.push_back($10); signature.push_back(this_signature("b",                      &isAdimensional));
+
+	// 	args.push_back($15); signature.push_back(this_signature("node1",                  &isAdimensional));
+	// 	args.push_back($17); signature.push_back(this_signature("node2",                  &isAdimensional));
+
+	// 	args.push_back($21); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
+	// 	args.push_back($24); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
+	// 	args.push_back($27); signature.push_back(this_signature("normal_damping",         &isThisUnit<1, 0, -1>));
+	// 	args.push_back($30); signature.push_back(this_signature("tangential_damping",     &isThisUnit<1, 0, -1>));
+	// 	args.push_back($33); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
+
+	// 	args.push_back($37); signature.push_back(this_signature("x_local_1",              &isAdimensional));
+	// 	args.push_back($39); signature.push_back(this_signature("x_local_2",              &isAdimensional));
+	// 	args.push_back($41); signature.push_back(this_signature("x_local_3",              &isAdimensional));
+
+
+	// 	if( fun_name.compare("exponential") == 0)
+	// 	{
+	// 		f     = &add_element_frictional_penalty_contact_exponential;
+	// 		fname = "add_element_frictional_penalty_contact_exponential";
+	// 	}
+	// 	else if( fun_name.compare("inverse") == 0)
+	// 	{
+	// 		f     = &add_element_frictional_penalty_contact_inverse;
+	// 		fname = "add_element_frictional_penalty_contact_inverse";
+	// 	}
+	// 	else if( fun_name.compare("power") == 0)
+	// 	{
+	// 		f     = &add_element_frictional_penalty_contact_power;
+	// 		fname = "add_element_frictional_penalty_contact_power";
+	// 	}
+	// 	else if( fun_name.compare("linear") == 0)
+	// 	{
+	// 		f     = &add_element_frictional_penalty_contact_linear;
+	// 		fname = "add_element_frictional_penalty_contact_linear";
+	// 	}
+	// 	else if( fun_name.compare("factorial") == 0)
+	// 	{
+	// 		f     = &add_element_frictional_penalty_contact_factorial;
+	// 		fname = "add_element_frictional_penalty_contact_factorial";
+	// 	}
+	// 	else
+	// 	{
+	// 		cerr << "Function_Type " << *$6 << " not recognized.\n\n";
+	// 	}
+
+	// 	if(f == NULL)
+	// 	{
+	// 		$$ = new Empty();
+	// 	}
+	// 	else
+	// 	{
+	// 		$$ = new FeiDslCaller11<int, double, double, int, int,
+	// 				   double, double, double, double, double,
+	// 				   double, double, double>(&add_element_frictional_penalty_contact_exponential, args, signature, "add_element_frictional_penalty_contact_exponential");
+	// 	}
+
+	// 	for(int ii = 1;ii <=13; ii++) nodes.pop();
+	// 	nodes.push($$);
+	// }
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type [4NodeShell_MITC4] with nodes (<.>, <.>, <.>, <.>) use material # <.> thickness = <L>;

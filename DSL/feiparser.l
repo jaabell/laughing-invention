@@ -706,6 +706,17 @@ EXP	([Ee][-+]?[0-9]+)
 										return token::ALGNAME;
 									 }
 
+ /* Penalty Function options*/
+"exponential"          				|
+"inverse"         					|
+"power"                    			|
+"factorial"                         {
+										yylval->ident = new string(yytext);
+										return token::FUNCTION_NAME;
+									}
+
+"function_name"   						{return token::FUNCTION_NAME;}
+"function_type"   						{return token::FUNCTION_TYPE;}
 "yield_function_relative_tolerance"   	{return token::yield_function_relative_tolerance;}
 "stress_relative_tolerance" 		  	{return token::stress_relative_tolerance;}
 
