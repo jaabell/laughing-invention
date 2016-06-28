@@ -105,20 +105,21 @@ public:
 
 protected:
     //Implementation-specific member functions...
-    bool computeGap();
+    void computeGap();
     void initialize();
 
 
 
 private:
 
-    void cross_product(double vect1[], double vect2[], double vect3[]); // Finds cross product -> vect3[] = vect1[] X vect2[]
-    void norm(double vect[], double* norm); // Finds the norm of the vector ->  norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
+    void cross_product(double vect1[],double vect2[],double vect3[]); // Finds cross product -> vect3[] = vect1[] X vect2[] 
+    void norm(double vect[],double* norm); // Finds the norm of the vector ->  norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
+    double fact(double x); // Finds the norm of the vector 
 
     double kn;     // Normal penalty stiffness
     double kt;     // Tangential penalty stiffness
     double cn;     // Normal penalty damping stiffness
-    double ct;     // Tangential penalty daping stiffness
+    double ct;     // Tangential penalty daping stiffness 
     double mu;     // Coeficient of friction
     Matrix B;      // Global to local (incremental gap) matrix
     ID external_nodes;
@@ -128,6 +129,7 @@ private:
     bool is_in_contact;      // whether slave is in contact with master
     bool is_in_contact_prev; // whetehr slave was in contact with master
     Vector *tC;     // Current trial local forces  t = [t_T1, t_T2, t_N]
+    Vector *tC_pred;// Current trial local forces  t = [t_T1, t_T2, t_N] outside the yield surface 
     Vector *R;      // Current resisting forces
     Vector *g;      // Current gap
     Vector *g_prev; // Previous gap
@@ -139,6 +141,9 @@ private:
     Vector *tA;     // Current committed local forces  t = [t_T1, t_T2, t_N]
     Vector *g_commit;      // Current gap
     Vector *g_prev_commit; // Previous gap
+
+
+    int t = 1;
 };
 
 #endif

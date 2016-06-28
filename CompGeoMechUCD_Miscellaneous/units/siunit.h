@@ -95,7 +95,7 @@ bool isThisUnit(const std::string& var_name, const SIUnit& u )
                    ( u.Getdim_t() == t ));
 
     if (!verified)
-         std::cout << std::endl << std::endl << "     Error: " << var_name << " should have unit as " << "[kg^("<<m<<")*m^(" << l << ")*s^(" << "t)] " << std::endl;
+         std::cout << std::endl << std::endl << "     Error: " << var_name << " should have unit as " << "[kg^("<<m<<")*m^(" << l << ")*s^(" << t << ")] " << std::endl;
 
     return verified;
 }
