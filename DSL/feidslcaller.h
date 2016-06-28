@@ -22,7 +22,7 @@
 
 bool argcheck(ArgumentType arguments, SignatureType signature);
 
-std::pair<string, bool (*)(const Quantity &)> this_signature(string s, bool (*f)(const Quantity &))
+std::pair<string, bool (*)(const string &, const Quantity &)> this_signature(string s, bool (*f)(const string & , const Quantity &))
 {
     return make_pair(s, f);
 }
