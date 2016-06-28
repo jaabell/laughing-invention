@@ -442,9 +442,6 @@ ostream& operator<<(ostream& out, const Quantity& qt)
 
 
 
-
-
-
 // ============================================================================================================
 // Auxiliary helper functions (tests)
 // ============================================================================================================
@@ -457,83 +454,88 @@ bool isAdimensional(const Quantity& q)
     return isAdimensional(q.Getunit());
 }
 
-bool isMass(const Quantity& q)
+bool isAdimensional(const string& var_name, const Quantity& q)
 {
-    return isMass(q.Getunit());
+    return isAdimensional(var_name,q.Getunit());
 }
 
-bool isLength(const Quantity& q)
+bool isMass(const string& var_name, const Quantity& q)
 {
-    return isLength(q.Getunit());
+    return isMass(var_name,q.Getunit());
 }
 
-bool isTime(const Quantity& q)
+bool isLength(const string& var_name, const Quantity& q)
 {
-    return isTime(q.Getunit());
+    return isLength(var_name,q.Getunit());
 }
 
-bool isFrequency(const Quantity& q)
+bool isTime(const string& var_name, const Quantity& q)
 {
-    return isFrequency(q.Getunit());
+    return isTime(var_name,q.Getunit());
 }
 
-bool isArea(const Quantity& q)
+bool isFrequency(const string& var_name, const Quantity& q)
 {
-    return isArea(q.Getunit());
+    return isFrequency(var_name,q.Getunit());
 }
 
-bool isVolume(const Quantity& q)
+bool isArea(const string& var_name, const Quantity& q)
 {
-    return isVolume(q.Getunit());
+    return isArea(var_name,q.Getunit());
 }
 
-bool isForce(const Quantity& q)
+bool isVolume(const string& var_name, const Quantity& q)
 {
-    return isForce(q.Getunit());
+    return isVolume(var_name,q.Getunit());
 }
 
-bool isEnergy(const Quantity& q)
+bool isForce(const string& var_name, const Quantity& q)
 {
-    return isEnergy(q.Getunit());
+    return isForce(var_name,q.Getunit());
 }
 
-bool isTorque(const Quantity& q)
+bool isEnergy(const string& var_name, const Quantity& q)
 {
-    return isTorque(q.Getunit());
+    return isEnergy(var_name,q.Getunit());
 }
 
-bool isPressure(const Quantity& q)
+bool isTorque(const string& var_name, const Quantity& q)
 {
-    return isPressure(q.Getunit());
+    return isTorque(var_name,q.Getunit());
 }
 
-bool isBodyForce(const Quantity& q)
+bool isPressure(const string& var_name, const Quantity& q)
 {
-    return isBodyForce(q.Getunit());
+    return isPressure(var_name,q.Getunit());
 }
 
-bool isDensity(const Quantity& q)
+bool isBodyForce(const string& var_name, const Quantity& q)
 {
-    return isDensity(q.Getunit());
+    return isBodyForce(var_name,q.Getunit());
 }
 
-bool isVelocity(const Quantity& q)
+bool isDensity(const string& var_name, const Quantity& q)
 {
-    return isVelocity(q.Getunit());
+    return isDensity(var_name,q.Getunit());
 }
 
-bool isAcceleration(const Quantity& q)
+bool isVelocity(const string& var_name, const Quantity& q)
 {
-    return isAcceleration(q.Getunit());
+    return isVelocity(var_name,q.Getunit());
 }
 
-bool isAreaMomentOfInertia(const Quantity& q)
+bool isAcceleration(const string& var_name, const Quantity& q)
 {
-    return isAreaMomentOfInertia(q.Getunit());
+    return isAcceleration(var_name,q.Getunit());
 }
 
-bool isMassMomentOfInertia(const Quantity& q)
+bool isAreaMomentOfInertia(const string& var_name, const Quantity& q)
 {
-    return isMassMomentOfInertia(q.Getunit());
+    return isAreaMomentOfInertia(var_name,q.Getunit());
+}
+
+bool isMassMomentOfInertia(const string& var_name, const Quantity& q)
+{
+    return isMassMomentOfInertia(var_name,q.Getunit());
 }
 
