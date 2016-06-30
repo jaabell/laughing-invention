@@ -790,7 +790,8 @@ Domain::addElement( Element *element )
     if ( result == true )
     {
         element->setDomain( this );
-        // element->update();   // Jose asks: Why is this necessary?
+        element->update();   // Jose asks: Why is this necessary?
+                             // sumeet replies: It is needed for contact element.
 
         // finally check the ele has correct number of dof
 #ifdef _G3DEBUG
