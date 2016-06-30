@@ -351,7 +351,6 @@ int SoftContactExponential::commitState(void)
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tA, 1.0);
 
-
 	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
 	cout.precision(10);
 	cout << "******************************************** Commit State *************************************\n";
@@ -381,8 +380,7 @@ int SoftContactExponential::revertToLastCommit(void)
 	*g_prev = *g_prev_commit;
 	is_in_contact = is_in_contact_commit;
 	is_in_contact_prev = is_in_contact_prev_commit;
-	// you must implement
-	// cout << "I am in Revert to Last Commit \n" ;
+
 	return 0;
 }
 
@@ -411,22 +409,20 @@ int SoftContactExponential::revertToStart(void)
 //   * Output: error flag, 0 if success
 int SoftContactExponential::update(void)
 {
-	// cout << "Going To Calculate gap \n"; 
 	double epsilon= 0;
 	double tol = 0;
 	computeGap();
 	Vector delg(3);				     // correct gap fucntion
 	Vector trial_tC(3);			     // Predicted Forces //
 	double u2,u1,kn_m;
-	int hard = 1;
 
-	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	cout << "************************************ Iteration Steps **********************************\n";
-	cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
-	cout << "is_in_contact " <<  is_in_contact << "\n";	
-	cout << "*g " <<  *g;
-	cout << "*tC_pred " << *tC_pred;
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+	// cout << "************************************ Iteration Steps **********************************\n";
+	// cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
+	// cout << "is_in_contact " <<  is_in_contact << "\n";	
+	// cout << "*g " <<  *g;
+	// cout << "*tC_pred " << *tC_pred;
+	// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (is_in_contact){
 
@@ -439,76 +435,22 @@ int SoftContactExponential::update(void)
 
 		if (is_in_contact_prev){
 			delg = *g - *g_prev;	///// Contact to Contact ////
-			u2 = ((*g)(2));
-			u1 = ((*g)(1));
 		}
 		else{
 			delg = *g;				///// No Contact to Contact ////
-			u2 = ((*g)(2));
-			u1 = 0;
 		}
 
-
 		///////////////////////////// Exponential Function //////////////////
-		cout << "Linear Function" << endl;
-		kn_m=kn;
-		/////////////////////////////////////////////////////////////////////
-
-		// ///////////////////////////// Exponential Function //////////////////
-		// cout << "Exponential Function" << endl;
-		// a=100;b=10;
-		// // a = 1000; b=10000;
-		// if (hard==0){
-		// 	kn_m =abs(b*((u2*exp(a*u2)-u1*exp(a*u1))/(u2-u1)-1)); t=1;
-		// }
-		// if (hard==1 or kn_m>kn or std::isnan(kn_m)) {
-		// 	kn_m = kn;t=1;
-		// }
-		// /////////////////////////////////////////////////////////////////////
-
-		///////////////////////////// Inverse Function ///////////////////////
-		// cout << "Inverse Function" << endl;
-		// a=100;b=1e2;t = 5e3;
-		// if (hard==0){
-		// 	kn_m = b*(abs(a/(a-u2)/(a-u1)));  t = 1;	
-		// }
-		// if (hard==1 or kn_m>kn or std::isnan(kn_m)) {
-		// 	kn_m = kn;t=1;
-		// }
-		/////////////////////////////////////////////////////////////////////
-
-		// ///////////////////////////// Power Function ///////////////////////
-		// cout << "Power Function" << endl;
-		// a=100;b=1e2;t = 5e3;
-		// if (hard==0){
-		// 	kn_m = b*(abs((pow(u2,(a+1))-pow(u1,(a+1))) /(u2-u1))); t = 100;
-		// }
-		// if (hard==1 or kn_m>kn or std::isnan(kn_m)) {
-		// 	kn_m = kn;t=1;
-		// }
-		// /////////////////////////////////////////////////////////////////////
-
-
-		// ///////////////////////////// Factorial Function ///////////////////////
-		// cout << "Factorial Function" << endl;
-		// a=100;b=1e2;t = 5e3;
-		// if (hard==0){
-		// 	kn_m = b*(abs((fact(log(a*u2))-fact(log(a*u1)))/(u2-u1))-1);  t = 100;	
-		// }
-		// if (hard==1 or kn_m>kn or std::isnan(kn_m)) {
-		// 	kn_m = kn;t=1;
-		// }
-		// /////////////////////////////////////////////////////////////////////
-
-
-
+		kn_m = b*exp(a*(-(*g)(2)))*(1+a*(-(*g)(2)));
 		cout <<" kn_m "<< kn_m << endl;
+		/////////////////////////////////////////////////////////////////////
 
 		/////////////////////// Setting elastic Tangent Stiffness ///////////////////////
 		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
 		//////////////////// Computing predictive forces (tB) ///////////////////////////
 
 		tC_pred->addMatrixVector(1, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
+		(*tC_pred)(2) = b*exp(a*(-(*g)(2)))*(*g)(2);
 		trial_tC = *tC_pred;
 
 		// // ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
@@ -811,7 +753,7 @@ const Matrix &SoftContactExponential::getMass(void)
 const Vector &SoftContactExponential::getResistingForce(void)
 {
 	R->Zero();
-	R->addMatrixTransposeVector(1, B, *tC, t);
+	R->addMatrixTransposeVector(1, B, *tC, 1);
 	return *R;
 }
 

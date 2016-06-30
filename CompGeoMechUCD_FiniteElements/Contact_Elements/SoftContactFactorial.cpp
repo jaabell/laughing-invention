@@ -418,7 +418,6 @@ int SoftContactFactorial::update(void)
 	Vector delg(3);				     // correct gap fucntion
 	Vector trial_tC(3);			     // Predicted Forces //
 	double u2,u1,kn_m;
-	int hard = 1;
 
 	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
 	cout << "************************************ Iteration Steps **********************************\n";
@@ -439,32 +438,20 @@ int SoftContactFactorial::update(void)
 
 		if (is_in_contact_prev){
 			delg = *g - *g_prev;	///// Contact to Contact ////
-			u2 = ((*g)(2));
-			u1 = ((*g)(1));
+			u2 = abs((*g)(2));
+			u1 = abs((*g)(1));
 		}
 		else{
 			delg = *g;				///// No Contact to Contact ////
-			u2 = ((*g)(2));
+			u2 = abs((*g)(2));
 			u1 = 0;
 		}
 
-
-		///////////////////////////// Exponential Function //////////////////
-		cout << "Linear Function" << endl;
-		kn_m=kn;
+		///////////////////////////// Inverse Function //////////////////
+		cout << "Factorial Function -> " << a << "  : " << b << endl;
+		kn_m = b/(a-((u1+u2)*0.5))+b*((u1+u2)*0.5)/pow((a-((u1+u2)*0.5)),2);
+		cout <<" kn_m "<< kn_m << endl;
 		/////////////////////////////////////////////////////////////////////
-
-		// ///////////////////////////// Exponential Function //////////////////
-		// cout << "Exponential Function" << endl;
-		// a=100;b=10;
-		// // a = 1000; b=10000;
-		// if (hard==0){
-		// 	kn_m =abs(b*((u2*exp(a*u2)-u1*exp(a*u1))/(u2-u1)-1)); t=1;
-		// }
-		// if (hard==1 or kn_m>kn or std::isnan(kn_m)) {
-		// 	kn_m = kn;t=1;
-		// }
-		// /////////////////////////////////////////////////////////////////////
 
 		///////////////////////////// Inverse Function ///////////////////////
 		// cout << "Inverse Function" << endl;
@@ -811,7 +798,7 @@ const Matrix &SoftContactFactorial::getMass(void)
 const Vector &SoftContactFactorial::getResistingForce(void)
 {
 	R->Zero();
-	R->addMatrixTransposeVector(1, B, *tC, t);
+	R->addMatrixTransposeVector(1, B, *tC, 1);
 	return *R;
 }
 

@@ -143,8 +143,6 @@ private:
     Vector *g_commit;      // Current gap
     Vector *g_prev_commit; // Previous gap
 
-
-    int t = 1;
 };
 
 #endif
