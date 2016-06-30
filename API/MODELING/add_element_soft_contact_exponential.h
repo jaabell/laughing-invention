@@ -35,7 +35,9 @@
 
 
 
-int add_element_frictional_penalty_contact(int ElementNumber,
+int add_element_soft_contact_exponential(int ElementNumber,
+        double a,
+        double b,
         int iNode,
         int jNode,
         double Knormal,
@@ -48,7 +50,9 @@ int add_element_frictional_penalty_contact(int ElementNumber,
         double x_local_3)
 {
     Element* theElement = 0;
-    theElement = new FrictionalPenaltyContact(ElementNumber,
+    theElement = new SoftContactExponential(ElementNumber,
+            a,
+            b,
             iNode,
             jNode,
             Knormal,

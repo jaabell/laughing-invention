@@ -65,7 +65,11 @@
 
 // Elements
 //--------------------------------------------------------------------------------------------------
-#include "MODELING/add_element_frictional_penalty_contact.h"
+#include "MODELING/add_element_hard_contact.h"
+#include "MODELING/add_element_soft_contact_exponential.h"
+#include "MODELING/add_element_soft_contact_inverse.h"
+#include "MODELING/add_element_soft_contact_power.h"
+#include "MODELING/add_element_soft_contact_factorial.h"
 // #include "MODELING/add_element_contact_3dof_to_3dof.h"
 // #include "MODELING/add_element_contact_nonlinear_3dof_to_7dof.h"
 // #include "MODELING/add_element_contact_nonlinear_3dof_to_3dof.h"

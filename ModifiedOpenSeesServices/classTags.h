@@ -318,7 +318,16 @@
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_3DOF_3DOF 5006
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_3DOF_6DOF 5007
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_6DOF_6DOF 5008
-#define ELE_TAG_FrictionalPenaltyContact 5015  //J.Abell
+
+
+// Sumeet Added Contact Elements 
+
+#define ELE_TAG_HardContact              5015      // Sumeet added on June 26 2016
+#define ELE_TAG_SoftContactExponential   5016      // Sumeet added on June 26 2016
+#define ELE_TAG_SoftContactInverse       5017      // Sumeet added on June 26 2016
+#define ELE_TAG_SoftContactPower         5018      // Sumeet added on June 26 2016
+#define ELE_TAG_SoftContactFactorial     5019      // Sumeet added on June 26 2016
+
 
 #define ELE_TAG_PenaltyElement 5009
 #define ELE_TAG_PenaltyElementApplyDisplacement 5010

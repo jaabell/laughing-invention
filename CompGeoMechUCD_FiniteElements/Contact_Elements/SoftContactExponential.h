@@ -24,8 +24,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef FrictionalPenaltyContact_h
-#define FrictionalPenaltyContact_h
+#ifndef SoftContactExponential_h
+#define SoftContactExponential_h
 
 
 #include <Element.h>
@@ -39,19 +39,19 @@
 
 class Node;
 
-class FrictionalPenaltyContact: public Element
+class SoftContactExponential: public Element
 {
 
 public:
 
     // Constructor
-    FrictionalPenaltyContact(int tag, int node1, int node2, double kn,  double kt,  double cn_,  double ct_, double mu, double e1_x_, double e1_y_, double e1_z_);
+    SoftContactExponential(int tag, double a, double b, int node1, int node2, double kn,  double kt,  double cn_,  double ct_, double mu, double e1_x_, double e1_y_, double e1_z_);
 
     // Empty constructor
-    FrictionalPenaltyContact();
+    SoftContactExponential();
 
     //Destructor
-    ~FrictionalPenaltyContact();
+    ~SoftContactExponential();
 
     // Functions to obtain information about dof & connectivity
     int getNumExternalNodes(void) const;
@@ -93,7 +93,7 @@ public:
     // Give the element a name
     std::string getElementName() const
     {
-        return "FrictionalPenaltyContact";
+        return "SoftContactExponential";
     }
 
     // Output interface functions
@@ -114,8 +114,8 @@ private:
 
     void cross_product(double vect1[],double vect2[],double vect3[]); // Finds cross product -> vect3[] = vect1[] X vect2[] 
     void norm(double vect[],double* norm); // Finds the norm of the vector ->  norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
-    double fact(double x); // Finds the norm of the vector 
 
+    double a,b;    // Soft Contact Function Variables F = b*exp(a*u)*u
     double kn;     // Normal penalty stiffness
     double kt;     // Tangential penalty stiffness
     double cn;     // Normal penalty damping stiffness

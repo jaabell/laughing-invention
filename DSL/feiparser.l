@@ -373,7 +373,8 @@ EXP	([Ee][-+]?[0-9]+)
 "4NodeShell_ANDES"                  {return token::FourNodeShellANDES;}
 "truss"                             {return token::truss;}
 "contact"                           {return token::contact;}
-"FrictionalPenaltyContact"          {return token::FrictionalPenaltyContact;}
+"HardContact"          				{return token::HardContact;}
+"SoftContact"          				{return token::SoftContact;}
 "variable_node_brick_8_to_27"       {return token::variable_node_brick_8_to_27;}
 "ShearBeamLT"                       {return token::ShearBeamLT;}
 
@@ -971,7 +972,7 @@ int newstdin()
 	yylineno = 1;
 	curfilename = initial;
 
-	cout << "Input: STDIN" << endl << endl;
+	// cout << "Input: STDIN" << endl << endl;
 	prompt = thePrompt;
 	//cout << prompt ;
 	return 1;

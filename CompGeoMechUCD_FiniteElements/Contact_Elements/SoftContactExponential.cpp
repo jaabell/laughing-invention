@@ -26,7 +26,7 @@
 
 
 
-#include <FrictionalPenaltyContact.h>
+#include <SoftContactExponential.h>
 #include <classTags.h> // Must define the class tag for the new element in this file. 
 #include <iostream>
 #include <cmath> // for checking if the vlue is nan
@@ -38,8 +38,10 @@
 // Constructor. Receive all input parameters. Should not allocate resources!
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
-FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2, double kn_, double kt_, double cn_, double ct_,  double mu_, double e1_x, double e1_y, double e1_z):
-	Element(tag, ELE_TAG_FrictionalPenaltyContact),
+SoftContactExponential::SoftContactExponential(int tag, double a_, double b_, int node1, int node2, double kn_, double kt_, double cn_, double ct_,  double mu_, double e1_x, double e1_y, double e1_z):
+	Element(tag, ELE_TAG_SoftContactExponential),
+	a(a_),
+	b(b_),
 	kn(kn_),
 	kt(kt_),
 	cn(cn_),
@@ -63,7 +65,7 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
 	nodes[0] = 0;
 	nodes[1] = 0;
 
-	// cout << "FrictionalPenaltyContact Element " <<  tag << endl;
+	// cout << "SoftContactExponential Element " <<  tag << endl;
 	// B matrix is initialized now .
 	// This is to avoid storing the normal vector's components apart from B matrix
 	// which is redundant, 'cause the normal vector components are the elements
@@ -137,8 +139,10 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
 // Empty constructor.  Create an empty element (with possibly a bad state)
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
-FrictionalPenaltyContact::FrictionalPenaltyContact():
-	Element(0, ELE_TAG_FrictionalPenaltyContact), //ATTENTION! Define the class tag in classTags.h
+SoftContactExponential::SoftContactExponential():
+	Element(0, ELE_TAG_SoftContactExponential), //ATTENTION! Define the class tag in classTags.h
+	a(0.0),
+	b(0.0),
 	kn(0.0),
 	kt(0.0),
 	cn(0.0),
@@ -174,7 +178,7 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
 // Destructor. Deallocate resources used by element.
 //   * Input: void
 //   * Output: void
-FrictionalPenaltyContact::~FrictionalPenaltyContact()
+SoftContactExponential::~SoftContactExponential()
 {
 
 
@@ -221,7 +225,7 @@ FrictionalPenaltyContact::~FrictionalPenaltyContact()
 // returns the number of nodes of the element.
 //   * Input: void
 //   * Output: number of nodes
-int FrictionalPenaltyContact::getNumExternalNodes(void) const
+int SoftContactExponential::getNumExternalNodes(void) const
 {
 	// cout << "tag = " << this->getTag() << endl;
 	// cout << "Number of node = 2\n";
@@ -234,7 +238,7 @@ int FrictionalPenaltyContact::getNumExternalNodes(void) const
 // Return an ID (integer vector) with the external nodes
 //   * Input: void
 //   * Output: ID with tags of external nodes
-const ID &FrictionalPenaltyContact::getExternalNodes(void)
+const ID &SoftContactExponential::getExternalNodes(void)
 {
 	// cout << "External nodes = " << external_nodes << endl;
 	return external_nodes;
@@ -246,7 +250,7 @@ const ID &FrictionalPenaltyContact::getExternalNodes(void)
 // Return pointer array to the nodes
 //   * Input: void
 //   * Output: node pointer array.
-Node **FrictionalPenaltyContact::getNodePtrs(void)
+Node **SoftContactExponential::getNodePtrs(void)
 {
 	return nodes;
 }
@@ -257,7 +261,7 @@ Node **FrictionalPenaltyContact::getNodePtrs(void)
 //Return the number of dofs in the element.
 //   * Input: void
 //   * Output: number of dofs (sum of dofs over all of element's nodes)
-int FrictionalPenaltyContact::getNumDOF(void)
+int SoftContactExponential::getNumDOF(void)
 {
 	return 6;
 }
@@ -270,7 +274,7 @@ int FrictionalPenaltyContact::getNumDOF(void)
 // some internal variables like lengths, volumes, etc. )
 //   * Input: domain pointer (see Domain.h)
 //   * Output: void
-void FrictionalPenaltyContact::setDomain(Domain *theDomain)
+void SoftContactExponential::setDomain(Domain *theDomain)
 {
 
 	// Check Domain is not null - invoked when object removed from a domain
@@ -305,7 +309,7 @@ void FrictionalPenaltyContact::setDomain(Domain *theDomain)
 		//Check  whether all nodes existed (we got a valid pointer)
 		if ( nodes[0] == 0 || nodes[1] == 0  )
 		{
-			cerr << "FATAL ERROR FrictionalPenaltyContact (tag: " << this->getTag() << "), node not found in domain\n";
+			cerr << "FATAL ERROR SoftContactExponential (tag: " << this->getTag() << "), node not found in domain\n";
 			return;
 		}
 
@@ -315,7 +319,7 @@ void FrictionalPenaltyContact::setDomain(Domain *theDomain)
 
 		if ( dofNd1 != 3 || dofNd2 != 3 )
 		{
-			cerr << "FATAL ERROR FrictionalPenaltyContact (tag: " << this->getTag() << "), has differing number of DOFs at its nodes\n";
+			cerr << "FATAL ERROR SoftContactExponential (tag: " << this->getTag() << "), has differing number of DOFs at its nodes\n";
 			return;
 		}
 
@@ -335,7 +339,7 @@ void FrictionalPenaltyContact::setDomain(Domain *theDomain)
 // return 0 if success.
 //   * Input: void
 //   * Output: error flag, 0 if success
-int FrictionalPenaltyContact::commitState(void)
+int SoftContactExponential::commitState(void)
 {
 	
 	*tA = *tC;
@@ -370,7 +374,7 @@ int FrictionalPenaltyContact::commitState(void)
 // Must call for gausspoints if needed.
 //   * Input: void
 //   * Output: error flag, 0 if success
-int FrictionalPenaltyContact::revertToLastCommit(void)
+int SoftContactExponential::revertToLastCommit(void)
 {
 	*tC = *tA;
 	*g = *g_commit;
@@ -390,7 +394,7 @@ int FrictionalPenaltyContact::revertToLastCommit(void)
 // Must call for gausspoints if needed.
 //   * Input: void
 //   * Output: error flag, 0 if success
-int FrictionalPenaltyContact::revertToStart(void)
+int SoftContactExponential::revertToStart(void)
 {
 	// you must implement
 	return 0;
@@ -405,7 +409,7 @@ int FrictionalPenaltyContact::revertToStart(void)
 // These changes should not be permanent until commit function is called.
 //   * Input: void
 //   * Output: error flag, 0 if success
-int FrictionalPenaltyContact::update(void)
+int SoftContactExponential::update(void)
 {
 	// cout << "Going To Calculate gap \n"; 
 	double epsilon= 0;
@@ -413,7 +417,7 @@ int FrictionalPenaltyContact::update(void)
 	computeGap();
 	Vector delg(3);				     // correct gap fucntion
 	Vector trial_tC(3);			     // Predicted Forces //
-	double u2,u1, a,b,kn_m;
+	double u2,u1,kn_m;
 	int hard = 1;
 
 	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
@@ -638,7 +642,7 @@ int FrictionalPenaltyContact::update(void)
 //  (optionl) Set the elemental load to zero.
 //   * Input: void
 //   * Output: void
-void FrictionalPenaltyContact::zeroLoad(void)
+void SoftContactExponential::zeroLoad(void)
 {
 	// optional to implement
 	return;
@@ -656,7 +660,7 @@ void FrictionalPenaltyContact::zeroLoad(void)
 //   * ElementalLoads have a type interger (a tag defined elsewhere) and a Vector (array
 //     of doubles) with data. Use these to generate the elemental load scaled by the
 //    load factor (which is also the time-step of the analysis).
-int FrictionalPenaltyContact::addLoad(ElementalLoad *theLoad, double loadFactor)
+int SoftContactExponential::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
 	// optional to implement
 	//
@@ -683,9 +687,9 @@ int FrictionalPenaltyContact::addLoad(ElementalLoad *theLoad, double loadFactor)
 //  Notes: use node pointers to get accelerations from nodes,
 // form an acceleration vector and multiply this with the mass matrix, then
 // add this into the load unbalance (with negative sign, cause it is inertia)
-int FrictionalPenaltyContact::addInertiaLoadToUnbalance(const Vector &accel)
+int SoftContactExponential::addInertiaLoadToUnbalance(const Vector &accel)
 {
-	//cout << "FrictionalPenaltyContact::addInertiaLoadToUnbalance()\n";
+	//cout << "SoftContactExponential::addInertiaLoadToUnbalance()\n";
 	return 0;
 }
 
@@ -698,12 +702,12 @@ int FrictionalPenaltyContact::addInertiaLoadToUnbalance(const Vector &accel)
 // Functions to obtain stiffness, mass, damping and residual information
 //   * Input: void
 //   * Output: reference to tangent stiffness matrix (of size nDOF x nDOF,
-//             where nDOF = FrictionalPenaltyContact::getNumDOF();
+//             where nDOF = SoftContactExponential::getNumDOF();
 //   Pro tip. If this matrix computes the tangent stiffness, then
 //   it can be stored as a static member variable so that all elements share
 //   the same memory space (each element overwrites the tangent). This saves
 //   memory.
-const Matrix &FrictionalPenaltyContact::getTangentStiff(void)
+const Matrix &SoftContactExponential::getTangentStiff(void)
 {
 	static Matrix K(6, 6);
 	K.Zero();
@@ -725,8 +729,8 @@ const Matrix &FrictionalPenaltyContact::getTangentStiff(void)
 // Functions to obtain initial stiffness
 //   * Input: void
 //   * Output: reference to initial tangent stiffness matrix (of size nDOF x nDOF,
-//             where nDOF = FrictionalPenaltyContact::getNumDOF();
-const Matrix &FrictionalPenaltyContact::getInitialStiff(void)
+//             where nDOF = SoftContactExponential::getNumDOF();
+const Matrix &SoftContactExponential::getInitialStiff(void)
 {
 	static Matrix Kinit(6, 6);
 	Kinit.Zero();
@@ -750,10 +754,10 @@ const Matrix &FrictionalPenaltyContact::getInitialStiff(void)
 // (optional) If element provides its own damping matrix, then this function returns it
 //   * Input: void
 //   * Output: reference to damping stiffness matrix (of size nDOF x nDOF,
-//             where nDOF = FrictionalPenaltyContact::getNumDOF();
-const Matrix &FrictionalPenaltyContact::getDamp(void)
+//             where nDOF = SoftContactExponential::getNumDOF();
+const Matrix &SoftContactExponential::getDamp(void)
 {
-	// cout << "FrictionalPenaltyContact::getDamp(void)\n";
+	// cout << "SoftContactExponential::getDamp(void)\n";
 	static Matrix C(6, 6);
 	C.Zero();
 
@@ -787,8 +791,8 @@ const Matrix &FrictionalPenaltyContact::getDamp(void)
 // (optional) If element provides its own damping matrix, then this function returns it
 //   * Input: void
 //   * Output: reference to damping stiffness matrix (of size nDOF x nDOF,
-//             where nDOF = FrictionalPenaltyContact::getNumDOF();
-const Matrix &FrictionalPenaltyContact::getMass(void)
+//             where nDOF = SoftContactExponential::getNumDOF();
+const Matrix &SoftContactExponential::getMass(void)
 {
 	static Matrix Mzero(6, 6);
 	return Mzero;
@@ -803,8 +807,8 @@ const Matrix &FrictionalPenaltyContact::getMass(void)
 // (optional) If element provides its own damping matrix, then this function returns it
 //   * Input: void
 //   * Output: reference to damping stiffness matrix (of size nDOF x nDOF,
-//             where nDOF = FrictionalPenaltyContact::getNumDOF();
-const Vector &FrictionalPenaltyContact::getResistingForce(void)
+//             where nDOF = SoftContactExponential::getNumDOF();
+const Vector &SoftContactExponential::getResistingForce(void)
 {
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tC, t);
@@ -822,7 +826,7 @@ const Vector &FrictionalPenaltyContact::getResistingForce(void)
 //   * Output: Vector of doubles with new resisting force.
 //   Note: Regularly, this function calls getResistingForce() and then
 //         adds inertial terms.
-const Vector &FrictionalPenaltyContact::getResistingForceIncInertia(void)
+const Vector &SoftContactExponential::getResistingForceIncInertia(void)
 {
 	return getResistingForce();
 }
@@ -838,7 +842,7 @@ const Vector &FrictionalPenaltyContact::getResistingForceIncInertia(void)
 // Note: This function is usually very involved, and should do a lot of checking
 // for pointers and for success of the send.
 // Note2: setDomain(...) *might* not be called before using this function.
-int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
+int SoftContactExponential::sendSelf(int commitTag, Channel &theChannel)
 {
 	// Useful constructs
 	// int error_flag;
@@ -935,7 +939,7 @@ int FrictionalPenaltyContact::sendSelf(int commitTag, Channel &theChannel)
 //   * Input: a reference to the Channel to use.
 //   * Output: error flag, 0 if success
 // Note: This function is called after setDomain() so all resources should be made available.
-int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
+int SoftContactExponential::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
 	// Useful constructs
 	// int error_flag;
@@ -1032,12 +1036,12 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
 // The flag can be used to request different levels of printing, ie.
 // a flag of 0 might be very basic information, while flag > 0 might
 // give increasing ammount of info.
-void FrictionalPenaltyContact::Print(ostream &s, int flag )
+void SoftContactExponential::Print(ostream &s, int flag )
 {
 	// you must implement
 	if (flag >= 0)
 	{
-		s << " FrictionalPenaltyContact, tag =  " << this->getTag() << endl;
+		s << " SoftContactExponential, tag =  " << this->getTag() << endl;
 	}
 }
 
@@ -1050,7 +1054,7 @@ void FrictionalPenaltyContact::Print(ostream &s, int flag )
 //   * Input: an ostream to print stuff into (print details of what is being checked here.)
 //   * Output: an error flag (<0 if element is not right in some way)
 //  Note: be verbose print element tag, etc. Print out only if an error is encountered.
-int FrictionalPenaltyContact::CheckMesh(ofstream &)
+int SoftContactExponential::CheckMesh(ofstream &)
 {
 	return 0;
 }
@@ -1066,11 +1070,11 @@ int FrictionalPenaltyContact::CheckMesh(ofstream &)
 //   * Input: void
 //   * Output: number of double outputs for the element (size of the output vector)
 
-#define FRICTIONALPENALTYCONTACT_NOUTPUT 6
+#define SoftContactExponential_NOUTPUT 6
 
-int FrictionalPenaltyContact::getOutputSize() const
+int SoftContactExponential::getOutputSize() const
 {
-	return  FRICTIONALPENALTYCONTACT_NOUTPUT;
+	return  SoftContactExponential_NOUTPUT;
 }
 
 
@@ -1081,9 +1085,9 @@ int FrictionalPenaltyContact::getOutputSize() const
 // Output interface functions
 //   * Input: void
 //   * Output: Vector (array of doubles) with the element output.
-const Vector &FrictionalPenaltyContact::getOutput()
+const Vector &SoftContactExponential::getOutput()
 {
-	static Vector output_vector(FRICTIONALPENALTYCONTACT_NOUTPUT);
+	static Vector output_vector(SoftContactExponential_NOUTPUT);
 
 	output_vector(0) = (*g_commit)(0);
 	output_vector(1) = (*g_commit)(1);
@@ -1106,7 +1110,7 @@ const Vector &FrictionalPenaltyContact::getOutput()
 //    gauss_coordinates[1,:] = [x_1,y_1,z_1]  -- Coordinates of second Gauss point
 //     ...
 //    gauss_coordinates[Ngauss,:] = [x_Ngauss,y_Ngauss,z_Ngauss]  -- Coordinates of Ngauss-th Gauss point
-Matrix &FrictionalPenaltyContact::getGaussCoordinates(void)
+Matrix &SoftContactExponential::getGaussCoordinates(void)
 {
 	// you must implement
 	static Matrix gauss_coordinates(2, 3);
@@ -1120,7 +1124,7 @@ Matrix &FrictionalPenaltyContact::getGaussCoordinates(void)
 //==================================================================================================
 // Add you own member functions at the end!
 
-void FrictionalPenaltyContact::computeGap()
+void SoftContactExponential::computeGap()
 {
 
 	// cout << "started Computing Gap \n";
@@ -1188,7 +1192,7 @@ void FrictionalPenaltyContact::computeGap()
 
 
 
-void FrictionalPenaltyContact::initialize()
+void SoftContactExponential::initialize()
 {
 
 	tA = new Vector(3);          // Current commitred local forces  t = [t_T1, t_T2, t_N]
@@ -1206,7 +1210,7 @@ void FrictionalPenaltyContact::initialize()
 //==================================================================================================
 // Finds the cross product of two vectors and stores in the third vector
 // vect3[] = vect1[] X vect2[] 
-void FrictionalPenaltyContact::cross_product(double vect1[],double vect2[],double vect3[]){
+void SoftContactExponential::cross_product(double vect1[],double vect2[],double vect3[]){
 
 	vect3[0] = vect1[1] * vect2[2] - vect1[2] * vect2[1];
 	vect3[1] = vect1[2] * vect2[0] - vect1[0] * vect2[2];
@@ -1216,23 +1220,8 @@ void FrictionalPenaltyContact::cross_product(double vect1[],double vect2[],doubl
 //==================================================================================================
 // Finds the norm of the vector and stores in the norm variable
 // norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
-void FrictionalPenaltyContact::norm(double vect[],double* nrm){
+void SoftContactExponential::norm(double vect[],double* nrm){
 
 	*nrm = abs(sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2]));
 	// cout << "norm -" << "\n";
-}
-
-//==================================================================================================
-// Finds the factorial of any real number 
-// fact(x) = x*(x-1)*(x-2)............ p where   1<=p<2
-double fact(double x){
-
-	double n=1;
-	while(x>1){
-		n = n*x;
-		x=x-1;
-	}
-
-	return n;
-
 }

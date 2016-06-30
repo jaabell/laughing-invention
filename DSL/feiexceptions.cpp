@@ -43,7 +43,7 @@ RunTimeException :: RunTimeException(string m) : msg(m)
 
 const char* RunTimeException :: what() const throw()
 {
-	string completemessage = "FeiRunTimeError: ";
+	string completemessage = "[FeiRunTimeError]: ";
 	completemessage += msg;
 	return completemessage.c_str();
 }
