@@ -139,8 +139,6 @@ private:
     Vector *tA;     // Current committed local forces  t = [t_T1, t_T2, t_N]
     Vector *g_commit;      // Current gap
 
-
-    int t = 1;
 };
 
 #endif

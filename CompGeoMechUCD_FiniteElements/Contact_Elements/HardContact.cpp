@@ -733,7 +733,7 @@ const Matrix &HardContact::getMass(void)
 const Vector &HardContact::getResistingForce(void)
 {
 	R->Zero();
-	R->addMatrixTransposeVector(1, B, *tC, t);
+	R->addMatrixTransposeVector(1, B, *tC, 1);
 	return *R;
 }
 
