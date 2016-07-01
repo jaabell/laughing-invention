@@ -47,10 +47,10 @@ SoftContactExponential::SoftContactExponential(int tag, double a_, double b_, in
 	cn(cn_),
 	ct(ct_),
 	mu(mu_),
-	is_in_contact(false),
-	is_in_contact_prev(false),
 	B(3, 6),
-	external_nodes(2)
+	external_nodes(2),
+	is_in_contact(false),
+	is_in_contact_prev(false)
 {
 
 	tA = 0;
@@ -128,10 +128,10 @@ SoftContactExponential::SoftContactExponential(int tag, double a_, double b_, in
 		B(2, i + 3) =  z_local(i);
 	}
 
-	g_commit = 0;
-	g_prev_commit = 0;
+	g_commit  =0;
+	g_elastic =0;
+	tC_pred_commit = 0;
 	is_in_contact_commit = false;
-	is_in_contact_prev_commit = false;;
 
 }
 
@@ -148,10 +148,10 @@ SoftContactExponential::SoftContactExponential():
 	cn(0.0),
 	ct(0.0),
 	mu(0.0),
-	is_in_contact(false),
-	is_in_contact_prev(false),
 	B(3, 6),
-	external_nodes(2)
+	external_nodes(2),
+	is_in_contact(false),
+	is_in_contact_prev(false)
 {
 
 	tA = 0;
@@ -167,9 +167,12 @@ SoftContactExponential::SoftContactExponential():
 	nodes[1] = 0;
 
 	g_commit = 0;
-	g_prev_commit = 0;
+	g_elastic = 0;
+	tC_pred_commit = 0;
 	is_in_contact_commit = false;
-	is_in_contact_prev_commit = false;
+
+	this->setNumberOfBoundaryNodes(1);
+
 }
 
 
@@ -180,17 +183,35 @@ SoftContactExponential::SoftContactExponential():
 //   * Output: void
 SoftContactExponential::~SoftContactExponential()
 {
-
-
 	if ( tA != NULL )
 	{
 		delete tA;
 		tA = NULL;
 	}
+	if ( g_commit != NULL )
+	{
+		delete g_commit;
+		g_commit = NULL;
+	}
+	if ( g_elastic != NULL )
+	{
+		delete g_elastic;
+		g_elastic = NULL;
+	}
+	if ( tC_pred_commit != NULL )
+	{
+		delete tC_pred_commit;
+		tC_pred_commit = NULL;
+	}
 	if ( tC != NULL )
 	{
 		delete tC;
 		tC = NULL;
+	}
+	if ( tC_pred != NULL )
+	{
+		delete tC_pred;
+		tC_pred = NULL;
 	}
 	if ( R != NULL )
 	{
@@ -227,8 +248,6 @@ SoftContactExponential::~SoftContactExponential()
 //   * Output: number of nodes
 int SoftContactExponential::getNumExternalNodes(void) const
 {
-	// cout << "tag = " << this->getTag() << endl;
-	// cout << "Number of node = 2\n";
 	return 2;
 }
 
@@ -240,7 +259,6 @@ int SoftContactExponential::getNumExternalNodes(void) const
 //   * Output: ID with tags of external nodes
 const ID &SoftContactExponential::getExternalNodes(void)
 {
-	// cout << "External nodes = " << external_nodes << endl;
 	return external_nodes;
 }
 
@@ -326,7 +344,9 @@ void SoftContactExponential::setDomain(Domain *theDomain)
 		// All is good, we can set the domain.
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
+		update();
 	}
+
 }
 
 
@@ -344,24 +364,24 @@ int SoftContactExponential::commitState(void)
 	
 	*tA = *tC;
 	*g_commit = *g;
-	*g_prev_commit = *g_prev;
 	is_in_contact_commit = is_in_contact;
-	is_in_contact_prev_commit = is_in_contact_prev;
+	*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);
+	*tC_pred_commit = *tC_pred; 
 	
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tA, 1.0);
+
 
 	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
 	cout.precision(10);
 	cout << "******************************************** Commit State *************************************\n";
 	cout << "*g_commit " <<  *g_commit;
-	cout << "*g_prev_commit " <<  *g_prev_commit;
-	cout << "is_in_contact_prev_commit " <<  is_in_contact_prev_commit << "\n";
 	cout << "is_in_contact_commit " <<  is_in_contact_commit << "\n";
 	cout << "*Commit Resisting Force -  " << *tA ;
+	cout << "*g_elastic - " << *g_elastic ;
+	cout << "*tC_pred " << *tC_pred;
 	cout << "###############################################################################################\n";
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	return 0;
 }
 
@@ -377,9 +397,10 @@ int SoftContactExponential::revertToLastCommit(void)
 {
 	*tC = *tA;
 	*g = *g_commit;
-	*g_prev = *g_prev_commit;
+	*g_prev = *g_commit;
 	is_in_contact = is_in_contact_commit;
-	is_in_contact_prev = is_in_contact_prev_commit;
+	*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);
+	*tC_pred = *tC_pred_commit;
 
 	return 0;
 }
@@ -394,7 +415,11 @@ int SoftContactExponential::revertToLastCommit(void)
 //   * Output: error flag, 0 if success
 int SoftContactExponential::revertToStart(void)
 {
-	// you must implement
+	g_elastic->Zero();
+	tC_pred_commit ->Zero();
+	tA->Zero();
+	g_commit->Zero();
+	is_in_contact_commit = true;
 	return 0;
 }
 
@@ -409,20 +434,18 @@ int SoftContactExponential::revertToStart(void)
 //   * Output: error flag, 0 if success
 int SoftContactExponential::update(void)
 {
-	double epsilon= 0;
-	double tol = 0;
+	double tol = 0, kn_m=0;
 	computeGap();
-	Vector delg(3);				     // correct gap fucntion
-	Vector trial_tC(3);			     // Predicted Forces //
-	double u2,u1,kn_m;
+	static Vector delg(3); delg.Zero();	     		// correct gap fucntion
+	static Vector trial_tC(3); trial_tC.Zero();     // Predicted Forces
 
-	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	// cout << "************************************ Iteration Steps **********************************\n";
-	// cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
-	// cout << "is_in_contact " <<  is_in_contact << "\n";	
-	// cout << "*g " <<  *g;
-	// cout << "*tC_pred " << *tC_pred;
-	// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+	cout << "************************************ Iteration Steps **********************************\n";
+	cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
+	cout << "is_in_contact " <<  is_in_contact << "\n";	
+	cout << "*g " <<  *g;
+	cout << "*tC_pred " << *tC_pred;
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (is_in_contact){
 
@@ -442,7 +465,6 @@ int SoftContactExponential::update(void)
 
 		///////////////////////////// Exponential Function //////////////////
 		kn_m = b*exp(a*(-(*g)(2)))*(1+a*(-(*g)(2)));
-		cout <<" kn_m "<< kn_m << endl;
 		/////////////////////////////////////////////////////////////////////
 
 		/////////////////////// Setting elastic Tangent Stiffness ///////////////////////
@@ -464,14 +486,13 @@ int SoftContactExponential::update(void)
 		///////////// checking if yf_B = (mu*N + Shear Force) >0  ///////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
 
-		double yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
+		static double yf_B; yf_B=0; yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
 
 		if (yf_B > tol){ /////// Sliding Condition /////////
 
 			/////////////////////////////////// Finding the Loading direction //////////////////////////////////////////////////
-			Vector eta=trial_tC;eta(2)=0;double norm_eta = eta.Norm();				// eta -> unit plastic flow direction (non-associative)
-			// cout <<  trial_tC << endl;
-			// cout <<  norm_eta << endl;
+			static Vector eta(3); eta.Zero();eta=trial_tC;eta(2)=0;double norm_eta = eta.Norm();				// eta -> unit plastic flow direction (non-associative)
+
 	        if (norm_eta > tol){
 	            eta = eta / norm_eta;
 	       		trial_tC(0) = -1*mu*trial_tC(2)*eta(0); 
@@ -493,7 +514,7 @@ int SoftContactExponential::update(void)
 			// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	        ////////////////////////////// Calculating the crossing increament force to yield surface /////////////////////////
-	       	Vector zeta=trial_tC;												// zeta -> unit normal to yield surface
+	       	static Vector zeta; zeta.Zero();  zeta=trial_tC	;						// zeta -> unit normal to yield surface
 	       	eta = trial_tC; eta(2)=0;
 	       	norm_eta = eta.Norm();
 	        if (norm_eta > tol){
@@ -501,7 +522,7 @@ int SoftContactExponential::update(void)
 		        ///////////////////////////////// Updating the stiffness matrix ///////////////////////////////////////////////////////////
 	        	zeta(2)=mu;	zeta = zeta / zeta.Norm();								// unit normal to yield surface
 		        double Beta = 0;     												// Hardening parameter
-				Matrix Cplastic(3,3);
+				static Matrix Cplastic(3,3); 
 				Cplastic(0,0) = eta(0)*zeta(0)*kt; 	Cplastic(0,1) = eta(0)*zeta(1)*kt; 	Cplastic(0,2) = eta(0)*zeta(2)*kn_m;
 				Cplastic(1,0) = eta(1)*zeta(0)*kt; 	Cplastic(1,1) = eta(1)*zeta(1)*kt;	Cplastic(1,2) = eta(1)*zeta(2)*kn_m;
 				C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
@@ -537,12 +558,10 @@ int SoftContactExponential::update(void)
 
 		}
 
-		// (*C)(2, 2) = 100*a*(-delg(2))*exp(a*(-delg(2)))-(exp(a*(-delg(2)))-1);;
-
 	}
 	else{
 
-		(*tC_pred)(0)=0;(*tC_pred)(1)=0;(*tC_pred)(2)=0;
+		tC_pred->Zero();
 
 		////////////////// Editted by Sumeet //////////////////////////
 		// The situataions that can happen inside it are as follows ///
@@ -657,8 +676,6 @@ const Matrix &SoftContactExponential::getTangentStiff(void)
 	{
 		K.addMatrixTripleProduct(0.0, B, *C, 1.0); // B' * C * B
 	}
-
-	// cout << "K = " << K << endl;
 
 	return K;
 }
@@ -1012,7 +1029,7 @@ int SoftContactExponential::CheckMesh(ofstream &)
 //   * Input: void
 //   * Output: number of double outputs for the element (size of the output vector)
 
-#define SoftContactExponential_NOUTPUT 6
+#define SoftContactExponential_NOUTPUT 9
 
 int SoftContactExponential::getOutputSize() const
 {
@@ -1037,7 +1054,9 @@ const Vector &SoftContactExponential::getOutput()
 	output_vector(3) = (*tA)(0);
 	output_vector(4) = (*tA)(1);
 	output_vector(5) = (*tA)(2);
-
+	output_vector(6) = (*g_elastic)(0);
+	output_vector(7) = (*g_elastic)(1);
+	output_vector(8) = (*g_elastic)(2);
 
 	return output_vector;
 }
@@ -1069,13 +1088,11 @@ Matrix &SoftContactExponential::getGaussCoordinates(void)
 void SoftContactExponential::computeGap()
 {
 
-	// cout << "started Computing Gap \n";
-
-	Vector d_ij(3);							// Distance between nodes
-	const Vector &xi = nodes[0]->getCrds();	 //Coordinates vector of node i
-	const Vector &ui = nodes[0]->getTrialDisp(); //Displacement vector of node i
-	const Vector &xj = nodes[1]->getCrds(); //Coordinates vector of node j
-	const Vector &uj = nodes[1]->getTrialDisp(); //Displacement vector of node j
+	static Vector d_ij(3); d_ij.Zero();				// Distance between nodes
+	const Vector &xi = nodes[0]->getCrds();	 		// Coordinates vector of node i
+	const Vector &ui = nodes[0]->getTrialDisp();	// Displacement vector of node i
+	const Vector &xj = nodes[1]->getCrds(); 		// Coordinates vector of node j
+	const Vector &uj = nodes[1]->getTrialDisp(); 	// Displacement vector of node j
 
 	g->Zero();
 	d_ij = (xj + uj) - (xi + ui);
@@ -1087,48 +1104,13 @@ void SoftContactExponential::computeGap()
 		(*g)(2) += B(2, 3 + i) * d_ij(i);
 	}
 
-	// Normal gap
-	double g_N = (*g)(2);
-	double tol = 0;
-
 	is_in_contact_prev = is_in_contact;
+	is_in_contact=false;
 
-	// cout << "g_N " << g_N << endl;
-	if (g_N <= tol )
+	if ((*g)(2) <= 0 )
 		is_in_contact=true;
-	else
-		is_in_contact=false;
 
-	// cout << "returning fron the compute gap function \n";
 	return;
-
-	// if (is_in_contact_prev)                    // If element was previously in contact...
-	// {
-	// 	if (g_N < epsilon )                    // ... and still is in contact
-	// 	{
-	// 		return;                            // ... proceed
-	// 	}
-	// 	else                                   // and now is no longer in contact
-	// 	{
-	// 		is_in_contact = false;             // set to not in contact
-
-	// 		return;
-	// 	}
-	// }
-	// else                                   	   // If element was previously not in contact ...
-	// {
-	// 	if (g_N <= epsilon)                           // ... and now is in contact
-	// 	{
-	// 		is_in_contact = true;              // ... set to being in contact
-	// 		return;
-	// 	}
-	// 	else                                   // ... and is still not in contact
-	// 	{
-	// 		is_in_contact = false;             // set to not in contact
-	// 		return;
-	// 	}
-	// }
-
 }
 
 
@@ -1139,13 +1121,15 @@ void SoftContactExponential::initialize()
 
 	tA = new Vector(3);          // Current commitred local forces  t = [t_T1, t_T2, t_N]
 	tC = new Vector(3);          // Current trial local forces  t = [t_T1, t_T2, t_N]
-	R = new Vector(6);          // Current resisting forces
+	R = new Vector(6);           // Current resisting forces
 	g = new Vector(3);
 	g_prev = new Vector(3);
 	g_commit = new Vector(3);
-	g_prev_commit = new Vector(3);
 	C = new Matrix(3, 3);
 	tC_pred = new Vector(3);
+	g_elastic = new Vector(3);
+	tC_pred_commit = new Vector(3);
+
 	return ;
 }
 

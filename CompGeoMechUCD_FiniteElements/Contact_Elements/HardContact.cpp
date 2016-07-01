@@ -126,7 +126,9 @@ HardContact::HardContact(int tag, int node1, int node2, double kn_, double kt_, 
 		B(2, i + 3) =  z_local(i);
 	}
 
-	g_commit = 0;
+	g_commit  =0;
+	g_elastic =0;
+	tC_pred_commit = 0;
 	is_in_contact_commit = false;
 
 }
@@ -161,6 +163,8 @@ HardContact::HardContact():
 	nodes[1] = 0;
 
 	g_commit = 0;
+	g_elastic = 0;
+	tC_pred_commit = 0;
 	is_in_contact_commit = false;
 
 	this->setNumberOfBoundaryNodes(1);
@@ -176,16 +180,35 @@ HardContact::HardContact():
 HardContact::~HardContact()
 {
 
-
 	if ( tA != NULL )
 	{
 		delete tA;
 		tA = NULL;
 	}
+	if ( g_commit != NULL )
+	{
+		delete g_commit;
+		g_commit = NULL;
+	}
+	if ( g_elastic != NULL )
+	{
+		delete g_elastic;
+		g_elastic = NULL;
+	}
+	if ( tC_pred_commit != NULL )
+	{
+		delete tC_pred_commit;
+		tC_pred_commit = NULL;
+	}
 	if ( tC != NULL )
 	{
 		delete tC;
 		tC = NULL;
+	}
+	if ( tC_pred != NULL )
+	{
+		delete tC_pred;
+		tC_pred = NULL;
 	}
 	if ( R != NULL )
 	{
@@ -318,8 +341,9 @@ void HardContact::setDomain(Domain *theDomain)
 		// All is good, we can set the domain.
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
+		update();
 	}
-	update();
+
 }
 
 
@@ -338,6 +362,8 @@ int HardContact::commitState(void)
 	*tA = *tC;
 	*g_commit = *g;
 	is_in_contact_commit = is_in_contact;
+	*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);
+	*tC_pred_commit = *tC_pred; 
 	
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tA, 1.0);
@@ -349,6 +375,8 @@ int HardContact::commitState(void)
 	cout << "*g_commit " <<  *g_commit;
 	cout << "is_in_contact_commit " <<  is_in_contact_commit << "\n";
 	cout << "*Commit Resisting Force -  " << *tA ;
+	cout << "*g_elastic - " << *g_elastic ;
+	cout << "*tC_pred " << *tC_pred;
 	cout << "###############################################################################################\n";
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -369,6 +397,8 @@ int HardContact::revertToLastCommit(void)
 	*g = *g_commit;
 	*g_prev = *g_commit;
 	is_in_contact = is_in_contact_commit;
+	*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);
+	*tC_pred = *tC_pred_commit;
 
 	return 0;
 }
@@ -383,7 +413,11 @@ int HardContact::revertToLastCommit(void)
 //   * Output: error flag, 0 if success
 int HardContact::revertToStart(void)
 {
-	// you must implement
+	g_elastic->Zero();
+	tC_pred_commit ->Zero();
+	tA->Zero();
+	g_commit->Zero();
+	is_in_contact_commit = true;
 	return 0;
 }
 
@@ -398,8 +432,6 @@ int HardContact::revertToStart(void)
 //   * Output: error flag, 0 if success
 int HardContact::update(void)
 {
-	// cout << "Going To Calculate gap \n"; 
-	// double epsilon= 0;
 	double tol = 0;
 	computeGap();
 	static Vector delg(3); delg.Zero();	     		// correct gap fucntion
@@ -439,7 +471,7 @@ int HardContact::update(void)
 		// // ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
 		// cout << "*tC_pred " <<  *tC_pred;	
 		// cout << "*trial_tC " <<  trial_tC;
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 		/////////////////////////////////////////////////////////////////////////////////
@@ -447,14 +479,13 @@ int HardContact::update(void)
 		///////////// checking if yf_B = (mu*N + Shear Force) >0  ///////////////////////
 		/////////////////////////////////////////////////////////////////////////////////
 
-		static double yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
+		static double yf_B; yf_B=0, yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
 
 		if (yf_B > tol){ /////// Sliding Condition /////////
 
 			/////////////////////////////////// Finding the Loading direction //////////////////////////////////////////////////
 			static Vector eta(3); eta.Zero();eta=trial_tC;eta(2)=0;double norm_eta = eta.Norm();				// eta -> unit plastic flow direction (non-associative)
-			// cout <<  trial_tC << endl;
-			// cout <<  norm_eta << endl;
+
 	        if (norm_eta > tol){
 	            eta = eta / norm_eta;
 	       		trial_tC(0) = -1*mu*trial_tC(2)*eta(0); 
@@ -475,8 +506,8 @@ int HardContact::update(void)
 			// cout << "*trial_tC " <<  trial_tC;
 			// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	        ////////////////////////////// Calculating the crossing increament force to yield surface /////////////////////////
-	       	static Vector zeta=trial_tC; zeta.Zero();												// zeta -> unit normal to yield surface
+	        //////////////////////////// Calculating the crossing increament force to yield surface /////////////////////////
+	       	static Vector zeta(3); zeta.Zero(); zeta=trial_tC;							// zeta -> unit normal to yield surface
 	       	eta = trial_tC; eta(2)=0;
 	       	norm_eta = eta.Norm();
 	        if (norm_eta > tol){
@@ -523,7 +554,7 @@ int HardContact::update(void)
 	}
 	else{
 
-		(*tC_pred)(0)=0;(*tC_pred)(1)=0;(*tC_pred)(2)=0;
+		tC_pred->Zero();
 
 		////////////////// Editted by Sumeet //////////////////////////
 		// The situataions that can happen inside it are as follows ///
@@ -638,8 +669,6 @@ const Matrix &HardContact::getTangentStiff(void)
 	{
 		K.addMatrixTripleProduct(0.0, B, *C, 1.0); // B' * C * B
 	}
-
-	// cout << "K = " << K << endl;
 
 	return K;
 }
@@ -984,16 +1013,12 @@ int HardContact::CheckMesh(ofstream &)
 
 
 
-
-
-
-
 //==================================================================================================
 // Output interface functions
 //   * Input: void
 //   * Output: number of double outputs for the element (size of the output vector)
 
-#define HardContact_NOUTPUT 6
+#define HardContact_NOUTPUT 9
 
 int HardContact::getOutputSize() const
 {
@@ -1018,7 +1043,9 @@ const Vector &HardContact::getOutput()
 	output_vector(3) = (*tA)(0);
 	output_vector(4) = (*tA)(1);
 	output_vector(5) = (*tA)(2);
-
+	output_vector(6) = (*g_elastic)(0);
+	output_vector(7) = (*g_elastic)(1);
+	output_vector(8) = (*g_elastic)(2);
 
 	return output_vector;
 }
@@ -1050,13 +1077,11 @@ Matrix &HardContact::getGaussCoordinates(void)
 void HardContact::computeGap()
 {
 
-	// cout << "started Computing Gap \n";
-
 	static Vector d_ij(3); d_ij.Zero();				// Distance between nodes
-	const Vector &xi = nodes[0]->getCrds();	 		//Coordinates vector of node i
-	const Vector &ui = nodes[0]->getTrialDisp();	//Displacement vector of node i
-	const Vector &xj = nodes[1]->getCrds(); 		//Coordinates vector of node j
-	const Vector &uj = nodes[1]->getTrialDisp(); 	//Displacement vector of node j
+	const Vector &xi = nodes[0]->getCrds();	 		// Coordinates vector of node i
+	const Vector &ui = nodes[0]->getTrialDisp();	// Displacement vector of node i
+	const Vector &xj = nodes[1]->getCrds(); 		// Coordinates vector of node j
+	const Vector &uj = nodes[1]->getTrialDisp(); 	// Displacement vector of node j
 
 	g->Zero();
 	d_ij = (xj + uj) - (xi + ui);
@@ -1068,47 +1093,13 @@ void HardContact::computeGap()
 		(*g)(2) += B(2, 3 + i) * d_ij(i);
 	}
 
-	// Normal gap
-	double g_N = (*g)(2);
-	double tol = 0;
-
 	is_in_contact_prev = is_in_contact;
+	is_in_contact=false;
 
-	// cout << "g_N " << g_N << endl;
-	if (g_N <= tol )
+	if ((*g)(2) <= 0 )
 		is_in_contact=true;
-	else
-		is_in_contact=false;
 
-	// cout << "returning fron the compute gap function \n";
 	return;
-
-	// if (is_in_contact_prev)                    // If element was previously in contact...
-	// {
-	// 	if (g_N < epsilon )                    // ... and still is in contact
-	// 	{
-	// 		return;                            // ... proceed
-	// 	}
-	// 	else                                   // and now is no longer in contact
-	// 	{
-	// 		is_in_contact = false;             // set to not in contact
-
-	// 		return;
-	// 	}
-	// }
-	// else                                   	   // If element was previously not in contact ...
-	// {
-	// 	if (g_N <= epsilon)                           // ... and now is in contact
-	// 	{
-	// 		is_in_contact = true;              // ... set to being in contact
-	// 		return;
-	// 	}
-	// 	else                                   // ... and is still not in contact
-	// 	{
-	// 		is_in_contact = false;             // set to not in contact
-	// 		return;
-	// 	}
-	// }
 
 }
 
@@ -1120,12 +1111,15 @@ void HardContact::initialize()
 
 	tA = new Vector(3);          // Current commitred local forces  t = [t_T1, t_T2, t_N]
 	tC = new Vector(3);          // Current trial local forces  t = [t_T1, t_T2, t_N]
-	R = new Vector(6);          // Current resisting forces
+	R = new Vector(6);           // Current resisting forces
 	g = new Vector(3);
 	g_prev = new Vector(3);
 	g_commit = new Vector(3);
 	C = new Matrix(3, 3);
 	tC_pred = new Vector(3);
+	g_elastic = new Vector(3);
+	tC_pred_commit = new Vector(3);
+
 	return ;
 }
 

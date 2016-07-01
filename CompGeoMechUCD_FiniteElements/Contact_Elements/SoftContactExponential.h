@@ -137,10 +137,10 @@ private:
 
     // commit state variables
     bool is_in_contact_commit;      // whether slave is in contact with master
-    bool is_in_contact_prev_commit; // whetehr slave was in contact with master
-    Vector *tA;     // Current committed local forces  t = [t_T1, t_T2, t_N]
-    Vector *g_commit;      // Current gap
-    Vector *g_prev_commit; // Previous gap
+    Vector *tA;                     // Current committed local forces  t = [t_T1, t_T2, t_N]
+    Vector *g_commit;               // Current gap
+    Vector *g_elastic;              // Elastic Displacement
+    Vector *tC_pred_commit;         // Commited predicter
 
 };
 
