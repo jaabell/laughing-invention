@@ -319,6 +319,7 @@ void HardContact::setDomain(Domain *theDomain)
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
 	}
+	update();
 }
 
 
