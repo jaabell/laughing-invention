@@ -834,6 +834,12 @@ int HardContact::sendSelf(int commitTag, Channel &theChannel)
         return -1;
     }
 
+    if ( theChannel.sendVector( 0, commitTag, *tC_pred_commit ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
     if (theChannel.sendMatrix( 0,commitTag,	B ) < 0)
     {
         cerr << "WARNING HardContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
@@ -893,7 +899,7 @@ int HardContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
     {
-        cerr << "WARNING HardContact::sendSelf() - " << this->getTag() << " failed to send ID idData\n";
+        cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve ID idData\n";
         return -1;
     }
 
@@ -904,7 +910,7 @@ int HardContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
     Vector floatData(5);
     if ( theChannel.receiveVector( 0, commitTag, floatData ) < 0 )
     {
-        cerr << "WARNING HardContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
 
@@ -919,7 +925,7 @@ int HardContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if ( theChannel.receiveVector( 0, commitTag, *tA ) < 0 )
     {
-        cerr << "WARNING HardContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
 
@@ -927,15 +933,23 @@ int HardContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if ( theChannel.receiveVector( 0, commitTag, *g_commit ) < 0 )
     {
-        cerr << "WARNING HardContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
 
     *g_prev = *g_commit;
 
+    if ( theChannel.receiveVector( 0, commitTag, *tC_pred_commit ) < 0 )
+    {
+        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        return -1;
+    }
+
+    *tC_pred = *tC_pred_commit;
+
     if (theChannel.receiveMatrix( 0,commitTag,	B ) < 0)
     {
-        cerr << "WARNING HardContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
     
