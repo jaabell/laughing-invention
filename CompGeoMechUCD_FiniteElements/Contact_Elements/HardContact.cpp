@@ -715,20 +715,9 @@ const Matrix &HardContact::getDamp(void)
 
 	Matrix Clocal(3, 3);
 
-	if (is_in_contact){
-
-		Clocal(0, 0) = ct;
-		Clocal(1, 1) = ct;
-		Clocal(2, 2) = cn;
-	}
-	else{
-
-		Clocal(0, 0) = 0;
-		Clocal(1, 1) = 0;
-		Clocal(2, 2) = 0;		
-
-	}
-
+	Clocal(0, 0) = ct;
+	Clocal(1, 1) = ct;
+	Clocal(2, 2) = cn;
 
 	C.addMatrixTripleProduct(0.0, B, Clocal, 1.0); // B' * C * B
 	return C;
