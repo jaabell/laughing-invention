@@ -188,7 +188,7 @@
 %token DYNAMICINTEGRATOR DYNAMICINTEGRATOR_HHT DYNAMICINTEGRATOR_NEWMARK STATICINTEGRATOR STATICINTEGRATOR_DISPLACEMENT
 %token SIMULATE COMPUTE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations RUNTEST
 %token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY LEVEL
-%token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT FUNCTION_TYPE FUNCTION_NAME
+%token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT 
 %token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
 %token self_weight surface load_value
 %token scale_factor displacement_scale_unit velocity_scale_unit acceleration_scale_unit 
@@ -196,12 +196,13 @@
 %token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file hdf5_file series_file time_series_file MAGNITUDES MAGNITUDE initial_velocity
 %token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain constitutive testing constant mean triaxial drained undrained simple shear
 %token number_of_subincrements maximum_number_of_iterations tolerance_1 tolerance_2 strain stress control Guass points Gauss each point single value
+%token initial_normal_stiffness stiffning_rate
 // Additionally these tokens carry a string type (the above carry no type)
 // This is becuase there are several options to what this token may be
 // and the program branches depending on these.
 // ie. DOF may take the values {ux, uy, uz, Ux, Uy, Uz, rx, ry, rz, p} as
 // defined in the lexer file (feiparser.l).
-%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FUNCTION_NAME FORCE 
+%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FORCE 
 %type <ident> DAMPINGTYPE 
 
 
@@ -3615,10 +3616,10 @@ ADD_element:
 	}
 	// !=========================================================================================================
 	// !
-	// !FEIDOC add element # <.> type [SoftContact] function [exponential] / [inverse] / [power] / [linear] / [factorial] (<.>,<.>) with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
-	| TEXTNUMBER exp TYPE SoftContact FUNCTION_TYPE FUNCTION_NAME '(' exp ',' exp ')' WITH NODES
-		'(' exp ',' exp ')'
-		normal_stiffness '=' exp
+	// !FEIDOC add element # <.> type [SoftContact] with nodes (<.>, <.>) initial_normal_stiffness = <F/L> stiffning_rate = <m^-1> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
+	| TEXTNUMBER exp TYPE SoftContact WITH NODES '(' exp ',' exp ')'
+		initial_normal_stiffness '=' exp
+		stiffning_rate '=' exp
 		tangential_stiffness '=' exp
 		normal_damping '=' exp
 		tangential_damping '=' exp
@@ -3627,67 +3628,28 @@ ADD_element:
 	{
 		args.clear(); signature.clear();
 
-		// FUNCTION_NAME contains a string to indicate which function to choose. 
-		// Instead of having different tokens for each function, just have one 
-		// and decide in the semantic action which DSL to call.
-		// Usually different DSLs have different arguments, but in this
-		// case all three take two arguments, which makes this approach easier.
 
-		int (*f)() = NULL;         // function poiner to the function DSL
-		string fname;              // name of the DSL called to report
+		args.push_back($2); signature.push_back(this_signature("number",                    &isAdimensional));
 
-		args.push_back($2); signature.push_back(this_signature("number",                  &isAdimensional));
-
-		//Read the string and turn into lower-case
-		string fun_name(*$6);std::transform(fun_name.begin(), fun_name.end(), fun_name.begin(), ::tolower);
-
-		args.push_back($8 ); signature.push_back(this_signature("a",                      &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("b",                      &isAdimensional));
-
-		args.push_back($15); signature.push_back(this_signature("node1",                  &isAdimensional));
-		args.push_back($17); signature.push_back(this_signature("node2",                  &isAdimensional));
-
-		args.push_back($21); signature.push_back(this_signature("normal_stiffness",       &isThisUnit<1, 0, -2>));
-		args.push_back($24); signature.push_back(this_signature("tangential_stiffness",   &isThisUnit<1, 0, -2>));
-		args.push_back($27); signature.push_back(this_signature("normal_damping",         &isThisUnit<1, 0, -1>));
-		args.push_back($30); signature.push_back(this_signature("tangential_damping",     &isThisUnit<1, 0, -1>));
-		args.push_back($33); signature.push_back(this_signature("friction_ratio",         &isAdimensional));
-
-		args.push_back($37); signature.push_back(this_signature("x_local_1",              &isAdimensional));
-		args.push_back($39); signature.push_back(this_signature("x_local_2",              &isAdimensional));
-		args.push_back($41); signature.push_back(this_signature("x_local_3",              &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("node1",                     &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2",                    &isAdimensional));
+ 
+ 		args.push_back($14); signature.push_back(this_signature("initial_normal_stiffness", &isThisUnit<1, 0, -2>));
+		args.push_back($17); signature.push_back(this_signature("stiffning_rate",           &isThisUnit<0, -1, 0>));
+		args.push_back($20); signature.push_back(this_signature("tangential_stiffness",     &isThisUnit<1, 0, -2>));
+		args.push_back($23); signature.push_back(this_signature("normal_damping",           &isThisUnit<1, 0, -1>));
+		args.push_back($26); signature.push_back(this_signature("tangential_damping",       &isThisUnit<1, 0, -1>));
+		args.push_back($29); signature.push_back(this_signature("friction_ratio",           &isAdimensional));
+  
+		args.push_back($33); signature.push_back(this_signature("x_local_1",                &isAdimensional));
+		args.push_back($35); signature.push_back(this_signature("x_local_2",                &isAdimensional));
+		args.push_back($37); signature.push_back(this_signature("x_local_3",                &isAdimensional));
 
 
-		if( fun_name.compare("exponential") == 0)
-		{
-			$$ = new FeiDslCaller13<int, double, double, int, int,
-					   double, double, double, double, double,
-					   double, double, double>(&add_element_soft_contact_exponential, args, signature, "add_element_soft_contact_exponential");
-		}
-		else if( fun_name.compare("inverse") == 0)
-		{
-			$$ = new FeiDslCaller13<int, double, double, int, int,
-					   double, double, double, double, double,
-					   double, double, double>(&add_element_soft_contact_inverse, args, signature, "add_element_soft_contact_inverse");
-		}
-		else if( fun_name.compare("power") == 0)
-		{
-			$$ = new FeiDslCaller13<int, double, double, int, int,
-					   double, double, double, double, double,
-					   double, double, double>(&add_element_soft_contact_power, args, signature, "add_element_soft_contact_power");
-		}
-		else if( fun_name.compare("factorial") == 0)
-		{
-			$$ = new FeiDslCaller13<int, double, double, int, int,
-					   double, double, double, double, double,
-					   double, double, double>(&add_element_soft_contact_factorial, args, signature, "add_element_soft_contact_factorial");
-		}
-		else
-		{
-			cerr << "Function_Type " << *$6 << " not recognized.\n\n";
-		}
+		$$ = new FeiDslCaller12<int, int, int, double, double, double, double, double, double,
+				   double, double, double>(&add_element_soft_contact, args, signature, "add_element_soft_contact");
 
-		for(int ii = 1;ii <=13; ii++) nodes.pop();
+		for(int ii = 1;ii <=12; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================

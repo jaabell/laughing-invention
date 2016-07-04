@@ -1405,10 +1405,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 || eleClassTag == ELE_TAG_TwentyNodeBrickLT
                 || eleClassTag == ELE_TAG_TwentySevenNodeBrickLT
                 || eleClassTag == ELE_TAG_HardContact                                               // Sumeet added on June 26 2016
-                || eleClassTag == ELE_TAG_SoftContactExponential                                    // Sumeet added on June 26 2016
-                || eleClassTag == ELE_TAG_SoftContactInverse                                        // Sumeet added on June 26 2016
-                || eleClassTag == ELE_TAG_SoftContactPower                                          // Sumeet added on June 26 2016
-                || eleClassTag == ELE_TAG_SoftContactFactorial                                      // Sumeet added on June 26 2016
+                || eleClassTag == ELE_TAG_SoftContact                                               // Sumeet added on June 26 2016
            )
         {
             //Guanzhou added
@@ -1470,10 +1467,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_TwentyNodeBrickLT
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                       // Jose Added Oct 2014
                 && eleClassTag == ELE_TAG_HardContact                                  // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContactExponential                       // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContactInverse                           // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContactPower                             // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContactFactorial                         // Sumeet added on June 26 2016
+                && eleClassTag == ELE_TAG_SoftContact                                  // Sumeet added on June 26 2016
            )
         {
             cerr << "PartitionedDomain::buildEleGraph() -- (2) Unknown element classTag = " << eleClassTag << " \n";
@@ -1603,10 +1597,7 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_TwentyNodeBrickLT
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT
                 && eleClassTag == ELE_TAG_HardContact                                  // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContactExponential                       // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContactInverse                           // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContactPower                             // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContactFactorial                         // Sumeet added on June 26 2016
+                && eleClassTag == ELE_TAG_SoftContact                                  // Sumeet added on June 26 2016
            )
         {
             cerr << "PartitionedDomain::buildEleGraph() -- (3) Unknown element class tag = " << eleClassTag << "\n";

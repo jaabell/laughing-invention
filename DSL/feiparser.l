@@ -407,7 +407,8 @@ EXP	([Ee][-+]?[0-9]+)
 "friction_ratio"                    {return token::friction_ratio;}
 "maximum_gap"                       {return token::maximum_gap;}
 "contact_plane_vector"              {return token::contact_plane_vector;}
-
+"initial_normal_stiffness"          {return token::initial_normal_stiffness;} 
+"stiffning_rate"					{return token::stiffning_rate;}
 
  /* section types */
 "Membrane_Plate_Fiber"              {return token::MembranePlateFiber;}
@@ -707,17 +708,6 @@ EXP	([Ee][-+]?[0-9]+)
 										return token::ALGNAME;
 									 }
 
- /* Penalty Function options*/
-"exponential"          				|
-"inverse"         					|
-"power"                    			|
-"factorial"                         {
-										yylval->ident = new string(yytext);
-										return token::FUNCTION_NAME;
-									}
-
-"function_name"   						{return token::FUNCTION_NAME;}
-"function_type"   						{return token::FUNCTION_TYPE;}
 "yield_function_relative_tolerance"   	{return token::yield_function_relative_tolerance;}
 "stress_relative_tolerance" 		  	{return token::stress_relative_tolerance;}
 

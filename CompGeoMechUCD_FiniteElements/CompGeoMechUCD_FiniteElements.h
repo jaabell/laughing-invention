@@ -26,10 +26,7 @@
 
 
 #include "./Contact_Elements/HardContact.h"
-#include "./Contact_Elements/SoftContactExponential.h"
-#include "./Contact_Elements/SoftContactInverse.h"
-#include "./Contact_Elements/SoftContactPower.h"
-#include "./Contact_Elements/SoftContactFactorial.h"
+#include "./Contact_Elements/SoftContact.h"
 #include "./solid_brick_8_nodes/EightNodeBrick.h"
 #include "./solid_brick_8_nodes_variable_number_of_gauss_points/EightNodeBrickVariableGP.h"
 #include "./solid_brick_8_nodes_elastic/EightNodeBrickElastic.h"

@@ -423,21 +423,11 @@ FEM_ObjectBroker::getNewElement(int classTag)
     case ELE_TAG_TwentySevenNodeBrickLT:            //Jose added on Oct 9, 2014
         return new TwentySevenNodeBrickLT();
 
-    case ELE_TAG_HardContact:            //Sumeet added on June 28, 2016
+    case ELE_TAG_HardContact:                       //Sumeet added on June 28, 2016
         return new HardContact();
 
-    case ELE_TAG_SoftContactExponential:            //Sumeet added on June 28, 2016
-        return new SoftContactExponential();
-
-    case ELE_TAG_SoftContactInverse:            //Sumeet added on June 28, 2016
-        return new SoftContactInverse();
-
-    case ELE_TAG_SoftContactPower:            //Sumeet added on June 28, 2016
-        return new SoftContactPower();
-
-    case ELE_TAG_SoftContactFactorial:            //Sumeet added on June 28, 2016
-        return new SoftContactFactorial();
-
+    case ELE_TAG_SoftContact:                       //Sumeet added on June 28, 2016
+        return new SoftContact();
 
         break;
 

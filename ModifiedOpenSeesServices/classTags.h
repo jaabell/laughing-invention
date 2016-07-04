@@ -323,11 +323,7 @@
 // Sumeet Added Contact Elements 
 
 #define ELE_TAG_HardContact              5015      // Sumeet added on June 26 2016
-#define ELE_TAG_SoftContactExponential   5016      // Sumeet added on June 26 2016
-#define ELE_TAG_SoftContactInverse       5017      // Sumeet added on June 26 2016
-#define ELE_TAG_SoftContactPower         5018      // Sumeet added on June 26 2016
-#define ELE_TAG_SoftContactFactorial     5019      // Sumeet added on June 26 2016
-
+#define ELE_TAG_SoftContact         	 5016      // Sumeet added on June 26 2016
 
 #define ELE_TAG_PenaltyElement 5009
 #define ELE_TAG_PenaltyElementApplyDisplacement 5010
