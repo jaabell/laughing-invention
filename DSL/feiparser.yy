@@ -210,7 +210,7 @@
 // Tokens for elements
 %token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
 %token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based BeamColumnDispFiber3d beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
-%token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact HardContact SoftContact
+%token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact HardContact FrictionalPenaltyContact SoftContact
 %token EightNodeBrickLT EightNodeBrickLTNoOutput TwentyNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT 
 
 // Element options tokens

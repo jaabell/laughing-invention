@@ -374,6 +374,9 @@ EXP	([Ee][-+]?[0-9]+)
 "truss"                             {return token::truss;}
 "contact"                           {return token::contact;}
 "HardContact"          				{return token::HardContact;}
+"HardContact"          				|
+"FrictionalPenaltyContact"          {yylval->ident = new string(yytext);
+									return token::HardContact;}
 "SoftContact"          				{return token::SoftContact;}
 "variable_node_brick_8_to_27"       {return token::variable_node_brick_8_to_27;}
 "ShearBeamLT"                       {return token::ShearBeamLT;}

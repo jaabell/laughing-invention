@@ -413,11 +413,11 @@ int HardContact::revertToLastCommit(void)
 //   * Output: error flag, 0 if success
 int HardContact::revertToStart(void)
 {
-	g_elastic->Zero();
-	tC_pred_commit ->Zero();
-	tA->Zero();
-	g_commit->Zero();
-	is_in_contact_commit = true;
+	// g_elastic->Zero();
+	// tC_pred_commit ->Zero();
+	// tA->Zero();
+	// g_commit->Zero();
+	// is_in_contact_commit = true;
 	return 0;
 }
 

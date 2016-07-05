@@ -62,13 +62,13 @@ int add_element_hard_contact(int ElementNumber,
 
     if (theElement == NULL)
     {
-        cerr << "Error: (add_element_frictional_penalty_contact) memory allocation problem for theElement!" << endl;
+        cerr << "Error: (add_element_hard_contact) memory allocation problem for theElement!" << endl;
         return -1;
     }
 
     if (theDomain.addElement(theElement) == false)
     {
-        cerr << "WARNING (add_element_frictional_penalty_contact) could not add element to the domain\n";
+        cerr << "WARNING (add_element_hard_contact) could not add element to the domain\n";
         cerr << "Element Number: " << ElementNumber << endln;
         return -1;
     }
