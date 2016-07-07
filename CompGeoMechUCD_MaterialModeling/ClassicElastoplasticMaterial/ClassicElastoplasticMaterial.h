@@ -959,15 +959,17 @@ private:
 
             Eelastic = et(TrialStress);
             int Niter = this-> n_max_iterations;
+            static DTensor2 sub_depsilon_elpl(3, 3, 0);
+            sub_depsilon_elpl(i, j) = depsilon_elpl(k, l) / Niter;
             for (int iteration = 0; iteration < Niter; iteration++)
             {
-                TrialStress(i, j)  += Eelastic(i, j, k, l) * depsilon_elpl(k, l) / Niter;
+                TrialStress(i, j)  += Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l) / Niter;
 
                 //Compute normal to YF (n) and Plastic Flow direction (m)
                 const DTensor2& n = yf.df_dsigma_ij(intersection_stress);
-                const DTensor2& m = pf(depsilon_elpl, intersection_stress);
+                const DTensor2& m = pf(sub_depsilon_elpl, intersection_stress);
 
-                double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  intersection_stress);
+                double xi_star_h_star = yf.xi_star_h_star( sub_depsilon_elpl, m,  intersection_stress);
                 double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
 
                 //Compute the plastic multiplier
@@ -978,10 +980,10 @@ private:
                     printTensor("n", n);
                     cout << "xi_star_h_star" << xi_star_h_star << endl;
                     cout << "den" << den << endl;
-                    printTensor("depsilon_elpl", depsilon_elpl);
+                    printTensor("sub_depsilon_elpl", sub_depsilon_elpl);
                     return -1;
                 }
-                double dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
+                double dLambda =  n(i, j) * Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l);
                 dLambda /= den;
 
                 //Update the trial plastic strain.
@@ -990,7 +992,7 @@ private:
                 //Correct the trial stress
                 TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
-                vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
+                vars.evolve(dLambda, sub_depsilon_elpl, m, intersection_stress);
                 vars.commit_tmp();
 
 
@@ -1001,7 +1003,7 @@ private:
                 while (yc > this-> f_relative_tol && ys_correction_count < this-> n_max_iterations)
                 {
                     const DTensor2& n = yf.df_dsigma_ij(TrialStress);
-                    const DTensor2& m = pf(depsilon_elpl, TrialStress);
+                    const DTensor2& m = pf(sub_depsilon_elpl, TrialStress);
                     double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s);
                     double dLambda_correction = yc / den;
                     TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
@@ -1010,8 +1012,8 @@ private:
                 }
 
                 const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
-                const DTensor2& mf = pf(depsilon_elpl, TrialStress);
-                xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, mf,  TrialStress);
+                const DTensor2& mf = pf(sub_depsilon_elpl, TrialStress);
+                xi_star_h_star = yf.xi_star_h_star( sub_depsilon_elpl, mf,  TrialStress);
                 double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
                 Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denf;
 
