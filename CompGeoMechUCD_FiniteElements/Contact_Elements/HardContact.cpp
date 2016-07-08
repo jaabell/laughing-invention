@@ -342,6 +342,7 @@ void HardContact::setDomain(Domain *theDomain)
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
 		update();
+		// commitState();
 	}
 
 }
@@ -846,6 +847,12 @@ int HardContact::sendSelf(int commitTag, Channel &theChannel)
         return -1;
     }
 
+    if (theChannel.sendMatrix( 0,commitTag,	*C ) < 0)
+    {
+        cerr << "WARNING HardContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////
 
     string tmp_string;
@@ -895,6 +902,7 @@ int HardContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 	// theChannel.receiveID(0, 0, integer_data);  //  the first two parameters are deprecated
 	//  Check that error_flag is not < 0
 
+    initialize();
     ID idData( 2 );
 
     if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
@@ -920,10 +928,9 @@ int HardContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
     ct = floatData(3);
     mu = floatData(4);
 
+	////////////////////// Commited local Contact forces vector /////////////////////////////////
 
-    ////////////////////// Commited local Contact forces vector /////////////////////////////////
-
-    if ( theChannel.receiveVector( 0, commitTag, *tA ) < 0 )
+    if ( theChannel.receiveVector( 0, commitTag, *tA) < 0 )
     {
         cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
@@ -952,6 +959,13 @@ int HardContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
         cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
+
+    if (theChannel.receiveMatrix( 0,commitTag,	*C ) < 0)
+    {
+        cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        return -1;
+    }
+    
     
     /////////////////////////////////////////////////////////////////////////////////////
 
