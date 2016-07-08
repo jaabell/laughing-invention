@@ -343,6 +343,7 @@ void SoftContact::setDomain(Domain *theDomain)
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
 		update();
+		commitState();
 	}
 
 }
@@ -363,15 +364,15 @@ int SoftContact::commitState(void)
 	*tA = *tC;
 	*g_commit = *g;
 	is_in_contact_commit = is_in_contact;
-	*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);
 	*tC_pred_commit = *tC_pred; 
-	
+	if(kt==0){*g_elastic = *g;}
+	else{*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);}	
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tA, 1.0);
 
 
 	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	cout.precision(10);
+	cout.precision(16);
 	cout << "******************************************** Commit State *************************************\n";
 	cout << "*g_commit " <<  *g_commit;
 	cout << "is_in_contact_commit " <<  is_in_contact_commit << "\n";
@@ -397,8 +398,9 @@ int SoftContact::revertToLastCommit(void)
 	*g = *g_commit;
 	*g_prev = *g_commit;
 	is_in_contact = is_in_contact_commit;
-	*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);
 	*tC_pred = *tC_pred_commit;
+	if(kt==0){*g_elastic = *g;}
+	else{*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);}
 
 	return 0;
 }
@@ -437,13 +439,13 @@ int SoftContact::update(void)
 	static Vector delg(3); delg.Zero();	     		// correct gap fucntion
 	static Vector trial_tC(3); trial_tC.Zero();     // Predicted Forces
 
-	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	cout << "************************************ Iteration Steps **********************************\n";
-	cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
-	cout << "is_in_contact " <<  is_in_contact << "\n";	
-	cout << "*g " <<  *g;
-	cout << "*tC_pred " << *tC_pred;
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+	// cout << "************************************ Iteration Steps **********************************\n";
+	// cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
+	// cout << "is_in_contact " <<  is_in_contact << "\n";	
+	// cout << "*g " <<  *g;
+	// cout << "*tC_pred " << *tC_pred;
+	// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (is_in_contact){
 
@@ -852,6 +854,12 @@ int SoftContact::sendSelf(int commitTag, Channel &theChannel)
         return -1;
     }
 
+    if (theChannel.sendMatrix( 0,commitTag,	*C ) < 0)
+    {
+        cerr << "WARNING HardContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        return -1;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////
 
     string tmp_string;
@@ -901,6 +909,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 	// theChannel.receiveID(0, 0, integer_data);  //  the first two parameters are deprecated
 	//  Check that error_flag is not < 0
 
+    initialize();
     ID idData( 2 );
 
     if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
@@ -920,12 +929,12 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
         return -1;
     }
 
-    floatData(0) = kn;
-    floatData(1) = sr;
-    floatData(2) = kt;
-    floatData(3) = cn;
-    floatData(4) = ct;
-    floatData(5) = mu;
+    kn = floatData(0);
+    sr = floatData(1);
+    kt = floatData(2);
+    cn = floatData(3);
+    ct = floatData(4);
+    mu = floatData(5);
 
     ////////////////////// Commited local Contact forces vector /////////////////////////////////
 
@@ -958,6 +967,13 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
         cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
+
+    if (theChannel.receiveMatrix( 0,commitTag,	*C ) < 0)
+    {
+        cerr << "WARNING HardContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        return -1;
+    }
+    
     
     /////////////////////////////////////////////////////////////////////////////////////
 

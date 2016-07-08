@@ -342,7 +342,7 @@ void HardContact::setDomain(Domain *theDomain)
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
 		update();
-		// commitState();
+		commitState();
 	}
 
 }
@@ -363,15 +363,15 @@ int HardContact::commitState(void)
 	*tA = *tC;
 	*g_commit = *g;
 	is_in_contact_commit = is_in_contact;
-	*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);
 	*tC_pred_commit = *tC_pred; 
-	
+	if(kt==0){*g_elastic = *g;}
+	else{*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);}	
 	R->Zero();
-	R->addMatrixTransposeVector(1, B, *tA, 1.0);
-
+	R->addMatrixTransposeVector(1, B, *tA, 1.0); 
+	
 
 	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	cout.precision(10);
+	cout.precision(16);
 	cout << "******************************************** Commit State *************************************\n";
 	cout << "*g_commit " <<  *g_commit;
 	cout << "is_in_contact_commit " <<  is_in_contact_commit << "\n";
@@ -398,8 +398,9 @@ int HardContact::revertToLastCommit(void)
 	*g = *g_commit;
 	*g_prev = *g_commit;
 	is_in_contact = is_in_contact_commit;
-	*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);
 	*tC_pred = *tC_pred_commit;
+	if(kt==0){*g_elastic = *g;}
+	else{*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);}
 
 	return 0;
 }
@@ -438,13 +439,13 @@ int HardContact::update(void)
 	static Vector delg(3); delg.Zero();	     		// correct gap fucntion
 	static Vector trial_tC(3); trial_tC.Zero();     // Predicted Forces
 
-	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
-	cout << "************************************ Iteration Steps **********************************\n";
-	cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
-	cout << "is_in_contact " <<  is_in_contact << "\n";	
-	cout << "*g " <<  *g;
-	cout << "*tC_pred " << *tC_pred;
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+	// cout << "************************************ Iteration Steps **********************************\n";
+	// cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
+	// cout << "is_in_contact " <<  is_in_contact << "\n";	
+	// cout << "*g " <<  *g;
+	// cout << "*tC_pred " << *tC_pred;
+	// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (is_in_contact){
 
