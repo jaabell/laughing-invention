@@ -960,7 +960,7 @@ private:
             Eelastic = et(TrialStress);
             int Niter = this-> n_max_iterations;
             static DTensor2 sub_depsilon_elpl(3, 3, 0);
-            sub_depsilon_elpl(i, j) = depsilon_elpl(k, l) / Niter;
+            sub_depsilon_elpl(i, j) = depsilon_elpl(i, j) / Niter;
             for (int iteration = 0; iteration < Niter; iteration++)
             {
                 TrialStress(i, j)  += Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l) / Niter;
