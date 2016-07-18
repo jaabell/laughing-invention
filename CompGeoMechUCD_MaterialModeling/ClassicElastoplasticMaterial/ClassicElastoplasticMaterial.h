@@ -679,19 +679,15 @@ private:
     int Forward_Euler(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;
-
-        //Check for quick return
-        // if( strain_incr(i,i) < );
-
-
         int errorcode = 0;
 
         static DTensor2 depsilon(3, 3, 0);
         depsilon *= 0;
         depsilon(i, j) = strain_incr(i, j);
+
         const DTensor2& sigma = CommitStress;
         const DTensor2& epsilon = CommitStrain;
-        // const DTensor2& epsilon_pl = CommitPlastic_Strain;
+
         vars.revert();
         vars.commit_tmp();
 
@@ -702,22 +698,6 @@ private:
         DTensor4& Eelastic = et(sigma);
         Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
 
-        // for (int ii = 0; ii < 3; ii++)
-        // {
-        //     for (int jj = 0; jj < 3; jj++)
-        //     {
-        //         for (int kk = 0; kk < 3; kk++)
-        //         {
-        //             for (int ll = 0; ll < 3; ll++)
-        //             {
-        //                 dsigma(ii, jj) += Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
-        //             }
-        //         }
-        //         // TrialStress(ii, jj) = sigma(ii, jj) + dsigma(ii, jj);
-        //         // TrialStrain(ii, jj) = CommitStrain(ii, jj) + depsilon(ii, jj);
-        //         // TrialPlastic_Strain(ii, jj) = CommitPlastic_Strain(ii, jj);
-        //     }
-        // }
         dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
 
         if (abs(dsigma(i, i)) < this->stress_relative_tol)
@@ -734,19 +714,13 @@ private:
         double yf_val_start = yf(sigma);
         double yf_val_end = yf(TrialStress);
 
-        // printTensor("   * depsilon", depsilon);
-        // printTensor("   * sigma", sigma);
-        // printTensor("   * dsigma", dsigma);
-        // std::cout << "   * yf start = " << yf_val_start << std::endl;
-        // std::cout << "   * yf end   = " << yf_val_end << std::endl;
-
         DTensor2& start_stress = CommitStress;
         DTensor2& end_stress = TrialStress;
 
         intersection_stress(i, j) = start_stress(i, j);
 
         bool returns = false;
-        // pre_integration_callback(const DTensor2 &depsilon, const DTensor2 &dsigma, const DTensor2 &TrialStress, double yf1, double yf2, bool & returns)
+
         int retval = pre_integration_callback_(depsilon, dsigma, TrialStress, Stiffness, yf_val_start, yf_val_end,  returns);
 
         if (returns)
@@ -772,14 +746,13 @@ private:
             }
 
             TrialStress(i, j) = intersection_stress(i, j);
+
             Eelastic = et(intersection_stress);
             TrialStress(i, j)  += Eelastic(i, j, k, l) * depsilon_elpl(k, l);
 
             //Compute normal to YF (n) and Plastic Flow direction (m)
             const DTensor2& n = yf.df_dsigma_ij(intersection_stress);
             const DTensor2& m = pf(depsilon_elpl, intersection_stress);
-
-            // printTensor("intersection_stress", intersection_stress);
 
             double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  intersection_stress);
             double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
@@ -890,6 +863,7 @@ private:
         static DTensor2 depsilon(3, 3, 0);
         depsilon *= 0;
         depsilon(i, j) = strain_incr(i, j);
+
         const DTensor2& sigma = CommitStress;
         const DTensor2& epsilon = CommitStrain;
         vars.revert();
@@ -902,18 +876,13 @@ private:
         DTensor4& Eelastic = et(sigma);
         Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
 
-        for (int ii = 0; ii < 3; ii++)
+        dsigma(i, j) += Eelastic(i, j, k, l) * depsilon(k, l);
+
+        if (abs(dsigma(i, i)) < this->stress_relative_tol)
         {
-            for (int jj = 0; jj < 3; jj++)
-            {
-                for (int kk = 0; kk < 3; kk++)
-                {
-                    for (int ll = 0; ll < 3; ll++)
-                    {
-                        dsigma(ii, jj) += Eelastic(ii, jj, kk, ll) * depsilon(kk, ll);
-                    }
-                }
-            }
+            // If the elastic stress increment is below the stress tolerance
+            // exit, doing nothing.
+            return 0;
         }
 
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
@@ -957,13 +926,16 @@ private:
             TrialStress(i, j) = intersection_stress(i, j);
 
 
-            Eelastic = et(TrialStress);
             int Niter = this-> n_max_iterations;
             static DTensor2 sub_depsilon_elpl(3, 3, 0);
+
+            sub_depsilon_elpl *= 0;
             sub_depsilon_elpl(i, j) = depsilon_elpl(i, j) / Niter;
+
             for (int iteration = 0; iteration < Niter; iteration++)
             {
-                TrialStress(i, j)  += Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l) / Niter;
+                Eelastic = et(TrialStress);
+                TrialStress(i, j)  += Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l) ;
 
                 //Compute normal to YF (n) and Plastic Flow direction (m)
                 const DTensor2& n = yf.df_dsigma_ij(TrialStress);
