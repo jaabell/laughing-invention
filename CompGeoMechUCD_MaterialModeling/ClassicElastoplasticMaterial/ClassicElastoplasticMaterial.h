@@ -966,10 +966,10 @@ private:
                 TrialStress(i, j)  += Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l) / Niter;
 
                 //Compute normal to YF (n) and Plastic Flow direction (m)
-                const DTensor2& n = yf.df_dsigma_ij(intersection_stress);
-                const DTensor2& m = pf(sub_depsilon_elpl, intersection_stress);
+                const DTensor2& n = yf.df_dsigma_ij(TrialStress);
+                const DTensor2& m = pf(sub_depsilon_elpl, TrialStress);
 
-                double xi_star_h_star = yf.xi_star_h_star( sub_depsilon_elpl, m,  intersection_stress);
+                double xi_star_h_star = yf.xi_star_h_star( sub_depsilon_elpl, m,  TrialStress);
                 double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
 
                 //Compute the plastic multiplier
@@ -992,7 +992,7 @@ private:
                 //Correct the trial stress
                 TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
-                vars.evolve(dLambda, sub_depsilon_elpl, m, intersection_stress);
+                vars.evolve(dLambda, sub_depsilon_elpl, m, TrialStress);
                 vars.commit_tmp();
 
 

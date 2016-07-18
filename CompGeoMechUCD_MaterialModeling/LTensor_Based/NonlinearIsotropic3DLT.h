@@ -30,11 +30,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-// ElasticIsotropic3DLT is another form of NewTemplate3Dep which has all
+// NonlinearIsotropic3DLT is another form of NewTemplate3Dep which has all
 // the functions embeded here for efficiency.
 
-#ifndef ELASTICISOTROPIC3dLT_HH
-#define ELASTICISOTROPIC3dLT_HH
+#ifndef NonlinearIsotropic3DLT_HH
+#define NonlinearIsotropic3DLT_HH
 
 //#include <LTensor.h>
 #include "NDMaterialLT.h"
@@ -44,24 +44,25 @@
 #include <Channel.h>
 using namespace std;
 
-class ElasticIsotropic3DLT : public NDMaterialLT
+class NonlinearIsotropic3DLT : public NDMaterialLT
 {
 
 public:
 
 
-    ElasticIsotropic3DLT( int tag,
-                          double E_in,
-                          double v_in,
-                          double rho_in );
+    NonlinearIsotropic3DLT(int tag,
+                           double rho_, double K_,
+                           double Kur_, double n_, double c_, double phi0_, double dphi_,
+                           double Rf_, double K0_, double Kb_, double m_, double pa_,
+                           double K2_, double B_, double Et_, double Ei_, double Er_);
 
-    ElasticIsotropic3DLT();
+    NonlinearIsotropic3DLT();
 
-    ~ElasticIsotropic3DLT( void );
+    ~NonlinearIsotropic3DLT( void );
 
     const char *getClassType( void ) const
     {
-        return "ElasticIsotropic3DLT";
+        return "NonlinearIsotropic3DLT";
     };
 
 
@@ -99,6 +100,8 @@ public:
 
     void compute_tangent_tensor(void);
 
+    void updateModulus();
+
     void zeroStrain();
 
 
@@ -110,20 +113,55 @@ private:
     DTensor2 CommitStress;
     DTensor2 CommitStrain;
 
-    double E;
-    double v;
     double rho;
+
+    // Parameters for equivalent linear (static) model
+    double K;    // For initial elasticity modulus
+    double Kur;  // Reloading elasticity modulus
+    double n;    // Relates confinement with elastic moduli
+    double c;    // Cohesion
+    double phi0; // Initial friction angle
+    double dphi; // Dariation of friction angle with confinement
+    double Rf;   // Relates ultimate deviator stress with Mohr-Coulomb rupture criteria
+    double K0;   // Coefficient of earth pressure at rest
+    double Kb;   // Relates bulk modulus with confinement
+    double m;    // Idem
+    double pa;   // Atmospheric pressure
+
+    double K2;   // Relates to dynamic equivalent stiffness
+
+    double B;    // Bulk modulus
+    double Et;   // Tangent elastic modulus
+    double Ei;   // Initial elastic modulus
+    double Er;   // Unload-Reload elastic modulus
+
+    double E, nu; //Computed from above and current stress state
+
+    double strlev_max;
 
     static const  DTensor2 ZeroStrain;
     static const  DTensor2 ZeroStress;
 
     static DTensor4 Ee;
 
+    bool initialize;
+
     Index < 'i' > i;
     Index < 'j' > j;
     Index < 'k' > k;
     Index < 'l' > l;
 };
+
+//Definir funciones para calcular rigideces y amortiguamientos
+// ---------------------------------------------------------------
+
+double Ei_calc (double K, double pa, double n, double sig3);
+double Et_calc (double K, double pa, double n, double Rf, double c, double phi, double desv, double sig3);
+double Eur_calc (double Kur, double pa, double n, double sig3);
+double phi_calc (double phi0, double Dphi, double pa, double sig3);
+double B_calc (double Kb, double pa, double n, double sig3);
+double nui_calc (double G, double F, double pa, double sig3);
+
 
 
 #endif

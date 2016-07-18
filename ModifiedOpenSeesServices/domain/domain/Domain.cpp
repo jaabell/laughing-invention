@@ -2639,7 +2639,10 @@ Domain::commit( void )
 {
     // Calls commit() on nodes and elements. Also in charge of storing
     // the data to the outputwriter.
-
+    int rank = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
     Element *elePtr;
@@ -2656,7 +2659,7 @@ Domain::commit( void )
 #ifdef _PARALLEL_PROCESSING
             theOutputWriter.syncWriters();
 #endif
-
+            cout << "  (" << rank << ") - Outputting mesh.\n";
             globalESSITimer.start("HDF5_write_global_data");
             theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
                                                 this->getNumElements(),
@@ -4617,4 +4620,34 @@ int Domain::setConstitutiveIntegrationMethod(int algorithm,
         cerr << "define_NDMaterialLT_constitutive_integration_algorithm() - Error. Constitutive algorithm not available.\n";
     }
     return errorflag;
+}
+
+
+void Domain::removeStrainFromElement(int tag)
+{
+    Element* ele = this->getElement(tag);
+    if (ele != NULL)
+    {
+        ele->zeroStrain();
+    }
+    else
+    {
+        cerr << "Domain::removeStrainFromElement - element tag = " <<  tag << " not found!\n";
+    }
+    return;
+}
+
+void Domain::removeDisplacementFromNode(int tag)
+{
+    // cout << "!";
+    Node* node = this->getNode(tag);
+    if (node != NULL)
+    {
+        node->zeroDisplacements();
+    }
+    else
+    {
+        cerr << "Domain::removeDisplacementFromNode - node tag = " <<  tag << " not found!\n";
+    }
+    return;
 }

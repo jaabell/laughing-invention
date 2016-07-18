@@ -133,6 +133,7 @@
 #include "MODELING/add_constitutive_model_NDMaterialLT_pisano.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_New_Pisano.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d.h"
+#include "MODELING/add_constitutive_model_NDMaterial_nonlinear_elastic_isotropic_3d.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_vonmises.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerpragervonmises.h"
@@ -161,6 +162,8 @@
 // #include "MODELING/remove_support_from_node_by_fixity_number.h"
 #include "MODELING/remove_support_from_node.h"
 #include "MODELING/remove_equaldof_from_node.h"
+#include "MODELING/remove_strain_from_element.h"
+#include "MODELING/remove_displacement_from_node.h"
 
 
 // Section related c_bindings

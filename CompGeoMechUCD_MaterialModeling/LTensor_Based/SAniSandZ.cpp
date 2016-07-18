@@ -18,6 +18,8 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef DEACTIVATETHIS
+
 #ifndef SAniSandZ_CPP
 #define SAniSandZ_CPP
 
@@ -443,5 +445,6 @@ int SAniSandZ::startNewStage()
 
 
 
+#endif
 #endif
 

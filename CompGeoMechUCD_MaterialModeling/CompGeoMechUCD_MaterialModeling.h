@@ -90,6 +90,7 @@
 #include "./LTensor_Based/PisanoLT.h"
 #include "./LTensor_Based/NewPisanoLT.h"
 #include "./LTensor_Based/ElasticIsotropic3DLT.h"
+#include "./LTensor_Based/NonlinearIsotropic3DLT.h"
 
 //Other materials
 #include "./ElasticIsotropic3D.h"

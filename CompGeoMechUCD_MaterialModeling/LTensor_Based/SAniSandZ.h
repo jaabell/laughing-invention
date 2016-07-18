@@ -31,6 +31,7 @@
 
 using namespace std;
 
+#ifdef DEACTIVATETHIS
 
 class SAniSandZ : public NDMaterialLT
 {
@@ -126,4 +127,5 @@ private:
     Index < 'l' > l;
 };
 
+#endif
 #endif
