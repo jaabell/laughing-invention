@@ -997,28 +997,30 @@ private:
 
 
                 //Stress correction back to the yield surface
-                double yc = yf(TrialStress);
-                int ys_correction_count = 0;
+                // double yc = yf(TrialStress);
+                // int ys_correction_count = 0;
 
-                while (yc > this-> f_relative_tol && ys_correction_count < this-> n_max_iterations)
-                {
-                    const DTensor2& n = yf.df_dsigma_ij(TrialStress);
-                    const DTensor2& m = pf(sub_depsilon_elpl, TrialStress);
-                    double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s);
-                    double dLambda_correction = yc / den;
-                    TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
-                    yc = yf(TrialStress);
-                    ys_correction_count++;
-                }
+                // while (yc > this-> f_relative_tol && ys_correction_count < this-> n_max_iterations)
+                // {
+                //     const DTensor2& n = yf.df_dsigma_ij(TrialStress);
+                //     const DTensor2& m = pf(sub_depsilon_elpl, TrialStress);
+                //     double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s);
+                //     double dLambda_correction = yc / den;
+                //     TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
+                //     yc = yf(TrialStress);
+                //     ys_correction_count++;
+                // }
 
-                const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
-                const DTensor2& mf = pf(sub_depsilon_elpl, TrialStress);
-                xi_star_h_star = yf.xi_star_h_star( sub_depsilon_elpl, mf,  TrialStress);
-                double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
-                Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denf;
+                // const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
+                // const DTensor2& mf = pf(sub_depsilon_elpl, TrialStress);
+                // xi_star_h_star = yf.xi_star_h_star( sub_depsilon_elpl, mf,  TrialStress);
+                // double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
+                // Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / den;
+                Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
 
                 double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
-                if (norm_trial_stress != norm_trial_stress || denf <= 0 ) //check for nan
+
+                if (norm_trial_stress != norm_trial_stress || den <= 0)//denf <= 0 ) //check for nan
                 {
                     cout << "Numeric error!\n";
                     printTensor("TrialStress = " , TrialStress);
@@ -1471,7 +1473,7 @@ private:
                     Relative_Error = normResidualStress / sqrt(TrialStress(i, j) * TrialStress(i, j));
 
 
-                    double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
+                    // double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
                     if (true) //norm_trial_stress != norm_trial_stress || debugrun)// || denf <= 0 ) //check for nan
                     {
 
