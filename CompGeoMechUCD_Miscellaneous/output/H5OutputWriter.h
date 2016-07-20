@@ -35,6 +35,10 @@
 
 #include <algorithm>  // For std::min and std::max functions
 
+// Yuan: for async output
+#include <thread>
+#include "tbb/tbb.h"
+#include <atomic>
 #ifndef H5OutputWriter_H
 #define H5OutputWriter_H
 
@@ -381,6 +385,15 @@ private:
     int numof_CHUNK_COLLECTIVE_calls;
     int numof_CHUNK_MIXED_calls;
 
+    // Yuan
+    tbb::concurrent_bounded_queue<double> displacement_buffer  ;
+    tbb::concurrent_bounded_queue<double> elementOutput_buffer ;
+    void writeDisplacements2disk() ;
+    void writeElementOutput2disk() ;
+    std::thread async_writer;
+    // std::atomic_bool step_output_start = false;
+    atomic<bool> buffer_ready;
+    // std::thread write2diskThread() ;
 };
 
 void call_hdf5_flush_next_chance(void);

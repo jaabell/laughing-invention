@@ -44,7 +44,10 @@
 
 # include <ESSITimer.h>
 
-
+// Yuan. Tue Jul 19 16:14:23 PDT 2016
+#include <thread>
+#include "tbb/tbb.h"
+#include <atomic>
 bool H5OutputWriter::call_hdf5_flush = false;
 
 H5OutputWriter::H5OutputWriter():
@@ -97,6 +100,23 @@ H5OutputWriter::H5OutputWriter():
 #ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
     dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER);  //Otherwise created in syncWriters in the parallel case
 #endif
+
+    // ===============================
+    // Yuan
+    // number_of_elements and number_of_nodes
+    // After the two variables are assigned, we can start the thread to write to disk . 
+    // Be careful: In multi-threading, we will have two instance of H5OutputWriter. So the desructor will be called twice. Keep this in mind.
+    buffer_ready.store(false);
+    async_writer = thread([=]{
+        while(true){
+            if(buffer_ready.load()){
+                writeDisplacements2disk();
+                writeElementOutput2disk();
+                break;
+            }
+        }
+    });
+    // async_writer.detach();
 }
 
 
@@ -159,21 +179,28 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
 #ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
     dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER); //Otherwise created in syncWriters in the parallel case
 #endif
+
 }
 
 
 
 H5OutputWriter::~H5OutputWriter()
 {
+    // // // Yuan: wait for the thread async_writer to finish
+    // async_writer.join();
     finalize();
 }
 
 
 void H5OutputWriter::finalize()
 {
+
     // cout << "H5OutputWriter::finalize() - ";
     if (file_is_open)
-    {
+    {    // // // Yuan: wait for the thread async_writer to finish
+        // fprintf(stderr, "wait for the thread async_writer to finish\n" );
+        async_writer.join();
+        // fprintf(stderr, "after wait for the thread async_writer to finish\n" );
         // cout << "endingtime \n\n";
         time_t current ;
         time(&current);
@@ -331,7 +358,8 @@ void H5OutputWriter::initialize(std::string filename_in,
 
 void H5OutputWriter::set_number_of_time_steps(int nsteps)
 {
-    int rank = 0;
+
+    // int rank = 0; Yuan - comment out due to warning [-Wunused-variable]
 
 #ifdef _PARALLEL_PROCESSING
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -419,7 +447,6 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
 
 // LoadPattern_names.resize();
 // Material_tags.resize();
-
     return 0;
 }
 
@@ -1695,8 +1722,6 @@ void H5OutputWriter::writeMesh()
     {
         cerr << "H5OutputWriter::writeMesh() -> could not open file: " << file_name << "!\n\n";
     }
-
-
 }
 
 int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
@@ -1733,79 +1758,66 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 #ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
     int processID;
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
     // cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
-#endif
-    int pos, ndofs;
-
-    // Read NDOFS from HDF5 file
-    int datarank         = 1;
-    hsize_t data_dims[1] = {1};
-    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
-    hsize_t stride[2]    = {1, 0};
-    hsize_t count[2]     = {1, 0};
-    hsize_t block[2]     = {1, 0};
-
-    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
-    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
-    status = H5Sselect_hyperslab(
-                 id_dataspace,          // Id of the parent dataspace
-                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
-                 offset,                // start of selection
-                 stride,                // stride in each dimension, NULL  is select everything
-                 count ,                // how many blocks to select in each direction
-                 block                  // little block selected per selection
-             );
-
-    hdf5_check_error(status);
-
-    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
-    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
-
-
-    //Write data
-    // hsize_t dims[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
-    hsize_t *dims;
-    dims = 0;   // This is to disable array extension (would not be done collectively)
-    data_dims[0] = (hsize_t) ndofs;
-
-    offset[0]    = (hsize_t) pos;
-    offset[1]    = (hsize_t) current_time_step - 1;
-    stride[0]    = 1;
-    stride[1]    = 1;
-    count[0]     = (hsize_t) ndofs;
-    count[1]     = 1;
-    block[0]     = 1;
-    block[1]     = 1;
-
-#if _PARALLEL_PROCESSING_COLLECTIVE_IO
     // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
 #endif
 
+    buffer_ready.store(true);
+    // Put data to buffer
+    for (int i =0; i< displacements.Size();++i)
+        displacement_buffer.push(displacements[i]);
 
-    double *data = displacements.theData;
-    writeVariableLengthDoubleArray(id_nodes_displacements,
-                                   datarank,
-                                   dims,
-                                   data_dims,
-                                   offset,
-                                   stride,
-                                   count,
-                                   block,
-                                   data);
-
-    H5Sclose(id_dataspace);
-    H5Sclose(id_memspace);
     H5OUTPUTWRITER_COUNT_OBJS;
     return 0;
 }
-
+// ==============================================================
+// Yuan testing
+// This method should be called only once. 
+void H5OutputWriter::writeDisplacements2disk() {
+    // Get data from buffer.
+    double item=3.0;
+    vector<double> disp_vec_step(number_of_dofs, 0.0) ;
+    for (int step = 0; step < number_of_time_steps; ++step){
+        for (int d_count=0; d_count<number_of_dofs; ++d_count){
+            // This is a blocking pop.
+            displacement_buffer.pop(item);
+            // fprintf(stderr, "writeDisplacements2disk item: %f\n",item );
+            disp_vec_step[d_count] = item ;
+        }
+        // Write data to HDF5 (hard disk) for this step
+        int datarank         = 1;
+        hsize_t data_dims[1] = {1};
+        hsize_t offset[2]    = {1, 0};
+        hsize_t stride[2]    = {1, 0};
+        hsize_t count[2]     = {1, 0};
+        hsize_t block[2]     = {1, 0};
+        hsize_t *dims;
+        dims = 0;   
+        data_dims[0] = (hsize_t) disp_vec_step.size();
+        offset[0]    = (hsize_t) 0;
+        offset[1]    = (hsize_t) step ;
+        stride[0]    = 1;
+        stride[1]    = 1;
+        count[0]     = (hsize_t) disp_vec_step.size();
+        count[1]     = 1;
+        block[0]     = 1;
+        block[1]     = 1;
+        writeVariableLengthDoubleArray(id_nodes_displacements,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       &disp_vec_step[0]);
+    }    
+    H5OUTPUTWRITER_COUNT_OBJS;
+}
 
 // Results for Nodes
 int H5OutputWriter::writeDummyDisplacements(  )
 {
-
-
     // Read NDOFS from HDF5 file
     int datarank         = 1;
     hsize_t dummy[1] = {1};
@@ -1851,71 +1863,66 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
 // Results for Elements
 int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
 {
+    if (length_element_output > 0){
+        // debug
+        // cout<<"writeElementOutput is called"<<endl;
+        // Put data to buffer
+        for (int i =0; i< output.Size();++i)
+            elementOutput_buffer.push(output[i]);
 
-    if (length_element_output > 0) // If there is nothing to output, there is nothing to output
-    {
-        int pos, noutputs;
-
-        // Read NOUTPUTS from HDF5 file
-        int datarank         = 1;
-        hsize_t data_dims[1] = {1};
-        hsize_t offset[2]    = {(hsize_t) elementTag , 0};
-        hsize_t stride[2]    = {1, 0};
-        hsize_t count[2]     = {1, 0};
-        hsize_t block[2]     = {1, 0};
-
-        hsize_t id_dataspace = H5Dget_space(id_elements_noutputs);
-        hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
-        status = H5Sselect_hyperslab(
-                     id_dataspace,          // Id of the parent dataspace
-                     H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
-                     offset,                // start of selection
-                     stride,                // stride in each dimension, NULL  is select everything
-                     count ,                // how many blocks to select in each direction
-                     block                  // little block selected per selection
-                 );
-
-        hdf5_check_error(status);
-
-        H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
-        H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
-
-
-        //Write data
-        // hsize_t dims[2]      =  { (hsize_t)  length_element_output, (hsize_t)  current_time_step};
-        hsize_t *dims;
-        dims = 0;   // This is to disable array extension (would not be done collectively)
-
-        data_dims[0] = (hsize_t) noutputs;
-
-        offset[0]    = (hsize_t) pos;
-        offset[1]    = (hsize_t) current_time_step - 1;
-        stride[0]    = 1;
-        stride[1]    = 1;
-        count[0]     = (hsize_t) noutputs;
-        count[1]     = 1;
-        block[0]     = 1;
-        block[1]     = 1;
-        double *data = output.theData;
-        writeVariableLengthDoubleArray(id_elements_output,
-                                       datarank,
-                                       dims,
-                                       data_dims,
-                                       offset,
-                                       stride,
-                                       count,
-                                       block,
-                                       data);
-
-        H5Sclose(id_dataspace);
-        H5Sclose(id_memspace);
-        H5OUTPUTWRITER_COUNT_OBJS;
     }
+    H5OUTPUTWRITER_COUNT_OBJS;
     return 0;
 }
+// ==============================================================
+// Yuan
+void H5OutputWriter::writeElementOutput2disk(){
+    if (length_element_output > 0) 
+    {
+        // debug
+        // cout<<"writeElementOutput2disk is called"<<endl;
+        // Get the data from buffer. 
+        double item{0.0};
+        vector<double> element_vec_step(number_of_outputs, 0.0) ;
+        for (int step = 0; step < number_of_time_steps; ++step)
+        {
+            for (int c = 0; c < number_of_outputs; ++c)
+            {
+                elementOutput_buffer.pop(item);
+                element_vec_step[c] = item;
+            }
 
-
-
+            // Write the data to HDF5 (hard disk).
+            int datarank         = 1;
+            hsize_t data_dims[1] = {1};
+            hsize_t offset[2]    = {1, 0};
+            hsize_t stride[2]    = {1, 0};
+            hsize_t count[2]     = {1, 0};
+            hsize_t block[2]     = {1, 0};
+            hsize_t *dims;
+            dims = 0;
+            data_dims[0] = (hsize_t) element_vec_step.size() ;
+            offset[0]    = (hsize_t) 0;
+            offset[1]    = (hsize_t) step;
+            stride[0]    = 1;
+            stride[1]    = 1;
+            count[0]     = (hsize_t) element_vec_step.size() ;
+            count[1]     = 1;
+            block[0]     = 1;
+            block[1]     = 1;
+            writeVariableLengthDoubleArray(id_elements_output,
+                                           datarank,
+                                           dims,
+                                           data_dims,
+                                           offset,
+                                           stride,
+                                           count,
+                                           block,
+                                           &element_vec_step[0]);
+        }
+    }
+    H5OUTPUTWRITER_COUNT_OBJS;
+}
 
 
 // Results for Elements
