@@ -47,6 +47,8 @@
 #include <type_traits>
 
 #include "ClassicElastoplasticityGlobals.h"
+// for print p, q, theta
+// #include <tuple> 
 
 #define ClassicElastoplasticMaterial_MAXITER_BRENT 20
 #define TOLERANCE1 1e-6
@@ -93,80 +95,83 @@ C++ "Rule of 5"
 namespace
 {
 
-void printTensor(string name, const DTensor2 &v)
-{
+    void printTensor(string name, const DTensor2 &v)
+    {
 
+        // All 9 elements in one line. 
+       // std::cout << name << " = [ " ;
+       // std::cout << v(0, 0) << " "
+       //           << v(1, 1) << " "
+       //           << v(2, 2) << " "
+       //           << v(0, 1) << " "
+       //           << v(0, 2) << " "
+       //           << v(1, 2) << " "
+       //           << v(1, 0) << " "
+       //           << v(2, 0) << " "
+       //           << v(2, 1) << " ]" << std::endl;
 
-   // std::cout << name << " = [ " ;
-   // std::cout << v(0, 0) << " "
-   //           << v(1, 1) << " "
-   //           << v(2, 2) << " "
-   //           << v(0, 1) << " "
-   //           << v(0, 2) << " "
-   //           << v(1, 2) << " "
-   //           << v(1, 0) << " "
-   //           << v(2, 0) << " "
-   //           << v(2, 1) << " ]" << std::endl;
-fprintf(stderr, "%s = \n", name.c_str());
+        // This is in good format but take 3 lines. 
+        // stderr will print immediately, not like cout (may be reordered by CPU).
+        fprintf(stderr, "%s = \n", name.c_str());
         fprintf(stderr, "[%16.8f \t %16.8f \t %16.8f \n",   v(0, 0), v(0, 1), v(0,2)); 
         fprintf(stderr, " %16.8f \t %16.8f \t %16.8f \n",   v(1, 0), v(1, 1), v(1,2)); 
         fprintf(stderr, " %16.8f \t %16.8f \t %16.8f] \n",  v(2, 0), v(2, 1), v(2,2)); 
-}
+    }
 
-void printTensor4(string name, const DTensor4 &v)
-{
+    void printTensor4(string name, const DTensor4 &v)
+    {
 
 
-    std::cout << name << " = [ " ;
-    for (int ii = 0; ii < 3; ii++)
-        for (int jj = 0; jj < 3; jj++)
-            for (int kk = 0; kk < 3; kk++)
-                for (int ll = 0; ll < 3; ll++)
-                {
-                    std::cout << v(ii, jj, kk, ll ) << " ";
-                }
-    std::cout << "]" << std::endl;
-}
+        std::cout << name << " = [ " ;
+        for (int ii = 0; ii < 3; ii++)
+            for (int jj = 0; jj < 3; jj++)
+                for (int kk = 0; kk < 3; kk++)
+                    for (int ll = 0; ll < 3; ll++)
+                    {
+                        std::cout << v(ii, jj, kk, ll ) << " ";
+                    }
+        std::cout << "]" << std::endl;
+    }
     // ------------------------------------------------------------
     // refer to https://en.wikipedia.org/wiki/Yield_surface
     // p = 1/3 * I1
     // q = sqrt(3* J2)
     // cos(3*theta) = 3/2 * sqrt(3) * J3 / J2^(3/2)
     // ------------------------------------------------------------
-    std::tuple<double,double,double> getpqtheta(const DTensor2 &mystress)  {
-        // ------------------------------------------------------------
-        // preliminary
-        const double I1 = mystress(0,0)+mystress(1,1)+mystress(2,2);
-        const double sigma_m=I1/3.0;
-        DTensor2 s = mystress; 
-        s(0,0)-=sigma_m;
-        s(1,1)-=sigma_m;
-        s(2,2)-=sigma_m;
-        // J2=0.5*s(i,j)*s(i,j)
-        const double J2 = 0.5 * ( 
-            s(0,0)*s(0,0) +  s(0,1)*s(0,1)  + s(0,2)*s(0,2)
-        +   s(1,0)*s(1,0) +  s(1,1)*s(1,1)  + s(1,2)*s(1,2)
-        +   s(2,0)*s(2,0) +  s(2,1)*s(2,1)  + s(2,2)*s(2,2)   );
-        // 3by3 Determinant: Refer to http://www.brown.edu/Departments/Engineering/Courses/En221/Notes/Tensors/Tensors.htm
-        const double J3 = s(0,0)*(s(1,1)*s(2,2)-s(1,2)*s(2,1))
-                       +  s(0,1)*(s(1,2)*s(2,0)-s(1,0)*s(2,2))
-                       +  s(0,2)*(s(1,0)*s(2,1)-s(2,0)*s(1,1));
-        // ------------------------------------------------------------
+    // std::tuple<double,double,double> getpqtheta(const DTensor2 &mystress)  {
+    //     // ------------------------------------------------------------
+    //     // preliminary
+    //     const double I1 = mystress(0,0)+mystress(1,1)+mystress(2,2);
+    //     const double sigma_m=I1/3.0;
+    //     DTensor2 s = mystress; 
+    //     s(0,0)-=sigma_m;
+    //     s(1,1)-=sigma_m;
+    //     s(2,2)-=sigma_m;
+    //     // J2=0.5*s(i,j)*s(i,j)
+    //     const double J2 = 0.5 * ( 
+    //         s(0,0)*s(0,0) +  s(0,1)*s(0,1)  + s(0,2)*s(0,2)
+    //     +   s(1,0)*s(1,0) +  s(1,1)*s(1,1)  + s(1,2)*s(1,2)
+    //     +   s(2,0)*s(2,0) +  s(2,1)*s(2,1)  + s(2,2)*s(2,2)   );
+    //     // 3by3 Determinant: Refer to http://www.brown.edu/Departments/Engineering/Courses/En221/Notes/Tensors/Tensors.htm
+    //     const double J3 = s(0,0)*(s(1,1)*s(2,2)-s(1,2)*s(2,1))
+    //                    +  s(0,1)*(s(1,2)*s(2,0)-s(1,0)*s(2,2))
+    //                    +  s(0,2)*(s(1,0)*s(2,1)-s(2,0)*s(1,1));
+    //     // ------------------------------------------------------------
 
-        // (1) calculate p
-        const double p = -I1/3;
-        // (2) calculate q
-        const double q = sqrt(3 * J2);
-        // (3) calculate theta
-        const double cos3theta = 1.5 * sqrt(3) * J3 / pow(J2,1.5);
-        // const static double PI=3.14159265358979323846; //20 digits from Wiki.
-        const double theta = acos(cos3theta)/3.0 * 180/PI;  //theta is in degree.
+    //     // (1) calculate p
+    //     const double p = -I1/3;
+    //     // (2) calculate q
+    //     const double q = sqrt(3 * J2);
+    //     // (3) calculate theta
+    //     const double cos3theta = 1.5 * sqrt(3) * J3 / pow(J2,1.5);
+    //     // const static double PI=3.14159265358979323846; //20 digits from Wiki.
+    //     const double theta = acos(cos3theta)/3.0 * 180/PI;  //theta is in degree.
 
-        return std::make_tuple(p,q,theta);
-        // return result;
-    }
+    //     return std::make_tuple(p,q,theta);
+    //     // return result;
+    // }
 
-    static int Nsteps = 0 ;
+    // static int Nsteps = 0 ;
 }
 
 
@@ -725,7 +730,7 @@ private:
 
         
         // ----------------------------------------------------------------
-        // ----------------------------------------------------------------
+        // Print p, q, theta for debug--------------------------------------
         // ----------------------------------------------------------------
         //double enter_yf = yf(CommitStress);
         //double enter_p,enter_q,enter_theta;
