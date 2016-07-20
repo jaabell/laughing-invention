@@ -186,7 +186,7 @@
 %token FIX FREE REMOVE
 %token DEFINE ALGORITHM ALGNAME CONSTITUTIVE_ALGNAME CONVERGENCE_TEST TESTNAME SOLVER SOLVERNAME CONSTITUTIVE INTEGRATION
 %token DYNAMICINTEGRATOR DYNAMICINTEGRATOR_HHT DYNAMICINTEGRATOR_NEWMARK STATICINTEGRATOR STATICINTEGRATOR_DISPLACEMENT
-%token SIMULATE COMPUTE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations
+%token SIMULATE COMPUTE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations RUNTEST
 %token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY LEVEL
 %token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT
 %token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
@@ -1295,7 +1295,7 @@ CMD_fix
 		// multiple calls to the DSL. The way to do this is by using ExpressionList
 		// which is a linked list of expressions.
 		Expression* cmd;
-		Expression* command_list;
+		Expression* command_list = 0;
 		int count = 0;
 
 		//dofchain is just a std::vector<Number*> to hold the parsed DOFS to fix.
@@ -1594,6 +1594,11 @@ CMD_define
 		{
 			f = &define_algorithm_newton_for_analysis;
 			fname = "define_algorithm_newton_for_analysis";
+		}
+		else if( algname.compare("newtonlinesearch") == 0)
+		{
+			f = &define_algorithm_newtonlinesearch_for_analysis;
+			fname = "define_algorithm_newtonlinesearch_for_analysis";
 		}
 		else
 		{
@@ -2025,6 +2030,15 @@ CMD_misc
 
 		for(int ii = 1;ii <=4; ii++) nodes.pop();
 
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC runTest;
+	| RUNTEST
+	{
+		args.clear(); signature.clear();
+		$$ = new FeiDslCaller0<>(&run_test, args, signature, "run_test");
 		nodes.push($$);
 	}
 	//!=========================================================================================================

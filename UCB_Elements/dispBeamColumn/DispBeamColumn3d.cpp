@@ -517,7 +517,7 @@ DispBeamColumn3d::getTangentStiff()
     // Transform to global stiffness
     K = crdTransf->getGlobalStiffMatrix(kb, q);
 
-    cout << K << endl;
+    // cout << K << endl;
 
     return K;
 }

@@ -512,6 +512,7 @@ int FrictionalPenaltyContact::update(void)
             eta(2) = 0;                                         // eta -> unit plastic flow direction (non-associative)
             static Vector zeta = trial_tC;                                             // zeta -> unit normal to yield surface
             zeta.Zero();
+
             del_tC = trial_tC - *tC;                                            // change in force to cross forces
             double norm_zeta = sqrt(zeta(0) * zeta(0) + zeta(1) * zeta(1));         // derivate of yield function tangential component
             // cout << "*trial_tC " <<  trial_tC;
@@ -525,6 +526,7 @@ int FrictionalPenaltyContact::update(void)
                 zeta = zeta / zeta.Norm();                              // unit normal to yield surface
                 double Beta = 0;                                                    // Hardening parameter
                 static Matrix Cplastic(3, 3);
+                Cplastic.Zero();
 
                 Cplastic(0, 0) = eta(0) * zeta(0) * kt;
                 Cplastic(0, 1) = eta(0) * zeta(1) * kt;
