@@ -116,6 +116,7 @@ private:
     void norm(double vect[],double* norm); // Finds the norm of the vector ->  norm = sqrt(vect[0]*vect[0]+vect[1]*vect[1]+vect[2]*vect[2])
 
     double kn;     // Intial contact normal stiffness 
+    double kn_m;   // contact_normal_stiffness
     double sr;     // stiffneing rate
     double kt;     // Tangential penalty stiffness
     double cn;     // Normal penalty damping stiffness

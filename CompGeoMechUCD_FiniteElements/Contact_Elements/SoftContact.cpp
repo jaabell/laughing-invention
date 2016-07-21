@@ -342,6 +342,7 @@ void SoftContact::setDomain(Domain *theDomain)
 		// All is good, we can set the domain.
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
+		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
 		update();
 		commitState();
 	}
@@ -369,6 +370,7 @@ int SoftContact::commitState(void)
 	else{*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);}	
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tA, 1.0);
+	C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
 
 
 	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
@@ -434,7 +436,7 @@ int SoftContact::revertToStart(void)
 //   * Output: error flag, 0 if success
 int SoftContact::update(void)
 {
-	double tol = 0, kn_m=0;
+	double tol = 0;
 	computeGap();
 	static Vector delg(3); delg.Zero();	     		// correct gap fucntion
 	static Vector trial_tC(3); trial_tC.Zero();     // Predicted Forces
@@ -468,18 +470,12 @@ int SoftContact::update(void)
 		/////////////////////////////////////////////////////////////////////
 
 		/////////////////////// Setting elastic Tangent Stiffness ///////////////////////
-		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
+		// C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
 		//////////////////// Computing predictive forces (tB) ///////////////////////////
 
-		tC_pred->addMatrixVector(1, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
+		tC_pred->addMatrixVector(0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
 		(*tC_pred)(2) = kn*exp(sr*(-(*g)(2)))*(*g)(2);
-		trial_tC = *tC_pred;
-
-		// // ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
-		// cout << "*tC_pred " <<  *tC_pred;	
-		// cout << "*trial_tC " <<  trial_tC;
-		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+		trial_tC = *tC + *tC_pred; trial_tC(2) = (*tC_pred)(2);
 
 		/////////////////////////////////////////////////////////////////////////////////
 		//////////////////// Compute Yield function at prediction point /////////////////
@@ -487,6 +483,13 @@ int SoftContact::update(void)
 		/////////////////////////////////////////////////////////////////////////////////
 
 		static double yf_B; yf_B=0; yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
+
+		// ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+		// cout << "*tC_pred " <<  *tC_pred;	
+		// cout << "*trial_tC " <<  trial_tC;
+		// cout << "delg " << delg ;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+		// cout << "yf_B " << yf_B << endl;
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		if (yf_B > tol){ /////// Sliding Condition /////////
 
@@ -532,8 +535,8 @@ int SoftContact::update(void)
 	        }
 	        else{
 
-	        	if(mu==0){
-	        		C->Zero(); (*C)(2, 2) = kn_m;
+	        	if(mu==0 or trial_tC(2)==0){
+	        		C->Zero(); (*C)(2, 2) = kn;
 	        	}
 	        	else{
 	        		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;

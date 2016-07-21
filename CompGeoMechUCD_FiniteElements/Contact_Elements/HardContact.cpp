@@ -341,6 +341,7 @@ void HardContact::setDomain(Domain *theDomain)
 		// All is good, we can set the domain.
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
+		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
 		update();
 		commitState();
 	}
@@ -368,8 +369,8 @@ int HardContact::commitState(void)
 	else{*g_elastic = (*tA)/kt; (*g_elastic)(2)=(*g)(2);}	
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tA, 1.0); 
+	C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
 	
-
 	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
 	// cout.precision(16);
 	// cout << "******************************************** Commit State *************************************\n";
@@ -464,17 +465,11 @@ int HardContact::update(void)
 		}
 
 		/////////////////////// Setting elastic Tangent Stiffness ///////////////////////
-		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
+		// C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
 		//////////////////// Computing predictive forces (tB) ///////////////////////////
 
-		tC_pred->addMatrixVector(1, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
-		trial_tC = *tC_pred;
-
-		// // ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
-		// cout << "*tC_pred " <<  *tC_pred;	
-		// cout << "*trial_tC " <<  trial_tC;
-		// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+		tC_pred->addMatrixVector(0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
+		trial_tC = *tC + *tC_pred;
 
 		/////////////////////////////////////////////////////////////////////////////////
 		//////////////////// Compute Yield function at prediction point /////////////////
@@ -482,6 +477,14 @@ int HardContact::update(void)
 		/////////////////////////////////////////////////////////////////////////////////
 
 		static double yf_B; yf_B=0, yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
+
+		// ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+		// cout << "*tC_pred " <<  *tC_pred;	
+		// cout << "*trial_tC " <<  trial_tC;
+		// cout << "delg " << delg ;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+		// cout << "yf_B " << yf_B << endl;
+		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 
 		if (yf_B > tol){ /////// Sliding Condition /////////
 
@@ -500,10 +503,10 @@ int HardContact::update(void)
 	            trial_tC(0) =0;
 	        }
 
-	        // cout << "Checking The compatibity " << (sqrt( trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2) ) << endl;
-	        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			// // ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+			// //////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+			// cout << "Checking The compatibity " << (sqrt( trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2) ) << endl;
 			// cout << "*tC_pred " <<  *tC_pred;	
 			// cout << "*trial_tC " <<  trial_tC;
 			// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -527,7 +530,7 @@ int HardContact::update(void)
 	        }
 	        else{
 
-	        	if(mu==0){
+	        	if(mu==0 or trial_tC(2)==0){
 	        		C->Zero(); (*C)(2, 2) = kn;
 	        	}
 	        	else{
@@ -586,7 +589,7 @@ int HardContact::update(void)
 	// // cout << "del_tC " << del_tC;
 	// cout << "tC " <<  *tC;
 	// cout << "C " <<  *C << endl;;
-	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return 0;
 }
