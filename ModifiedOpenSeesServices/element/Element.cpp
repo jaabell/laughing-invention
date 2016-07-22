@@ -749,6 +749,7 @@ int Element::CalculateDamping(Matrix *theMatrix)
 
         else if (stiffness_type.compare("Initial_Stiffness") == 0)
         {
+            cout << "Ele " << this->getTag() << " Current_Stiffness : factors = " << a0 << " " a1 << " "a2 << " "a3 << endl;
             theMatrix->addMatrix(1.0, this->getInitialStiff(), a1);
         }
 
