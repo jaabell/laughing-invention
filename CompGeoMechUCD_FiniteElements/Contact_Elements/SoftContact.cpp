@@ -63,6 +63,7 @@ SoftContact::SoftContact(int tag, int node1, int node2, double kn_, double sr_, 
 	external_nodes(1) = node2;
 	nodes[0] = 0;
 	nodes[1] = 0;
+	kn_m = kn;
 
 	// cout << "SoftContact Element " <<  tag << endl;
 	// B matrix is initialized now .
@@ -163,6 +164,7 @@ SoftContact::SoftContact():
 	external_nodes(1) = -1;
 	nodes[0] = 0;
 	nodes[1] = 0;
+	kn_m = kn;
 
 	g_commit = 0;
 	g_elastic = 0;
@@ -325,7 +327,7 @@ void SoftContact::setDomain(Domain *theDomain)
 		//Check  whether all nodes existed (we got a valid pointer)
 		if ( nodes[0] == 0 || nodes[1] == 0  )
 		{
-			cerr << "FATAL ERROR SoftContact (tag: " << this->getTag() << "), node not found in domain\n";
+			cerr << "FATAL ERROR HardContact (tag: " << this->getTag() << "), node not found in domain\n";
 			return;
 		}
 
@@ -335,14 +337,14 @@ void SoftContact::setDomain(Domain *theDomain)
 
 		if ( dofNd1 != 3 || dofNd2 != 3 )
 		{
-			cerr << "FATAL ERROR SoftContact (tag: " << this->getTag() << "), has differing number of DOFs at its nodes\n";
+			cerr << "FATAL ERROR HardContact (tag: " << this->getTag() << "), has differing number of DOFs at its nodes\n";
 			return;
 		}
 
 		// All is good, we can set the domain.
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
-		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
+		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
 		update();
 		commitState();
 	}
@@ -371,7 +373,6 @@ int SoftContact::commitState(void)
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tA, 1.0);
 	C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
-
 
 	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
 	// cout.precision(16);
@@ -441,13 +442,13 @@ int SoftContact::update(void)
 	static Vector delg(3); delg.Zero();	     		// correct gap fucntion
 	static Vector trial_tC(3); trial_tC.Zero();     // Predicted Forces
 
-	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+	// ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
 	// cout << "************************************ Iteration Steps **********************************\n";
 	// cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
 	// cout << "is_in_contact " <<  is_in_contact << "\n";	
 	// cout << "*g " <<  *g;
-	// cout << "*tC_pred " << *tC_pred;
-	// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// cout << "*tC " << *tC;
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (is_in_contact){
 
@@ -473,9 +474,10 @@ int SoftContact::update(void)
 		// C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
 		//////////////////// Computing predictive forces (tB) ///////////////////////////
 
-		tC_pred->addMatrixVector(0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
-		(*tC_pred)(2) = kn*exp(sr*(-(*g)(2)))*(*g)(2);
-		trial_tC = *tC + *tC_pred; trial_tC(2) = (*tC_pred)(2);
+		tC_pred->Zero();tC_pred->addMatrixVector(0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
+
+		trial_tC = *tC + *tC_pred; 
+		trial_tC(2) = kn*exp(sr*(-(*g)(2)))*(*g)(2);
 
 		/////////////////////////////////////////////////////////////////////////////////
 		//////////////////// Compute Yield function at prediction point /////////////////
@@ -484,12 +486,12 @@ int SoftContact::update(void)
 
 		static double yf_B; yf_B=0; yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
 
-		// ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+		///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
 		// cout << "*tC_pred " <<  *tC_pred;	
 		// cout << "*trial_tC " <<  trial_tC;
 		// cout << "delg " << delg ;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 		// cout << "yf_B " << yf_B << endl;
-		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		if (yf_B > tol){ /////// Sliding Condition /////////
 
@@ -508,10 +510,10 @@ int SoftContact::update(void)
 	            trial_tC(0) =0;
 	        }
 
-	        // cout << "Checking The compatibity " << (sqrt( trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2) ) << endl;
-	        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			// // ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+			// //////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+			// cout << "Checking The compatibity " << (sqrt( trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2) ) << endl;
 			// cout << "*tC_pred " <<  *tC_pred;	
 			// cout << "*trial_tC " <<  trial_tC;
 			// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -536,7 +538,7 @@ int SoftContact::update(void)
 	        else{
 
 	        	if(mu==0 or trial_tC(2)==0){
-	        		C->Zero(); (*C)(2, 2) = kn;
+	        		C->Zero(); (*C)(2, 2) = kn_m;
 	        	}
 	        	else{
 	        		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn_m;
@@ -565,6 +567,7 @@ int SoftContact::update(void)
 	else{
 
 		tC_pred->Zero();
+		kn_m =kn;
 
 		////////////////// Editted by Sumeet //////////////////////////
 		// The situataions that can happen inside it are as follows ///
@@ -591,7 +594,7 @@ int SoftContact::update(void)
 	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////	
 	// cout.precision(10);
 	// cout << "*del_gap " <<  delg;
-	// // cout << "del_tC " << del_tC;
+	// cout << "del_tC " << del_tC;
 	// cout << "tC " <<  *tC;
 	// cout << "C " <<  *C << endl;;
 	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -678,6 +681,8 @@ const Matrix &SoftContact::getTangentStiff(void)
 	if (is_in_contact)
 	{
 		K.addMatrixTripleProduct(0.0, B, *C, 1.0); // B' * C * B
+		// cout.precision(16);
+		// cout << "Stiffness " << *C << endl;
 	}
 
 	return K;
@@ -700,7 +705,7 @@ const Matrix &SoftContact::getInitialStiff(void)
 	Matrix Celast(3, 3);
 	Celast(0, 0) = kt;
 	Celast(1, 1) = kt;
-	Celast(2, 2) = kn;
+	Celast(2, 2) = kn_m;
 
 	Kinit.addMatrixTripleProduct(0.0, B, Celast, 1.0); // B' * C * B
 
@@ -763,6 +768,8 @@ const Vector &SoftContact::getResistingForce(void)
 {
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tC, 1);
+	// cout.precision(16);
+	// cout << "Resisting " << *R << endl;
 	return *R;
 }
 
@@ -817,13 +824,14 @@ int SoftContact::sendSelf(int commitTag, Channel &theChannel)
     }
 
     // send double data
-    Vector floatData(6);
+    Vector floatData(7);
     floatData(0) = kn;
     floatData(1) = sr;
     floatData(2) = kt;
     floatData(3) = cn;
     floatData(4) = ct;
     floatData(5) = mu;
+    floatData(6) = kn_m;
 
     if ( theChannel.sendVector( 0, commitTag, floatData ) < 0 )
     {
@@ -925,7 +933,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
     is_in_contact_commit = (bool) idData( 1 );
 
 
-    Vector floatData(6);
+    Vector floatData(7);
     if ( theChannel.receiveVector( 0, commitTag, floatData ) < 0 )
     {
         cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
@@ -938,7 +946,8 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
     cn = floatData(3);
     ct = floatData(4);
     mu = floatData(5);
-
+	kn_m = floatData(6);
+	
     ////////////////////// Commited local Contact forces vector /////////////////////////////////
 
     if ( theChannel.receiveVector( 0, commitTag, *tA ) < 0 )
@@ -1128,8 +1137,10 @@ void SoftContact::computeGap()
 	is_in_contact_prev = is_in_contact;
 	is_in_contact=false;
 
-	if ((*g)(2) <= 0 )
+	if ((*g)(2) <= 0 ){
 		is_in_contact=true;
+		(*C)(2,2) =kn_m;
+	}
 
 	return;
 }

@@ -416,11 +416,11 @@ int HardContact::revertToLastCommit(void)
 //   * Output: error flag, 0 if success
 int HardContact::revertToStart(void)
 {
-	// g_elastic->Zero();
-	// tC_pred_commit ->Zero();
-	// tA->Zero();
-	// g_commit->Zero();
-	// is_in_contact_commit = true;
+	g_elastic->Zero();
+	tC_pred_commit ->Zero();
+	tA->Zero();
+	g_commit->Zero();
+	is_in_contact_commit = true;
 	return 0;
 }
 
@@ -440,13 +440,13 @@ int HardContact::update(void)
 	static Vector delg(3); delg.Zero();	     		// correct gap fucntion
 	static Vector trial_tC(3); trial_tC.Zero();     // Predicted Forces
 
-	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
+	/////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////
 	// cout << "************************************ Iteration Steps **********************************\n";
 	// cout << "is_in_contact_prev " <<  is_in_contact_prev << "\n";
 	// cout << "is_in_contact " <<  is_in_contact << "\n";	
 	// cout << "*g " <<  *g;
-	// cout << "*tC_pred " << *tC_pred;
-	// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// cout << "*tC " << *tC;
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	if (is_in_contact){
 
@@ -468,7 +468,7 @@ int HardContact::update(void)
 		// C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
 		//////////////////// Computing predictive forces (tB) ///////////////////////////
 
-		tC_pred->addMatrixVector(0, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
+		tC_pred->Zero();tC_pred->addMatrixVector(1, *C, delg, 1.0); 			/// Correct Normal change in Predicted Shear ///
 		trial_tC = *tC + *tC_pred;
 
 		/////////////////////////////////////////////////////////////////////////////////
@@ -478,12 +478,12 @@ int HardContact::update(void)
 
 		static double yf_B; yf_B=0, yf_B = sqrt(trial_tC(0)*trial_tC(0) + trial_tC(1)*trial_tC(1)) + mu*trial_tC(2);
 
-		// ///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
+		///////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////	
 		// cout << "*tC_pred " <<  *tC_pred;	
 		// cout << "*trial_tC " <<  trial_tC;
 		// cout << "delg " << delg ;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 		// cout << "yf_B " << yf_B << endl;
-		// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 
 		if (yf_B > tol){ /////// Sliding Condition /////////
@@ -586,7 +586,7 @@ int HardContact::update(void)
 	// /////////////////////////////////////// Sumeet :: Printing for Debugging //////////////////////////////////////////////////	
 	// cout.precision(10);
 	// cout << "*del_gap " <<  delg;
-	// // cout << "del_tC " << del_tC;
+	// cout << "del_tC " << del_tC;
 	// cout << "tC " <<  *tC;
 	// cout << "C " <<  *C << endl;;
 	// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -673,6 +673,8 @@ const Matrix &HardContact::getTangentStiff(void)
 	if (is_in_contact)
 	{
 		K.addMatrixTripleProduct(0.0, B, *C, 1.0); // B' * C * B
+		// cout.precision(16);
+		// cout << "Stiffness " << *C << endl;	
 	}
 
 	return K;
@@ -758,6 +760,8 @@ const Vector &HardContact::getResistingForce(void)
 {
 	R->Zero();
 	R->addMatrixTransposeVector(1, B, *tC, 1);
+	// cout.precision(16);
+	// cout << "Resisting " << *R << endl;
 	return *R;
 }
 
@@ -1117,8 +1121,10 @@ void HardContact::computeGap()
 	is_in_contact_prev = is_in_contact;
 	is_in_contact=false;
 
-	if ((*g)(2) <= 0 )
+	if ((*g)(2) <= 0 ){
 		is_in_contact=true;
+		(*C)(2,2) =kn;
+	}
 
 	return;
 
