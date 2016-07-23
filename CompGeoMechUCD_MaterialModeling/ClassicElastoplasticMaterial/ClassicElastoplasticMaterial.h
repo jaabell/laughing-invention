@@ -935,14 +935,16 @@ private:
             for (int iteration = 0; iteration < Niter; iteration++)
             {
                 Eelastic = et(TrialStress);
-                TrialStress(i, j)  += Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l) ;
+                
 
-                //Compute normal to YF (n) and Plastic Flow direction (m)
+                //Compute normal to YF (n) and Plastic Flow direction (m) at the starting point.
+                // Now TrialStress is at the starting point.
                 const DTensor2& n = yf.df_dsigma_ij(TrialStress);
                 const DTensor2& m = pf(sub_depsilon_elpl, TrialStress);
 
                 double xi_star_h_star = yf.xi_star_h_star( sub_depsilon_elpl, m,  TrialStress);
                 double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+                
 
                 //Compute the plastic multiplier
                 if (den == 0)
@@ -957,6 +959,9 @@ private:
                 }
                 double dLambda =  n(i, j) * Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l);
                 dLambda /= den;
+
+                // Add the elastic predictor.
+                TrialStress(i, j)  += Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l) ;
 
                 //Update the trial plastic strain.
                 TrialPlastic_Strain(i, j) += dLambda * m(i, j);
