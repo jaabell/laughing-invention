@@ -94,7 +94,6 @@ int ElasticIsotropic3DLT::setTrialStrain( const DTensor2 &strain )
     static DTensor2 strain_increment(3, 3, 0);
     strain_increment *= 0;
 
-    TrialStrain(i, j) = strain(i, j);
     strain_increment(i, j) = strain(i, j) - CommitStrain(i, j);
 
     return setTrialStrainIncr(strain_increment);
@@ -103,6 +102,7 @@ int ElasticIsotropic3DLT::setTrialStrain( const DTensor2 &strain )
 //================================================================================
 int ElasticIsotropic3DLT::setTrialStrainIncr( const DTensor2 &strain_increment )
 {
+    TrialStrain(i, j) += strain_increment(i, j);
     static DTensor2 stress_increment(3, 3, 0);
     stress_increment *= 0;
 
