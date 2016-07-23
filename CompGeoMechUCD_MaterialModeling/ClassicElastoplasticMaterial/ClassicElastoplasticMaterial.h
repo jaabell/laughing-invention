@@ -1337,12 +1337,12 @@ private:
 
         for (int step = 0; step < NSteps; step++)
         {
-            cout << "BackEuler - step = " << step << " of " << NSteps << endl;
+            // cout << "BackEuler - step = " << step << " of " << NSteps << endl;
 
-            depsilon *= 0;
-            PredictorStress *= 0;
+            // depsilon *= 0;
+            // PredictorStress *= 0;
 
-            dsigma *= 0;//Zero-out the stress increment tensor
+            // dsigma *= 0;//Zero-out the stress increment tensor
 
             DTensor4& Eelastic = et(sigma);
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
@@ -1356,13 +1356,13 @@ private:
             double yf_val_start = yf(sigma);
             double yf_val_end = yf(PredictorStress);
 
-            printTensor (" CommitStress       " , CommitStress);
-            printTensor (" depsilon           " , depsilon);
-            printTensor (" dsigma             " , dsigma);
-            printTensor (" PredictorStress    " , PredictorStress);
-            cout <<      " yf_val_start        = " << yf_val_start << endl;
-            cout <<      " yf_val_end          = " << yf_val_end << endl;
-            printTensor (" TrialStress        " , TrialStress);
+            // printTensor (" CommitStress       " , CommitStress);
+            // printTensor (" depsilon           " , depsilon);
+            // printTensor (" dsigma             " , dsigma);
+            // printTensor (" PredictorStress    " , PredictorStress);
+            // cout <<      " yf_val_start        = " << yf_val_start << endl;
+            // cout <<      " yf_val_end          = " << yf_val_end << endl;
+            // printTensor (" TrialStress        " , TrialStress);
 
             if (sqrt(dsigma(i, j) * dsigma(i, j)) < this->stress_relative_tol)
             {
@@ -1454,29 +1454,29 @@ private:
                     if (true) //norm_trial_stress != norm_trial_stress || debugrun)// || denf <= 0 ) //check for nan
                     {
 
-                        cout <<      " ==========================================================" << endl;
-                        printTensor (" CommitStress       " , CommitStress);
-                        printTensor (" depsilon           " , depsilon);
-                        printTensor (" dsigma             " , dsigma);
-                        printTensor (" PredictorStress    " , PredictorStress);
-                        cout <<      " yf_val_start        = " << yf_val_start << endl;
-                        cout <<      " yf_val_end          = " << yf_val_end << endl;
-                        printTensor (" n                  " , n );
-                        printTensor (" m                  " , m );
-                        cout <<      " xi_star_h_star      = " << xi_star_h_star << endl;
-                        cout <<      " denominator         = " << denominator << endl;
-                        cout <<      " dLambda             = " << dLambda << endl;
-                        printTensor (" TrialStress        " , TrialStress);
-                        printTensor (" TrialStress_prev   " , TrialStress_prev);
-                        printTensor (" ResidualStress     " , ResidualStress );
-                        cout <<      " normResidualStress  = " << normResidualStress << endl;
-                        cout <<      " Relative_Error      = " << Relative_Error << endl;
-                        cout <<      " yf_RelativeErr      = " << abs(yf_TrialStress) / yf_PredictorStress << endl;
-                        cout <<      " iteration_count     = " << iteration_count << endl;
-                        cout <<      " .........................................................." << endl;
-                        cout <<      "  Internal variables:" << endl;
-                        vars.print();
-                        cout <<      " ==========================================================" << endl;
+                        // cout <<      " ==========================================================" << endl;
+                        // printTensor (" CommitStress       " , CommitStress);
+                        // printTensor (" depsilon           " , depsilon);
+                        // printTensor (" dsigma             " , dsigma);
+                        // printTensor (" PredictorStress    " , PredictorStress);
+                        // cout <<      " yf_val_start        = " << yf_val_start << endl;
+                        // cout <<      " yf_val_end          = " << yf_val_end << endl;
+                        // printTensor (" n                  " , n );
+                        // printTensor (" m                  " , m );
+                        // cout <<      " xi_star_h_star      = " << xi_star_h_star << endl;
+                        // cout <<      " denominator         = " << denominator << endl;
+                        // cout <<      " dLambda             = " << dLambda << endl;
+                        // printTensor (" TrialStress        " , TrialStress);
+                        // printTensor (" TrialStress_prev   " , TrialStress_prev);
+                        // printTensor (" ResidualStress     " , ResidualStress );
+                        // cout <<      " normResidualStress  = " << normResidualStress << endl;
+                        // cout <<      " Relative_Error      = " << Relative_Error << endl;
+                        // cout <<      " yf_RelativeErr      = " << abs(yf_TrialStress) / yf_PredictorStress << endl;
+                        // cout <<      " iteration_count     = " << iteration_count << endl;
+                        // cout <<      " .........................................................." << endl;
+                        // cout <<      "  Internal variables:" << endl;
+                        // vars.print();
+                        // cout <<      " ==========================================================" << endl;
 
                         // errorcode = -1;
                     }
