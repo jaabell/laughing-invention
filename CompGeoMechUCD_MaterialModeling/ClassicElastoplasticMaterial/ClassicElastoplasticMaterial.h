@@ -700,7 +700,13 @@ private:
 
         dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
 
-        if (abs(dsigma(i, i)) < this->stress_relative_tol)
+        double Frobenius_norm = 0.0; 
+        for (int i = 0; i < 3; ++i){
+            for (int j = 0; j < 3; ++j){
+                Frobenius_norm += abs(dsigma(i,j));
+            }
+        }
+        if (Frobenius_norm < this->stress_relative_tol)
         {
             // If the elastic stress increment is below the stress tolerance
             // exit, doing nothing.
@@ -878,7 +884,13 @@ private:
 
         dsigma(i, j) += Eelastic(i, j, k, l) * depsilon(k, l);
 
-        if (abs(dsigma(i, i)) < this->stress_relative_tol)
+        double Frobenius_norm = 0.0; 
+        for (int i = 0; i < 3; ++i){
+            for (int j = 0; j < 3; ++j){
+                Frobenius_norm += abs(dsigma(i,j));
+            }
+        }
+        if (Frobenius_norm < this->stress_relative_tol)
         {
             // If the elastic stress increment is below the stress tolerance
             // exit, doing nothing.
