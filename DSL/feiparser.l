@@ -347,6 +347,7 @@ EXP	([Ee][-+]?[0-9]+)
 "load pattern"                      {return token::LOADPATTERN;}
  /* "penalty displacement"              {return token::PENALTYDISPLACEMENT;} */
 "load value"                        {return token::LOADVALUE;}
+"displacement"                        {return token::DISPLACEMENT;}
 
  /* Element names */
 "8NodeBrick"                        {return token::EightNodeBrick;}
@@ -431,7 +432,9 @@ EXP	([Ee][-+]?[0-9]+)
 "fiber"								{return token::FIBER;}
 
  /* Material Names*/
-"linear_elastic_isotropic_3d"       {return token::linear_elastic_isotropic_3d;}
+"linear_elastic_isotropic_3d"  | 
+"ElasticIsotropic3DLT"     {return token::linear_elastic_isotropic_3d;}
+"NonlinearIsotropic3DLT"     {return token::NonlinearIsotropic3DLT;}
 "VonMisesLT"        				{return token::VonMisesLT;}
 "DruckerPragerLT"                   {return token::DruckerPragerLT;}
 "DruckerPragerVonMisesLT"           {return token::DruckerPragerVonMisesLT;}
@@ -566,6 +569,22 @@ EXP	([Ee][-+]?[0-9]+)
 "point"                             {return token::point;}
 "single"                            {return token::single;}
 "value"                             {return token::value;}
+"Niso3d_K"                          {return token::Niso3d_K;}
+"Niso3d_Kur"                        {return token::Niso3d_Kur;}
+"Niso3d_n"                          {return token::Niso3d_n;}
+"Niso3d_c"                          {return token::Niso3d_c;}
+"Niso3d_phi0"                       {return token::Niso3d_phi0;}
+"Niso3d_dphi"                       {return token::Niso3d_dphi;}
+"Niso3d_Rf"                         {return token::Niso3d_Rf;}
+"Niso3d_K0"                         {return token::Niso3d_K0;}
+"Niso3d_Kb"                         {return token::Niso3d_Kb;}
+"Niso3d_m"                          {return token::Niso3d_m;}
+"Niso3d_pa"                         {return token::Niso3d_pa;}
+"Niso3d_K2"                         {return token::Niso3d_K2;}
+"Niso3d_B"                          {return token::Niso3d_B;}
+"Niso3d_Et"                         {return token::Niso3d_Et;}
+"Niso3d_Ei"                         {return token::Niso3d_Ei;}
+"Niso3d_Er"                         {return token::Niso3d_Er;}
 
 
  /* Pisano Model options  */

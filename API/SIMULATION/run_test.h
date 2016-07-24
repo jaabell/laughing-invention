@@ -48,7 +48,9 @@ int run_test()
     for (int step = 1; step < Nsteps ; step++)
     {
         cout << " >>>>>>>>>>>>>>>>>>>> Step " << step << endl;
-        strain(0, 2) = 0.00000001 * step;
+        strain(0, 2) =  0.1 * step;
+        strain(2, 0) =  0.1 * step;
+        printTensor("strain", strain);
         mat.setTrialStrain(strain);
         printTensor("stress", stress);
         mat.commitState();

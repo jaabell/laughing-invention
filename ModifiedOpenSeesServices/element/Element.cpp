@@ -969,6 +969,12 @@ const Vector &Element::getOutput()
     return *SizedVector1;
 }
 
+void Element::zeroStrain()
+{
+    cerr << "Element::zeroStrain() -- Subclass responsability.\n\n";
+    return ;
+}
+
 Matrix &Element::getGaussCoordinates(void)
 {
     // cerr << "Element::getGaussCoordinates() -- Subclass responsability.\n\n";

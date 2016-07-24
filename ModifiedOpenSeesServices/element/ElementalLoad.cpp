@@ -178,7 +178,6 @@ int
 ElementalLoad::addElement(int tag)
 {
     theElementTags[tag] = tag;
-    (*theElementTags)(tag) == tag;
     numElements++;
     return numElements;
 }

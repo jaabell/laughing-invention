@@ -87,16 +87,17 @@ int DruckerPragerArmstrongFrederick::pre_integration_callback(const DTensor2 &de
         bool & returns)
 {
     using namespace ClassicElastoplasticityGlobals;
-    static DTensor2 str(3, 3, 0);
+    static DTensor2 stress(3, 3, 0);
+    static DTensor2 plasticstrain(3, 3, 0);
     static DTensor4 stiff(3, 3, 3, 3, 0);
     double p = -(TrialStress(0, 0) + TrialStress(1, 1) + TrialStress(2, 2)) / 3;
     if (p < 0)
     {
-        str *= 0;
+        stress *= 0;
         stiff *= 0;
-        str(0, 0) = -0.1;
-        str(1, 1) = -0.1;
-        str(2, 2) = -0.1;
+        stress(0, 0) = -0.1;
+        stress(1, 1) = -0.1;
+        stress(2, 2) = -0.1;
         stiff = Stiffness;// / 10000;
         double mu = stiff(0, 1, 0, 1);
         double mu_reduced = mu / 10000;
@@ -125,8 +126,19 @@ int DruckerPragerArmstrongFrederick::pre_integration_callback(const DTensor2 &de
         stiff( 2, 2, 2, 2 ) += -2 * mu + 2 * mu_reduced; // lambda + 2 * mu;
 
 
-        this->setTrialStress(str);
+        plasticstrain = this->getCommittedPlasticStrainTensor();
+        plasticstrain(i, j) = plasticstrain(i, j) + depsilon(i, j);
+
+        this->setTrialStress(stress);
         this->setStiffness(stiff);
+        this->setTrialPlastic_Strain(depsilon);
+
+        //Reuse the 'stress' variable now to reset the backstress to zero
+        stress *= 0;
+        alpha.setVar(stress);
+        alpha.commit_tmp();
+
+        // cout << "pre_integration_callback acted!\n";
 
         returns = true;
     }

@@ -2640,7 +2640,10 @@ Domain::commit( void )
 {
     // Calls commit() on nodes and elements. Also in charge of storing
     // the data to the outputwriter.
-
+    int rank = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+#endif
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
     Element *elePtr;
@@ -2648,61 +2651,16 @@ Domain::commit( void )
 
     globalESSITimer.start("Domain_Mesh_Output");
 
-#ifdef _PARALLEL_PROCESSING
-    int numProcesses, processID;
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-#endif
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
-
-
-    //Max number of nodes and elements to write on all processes (so hat collective call to write can)
-    //be done.
-    static int NnodesMax_AllProccesses;
-    static int NelemsMax_AllProccesses;
-
-    if (!have_written_static_mesh_data) //Will be done only once per stage
-    {
-        int tmpNnodes = theNodes->getNumComponents();
-        int tmpNelems = theElements->getNumComponents();
-
-        MPI_Allreduce(&tmpNnodes, &NnodesMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
-        MPI_Allreduce(&tmpNelems, &NelemsMax_AllProccesses, 1, MPI_INTEGER, MPI_MAX, MPI_COMM_WORLD);
-    }
 
     if (output_is_enabled && countdown_til_output == 0)
     {
         //Write out static mesh data once!
         if (!have_written_static_mesh_data)
         {
-            theOutputWriter.syncWriters();
-            theOutputWriter.writeMesh();
-            have_written_static_mesh_data = true;
-        }
-        theOutputWriter.setTime(currentTime);
-    }
-#else //   _PARALLEL_PROCESSING_COLLECTIVE_IO  not defined
-    // NOTE: This is done in PartitionedDomain::partition in the case of parallel processing.
-    //
-    // This outputs the mesh information to the HDF5 writer. This is important because it builds the
-    // arrays of indexes into node output data and element output data.
-    if (output_is_enabled && countdown_til_output == 0)
-    {
-        //Write out static mesh data once!
-        if (!have_written_static_mesh_data)
-        {
-            //     cout << "this->getNumNodes()           = " << this->getNumNodes() << endl;
-            //     cout << "this->getNumElements()        = " << this->getNumElements() << endl;
-            //     cout << "maxNodesTag                   = " << maxNodesTag << endl;
-            //     cout << "maxElementsTag                = " << maxElementsTag << endl;
-            //     cout << "numberOfDomainNodeDOFs        = " << numberOfDomainNodeDOFs << endl;
-            //     cout << "numberOfDomainElementOutputs) = " << numberOfDomainElementOutputs << endl;
-
 #ifdef _PARALLEL_PROCESSING
             theOutputWriter.syncWriters();
 #endif
-
+            cout << "  (" << rank << ") - Outputting mesh.\n";
             globalESSITimer.start("HDF5_write_global_data");
             theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
                                                 this->getNumElements(),
@@ -2712,35 +2670,32 @@ Domain::commit( void )
                                                 numberOfDomainElementOutputs);
             globalESSITimer.stop("HDF5_write_global_data");
             globalESSITimer.start("HDF5_buffer_nodes");
-            //Write Node Mesh data!
 
-            // theOutputWriter.writeNumberOfNodes(this->getNumNodes());
+            //Write Node Mesh data!
             while ( ( nodePtr = theNodeIter() ) != 0 )
             {
                 theOutputWriter.writeNodeMeshData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
             }
+
+            SP_Constraint *sp_ptr = 0;
+            SP_ConstraintIter &theSP_Iter = this->getSPs();
+
+            while ( ( sp_ptr = theSP_Iter() ) != 0 )
+            {
+                int nodetag = sp_ptr->getNodeTag();
+                int dof = sp_ptr->getDOF_Number();
+
+                theOutputWriter.writeSPConstraintsData(nodetag, dof);
+            }
+
+
             globalESSITimer.stop("HDF5_buffer_nodes");
 
             globalESSITimer.start("HDF5_buffer_elements");
-            //Write Element Mesh data!
-            // theOutputWriter.writeNumberOfElements(this->getNumElements());
-#ifdef _PARALLEL_PROCESSING
-            if (processID > 0) // P0 has no elements
-            {
 
-                while ( ( elePtr = theElemIter() ) != 0 )
-                {
-                    int materialtag = 0;
-                    theOutputWriter.writeElementMeshData(elePtr->getTag() ,
-                                                         elePtr->getElementName(),
-                                                         elePtr->getExternalNodes(),
-                                                         materialtag ,
-                                                         elePtr->getGaussCoordinates(),
-                                                         elePtr->getOutputSize(),
-                                                         elePtr->getElementclassTag());
-                }
-            }
-#else
+
+            //Write Element Mesh data!
+
             while ( ( elePtr = theElemIter() ) != 0 )
             {
                 int materialtag = 0;
@@ -2752,7 +2707,7 @@ Domain::commit( void )
                                                      elePtr->getOutputSize(),
                                                      elePtr->getElementclassTag());
             }
-#endif
+
 
             globalESSITimer.stop("HDF5_buffer_elements");
 
@@ -2765,8 +2720,7 @@ Domain::commit( void )
         theOutputWriter.setTime(currentTime);
     }
 
-//   _PARALLEL_PROCESSING_COLLECTIVE_IO  not defined
-#endif
+
 
     globalESSITimer.stop("Domain_Mesh_Output");
 
@@ -2774,7 +2728,6 @@ Domain::commit( void )
     globalESSITimer.start("Domain_Node_Commit_and_output");
 
     //Do the actual commit of nodal displacements
-    // theNodeIter.reset();
     theNodeIter = this->getNodes();
     while ( ( nodePtr = theNodeIter() ) != 0 )
     {
@@ -2784,27 +2737,14 @@ Domain::commit( void )
     //Do element output
     if (output_is_enabled && (countdown_til_output == 0))
     {
+        // this->calculateNodalReactions(0);
         theNodeIter = this->getNodes();
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
 
-        for (int i = 0; i < NnodesMax_AllProccesses; i++)
-        {
-            nodePtr = theNodeIter();
-            if (nodePtr && (processID != 0)) //Process 0 always does the other branch
-            {
-                theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-            }
-            else
-            {
-                theOutputWriter.writeDummyDisplacements(); //Needed for collective calling of HDF5
-            }
-        }
-#else // Sequential output
         while ((nodePtr = theNodeIter()) != 0)
         {
             theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
+            // theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
         }
-#endif
     }
 
     globalESSITimer.stop("Domain_Node_Commit_and_output");
@@ -2824,33 +2764,15 @@ Domain::commit( void )
     if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
     {
         theElemIter = this->getElements();
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
 
-
-        for (int i = 0; i < NelemsMax_AllProccesses; i++)
-        {
-            elePtr = theElemIter();
-            if (elePtr && (processID != 0)) //Process 0 always does the other branch
-            {
-                theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
-            }
-            else
-            {
-                theOutputWriter.writeDummyElementOutput(); //Needed for collective calling of HDF5
-            }
-        }
-
-#else //Not parallel processing
         while ( ( elePtr = theElemIter() ) != 0 )
         {
             theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
         }
-#endif
     }
 
     globalESSITimer.stop("Domain_Element_Commit_and_output");
 
-// cout << "countdown_til_output = " << countdown_til_output << endl;
     if (countdown_til_output == 0)
     {
         countdown_til_output = output_every_nsteps;
@@ -4677,10 +4599,10 @@ int Domain::setConstitutiveIntegrationMethod(int algorithm,
         double f_relative_tol, double stress_relative_tol, int n_max_iterations)
 {
     int errorflag = -1;
-    int rank = 0;
 
 
 // #ifdef _PARALLEL_PROCESSING
+//     int rank = 0;
 //     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 //     cout << "setConstitutiveIntegrationMethod(" << rank << ") - \n";
 //     cout << "algorithm = " << algorithm << endl;
@@ -4699,4 +4621,34 @@ int Domain::setConstitutiveIntegrationMethod(int algorithm,
         cerr << "define_NDMaterialLT_constitutive_integration_algorithm() - Error. Constitutive algorithm not available.\n";
     }
     return errorflag;
+}
+
+
+void Domain::removeStrainFromElement(int tag)
+{
+    Element* ele = this->getElement(tag);
+    if (ele != NULL)
+    {
+        ele->zeroStrain();
+    }
+    else
+    {
+        cerr << "Domain::removeStrainFromElement - element tag = " <<  tag << " not found!\n";
+    }
+    return;
+}
+
+void Domain::removeDisplacementFromNode(int tag)
+{
+    // cout << "!";
+    Node* node = this->getNode(tag);
+    if (node != NULL)
+    {
+        node->zeroDisplacements();
+    }
+    else
+    {
+        cerr << "Domain::removeDisplacementFromNode - node tag = " <<  tag << " not found!\n";
+    }
+    return;
 }

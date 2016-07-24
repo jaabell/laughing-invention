@@ -119,6 +119,8 @@ public:
         return errVectorVector;
     }
 
+    virtual void zeroStrain();
+
     static bool set_constitutive_integration_method(int method, double f_relative_tol, double stress_relative_tol, int n_max_iterations);
 
 

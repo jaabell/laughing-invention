@@ -137,6 +137,12 @@ public:
         a = a_tmp;
     }
 
+    void revert_to_start()
+    {
+        // cout << "Reverting from " << a << " to " << a_tmp << endl;
+        a = 0 * a_tmp;
+    }
+
     void print()
     {
         cout << "     > a           = " << a << endl;

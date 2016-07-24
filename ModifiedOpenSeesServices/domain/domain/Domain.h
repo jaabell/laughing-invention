@@ -384,6 +384,9 @@ public:
     virtual int setConstitutiveIntegrationMethod(int algorithm,
             double f_relative_tol, double stress_relative_tol, int n_max_iterations);
 
+    virtual void removeStrainFromElement(int tag);
+    virtual void removeDisplacementFromNode(int tag);
+
 protected:
     virtual int buildEleGraph(Graph *theEleGraph);
     virtual int buildNodeGraph(Graph *theNodeGraph);

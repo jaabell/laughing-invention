@@ -36,6 +36,9 @@
 #include <Vector.h>
 #include <math.h>
 
+#ifdef _PARALLEL_PROCESSING
+#include <mpi.h>
+#endif
 
 InitialInterpolatedLineSearch::InitialInterpolatedLineSearch(double tol, int mIter, double mnEta,
         double mxEta, int pFlag)
@@ -168,6 +171,23 @@ InitialInterpolatedLineSearch::search(double s0,
 
         //new value of s
         s = dU ^ ResidI;
+
+#ifdef _PARALLEL_PROCESSING
+        // In the case of parallel processing, residuals are computed locally at each processor and
+        // are different, in general, across them.
+        // On the other hand dU was computed once and for all at the invokation of solve() and
+        // is the same across all processes. Therefore, to compute s in parallel a reduction
+        // operation is needed, summing up all values of 's' across all preocesses.
+        double s_;
+        MPI_Allreduce(
+            &s,
+            &s_,
+            1,
+            MPI_DOUBLE,
+            MPI_SUM,
+            MPI_COMM_WORLD);
+        s = s_;
+#endif
 
         //new value of r
         r = fabs( s / s0 );

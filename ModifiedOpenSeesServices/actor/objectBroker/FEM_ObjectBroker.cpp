@@ -777,6 +777,11 @@ FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
         return new NewPisanoLT();
         break;
 
+    case ND_TAG_NonlinearIsotropic3DLT:
+        return new NonlinearIsotropic3DLT();
+        break;
+
+
 
     default:
         cerr << "FEM_ObjectBroker::getNewNDMaterialLT - ";

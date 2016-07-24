@@ -159,6 +159,8 @@ public:
 
     virtual void setProducesOutputFlag(bool truthvalue);
 
+    virtual void zeroStrain();
+
 protected:
     const Vector &getRayleighDampingForces(void);
 

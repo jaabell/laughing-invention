@@ -119,6 +119,12 @@ struct MaterialInternalVariables<Q, Qs...> : MaterialInternalVariables<Qs...>
         static_cast<MaterialInternalVariables<Qs...>*>(this)->revert();
     }
 
+    void revert_to_start()
+    {
+        q_i.revert_to_start();
+        static_cast<MaterialInternalVariables<Qs...>*>(this)->revert_to_start();
+    }
+
     void commit_tmp()
     {
         q_i.commit_tmp();

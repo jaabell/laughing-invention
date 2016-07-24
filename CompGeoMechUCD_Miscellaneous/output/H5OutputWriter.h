@@ -115,6 +115,7 @@ public:  // To meet with OutputWriter interfacec
     virtual int writeElementPartitionData(int tag  , int partition) ;
     virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
     virtual int writeLoadPatternData(int tag , std::string name) ;
+    virtual int writeSPConstraintsData(int nodetag , int dof) ;
 
     // Results for Nodes
     virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
@@ -325,6 +326,8 @@ private:
     hid_t id_elements_materialtag;
     hid_t id_elements_classtag;
     hid_t id_elements_partition;
+    hid_t id_Constrained_Nodes;
+    hid_t id_Constrained_DOFs;
 
 
 
@@ -375,6 +378,8 @@ private:
     ID Material_tags;
     ID Class_Tags;
     ID Partition;
+    ID SPNodes;
+    ID SPDofs;
 
     int numof_NO_COLLECTIVE_calls;
     int numof_CHUNK_INDEPENDENT_calls;

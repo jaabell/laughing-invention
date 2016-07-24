@@ -91,27 +91,35 @@ ElasticIsotropic3DLT::~ElasticIsotropic3DLT()
 //================================================================================
 int ElasticIsotropic3DLT::setTrialStrain( const DTensor2 &strain )
 {
-    // compute_tangent_tensor();
+    static DTensor2 strain_increment(3, 3, 0);
+    strain_increment *= 0;
+
     TrialStrain(i, j) = strain(i, j);
-    // TrialStress(i, j) = Ee(i, j, k, l) * TrialStrain(k, l);
-    //      \sigma_{ij}
-    // =\lambda \delta_{ij} \varepsilon_{kk}+2\mu\varepsilon_{ij}
-    // \,\!
+    strain_increment(i, j) = strain(i, j) - CommitStrain(i, j);
 
-    double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
-    double mu = E / ( 2 * ( 1 + v ) );
-    double lambda_eps_ii = lambda * TrialStrain(i, i);
-    TrialStress(i, j) = 2 * mu * TrialStrain(i, j);
-    TrialStress(0, 0) += lambda_eps_ii;
-    TrialStress(1, 1) += lambda_eps_ii;
-    TrialStress(2, 2) += lambda_eps_ii;
-
-    return 0;
+    return setTrialStrainIncr(strain_increment);
 }
 
 //================================================================================
 int ElasticIsotropic3DLT::setTrialStrainIncr( const DTensor2 &strain_increment )
 {
+    static DTensor2 stress_increment(3, 3, 0);
+    stress_increment *= 0;
+
+    compute_tangent_tensor();
+
+    double lambda = ( v * E ) / ( ( 1 + v ) * ( 1 - 2 * v ) );
+    double mu = E / ( 2 * ( 1 + v ) );
+    double lambda_eps_ii = lambda * strain_increment(i, i);
+
+    stress_increment(i, j) = 2 * mu * strain_increment(i, j);
+    stress_increment(0, 0) += lambda_eps_ii;
+    stress_increment(1, 1) += lambda_eps_ii;
+    stress_increment(2, 2) += lambda_eps_ii;
+
+    TrialStress(i, j) = CommitStress(i, j);
+    TrialStress(i, j) += stress_increment(i, j);
+
     return 0;
 }
 
@@ -388,3 +396,12 @@ int ElasticIsotropic3DLT::getObjectSize()
 
     return size;
 }
+
+
+
+void ElasticIsotropic3DLT::zeroStrain()
+{
+    TrialStrain *= 0;
+    CommitStrain *= 0;
+}
+

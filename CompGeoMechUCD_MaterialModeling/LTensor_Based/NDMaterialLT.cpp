@@ -345,6 +345,12 @@ const char *NDMaterialLT::getType(void) const
     return 0;
 }
 
+void NDMaterialLT::zeroStrain(void)
+{
+    cerr << "NDMaterialLT::zeroStrain -> Subclass responsability" << endl;
+    return ;
+}
+
 bool NDMaterialLT::set_constitutive_integration_method(int method, double f_relative_tol, double stress_relative_tol, int n_max_iterations)
 {
     if ( method == (int) NDMaterialLT_Constitutive_Integration_Method::Not_Set
