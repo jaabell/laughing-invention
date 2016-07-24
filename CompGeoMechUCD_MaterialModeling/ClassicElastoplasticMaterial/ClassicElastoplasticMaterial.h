@@ -1366,7 +1366,8 @@ private:
             // cout <<      " yf_val_end          = " << yf_val_end << endl;
             // printTensor (" TrialStress        " , TrialStress);
 
-            if (sqrt(dsigma(i, j) * dsigma(i, j)) < this->stress_relative_tol)
+            double relative_stress_norm = sqrt(dsigma(i, j) * dsigma(i, j))  /  sqrt(sigma(k, l) * sigma(k, l)) ;
+            if (relative_stress_norm < this->stress_relative_tol)
             {
                 // If the elastic stress increment is below the stress tolerance
                 // exit, doing nothing.
