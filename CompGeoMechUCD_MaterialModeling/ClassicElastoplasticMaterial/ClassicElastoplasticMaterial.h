@@ -1366,17 +1366,18 @@ private:
             // cout <<      " yf_val_end          = " << yf_val_end << endl;
             // printTensor (" TrialStress        " , TrialStress);
 
-            double relative_stress_norm = sqrt(dsigma(i, j) * dsigma(i, j))  /  sqrt(sigma(k, l) * sigma(k, l)) ;
-            if (relative_stress_norm < this->stress_relative_tol)
-            {
-                // If the elastic stress increment is below the stress tolerance
-                // exit, doing nothing.
-                return 0;
-            }
+            // // The tolerance is checked later. No need to check twice.
+            // if (relative_stress_norm < this->stress_relative_tol){
+            //     return 0;
+            // }
 
             bool returns = false;
-            int retval = pre_integration_callback_(depsilon, dsigma, TrialStress, Stiffness, yf_val_start, yf_val_end,  returns);
 
+            // If vonMises, do nothing. If DruckerPrager:
+            // Checks whether predicted stress is less than zero,
+            // in which case sets stress to low confinement value and
+            // gives a reduced stiffness.
+            int retval = pre_integration_callback_(depsilon, dsigma, TrialStress, Stiffness, yf_val_start, yf_val_end,  returns);
             if (returns)
             {
                 return retval;
@@ -1395,7 +1396,7 @@ private:
                 ResidualStress *= 0;
                 TrialStress_prev(i, j) = PredictorStress(i, j);
                 double normResidualStress = -1;
-                double Relative_Error = stress_relative_tol * 10; //
+                double stress_relative_error = this->stress_relative_tol * 10; //
                 bool converged = false;
                 double dLambda = 0;
                 double denominator = 0;
@@ -1403,11 +1404,12 @@ private:
 
                 double yf_PredictorStress = yf(PredictorStress);
                 double yf_TrialStress = yf(TrialStress);
+                double yf_TrialStress_prev = 0;
+                double f_relative_error=this->f_relative_tol*10;
 
-
-                while ((Relative_Error > this-> stress_relative_tol ||
-                        abs(yf_TrialStress) / yf_PredictorStress > this->f_relative_tol) &&
-                        iteration_count < this->n_max_iterations
+                while ((stress_relative_error > this-> stress_relative_tol ||
+                        f_relative_error > this->f_relative_tol) &&
+                        iteration_count++ < this->n_max_iterations
                       )
                 {
                     vars.revert_tmp();
@@ -1441,16 +1443,20 @@ private:
 
                     //Correct the trial stress
                     TrialStress_prev(i, j) = TrialStress(i, j);
+                    yf_TrialStress_prev = yf(TrialStress_prev) ;
+
                     TrialStress(i, j) = PredictorStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
-                    vars.evolve(dLambda, depsilon_elpl, m, TrialStress);
+                    vars.evolve(dLambda, depsilon, m, TrialStress);
                     yf_TrialStress = yf(TrialStress);
 
                     ResidualStress(i, j) = TrialStress(i, j) - TrialStress_prev(i, j);
 
                     normResidualStress = sqrt(ResidualStress(i, j) * ResidualStress(i, j));
 
-                    Relative_Error = normResidualStress / sqrt(TrialStress(i, j) * TrialStress(i, j));
+                    // update the stress and f relative error. 
+                    stress_relative_error = normResidualStress / sqrt(TrialStress(i, j) * TrialStress(i, j));
+                    f_relative_error = abs(yf_TrialStress-yf_TrialStress_prev / yf_TrialStress);
 
 
                     // double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
@@ -1473,8 +1479,8 @@ private:
                         // printTensor (" TrialStress_prev   " , TrialStress_prev);
                         // printTensor (" ResidualStress     " , ResidualStress );
                         // cout <<      " normResidualStress  = " << normResidualStress << endl;
-                        // cout <<      " Relative_Error      = " << Relative_Error << endl;
-                        // cout <<      " yf_RelativeErr      = " << abs(yf_TrialStress) / yf_PredictorStress << endl;
+                        // cout <<      " stress_relative_error      = " << stress_relative_error << endl;
+                        // cout <<      " f_relative_error      = " <<f_relative_error << endl;
                         // cout <<      " iteration_count     = " << iteration_count << endl;
                         // cout <<      " .........................................................." << endl;
                         // cout <<      "  Internal variables:" << endl;
@@ -1484,7 +1490,6 @@ private:
                         // errorcode = -1;
                     }
 
-                    iteration_count += 1;
                 } // while for el-pl this step
 
                 if (iteration_count < this->n_max_iterations )
@@ -1507,22 +1512,23 @@ private:
 
 
 
-                if (not converged && !debugrun )
-                {
-                    if (NSteps > 1)
-                    {
-                        cout << "Failed to achieve convergence (exceeded maximum number of iterations)!\n";
-                        cout << "Running again in debug mode.\n";
-                        Backward_Euler(strain_incr, true, 100);
-                        errorcode = -1;
-                    }
-                    else
-                    {
-                        cout << "Failed to achieve convergence (exceeded maximum number of iterations)!\n";
-                        cout << "Attempting run with sub-stepping\n";
-                        errorcode = Backward_Euler(strain_incr, false, 100);
-                    }
-                }
+                // if (not converged && !debugrun )
+                // {
+                //     if (NSteps > 1)
+                //     {
+                //         cout << "With 100 substeps Backward_Euler, still Failed to achieve convergence (exceeded maximum number of iterations)!\n";
+                //         cout << "Running again in debug mode.\n";
+                //         Backward_Euler(strain_incr, true, 100);
+                //         errorcode = -1;
+                //         return errorcode;
+                //     }
+                //     else
+                //     {
+                //         cout << "One-step Backward_Euler could not achieve convergence (exceeded maximum number of iterations)!\n";
+                //         cout << "Attempting run with sub-stepping 100\n";
+                //         errorcode = Backward_Euler(strain_incr, false, 100);
+                //     }
+                // }
 
             } //else  //Plasticity
             vars.commit_tmp();
