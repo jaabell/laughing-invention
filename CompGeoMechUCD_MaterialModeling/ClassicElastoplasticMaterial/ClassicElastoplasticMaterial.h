@@ -700,13 +700,7 @@ private:
 
         dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
 
-        double Frobenius_norm = 0.0; 
-        for (int i = 0; i < 3; ++i){
-            for (int j = 0; j < 3; ++j){
-                Frobenius_norm += abs(dsigma(i,j));
-            }
-        }
-        if (Frobenius_norm < this->stress_relative_tol)
+        if (sqrt(dsigma(i, j) * dsigma(i, j)) < this->stress_relative_tol)
         {
             // If the elastic stress increment is below the stress tolerance
             // exit, doing nothing.
@@ -884,13 +878,7 @@ private:
 
         dsigma(i, j) += Eelastic(i, j, k, l) * depsilon(k, l);
 
-        double Frobenius_norm = 0.0; 
-        for (int i = 0; i < 3; ++i){
-            for (int j = 0; j < 3; ++j){
-                Frobenius_norm += abs(dsigma(i,j));
-            }
-        }
-        if (Frobenius_norm < this->stress_relative_tol)
+        if (sqrt(dsigma(i, j) * dsigma(i, j)) < this->stress_relative_tol)
         {
             // If the elastic stress increment is below the stress tolerance
             // exit, doing nothing.
@@ -938,13 +926,13 @@ private:
             TrialStress(i, j) = intersection_stress(i, j);
 
 
-            int Niter = this-> n_max_iterations;
+            int Nsubsteps = this-> n_max_iterations;
             static DTensor2 sub_depsilon_elpl(3, 3, 0);
 
             sub_depsilon_elpl *= 0;
-            sub_depsilon_elpl(i, j) = depsilon_elpl(i, j) / Niter;
+            sub_depsilon_elpl(i, j) = depsilon_elpl(i, j) / Nsubsteps;
 
-            for (int iteration = 0; iteration < Niter; iteration++)
+            for (int iteration = 0; iteration < Nsubsteps; iteration++)
             {
                 Eelastic = et(TrialStress);
                 
