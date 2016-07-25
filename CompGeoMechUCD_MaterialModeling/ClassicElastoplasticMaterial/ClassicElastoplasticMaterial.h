@@ -1351,11 +1351,11 @@ private:
 
             dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
 
-
+            double yf_val_start = yf(TrialStress);
             TrialStress(i, j) +=  dsigma(i, j);
             PredictorStress(i, j) = TrialStress(i, j);
 
-            double yf_val_start = yf(sigma);
+            // double yf_val_start = yf(sigma);
             double yf_val_end = yf(PredictorStress);
 
             // printTensor (" CommitStress       " , CommitStress);
