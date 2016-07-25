@@ -1335,7 +1335,7 @@ const Vector &ElasticBeam::getOutput()
 
 void ElasticBeam::formOutputVector()
 {
-    Vector LocalDisplacements(12);
+    static Vector LocalDisplacements(12);
 
 
     Vector displacement1 = theNodes[0]->getTrialDisp();
@@ -1436,8 +1436,8 @@ void ElasticBeam::formOutputVector()
         LocalDisplacements(11)  += displacement(6) * RWJ(0, 2)  + displacement(7) * RWJ(1, 2)  + displacement(8) * RWJ(2, 2);
     }
 
-
-    Vector LocalForces(12);
+    P = this->getResistingForce();
+    static Vector LocalForces(12);
 
     // Transform resisting forces to local forces
 
@@ -1500,5 +1500,4 @@ void ElasticBeam::formOutputVector()
     outputVector(21) = LocalForces(9);
     outputVector(22) = LocalForces(10);
     outputVector(23) = LocalForces(11);
-
 }

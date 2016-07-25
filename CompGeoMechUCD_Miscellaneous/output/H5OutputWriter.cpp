@@ -94,7 +94,7 @@ H5OutputWriter::H5OutputWriter():
     create_elementMeshData_arrays        = true;
     create_elementOutput_arrays          = true;
 
-    zlib_compression_level = 0;
+    zlib_compression_level = 5;
     flag_write_element_output            = 1;
 
 #ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
@@ -173,28 +173,24 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
                stage_name_in,
                nsteps);
 
-    zlib_compression_level = 0;
+    zlib_compression_level = 5;
     flag_write_element_output = 1;
 
 #ifndef _PARALLEL_PROCESSING_COLLECTIVE_IO
     dataset_xfer_plist = H5Pcreate(H5P_DATASET_XFER); //Otherwise created in syncWriters in the parallel case
 #endif
-
 }
 
 
 
 H5OutputWriter::~H5OutputWriter()
 {
-    // // // Yuan: wait for the thread async_writer to finish
-    // async_writer.join();
     finalize();
 }
 
 
 void H5OutputWriter::finalize()
 {
-
     // cout << "H5OutputWriter::finalize() - ";
     if (file_is_open)
     {    // // // Yuan: wait for the thread async_writer to finish
@@ -358,10 +354,8 @@ void H5OutputWriter::initialize(std::string filename_in,
 
 void H5OutputWriter::set_number_of_time_steps(int nsteps)
 {
-
-    // int rank = 0; Yuan - comment out due to warning [-Wunused-variable]
-
 #ifdef _PARALLEL_PROCESSING
+    int rank = 0;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #endif
 
@@ -447,6 +441,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
 
 // LoadPattern_names.resize();
 // Material_tags.resize();
+
     return 0;
 }
 
@@ -624,6 +619,26 @@ int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
     return 0;
 }
 
+int H5OutputWriter::writeSPConstraintsData(int nodetag , int dof)
+{
+    int nsps = SPNodes.Size();
+
+    // int ntags;
+    // ntags = LoadPattern_names.Size();
+    // int addzeros = tag - ntags;
+
+    // //Extend arrays
+    // for (int i = 0; i <= addzeros; i++)
+    // {
+    //     LoadPattern_names.push_back(" not defined ");
+    // }
+    // LoadPattern_names.push_back(name);
+
+    SPNodes[nsps] = nodetag;
+    SPDofs[nsps] = dof;
+
+    return 0;
+}
 
 void H5OutputWriter::syncWriters()
 {
@@ -1688,6 +1703,7 @@ void H5OutputWriter::writeMesh()
             maxdims[1] = number_of_time_steps + 1;
 
             id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
+            // id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
         }
 
         // if (processID > 0)
@@ -1716,12 +1732,52 @@ void H5OutputWriter::writeMesh()
 
         }//    create_elementOutput_arrays = false;
 
-        // cout << "subgroupname" << subgroupname << endl;
+
+        //For SP Constraints
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = H5S_UNLIMITED;
+        id_Constrained_Nodes              = createVariableLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_Nodes", " ");
+        id_Constrained_DOFs               = createVariableLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_DOFs", " ");
+
+        //Write gauss coordinate values
+        dims[0]      = (hsize_t) SPNodes.Size();
+        data_dims[0] = (hsize_t) SPNodes.Size();
+        count[0]     = dims[0];
+        int_data_buffer = SPNodes.data;
+        writeVariableLengthIntegerArray(id_Constrained_Nodes,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+        H5OUTPUTWRITER_COUNT_OBJS;
+
+        //Write gauss coordinate values
+        dims[0]      = (hsize_t) SPDofs.Size();
+        data_dims[0] = (hsize_t) SPDofs.Size();
+        count[0]     = dims[0];
+        int_data_buffer = SPDofs.data;
+        writeVariableLengthIntegerArray(id_Constrained_DOFs,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
     }
     else  //Could not open file
     {
         cerr << "H5OutputWriter::writeMesh() -> could not open file: " << file_name << "!\n\n";
     }
+
+
+    H5OUTPUTWRITER_COUNT_OBJS;
 }
 
 int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
@@ -1758,6 +1814,7 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 #ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
     int processID;
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
     // cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
     // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
 #endif
@@ -1818,6 +1875,8 @@ void H5OutputWriter::writeDisplacements2disk() {
 // Results for Nodes
 int H5OutputWriter::writeDummyDisplacements(  )
 {
+
+
     // Read NDOFS from HDF5 file
     int datarank         = 1;
     hsize_t dummy[1] = {1};
@@ -1854,7 +1913,75 @@ int H5OutputWriter::writeAccelerations(  int nodeTag, const Vector &acceleration
 
 int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForces)
 {
-    cout << "H5OutputWriter::writeReactionForces()  -- Not available. Implement by copying writeDisplacements.\n ";
+
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+    int processID;
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
+    // cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
+#endif
+    int pos, ndofs;
+
+    // Read NDOFS from HDF5 file
+    int datarank         = 1;
+    hsize_t data_dims[1] = {1};
+    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
+    hsize_t stride[2]    = {1, 0};
+    hsize_t count[2]     = {1, 0};
+    hsize_t block[2]     = {1, 0};
+
+    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+
+    hdf5_check_error(status);
+
+    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
+    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+
+
+    //Write data
+    // hsize_t dims[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
+    hsize_t *dims;
+    dims = 0;   // This is to disable array extension (would not be done collectively)
+    data_dims[0] = (hsize_t) ndofs;
+
+    offset[0]    = (hsize_t) pos;
+    offset[1]    = (hsize_t) current_time_step - 1;
+    stride[0]    = 1;
+    stride[1]    = 1;
+    count[0]     = (hsize_t) ndofs;
+    count[1]     = 1;
+    block[0]     = 1;
+    block[1]     = 1;
+
+#if _PARALLEL_PROCESSING_COLLECTIVE_IO
+    // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
+#endif
+
+
+    double *data = reactionForces.theData;
+    writeVariableLengthDoubleArray(id_nodes_reaction_forces,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   data);
+
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+    return 0;
     return 0;
 }
 
@@ -1923,6 +2050,9 @@ void H5OutputWriter::writeElementOutput2disk(){
     }
     H5OUTPUTWRITER_COUNT_OBJS;
 }
+
+
+
 
 
 // Results for Elements

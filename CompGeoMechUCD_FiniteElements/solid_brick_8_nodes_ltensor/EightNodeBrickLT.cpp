@@ -374,17 +374,14 @@ const DTensor2 &EightNodeBrickLT::incr_disp( void ) const
 {
     static DTensor2 increment_disp( 8, 3, 0.0 );
 
-    //Have to get IncrDeltaDisp, not IncrDisp for cumulation of incr_disp
-    const Vector &IncrDis1 = theNodes[0]->getIncrDeltaDisp();
-    const Vector &IncrDis2 = theNodes[1]->getIncrDeltaDisp();
-    const Vector &IncrDis3 = theNodes[2]->getIncrDeltaDisp();
-    const Vector &IncrDis4 = theNodes[3]->getIncrDeltaDisp();
-    const Vector &IncrDis5 = theNodes[4]->getIncrDeltaDisp();
-    const Vector &IncrDis6 = theNodes[5]->getIncrDeltaDisp();
-    const Vector &IncrDis7 = theNodes[6]->getIncrDeltaDisp();
-    const Vector &IncrDis8 = theNodes[7]->getIncrDeltaDisp();
-
-
+    const Vector &IncrDis1 = theNodes[0]->getIncrDisp();
+    const Vector &IncrDis2 = theNodes[1]->getIncrDisp();
+    const Vector &IncrDis3 = theNodes[2]->getIncrDisp();
+    const Vector &IncrDis4 = theNodes[3]->getIncrDisp();
+    const Vector &IncrDis5 = theNodes[4]->getIncrDisp();
+    const Vector &IncrDis6 = theNodes[5]->getIncrDisp();
+    const Vector &IncrDis7 = theNodes[6]->getIncrDisp();
+    const Vector &IncrDis8 = theNodes[7]->getIncrDisp();
 
     increment_disp( 0, 0 ) = IncrDis1( 0 );
     increment_disp( 0, 1 ) = IncrDis1( 1 );
@@ -1853,7 +1850,8 @@ int EightNodeBrickLT::update( void )
     total_strain *= 0;
     trial_strain *= 0;
 
-    trial_disp = total_disp();
+    // trial_disp = total_disp();  ///////!!!!!!!!!!!!!!  Jose did this. Might break a few material models that are not correctly programmed.
+    trial_disp = incr_disp();
 
     //Debug
     // cout << endl << endl << "EightNodeBrickLT::update()" << endl;
@@ -1880,7 +1878,8 @@ int EightNodeBrickLT::update( void )
         trial_strain(i, j) = 0.5 * (dhGlobal( k, i ) * trial_disp( k, j ) + dhGlobal( k, j ) * trial_disp( k, i ));
         // LTensorDisplay::print(trial_strain, "trial_strain");
 
-        if ( ( material_array[gp]->setTrialStrain( trial_strain ) ) )
+        // if ( ( material_array[gp]->setTrialStrain( trial_strain ) ) )
+        if ( ( material_array[gp]->setTrialStrainIncr( trial_strain ) ) )
         {
             Matrix &gps = getGaussCoordinates();
             cerr << "EightNodeBrickLT::update (tag: " << this->getTag()
@@ -2079,6 +2078,15 @@ const Vector &EightNodeBrickLT::getOutput()
     return outputVector;
 }
 
+void EightNodeBrickLT::zeroStrain()
+{
+    for (int gp = 0; gp < 8; gp++)
+    {
+        material_array[gp]->zeroStrain();
+    }
+
+    return ;
+}
 
 
 #endif

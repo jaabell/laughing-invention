@@ -180,7 +180,7 @@
 %token CMD_print CMD_help CMD_whos CMD_check CMD_save CMD_restore
 
 %token MODEL NAME RESTART MESH
-%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION UNIFORMACCELERATION DAMPING DAMPINGTYPE CONSTRAINT DRM  SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE SET REACTION FORCES
+%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION UNIFORMACCELERATION DAMPING DAMPINGTYPE CONSTRAINT DRM  SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE SET REACTION FORCES DISPLACEMENT
 %token ELEMENTNAME MATERIALNAME
 %token ACCELERATION_FIELD
 %token FIX FREE REMOVE
@@ -221,10 +221,10 @@
 %token MembranePlateFiber ElasticMembranePlate elastic3d FIBER FiberSection Section fiber_cross_section fiber_location_Y fiber_location_Z fiber_location TorsionConstant_GJ 
 
 // Section options tokens
-%token thickness integration_rule section_number number_of_integration_points
+%token thickness integration_rule section_number 
 
 // Tokens for materials
-%token NDMaterialLT linear_elastic_isotropic_3d linear_elastic_isotropic_3d_LT
+%token NDMaterialLT linear_elastic_isotropic_3d linear_elastic_isotropic_3d_LT NonlinearIsotropic3DLT
 %token sanisand2008 camclay camclay_accelerated sanisand2004    
 %token linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
 %token PisanoLT 
@@ -238,7 +238,7 @@
 %token reference_void_ratio critical_stress_ratio_M minimum_bulk_modulus initial_mean_pressure yield_strength strain_hardening_ratio compressive_strength strain_at_compressive_strength
 %token crushing_strength strain_at_crushing_strength tensile_strength tension_softening_stiffness
 %token M_in kd_in xi_in h_in m_in beta_min n_in a_in elastic_modulus_1atm eplcum_cr_in
-
+%token Niso3d_K Niso3d_Kur Niso3d_n Niso3d_c Niso3d_phi0 Niso3d_dphi Niso3d_Rf Niso3d_K0 Niso3d_Kb Niso3d_m Niso3d_pa Niso3d_K2 Niso3d_B Niso3d_Et Niso3d_Ei Niso3d_Er
 
 
 // For acceleration field
@@ -2123,6 +2123,30 @@ CMD_remove
 		nodes.push($$);
 	}
 	//!=========================================================================================================
+	//!
+	//!FEIDOC remove displacement from  node # <.>;
+	| REMOVE DISPLACEMENT FROM NODE TEXTNUMBER exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($6); signature.push_back(this_signature("number", &isAdimensional));
+		$$ = new FeiDslCaller1<int>(&remove_displacement_from_node, args, signature, "remove_displacement_from_node");
+
+		nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC remove strain from element # <.>;
+	| REMOVE strain FROM ELEMENT TEXTNUMBER exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($6); signature.push_back(this_signature("number", &isAdimensional));
+		$$ = new FeiDslCaller1<int>(&remove_strain_from_element, args, signature, "remove_strain_from_element");
+
+		nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
 	;
 
 
@@ -2606,6 +2630,7 @@ ADD_material
 		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));
 		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));
 
+
 		$$ = new FeiDslCaller4<int, double, double, double>(&add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d, args,
 			signature,"add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d");
 		for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 4 exps
@@ -2613,44 +2638,54 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [PisanoLT] mass_density = <M/L^3> elastic_modulus_1atm = <F/L^2> poisson_ratio = <.> M_in = <.> kd_in = <.> xi_in = <.> h_in = <.> m_in = <.> initial_confining_stress = <F/L^2> n_in = <.> a_in = <.> eplcum_cr_in = <.>;
-	| MATERIAL TEXTNUMBER exp TYPE PisanoLT
-						mass_density '=' exp
-						elastic_modulus_1atm '=' exp
-						poisson_ratio '=' exp
-						M_in '=' exp
-						kd_in '=' exp
-						xi_in '=' exp
-						h_in '=' exp
-						m_in '=' exp
-						initial_confining_stress '=' exp
-						n_in '=' exp
-						a_in '=' exp
-						eplcum_cr_in '=' exp
-	  {
+	//!FEIDOC add material # <.> type [NonlinearIsotropic3DLT] mass_density = <M/L^3>  Niso3d_K = <F/L^2> Niso3d_Kur = <F/L^2> Niso3d_n = <.> Niso3d_c = <.> Niso3d_phi0 = <.> Niso3d_dphi = <.> Niso3d_Rf = <.> Niso3d_K0 = <.> Niso3d_Kb = <.> Niso3d_m = <.> Niso3d_pa = <F/L^2> Niso3d_K2 = <.> Niso3d_B = <.> Niso3d_Et = <F/L^2> Niso3d_Ei = <F/L^2> Niso3d_Er = <F/L^2>
+	| MATERIAL TEXTNUMBER exp TYPE NonlinearIsotropic3DLT
+		mass_density '=' exp
+		Niso3d_K '=' exp
+		Niso3d_Kur '=' exp
+		Niso3d_n '=' exp
+		Niso3d_c '=' exp
+		Niso3d_phi0 '=' exp
+		Niso3d_dphi '=' exp
+		Niso3d_Rf '=' exp
+		Niso3d_K0 '=' exp
+		Niso3d_Kb '=' exp
+		Niso3d_m '=' exp
+		Niso3d_pa '=' exp
+		Niso3d_K2 '=' exp
+		Niso3d_B '=' exp
+		Niso3d_Et '=' exp
+		Niso3d_Ei '=' exp
+		Niso3d_Er '=' exp
+	{
 		args.clear(); signature.clear();
+		args.push_back($3); signature.push_back(this_signature("number",            &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));
+		args.push_back($11); signature.push_back(this_signature("Niso3d_K",      &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("Niso3d_Kur",      &isAdimensional));
+		args.push_back($17); signature.push_back(this_signature("Niso3d_n",      &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("Niso3d_c",      &isAdimensional));
+		args.push_back($23); signature.push_back(this_signature("Niso3d_phi0",      &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("Niso3d_dphi",      &isAdimensional));
+		args.push_back($29); signature.push_back(this_signature("Niso3d_Rf",      &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("Niso3d_K0",      &isAdimensional));
+		args.push_back($35); signature.push_back(this_signature("Niso3d_Kb",      &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("Niso3d_m",      &isAdimensional));
+		args.push_back($41); signature.push_back(this_signature("Niso3d_pa",      &isPressure));
+		args.push_back($44); signature.push_back(this_signature("Niso3d_K2",      &isAdimensional));
+		args.push_back($47); signature.push_back(this_signature("Niso3d_B",      &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("Niso3d_Et",      &isAdimensional));
+		args.push_back($53); signature.push_back(this_signature("Niso3d_Ei",      &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("Niso3d_Er",      &isAdimensional));
 
-		args.push_back($3); signature.push_back(this_signature("number"                    , &isAdimensional));
-		args.push_back($11); signature.push_back(this_signature("elastic_modulus_1atm"      , &isPressure));
-		args.push_back($14); signature.push_back(this_signature("poisson_ratio"            , &isAdimensional));
-		args.push_back($17); signature.push_back(this_signature("M_in"                     , &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("kd_in"                    , &isAdimensional));
-		args.push_back($23); signature.push_back(this_signature("xi_in"                    , &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("h_in"                     , &isAdimensional));
-		args.push_back($29); signature.push_back(this_signature("m_in"                     , &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("mass_density"             , &isDensity));
-		args.push_back($32); signature.push_back(this_signature("initial_confining_stress" , &isPressure));
-		args.push_back($35); signature.push_back(this_signature("n_in"                     , &isAdimensional));
-		args.push_back($38); signature.push_back(this_signature("a_in"                     , &isAdimensional));
-		args.push_back($41); signature.push_back(this_signature("eplcum_cr_in"             , &isAdimensional));
-
-		$$ = new FeiDslCaller13<int,
-								double, double, double,
-								double, double, double,
-								double, double, double,
-								double, double, double>(&add_constitutive_model_NDMaterialLT_New_Pisano, args, signature, "add_constitutive_model_NDMaterialLT_New_Pisano");
-
-		for(int ii = 1;ii <=12; ii++) nodes.pop();
+	//tag, rho, K, Kur, n, c, phi0, dphi, Rf, K0, Kb, m, pa, K2, B, Et, Ei, Er
+        
+		$$ = new FeiDslCaller18<int, double, double,
+        double, double, double, double, double,
+        double, double, double, double, double,
+        double, double, double, double, double>(&add_constitutive_model_NDMaterial_nonlinear_elastic_isotropic_3d, args,
+			signature,"add_constitutive_model_NDMaterial_nonlinear_elastic_isotropic_3d");
+		for(int ii = 1;ii <=18; ii++) nodes.pop(); //pop 4 exps
 		nodes.push($$);
 	}
 	;
@@ -3651,7 +3686,7 @@ ADD_element:
 							   double, double, double, double, double,
 							   double, double, double>(&add_element_frictional_penalty_contact, args, signature, "add_element_frictional_penalty_contact");
 
-		for(int ii = 1;ii <=9; ii++) nodes.pop();
+		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================

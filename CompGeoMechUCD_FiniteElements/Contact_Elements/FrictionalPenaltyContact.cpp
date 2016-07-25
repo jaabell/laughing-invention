@@ -47,8 +47,8 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
     mu(mu_),
     B(3, 6),
     external_nodes(2),
-    is_in_contact(false),
-    is_in_contact_prev(false)
+    is_in_contact(true),
+    is_in_contact_prev(true)
 {
 
     tA = 0;
@@ -127,8 +127,13 @@ FrictionalPenaltyContact::FrictionalPenaltyContact(int tag, int node1, int node2
 
     g_commit = 0;
     g_prev_commit = 0;
-    is_in_contact_commit = false;
-    is_in_contact_prev_commit = false;
+    is_in_contact_commit = true;
+    is_in_contact_prev_commit = true;
+
+    // C->Zero();
+    // (*C)(0, 0) = kt;
+    // (*C)(1, 1) = kt;
+    // (*C)(2, 2) = kn;
 
     // cout << B(0,0) << " " << B(0,1) << " " << B(0,2) << " " << B(0,3) << " " << B(0,4) << " " << B(0,5) << "\n" << endl;
     // cout << B(1,0) << " " << B(1,1) << " " << B(1,2) << " " << B(1,3) << " " << B(1,4) << " " << B(1,5) << "\n" << endl;
@@ -156,8 +161,8 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
     mu(0.0),
     B(3, 6),
     external_nodes(2),
-    is_in_contact(false),
-    is_in_contact_prev(false)
+    is_in_contact(true),
+    is_in_contact_prev(true)
 {
 
     tA = 0;
@@ -173,8 +178,8 @@ FrictionalPenaltyContact::FrictionalPenaltyContact():
 
     g_commit = 0;
     g_prev_commit = 0;
-    is_in_contact_commit = false;
-    is_in_contact_prev_commit = false;
+    is_in_contact_commit = true;
+    is_in_contact_prev_commit = true;
 
     this->setNumberOfBoundaryNodes(1);
     this->initialize(); // Its ok to initialize memory once element is created on
@@ -419,9 +424,15 @@ int FrictionalPenaltyContact::revertToStart(void)
 //   * Output: error flag, 0 if success
 int FrictionalPenaltyContact::update(void)
 {
+    // cout << "update";
     // cout << "Going To Calculate gap \n";
     double epsilon = 0;
-    computeGap();
+    if (not computeGap())
+    {
+        // cout << "Exiting";
+        //Avoid updating if changes are too small.
+        return 0;
+    }
     static Vector del_tC(3);            // vector to hold current total step predicted forces
     static Vector delg(3);              // correct gap fucntion
 
@@ -779,6 +790,7 @@ const Vector &FrictionalPenaltyContact::getResistingForce(void)
 {
     R->Zero();
     R->addMatrixTransposeVector(1, B, *tC, 1.0);
+    // cout << "tc = " << *tC << endl;
     return *R;
 }
 
@@ -990,6 +1002,11 @@ int FrictionalPenaltyContact::receiveSelf(int commitTag, Channel &theChannel, FE
         return -1;
     }
 
+    C->Zero();
+    (*C)(0, 0) = kt;
+    (*C)(1, 1) = kt;
+    (*C)(2, 2) = kn;
+
     return 0;
 }
 
@@ -1091,9 +1108,9 @@ Matrix &FrictionalPenaltyContact::getGaussCoordinates(void)
 //==================================================================================================
 // Add you own member functions at the end!
 
-void FrictionalPenaltyContact::computeGap()
+bool FrictionalPenaltyContact::computeGap()
 {
-
+    // cout << "comutegap"
     // cout << "started Computing Gap \n";
 
     static Vector d_ij(3);                         // Distance between nodes
@@ -1115,11 +1132,18 @@ void FrictionalPenaltyContact::computeGap()
 
     // Normal gap
     double g_N = (*g)(2);
-    double epsilon = 0;
+    double epsilon = 1e-6;
+
+    // cout << "g_N = " << g_N << endl;
+    double du = ui.Norm() + uj.Norm();
+    if (du < 1e-16)
+    {
+        // cout << "!";
+        return false;
+    }
 
     is_in_contact_prev = is_in_contact;
 
-    // cout << "g_N " << g_N << endl;
     if (g_N <= epsilon )
     {
         is_in_contact = true;
@@ -1130,7 +1154,7 @@ void FrictionalPenaltyContact::computeGap()
     }
 
     // cout << "returning fron the compute gap function \n";
-    return;
+    return true;
 
     // if (is_in_contact_prev)                    // If element was previously in contact...
     // {
@@ -1177,6 +1201,11 @@ void FrictionalPenaltyContact::initialize()
         g_commit = new Vector(3);
         g_prev_commit = new Vector(3);
         C = new Matrix(3, 3);
+
+        C->Zero();
+        (*C)(0, 0) = kt;
+        (*C)(1, 1) = kt;
+        (*C)(2, 2) = kn;
     }
     return ;
 }

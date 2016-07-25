@@ -2195,6 +2195,7 @@ int Node::zeroDisplacements()
 {
     if (commitDisp != 0)
     {
+        // cout << ".";
         commitDisp->Zero();
     }
     if (commitVel != 0)
@@ -2207,6 +2208,7 @@ int Node::zeroDisplacements()
     }
     if (trialDisp != 0)
     {
+        // cout << "+";
         trialDisp->Zero();
     }
     if (trialVel != 0)

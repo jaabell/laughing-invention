@@ -231,6 +231,7 @@
 #define ND_TAG_PisanoLT 4002
 #define ND_TAG_NewPisanoLT 4003
 #define ND_TAG_ElasticIsotropic3DLT 4004
+#define ND_TAG_NonlinearIsotropic3DLT 4005
 
 
 #define ND_TAG_FluidSolidPorousMaterial        100
