@@ -31,7 +31,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "VonMisesLinearHardening.h"
-
+#include "NDMaterialLT.h"
+#include <iostream>
+#include "../../../ltensor/LTensor.h"
+#include "../ClassicElastoplasticityGlobals.h"
 //First constructor, creates a material at its "ground state" from its parameters.
 VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_) :
     VMLHBase::ClassicElastoplasticMaterial(tag_in, rho_, 0.0, //Initial confinement can be 0 for this model
@@ -51,7 +54,18 @@ VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double k0_in, doubl
     // cout << "nu  = " << nu << endl;
     // cout << "rho_  = " << rho_ << endl;
     // cout << "yf  = " << yf(getStressTensor()) << endl;
-
+  double machine_epsilon=1e-15;
+  if( abs(H_alpha)<machine_epsilon &&  abs(H_k)<machine_epsilon){
+    hardening_type = Perfectly_Plastic;
+  }else if(abs(H_alpha)<machine_epsilon &&  abs(H_k)>machine_epsilon){
+    hardening_type = ;
+    hardening_type = ;
+    hardening_type = ;
+  }else if(abs(H_alpha)>machine_epsilon &&  abs(H_k)<machine_epsilon){
+    hardening_type = Kinematic_Hardening_Only;
+  }else{
+    hardening_type = Both_Isotropic_Kinematic_Hardening;
+  }
 
 }
 
@@ -81,4 +95,43 @@ VonMisesLinearHardening::VonMisesLinearHardening() :
     alpha(0),
     k(0, 0)
 {}
+
+int VonMisesLinearHardening::consistent_stiffness_(DTensor2 const &dlambda_,
+                          DTensor2 const &dsigma_,
+                          DTensor2 const &m_,
+                          DTensor2 const &z_,
+                          DTensor2 const &alpha_,
+                          double   const & k_,
+                          DTensor4       &Stiffness_ ){
+  using namespace ClassicElastoplasticityGlobals;
+  // (1) No hardening
+   
+  switch(hardening_type){
+    case Perfectly_Plastic:{
+      
+      break;
+    }
+    case Isotropic_Hardening_Only:{
+
+      break;
+    }
+    case Kinematic_Hardening_Only:{
+
+      break;
+    }
+    case Both_Isotropic_Kinematic_Hardening:{
+
+      break;
+    }
+    default:{
+
+
+    }
+    
+
+  }
+  
+  return 1;
+}
+
 

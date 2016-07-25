@@ -1594,8 +1594,37 @@ private:
         return static_cast<U*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
     }
 
+    // ====================================================
+    // Working on consistent tangent stiffness matrix. 
+    // ====================================================
+    template <typename U = T>
+    typename std::enable_if < !supports_consistent_stiffness<U>::value, int >::type
+    consistent_stiffness_(DTensor2 const &dlambda_,
+                          DTensor2 const &dsigma_,
+                          DTensor2 const &m_,
+                          DTensor2 const &z_,
+                          DTensor2 const &alpha_,
+                          double   const & k_,
+                          DTensor4       &Stiffness_ ){
+        cout << "consistent_stiffness_ for this type of materials is not implemented yet!\n";
+        return 0;
+    }
 
+    template <typename U = T>
+    typename std::enable_if<supports_consistent_stiffness<U>::value, int>::type
+    consistent_stiffness_(DTensor2 const &dlambda_,
+                          DTensor2 const &dsigma_,
+                          DTensor2 const &m_,
+                          DTensor2 const &z_,
+                          DTensor2 const &alpha_,
+                          double   const & k_,
+                          DTensor4       &Stiffness_ ){
+        return static_cast<U*>(this)->consistent_stiffness(dlambda_, dsigma_, m_, z_, alpha_, Stiffness_,  k_,  yf2, returns);
+    }
 
+    // ====================================================
+    // Working on consistent tangent stiffness matrix. END
+    // ====================================================
 private:
 // Routine used by yield_surface_cross to find the stresstensor at cross point
 //================================================================================
