@@ -1404,7 +1404,7 @@ private:
 
                 double yf_PredictorStress = yf(PredictorStress);
                 double yf_TrialStress = yf(TrialStress);
-                double yf_TrialStress_prev = 0;
+                // double yf_TrialStress_prev = 0;
                 double f_relative_error=this->f_relative_tol*10;
 
                 while ((stress_relative_error > this-> stress_relative_tol ||
@@ -1443,7 +1443,7 @@ private:
 
                     //Correct the trial stress
                     TrialStress_prev(i, j) = TrialStress(i, j);
-                    yf_TrialStress_prev = yf(TrialStress_prev) ;
+                    // yf_TrialStress_prev = yf(TrialStress_prev) ;
 
                     TrialStress(i, j) = PredictorStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
@@ -1456,7 +1456,7 @@ private:
 
                     // update the stress and f relative error. 
                     stress_relative_error = normResidualStress / sqrt(TrialStress(i, j) * TrialStress(i, j));
-                    f_relative_error = abs(yf_TrialStress / yf_TrialStress_prev);
+                    f_relative_error = abs(yf_TrialStress / yf_PredictorStress);
 
 
                     // double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
