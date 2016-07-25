@@ -97,18 +97,28 @@ VonMisesLinearHardening::VonMisesLinearHardening() :
 {}
 
 int VonMisesLinearHardening::consistent_stiffness_(DTensor2 const &dlambda_,
-                          DTensor2 const &dsigma_,
+                          DTensor2 const &sigma_,
+                          DTensor2 const &n_,
                           DTensor2 const &m_,
                           DTensor2 const &z_,
                           DTensor2 const &alpha_,
-                          double   const & k_,
+                          double   const &k_,
                           DTensor4       &Stiffness_ ){
   using namespace ClassicElastoplasticityGlobals;
-  // (1) No hardening
-   
+  
+  static DTensor4 I4(3,3,3,3,0.0);
+  I4=kronecker_delta(i,k)*kronecker_delta(j,l);
+  static DTensor4 dm_dsigma(3,3,3,3,0.0);
+  dm_dsigma=m_(k,l)/sigma_(m,n);
+
   switch(hardening_type){
     case Perfectly_Plastic:{
-      
+      static Dtensor4 General_C_inv(3,3,3,3,0.0);
+      General_C_inv=I4(i,j,k,l) + dlambda_ * Stiffness_(i,j,k,l)*dm_dsigma(k,l,m,n);
+      static Dtensor4 General_C(3,3,3,3,0.0);
+      General_C=General_C_inv.Inv();
+      double denominator=n_(p, q) * Stiffness_(p, q, r, s) * m_(r, s);
+      Stiffness_(i,j,k,l)*=(General_C(i,j,k,l)-(General_C(i, j, p, q) * m_(p, q)) * (n_(r, s) * General_C(r, s, k, l) ) )/denominator
       break;
     }
     case Isotropic_Hardening_Only:{
@@ -124,7 +134,7 @@ int VonMisesLinearHardening::consistent_stiffness_(DTensor2 const &dlambda_,
       break;
     }
     default:{
-
+      cout<<"Stiffness_(i,j,k,l) \n";
 
     }
     

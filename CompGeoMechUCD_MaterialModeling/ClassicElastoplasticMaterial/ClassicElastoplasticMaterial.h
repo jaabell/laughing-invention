@@ -1632,7 +1632,8 @@ private:
     template <typename U = T>
     typename std::enable_if < !supports_consistent_stiffness<U>::value, int >::type
     consistent_stiffness_(DTensor2 const &dlambda_,
-                          DTensor2 const &dsigma_,
+                          DTensor2 const &sigma_,
+                          DTensor2 const &n_,
                           DTensor2 const &m_,
                           DTensor2 const &z_,
                           DTensor2 const &alpha_,
@@ -1645,13 +1646,14 @@ private:
     template <typename U = T>
     typename std::enable_if<supports_consistent_stiffness<U>::value, int>::type
     consistent_stiffness_(DTensor2 const &dlambda_,
-                          DTensor2 const &dsigma_,
+                          DTensor2 const &sigma_,
+                          DTensor2 const &n_,
                           DTensor2 const &m_,
                           DTensor2 const &z_,
                           DTensor2 const &alpha_,
                           double   const & k_,
                           DTensor4       &Stiffness_ ){
-        return static_cast<U*>(this)->consistent_stiffness(dlambda_, dsigma_, m_, z_, alpha_, Stiffness_,  k_,  yf2, returns);
+        return static_cast<U*>(this)->consistent_stiffness(dlambda_, sigma_, m_, z_, alpha_, Stiffness_,  k_,  yf2, returns);
     }
 
     // ====================================================

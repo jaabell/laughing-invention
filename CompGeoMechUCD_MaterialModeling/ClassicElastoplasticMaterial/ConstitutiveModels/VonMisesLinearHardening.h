@@ -95,7 +95,8 @@ public:
     //The state variables.
 
     int VonMisesLinearHardening::consistent_stiffness_(DTensor2 const &dlambda_,
-                              DTensor2 const &dsigma_,
+                              DTensor2 const &sigma_,
+                              DTensor2 const &n_,
                               DTensor2 const &m_,
                               DTensor2 const &z_,
                               DTensor2 const &alpha_,
