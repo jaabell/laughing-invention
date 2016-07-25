@@ -1351,11 +1351,11 @@ private:
 
             dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
 
-            double yf_val_start = yf(TrialStress);
+
             TrialStress(i, j) +=  dsigma(i, j);
             PredictorStress(i, j) = TrialStress(i, j);
-
-            // double yf_val_start = yf(sigma);
+            // Still use the sigma (inside the YF) in the first (sub)step.
+            double yf_val_start = yf(sigma);
             double yf_val_end = yf(PredictorStress);
 
             // printTensor (" CommitStress       " , CommitStress);
@@ -1456,7 +1456,7 @@ private:
 
                     // update the stress and f relative error. 
                     stress_relative_error = normResidualStress / sqrt(TrialStress(i, j) * TrialStress(i, j));
-                    f_relative_error = abs((yf_TrialStress-yf_TrialStress_prev) / yf_TrialStress);
+                    f_relative_error = abs(yf_TrialStress / yf_TrialStress_prev);
 
 
                     // double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
