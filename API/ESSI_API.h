@@ -230,6 +230,8 @@
 //--------------------------------------------------------------------------------------------------
 #include "FullGenEigenSolver.h"
 #include "FullGenEigenSOE.h"
+#include "BandArpackSOE.h"
+#include "BandArpackSolver.h"
 
 
 // MOSSy Elements

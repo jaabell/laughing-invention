@@ -1,6 +1,7 @@
 #cmake -G "Unix Makefiles" -DBaseName:STRING=mybase -DCMAKE_CXX_COMPILER=/usr/bin/clang++ 
 # -DCMAKE_C_COMPILER=/usr/bin/clang -DEXTRA_INCLUDE=<path>
 # For parallel:  cmake -DCMAKE_CXX_COMPILER=/usr/bin/mpic++ -DPROGRAMMING_MODE=PARALLEL ..
+# For edison:  cmake -DCMAKE_CXX_COMPILER=g++ -DPROGRAMMING_MODE=PARALLEL -DNO_BLASLAPACK=TRUE ..
 # For parallel with MUMPS solver:
 #               cmake -DCMAKE_CXX_COMPILER=/usr/bin/mpic++ -DPETSC_HAS_MUMPS=TRUE -DPROGRAMMING_MODE=PARALLEL ..
 cmake_minimum_required(VERSION 2.8.9)
