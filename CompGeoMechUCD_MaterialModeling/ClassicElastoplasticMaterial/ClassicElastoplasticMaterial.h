@@ -1354,7 +1354,7 @@ private:
 
             TrialStress(i, j) +=  dsigma(i, j);
             PredictorStress(i, j) = TrialStress(i, j);
-
+            // Still use the sigma (inside the YF) in the first (sub)step.
             double yf_val_start = yf(sigma);
             double yf_val_end = yf(PredictorStress);
 
@@ -1394,7 +1394,7 @@ private:
                 static DTensor2 ResidualStress(3, 3, 0);
                 static DTensor2 TrialStress_prev(3, 3, 0);
                 ResidualStress *= 0;
-                TrialStress_prev(i, j) = PredictorStress(i, j);
+                TrialStress_prev *=0;
                 double normResidualStress = -1;
                 double stress_relative_error = this->stress_relative_tol * 10; //
                 bool converged = false;
@@ -1404,7 +1404,7 @@ private:
 
                 double yf_PredictorStress = yf(PredictorStress);
                 double yf_TrialStress = yf(TrialStress);
-                double yf_TrialStress_prev = 0;
+                // double yf_TrialStress_prev = 0;
                 double f_relative_error=this->f_relative_tol*10;
 
                 while ((stress_relative_error > this-> stress_relative_tol ||
@@ -1421,8 +1421,8 @@ private:
 #endif
 
                     const DTensor2& n = yf.df_dsigma_ij(TrialStress);
-                    const DTensor2& m = pf(depsilon_elpl, TrialStress);
-                    double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  TrialStress);
+                    const DTensor2& m = pf(depsilon, TrialStress);
+                    double xi_star_h_star = yf.xi_star_h_star( depsilon, m,  TrialStress);
                     denominator = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
 
                     //Compute the plastic multiplier
@@ -1434,16 +1434,16 @@ private:
                         printTensor("n", n);
                         cout << "xi_star_h_star" << xi_star_h_star << endl;
                         cout << "denominator" << denominator << endl;
-                        printTensor("depsilon_elpl", depsilon_elpl);
+                        printTensor("depsilon", depsilon);
                         return -1;
                     }
-                    // dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon_elpl(k, l);
+                    // dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon(k, l);
                     dLambda =  yf_PredictorStress / denominator; //n(i, j) * Eelastic(i, j, k, l) * depsilon(k, l);
                     // dLambda /= denominator;
 
                     //Correct the trial stress
                     TrialStress_prev(i, j) = TrialStress(i, j);
-                    yf_TrialStress_prev = yf(TrialStress_prev) ;
+                    // yf_TrialStress_prev = yf(TrialStress_prev) ;
 
                     TrialStress(i, j) = PredictorStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
@@ -1456,7 +1456,7 @@ private:
 
                     // update the stress and f relative error. 
                     stress_relative_error = normResidualStress / sqrt(TrialStress(i, j) * TrialStress(i, j));
-                    f_relative_error = abs(yf_TrialStress-yf_TrialStress_prev / yf_TrialStress);
+                    f_relative_error = abs(yf_TrialStress / yf_PredictorStress);
 
 
                     // double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
@@ -1499,12 +1499,12 @@ private:
 
                 //Update the trial plastic strain. and internal variables
                 const DTensor2& n = yf.df_dsigma_ij(TrialStress);
-                const DTensor2& m = pf(depsilon_elpl, TrialStress);
-                const double xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, m,  TrialStress);
+                const DTensor2& m = pf(depsilon, TrialStress);
+                const double xi_star_h_star = yf.xi_star_h_star( depsilon, m,  TrialStress);
 
                 denominator = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
                 TrialPlastic_Strain(i, j) += dLambda * m(i, j);
-                // vars.evolve(dLambda, depsilon_elpl, m, TrialStress);
+                // vars.evolve(dLambda, depsilon, m, TrialStress);
                 vars.commit_tmp();
 
                 //Report inconsistent stiffness for now. Dear coder, the responsibility of implementing a consistent stiffness now rests on your shoulders. :P
