@@ -4652,3 +4652,15 @@ void Domain::removeDisplacementFromNode(int tag)
     }
     return;
 }
+
+// Added by Sumeet 30th July 2016
+
+void Domain::add_Gauss_Points(int add_number_of_gauss_points)
+{
+    this->Number_of_Gauss_Points = this->Number_of_Gauss_Points + add_number_of_gauss_points;
+}
+
+void Domain::add_Connectivity_Nodes( int add_number_of_Connectivity_Nodes)
+{
+    this->Number_of_Connectivity_Nodes = this->Number_of_Connectivity_Nodes + add_number_of_Connectivity_Nodes;
+}

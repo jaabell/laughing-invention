@@ -292,10 +292,6 @@ int HardContact::getNumDOF(void)
 void HardContact::setDomain(Domain *theDomain)
 {
 
-	// add the number of gauss node and the number of connectivity nodes 
-
-	theDomain->Number_of_Gauss_Points = theDomain->Number_of_Gauss_Points +0;
-
 	// Check Domain is not null - invoked when object removed from a domain
 	if (theDomain == 0)
 	{
@@ -341,6 +337,12 @@ void HardContact::setDomain(Domain *theDomain)
 			cerr << "FATAL ERROR HardContact (tag: " << this->getTag() << "), has differing number of DOFs at its nodes\n";
 			return;
 		}
+
+				
+		// add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
+
+		theDomain->add_Gauss_Points(0);
+		theDomain->add_Connectivity_Nodes(2);
 
 		// All is good, we can set the domain.
 		this->DomainComponent::setDomain(theDomain);
