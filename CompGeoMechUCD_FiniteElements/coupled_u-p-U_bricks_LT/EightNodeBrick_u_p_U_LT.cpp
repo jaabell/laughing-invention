@@ -106,6 +106,9 @@ EightNodeBrick_u_p_U_LT::EightNodeBrick_u_p_U_LT(int element_number,
       Q(0),
       Ki(0), gauss_points(8, 3), outputVector(EightNodeBrick_u_p_U_LT_OUTPUT_SIZE)
 {
+   
+     this->setMaterialTag(Globalmmodel->getTag());
+    
     // permeability
     perm(0) = permb_x;
     perm(1) = permb_y;

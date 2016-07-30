@@ -111,7 +111,7 @@ public:  // To meet with OutputWriter interfacec
     // virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
 
     virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
-    virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity         , int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
+    virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity, int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
     virtual int writeElementPartitionData(int tag  , int partition) ;
     virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
     virtual int writeLoadPatternData(int tag , std::string name) ;

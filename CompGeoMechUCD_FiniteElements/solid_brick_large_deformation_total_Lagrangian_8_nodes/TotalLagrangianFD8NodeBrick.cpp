@@ -77,6 +77,8 @@ TotalLagrangianFD8NodeBrick::TotalLagrangianFD8NodeBrick(int tag,
 
 {
 
+    this->setMaterialTag(m.getTag());
+
     connectedExternalNodes( 0) = node_numb_1;
 
     connectedExternalNodes( 1) = node_numb_2;

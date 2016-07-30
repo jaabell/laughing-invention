@@ -146,6 +146,9 @@ FourNodeAndesShell::FourNodeAndesShell(int element_number,
     gauss_points(1, 3),
     outputVector(FourNodeAndesShell_OUTPUT_SIZE)
 {
+
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     // Set connected external node IDs
     connectedExternalNodes(0) = node_numb_1;
     connectedExternalNodes(1) = node_numb_2;

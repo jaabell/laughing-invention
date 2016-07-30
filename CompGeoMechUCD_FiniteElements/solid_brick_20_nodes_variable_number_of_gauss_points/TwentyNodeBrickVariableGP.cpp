@@ -56,6 +56,8 @@ TwentyNodeBrickVariableGP::TwentyNodeBrickVariableGP(int element_number, int num
       connectedExternalNodes(20), Ki(0), Q(60), rho(0.0)
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+
     rho = Globalmmodel->getRho();
 
     //     bf = bodyforce->getBodyForceVector();

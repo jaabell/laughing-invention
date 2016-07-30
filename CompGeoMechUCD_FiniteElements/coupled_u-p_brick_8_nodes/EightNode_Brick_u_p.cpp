@@ -93,6 +93,8 @@ EightNode_Brick_u_p::EightNode_Brick_u_p(int element_ID,
 
     //================================================================
 
+    this->setMaterialTag(Globalmmodel->getTag());
+
     // permeability
     if (permb_x == 0.0 || permb_y == 0.0 || permb_z == 0.0)
     {

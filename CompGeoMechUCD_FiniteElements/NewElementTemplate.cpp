@@ -59,6 +59,7 @@ NewElementTemplate::NewElementTemplate(int tag, int node1, .....):
     Element(tag, ELE_TAG_NewElementTemplate),   //ATTENTION! Define the class tag in classTags.h
     // add more initializers
 {
+    this->setMaterialTag(material->getTag());   // for setting the material id to the element
     you must implement
 }
 

@@ -271,8 +271,6 @@ StaticAnalysis::analyze(int numSteps)
         }
 
 
-
-
         globalESSITimer.start("Output");
         result = theIntegrator->commit();
         globalESSITimer.stop("Output");

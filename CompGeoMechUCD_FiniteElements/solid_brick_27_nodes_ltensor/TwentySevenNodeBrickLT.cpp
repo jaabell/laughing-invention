@@ -74,6 +74,8 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
       bf(3), Q( 81 ), P( 81 )
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+
     rho = Globalmmodel->getRho();
     //     bf = bodyforce->getBodyForceVector();
 

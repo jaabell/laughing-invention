@@ -67,6 +67,9 @@ EightNode_LDBrick_u_p::EightNode_LDBrick_u_p(int element_ID,
       connectedExternalNodes(Num_Nodes), bf(Num_Dim), nf(fn),
       rho_s(rs), rho_f(rf), kf(kkf), Q(0), Ki(0)
 {
+    
+    this->setMaterialTag(Globalmmodel->getTag());
+
     // body forces
     bf(0) = b1;
     bf(1) = b2;

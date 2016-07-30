@@ -1014,3 +1014,16 @@ void Element::setProducesOutputFlag(bool truthvalue)
 {
     produces_output = truthvalue;
 }
+
+/// Added by Sumeet 30th July 2016 
+
+void Element::setMaterialTag(int material_tag)
+{
+    this->materialTag = material_tag;
+}
+
+/// Added by Sumeet 30th July 2016 
+int  Element::getMaterialTag()
+{
+    return this->materialTag;
+}

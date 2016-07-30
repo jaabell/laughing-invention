@@ -161,6 +161,10 @@ public:
 
     virtual void zeroStrain();
 
+    // added by sumeet 30th July , 201
+    virtual void setMaterialTag(int materialTag);
+    virtual int  getMaterialTag();
+
 protected:
     const Vector &getRayleighDampingForces(void);
 
@@ -179,6 +183,8 @@ private:
 
     int classTag;
     int index_sized_matrix_vector;
+
+    int materialTag = -1;            // added by sumeet 30th July , 2016
 
     int numberOfBoundaryNodes;
 

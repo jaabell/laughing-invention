@@ -118,6 +118,7 @@ ThreeNodeAndesMembrane::ThreeNodeAndesMembrane( int element_number,
     rho( 0.0 ), E_planestress( 3, 3 ),
     is_stiffness_calculated( false ), is_mass_calculated( false )
 {
+    this->setMaterialTag(material->getTag());
     init(node_numb_1, node_numb_2, node_numb_3,
          material, bodyforce);
 }
@@ -137,6 +138,7 @@ ThreeNodeAndesMembrane::ThreeNodeAndesMembrane( int element_number,
     rho( 0.0 ), E_planestress( 3, 3 ),
     is_stiffness_calculated( false ), is_mass_calculated( false )
 {
+    this->setMaterialTag((*material)->getTag());
     init(node_numb_1, node_numb_2, node_numb_3,
          *material, bodyforce);
 }
@@ -146,6 +148,9 @@ void ThreeNodeAndesMembrane::init(
     int node_numb_1, int node_numb_2, int node_numb_3,
     NDMaterial* material, BodyForce* bodyforce )
 {
+    
+    this->setMaterialTag(material->getTag());
+
     // Set connected external node IDs
     connectedExternalNodes( 0 ) = node_numb_1;
     connectedExternalNodes( 1 ) = node_numb_2;

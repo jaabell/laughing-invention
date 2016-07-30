@@ -65,6 +65,7 @@ TwentyNodeBrickLT::TwentyNodeBrickLT(int element_number,
       Ki(0), Q(60), bf(3),
       M( 60, 60), P( 60 )
 {
+    this->setMaterialTag(Globalmmodel->getTag());
 
     rho = Globalmmodel->getRho();
 

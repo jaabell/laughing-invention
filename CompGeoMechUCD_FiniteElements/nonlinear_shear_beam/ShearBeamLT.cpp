@@ -52,6 +52,8 @@ ShearBeamLT::ShearBeamLT( int element_number,
       M( 6, 6), P(6), gauss_points(1, 3), outputVector(ShearBeamLT_OUTPUT_SIZE)
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     rho = Globalmmodel->getRho();
     mmodel = Globalmmodel;
     Area = area;

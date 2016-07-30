@@ -401,6 +401,9 @@ protected:
 
     double currentTime;               // current pseudo time
 
+    int Number_of_Gauss_Points=0;
+    int Number_of_Connectivity_Nodes=0;
+    
 private:
     double committedTime;             // the committed pseudo time
     double dT;                        // difference between committed and current time
@@ -462,6 +465,9 @@ public:
     int maxLoadPatternsTag;
     int numberOfDomainNodeDOFs;
     int numberOfDomainElementOutputs;
+
+    // Added by Sumeet 30th July, 2016
+
 
 };
 

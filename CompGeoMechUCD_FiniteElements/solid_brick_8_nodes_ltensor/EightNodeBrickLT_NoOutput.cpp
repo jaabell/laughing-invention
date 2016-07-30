@@ -41,6 +41,8 @@ EightNodeBrickLT_NoOutput::EightNodeBrickLT_NoOutput( int element_number,
                         Globalmmodel)
 {
 
+	this->setMaterialTag(Globalmmodel->getTag());
+
 }
 
 

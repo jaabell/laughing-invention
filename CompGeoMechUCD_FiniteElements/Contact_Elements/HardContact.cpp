@@ -292,6 +292,10 @@ int HardContact::getNumDOF(void)
 void HardContact::setDomain(Domain *theDomain)
 {
 
+	// add the number of gauss node and the number of connectivity nodes 
+
+	theDomain->Number_of_Gauss_Points = theDomain->Number_of_Gauss_Points +0;
+
 	// Check Domain is not null - invoked when object removed from a domain
 	if (theDomain == 0)
 	{

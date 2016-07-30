@@ -127,6 +127,8 @@ TwentyNodeBrick_u_p_U::TwentyNodeBrick_u_p_U(int element_number,
     perm(1) = permb_y;
     perm(2) = permb_z;
 
+    this->setMaterialTag(Globalmmodel->getTag());
+
     if (perm(0) == 0.0 || perm(1) == 0.0 || perm(2) == 0.0)
     {
         cerr << " Error, TwentyNodeBrick_u_p_U:: permeability (kx/ky/kz) is zero! \n";

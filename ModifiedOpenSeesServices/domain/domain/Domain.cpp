@@ -2698,11 +2698,11 @@ Domain::commit( void )
 
             while ( ( elePtr = theElemIter() ) != 0 )
             {
-                int materialtag = 0;
+
                 theOutputWriter.writeElementMeshData(elePtr->getTag() ,
                                                      elePtr->getElementName(),
                                                      elePtr->getExternalNodes(),
-                                                     materialtag ,
+                                                     elePtr->getMaterialTag() ,
                                                      elePtr->getGaussCoordinates(),
                                                      elePtr->getOutputSize(),
                                                      elePtr->getElementclassTag());

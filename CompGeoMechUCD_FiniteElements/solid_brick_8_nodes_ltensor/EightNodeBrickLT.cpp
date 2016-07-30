@@ -69,6 +69,8 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
       M( 24, 24), P( 24 )
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     rho = Globalmmodel->getRho();
     determinant_of_Jacobian = 0.0;
     mmodel = Globalmmodel;

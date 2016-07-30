@@ -67,7 +67,8 @@ EightNodeBrickElastic::EightNodeBrickElastic(int element_number,
     //BJ//BJ
     //elem_numb = element_number;
 
-
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     //================================================================
     // added by Nima Tafazzoli (October 2010)
     // replacing the input density with the one defined in material
