@@ -162,6 +162,24 @@ StaticAnalysis::analyze(int numSteps)
     int result = 0;
     Domain *the_Domain = this->getDomainPtr();
 
+    //////////////////// Added by Sumeet (Initial Conditions ) ///////////
+
+    cout << "Writing Initial Conditions " << " " ;
+
+    result = theIntegrator->commit();
+
+    if (result < 0)
+    {
+        cerr << "StaticAnalysis::analyze() - ";
+        cerr << "the Integrator failed to commit";
+        cerr << the_Domain->getCurrentTime() << endln;
+        // the_Domain->revertToLastCommit();
+        // theIntegrator->revertToLastStep();
+
+        return -4;
+    }
+
+    ////////////////////////////////////////////////////////////////////
 
     for (int i = 0; i < numSteps; i++)
     {

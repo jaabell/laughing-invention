@@ -2124,12 +2124,13 @@ int H5OutputWriter::setTime(double t)
     H5OUTPUTWRITER_COUNT_OBJS;
 
 
-    //Extend objects
-    hsize_t dims_new[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step + 1};
+    // Extend objects
+    // hsize_t dims_new[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step + 1};
 
-    status =  H5Dset_extent( id_nodes_displacements, dims_new );
+    // status =  H5Dset_extent( id_nodes_displacements, dims_new );
 
-    hdf5_check_error(status);
+    // hdf5_check_error(status);
+
 
     int processID = 1; //
 
@@ -2137,12 +2138,12 @@ int H5OutputWriter::setTime(double t)
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 #endif
 
-    if ( flag_write_element_output == 1 && (processID > 0)) //extend element output array depending on whether the flag is enabled.
-    {
-        dims_new[0] = length_element_output;
-        dims_new[1] = current_time_step + 1;
-        status =  H5Dset_extent( id_elements_output, dims_new );
-    }
+    // if ( flag_write_element_output == 1 && (processID > 0)) //extend element output array depending on whether the flag is enabled.
+    // {
+    //     dims_new[0] = length_element_output;
+    //     dims_new[1] = current_time_step + 1;
+    //     status =  H5Dset_extent( id_elements_output, dims_new );
+    // }
 
 
     return 0;
