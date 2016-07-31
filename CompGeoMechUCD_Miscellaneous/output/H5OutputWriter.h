@@ -109,6 +109,11 @@ public:  // To meet with OutputWriter interfacec
                             unsigned int number_of_outputs_in,
                             unsigned int Total_Number_of_Gauss_Points,
                             unsigned int Total_Number_of_Connectivity_Nodes);
+
+    // Added by sumeet on 30th ju;y, 2016 
+    // Can be used to reserve space for datasets 
+    int reserveSpaceForDatasets(unsigned int number_of_materials);
+
     // virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
     // virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
 
@@ -116,6 +121,7 @@ public:  // To meet with OutputWriter interfacec
     virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity, int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
     virtual int writeElementPartitionData(int tag  , int partition) ;
     virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
+    virtual int writeMaterialMeshData(int tag , std::string type );
     virtual int writeLoadPatternData(int tag , std::string name) ;
     virtual int writeSPConstraintsData(int nodetag , int dof) ;
 
@@ -301,6 +307,7 @@ private:
 
     // HDF5 "hid_t" handles to objects within file
     hid_t id_model_group;           // object id of the base group for models
+    // hid_t id_material_group         // object id of the base group for materials //added by sumeet 30th jult, 2016
     hid_t id_elements_group;        // object id of the base group for models
     hid_t id_nodes_group;           // object id of the base group for models
     hid_t id_time_vector;           // object id of the time vector
@@ -330,8 +337,6 @@ private:
     hid_t id_elements_partition;
     hid_t id_Constrained_Nodes;
     hid_t id_Constrained_DOFs;
-
-
 
     //Some property lists
     hid_t group_creation_plist;
@@ -382,6 +387,10 @@ private:
     ID Partition;
     ID SPNodes;
     ID SPDofs;
+
+    //For Materials
+    hid_t id_material;
+    std::vector<std::string> Materials;
 
     int numof_NO_COLLECTIVE_calls;
     int numof_CHUNK_INDEPENDENT_calls;

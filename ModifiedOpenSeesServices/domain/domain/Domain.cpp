@@ -2711,6 +2711,45 @@ Domain::commit( void )
             }
 
 
+            /// Write Material Data   - By Sumeet 30th July, 2016
+            
+            int number_of_materials = max(maxNDMaterialsTag,maxNDMaterialLTsTag);
+            number_of_materials = max(number_of_materials,maxUniaxialMaterialsTag);
+            theOutputWriter.reserveSpaceForDatasets(number_of_materials);
+
+            Material *matPtr;
+            NDMaterialIter &theMatIter = this->getNDMaterials();
+            NDMaterialLTIter &theMatLTIter = this->getNDMaterialLTs();
+            UniaxialMaterialIter &theUniMatIter = this->getUniaxialMaterials();
+
+            std::stringstream material_info;
+
+            while ( ( matPtr = theMatIter() ) != 0 )
+            {
+
+                matPtr->Print(material_info,0);
+                theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
+
+            }
+
+            while ( ( matPtr = theMatLTIter() ) != 0 )
+            {
+
+                matPtr->Print(material_info,0);
+                theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
+
+            }
+
+            while ( ( matPtr = theUniMatIter() ) != 0 )
+            {
+
+                matPtr->Print(material_info,0);
+                theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
+
+            }
+            //////////////------------------------------------------------------------------/////////////////
+
+
             globalESSITimer.stop("HDF5_buffer_elements");
 
             globalESSITimer.start("HDF5_write");

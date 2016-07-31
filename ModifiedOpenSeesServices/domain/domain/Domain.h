@@ -423,14 +423,14 @@ private:
 
     TaggedObjectStorage  *theElements;
     TaggedObjectStorage  *theNodes;
-    TaggedObjectStorage *theUniaxialMaterials;
-    TaggedObjectStorage *theNDMaterials;
-    TaggedObjectStorage *theNDMaterialLTs;
-    TaggedObjectStorage *theSections;
-    TaggedObjectStorage *theSectionRepresents;
-    TaggedObjectStorage *theMultipleSupports;
-    TaggedObjectStorage *theAccelerationFields;
-    TaggedObjectStorage *theDampings;
+    TaggedObjectStorage  *theUniaxialMaterials;
+    TaggedObjectStorage  *theNDMaterials;
+    TaggedObjectStorage  *theNDMaterialLTs;
+    TaggedObjectStorage  *theSections;
+    TaggedObjectStorage  *theSectionRepresents;
+    TaggedObjectStorage  *theMultipleSupports;
+    TaggedObjectStorage  *theAccelerationFields;
+    TaggedObjectStorage  *theDampings;
     TaggedObjectStorage  *theSPs;
     TaggedObjectStorage  *theMPs;
     TaggedObjectStorage  *theLoadPatterns;
@@ -441,9 +441,9 @@ private:
     SingleDomMP_Iter      *theMP_Iter;
     LoadPatternIter       *theLoadPatternIter;
     SingleDomAllSP_Iter   *allSP_Iter;
-    SingleDomUniaxialMaterialIter  *theUniMaterialIter;
-    SingleDomNDMaterialIter        *theNDMaterialIter;
-    SingleDomNDMaterialLTIter        *theNDMaterialLTIter;
+    SingleDomUniaxialMaterialIter   *theUniMaterialIter;
+    SingleDomNDMaterialIter         *theNDMaterialIter;
+    SingleDomNDMaterialLTIter       *theNDMaterialLTIter;
 
 
     int commitTag;

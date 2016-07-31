@@ -68,6 +68,8 @@ public:
                                       std::string type,
                                       Vector     &parameters) = 0;
 
+    virtual int writeMaterialMeshData(int         tag,
+                                      std::string type) = 0;
     // Results for Nodes
     virtual int writeDisplacements(  int nodeTag, const Vector &displacements) = 0;
     virtual int writeVelocities(     int nodeTag, const Vector &velocities) = 0;

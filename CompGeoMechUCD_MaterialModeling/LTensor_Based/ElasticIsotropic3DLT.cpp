@@ -341,7 +341,11 @@ int ElasticIsotropic3DLT::receiveSelf( int commitTag, Channel &theChannel, FEM_O
 //================================================================================
 void ElasticIsotropic3DLT::Print( ostream &s, int flag )
 {
-    s << ( *this );
+    s << "ElasticIsotropic3D" << endln;
+    s << "\ttag: " << this->getTag() << endln;
+    s << "\tE: " << E << endln;
+    s << "\tv: " << v << endln;
+    s << "\trho: " << rho << endln;
 }
 
 //================================================================================

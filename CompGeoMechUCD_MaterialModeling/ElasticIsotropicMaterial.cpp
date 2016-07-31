@@ -505,7 +505,7 @@ ElasticIsotropicMaterial::receiveSelf (int commitTag, Channel &theChannel,
 void
 ElasticIsotropicMaterial::Print (ostream &s, int flag)
 {
-    s << "Elastic Isotropic Material Model" << endln;
+    s << "ElasticIsotropicMaterial" << endln;
     s << "\tE:  " << E << endln;
     s << "\tv:  " << v << endln;
     s << "\trho:  " << rho << endln;

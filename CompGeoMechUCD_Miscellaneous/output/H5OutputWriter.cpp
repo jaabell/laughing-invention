@@ -403,7 +403,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
     Partition.resize(max_element_tag + 1);
     Material_tags.resize(max_element_tag+1);
     Number_of_Output_Fields.resize(max_element_tag + 1);
-    
+
     for (int i = 0; i < max_element_tag; i++)
     {
         Number_of_Nodes[i] = -1;
@@ -411,7 +411,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
         Index_to_Outputs[i] = -1;
         Number_of_Gauss_Points[i] = -1;
         Index_to_Gauss_Point_Coordinates[i] = -1;
-        // Element_types[i] = -1;
+        Element_types[i] = "-1";
         Class_Tags[i] = -1;
         Material_tags[i] = -1;
         Partition[i] = -1;
@@ -503,7 +503,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
         Number_of_Gauss_Points[ntags + i]           = -1;
         Index_to_Gauss_Point_Coordinates[ntags + i] = -1;
         Material_tags[ntags + i]                    = -1;
-        Element_types.push_back(" not defined ");
+        Element_types.push_back("-1");
         Number_of_Output_Fields[ntags + i]          = -1;
         Class_Tags[ntags + i]                       = -1;
     }
@@ -578,7 +578,7 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     pos_elements_gausscoords += ngauss * 3;
 
     // Writing Element_types;
-    // Element_types.push_back(type);
+    Element_types[tag] = type;
 
     // Writing Material_tags;
     Material_tags[tag] = materialtag;
@@ -1226,7 +1226,13 @@ void H5OutputWriter::writeMesh()
         dims[0] = 1;
         maxdims[0] = 1;
 
-
+        //================================================================================
+        // Material Info
+        //================================================================================
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = H5S_UNLIMITED;
+        id_material = createVariableLengthStringArray(id_model_group, "Materials", " ");
 
         //================================================================================
         //Write time of creation
@@ -1569,6 +1575,18 @@ void H5OutputWriter::writeMesh()
                                         block,
                                         int_data_buffer);
 
+        //Write material info
+        for (int tag = 0; tag < (int) Materials.size(); tag++)
+        {
+            std::string mat_info = Materials[tag];
+            writeVariableLengthStringArray(id_material,
+                                           tag,
+                                           mat_info.size(),
+                                           mat_info);
+        }
+
+
+        //Writing Class tags
         dims[0]      = (hsize_t) Class_Tags.Size();
         data_dims[0] = (hsize_t) Class_Tags.Size();
         count[0]     = dims[0];
@@ -1609,15 +1627,15 @@ void H5OutputWriter::writeMesh()
 #endif
 
         // TODO: Bring back element types
-        // //Write material tags
-        // for (int tag = 0; tag < (int) Element_types.size(); tag++)
-        // {
-        //     std::string type = Element_types[tag];
-        //     writeVariableLengthStringArray(id_elements_type,
-        //                                    tag,
-        //                                    type.size(),
-        //                                    type);
-        // }
+        //Write element type
+        for (int tag = 0; tag < (int) Element_types.size(); tag++)
+        {
+            std::string type = Element_types[tag];
+            writeVariableLengthStringArray(id_elements_type,
+                                           tag,
+                                           type.size(),
+                                           type);
+        }
 
 
         //Write index to gauss coordinates (if any)
@@ -1786,6 +1804,31 @@ int H5OutputWriter::writeElementPartitionData(int tag  , int partition)
 
 int H5OutputWriter::writeMaterialMeshData(int tag , std::string type , Vector &parameters)
 {
+    return 0;
+}
+
+int H5OutputWriter::writeMaterialMeshData(int tag , std::string material_info )
+{
+
+    if (tag < 0)
+    {
+        cerr << "H5OutputWriter::writeElementMeshData - Error: got tag = " << tag << " < 0" << endl;
+    }
+
+    int ntags, addzeros;
+    ntags = (int) Materials.size();
+    addzeros = tag - ntags;
+
+    //Extend arrays if necessary
+    for (int i = 0; i <= addzeros; i++)
+    {
+        cout << "ntags = " << ntags << " tag = " << tag;
+        cout << " H5OutputWriter::writeMaterialMeshData() -- Should not happen!!\n\n";
+        Materials.push_back("-1");
+    }
+
+    Materials[tag] = material_info;
+
     return 0;
 }
 
@@ -3023,4 +3066,29 @@ inline void hdf5_check_error(herr_t status)
         print_stacktrace();
         exit(-1);
     }
+}
+
+// Added by sumeet on 30th ju;y, 2016 
+// Can be used to reserve space for datasets 
+int H5OutputWriter::reserveSpaceForDatasets(unsigned int number_of_materials){
+
+
+    Materials.resize(number_of_materials + 1);
+
+    for (int i = 0; i < number_of_materials; i++)
+    {
+        Materials[i] = "-1";
+    }
+    // herr_t status;
+    // hid_t File, DataSet, DataSpace; 
+    // hsize_t  dims_out[1];
+
+    // /*** Dataset not present so lets create it **/
+    // dims_out[0]=number_of_materials; DataSpace = H5Screate_simple(1, dims_out, NULL);
+    // DataSet = H5Dcreate(File,"Whether_Maps_Build",H5T_STD_I32BE,DataSpace,H5P_DEFAULT,H5P_DEFAULT, H5P_DEFAULT);
+    // Build_Map_Status[0] = -1; status = H5Sclose(DataSpace); status = H5Dclose(DataSet); 
+
+    return 0;
+
+
 }
