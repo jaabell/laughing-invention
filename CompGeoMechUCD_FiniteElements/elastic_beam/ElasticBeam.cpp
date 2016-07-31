@@ -216,6 +216,11 @@ ElasticBeam::setDomain(Domain *theDomain)
         exit(-1);
     }
 
+    // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
+    theDomain->add_Gauss_Points(0);
+    theDomain->add_Connectivity_Nodes(2);
+    ///---------------------------------------------------------------------//
+
     this->DomainComponent::setDomain(theDomain);
 
     if (this->initialize() != 0)

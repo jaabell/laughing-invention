@@ -261,6 +261,11 @@ void EightNodeBrick_u_p_U::setDomain (Domain *theDomain)
         }
     }
 
+    // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
+    theDomain->add_Gauss_Points(Num_TotalGaussPts);
+    theDomain->add_Connectivity_Nodes(Num_Nodes);
+    ///---------------------------------------------------------------------//
+
     this->DomainComponent::setDomain(theDomain);
     tensor gp = getGaussPts();
 }

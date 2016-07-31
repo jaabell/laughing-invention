@@ -106,7 +106,9 @@ public:  // To meet with OutputWriter interfacec
 	                        unsigned int max_node_tag_in,
 	                        unsigned int max_element_tag_in,
 	                        unsigned int number_of_dofs_in,
-	                        unsigned int number_of_outputs_in);
+	                        unsigned int number_of_outputs_in,
+	                        unsigned int Total_Number_of_Gauss_Points,
+                            unsigned int Total_Number_of_Connectivity_Nodes);
 	// virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
 	// virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
 

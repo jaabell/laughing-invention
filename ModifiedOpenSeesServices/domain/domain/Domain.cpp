@@ -2667,7 +2667,9 @@ Domain::commit( void )
                                                 maxNodesTag,
                                                 maxElementsTag,
                                                 numberOfDomainNodeDOFs,
-                                                numberOfDomainElementOutputs);
+                                                numberOfDomainElementOutputs,
+                                                this->Number_of_Gauss_Points,
+                                                this->Number_of_Connectivity_Nodes);
             globalESSITimer.stop("HDF5_write_global_data");
             globalESSITimer.start("HDF5_buffer_nodes");
 

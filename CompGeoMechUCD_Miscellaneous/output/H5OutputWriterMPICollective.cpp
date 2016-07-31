@@ -345,7 +345,9 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
         unsigned int max_node_tag_in,
         unsigned int max_element_tag_in,
         unsigned int number_of_dofs_in,
-        unsigned int number_of_outputs_in)
+        unsigned int number_of_outputs_in,
+        unsigned int Total_Number_of_Gauss_Points,
+        unsigned int Total_Number_of_Connectivity_Nodes)
 {
 	number_of_nodes = number_of_nodes_in;
 	number_of_elements = number_of_elements_in;
@@ -402,10 +404,13 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
 		Partition[i] = -1;
 		Number_of_Output_Fields[i] = -1;
 	}
-//NOTE: This is wasting some memory.
-//FIXME: Make pre-allocation for these arrays be exact
-	Connectivity.resize(27 * number_of_elements);
-	Gauss_Point_Coordinates.resize(27 * number_of_elements * 3);
+
+	//NOTE: This is wasting some memory. 
+	//FIXME: Make pre-allocation for these arrays be exact
+	//FIX : Fix added by sumeet 30th July, 2016
+
+	Connectivity.resize(Total_Number_of_Connectivity_Nodes);
+	Gauss_Point_Coordinates.resize(Total_Number_of_Gauss_Points*3+1);
 
 // LoadPattern_names.resize();
 // Material_tags.resize();
