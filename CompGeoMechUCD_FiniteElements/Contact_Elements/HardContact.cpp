@@ -1091,12 +1091,12 @@ const Vector &HardContact::getOutput()
 //    gauss_coordinates[1,:] = [x_1,y_1,z_1]  -- Coordinates of second Gauss point
 //     ...
 //    gauss_coordinates[Ngauss,:] = [x_Ngauss,y_Ngauss,z_Ngauss]  -- Coordinates of Ngauss-th Gauss point
-Matrix &HardContact::getGaussCoordinates(void)
-{
-	// you must implement
-	static Matrix gauss_coordinates(2, 3);
-	return gauss_coordinates;
-}
+// Matrix &HardContact::getGaussCoordinates(void)
+// {
+// 	// you must implement
+// 	static Matrix gauss_coordinates(2, 3);
+// 	return gauss_coordinates;
+// }
 
 
 

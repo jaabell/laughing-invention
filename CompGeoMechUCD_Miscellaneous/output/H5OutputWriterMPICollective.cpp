@@ -391,6 +391,7 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
 // Element_types.resize(max_element_tag+1);
 	Class_Tags.resize(max_element_tag + 1);
 	Partition.resize(max_element_tag + 1);
+	Material_tags.resize(max_element_tag+1);
 	Number_of_Output_Fields.resize(max_element_tag + 1);
 	for (int i = 0; i < max_element_tag; i++)
 	{
@@ -401,6 +402,7 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
 		Index_to_Gauss_Point_Coordinates[i] = -1;
 		// Element_types[i] = -1;
 		Class_Tags[i] = -1;
+		Material_tags[i] = -1;
 		Partition[i] = -1;
 		Number_of_Output_Fields[i] = -1;
 	}
@@ -413,7 +415,6 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
 	Gauss_Point_Coordinates.resize(Total_Number_of_Gauss_Points*3+1);
 
 // LoadPattern_names.resize();
-// Material_tags.resize();
 
 	return 0;
 }
@@ -572,7 +573,8 @@ int H5OutputWriterMPICollective::writeElementMeshData(int tag  , std::string typ
 	// Element_types.push_back(type);
 
 	// Writing Material_tags;
-	// Material_tags[tag] = 0;
+	 Material_tags[tag] = materialtag;
+	 
 	return 0;
 }
 

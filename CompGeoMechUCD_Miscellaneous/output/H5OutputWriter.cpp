@@ -364,6 +364,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
     max_element_tag = max_element_tag_in;
     number_of_dofs = number_of_dofs_in;
     number_of_outputs = number_of_outputs_in;
+    number_of_gausspoints = Total_Number_of_Gauss_Points;
 
 
     // cout << "number_of_nodes    = " << number_of_nodes    << endl;
@@ -402,6 +403,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
     Partition.resize(max_element_tag + 1);
     Material_tags.resize(max_element_tag+1);
     Number_of_Output_Fields.resize(max_element_tag + 1);
+    
     for (int i = 0; i < max_element_tag; i++)
     {
         Number_of_Nodes[i] = -1;
@@ -420,7 +422,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
     //FIX : Fix added by sumeet 30th July, 2016
 
     Connectivity.resize(Total_Number_of_Connectivity_Nodes);
-    Gauss_Point_Coordinates.resize(Total_Number_of_Gauss_Points*3+1);
+    Gauss_Point_Coordinates.resize(number_of_gausspoints*3+1);
 
 // LoadPattern_names.resize();
 
