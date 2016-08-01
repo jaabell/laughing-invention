@@ -2714,10 +2714,12 @@ Domain::commit( void )
             number_of_materials = max(number_of_materials,maxUniaxialMaterialsTag);
             theOutputWriter.reserveSpaceForDatasets(number_of_materials);
 
-            cout << " maxNDMaterialsTag " << maxNDMaterialsTag << endl;
-            cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag <<endl;
-            cout << " maxUniaxialMaterialsTag " << maxUniaxialMaterialsTag << endl;
-
+            /////////////////////////// For Debugging //////////////////////////////////
+            // cout << " maxNDMaterialsTag " << maxNDMaterialsTag << endl;
+            // cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag <<endl;
+            // cout << " maxUniaxialMaterialsTag " << maxUniaxialMaterialsTag << endl;
+            ////////////////////////////////////////////////////////////////////////////
+            
             Material *matPtr;
             NDMaterialIter &theMatIter = this->getNDMaterials();
             NDMaterialLTIter &theMatLTIter = this->getNDMaterialLTs();

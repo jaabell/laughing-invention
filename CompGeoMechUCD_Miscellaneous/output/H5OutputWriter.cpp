@@ -3072,7 +3072,6 @@ inline void hdf5_check_error(herr_t status)
 // Can be used to reserve space for datasets 
 int H5OutputWriter::reserveSpaceForDatasets(unsigned int number_of_materials){
 
-    cout << "number of materials " << number_of_materials << endl;
     Materials.resize(number_of_materials + 1);
 
     for (int i = 0; i < number_of_materials; i++)
