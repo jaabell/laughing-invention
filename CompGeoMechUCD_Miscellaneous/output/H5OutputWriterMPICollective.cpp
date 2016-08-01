@@ -1056,6 +1056,15 @@ void H5OutputWriterMPICollective::writeMesh()
 		id_number_of_nodes      = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Nodes", " ");
 		id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
 
+
+        //================================================================================
+        // Material Info
+        //================================================================================
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = H5S_UNLIMITED;
+        id_material = createVariableLengthStringArray(id_model_group, "Materials", " ");
+
 		//Write time of creation
 		time_t current;
 		time(&current);
@@ -1298,21 +1307,33 @@ void H5OutputWriterMPICollective::writeMesh()
 		                                block,
 		                                int_data_buffer);
 
-		//Write material tags
-		dims[0]      = (hsize_t) Material_tags.Size();
-		data_dims[0] = (hsize_t) Material_tags.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Material_tags.data;
-		// writeVariableLengthIntegerArray(id_elements_materialtag,
-		//                                 datarank,
-		//                                 dims,
-		//                                 data_dims,
-		//                                 offset,
-		//                                 stride,
-		//                                 count,
-		//                                 block,
-		//                                 int_data_buffer);
+        //Write material tags
+        dims[0]      = (hsize_t) Material_tags.Size();
+        data_dims[0] = (hsize_t) Material_tags.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Material_tags.data;
+        writeVariableLengthIntegerArray(id_elements_materialtag,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
+
+        //Write material info
+        for (int tag = 0; tag < (int) Materials.size(); tag++)
+        {
+            std::string mat_info = Materials[tag];
+            writeVariableLengthStringArray(id_material,
+                                           tag,
+                                           mat_info.size(),
+                                           mat_info);
+        }
+
+        //Writing Class tags
 		dims[0]      = (hsize_t) Class_Tags.Size();
 		data_dims[0] = (hsize_t) Class_Tags.Size();
 		count[0]     = dims[0];
@@ -1484,6 +1505,31 @@ int H5OutputWriterMPICollective::writeElementPartitionData(int tag  , int partit
 int H5OutputWriterMPICollective::writeMaterialMeshData(int tag , std::string type , Vector &parameters)
 {
 	return 0;
+}
+
+int H5OutputWriterMPICollective::writeMaterialMeshData(int tag , std::string material_info )
+{
+
+    if (tag < 0)
+    {
+        cerr << "H5OutputWriter::writeElementMeshData - Error: got tag = " << tag << " < 0" << endl;
+    }
+
+    int ntags, addzeros;
+    ntags = (int) Materials.size();
+    addzeros = tag - ntags;
+
+    //Extend arrays if necessary
+    for (int i = 0; i <= addzeros; i++)
+    {
+        cout << "ntags = " << ntags << " tag = " << tag;
+        cout << " H5OutputWriter::writeMaterialMeshData() -- Should not happen!!\n\n";
+        Materials.push_back("-1");
+    }
+
+    Materials[tag] = material_info;
+
+    return 0;
 }
 
 // Results for Nodes
@@ -2640,4 +2686,22 @@ inline void hdf5_check_error(herr_t status)
 	{
 		cout << "status = " << status << endl;
 	}
+}
+
+
+// Added by sumeet on 30th ju;y, 2016 
+// Can be used to reserve space for datasets 
+int H5OutputWriterMPICollective::reserveSpaceForDatasets(unsigned int number_of_materials){
+
+    cout << "number of materials " << number_of_materials << endl;
+    Materials.resize(number_of_materials + 1);
+
+    for (int i = 0; i < number_of_materials; i++)
+    {
+        Materials[i] = "-1";
+    }
+
+    return 0;
+
+
 }

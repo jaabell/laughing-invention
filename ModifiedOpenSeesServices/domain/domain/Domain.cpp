@@ -994,7 +994,11 @@ Domain::addNDMaterial( NDMaterial &theMaterial )
 int
 Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
 {
+    
     int materialTag = theMaterial.getTag();
+
+    // cout << " materialTag " << materialTag << endl;
+    // cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag << endl;
 
 
     // check if a Material with a similar tag already exists in the Domain
@@ -1023,6 +1027,8 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
     {
         maxNDMaterialLTsTag = materialTag;
     }
+
+    // cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag << endl;
 }// end Jose Abell addition
 
 // *****************************************************************************************
@@ -2711,11 +2717,15 @@ Domain::commit( void )
             }
 
 
-            /// Write Material Data   - By Sumeet 30th July, 2016
+            /*********************** Write Material Data   - By Sumeet 30th July, 2016 */
             
             int number_of_materials = max(maxNDMaterialsTag,maxNDMaterialLTsTag);
             number_of_materials = max(number_of_materials,maxUniaxialMaterialsTag);
             theOutputWriter.reserveSpaceForDatasets(number_of_materials);
+
+            cout << " maxNDMaterialsTag " << maxNDMaterialsTag << endl;
+            cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag <<endl;
+            cout << " maxUniaxialMaterialsTag " << maxUniaxialMaterialsTag << endl;
 
             Material *matPtr;
             NDMaterialIter &theMatIter = this->getNDMaterials();
@@ -2747,7 +2757,8 @@ Domain::commit( void )
                 theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
 
             }
-            //////////////------------------------------------------------------------------/////////////////
+
+            /**************************************************************************************/
 
 
             globalESSITimer.stop("HDF5_buffer_elements");
@@ -4279,7 +4290,7 @@ Domain::receiveSelf( int cTag, Channel & theChannel, FEM_ObjectBroker & theBroke
     maxNodesTag              = domainData( 12 );
     maxUniaxialMaterialsTag  = domainData( 13 );
     maxNDMaterialsTag        = domainData( 14 );
-    maxNDMaterialLTsTag        = domainData( 15 );
+    maxNDMaterialLTsTag      = domainData( 15 );
     maxSectionsTag           = domainData( 16 );
     maxSectionRepresentsTag  = domainData( 17 );
     maxMultipleSupportsTag   = domainData( 18 );

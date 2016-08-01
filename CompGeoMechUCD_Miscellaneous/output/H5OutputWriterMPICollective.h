@@ -109,14 +109,19 @@ public:  // To meet with OutputWriter interfacec
 	                        unsigned int number_of_outputs_in,
 	                        unsigned int Total_Number_of_Gauss_Points,
                             unsigned int Total_Number_of_Connectivity_Nodes);
+
+	// Added by sumeet on 30th ju;y, 2016 
+    // Can be used to reserve space for datasets just increase the parameter . 
+    // While foing so need to sync the function in H5OutputWriterMPICollective and  H5OutputWriter
+    int reserveSpaceForDatasets(unsigned int number_of_materials);
+
 	// virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
 	// virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
-
 	virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
 	virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity         , int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
 	virtual int writeElementPartitionData(int tag  , int partition) ;
 	virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
-	virtual int writeMaterialMeshData(int tag , std::string type) ;
+	virtual int writeMaterialMeshData(int tag , std::string type);
 	virtual int writeLoadPatternData(int tag , std::string name) ;
 
 	// Results for Nodes
