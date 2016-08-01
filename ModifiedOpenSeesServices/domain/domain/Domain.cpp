@@ -919,7 +919,6 @@ Domain::addUniaxialMaterial( UniaxialMaterial &theMaterial )
 {
     int materialTag = theMaterial.getTag();
 
-
     // check if a Material with a similar tag already exists in the Domain
     TaggedObject *other = theUniaxialMaterials->getComponentPtr( materialTag );
 
@@ -934,6 +933,10 @@ Domain::addUniaxialMaterial( UniaxialMaterial &theMaterial )
 
     if ( result == true )
     {
+        if ( materialTag > maxUniaxialMaterialsTag)
+        {
+            maxUniaxialMaterialsTag = materialTag;
+        }
         return 0;
     }
     else
@@ -942,10 +945,6 @@ Domain::addUniaxialMaterial( UniaxialMaterial &theMaterial )
         return -1;
     }
 
-    if ( materialTag > maxUniaxialMaterialsTag)
-    {
-        maxUniaxialMaterialsTag = materialTag;
-    }
 }
 // *****************************************************************************************
 
@@ -972,17 +971,16 @@ Domain::addNDMaterial( NDMaterial &theMaterial )
 
     if ( result == true )
     {
+        if (materialTag > maxNDMaterialsTag)
+        {
+            maxNDMaterialsTag = materialTag;
+        }
         return 0;
     }
     else
     {
         cerr << "Domain::NDMaterial - material with tag " << materialTag << "could not be added to container\n";
         return -1;
-    }
-
-    if (materialTag > maxNDMaterialsTag)
-    {
-        maxNDMaterialsTag = materialTag;
     }
 
 }
@@ -996,10 +994,6 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
 {
     
     int materialTag = theMaterial.getTag();
-
-    // cout << " materialTag " << materialTag << endl;
-    // cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag << endl;
-
 
     // check if a Material with a similar tag already exists in the Domain
     TaggedObject *other = theNDMaterialLTs->getComponentPtr( materialTag );
@@ -1015,6 +1009,10 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
 
     if ( result == true )
     {
+        if (materialTag > maxNDMaterialLTsTag)
+        {
+            maxNDMaterialLTsTag = materialTag;
+        }
         return 0;
     }
     else
@@ -1023,12 +1021,8 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
         return -1;  // end Jose Abell addition
     }// end Jose Abell addition
 
-    if (materialTag > maxNDMaterialLTsTag)
-    {
-        maxNDMaterialLTsTag = materialTag;
-    }
 
-    // cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag << endl;
+
 }// end Jose Abell addition
 
 // *****************************************************************************************
