@@ -99,8 +99,6 @@ Testing
 What has been done
 =============================
 
-
-
 Features
 ---------
 
