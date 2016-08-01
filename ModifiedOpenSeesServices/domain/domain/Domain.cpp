@@ -2719,7 +2719,7 @@ Domain::commit( void )
             // cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag <<endl;
             // cout << " maxUniaxialMaterialsTag " << maxUniaxialMaterialsTag << endl;
             ////////////////////////////////////////////////////////////////////////////
-            
+
             Material *matPtr;
             NDMaterialIter &theMatIter = this->getNDMaterials();
             NDMaterialLTIter &theMatLTIter = this->getNDMaterialLTs();
@@ -2755,13 +2755,13 @@ Domain::commit( void )
 
 
             globalESSITimer.stop("HDF5_buffer_elements");
-
             globalESSITimer.start("HDF5_write");
             theOutputWriter.writeMesh();
             globalESSITimer.stop("HDF5_write");
 
             have_written_static_mesh_data = true;
         }
+        
         theOutputWriter.setTime(currentTime);
     }
 
