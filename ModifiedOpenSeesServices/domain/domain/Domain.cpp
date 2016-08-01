@@ -808,20 +808,19 @@ Domain::addElement( Element *element )
 
         // mark the Domain as having been changed
         this->domainChange();
+
+        if (eleTag > maxElementsTag)
+        {
+            maxElementsTag = eleTag;
+        }
+
+        // cout << "numberOfDomainElementOutputs = " << numberOfDomainElementOutputs << " | ";
+        numberOfDomainElementOutputs += element->getOutputSize();
+        // cout << numberOfDomainElementOutputs << endl;
     }
     else
     {
         cerr << "Domain::addElement - element " << eleTag << "could not be added to container\n";
-    }
-
-    // cout << "numberOfDomainElementOutputs = " << numberOfDomainElementOutputs << " | ";
-    numberOfDomainElementOutputs += element->getOutputSize();
-    // cout << numberOfDomainElementOutputs << endl;
-
-
-    if (eleTag > maxElementsTag)
-    {
-        maxElementsTag = eleTag;
     }
 
 
@@ -854,6 +853,11 @@ Domain::addNode( Node *node )
     {
         node->setDomain( this );
         this->domainChange();
+
+        if ( nodTag > maxNodesTag)
+        {
+            maxNodesTag = nodTag;
+        }
 
         // see if the physical bounds are changed
         // note this assumes 0,0,0,0,0,0 as startup min,max values
@@ -903,11 +907,6 @@ Domain::addNode( Node *node )
         cerr << "Domain::addNode - node with tag " << nodTag << "could not be added to container\n";
     }
 
-    if ( nodTag > maxNodesTag)
-    {
-        maxNodesTag = nodTag;
-    }
-
     return result;
 }
 
@@ -955,7 +954,6 @@ int
 Domain::addNDMaterial( NDMaterial &theMaterial )
 {
     int materialTag = theMaterial.getTag();
-
 
     // check if a Material with a similar tag already exists in the Domain
     TaggedObject *other = theNDMaterials->getComponentPtr( materialTag );
@@ -1035,14 +1033,13 @@ Domain::addMultipleSupport( MultiSupportPattern &theMultiSupportPattern )
 
     bool result = theMultipleSupports->addComponent( &theMultiSupportPattern );
 
-    int tag = theMultiSupportPattern.getTag();
-    if (tag > maxMultipleSupportsTag)
-    {
-        maxMultipleSupportsTag = tag;
-    }
-
     if ( result == true )
     {
+        int tag = theMultiSupportPattern.getTag();
+        if (tag > maxMultipleSupportsTag)
+        {
+            maxMultipleSupportsTag = tag;
+        }
         return 0;
     }
     else
@@ -1061,14 +1058,13 @@ Domain::addSection( SectionForceDeformation &theSection )
 {
     bool result = theSections->addComponent( &theSection );
 
-    int tag = theSection.getTag();
-    if (tag > maxSectionsTag)
-    {
-        maxSectionsTag = tag;
-    }
-
     if ( result == true )
     {
+        int tag = theSection.getTag();
+        if (tag > maxSectionsTag)
+        {
+            maxSectionsTag = tag;
+        }
         return 0;
     }
     else
@@ -1085,14 +1081,15 @@ int
 Domain::addSectionRepres( SectionRepres &theSectionRepres )
 {
     bool result = theSectionRepresents->addComponent( &theSectionRepres );
-    int tag = theSectionRepres.getTag();
-    if (tag > maxSectionRepresentsTag)
-    {
-        maxSectionRepresentsTag = tag;
-    }
+
 
     if ( result == true )
     {
+        int tag = theSectionRepres.getTag();
+        if (tag > maxSectionRepresentsTag)
+        {
+            maxSectionRepresentsTag = tag;
+        }
         return 0;
     }
     else
@@ -1112,14 +1109,14 @@ int
 Domain::addAccelerationField( AccelerationField *theAccelerationField )
 {
     bool result = theAccelerationFields->addComponent( theAccelerationField );
-    int tag = theAccelerationField->getTag();
-    if (tag > maxAccelerationFieldsTag)
-    {
-        maxAccelerationFieldsTag = tag;
-    }
 
     if ( result == true )
     {
+        int tag = theAccelerationField->getTag();
+        if (tag > maxAccelerationFieldsTag)
+        {
+            maxAccelerationFieldsTag = tag;
+        }
         return 0;
     }
     else
@@ -1135,14 +1132,14 @@ int
 Domain::addDamping( Damping *theDamping )
 {
     bool result = theDampings->addComponent( theDamping );
-    int tag = theDamping->getTag();
-    if (tag > maxDampingsTag)
-    {
-        maxDampingsTag = tag;
-    }
 
     if ( result == true )
     {
+        int tag = theDamping->getTag();
+        if (tag > maxDampingsTag)
+        {
+            maxDampingsTag = tag;
+        }
         return 0;
     }
     else
@@ -1246,14 +1243,14 @@ Domain::addMP_Constraint( MP_Constraint *mpConstraint )
     {
         mpConstraint->setDomain( this );
         this->domainChange();
+        if (tag > maxMPsTag)
+        {
+            maxMPsTag = tag;
+        }
     }
-    else
+    else{
         cerr << "Domain::addMP_Constraint - cannot add constraint with tag" <<
              tag << "to the container\n";
-
-    if (tag > maxMPsTag)
-    {
-        maxMPsTag = tag;
     }
 
     return result;
@@ -1281,16 +1278,16 @@ Domain::addLoadPattern( LoadPattern *load )
     {
         load->setDomain( this );
         this->domainChange();
+        if (tag > maxLoadPatternsTag)
+        {
+            maxLoadPatternsTag = tag;
+        }
+
     }
-    else
+    else{
         cerr << "Domain::addLoadPattern - cannot add LoadPattern with tag" <<
              tag << "to the container\n";
-
-    if (tag > maxLoadPatternsTag)
-    {
-        maxLoadPatternsTag = tag;
     }
-
 
     return result;
 }
