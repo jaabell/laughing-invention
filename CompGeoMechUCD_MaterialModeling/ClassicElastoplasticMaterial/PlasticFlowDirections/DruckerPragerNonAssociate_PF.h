@@ -83,13 +83,13 @@ public:
         }
 
         // (2) Governing the volumetric component.
-        cout<<"DruckerPragerNonAssociate_PF: --> Kd_         : "<<Kd_<<endl;
-        cout<<"DruckerPragerNonAssociate_PF: --> xi_         : "<<xi_<<endl;
+        // cout<<"DruckerPragerNonAssociate_PF: --> Kd_         : "<<Kd_<<endl;
+        // cout<<"DruckerPragerNonAssociate_PF: --> xi_         : "<<xi_<<endl;
 
         double dilatancy_D= xi_ * (sqrt(2.0/3.0)*Kd_ - sqrt( (s(i,j)/p) * (s(i,j)/p) ));
         result(i,j)=result(i,j)- 1.0 / 3.0 * dilatancy_D * kronecker_delta(i, j);
 
-        cout<<"DruckerPragerNonAssociate_PF: --> dilatancy_D : "<<dilatancy_D<<endl;
+        // cout<<"DruckerPragerNonAssociate_PF: --> dilatancy_D : "<<dilatancy_D<<endl;
 
         // cout << "m = [";
         // for (int ii = 0; ii < 3; ii++)

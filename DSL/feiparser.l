@@ -434,8 +434,10 @@ EXP	([Ee][-+]?[0-9]+)
 "NonlinearIsotropic3DLT"     {return token::NonlinearIsotropic3DLT;}
 "VonMisesLT"        				{return token::VonMisesLT;}
 "DruckerPragerLT"                   {return token::DruckerPragerLT;}
+"DruckerPragerNonAssociateLinearHardeningLT"                   {return token::DruckerPragerNonAssociateLinearHardeningLT;}
 "DruckerPragerVonMisesLT"           {return token::DruckerPragerVonMisesLT;}
 "DruckerPragerArmstrongFrederickLT"   {return token::DruckerPragerArmstrongFrederickLT;}
+"DruckerPragerNonAssociateArmstrongFrederickLT"   {return token::DruckerPragerNonAssociateArmstrongFrederickLT;}
 "sanisand2008"                      {return token::sanisand2008;}
 "camclay"                           {return token::camclay;}
 "camclay_accelerated"               {return token::camclay_accelerated;}
@@ -469,6 +471,8 @@ EXP	([Ee][-+]?[0-9]+)
 "armstrong_frederick_ha"            {return token::armstrong_frederick_ha;}
 "armstrong_frederick_cr"            {return token::armstrong_frederick_cr;}
 "initial_confining_stress"          {return token::initial_confining_stress;}
+"plastic_flow_kd"          			{return token::plastic_flow_kd;}
+"plastic_flow_xi"          			{return token::plastic_flow_xi;}
 "pressure_reference_p0"             {return token::pressure_reference_p0;}
 "strain"                            {return token::strain;}
 "stress"                            {return token::stress;}
