@@ -268,7 +268,6 @@ void H5OutputWriter::finalize()
 
 }
 
-
 void H5OutputWriter::initialize(std::string filename_in,
                                 std::string model_name_in,
                                 std::string stage_name_in,
