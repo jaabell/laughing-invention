@@ -54,18 +54,22 @@ VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double k0_in, doubl
     // cout << "nu  = " << nu << endl;
     // cout << "rho_  = " << rho_ << endl;
     // cout << "yf  = " << yf(getStressTensor()) << endl;
-  double machine_epsilon=1e-15;
-  if( abs(H_alpha)<machine_epsilon &&  abs(H_k)<machine_epsilon){
-    hardening_type = Perfectly_Plastic;
-  }else if(abs(H_alpha)<machine_epsilon &&  abs(H_k)>machine_epsilon){
-    hardening_type = ;
-    hardening_type = ;
-    hardening_type = ;
-  }else if(abs(H_alpha)>machine_epsilon &&  abs(H_k)<machine_epsilon){
-    hardening_type = Kinematic_Hardening_Only;
-  }else{
-    hardening_type = Both_Isotropic_Kinematic_Hardening;
-  }
+
+  // // ====================================
+  // // working on consistent_stiffness_, not finished yet.
+  // // ====================================
+  // double machine_epsilon=1e-15;
+  // if( abs(H_alpha)<machine_epsilon &&  abs(H_k)<machine_epsilon){
+  //   hardening_type = Perfectly_Plastic;
+  // }else if(abs(H_alpha)<machine_epsilon &&  abs(H_k)>machine_epsilon){
+  //   hardening_type = ;
+  //   hardening_type = ;
+  //   hardening_type = ;
+  // }else if(abs(H_alpha)>machine_epsilon &&  abs(H_k)<machine_epsilon){
+  //   hardening_type = Kinematic_Hardening_Only;
+  // }else{
+  //   hardening_type = Both_Isotropic_Kinematic_Hardening;
+  // }
 
 }
 
@@ -96,52 +100,53 @@ VonMisesLinearHardening::VonMisesLinearHardening() :
     k(0, 0)
 {}
 
-int VonMisesLinearHardening::consistent_stiffness_(DTensor2 const &dlambda_,
-                          DTensor2 const &sigma_,
-                          DTensor2 const &n_,
-                          DTensor2 const &m_,
-                          DTensor2 const &z_,
-                          DTensor2 const &alpha_,
-                          double   const &k_,
-                          DTensor4       &Stiffness_ ){
-  using namespace ClassicElastoplasticityGlobals;
+// ====================================
+// working on consistent_stiffness_, not finished yet.
+// ====================================
+// int VonMisesLinearHardening::consistent_stiffness_(DTensor2 const &dlambda_,
+//                           DTensor2 const &sigma_,
+//                           DTensor2 const &n_,
+//                           DTensor2 const &m_,
+//                           DTensor2 const &z_,
+//                           DTensor2 const &alpha_,
+//                           double   const &k_,
+//                           DTensor4       &Stiffness_ ){
+//   using namespace ClassicElastoplasticityGlobals;
   
-  static DTensor4 I4(3,3,3,3,0.0);
-  I4=kronecker_delta(i,k)*kronecker_delta(j,l);
-  static DTensor4 dm_dsigma(3,3,3,3,0.0);
-  dm_dsigma=m_(k,l)/sigma_(m,n);
+//   static DTensor4 I4(3,3,3,3,0.0);
+//   I4=kronecker_delta(i,k)*kronecker_delta(j,l);
+//   static DTensor4 dm_dsigma(3,3,3,3,0.0);
+//   dm_dsigma=m_(k,l)/sigma_(m,n);
 
-  switch(hardening_type){
-    case Perfectly_Plastic:{
-      static Dtensor4 General_C_inv(3,3,3,3,0.0);
-      General_C_inv=I4(i,j,k,l) + dlambda_ * Stiffness_(i,j,k,l)*dm_dsigma(k,l,m,n);
-      static Dtensor4 General_C(3,3,3,3,0.0);
-      General_C=General_C_inv.Inv();
-      double denominator=n_(p, q) * Stiffness_(p, q, r, s) * m_(r, s);
-      Stiffness_(i,j,k,l)*=(General_C(i,j,k,l)-(General_C(i, j, p, q) * m_(p, q)) * (n_(r, s) * General_C(r, s, k, l) ) )/denominator
-      break;
-    }
-    case Isotropic_Hardening_Only:{
+//   switch(hardening_type){
+//     case Perfectly_Plastic:{
+//       static Dtensor4 General_C_inv(3,3,3,3,0.0);
+//       General_C_inv=I4(i,j,k,l) + dlambda_ * Stiffness_(i,j,k,l)*dm_dsigma(k,l,m,n);
+//       static Dtensor4 General_C(3,3,3,3,0.0);
+//       General_C=General_C_inv.Inv();
+//       double denominator=n_(p, q) * Stiffness_(p, q, r, s) * m_(r, s);
+//       Stiffness_(i,j,k,l)*=(General_C(i,j,k,l)-(General_C(i, j, p, q) * m_(p, q)) * (n_(r, s) * General_C(r, s, k, l) ) )/denominator
+//       break;
+//     }
+//     case Isotropic_Hardening_Only:{
 
-      break;
-    }
-    case Kinematic_Hardening_Only:{
+//       break;
+//     }
+//     case Kinematic_Hardening_Only:{
 
-      break;
-    }
-    case Both_Isotropic_Kinematic_Hardening:{
+//       break;
+//     }
+//     case Both_Isotropic_Kinematic_Hardening:{
 
-      break;
-    }
-    default:{
-      cout<<"Stiffness_(i,j,k,l) \n";
+//       break;
+//     }
+//     default:{
+//       cout<<"Stiffness_(i,j,k,l) \n";
 
-    }
-    
-
-  }
+//     }
+//   }
   
-  return 1;
-}
+//   return 1;
+// }
 
 

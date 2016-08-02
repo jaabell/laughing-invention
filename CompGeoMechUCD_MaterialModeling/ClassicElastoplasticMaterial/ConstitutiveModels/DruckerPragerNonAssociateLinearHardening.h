@@ -17,8 +17,10 @@
 //
 // MEMBER VARIABLES
 //
-// PURPOSE:
-//
+// PURPOSE: 
+//         Yield Function: Drucker-Prager
+//         Plastic Flow  : Non-associate
+//         Hardening type: Linear-Hardening
 // RETURN:
 // VERSION:
 // LANGUAGE:          C++
@@ -36,12 +38,12 @@
 #include "../MaterialInternalVariables.h"
 
 //Yield Functions
-#include "../YieldFunctions/VonMises_YF.h"
+#include "../YieldFunctions/DruckerPrager_YF.h"
 
 //Plastic flow directions
-#include "../PlasticFlowDirections/VonMises_PF.h"
+#include "../PlasticFlowDirections/DruckerPragerNonAssociate_PF.h"
 
-//Elasticity Models
+//Elasticity
 #include "../ElasticityModels/LinearIsotropic3D_EL.h"
 
 //Evolving variables
@@ -51,63 +53,63 @@
 
 
 #include <classTags.h>
-static const int Perfectly_Plastic=1;
-static const int Isotropic_Hardening_Only=2;
-static const int Kinematic_Hardening_Only=3;
-static const int Both_Isotropic_Kinematic_Hardening=4;
+
+
+
 // New materials are created by subclassing instances of the ClassicElastoplasticMaterial<.,.,.,.,>
 // template class, with the appropriate components as template parameters.
 // Heavy use of templating is made, therefore typedeffing is a friend in helping clear up the mess.
 
-//Von Mises Model with linear hardening (VMLH)
-class VonMisesLinearHardening;  //This model we will define
+//Drucker Prager Model with linear hardening (DPAF)
+class DruckerPragerNonAssociateLinearHardening;  //This model we will define
+
+//Activate pre_integration_callback to handle tension case
+template< >
+struct supports_pre_integration_callback<DruckerPragerNonAssociateLinearHardening>
+{
+    static const bool value = true;
+};
 
 //Typedefs for internal variables list, yield function, and plastic flow function
-typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> VMLHVarsType;
-typedef VonMises_YF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> VMLH_YFType;
-typedef VonMises_PF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> VMLH_PFType;
+typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPNALHVarsType;
+typedef DruckerPrager_YF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPNALH_YFType;
+typedef DruckerPragerNonAssociate_PF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPNALH_PFType;
+// DPNALH_PFType means "Drucker Prager Non-Associate Linear Hardening Plastic Flow"
 
-//Create a helpful typedef for the base class from which we will inherit to create the new material.
+//Create a helpful typedef for the base class from which we will inherit to create the n
 typedef ClassicElastoplasticMaterial <LinearIsotropic3D_EL,
-        VMLH_YFType,
-        VMLH_PFType,
-        VMLHVarsType,
-        ND_TAG_CEM_VonMisesLinearHardening,
-        VonMisesLinearHardening > VMLHBase;
+        DPNALH_YFType,
+        DPNALH_PFType,
+        DPNALHVarsType,
+        ND_TAG_CEM_DruckerPragerNonAssociateLinearHardening,
+        DruckerPragerNonAssociateLinearHardening
+        > DPNALHBase;
 
 //Define the new class. We must provide two constructor and the evolving variables as data-members.
-class VonMisesLinearHardening : public VMLHBase
+class DruckerPragerNonAssociateLinearHardening : public DPNALHBase
 {
 public:
 
     //First constructor, creates a material at its "ground state" from its parameters.
-    VonMisesLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_);
+    DruckerPragerNonAssociateLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_, double p0, double xi, double Kd) ;
 
     // Second constructor is not called by the user, instead it is called when creating a copy of the
     // material. This must provide an initialization for the state variables and link the components
     // to these variables appropriately.
-    VonMisesLinearHardening(int tag_in, double rho, double p0, VMLH_YFType &yf,
-                            LinearIsotropic3D_EL &el,
-                            VMLH_PFType &pf,
-                            VMLHVarsType &vars);
+    DruckerPragerNonAssociateLinearHardening(int tag_in, double rho, double p0, DPNALH_YFType & yf,
+                                    LinearIsotropic3D_EL & el,
+                                    DPNALH_PFType & pf,
+                                    DPNALHVarsType & vars);
 
-    VonMisesLinearHardening();
+    // Empty constructor for parallel
+    DruckerPragerNonAssociateLinearHardening() ;
+
+    int pre_integration_callback(const DTensor2&, const DTensor2&, const DTensor2&, const DTensor4&, double, double, bool&);
+
+
     //The state variables.
-
-    // ====================================
-    // working on consistent_stiffness_, not finished yet.
-    // ====================================
-    // int VonMisesLinearHardening::consistent_stiffness_(DTensor2 const &dlambda_,
-    //                           DTensor2 const &sigma_,
-    //                           DTensor2 const &n_,
-    //                           DTensor2 const &m_,
-    //                           DTensor2 const &z_,
-    //                           DTensor2 const &alpha_,
-    //                           double   const & k_,
-    //                           DTensor4       &Stiffness_ );
 private:
     LinearHardeningTensor_EV alpha; // Backstress
     LinearHardeningScalar_EV k;     // Critical stress ratio (k = M under this formulation)
-    int hardening_type;
 };
 
