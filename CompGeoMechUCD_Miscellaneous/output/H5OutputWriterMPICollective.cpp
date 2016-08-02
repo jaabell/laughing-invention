@@ -40,6 +40,7 @@
 
 # include <ESSITimer.h>
 
+#define VERIFY(a) do { if((a)<0) { fprintf(stderr,"Failure line %d.\n",__LINE__); exit(-1);}}while(0)
 
 bool H5OutputWriterMPICollective::call_hdf5_flush = false;
 
@@ -2345,6 +2346,99 @@ hid_t H5OutputWriterMPICollective::writeVariableLengthDoubleArray(hid_t id_array
 	return id_array;
 }
 
+/****************************************************************************
+* Added by Sumeet 1st Augustt, 2016 
+* It takes a matrix in the form of 1-D array and converts in matrix and 
+* write it to output file
+*****************************************************************************/
+hid_t H5OutputWriterMPICollective::writeVariableLengthDoubleMatrix(hid_t id_array,
+        int datarank,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        double* matrix_data_in_linear_fashion)
+{
+
+    double data[6][3];
+    for(int i=0; i < count[1]; i++) {
+        for(int j=0; j < count[0]; j++) {
+            data[i][j] = matrix_data_in_linear_fashion[j*count[0]+i];
+        }
+    }
+
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = 0;
+    hsize_t id_memspace = 0;
+
+    id_dataspace = H5Dget_space(id_array); VERIFY(id_dataspace);
+    id_memspace = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+
+    //Select the region of data to output to
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+
+    hdf5_check_error(status);
+
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_DOUBLE,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 dataset_xfer_plist,           // Form of writing
+                 data                   // The actual data
+             );
+
+    H5D_mpio_actual_io_mode_t actual_io_mode;
+    H5Pget_mpio_actual_io_mode( dataset_xfer_plist, &actual_io_mode);
+
+    switch (actual_io_mode)
+    {
+
+    case H5D_MPIO_NO_COLLECTIVE: //     No collective I/O was performed. Collective I/O was not requested or collective I/O isn't possible on this dataset.
+        numof_NO_COLLECTIVE_calls++;
+        break;
+    case H5D_MPIO_CHUNK_INDEPENDENT:        // HDF5 performed one the chunk collective optimization schemes and each chunk was accessed independently.
+        numof_CHUNK_INDEPENDENT_calls++;
+        break;
+    case H5D_MPIO_CHUNK_COLLECTIVE:     // HDF5 performed one the chunk collective optimization schemes and each chunk was accessed collectively.
+        numof_CHUNK_COLLECTIVE_calls++;
+        break;
+    case H5D_MPIO_CHUNK_MIXED:            // HDF5 performed one the chunk collective optimization schemes and some chunks were accessed independently, some collectively.
+        numof_CHUNK_MIXED_calls++;
+        break;
+    }
+#else
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_DOUBLE,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 data                   // The actual data
+             );
+#endif
+//------------------------
+
+    hdf5_check_error(status);
+
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+    return id_array;
+}
 
 hid_t H5OutputWriterMPICollective::writeVariableLengthIntegerArray(hid_t id_array,
         int datarank,
@@ -2689,8 +2783,10 @@ inline void hdf5_check_error(herr_t status)
 }
 
 
-// Added by sumeet on 30th ju;y, 2016 
-// Can be used to reserve space for datasets 
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* Can be used to reserve space for datasets 
+***********************************************************************************/
 int H5OutputWriterMPICollective::reserveSpaceForDatasets(unsigned int number_of_materials){
 
     cout << "number of materials " << number_of_materials << endl;
@@ -2702,6 +2798,199 @@ int H5OutputWriterMPICollective::reserveSpaceForDatasets(unsigned int number_of_
     }
 
     return 0;
+}
 
+
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* Creates datasets for eigen analysis outputs 
+***********************************************************************************/
+int H5OutputWriterMPICollective::writeEigenMesh (int number_of_modes){
+
+	this->number_of_eigen_modes = number_of_modes;
+
+    if (id_file > 0)
+    {
+
+        //================================================================================
+        // Creating Eigen Value Analysis Group
+        //================================================================================
+
+        id_eigen_analysis_group = create_group(id_file, "Eigen_Mode_Analysis");
+
+        //================================================================================
+        // Create Eigen Vaule Analysis Datasets
+        //================================================================================
+
+        hsize_t dims[1], maxdims[1];
+        int rank = 1;
+        dims[0] = number_of_modes;
+        maxdims[0] = number_of_modes;
+
+        id_eigen_values      = createVariableLengthDoubleArray(id_eigen_analysis_group, rank, dims, maxdims, "values", " ");
+        id_eigen_frequencies = createVariableLengthDoubleArray(id_eigen_analysis_group, rank, dims, maxdims, "frequencies", " ");
+        id_eigen_periods     = createVariableLengthDoubleArray(id_eigen_analysis_group, rank, dims, maxdims, "periods", " ");
+
+
+        {
+            int rank = 2;
+            hsize_t dims[2];
+            hsize_t maxdims[2];
+            dims[0] = (hsize_t) number_of_nodes*3;
+            dims[1] = number_of_modes;
+            maxdims[0] = (hsize_t)  number_of_nodes*3;
+            maxdims[1] = number_of_modes;
+
+            id_eigen_modes = createVariableLengthDoubleArray(id_eigen_analysis_group, rank, dims, maxdims, "modes", " ", 1);
+        }
+
+
+        dims[0] = 1;
+        maxdims[0] = 1;
+        id_number_of_modes = createConstantLengthIntegerArray(id_eigen_analysis_group, rank, dims, maxdims, "number_of_modes", " ");
+
+        dims[0]     = 1;
+        hsize_t data_dims[1] = {1};
+        hsize_t offset[1]    = {0};
+        hsize_t stride[1]    = {1};
+        hsize_t count[1]     = {1};
+        hsize_t block[1]     = {1};
+
+        writeConstantLengthIntegerArray(id_number_of_modes, rank, dims, data_dims, offset, stride, count, block,
+                                        &number_of_eigen_modes);
+
+
+    }
+
+    H5OUTPUTWRITER_COUNT_OBJS; 
+
+    return 0; 
+}
+
+
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* Writes eigen modes
+***********************************************************************************/
+int H5OutputWriterMPICollective::writeEigenModes( int nodeTag, const Matrix &displacements){
+
+    int pos, ndofs;
+
+    // Read NDOFS from HDF5 file
+    int datarank         = 1;
+    hsize_t data_dims[1] = {1};
+    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
+    hsize_t stride[2]    = {1, 0};
+    hsize_t count[2]     = {1, 0};
+    hsize_t block[2]     = {1, 0};
+
+    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+
+    hdf5_check_error(status);
+
+    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
+    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+
+    datarank =2;
+    hsize_t *dims;
+    hsize_t data_2dims[2];
+    dims = 0;                           // This is to disable array extension (would not be done collectively)
+    data_2dims[0] = (hsize_t) ndofs;
+    data_2dims[1] = (hsize_t) this->number_of_eigen_modes;
+
+    offset[0]    = (hsize_t) pos;
+    offset[1]    = 0;
+    stride[0]    = 1;
+    stride[1]    = 1;
+    count[0]     = (hsize_t) ndofs;
+    count[1]     = (hsize_t) this->number_of_eigen_modes;
+    block[0]     = 1;
+    block[1]     = 1;
+
+    // ///////////////////////// Fotr Debugging Sumeet 1st August, 2016 ////////////////////////
+    // cout << "offset[0] " << offset[0] <<endl;
+    // cout << "offset[1] " << offset[1] << endl;
+    // cout << "stride[0] " << stride[0] <<endl;
+    // cout << "stride[1] " << stride[1] << endl;
+    // cout << " count[0] " <<  count[0] <<endl;
+    // cout << " count[1] " <<  count[1] << endl;   
+    // cout << "-------------------------------------------------" <<endl; 
+    // /////////////////////////////////////////////////////////////////////////////////////////
+
+    double *data = displacements.data;
+    writeVariableLengthDoubleMatrix(id_eigen_modes,
+                                   datarank,
+                                   dims,
+                                   data_2dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   data);
+
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+
+    return 0;
+}
+
+
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* writes eigen period, frequencies and values 
+***********************************************************************************/
+int H5OutputWriterMPICollective::writeEigen_Value_Frequency_Period ( const Vector & eigenvalues, Vector periodvalues, Vector frequencyvalues){
+
+    int datarank         = 1;
+    hsize_t *dims; dims=0;
+    hsize_t data_dims[1] = {this->number_of_eigen_modes};
+    hsize_t offset[2]    = {0, 0};
+    hsize_t stride[2]    = {1, 0};
+    hsize_t count[2]     = {this->number_of_eigen_modes, 0};
+    hsize_t block[2]     = {1, 0};
+
+    writeVariableLengthDoubleArray(id_eigen_values,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   periodvalues.theData);
+
+    writeVariableLengthDoubleArray(id_eigen_frequencies,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   frequencyvalues.theData);
+
+    writeVariableLengthDoubleArray(id_eigen_periods,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   eigenvalues.theData);
+
+    H5OUTPUTWRITER_COUNT_OBJS;
+
+    return 0; 
 
 }

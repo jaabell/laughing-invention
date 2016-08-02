@@ -301,7 +301,9 @@ public:
     virtual  int  setDampingFactorsforElement(int ElementTag, int DampingTag);
     virtual  int  setDampingFactorsforNode(int NodeTag, int DampingTag);
 
-    virtual  int  eigenAnalysis(int numMode);
+    virtual  int  eigenAnalysis(int numodes);
+
+    virtual  int  Commit_Eigen_Analysis();              // Added by Sumeet 1st August, 2016
 
     virtual  int  CheckMesh(const char *);
 
@@ -470,6 +472,8 @@ public:
     int maxLoadPatternsTag;
     int numberOfDomainNodeDOFs;
     int numberOfDomainElementOutputs;
+
+    int number_of_eigen_modes=-1; // added by sumeet 1st Asugust, 2016
 
 };
 

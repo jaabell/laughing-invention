@@ -823,7 +823,6 @@ Domain::addElement( Element *element )
         cerr << "Domain::addElement - element " << eleTag << "could not be added to container\n";
     }
 
-
     return result;
 }
 
@@ -2760,6 +2759,11 @@ Domain::commit( void )
             globalESSITimer.stop("HDF5_write");
 
             have_written_static_mesh_data = true;
+
+            if(number_of_eigen_modes>=0){
+                theOutputWriter.writeEigenMesh(number_of_eigen_modes);
+            }
+
         }
         
         theOutputWriter.setTime(currentTime);
@@ -4350,14 +4354,48 @@ Domain::calculateNodalReactions( int flag )
     return 0;
 }
 
-
-
 // Nima Tafazzoli added for eigen analysis, June 2012
 int
-Domain::eigenAnalysis( int nuMode )
+Domain::eigenAnalysis(int numodes)
 {
-    return 0; // empty
-} //
+    return 0;
+}
+
+/*********************************************************************************
+* sumeet 1st August, 2016
+* Prints out the eigen_value analysis to hdf5 outpout file.
+*********************************************************************************/ 
+int Domain::Commit_Eigen_Analysis()
+{
+
+    Node *nodePtr;
+    NodeIter &theNodeIter = this->getNodes();
+
+    while ((nodePtr = theNodeIter()) != 0)
+    {
+        int nodeTag =  nodePtr->getTag();
+        theOutputWriter.writeEigenModes( nodeTag, nodePtr->getEigenvectors());
+    }
+
+    const Vector &eigenvalues = this->getEigenvalues();
+    Vector periodvalues(number_of_eigen_modes);
+    Vector frequencyvalues(number_of_eigen_modes);
+
+    double Pi = 2 * asin(1.0);
+
+    for (int i = 0; i < number_of_eigen_modes; i++)
+    {
+        double sqrtEigen = sqrt(eigenvalues(i));
+        periodvalues(i) = 2 * Pi / sqrtEigen;
+        frequencyvalues(i) = sqrtEigen / (2 * Pi);
+    }
+
+    theOutputWriter.writeEigen_Value_Frequency_Period ( eigenvalues, periodvalues, frequencyvalues);
+
+    this->number_of_eigen_modes=-1;
+    // theOutputWriter.number_of_eigen_modes=-1;
+    return 0;
+}
 
 
 

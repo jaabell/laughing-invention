@@ -135,6 +135,10 @@ public:  // To meet with OutputWriter interfacec
 	virtual int writeElementOutput(int elementTag, const Vector &output) ;
 	virtual int writeDummyElementOutput() ;  //Needed for collective HDF5 calls
 
+    // Results for Eigen Value Analysis   // Sumeet 1st August, 2016
+    virtual int writeEigenMesh (  int number_of_modes) ;
+    virtual int writeEigenModes(  int nodeTag, const Matrix &eigenvectors) ;
+    virtual int writeEigen_Value_Frequency_Period ( const Vector & periodvalues, const Vector & frequencyvalues, const Vector & eigenvalues) ;
 
 public:  //Additional stuff
 	void initialize(std::string filename_in,
@@ -212,6 +216,16 @@ public:  //Additional stuff
 	                                     hsize_t *block,
 	                                     double *data);
 
+    hid_t writeVariableLengthDoubleMatrix(hid_t id_array,
+                                        int datarank,
+                                        hsize_t *dims,
+                                        hsize_t *data_dims,
+                                        hsize_t *offset,
+                                        hsize_t *stride,
+                                        hsize_t *count,
+                                        hsize_t *block,
+                                        double *data);
+
 	hid_t writeVariableLengthIntegerArray(hid_t id_array,
 	                                      int datarank,
 	                                      hsize_t *dims,
@@ -283,6 +297,8 @@ private:
 	int number_of_dofs;
 	int number_of_outputs;
 
+    int number_of_eigen_modes;          // added by sumeet 1st August, 2016
+
 	int length_nodes_displacements_output;
 	int length_nodes_velocities_output;
 	int length_nodes_accelerations_output;
@@ -334,9 +350,15 @@ private:
 	hid_t id_elements_classtag;
 	hid_t id_elements_partition;
 
+    //For Eigen Value Analysis [sumeet 1st august, 2016]
+    hid_t id_eigen_analysis_group; 
+    hid_t id_number_of_modes;
+    hid_t id_eigen_modes;
+    hid_t id_eigen_values;
+    hid_t id_eigen_frequencies;
+    hid_t id_eigen_periods;
 
-
-	//Some property lists
+    //Some property lists
 	hid_t group_creation_plist;
 	hid_t dataset_creation_plist;
 	hid_t dataset_access_plist;
