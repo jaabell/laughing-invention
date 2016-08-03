@@ -267,6 +267,9 @@ StaticAnalysis::analyze(int numSteps)
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
 
+            this->output_Substeps_of_Last_Non_Converged_Step(theAnalysisModel, theIntegrator, theAlgorithm);  
+
+
             return -3;
         }
 

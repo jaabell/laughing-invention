@@ -175,7 +175,6 @@ NewtonRaphson::solveCurrentStep(void)
         }
 
         result = theTest->test();
-        // this->record(count++);
 
     }
     while (result == -1);

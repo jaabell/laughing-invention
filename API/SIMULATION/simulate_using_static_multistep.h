@@ -257,7 +257,6 @@ int simulate_using_static_multistep(int numSteps)
 
 #endif
 
-
     globalESSITimer.report();
 
     return result;

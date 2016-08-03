@@ -1688,6 +1688,8 @@ void H5OutputWriter::writeMesh()
         //   CREATE OUTPUT ARRAYS!
         // =============================================================================================
 
+        clock_t begin = clock();
+
         {
             int rank = 2;
             hsize_t dims[2];
@@ -1701,12 +1703,10 @@ void H5OutputWriter::writeMesh()
             // id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
         }
 
-        // if (processID > 0)
-        // if (length_element_output <= 0)
-        // {
-        //  length_element_output = 1;
-        // }
+        clock_t end = clock();
+        double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
 
+        cout << "elapsed_secs " << elapsed_secs << endl;
 
         if (length_element_output > 0)
         {

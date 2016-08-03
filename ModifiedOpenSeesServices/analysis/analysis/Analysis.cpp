@@ -55,6 +55,32 @@ Analysis::~Analysis()
 // 	timers.setReportFileName(reportfilename_, header);
 // }
 
+/****************************************************************************************************
+* Adde by Sumeet 2nd August, 2016
+* For outputting sub_increaments of the last non-converged step
+*
+*****************************************************************************************************/
+int Analysis::output_Substeps_of_Last_Non_Converged_Step(AnalysisModel* theAnalysisModel, Integrator* theIntegrator, EquiSolnAlgo* theAlgorithm){
+
+
+	cout << " I am here " << endl;
+	// this->theDomain->revertToLastCommit();
+	// theIntegrator.revertToLastStep();
+	// theAnalysisModel.newStepDomain();
+ //    theIntegrator.newStep();
+ //    theAlgorithm.solveCurrentStep();
+
+	if (StaticIntegrator* newIntegrator = dynamic_cast<StaticIntegrator*>(theIntegrator)) {
+       cout << " This is a static integerator " << endl;
+       theAnalysisModel->newStepDomain();
+       newIntegrator->newStep();
+       theAlgorithm->solveCurrentStep();
+    } else if (TransientIntegrator* newIntegrator = dynamic_cast<TransientIntegrator*>(theIntegrator)) {
+        cout << " This is a dynamic integerator " << endl;
+    }
+
+    return 0;
+} 
 
 Domain*
 Analysis::getDomainPtr(void)
