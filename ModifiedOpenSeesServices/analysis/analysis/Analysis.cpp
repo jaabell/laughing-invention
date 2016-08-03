@@ -63,13 +63,6 @@ Analysis::~Analysis()
 int Analysis::output_Substeps_of_Last_Non_Converged_Step(AnalysisModel* theAnalysisModel, Integrator* theIntegrator, EquiSolnAlgo* theAlgorithm){
 
 
-	cout << " I am here " << endl;
-	// this->theDomain->revertToLastCommit();
-	// theIntegrator.revertToLastStep();
-	// theAnalysisModel.newStepDomain();
- //    theIntegrator.newStep();
- //    theAlgorithm.solveCurrentStep();
-
 	if (StaticIntegrator* newIntegrator = dynamic_cast<StaticIntegrator*>(theIntegrator)) {
        cout << " This is a static integerator " << endl;
        theAnalysisModel->newStepDomain();
