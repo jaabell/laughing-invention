@@ -55,7 +55,6 @@ public:
     // pure virtual functions
     //    virtual int analyze(void) =0;
     virtual int domainChanged(void) = 0;
-    virtual int output_Substeps_of_Last_Non_Converged_Step(AnalysisModel*, Integrator*, EquiSolnAlgo*); // Added by Sumeet 2nd August, 2016
 
     //Added by Jose to time analysis for profiling. Instances of analysis have to implement the actual timing of the parts.
     // virtual int setTimer(std::string reportfilename_, std::string header = "");

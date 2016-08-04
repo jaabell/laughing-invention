@@ -201,6 +201,19 @@ IncrementalIntegrator::commit(void)
     return theAnalysisModel->commitDomain();
 }
 
+int
+IncrementalIntegrator::commit_substep( int substep_no )
+{
+    if (theAnalysisModel == 0)
+    {
+        cerr << "WARNING IncrementalIntegrator::commit() -";
+        cerr << "no AnalysisModel object associated with this object\n";
+        return -1;
+    }
+
+    return theAnalysisModel->commit_sub_step_Domain(substep_no);
+}
+
 
 int
 IncrementalIntegrator::revertToLastStep(void)

@@ -218,6 +218,13 @@ NewtonLineSearch::solveCurrentStep(void)
     return result;
 }
 
+int
+NewtonLineSearch::solveSubStep(int substep_no)
+{
+    return 0;
+
+}
+
 ConvergenceTest *
 NewtonLineSearch::getConvergenceTest(void)
 {

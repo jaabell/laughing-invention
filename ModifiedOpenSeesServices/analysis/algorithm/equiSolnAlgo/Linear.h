@@ -49,6 +49,7 @@ class Linear: public EquiSolnAlgo
         ~Linear();
 
         int solveCurrentStep(void);
+        int solveSubStep(int substep_no);
         int setConvergenceTest(ConvergenceTest* theTest);
         ConvergenceTest* getConvergenceTest(void);
 

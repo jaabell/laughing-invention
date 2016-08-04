@@ -91,6 +91,8 @@ StaticAnalysis::StaticAnalysis(Domain &the_Domain,
     theIntegrator->setLinks(theModel, theLinSOE);
     theAlgorithm->setLinks(theModel, theStaticIntegrator, theLinSOE);
 
+    this->Global_Sub_Step_No = 1;     // Added by Sumeet to calculte the Global_Sub_Step_No
+
     if (theTest != 0)
     {
         theAlgorithm->setConvergenceTest(theTest);
@@ -151,7 +153,6 @@ StaticAnalysis::clearAll(void)
     theAlgorithm = 0;
     theSOE = 0;
     theTest = 0;
-
 
 }
 
@@ -267,7 +268,7 @@ StaticAnalysis::analyze(int numSteps)
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
 
-            this->output_Substeps_of_Last_Non_Converged_Step(theAnalysisModel, theIntegrator, theAlgorithm);  
+            this->save_substeps(10);  
 
 
             return -3;
@@ -309,6 +310,29 @@ StaticAnalysis::analyze(int numSteps)
 
     return 0;
 }
+
+/****************************************************************************************************
+* Adde by Sumeet 2nd August, 2016
+* This function basically, saves and performs the substeps of a current analysis_step from the 
+* beginning of that step till "number_of_sub_steps" as its parameter.
+*****************************************************************************************************/
+int StaticAnalysis::save_substeps(int num_of_sub_steps){
+
+  int result=-1, sub_step_no =1;
+
+    while (result == -1 and sub_step_no <= num_of_sub_steps){
+
+        result = theAnalysisModel->newStepDomain();
+        result = theIntegrator->newStep();
+        result = theAlgorithm->solveSubStep(sub_step_no);
+        theIntegrator->commit_substep(Global_Sub_Step_No);
+        sub_step_no++;
+        Global_Sub_Step_No ++;
+    }
+
+    return 0;
+} 
+
 
 
 int

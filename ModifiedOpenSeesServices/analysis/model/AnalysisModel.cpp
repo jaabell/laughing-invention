@@ -587,6 +587,26 @@ AnalysisModel::commitDomain(void)
 }
 
 int
+AnalysisModel::commit_sub_step_Domain(int substep_no)
+{
+    // check to see there is a Domain linked to the Model
+    if (myDomain == 0)
+    {
+        cerr << "WARNING: AnalysisModel::commitDomain. No Domain linked.\n";
+        return -1;
+    }
+
+    // invoke the method
+    if (myDomain->commit_substep(substep_no) < 0)
+    {
+        cerr << "WARNING: AnalysisModel::commitDomain - Domain::commit() failed\n";
+        return -2;
+    }
+
+    return 0;
+}
+
+int
 AnalysisModel::revertDomainToLastCommit(void)
 {
     // check to see there is a Domain linked to the Model

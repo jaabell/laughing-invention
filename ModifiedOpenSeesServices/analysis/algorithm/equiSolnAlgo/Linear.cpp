@@ -151,6 +151,13 @@ Linear::solveCurrentStep(void)
 }
 
 int
+Linear::solveSubStep(int substep_no)
+{
+    return 0;
+
+}
+
+int
 Linear::setConvergenceTest(ConvergenceTest *theNewTest)
 {
     // Linear Algorithm dooes not need a convergence test

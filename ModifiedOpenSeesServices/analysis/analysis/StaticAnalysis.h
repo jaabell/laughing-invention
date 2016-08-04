@@ -72,12 +72,11 @@ class StaticAnalysis: public Analysis
         int setIntegrator(StaticIntegrator& theIntegrator);
         int setLinearSOE(LinearSOE& theSOE);
         int setConvergenceTest(ConvergenceTest& theTest);
+        int save_substeps(int num_of_sub_steps); // Added by Sumeet 2nd August, 2016
 
         EquiSolnAlgo*     getAlgorithm(void);
         StaticIntegrator* getIntegrator(void);
         ConvergenceTest*  getConvergenceTest(void);
-
-
 
     protected:
 
@@ -91,6 +90,7 @@ class StaticAnalysis: public Analysis
         ConvergenceTest*     theTest;
 
         int domainStamp;
+        int Global_Sub_Step_No;                // Added  by Sumeet 3rd August, 2016 
 
 
 

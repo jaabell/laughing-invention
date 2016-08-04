@@ -49,6 +49,7 @@ public:
     ~NewtonRaphson();
 
     int solveCurrentStep(void);
+    int solveSubStep(int substep_no);
 
     int setConvergenceTest(ConvergenceTest* theTest);
     ConvergenceTest* getConvergenceTest(void);
@@ -62,6 +63,9 @@ protected:
 
 private:
     ConvergenceTest* theTest;
+    AnalysisModel*   theAnaModel;
+    IncrementalIntegrator* theIntegrator;
+    LinearSOE*  theSOE ;
     int tangent;
 
 };

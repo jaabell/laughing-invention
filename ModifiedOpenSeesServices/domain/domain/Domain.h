@@ -308,6 +308,7 @@ public:
     virtual  int  CheckMesh(const char *);
 
     virtual  int  commit(void);
+    virtual  int  commit_substep( int );               // Added by Sumeet 3rd August, 2016 for substep output
     virtual  int  revertToLastCommit(void);
     virtual  int  revertToStart(void);
     virtual  int  update(void);

@@ -128,6 +128,7 @@ public:  // To meet with OutputWriter interfacec
 
     // Results for Nodes
     virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
+    virtual int writeTrialDisplacements(  int nodeTag, const Vector &displacements) ;
     virtual int writeDummyDisplacements() ;
     virtual int writeVelocities(     int nodeTag, const Vector &velocities) ;
     virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) ;
@@ -135,6 +136,7 @@ public:  // To meet with OutputWriter interfacec
 
     // Results for Elements
     virtual int writeElementOutput(int elementTag, const Vector &output) ;
+    virtual int writeTrialElementOutput(int elementTag, const Vector &output) ;
     virtual int writeDummyElementOutput() ;  //Needed for collective HDF5 calls
 
     // Results for Eigen Value Analysis   // Sumeet 1st August, 2016
@@ -142,7 +144,9 @@ public:  // To meet with OutputWriter interfacec
     virtual int writeEigenModes(  int nodeTag, const Matrix &eigenvectors) ;
     virtual int writeEigen_Value_Frequency_Period ( const Vector &eigenvalues, Vector periodvalues, Vector frequencyvalues) ;
 
-
+    // Results of Substeps                // Sumeet 3rd August, 2016 
+    virtual int writeSubstepMesh();       
+    virtual int setSubStep(int substep_no);
 
 public:  //Additional stuff
     void initialize(std::string filename_in,
@@ -296,6 +300,7 @@ private:
     int number_of_gausspoints;
     int current_time_step;
     int number_of_time_steps;
+    int current_sub_step;               // Added by sumeet 3rd August, 2016
     int max_node_tag;
     int max_element_tag;
     int number_of_dofs;
@@ -326,7 +331,6 @@ private:
 
     // HDF5 "hid_t" handles to objects within file
     hid_t id_model_group;           // object id of the base group for models
-    // hid_t id_material_group         // object id of the base group for materials //added by sumeet 30th jult, 2016
     hid_t id_elements_group;        // object id of the base group for models
     hid_t id_nodes_group;           // object id of the base group for models
     hid_t id_time_vector;           // object id of the time vector
@@ -364,6 +368,10 @@ private:
     hid_t id_eigen_values;
     hid_t id_eigen_frequencies;
     hid_t id_eigen_periods;
+
+    // added by sumeet 3rd August, 2016 for substeps output
+    hid_t id_trial_nodes_displacements; 
+    hid_t id_trial_elements_output;
 
     //Some property lists
     hid_t group_creation_plist;

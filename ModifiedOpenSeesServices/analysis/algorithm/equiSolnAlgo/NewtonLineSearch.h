@@ -49,6 +49,7 @@ public:
     ~NewtonLineSearch( );
 
     int solveCurrentStep(void);
+    int solveSubStep(int substep_no);
     int setConvergenceTest(ConvergenceTest *theNewTest);
     ConvergenceTest *getConvergenceTest(void);
 

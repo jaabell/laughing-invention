@@ -79,7 +79,8 @@ class IncrementalIntegrator : public Integrator
         // methods to update the domain
         virtual int newStep(double deltaT);
         virtual int update(const Vector& deltaU) = 0;
-        virtual int commit(void);
+        virtual int commit(void);        
+        virtual int commit_substep(int);                    // Added by sumeet 3rd August, 2016
         virtual int revertToLastStep(void);
         virtual int initialize(void);
 

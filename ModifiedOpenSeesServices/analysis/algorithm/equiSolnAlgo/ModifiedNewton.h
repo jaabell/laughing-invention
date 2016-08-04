@@ -1,4 +1,5 @@
 /* ****************************************************************** **
+/* ****************************************************************** **
 **    OpenSees - Open System for Earthquake Engineering Simulation    **
 **          Pacific Earthquake Engineering Research Center            **
 **                                                                    **
@@ -50,6 +51,7 @@ class ModifiedNewton: public EquiSolnAlgo
         ~ModifiedNewton();
 
         int solveCurrentStep(void);
+        int solveSubStep(int substep_no);
         int setConvergenceTest(ConvergenceTest* theTest);
         ConvergenceTest* getConvergenceTest(void);
 

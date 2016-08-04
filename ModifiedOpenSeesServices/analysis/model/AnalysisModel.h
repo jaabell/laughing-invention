@@ -111,6 +111,7 @@ class AnalysisModel: public MovableObject
         virtual int    updateDomain(double newTime, double dT);
         virtual int    newStepDomain(double dT = 0.0);
         virtual int    commitDomain(void);
+        virtual int    commit_sub_step_Domain(int);                     // Added by Sumeet 3rd August, 2016
         virtual int    revertDomainToLastCommit(void);
         virtual double getCurrentDomainTime(void);
         virtual void   setCurrentDomainTime(double newTime);

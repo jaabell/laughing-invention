@@ -191,6 +191,113 @@ NewtonRaphson::solveCurrentStep(void)
     return result;
 }
 
+
+int
+NewtonRaphson::solveSubStep(int substep_no)
+{
+
+    if(substep_no==1){
+
+        // set up some pointers and check they are valid
+        // NOTE this could be taken away if we set Ptrs as protecetd in superclass
+        this->theAnaModel = this->getAnalysisModelPtr();
+        this->theIntegrator = this->getIncrementalIntegratorPtr();
+        this->theSOE = this->getLinearSOEptr();
+
+        if ((theAnaModel == 0) || (theIntegrator == 0) || (theSOE == 0)
+                || (theTest == 0))
+        {
+            cerr << "WARNING NewtonRaphson::solveCurrentStep() - setLinks() has";
+            cerr << " not been called - or no ConvergenceTest has been set\n";
+            return -5;
+        }
+
+        if (theIntegrator->formUnbalance() < 0)
+        {
+            cerr << "WARNING NewtonRaphson::solveCurrentStep() -";
+            cerr << "the Integrator failed in formUnbalance()\n";
+            return -2;
+        }
+
+        // set itself as the ConvergenceTest objects EquiSolnAlgo
+        theTest->setEquiSolnAlgo(*this);
+        if (theTest->start() < 0)
+        {
+            cerr << "NewtnRaphson::solveCurrentStep() -";
+            cerr << "the ConvergenceTest object failed in start()\n";
+            return -3;
+        }
+
+    }
+
+
+     if (tangent == INITIAL_THEN_CURRENT_TANGENT)
+    {
+        if (substep_no == 0)
+        {
+            if (theIntegrator->formTangent(INITIAL_TANGENT) < 0)
+            {
+                cerr << "WARNING NewtonRaphson::solveCurrentStep() -";
+                cerr << "the Integrator failed in formTangent()\n";
+                return -1;
+            }
+        }
+        else
+        {
+            if (theIntegrator->formTangent(CURRENT_TANGENT) < 0)
+            {
+                cerr << "WARNING NewtonRaphson::solveCurrentStep() -";
+                cerr << "the Integrator failed in formTangent()\n";
+                return -1;
+            }
+        }
+    }
+    else
+    {
+        if (theIntegrator->formTangent(tangent) < 0)
+        {
+            cerr << "WARNING NewtonRaphson::solveCurrentStep() -";
+            cerr << "the Integrator failed in formTangent()\n";
+            return -1;
+        }
+    }
+
+    if (theSOE->solve() < 0)
+    {
+        cerr << "WARNING NewtonRaphson::solveCurrentStep() -";
+        cerr << "the LinearSysOfEqn failed in solve()\n";
+        return -3;
+    }
+
+    if (theIntegrator->update(theSOE->getX()) < 0)
+    {
+        cerr << "WARNING NewtonRaphson::solveCurrentStep() -";
+        cerr << "the Integrator failed in update()\n";
+        return -4;
+    }
+
+    if (theIntegrator->formUnbalance() < 0)
+    {
+        cerr << "WARNING NewtonRaphson::solveCurrentStep() -";
+        cerr << "the Integrator failed in formUnbalance()\n";
+        return -2;
+    }
+
+    int result = theTest->test();
+
+    if (result == -2)
+    {
+        cerr << "NewtonRaphson::solveCurrentStep() -";
+        cerr << "the ConvergenceTest object failed in test()\n";
+        return -3;
+    }
+
+    // note - if postive result we are returning what the convergence test returned
+    // which should be the number of iterations
+    return result;
+}
+
+
 ConvergenceTest*
 NewtonRaphson::getConvergenceTest(void)
 {

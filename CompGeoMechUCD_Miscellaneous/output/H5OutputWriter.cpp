@@ -1901,6 +1901,93 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
     return 0;
 }
 
+/************************************************************************************************************
+* Added by Sumeet 3rd August, 2016
+* It outputs the trial substep iteration results for nodes.
+**************************************************************************************************************/
+
+int H5OutputWriter::writeTrialDisplacements(  int nodeTag, const Vector &displacements)
+{
+
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+    int processID;
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
+    // cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
+#endif
+    int pos, ndofs;
+
+    // Read NDOFS from HDF5 file
+    int datarank         = 1;
+    hsize_t data_dims[1] = {1};
+    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
+    hsize_t stride[2]    = {1, 0};
+    hsize_t count[2]     = {1, 0};
+    hsize_t block[2]     = {1, 0};
+
+    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+
+    hdf5_check_error(status);
+
+    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
+    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+
+
+    //Write data
+    // hsize_t dims[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
+    hsize_t *dims;
+    dims = 0;   // This is to disable array extension (would not be done collectively)
+    data_dims[0] = (hsize_t) ndofs;
+
+    offset[0]    = (hsize_t) pos;
+    offset[1]    = (hsize_t) current_sub_step - 1;
+    stride[0]    = 1;
+    stride[1]    = 1;
+    count[0]     = (hsize_t) ndofs;
+    count[1]     = 1;
+    block[0]     = 1;
+    block[1]     = 1;
+
+#if _PARALLEL_PROCESSING_COLLECTIVE_IO
+    // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
+#endif
+
+    // ///////////////////////// Fotr Debugging Sumeet 1st August, 2016 ////////////////////////
+    // cout << "offset[0] " << offset[0] <<endl;
+    // cout << "offset[1] " << offset[1] << endl;
+    // cout << "stride[0] " << stride[0] <<endl;
+    // cout << "stride[1] " << stride[1] << endl;
+    // cout << " count[0] " <<  count[0] <<endl;
+    // cout << " count[1] " <<  count[1] << endl;   
+    // cout << "-------------------------------------------------" <<endl; 
+    // /////////////////////////////////////////////////////////////////////////////////////////
+
+
+    double *data = displacements.theData;
+    writeVariableLengthDoubleArray(id_trial_nodes_displacements,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   data);
+
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+    return 0;
+}
 
 // Results for Nodes
 int H5OutputWriter::writeDummyDisplacements(  )
@@ -2083,6 +2170,83 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
     return 0;
 }
 
+/************************************************************************************************************
+* Added by Sumeet 3rd August, 2016
+* It outputs the trial substep iteration results for elements output.
+**************************************************************************************************************/
+int H5OutputWriter::writeTrialElementOutput(int elementTag, const  Vector &output)
+{
+
+    if (length_element_output > 0) // If there is nothing to output, there is nothing to output
+    {
+        int pos, noutputs;
+
+        // Read NOUTPUTS from HDF5 file
+        int datarank         = 1;
+        hsize_t data_dims[1] = {1};
+        hsize_t offset[2]    = {(hsize_t) elementTag , 0};
+        hsize_t stride[2]    = {1, 0};
+        hsize_t count[2]     = {1, 0};
+        hsize_t block[2]     = {1, 0};
+
+        hsize_t id_dataspace = H5Dget_space(id_elements_noutputs);
+        hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+        status = H5Sselect_hyperslab(
+                     id_dataspace,          // Id of the parent dataspace
+                     H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                     offset,                // start of selection
+                     stride,                // stride in each dimension, NULL  is select everything
+                     count ,                // how many blocks to select in each direction
+                     block                  // little block selected per selection
+                 );
+
+        hdf5_check_error(status);
+
+        H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
+        H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+
+
+        hsize_t *dims;
+        dims = 0;   // This is to disable array extension (would not be done collectively)
+
+        data_dims[0] = (hsize_t) noutputs;
+
+        offset[0]    = (hsize_t) pos;
+        offset[1]    = (hsize_t) current_sub_step - 1;
+        stride[0]    = 1;
+        stride[1]    = 1;
+        count[0]     = (hsize_t) noutputs;
+        count[1]     = 1;
+        block[0]     = 1;
+        block[1]     = 1;
+
+    // ///////////////////////// Fotr Debugging Sumeet 1st August, 2016 ////////////////////////
+    // cout << "offset[0] " << offset[0] <<endl;
+    // cout << "offset[1] " << offset[1] << endl;
+    // cout << "stride[0] " << stride[0] <<endl;
+    // cout << "stride[1] " << stride[1] << endl;
+    // cout << " count[0] " <<  count[0] <<endl;
+    // cout << " count[1] " <<  count[1] << endl;   
+    // cout << "-------------------------------------------------" <<endl; 
+    // /////////////////////////////////////////////////////////////////////////////////////////
+
+        double *data = output.theData;
+        writeVariableLengthDoubleArray(id_trial_elements_output,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       data);
+
+        H5Sclose(id_dataspace);
+        H5Sclose(id_memspace);
+        H5OUTPUTWRITER_COUNT_OBJS;
+    }
+    return 0;
+}
 
 
 
@@ -3368,3 +3532,62 @@ int H5OutputWriter::writeEigen_Value_Frequency_Period ( const Vector & eigenvalu
     return 0; 
 
 }
+
+/********************************************************************************************
+* Added by sumeet 3rd August, 2016 
+* This function is used to create the substep outputmesh
+*********************************************************************************************/
+int H5OutputWriter::writeSubstepMesh(){
+    
+    if (id_file > 0)
+    {
+
+        int rank = 2;
+        hsize_t dims[2];
+        hsize_t maxdims[2];
+        dims[0] = (hsize_t) number_of_dofs;
+        dims[1] = 100;
+        maxdims[0] = (hsize_t)  number_of_dofs;
+        maxdims[1] = 100;
+
+        id_trial_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Substep_Generalized_Displacements", " ",1);
+
+        dims[0] = (hsize_t) number_of_outputs;
+        maxdims[0] = (hsize_t) number_of_outputs;
+
+        id_trial_elements_output     = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Substep_Outputs", " ");
+
+        this->current_sub_step = 1;
+    }
+
+    H5OUTPUTWRITER_COUNT_OBJS;  
+
+    return 0;
+
+}
+
+/********************************************************************************************
+* Added by sumeet 3rd August, 2016 
+* Basically saves the current sub_step_number i.e the column index of HDF5 output file.
+*********************************************************************************************/
+int H5OutputWriter::setSubStep(int substep_no){
+
+    current_sub_step = substep_no;
+
+
+    // hsize_t      size[2];
+    // size[0] = (hsize_t) number_of_outputs;
+    // size[1] = (hsize_t) current_sub_step;
+
+    // status = H5Dset_extent (id_trial_elements_output, size);
+
+
+    // size[0] = (hsize_t) number_of_dofs;
+    // size[1] = (hsize_t) current_sub_step;
+
+    // status = H5Dset_extent (id_trial_nodes_displacements, size);
+
+
+    return 0;
+}
+

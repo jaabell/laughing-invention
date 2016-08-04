@@ -176,6 +176,14 @@ ModifiedNewton::solveCurrentStep(void)
     return result;
 }
 
+int
+ModifiedNewton::solveSubStep(int substep_no)
+{
+    return 0;
+
+}
+
+
 ConvergenceTest*
 ModifiedNewton::getConvergenceTest(void)
 {
