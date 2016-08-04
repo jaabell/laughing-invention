@@ -330,12 +330,26 @@ public:
 
         int exitflag = 0;
 
-        //Check for quick return:
-        double eps_norm = strain_increment(i, j) * strain_increment(i, j);
-        if (eps_norm == 0)
-        {
+        // ==========================================
+        // Check for quick return:
+        // If strain_increment are all zeroes. Return
+        // ==========================================
+        // The quick return is useful for displacement_control.
+        // In displacement_control, we have to do double update.
+        // ==========================================
+        double max_component=0.0;
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j)
+                if (max_component<abs(strain_increment(i,j)))
+                    max_component=abs(strain_increment(i,j));
+        // ==========================================
+        // We do not use below(eps_norm) because 1E-8 will go to 1E-16. --> False return.
+        // double eps_norm = strain_increment(i, j) * strain_increment(i, j);
+        // ==========================================
+        if (max_component == 0){
             return exitflag;
         }
+        // ==========================================
 
         switch (this->constitutive_integration_method)
         {
@@ -771,13 +785,15 @@ private:
 
         dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
 
-        double relative_stress_norm = sqrt(dsigma(i, j) * dsigma(i, j))  /  sqrt(sigma(k, l) * sigma(k, l)) ;
-        if (relative_stress_norm < this->stress_relative_tol)
-        {
-            // If the elastic stress increment is below the stress tolerance
-            // exit, doing nothing.
-            return 0;
-        }
+
+        // ======================================================================
+        // No need to do stress tolerance check in Forward_Euler and Multistep_Forward_Euler. 
+        // ======================================================================
+        // double relative_stress_norm = sqrt(dsigma(i, j) * dsigma(i, j))  /  sqrt(sigma(k, l) * sigma(k, l)) ;
+        // if (relative_stress_norm < this->stress_relative_tol){
+        //     return 0;
+        // }
+        // ======================================================================
 
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
@@ -950,13 +966,14 @@ private:
 
         dsigma(i, j) += Eelastic(i, j, k, l) * depsilon(k, l);
 
-        double relative_stress_norm = sqrt(dsigma(i, j) * dsigma(i, j))  /  sqrt(sigma(k, l) * sigma(k, l)) ;
-        if (relative_stress_norm < this->stress_relative_tol)
-        {
-            // If the elastic stress increment is below the stress tolerance
-            // exit, doing nothing.
-            return 0;
-        }
+        // ======================================================================
+        // No need to do stress tolerance check in Forward_Euler and Multistep_Forward_Euler. 
+        // ======================================================================
+        // double relative_stress_norm = sqrt(dsigma(i, j) * dsigma(i, j))  /  sqrt(sigma(k, l) * sigma(k, l)) ;
+        // if (relative_stress_norm < this->stress_relative_tol){
+        //     return 0;
+        // }
+        // ======================================================================
 
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
