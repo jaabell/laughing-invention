@@ -108,7 +108,7 @@ CTestRelativeNormDispIncr::test(void)
 
     // get the X vector & determine it's norm & save the value in norms vector
     const Vector& x = theSOE->getX();
-    double norm = x.Norm();
+    double norm = x.Norm(); double x_norm = norm;
 
     if (currentIter <= maxNumIter)
     {
@@ -138,10 +138,11 @@ CTestRelativeNormDispIncr::test(void)
 
     if (printFlag == 4)
     {
-        cerr << "\t CTestRelativeNormDispIncr::test() - iteration: " << currentIter;
-        cerr << " current ratio (|dR|/|dR1|): " << norm << " (max: " << tol << ")\n";
-        cerr << " Norm deltaX: " << norm << "  Norm deltaR: " << (theSOE->getB()).Norm() << endln;
-        cerr << "deltaX: " << x << "deltaR: " << theSOE->getB();
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormDispIncr::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x_norm                << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n"; 
+
     }
 
     //
@@ -161,8 +162,10 @@ CTestRelativeNormDispIncr::test(void)
             }
             else if (printFlag == 2)
             {
-                cerr << "\t CTestRelativeNormDispIncr::test() - iteration: " << currentIter;
-                cerr << " current ratio (|dR|/|dR1|): " << norm << " (max: " << tol << ")\n";
+                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormDispIncr::(tol: " << tol <<")\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << product               << "\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x_norm                << "\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n"; 
             }
         }
 
@@ -173,17 +176,21 @@ CTestRelativeNormDispIncr::test(void)
     // algo failed to converged after specified number of iterations - but RETURN OK
     else if (printFlag == 5 && currentIter >= maxNumIter)
     {
-        cerr << "WARNING: CTestDispIncr::test() - failed to converge but going on - ";
-        cerr << " current ratio (|dR|/|dR1|): " << norm << " (max: " << tol << ")\n";
-        cerr << " Norm deltaX: " << norm << "  Norm deltaR: " << (theSOE->getB()).Norm() << endln;
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormDispIncr::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x_norm                << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n"; 
+
         return currentIter;
     }
 
     // algo failed to converged after specified number of iterations - return FAILURE -2
     else if (currentIter >= maxNumIter)   // failes to converge
     {
-        cerr << "WARNING: CTestDispIncr::test() - failed to converge \n";
-        cerr << "after: " << currentIter << " iterations\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormDispIncr::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x_norm                << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n"; 
         currentIter++;
         return -2;
     }

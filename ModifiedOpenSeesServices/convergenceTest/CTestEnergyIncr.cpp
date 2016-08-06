@@ -139,16 +139,19 @@ CTestEnergyIncr::test(void)
     // print the data if required
     if (printFlag == 1)
     {
-        cerr << "CTestEnergyIncr::test() - iteration: " << currentIter;
-        cerr << " current Product: " << product << " (max: " << tol << ")\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestEnergyIncr::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm Energy: " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x.Norm()              << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << b.Norm()              << "\n"; 
+
     }
 
     if (printFlag == 4)
     {
-        cerr << "CTestEnergyIncr::test() - iteration: " << currentIter;
-        cerr << " current Product: " << product << " (max: " << tol << ")\n";
-        cerr << " Norm deltaX: " << x.Norm() << "  Norm deltaR: " << b.Norm() << endln;
-        //     cerr << "deltaX: " << x << " deltaR: " << b;
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestEnergyIncr::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm Energy: " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x.Norm()              << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << b.Norm()              << "\n"; 
     }
 
     //
@@ -168,8 +171,10 @@ CTestEnergyIncr::test(void)
             }
             else if (printFlag == 2)
             {
-                cerr << "CTestEnergyIncr::test() - iteration: " << currentIter;
-                cerr << " last incr: " << product << " (max permissable: " << tol << ")\n";
+                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestEnergyIncr::(tol: " << tol <<")\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm Energy: " << setprecision(5) << product               << "\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x.Norm()              << "\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << b.Norm()              << "\n"; 
             }
         }
 
@@ -180,17 +185,21 @@ CTestEnergyIncr::test(void)
     // algo failed to converged after specified number of iterations - but RETURN OK
     else if (printFlag == 5 && currentIter >= maxNumIter)
     {
-        cerr << "WARNING: CTestEnergyIncr::test() - failed to converge but goin on - ";
-        cerr << " current Product: " << product << " (max: " << tol << ")\n";
-        cerr << " Norm deltaX: " << x.Norm() << "  Norm deltaR: " << b.Norm() << endln;
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestEnergyIncr::(tol: " << tol <<")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm Energy: " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x.Norm()              << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << b.Norm()              << "\n"; 
         return currentIter;
     }
 
     // algo failed to converged after specified number of iterations - return FAILURE -2
     else if (currentIter >= maxNumIter)   // >= in case algorithm does not check
     {
-        cerr << "WARNING: CTestEnergyIncr::test() - failed to converge \n";
-        cerr << "after: " << currentIter << " iterations\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestEnergyIncr::(tol: " << tol <<")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm Energy: " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << x.Norm()              << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << b.Norm()              << "\n";  
+
         currentIter++;
         return -2;
     }

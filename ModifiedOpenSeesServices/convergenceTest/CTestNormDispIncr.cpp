@@ -30,6 +30,8 @@
 #include <EquiSolnAlgo.h>
 #include <LinearSOE.h>
 #include <iostream>
+#include <iostream>
+#include <iomanip>
 using namespace std;
 
 
@@ -121,23 +123,17 @@ CTestNormDispIncr::test(void)
     // print the data if required
     if (printFlag == 1)
     {
-        cout << "\t CTestNormDispIncr::test() - iteration: " << currentIter;
-        cout << " current Norm: " << norm << " (max: " << tol;
-        cout << " residual Norm: " << theSOE->getB().Norm() << ")\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
     }
 
     if (printFlag == 4)
     {
-        cout << "\t CTestNormDispIncr::test() - iteration: " << currentIter;
-        cout << " current Norm: " << norm << " (max: " << tol << ")\n";
-        cout << " Norm deltaX: " << norm << endln;
-        //     cerr << " Norm deltaX: " << norm << "  Norm deltaR: " << (theSOE->getB()).Norm() << endln;
-        //     cerr << "deltaX: " << x << "deltaR: " << theSOE->getB();
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
     }
-
-    //
-    // check if the algorithm converged
-    //
 
     // if converged - print & return ok
     if (norm <= tol)
@@ -152,9 +148,10 @@ CTestNormDispIncr::test(void)
             }
             else if (printFlag == 2)
             {
-                cout << "\t CTestNormDispIncr::test() - iteration: " << currentIter;
-                cout << " current Norm: " << norm << " (max: " << tol;
-                cout << " residual Norm: " << theSOE->getB().Norm() << ")\n";
+                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol <<")\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
+
             }
         }
 
@@ -165,19 +162,18 @@ CTestNormDispIncr::test(void)
     // algo failed to converged after specified number of iterations - but RETURN OK
     else if (printFlag == 5 && currentIter >= maxNumIter)
     {
-        cout << "WARNING: CTestDispIncr::test() - failed to converge but going on - ";
-        cout << " current Norm: " << norm << " (max: " << tol;
-        cout << " residual Norm: " << theSOE->getB().Norm() << ")\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
         return currentIter;
     }
 
     // algo failed to converged after specified number of iterations - return FAILURE -2
     else if (currentIter >= maxNumIter)   // failes to converge
     {
-        cerr << "WARNING: CTestDispIncr::test() - failed to converge \n";
-        cerr << " current Norm: " << norm << " (max: " << tol;
-        cerr << " residual Norm: " << theSOE->getB().Norm() << ")\n";
-        cerr << "after: " << currentIter << " iterations\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
         currentIter++;
         return -2;
     }

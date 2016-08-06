@@ -171,7 +171,7 @@ StaticAnalysis::analyze(int numSteps)
 
     if (result < 0)
     {
-        cerr << "StaticAnalysis::analyze() - ";
+        cout << "\nStatic Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
         cerr << "the Integrator failed to commit";
         cerr << the_Domain->getCurrentTime() << endln;
         // the_Domain->revertToLastCommit();
@@ -184,7 +184,7 @@ StaticAnalysis::analyze(int numSteps)
 
     for (int i = 0; i < numSteps; i++)
     {
-        cout << "\nStatic Analysis: ["<< i + 1 << std::setw(5) << "/" << numSteps << "]";
+        cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
 
         std::chrono::high_resolution_clock::time_point step_start;
         std::chrono::high_resolution_clock::duration estimated_time_to_completion;
@@ -212,8 +212,8 @@ StaticAnalysis::analyze(int numSteps)
 
         if (result < 0)
         {
-            cerr << "StaticAnalysis::analyze() - the AnalysisModel failed";
-            cerr << " at iteration: " << i << " with domain at load factor ";
+            cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << "The AnalysisModel failed at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
 
@@ -234,8 +234,10 @@ StaticAnalysis::analyze(int numSteps)
 
             if (result < 0)
             {
-                cerr << "StaticAnalysis::analyze() - domainChanged failed";
-                cerr << " at step " << i << " of " << numSteps << endln;
+                cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+                cerr << "DomainChange FAILED at load factor";
+                cerr << the_Domain->getCurrentTime() << endln;
+                the_Domain->revertToLastCommit();
                 return -1;
             }
         }
@@ -247,8 +249,8 @@ StaticAnalysis::analyze(int numSteps)
         globalESSITimer.stop("Integrator_Step");
         if (result < 0)
         {
-            cerr << "StaticAnalysis::analyze() - the Integrator failed";
-            cerr << " at iteration: " << i << " with domain at load factor ";
+            cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << "The AnalysisModel failed with domain at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
 
@@ -262,8 +264,8 @@ StaticAnalysis::analyze(int numSteps)
         globalESSITimer.stop("SOE_Solution");
         if (result < 0)
         {
-            cerr << "StaticAnalysis::analyze() - the Algorithm failed";
-            cerr << " at iteration: " << i << " with domain at load factor ";
+            cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << "The Algorithm failed at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
@@ -283,9 +285,8 @@ StaticAnalysis::analyze(int numSteps)
         globalESSITimer.stop("Output");
         if (result < 0)
         {
-            cerr << "StaticAnalysis::analyze() - ";
-            cerr << "the Integrator failed to commit";
-            cerr << " at iteration: " << i << " with domain at load factor ";
+            cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << "The AnalysisModel failed with domain at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
