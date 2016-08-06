@@ -287,7 +287,7 @@ NewtonRaphson::solveSubStep(int substep_no)
 
     if (result == -2)
     {
-        cerr << "NewtonRaphson::solveCurrentStep() -";
+        cerr << "\tNewtonRaphson::solveCurrentStep() -";
         cerr << "the ConvergenceTest object failed in test()\n";
         return -3;
     }

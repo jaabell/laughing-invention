@@ -184,7 +184,7 @@ StaticAnalysis::analyze(int numSteps)
 
     for (int i = 0; i < numSteps; i++)
     {
-        cout << "Static Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
+        cout << "\nStatic Analysis: ["<< i + 1 << std::setw(5) << "/" << numSteps << "]";
 
         std::chrono::high_resolution_clock::time_point step_start;
         std::chrono::high_resolution_clock::duration estimated_time_to_completion;
@@ -193,7 +193,7 @@ StaticAnalysis::analyze(int numSteps)
 
         if (i > 0)
         {
-            cout << " [ETA: "
+            cout << "                             ............. [ETA: "
                  << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
                  << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
                  << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
@@ -267,6 +267,9 @@ StaticAnalysis::analyze(int numSteps)
             cerr << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
+
+            cout << endl << "################## Started Writing SubStep Output ######################" << endl;;
+
 
             this->save_substeps(10);  
 

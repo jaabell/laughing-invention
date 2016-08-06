@@ -224,7 +224,7 @@ public:  //Additional stuff
                                          hsize_t *block,
                                          double *data);
 
-    hid_t writeVariableLengthDoubleMatrix(hid_t id_array,
+    hid_t writeConstantLengthDoubleMatrix(hid_t id_array,
                                         int datarank,
                                         hsize_t *dims,
                                         hsize_t *data_dims,
@@ -298,9 +298,10 @@ private:
     int number_of_nodes;
     int number_of_elements;
     int number_of_gausspoints;
-    int current_time_step;
+    int current_time_step;              
     int number_of_time_steps;
     int current_sub_step;               // Added by sumeet 3rd August, 2016
+    int number_of_connectivity_nodes;   // Adde by sumeet 
     int max_node_tag;
     int max_element_tag;
     int number_of_dofs;

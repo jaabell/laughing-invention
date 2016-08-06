@@ -2656,7 +2656,7 @@ Domain::commit( void )
 #ifdef _PARALLEL_PROCESSING
             theOutputWriter.syncWriters();
 #endif
-            cout << "  (" << rank << ") - Outputting mesh.\n";
+            cout << " and  (" << rank << ") - Outputting mesh.\n";
             globalESSITimer.start("HDF5_write_global_data");
             theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
                                                 this->getNumElements(),
@@ -2728,7 +2728,7 @@ Domain::commit( void )
 
             while ( ( matPtr = theMatIter() ) != 0 )
             {
-
+                material_info.str("") ;
                 matPtr->Print(material_info,0);
                 theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
 
@@ -2736,7 +2736,7 @@ Domain::commit( void )
 
             while ( ( matPtr = theMatLTIter() ) != 0 )
             {
-
+                material_info.str("") ;
                 matPtr->Print(material_info,0);
                 theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
 
@@ -2744,7 +2744,7 @@ Domain::commit( void )
 
             while ( ( matPtr = theUniMatIter() ) != 0 )
             {
-
+                material_info.str("") ;
                 matPtr->Print(material_info,0);
                 theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
 
@@ -2792,7 +2792,6 @@ Domain::commit( void )
         while ((nodePtr = theNodeIter()) != 0)
         {
             theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-            // theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
         }
     }
 
@@ -2904,6 +2903,7 @@ Domain::commit_substep( int substep_no )
         while ( ( elePtr = theElemIter() ) != 0 )
         {
             theOutputWriter.writeTrialElementOutput(elePtr->getTag(), elePtr->getOutput());
+            // cout << " element_tag " <<  elePtr->getTag() << endl;
         }
     }
 
@@ -4591,7 +4591,7 @@ int Domain::CheckMesh( const char *check_mesh_file )
     checkmesh_file.close();
 
 
-    cout << "Outputting mesh. \n";
+    cout << " Outputting mesh. \n";
     this->commit();
 
     cout << "\n\nDone checking mesh \n";
