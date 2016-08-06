@@ -65,6 +65,9 @@ class ModifiedNewton: public EquiSolnAlgo
 
     private:
         ConvergenceTest* theTest;
+        AnalysisModel*   theAnaModel;
+        IncrementalIntegrator* theIncIntegratorr;
+        LinearSOE*  theSOE ;
         int tangent;
 };
 

@@ -153,8 +153,7 @@ Linear::solveCurrentStep(void)
 int
 Linear::solveSubStep(int substep_no)
 {
-    return 0;
-
+    return this->solveCurrentStep();
 }
 
 int

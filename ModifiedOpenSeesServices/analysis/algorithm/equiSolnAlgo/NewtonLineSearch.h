@@ -65,6 +65,9 @@ private:
     ConvergenceTest *theTest;
     ConvergenceTest *theOtherTest;
     LineSearch *theLineSearch;
+    AnalysisModel   *theAnaModel;
+    IncrementalIntegrator *theIntegrator;
+    LinearSOE  *theSOE;
 };
 
 #endif

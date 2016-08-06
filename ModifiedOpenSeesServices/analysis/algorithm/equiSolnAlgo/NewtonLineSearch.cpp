@@ -221,7 +221,129 @@ NewtonLineSearch::solveCurrentStep(void)
 int
 NewtonLineSearch::solveSubStep(int substep_no)
 {
-    return 0;
+
+    if(substep_no==1){
+        // set up some pointers and check they are valid
+        // NOTE this could be taken away if we set Ptrs as protecetd in superclass
+        AnalysisModel   *theAnaModel = this->getAnalysisModelPtr();
+        IncrementalIntegrator *theIntegrator = this->getIncrementalIntegratorPtr();
+        LinearSOE  *theSOE = this->getLinearSOEptr();
+
+        if ((theAnaModel == 0) || (theIntegrator == 0) || (theSOE == 0)
+                || (theTest == 0))
+        {
+            cout << "WARNING NewtonLineSearch::solveCurrentStep() - setLinks() has";
+            cout << " not been called - or no ConvergenceTest has been set\n";
+            return -5;
+        }
+
+        theLineSearch->newStep(*theSOE);
+
+        // set itself as the ConvergenceTest objects EquiSolnAlgo
+        theTest->setEquiSolnAlgo(*this);
+        if (theTest->start() < 0)
+        {
+            cout << "NewtonLineSearch::solveCurrentStep() -";
+            cout << "the ConvergenceTest object failed in start()\n";
+            return -3;
+        }
+
+        if (theIntegrator->formUnbalance() < 0)
+        {
+            cout << "WARNING NewtonLineSearch::solveCurrentStep() -";
+            cout << "the Integrator failed in formUnbalance()\n";
+            return -2;
+        }
+    }
+
+    //residual at this iteration before next solve
+    const Vector &Resid0 = theSOE->getB() ;
+
+    //form the tangent
+    if (theIntegrator->formTangent() < 0)
+    {
+        cout << "WARNING NewtonLineSearch::solveCurrentStep() -";
+        cout << "the Integrator failed in formTangent()\n";
+        return -1;
+    }
+
+    //solve
+    if (theSOE->solve() < 0)
+    {
+        cout << "WARNING NewtonLineSearch::solveCurrentStep() -";
+        cout << "the LinearSysOfEqn failed in solve()\n";
+        return -3;
+    }
+
+
+    //line search direction
+    const Vector &dx0 = theSOE->getX() ;
+
+    //intial value of s
+    double s0 = - (dx0 ^ Resid0) ;
+
+    if (theIntegrator->update(theSOE->getX()) < 0)
+    {
+        cout << "WARNING NewtonLineSearch::solveCurrentStep() -";
+        cout << "the Integrator failed in update()\n";
+        return -4;
+    }
+
+    if (theIntegrator->formUnbalance() < 0)
+    {
+        cout << "WARNING NewtonLineSearch::solveCurrentStep() -";
+        cout << "the Integrator failed in formUnbalance()\n";
+        return -2;
+    }
+
+    // do a line search only if convergence criteria not met
+    theOtherTest->start();
+    int result = theOtherTest->test();
+
+    if (result < 1)
+    {
+        //new residual
+        const Vector &Resid = theSOE->getB() ;
+
+        //new value of s
+        double s = - ( dx0 ^ Resid ) ;
+
+#ifdef _PARALLEL_PROCESSING
+        // In the case of parallel processing, residuals are computed locally at each processor and
+        // are different in general.
+        // On the other hand dx0 was computed once and for all at the invokation of solve() and
+        // should be the same across all processes. Therefore, to compute s in parallel a reduction
+        // operation is needed, summing up all values of 's' across all preocesses.
+        double s_;
+        MPI_Allreduce(
+            &s,
+            &s_,
+            1,
+            MPI_DOUBLE,
+            MPI_SUM,
+            MPI_COMM_WORLD);
+        s = s_;
+#endif
+        if (theLineSearch != 0)
+        {
+            theLineSearch->search(s0, s, *theSOE, *theIntegrator);
+        }
+    }
+
+    // this->record(0);
+
+    result = theTest->test();
+
+    if (result == -2)
+    {
+        cout << "NewtonLineSearch::solveCurrentStep() -";
+        cout << "the ConvergenceTest object failed in test()\n";
+        return -3;
+    }
+
+    // note - if postive result we are returning what the convergence test returned
+    // which should be the number of iterations
+    return result;
 
 }
 

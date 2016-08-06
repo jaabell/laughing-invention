@@ -98,6 +98,8 @@ DirectIntegrationAnalysis::DirectIntegrationAnalysis(Domain &the_Domain,
     theIntegrator->setLinks(theModel, theLinSOE);
     theAlgorithm->setLinks(theModel, theTransientIntegrator, theLinSOE);
 
+    this->Global_Sub_Step_No = 1;     // Added by Sumeet to calculte the Global_Sub_Step_No
+
     if (theTest != 0)
     {
         theAlgorithm->setConvergenceTest(theTest);
@@ -218,7 +220,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
     //////////////////// Added by Sumeet (Initial Conditions ) ///////////
 
-    cout << "Writing Initial Conditions " << " " ;
+    cout << "\n Writing Initial Conditions " << " " ;
 
     result = theIntegrator->commit();
 
@@ -236,7 +238,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
     for (int i = 0; i < numSteps; i++)
     {
 
-        cout << "\nTransient Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+        cout << "\nTransient Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
 
         std::chrono::high_resolution_clock::time_point step_start;
         std::chrono::high_resolution_clock::duration estimated_time_to_completion;
@@ -262,7 +264,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         
         if (result< 0)  //call "theAnalysisModel->newStepDomain(dT)" only once and move that call above for globalESSITimer  --Yuan
         {
-            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
             cerr << " Integration failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
 
@@ -282,7 +284,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             // cout << "       this->domainChanged() \n";//Jdebug
             if (this->domainChanged() < 0)
             {
-                cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+                cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
                 cerr << " Domain change failed " << the_Domain->getCurrentTime() << endln;
                 return -1;
             }
@@ -294,7 +296,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         globalESSITimer.stop("Integrator_Step");
         if (result < 0) //call "theIntegrator->newStepDomain(dT)" only once and move that call above for globalESSITimer  --Yuan
         {
-            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
             cerr << " Integrator failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             return -2;
@@ -306,10 +308,15 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
         if (result < 0)
         {
-            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
             cerr << " Algorithm failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
+
+            cout << endl << "################## Started Writing SubStep Output ######################" << endl;;
+
+            this->save_substeps(10, dT); 
+
             return -3;
         }
 
@@ -320,7 +327,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         globalESSITimer.stop("Output");
         if (result < 0)
         {
-            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
             cerr << " Integrator failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
@@ -335,6 +342,28 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
     return result;
 }
+
+/****************************************************************************************************
+* Adde by Sumeet 4nd August, 2016
+* This function basically, saves and performs the substeps of a current analysis_step from the 
+* beginning of that step till "number_of_sub_steps" as its parameter.
+*****************************************************************************************************/
+int DirectIntegrationAnalysis::save_substeps(int num_of_sub_steps, double dT){
+
+  int result=-1, sub_step_no =1;
+
+    while (result == -1 and sub_step_no <= num_of_sub_steps){
+
+        result = theAnalysisModel->newStepDomain();
+        result = theIntegrator->newStep(dT);
+        result = theAlgorithm->solveSubStep(sub_step_no);
+        theIntegrator->commit_substep(Global_Sub_Step_No);
+        sub_step_no++;
+        Global_Sub_Step_No ++;
+    }
+
+    return 0;
+} 
 
 
 int

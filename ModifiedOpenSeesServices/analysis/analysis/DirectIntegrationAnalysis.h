@@ -76,6 +76,7 @@ class DirectIntegrationAnalysis: public TransientAnalysis
         int setIntegrator(TransientIntegrator& theIntegrator);
         int setLinearSOE(LinearSOE& theSOE);
         int setConvergenceTest(ConvergenceTest& theTest);
+        int save_substeps(int num_of_sub_steps, double dT); // Added by Sumeet 5d August, 2016
 
         int checkDomainChange(void);
         EquiSolnAlgo* getAlgorithm(void);
@@ -86,6 +87,7 @@ class DirectIntegrationAnalysis: public TransientAnalysis
         // Nima Tafazzoli added for engein analysis, June 2012
         int setEigenSOE(EigenSOE& theSOE);
         int eigen(int numMode);
+        
 
     protected:
 
@@ -100,6 +102,7 @@ class DirectIntegrationAnalysis: public TransientAnalysis
         EigenSOE*        theEigenSOE;
 
         int domainStamp;
+        int Global_Sub_Step_No;                // Added  by Sumeet 3rd August, 2016 
 
 
 
