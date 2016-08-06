@@ -174,8 +174,6 @@ StaticAnalysis::analyze(int numSteps)
         cout << "\nStatic Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
         cerr << "the Integrator failed to commit";
         cerr << the_Domain->getCurrentTime() << endln;
-        // the_Domain->revertToLastCommit();
-        // theIntegrator->revertToLastStep();
 
         return -4;
     }

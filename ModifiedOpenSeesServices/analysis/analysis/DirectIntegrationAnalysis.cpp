@@ -224,11 +224,9 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
     if (result < 0)
     {
-        cerr << "StaticAnalysis::analyze() - ";
-        cerr << "the Integrator failed to commit";
+        cout << "\nTransient Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+        cerr << "the Integrator failed to commit at ";
         cerr << the_Domain->getCurrentTime() << endln;
-        // the_Domain->revertToLastCommit();
-        // theIntegrator->revertToLastStep();
 
         return -4;
     }
@@ -238,7 +236,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
     for (int i = 0; i < numSteps; i++)
     {
 
-        cout << "Transient Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
+        cout << "\nTransient Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
 
         std::chrono::high_resolution_clock::time_point step_start;
         std::chrono::high_resolution_clock::duration estimated_time_to_completion;
@@ -264,8 +262,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         
         if (result< 0)  //call "theAnalysisModel->newStepDomain(dT)" only once and move that call above for globalESSITimer  --Yuan
         {
-            cerr << "DirectIntegrationAnalysis::analyze() - the AnalysisModel failed";
-            cerr << " at time " << the_Domain->getCurrentTime() << endln;
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << " Integration failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
 
             return -2;
@@ -284,7 +282,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             // cout << "       this->domainChanged() \n";//Jdebug
             if (this->domainChanged() < 0)
             {
-                cerr << "DirectIntegrationAnalysis::analyze() - domainChanged() failed\n";
+                cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+                cerr << " Domain change failed " << the_Domain->getCurrentTime() << endln;
                 return -1;
             }
         }
@@ -295,8 +294,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         globalESSITimer.stop("Integrator_Step");
         if (result < 0) //call "theIntegrator->newStepDomain(dT)" only once and move that call above for globalESSITimer  --Yuan
         {
-            cerr << "DirectIntegrationAnalysis::analyze() - the Integrator failed";
-            cerr << " at time " << the_Domain->getCurrentTime() << endln;
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << " Integrator failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             return -2;
         }
@@ -307,8 +306,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
         if (result < 0)
         {
-            cerr << "DirectIntegrationAnalysis::analyze() - the Algorithm failed";
-            cerr << " at time " << the_Domain->getCurrentTime() << endln;
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << " Algorithm failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
             return -3;
@@ -321,9 +320,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         globalESSITimer.stop("Output");
         if (result < 0)
         {
-            cerr << "DirectIntegrationAnalysis::analyze() - ";
-            cerr << "the Integrator failed to commit";
-            cerr << " at time " << the_Domain->getCurrentTime() << endln;
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << " Integrator failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
             return -4;
