@@ -111,3 +111,11 @@ int DruckerPragerVonMisesLinearHardening::pre_integration_callback(const DTensor
     }
     return 0;
 }
+
+void
+DruckerPragerVonMisesLinearHardening::Print(ostream& s, int flag)
+{
+    s << "DruckerPragerVonMisesLinearHardening" << endln;
+    s << "\tTag: " << this->getTag() << endln;
+    s << " Please Implement Me !!! " << endl;
+}

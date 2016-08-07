@@ -145,7 +145,7 @@ public:  // To meet with OutputWriter interfacec
     virtual int writeEigen_Value_Frequency_Period ( const Vector &eigenvalues, Vector periodvalues, Vector frequencyvalues) ;
 
     // Results of Substeps                // Sumeet 3rd August, 2016 
-    virtual int writeSubstepMesh();       
+    virtual int writeSubstepMesh(int);       
     virtual int setSubStep(int substep_no);
 
 public:  //Additional stuff

@@ -1198,9 +1198,6 @@ void H5OutputWriter::writeMesh()
 
         id_time_vector = createConstantLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
 
-        // cout << "id_time_vector = " << id_time_vector << endl;
-
-
 
         //================================================================================
         // Domain metadata
@@ -1234,7 +1231,8 @@ void H5OutputWriter::writeMesh()
         id_material = createVariableLengthStringArray(id_model_group, "Materials", " ");
 
         //================================================================================
-        //Write time of creation
+        // Time of Creation
+        //================================================================================
         time_t current;
         time(&current);
         char *timestring;
@@ -1242,7 +1240,9 @@ void H5OutputWriter::writeMesh()
         timestring[strlen(timestring) - 1] = '\0';
         write_string(id_file, "Date_and_Time_Start", timestring);
 
-
+        //================================================================================
+        // Analysis Options
+        //================================================================================
         createVariableLengthStringArray(id_file, "Analysis_Options", " ");
 
 
@@ -1338,9 +1338,6 @@ void H5OutputWriter::writeMesh()
                                         block,
                                         int_data_buffer);
 
-
-
-
         //================================================================================
         // Create number of elements and nodes
         //================================================================================
@@ -1385,12 +1382,6 @@ void H5OutputWriter::writeMesh()
         H5Dclose(id_my_proc_rank);
         H5Dclose(id_number_of_procs);
 
-
-        //===============================================================================
-        // Writing Number of time steps  
-        //===============================================================================
-        writeConstantLengthIntegerArray(id_number_of_time_steps, rank, dims, data_dims, offset, stride, count, block,
-                                    &number_of_time_steps);
 
         // =============================================================================================
         //Determine the bounds
@@ -1702,12 +1693,11 @@ void H5OutputWriter::writeMesh()
             hsize_t dims[2];
             hsize_t maxdims[2];
             dims[0] = (hsize_t) length_nodes_displacements_output;
-            dims[1] = number_of_time_steps + 1;
+            dims[1] = 0;
             maxdims[0] = (hsize_t)  length_nodes_displacements_output;
             maxdims[1] = number_of_time_steps + 1;
 
-            id_nodes_displacements = createConstantLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
-            // id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
+            id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
         }
 
         if (number_of_outputs > 0)
@@ -1716,15 +1706,13 @@ void H5OutputWriter::writeMesh()
             hsize_t dims[2];
             hsize_t maxdims[2];
             dims[0] = (hsize_t) number_of_outputs;
-            dims[1] = number_of_time_steps + 1;
+            dims[1] = 0;
             maxdims[0] = (hsize_t)  number_of_outputs;
             maxdims[1] = number_of_time_steps + 1;
 
             if (flag_write_element_output == 1  )
             {
-                // dims[1] = 1;
-                // maxdims[1] = 1;
-                id_elements_output = createConstantLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+                id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
             }
 
         }//    create_elementOutput_arrays = false;
@@ -2290,7 +2278,6 @@ int H5OutputWriter::setTime(double t)
     hsize_t count[1]     = {1};
     hsize_t block[1]     = {1};
 
-    id_time_vector = H5Dopen( id_file, "/time", H5P_DEFAULT);
     writeConstantLengthDoubleArray(id_time_vector,
                                    1, //datarank
                                    dims,
@@ -2302,6 +2289,35 @@ int H5OutputWriter::setTime(double t)
                                    &current_time);
 
     current_time_step++;
+
+    cout << " current_time_step " <<  current_time_step << endl;
+
+    //===============================================================================
+    // Writing Number of time steps  
+    //===============================================================================
+    dims[0]=1;
+    offset[0]=0;
+    writeConstantLengthIntegerArray(id_number_of_time_steps, 1, dims, data_dims, offset, stride, count, block,
+                                &current_time_step);
+
+    // ===============================================================================
+    // Extending the output dataset (By Sumeet)
+    // ===============================================================================
+
+    hsize_t      size[2];
+    size[0] = (hsize_t) number_of_outputs;
+    size[1] = (hsize_t) current_time_step;
+
+    status = H5Dset_extent (id_elements_output, size);
+
+
+    size[0] = (hsize_t) number_of_dofs;
+    size[1] = (hsize_t) current_time_step;
+
+    status = H5Dset_extent (id_nodes_displacements, size);
+
+    // /**********************************************************************************/
+
     H5OUTPUTWRITER_COUNT_OBJS;
 
 
@@ -3274,24 +3290,18 @@ inline void hdf5_check_error(herr_t status)
     }
 }
 
-// Added by sumeet on 30th ju;y, 2016 
-// Can be used to reserve space for datasets 
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* Can be used to reserve space for datasets 
+***********************************************************************************/
 int H5OutputWriter::reserveSpaceForDatasets(unsigned int number_of_materials){
 
     Materials.resize(number_of_materials + 1);
 
     for (int i = 0; i < number_of_materials; i++)
     {
-        Materials[i] = "-1";
+        Materials[i] = "0";
     }
-    // herr_t status;
-    // hid_t File, DataSet, DataSpace; 
-    // hsize_t  dims_out[1];
-
-    // /*** Dataset not present so lets create it **/
-    // dims_out[0]=number_of_materials; DataSpace = H5Screate_simple(1, dims_out, NULL);
-    // DataSet = H5Dcreate(File,"Whether_Maps_Build",H5T_STD_I32BE,DataSpace,H5P_DEFAULT,H5P_DEFAULT, H5P_DEFAULT);
-    // Build_Map_Status[0] = -1; status = H5Sclose(DataSpace); status = H5Dclose(DataSet); 
 
     return 0;
 
@@ -3303,7 +3313,6 @@ int H5OutputWriter::reserveSpaceForDatasets(unsigned int number_of_materials){
 * Added by Sumeet 1st August, 2016
 * Creates datasets for eigen analysis outputs 
 ***********************************************************************************/
-
 int H5OutputWriter::writeEigenMesh (int number_of_modes){
 
     this->number_of_eigen_modes = number_of_modes;
@@ -3494,7 +3503,7 @@ int H5OutputWriter::writeEigen_Value_Frequency_Period ( const Vector & eigenvalu
 * Added by sumeet 3rd August, 2016 
 * This function is used to create the substep outputmesh
 *********************************************************************************************/
-int H5OutputWriter::writeSubstepMesh(){
+int H5OutputWriter::writeSubstepMesh(int number_of_substeps){
     
     if (id_file > 0)
     {
@@ -3504,7 +3513,7 @@ int H5OutputWriter::writeSubstepMesh(){
         dims[0] = (hsize_t) number_of_dofs;
         dims[1] = 0;
         maxdims[0] = (hsize_t)  number_of_dofs;
-        maxdims[1] = 100;
+        maxdims[1] = number_of_substeps;
 
         id_trial_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Substep_Generalized_Displacements", " ");
 
@@ -3529,9 +3538,9 @@ int H5OutputWriter::writeSubstepMesh(){
 *********************************************************************************************/
 int H5OutputWriter::setSubStep(int substep_no){
 
-    cout << "[" << current_sub_step << "] Writing Substep " << substep_no << endl;;
+    cout << "Writing Substep " <<"[" << substep_no << "]" << " ....................."; 
 
-    this->current_sub_step ++;
+    this->current_sub_step = substep_no ;
 
     hsize_t      size[2];
     size[0] = (hsize_t) number_of_outputs;
@@ -3544,8 +3553,6 @@ int H5OutputWriter::setSubStep(int substep_no){
     size[1] = (hsize_t) current_sub_step;
 
     status = H5Dset_extent (id_trial_nodes_displacements, size);
-
-    
 
     return 0;
 }

@@ -2862,7 +2862,7 @@ Domain::commit_substep( int substep_no )
 #ifdef _PARALLEL_PROCESSING
             theOutputWriter.syncWriters();
 #endif
-        theOutputWriter.writeSubstepMesh();
+        theOutputWriter.writeSubstepMesh(save_number_of_non_converged_substeps);
 
         }
         
@@ -2908,6 +2908,8 @@ Domain::commit_substep( int substep_no )
     }
 
     globalESSITimer.stop("Domain_Element_Commit_and_output");
+
+    cout << "................... completed!!" << endl;;
 
     if (countdown_til_output == 0)
     {
@@ -4480,7 +4482,6 @@ int Domain::Commit_Eigen_Analysis()
     theOutputWriter.writeEigen_Value_Frequency_Period ( eigenvalues, periodvalues, frequencyvalues);
 
     this->number_of_eigen_modes=-1;
-    // theOutputWriter.number_of_eigen_modes=-1;
     return 0;
 }
 
@@ -4629,6 +4630,7 @@ Domain::setOutputWriter(std::string filename_in,
 {
     theOutputWriter.initialize(filename_in, model_name_in, stage_name_in, nsteps);
     have_written_static_mesh_data = false;
+    save_number_of_non_converged_substeps =0;    // Added by summet for substep output
     return 0;
 }
 
@@ -4823,14 +4825,36 @@ void Domain::removeDisplacementFromNode(int tag)
     return;
 }
 
-// Added by Sumeet 30th July 2016
-
+/*************************************************************************************************
+* Added by Sumeet 30th July 2016
+* This function basically, adds the number of gauss points in the model 
+* when elemnts are added to domain
+***************************************************************************************************/
 void Domain::add_Gauss_Points(int add_number_of_gauss_points)
 {
     this->Number_of_Gauss_Points = this->Number_of_Gauss_Points + add_number_of_gauss_points;
+    return;
 }
 
+
+/*************************************************************************************************
+* Added by Sumeet 30th July 2016
+* This function basically, adds the number of connectivity nodes in the model 
+* when elemnts are added to domain
+***************************************************************************************************/
 void Domain::add_Connectivity_Nodes( int add_number_of_Connectivity_Nodes)
 {
     this->Number_of_Connectivity_Nodes = this->Number_of_Connectivity_Nodes + add_number_of_Connectivity_Nodes;
+    return;
+}
+
+/*************************************************************************************************
+* Added by Sumeet 5th August 2016
+* This function basically sets the number of substeps output in the non_converged state
+***************************************************************************************************/
+void Domain:: set_number_of_non_converged_substeps(int Num_Sub_Steps){
+
+    this->save_number_of_non_converged_substeps =  Num_Sub_Steps > 0 ? Num_Sub_Steps : 0;
+
+    return;
 }

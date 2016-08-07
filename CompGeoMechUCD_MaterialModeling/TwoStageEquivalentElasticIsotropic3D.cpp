@@ -319,23 +319,21 @@ void
 TwoStageEquivalentElasticIsotropic3D::Print(ostream& s, int flag)
 {
     s << "TwoStageEquivalentElasticIsotropic3D" << endln;
-    s << "    tag: " << this->getTag() << endln;
-    s << "    stage   = " << stage << endln;
-    s << "    nu      = " << v << endln;
-    s << "    rho     = " << rho << endln;
-    s << "    K       = " << K << endln;
-    s << "    Kur     = " << Kur << endln;
-    s << "    n       = " << n << endln;
-    s << "    c       = " << c << endln;
-    s << "    phi0    = " << phi0 << endln;
-    s << "    dphi    = " << dphi << endln;
-    s << "    Rf      = " << Rf << endln;
-    s << "    K0      = " << K0 << endln;
-    s << "    Kb      = " << Kb << endln;
-    s << "    m       = " << m << endln;
-    s << "    pa      = " << pa << endln;
-    // ======================================
-    //s << "\tD: " << D << endln;
+    s << "\ttag: " << this->getTag() << endln;
+    s << "\tstage: " << stage << endln;
+    s << "\tnu: " << v << endln;
+    s << "\trho: " << rho << endln;
+    s << "\tK: " << K << endln;
+    s << "\tKur: " << Kur << endln;
+    s << "\tn: " << n << endln;
+    s << "\tc: " << c << endln;
+    s << "\tphi0: " << phi0 << endln;
+    s << "\tdphi: " << dphi << endln;
+    s << "\tRf: " << Rf << endln;
+    s << "\tK0: " << K0 << endln;
+    s << "\tKb: " << Kb << endln;
+    s << "\tm: " << m << endln;
+    s << "\tpa: " << pa << endln;
 }
 
 

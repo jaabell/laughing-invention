@@ -392,6 +392,7 @@ public:
 
     virtual void add_Gauss_Points(int number_of_gauss_points);
     virtual void add_Connectivity_Nodes( int Number_of_Connectivity_Nodes);
+    virtual void set_number_of_non_converged_substeps(int);
 
 protected:
     virtual int buildEleGraph(Graph *theEleGraph);
@@ -475,6 +476,7 @@ public:
     int numberOfDomainElementOutputs;
 
     int number_of_eigen_modes=-1; // added by sumeet 1st Asugust, 2016
+    int save_number_of_non_converged_substeps=0; // added by sumeet 5th August, 2016
 
 };
 

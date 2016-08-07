@@ -98,8 +98,6 @@ DirectIntegrationAnalysis::DirectIntegrationAnalysis(Domain &the_Domain,
     theIntegrator->setLinks(theModel, theLinSOE);
     theAlgorithm->setLinks(theModel, theTransientIntegrator, theLinSOE);
 
-    this->Global_Sub_Step_No = 1;     // Added by Sumeet to calculte the Global_Sub_Step_No
-
     if (theTest != 0)
     {
         theAlgorithm->setConvergenceTest(theTest);
@@ -313,9 +311,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
 
-            cout << endl << "################## Started Writing SubStep Output ######################" << endl;;
-
-            this->save_substeps(10, dT); 
+            this->save_substeps(the_Domain->save_number_of_non_converged_substeps, dT); 
 
             return -3;
         }
@@ -350,6 +346,12 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 *****************************************************************************************************/
 int DirectIntegrationAnalysis::save_substeps(int num_of_sub_steps, double dT){
 
+
+  if ( num_of_sub_steps <0)
+    return 0;
+
+  cout << endl << "################## Started Writing SubStep Output ######################" << endl;;
+  
   int result=-1, sub_step_no =1;
 
     while (result == -1 and sub_step_no <= num_of_sub_steps){
@@ -357,10 +359,12 @@ int DirectIntegrationAnalysis::save_substeps(int num_of_sub_steps, double dT){
         result = theAnalysisModel->newStepDomain();
         result = theIntegrator->newStep(dT);
         result = theAlgorithm->solveSubStep(sub_step_no);
-        theIntegrator->commit_substep(Global_Sub_Step_No);
+        theIntegrator->commit_substep(sub_step_no);
         sub_step_no++;
-        Global_Sub_Step_No ++;
     }
+
+    this->getDomainPtr()->save_number_of_non_converged_substeps=0; // setting number_of_substeps output back to zero
+
 
     return 0;
 } 

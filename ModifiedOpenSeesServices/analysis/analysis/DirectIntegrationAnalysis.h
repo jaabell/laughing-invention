@@ -102,10 +102,6 @@ class DirectIntegrationAnalysis: public TransientAnalysis
         EigenSOE*        theEigenSOE;
 
         int domainStamp;
-        int Global_Sub_Step_No;                // Added  by Sumeet 3rd August, 2016 
-
-
-
 };
 
 #endif

@@ -424,7 +424,12 @@ int NonlinearIsotropic3DLT::receiveSelf( int commitTag, Channel &theChannel, FEM
 //================================================================================
 void NonlinearIsotropic3DLT::Print( ostream &s, int flag )
 {
-    s << ( *this );
+    s << "NonlinearIsotropic3DLT::" << endl;
+    s << "\tTag: " << this->getTag() << endln;
+    s << "\tElastic_Modulus: " << E << endln;
+    s << "\tPoissons_Ratio: " << nu << endln;
+    s << "\tDensity: " << rho << endln;
+    s << "!!Please Implement me!! " << endl;
 }
 
 //================================================================================

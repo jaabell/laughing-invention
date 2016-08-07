@@ -126,6 +126,7 @@ public:  // To meet with OutputWriter interfacec
 
 	// Results for Nodes
 	virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
+    virtual int writeTrialDisplacements(  int nodeTag, const Vector &displacements) ;
 	virtual int writeDummyDisplacements() ;
 	virtual int writeVelocities(     int nodeTag, const Vector &velocities) ;
 	virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) ;
@@ -133,6 +134,7 @@ public:  // To meet with OutputWriter interfacec
 
 	// Results for Elements
 	virtual int writeElementOutput(int elementTag, const Vector &output) ;
+    virtual int writeTrialElementOutput(int elementTag, const Vector &output) ;
 	virtual int writeDummyElementOutput() ;  //Needed for collective HDF5 calls
 
     // Results for Eigen Value Analysis   // Sumeet 1st August, 2016
@@ -216,7 +218,7 @@ public:  //Additional stuff
 	                                     hsize_t *block,
 	                                     double *data);
 
-    hid_t writeVariableLengthDoubleMatrix(hid_t id_array,
+    hid_t writeConstantLengthDoubleMatrix(hid_t id_array,
                                         int datarank,
                                         hsize_t *dims,
                                         hsize_t *data_dims,
@@ -292,6 +294,8 @@ private:
 	int number_of_gausspoints;
 	int current_time_step;
 	int number_of_time_steps;
+    int current_sub_step;               // Added by sumeet 3rd August, 2016
+    int number_of_connectivity_nodes;   // Adde by sumeet 
 	int max_node_tag;
 	int max_element_tag;
 	int number_of_dofs;
@@ -358,6 +362,10 @@ private:
     hid_t id_eigen_frequencies;
     hid_t id_eigen_periods;
 
+    // added by sumeet 3rd August, 2016 for substeps output
+    hid_t id_trial_nodes_displacements; 
+    hid_t id_trial_elements_output;
+    
     //Some property lists
 	hid_t group_creation_plist;
 	hid_t dataset_creation_plist;

@@ -102,6 +102,8 @@ public:
 
     int pre_integration_callback(const DTensor2&, const DTensor2&, const DTensor2&, const DTensor4&, double, double, bool&);
 
+    void Print(ostream& s, int flag);
+
 
     //The state variables.
 private:

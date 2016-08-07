@@ -587,7 +587,9 @@ namespace yy {
         TEXT = 690,
         ENABLE = 691,
         DISABLE = 692,
-        COMPRESSION = 693
+        COMPRESSION = 693,
+        SAVE = 694,
+        NON_CONVERGED_SUBSTEPS = 695
       };
     };
 
@@ -892,12 +894,12 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 9210,     ///< Last index in yytable_.
+      yylast_ = 9246,     ///< Last index in yytable_.
       yynnts_ = 16,  ///< Number of nonterminal symbols.
-      yyfinal_ = 121, ///< Termination state number.
+      yyfinal_ = 123, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 456  ///< Number of tokens.
+      yyntokens_ = 458  ///< Number of tokens.
     };
 
 
@@ -906,7 +908,7 @@ namespace yy {
 
 
 } // yy
-#line 910 "feiparser.tab.hh" // lalr1.cc:377
+#line 912 "feiparser.tab.hh" // lalr1.cc:377
 
 
 
