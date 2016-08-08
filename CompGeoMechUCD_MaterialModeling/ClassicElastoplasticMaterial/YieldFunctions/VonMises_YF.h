@@ -135,6 +135,13 @@ public:
         return dbl_result;
     }
 
+    // DTensor4 const& dalpha_over_dsigma(DTensor2 const& sigma){
+
+    // }
+    // DTensor4 const& dalpha_over_dalpha(DTensor2 const& sigma){
+
+    // }
+    
 private:
 
     AlphaType &alpha_;

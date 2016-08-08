@@ -39,7 +39,7 @@
 // Defines indices i,j,k,l,m,n,p,q,r,s and the kronecker_delta.
 #include "../ClassicElastoplasticityGlobals.h"
 
-
+#include <cmath>
 
 
 
@@ -103,6 +103,60 @@ public:
         return result;
     }
 
+    DTensor4 const& dm_over_dsigma(DTensor2 const& sigma){
+        static DTensor2 s(3, 3, 0.0);
+        const DTensor2 &alpha = alpha_.getVariableConstReference();
+        // const double &k = k_.getVariableConstReference();
+        double p=0;
+        sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+        p=-p;
+        static DTensor2 s_minus_alpha(3,3,0.0);
+        s_minus_alpha(i,j) = s(i,j) - alpha(i,j);
+        double intermediate = s_minus_alpha(i,j) * s_minus_alpha(i,j) ; 
+
+
+
+        for (int ig = 0; ig < 3; ++ig){
+            for (int mg = 0; mg < 3; ++mg){
+                for (int jg = 0; jg < 3; ++jg){
+                    for (int ng = 0; ng < 3; ++ng){
+                        dm__dsigma(ig,jg,mg,ng) = 
+                            (
+                                kronecker_delta(ig,mg) * kronecker_delta(jg,ng) - 1.0/3.0 * kronecker_delta(ig,jg) * kronecker_delta(mg,ng) 
+                            ) * pow(intermediate, -0.5) - 
+                            (
+                                (s(ig,jg)-alpha(ig,jg)) * (s(mg,ng)-alpha(mg,ng))
+                            ) * pow(intermediate, -1.5); 
+                    }
+                }
+            }
+        }
+
+        // // ==============
+        // //  Backup . LTensor do not accept this. Change to the naive for-loop.
+        // // ==============
+        // dm__dsigma(i,j,m,n) = 
+        //     (
+        //         kronecker_delta(i,m) * kronecker_delta(j,n) - 1.0/3.0 * kronecker_delta(i,j) * kronecker_delta(m,n) 
+        //     ) * pow(intermediate, -0.5) - 
+        //     (
+        //         (s(i,j)-alpha(i,j)) * (s(m,n)-alpha(m,n))
+        //     ) * pow(intermediate, -1.5); 
+        // // ==============
+        // =========================================
+        // minimal failed example
+        // =========================================
+        // test(i,j,m,n)=kronecker_delta(i,m) * kronecker_delta(j,n) - 1.0/3.0 * kronecker_delta(i,j) * kronecker_delta(m,n) ;
+        // =========================================
+
+        return dm__dsigma;
+    }
+    // DTensor4 const& dm_over_dalpha(DTensor2 const& sigma){
+        
+    // }
+
+
+
 private:
 
     AlphaType &alpha_;
@@ -110,6 +164,7 @@ private:
 
     static DTensor2 s; //sigma deviator
     static DTensor2 result; //For returning Dtensor2s
+    static DTensor4 dm__dsigma; //For returning dm_over_dsigma
 
 };
 
@@ -118,5 +173,7 @@ template<class AlphaHardeningType, class KHardeningType>
 DTensor2 VonMises_PF<AlphaHardeningType , KHardeningType >::s(3, 3, 0.0);
 template<class AlphaHardeningType, class KHardeningType>
 DTensor2 VonMises_PF<AlphaHardeningType , KHardeningType >::result(3, 3, 0.0);
+template<typename AlphaHardeningType, typename KHardeningType>
+DTensor4 VonMises_PF<AlphaHardeningType , KHardeningType >::dm__dsigma(3, 3, 3, 3, 0.0);
 
 #endif

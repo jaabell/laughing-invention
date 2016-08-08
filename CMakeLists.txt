@@ -126,6 +126,22 @@ LINK_LIBS(${EXECUTABLE} NUMERIC_LIBS)
 # Link standar libraries
 LINK_LIBS(${EXECUTABLE} MACHINE_LIBS)
 
+
+add_executable("error_map1_vonmises_perfect_plastic" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/error_map1_vonmises_perfect_plastic.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/LTensor_Based/NDMaterialLT.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/ClassicElastoplasticityGlobals.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/myReader.cpp")
+LINK_LIBS("error_map1_vonmises_perfect_plastic" ESSI_LIBS)
+LINK_LIBS("error_map1_vonmises_perfect_plastic" NUMERIC_LIBS)
+LINK_LIBS("error_map1_vonmises_perfect_plastic" MACHINE_LIBS)
+
+add_executable("error_map1multiStep_vonmises_perfect_plastic" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/error_map1multiStep_vonmises_perfect_plastic.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/LTensor_Based/NDMaterialLT.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/ClassicElastoplasticityGlobals.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/myReader.cpp")
+LINK_LIBS("error_map1multiStep_vonmises_perfect_plastic" ESSI_LIBS)
+LINK_LIBS("error_map1multiStep_vonmises_perfect_plastic" NUMERIC_LIBS)
+LINK_LIBS("error_map1multiStep_vonmises_perfect_plastic" MACHINE_LIBS)
+
+add_executable("error_map1backward_vonmises_perfect_plastic" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/error_map1backward_vonmises_perfect_plastic.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/LTensor_Based/NDMaterialLT.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/ClassicElastoplasticityGlobals.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/myReader.cpp")
+LINK_LIBS("error_map1backward_vonmises_perfect_plastic" ESSI_LIBS)
+LINK_LIBS("error_map1backward_vonmises_perfect_plastic" NUMERIC_LIBS)
+LINK_LIBS("error_map1backward_vonmises_perfect_plastic" MACHINE_LIBS)
+
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION "${RealESSI_SRC}/bin")
 
 if(FINAL_SUMMARY)
