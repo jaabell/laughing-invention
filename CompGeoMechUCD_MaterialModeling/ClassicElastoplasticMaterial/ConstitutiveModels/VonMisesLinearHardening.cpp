@@ -58,15 +58,17 @@ VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double k0_in, doubl
   // // ====================================
   // // working on consistent_stiffness_, not finished yet.
   // // ====================================
-  // if( abs(H_alpha)< machine_epsilon &&  abs(H_k)<machine_epsilon){
-  //   hardening_type = Perfectly_Plastic;
-  // }else if(abs(H_alpha)<machine_epsilon &&  abs(H_k)>machine_epsilon){
-  //   hardening_type = One_Isotropic_Hardening_Only;
-  // }else if(abs(H_alpha)>machine_epsilon &&  abs(H_k)<machine_epsilon){
-  //   hardening_type = One_Kinematic_Hardening_Only;
-  // }else{
-  //   hardening_type = Both_One_Isotropic_One_Kinematic_Hardening;
-  // }
+  // global variable. should be optimized later.
+  int HARDENING_TYPE;
+  if( abs(H_alpha)< MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
+    HARDENING_TYPE = Perfectly_Plastic;
+  }else if(abs(H_alpha)<MACHINE_EPSILON &&  abs(H_k)>MACHINE_EPSILON){
+    HARDENING_TYPE = One_Isotropic_Hardening_Only;
+  }else if(abs(H_alpha)>MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
+    HARDENING_TYPE = One_Kinematic_Hardening_Only;
+  }else{
+    HARDENING_TYPE = Both_One_Isotropic_One_Kinematic_Hardening;
+  }
 
 }
 

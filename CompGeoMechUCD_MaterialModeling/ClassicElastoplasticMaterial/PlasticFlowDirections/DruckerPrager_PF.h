@@ -133,18 +133,18 @@ public:
         //     ) * pow(intermediate, -1.5); 
         // // ======================================================================
         // =========================================
-        // minimal failed example
+        // The minimal failed example
         // =========================================
         // test(i,j,m,n)=kronecker_delta(i,m) * kronecker_delta(j,n) - 1.0/3.0 * kronecker_delta(i,j) * kronecker_delta(m,n) ;
         // =========================================
 
-        for (int ig = 0; ig < 3; ++ig){
-            for (int mg = 0; mg < 3; ++mg){
-                for (int jg = 0; jg < 3; ++jg){
-                    for (int ng = 0; ng < 3; ++ng){
-                        for (int pg = 0; pg < 3; ++pg){
-                            for (int qg = 0; qg < 3; ++qg){
-                                for (int rg = 0; rg < 3; ++rg){
+        for (int ig = 0; ig < 3; ++ig)
+            for (int mg = 0; mg < 3; ++mg)
+                for (int jg = 0; jg < 3; ++jg)
+                    for (int ng = 0; ng < 3; ++ng)
+                        for (int pg = 0; pg < 3; ++pg)
+                            for (int qg = 0; qg < 3; ++qg)
+                                for (int rg = 0; rg < 3; ++rg)
                                     for (int sg = 0; sg < 3; ++sg){
                                         dm__dsigma(ig,jg,mg,ng) = 
                                             ( 
@@ -160,13 +160,7 @@ public:
                                                  (s(rg,sg)-p*alpha(rg,sg)) 
                                             ) * pow(intermediate, -1.5); 
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+
 
         return dm__dsigma;
     }

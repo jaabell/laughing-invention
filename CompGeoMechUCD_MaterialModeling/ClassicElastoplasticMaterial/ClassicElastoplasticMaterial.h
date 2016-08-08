@@ -171,6 +171,38 @@ namespace
     //     // return result;
     // }
 
+    DTensor4 const& inverse4thTensor(DTensor4 const& rhs){
+        static DTensor2 intermediate_matrix(9,9,0.0);
+        static DTensor4 ret(3,3,3,3,0.0);
+        int m41 = 0,  m42 = 0;
+        // (1). convert 4th order Tensor to matrix 
+        for ( int c44 = 1 ; c44 <= 3 ; c44++ )
+            for ( int c43 = 1 ; c43 <= 3 ; c43++ )
+                for ( int c42 = 1 ; c42 <= 3 ; c42++ )
+                    for ( int c41 = 1 ; c41 <= 3 ; c41++ )
+                    {
+                        m41 = 3 * (c41 - 1) + c42;
+                        m42 = 3 * (c43 - 1) + c44;
+
+                        intermediate_matrix( m41-1, m42-1 ) = rhs( c41-1, c42-1, c43-1, c44-1 );
+
+                    }
+        // (2). Inverse the matrix .
+        DTensor2 const& inv_matrix = intermediate_matrix.Inv();
+        // (3). convert Matrix to 4th order tensor
+        for ( int c44 = 1 ; c44 <= 3 ; c44++ )
+            for ( int c43 = 1 ; c43 <= 3 ; c43++ )
+                for ( int c42 = 1 ; c42 <= 3 ; c42++ )
+                    for ( int c41 = 1 ; c41 <= 3 ; c41++ )
+                    {
+                        m41 = 3 * (c41 - 1) + c42;
+                        m42 = 3 * (c43 - 1) + c44;
+
+                        ret(c41-1, c42-1, c43-1, c44-1) = inv_matrix(m41-1, m42-1);
+                    }
+        return ret;
+    }
+
     // static int Nsteps = 0 ;
 }
 
@@ -1891,13 +1923,13 @@ private:
                     DTensor4 const& dm_dsigma = pf.dm_over_dsigma(TrialStress);
                     static DTensor4 invC11(3,3,3,3, 0.0);
                     invC11(i,j,p,q) = IdentityTensor4(i,j,p,q) + dLambda*Eelastic(i,j,k,l)*dm_dsigma(k,l,p,q);
-                    static DTensor4 C11(3,3,3,3,0.0);
-                    C11 = invC11.Inv();
+
+                    DTensor4 const& C11 = inverse4thTensor(invC11);
                     // Actually, only the argument TrialStress is used for now. mf means m_final.
                     const DTensor2& mf = pf(depsilon, TrialStress);
                     const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
 
-                    switch(hardening_type){
+                    switch(HARDENING_TYPE){
                         case Perfectly_Plastic:{
                           double denom=nf(p, q) * C11(p, q, r, s) * mf(r, s);
                           static DTensor4 CC(3,3,3,3,0.0);
@@ -1907,7 +1939,7 @@ private:
                           break;
                         }
                         case One_Kinematic_Hardening_Only:{
-                            cout<<"::consistent_stiffness_ hardening_type One_Kinematic_Hardening_Only not implemented yet!";
+                            cout<<"::consistent_stiffness_ hardening_type One_Kinematic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used.";
                             // DTensor4 const& dm_dalpha = pf.dm_over_dalpha(TrialStress);
                             // DTensor4 const& dalpha_dsigma = yf.dalpha_over_dsigma(TrialStress);
                             // DTensor4 const& dalpha_dalpha = yf.dalpha_over_dalpha(TrialStress);
@@ -1915,15 +1947,15 @@ private:
                             break;
                         }
                         case One_Isotropic_Hardening_Only:{
-                            cout<<"::consistent_stiffness_ hardening_type One_Isotropic_Hardening_Only not implemented   yet!";
+                            cout<<"::consistent_stiffness_ hardening_type One_Isotropic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used.";
                             break;
                         }
                         case Both_One_Isotropic_One_Kinematic_Hardening:{
-                            cout<<"::consistent_stiffness_ hardening_type Both_One_Isotropic_One_Kinematic_Hardening not   implemented yet!";
+                            cout<<"::consistent_stiffness_ hardening_type Both_One_Isotropic_One_Kinematic_Hardening not   implemented yet! The inconsistent stiffness tensor is used.";
                             break;
                         }
                         default:{
-                            cout<<"Stiffness_(i,j,k,l) \n";
+                            // cout<<"Stiffness_(i,j,k,l) \n";
                         }
                     }
 

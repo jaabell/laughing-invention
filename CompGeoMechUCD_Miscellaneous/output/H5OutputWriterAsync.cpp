@@ -34,7 +34,7 @@
 
 #include <ID.h>
 #include <Vector.h>
-#include <H5OutputWriter.h>
+#include <H5OutputWriterAsync.h>
 #include <hdf5.h>
 #include <time.h>
 

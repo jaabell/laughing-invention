@@ -116,9 +116,9 @@ public:
 
 
 
-        for (int ig = 0; ig < 3; ++ig){
-            for (int mg = 0; mg < 3; ++mg){
-                for (int jg = 0; jg < 3; ++jg){
+        for (int ig = 0; ig < 3; ++ig)
+            for (int mg = 0; mg < 3; ++mg)
+                for (int jg = 0; jg < 3; ++jg)
                     for (int ng = 0; ng < 3; ++ng){
                         dm__dsigma(ig,jg,mg,ng) = 
                             (
@@ -128,9 +128,6 @@ public:
                                 (s(ig,jg)-alpha(ig,jg)) * (s(mg,ng)-alpha(mg,ng))
                             ) * pow(intermediate, -1.5); 
                     }
-                }
-            }
-        }
 
         // // ==============
         // //  Backup . LTensor do not accept this. Change to the naive for-loop.
