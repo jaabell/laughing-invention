@@ -1493,7 +1493,7 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
+	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Forward_Euler|Forward_Euler_Crisfield|Multistep_Forward_Euler|Multistep_Forward_Euler_Crisfield|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
 	| DEFINE NDMaterialLT CONSTITUTIVE INTEGRATION ALGORITHM CONSTITUTIVE_ALGNAME 
 		yield_function_relative_tolerance  '=' exp
 		stress_relative_tolerance '=' exp
@@ -1521,10 +1521,19 @@ CMD_define
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler;
 			good = true;
 		}
-
+		if( algname.compare("Forward_Euler_Crisfield") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Crisfield;
+			good = true;
+		}
 		if( algname.compare("Multistep_Forward_Euler") == 0)
 		{
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler;
+			good = true;
+		}
+		if( algname.compare("Multistep_Forward_Euler_Crisfield") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler_Crisfield;
 			good = true;
 		}
 		if( algname.compare("Modified_Euler_Error_Control") == 0)

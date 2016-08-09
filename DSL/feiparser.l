@@ -714,7 +714,9 @@ EXP	([Ee][-+]?[0-9]+)
 
  /* Constitutive algorithm options*/
 "Forward_Euler"          				          |
+"Forward_Euler_Crisfield"				          |
 "Multistep_Forward_Euler"          		    	  |
+"Multistep_Forward_Euler_Crisfield"		    	  |
 "Euler_One_Step"                                  |
 "Modified_Euler_Error_Control"                    |
 "Runge_Kutta_45_Error_Control"                    |
