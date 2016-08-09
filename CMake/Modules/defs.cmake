@@ -147,9 +147,9 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     SYSTEM_LIBS("rt" MACHINE_LIBS)
     # SYSTEM_LIBS("mpif90" MACHINE_LIBS)   #Needed for MUMPS
 
-    if(PETSC_HAS_MUMPS)
-        SYSTEM_LIBS("mpi_f77" MACHINE_LIBS)   #Needed for MUMPS
-    endif(PETSC_HAS_MUMPS)
+    # if(PETSC_HAS_MUMPS)
+    #     SYSTEM_LIBS("mpi_f77" MACHINE_LIBS)   #Needed for MUMPS
+    # endif(PETSC_HAS_MUMPS)
 
 else()  # sequential
     message(STATUS "YES! SEQUENTIAL")
