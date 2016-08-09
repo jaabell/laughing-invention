@@ -390,10 +390,16 @@ public:
             cerr << "NewPisanoLT::setTrialStrainIncr - Integration method not set!\n" ;
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler :
-            exitflag = this->Forward_Euler(strain_increment);
+            exitflag = this->Forward_Euler(strain_increment, false);
+            break;
+        case NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Crisfield :
+            exitflag = this->Forward_Euler(strain_increment, true);
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler :
-            exitflag = this->Multistep_Forward_Euler(strain_increment);
+            exitflag = this->Multistep_Forward_Euler(strain_increment, false);
+            break;
+        case NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler_Crisfield :
+            exitflag = this->Multistep_Forward_Euler(strain_increment, true);
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control :
             exitflag = this->Modified_Euler_Error_Control(strain_increment);
@@ -770,7 +776,7 @@ protected:
 private:
 
 
-    int Forward_Euler(const DTensor2 &strain_incr)
+    int Forward_Euler(const DTensor2 &strain_incr, bool const& with_return2yield_surface)
     {
         using namespace ClassicElastoplasticityGlobals;
 
@@ -792,9 +798,6 @@ private:
         // ----------------------------------------------------------------
         // ----------------------------------------------------------------
         // ----------------------------------------------------------------
-
-
-
 
         int errorcode = 0;
 
@@ -915,59 +918,38 @@ private:
             // std::cout << "   * den = " << den << std::endl;
 
 
-            // ========================================
-            // Add the additional step: returning to the yield surface. 
-            // This algorithm is based Crisfield(1996). Page 171. Section 6.6.3
-            // ========================================
-            // In the evolve function, only dLambda and m are used. Other arguments are not used at all.
-            // Update the internal variables first. And then, return to the yield surface.
+            // Update the internal variables (k and alpha)
             vars.evolve(dLambda, depsilon_elpl, m, TrialStress);
             vars.commit_tmp();
-
-            double yf_val_after_corrector = yf(TrialStress);
-            const DTensor2& n_after_corrector = yf.df_dsigma_ij(TrialStress);
-            const DTensor2& m_after_corrector = pf(depsilon_elpl, TrialStress);
-            // depsilon_elpl is actually not used at all in xi_star_h_star
-            double xi_star_h_star_after_corrector = yf.xi_star_h_star( depsilon_elpl, m_after_corrector,  TrialStress);
-            double dLambda_after_corrector = yf_val_after_corrector / (
-                n_after_corrector(i,j)*Eelastic(i,j,k,l)*m_after_corrector(k,l) - xi_star_h_star_after_corrector
-                );
-            TrialStress(i, j) = TrialStress(i, j) - dLambda_after_corrector * Eelastic(i, j, k, l) * m_after_corrector(k, l);
-            TrialPlastic_Strain(i, j) += dLambda_after_corrector * m_after_corrector(i, j);
-            // ========================================
-            // vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
+            // Calculate the stiffness for the global iteration:
+            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
 
 
+            // ============================================================================================
+            // Add the additional step: returning to the yield surface. 
+            // This algorithm is based on Crisfield(1996). Page 171. Section 6.6.3
+            // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated to the yield surface. 
+            // ============================================================================================
+            if(with_return2yield_surface){
+                // In the evolve function, only dLambda and m are used. Other arguments are not used at all.
+                // Make surface the internal variables are already updated. And then, return to the yield surface. 
+                double yf_val_after_corrector = yf(TrialStress);
+                const DTensor2& n_after_corrector = yf.df_dsigma_ij(TrialStress);
+                const DTensor2& m_after_corrector = pf(depsilon_elpl, TrialStress);
+                // In the function below, depsilon_elpl is actually not used at all in xi_star_h_star
+                double xi_star_h_star_after_corrector = yf.xi_star_h_star( depsilon_elpl, m_after_corrector,  TrialStress);
+                double dLambda_after_corrector = yf_val_after_corrector / (
+                    n_after_corrector(i,j)*Eelastic(i,j,k,l)*m_after_corrector(k,l) - xi_star_h_star_after_corrector
+                    );
+                TrialStress(i, j) = TrialStress(i, j) - dLambda_after_corrector * Eelastic(i, j, k, l) * m_after_corrector(k, l);
+                TrialPlastic_Strain(i, j) += dLambda_after_corrector * m_after_corrector(i, j);
 
-            //Stress correction back to the yield surface
-            // double yc = yf(TrialStress);
-            // int ys_correction_count = 0;
-            // // printTensor("  TrialStress before correction", TrialStress);
-            // while (yc > this-> f_relative_tol && ys_correction_count < this-> n_max_iterations)
-            // {
-            //     // cout << "    +++ yf() = " << yc << endl;
-            //     const DTensor2& n = yf.df_dsigma_ij(TrialStress);
-            //     const DTensor2& m = pf(depsilon_elpl, TrialStress);
-            //     double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s);
-            //     double dLambda_correction = yc / den;
-            //     TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
-            //     // printTensor("    +++ TrialStress correction", TrialStress);
-            //     yc = yf(TrialStress);
-            //     ys_correction_count++;
-            // }
-            // printTensor("  TrialStress after correction", TrialStress);
+                double den_after_corrector = n_after_corrector(p, q) * Eelastic(p, q, r, s) * m_after_corrector(r, s) - xi_star_h_star_after_corrector;
+                Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m_after_corrector(p, q)) * (n_after_corrector(r, s) * Eelastic(r, s, k, l) ) / den_after_corrector;
+            }
+            // ============================================================================================
+            // ============================================================================================
 
-
-
-            // const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
-            // const DTensor2& mf = pf(depsilon_elpl, TrialStress);
-            // xi_star_h_star = yf.xi_star_h_star( depsilon_elpl, mf,  TrialStress);
-            // double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
-            // Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denf;
-
-            double den_after_corrector = n_after_corrector(p, q) * Eelastic(p, q, r, s) * m_after_corrector(r, s) - xi_star_h_star_after_corrector;
-
-            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m_after_corrector(p, q)) * (n_after_corrector(r, s) * Eelastic(r, s, k, l) ) / den_after_corrector;
 
 
             double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
@@ -999,7 +981,7 @@ private:
 
 
 
-    int Multistep_Forward_Euler(const DTensor2 &strain_incr)
+    int Multistep_Forward_Euler(const DTensor2 &strain_incr, bool const& with_return2yield_surface)
     {
         using namespace ClassicElastoplasticityGlobals;
         int errorcode = 0;
@@ -1081,7 +1063,7 @@ private:
             // ====================================
             // Initialize the stiffness to be zero.
             // In multiStep, this entire stiffness should be the average of the substep
-            // stiffness to match the real stiffness better.
+            // stiffness to match the real stiffness in one global step.
             Stiffness*=0;
             // ====================================
             for (int iteration = 0; iteration < Nsubsteps; iteration++)
@@ -1122,64 +1104,50 @@ private:
                 TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
         
-                // ========================================
-                // Add the additional step: returning to the yield surface. 
-                // This algorithm is based on Crisfield(1996). Page 171. Section 6.6.3
-                // ========================================
-                // In the evolve function, only dLambda and m are used. Other arguments are not used at all.
-                // Update the internal variables first. And then, return to the yield surface.
+
+
                 vars.evolve(dLambda, sub_depsilon_elpl, m, TrialStress);
                 vars.commit_tmp();
-
-                double yf_val_after_corrector = yf(TrialStress);
-                const DTensor2& n_after_corrector = yf.df_dsigma_ij(TrialStress);
-                const DTensor2& m_after_corrector = pf(depsilon_elpl, TrialStress);
-                // depsilon_elpl is actually not used at all in xi_star_h_star
-                double xi_star_h_star_after_corrector = yf.xi_star_h_star( depsilon_elpl, m_after_corrector,  TrialStress);
-                double dLambda_after_corrector = yf_val_after_corrector / (
-                    n_after_corrector(i,j)*Eelastic(i,j,k,l)*m_after_corrector(k,l) - xi_star_h_star_after_corrector
-                    );
-                TrialStress(i, j) = TrialStress(i, j) - dLambda_after_corrector * Eelastic(i, j, k, l) * m_after_corrector(k, l);
-                TrialPlastic_Strain(i, j) += dLambda_after_corrector * m_after_corrector(i, j);
-
-
-                //Stress correction back to the yield surface
-                // double yc = yf(TrialStress);
-                // int ys_correction_count = 0;
-
-                // while (yc > this-> f_relative_tol && ys_correction_count < this-> n_max_iterations)
-                // {
-                //     const DTensor2& n = yf.df_dsigma_ij(TrialStress);
-                //     const DTensor2& m = pf(sub_depsilon_elpl, TrialStress);
-                //     double den = n(p, q) * Eelastic(p, q, r, s) * m(r, s);
-                //     double dLambda_correction = yc / den;
-                //     TrialStress(i, j) = TrialStress(i, j) - dLambda_correction * Eelastic(i, j, k, l) * m(k, l);
-                //     yc = yf(TrialStress);
-                //     ys_correction_count++;
-                // }
-
-                // const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
-                // const DTensor2& mf = pf(sub_depsilon_elpl, TrialStress);
-                // xi_star_h_star = yf.xi_star_h_star( sub_depsilon_elpl, mf,  TrialStress);
-                // double denf = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
-                // Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / den;
-                
-
-                // ===============
+                // =================================================================================
                 // According to Crisfield(1996) Page 172. Section 6.6.4.
                 // The stiffness for the entire step should be the average of the substeps'
                 // stiffness
-                // ===============
-                double den_after_corrector = n_after_corrector(p, q) * Eelastic(p, q, r, s) * m_after_corrector(r, s) - xi_star_h_star_after_corrector;
+                // =================================================================================
                 static DTensor4 Stiffness_substep(3,3,3,3,0.0);
-                Stiffness_substep(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m_after_corrector(p, q)) * (n_after_corrector(r, s) * Eelastic(r, s, k, l) ) / den_after_corrector;
-                // ===============
+                Stiffness_substep(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
                 Stiffness(i, j, k, l) += Stiffness_substep(i, j, k, l)/Nsubsteps;
 
 
 
-                double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
+                // ============================================================================================
+                // Add the additional step: returning to the yield surface. 
+                // This algorithm is based on Crisfield(1996). Page 171. Section 6.6.3
+                // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated to the yield surface. 
+                // In addition, each substep will have this behavior of returning to yield surface.
+                // ============================================================================================
+                if(with_return2yield_surface){
+                    // In the evolve function, only dLambda and m are used. Other arguments are not used at all.
+                    // Make surface the internal variables are already updated. And then, return to the yield surface. 
+                    double yf_val_after_corrector = yf(TrialStress);
+                    const DTensor2& n_after_corrector = yf.df_dsigma_ij(TrialStress);
+                    const DTensor2& m_after_corrector = pf(depsilon_elpl, TrialStress);
+                    // In the function below, depsilon_elpl is actually not used at all in xi_star_h_star
+                    double xi_star_h_star_after_corrector = yf.xi_star_h_star( depsilon_elpl, m_after_corrector,  TrialStress);
+                    double dLambda_after_corrector = yf_val_after_corrector / (
+                        n_after_corrector(i,j)*Eelastic(i,j,k,l)*m_after_corrector(k,l) - xi_star_h_star_after_corrector
+                        );
+                    TrialStress(i, j) = TrialStress(i, j) - dLambda_after_corrector * Eelastic(i, j, k, l) * m_after_corrector(k, l);
+                    TrialPlastic_Strain(i, j) += dLambda_after_corrector * m_after_corrector(i, j);
 
+                    double den_after_corrector = n_after_corrector(p, q) * Eelastic(p, q, r, s) * m_after_corrector(r, s) - xi_star_h_star_after_corrector;
+                    Stiffness_substep(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m_after_corrector(p, q)) * (n_after_corrector(r, s) * Eelastic(r, s, k, l) ) / den_after_corrector;
+                    Stiffness(i, j, k, l) += Stiffness_substep(i, j, k, l)/Nsubsteps;
+                }
+                // ============================================================================================
+                // ============================================================================================
+
+
+                double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
                 if (norm_trial_stress != norm_trial_stress || den <= 0)//denf <= 0 ) //check for nan
                 {
                     cout << "Numeric error!\n";

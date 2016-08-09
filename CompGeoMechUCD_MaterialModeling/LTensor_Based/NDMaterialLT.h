@@ -35,7 +35,9 @@ enum struct NDMaterialLT_Constitutive_Integration_Method : int
 {
     Not_Set,
     Forward_Euler,
+    Forward_Euler_Crisfield,
     Multistep_Forward_Euler,
+    Multistep_Forward_Euler_Crisfield,
     Modified_Euler_Error_Control,
     Runge_Kutta_45_Error_Control,
     Backward_Euler

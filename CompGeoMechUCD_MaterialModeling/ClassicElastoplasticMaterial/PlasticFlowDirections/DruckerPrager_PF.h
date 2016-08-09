@@ -116,7 +116,7 @@ public:
 
 
         // // ======================================================================
-        // //  Backup . LTensor do not accept this. Change to the naive for-loop.
+        // //  Backup . LTensor does not accept this. So change to the naive for-loop.
         // // ======================================================================
         // dm__dsigma(i,j,m,n) = 
         //     ( 
@@ -134,6 +134,7 @@ public:
         // // ======================================================================
         // =========================================
         // The minimal failed example
+        // Possible reasons: i,j,m,n are free indices but ?...
         // =========================================
         // test(i,j,m,n)=kronecker_delta(i,m) * kronecker_delta(j,n) - 1.0/3.0 * kronecker_delta(i,j) * kronecker_delta(m,n) ;
         // =========================================
@@ -146,7 +147,7 @@ public:
                             for (int qg = 0; qg < 3; ++qg)
                                 for (int rg = 0; rg < 3; ++rg)
                                     for (int sg = 0; sg < 3; ++sg){
-                                        dm__dsigma(ig,jg,mg,ng) = 
+                                        dm__dsigma(ig,jg,mg,ng) += 
                                             ( 
                                                 (kronecker_delta(mg,ig)*kronecker_delta(ng,jg) - 1./3.0 * kronecker_delta(mg,ng) * kronecker_delta(ig,jg) 
                                                     + 1./3.0 * kronecker_delta(mg,ng)*alpha(ig,jg) ) + 1./3.0 * alpha(pg,qg)*kronecker_delta(ig,jg) * 
@@ -164,9 +165,42 @@ public:
 
         return dm__dsigma;
     }
-    // DTensor4 const& dm_over_dalpha(DTensor2 const& sigma){
-        
-    // }
+    DTensor4 const& dm_over_dalpha(DTensor2 const& sigma){
+        static DTensor2 s(3, 3, 0.0);
+        const DTensor2 &alpha = alpha_.getVariableConstReference();
+        // const double &k = k_.getVariableConstReference();
+        double p=0.0;
+        sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+        p=-p;
+        static DTensor2 s_minus_palpha(3,3,0.0);
+        s_minus_palpha(i,j) = s(i,j) - p*alpha(i,j);
+        double intermediate = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
+        for (int ig = 0; ig < 3; ++ig)
+            for (int mg = 0; mg < 3; ++mg)
+                for (int jg = 0; jg < 3; ++jg)
+                    for (int ng = 0; ng < 3; ++ng)
+                        for (int pg = 0; pg < 3; ++pg)
+                            for (int qg = 0; qg < 3; ++qg)
+                                for (int rg = 0; rg < 3; ++rg)
+                                    for (int sg = 0; sg < 3; ++sg){
+                                        dm__dalpha(ig,jg,mg,ng) += 
+                                            ( 
+                                                -p*kronecker_delta(mg,ig)*kronecker_delta(ng,jg) + 1./3.0 * kronecker_delta(mg,pg) * kronecker_delta(ig,jg) 
+
+                                            ) * pow(intermediate, -0.5)  ;
+                                            // Not finished yet!
+                                            // -
+                                            // (
+                                            //      (s(ig,jg)-p*alpha(ig,jg) + 1./3.0 *alpha(pg,qg) * kronecker_delta(ig,jg) * (s(pg,qg) - p*alpha(pg,qg))) *
+                                            //      (kronecker_delta(mg,rg)*kronecker_delta(ng,sg) - 1./3.0*kronecker_delta(mg,ng)*kronecker_delta(rg,sg) 
+                                            //         +1./3.0 * kronecker_delta(mg,ng) * alpha(rg,sg)) *
+                                            //      (s(rg,sg)-p*alpha(rg,sg)) 
+                                            // ) * pow(intermediate, -1.5); 
+                                    }
+
+
+        return dm__dalpha;
+    }
 
 
 private:
@@ -177,6 +211,7 @@ private:
     static DTensor2 s; //sigma deviator
     static DTensor2 result; //For returning Dtensor2s
     static DTensor4 dm__dsigma; //For returning dm_over_dsigma
+    static DTensor4 dm__dalpha; //For returning dm_over_dsigma
 
 };
 
@@ -186,5 +221,7 @@ template<class AlphaHardeningType, class KHardeningType>
 DTensor2 DruckerPrager_PF<AlphaHardeningType , KHardeningType >::result(3, 3, 0.0);
 template<typename AlphaHardeningType, typename KHardeningType>
 DTensor4 DruckerPrager_PF<AlphaHardeningType , KHardeningType >::dm__dsigma(3, 3, 3, 3, 0.0);
+template<typename AlphaHardeningType, typename KHardeningType>
+DTensor4 DruckerPrager_PF<AlphaHardeningType , KHardeningType >::dm__dalpha(3, 3, 3, 3, 0.0);
 
 #endif

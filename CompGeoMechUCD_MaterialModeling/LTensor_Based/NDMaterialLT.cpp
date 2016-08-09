@@ -355,7 +355,9 @@ bool NDMaterialLT::set_constitutive_integration_method(int method, double f_rela
 {
     if ( method == (int) NDMaterialLT_Constitutive_Integration_Method::Not_Set
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Crisfield
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler_Crisfield
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler)
