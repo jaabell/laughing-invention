@@ -55,7 +55,7 @@ SYSTEM_LIBS("z" MACHINE_LIBS)
 SYSTEM_LIBS("m" MACHINE_LIBS)
 # SYSTEM_LIBS("gfortran" MACHINE_LIBS)
 #SYSTEM_LIBS("gfortran" MACHINE_LIBS)
-set(MACHINE_LIBS ${MACHINE_LIBS} "gfortran")
+# set(MACHINE_LIBS ${MACHINE_LIBS} "gfortran")
 set(MACHINE_LIBS ${MACHINE_LIBS} "m")
 set(MACHINE_LIBS ${MACHINE_LIBS} "supc++")
 # Include external headers
