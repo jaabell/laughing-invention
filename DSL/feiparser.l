@@ -720,7 +720,8 @@ EXP	([Ee][-+]?[0-9]+)
 "Euler_One_Step"                                  |
 "Modified_Euler_Error_Control"                    |
 "Runge_Kutta_45_Error_Control"                    |
-"Backward_Euler"                     {yylval->ident = new string(yytext); return token::CONSTITUTIVE_ALGNAME;}
+"Backward_Euler"                    			  |
+"Full_Backward_Euler"                     {yylval->ident = new string(yytext); return token::CONSTITUTIVE_ALGNAME;}
 
  /* Algorithm options*/
 "With_no_convergence_check"          |

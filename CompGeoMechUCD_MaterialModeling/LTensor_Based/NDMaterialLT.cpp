@@ -360,7 +360,8 @@ bool NDMaterialLT::set_constitutive_integration_method(int method, double f_rela
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler_Crisfield
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Modified_Euler_Error_Control
             || method == (int) NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control
-            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler)
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler
+            || method == (int) NDMaterialLT_Constitutive_Integration_Method::Full_Backward_Euler)
     {
         NDMaterialLT::constitutive_integration_method = (NDMaterialLT_Constitutive_Integration_Method) method ;
         NDMaterialLT::f_relative_tol = f_relative_tol ;

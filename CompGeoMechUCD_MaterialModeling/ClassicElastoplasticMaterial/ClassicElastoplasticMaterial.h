@@ -407,6 +407,9 @@ public:
         case NDMaterialLT_Constitutive_Integration_Method::Backward_Euler :
             exitflag = this->Backward_Euler(strain_increment);;
             break;
+        case NDMaterialLT_Constitutive_Integration_Method::Full_Backward_Euler :
+            exitflag = this->Full_Backward_Euler(strain_increment);;
+            break;
         case NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control :
             // exitflag = this->Runge_Kutta_45_Error_Control(strain_increment);;
             break;

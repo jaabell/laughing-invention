@@ -1935,6 +1935,12 @@ namespace yy {
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler;
 			good = true;
 		}
+		
+		if( algname.compare("Full_Backward_Euler") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Full_Backward_Euler;
+			good = true;
+		}
 		else
 		{
 			(yylhs.value.exp) = new Number(-1, ESSIunits::unitless);
@@ -1953,11 +1959,11 @@ namespace yy {
 			nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 1957 "feiparser.tab.cc" // lalr1.cc:847
+#line 1963 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 70:
-#line 1576 "feiparser.yy" // lalr1.cc:847
+#line 1582 "feiparser.yy" // lalr1.cc:847
     {
 		// This case is a bit different. ALGNAME contains a string to
 		// indicate which algorithm to choose. Instead of having different
@@ -2010,11 +2016,11 @@ namespace yy {
 		
 		nodes.push((yylhs.value.exp));
 	}
-#line 2014 "feiparser.tab.cc" // lalr1.cc:847
+#line 2020 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 71:
-#line 1632 "feiparser.yy" // lalr1.cc:847
+#line 1638 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2086,11 +2092,11 @@ namespace yy {
 		for(int ii = 1;ii <=3; ii++) nodes.pop(); //pop 3 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 2090 "feiparser.tab.cc" // lalr1.cc:847
+#line 2096 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 72:
-#line 1707 "feiparser.yy" // lalr1.cc:847
+#line 1713 "feiparser.yy" // lalr1.cc:847
     {
 		int (*f)() = NULL;         // function poiner to the algorithm DSL
 		string fname;       // name of the DSL called to report
@@ -2122,11 +2128,11 @@ namespace yy {
 		}
 		nodes.push((yylhs.value.exp));
 	}
-#line 2126 "feiparser.tab.cc" // lalr1.cc:847
+#line 2132 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 73:
-#line 1742 "feiparser.yy" // lalr1.cc:847
+#line 1748 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("gamma", &isAdimensional));
@@ -2137,11 +2143,11 @@ namespace yy {
 		for(int ii = 1;ii <=2; ii++) nodes.pop(); //pop 2 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 2141 "feiparser.tab.cc" // lalr1.cc:847
+#line 2147 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 74:
-#line 1756 "feiparser.yy" // lalr1.cc:847
+#line 1762 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("alpha", &isAdimensional));
@@ -2151,11 +2157,11 @@ namespace yy {
 		nodes.pop(); //pop 2 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 2155 "feiparser.tab.cc" // lalr1.cc:847
+#line 2161 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 75:
-#line 1769 "feiparser.yy" // lalr1.cc:847
+#line 1775 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2173,11 +2179,11 @@ namespace yy {
 		for(int ii = 1;ii <=2; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2177 "feiparser.tab.cc" // lalr1.cc:847
+#line 2183 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 76:
-#line 1796 "feiparser.yy" // lalr1.cc:847
+#line 1802 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		//cout << "  --> Starting new model named " << *$3 << endl;
@@ -2212,11 +2218,11 @@ namespace yy {
 
 
 	}
-#line 2216 "feiparser.tab.cc" // lalr1.cc:847
+#line 2222 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 77:
-#line 1834 "feiparser.yy" // lalr1.cc:847
+#line 1840 "feiparser.yy" // lalr1.cc:847
     {
 		Quantity returnQuantity;
 		string temp = *(yystack_[0].value.ident);
@@ -2241,11 +2247,11 @@ namespace yy {
 
 		nodes.push((yylhs.value.exp));
 	}
-#line 2245 "feiparser.tab.cc" // lalr1.cc:847
+#line 2251 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 78:
-#line 1862 "feiparser.yy" // lalr1.cc:847
+#line 1868 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[4].value.exp)); signature.push_back(this_signature("nsteps", &isAdimensional));
@@ -2255,11 +2261,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2259 "feiparser.tab.cc" // lalr1.cc:847
+#line 2265 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 79:
-#line 1875 "feiparser.yy" // lalr1.cc:847
+#line 1881 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("time_step", &isTime));
@@ -2272,11 +2278,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2276 "feiparser.tab.cc" // lalr1.cc:847
+#line 2282 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 80:
-#line 1895 "feiparser.yy" // lalr1.cc:847
+#line 1901 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2292,11 +2298,11 @@ namespace yy {
 		for(int ii = 1;ii <=5; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2296 "feiparser.tab.cc" // lalr1.cc:847
+#line 2302 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 81:
-#line 1914 "feiparser.yy" // lalr1.cc:847
+#line 1920 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back
@@ -2307,11 +2313,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2311 "feiparser.tab.cc" // lalr1.cc:847
+#line 2317 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 82:
-#line 1931 "feiparser.yy" // lalr1.cc:847
+#line 1937 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2329,11 +2335,11 @@ namespace yy {
 
 		nodes.push((yylhs.value.exp));
 	}
-#line 2333 "feiparser.tab.cc" // lalr1.cc:847
+#line 2339 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 83:
-#line 1955 "feiparser.yy" // lalr1.cc:847
+#line 1961 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2351,11 +2357,11 @@ namespace yy {
 
 		nodes.push((yylhs.value.exp));
 	}
-#line 2355 "feiparser.tab.cc" // lalr1.cc:847
+#line 2361 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 84:
-#line 1979 "feiparser.yy" // lalr1.cc:847
+#line 1985 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2373,11 +2379,11 @@ namespace yy {
 
 		nodes.push((yylhs.value.exp));
 	}
-#line 2377 "feiparser.tab.cc" // lalr1.cc:847
+#line 2383 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 85:
-#line 2003 "feiparser.yy" // lalr1.cc:847
+#line 2009 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2395,11 +2401,11 @@ namespace yy {
 
 		nodes.push((yylhs.value.exp));
 	}
-#line 2399 "feiparser.tab.cc" // lalr1.cc:847
+#line 2405 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 86:
-#line 2027 "feiparser.yy" // lalr1.cc:847
+#line 2033 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2417,32 +2423,32 @@ namespace yy {
 
 		nodes.push((yylhs.value.exp));
 	}
-#line 2421 "feiparser.tab.cc" // lalr1.cc:847
+#line 2427 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 87:
-#line 2048 "feiparser.yy" // lalr1.cc:847
+#line 2054 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		(yylhs.value.exp) = new FeiDslCaller0<>(&run_test, args, signature, "run_test");
 		nodes.push((yylhs.value.exp));
 	}
-#line 2431 "feiparser.tab.cc" // lalr1.cc:847
+#line 2437 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 88:
-#line 2058 "feiparser.yy" // lalr1.cc:847
+#line 2064 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
 		(yylhs.value.exp) = new FeiDslCaller0<>(&compute_reaction_forces, args, signature, "compute_reaction_forces");
 
 	}
-#line 2442 "feiparser.tab.cc" // lalr1.cc:847
+#line 2448 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 89:
-#line 2074 "feiparser.yy" // lalr1.cc:847
+#line 2080 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2452,11 +2458,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2456 "feiparser.tab.cc" // lalr1.cc:847
+#line 2462 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 90:
-#line 2087 "feiparser.yy" // lalr1.cc:847
+#line 2093 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2466,11 +2472,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2470 "feiparser.tab.cc" // lalr1.cc:847
+#line 2476 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 91:
-#line 2100 "feiparser.yy" // lalr1.cc:847
+#line 2106 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2481,11 +2487,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2485 "feiparser.tab.cc" // lalr1.cc:847
+#line 2491 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 92:
-#line 2114 "feiparser.yy" // lalr1.cc:847
+#line 2120 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2494,11 +2500,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2498 "feiparser.tab.cc" // lalr1.cc:847
+#line 2504 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 93:
-#line 2126 "feiparser.yy" // lalr1.cc:847
+#line 2132 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2507,11 +2513,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2511 "feiparser.tab.cc" // lalr1.cc:847
+#line 2517 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 94:
-#line 2138 "feiparser.yy" // lalr1.cc:847
+#line 2144 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2520,11 +2526,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2524 "feiparser.tab.cc" // lalr1.cc:847
+#line 2530 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 95:
-#line 2150 "feiparser.yy" // lalr1.cc:847
+#line 2156 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -2533,11 +2539,11 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2537 "feiparser.tab.cc" // lalr1.cc:847
+#line 2543 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 96:
-#line 2174 "feiparser.yy" // lalr1.cc:847
+#line 2180 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2549,11 +2555,11 @@ namespace yy {
 		for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 4 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 2553 "feiparser.tab.cc" // lalr1.cc:847
+#line 2559 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 97:
-#line 2195 "feiparser.yy" // lalr1.cc:847
+#line 2201 "feiparser.yy" // lalr1.cc:847
     {
 
 		//int add_constitutive_model_NDMaterialLT_vonmises_linear_hardening(int MaterialNumber,
@@ -2580,11 +2586,11 @@ namespace yy {
 		for(int ii = 1;ii <=7; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2584 "feiparser.tab.cc" // lalr1.cc:847
+#line 2590 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 98:
-#line 2232 "feiparser.yy" // lalr1.cc:847
+#line 2238 "feiparser.yy" // lalr1.cc:847
     {
 
 		args.clear(); signature.clear();
@@ -2602,11 +2608,11 @@ namespace yy {
 		for(int ii = 1;ii <=8; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2606 "feiparser.tab.cc" // lalr1.cc:847
+#line 2612 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 99:
-#line 2260 "feiparser.yy" // lalr1.cc:847
+#line 2266 "feiparser.yy" // lalr1.cc:847
     {
 
 		args.clear(); signature.clear();
@@ -2624,11 +2630,11 @@ namespace yy {
 		for(int ii = 1;ii <=8; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2628 "feiparser.tab.cc" // lalr1.cc:847
+#line 2634 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 100:
-#line 2290 "feiparser.yy" // lalr1.cc:847
+#line 2296 "feiparser.yy" // lalr1.cc:847
     {
 
 		args.clear(); signature.clear();
@@ -2648,11 +2654,11 @@ namespace yy {
 		for(int ii = 1;ii <=10; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2652 "feiparser.tab.cc" // lalr1.cc:847
+#line 2658 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 101:
-#line 2321 "feiparser.yy" // lalr1.cc:847
+#line 2327 "feiparser.yy" // lalr1.cc:847
     {
 
 		args.clear(); signature.clear();
@@ -2671,11 +2677,11 @@ namespace yy {
 		for(int ii = 1;ii <=9; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2675 "feiparser.tab.cc" // lalr1.cc:847
+#line 2681 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 102:
-#line 2353 "feiparser.yy" // lalr1.cc:847
+#line 2359 "feiparser.yy" // lalr1.cc:847
     {
 
 		args.clear(); signature.clear();
@@ -2695,11 +2701,11 @@ namespace yy {
 		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2699 "feiparser.tab.cc" // lalr1.cc:847
+#line 2705 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 103:
-#line 2406 "feiparser.yy" // lalr1.cc:847
+#line 2412 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[92].value.exp));  signature.push_back(this_signature("number",                    &isAdimensional));
@@ -2749,11 +2755,11 @@ namespace yy {
 		for(int ii = 1;ii <= 31; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2753 "feiparser.tab.cc" // lalr1.cc:847
+#line 2759 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 104:
-#line 2484 "feiparser.yy" // lalr1.cc:847
+#line 2490 "feiparser.yy" // lalr1.cc:847
     {
 
 		args.clear(); signature.clear();
@@ -2799,11 +2805,11 @@ namespace yy {
 		for(int ii = 1;ii <= 26; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2803 "feiparser.tab.cc" // lalr1.cc:847
+#line 2809 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 105:
-#line 2539 "feiparser.yy" // lalr1.cc:847
+#line 2545 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2819,11 +2825,11 @@ namespace yy {
 		for(int ii = 1;ii <=7; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2823 "feiparser.tab.cc" // lalr1.cc:847
+#line 2829 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 106:
-#line 2558 "feiparser.yy" // lalr1.cc:847
+#line 2564 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2835,11 +2841,11 @@ namespace yy {
 		for(int ii = 1;ii <= 2; ii++) nodes.pop(); //pop 2 exps
 			nodes.push((yylhs.value.exp));
 	}
-#line 2839 "feiparser.tab.cc" // lalr1.cc:847
+#line 2845 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 107:
-#line 2580 "feiparser.yy" // lalr1.cc:847
+#line 2586 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2858,11 +2864,11 @@ namespace yy {
 		for(int ii = 1;ii <=8; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	  }
-#line 2862 "feiparser.tab.cc" // lalr1.cc:847
+#line 2868 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 108:
-#line 2612 "feiparser.yy" // lalr1.cc:847
+#line 2618 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2884,11 +2890,11 @@ namespace yy {
 		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2888 "feiparser.tab.cc" // lalr1.cc:847
+#line 2894 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 109:
-#line 2644 "feiparser.yy" // lalr1.cc:847
+#line 2650 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -2907,11 +2913,11 @@ namespace yy {
 		for(int ii = 1;ii <=8; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2911 "feiparser.tab.cc" // lalr1.cc:847
+#line 2917 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 110:
-#line 2672 "feiparser.yy" // lalr1.cc:847
+#line 2678 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("number",                    &isAdimensional));
@@ -2928,11 +2934,11 @@ namespace yy {
 		for(int ii = 1;ii <=6; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 2932 "feiparser.tab.cc" // lalr1.cc:847
+#line 2938 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 111:
-#line 2700 "feiparser.yy" // lalr1.cc:847
+#line 2706 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[11].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2946,11 +2952,11 @@ namespace yy {
 		for(int ii = 1;ii <=4; ii++) nodes.pop(); //pop 4 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 2950 "feiparser.tab.cc" // lalr1.cc:847
+#line 2956 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 112:
-#line 2734 "feiparser.yy" // lalr1.cc:847
+#line 2740 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[53].value.exp)); signature.push_back(this_signature("number",            &isAdimensional));
@@ -2982,11 +2988,11 @@ namespace yy {
 		for(int ii = 1;ii <=18; ii++) nodes.pop(); //pop 4 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 2986 "feiparser.tab.cc" // lalr1.cc:847
+#line 2992 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 113:
-#line 2781 "feiparser.yy" // lalr1.cc:847
+#line 2787 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3006,11 +3012,11 @@ namespace yy {
 		for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 11 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 3010 "feiparser.tab.cc" // lalr1.cc:847
+#line 3016 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 114:
-#line 2807 "feiparser.yy" // lalr1.cc:847
+#line 2813 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3029,11 +3035,11 @@ namespace yy {
 		for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 10 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 3033 "feiparser.tab.cc" // lalr1.cc:847
+#line 3039 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 115:
-#line 2832 "feiparser.yy" // lalr1.cc:847
+#line 2838 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3052,11 +3058,11 @@ namespace yy {
 		for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 10 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 3056 "feiparser.tab.cc" // lalr1.cc:847
+#line 3062 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 116:
-#line 2856 "feiparser.yy" // lalr1.cc:847
+#line 2862 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[16].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3070,11 +3076,11 @@ namespace yy {
 		for(int ii = 1;ii <=5; ii++) nodes.pop(); //pop 5 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 3074 "feiparser.tab.cc" // lalr1.cc:847
+#line 3080 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 117:
-#line 2876 "feiparser.yy" // lalr1.cc:847
+#line 2882 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[25].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3093,11 +3099,11 @@ namespace yy {
 		for(int ii = 1;ii <=10; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3097 "feiparser.tab.cc" // lalr1.cc:847
+#line 3103 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 118:
-#line 2900 "feiparser.yy" // lalr1.cc:847
+#line 2906 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[31].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3119,11 +3125,11 @@ namespace yy {
 		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3123 "feiparser.tab.cc" // lalr1.cc:847
+#line 3129 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 119:
-#line 2929 "feiparser.yy" // lalr1.cc:847
+#line 2935 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[63].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3163,11 +3169,11 @@ namespace yy {
 		for(int ii = 1;ii <=29; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3167 "feiparser.tab.cc" // lalr1.cc:847
+#line 3173 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 120:
-#line 2976 "feiparser.yy" // lalr1.cc:847
+#line 2982 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[63].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3207,11 +3213,11 @@ namespace yy {
 		for(int ii = 1;ii <=29; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3211 "feiparser.tab.cc" // lalr1.cc:847
+#line 3217 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 121:
-#line 3023 "feiparser.yy" // lalr1.cc:847
+#line 3029 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[69].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3252,11 +3258,11 @@ namespace yy {
 		for(int ii = 1;ii <=30; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3256 "feiparser.tab.cc" // lalr1.cc:847
+#line 3262 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 122:
-#line 3072 "feiparser.yy" // lalr1.cc:847
+#line 3078 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[63].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3296,11 +3302,11 @@ namespace yy {
 		for(int ii = 1;ii <=29; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3300 "feiparser.tab.cc" // lalr1.cc:847
+#line 3306 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 123:
-#line 3119 "feiparser.yy" // lalr1.cc:847
+#line 3125 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[69].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3343,11 +3349,11 @@ namespace yy {
 		for(int ii = 1;ii <=30; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3347 "feiparser.tab.cc" // lalr1.cc:847
+#line 3353 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 124:
-#line 3170 "feiparser.yy" // lalr1.cc:847
+#line 3176 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[49].value.exp));  signature.push_back(this_signature("number", &isAdimensional));
@@ -3380,11 +3386,11 @@ namespace yy {
 		for(int ii = 1;ii <=22; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3384 "feiparser.tab.cc" // lalr1.cc:847
+#line 3390 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 125:
-#line 3211 "feiparser.yy" // lalr1.cc:847
+#line 3217 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[49].value.exp));  signature.push_back(this_signature("number", &isAdimensional));
@@ -3417,11 +3423,11 @@ namespace yy {
 		for(int ii = 1;ii <=22; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3421 "feiparser.tab.cc" // lalr1.cc:847
+#line 3427 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 126:
-#line 3251 "feiparser.yy" // lalr1.cc:847
+#line 3257 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[55].value.exp));  signature.push_back(this_signature("number", &isAdimensional));
@@ -3455,11 +3461,11 @@ namespace yy {
 		for(int ii = 1;ii <=23; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3459 "feiparser.tab.cc" // lalr1.cc:847
+#line 3465 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 127:
-#line 3293 "feiparser.yy" // lalr1.cc:847
+#line 3299 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[49].value.exp));  signature.push_back(this_signature("number", &isAdimensional));
@@ -3492,11 +3498,11 @@ namespace yy {
 		for(int ii = 1;ii <=22; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3496 "feiparser.tab.cc" // lalr1.cc:847
+#line 3502 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 128:
-#line 3341 "feiparser.yy" // lalr1.cc:847
+#line 3347 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[52].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3528,11 +3534,11 @@ namespace yy {
 		for(int ii = 1;ii <=19; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3532 "feiparser.tab.cc" // lalr1.cc:847
+#line 3538 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 129:
-#line 3381 "feiparser.yy" // lalr1.cc:847
+#line 3387 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[52].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3562,11 +3568,11 @@ namespace yy {
 		for(int ii = 1;ii <=19; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3566 "feiparser.tab.cc" // lalr1.cc:847
+#line 3572 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 130:
-#line 3420 "feiparser.yy" // lalr1.cc:847
+#line 3426 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[76].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3611,11 +3617,11 @@ namespace yy {
 		for(int ii = 1;ii <=31; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3615 "feiparser.tab.cc" // lalr1.cc:847
+#line 3621 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 131:
-#line 3479 "feiparser.yy" // lalr1.cc:847
+#line 3485 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[45].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3647,11 +3653,11 @@ namespace yy {
 		for(int ii = 1;ii <=15; ii++) nodes.pop(); 
 		nodes.push((yylhs.value.exp));
 	}
-#line 3651 "feiparser.tab.cc" // lalr1.cc:847
+#line 3657 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 132:
-#line 3537 "feiparser.yy" // lalr1.cc:847
+#line 3543 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3688,11 +3694,11 @@ namespace yy {
 		for(int ii = 1;ii <=19; ii++) nodes.pop(); //pop        19 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 3692 "feiparser.tab.cc" // lalr1.cc:847
+#line 3698 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 133:
-#line 3588 "feiparser.yy" // lalr1.cc:847
+#line 3594 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3729,11 +3735,11 @@ namespace yy {
 		for(int ii = 1;ii <=19; ii++) nodes.pop(); //pop 19 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 3733 "feiparser.tab.cc" // lalr1.cc:847
+#line 3739 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 134:
-#line 3636 "feiparser.yy" // lalr1.cc:847
+#line 3642 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -3775,11 +3781,11 @@ namespace yy {
 		for(int ii = 1;ii <=16; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3779 "feiparser.tab.cc" // lalr1.cc:847
+#line 3785 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 135:
-#line 3692 "feiparser.yy" // lalr1.cc:847
+#line 3698 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[57].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3817,11 +3823,11 @@ namespace yy {
 		for(int ii = 1;ii <=19; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3821 "feiparser.tab.cc" // lalr1.cc:847
+#line 3827 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 136:
-#line 3740 "feiparser.yy" // lalr1.cc:847
+#line 3746 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -3848,11 +3854,11 @@ namespace yy {
 		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3852 "feiparser.tab.cc" // lalr1.cc:847
+#line 3858 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 137:
-#line 3773 "feiparser.yy" // lalr1.cc:847
+#line 3779 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[20].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3872,11 +3878,11 @@ namespace yy {
 		for(int ii = 1;ii <=7; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3876 "feiparser.tab.cc" // lalr1.cc:847
+#line 3882 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 138:
-#line 3799 "feiparser.yy" // lalr1.cc:847
+#line 3805 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[20].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3896,11 +3902,11 @@ namespace yy {
 		for(int ii = 1;ii <=7; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3900 "feiparser.tab.cc" // lalr1.cc:847
+#line 3906 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 139:
-#line 3825 "feiparser.yy" // lalr1.cc:847
+#line 3831 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[18].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3918,11 +3924,11 @@ namespace yy {
 		for(int ii = 1;ii <=6; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3922 "feiparser.tab.cc" // lalr1.cc:847
+#line 3928 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 140:
-#line 3849 "feiparser.yy" // lalr1.cc:847
+#line 3855 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[20].value.exp)); signature.push_back(this_signature("number", &isAdimensional));
@@ -3941,11 +3947,11 @@ namespace yy {
 		for(int ii = 1;ii <=7; ii++) nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 3945 "feiparser.tab.cc" // lalr1.cc:847
+#line 3951 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 141:
-#line 3875 "feiparser.yy" // lalr1.cc:847
+#line 3881 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 
@@ -3961,11 +3967,11 @@ namespace yy {
 		for(int ii = 1;ii <=6; ii++) nodes.pop(); //pop 6 exps
 		nodes.push((yylhs.value.exp));
 	}
-#line 3965 "feiparser.tab.cc" // lalr1.cc:847
+#line 3971 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 142:
-#line 4063 "feiparser.yy" // lalr1.cc:847
+#line 4069 "feiparser.yy" // lalr1.cc:847
     {
 		if ((yystack_[0].value.exp)) // Null pointer safety
 		{
@@ -4007,11 +4013,11 @@ namespace yy {
 		}
 		(yylhs.value.errcode) = 0;
 	}
-#line 4011 "feiparser.tab.cc" // lalr1.cc:847
+#line 4017 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 143:
-#line 4105 "feiparser.yy" // lalr1.cc:847
+#line 4111 "feiparser.yy" // lalr1.cc:847
     {
 		if ((yystack_[0].value.exp)) // Null pointer safety
 		{
@@ -4053,11 +4059,11 @@ namespace yy {
 		}
 		(yylhs.value.errcode) = 0;
 	}
-#line 4057 "feiparser.tab.cc" // lalr1.cc:847
+#line 4063 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 144:
-#line 4147 "feiparser.yy" // lalr1.cc:847
+#line 4153 "feiparser.yy" // lalr1.cc:847
     {
 		clear_stack ();
 
@@ -4069,11 +4075,11 @@ namespace yy {
 
 		(yylhs.value.errcode) = 0;
 	}
-#line 4073 "feiparser.tab.cc" // lalr1.cc:847
+#line 4079 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 145:
-#line 4162 "feiparser.yy" // lalr1.cc:847
+#line 4168 "feiparser.yy" // lalr1.cc:847
     {   /*  Just a reminder...
 		">"  = 1
 		"<"  = 2
@@ -4118,98 +4124,98 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 4122 "feiparser.tab.cc" // lalr1.cc:847
+#line 4128 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 146:
-#line 4207 "feiparser.yy" // lalr1.cc:847
+#line 4213 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Plus ((yystack_[2].value.exp), (yystack_[0].value.exp));
 		nodes.pop ();  //  The children are handled by Plus so we
 		nodes.pop ();  // take them of the allocated nodes stack.
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4133 "feiparser.tab.cc" // lalr1.cc:847
+#line 4139 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 147:
-#line 4214 "feiparser.yy" // lalr1.cc:847
+#line 4220 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Minus ((yystack_[2].value.exp), (yystack_[0].value.exp));
 		nodes.pop ();  //  The children are handled by Plus so we
 		nodes.pop ();  // take them of the allocated nodes stack.
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4144 "feiparser.tab.cc" // lalr1.cc:847
+#line 4150 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 148:
-#line 4221 "feiparser.yy" // lalr1.cc:847
+#line 4227 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Times ((yystack_[2].value.exp), (yystack_[0].value.exp));
 		nodes.pop ();  // The same as above.
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4155 "feiparser.tab.cc" // lalr1.cc:847
+#line 4161 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 149:
-#line 4228 "feiparser.yy" // lalr1.cc:847
+#line 4234 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Divide ((yystack_[2].value.exp), (yystack_[0].value.exp));
 		nodes.pop ();  // The same as above.
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4166 "feiparser.tab.cc" // lalr1.cc:847
+#line 4172 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 150:
-#line 4235 "feiparser.yy" // lalr1.cc:847
+#line 4241 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Modulo ((yystack_[2].value.exp), (yystack_[0].value.exp));
 		nodes.pop ();  // The same as above.
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4177 "feiparser.tab.cc" // lalr1.cc:847
+#line 4183 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 151:
-#line 4242 "feiparser.yy" // lalr1.cc:847
+#line 4248 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Pow ((yystack_[2].value.exp), (yystack_[0].value.exp));
 		nodes.pop ();  // The same as above.
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4188 "feiparser.tab.cc" // lalr1.cc:847
+#line 4194 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 152:
-#line 4249 "feiparser.yy" // lalr1.cc:847
+#line 4255 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new LogicalNot ((yystack_[0].value.exp));
 		nodes.pop ();  // The same as above.
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4198 "feiparser.tab.cc" // lalr1.cc:847
+#line 4204 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 153:
-#line 4255 "feiparser.yy" // lalr1.cc:847
+#line 4261 "feiparser.yy" // lalr1.cc:847
     {
 		Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
 		(yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Plus (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4209 "feiparser.tab.cc" // lalr1.cc:847
+#line 4215 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 154:
-#line 4262 "feiparser.yy" // lalr1.cc:847
+#line 4268 "feiparser.yy" // lalr1.cc:847
     {
 		Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
 		(yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Minus (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
@@ -4217,11 +4223,11 @@ namespace yy {
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4221 "feiparser.tab.cc" // lalr1.cc:847
+#line 4227 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 155:
-#line 4270 "feiparser.yy" // lalr1.cc:847
+#line 4276 "feiparser.yy" // lalr1.cc:847
     {
 		Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
 		(yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Times (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
@@ -4229,11 +4235,11 @@ namespace yy {
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4233 "feiparser.tab.cc" // lalr1.cc:847
+#line 4239 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 156:
-#line 4278 "feiparser.yy" // lalr1.cc:847
+#line 4284 "feiparser.yy" // lalr1.cc:847
     {
 		Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
 		(yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Divide (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
@@ -4241,11 +4247,11 @@ namespace yy {
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4245 "feiparser.tab.cc" // lalr1.cc:847
+#line 4251 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 157:
-#line 4286 "feiparser.yy" // lalr1.cc:847
+#line 4292 "feiparser.yy" // lalr1.cc:847
     {
 		Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
 		(yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Modulo (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
@@ -4253,11 +4259,11 @@ namespace yy {
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4257 "feiparser.tab.cc" // lalr1.cc:847
+#line 4263 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 158:
-#line 4294 "feiparser.yy" // lalr1.cc:847
+#line 4300 "feiparser.yy" // lalr1.cc:847
     {
 		Expression* varref = new VariableReference(*(yystack_[2].value.ident), global_variables);
 		(yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), new Pow (varref, (yystack_[0].value.exp)), global_variables, locked_global_variables);
@@ -4265,88 +4271,88 @@ namespace yy {
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4269 "feiparser.tab.cc" // lalr1.cc:847
+#line 4275 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 159:
-#line 4302 "feiparser.yy" // lalr1.cc:847
+#line 4308 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = (yystack_[1].value.exp);
 	}
-#line 4277 "feiparser.tab.cc" // lalr1.cc:847
+#line 4283 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 160:
-#line 4306 "feiparser.yy" // lalr1.cc:847
+#line 4312 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Minus (new Number(0.0, (yystack_[0].value.exp) -> value().Getunit() ), (yystack_[0].value.exp));
 		nodes.pop ();
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4287 "feiparser.tab.cc" // lalr1.cc:847
+#line 4293 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 161:
-#line 4312 "feiparser.yy" // lalr1.cc:847
+#line 4318 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Number (*(yystack_[0].value.value));
 		nodes.push ((yylhs.value.exp));
 	}
-#line 4296 "feiparser.tab.cc" // lalr1.cc:847
+#line 4302 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 162:
-#line 4317 "feiparser.yy" // lalr1.cc:847
+#line 4323 "feiparser.yy" // lalr1.cc:847
     {
 
 		(yylhs.value.exp) = new VariableReference(*(yystack_[0].value.ident),global_variables);
 		nodes.push((yylhs.value.exp));
 	}
-#line 4306 "feiparser.tab.cc" // lalr1.cc:847
+#line 4312 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 163:
-#line 4323 "feiparser.yy" // lalr1.cc:847
+#line 4329 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Assign(*(yystack_[2].value.ident), (yystack_[0].value.exp), global_variables, locked_global_variables);
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 4316 "feiparser.tab.cc" // lalr1.cc:847
+#line 4322 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 164:
-#line 4329 "feiparser.yy" // lalr1.cc:847
+#line 4335 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new ConvertUnits(*(yystack_[2].value.ident), *(yystack_[0].value.ident), global_variables);
 
 		nodes.push((yylhs.value.exp));
 	}
-#line 4326 "feiparser.tab.cc" // lalr1.cc:847
+#line 4332 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 165:
-#line 4335 "feiparser.yy" // lalr1.cc:847
+#line 4341 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new FeiMath(*(yystack_[3].value.ident), (yystack_[1].value.exp));
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 4336 "feiparser.tab.cc" // lalr1.cc:847
+#line 4342 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 166:
-#line 4341 "feiparser.yy" // lalr1.cc:847
+#line 4347 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new UnitTypeTest(*(yystack_[3].value.ident), (yystack_[1].value.exp));
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 4346 "feiparser.tab.cc" // lalr1.cc:847
+#line 4352 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 167:
-#line 4347 "feiparser.yy" // lalr1.cc:847
+#line 4353 "feiparser.yy" // lalr1.cc:847
     {
 		string temp = *(yystack_[0].value.ident);
 		temp.erase(0, 1);                               //remove quotes
@@ -4354,84 +4360,84 @@ namespace yy {
 		(yylhs.value.exp) = new FeiString(temp);
 		nodes.push((yylhs.value.exp));
 	}
-#line 4358 "feiparser.tab.cc" // lalr1.cc:847
+#line 4364 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 168:
-#line 4355 "feiparser.yy" // lalr1.cc:847
+#line 4361 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = (yystack_[1].value.exp);//new FeiVector($3);
 		//nodes.push($$);
 	}
-#line 4367 "feiparser.tab.cc" // lalr1.cc:847
+#line 4373 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 169:
-#line 4360 "feiparser.yy" // lalr1.cc:847
+#line 4366 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		(yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_nodes, args, signature, "query_domain_number_of_nodes");
 		nodes.push((yylhs.value.exp));
 	}
-#line 4377 "feiparser.tab.cc" // lalr1.cc:847
+#line 4383 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 170:
-#line 4366 "feiparser.yy" // lalr1.cc:847
+#line 4372 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_elements, args, signature, "query_domain_number_of_elements");
 		nodes.push((yylhs.value.exp));
 	}
-#line 4386 "feiparser.tab.cc" // lalr1.cc:847
+#line 4392 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 171:
-#line 4371 "feiparser.yy" // lalr1.cc:847
+#line 4377 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new FeiDslCaller0<double>(&query_domain_current_time, args, signature, "query_domain_current_time");
 		nodes.push((yylhs.value.exp));
 	}
-#line 4395 "feiparser.tab.cc" // lalr1.cc:847
+#line 4401 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 172:
-#line 4376 "feiparser.yy" // lalr1.cc:847
+#line 4382 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_sp_constraints, args, signature, "query_domain_number_of_sp_constraints");
 		nodes.push((yylhs.value.exp));
 	}
-#line 4404 "feiparser.tab.cc" // lalr1.cc:847
+#line 4410 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 173:
-#line 4381 "feiparser.yy" // lalr1.cc:847
+#line 4387 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_mp_constraints, args, signature, "query_domain_number_of_mp_constraints");
 		nodes.push((yylhs.value.exp));
 	}
-#line 4413 "feiparser.tab.cc" // lalr1.cc:847
+#line 4419 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 174:
-#line 4386 "feiparser.yy" // lalr1.cc:847
+#line 4392 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_number_of_loads, args, signature, "query_domain_number_of_loads");
 		nodes.push((yylhs.value.exp));
 	}
-#line 4422 "feiparser.tab.cc" // lalr1.cc:847
+#line 4428 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 175:
-#line 4391 "feiparser.yy" // lalr1.cc:847
+#line 4397 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new FeiDslCaller0<>(&query_domain_is_parallel, args, signature, "query_domain_is_parallel");
 		nodes.push((yylhs.value.exp));
 	}
-#line 4431 "feiparser.tab.cc" // lalr1.cc:847
+#line 4437 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 176:
-#line 4399 "feiparser.yy" // lalr1.cc:847
+#line 4405 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear();
 		signature.clear();
@@ -4459,38 +4465,38 @@ namespace yy {
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 4463 "feiparser.tab.cc" // lalr1.cc:847
+#line 4469 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 177:
-#line 4430 "feiparser.yy" // lalr1.cc:847
+#line 4436 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Empty();
 		nodes.push((yylhs.value.exp));
 	}
-#line 4472 "feiparser.tab.cc" // lalr1.cc:847
+#line 4478 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 178:
-#line 4435 "feiparser.yy" // lalr1.cc:847
+#line 4441 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = (yystack_[1].value.exp);
 	}
-#line 4480 "feiparser.tab.cc" // lalr1.cc:847
+#line 4486 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 179:
-#line 4439 "feiparser.yy" // lalr1.cc:847
+#line 4445 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = (yystack_[1].value.exp);
 		args.clear();
 		signature.clear();
 	}
-#line 4490 "feiparser.tab.cc" // lalr1.cc:847
+#line 4496 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 180:
-#line 4448 "feiparser.yy" // lalr1.cc:847
+#line 4454 "feiparser.yy" // lalr1.cc:847
     {
 		Comparison* ptr_comp = dynamic_cast<Comparison*>((yystack_[1].value.exp));
 		if (!ptr_comp) // Check whether ptr_comp is a valid Comparison* pointer
@@ -4509,11 +4515,11 @@ namespace yy {
 			nodes.push((yylhs.value.exp));
 		}
 	}
-#line 4513 "feiparser.tab.cc" // lalr1.cc:847
+#line 4519 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 181:
-#line 4470 "feiparser.yy" // lalr1.cc:847
+#line 4476 "feiparser.yy" // lalr1.cc:847
     {
 		Comparison* ptr_comp = dynamic_cast<Comparison*>((yystack_[3].value.exp));
 		if (!ptr_comp) // Check whether ptr_comp is a valid Comparison* pointer
@@ -4535,11 +4541,11 @@ namespace yy {
 			nodes.push((yylhs.value.exp));
 		}
 	}
-#line 4539 "feiparser.tab.cc" // lalr1.cc:847
+#line 4545 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 182:
-#line 4495 "feiparser.yy" // lalr1.cc:847
+#line 4501 "feiparser.yy" // lalr1.cc:847
     {
 		Comparison* ptr_comp = dynamic_cast<Comparison*>((yystack_[1].value.exp));
 		if (!ptr_comp)  // Check whether ptr_comp is a valid Comparison* pointer
@@ -4559,11 +4565,11 @@ namespace yy {
 			nodes.push((yylhs.value.exp));
 		}
 	}
-#line 4563 "feiparser.tab.cc" // lalr1.cc:847
+#line 4569 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 183:
-#line 4515 "feiparser.yy" // lalr1.cc:847
+#line 4521 "feiparser.yy" // lalr1.cc:847
     {
 		if (FLAG_generate_cpp_output == 1)
 		{
@@ -4581,11 +4587,11 @@ namespace yy {
 		//exit(0);
 		return(0);
 	}
-#line 4585 "feiparser.tab.cc" // lalr1.cc:847
+#line 4591 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 184:
-#line 4533 "feiparser.yy" // lalr1.cc:847
+#line 4539 "feiparser.yy" // lalr1.cc:847
     {
 		args.clear(); signature.clear();
 		if (FLAG_generate_cpp_output == 1)
@@ -4596,48 +4602,48 @@ namespace yy {
 		(yylhs.value.exp) = new FeiDslCaller0<>(&wipe_model, args, signature, "wipe_model");
 		nodes.push((yylhs.value.exp));
 	}
-#line 4600 "feiparser.tab.cc" // lalr1.cc:847
+#line 4606 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 185:
-#line 4544 "feiparser.yy" // lalr1.cc:847
+#line 4550 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = new Empty();
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
 	}
-#line 4610 "feiparser.tab.cc" // lalr1.cc:847
+#line 4616 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 186:
-#line 4554 "feiparser.yy" // lalr1.cc:847
+#line 4560 "feiparser.yy" // lalr1.cc:847
     {
 		// empty statement generates an  empty expression
 		(yylhs.value.exp) = new Empty();
 		nodes.push((yylhs.value.exp));
 	}
-#line 4620 "feiparser.tab.cc" // lalr1.cc:847
+#line 4626 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 187:
-#line 4560 "feiparser.yy" // lalr1.cc:847
+#line 4566 "feiparser.yy" // lalr1.cc:847
     {
 		// Used to initialize a list of statements (compound statement)
 		(yylhs.value.exp) = (yystack_[1].value.exp);
 	}
-#line 4629 "feiparser.tab.cc" // lalr1.cc:847
+#line 4635 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 188:
-#line 4568 "feiparser.yy" // lalr1.cc:847
+#line 4574 "feiparser.yy" // lalr1.cc:847
     {
 		(yylhs.value.exp) = (yystack_[0].value.exp);
 	}
-#line 4637 "feiparser.tab.cc" // lalr1.cc:847
+#line 4643 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
   case 189:
-#line 4572 "feiparser.yy" // lalr1.cc:847
+#line 4578 "feiparser.yy" // lalr1.cc:847
     {
 		if ((yystack_[0].value.exp) == NULL)
 			(yylhs.value.exp) = (yystack_[1].value.exp);
@@ -4649,11 +4655,11 @@ namespace yy {
 			nodes.push((yylhs.value.exp));
 		}
 	}
-#line 4653 "feiparser.tab.cc" // lalr1.cc:847
+#line 4659 "feiparser.tab.cc" // lalr1.cc:847
     break;
 
 
-#line 4657 "feiparser.tab.cc" // lalr1.cc:847
+#line 4663 "feiparser.tab.cc" // lalr1.cc:847
             default:
               break;
             }
@@ -7668,18 +7674,18 @@ namespace yy {
     1025,  1044,  1060,  1076,  1094,  1115,  1152,  1169,  1186,  1205,
     1221,  1243,  1267,  1290,  1330,  1344,  1366,  1395,  1399,  1404,
     1410,  1421,  1430,  1437,  1444,  1452,  1462,  1471,  1484,  1497,
-    1575,  1631,  1706,  1741,  1755,  1768,  1795,  1833,  1861,  1874,
-    1890,  1913,  1927,  1951,  1975,  1999,  2023,  2047,  2057,  2073,
-    2086,  2099,  2113,  2125,  2137,  2149,  2170,  2188,  2224,  2252,
-    2280,  2312,  2342,  2375,  2458,  2532,  2557,  2572,  2601,  2636,
-    2669,  2696,  2716,  2777,  2803,  2828,  2853,  2872,  2897,  2924,
-    2971,  3018,  3067,  3114,  3165,  3206,  3246,  3288,  3328,  3375,
-    3413,  3471,  3525,  3576,  3627,  3680,  3732,  3769,  3795,  3821,
-    3845,  3870,  4062,  4104,  4146,  4161,  4206,  4213,  4220,  4227,
-    4234,  4241,  4248,  4254,  4261,  4269,  4277,  4285,  4293,  4301,
-    4305,  4311,  4316,  4322,  4328,  4334,  4340,  4346,  4354,  4359,
-    4365,  4370,  4375,  4380,  4385,  4390,  4398,  4429,  4434,  4438,
-    4447,  4469,  4494,  4514,  4532,  4543,  4553,  4559,  4567,  4571
+    1581,  1637,  1712,  1747,  1761,  1774,  1801,  1839,  1867,  1880,
+    1896,  1919,  1933,  1957,  1981,  2005,  2029,  2053,  2063,  2079,
+    2092,  2105,  2119,  2131,  2143,  2155,  2176,  2194,  2230,  2258,
+    2286,  2318,  2348,  2381,  2464,  2538,  2563,  2578,  2607,  2642,
+    2675,  2702,  2722,  2783,  2809,  2834,  2859,  2878,  2903,  2930,
+    2977,  3024,  3073,  3120,  3171,  3212,  3252,  3294,  3334,  3381,
+    3419,  3477,  3531,  3582,  3633,  3686,  3738,  3775,  3801,  3827,
+    3851,  3876,  4068,  4110,  4152,  4167,  4212,  4219,  4226,  4233,
+    4240,  4247,  4254,  4260,  4267,  4275,  4283,  4291,  4299,  4307,
+    4311,  4317,  4322,  4328,  4334,  4340,  4346,  4352,  4360,  4365,
+    4371,  4376,  4381,  4386,  4391,  4396,  4404,  4435,  4440,  4444,
+    4453,  4475,  4500,  4520,  4538,  4549,  4559,  4565,  4573,  4577
   };
 
   // Print the state stack on the debug stream.
@@ -7803,8 +7809,8 @@ namespace yy {
 
 
 } // yy
-#line 7807 "feiparser.tab.cc" // lalr1.cc:1155
-#line 4599 "feiparser.yy" // lalr1.cc:1156
+#line 7813 "feiparser.tab.cc" // lalr1.cc:1155
+#line 4605 "feiparser.yy" // lalr1.cc:1156
 
 
 // Deletes all the nodes that were allocated

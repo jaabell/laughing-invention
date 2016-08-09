@@ -40,7 +40,8 @@ enum struct NDMaterialLT_Constitutive_Integration_Method : int
     Multistep_Forward_Euler_Crisfield,
     Modified_Euler_Error_Control,
     Runge_Kutta_45_Error_Control,
-    Backward_Euler
+    Backward_Euler,
+    Full_Backward_Euler
 };
 
 class NDMaterialLT : public Material
