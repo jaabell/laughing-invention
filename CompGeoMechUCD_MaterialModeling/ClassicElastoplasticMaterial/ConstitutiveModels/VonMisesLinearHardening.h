@@ -51,10 +51,6 @@
 
 
 #include <classTags.h>
-// static const int Perfectly_Plastic=1;
-// static const int Isotropic_Hardening_Only=2;
-// static const int Kinematic_Hardening_Only=3;
-// static const int Both_Isotropic_Kinematic_Hardening=4;
 // New materials are created by subclassing instances of the ClassicElastoplasticMaterial<.,.,.,.,>
 // template class, with the appropriate components as template parameters.
 // Heavy use of templating is made, therefore typedeffing is a friend in helping clear up the mess.
@@ -94,20 +90,9 @@ public:
     VonMisesLinearHardening();
     //The state variables.
 
-    // ====================================
-    // working on consistent_stiffness_, not finished yet.
-    // ====================================
-    // int VonMisesLinearHardening::consistent_stiffness_(DTensor2 const &dlambda_,
-    //                           DTensor2 const &sigma_,
-    //                           DTensor2 const &n_,
-    //                           DTensor2 const &m_,
-    //                           DTensor2 const &z_,
-    //                           DTensor2 const &alpha_,
-    //                           double   const & k_,
-    //                           DTensor4       &Stiffness_ );
 private:
     LinearHardeningTensor_EV alpha; // Backstress
     LinearHardeningScalar_EV k;     // Critical stress ratio (k = M under this formulation)
-    // int HARDENING_TYPE; //Determine the hardening type according to hardening rate. This is useful for consistent stiffness tensor. 
+
 };
 

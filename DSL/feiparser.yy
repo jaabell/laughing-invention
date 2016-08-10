@@ -228,7 +228,7 @@
 %token sanisand2008 camclay camclay_accelerated sanisand2004    
 %token linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
 %token PisanoLT 
-%token VonMisesLT DruckerPragerLT DruckerPragerNonAssociateLinearHardeningLT DruckerPragerVonMisesLT DruckerPragerArmstrongFrederickLT DruckerPragerNonAssociateArmstrongFrederickLT
+%token VonMisesLT VonMisesArmstrongFrederickLT DruckerPragerLT DruckerPragerNonAssociateLinearHardeningLT DruckerPragerVonMisesLT DruckerPragerArmstrongFrederickLT DruckerPragerNonAssociateArmstrongFrederickLT
 
 // Material options tokens
 %token mass_density elastic_modulus viscoelastic_modulus poisson_ratio von_mises_radius druckerprager_angle druckerprager_k
@@ -2222,6 +2222,34 @@ ADD_material
 
 		$$ = new FeiDslCaller7<int, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_vonmises_linear_hardening, args, signature, "add_constitutive_model_NDMaterialLT_vonmises_linear_hardening");
 		for(int ii = 1;ii <=7; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add material # <.> type [VonMisesArmstrongFrederickLT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> von_mises_radius = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> ;
+	| MATERIAL TEXTNUMBER exp TYPE VonMisesArmstrongFrederickLT
+		mass_density '=' exp
+		elastic_modulus '=' exp
+		poisson_ratio '=' exp
+		von_mises_radius '=' exp
+		armstrong_frederick_ha '=' exp
+		armstrong_frederick_cr '=' exp
+		isotropic_hardening_rate '=' exp
+	{
+
+		args.clear(); signature.clear();
+		args.push_back($3); signature.push_back(this_signature("number",            &isAdimensional));    // 1
+		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));  // 2
+		args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));  // 3
+		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));  // 4
+		args.push_back($17); signature.push_back(this_signature("von_mises_radius",  &isAdimensional));  // 5
+		args.push_back($20); signature.push_back(this_signature("armstrong_frederick_ha",   &isPressure));  // 6
+		args.push_back($23); signature.push_back(this_signature("armstrong_frederick_cr",   &isPressure));  // 7
+		args.push_back($26); signature.push_back(this_signature("isotropic_hardening_rate",   &isPressure));  // 8
+
+
+		$$ = new FeiDslCaller8<int, double, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_vonMises_ArmstrongFrederick, args, signature, "add_constitutive_model_NDMaterialLT_vonMises_ArmstrongFrederick");
+		for(int ii = 1;ii <=8; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================

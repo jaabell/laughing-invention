@@ -36,73 +36,63 @@
 #include "../MaterialInternalVariables.h"
 
 //Yield Functions
-#include "../YieldFunctions/DruckerPrager_YF.h"
+#include "../YieldFunctions/VonMises_YF.h"
 
 //Plastic flow directions
-#include "../PlasticFlowDirections/DruckerPragerDeviatoric_PF.h"
+#include "../PlasticFlowDirections/VonMises_PF.h"
 
 //Elasticity Models
 #include "../ElasticityModels/LinearIsotropic3D_EL.h"
 
 //Evolving variables
-#include "../EvolvingVariables/LinearHardeningTensor_EV.h"
+#include "../EvolvingVariables/ArmstrongFrederickTensor_EV.h"
 #include "../EvolvingVariables/LinearHardeningScalar_EV.h"
 
-// #include "../CEPTraits.h"
+
 
 #include <classTags.h>
-
 // New materials are created by subclassing instances of the ClassicElastoplasticMaterial<.,.,.,.,>
 // template class, with the appropriate components as template parameters.
 // Heavy use of templating is made, therefore typedeffing is a friend in helping clear up the mess.
 
-//Drucker Prager Model with linear hardening (DPLH)
-class DruckerPragerVonMisesLinearHardening;  //This model we will define
-
-//Activate pre_integration_callback to handle tension case
-template< >
-struct supports_pre_integration_callback<DruckerPragerVonMisesLinearHardening>
-{
-    static const bool value = true;
-};
+//Von Mises Model with linear hardening (VMAF)
+class VonMisesArmstrongFrederick;  //This model we will define
 
 //Typedefs for internal variables list, yield function, and plastic flow function
-typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLHVarsType;
-typedef DruckerPrager_YF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLH_YFType;
-typedef DruckerPragerDeviatoric_PF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPDLHLH_PFType;
+typedef MaterialInternalVariables < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> VMAFVarsType;
+typedef VonMises_YF < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> VMAF_YFType;
+typedef VonMises_PF < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> VMAF_PFType;
 
 //Create a helpful typedef for the base class from which we will inherit to create the new material.
 typedef ClassicElastoplasticMaterial <LinearIsotropic3D_EL,
-        DPLH_YFType,
-        DPDLHLH_PFType,
-        DPLHVarsType,
-        ND_TAG_CEM_DruckerPragerVonMisesLinearHardening,
-        DruckerPragerVonMisesLinearHardening > DPVMLHBase;
+        VMAF_YFType,
+        VMAF_PFType,
+        VMAFVarsType,
+        ND_TAG_CEM_VonMisesArmstrongFrederick,
+        VonMisesArmstrongFrederick > VMAFBase;
 
 //Define the new class. We must provide two constructor and the evolving variables as data-members.
-class DruckerPragerVonMisesLinearHardening : public DPVMLHBase
+class VonMisesArmstrongFrederick : public VMAFBase
 {
 public:
 
     //First constructor, creates a material at its "ground state" from its parameters.
-    DruckerPragerVonMisesLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_, double p0) ;
+    VonMisesArmstrongFrederick(int tag_in, double k0_in, double ha_alpha, double cr_alpha, double H_k, double E, double nu, double rho_);
 
     // Second constructor is not called by the user, instead it is called when creating a copy of the
     // material. This must provide an initialization for the state variables and link the components
     // to these variables appropriately.
-    DruckerPragerVonMisesLinearHardening(int tag_in, double rho, double p0, DPLH_YFType & yf,
-                                         LinearIsotropic3D_EL & el,
-                                         DPDLHLH_PFType & pf,
-                                         DPLHVarsType & vars);
+    VonMisesArmstrongFrederick(int tag_in, double rho, double p0, VMAF_YFType &yf,
+                            LinearIsotropic3D_EL &el,
+                            VMAF_PFType &pf,
+                            VMAFVarsType &vars);
 
-    // Empty constructor for parallel
-    DruckerPragerVonMisesLinearHardening() ;
-
-    int pre_integration_callback(const DTensor2&, const DTensor2&, const DTensor2&, const DTensor4&, double, double, bool&);
-
+    VonMisesArmstrongFrederick();
     //The state variables.
+
 private:
-    LinearHardeningTensor_EV alpha; // Backstress
+    ArmstrongFrederickTensor_EV alpha; // Backstress
     LinearHardeningScalar_EV k;     // Critical stress ratio (k = M under this formulation)
+
 };
 

@@ -433,6 +433,7 @@ EXP	([Ee][-+]?[0-9]+)
 "ElasticIsotropic3DLT"     {return token::linear_elastic_isotropic_3d;}
 "NonlinearIsotropic3DLT"     {return token::NonlinearIsotropic3DLT;}
 "VonMisesLT"        				{return token::VonMisesLT;}
+"VonMisesArmstrongFrederickLT"		{return token::VonMisesArmstrongFrederickLT;}
 "DruckerPragerLT"                   {return token::DruckerPragerLT;}
 "DruckerPragerNonAssociateLinearHardeningLT"                   {return token::DruckerPragerNonAssociateLinearHardeningLT;}
 "DruckerPragerVonMisesLT"           {return token::DruckerPragerVonMisesLT;}
