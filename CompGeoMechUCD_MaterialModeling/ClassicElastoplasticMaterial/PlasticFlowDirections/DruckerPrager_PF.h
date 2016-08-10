@@ -138,7 +138,7 @@ public:
         // =========================================
         // test(i,j,m,n)=kronecker_delta(i,m) * kronecker_delta(j,n) - 1.0/3.0 * kronecker_delta(i,j) * kronecker_delta(m,n) ;
         // =========================================
-
+        dm__dsigma*=0;
         for (int ig = 0; ig < 3; ++ig)
             for (int mg = 0; mg < 3; ++mg)
                 for (int jg = 0; jg < 3; ++jg)
@@ -165,6 +165,7 @@ public:
 
         return dm__dsigma;
     }
+    
     DTensor4 const& dm_over_dalpha(DTensor2 const& sigma){
         static DTensor2 s(3, 3, 0.0);
         const DTensor2 &alpha = alpha_.getVariableConstReference();
@@ -175,6 +176,7 @@ public:
         static DTensor2 s_minus_palpha(3,3,0.0);
         s_minus_palpha(i,j) = s(i,j) - p*alpha(i,j);
         double intermediate = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
+        dm__dalpha*=0;
         for (int ig = 0; ig < 3; ++ig)
             for (int mg = 0; mg < 3; ++mg)
                 for (int jg = 0; jg < 3; ++jg)

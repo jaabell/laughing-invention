@@ -108,6 +108,6 @@ public:
 private:
     LinearHardeningTensor_EV alpha; // Backstress
     LinearHardeningScalar_EV k;     // Critical stress ratio (k = M under this formulation)
-    // int hardening_type;
+    // int HARDENING_TYPE; //Determine the hardening type according to hardening rate. This is useful for consistent stiffness tensor. 
 };
 

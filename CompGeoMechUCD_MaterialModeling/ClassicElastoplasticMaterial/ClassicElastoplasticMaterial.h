@@ -1882,27 +1882,29 @@ private:
                     // ===================================================================
                     static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize to integer later.
                     IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
-                    // A quick check:
-                    cout<<"--> kronecker_delta(1,1): "<<kronecker_delta(1,1)<<endl;
-                    cout<<"--> kronecker_delta(1,0): "<<kronecker_delta(1,0)<<endl;
-                    cout<<"--> IdentityTensor4(1,1,1,1): "<<IdentityTensor4(1,1,1,1)<<endl;
-                    cout<<"--> IdentityTensor4(1,1,1,0): "<<IdentityTensor4(1,1,1,0)<<endl;
 
                     // ==================
                     // The first part C11
                     // ==================
-                    DTensor4 const& dm_dsigma = pf.dm_over_dsigma(TrialStress);
+                    static DTensor4 dm_dsigma(3,3,3,3,0.0);
+                    dm_dsigma = pf.dm_over_dsigma(TrialStress);
+
                     static DTensor4 invC11(3,3,3,3, 0.0);
-                    invC11(i,j,p,q) = IdentityTensor4(i,j,p,q) + dLambda*Eelastic(i,j,k,l)*dm_dsigma(k,l,p,q);
+                    invC11(i,j,k,l) = IdentityTensor4(i,j,k,l) + dLambda * ( Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l) )   ;
 
-                    DTensor4 const& C11 = inverse4thTensor(invC11);
+
+                    static DTensor4 C11(3,3,3,3,0.0);
+                    C11 = inverse4thTensor(invC11);
                     // Actually, only the argument TrialStress is used for now. mf means m_final.
-                    const DTensor2& mf = pf(depsilon, TrialStress);
-                    const DTensor2& nf = yf.df_dsigma_ij(TrialStress);
+                    static DTensor2 mf(3,3,0.0);
+                    mf = pf(depsilon, TrialStress);
+                    static DTensor2 nf(3,3,0.0);
+                    nf = yf.df_dsigma_ij(TrialStress);
 
+                    int HARDENING_TYPE=yf.getHardeningType();
                     switch(HARDENING_TYPE){
                         case Perfectly_Plastic:{
-                          double denom=nf(p, q) * C11(p, q, r, s) * mf(r, s);
+                          double denom = nf(p, q) * C11(p, q, i, j) * mf(i, j);
                           static DTensor4 CC(3,3,3,3,0.0);
                           CC(i,j,k,l) = C11(i,j,k,l) - (C11(i,j,r,s)*mf(r,s)) * (nf(p,q)*C11(p,q,k,l)) / denom;
                           Stiffness(p,q,k,l) = CC(i,j,p,q)*Eelastic(i,j,k,l);
@@ -1910,7 +1912,7 @@ private:
                           break;
                         }
                         case One_Kinematic_Hardening_Only:{
-                            cout<<"::consistent_stiffness_ hardening_type One_Kinematic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used.";
+                            cout<<"::consistent_stiffness_ hardening_type One_Kinematic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used."<<endl;
                             // DTensor4 const& dm_dalpha = pf.dm_over_dalpha(TrialStress);
                             // DTensor4 const& dalpha_dsigma = yf.dalpha_over_dsigma(TrialStress);
                             // DTensor4 const& dalpha_dalpha = yf.dalpha_over_dalpha(TrialStress);
@@ -1918,11 +1920,11 @@ private:
                             break;
                         }
                         case One_Isotropic_Hardening_Only:{
-                            cout<<"::consistent_stiffness_ hardening_type One_Isotropic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used.";
+                            cout<<"::consistent_stiffness_ hardening_type One_Isotropic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used."<<endl;
                             break;
                         }
                         case Both_One_Isotropic_One_Kinematic_Hardening:{
-                            cout<<"::consistent_stiffness_ hardening_type Both_One_Isotropic_One_Kinematic_Hardening not   implemented yet! The inconsistent stiffness tensor is used.";
+                            cout<<"::consistent_stiffness_ hardening_type Both_One_Isotropic_One_Kinematic_Hardening not   implemented yet! The inconsistent stiffness tensor is used."<<endl;
                             break;
                         }
                         default:{
