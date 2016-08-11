@@ -1117,18 +1117,16 @@ private:
                 // stiffness
                 // =================================================================================
                 static DTensor4 Stiffness_substep(3,3,3,3,0.0);
-                Stiffness_substep(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
-                Stiffness(i, j, k, l) += Stiffness_substep(i, j, k, l)/Nsubsteps;
-
-
-
-                // ============================================================================================
-                // Add the additional step: returning to the yield surface. 
-                // This algorithm is based on Crisfield(1996). Page 171. Section 6.6.3
-                // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated to the yield surface. 
-                // In addition, each substep will have this behavior of returning to yield surface.
-                // ============================================================================================
-                if(with_return2yield_surface){
+                if(!with_return2yield_surface){
+                    Stiffness_substep(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
+                    Stiffness(i, j, k, l) += Stiffness_substep(i, j, k, l)/Nsubsteps;
+                }else{
+                    // ============================================================================================
+                    // Add the additional step: returning to the yield surface. 
+                    // This algorithm is based on Crisfield(1996). Page 171. Section 6.6.3
+                    // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated to the yield surface. 
+                    // In addition, each substep will have this behavior of returning to yield surface.
+                    // ============================================================================================
                     // In the evolve function, only dLambda and m are used. Other arguments are not used at all.
                     // Make surface the internal variables are already updated. And then, return to the yield surface. 
                     double yf_val_after_corrector = yf(TrialStress);
