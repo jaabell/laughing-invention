@@ -1332,7 +1332,7 @@ private:
 
         for (int step = 0; step < NSteps; step++)
         {
-            cout << "BackEuler - step = " << step << " of " << NSteps << endl;
+            // cout << "BackEuler - step = " << step << " of " << NSteps << endl;
 
             depsilon *= 0;
             PredictorStress *= 0;
@@ -1351,13 +1351,13 @@ private:
             double yf_val_start = yf(sigma);
             double yf_val_end = yf(PredictorStress);
 
-            printTensor (" CommitStress       " , CommitStress);
-            printTensor (" depsilon           " , depsilon);
-            printTensor (" dsigma             " , dsigma);
-            printTensor (" PredictorStress    " , PredictorStress);
-            cout <<      " yf_val_start        = " << yf_val_start << endl;
-            cout <<      " yf_val_end          = " << yf_val_end << endl;
-            printTensor (" TrialStress        " , TrialStress);
+            // printTensor (" CommitStress       " , CommitStress);
+            // printTensor (" depsilon           " , depsilon);
+            // printTensor (" dsigma             " , dsigma);
+            // printTensor (" PredictorStress    " , PredictorStress);
+            // cout <<      " yf_val_start        = " << yf_val_start << endl;
+            // cout <<      " yf_val_end          = " << yf_val_end << endl;
+            // printTensor (" TrialStress        " , TrialStress);
 
             if (sqrt(dsigma(i, j) * dsigma(i, j)) < this->stress_relative_tol)
             {
