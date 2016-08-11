@@ -32,7 +32,14 @@ set(ESSI_LIBS "")           # List of internal libs to be included
 set(NUMERIC_LIBS "")        # List of external libs to be included
 set(MACHINE_LIBS "")        # List of standard libs to be included
 
-set(NO_BLASLAPACK FALSE CACHE BOOL "TRUE if BLAS and LAPACK are provided some other means. (eg. directly in the compiler wrapper)")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
+set(ON_NERSC FALSE CACHE BOOL "TRUE if compiling on NERSC infrastructure. Implies NO_BLASLAPACK=True too")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
+
+if(ON_NERSC)
+    set(NO_BLASLAPACK FALSE CACHE BOOL "TRUE if BLAS and LAPACK are provided some other means. (eg. directly in the compiler wrapper)")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
+else()
+    set(NO_BLASLAPACK FALSE CACHE BOOL "TRUE if BLAS and LAPACK are provided some other means. (eg. directly in the compiler wrapper)")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
+endif()
+
 set(PETSC_HAS_MUMPS FALSE CACHE BOOL "TRUE if PETSc library was configured to use the MUMPS solver")  # Set to "TRUE" if BLAS and LAPACK are provided some other way (ie. on NERSC the CC compiler wrapper automatically links with these)
 message(STATUS "NO_BLASLAPACK=${NO_BLASLAPACK}")
 
@@ -53,7 +60,11 @@ include(${CMAKE_SOURCE_DIR}/CMake/Modules/defs.cmake)
 SYSTEM_LIBS("dl" MACHINE_LIBS)
 SYSTEM_LIBS("z" MACHINE_LIBS)
 SYSTEM_LIBS("m" MACHINE_LIBS)
-set(MACHINE_LIBS ${MACHINE_LIBS} "gfortran")
+
+if(NOT ON_NERSC)
+    set(MACHINE_LIBS ${MACHINE_LIBS} "gfortran")
+endif()
+
 set(MACHINE_LIBS ${MACHINE_LIBS} "m")
 set(MACHINE_LIBS ${MACHINE_LIBS} "supc++")
 # Include external headers
