@@ -1273,8 +1273,8 @@ void H5OutputWriter::writeMesh()
         id_index_to_nodes_coordinates = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
         id_index_to_nodes_outputs     = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
 
-        dims[0]    = max_node_tag*3;
-        maxdims[0] = max_node_tag*3;      
+        dims[0]    = number_of_nodesr*3;
+        maxdims[0] = number_of_nodesr*3;      
         id_nodes_coordinates          = createConstantLengthDoubleArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ");
         
         
