@@ -50,6 +50,7 @@ public:
     const double& getDerivative(const DTensor2 &depsilon,
                                 const DTensor2 &m,
                                 const DTensor2& stress) const;
+    double const& getHardeningType() const;
     int sendSelf(int commitTag, Channel &theChannel);
     int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 

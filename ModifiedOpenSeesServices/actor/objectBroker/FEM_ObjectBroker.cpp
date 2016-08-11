@@ -42,7 +42,9 @@
 #include <CTestNormUnbalance.h>
 #include <CTestNormDispIncr.h>
 #include <CTestEnergyIncr.h>
-
+#include <CTestRelativeNormUnbalance.h>
+#include <CTestRelativeNormDispIncr.h>
+#include <CTestRelativeEnergyIncr.h>
 // graph numbering schemes
 #include <RCM.h>
 #include <MyRCM.h>
@@ -984,6 +986,14 @@ FEM_ObjectBroker::getNewConvergenceTest(int classTag)
     case CONVERGENCE_TEST_CTestEnergyIncr:
         return new CTestEnergyIncr();
 
+    case CONVERGENCE_TEST_CTestRelativeNormUnbalance:
+        return new CTestRelativeNormUnbalance();
+
+    case CONVERGENCE_TEST_CTestRelativeNormDispIncr:
+        return new CTestRelativeNormDispIncr();
+
+    case CONVERGENCE_TEST_CTestRelativeEnergyIncr:
+        return new CTestRelativeEnergyIncr();
 
     default:
         cerr << "FEM_ObjectBroker::getNewConvergenceTest - ";

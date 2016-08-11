@@ -35,7 +35,7 @@
 #define ClassicElastoplasticityGlobals_H
 
 #include "../../ltensor/LTensor.h"
-
+#include <limits>
 namespace ClassicElastoplasticityGlobals
 {
 
@@ -55,6 +55,12 @@ extern DTensor2 kronecker_delta;
 constexpr double SQRT_2_over_3  = 0.816496580928;//sqrt(2.0 / 3.0); because Intel compiler do not take this.
 constexpr double SQRT_2_over_27 = 0.272165526976;//sqrt(2.0 / 27.0);
 
+// extern int HARDENING_TYPE=0;
+constexpr double MACHINE_EPSILON= std::numeric_limits<double>::epsilon(); 
+static const int Perfectly_Plastic=1;
+static const int One_Isotropic_Hardening_Only=2;
+static const int One_Kinematic_Hardening_Only=3;
+static const int Both_One_Isotropic_One_Kinematic_Hardening=4;
 
 }
 

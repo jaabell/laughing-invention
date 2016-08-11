@@ -1879,6 +1879,8 @@ int EightNodeBrickLT::update( void )
         // LTensorDisplay::print(trial_strain, "trial_strain");
 
         // if ( ( material_array[gp]->setTrialStrain( trial_strain ) ) )
+        // Get back by Yuan to solve the zero elastic strain problems.
+        material_array[gp]->setTrialStrain( trial_strain );
         if ( ( material_array[gp]->setTrialStrainIncr( trial_strain ) ) )
         {
             Matrix &gps = getGaussCoordinates();
@@ -2074,7 +2076,7 @@ const Vector &EightNodeBrickLT::getOutput()
         outputVector(ii++) = stress(1, 2);
     }
 
-    outputVector(ii++) = update_time_taken;
+    // outputVector(ii++) = update_time_taken;
     return outputVector;
 }
 

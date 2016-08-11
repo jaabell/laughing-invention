@@ -109,7 +109,7 @@ public:
         {
             result(i, j) =
                 (
-                    (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n) / 3)
+                    (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n) )/ 3
                 )
                 / den;
         }
@@ -160,6 +160,27 @@ public:
 
         return dbl_result;
     }
+    // DTensor4 const& dalpha_over_dsigma(DTensor2 const& sigma){
+
+    // }
+    // DTensor4 const& dalpha_over_dalpha(DTensor2 const& sigma){
+
+    // }
+    int getHardeningType(){
+        double H_alpha=alpha_.getHardeningType();
+        double H_k=k_.getHardeningType();
+        int HARDENING_TYPE=0;
+        if( abs(H_alpha)< MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
+          HARDENING_TYPE = Perfectly_Plastic;
+        }else if(abs(H_alpha)<MACHINE_EPSILON &&  abs(H_k)>MACHINE_EPSILON){
+          HARDENING_TYPE = One_Isotropic_Hardening_Only;
+        }else if(abs(H_alpha)>MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
+          HARDENING_TYPE = One_Kinematic_Hardening_Only;
+        }else{
+          HARDENING_TYPE = Both_One_Isotropic_One_Kinematic_Hardening;
+        }
+        return HARDENING_TYPE;
+    }
 
 private:
 
@@ -167,7 +188,6 @@ private:
     KType &k_;
     static DTensor2 s; //Stress deviator
     static DTensor2 result; //For returning Dtensor2's
-
 };
 
 template <class AlphaHardeningType,  class KHardeningType>

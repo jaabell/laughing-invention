@@ -33,7 +33,7 @@
 #include "NoTensionLinearIsotropic3D_EL.h"
 #include "Vector.h"
 
-DTensor4 NoTensionLinearIsotropic3D_EL::Ee(4, 4, 4, 4, 0.0);
+DTensor4 NoTensionLinearIsotropic3D_EL::Ee(3, 3, 3, 3, 0.0);
 
 
 NoTensionLinearIsotropic3D_EL::NoTensionLinearIsotropic3D_EL(double E, double nu) : ElasticityBase<NoTensionLinearIsotropic3D_EL>::ElasticityBase()  // Note the full-qualification of ElasticityBase through the scope resolution operator (::)

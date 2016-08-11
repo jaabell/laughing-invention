@@ -472,6 +472,17 @@ bool isTime(const Quantity& q)
     return isTime(q.Getunit());
 }
 
+bool isTime3(const Quantity& q)
+{
+    return isTime3(q.Getunit());
+}
+
+bool isTime5(const Quantity& q)
+{
+    return isTime5(q.Getunit());
+}
+
+
 bool isFrequency(const Quantity& q)
 {
     return isFrequency(q.Getunit());

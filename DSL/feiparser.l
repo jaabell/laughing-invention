@@ -223,6 +223,8 @@ EXP	([Ee][-+]?[0-9]+)
 "isMass"                    |
 "isLength"                  |
 "isTime"                    |
+"isTime3"                   |
+"isTime5"                   |
 "isArea"                    |
 "isVolume"                  |
 "isForce"                   |
@@ -431,9 +433,12 @@ EXP	([Ee][-+]?[0-9]+)
 "ElasticIsotropic3DLT"     {return token::linear_elastic_isotropic_3d;}
 "NonlinearIsotropic3DLT"     {return token::NonlinearIsotropic3DLT;}
 "VonMisesLT"        				{return token::VonMisesLT;}
+"VonMisesArmstrongFrederickLT"		{return token::VonMisesArmstrongFrederickLT;}
 "DruckerPragerLT"                   {return token::DruckerPragerLT;}
+"DruckerPragerNonAssociateLinearHardeningLT"                   {return token::DruckerPragerNonAssociateLinearHardeningLT;}
 "DruckerPragerVonMisesLT"           {return token::DruckerPragerVonMisesLT;}
 "DruckerPragerArmstrongFrederickLT"   {return token::DruckerPragerArmstrongFrederickLT;}
+"DruckerPragerNonAssociateArmstrongFrederickLT"   {return token::DruckerPragerNonAssociateArmstrongFrederickLT;}
 "sanisand2008"                      {return token::sanisand2008;}
 "camclay"                           {return token::camclay;}
 "camclay_accelerated"               {return token::camclay_accelerated;}
@@ -467,6 +472,8 @@ EXP	([Ee][-+]?[0-9]+)
 "armstrong_frederick_ha"            {return token::armstrong_frederick_ha;}
 "armstrong_frederick_cr"            {return token::armstrong_frederick_cr;}
 "initial_confining_stress"          {return token::initial_confining_stress;}
+"plastic_flow_kd"          			{return token::plastic_flow_kd;}
+"plastic_flow_xi"          			{return token::plastic_flow_xi;}
 "pressure_reference_p0"             {return token::pressure_reference_p0;}
 "strain"                            {return token::strain;}
 "stress"                            {return token::stress;}
@@ -708,10 +715,14 @@ EXP	([Ee][-+]?[0-9]+)
 
  /* Constitutive algorithm options*/
 "Forward_Euler"          				          |
-"Multistep_Forward_Euler"          						  |
+"Forward_Euler_Crisfield"				          |
+"Multistep_Forward_Euler"          		    	  |
+"Multistep_Forward_Euler_Crisfield"		    	  |
+"Euler_One_Step"                                  |
 "Modified_Euler_Error_Control"                    |
 "Runge_Kutta_45_Error_Control"                    |
-"Backward_Euler"                     {yylval->ident = new string(yytext); return token::CONSTITUTIVE_ALGNAME;}
+"Backward_Euler"                    			  |
+"Full_Backward_Euler"                     {yylval->ident = new string(yytext); return token::CONSTITUTIVE_ALGNAME;}
 
  /* Algorithm options*/
 "With_no_convergence_check"          |
@@ -729,12 +740,15 @@ EXP	([Ee][-+]?[0-9]+)
 "stress_relative_tolerance" 		  	{return token::stress_relative_tolerance;}
 
  /* Test options */
-"Norm_Displacement_Increment"       |
-"Norm_Unbalance"                    |
-"Energy_Increment"                  {
-										yylval->ident = new string(yytext);
-										return token::TESTNAME;
-									}
+"Norm_Displacement_Increment"                |
+"Norm_Unbalance"                             |
+"Energy_Increment"                           |
+"Relative_Norm_Displacement_Increment"       |
+"Relative_Norm_Unbalance"                    |
+"Relative_Energy_Increment"                  {
+										        yylval->ident = new string(yytext);
+										        return token::TESTNAME;
+									         }
 "tolerance"                         {return token::tolerance;}
 "maximum_iterations"                {return token::maximum_iterations;}
 "verbose_level"                     {return token::verbose_level;}

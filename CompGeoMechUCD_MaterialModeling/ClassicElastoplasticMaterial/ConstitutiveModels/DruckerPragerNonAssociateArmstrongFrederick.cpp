@@ -17,8 +17,10 @@
 //
 // MEMBER VARIABLES
 //
-// PURPOSE:
-//
+// PURPOSE: 
+//         Yield Function: Drucker-Prager
+//         Plastic Flow  : Non-associate
+//         Hardening type: Armstrong-Frederick
 // RETURN:
 // VERSION:
 // LANGUAGE:          C++
@@ -30,15 +32,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#include "DruckerPragerArmstrongFrederick.h"
+#include "DruckerPragerNonAssociateArmstrongFrederick.h"
 
 //First constructor, creates a material at its "ground state" from its parameters.
-DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, double k0_in, double ha_alpha, double cr_alpha, double H_k, double E, double nu, double rho_, double p0) :
-    DPAFBase::ClassicElastoplasticMaterial(tag_in, rho_, p0,
-                                           DPAF_YFType(alpha, k),       // Point YF to internal variables
+DruckerPragerNonAssociateArmstrongFrederick::DruckerPragerNonAssociateArmstrongFrederick(int tag_in, double k0_in, double ha_alpha, double cr_alpha, double H_k, double E, double nu, double rho_, double p0, double xi, double Kd) :
+    DPNAAFBase::ClassicElastoplasticMaterial(tag_in, rho_, p0,
+                                           DPNAAF_YFType(alpha, k),       // Point YF to internal variables
                                            LinearIsotropic3D_EL(E, nu), // Create Elasticity
-                                           DPAF_PFType(alpha, k),       // Point PF to the internal variables
-                                           DPAFVarsType(alpha, k)),     // Declare the list of internal variables
+                                           DPNAAF_PFType(alpha, k, xi, Kd),       // Point PF to the internal variables
+                                           DPNAAFVarsType(alpha, k)),     // Declare the list of internal variables
     alpha(ha_alpha, cr_alpha),
     k(H_k, k0_in)
 {
@@ -48,28 +50,28 @@ DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, dou
 // Second constructor is not called by the user, instead it is called when creating a copy of the
 // material. This must provide an initialization for the state variables and link the components
 // to these variables appropriately.
-DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, double rho, double p0, DPAF_YFType &yf,
+DruckerPragerNonAssociateArmstrongFrederick::DruckerPragerNonAssociateArmstrongFrederick(int tag_in, double rho, double p0, DPNAAF_YFType &yf,
         LinearIsotropic3D_EL &el,
-        DPAF_PFType &pf,
-        DPAFVarsType &vars) :
-    DPAFBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
+        DPNAAF_PFType &pf,
+        DPNAAFVarsType &vars) :
+    DPNAAFBase::ClassicElastoplasticMaterial(tag_in, this->getRho(),
                                            p0,     //Sets p0
-                                           DPAF_YFType(alpha, k),    // Point YF to new internal variables
+                                           DPNAAF_YFType(alpha, k),    // Point YF to new internal variables
                                            LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
-                                           DPAF_PFType(alpha, k),    // Point PF to the internal variables
-                                           DPAFVarsType(alpha, k)),   // Declare the list of internal variables
+                                           DPNAAF_PFType(pf),    // Point PF to the internal variables
+                                           DPNAAFVarsType(alpha, k)),   // Declare the list of internal variables
     alpha(0, 0.0),
     k(0, 0)
 {
 
 }
 
-DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick() :
-    DPAFBase::ClassicElastoplasticMaterial(0, 0, 0,
-                                           DPAF_YFType(alpha, k),       // Point YF to internal variables
+DruckerPragerNonAssociateArmstrongFrederick::DruckerPragerNonAssociateArmstrongFrederick() :
+    DPNAAFBase::ClassicElastoplasticMaterial(0, 0, 0,
+                                           DPNAAF_YFType(alpha, k),       // Point YF to internal variables
                                            LinearIsotropic3D_EL(0, 0), // Create Elasticity
-                                           DPAF_PFType(alpha, k),       // Point PF to the internal variables
-                                           DPAFVarsType(alpha, k)),     // Declare the list of internal variables
+                                           DPNAAF_PFType(alpha, k, 0.0, 0.0),        // Point PF to the internal variables
+                                           DPNAAFVarsType(alpha, k)),     // Declare the list of internal variables
     alpha(0, 0),
     k(0, 0)
 {
@@ -78,7 +80,7 @@ DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick() :
 
 //Checks whether predicted stress is less than zero, in which case sets stress to low confinement
 //value and gives a reduced stiffness.
-int DruckerPragerArmstrongFrederick::pre_integration_callback(const DTensor2 &depsilon,
+int DruckerPragerNonAssociateArmstrongFrederick::pre_integration_callback(const DTensor2 &depsilon,
         const DTensor2 &dsigma,
         const DTensor2 &TrialStress,
         const DTensor4 &Stiffness,
