@@ -47,6 +47,8 @@
 #include <type_traits>
 
 #include "ClassicElastoplasticityGlobals.h"
+// for print p, q, theta
+// #include <tuple> 
 
 #define ClassicElastoplasticMaterial_MAXITER_BRENT 20
 #define TOLERANCE1 1e-6
@@ -95,6 +97,19 @@ namespace
 
     void printTensor(string name, const DTensor2 &v)
     {
+
+        // All 9 elements in one line. 
+       // std::cout << name << " = [ " ;
+       // std::cout << v(0, 0) << " "
+       //           << v(1, 1) << " "
+       //           << v(2, 2) << " "
+       //           << v(0, 1) << " "
+       //           << v(0, 2) << " "
+       //           << v(1, 2) << " "
+       //           << v(1, 0) << " "
+       //           << v(2, 0) << " "
+       //           << v(2, 1) << " ]" << std::endl;
+
         // This is in good format but take 3 lines. 
         // stderr will print immediately, not like cout (may be reordered by CPU).
         fprintf(stderr, "%s = \n", name.c_str());
@@ -103,8 +118,8 @@ namespace
         fprintf(stderr, " %16.8f \t %16.8f \t %16.8f] \n",  v(2, 0), v(2, 1), v(2,2)); 
     }
 
-void printTensor4(string name, const DTensor4 &v)
-{
+    void printTensor4(string name, const DTensor4 &v)
+    {
 
 
         std::cout << name << " = [ " ;
@@ -366,6 +381,7 @@ public:
         if (max_component == 0){
             return exitflag;
         }
+        // ==========================================
 
         switch (this->constitutive_integration_method)
         {
@@ -766,6 +782,26 @@ private:
     int Forward_Euler(const DTensor2 &strain_incr, bool const& with_return2yield_surface)
     {
         using namespace ClassicElastoplasticityGlobals;
+
+        
+        // ----------------------------------------------------------------
+        // Print p, q, theta for debug--------------------------------------
+        // ----------------------------------------------------------------
+        //double enter_yf = yf(CommitStress);
+        //double enter_p,enter_q,enter_theta;
+        //std::tie(enter_p,enter_q,enter_theta) = getpqtheta(CommitStress);
+        //fprintf(stderr, "--------------------------------------------\n ");
+        //fprintf(stderr, "--------------------------------------------\n ");
+        //fprintf(stderr, "-----------start iteration step %d----------\n",Nsteps );
+        //fprintf(stderr, "When Enter Euler Step\n");
+        //fprintf(stderr, "yf start (:<0) = %16.8f \n" , enter_yf );
+        //fprintf(stderr, "    enter_p    = %16.8f \n"  , enter_p );
+        //fprintf(stderr, "    enter_q    = %16.8f \n"  , enter_q );
+        //fprintf(stderr, "enter_theta    = %16.8f \n"  , enter_theta ); 
+        // ----------------------------------------------------------------
+        // ----------------------------------------------------------------
+        // ----------------------------------------------------------------
+
         int errorcode = 0;
 
         static DTensor2 depsilon(3, 3, 0);
@@ -787,6 +823,15 @@ private:
 
         dsigma(i, j) = Eelastic(i, j, k, l) * depsilon(k, l);
 
+
+        // ======================================================================
+        // No need to do stress tolerance check in Forward_Euler and Multistep_Forward_Euler. 
+        // ======================================================================
+        // double relative_stress_norm = sqrt(dsigma(i, j) * dsigma(i, j))  /  sqrt(sigma(k, l) * sigma(k, l)) ;
+        // if (relative_stress_norm < this->stress_relative_tol){
+        //     return 0;
+        // }
+        // ======================================================================
 
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
@@ -909,8 +954,6 @@ private:
             // ============================================================================================
 
 
-            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
-
 
             double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
             if (norm_trial_stress != norm_trial_stress)// || denf <= 0 ) //check for nan
@@ -963,6 +1006,15 @@ private:
         Stiffness(i, j, k, l) = Eelastic(i, j, k, l);
 
         dsigma(i, j) += Eelastic(i, j, k, l) * depsilon(k, l);
+
+        // ======================================================================
+        // No need to do stress tolerance check in Forward_Euler and Multistep_Forward_Euler. 
+        // ======================================================================
+        // double relative_stress_norm = sqrt(dsigma(i, j) * dsigma(i, j))  /  sqrt(sigma(k, l) * sigma(k, l)) ;
+        // if (relative_stress_norm < this->stress_relative_tol){
+        //     return 0;
+        // }
+        // ======================================================================
 
         TrialStress(i, j) = sigma(i, j) + dsigma(i, j);
         TrialStrain(i, j) = CommitStrain(i, j) + depsilon(i, j);
@@ -1065,21 +1117,16 @@ private:
                 // stiffness
                 // =================================================================================
                 static DTensor4 Stiffness_substep(3,3,3,3,0.0);
-                Stiffness_substep(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
-                Stiffness(i, j, k, l) += Stiffness_substep(i, j, k, l)/Nsubsteps;
-
-
-                //Stress correction back to the yield surface
-                // double yc = yf(TrialStress);
-                // int ys_correction_count = 0;
-
-                // ============================================================================================
-                // Add the additional step: returning to the yield surface. 
-                // This algorithm is based on Crisfield(1996). Page 171. Section 6.6.3
-                // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated to the yield surface. 
-                // In addition, each substep will have this behavior of returning to yield surface.
-                // ============================================================================================
-                if(with_return2yield_surface){
+                if(!with_return2yield_surface){
+                    Stiffness_substep(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
+                    Stiffness(i, j, k, l) += Stiffness_substep(i, j, k, l)/Nsubsteps;
+                }else{
+                    // ============================================================================================
+                    // Add the additional step: returning to the yield surface. 
+                    // This algorithm is based on Crisfield(1996). Page 171. Section 6.6.3
+                    // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated to the yield surface. 
+                    // In addition, each substep will have this behavior of returning to yield surface.
+                    // ============================================================================================
                     // In the evolve function, only dLambda and m are used. Other arguments are not used at all.
                     // Make surface the internal variables are already updated. And then, return to the yield surface. 
                     double yf_val_after_corrector = yf(TrialStress);
@@ -1102,7 +1149,6 @@ private:
 
 
                 double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
-
                 if (norm_trial_stress != norm_trial_stress || den <= 0)//denf <= 0 ) //check for nan
                 {
                     cout << "Numeric error!\n";
@@ -1457,7 +1503,6 @@ private:
 
 
             TrialStress(i, j) +=  dsigma(i, j);
-
             PredictorStress(i, j) = TrialStress(i, j);
             // Still use the sigma (inside the YF) in the first (sub)step.
             double yf_val_start = yf(sigma);
@@ -1483,7 +1528,6 @@ private:
             // in which case sets stress to low confinement value and
             // gives a reduced stiffness.
             int retval = pre_integration_callback_(depsilon, dsigma, TrialStress, Stiffness, yf_val_start, yf_val_end,  returns);
-
             if (returns)
             {
                 return retval;
@@ -1549,6 +1593,8 @@ private:
 
                     //Correct the trial stress
                     TrialStress_prev(i, j) = TrialStress(i, j);
+                    // yf_TrialStress_prev = yf(TrialStress_prev) ;
+
                     TrialStress(i, j) = PredictorStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
                     vars.evolve(dLambda, depsilon, m, TrialStress);
@@ -1615,15 +1661,29 @@ private:
                 //Report inconsistent stiffness for now. Dear coder, the responsibility of implementing a consistent stiffness now rests on your shoulders. :P
                 Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / denominator;
 
+                // if (not converged && !debugrun )
+                // {
+                //     if (NSteps > 1)
+                //     {
+                //         cout << "With 100 substeps Backward_Euler, still Failed to achieve convergence (exceeded maximum number of iterations)!\n";
+                //         cout << "Running again in debug mode.\n";
+                //         Backward_Euler(strain_incr, true, 100);
+                //         errorcode = -1;
+                //         return errorcode;
+                //     }
+                //     else
+                //     {
+                //         cout << "One-step Backward_Euler could not achieve convergence (exceeded maximum number of iterations)!\n";
+                //         cout << "Attempting run with sub-stepping 100\n";
+                //         errorcode = Backward_Euler(strain_incr, false, 100);
+                //     }
+                // }
 
             } //else  //Plasticity
             vars.commit_tmp();
         } //for (int step = 0; step < NSteps; step++)
         return errorcode;
     }
-
-
-
 
         int Full_Backward_Euler(const DTensor2 &strain_incr, bool debugrun = false, int NSteps = 1)
         {
@@ -1896,8 +1956,39 @@ private:
         return static_cast<U*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
     }
 
+    // // // ====================================================
+    // // // Working on consistent tangent stiffness matrix. 
+    // // // ====================================================
+    // template <typename U = T>
+    // typename std::enable_if < !supports_consistent_stiffness<U>::value, int >::type
+    // consistent_stiffness_(DTensor2 const& dlambda_,
+    //                       DTensor2 const& sigma_,
+    //                       DTensor2 const& n_,
+    //                       DTensor2 const& m_,
+    //                       DTensor2 const& z_,
+    //                       DTensor2 const& alpha_,
+    //                       double   const&  k_,
+    //                       DTensor4      & Stiffness_ ){
+    //     cout << "consistent_stiffness_ for this type of materials is not implemented yet!\n";
+    //     return 0;
+    // }
 
+    // template <typename U = T>
+    // typename std::enable_if<supports_consistent_stiffness<U>::value, int>::type
+    // consistent_stiffness_(DTensor2 const& dlambda_,
+    //                       DTensor2 const& sigma_,
+    //                       DTensor2 const& n_,
+    //                       DTensor2 const& m_,
+    //                       DTensor2 const& z_,
+    //                       DTensor2 const& alpha_,
+    //                       double   const&  k_,
+    //                       DTensor4      & Stiffness_ ){
+    //     return static_cast<U*>(this)->consistent_stiffness(dlambda_, sigma_, m_, z_, alpha_, Stiffness_,  k_,  yf2, returns);
+    // }
 
+    // // ====================================================
+    // // Working on consistent tangent stiffness matrix. END
+    // // ====================================================
 private:
 // Routine used by yield_surface_cross to find the stresstensor at cross point
 //================================================================================
