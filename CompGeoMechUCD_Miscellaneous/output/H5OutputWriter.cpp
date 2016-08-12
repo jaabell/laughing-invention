@@ -1678,7 +1678,7 @@ void H5OutputWriter::writeMesh()
             maxdims[1] = number_of_time_steps + 1;
 
             id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
-            // id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
+            id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
         }
 
         // if (processID > 0)
