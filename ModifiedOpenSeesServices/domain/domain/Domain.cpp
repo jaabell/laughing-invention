@@ -2736,20 +2736,25 @@ Domain::commit( void )
     //Do element output
     if (output_is_enabled && (countdown_til_output == 0))
     {
-        if (rank > 0)
-        {
+        #ifdef _PARALLEL_PROCESSING
+            if(rank>0){
+                this->calculateNodalReactions(0);
+            }
+            theNodeIter = this->getNodes();
+            while ((nodePtr = theNodeIter()) != 0){
+                theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
+                if(rank>0){
+                    theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
+                }
+            }
+        #else
             this->calculateNodalReactions(0);
-        }
-        theNodeIter = this->getNodes();
-
-        while ((nodePtr = theNodeIter()) != 0)
-        {
-            theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-            if (rank > 0)
-            {
+            theNodeIter = this->getNodes();
+            while ((nodePtr = theNodeIter()) != 0){
+                theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
                 theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
             }
-        }
+        #endif
     }
 
     globalESSITimer.stop("Domain_Node_Commit_and_output");
