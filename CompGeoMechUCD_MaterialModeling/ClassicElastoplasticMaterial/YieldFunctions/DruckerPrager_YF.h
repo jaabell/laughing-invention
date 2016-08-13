@@ -167,49 +167,6 @@ public:
 
     // }
 
-    DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress){
-        static DTensor2 s(3, 3, 0.0);
-        const DTensor2 &alpha = alpha_.getVariableConstReference();
-        const double &k = k_.getVariableConstReference();
-        double p=0;
-        stress.compute_deviatoric_tensor(s, p); // here p is positive if in tension
-        p=-p;
-
-        static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize this to global later.
-        IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
-        // (1) von Mises material always has this part zero. 
-        static DTensor2 dm_dk(3,3,0.0);
-        dm_dk(i,j) = SQRT_2_over_27 * kronecker_delta(i, j) ; 
-
-        // (2) dm_dalpha part
-        static DTensor4 dm_dalpha(3,3,3,3,0.0);
-        static DTensor2 s_minus_p_alpha(3,3,0.0);
-        s_minus_p_alpha(i,j) = s(i,j) - p * alpha(i,j);
-        double s_minus_p_alpha_square = s_minus_p_alpha(i,j) * s_minus_p_alpha(i,j) ; 
-
-        dm_dalpha(i,j,k,l) = 
-            (
-                - p * IdentityTensor4(k,i,l,j) 
-                + 1./3. * kronecker_delta(i, j) * (kronecker_delta(k,p) * (kronecker_delta(l,q) * s_minus_p_alpha(p,q)) ) 
-                - 1./3. * p * kronecker_delta(i, j) * ((alpha(p,q) * kronecker_delta(k,p)) * kronecker_delta(l,q))
-            ) * pow(s_minus_p_alpha_square,-0.5) 
-            -
-            (
-                + s_minus_p_alpha(i,j)
-                + 1./3. * kronecker_delta(i,j) * (alpha(p,q)  * s_minus_p_alpha(p,q))
-                
-            ) 
-            * 
-            (
-                - p * kronecker_delta(m,k) * (kronecker_delta(n,l) * s_minus_p_alpha(m,n))
-            ) * pow(s_minus_p_alpha_square,-1.5);
-
-        static DTensor2 ret(3,3,0.0);
-        ret(i,j) = dm_dalpha(i,j,m,n) * alpha(m,n);
-        ret(i,j) += dm_dk(i,j) * k;
-
-        return ret;
-    }
 
 
     int getHardeningType(){

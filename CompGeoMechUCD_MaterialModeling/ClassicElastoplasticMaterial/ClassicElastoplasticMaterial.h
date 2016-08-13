@@ -1914,7 +1914,7 @@ private:
                     // ===================================================================
                     // Construct the Tensor H
                     static DTensor2 dm_dq_star_h_star(3,3,0.0);
-                    dm_dq_star_h_star = yf.dm_over_dq_start_h_star(TrialStress);
+                    dm_dq_star_h_star = pf.dm_over_dq_start_h_star(TrialStress);
                     static DTensor2 H(3,3,0.0);
                     H(k,l) = mf(k,l) + dLambda * dm_dq_star_h_star(k,l);
                     

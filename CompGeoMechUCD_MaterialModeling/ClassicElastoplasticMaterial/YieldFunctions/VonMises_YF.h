@@ -156,7 +156,7 @@ public:
         static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize this to global later.
         IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
         // (1) von Mises material always has this part zero. 
-        double dm_dk=0.0; 
+        // double dm_dk=0.0; 
         // (2) dm_dalpha part
         static DTensor4 dm_dalpha(3,3,3,3,0.0);
         static DTensor2 s_minus_alpha(3,3,0.0);
