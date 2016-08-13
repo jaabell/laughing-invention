@@ -1903,13 +1903,24 @@ private:
 
                     // ===================================================================
                     // Construct the Tensor H
+                    static DTensor2 dm_dq_star_h_star(3,3,0.0);
+                    dm_dq_star_h_star = yf.dm_over_dq_start_h_star(TrialStress);
                     static DTensor4 H(3,3,0.0);
-                    H(k,l) = mf(k,l) + dLambda * 
+                    H(k,l) = mf(k,l) + dLambda * dm_dq_star_h_star(k,l);
                     
-
+                    static DTensor4 invT(3,3,3,3,0.0);
+                    invT = inverse4thTensor(T);
+                    static DTensor4 R(3,3,3,3,0.0);
+                    R(m,n,k,l)=invT(i,j,m,n)*Eelastic(i,j,k,l);
                     // ===================================================================
-                    
 
+                    double denomin{0.0};
+                    double const& xi_star_h_star_f = yf.xi_star_h_star( depsilon, mf,  TrialStress);
+                    denomin = nf(i,j) * R(i,j,m,n) * H(m,n) - xi_star_h_star_f ; 
+
+                    Stiffness(p,q,m,n) = R(p,q,m,n) - ((R(p,q,k,l)*H(k,l)) * (nf(i,j)*R(i,j,m,n))) /denomin; 
+
+                    
                     // // ==================
                     // // The first part C11
                     // // ==================
@@ -1924,36 +1935,36 @@ private:
 
 
 
-                    int HARDENING_TYPE=yf.getHardeningType();
-                    switch(HARDENING_TYPE){
-                        case Perfectly_Plastic:{
-                          double denom = nf(p, q) * C11(p, q, i, j) * mf(i, j);
-                          static DTensor4 CC(3,3,3,3,0.0);
-                          CC(i,j,k,l) = C11(i,j,k,l) - (C11(i,j,r,s)*mf(r,s)) * (nf(p,q)*C11(p,q,k,l)) / denom;
-                          Stiffness(p,q,k,l) = CC(i,j,p,q)*Eelastic(i,j,k,l);
+                    // int HARDENING_TYPE=yf.getHardeningType();
+                    // switch(HARDENING_TYPE){
+                    //     case Perfectly_Plastic:{
+                    //       double denom = nf(p, q) * C11(p, q, i, j) * mf(i, j);
+                    //       static DTensor4 CC(3,3,3,3,0.0);
+                    //       CC(i,j,k,l) = C11(i,j,k,l) - (C11(i,j,r,s)*mf(r,s)) * (nf(p,q)*C11(p,q,k,l)) / denom;
+                    //       Stiffness(p,q,k,l) = CC(i,j,p,q)*Eelastic(i,j,k,l);
 
-                          break;
-                        }
-                        case One_Kinematic_Hardening_Only:{
-                            cout<<"::consistent_stiffness_ hardening_type One_Kinematic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used."<<endl;
-                            // DTensor4 const& dm_dalpha = pf.dm_over_dalpha(TrialStress);
-                            // DTensor4 const& dalpha_dsigma = yf.dalpha_over_dsigma(TrialStress);
-                            // DTensor4 const& dalpha_dalpha = yf.dalpha_over_dalpha(TrialStress);
+                    //       break;
+                    //     }
+                    //     case One_Kinematic_Hardening_Only:{
+                    //         cout<<"::consistent_stiffness_ hardening_type One_Kinematic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used."<<endl;
+                    //         // DTensor4 const& dm_dalpha = pf.dm_over_dalpha(TrialStress);
+                    //         // DTensor4 const& dalpha_dsigma = yf.dalpha_over_dsigma(TrialStress);
+                    //         // DTensor4 const& dalpha_dalpha = yf.dalpha_over_dalpha(TrialStress);
 
-                            break;
-                        }
-                        case One_Isotropic_Hardening_Only:{
-                            cout<<"::consistent_stiffness_ hardening_type One_Isotropic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used."<<endl;
-                            break;
-                        }
-                        case Both_One_Isotropic_One_Kinematic_Hardening:{
-                            cout<<"::consistent_stiffness_ hardening_type Both_One_Isotropic_One_Kinematic_Hardening not   implemented yet! The inconsistent stiffness tensor is used."<<endl;
-                            break;
-                        }
-                        default:{
-                            // cout<<"Stiffness_(i,j,k,l) \n";
-                        }
-                    }
+                    //         break;
+                    //     }
+                    //     case One_Isotropic_Hardening_Only:{
+                    //         cout<<"::consistent_stiffness_ hardening_type One_Isotropic_Hardening_Only not implemented yet! The inconsistent stiffness tensor is used."<<endl;
+                    //         break;
+                    //     }
+                    //     case Both_One_Isotropic_One_Kinematic_Hardening:{
+                    //         cout<<"::consistent_stiffness_ hardening_type Both_One_Isotropic_One_Kinematic_Hardening not   implemented yet! The inconsistent stiffness tensor is used."<<endl;
+                    //         break;
+                    //     }
+                    //     default:{
+                    //         // cout<<"Stiffness_(i,j,k,l) \n";
+                    //     }
+                    // }
 
                 } //else  //Plasticity
                 vars.commit_tmp();
