@@ -187,11 +187,11 @@ public:
         s_minus_p_alpha(i,j) = s(i,j) - p * alpha(i,j);
         double s_minus_p_alpha_square = s_minus_p_alpha(i,j) * s_minus_p_alpha(i,j) ; 
 
-        dm_dalpha(i,j,m,n) = 
+        dm_dalpha(i,j,k,l) = 
             (
-                - p * IdentityTensor4(m,i,n,j) 
-                + 1./3. * kronecker_delta(i, j) * (kronecker_delta(m,p) * (kronecker_delta(n,q) * s_minus_p_alpha(p,q)) ) 
-                - 1./3. * p * kronecker_delta(i, j) * ((alpha(p,q) * kronecker_delta(m,p)) * kronecker_delta(n,q))
+                - p * IdentityTensor4(k,i,l,j) 
+                + 1./3. * kronecker_delta(i, j) * (kronecker_delta(k,p) * (kronecker_delta(l,q) * s_minus_p_alpha(p,q)) ) 
+                - 1./3. * p * kronecker_delta(i, j) * ((alpha(p,q) * kronecker_delta(k,p)) * kronecker_delta(l,q))
             ) * pow(s_minus_p_alpha_square,-0.5) 
             -
             (
@@ -201,7 +201,7 @@ public:
             ) 
             * 
             (
-                - p * kronecker_delta(k,m) * (kronecker_delta(l,n) * s_minus_p_alpha(k,l))
+                - p * kronecker_delta(m,k) * (kronecker_delta(n,l) * s_minus_p_alpha(m,n))
             ) * pow(s_minus_p_alpha_square,-1.5);
 
         static DTensor2 ret(3,3,0.0);

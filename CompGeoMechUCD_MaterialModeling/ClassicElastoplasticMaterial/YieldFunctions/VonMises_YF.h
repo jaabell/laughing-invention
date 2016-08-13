@@ -142,6 +142,9 @@ public:
 
     // }
 
+
+
+
     DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress){
         static DTensor2 s(3, 3, 0.0);
         const DTensor2 &alpha = alpha_.getVariableConstReference();
@@ -166,6 +169,8 @@ public:
 
         return ret;
     }
+
+
 
 
     int getHardeningType(){

@@ -1897,30 +1897,50 @@ private:
                     static DTensor4 dm_dsigma(3,3,3,3,0.0);
                     dm_dsigma = pf.dm_over_dsigma(TrialStress);
 
-                    static DTensor4 T(3,3,3,3,0.0);
-                    T(i,j,m,n) = IdentityTensor4(i,m,j,n) + dLambda * Eelastic(i,j,k,l) * dm_dsigma(k,l,m,n);
-                    // ===================================================================
+                    static DTensor4 Ts(3,3,3,3,0.0);
 
+                    // Ts*=0;
+                    // for (int ig = 0; ig < 3; ++ig)
+                    //     for (int jg = 0; jg < 3; ++jg)
+                    //         for (int mg = 0; mg < 3; ++mg)
+                    //             for (int ng = 0; ng < 3; ++ng)
+                    //                 for (int kg = 0; kg < 3; ++kg)
+                    //                     for (int lg = 0; lg < 3; ++lg){
+                    //                        Ts(ig,jg,mg,ng) += IdentityTensor4(ig,mg,jg,ng) + dLambda * Eelastic(ig,jg,kg,lg) * dm_dsigma(kg,lg,mg,ng);
+                    //                     }
+                    Ts(i, j, k, l) = IdentityTensor4(i,k,j,l) + dLambda * Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l);
+                    
+                    // ===================================================================
                     // ===================================================================
                     // Construct the Tensor H
                     static DTensor2 dm_dq_star_h_star(3,3,0.0);
                     dm_dq_star_h_star = yf.dm_over_dq_start_h_star(TrialStress);
-                    static DTensor4 H(3,3,0.0);
+                    static DTensor2 H(3,3,0.0);
                     H(k,l) = mf(k,l) + dLambda * dm_dq_star_h_star(k,l);
                     
                     static DTensor4 invT(3,3,3,3,0.0);
-                    invT = inverse4thTensor(T);
+                    invT = inverse4thTensor(Ts);
                     static DTensor4 R(3,3,3,3,0.0);
-                    R(m,n,k,l)=invT(i,j,m,n)*Eelastic(i,j,k,l);
+
+                    // for (int mg = 0; mg < 3; ++mg)
+                    //     for (int ng = 0; ng < 3; ++ng)
+                    //         for (int kg = 0; kg < 3; ++kg)
+                    //             for (int lg = 0; lg < 3; ++lg)
+                    //                 for (int ig = 0; ig < 3; ++ig)
+                    //                     for (int jg = 0; jg < 3; ++jg){
+                    //                         R(mg,ng,kg,lg)=invT(ig,jg,mg,ng)*Eelastic(ig,jg,kg,lg);
+                    //                     }
+                    R(p, q, r, s)=invT(k, l, p, q)*Eelastic(k, l, r, s);
+
                     // ===================================================================
 
                     // ===================================================================
                     // Construct the consistent stiffness
                     double denomin{0.0};
                     double const& xi_star_h_star_f = yf.xi_star_h_star( depsilon, mf,  TrialStress);
-                    denomin = nf(i,j) * R(i,j,m,n) * H(m,n) - xi_star_h_star_f ; 
+                    denomin = nf(p, q) * R(p, q, r, s) * H(r, s) - xi_star_h_star_f ; 
 
-                    Stiffness(p,q,m,n) = R(p,q,m,n) - ((R(p,q,k,l)*H(k,l)) * (nf(i,j)*R(i,j,m,n))) /denomin; 
+                    Stiffness(i, j, k, l) = R(i, j, k, l) - ((R(i, j, p, q)*H(p, q)) * (nf(r, s)*R(r, s, k, l))) /denomin; 
 
 
                     // ===================================================================
