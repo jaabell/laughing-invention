@@ -1878,26 +1878,51 @@ private:
                     // ===================================================================
                     // Working on consistent stiffness
                     // ===================================================================
+                    
+                    // ===================================================================
+                    // Update the m:
+                    static DTensor2 nf(3,3,0.0);
+                    nf = yf.df_dsigma_ij(TrialStress);
+                    static DTensor2 mf(3,3,0.0);
+                    mf = pf(depsilon, TrialStress);
+                    // ===================================================================
+
+                    
+                    // ===================================================================
+                    // Construct the Tensor T
                     static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize to integer later.
                     IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
 
-                    // ==================
-                    // The first part C11
-                    // ==================
                     static DTensor4 dm_dsigma(3,3,3,3,0.0);
                     dm_dsigma = pf.dm_over_dsigma(TrialStress);
 
-                    static DTensor4 invC11(3,3,3,3, 0.0);
-                    invC11(i,j,k,l) = IdentityTensor4(i,j,k,l) + dLambda * ( Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l) )   ;
+                    static DTensor4 T(3,3,3,3,0.0);
+                    T(i,j,m,n) = IdentityTensor4(i,m,j,n) + dLambda * Eelastic(i,j,k,l) * dm_dsigma(k,l,m,n);
+                    // ===================================================================
 
 
-                    static DTensor4 C11(3,3,3,3,0.0);
-                    C11 = inverse4thTensor(invC11);
-                    // Actually, only the argument TrialStress is used for now. mf means m_final.
-                    static DTensor2 mf(3,3,0.0);
-                    mf = pf(depsilon, TrialStress);
-                    static DTensor2 nf(3,3,0.0);
-                    nf = yf.df_dsigma_ij(TrialStress);
+                    // ===================================================================
+                    // Construct the Tensor H
+                    static DTensor4 H(3,3,0.0);
+                    H(k,l) = mf(k,l) + dLambda * 
+                    
+
+                    // ===================================================================
+                    
+
+                    // // ==================
+                    // // The first part C11
+                    // // ==================
+
+
+                    // static DTensor4 invC11(3,3,3,3, 0.0);
+                    // invC11(i,j,k,l) = IdentityTensor4(i,j,k,l) + dLambda * ( Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l) )   ;
+
+
+                    // static DTensor4 C11(3,3,3,3,0.0);
+                    // C11 = inverse4thTensor(invC11);
+
+
 
                     int HARDENING_TYPE=yf.getHardeningType();
                     switch(HARDENING_TYPE){
