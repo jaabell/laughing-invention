@@ -112,7 +112,7 @@ public:
         p=-p;
         static DTensor2 s_minus_palpha(3,3,0.0);
         s_minus_palpha(i,j) = s(i,j) - p*alpha(i,j);
-        double intermediate = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
+        double s_minus_p_alpha_square = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
 
 
         // // ======================================================================
@@ -124,13 +124,13 @@ public:
         //             + 1./3.0 * kronecker_delta(m,n)*alpha(i,j) ) + 1./3.0 * alpha(p,q)*kronecker_delta(i,j) * 
         //         (kronecker_delta(m,p)*kronecker_delta(n,q) - 1.0/3.0*kronecker_delta(m,n)*kronecker_delta(p,q) 
         //             + 1./3.0 * kronecker_delta(m,n)*alpha(p,q) )
-        //     ) * pow(intermediate, -0.5)  -
+        //     ) * pow(s_minus_p_alpha_square, -0.5)  -
         //     (
         //          (s(i,j)-p*alpha(i,j) + 1./3.0 *alpha(p,q) * kronecker_delta(i,j) * (s(p,q) - p*alpha(p,q))) *
         //          (kronecker_delta(m,r)*kronecker_delta(n,s) - 1./3.0*kronecker_delta(m,n)*kronecker_delta(r,s) 
         //             +1./3.0 * kronecker_delta(m,n) * alpha(r,s)) *
         //          (s(r,s)-p*alpha(r,s)) 
-        //     ) * pow(intermediate, -1.5); 
+        //     ) * pow(s_minus_p_alpha_square, -1.5); 
         // // ======================================================================
         // =========================================
         // The minimal failed example
@@ -138,12 +138,17 @@ public:
         // =========================================
         // test(i,j,m,n)=kronecker_delta(i,m) * kronecker_delta(j,n) - 1.0/3.0 * kronecker_delta(i,j) * kronecker_delta(m,n) ;
         // =========================================
+        // This also failed:
+        // test(i,j,m,n)=IdentityTensor4(i,m,j,n) - 1.0/3.0 * IdentityTensor4(i,j,m,n) ;
+        // =========================================
         static DTensor4 dm__dsigma(3,3,3,3,0.0);
         dm__dsigma*=0;
+        // Four free indices
         for (int ig = 0; ig < 3; ++ig)
-            for (int mg = 0; mg < 3; ++mg)
-                for (int jg = 0; jg < 3; ++jg)
+            for (int jg = 0; jg < 3; ++jg)
+                for (int mg = 0; mg < 3; ++mg)
                     for (int ng = 0; ng < 3; ++ng)
+                        // Four dummy indices
                         for (int pg = 0; pg < 3; ++pg)
                             for (int qg = 0; qg < 3; ++qg)
                                 for (int rg = 0; rg < 3; ++rg)
@@ -154,13 +159,13 @@ public:
                                                     + 1./3.0 * kronecker_delta(mg,ng)*alpha(ig,jg) ) + 1./3.0 * alpha(pg,qg)*kronecker_delta(ig,jg) * 
                                                 (kronecker_delta(mg,pg)*kronecker_delta(ng,qg) - 1.0/3.0*kronecker_delta(mg,ng)*kronecker_delta(pg,qg) 
                                                     + 1./3.0 * kronecker_delta(mg,ng)*alpha(pg,qg) )
-                                            ) * pow(intermediate, -0.5)  -
+                                            ) * pow(s_minus_p_alpha_square, -0.5)  -
                                             (
                                                  (s(ig,jg)-p*alpha(ig,jg) + 1./3.0 *alpha(pg,qg) * kronecker_delta(ig,jg) * (s(pg,qg) - p*alpha(pg,qg))) *
                                                  (kronecker_delta(mg,rg)*kronecker_delta(ng,sg) - 1./3.0*kronecker_delta(mg,ng)*kronecker_delta(rg,sg) 
                                                     +1./3.0 * kronecker_delta(mg,ng) * alpha(rg,sg)) *
                                                  (s(rg,sg)-p*alpha(rg,sg)) 
-                                            ) * pow(intermediate, -1.5); 
+                                            ) * pow(s_minus_p_alpha_square, -1.5); 
                                     }
 
 
@@ -196,10 +201,8 @@ public:
             ) * pow(s_minus_p_alpha_square,-0.5) 
             -
             (
-                + s_minus_p_alpha(i,j)
-                + 1./3. * kronecker_delta(i,j) * (alpha(p,q)  * s_minus_p_alpha(p,q))
-                
-            ) 
+                 s_minus_p_alpha(i,j)
+            )
             * 
             (
                 - p * kronecker_delta(m,k) * (kronecker_delta(n,l) * s_minus_p_alpha(m,n))
@@ -251,7 +254,7 @@ DTensor2 DruckerPrager_PF<AlphaHardeningType , KHardeningType >::result(3, 3, 0.
 //     p=-p;
 //     static DTensor2 s_minus_palpha(3,3,0.0);
 //     s_minus_palpha(i,j) = s(i,j) - p*alpha(i,j);
-//     double intermediate = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
+//     double s_minus_p_alpha_square = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
 //     static DTensor4 dm__dalpha(3,3,3,3,0.0);
 //     dm__dalpha*=0;
 //     for (int ig = 0; ig < 3; ++ig)
@@ -266,7 +269,7 @@ DTensor2 DruckerPrager_PF<AlphaHardeningType , KHardeningType >::result(3, 3, 0.
 //                                         ( 
 //                                             -p*kronecker_delta(mg,ig)*kronecker_delta(ng,jg) + 1./3.0 * kronecker_delta(mg,pg) * kronecker_delta(ig,jg) 
 
-//                                         ) * pow(intermediate, -0.5)  ;
+//                                         ) * pow(s_minus_p_alpha_square, -0.5)  ;
 //                                         // Not finished yet!
 //                                         // -
 //                                         // (
@@ -274,7 +277,7 @@ DTensor2 DruckerPrager_PF<AlphaHardeningType , KHardeningType >::result(3, 3, 0.
 //                                         //      (kronecker_delta(mg,rg)*kronecker_delta(ng,sg) - 1./3.0*kronecker_delta(mg,ng)*kronecker_delta(rg,sg) 
 //                                         //         +1./3.0 * kronecker_delta(mg,ng) * alpha(rg,sg)) *
 //                                         //      (s(rg,sg)-p*alpha(rg,sg)) 
-//                                         // ) * pow(intermediate, -1.5); 
+//                                         // ) * pow(s_minus_p_alpha_square, -1.5); 
 //                                 }
 
 

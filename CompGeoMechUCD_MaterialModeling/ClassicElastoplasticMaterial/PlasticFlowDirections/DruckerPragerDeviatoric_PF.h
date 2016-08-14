@@ -102,16 +102,55 @@ public:
         return result;
     }
     DTensor4 const& dm_over_dsigma(DTensor2 const& sigma){
-        static DTensor4 placeholder(3,3,3,3,0.0);
-        return placeholder;
-    }
-    
-
-    // placeholder:
-    DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress){
         static DTensor2 s(3, 3, 0.0);
         const DTensor2 &alpha = alpha_.getVariableConstReference();
         // const double &k = k_.getVariableConstReference();
+        double p=0.0;
+        sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+        p=-p;
+        if(p<MACHINE_EPSILON){
+            cout<<"DruckerPragerNonAssociate_PF:: pressuse < 0 ! The Drucker-Prager has tensile force.";
+        }
+        static DTensor2 s_minus_palpha(3,3,0.0);
+        s_minus_palpha(i,j) = s(i,j) - p*alpha(i,j);
+        double s_minus_p_alpha_square = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
+        // double s_square = s(i,j) * s(i,j) ; 
+
+        static DTensor4 dm__dsigma(3,3,3,3,0.0);
+        dm__dsigma*=0;
+        // Four free indices
+        for (int ig = 0; ig < 3; ++ig)
+            for (int jg = 0; jg < 3; ++jg)
+                for (int mg = 0; mg < 3; ++mg)
+                    for (int ng = 0; ng < 3; ++ng)
+                        // for (int pg = 0; pg < 3; ++pg)
+                            // for (int qg = 0; qg < 3; ++qg)
+                                // Two dummy indices
+                                for (int rg = 0; rg < 3; ++rg)
+                                    for (int sg = 0; sg < 3; ++sg){
+                                        dm__dsigma(ig,jg,mg,ng) += 
+                                            ( 
+                                                kronecker_delta(mg,ig)*kronecker_delta(ng,jg) - 1./3.0 * kronecker_delta(mg,ng) * kronecker_delta(ig,jg) 
+                                                    + 1./3.0 * kronecker_delta(mg,ng)*alpha(ig,jg)
+                                            ) * pow(s_minus_p_alpha_square, -0.5)  
+                                            -
+                                            (
+                                                 s_minus_palpha(ig,jg) *
+                                                 (kronecker_delta(mg,rg)*kronecker_delta(ng,sg) - 1./3.0*kronecker_delta(mg,ng)*kronecker_delta(rg,sg) 
+                                                    +1./3.0 * kronecker_delta(mg,ng) * alpha(rg,sg)) *
+                                                 s_minus_palpha(rg,sg) 
+                                            ) * pow(s_minus_p_alpha_square, -1.5) ; 
+                                    }
+
+
+        return dm__dsigma;
+    }
+    
+
+    DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress){
+        static DTensor2 s(3, 3, 0.0);
+        const DTensor2 &alpha = alpha_.getVariableConstReference();
+        const double &k = k_.getVariableConstReference();
         double p=0;
         stress.compute_deviatoric_tensor(s, p); // here p is positive if in tension
         p=-p;
@@ -119,17 +158,32 @@ public:
         static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize this to global later.
         IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
         // (1) von Mises material always has this part zero. 
-        // double dm_dk=0.0; 
+        static DTensor2 dm_dk(3,3,0.0);
+        dm_dk(i,j) = SQRT_2_over_27 * kronecker_delta(i, j) ; 
+
         // (2) dm_dalpha part
         static DTensor4 dm_dalpha(3,3,3,3,0.0);
-        static DTensor2 s_minus_alpha(3,3,0.0);
-        s_minus_alpha(i,j) = s(i,j) - alpha(i,j);
-        double s_minus_alpha_square = s_minus_alpha(i,j) * s_minus_alpha(i,j) ; 
+        static DTensor2 s_minus_p_alpha(3,3,0.0);
+        s_minus_p_alpha(i,j) = s(i,j) - p * alpha(i,j);
+        double s_minus_p_alpha_square = s_minus_p_alpha(i,j) * s_minus_p_alpha(i,j) ; 
 
-        dm_dalpha(i,j,m,n) = - IdentityTensor4(i,m,j,n) * pow(s_minus_alpha_square,-0.5) + s_minus_alpha(i,j)*s_minus_alpha(m,n) * pow(s_minus_alpha_square,-1.5);
+        dm_dalpha(i,j,k,l) = 
+            (
+                - p * IdentityTensor4(k,i,l,j) 
+            ) * pow(s_minus_p_alpha_square,-0.5) 
+            -
+            (
+                + s_minus_p_alpha(i,j)
+                + 1./3. * kronecker_delta(i,j) * (alpha(p,q)  * s_minus_p_alpha(p,q))
+            ) 
+            * 
+            (
+                - p * kronecker_delta(m,k) * (kronecker_delta(n,l) * s_minus_p_alpha(m,n))
+            ) * pow(s_minus_p_alpha_square,-1.5);
+
         static DTensor2 ret(3,3,0.0);
         ret(i,j) = dm_dalpha(i,j,m,n)*alpha(m,n);
-
+                
         return ret;
     }
 private:
