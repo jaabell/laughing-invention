@@ -171,9 +171,9 @@ namespace
     //     // return result;
     // }
 
-    DTensor4 const& inverse4thTensor(DTensor4 const& rhs){
+    bool const& inverse4thTensor(DTensor4 const& rhs, DTensor4 & ret){
         static DTensor2 intermediate_matrix(9,9,0.0);
-        static DTensor4 ret(3,3,3,3,0.0);
+        // static DTensor4 ret(3,3,3,3,0.0);
         int m41 = 0,  m42 = 0;
         // (1). convert 4th order Tensor to matrix 
         for ( int c44 = 1 ; c44 <= 3 ; c44++ )
@@ -188,6 +188,11 @@ namespace
 
                     }
         // (2). Inverse the matrix .
+        double det = intermediate_matrix.compute_Determinant();
+        if(det<MACHINE_EPSILON){
+            cout<<"ClassicElastoplasticMaterial cannot inverse T to get the consistent stiffness tensor. Use the inconsistent stiffness instead! "<<endl;
+            return false;
+        }
         DTensor2 const& inv_matrix = intermediate_matrix.Inv();
         // (3). convert Matrix to 4th order tensor
         for ( int c44 = 1 ; c44 <= 3 ; c44++ )
@@ -200,7 +205,7 @@ namespace
 
                         ret(c41-1, c42-1, c43-1, c44-1) = inv_matrix(m41-1, m42-1);
                     }
-        return ret;
+        return true;
     }
 
     // static int Nsteps = 0 ;
@@ -1919,7 +1924,7 @@ private:
                     H(k,l) = mf(k,l) + dLambda * dm_dq_star_h_star(k,l);
                     
                     static DTensor4 invT(3,3,3,3,0.0);
-                    invT = inverse4thTensor(Ts);
+                    if( !inverse4thTensor(Ts, invT) ) return -1;
                     static DTensor4 R(3,3,3,3,0.0);
 
                     // for (int mg = 0; mg < 3; ++mg)
