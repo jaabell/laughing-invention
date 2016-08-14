@@ -130,16 +130,24 @@ public:
                                     for (int sg = 0; sg < 3; ++sg){
                                         dm__dsigma(ig,jg,mg,ng) += 
                                             ( 
-                                                kronecker_delta(mg,ig)*kronecker_delta(ng,jg) - 1./3.0 * kronecker_delta(mg,ng) * kronecker_delta(ig,jg) 
-                                                    + 1./3.0 * kronecker_delta(mg,ng)*alpha(ig,jg)
+                                                kronecker_delta(mg,ig)*kronecker_delta(ng,jg) 
+                                                - 1./3.0 * kronecker_delta(mg,ng) * kronecker_delta(ig,jg) 
+                                                + 1./3.0 * kronecker_delta(mg,ng)*alpha(ig,jg)   
                                             ) * pow(s_minus_p_alpha_square, -0.5)  
                                             -
                                             (
-                                                 s_minus_palpha(ig,jg) *
-                                                 (kronecker_delta(mg,rg)*kronecker_delta(ng,sg) - 1./3.0*kronecker_delta(mg,ng)*kronecker_delta(rg,sg) 
-                                                    +1./3.0 * kronecker_delta(mg,ng) * alpha(rg,sg)) *
-                                                 s_minus_palpha(rg,sg) 
-                                            ) * pow(s_minus_p_alpha_square, -1.5) ; 
+                                                s_minus_palpha(ig,jg) 
+                                                *
+                                                (
+                                                    kronecker_delta(mg,rg)*kronecker_delta(ng,sg) 
+                                                    - 1./3.0 * kronecker_delta(mg,ng) * kronecker_delta(rg,sg) 
+                                                    + 1./3.0 * kronecker_delta(mg,ng) * alpha(rg,sg)
+                                                ) 
+                                                * 
+                                                s_minus_palpha(rg,sg)
+                                                *
+                                                pow(s_minus_p_alpha_square, -1.5)
+                                            ) ; 
                                     }
 
 
@@ -167,19 +175,21 @@ public:
         s_minus_p_alpha(i,j) = s(i,j) - p * alpha(i,j);
         double s_minus_p_alpha_square = s_minus_p_alpha(i,j) * s_minus_p_alpha(i,j) ; 
 
-        dm_dalpha(i,j,k,l) = 
-            (
-                - p * IdentityTensor4(k,i,l,j) 
-            ) * pow(s_minus_p_alpha_square,-0.5) 
-            -
-            (
-                + s_minus_p_alpha(i,j)
-                + 1./3. * kronecker_delta(i,j) * (alpha(p,q)  * s_minus_p_alpha(p,q))
-            ) 
-            * 
-            (
-                - p * kronecker_delta(m,k) * (kronecker_delta(n,l) * s_minus_p_alpha(m,n))
-            ) * pow(s_minus_p_alpha_square,-1.5);
+        for (int ig = 0; ig < 3; ++ig)
+            for (int jg = 0; jg < 3; ++jg)
+                for (int kg = 0; kg < 3; ++kg)
+                    for (int lg = 0; lg < 3; ++lg){
+                        dm_dalpha(ig,jg,kg,lg) = 
+                            (
+                                - p * IdentityTensor4(kg,ig,lg,jg) 
+                            ) * pow(s_minus_p_alpha_square,-0.5) 
+                            -
+                            (
+                                s_minus_p_alpha(ig,jg) 
+                                *(- p *  s_minus_p_alpha(kg,lg) )
+                                * pow(s_minus_p_alpha_square,-1.5)
+                            );
+                        }
 
         static DTensor2 ret(3,3,0.0);
         ret(i,j) = dm_dalpha(i,j,m,n)*alpha(m,n);

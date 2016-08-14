@@ -125,15 +125,12 @@ public:
                                 kronecker_delta(ig,mg) * kronecker_delta(jg,ng) - 1.0/3.0 * kronecker_delta(ig,jg) * kronecker_delta(mg,ng) 
                             ) * pow(s_minus_alpha_square, -0.5) - 
                             (
-                                (s(ig,jg)-alpha(ig,jg)) * (s(mg,ng)-alpha(mg,ng))
+                                (s_minus_alpha(ig,jg)) * (s_minus_alpha(mg,ng))
                             ) * pow(s_minus_alpha_square, -1.5); 
                     }
 
-
-
-
         // // ==============
-        // //  Backup . LTensor do not accept this. Change to the naive for-loop.
+        // //  Legacy . LTensor do not accept this. Change to the naive for-loop.
         // // ==============
         // dm__dsigma(i,j,m,n) = 
         //     (

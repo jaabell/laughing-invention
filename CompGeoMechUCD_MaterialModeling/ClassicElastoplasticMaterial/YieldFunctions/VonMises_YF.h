@@ -135,59 +135,30 @@ public:
         return dbl_result;
     }
 
+    // ==================================================================
+    // Legacy: should be removed later.
     // DTensor4 const& dalpha_over_dsigma(DTensor2 const& sigma){
 
     // }
     // DTensor4 const& dalpha_over_dalpha(DTensor2 const& sigma){
 
     // }
-
-
-
-
-    DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress){
-        static DTensor2 s(3, 3, 0.0);
-        const DTensor2 &alpha = alpha_.getVariableConstReference();
-        // const double &k = k_.getVariableConstReference();
-        double p=0;
-        stress.compute_deviatoric_tensor(s, p); // here p is positive if in tension
-        p=-p;
-
-        static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize this to global later.
-        IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
-        // (1) von Mises material always has this part zero. 
-        // double dm_dk=0.0; 
-        // (2) dm_dalpha part
-        static DTensor4 dm_dalpha(3,3,3,3,0.0);
-        static DTensor2 s_minus_alpha(3,3,0.0);
-        s_minus_alpha(i,j) = s(i,j) - alpha(i,j);
-        double s_minus_alpha_square = s_minus_alpha(i,j) * s_minus_alpha(i,j) ; 
-
-        dm_dalpha(i,j,m,n) = - IdentityTensor4(i,m,j,n) * pow(s_minus_alpha_square,-0.5) + s_minus_alpha(i,j)*s_minus_alpha(m,n) * pow(s_minus_alpha_square,-1.5);
-        static DTensor2 ret(3,3,0.0);
-        ret(i,j) = dm_dalpha(i,j,m,n)*alpha(m,n);
-
-        return ret;
-    }
-
-
-
-
-    int getHardeningType(){
-        double H_alpha=alpha_.getHardeningType();
-        double H_k=k_.getHardeningType();
-        int HARDENING_TYPE=0;
-        if( abs(H_alpha)< MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
-          HARDENING_TYPE = Perfectly_Plastic;
-        }else if(abs(H_alpha)<MACHINE_EPSILON &&  abs(H_k)>MACHINE_EPSILON){
-          HARDENING_TYPE = One_Isotropic_Hardening_Only;
-        }else if(abs(H_alpha)>MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
-          HARDENING_TYPE = One_Kinematic_Hardening_Only;
-        }else{
-          HARDENING_TYPE = Both_One_Isotropic_One_Kinematic_Hardening;
-        }
-        return HARDENING_TYPE;
-    }
+    // int getHardeningType(){
+    //     double H_alpha=alpha_.getHardeningType();
+    //     double H_k=k_.getHardeningType();
+    //     int HARDENING_TYPE=0;
+    //     if( abs(H_alpha)< MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
+    //       HARDENING_TYPE = Perfectly_Plastic;
+    //     }else if(abs(H_alpha)<MACHINE_EPSILON &&  abs(H_k)>MACHINE_EPSILON){
+    //       HARDENING_TYPE = One_Isotropic_Hardening_Only;
+    //     }else if(abs(H_alpha)>MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
+    //       HARDENING_TYPE = One_Kinematic_Hardening_Only;
+    //     }else{
+    //       HARDENING_TYPE = Both_One_Isotropic_One_Kinematic_Hardening;
+    //     }
+    //     return HARDENING_TYPE;
+    // }
+    // ==================================================================
 private:
 
     AlphaType &alpha_;
