@@ -115,14 +115,15 @@ public:
         double s_minus_alpha_square = s_minus_alpha(i,j) * s_minus_alpha(i,j) ; 
 
         static DTensor4 dm__dsigma(3,3,3,3,0.0);
-
+        dm__dsigma*=0;
         for (int ig = 0; ig < 3; ++ig)
-            for (int mg = 0; mg < 3; ++mg)
-                for (int jg = 0; jg < 3; ++jg)
+            for (int jg = 0; jg < 3; ++jg)
+                for (int mg = 0; mg < 3; ++mg)
                     for (int ng = 0; ng < 3; ++ng){
                         dm__dsigma(ig,jg,mg,ng) = 
                             (
-                                kronecker_delta(ig,mg) * kronecker_delta(jg,ng) - 1.0/3.0 * kronecker_delta(ig,jg) * kronecker_delta(mg,ng) 
+                                kronecker_delta(ig,mg) * kronecker_delta(jg,ng) 
+                                - 1.0/3.0 * kronecker_delta(ig,jg) * kronecker_delta(mg,ng) 
                             ) * pow(s_minus_alpha_square, -0.5) - 
                             (
                                 (s_minus_alpha(ig,jg)) * (s_minus_alpha(mg,ng))
@@ -168,7 +169,7 @@ public:
         stress.compute_deviatoric_tensor(s, p); // here p is positive if in tension
         p=-p;
 
-        static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize this to global later.
+        static DTensor4 IdentityTensor4(3,3,3,3, 0.0); //optimize this to global later.
         IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
         // (1) von Mises material always has this part zero. 
         // double dm_dk=0.0; 
@@ -178,7 +179,8 @@ public:
         s_minus_alpha(i,j) = s(i,j) - alpha(i,j);
         double s_minus_alpha_square = s_minus_alpha(i,j) * s_minus_alpha(i,j) ; 
 
-        dm_dalpha(i,j,m,n) = - IdentityTensor4(i,m,j,n) * pow(s_minus_alpha_square,-0.5) + s_minus_alpha(i,j)*s_minus_alpha(m,n) * pow(s_minus_alpha_square,-1.5);
+        dm_dalpha(i,j,m,n) = - IdentityTensor4(i,m,j,n) * pow(s_minus_alpha_square,-0.5) 
+            + s_minus_alpha(i,j)*s_minus_alpha(m,n) * pow(s_minus_alpha_square,-1.5);
         static DTensor2 ret(3,3,0.0);
         ret(i,j) = dm_dalpha(i,j,m,n)*alpha(m,n);
 

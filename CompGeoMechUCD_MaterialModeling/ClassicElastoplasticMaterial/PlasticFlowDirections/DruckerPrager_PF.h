@@ -110,10 +110,9 @@ public:
         double p=0.0;
         sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
         p=-p;
-        static DTensor2 s_minus_palpha(3,3,0.0);
-        s_minus_palpha(i,j) = s(i,j) - p*alpha(i,j);
-        double s_minus_p_alpha_square = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
-
+        static DTensor2 s_minus_p_alpha(3,3,0.0);
+        s_minus_p_alpha(i,j) = s(i,j) - p*alpha(i,j);
+        double s_minus_p_alpha_square = s_minus_p_alpha(i,j) * s_minus_p_alpha(i,j) ; 
 
         // // ======================================================================
         // //  Backup . LTensor does not accept this. So change to the naive for-loop.
@@ -141,32 +140,56 @@ public:
         // This also failed:
         // test(i,j,m,n)=IdentityTensor4(i,m,j,n) - 1.0/3.0 * IdentityTensor4(i,j,m,n) ;
         // =========================================
+
+
+        // =========================================
+        // the naive for-loop:
+        // =========================================
+        // pre-computation for the dummy indices. 
+        double alpha_square = alpha(i,j) * alpha(i,j);
+        double alpha_volume = alpha(i,i);
+        double alpha_times_s= alpha(i,j) * s(i,j);
+        // =========================================
+
         static DTensor4 dm__dsigma(3,3,3,3,0.0);
         dm__dsigma*=0;
         // Four free indices
         for (int ig = 0; ig < 3; ++ig)
             for (int jg = 0; jg < 3; ++jg)
                 for (int mg = 0; mg < 3; ++mg)
-                    for (int ng = 0; ng < 3; ++ng)
-                        // Four dummy indices
-                        for (int pg = 0; pg < 3; ++pg)
-                            for (int qg = 0; qg < 3; ++qg)
-                                for (int rg = 0; rg < 3; ++rg)
-                                    for (int sg = 0; sg < 3; ++sg){
-                                        dm__dsigma(ig,jg,mg,ng) += 
-                                            ( 
-                                                (kronecker_delta(mg,ig)*kronecker_delta(ng,jg) - 1./3.0 * kronecker_delta(mg,ng) * kronecker_delta(ig,jg) 
-                                                    + 1./3.0 * kronecker_delta(mg,ng)*alpha(ig,jg) ) + 1./3.0 * alpha(pg,qg)*kronecker_delta(ig,jg) * 
-                                                (kronecker_delta(mg,pg)*kronecker_delta(ng,qg) - 1.0/3.0*kronecker_delta(mg,ng)*kronecker_delta(pg,qg) 
-                                                    + 1./3.0 * kronecker_delta(mg,ng)*alpha(pg,qg) )
-                                            ) * pow(s_minus_p_alpha_square, -0.5)  -
-                                            (
-                                                 (s(ig,jg)-p*alpha(ig,jg) + 1./3.0 *alpha(pg,qg) * kronecker_delta(ig,jg) * (s(pg,qg) - p*alpha(pg,qg))) *
-                                                 (kronecker_delta(mg,rg)*kronecker_delta(ng,sg) - 1./3.0*kronecker_delta(mg,ng)*kronecker_delta(rg,sg) 
-                                                    +1./3.0 * kronecker_delta(mg,ng) * alpha(rg,sg)) *
-                                                 (s(rg,sg)-p*alpha(rg,sg)) 
-                                            ) * pow(s_minus_p_alpha_square, -1.5); 
-                                    }
+                    for (int ng = 0; ng < 3; ++ng){
+                        dm__dsigma(ig,jg,mg,ng) = 
+                            ( 
+                                (
+                                    kronecker_delta(mg,ig) * kronecker_delta(ng,jg) 
+                                    - 1./3.0 * kronecker_delta(mg,ng) * kronecker_delta(ig,jg) 
+                                    + 1./3.0 * kronecker_delta(mg,ng) * alpha(ig,jg) 
+                                ) 
+                                + 
+                                1./3.0 * kronecker_delta(ig,jg) * 
+                                    (
+                                        alpha(mg,ng)
+                                        - 1./3.0 * kronecker_delta(mg,ng)*alpha_volume 
+                                        + 1./3.0 * kronecker_delta(mg,ng)*alpha_square
+                                    )
+                            ) * pow(s_minus_p_alpha_square, -0.5)  
+                            -
+                            (
+                                (
+                                    s_minus_p_alpha(ig,jg) 
+                                    + 1./3.0  * kronecker_delta(ig,jg) *
+                                    (
+                                        alpha_times_s - p * alpha_square
+                                    )
+                                ) 
+                                *
+                                (
+                                    s_minus_p_alpha(mg,ng)
+                                    - 1./3.0 * kronecker_delta(mg,ng) * (-p*alpha_volume)
+                                    + 1./3.0 * kronecker_delta(mg,ng) * (alpha_times_s-p*alpha_square)
+                                )
+                            ) * pow(s_minus_p_alpha_square, -1.5); 
+                    }
 
 
         return dm__dsigma;

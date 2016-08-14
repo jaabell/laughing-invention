@@ -49,6 +49,8 @@
 #include "ClassicElastoplasticityGlobals.h"
 // for print p, q, theta
 // #include <tuple> 
+// for debugging printing
+#include <fstream> 
 
 #define ClassicElastoplasticMaterial_MAXITER_BRENT 20
 #define TOLERANCE1 1e-6
@@ -95,7 +97,7 @@ C++ "Rule of 5"
 namespace
 {
 
-    void printTensor(string name, const DTensor2 &v)
+    void printTensor(string const& name, DTensor2 const& v)
     {
 
         // All 9 elements in one line. 
@@ -118,7 +120,7 @@ namespace
         fprintf(stderr, " %16.8f \t %16.8f \t %16.8f] \n",  v(2, 0), v(2, 1), v(2,2)); 
     }
 
-    void printTensor4(string name, const DTensor4 &v)
+    void printTensor4(string const& name, DTensor4 const& v)
     {
 
 
@@ -174,6 +176,7 @@ namespace
     bool inverse4thTensor(DTensor4 const& rhs, DTensor4& ret){
         using namespace ClassicElastoplasticityGlobals;
         static DTensor2 intermediate_matrix(9,9,0.0);
+        intermediate_matrix*=0;
         // static DTensor4 ret(3,3,3,3,0.0);
         int m41 = 0,  m42 = 0;
         // (1). convert 4th order Tensor to matrix 
@@ -190,23 +193,29 @@ namespace
                     }
         // (2). Inverse the matrix .
         double det = intermediate_matrix.compute_Determinant();
-        if(det<MACHINE_EPSILON){
-            cout<<"ClassicElastoplasticMaterial cannot inverse T to get the consistent stiffness tensor. Use the inconsistent stiffness instead! "<<endl;
-            return false;
-        }
-        DTensor2 const& inv_matrix = intermediate_matrix.Inv();
-        // (3). convert Matrix to 4th order tensor
-        for ( int c44 = 1 ; c44 <= 3 ; c44++ )
-            for ( int c43 = 1 ; c43 <= 3 ; c43++ )
-                for ( int c42 = 1 ; c42 <= 3 ; c42++ )
-                    for ( int c41 = 1 ; c41 <= 3 ; c41++ )
-                    {
-                        m41 = 3 * (c41 - 1) + c42;
-                        m42 = 3 * (c43 - 1) + c44;
+        
+        // fprintf(stderr, "----> det: %f\n", det);
 
-                        ret(c41-1, c42-1, c43-1, c44-1) = inv_matrix(m41-1, m42-1);
-                    }
-        return true;
+        if(det<MACHINE_EPSILON){
+            cout<<"ClassicElastoplasticMaterial matrix T is not invertible to get the consistent stiffness tensor. Use the inconsistent stiffness instead! "<<endl;
+            return false;
+        }else{
+            static DTensor2 inv_matrix(3,3,0.0);
+            inv_matrix = intermediate_matrix.Inv();
+            // (3). convert Matrix to 4th order tensor
+            for ( int c44 = 1 ; c44 <= 3 ; c44++ )
+                for ( int c43 = 1 ; c43 <= 3 ; c43++ )
+                    for ( int c42 = 1 ; c42 <= 3 ; c42++ )
+                        for ( int c41 = 1 ; c41 <= 3 ; c41++ )
+                        {
+                            m41 = 3 * (c41 - 1) + c42;
+                            m42 = 3 * (c43 - 1) + c44;
+
+                            ret(c41-1, c42-1, c43-1, c44-1) = inv_matrix(m41-1, m42-1);
+                        }
+            return true;
+        }
+
     }
 
     // static int Nsteps = 0 ;
@@ -1760,7 +1769,7 @@ private:
                 }
                 else  //Plasticity
                 {
-
+                    // fprintf(stderr, "Full_Backward_Euler Plastic!\n" );
                     static DTensor2 ResidualStress(3, 3, 0);
                     static DTensor2 TrialStress_prev(3, 3, 0);
                     ResidualStress *= 0;
@@ -1886,7 +1895,7 @@ private:
                     // Working on consistent stiffness
                     // ===================================================================
                     // ===================================================================
-                    
+                    // fprintf(stderr, "start calculating the consistent stiffness!\n" );
                     // ===================================================================
                     // Update the m and n:
                     static DTensor2 nf(3,3,0.0);
@@ -1894,15 +1903,16 @@ private:
                     static DTensor2 mf(3,3,0.0);
                     mf = pf(depsilon, TrialStress);
                     // ===================================================================
-
+                    // fprintf(stderr, "start calculating the Tensor Ts!\n");
                     // ===================================================================
                     // Construct the Tensor T
                     static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize to integer later.
                     IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
 
                     static DTensor4 dm_dsigma(3,3,3,3,0.0);
+                    // fprintf(stderr, "Before dm_over_dsigma!\n");
                     dm_dsigma = pf.dm_over_dsigma(TrialStress);
-
+                    // fprintf(stderr, "After dm_over_dsigma!\n");
                     static DTensor4 Ts(3,3,3,3,0.0);
 
                     // Ts*=0;
@@ -1915,8 +1925,12 @@ private:
                     //                        Ts(ig,jg,mg,ng) += IdentityTensor4(ig,mg,jg,ng) + dLambda * Eelastic(ig,jg,kg,lg) * dm_dsigma(kg,lg,mg,ng);
                     //                     }
                     Ts(i, j, k, l) = IdentityTensor4(i,k,j,l) + dLambda * Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l);
-                    
+
+                    // printTensor4 (" IdentityTensor4     " , IdentityTensor4 );
+                    // printTensor4 (" dm_dsigma           " , dm_dsigma );
+                    // printTensor4 (" Ts                  " , Ts );
                     // ===================================================================
+                    // fprintf(stderr, "start calculating the Tensor H!\n" );
                     // ===================================================================
                     // Construct the Tensor H
                     static DTensor2 dm_dq_star_h_star(3,3,0.0);

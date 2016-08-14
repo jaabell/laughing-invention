@@ -2242,7 +2242,7 @@ ADD_material
 		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));  // 2
 		args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));  // 3
 		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));  // 4
-		args.push_back($17); signature.push_back(this_signature("von_mises_radius",  &isAdimensional));  // 5
+		args.push_back($17); signature.push_back(this_signature("von_mises_radius",  &isPressure));  // 5
 		args.push_back($20); signature.push_back(this_signature("armstrong_frederick_ha",   &isPressure));  // 6
 		args.push_back($23); signature.push_back(this_signature("armstrong_frederick_cr",   &isPressure));  // 7
 		args.push_back($26); signature.push_back(this_signature("isotropic_hardening_rate",   &isPressure));  // 8
