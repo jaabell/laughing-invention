@@ -171,7 +171,8 @@ namespace
     //     // return result;
     // }
 
-    bool const& inverse4thTensor(DTensor4 const& rhs, DTensor4 & ret){
+    bool inverse4thTensor(DTensor4 const& rhs, DTensor4& ret){
+        using namespace ClassicElastoplasticityGlobals;
         static DTensor2 intermediate_matrix(9,9,0.0);
         // static DTensor4 ret(3,3,3,3,0.0);
         int m41 = 0,  m42 = 0;
@@ -1924,7 +1925,9 @@ private:
                     H(k,l) = mf(k,l) + dLambda * dm_dq_star_h_star(k,l);
                     
                     static DTensor4 invT(3,3,3,3,0.0);
-                    if( !inverse4thTensor(Ts, invT) ) return -1;
+                    // If cannot inverse T, return directly. 
+                    // So "Stiffness" is the inconsistent stiffness tensor. 
+                    if( !inverse4thTensor(Ts, invT) ) return 0;
                     static DTensor4 R(3,3,3,3,0.0);
 
                     // for (int mg = 0; mg < 3; ++mg)
