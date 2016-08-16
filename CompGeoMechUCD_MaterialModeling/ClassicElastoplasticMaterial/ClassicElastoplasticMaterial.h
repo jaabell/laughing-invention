@@ -1593,8 +1593,7 @@ private:
                     //Compute the plastic multiplier
                     if (denominator == 0)
                     {
-                        cout << "CEP - denominator of plastic multiplier =0 \n
-                                   n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star = 0\n";
+                        cout << "CEP - denominator of plastic multiplier =0 \n n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star = 0\n";
                         printTensor("m", m);
                         printTensor("n", n);
                         cout << "xi_star_h_star=" << xi_star_h_star << endl;
