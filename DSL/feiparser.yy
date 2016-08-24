@@ -3664,9 +3664,9 @@ ADD_element:
 		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push($$);
 	}
-	// !=========================================================================================================
-	// !
-	// !FEIDOC add element # <.> type [SoftContact] with nodes (<.>, <.>) initial_normal_stiffness = <F/L> stiffning_rate = <m^-1> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [SoftContact] with nodes (<.>, <.>) initial_normal_stiffness = <F/L> stiffning_rate = <m^-1> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
 	| TEXTNUMBER exp TYPE SoftContact WITH NODES '(' exp ',' exp ')'
 		initial_normal_stiffness '=' exp
 		stiffning_rate '=' exp
