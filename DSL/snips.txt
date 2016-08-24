@@ -1,0 +1,712 @@
+// add acceleration field # <.> ax = <accel> ay = <accel> az = <aaccel> ;
+add acceleration field # $1 
+	ax = $2 
+	ay = $3 
+	az = $4 ;
+
+// add constraint equal dof with master node # <.> and slave node # <.> dof to constrain <.>;
+add constraint equal dof with master node # $1 and slave node # $2 dof to constrain $3;
+
+// add constraint equal dof with node # <.> dof <.> master and node # <.> dof <.> slave;
+add constraint equal dof with node # $1 dof $2 master and node # $3 dof $4 slave;
+
+// add damping # <.> to element # <.>;
+add damping # $1 to element # $2;
+
+// add damping # <.> to node # <.>;
+add damping # $1 to node # $2;
+
+// add damping # <.> type Caughey3rd with a0 = <time> a1 = <1/time> a2 = <.> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
+add damping # $1 type Caughey3rd with 
+	a0 = $2 
+	a1 = $3 
+	a2 = $4 
+	stiffness_to_use = $5;
+
+// add damping # <.> type Caughey4th with a0 = <time> a1 = <1/time> a2 = <.> a3 = <.> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
+add damping # $1 type Caughey4th with 
+	a0 = $2 
+	a1 = $3 
+	a2 = $4 
+	a3 = $5 
+	stiffness_to_use = $6;
+
+// add damping # <.> type Rayleigh with a0 = <1/time> a1 = <time> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
+add damping # $1 type Rayleigh with 
+	a0 = $2 
+	a1 = $3 
+	stiffness_to_use = $4;
+
+// add domain reduction method loading # <.> hdf5_file = <string> scale_factor = <.>;
+add domain reduction method loading # $1 
+	hdf5_file = $2 
+	scale_factor = $3;
+
+// add domain reduction method loading # <.> hdf5_file = <string>;
+add domain reduction method loading # $1 
+	hdf5_file = $2;
+
+// add element # <.> type 20NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 20NodeBrick using $2 Gauss points each direction with nodes ($3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) use material # $23;
+
+// add element # <.> type 20NodeBrick with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 20NodeBrick with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22;
+
+// add element # <.> type 20NodeBrick_elastic with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 20NodeBrick_elastic with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22;
+
+// add element # <.> type 20NodeBrick_upU with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+add element # $1 type 20NodeBrick_upU with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22 and 
+	porosity = $23 
+	alpha = $24  
+	rho_s = $25  
+	rho_f = $26 
+	k_x = $27  
+	k_y = $28  
+	k_z = $29  
+	K_s = $30 
+	K_f = $31;
+
+// add element # <.> type 20NodeBrickLT with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 20NodeBrickLT with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22;
+
+// add element # <.> type 27NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 27NodeBrick using $2 Gauss points each direction with nodes ($3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29) use material # $30;
+
+// add element # <.> type 27NodeBrick with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 27NodeBrick with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) use material # $29;
+
+// add element # <.> type 27NodeBrick_elastic with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 27NodeBrick_elastic with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) use material # $29;
+
+// add element # <.> type 27NodeBrickLT with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 27NodeBrickLT with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) use material # $29;
+
+// add element # <.> type 3NodeShell_ANDES with nodes (<.>, <.>, <.>) use material # <.> thickness = <l> ;
+add element # $1 type 3NodeShell_ANDES with nodes ($2, $3, $4) use material # $5 
+	thickness = $6 ;
+
+// add element # <.> type 4NodeShell_ANDES with nodes (<.>, <.>, <.>, <.>) use material # <.> thickness = <l> ;
+add element # $1 type 4NodeShell_ANDES with nodes ($2, $3, $4, $5) use material # $6 
+	thickness = $7 ;
+
+// add element # <.> type 4NodeShell_MITC4 with nodes (<.>, <.>, <.>, <.>) use material # <.> thickness = <L>;
+add element # $1 type 4NodeShell_MITC4 with nodes ($2, $3, $4, $5) use material # $6 
+	thickness = $7;
+
+// add element # <.> type 4NodeShell_NewMITC4 with nodes (<.>, <.>, <.>, <.>) use material # <.> thickness = <L>;
+add element # $1 type 4NodeShell_NewMITC4 with nodes ($2, $3, $4, $5) use material # $6 
+	thickness = $7;
+
+// add element # <.> type 8NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 8NodeBrick using $2 Gauss points each direction with nodes ($3, $4, $5, $6, $7, $8, $9, $10) use material # $11;
+
+// add element # <.> type 8NodeBrick with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 8NodeBrick with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10;
+
+// add element # <.> type 8NodeBrick_elastic with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 8NodeBrick_elastic with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10;
+
+// add element # <.> type 8NodeBrick_up with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+add element # $1 type 8NodeBrick_up with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10 
+	porosity = $11 
+	alpha = $12  
+	rho_s = $13  
+	rho_f = $14 
+	k_x = $15  
+	k_y = $16  
+	k_z = $17  
+	K_s = $18 
+	K_f = $19;
+
+// add element # <.> type 8NodeBrick_upU with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+add element # $1 type 8NodeBrick_upU with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10 
+	porosity = $11 
+	alpha = $12  
+	rho_s = $13  
+	rho_f = $14 
+	k_x = $15  
+	k_y = $16  
+	k_z = $17  
+	K_s = $18 
+	K_f = $19;
+
+// add element # <.> type 8NodeBrickLT with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type 8NodeBrickLT with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10;
+
+// add element # <.> type beam_9dof_elastic with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
+add element # $1 type beam_9dof_elastic with nodes ($2, $3) 
+	cross_section = $4 
+	elastic_modulus = $5 
+	shear_modulus = $6 
+	torsion_Jx = $7 
+	bending_Iy = $8 
+	bending_Iz = $9 
+	mass_density = $10  
+	xz_plane_vector = ($11, $12, $13 ) 
+	joint_1_offset = ($14, $15, $16 ) 
+	joint_2_offset = ($17, $18, $19 );
+
+// add element # <.> type beam_displacement_based with nodes (<.>, <.>) with # <.> integration_points use section # <.> mass_density = <M/L^3> IntegrationRule = "" xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
+add element # $1 type beam_displacement_based with nodes ($2, $3) with # $4 integration_points use section # $5 
+	mass_density = $6 
+	IntegrationRule = $7 
+	xz_plane_vector = ($8, $9, $10 ) 
+	joint_1_offset = ($11, $12, $13 ) 
+	joint_2_offset = ($14, $15, $16 );
+
+// add element # <.> type beam_elastic with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
+add element # $1 type beam_elastic with nodes ($2, $3) 
+	cross_section = $4 
+	elastic_modulus = $5 
+	shear_modulus = $6 
+	torsion_Jx = $7 
+	bending_Iy = $8 
+	bending_Iz = $9 
+	mass_density = $10  
+	xz_plane_vector = ($11, $12, $13 ) 
+	joint_1_offset = ($14, $15, $16 ) 
+	joint_2_offset = ($17, $18, $19 );
+
+// add element # <.> type beam_elastic_lumped_mass with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
+add element # $1 type beam_elastic_lumped_mass with nodes ($2, $3) 
+	cross_section = $4 
+	elastic_modulus = $5 
+	shear_modulus = $6 
+	torsion_Jx = $7 
+	bending_Iy = $8 
+	bending_Iz = $9 
+	mass_density = $10  
+	xz_plane_vector = ($11, $12, $13 ) 
+	joint_1_offset = ($14, $15, $16 ) 
+	joint_2_offset = ($17, $18, $19 );
+
+// add element # <.> type BeamColumnDispFiber3d with nodes (<.>, <.>) number_of_integration_points = <.> section_number = <.> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
+add element # $1 type BeamColumnDispFiber3d with nodes ($2, $3) 
+	number_of_integration_points = $4 
+	section_number = $5 
+	mass_density = $6  
+	xz_plane_vector = ($7, $8, $9 ) 
+	joint_1_offset = ($10, $11, $12 ) 
+	joint_2_offset = ($13, $14, $15 );
+
+// add element # <.> type EightNodeBrickLTNoOutput with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type EightNodeBrickLTNoOutput with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10;
+
+// add element # <.> type HardContact with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
+add element # $1 type HardContact with nodes ($2, $3) 
+	normal_stiffness = $4 
+	tangential_stiffness = $5 
+	normal_damping = $6 
+	tangential_damping = $7  
+	friction_ratio = $8  
+	contact_plane_vector = ($9, $10, $11 );
+
+// add element # <.> type ShearBeamLT with nodes (<.>, <.>) cross_section = <l^2> use material # <.>;
+add element # $1 type ShearBeamLT with nodes ($2, $3) 
+	cross_section = $4 use material # $5;
+
+// add element # <.> type SoftContact with nodes (<.>, <.>) initial_normal_stiffness = <F/L> stiffning_rate = <m^-1> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
+add element # $1 type SoftContact with nodes ($2, $3) 
+	initial_normal_stiffness = $4 
+	stiffning_rate = $5 
+	tangential_stiffness = $6 
+	normal_damping = $7 
+	tangential_damping = $8  
+	friction_ratio = $9  
+	contact_plane_vector = ($10, $11, $12 );
+
+// add element # <.> type truss with nodes (<.>, <.>) use material # <.> cross_section = <length^2> mass_density = <M/L^3> ;
+add element # $1 type truss with nodes ($2, $3) use material # $4 
+	cross_section = $5 
+	mass_density = $6 ;
+
+// add element # <.> type variable_node_brick_8_to_27 using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+add element # $1 type variable_node_brick_8_to_27 using $2 Gauss points each direction with nodes ($3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29) use material # $30;
+
+// add fiber # <.> using material # <.> to section # <.>  fiber_cross_section = <area> fiber_location = (<L>,<L>);
+add fiber # $1 using material # $2 to section # $3  
+	fiber_cross_section = $4 
+	fiber_location = ($5,$6);
+
+// add imposed motion # <.> to node # <.> dof DOFTYPE displacement_scale_unit = <displacement> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
+add imposed motion # $1 to node # $2 dof DOFTYPE 
+	displacement_scale_unit = $3 
+	displacement_file = $4 
+	velocity_scale_unit = $5 
+	velocity_file = $6 
+	acceleration_scale_unit = $7 
+	acceleration_file = $8;
+
+// add imposed motion # <.> to node # <.> dof DOFTYPE time_step = <t> displacement_scale_unit = <length> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
+add imposed motion # $1 to node # $2 dof DOFTYPE 
+	time_step = $3 
+	displacement_scale_unit = $4 
+	displacement_file = $5 
+	velocity_scale_unit = $6 
+	velocity_file = $7 
+	acceleration_scale_unit = $8 
+	acceleration_file = $9;
+
+// add load # <.> to all elements type self_weight use acceleration field # <.>;
+add load # $1 to all elements type self_weight use acceleration field # $2;
+
+// add load # <.> to element # <.> type self_weight use acceleration field # <.>;
+add load # $1 to element # $2 type self_weight use acceleration field # $3;
+
+// add load # <.> to element # <.> type surface at nodes (<.> , <.> , <.> , <.>) with magnitude <.>;
+add load # $1 to element # $2 type surface at nodes ($3 , $4 , $5 , $6) with magnitude $7;
+
+// add load # <.> to element # <.> type surface at nodes (<.> , <.> , <.> , <.>) with magnitudes (<.> , <.> , <.> , <.>);
+add load # $1 to element # $2 type surface at nodes ($3 , $4 , $5 , $6) with magnitudes ($7 , $8 , $9 , $10);
+
+// add load # <.> to element # <.> type surface at nodes (<.> , <.> , <.> , <.>, <.>, <.>, <.>, <.>) with magnitude <.>;
+add load # $1 to element # $2 type surface at nodes ($3 , $4 , $5 , $6, $7, $8, $9, $10) with magnitude $11;
+
+// add load # <.> to element # <.> type surface at nodes (<.> , <.> , <.> , <.>, <.>, <.>, <.>, <.>) with magnitudes (<.> , <.> , <.> , <.>, <.>, <.>, <.>, <.>);
+add load # $1 to element # $2 type surface at nodes ($3 , $4 , $5 , $6, $7, $8, $9, $10) with magnitudes ($11 , $12 , $13 , $14, $15, $16, $17, $18);
+
+// add load # <.> to element # <.> type surface at nodes (<.> , <.> , <.> , <.>, <.>, <.>, <.>, <.>, <.>) with magnitude <.>;
+add load # $1 to element # $2 type surface at nodes ($3 , $4 , $5 , $6, $7, $8, $9, $10, $11) with magnitude $12;
+
+// add load # <.> to element # <.> type surface at nodes (<.> , <.> , <.> , <.>, <.>, <.>, <.>, <.>, <.>) with magnitudes (<.> , <.> , <.> , <.>, <.>, <.>, <.>, <.>, <.>);
+add load # $1 to element # $2 type surface at nodes ($3 , $4 , $5 , $6, $7, $8, $9, $10, $11) with magnitudes ($12 , $13 , $14 , $15, $16, $17, $18, $19, $20);
+
+// add load # <.> to node # <.> type from_reactions;
+add load # $1 to node # $2 type from_reactions;
+
+// add load # <.> to node # <.> type linear FORCETYPE = <force or moment>; //FORCETYPE = Fx Fy Fz Mx My Mz F_fluid_x F_fluid_y F_fluid_z
+add load # $1 to node # $2 type linear 
+	FORCETYPE = $3; //FORCETYPE = Fx Fy Fz Mx My Mz F_fluid_x F_fluid_y F_fluid_z
+
+// add load # <.> to node # <.> type path_series FORCETYPE = <force or moment> time_step = <time> series_file = "STRING";
+add load # $1 to node # $2 type path_series 
+	FORCETYPE = $3 
+	time_step = $4 
+	series_file = $5;
+
+// add load # <.> to node # <.> type path_time_series FORCETYPE = <force or moment> series_file = "STRING";
+add load # $1 to node # $2 type path_time_series 
+	FORCETYPE = $3 
+	series_file = $4;
+
+// add load # <.> to node # <.> type self_weight use acceleration field # <.>;
+add load # $1 to node # $2 type self_weight use acceleration field # $3;
+
+// add mass to node # <.> mx = <mass> my = <mass> mz = <mass> Imx = <mass*length^2> Imy = <mass*length^2> Imz = <mass*length^2>;
+add mass to node # $1 
+	mx = $2 
+	my = $3 
+	mz = $4 
+	Imx = $5 
+	Imy = $6 
+	Imz = $7;
+
+// add mass to node # <.> mx = <mass> my = <mass> mz = <mass>;
+add mass to node # $1 
+	mx = $2 
+	my = $3 
+	mz = $4;
+
+// add material # <.> type DruckerPragerArmstrongFrederickLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
+add material # $1 type DruckerPragerArmstrongFrederickLT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	druckerprager_k = $5 
+	armstrong_frederick_ha = $6 
+	armstrong_frederick_cr = $7 
+	isotropic_hardening_rate = $8 initial_confining_stress = exp;
+
+// add material # <.> type DruckerPragerLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
+add material # $1 type DruckerPragerLT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	druckerprager_k = $5 
+	kinematic_hardening_rate = $6 
+	isotropic_hardening_rate = $7 initial_confining_stress = exp;
+
+// add material # <.> type DruckerPragerVonMisesLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
+add material # $1 type DruckerPragerVonMisesLT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	druckerprager_k = $5 
+	kinematic_hardening_rate = $6 
+	isotropic_hardening_rate = $7 initial_confining_stress = exp;
+
+// add material # <.> type linear_elastic_crossanisotropic mass_density = <mass_density> elastic_modulus_horizontal = <F/L^2> elastic_modulus_vertical = <F/L^2> poisson_ratio_h_v = <.> poisson_ratio_h_h = <.> shear_modulus_h_v = <F/L^2>;
+add material # $1 type linear_elastic_crossanisotropic 
+	mass_density = $2 
+	elastic_modulus_horizontal = $3 
+	elastic_modulus_vertical = $4 
+	poisson_ratio_h_v = $5 
+	poisson_ratio_h_h = $6 
+	shear_modulus_h_v = $7;
+
+// add material # <.> type linear_elastic_isotropic_3d mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.>;
+add material # $1 type linear_elastic_isotropic_3d 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4;
+
+// add material # <.> type linear_elastic_isotropic_3d_LT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.>;
+add material # $1 type linear_elastic_isotropic_3d_LT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4;
+
+// add material # <.> type NonlinearIsotropic3DLT mass_density = <M/L^3>  Niso3d_K = <F/L^2> Niso3d_Kur = <F/L^2> Niso3d_n = <.> Niso3d_c = <.> Niso3d_phi0 = <.> Niso3d_dphi = <.> Niso3d_Rf = <.> Niso3d_K0 = <.> Niso3d_Kb = <.> Niso3d_m = <.> Niso3d_pa = <F/L^2> Niso3d_K2 = <.> Niso3d_B = <.> Niso3d_Et = <F/L^2> Niso3d_Ei = <F/L^2> Niso3d_Er = <F/L^2>
+add material # $1 type NonlinearIsotropic3DLT 
+	mass_density = $2  
+	Niso3d_K = $3 
+	Niso3d_Kur = $4 
+	Niso3d_n = $5 
+	Niso3d_c = $6 
+	Niso3d_phi0 = $7 
+	Niso3d_dphi = $8 
+	Niso3d_Rf = $9 
+	Niso3d_K0 = $10 
+	Niso3d_Kb = $11 
+	Niso3d_m = $12 
+	Niso3d_pa = $13 
+	Niso3d_K2 = $14 
+	Niso3d_B = $15 
+	Niso3d_Et = $16 
+	Niso3d_Ei = $17 
+	Niso3d_Er = $18
+
+// add material # <.> type sanisand2004 mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
+add material # $1 type sanisand2004 
+	mass_density = $2 
+	e0 = $3 
+	sanisand2004_G0 = $4 
+	poisson_ratio = $5 
+	sanisand2004_Pat = $6  
+	sanisand2004_p_cut = $7  
+	sanisand2004_Mc = $8  
+	sanisand2004_c = $9 
+	sanisand2004_lambda_c = $10 
+	sanisand2004_xi = $11  
+	sanisand2004_ec_ref = $12  
+	sanisand2004_m = $13  
+	sanisand2004_h0 = $14 
+	sanisand2004_ch = $15  
+	sanisand2004_nb = $16 
+	sanisand2004_A0 = $17 
+	sanisand2004_nd = $18 
+	sanisand2004_z_max = $19  
+	sanisand2004_cz = $20 
+	initial_confining_stress = $21  
+	algorithm = $22  
+	number_of_subincrements = $23  
+	maximum_number_of_iterations = $24  
+	tolerance_1 = $25  
+	tolerance_2 = $26;
+
+// add material # <.> type sanisand2008 mass_density = <M/L^3>  e0 = <.>  sanisand2008_G0 = <.>  sanisand2008_K0 = <.> sanisand2008_Pat = <stress> sanisand2008_k_c = <.>  sanisand2008_alpha_cc = <.> sanisand2008_c = <.>  sanisand2008_xi = <.>  sanisand2008_lambda = <.>  sanisand2008_ec_ref = <.>  sanisand2008_m = <.>  sanisand2008_h0 = <.>  sanisand2008_ch = <.>  sanisand2008_nb = <.>  sanisand2008_A0 = <.> sanisand2008_nd = <.>  sanisand2008_p_r = <.>  sanisand2008_rho_c = <.>  sanisand2008_theta_c = <.>  sanisand2008_X = <.>  sanisand2008_z_max = <.>  sanisand2008_cz = <.>  sanisand2008_p0 = <stress>  sanisand2008_p_in = <.>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
+add material # $1 type sanisand2008 
+	mass_density = $2  
+	e0 = $3  
+	sanisand2008_G0 = $4  
+	sanisand2008_K0 = $5 
+	sanisand2008_Pat = $6 
+	sanisand2008_k_c = $7  
+	sanisand2008_alpha_cc = $8 
+	sanisand2008_c = $9  
+	sanisand2008_xi = $10  
+	sanisand2008_lambda = $11  
+	sanisand2008_ec_ref = $12  
+	sanisand2008_m = $13  
+	sanisand2008_h0 = $14  
+	sanisand2008_ch = $15  
+	sanisand2008_nb = $16  
+	sanisand2008_A0 = $17 
+	sanisand2008_nd = $18  
+	sanisand2008_p_r = $19  
+	sanisand2008_rho_c = $20  
+	sanisand2008_theta_c = $21  
+	sanisand2008_X = $22  
+	sanisand2008_z_max = $23  
+	sanisand2008_cz = $24  
+	sanisand2008_p0 = $25  
+	sanisand2008_p_in = $26  
+	algorithm = $27  
+	number_of_subincrements = $28  
+	maximum_number_of_iterations = $29  
+	tolerance_1 = $30  
+	tolerance_2 = $31;
+
+// add material # <.> type uniaxial_concrete02 compressive_strength = <F/L^2> strain_at_compressive_strength = <.> crushing_strength = <F/L^2>  strain_at_crushing_strength = <.> lambda = <.> tensile_strength = <F/L^2> tension_softening_stiffness = <F/L^2>;
+add material # $1 type uniaxial_concrete02 
+	compressive_strength = $2 
+	strain_at_compressive_strength = $3 
+	crushing_strength = $4  
+	strain_at_crushing_strength = $5 
+	lambda = $6 
+	tensile_strength = $7 
+	tension_softening_stiffness = $8;
+
+// add material # <.> type uniaxial_elastic elastic_modulus = <F/L^2> viscoelastic_modulus = <mass / length / time> ;
+add material # $1 type uniaxial_elastic 
+	elastic_modulus = $2 
+	viscoelastic_modulus = $3 ;
+
+// add material # <.> type uniaxial_steel01 yield_strength = <F/L^2> elastic_modulus = <F/L^2> strain_hardening_ratio = <.>  a1 = <.>  a2 = <.>  a3 = <>  a4 = <.> ;
+add material # $1 type uniaxial_steel01 
+	yield_strength = $2 
+	elastic_modulus = $3 
+	strain_hardening_ratio = $4  
+	a1 = $5  
+	a2 = $6  
+	a3 = $7  
+	a4 = $8 ;
+
+// add material # <.> type uniaxial_steel02 yield_strength = <F/L^2> elastic_modulus = <F/L^2> strain_hardening_ratio = <.> R0 = <.> cR1 = <.> cR2 = <.>  a1 = <.>  a2 = <.>  a3 = <>  a4 = <.> ;
+add material # $1 type uniaxial_steel02 
+	yield_strength = $2 
+	elastic_modulus = $3 
+	strain_hardening_ratio = $4 
+	R0 = $5 
+	cR1 = $6 
+	cR2 = $7  
+	a1 = $8  
+	a2 = $9  
+	a3 = $10  
+	a4 = $11 ;
+
+// add material # <.> type VonMisesLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> von_mises_radius = <F/L^2> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> ;
+add material # $1 type VonMisesLT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	von_mises_radius = $5 
+	kinematic_hardening_rate = $6 
+	isotropic_hardening_rate = $7 ;
+
+// add node # <.> at (<length>,<length>,<length>)  with <.> dofs;
+add node # $1 at ($2,$3,$4)  with $5 dofs;
+
+// add section # <.> type elastic3d elastic_modulus = <F/L^2> cross_section = <L^2> bending_Iz = <L^4> bending_Iy=<L^4> torsion_Jx=<L^4> ;
+add section # $1 type elastic3d 
+	elastic_modulus = $2 
+	cross_section = $3 
+	bending_Iz = $4 
+	bending_Iy = $5 
+	torsion_Jx = $6 ;
+
+// add section # <.> type Elastic_Membrane_Plate elastic_modulus = <F/L^2> poisson_ratio = <.> thickness = <length> mass_density = <M/L^3>;
+add section # $1 type Elastic_Membrane_Plate 
+	elastic_modulus = $2 
+	poisson_ratio = $3 
+	thickness = $4 
+	mass_density = $5;
+
+// add section # <.> type FiberSection TorsionConstant_GJ = <F*L^2>
+add section # $1 type FiberSection 
+	TorsionConstant_GJ = $2
+
+// add section # <.> type Membrane_Plate_Fiber thickness = <length> use material # <.>;
+add section # $1 type Membrane_Plate_Fiber 
+	thickness = $2 use material # $3;
+
+// add single point constraint to node # <.> dof to constrain <dof_type> constraint value of <corresponding unit>;
+add single point constraint to node # $1 dof to constrain $2 constraint value of $3;
+
+// add uniform acceleration # <.> to all nodes dof <.> time_step = <T> scale_factor = <.> initial_velocity = <L/S> acceleration_file = <string>;
+add uniform acceleration # $1 to all nodes dof $2 
+	time_step = $3 
+	scale_factor = $4 
+	initial_velocity = $5 
+	acceleration_file = $6;
+
+// check element # <.>;
+check element # $1;
+
+// check mesh filename;
+check mesh filename;
+
+// compute reaction forces;
+compute reaction forces;
+
+// define algorithm With_no_convergence_check / Newton / Modified_Newton;
+define algorithm With_no_convergence_check / Newton / Modified_Newton;
+
+// define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Unbalance tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
+define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Unbalance 
+	tolerance = $1 
+	maximum_iterations = $2 
+	verbose_level = $3|$4|$5;
+
+// define dynamic integrator Hilber_Hughes_Taylor with alpha = <.>;
+define dynamic integrator Hilber_Hughes_Taylor with 
+	alpha = $1;
+
+// define dynamic integrator Newmark with gamma = <.> beta = <.>;
+define dynamic integrator Newmark with 
+	gamma = $1 
+	beta = $2;
+
+// define load factor increment <.>;
+define load factor increment $1;
+
+// define NDMaterialLT constitutive integration algorithm Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
+define NDMaterialLT constitutive integration algorithm Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler 
+	yield_function_relative_tolerance = $1 
+	stress_relative_tolerance = $2 
+	maximum_iterations = $3;
+
+// define solver ProfileSPD / UMFPack;
+define solver ProfileSPD / UMFPack;
+
+// define static integrator displacement_control using node # <.> dof DOFTYPE increment <length>;
+define static integrator displacement_control using node # $1 dof DOFTYPE increment $2;
+
+// disable element # <.> output;
+disable element # $1 output;
+
+// disable element output;
+disable element output;
+
+// disable output;
+disable output;
+
+// enable element output;
+enable element output;
+
+// enable output;
+enable output;
+
+// fix node # <.> dofs <.>;
+fix node # $1 dofs $2;
+
+// fix node # <.> dofs all;
+fix node # $1 dofs all;
+
+// free node # <.> dofs <.>;
+free node # $1 dofs $2;
+
+// help;
+help;
+
+// if (.) { } else {};
+if (.) { } else {};
+
+// if (.) { };
+if (.) { };
+
+// model name "name_string";
+model name $1;
+
+// new loading stage "name_string";
+new loading stage $1;
+
+// output every <.> steps;
+output every $1 steps;
+
+// print <.> in <.>;
+print $1 in $2;
+
+// print <.>;
+print $1;
+
+// print domain;
+print domain;
+
+// print element # <.>;
+print element # $1;
+
+// print material # <.>;
+print material # $1;
+
+// print node # <.>;
+print node # $1;
+
+// remove constraint equaldof node # <.>;
+remove constraint equaldof node # $1;
+
+// remove displacement from  node # <.>;
+remove displacement from  node # $1;
+
+// remove element # <.>;
+remove element # $1;
+
+// remove imposed motion # <.>;
+remove imposed motion # $1;
+
+// remove load # <.>;
+remove load # $1;
+
+// remove node # <.>;
+remove node # $1;
+
+// remove strain from element # <.>;
+remove strain from element # $1;
+
+// runTest;
+runTest;
+
+// save <.> non_converged_substeps;
+save $1 non_converged_substeps;
+
+// set output compression level to <.>;
+set output compression level to $1;
+
+// simulate <.> steps using static algorithm;
+simulate $1 steps using static algorithm;
+
+// simulate <.> steps using transient algorithm time_step = <time>;
+simulate $1 steps using transient algorithm 
+	time_step = $2;
+
+// simulate <.> steps using variable transient algorithm time_step = <time> minimum_time_step = <time> maximum_time_step = <time> number_of_iterations = <.>;
+simulate $1 steps using variable transient algorithm 
+	time_step = $2 
+	minimum_time_step = $3 
+	maximum_time_step = $4 
+	number_of_iterations = $5;
+
+// simulate constitutive testing constant mean pressure triaxial strain control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
+simulate constitutive testing constant mean pressure triaxial strain control use material # $1 
+	strain_increment_size = $2 
+	maximum_strain = $3 
+	number_of_times_reaching_maximum_strain = $4;
+
+// simulate constitutive testing drained triaxial strain control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
+simulate constitutive testing drained triaxial strain control use material # $1 
+	strain_increment_size = $2 
+	maximum_strain = $3 
+	number_of_times_reaching_maximum_strain = $4;
+
+// simulate constitutive testing undrained simple shear use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
+simulate constitutive testing undrained simple shear use material # $1 
+	strain_increment_size = $2 
+	maximum_strain = $3 
+	number_of_times_reaching_maximum_strain = $4;
+
+// simulate constitutive testing undrained triaxial stress control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
+simulate constitutive testing undrained triaxial stress control use material # $1 
+	strain_increment_size = $2 
+	maximum_strain = $3 
+	number_of_times_reaching_maximum_strain = $4;
+
+// simulate constitutive testing undrained triaxial use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;
+simulate constitutive testing undrained triaxial use material # $1 
+	strain_increment_size = $2 
+	maximum_strain = $3 
+	number_of_times_reaching_maximum_strain = $4;
+
+// simulate using eigen algorithm number_of_modes = <.>;
+simulate using eigen algorithm 
+	number_of_modes = $1;
+
+// ux uy uz Ux Uy Uz rx ry rz;
+ux uy uz Ux Uy Uz rx ry rz;
+
+// while (.) { };
+while (.) { };
+
+// whos;
+whos;
+
