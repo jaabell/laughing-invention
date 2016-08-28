@@ -395,7 +395,6 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
     Index_to_Gauss_Point_Coordinates.resize(max_element_tag + 1);
 
 
-// Element_types.resize(max_element_tag+1);
     Class_Tags.resize(max_element_tag + 1);
     Partition.resize(max_element_tag + 1);
     Number_of_Output_Fields.resize(max_element_tag + 1);
@@ -406,7 +405,6 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
         Index_to_Outputs[i] = -1;
         Number_of_Gauss_Points[i] = -1;
         Index_to_Gauss_Point_Coordinates[i] = -1;
-        // Element_types[i] = -1;
         Class_Tags[i] = -1;
         Partition[i] = -1;
         Number_of_Output_Fields[i] = -1;
@@ -496,7 +494,6 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
         Number_of_Gauss_Points[ntags + i]           = -1;
         Index_to_Gauss_Point_Coordinates[ntags + i] = -1;
         Material_tags[ntags + i]                    = -1;
-        Element_types.push_back(" not defined ");
         Number_of_Output_Fields[ntags + i]          = -1;
         Class_Tags[ntags + i]                       = -1;
     }
@@ -569,9 +566,6 @@ int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID 
     // Writing Index_to_Gauss_Point_Coordinates;
     Index_to_Gauss_Point_Coordinates[tag] = pos_elements_gausscoords;
     pos_elements_gausscoords += ngauss * 3;
-
-    // Writing Element_types;
-    // Element_types.push_back(type);
 
     // Writing Material_tags;
     // Material_tags[tag] = 0;
@@ -1458,7 +1452,6 @@ void H5OutputWriter::writeMesh()
         id_elements_ngauss                = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
         id_elements_gausscoords           = createVariableLengthDoubleArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
         id_index_to_elements_gausscoords  = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
-        id_elements_type                  = createVariableLengthStringArray (id_elements_group,  "Element_types", " ");
         id_elements_materialtag           = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
         id_elements_classtag              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
 
@@ -1600,17 +1593,25 @@ void H5OutputWriter::writeMesh()
         // }
         // cout << "Processor " << processID << " went through. \n";
 #endif
+        // Creating Element_Class_Tag Description [Sumeet, August, 2016]
+        ELE_TAG_DESC_ARRAY;
+        int ele_class_desc_size = sizeof(ele_tag_desc_array)/sizeof(int);
+        cout << ele_class_desc_size << endl;
+        dims[0]      = (hsize_t) ele_class_desc_size;
+        maxdims[0]   = (hsize_t) ele_class_desc_size;
+        count[0]     = dims[0];
+        id_elements_class_desc            = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Element_Class_Desc"," ");
 
-        // TODO: Bring back element types
-        // //Write material tags
-        // for (int tag = 0; tag < (int) Element_types.size(); tag++)
-        // {
-        //     std::string type = Element_types[tag];
-        //     writeVariableLengthStringArray(id_elements_type,
-        //                                    tag,
-        //                                    type.size(),
-        //                                    type);
-        // }
+        // Writing Element_Class_Tag Description [Sumeet, August, 2016]
+        writeConstantLengthIntegerArray(id_elements_class_desc,
+                                        datarank,
+                                        dims,
+                                        maxdims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        ele_tag_desc_array);
 
 
         //Write index to gauss coordinates (if any)
