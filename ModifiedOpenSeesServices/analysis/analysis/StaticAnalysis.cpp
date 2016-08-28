@@ -181,24 +181,22 @@ StaticAnalysis::analyze(int numSteps)
     for (int i = 0; i < numSteps; i++)
     {
         cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+        // std::chrono::high_resolution_clock::time_point step_start;
+        // std::chrono::high_resolution_clock::duration estimated_time_to_completion;
+        // step_start = std::chrono::high_resolution_clock::now();
 
-        std::chrono::high_resolution_clock::time_point step_start;
-        std::chrono::high_resolution_clock::duration estimated_time_to_completion;
-        step_start = std::chrono::high_resolution_clock::now();
 
-
-        if (i > 0)
-        {
-            cout << "                             ............. [ETA: "
-                 << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
-                 << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
-                 << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
-        }
-        else
-        {
+        // if (i > 0)
+        // {
+        //     cout << " [ETA: "
+        //          << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
+        //          << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
+        //          << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
+        // }
+        // else
+        // {
             cout << "\n";
-        }
-
+        // }
 
         globalESSITimer.start("Domain_Step");
         result = theAnalysisModel->newStepDomain();
@@ -297,7 +295,7 @@ StaticAnalysis::analyze(int numSteps)
 # endif
 
 
-        estimated_time_to_completion = std::chrono::high_resolution_clock::now() - step_start;
+        // estimated_time_to_completion = std::chrono::high_resolution_clock::now() - step_start;
 
     }
 

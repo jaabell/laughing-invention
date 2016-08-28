@@ -1622,6 +1622,14 @@ void H5OutputWriter::writeMesh()
         // }
         // cout << "Processor " << processID << " went through. \n";
 #endif
+        // Creating Element_Class_Tag Description [Sumeet, August, 2016]
+        ELE_TAG_DESC_ARRAY;
+        int ele_class_desc_size = sizeof(ele_tag_desc_array)/sizeof(int);
+        cout << ele_class_desc_size << endl;
+        dims[0]      = (hsize_t) ele_class_desc_size;
+        maxdims[0]   = (hsize_t) ele_class_desc_size;
+        count[0]     = dims[0];
+        id_elements_class_desc            = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Element_Class_Desc"," ");
 
         for (int tag = 0; tag < (int) Element_types.size(); tag++)
         {
@@ -1632,6 +1640,16 @@ void H5OutputWriter::writeMesh()
                                            type);
         }
 
+        // Writing Element_Class_Tag Description [Sumeet, August, 2016]
+        writeConstantLengthIntegerArray(id_elements_class_desc,
+                                        datarank,
+                                        dims,
+                                        maxdims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        ele_tag_desc_array);
 
         //Write index to gauss coordinates (if any)
         dims[0]      = (hsize_t) Number_of_Gauss_Points.Size();
@@ -2289,8 +2307,6 @@ int H5OutputWriter::setTime(double t)
                                    &current_time);
 
     current_time_step++;
-
-    cout << " current_time_step " <<  current_time_step << endl;
 
     //===============================================================================
     // Writing Number of time steps  

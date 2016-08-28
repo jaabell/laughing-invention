@@ -293,104 +293,140 @@
 #define MAT_TAG_OrthotropicLinElastic       1003
 #define MAT_TAG_OrthotropicLinElasticPoint  1004
 
-#define ELE_TAG_CST                         4050
+#define ELE_TAG_CST                                              4050
 
-#define ELE_TAG_Subdomain                   1
-#define ELE_TAG_ElasticBeamLumpedMass       3000
-#define ELE_TAG_beam3d01                    3001
-#define ELE_TAG_beam3d02                    3002
-#define ELE_TAG_Truss                       4001
-#define ELE_TAG_TrussSection                4005
-#define ELE_TAG_CorotTruss                  4003
-#define ELE_TAG_CorotTrussSection           4004
-#define ELE_TAG_fElmt05                     5
-#define ELE_TAG_fElmt02                     2
-#define ELE_TAG_ZeroLength                  5000
-#define ELE_TAG_ZeroLengthSection           5001
-#define ELE_TAG_ZeroLengthND                5002
+#define ELE_TAG_Subdomain                                        1
+#define ELE_TAG_ElasticBeamLumpedMass                            3000
+#define ELE_TAG_beam3d01                                         3001
+#define ELE_TAG_beam3d02                                         3002
+#define ELE_TAG_TrussSection                                     4005
+#define ELE_TAG_CorotTruss                                       4003
+#define ELE_TAG_CorotTrussSection                                4004
+#define ELE_TAG_fElmt05                                          5
+#define ELE_TAG_fElmt02                                          2
+#define ELE_TAG_ZeroLength                                       5000
+#define ELE_TAG_ZeroLengthSection                                5001
+#define ELE_TAG_ZeroLengthND                                     5002
 
 // Nima Tafazzoli added
-#define ELE_TAG_ContactElement_3DOF_3DOF 5003
-#define ELE_TAG_ContactElement_3DOF_6DOF 5004
-#define ELE_TAG_ContactElement_6DOF_6DOF 5005
-#define ELE_TAG_ContactElement_Nonlinear_3DOF_7DOF 5013
-#define ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF 5014
+#define ELE_TAG_ContactElement_3DOF_3DOF                         5003
+#define ELE_TAG_ContactElement_3DOF_6DOF                         5004
+#define ELE_TAG_ContactElement_6DOF_6DOF                         5005
+#define ELE_TAG_ContactElement_Nonlinear_3DOF_7DOF               5013
+#define ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF               5014
 
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_3DOF_3DOF 5006
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_3DOF_6DOF 5007
 #define ELE_TAG_Nonlinear_two_functions_ContactElement_6DOF_6DOF 5008
 
+#define ELE_TAG_PenaltyElement                                   5009
+#define ELE_TAG_PenaltyElementApplyDisplacement                  5010
+#define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam     5012  // Nima Tafazzoli, December 2012
+#define ELE_TAG_LargeDispBeamColumn3d                            6002
+#define ELE_TAG_FourNodeQuad                                     1010
+#define ELE_TAG_BeamWithHinges3d                                  402
+#define ELE_TAG_EightNodeBrick                                   7001
+#define ELE_TAG_EightNodeBrickElastic                            7015
+#define ELE_TAG_EightNodeBrickVariableGP                         7019
+#define ELE_TAG_TwentyNodeBrick                                  7002
+#define ELE_TAG_TwentyNodeBrickVariableGP                        7020
+#define ELE_TAG_TwentySevenNodeBrickVariableGP                   7021
+#define ELE_TAG_TwentyNodeBrickElastic                           7017
+#define ELE_TAG_VariableNodeBrick                                7018
+#define ELE_TAG_EightNodeBrick_u_p_U                             7003
+#define ELE_TAG_EightNodeBrick_u_p_U_LT                          7022
+#define ELE_TAG_TwentyNodeBrick_u_p_U                            7004
+#define ELE_TAG_FourNodeQuadUP                                   7005
+#define ELE_TAG_TotalLagrangianFD20NodeBrick                     7006 // ZC added
+#define ELE_TAG_TotalLagrangianFD8NodeBrick                      7007
+#define ELE_TAG_EightNode_LDBrick_u_p                            7008
+#define ELE_TAG_EightNode_Brick_u_p                              7009
+#define ELE_TAG_TwentySevenNodeBrick                             7010
+#define ELE_TAG_TwentySevenNodeBrickElastic                      7016
+#define ELE_TAG_BrickUP                                          7011
+#define ELE_TAG_Nine_Four_Node_QuadUP                            7012
+#define ELE_TAG_Twenty_Eight_Node_BrickUP                        7013
+#define ELE_TAG_Twenty_Node_Brick                                7014
+#define ELE_TAG_PlateMITC4                                       2023
+#define ELE_TAG_ShellMITC4                                       2024
+#define ELE_TAG_NewShellMITC4                                    2025
+#define ELE_TAG_ThreeNodeAndesBending                            2027
+#define ELE_TAG_ThreeNodeAndesMembrane                           2028
+#define ELE_TAG_Plate1                                           2022
+#define ELE_TAG_Brick                                            3458
+#define ELE_TAG_BbarBrick                                        3457
+#define ELE_TAG_EnhancedQuad                                     3459
+#define ELE_TAG_ConstantPressureVolumeQuad                       3456
+#define ELE_TAG_NineNodeMixedQuad                                3359
+#define ELE_TAG_DispBeamColumn3d                                 9871
+#define ELE_TAG_HingedBeam3d                                     9873
+#define ELE_TAG_TwoPointHingedBeam3d                             9875
+#define ELE_TAG_OnePointHingedBeam3d                             9877
+#define ELE_TAG_BeamColumnJoint3d                                4445
+                
 
-// Sumeet Added Contact Elements 
+                
+                
+                
+#define ELE_TAG_Joint3D                                          9903
 
-#define ELE_TAG_HardContact              5015      // Sumeet added on June 26 2016
-#define ELE_TAG_SoftContact         	 5016      // Sumeet added on June 26 2016
+// Reorganizing Element Tag Numbers  [Sumeet August,2016]
 
-#define ELE_TAG_PenaltyElement 5009
-#define ELE_TAG_PenaltyElementApplyDisplacement 5010
+// All elements class tags would be in serial numbers from 1-N for optimization
+/***************************************************************************
+* Desc is [Dimension][N. Nodes][Dof per nodes][N. Gauss][No.of Outputs]
+* - - - - - - - - - - - - - -- - - - - - - - -- - - - - - - - - - - - - - -- 
+*
+* [Dimension] = <num_of_digits = 1> Dimesnion of the element
+*				1-> 1-dimension
+*				2-> 2-dimension
+*				3-> 3-dimension
+*				4-> special elements
+*
+* [N. Nodes]  = <num_of_digits = 2> Number of nodes in elements
+*				xx-> number of nodes
+*
+* [Dof per nodes]  = <num_of_digits = 2> Degree of freedom per node
+*					 xx-> DOFS per node
+*
+* [N. Gauss]  = <num_of_digits = 2> Number of gauss points in elements
+*				xx-> number of gauss points
+*
+* [No.of Outputs]  = <num_of_digits = 3> Number of outputs for elements
+*					 xxx-> number of outputs for elements
+*
+***************************************************************************/
 
-#define ELE_TAG_ElasticBeam 5011         // Nima Tafazzoli, December 2012
-#define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam 5012  // Nima Tafazzoli, December 2012
+                                                              //New  //Old       //Desc
+#define ELE_TAG_Truss                                            1   //4001    102300002
+#define ELE_TAG_ElasticBeam                                      2   //5011    102600024         // Nima Tafazzoli, December 2012
+#define ELE_TAG_FrictionalPenaltyContact                         3   //5015    102300009         // J.Abell
+#define ELE_TAG_ThreeNodeAndesShell                              4   //2026    203600006
+#define ELE_TAG_FourNodeAndesShell                               5   //2029    204600006               
+#define ELE_TAG_EightNodeBrickLT                                 6   //8001    308308144
+#define ELE_TAG_TwentySevenNodeBrickLT                           7   //8002    327327486
+#define ELE_TAG_ShearBeamLT                                      8   //8003    302301018
+#define ELE_TAG_EightNodeBrickLT_NoOutput                        9   //8004    308308000
+#define ELE_TAG_TwentyNodeBrickLT                                10  //8005    320320486
+#define ELE_TAG_HardContact              						5015      // Sumeet added on June 26 2016
+#define ELE_TAG_SoftContact         	 						5016      // Sumeet added on June 26 2016
 
-
-
-#define ELE_TAG_LargeDispBeamColumn3d    6002
-#define ELE_TAG_FourNodeQuad     1010
-#define ELE_TAG_BeamWithHinges3d  402
-#define ELE_TAG_EightNodeBrick   7001
-#define ELE_TAG_EightNodeBrickElastic   7015
-#define ELE_TAG_EightNodeBrickVariableGP   7019
-#define ELE_TAG_TwentyNodeBrick   7002
-#define ELE_TAG_TwentyNodeBrickVariableGP   7020
-#define ELE_TAG_TwentySevenNodeBrickVariableGP   7021
-#define ELE_TAG_TwentyNodeBrickElastic   7017
-#define ELE_TAG_VariableNodeBrick   7018
-#define ELE_TAG_EightNodeBrick_u_p_U            7003
-#define ELE_TAG_EightNodeBrick_u_p_U_LT            7022
-#define ELE_TAG_TwentyNodeBrick_u_p_U            7004
-#define ELE_TAG_FourNodeQuadUP  7005
-#define ELE_TAG_TotalLagrangianFD20NodeBrick 7006 // ZC added
-#define ELE_TAG_TotalLagrangianFD8NodeBrick 7007
-#define ELE_TAG_EightNode_LDBrick_u_p 7008
-#define ELE_TAG_EightNode_Brick_u_p 7009
-#define ELE_TAG_TwentySevenNodeBrick   7010
-#define ELE_TAG_TwentySevenNodeBrickElastic   7016
-#define ELE_TAG_BrickUP         7011
-#define ELE_TAG_Nine_Four_Node_QuadUP         7012
-#define ELE_TAG_Twenty_Eight_Node_BrickUP         7013
-#define ELE_TAG_Twenty_Node_Brick         7014
-#define ELE_TAG_PlateMITC4      2023
-#define ELE_TAG_ShellMITC4      2024
-#define ELE_TAG_NewShellMITC4      2025
-#define ELE_TAG_ThreeNodeAndesShell 2026
-#define ELE_TAG_ThreeNodeAndesBending 2027
-#define ELE_TAG_ThreeNodeAndesMembrane 2028
-#define ELE_TAG_FourNodeAndesShell 2029
-#define ELE_TAG_Plate1          2022
-#define ELE_TAG_Brick                      3458
-#define ELE_TAG_BbarBrick                  3457
-#define ELE_TAG_EnhancedQuad               3459
-#define ELE_TAG_ConstantPressureVolumeQuad 3456
-#define ELE_TAG_NineNodeMixedQuad          3359
-#define ELE_TAG_DispBeamColumn3d 9871
-#define ELE_TAG_HingedBeam3d     9873
-#define ELE_TAG_TwoPointHingedBeam3d     9875
-#define ELE_TAG_OnePointHingedBeam3d     9877
-#define ELE_TAG_BeamColumnJoint3d 4445
-
-// LTensor Elements
-#define ELE_TAG_EightNodeBrickLT   8001
-#define ELE_TAG_TwentySevenNodeBrickLT   8002
-#define ELE_TAG_ShearBeamLT 8003
-#define ELE_TAG_EightNodeBrickLT_NoOutput   8004
-#define ELE_TAG_TwentyNodeBrickLT 8005
+/********* Writing Element Description Array [Sumeet August,2016] ***********************/
+#define ELE_TAG_DESC_ARRAY      int ele_tag_desc_array[] =  {  	-1		 , \
+																102300002, \
+																102600024, \
+																102300009, \
+																203600006, \
+																204600006, \
+																308308144, \
+																327327486, \
+																302301018, \
+																308308000, \
+																320320486, \
+															}
 
 
-
-#define ELE_TAG_Joint3D    9903
-
-
-
+/******************************************************************************************/
 #define BEAM_INTEGRATION_TAG_Lobatto         1
 #define BEAM_INTEGRATION_TAG_Legendre        2
 #define BEAM_INTEGRATION_TAG_Radau           3
