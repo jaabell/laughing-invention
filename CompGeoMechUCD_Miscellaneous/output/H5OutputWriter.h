@@ -243,6 +243,30 @@ public:  //Additional stuff
                                           hsize_t *block,
                                           int *data);
 
+// ===========================================================
+// For float output    
+// ===========================================================
+    hid_t createVariableLengthFloatArray(hid_t here,
+                                          int rank,
+                                          hsize_t *dims,
+                                          hsize_t *maxdims,
+                                          std::string name,
+                                          std::string attibute,
+                                          int timedimension = -1);
+
+    hid_t writeVariableLengthFloatArray(hid_t id_array,
+                                         int datarank,
+                                         hsize_t *dims,
+                                         hsize_t *data_dims,
+                                         hsize_t *offset,
+                                         hsize_t *stride,
+                                         hsize_t *count,
+                                         hsize_t *block,
+                                         float *data);
+// ===========================================================
+// For float output    END
+// =========================================================== 
+        
     void writeMesh(void);
     void syncWriters(); //Used in parallel
 

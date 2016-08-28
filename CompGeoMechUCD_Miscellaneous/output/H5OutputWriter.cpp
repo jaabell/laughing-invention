@@ -1677,8 +1677,8 @@ void H5OutputWriter::writeMesh()
             maxdims[0] = (hsize_t)  length_nodes_displacements_output;
             maxdims[1] = number_of_time_steps + 1;
 
-            id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
-            id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
+            id_nodes_displacements = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
+            id_nodes_reaction_forces = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
         }
 
         // if (processID > 0)
@@ -1702,7 +1702,7 @@ void H5OutputWriter::writeMesh()
             {
                 // dims[1] = 1;
                 // maxdims[1] = 1;
-                id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ", 1);
+                id_elements_output = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Outputs", " ", 1);
             }
 
         }//    create_elementOutput_arrays = false;
@@ -1839,8 +1839,11 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
 #endif
 
 
-    double *data = displacements.theData;
-    writeVariableLengthDoubleArray(id_nodes_displacements,
+    // double *data = displacements.theData;
+    std::vector<float> displacements_in_(displacements.Size());
+    for (int i = 0; i < displacements.Size(); ++i)
+        displacements_in_[i]=displacements(i);
+    writeVariableLengthFloatArray(id_nodes_displacements,
                                    datarank,
                                    dims,
                                    data_dims,
@@ -1848,7 +1851,8 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
                                    stride,
                                    count,
                                    block,
-                                   data);
+                                   &displacements_in_[0] );
+                                   // data);
 
     H5Sclose(id_dataspace);
     H5Sclose(id_memspace);
@@ -1952,8 +1956,11 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
 #endif
 
 
-    double *data = reactionForces.theData;
-    writeVariableLengthDoubleArray(id_nodes_reaction_forces,
+    // double *data = reactionForces.theData;
+    std::vector<float> reactionForces_in_(reactionForces.Size());
+    for (int i = 0; i < reactionForces.Size(); ++i)
+        reactionForces_in_[i]=reactionForces(i);
+    writeVariableLengthFloatArray(id_nodes_reaction_forces,
                                    datarank,
                                    dims,
                                    data_dims,
@@ -1961,7 +1968,8 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
                                    stride,
                                    count,
                                    block,
-                                   data);
+                                   &reactionForces_in_[0] );
+                                   // data);
 
     H5Sclose(id_dataspace);
     H5Sclose(id_memspace);
@@ -2020,8 +2028,11 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
         count[1]     = 1;
         block[0]     = 1;
         block[1]     = 1;
-        double *data = output.theData;
-        writeVariableLengthDoubleArray(id_elements_output,
+        // double *data = output.theData;
+        std::vector<float> elementoutput_in_(output.Size());
+        for (int i = 0; i < output.Size(); ++i)
+            elementoutput_in_[i]=output(i);
+        writeVariableLengthFloatArray(id_elements_output,
                                        datarank,
                                        dims,
                                        data_dims,
@@ -2029,7 +2040,8 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
                                        stride,
                                        count,
                                        block,
-                                       data);
+                                       &elementoutput_in_[0] );
+                                       // data);
 
         H5Sclose(id_dataspace);
         H5Sclose(id_memspace);
@@ -2994,6 +3006,132 @@ hid_t H5OutputWriter::writeConstantLengthIntegerArray(hid_t id_array,
     H5OUTPUTWRITER_COUNT_OBJS;
     return id_array;
 }
+
+// ===========================================================
+// For float output    
+// =========================================================== 
+hid_t H5OutputWriter::createVariableLengthFloatArray(hid_t here,
+        int rank,
+        hsize_t *dims,
+        hsize_t *maxdims,
+        std::string name,
+        std::string attribute,
+        int timedimension)
+{
+    hid_t id_array;
+    float fill_value = 0.0;
+    id_array = createVariableLengthArray(here,
+                                         rank,
+                                         dims,
+                                         maxdims,
+                                         name,
+                                         attribute,
+                                         H5T_NATIVE_FLOAT,
+                                         sizeof(float),
+                                         &fill_value,
+                                         timedimension);
+
+    return id_array;
+}
+
+hid_t H5OutputWriter::writeVariableLengthFloatArray(hid_t id_array,
+        int datarank,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        float *data)
+{
+    // Extend it if necesary!
+    if (dims != 0 && data != 0)
+    {
+        status =  H5Dset_extent( id_array, dims ); // Needs to be avoided for Displacement and Outputs arrays, they are
+        //extended collectively in setTime() function
+        hdf5_check_error(status);
+    }
+
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = 0;
+    hsize_t id_memspace = 0;
+
+    id_dataspace = H5Dget_space(id_array);
+    id_memspace = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+
+    if (data != 0)
+    {
+        //Select the region of data to output to
+        status = H5Sselect_hyperslab(
+                     id_dataspace,          // Id of the parent dataspace
+                     H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                     offset,                // start of selection
+                     stride,                // stride in each dimension, NULL  is select everything
+                     count ,                // how many blocks to select in each direction
+                     block                  // little block selected per selection
+                 );
+    }
+    else
+    {
+        status = H5Sselect_none(id_dataspace);
+        status = H5Sselect_none(id_memspace);
+    }
+    hdf5_check_error(status);
+
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_FLOAT,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 dataset_xfer_plist,           // Form of writing
+                 data                   // The actual data
+             );
+
+    H5D_mpio_actual_io_mode_t actual_io_mode;
+    H5Pget_mpio_actual_io_mode( dataset_xfer_plist, &actual_io_mode);
+
+    switch (actual_io_mode)
+    {
+
+    case H5D_MPIO_NO_COLLECTIVE: //     No collective I/O was performed. Collective I/O was not requested or collective I/O isn't possible on this dataset.
+        numof_NO_COLLECTIVE_calls++;
+        break;
+    case H5D_MPIO_CHUNK_INDEPENDENT:        // HDF5 performed one the chunk collective optimization schemes and each chunk was accessed independently.
+        numof_CHUNK_INDEPENDENT_calls++;
+        break;
+    case H5D_MPIO_CHUNK_COLLECTIVE:     // HDF5 performed one the chunk collective optimization schemes and each chunk was accessed collectively.
+        numof_CHUNK_COLLECTIVE_calls++;
+        break;
+    case H5D_MPIO_CHUNK_MIXED:            // HDF5 performed one the chunk collective optimization schemes and some chunks were accessed independently, some collectively.
+        numof_CHUNK_MIXED_calls++;
+        break;
+    }
+#else
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_FLOAT,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 data                   // The actual data
+             );
+#endif
+//------------------------
+
+    hdf5_check_error(status);
+
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+    return id_array;
+}
+// ===========================================================
+// For float output    END
+// =========================================================== 
 
 void H5OutputWriter::set_zlib_compression_level(int level)
 {
