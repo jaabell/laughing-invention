@@ -1870,8 +1870,8 @@ int H5OutputWriter::writeDummyDisplacements(  )
     int datarank         = 1;
     hsize_t dummy[1] = {1};
 
-    double *zerodata = 0;
-    writeVariableLengthDoubleArray(id_nodes_displacements,
+    float *zerodata = 0;
+    writeVariableLengthFloatArray(id_nodes_displacements,
                                    datarank,
                                    dummy,
                                    dummy,
@@ -2061,8 +2061,8 @@ int H5OutputWriter::writeDummyElementOutput()
     int datarank         = 1;
     hsize_t dummy[1] = {1};
 
-    double *zerodata = 0;//displacements.theData;
-    writeVariableLengthDoubleArray(id_elements_output,
+    float *zerodata = 0;//displacements.theData;
+    writeVariableLengthFloatArray(id_elements_output,
                                    datarank,
                                    dummy,
                                    dummy,
