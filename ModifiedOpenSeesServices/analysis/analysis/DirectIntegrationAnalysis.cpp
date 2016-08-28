@@ -221,22 +221,22 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
         cout << "Transient Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
 
-        std::chrono::high_resolution_clock::time_point step_start;
-        std::chrono::high_resolution_clock::duration estimated_time_to_completion;
-        step_start = std::chrono::high_resolution_clock::now();
+        // std::chrono::high_resolution_clock::time_point step_start;
+        // std::chrono::high_resolution_clock::duration estimated_time_to_completion;
+        // step_start = std::chrono::high_resolution_clock::now();
 
 
-        if (i > 0)
-        {
-            cout << " [ETA: "
-                 << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
-                 << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
-                 << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
-        }
-        else
-        {
+        // if (i > 0)
+        // {
+        //     cout << " [ETA: "
+        //          << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
+        //          << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
+        //          << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
+        // }
+        // else
+        // {
             cout << "\n";
-        }
+        // }
 
         globalESSITimer.start("Domain_Step");
         result = theAnalysisModel->newStepDomain(dT);
@@ -310,7 +310,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             return -4;
         }
 
-        estimated_time_to_completion =  std::chrono::high_resolution_clock::now() - step_start;
+        // estimated_time_to_completion =  std::chrono::high_resolution_clock::now() - step_start;
 
     }
 
