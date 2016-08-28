@@ -125,7 +125,6 @@ mass
 mass_density
 master
 material
-maximum_iterations
 maximum_number_of_iterations
 maximum_strain
 maximum_time_step
@@ -171,6 +170,8 @@ number_of_times_reaching_maximum_strain
 of
 output
 output
+plastic_flow_kd
+plastic_flow_xi
 point
 points
 poisson_ratio
@@ -255,7 +256,6 @@ strain_at_crushing_strength
 strain_hardening_ratio
 strain_increment_size
 stress
-stress_relative_tolerance
 surface
 tangential_damping
 tangential_stiffness
@@ -289,7 +289,6 @@ while
 whos
 with
 xz_plane_vector
-yield_function_relative_tolerance
 yield_strength
 
 
@@ -309,6 +308,7 @@ yield_strength
 8NodeBrick_up
 8NodeBrick_upU
 8NodeBrickLT
+Backward_Euler
 beam_9dof_elastic
 beam_displacement_based
 beam_elastic
@@ -319,6 +319,8 @@ Caughey4th
 DOFTYPE
 DruckerPragerArmstrongFrederickLT
 DruckerPragerLT
+DruckerPragerNonAssociateArmstrongFrederickLT
+DruckerPragerNonAssociateLinearHardeningLT
 DruckerPragerVonMisesLT
 EightNodeBrickLTNoOutput
 Energy_Increment
@@ -326,8 +328,10 @@ F_fluid_x
 F_fluid_y
 F_fluid_z
 FORCETYPE
-Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler
+Forward_Euler
+Forward_Euler_Crisfield
 from_reactions
+Full_Backward_Euler
 Fx
 Fy
 Fz
@@ -337,7 +341,10 @@ linear
 linear_elastic_crossanisotropic
 linear_elastic_isotropic_3d
 linear_elastic_isotropic_3d_LT
+Modified_Euler_Error_Control
 Modified_Newton
+Multistep_Forward_Euler
+Multistep_Forward_Euler_Crisfield
 Mx
 My
 Mz
@@ -350,6 +357,10 @@ path_series
 path_time_series
 ProfileSPD
 Rayleigh
+Relative_Energy_Increment
+Relative_Norm_Displacement_Increment
+Relative_Norm_Unbalance
+Runge_Kutta_45_Error_Control
 sanisand2004
 sanisand2008
 ShearBeamLT
@@ -363,5 +374,6 @@ uniaxial_elastic
 uniaxial_steel01
 uniaxial_steel02
 variable transient
+VonMisesArmstrongFrederickLT
 VonMisesLT
 With_no_convergence_check

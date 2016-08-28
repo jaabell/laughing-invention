@@ -57,6 +57,10 @@ const DTensor2& LinearHardeningTensor_EV::getDerivative(const DTensor2 &depsilon
     return derivative;
 }
 
+double const& LinearHardeningTensor_EV::getHardeningType() const{
+    return H;
+}
+
 int LinearHardeningTensor_EV::sendSelf(int commitTag, Channel &theChannel)
 {
     //Shove all data into single vector for sending

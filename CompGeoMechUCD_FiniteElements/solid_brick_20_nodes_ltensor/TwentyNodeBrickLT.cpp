@@ -53,12 +53,12 @@ Matrix TwentyNodeBrickLT::K(60, 60);
 //====================================================================
 
 TwentyNodeBrickLT::TwentyNodeBrickLT(int element_number,
-                                 int node_numb_1,  int node_numb_2,  int node_numb_3,  int node_numb_4,
-                                 int node_numb_5,  int node_numb_6,  int node_numb_7,  int node_numb_8,
-                                 int node_numb_9,  int node_numb_10, int node_numb_11, int node_numb_12,
-                                 int node_numb_13, int node_numb_14, int node_numb_15, int node_numb_16,
-                                 int node_numb_17, int node_numb_18, int node_numb_19, int node_numb_20,
-                                 NDMaterialLT *Globalmmodel)
+                                     int node_numb_1,  int node_numb_2,  int node_numb_3,  int node_numb_4,
+                                     int node_numb_5,  int node_numb_6,  int node_numb_7,  int node_numb_8,
+                                     int node_numb_9,  int node_numb_10, int node_numb_11, int node_numb_12,
+                                     int node_numb_13, int node_numb_14, int node_numb_15, int node_numb_16,
+                                     int node_numb_17, int node_numb_18, int node_numb_19, int node_numb_20,
+                                     NDMaterialLT *Globalmmodel)
 
     : Element(element_number, ELE_TAG_TwentyNodeBrickLT ),
       rho(0.0), connectedExternalNodes(20),
@@ -80,29 +80,38 @@ TwentyNodeBrickLT::TwentyNodeBrickLT(int element_number,
     }
 
 
-    // 20NodeBrick also has 27 Gauss Points, like 27NodeBrick. 
+    // 20NodeBrick also has 27 Gauss Points, like 27NodeBrick.
     short where = 0;
-    for (short ii = 0 ; ii < 3 ; ++ii ){
-        for (short jj = 0 ; jj < 3 ; ++jj ){
-            for (short kk = 0 ; kk < 3 ; ++kk ){
-                std::vector<short> axis={ii,jj,kk};
-                for(short rst=0;rst<3;++rst){
-                    switch(axis[rst]){
-                        case 0:{
-                            gp_coords(where, rst) = -0.774596669241483;
-                            gp_weight(where, rst) = 0.555555555555556;
-                            break;
-                        }
-                        case 1:{
-                            gp_coords(where, rst) = 0.0;
-                            gp_weight(where, rst) = 0.888888888888889;
-                            break;
-                        }
-                        case 2:{
-                            gp_coords(where, rst) = 0.774596669241483;
-                            gp_weight(where, rst) = 0.555555555555556;
-                            break;
-                        }
+    for (short ii = 0 ; ii < 3 ; ++ii )
+    {
+        for (short jj = 0 ; jj < 3 ; ++jj )
+        {
+            for (short kk = 0 ; kk < 3 ; ++kk )
+            {
+                // std::vector<short> axis={ii,jj,kk}; // This doesnt work on intel compiler on edison (jose)
+                short axis[3] = {ii, jj, kk};
+                for (short rst = 0; rst < 3; ++rst)
+                {
+                    switch (axis[rst])
+                    {
+                    case 0:
+                    {
+                        gp_coords(where, rst) = -0.774596669241483;
+                        gp_weight(where, rst) = 0.555555555555556;
+                        break;
+                    }
+                    case 1:
+                    {
+                        gp_coords(where, rst) = 0.0;
+                        gp_weight(where, rst) = 0.888888888888889;
+                        break;
+                    }
+                    case 2:
+                    {
+                        gp_coords(where, rst) = 0.774596669241483;
+                        gp_weight(where, rst) = 0.555555555555556;
+                        break;
+                    }
                     }
                 }
                 where ++;
@@ -136,26 +145,26 @@ TwentyNodeBrickLT::TwentyNodeBrickLT(int element_number,
     connectedExternalNodes(18) = node_numb_19;
     connectedExternalNodes(19) = node_numb_20;
 
-    Global_to_Local_Node_Mapping[node_numb_1] =0;
-    Global_to_Local_Node_Mapping[node_numb_2] =1;
-    Global_to_Local_Node_Mapping[node_numb_3] =2;
-    Global_to_Local_Node_Mapping[node_numb_4] =3;
-    Global_to_Local_Node_Mapping[node_numb_5] =4;
-    Global_to_Local_Node_Mapping[node_numb_6] =5;
-    Global_to_Local_Node_Mapping[node_numb_7] =6;
-    Global_to_Local_Node_Mapping[node_numb_8] =7;
-    Global_to_Local_Node_Mapping[node_numb_9] =8;
-    Global_to_Local_Node_Mapping[node_numb_10] =9;
-    Global_to_Local_Node_Mapping[node_numb_11] =10;
-    Global_to_Local_Node_Mapping[node_numb_12] =11;
-    Global_to_Local_Node_Mapping[node_numb_13] =12;
-    Global_to_Local_Node_Mapping[node_numb_14] =13;
-    Global_to_Local_Node_Mapping[node_numb_15] =14;
-    Global_to_Local_Node_Mapping[node_numb_16] =15;
-    Global_to_Local_Node_Mapping[node_numb_17] =16;
-    Global_to_Local_Node_Mapping[node_numb_18] =17;
-    Global_to_Local_Node_Mapping[node_numb_19] =18;
-    Global_to_Local_Node_Mapping[node_numb_20] =19;
+    Global_to_Local_Node_Mapping[node_numb_1] = 0;
+    Global_to_Local_Node_Mapping[node_numb_2] = 1;
+    Global_to_Local_Node_Mapping[node_numb_3] = 2;
+    Global_to_Local_Node_Mapping[node_numb_4] = 3;
+    Global_to_Local_Node_Mapping[node_numb_5] = 4;
+    Global_to_Local_Node_Mapping[node_numb_6] = 5;
+    Global_to_Local_Node_Mapping[node_numb_7] = 6;
+    Global_to_Local_Node_Mapping[node_numb_8] = 7;
+    Global_to_Local_Node_Mapping[node_numb_9] = 8;
+    Global_to_Local_Node_Mapping[node_numb_10] = 9;
+    Global_to_Local_Node_Mapping[node_numb_11] = 10;
+    Global_to_Local_Node_Mapping[node_numb_12] = 11;
+    Global_to_Local_Node_Mapping[node_numb_13] = 12;
+    Global_to_Local_Node_Mapping[node_numb_14] = 13;
+    Global_to_Local_Node_Mapping[node_numb_15] = 14;
+    Global_to_Local_Node_Mapping[node_numb_16] = 15;
+    Global_to_Local_Node_Mapping[node_numb_17] = 16;
+    Global_to_Local_Node_Mapping[node_numb_18] = 17;
+    Global_to_Local_Node_Mapping[node_numb_19] = 18;
+    Global_to_Local_Node_Mapping[node_numb_20] = 19;
 
     for (int i = 0; i < 20; i++)
     {
@@ -171,41 +180,51 @@ TwentyNodeBrickLT::TwentyNodeBrickLT(int element_number,
 
 //====================================================================
 TwentyNodeBrickLT::TwentyNodeBrickLT (): Element(0, ELE_TAG_TwentyNodeBrickLT ),
-    rho(0.0), connectedExternalNodes(20), 
+    rho(0.0), connectedExternalNodes(20),
     Ki(0), mmodel(0), Q(60),
     bf(3), M( 60, 60), P( 60 )
 {
     is_mass_computed = false;
     nodes_in_brick = 20;
 
-    for (int i = 0; i < 20; i++){
+    for (int i = 0; i < 20; i++)
+    {
         theNodes[i] = 0;
     }
     this->setNumberOfBoundaryNodes(8);
 
-        // 20NodeBrick also has 27 Gauss Points, like 27NodeBrick. 
+    // 20NodeBrick also has 27 Gauss Points, like 27NodeBrick.
     short where = 0;
-    for (short ii = 0 ; ii < 3 ; ++ii ){
-        for (short jj = 0 ; jj < 3 ; ++jj ){
-            for (short kk = 0 ; kk < 3 ; ++kk ){
-                std::vector<short> axis={ii,jj,kk};
-                for(short rst=0;rst<3;++rst){
-                    switch(axis[rst]){
-                        case 0:{
-                            gp_coords(where, rst) = -0.774596669241483;
-                            gp_weight(where, rst) = 0.555555555555556;
-                            break;
-                        }
-                        case 1:{
-                            gp_coords(where, rst) = 0.0;
-                            gp_weight(where, rst) = 0.888888888888889;
-                            break;
-                        }
-                        case 2:{
-                            gp_coords(where, rst) = 0.774596669241483;
-                            gp_weight(where, rst) = 0.555555555555556;
-                            break;
-                        }
+    for (short ii = 0 ; ii < 3 ; ++ii )
+    {
+        for (short jj = 0 ; jj < 3 ; ++jj )
+        {
+            for (short kk = 0 ; kk < 3 ; ++kk )
+            {
+                // std::vector<short> axis={ii,jj,kk};// This doesnt work on intel compiler on edison (jose)
+                short axis[3] = {ii, jj, kk};
+                for (short rst = 0; rst < 3; ++rst)
+                {
+                    switch (axis[rst])
+                    {
+                    case 0:
+                    {
+                        gp_coords(where, rst) = -0.774596669241483;
+                        gp_weight(where, rst) = 0.555555555555556;
+                        break;
+                    }
+                    case 1:
+                    {
+                        gp_coords(where, rst) = 0.0;
+                        gp_weight(where, rst) = 0.888888888888889;
+                        break;
+                    }
+                    case 2:
+                    {
+                        gp_coords(where, rst) = 0.774596669241483;
+                        gp_weight(where, rst) = 0.555555555555556;
+                        break;
+                    }
                     }
                 }
                 where ++;
@@ -840,7 +859,7 @@ void TwentyNodeBrickLT::computeGaussPoint(void)
 //=============================================================================
 int TwentyNodeBrickLT::getNumExternalNodes () const
 {
-    return 20; 
+    return 20;
 }
 
 
@@ -859,7 +878,7 @@ TwentyNodeBrickLT::getNodePtrs(void)
 //=============================================================================
 int TwentyNodeBrickLT::getNumDOF ()
 {
-    return 3 * nodes_in_brick; 
+    return 3 * nodes_in_brick;
 }
 
 //=============================================================================
@@ -898,7 +917,8 @@ void TwentyNodeBrickLT::setDomain (Domain *theDomain)
             theNodes[i] = theDomain->getNode( connectedExternalNodes(i) );
 
 # ifdef _PARALLEL_PROCESSING
-            if ( theNodes[i] == 0 ){
+            if ( theNodes[i] == 0 )
+            {
                 theNodes[i] = theDomain->getOutsideNode( connectedExternalNodes(i) );
             }
 # endif
@@ -1105,7 +1125,7 @@ const Matrix &TwentyNodeBrickLT::getTangentStiff ()
 
 
     }
-    
+
     //Set the stiffness tensor to zero (its static!)
     K.Zero();
     int Ki = 0;
@@ -1121,7 +1141,7 @@ const Matrix &TwentyNodeBrickLT::getTangentStiff ()
                 {
                     Ki = k + 3 * (i - 1);
                     Kj = l + 3 * (j - 1);
-                    K( Ki - 1 , Kj - 1 ) = stifftensor(i-1, k-1, l-1, j-1);
+                    K( Ki - 1 , Kj - 1 ) = stifftensor(i - 1, k - 1, l - 1, j - 1);
                 }
             }
         }
@@ -1138,8 +1158,8 @@ const DTensor4 &TwentyNodeBrickLT::getStiffnessTensor(void) const
 {
 
     static DTensor4 stifftensor(nodes_in_brick, 3, 3, nodes_in_brick, 0.0);
-    
-    for (auto it = stifftensor.begin(); it != stifftensor.end(); it++) 
+
+    for (auto it = stifftensor.begin(); it != stifftensor.end(); it++)
     {
         *it = 0.0;
     }
@@ -1347,55 +1367,69 @@ const Vector &TwentyNodeBrickLT::getBodyForce(double loadFactor, const Vector &d
 //======================================================================
 const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector &data)
 {
-    map<int,int> local_nodes_map; int local_nodes[8];
+    map<int, int> local_nodes_map;
+    int local_nodes[8];
     //note -> the user at least should start with a node on the corner edge (sumeet)
-    
+
     /////////////////////////////////////////// Edited by Sumeet 30/03/2016 //////////////////////////////
     // checking if node exists in the element
-    for ( int i =0; i<8 ;i++){
-        std::map<int,int>::iterator it;
-        it=Global_to_Local_Node_Mapping.find(data(i));
-        if (it == Global_to_Local_Node_Mapping.end()){
+    for ( int i = 0; i < 8 ; i++)
+    {
+        std::map<int, int>::iterator it;
+        it = Global_to_Local_Node_Mapping.find(data(i));
+        if (it == Global_to_Local_Node_Mapping.end())
+        {
             cerr << "\nERROR: Node " <<  data(i) << " defined for the BrickSurfaceLoad does not belong to element \n" ;
             exit( 1 );
         }
-        local_nodes_map[it->second]=i;
-        local_nodes[i]=it->second;
+        local_nodes_map[it->second] = i;
+        local_nodes[i] = it->second;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    static const int Node_to_Surface_Number[20][4]={{3,0,2,4},{3,0,2,5},{3,0,3,5},{3,0,3,4},
-                                                    {3,1,2,4},{3,1,2,5},{3,1,3,5},{3,1,3,4},
-                                                    {2,0,2,0},{2,0,5,0},{2,0,3,0},{2,0,4,0},
-                                                    {2,1,2,0},{2,1,5,0},{2,1,3,0},{2,1,4,0}};
-    static const int Surface_Number_to_Node_order[6][8]={{1,2,3,0,9 ,10,11,8 },
-                                                         {5,4,7,6,12,15,14,13},
-                                                         {5,1,0,4,17,8 ,16,12},
-                                                         {2,6,7,3,18,14,19,10},
-                                                         {0,3,7,4,11,19,15,16},
-                                                         {1,5,6,2,17,13,18,9 }};    
+    static const int Node_to_Surface_Number[20][4] = {{3, 0, 2, 4}, {3, 0, 2, 5}, {3, 0, 3, 5}, {3, 0, 3, 4},
+        {3, 1, 2, 4}, {3, 1, 2, 5}, {3, 1, 3, 5}, {3, 1, 3, 4},
+        {2, 0, 2, 0}, {2, 0, 5, 0}, {2, 0, 3, 0}, {2, 0, 4, 0},
+        {2, 1, 2, 0}, {2, 1, 5, 0}, {2, 1, 3, 0}, {2, 1, 4, 0}
+    };
+    static const int Surface_Number_to_Node_order[6][8] = {{1, 2, 3, 0, 9 , 10, 11, 8 },
+        {5, 4, 7, 6, 12, 15, 14, 13},
+        {5, 1, 0, 4, 17, 8 , 16, 12},
+        {2, 6, 7, 3, 18, 14, 19, 10},
+        {0, 3, 7, 4, 11, 19, 15, 16},
+        {1, 5, 6, 2, 17, 13, 18, 9 }
+    };
     ////////////////////////////////////// Edited by Sumeet 30/3/2016 /////////////////////////////////////
     //  Finding the correct surface nodes order
-    int success =0; int surface_nodes_order[8]={0,0,0,0,0,0,0,0};
+    int success = 0;
+    int surface_nodes_order[8] = {0, 0, 0, 0, 0, 0, 0, 0};
     int number_of_surfaces = Node_to_Surface_Number[local_nodes[0]][0];
-    for ( int i =0; i<number_of_surfaces ;i++){
-        int surface_no = Node_to_Surface_Number[local_nodes[0]][i+1];
-        for( int j=0; j<8;j++){
-            std::map<int,int>::iterator it;
-            int node=Surface_Number_to_Node_order[surface_no][j];
-            it=local_nodes_map.find(node);
-            if (it == local_nodes_map.end()){
-                success=0;break;
+    for ( int i = 0; i < number_of_surfaces ; i++)
+    {
+        int surface_no = Node_to_Surface_Number[local_nodes[0]][i + 1];
+        for ( int j = 0; j < 8; j++)
+        {
+            std::map<int, int>::iterator it;
+            int node = Surface_Number_to_Node_order[surface_no][j];
+            it = local_nodes_map.find(node);
+            if (it == local_nodes_map.end())
+            {
+                success = 0;
+                break;
             }
-            success=success+1;
-            surface_nodes_order[j]= it->second;         
+            success = success + 1;
+            surface_nodes_order[j] = it->second;
         }
-        if(success==8) break;
+        if (success == 8)
+        {
+            break;
+        }
     }
-    if (success == 0){
+    if (success == 0)
+    {
         cerr << "\nERROR: Nodes  defined for the BrickSurfaceLoad does not belong to elements surface  \n" ;
         exit( 1 );
-    }      
+    }
     ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
     // cout << "surface_nodes_order ";
     // for ( int i =0; i < 8 ; i++)
@@ -1423,18 +1457,19 @@ const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector
     double LoadValue;
 
 
-    Pressure(0) = data(surface_nodes_order[0]+8) * loadFactor;
-    Pressure(1) = data(surface_nodes_order[1]+8) * loadFactor;
-    Pressure(2) = data(surface_nodes_order[2]+8) * loadFactor;
-    Pressure(3) = data(surface_nodes_order[3]+8) * loadFactor;
-    Pressure(4) = data(surface_nodes_order[4]+8) * loadFactor;
-    Pressure(5) = data(surface_nodes_order[5]+8) * loadFactor;
-    Pressure(6) = data(surface_nodes_order[6]+8) * loadFactor;
-    Pressure(7) = data(surface_nodes_order[7]+8) * loadFactor;
+    Pressure(0) = data(surface_nodes_order[0] + 8) * loadFactor;
+    Pressure(1) = data(surface_nodes_order[1] + 8) * loadFactor;
+    Pressure(2) = data(surface_nodes_order[2] + 8) * loadFactor;
+    Pressure(3) = data(surface_nodes_order[3] + 8) * loadFactor;
+    Pressure(4) = data(surface_nodes_order[4] + 8) * loadFactor;
+    Pressure(5) = data(surface_nodes_order[5] + 8) * loadFactor;
+    Pressure(6) = data(surface_nodes_order[6] + 8) * loadFactor;
+    Pressure(7) = data(surface_nodes_order[7] + 8) * loadFactor;
 
     static Vector NodalForces(60);
 
-    for (int m = 0; m < 60; m++){
+    for (int m = 0; m < 60; m++)
+    {
         NodalForces(m) = 0;
     }
 
@@ -1505,8 +1540,8 @@ const Vector &TwentyNodeBrickLT::getSurfaceForce(double loadFactor, const Vector
             for (int i = 0; i < 9; i++)
             {
                 ShapeFunctionValues = SurfaceShapeFunctionValues(GsPts(i, 0) , GsPts(i, 1), j);
-                J_vector = Direction_Weight(GsPts(i, 0) , GsPts(i, 1),coordnode1, coordnode2, 
-                        coordnode3, coordnode4,coordnode5, coordnode6, coordnode7, coordnode8);
+                J_vector = Direction_Weight(GsPts(i, 0) , GsPts(i, 1), coordnode1, coordnode2,
+                                            coordnode3, coordnode4, coordnode5, coordnode6, coordnode7, coordnode8);
                 LoadValue = SurfaceLoadValues(GsPts(i, 0) , GsPts(i, 1), Pressure);
                 NodalForces(r * 3 + k) = NodalForces(r * 3 + k) + LoadValue * J_vector(k) * ShapeFunctionValues * Weight(i, 0) * Weight(i, 1);
             }
@@ -1612,7 +1647,7 @@ int TwentyNodeBrickLT::addInertiaLoadToUnbalance(const Vector &accel)
         return -1;
     }
 
-    Vector ra(60);  
+    Vector ra(60);
 
     ra( 0) = Raccel1(0);
     ra( 1) = Raccel1(1);
@@ -1777,8 +1812,10 @@ const Vector &TwentyNodeBrickLT::getResistingForce ()
     nodalforces = nodal_forces();
 
     //converting nodalforce tensor to vector
-    for (int i = 0; i < nodes_in_brick; i++){
-        for (int j = 0; j < 3; j++){
+    for (int i = 0; i < nodes_in_brick; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
             P(i * 3 + j) = nodalforces( i, j );
         }
     }
@@ -1830,7 +1867,7 @@ const Vector &TwentyNodeBrickLT::getResistingForceIncInertia ()
         const Vector &accel19 = theNodes[18]->getTrialAccel();
         const Vector &accel20 = theNodes[19]->getTrialAccel();
 
-        static Vector a(60);  
+        static Vector a(60);
 
         a( 0) = accel1(0);
         a( 1) = accel1(1);
@@ -1897,11 +1934,14 @@ const Vector &TwentyNodeBrickLT::getResistingForceIncInertia ()
         P.addMatrixVector(1.0, M, a, 1.0);
 
         // add the damping forces if rayleigh damping
-        if (a0 != 0.0 || a1 != 0.0 || a2 != 0.0 || a3 != 0.0){
+        if (a0 != 0.0 || a1 != 0.0 || a2 != 0.0 || a3 != 0.0)
+        {
             P += this->getRayleighDampingForces();
         }
 
-    }else{
+    }
+    else
+    {
 
         // add the damping forces if rayleigh damping
         if (a1 != 0.0 || a2 != 0.0 || a3 != 0.0)
@@ -2003,7 +2043,7 @@ int TwentyNodeBrickLT::sendSelf (int commitTag, Channel &theChannel)
 //=============================================================================
 int TwentyNodeBrickLT::receiveSelf (int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker)
 {
-   //Copied from EightNodeBrickLT (with modifications)    // cout << "TwentyNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
+    //Copied from EightNodeBrickLT (with modifications)    // cout << "TwentyNodeBrickLT::receiveSelf() tag = " << this->getTag() << "\n";
 
     ID idData( 5 );
 
@@ -2523,15 +2563,16 @@ TwentyNodeBrickLT::CheckMesh(ofstream &checkmesh_file)
 
 
 //==================================================================================
-// std::shared_ptr<Vector> 
+// std::shared_ptr<Vector>
 Vector *
 TwentyNodeBrickLT::getStress( void )
 {
     DTensor2 stress;
     Vector *stresses = new Vector( 162 );   // FIXME: Who deallocates this guy???
-    // auto stresses = std::make_shared<Vector>( 162 );   
+    // auto stresses = std::make_shared<Vector>( 162 );
 
-    for ( short gp = 0 ; gp < 27 ; gp++ ){
+    for ( short gp = 0 ; gp < 27 ; gp++ )
+    {
         stress = material_array[gp]->getStressTensor();
         ( *stresses )( gp * 6 + 0 ) = stress( 0, 0 ); //sigma_xx
         ( *stresses )( gp * 6 + 1 ) = stress( 1, 1 ); //sigma_yy
@@ -2566,7 +2607,7 @@ int TwentyNodeBrickLT::getOutputSize() const
 
 
 
-const Vector &TwentyNodeBrickLT::getOutput() 
+const Vector &TwentyNodeBrickLT::getOutput()
 {
 
 
@@ -2602,16 +2643,16 @@ const Vector &TwentyNodeBrickLT::getOutput()
         outputVector(ii++) = stress(0, 2);
         outputVector(ii++) = stress(1, 2);
     }
-        // //Cycle material outputs and place them appropriately
-        // int nmaterial_output = material_array[0]->getOutputSize();
-        // if (nmaterial_output > 0)
-        // {
-        //     const Vector & matOutput = material_array[gp]->getOutput();
-        //     for (int jj = 0; jj < nmaterial_output ; jj++)
-        //     {
-        //         outputVector(ii++) = matOutput(jj);
-        //     }
-        // }
+    // //Cycle material outputs and place them appropriately
+    // int nmaterial_output = material_array[0]->getOutputSize();
+    // if (nmaterial_output > 0)
+    // {
+    //     const Vector & matOutput = material_array[gp]->getOutput();
+    //     for (int jj = 0; jj < nmaterial_output ; jj++)
+    //     {
+    //         outputVector(ii++) = matOutput(jj);
+    //     }
+    // }
 
     return outputVector;
 }

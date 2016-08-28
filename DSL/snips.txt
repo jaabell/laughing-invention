@@ -16,14 +16,14 @@ add damping # $1 to element # $2;
 // add damping # <.> to node # <.>;
 add damping # $1 to node # $2;
 
-// add damping # <.> type Caughey3rd with a0 = <time> a1 = <1/time> a2 = <.> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
+// add damping # <.> type Caughey3rd with a0 = <1/time> a1 = <time> a2 = <time^3> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
 add damping # $1 type Caughey3rd with 
 	a0 = $2 
 	a1 = $3 
 	a2 = $4 
 	stiffness_to_use = $5;
 
-// add damping # <.> type Caughey4th with a0 = <time> a1 = <1/time> a2 = <.> a3 = <.> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
+// add damping # <.> type Caughey4th with a0 = <1/time> a1 = <time> a2 = <time^3> a3 = <time^5> stiffness_to_use = <Initial_Stiffness|Current_Stiffness|Last_Committed_Stiffness>;
 add damping # $1 type Caughey4th with 
 	a0 = $2 
 	a1 = $3 
@@ -308,7 +308,7 @@ add mass to node # $1
 	my = $3 
 	mz = $4;
 
-// add material # <.> type DruckerPragerArmstrongFrederickLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
+// add material # <.> type DruckerPragerArmstrongFrederickLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
 add material # $1 type DruckerPragerArmstrongFrederickLT 
 	mass_density = $2 
 	elastic_modulus = $3 
@@ -316,7 +316,8 @@ add material # $1 type DruckerPragerArmstrongFrederickLT
 	druckerprager_k = $5 
 	armstrong_frederick_ha = $6 
 	armstrong_frederick_cr = $7 
-	isotropic_hardening_rate = $8 initial_confining_stress = exp;
+	isotropic_hardening_rate = $8 
+	initial_confining_stress = $9;
 
 // add material # <.> type DruckerPragerLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
 add material # $1 type DruckerPragerLT 
@@ -326,6 +327,31 @@ add material # $1 type DruckerPragerLT
 	druckerprager_k = $5 
 	kinematic_hardening_rate = $6 
 	isotropic_hardening_rate = $7 initial_confining_stress = exp;
+
+// add material # <.> type DruckerPragerNonAssociateArmstrongFrederickLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2> plastic_flow_xi = <> plastic_flow_kd = <> ;
+add material # $1 type DruckerPragerNonAssociateArmstrongFrederickLT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	druckerprager_k = $5 
+	armstrong_frederick_ha = $6 
+	armstrong_frederick_cr = $7 
+	isotropic_hardening_rate = $8 
+	initial_confining_stress = $9 
+	plastic_flow_xi = $10 
+	plastic_flow_kd = $11 ;
+
+// add material # <.> type DruckerPragerNonAssociateLinearHardeningLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2> plastic_flow_xi = <> plastic_flow_kd = <> ;
+add material # $1 type DruckerPragerNonAssociateLinearHardeningLT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	druckerprager_k = $5 
+	kinematic_hardening_rate = $6 
+	isotropic_hardening_rate = $7 
+	initial_confining_stress = $8 
+	plastic_flow_xi = $9 
+	plastic_flow_kd = $10 ;
 
 // add material # <.> type DruckerPragerVonMisesLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
 add material # $1 type DruckerPragerVonMisesLT 
@@ -476,6 +502,16 @@ add material # $1 type uniaxial_steel02
 	a3 = $10  
 	a4 = $11 ;
 
+// add material # <.> type VonMisesArmstrongFrederickLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> von_mises_radius = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> ;
+add material # $1 type VonMisesArmstrongFrederickLT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	von_mises_radius = $5 
+	armstrong_frederick_ha = $6 
+	armstrong_frederick_cr = $7 
+	isotropic_hardening_rate = $8 ;
+
 // add material # <.> type VonMisesLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> von_mises_radius = <F/L^2> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> ;
 add material # $1 type VonMisesLT 
 	mass_density = $2 
@@ -533,8 +569,8 @@ compute reaction forces;
 // define algorithm With_no_convergence_check / Newton / Modified_Newton;
 define algorithm With_no_convergence_check / Newton / Modified_Newton;
 
-// define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Unbalance tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
-define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Unbalance 
+// define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Unbalance / Relative_Norm_Displacement_Increment / Relative_Energy_Increment / Relative_Norm_Unbalance tolerance = <.> maximum_iterations = <.> verbose_level = <0>|<1>|<2>;
+define convergence test Norm_Displacement_Increment / Energy_Increment / Norm_Unbalance / Relative_Norm_Displacement_Increment / Relative_Energy_Increment / Relative_Norm_Unbalance 
 	tolerance = $1 
 	maximum_iterations = $2 
 	verbose_level = $3|$4|$5;
@@ -551,8 +587,8 @@ define dynamic integrator Newmark with
 // define load factor increment <.>;
 define load factor increment $1;
 
-// define NDMaterialLT constitutive integration algorithm Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
-define NDMaterialLT constitutive integration algorithm Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler 
+// define NDMaterialLT constitutive integration algorithm Forward_Euler / Forward_Euler_Crisfield / Multistep_Forward_Euler / Multistep_Forward_Euler_Crisfield / Modified_Euler_Error_Control / Runge_Kutta_45_Error_Control / Backward_Euler / Full_Backward_Euler yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
+define NDMaterialLT constitutive integration algorithm Forward_Euler / Forward_Euler_Crisfield / Multistep_Forward_Euler / Multistep_Forward_Euler_Crisfield / Modified_Euler_Error_Control / Runge_Kutta_45_Error_Control / Backward_Euler / Full_Backward_Euler 
 	yield_function_relative_tolerance = $1 
 	stress_relative_tolerance = $2 
 	maximum_iterations = $3;

@@ -401,6 +401,8 @@ protected:
     H5OutputWriter theOutputWriter;
 
     bool output_is_enabled;
+    bool reaction_output_is_enabled; // enabling or disabling the reaction output [sumeet August, 2016]]
+    bool energy_output_is_enabled;   // may be will be used in future [sumeet August, 2016]
     bool element_output_is_enabled;
     bool have_written_static_mesh_data;
     int  output_every_nsteps;
@@ -475,7 +477,7 @@ public:
     int numberOfDomainNodeDOFs;
     int numberOfDomainElementOutputs;
 
-    int number_of_eigen_modes=-1; // added by sumeet 1st Asugust, 2016
+    int number_of_eigen_modes=-1;                // added by sumeet 1st Asugust, 2016
     int save_number_of_non_converged_substeps=0; // added by sumeet 5th August, 2016
 
 };

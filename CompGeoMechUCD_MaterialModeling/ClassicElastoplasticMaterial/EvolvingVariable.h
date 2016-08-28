@@ -66,7 +66,9 @@ public:
     {
         return static_cast<const T*>(this)->getDerivative(depsilon,  m,  sigma);
     };
-
+    double const& getHardeningType() const{
+        return static_cast<const T*>(this)->getHardeningType();
+    };
     EvolvingVariable<VarType, T> & operator= ( const EvolvingVariable<VarType, T> & other)
     {
         //Check self-assignment

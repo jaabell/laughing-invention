@@ -2079,7 +2079,7 @@ const Vector &EightNodeBrickLT::getOutput()
         outputVector(ii++) = stress(1, 2);
     }
 
-    outputVector(ii++) = update_time_taken;
+    // outputVector(ii++) = update_time_taken;
     return outputVector;
 }
 

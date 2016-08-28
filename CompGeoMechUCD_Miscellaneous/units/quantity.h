@@ -89,6 +89,7 @@ bool isAreaMomentOfInertia(const string& var_name, const Quantity& q);
 bool isMassMomentOfInertia(const string& var_name, const Quantity& q);
 bool isMassMomentOfInertia(const string& var_name, const Quantity& q);
 
+
 // For any other cases not defined herein
 template<short int m, short int l, short int t>
 bool isThisUnit(const string& var_name, const Quantity& q)

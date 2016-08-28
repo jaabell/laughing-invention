@@ -51,7 +51,6 @@
 
 
 #include <classTags.h>
-
 // New materials are created by subclassing instances of the ClassicElastoplasticMaterial<.,.,.,.,>
 // template class, with the appropriate components as template parameters.
 // Heavy use of templating is made, therefore typedeffing is a friend in helping clear up the mess.
@@ -91,8 +90,10 @@ public:
     VonMisesLinearHardening();
     void Print(ostream& s, int flag);
     //The state variables.
+
 private:
     LinearHardeningTensor_EV alpha; // Backstress
     LinearHardeningScalar_EV k;     // Critical stress ratio (k = M under this formulation)
+
 };
 

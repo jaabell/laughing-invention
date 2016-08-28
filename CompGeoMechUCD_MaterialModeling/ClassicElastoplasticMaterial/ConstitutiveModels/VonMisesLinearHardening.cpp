@@ -31,7 +31,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "VonMisesLinearHardening.h"
-
+#include "NDMaterialLT.h"
+#include <iostream>
+#include "../../../ltensor/LTensor.h"
+#include "../ClassicElastoplasticityGlobals.h"
 //First constructor, creates a material at its "ground state" from its parameters.
 VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double k0_in, double H_alpha, double H_k, double E, double nu, double rho_) :
     VMLHBase::ClassicElastoplasticMaterial(tag_in, rho_, 0.0, //Initial confinement can be 0 for this model
@@ -51,7 +54,6 @@ VonMisesLinearHardening::VonMisesLinearHardening(int tag_in, double k0_in, doubl
     // cout << "nu  = " << nu << endl;
     // cout << "rho_  = " << rho_ << endl;
     // cout << "yf  = " << yf(getStressTensor()) << endl;
-
 
 }
 
@@ -96,3 +98,4 @@ VonMisesLinearHardening::Print(ostream& s, int flag)
     // s << "\tKinematic_hardening_rate: "
     // s << "\tIsotropic_hardening_rate: "
 }
+

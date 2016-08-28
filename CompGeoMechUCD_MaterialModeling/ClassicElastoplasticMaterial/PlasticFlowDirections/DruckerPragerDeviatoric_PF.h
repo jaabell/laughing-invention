@@ -84,7 +84,6 @@ public:
         {
             result(i, j) = result(i, j) / den;
         }
-
         // cout << "m = [";
         // for (int ii = 0; ii < 3; ii++)
         //     for (int jj = 0; jj < 3; jj++)
@@ -101,6 +100,15 @@ public:
         // cout << "]\n";
 
         return result;
+    }
+    DTensor4 const& dm_over_dsigma(DTensor2 const& sigma){
+        static DTensor4 placeholder(3,3,3,3,0.0);
+        return placeholder;
+    }
+    
+    DTensor4 const& dm_over_dalpha(DTensor2 const& sigma, DTensor2 const& m){
+        static DTensor4 placeholder(3,3,3,3,0.0);
+        return placeholder;
     }
 
 private:

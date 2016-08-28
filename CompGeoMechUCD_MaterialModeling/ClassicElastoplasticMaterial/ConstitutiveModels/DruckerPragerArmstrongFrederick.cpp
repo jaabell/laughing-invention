@@ -58,7 +58,7 @@ DruckerPragerArmstrongFrederick::DruckerPragerArmstrongFrederick(int tag_in, dou
                                            LinearIsotropic3D_EL(el), // Create Elasticity -- use copy constructor here
                                            DPAF_PFType(alpha, k),    // Point PF to the internal variables
                                            DPAFVarsType(alpha, k)),   // Declare the list of internal variables
-    alpha(0, ND_TAG_CEM_DruckerPragerArmstrongFrederick),
+    alpha(0, 0.0),
     k(0, 0)
 {
 

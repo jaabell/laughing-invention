@@ -1697,11 +1697,6 @@ void H5OutputWriter::writeMesh()
                                        double_data_buffer);
         H5OUTPUTWRITER_COUNT_OBJS;
 
-
-
-
-
-
         // =============================================================================================
         //   CREATE OUTPUT ARRAYS!
         // =============================================================================================
@@ -1715,7 +1710,8 @@ void H5OutputWriter::writeMesh()
             maxdims[0] = (hsize_t)  length_nodes_displacements_output;
             maxdims[1] = number_of_time_steps + 1;
 
-            id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+            id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
+            id_nodes_reaction_forces = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
         }
 
         if (number_of_outputs > 0)

@@ -14,6 +14,7 @@
 8NodeBrick_up
 8NodeBrick_upU
 8NodeBrickLT
+Backward_Euler
 beam_9dof_elastic
 beam_displacement_based
 beam_elastic
@@ -24,6 +25,8 @@ Caughey4th
 DOFTYPE
 DruckerPragerArmstrongFrederickLT
 DruckerPragerLT
+DruckerPragerNonAssociateArmstrongFrederickLT
+DruckerPragerNonAssociateLinearHardeningLT
 DruckerPragerVonMisesLT
 EightNodeBrickLTNoOutput
 Energy_Increment
@@ -31,8 +34,10 @@ F_fluid_x
 F_fluid_y
 F_fluid_z
 FORCETYPE
-Forward_Euler|Multistep_Forward_Euler|Modified_Euler_Error_Control|Runge_Kutta_45_Error_Control|Backward_Euler
+Forward_Euler
+Forward_Euler_Crisfield
 from_reactions
+Full_Backward_Euler
 Fx
 Fy
 Fz
@@ -42,7 +47,10 @@ linear
 linear_elastic_crossanisotropic
 linear_elastic_isotropic_3d
 linear_elastic_isotropic_3d_LT
+Modified_Euler_Error_Control
 Modified_Newton
+Multistep_Forward_Euler
+Multistep_Forward_Euler_Crisfield
 Mx
 My
 Mz
@@ -55,6 +63,10 @@ path_series
 path_time_series
 ProfileSPD
 Rayleigh
+Relative_Energy_Increment
+Relative_Norm_Displacement_Increment
+Relative_Norm_Unbalance
+Runge_Kutta_45_Error_Control
 sanisand2004
 sanisand2008
 ShearBeamLT
@@ -68,5 +80,6 @@ uniaxial_elastic
 uniaxial_steel01
 uniaxial_steel02
 variable transient
+VonMisesArmstrongFrederickLT
 VonMisesLT
 With_no_convergence_check

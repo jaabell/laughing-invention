@@ -34,7 +34,8 @@
 #include <fstream>
 
 
-constexpr double sqrt_two_three = sqrt(2.0 / 3.0);
+// constexpr double sqrt_two_three = sqrt(2.0 / 3.0);
+constexpr double sqrt_two_three = 0.81649658;
 
 const double NewPisanoLT:: check_for_zero = sqrt(std::numeric_limits<double>::epsilon()); // used to check the variable nullity
 const double NewPisanoLT::beta_min = 1e-16;

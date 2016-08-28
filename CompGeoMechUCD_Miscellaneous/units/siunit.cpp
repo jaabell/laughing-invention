@@ -258,7 +258,6 @@ bool isLength(const string& var_name, const SIUnit& u)
     return verified;
 }
 
-
 bool isTime(const string& var_name, const SIUnit& u)
 {
     bool verified = (( u.Getdim_m() == 0 ) &

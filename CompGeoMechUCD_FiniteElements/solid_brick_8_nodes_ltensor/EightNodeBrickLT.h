@@ -58,7 +58,7 @@
 
 // Output is 6 components of strain 6 components of plastic strain and 6 of stress per gauss point + 1 for update time
 #define EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS 8
-#define EightNodeBrickLT_OUTPUT_SIZE EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*3) + 1
+#define EightNodeBrickLT_OUTPUT_SIZE EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*3) 
 
 class Node;
 

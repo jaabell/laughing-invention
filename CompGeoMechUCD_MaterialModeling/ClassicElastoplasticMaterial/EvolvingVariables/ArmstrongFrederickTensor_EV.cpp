@@ -65,6 +65,11 @@ const DTensor2& ArmstrongFrederickTensor_EV::getDerivative(const DTensor2 &depsi
     return derivative;
 }
 
+double const& ArmstrongFrederickTensor_EV::getHardeningType() const{
+    return ha;
+}
+
+
 int ArmstrongFrederickTensor_EV::sendSelf(int commitTag, Channel &theChannel)
 {
     //Shove all data into single vector for sending

@@ -147,7 +147,9 @@
 #include "../ModifiedOpenSeesServices/convergenceTest/CTestNormUnbalance.h"
 #include "../ModifiedOpenSeesServices/convergenceTest/CTestNormDispIncr.h"
 #include "../ModifiedOpenSeesServices/convergenceTest/CTestEnergyIncr.h"
-
+#include "../ModifiedOpenSeesServices/convergenceTest/CTestRelativeNormUnbalance.h"
+#include "../ModifiedOpenSeesServices/convergenceTest/CTestRelativeNormDispIncr.h"
+#include "../ModifiedOpenSeesServices/convergenceTest/CTestRelativeEnergyIncr.h"
 
 // Solution Algorithms
 //--------------------------------------------------------------------------------------------------
@@ -230,6 +232,8 @@
 //--------------------------------------------------------------------------------------------------
 #include "FullGenEigenSolver.h"
 #include "FullGenEigenSOE.h"
+#include "BandArpackSOE.h"
+#include "BandArpackSolver.h"
 
 
 // MOSSy Elements

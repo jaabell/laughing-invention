@@ -136,9 +136,12 @@
 #include "MODELING/add_constitutive_model_NDMaterialLT_linear_elastic_isotropic_3d.h"
 #include "MODELING/add_constitutive_model_NDMaterial_nonlinear_elastic_isotropic_3d.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_vonmises.h"
+#include "MODELING/add_constitutive_model_NDMaterialLT_vonMises_ArmstrongFrederick.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerpragervonmises.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick.h"
+#include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager_non_associate_linear_hardening.h"
+#include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager_non_associate_armstrong_frederick.h"
 
 // Uniaxial
 #include "MODELING/add_constitutive_model_uniaxial_elastic.h"
@@ -224,7 +227,9 @@
 #include "SIMULATION/define_convergence_test_energyincrement_for_analysis.h"
 #include "SIMULATION/define_convergence_test_normdisplacementincrement_for_analysis.h"
 #include "SIMULATION/define_convergence_test_normunbalance_for_analysis.h"
-
+#include "SIMULATION/define_convergence_test_RelativeEnergyincrement_for_analysis.h"
+#include "SIMULATION/define_convergence_test_RelativeNormdisplacementincrement_for_analysis.h"
+#include "SIMULATION/define_convergence_test_RelativeNormunbalance_for_analysis.h"
 
 // Integrators
 //--------------------------------------------------------------------------------------------------

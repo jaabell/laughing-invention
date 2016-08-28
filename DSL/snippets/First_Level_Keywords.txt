@@ -125,7 +125,6 @@ mass
 mass_density
 master
 material
-maximum_iterations
 maximum_number_of_iterations
 maximum_strain
 maximum_time_step
@@ -171,6 +170,8 @@ number_of_times_reaching_maximum_strain
 of
 output
 output
+plastic_flow_kd
+plastic_flow_xi
 point
 points
 poisson_ratio
@@ -255,7 +256,6 @@ strain_at_crushing_strength
 strain_hardening_ratio
 strain_increment_size
 stress
-stress_relative_tolerance
 surface
 tangential_damping
 tangential_stiffness
@@ -289,5 +289,4 @@ while
 whos
 with
 xz_plane_vector
-yield_function_relative_tolerance
 yield_strength
