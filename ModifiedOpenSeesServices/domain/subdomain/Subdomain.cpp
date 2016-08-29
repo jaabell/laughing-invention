@@ -548,7 +548,6 @@ Subdomain::commit(void)
     //cerr << "\n\n\n\n Subdomain::commit()" << this->getTag() << "calls Domain::commit()!!\n";
 
     this->Domain::commit();
-    // this->Domain::Dump_All_Nodes_Displacement_Singlefile(); //Added by Babak to dump node Displacements in pos format
 
     NodeIter &theNodes = this->getNodes();
     Node *nodePtr;

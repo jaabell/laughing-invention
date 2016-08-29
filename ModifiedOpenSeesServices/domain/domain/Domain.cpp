@@ -790,8 +790,7 @@ Domain::addElement( Element *element )
     if ( result == true )
     {
         element->setDomain( this );
-        //element->update();   // Jose asks: Why is this necessary?
-                             // sumeet replies: It is needed for contact element.
+        //element->update(); // Jose and Sumeet: Thinks its not requird, needs to be taken care by element itself?
 
         // finally check the ele has correct number of dof
 #ifdef _G3DEBUG
@@ -2313,29 +2312,6 @@ Domain::getPhysicalBounds( void )
     return theBounds;
 }
 
-
-// int
-// Domain::getNumberof8GPBrickElements( void )
-// {
-//     return number_of_8GP_brick_elements;
-// }
-
-
-// int
-// Domain::getNumberof27GPBrickElements( void )
-// {
-//     return number_of_27GP_brick_elements;
-// }
-
-
-// int
-// Domain::getNumberofLineElements( void )
-// {
-//     return number_of_line_elements;
-// }
-
-
-
 Graph *
 Domain::getElementGraph( void )
 {
@@ -2372,6 +2348,10 @@ Domain::getElementGraph( void )
             cerr << "Domain::getElementGraph() - failed to build the element graph\n";
         }
     }
+
+    
+    theOutputWriter.initializePartitionData(maxNodesTag, maxElementsTag);
+
 
     // return the Graph
     return theElementGraph;
@@ -3012,7 +2992,7 @@ Domain::update( void )
 
     NanoTimer myTime;
     Graph *theEleGraph = this->getElementGraph();
-    VertexIter &theVertexIter = theEleGraph->getVertices();
+    // VertexIter &theVertexIter = theEleGraph->getVertices();
     Vertex *vertexPtr;
     ElementIter &theEles = this->getElements(); //has to be put here in order to reset the eleIter(), which firstly called by getElementGraph without rewind!!!!
     Element *theEle;
@@ -4863,4 +4843,30 @@ void Domain:: set_number_of_non_converged_substeps(int Num_Sub_Steps){
     this->save_number_of_non_converged_substeps =  Num_Sub_Steps > 0 ? Num_Sub_Steps : 0;
 
     return;
+}
+
+/*************************************************************************************************
+* Added by Sumeet 30th August 2016
+* This function basically appendds the proces id information to Element_Partition 
+* vector in H5OutputWriter. only for static Decomposition
+***************************************************************************************************/
+void Domain::add_Element_Partition_Info(int tag, int Partition_no){ // Added by [Sumeet August,2016]
+
+   theOutputWriter.writeElementPartitionData(tag,Partition_no);
+
+   return;
+
+}
+
+/*************************************************************************************************
+* Added by Sumeet 30th August 2016
+* This function basically appendds the procces id information to Node_Partition 
+* vector in H5OutputWriter. only for static Decomposition
+***************************************************************************************************/
+void Domain::add_Node_Partition_Info(int tag, int Partition_no){    // Added by [Sumeet August,2016]
+
+    theOutputWriter.writeNodePartitionData(tag,Partition_no);
+
+    return;
+
 }

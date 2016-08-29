@@ -1202,10 +1202,10 @@ PartitionedDomain::partition(int numPartitions)
 {
     // cout << "\n\nPartitioning Mesh into " << numPartitions << " partitions. \n";
 
-    Node *nodePtr;
-    NodeIter &theNodeIter = this->getNodes();
-    Element *elePtr;
-    ElementIter &theElemIter = this->getElements();
+    // Node *nodePtr;
+    // NodeIter &theNodeIter = this->getNodes();
+    // Element *elePtr;
+    // ElementIter &theElemIter = this->getElements();
 
     // need to create element graph before create new subdomains
     // DO NOT REMOVE THIS LINE __ EVEN IF COMPILER WARNING ABOUT UNUSED VARIABLE

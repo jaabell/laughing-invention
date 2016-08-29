@@ -197,6 +197,7 @@ ActorSubdomain::run(void)
             if (theEle != 0)
             {
                 theEle->setDbTag(dbTag);
+                theEle->setMaterialTag(msgData(3));
                 this->receiveObject(*theEle);
                 bool result = this->addElement(theEle);
 

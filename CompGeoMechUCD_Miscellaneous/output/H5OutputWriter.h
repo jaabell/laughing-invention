@@ -118,10 +118,9 @@ public:  // To meet with OutputWriter interfacec
 
     virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
     virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity, int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
-    virtual int writeElementPartitionData(int tag  , int partition) ;
-    virtual int writeMaterialMeshData(int tag , std::string type );
     virtual int writeLoadPatternData(int tag , std::string name) ;
     virtual int writeSPConstraintsData(int nodetag , int dof) ;
+    virtual int writeMaterialMeshData(int tag , std::string type ); //[Sumeet August,2016]
 
     // Results for Nodes
     virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
@@ -144,6 +143,11 @@ public:  // To meet with OutputWriter interfacec
     // Results of Substeps                // Sumeet 3rd August, 2016 
     virtual int writeSubstepMesh(int);       
     virtual int setSubStep(int substep_no);
+
+    // Partition Info in master file output // [Sumeet August,2016]
+    void writeNodePartitionData(int tag  , int partition) ;
+    void writeElementPartitionData(int tag  , int partition) ;
+    void initializePartitionData(int max_node_id, int max_element_id);
 
 public:  //Additional stuff
     void initialize(std::string filename_in,
@@ -298,7 +302,7 @@ private:
     int current_time_step;              
     int number_of_time_steps;
     int current_sub_step;               // Added by sumeet 3rd August, 2016
-    int number_of_connectivity_nodes;   // Adde by sumeet 
+    int number_of_connectivity_nodes;   // Added by sumeet 
     int max_node_tag;
     int max_element_tag;
     int number_of_dofs;
@@ -341,6 +345,7 @@ private:
     hid_t id_nodes_ndofs         , id_index_to_nodes_ndofs;
     hid_t id_nodes_coordinates   , id_index_to_nodes_coordinates;
     hid_t id_nodes_displacements , id_index_to_nodes_outputs;
+    hid_t id_nodes_partition     ;
     hid_t id_nodes_velocities    ;
     hid_t id_nodes_accelerations ;
     hid_t id_nodes_reaction_forces ;
@@ -416,7 +421,8 @@ private:
     std::vector<std::string> LoadPattern_names;
     ID Material_tags;
     ID Class_Tags;
-    ID Partition;
+    ID Element_Partition;
+    ID Node_Partition;
     ID SPNodes;
     ID SPDofs;
 

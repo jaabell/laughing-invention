@@ -494,6 +494,7 @@ DomainPartitioner::partition(int numParts)
             {
                 Subdomain *theSubdomain = myDomain->getSubdomainPtr(par);
                 nodePtr = myDomain->Domain::removeNode(nodePtr->getTag());
+                myDomain->add_Node_Partition_Info(nodeTag,par);  // [Sumeet August,2016]
                 theSubdomain->addNode(nodePtr);
                 nodesOnEachPart[par]++;
             }
@@ -510,6 +511,7 @@ DomainPartitioner::partition(int numParts)
                 if ( par != 0 )
                 {
                     theSubdomain = myDomain->getSubdomainPtr(par);
+                    myDomain->add_Node_Partition_Info(nodeTag,par);  // [Sumeet August,2016]
                 }
                 else
                 {
@@ -632,7 +634,7 @@ DomainPartitioner::partition(int numParts)
         int eleTag = vertexPtr->getRef();
         Element *elePtr = myDomain->removeElement(eleTag);
 
-
+        myDomain->add_Element_Partition_Info(eleTag,partition);  // [Sumeet August,2016]
         Subdomain *theSubdomain = myDomain->getSubdomainPtr(partition);
         elementsOnEachPart[partition]++;
 

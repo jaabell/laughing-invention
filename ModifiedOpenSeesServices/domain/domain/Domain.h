@@ -393,6 +393,9 @@ public:
     virtual void add_Gauss_Points(int number_of_gauss_points);
     virtual void add_Connectivity_Nodes( int Number_of_Connectivity_Nodes);
     virtual void set_number_of_non_converged_substeps(int);
+    void add_Element_Partition_Info(int tag, int Partition_no); // Added by [Sumeet August,2016]
+    void add_Node_Partition_Info(int tag, int Partition_no);    // Added by [Sumeet August,2016]
+
 
 protected:
     virtual int buildEleGraph(Graph *theEleGraph);

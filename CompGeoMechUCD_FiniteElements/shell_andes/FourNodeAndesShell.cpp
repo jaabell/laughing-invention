@@ -798,7 +798,6 @@ int FourNodeAndesShell::receiveSelf (int commitTag, Channel &theChannel, FEM_Obj
         return -1;
     }
 
-    int BodyForce_Tag = (int) matProp(0);
     bf(0) = matProp(1);
     bf(1) = matProp(2);
     bf(2) = matProp(3);

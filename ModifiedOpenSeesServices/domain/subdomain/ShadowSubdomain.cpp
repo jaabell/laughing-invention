@@ -217,6 +217,7 @@ ShadowSubdomain::addElement(Element *theEle)
     msgData(0) = ShadowActorSubdomain_addElement;
     msgData(1) = theEle->getClassTag();
     msgData(2) = theEle->getDbTag();
+    msgData(3) = theEle->getMaterialTag();
 
     this->sendID(msgData);
     this->sendObject(*theEle);
