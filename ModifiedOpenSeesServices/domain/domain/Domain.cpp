@@ -844,9 +844,7 @@ Domain::addNode( Node *node )
 
     bool result = theNodes->addComponent( node );
 
-    // cout << "numberOfDomainNodeDOFs = " << numberOfDomainNodeDOFs << " | ";
     numberOfDomainNodeDOFs += node->getNumberDOF();
-    // cout << numberOfDomainNodeDOFs << endl;
 
     if ( result == true )
     {
@@ -2706,18 +2704,18 @@ Domain::commit( void )
                                                      elePtr->getElementclassTag());
             }
 
-
             /*********************** Write Material Data   - By Sumeet 30th July, 2016 */
             
             int number_of_materials = max(maxNDMaterialsTag,maxNDMaterialLTsTag);
             number_of_materials = max(number_of_materials,maxUniaxialMaterialsTag);
             theOutputWriter.reserveSpaceForDatasets(number_of_materials);
 
-            /////////////////////////// For Debugging //////////////////////////////////
+            // ///////////////////////// For Debugging //////////////////////////////////
             // cout << " maxNDMaterialsTag " << maxNDMaterialsTag << endl;
             // cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag <<endl;
             // cout << " maxUniaxialMaterialsTag " << maxUniaxialMaterialsTag << endl;
-            ////////////////////////////////////////////////////////////////////////////
+            // cout << " number of materials " << number_of_materials << endl;
+            // //////////////////////////////////////////////////////////////////////////
 
             Material *matPtr;
             NDMaterialIter &theMatIter = this->getNDMaterials();
@@ -2752,12 +2750,11 @@ Domain::commit( void )
 
             /**************************************************************************************/
 
-
             globalESSITimer.stop("HDF5_buffer_elements");
             globalESSITimer.start("HDF5_write");
             theOutputWriter.writeMesh();
             globalESSITimer.stop("HDF5_write");
-
+            
             have_written_static_mesh_data = true;
 
             if(number_of_eigen_modes>=0){
@@ -2783,7 +2780,7 @@ Domain::commit( void )
         nodePtr->commitState();
     }
 
-    //Do element output
+    //Do node output
     if (output_is_enabled && (countdown_til_output == 0))
     {
         if (rank > 0)
@@ -2798,7 +2795,7 @@ Domain::commit( void )
 
             if (rank > 0)
             {
-                theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
+                // theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
             }
 
         }

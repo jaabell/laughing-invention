@@ -40,7 +40,7 @@ public:
     OutputWriter();
     ~OutputWriter();
 
-    virtual int setTime(double t) = 0;
+    virtual int setTime(float t) = 0;
 
     // Mesh output
     virtual int writeGlobalMeshData(unsigned int number_of_nodes_in,
@@ -64,10 +64,6 @@ public:
                                      const        Matrix &gausscoordinates,
                                      int          length_of_output,
                                      int class_tag) = 0;
-    virtual int writeMaterialMeshData(int         tag,
-                                      std::string type,
-                                      Vector     &parameters) = 0;
-
     virtual int writeMaterialMeshData(int         tag,
                                       std::string type) = 0;
     // Results for Nodes

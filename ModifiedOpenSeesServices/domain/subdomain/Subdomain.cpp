@@ -331,6 +331,10 @@ Subdomain::addExternalNode(Node *thePtr)
         return -1;
     }
 
+    if (  thePtr->getTag() > maxNodesTag)
+    {
+        maxNodesTag =  thePtr->getTag();
+    }
 
     return result;
 }
@@ -383,6 +387,11 @@ Subdomain::addInternalNode(Node *thePtr)
     {
         cerr << "Subdomain::addInternalNode - failed to add Node " << thePtr->getTag() << "\n";
         return -1;
+    }
+
+    if (  thePtr->getTag() > maxNodesTag)
+    {
+        maxNodesTag =  thePtr->getTag();
     }
 
     return result;

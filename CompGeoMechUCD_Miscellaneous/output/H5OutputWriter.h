@@ -100,7 +100,7 @@ public:  // To meet with OutputWriter interfacec
 
     ~H5OutputWriter();
 
-    virtual int setTime(double t);
+    virtual int setTime(float t);
 
     // Mesh output
     int writeGlobalMeshData(unsigned int number_of_nodes_in,
@@ -116,13 +116,9 @@ public:  // To meet with OutputWriter interfacec
     // Can be used to reserve space for datasets 
     int reserveSpaceForDatasets(unsigned int number_of_materials);
 
-    // virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
-    // virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
-
     virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
     virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity, int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
     virtual int writeElementPartitionData(int tag  , int partition) ;
-    virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
     virtual int writeMaterialMeshData(int tag , std::string type );
     virtual int writeLoadPatternData(int tag , std::string name) ;
     virtual int writeSPConstraintsData(int nodetag , int dof) ;
@@ -178,14 +174,13 @@ public:  //Additional stuff
                                     void *fill_value_ptr,
                                     int timedimension = -1);
 
-    hid_t createVariableLengthDoubleArray(hid_t here,
+    hid_t createVariableLengthFloatArray(hid_t here,
                                           int rank,
                                           hsize_t *dims,
                                           hsize_t *maxdims,
                                           std::string name,
                                           std::string attibute,
                                           int timedimension = -1);
-
 
     hid_t createVariableLengthIntegerArray(hid_t here,
                                            int rank,
@@ -195,11 +190,14 @@ public:  //Additional stuff
                                            std::string attibute,
                                            int timedimension = -1);
 
-    hid_t createVariableLengthStringArray(hid_t here,
+    hid_t createConstantLengthStringArray(hid_t here,
+                                          int rank,
+                                          hsize_t *dims,
+                                          hsize_t *maxdims,
                                           std::string name,
                                           std::string attribute);
 
-    hid_t createConstantLengthDoubleArray(hid_t here,
+    hid_t createConstantLengthFloatArray(hid_t here,
                                           int rank,
                                           hsize_t *dims,
                                           hsize_t *maxdims,
@@ -213,9 +211,7 @@ public:  //Additional stuff
                                            std::string name,
                                            std::string units);
 
-
-
-    hid_t writeVariableLengthDoubleArray(hid_t id_array,
+    hid_t writeVariableLengthFloatArray(hid_t id_array,
                                          int datarank,
                                          hsize_t *dims,
                                          hsize_t *data_dims,
@@ -223,9 +219,9 @@ public:  //Additional stuff
                                          hsize_t *stride,
                                          hsize_t *count,
                                          hsize_t *block,
-                                         double *data);
+                                         float *data);
 
-    hid_t writeConstantLengthDoubleMatrix(hid_t id_array,
+    hid_t writeConstantLengthFloatMatrix(hid_t id_array,
                                         int datarank,
                                         hsize_t *dims,
                                         hsize_t *data_dims,
@@ -233,7 +229,7 @@ public:  //Additional stuff
                                         hsize_t *stride,
                                         hsize_t *count,
                                         hsize_t *block,
-                                        double *data);
+                                        float *data);
 
     hid_t writeVariableLengthIntegerArray(hid_t id_array,
                                           int datarank,
@@ -246,13 +242,13 @@ public:  //Additional stuff
                                           int *data);
 
 
-    hid_t writeVariableLengthStringArray(hid_t id_array,
+    hid_t writeConstantLengthStringArray(hid_t id_array,
                                          hsize_t datasize,
                                          hsize_t offset,
                                          std::string &data);
 
 
-    hid_t writeConstantLengthDoubleArray(hid_t id_array,
+    hid_t writeConstantLengthFloatArray(hid_t id_array,
                                          int datarank,
                                          hsize_t *dims,
                                          hsize_t *data_dims,
@@ -260,7 +256,7 @@ public:  //Additional stuff
                                          hsize_t *stride,
                                          hsize_t *count,
                                          hsize_t *block,
-                                         double *data);
+                                         float *data);
 
 
     hid_t writeConstantLengthIntegerArray(hid_t id_array,
@@ -316,7 +312,7 @@ private:
     int length_nodes_reaction_forcess_output;
     int length_element_output;
 
-    double current_time;
+    float current_time;
 
     int zlib_compression_level;
     int flag_write_element_output;
@@ -356,7 +352,7 @@ private:
     hid_t id_elements_ngauss;
     hid_t id_elements_gausscoords  , id_index_to_elements_gausscoords;
     hid_t id_elements_output       , id_index_to_elements_output;
-    hid_t id_elements_class_desc, id_elements_type;
+    hid_t id_elements_class_desc;
     hid_t id_elements_materialtag;
     hid_t id_elements_classtag;
     hid_t id_elements_partition;
@@ -417,7 +413,6 @@ private:
     ID Number_of_Gauss_Points;
     Vector Gauss_Point_Coordinates;
     ID Index_to_Gauss_Point_Coordinates;
-    std::vector<std::string> Element_types;
     std::vector<std::string> LoadPattern_names;
     ID Material_tags;
     ID Class_Tags;
