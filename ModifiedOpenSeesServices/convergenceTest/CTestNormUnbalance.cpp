@@ -30,6 +30,9 @@
 #include <EquiSolnAlgo.h>
 #include <LinearSOE.h>
 #include <iostream>
+#ifdef _PARALLEL_PROCESSING
+#include <mpi.h>
+#endif
 using namespace std;
 
 
@@ -109,7 +112,29 @@ CTestNormUnbalance::test(void)
 
 
     // get the B vector & determine it's norm & save the value in norms vector
-    const Vector& x = theSOE->getB();
+    Vector x;
+    #ifdef _PARALLEL_PROCESSING
+        int rank=0;
+        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+        // // ================================
+        // // Debug printing
+        // // ================================
+        // cout<<"rank "<<rank << ". vecB.size = "<<(theSOE->getB()).Size()<<endl;
+        // cout<<"rank "<<rank << ". vecB.norm = "<<(theSOE->getB()).Norm()<<endl;
+        // // ================================
+        Vector myVectB =theSOE->getB();
+        int bsize = myVectB.Size();
+        std::vector<double> in_B(bsize,0.0);
+        std::vector<double> out_B(bsize,0.0);
+        for (int i = 0; i < bsize; ++i)
+            in_B[i]=myVectB(i) ; 
+        MPI_Allreduce(&in_B[0] , &out_B[0] , bsize, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        x.resize(bsize);
+        for (int i = 0; i < bsize; ++i)
+           x(i)=out_B[i];
+    #else
+        x = theSOE->getB();
+    #endif
     double norm = x.Norm();
 
     if (currentIter <= maxNumIter)
@@ -232,13 +257,17 @@ CTestNormUnbalance::getNorms()
 }
 
 
+
 int
-CTestNormUnbalance::sendSelf(int cTag, Channel& theChannel)
+CTestNormUnbalance::sendSelf(int cTag, Channel &theChannel)
 {
     int res = 0;
-    Vector x(2);
+    Vector x(4);
     x(0) = tol;
     x(1) = maxNumIter;
+    // x(2) = printFlag;
+    x(2) = 0; // Only processor 0 prints info, whatever it is
+    x(3) = norms.Size();
     res = theChannel.sendVector(this->getDbTag(), cTag, x);
 
     if (res < 0)
@@ -250,25 +279,18 @@ CTestNormUnbalance::sendSelf(int cTag, Channel& theChannel)
 }
 
 int
-CTestNormUnbalance::receiveSelf(int cTag, Channel& theChannel,
-                                FEM_ObjectBroker& theBroker)
+CTestNormUnbalance::receiveSelf(int cTag, Channel &theChannel,
+                               FEM_ObjectBroker &theBroker)
 {
     int res = 0;
-    Vector x(2);
+    Vector x(4);
     res = theChannel.receiveVector(this->getDbTag(), cTag, x);
 
-    if (res < 0)
-    {
-        tol = 1.0e-8;
-        maxNumIter = 25;
-        cerr << "CTestNormUnbalance::sendSelf() - failed to send data\n";
-    }
-    else
-    {
-        tol = x(0);
-        maxNumIter = x(1);
-        norms.resize(maxNumIter);
-    }
+    tol = x(0);
+    maxNumIter = x(1);
+    printFlag = x(2);
+    norms.resize(x(3));
+    //  norms.resize(maxNumIter);
 
     return res;
 }
