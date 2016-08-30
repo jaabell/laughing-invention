@@ -927,10 +927,10 @@ void H5OutputWriter::writeMesh()
                                             block,
                                             int_data_buffer);
 
-            dims[0]      = (hsize_t) Coordinates.Size();
-            data_dims[0] = (hsize_t) Coordinates.Size();
+            dims[0]      = (hsize_t) Coordinates.size();
+            data_dims[0] = (hsize_t) Coordinates.size();
             count[0]     = dims[0];
-            float_data_buffer = (float *) Coordinates.theData;
+            float_data_buffer = &Coordinates[0];
             writeConstantLengthFloatArray(id_nodes_coordinates,
                                            datarank,
                                            dims,
@@ -1266,7 +1266,7 @@ void H5OutputWriter::writeMesh()
             dims[0]      = (hsize_t) number_of_gausspoints*3;
             data_dims[0] = (hsize_t) number_of_gausspoints*3;
             count[0]     = dims[0];
-            float_data_buffer = (float *) Gauss_Point_Coordinates.theData;
+            float_data_buffer = &Gauss_Point_Coordinates[0];
             writeConstantLengthFloatArray(id_elements_gausscoords,
                                            datarank,
                                            dims,
@@ -1540,12 +1540,10 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
     block[0]     = 1;
     block[1]     = 1;
 
-#if _PARALLEL_PROCESSING_COLLECTIVE_IO
-    // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
-#endif
+    std::vector<float> float_displacements(displacements.Size());
+    for (int i = 0; i < displacements.Size(); ++i)
+        float_displacements[i]=displacements(i);
 
-
-    float *data = (float *) displacements.theData;
     writeConstantLengthFloatArray(id_nodes_displacements,
                                    datarank,
                                    dims,
@@ -1554,7 +1552,7 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
                                    stride,
                                    count,
                                    block,
-                                   data);
+                                   &float_displacements[0]);
 
     H5Sclose(id_dataspace);
     H5Sclose(id_memspace);
@@ -1615,10 +1613,6 @@ int H5OutputWriter::writeTrialDisplacements(  int nodeTag, const Vector &displac
     block[0]     = 1;
     block[1]     = 1;
 
-#if _PARALLEL_PROCESSING_COLLECTIVE_IO
-    // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
-#endif
-
     // ///////////////////////// Fotr Debugging Sumeet 1st August, 2016 ////////////////////////
     // cout << "offset[0] " << offset[0] <<endl;
     // cout << "offset[1] " << offset[1] << endl;
@@ -1630,7 +1624,10 @@ int H5OutputWriter::writeTrialDisplacements(  int nodeTag, const Vector &displac
     // /////////////////////////////////////////////////////////////////////////////////////////
 
 
-    float *data = (float *) displacements.theData;
+    std::vector<float> float_displacements(displacements.Size());
+    for (int i = 0; i < displacements.Size(); ++i)
+        float_displacements[i]=displacements(i);
+
     writeConstantLengthFloatArray(id_trial_nodes_displacements,
                                    datarank,
                                    dims,
@@ -1639,7 +1636,7 @@ int H5OutputWriter::writeTrialDisplacements(  int nodeTag, const Vector &displac
                                    stride,
                                    count,
                                    block,
-                                   data);
+                                   &float_displacements[0]);
 
     H5Sclose(id_dataspace);
     H5Sclose(id_memspace);
@@ -1741,8 +1738,10 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
     // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
 #endif
 
+    std::vector<float> float_reactionForces(reactionForces.Size());
+    for (int i = 0; i < reactionForces.Size(); ++i)
+        float_reactionForces[i]=reactionForces(i);
 
-    float *data = (float *) reactionForces.theData;
     writeVariableLengthFloatArray(id_nodes_reaction_forces,
                                    datarank,
                                    dims,
@@ -1751,7 +1750,7 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
                                    stride,
                                    count,
                                    block,
-                                   data);
+                                   &float_reactionForces[0]);
 
     H5Sclose(id_dataspace);
     H5Sclose(id_memspace);
@@ -1804,7 +1803,11 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
         count[1]     = 1;
         block[0]     = 1;
         block[1]     = 1;
-        float *data = (float *) output.theData;
+
+        std::vector<float> float_output(output.Size());
+        for (int i = 0; i < output.Size(); ++i)
+            float_output[i]=output(i);
+
         writeConstantLengthFloatArray(id_elements_output,
                                        datarank,
                                        dims,
@@ -1813,7 +1816,7 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
                                        stride,
                                        count,
                                        block,
-                                       data);
+                                       &float_output[0]);
 
         H5Sclose(id_dataspace);
         H5Sclose(id_memspace);
@@ -1870,7 +1873,11 @@ int H5OutputWriter::writeTrialElementOutput(int elementTag, const  Vector &outpu
         count[1]     = 1;
         block[0]     = 1;
         block[1]     = 1;
-        float *data = (float *) output.theData;
+
+        std::vector<float> float_output(output.Size());
+        for (int i = 0; i < output.Size(); ++i)
+            float_output[i]=output(i);
+
         writeConstantLengthFloatArray(id_trial_elements_output,
                                        datarank,
                                        dims,
@@ -1879,7 +1886,7 @@ int H5OutputWriter::writeTrialElementOutput(int elementTag, const  Vector &outpu
                                        stride,
                                        count,
                                        block,
-                                       data);
+                                       &float_output[0]);
 
         H5Sclose(id_dataspace);
         H5Sclose(id_memspace);

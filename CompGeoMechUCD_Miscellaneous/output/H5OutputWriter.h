@@ -405,7 +405,7 @@ private:
 
     //For nodes
     ID Number_of_DOFs;
-    Vector Coordinates;
+    std::vector<float> Coordinates;
     ID Index_to_Coordinates;
     ID Index_to_Generalized_Displacements;
 
@@ -416,7 +416,7 @@ private:
     ID Number_of_Output_Fields;
     ID Index_to_Outputs;
     ID Number_of_Gauss_Points;
-    Vector Gauss_Point_Coordinates;
+    std::vector<float> Gauss_Point_Coordinates;
     ID Index_to_Gauss_Point_Coordinates;
     std::vector<std::string> LoadPattern_names;
     ID Material_tags;
