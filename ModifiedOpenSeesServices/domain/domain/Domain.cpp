@@ -3215,14 +3215,6 @@ Domain::buildEleGraph( Graph * theEleGraph )
 
     int *theElementTagVertices = 0;
     int maxEleNum = maxElementsTag;
-    Element *elePtr;
-    ElementIter &eleIter = this->getElements();
-
-    while ( ( elePtr = eleIter() ) != 0 )
-        if ( elePtr->getTag() > maxEleNum )
-        {
-            maxEleNum = elePtr->getTag();
-        }
 
     theElementTagVertices = new int[maxEleNum + 1];
 
@@ -3246,10 +3238,11 @@ Domain::buildEleGraph( Graph * theEleGraph )
     // now create the vertices with a reference equal to the element number.
     // and a tag which ranges from 0 through numVertex-1
 
-    ElementIter &eleIter2 = this->getElements();
+    ElementIter &eleIter = this->getElements();
+    Element *elePtr;
     int count = START_VERTEX_NUM;  // = 0 Defined in Vertex.h
 
-    while ( ( elePtr = eleIter2() ) != 0 )
+    while ( ( elePtr = eleIter() ) != 0 )
     {
         int ElementTag = elePtr->getTag();
         Vertex *vertexPtr = new Vertex( count, ElementTag );
@@ -3280,14 +3273,6 @@ Domain::buildEleGraph( Graph * theEleGraph )
     Vertex **theNodeTagVertices = 0;
     int maxNodNum = maxNodesTag;
     Node *nodPtr;
-    NodeIter &nodeIter = this->getNodes();
-
-    while ( ( nodPtr = nodeIter() ) != 0 )
-        if ( nodPtr->getTag() > maxNodNum )
-        {
-            maxNodNum = nodPtr->getTag();
-        }
-
     theNodeTagVertices = new Vertex *[maxNodNum + 1];
 
     if ( theNodeTagVertices == 0 )
@@ -3306,10 +3291,10 @@ Domain::buildEleGraph( Graph * theEleGraph )
     // and a tag which ranges from 0 through numVertex-1 and placed in
     // theNodeTagVertices at a position equal to the node's tag.
 
-    NodeIter &nodeIter2 = this->getNodes();
+    NodeIter &nodeIter = this->getNodes();
     count = START_VERTEX_NUM;
 
-    while ( ( nodPtr = nodeIter2() ) != 0 )
+    while ( ( nodPtr = nodeIter() ) != 0 )
     {
         int nodeTag = nodPtr->getTag();
         Vertex *vertexPtr = new Vertex( count++, nodeTag );
@@ -3327,9 +3312,9 @@ Domain::buildEleGraph( Graph * theEleGraph )
 
     // now add the the Elements to the nodes
 
-    ElementIter &eleIter3 = this->getElements();
+    ElementIter &eleIter2 = this->getElements();
 
-    while ( ( elePtr = eleIter3() ) != 0 )
+    while ( ( elePtr = eleIter2() ) != 0 )
     {
         int eleTag = elePtr->getTag();
         const ID &id = elePtr->getExternalNodes();
@@ -3505,16 +3490,8 @@ Domain::buildNodeGraph( Graph * theNodeGraph )
     // create another vertices array which aids in adding edges
 
     int *theNodeTagVertices = 0;
-    int maxNodNum = 0;
+    int maxNodNum = maxNodesTag;
     Node *nodPtr;
-    NodeIter &nodeIter = this->getNodes();
-
-    while ( ( nodPtr = nodeIter() ) != 0 )
-        if ( nodPtr->getTag() > maxNodNum )
-        {
-            maxNodNum = nodPtr->getTag();
-        }
-
     theNodeTagVertices = new int [maxNodNum + 1];
 
     if ( theNodeTagVertices == 0 )
@@ -3533,10 +3510,10 @@ Domain::buildNodeGraph( Graph * theNodeGraph )
     // and a tag which ranges from START_VERTEX_NUM through
     // numNodes+START_VERTEX_NUM
 
-    NodeIter &nodeIter2 = this->getNodes();
+    NodeIter &nodeIter = this->getNodes();
     int count = START_VERTEX_NUM;
 
-    while ( ( nodPtr = nodeIter2() ) != 0 )
+    while ( ( nodPtr = nodeIter() ) != 0 )
     {
         int nodeTag = nodPtr->getTag();
         Vertex *vertexPtr = new Vertex( count, nodeTag );

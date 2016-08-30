@@ -249,42 +249,17 @@ DomainPartitioner::partition(int numParts)
     NodeIter &theNodes = myDomain->getNodes();
     Node *nodePtr;
 
-    while ((nodePtr = theNodes()) != 0)
-    {
-        int tag = nodePtr->getTag();
-        if (tag > maxNodeTag)
-        {
-            maxNodeTag = tag;
-        }
-        if (tag < minNodeTag)
-        {
-            minNodeTag = tag;  //NOTE: minNodeTag will always be zero!! -JAbell
-        }
-    }
-
-    if (minNodeTag < 0)
-    {
-        //Never happens! :/ -JAbell
-        cerr << "DomainPartitioner::partition(int numParts)";
-        cerr << " - minNodeTag < 0 \n";
-        numPartitions = 0;
-        return -1;
-    }
+    maxNodeTag = myDomain->maxNodesTag;   // [Sumeet August 2016]
+    minNodeTag = 0;                       // minimum node tag will always be zero [Jabell and Sumeet August 2016]
 
     // we now create an ID which will contain information
     // about which partition the node is located in
 
-    // if ( nodePartition != NULL )
-    {
-        delete [] nodePartition;
-    }
+    delete [] nodePartition;
     nodePartition = NULL;
     nodePartition = new int[(maxNodeTag + 1) * 8];  //Note:  why *8 here? -JAbell
 
-    if ( ParCount != NULL )
-    {
-        delete [] ParCount;
-    }
+    delete [] ParCount;
     ParCount = NULL;
     ParCount = new int[maxNodeTag + 1];
 
