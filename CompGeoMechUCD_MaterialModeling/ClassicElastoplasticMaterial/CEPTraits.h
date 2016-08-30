@@ -60,3 +60,8 @@ struct supports_implicit_integration
     static const bool value = false;
 };
 
+template< typename T >
+struct requires_DruckerPrager_Apex_Tension_check
+{
+    static const bool require = false;
+};

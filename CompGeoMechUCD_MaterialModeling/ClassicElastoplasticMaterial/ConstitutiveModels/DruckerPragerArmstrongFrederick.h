@@ -68,6 +68,12 @@ struct supports_pre_integration_callback<DruckerPragerArmstrongFrederick>
     static const bool value = true;
 };
 
+//Activate to handle tension case
+template< >
+struct requires_DruckerPrager_Apex_Tension_check<DruckerPragerArmstrongFrederick>
+{
+    static const bool require = true;
+};
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> DPAFVarsType;
 typedef DruckerPrager_YF < ArmstrongFrederickTensor_EV, LinearHardeningScalar_EV> DPAF_YFType;
