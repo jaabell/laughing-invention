@@ -32,7 +32,6 @@
 #include "OutputWriter.h"
 #include <hdf5.h>
 #include <hdf5_hl.h>
-#include <classTags.h>
 
 #include <algorithm>  // For std::min and std::max functions
 
@@ -244,6 +243,30 @@ public:  //Additional stuff
                                           hsize_t *block,
                                           int *data);
 
+// ===========================================================
+// For float output    
+// ===========================================================
+    hid_t createVariableLengthFloatArray(hid_t here,
+                                          int rank,
+                                          hsize_t *dims,
+                                          hsize_t *maxdims,
+                                          std::string name,
+                                          std::string attibute,
+                                          int timedimension = -1);
+
+    hid_t writeVariableLengthFloatArray(hid_t id_array,
+                                         int datarank,
+                                         hsize_t *dims,
+                                         hsize_t *data_dims,
+                                         hsize_t *offset,
+                                         hsize_t *stride,
+                                         hsize_t *count,
+                                         hsize_t *block,
+                                         float *data);
+// ===========================================================
+// For float output    END
+// =========================================================== 
+        
     void writeMesh(void);
     void syncWriters(); //Used in parallel
 
@@ -323,7 +346,7 @@ private:
     hid_t id_elements_ngauss;
     hid_t id_elements_gausscoords  , id_index_to_elements_gausscoords;
     hid_t id_elements_output       , id_index_to_elements_output;
-    hid_t id_elements_class_desc;
+    hid_t id_elements_type;
     hid_t id_elements_materialtag;
     hid_t id_elements_classtag;
     hid_t id_elements_partition;
