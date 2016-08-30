@@ -2045,39 +2045,53 @@ private:
         return static_cast<U*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
     }
 
-    // // // ====================================================
-    // // // Working on consistent tangent stiffness matrix. 
-    // // // ====================================================
-    // template <typename U = T>
-    // typename std::enable_if < !supports_consistent_stiffness<U>::value, int >::type
-    // consistent_stiffness_(DTensor2 const& dlambda_,
-    //                       DTensor2 const& sigma_,
-    //                       DTensor2 const& n_,
-    //                       DTensor2 const& m_,
-    //                       DTensor2 const& z_,
-    //                       DTensor2 const& alpha_,
-    //                       double   const&  k_,
-    //                       DTensor4      & Stiffness_ ){
-    //     cout << "consistent_stiffness_ for this type of materials is not implemented yet!\n";
-    //     return 0;
-    // }
 
-    // template <typename U = T>
-    // typename std::enable_if<supports_consistent_stiffness<U>::value, int>::type
-    // consistent_stiffness_(DTensor2 const& dlambda_,
-    //                       DTensor2 const& sigma_,
-    //                       DTensor2 const& n_,
-    //                       DTensor2 const& m_,
-    //                       DTensor2 const& z_,
-    //                       DTensor2 const& alpha_,
-    //                       double   const&  k_,
-    //                       DTensor4      & Stiffness_ ){
-    //     return static_cast<U*>(this)->consistent_stiffness(dlambda_, sigma_, m_, z_, alpha_, Stiffness_,  k_,  yf2, returns);
-    // }
+// ================================================================================
+// DruckerPrager Apex check
+// ================================================================================
+// If the stress is outside the DruckerPrager apex, set the stress to a small number
+// (-0.1, -0.1, -0.1). Then, according to the incremental stress, calculate the 
+// stiffness tensor. 
+// (1) Forward_Euler: use the physical meaning to calculate the stiffness. 
+// (2) Backward_Euler: use the plastic corrector to calculate the stiffness.
+// ================================================================================
+// (1) Forward_Euler :
+// ================================================================================
+    template <typename U = T>
+    typename std::enable_if < !supports_DruckerPrager_Apex_check_Forward_Euler<U>::value, int >::type
+    DruckerPrager_Apex_check_Forward_Euler_(const DTensor2 &depsilon, const DTensor2 &dsigma,  const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
+    {
+        returns = false;
+        return 0;
+    }
 
-    // // ====================================================
-    // // Working on consistent tangent stiffness matrix. END
-    // // ====================================================
+    template <typename U = T>
+    typename std::enable_if<supports_DrukerPrager_Apex_check_Forward_Euler<U>::value, int>::type
+    DruckerPrager_Apex_check_Forward_Euler_(const DTensor2 &depsilon, const DTensor2 &dsigma, const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
+    {
+        return static_cast<U*>(this)->DruckerPrager_Apex_check_Forward_Euler(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
+    }
+// ================================================================================
+// (2) Backward_Euler:
+// ================================================================================
+    template <typename U = T>
+    typename std::enable_if < !supports_DruckerPrager_Apex_check_Backward_Euler<U>::value, int >::type
+    DruckerPrager_Apex_check_Backward_Euler_(const DTensor2 &depsilon, const DTensor2 &dsigma,  const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
+    {
+        returns = false;
+        return 0;
+    }
+
+    template <typename U = T>
+    typename std::enable_if<supports_DrukerPrager_Apex_check_Backward_Euler<U>::value, int>::type
+    DruckerPrager_Apex_check_Backward_Euler_(const DTensor2 &depsilon, const DTensor2 &dsigma, const DTensor2 &TrialStress, const DTensor4 &Stiffness, double yf1, double yf2, bool & returns)
+    {
+        return static_cast<U*>(this)->DruckerPrager_Apex_check_Backward_Euler(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
+    }
+// ================================================================================
+// DruckerPrager Apex check   END
+// ================================================================================
+
 private:
 // Routine used by yield_surface_cross to find the stresstensor at cross point
 //================================================================================
