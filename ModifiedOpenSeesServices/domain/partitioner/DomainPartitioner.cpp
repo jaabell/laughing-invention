@@ -369,6 +369,7 @@ DomainPartitioner::partition(int numParts)
             ele_nodes[i_ele_nodes] = node;
 
             int count = ParCount[node];
+            cout << "count " << count << endl;
             bool added = false;
             for (int k = 0; k < count; k++)
             {
