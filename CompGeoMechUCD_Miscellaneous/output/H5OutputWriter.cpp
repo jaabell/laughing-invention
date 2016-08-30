@@ -1455,8 +1455,6 @@ void H5OutputWriter::writeElementPartitionData(int tag  , int partition)
 void H5OutputWriter::writeNodePartitionData(int tag  , int partition)
 {
     Node_Partition[tag] = partition;
-    cout << " Tag " << tag << " " ;
-    cout << "Partition " << partition << endl;
 }
 
 // Added by Sumeet August 2016
