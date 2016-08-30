@@ -362,65 +362,73 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
     number_of_elements = number_of_elements_in;
     max_node_tag = max_node_tag_in;
     max_element_tag = max_element_tag_in;
-    number_of_dofs = number_of_dofs_in;
-    number_of_outputs = number_of_outputs_in;
-    number_of_gausspoints = Total_Number_of_Gauss_Points;
-    number_of_connectivity_nodes = Total_Number_of_Connectivity_Nodes;
+
+    bool Process_output = false;
+#ifdef _PARALLEL_PROCESSING
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if(rank!=0)
+        Process_output=true;
+#else
+    Process_output = true;
+#endif
+
+        number_of_dofs = number_of_dofs_in;
+        number_of_outputs = number_of_outputs_in;
+        number_of_gausspoints = Total_Number_of_Gauss_Points;
+        number_of_connectivity_nodes = Total_Number_of_Connectivity_Nodes;
 
 
-    // cout << "number_of_nodes    = " << number_of_nodes    << endl;
-    // cout << "number_of_elements = " << number_of_elements << endl;
-    // cout << "max_node_tag       = " << max_node_tag       << endl;
-    // cout << "max_element_tag    = " << max_element_tag    << endl;
-    // cout << "number_of_dofs     = " << number_of_dofs     << endl;
-    // cout << "number_of_outputs  = " << number_of_outputs  << endl;
+        // cout << "number_of_nodes    = " << number_of_nodes    << endl;
+        // cout << "number_of_elements = " << number_of_elements << endl;
+        // cout << "max_node_tag       = " << max_node_tag       << endl;
+        // cout << "max_element_tag    = " << max_element_tag    << endl;
+        // cout << "number_of_dofs     = " << number_of_dofs     << endl;
+        // cout << "number_of_outputs  = " << number_of_outputs  << endl;
 
-    //Initialize data
+        //Initialize data
 
 
 
-    Coordinates.resize(number_of_nodes * 3);
+        Coordinates.resize(number_of_nodes * 3);
 
-    Number_of_DOFs.resize(max_node_tag + 1);
-    Index_to_Coordinates.resize(max_node_tag + 1);
-    Index_to_Generalized_Displacements.resize(max_node_tag + 1);
-    for (int i = 0; i < max_node_tag + 1; i++)
-    {
-        Number_of_DOFs[i] = -1;
-        Index_to_Coordinates[i] = -1;
-        Index_to_Generalized_Displacements[i] = -1;
-    }
+        Number_of_DOFs.resize(max_node_tag + 1);
+        Index_to_Coordinates.resize(max_node_tag + 1);
+        Index_to_Generalized_Displacements.resize(max_node_tag + 1);
+        for (int i = 0; i < max_node_tag + 1; i++)
+        {
+            Number_of_DOFs[i] = -1;
+            Index_to_Coordinates[i] = -1;
+            Index_to_Generalized_Displacements[i] = -1;
+        }
 
-    //For Elements
-    Number_of_Nodes.resize(max_element_tag + 1);
-    Index_to_Connectivity.resize(max_element_tag + 1);
-    Index_to_Outputs.resize(max_element_tag + 1);
-    Number_of_Gauss_Points.resize(max_element_tag + 1);
-    Index_to_Gauss_Point_Coordinates.resize(max_element_tag + 1);
+        //For Elements
+        Number_of_Nodes.resize(max_element_tag + 1);
+        Index_to_Connectivity.resize(max_element_tag + 1);
+        Index_to_Outputs.resize(max_element_tag + 1);
+        Number_of_Gauss_Points.resize(max_element_tag + 1);
+        Index_to_Gauss_Point_Coordinates.resize(max_element_tag + 1);
 
-    Class_Tags.resize(max_element_tag + 1);
-    Material_tags.resize(max_element_tag+1);
-    Number_of_Output_Fields.resize(max_element_tag + 1);
+        Class_Tags.resize(max_element_tag + 1);
+        Material_tags.resize(max_element_tag+1);
+        Number_of_Output_Fields.resize(max_element_tag + 1);
 
-    for (int i = 0; i < max_element_tag; i++)
-    {
-        Number_of_Nodes[i] = -1;
-        Index_to_Connectivity[i] = -1;
-        Index_to_Outputs[i] = -1;
-        Number_of_Gauss_Points[i] = -1;
-        Index_to_Gauss_Point_Coordinates[i] = -1;
-        Class_Tags[i] = -1;
-        Material_tags[i] = -1;
-        Number_of_Output_Fields[i] = -1;
-    }
+        for (int i = 0; i < max_element_tag; i++)
+        {
+            Number_of_Nodes[i] = -1;
+            Index_to_Connectivity[i] = -1;
+            Index_to_Outputs[i] = -1;
+            Number_of_Gauss_Points[i] = -1;
+            Index_to_Gauss_Point_Coordinates[i] = -1;
+            Class_Tags[i] = -1;
+            Material_tags[i] = -1;
+            Number_of_Output_Fields[i] = -1;
+        }
 
-    // Exact pre-allocation for these arrays be exact
-    // Fixed added by sumeet 30th July, 2016
+        // Exact pre-allocation for these arrays fixed by sumeet 30th July, 2016
 
-    Connectivity.resize(number_of_connectivity_nodes);
-    Gauss_Point_Coordinates.resize(number_of_gausspoints*3);
-
-// LoadPattern_names.resize();
+        Connectivity.resize(number_of_connectivity_nodes);
+        Gauss_Point_Coordinates.resize(number_of_gausspoints*3);
 
     return 0;
 }
@@ -726,13 +734,18 @@ void H5OutputWriter::writeMesh()
 
     //Initialize datamembers
     file_is_open = false;
+    bool Enable_Process_output = false;
 
     int numProcesses, processID;
     numProcesses = 1;
     processID = 0;
+
 #ifdef _PARALLEL_PROCESSING
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
+    if(processID!=0)
+        Enable_Process_output=true;
 
 
     //Higher ranks get an additional extension .pid
@@ -763,8 +776,8 @@ void H5OutputWriter::writeMesh()
         file_name += ".feioutput";
     }
 
-    // cout << "Process " << processID << " filename = " << file_name << endl;
-
+#else
+    Enable_Process_output = true;
 #endif
 
     //================================================================================
@@ -883,225 +896,517 @@ void H5OutputWriter::writeMesh()
         hsize_t count[1];
         hsize_t block[1];
 
+        if(Enable_Process_output)
+        {
+            //Create arrays
+            dims[0]    = (hsize_t) max_node_tag+1;
+            maxdims[0] = (hsize_t) max_node_tag+1;
+            id_nodes_ndofs                = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Number_of_DOFs"                     , " ");
+            id_index_to_nodes_coordinates = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
+            id_index_to_nodes_outputs     = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
 
-        //Create arrays
-        dims[0]    = (hsize_t) max_node_tag+1;
-        maxdims[0] = (hsize_t) max_node_tag+1;
-        id_nodes_ndofs                = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Number_of_DOFs"                     , " ");
-        id_index_to_nodes_coordinates = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
-        id_index_to_nodes_outputs     = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
+            dims[0]    = number_of_nodes*3;
+            maxdims[0] = number_of_nodes*3;      
+            id_nodes_coordinates          = createConstantLengthFloatArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ");
+            
+            // Write a vector with the number of DOFS for node at a given tag
+            dims[0]      = (hsize_t) Number_of_DOFs.Size();
+            data_dims[0] = (hsize_t) Number_of_DOFs.Size();
+            offset[0]    = 0;
+            stride[0]    = 1;
+            count[0]     = dims[0];
+            block[0]     = 1;
+            int_data_buffer = Number_of_DOFs.data;
+            writeConstantLengthIntegerArray(id_nodes_ndofs,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
 
-        dims[0]    = number_of_nodes*3;
-        maxdims[0] = number_of_nodes*3;      
-        id_nodes_coordinates          = createConstantLengthFloatArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ");
-        
-        // Write a vector with the number of DOFS for node at a given tag
-        dims[0]      = (hsize_t) Number_of_DOFs.Size();
-        data_dims[0] = (hsize_t) Number_of_DOFs.Size();
-        offset[0]    = 0;
-        stride[0]    = 1;
-        count[0]     = dims[0];
-        block[0]     = 1;
-        int_data_buffer = Number_of_DOFs.data;
-        writeConstantLengthIntegerArray(id_nodes_ndofs,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
+            dims[0]      = (hsize_t) Coordinates.Size();
+            data_dims[0] = (hsize_t) Coordinates.Size();
+            count[0]     = dims[0];
+            float_data_buffer = (float *) Coordinates.theData;
+            writeConstantLengthFloatArray(id_nodes_coordinates,
+                                           datarank,
+                                           dims,
+                                           data_dims,
+                                           offset,
+                                           stride,
+                                           count,
+                                           block,
+                                           float_data_buffer);
 
-        dims[0]      = (hsize_t) Coordinates.Size();
-        data_dims[0] = (hsize_t) Coordinates.Size();
-        count[0]     = dims[0];
-        float_data_buffer = (float *) Coordinates.theData;
-        writeConstantLengthFloatArray(id_nodes_coordinates,
-                                       datarank,
-                                       dims,
-                                       data_dims,
-                                       offset,
-                                       stride,
-                                       count,
-                                       block,
-                                       float_data_buffer);
+            dims[0]      = (hsize_t) Index_to_Coordinates.Size();
+            data_dims[0] = (hsize_t) Index_to_Coordinates.Size();
+            count[0]     = dims[0];
+            int_data_buffer = Index_to_Coordinates.data;
+            writeConstantLengthIntegerArray(id_index_to_nodes_coordinates,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
 
-        dims[0]      = (hsize_t) Index_to_Coordinates.Size();
-        data_dims[0] = (hsize_t) Index_to_Coordinates.Size();
-        count[0]     = dims[0];
-        int_data_buffer = Index_to_Coordinates.data;
-        writeConstantLengthIntegerArray(id_index_to_nodes_coordinates,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
+            dims[0]      = (hsize_t) Index_to_Generalized_Displacements.Size();
+            data_dims[0] = (hsize_t) Index_to_Generalized_Displacements.Size();
+            count[0]     = dims[0];
+            int_data_buffer = Index_to_Generalized_Displacements.data;
+            writeConstantLengthIntegerArray(id_index_to_nodes_outputs,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
 
-        dims[0]      = (hsize_t) Index_to_Generalized_Displacements.Size();
-        data_dims[0] = (hsize_t) Index_to_Generalized_Displacements.Size();
-        count[0]     = dims[0];
-        int_data_buffer = Index_to_Generalized_Displacements.data;
-        writeConstantLengthIntegerArray(id_index_to_nodes_outputs,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
+            //================================================================================
+            // Create number of elements and nodes
+            //================================================================================
 
-        //================================================================================
-        // Create number of elements and nodes
-        //================================================================================
+            rank        = 1;
+            dims[0]     = 1;
+            data_dims[0] = 1;
+            offset[0]   = 0;
+            stride[0]   = 1;
+            count[0]    = 1;
+            block[0]    = 1;
 
-        rank        = 1;
-        dims[0]     = 1;
-        data_dims[0] = 1;
-        offset[0]   = 0;
-        stride[0]   = 1;
-        count[0]    = 1;
-        block[0]    = 1;
+            writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, data_dims, offset, stride, count, block,
+                                            &number_of_nodes);
 
-        writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, data_dims, offset, stride, count, block,
-                                        &number_of_nodes);
-
-        writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, data_dims, offset, stride, count, block,
-                                        &number_of_elements);
-
-
-        rank        = 1;
-        dims[0]     = 1;
-        data_dims[0] = 1;
-        offset[0]   = 0;
-        stride[0]   = 1;
-        count[0]    = 1;
-        block[0]    = 1;
-
-        writeConstantLengthIntegerArray(id_my_proc_rank, rank, dims, data_dims, offset, stride, count, block,
-                                        &processID);
-
-        rank        = 1;
-        dims[0]     = 1;
-        data_dims[0] = 1;
-        offset[0]   = 0;
-        stride[0]   = 1;
-        count[0]    = 1;
-        block[0]    = 1;
-
-        writeConstantLengthIntegerArray(id_number_of_procs, rank, dims, data_dims, offset, stride, count, block,
-                                        &numProcesses);
-
-        H5Dclose(id_my_proc_rank);
-        H5Dclose(id_number_of_procs);
+            writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, data_dims, offset, stride, count, block,
+                                            &number_of_elements);
 
 
-        // // =============================================================================================
-        // //Determine the bounds
-        // // =============================================================================================
-        // float bounds[6];//, xmax, ymin, ymax, zmin, zmax;
-        // bounds[0] = -std::numeric_limits<float>::infinity();
-        // bounds[1] = std::numeric_limits<float>::infinity();
-        // bounds[2] = -std::numeric_limits<float>::infinity();
-        // bounds[3] = std::numeric_limits<float>::infinity();
-        // bounds[4] = -std::numeric_limits<float>::infinity();
-        // bounds[5] = std::numeric_limits<float>::infinity();
-        // for (int n = 0; n < number_of_nodes; n++)
-        // {
-        //     float x = Coordinates[3 * n];
-        //     float y = Coordinates[3 * n + 1];
-        //     float z = Coordinates[3 * n + 2];
-        //     if (x > bounds[0])
-        //     {
-        //         bounds[0] = x;
-        //     }
-        //     if (x < bounds[1])
-        //     {
-        //         bounds[1] = x;
-        //     }
-        //     if (y > bounds[2])
-        //     {
-        //         bounds[2] = y;
-        //     }
-        //     if (y < bounds[3])
-        //     {
-        //         bounds[3] = y;
-        //     }
-        //     if (z > bounds[4])
-        //     {
-        //         bounds[4] = z;
-        //     }
-        //     if (z < bounds[5])
-        //     {
-        //         bounds[5] = z;
-        //     }
-        // }
-        // // cout << processID <<  ": Model bounds ("
-        // //      << bounds[0] << ", "
-        // //      << bounds[1] << ", "
-        // //      << bounds[2] << ", "
-        // //      << bounds[3] << ", "
-        // //      << bounds[4] << ", "
-        // //      << bounds[5] << ")\n";
-        // //Write them
-        // rank        = 1;
-        // dims[0]     = 6;
-        // data_dims[0] = 6;
-        // offset[0]   = 0;
-        // stride[0]   = 1;
-        // count[0]    = 6;
-        // block[0]    = 1;
+            rank        = 1;
+            dims[0]     = 1;
+            data_dims[0] = 1;
+            offset[0]   = 0;
+            stride[0]   = 1;
+            count[0]    = 1;
+            block[0]    = 1;
 
-        // writeConstantLengthFloatArray(id_model_bounds, rank, dims, data_dims, offset, stride, count, block,
-        //                                bounds);
-        // // cout << processID <<  "Wrote bounds!\n";
-        // H5Dclose(id_model_bounds);
-        // H5OUTPUTWRITER_COUNT_OBJS;
+            writeConstantLengthIntegerArray(id_my_proc_rank, rank, dims, data_dims, offset, stride, count, block,
+                                            &processID);
 
-        // =============================================================================================
-        //   Write element mesh data
-        // =============================================================================================
+            rank        = 1;
+            dims[0]     = 1;
+            data_dims[0] = 1;
+            offset[0]   = 0;
+            stride[0]   = 1;
+            count[0]    = 1;
+            block[0]    = 1;
+
+            writeConstantLengthIntegerArray(id_number_of_procs, rank, dims, data_dims, offset, stride, count, block,
+                                            &numProcesses);
+
+            H5Dclose(id_my_proc_rank);
+            H5Dclose(id_number_of_procs);
 
 
-        rank = 1;
-        dims[0] = max_element_tag+1;
-        maxdims[0] = max_element_tag+1;
+            // // =============================================================================================
+            // //Determine the bounds
+            // // =============================================================================================
+            // float bounds[6];//, xmax, ymin, ymax, zmin, zmax;
+            // bounds[0] = -std::numeric_limits<float>::infinity();
+            // bounds[1] = std::numeric_limits<float>::infinity();
+            // bounds[2] = -std::numeric_limits<float>::infinity();
+            // bounds[3] = std::numeric_limits<float>::infinity();
+            // bounds[4] = -std::numeric_limits<float>::infinity();
+            // bounds[5] = std::numeric_limits<float>::infinity();
+            // for (int n = 0; n < number_of_nodes; n++)
+            // {
+            //     float x = Coordinates[3 * n];
+            //     float y = Coordinates[3 * n + 1];
+            //     float z = Coordinates[3 * n + 2];
+            //     if (x > bounds[0])
+            //     {
+            //         bounds[0] = x;
+            //     }
+            //     if (x < bounds[1])
+            //     {
+            //         bounds[1] = x;
+            //     }
+            //     if (y > bounds[2])
+            //     {
+            //         bounds[2] = y;
+            //     }
+            //     if (y < bounds[3])
+            //     {
+            //         bounds[3] = y;
+            //     }
+            //     if (z > bounds[4])
+            //     {
+            //         bounds[4] = z;
+            //     }
+            //     if (z < bounds[5])
+            //     {
+            //         bounds[5] = z;
+            //     }
+            // }
+            // // cout << processID <<  ": Model bounds ("
+            // //      << bounds[0] << ", "
+            // //      << bounds[1] << ", "
+            // //      << bounds[2] << ", "
+            // //      << bounds[3] << ", "
+            // //      << bounds[4] << ", "
+            // //      << bounds[5] << ")\n";
+            // //Write them
+            // rank        = 1;
+            // dims[0]     = 6;
+            // data_dims[0] = 6;
+            // offset[0]   = 0;
+            // stride[0]   = 1;
+            // count[0]    = 6;
+            // block[0]    = 1;
 
-        id_elements_nnodes                = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Nodes", " ");
-        id_index_to_elements_connectivity = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Connectivity", " ");
-        id_elements_noutputs              = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Output_Fields", " ");
-        id_index_to_elements_output       = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
-        id_elements_ngauss                = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
-        id_index_to_elements_gausscoords  = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
-        id_elements_materialtag           = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
-        id_elements_classtag              = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
+            // writeConstantLengthFloatArray(id_model_bounds, rank, dims, data_dims, offset, stride, count, block,
+            //                                bounds);
+            // // cout << processID <<  "Wrote bounds!\n";
+            // H5Dclose(id_model_bounds);
+            // H5OUTPUTWRITER_COUNT_OBJS;
 
-#ifdef _PARALLEL_PROCESSING
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+            // =============================================================================================
+            //   Write element mesh data
+            // =============================================================================================
 
-    // return digits;
-    if (processID == 0)
-    {
-        id_elements_partition             = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Partition", " ");
-        dims[0] = max_node_tag+1;
-        maxdims[0] = max_node_tag+1;
-        id_nodes_partition                = createConstantLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Partition", " ");
-    }
 
-#endif
+            rank = 1;
+            dims[0] = max_element_tag+1;
+            maxdims[0] = max_element_tag+1;
 
-        dims[0]    = this->number_of_gausspoints*3;
-        maxdims[0] = this->number_of_gausspoints*3;
-        id_elements_gausscoords           = createConstantLengthFloatArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
+            id_elements_nnodes                = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Nodes", " ");
+            id_index_to_elements_connectivity = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Connectivity", " ");
+            id_elements_noutputs              = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Output_Fields", " ");
+            id_index_to_elements_output       = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
+            id_elements_ngauss                = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
+            id_index_to_elements_gausscoords  = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
+            id_elements_materialtag           = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
+            id_elements_classtag              = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
 
-        dims[0]    = this->number_of_connectivity_nodes;
-        maxdims[0] = this->number_of_connectivity_nodes;
-        id_elements_connectivity          = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Connectivity", " ");
+            dims[0]    = this->number_of_gausspoints*3;
+            maxdims[0] = this->number_of_gausspoints*3;
+            id_elements_gausscoords           = createConstantLengthFloatArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
+
+            dims[0]    = this->number_of_connectivity_nodes;
+            maxdims[0] = this->number_of_connectivity_nodes;
+            id_elements_connectivity          = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Connectivity", " ");
+           
+            // Write a vector with the number of nodes at a given elements tag
+            datarank     = 1;
+            dims[0]      = (hsize_t) max_element_tag + 1;
+            data_dims[0] = (hsize_t) max_element_tag + 1;
+            offset[0]    = 0;
+            stride[0]    = 1;
+            count[0]     = dims[0];
+            block[0]     = 1;
+            int_data_buffer = Number_of_Nodes.data;
+            writeConstantLengthIntegerArray(id_elements_nnodes,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+
+            //Write index to connectivity
+            dims[0]      = (hsize_t) max_element_tag + 1;
+            data_dims[0] = (hsize_t) max_element_tag + 1;
+            count[0]     = dims[0];
+            int_data_buffer = Index_to_Connectivity.data;
+            writeConstantLengthIntegerArray(id_index_to_elements_connectivity,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+
+            //Write element connectivity
+            dims[0]      = (hsize_t) number_of_connectivity_nodes;
+            data_dims[0] = (hsize_t) number_of_connectivity_nodes;
+            count[0]     = dims[0];
+            int_data_buffer = Connectivity.data;
+            writeConstantLengthIntegerArray(id_elements_connectivity,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+            //Write index to number of outputs
+            dims[0]      = (hsize_t) max_element_tag + 1;
+            data_dims[0] = (hsize_t) max_element_tag + 1;
+            count[0]     = dims[0];
+            int_data_buffer = Number_of_Output_Fields.data;
+            writeConstantLengthIntegerArray(id_elements_noutputs,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+            //Write index to outputs
+            dims[0]      = (hsize_t) max_element_tag + 1;
+            data_dims[0] = (hsize_t) max_element_tag + 1;
+            count[0]     = dims[0];
+            int_data_buffer = Index_to_Outputs.data;
+            writeConstantLengthIntegerArray(id_index_to_elements_output,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+            //Write material tags
+            dims[0]      = (hsize_t) max_element_tag + 1;
+            data_dims[0] = (hsize_t) max_element_tag + 1;
+            count[0]     = dims[0];
+            int_data_buffer = Material_tags.data;
+            writeConstantLengthIntegerArray(id_elements_materialtag,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+            //Writing Class tags
+            dims[0]      = (hsize_t) Class_Tags.Size();
+            data_dims[0] = (hsize_t) Class_Tags.Size();
+            count[0]     = dims[0];
+            int_data_buffer = Class_Tags.data;
+            writeConstantLengthIntegerArray(id_elements_classtag,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+            // Creating Element_Class_Tag Description [Sumeet, August, 2016]
+            ELE_TAG_DESC_ARRAY;
+            int ele_class_desc_size = sizeof(ele_tag_desc_array)/sizeof(int);
+            dims[0]      = (hsize_t) ele_class_desc_size;
+            maxdims[0]   = (hsize_t) ele_class_desc_size;
+            count[0]     = dims[0];
+            id_elements_class_desc            = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Element_Class_Desc"," ");
+
+            // Writing Element_Class_Tag Description [Sumeet, August, 2016]
+            writeConstantLengthIntegerArray(id_elements_class_desc,
+                                            datarank,
+                                            dims,
+                                            maxdims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            ele_tag_desc_array);
+
+            //Write number of gauss points
+            dims[0]      = (hsize_t) max_element_tag+1;
+            data_dims[0] = (hsize_t) max_element_tag+1;
+            count[0]     = dims[0];
+            int_data_buffer = Number_of_Gauss_Points.data;
+            writeConstantLengthIntegerArray(id_elements_ngauss,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+            //Write index_to_gauss_coordinate
+            dims[0]      = (hsize_t) max_element_tag+1;
+            data_dims[0] = (hsize_t) max_element_tag+1;
+            count[0]     = dims[0];
+            int_data_buffer = Index_to_Gauss_Point_Coordinates.data;
+            writeConstantLengthIntegerArray(id_index_to_elements_gausscoords,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+            //Write gauss coordinate values
+            dims[0]      = (hsize_t) number_of_gausspoints*3;
+            data_dims[0] = (hsize_t) number_of_gausspoints*3;
+            count[0]     = dims[0];
+            float_data_buffer = (float *) Gauss_Point_Coordinates.theData;
+            writeConstantLengthFloatArray(id_elements_gausscoords,
+                                           datarank,
+                                           dims,
+                                           data_dims,
+                                           offset,
+                                           stride,
+                                           count,
+                                           block,
+                                           float_data_buffer);
+            H5OUTPUTWRITER_COUNT_OBJS;
+
+            // =============================================================================================
+            //   CREATE OUTPUT ARRAYS!
+            // =============================================================================================
+
+            {
+                int rank = 2;
+                hsize_t dims[2];
+                hsize_t maxdims[2];
+                dims[0] = (hsize_t) length_nodes_displacements_output;
+                dims[1] = 0;
+                maxdims[0] = (hsize_t)  length_nodes_displacements_output;
+                maxdims[1] = number_of_time_steps + 1;
+
+                id_nodes_displacements = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
+                id_nodes_reaction_forces = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
+            }
+
+            if (number_of_outputs > 0)
+            {
+                int rank = 2;
+                hsize_t dims[2];
+                hsize_t maxdims[2];
+                dims[0] = (hsize_t) number_of_outputs;
+                dims[1] = 0;
+                maxdims[0] = (hsize_t)  number_of_outputs;
+                maxdims[1] = number_of_time_steps + 1;
+
+                if (flag_write_element_output == 1  )
+                {
+                    id_elements_output = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+                }
+
+            }//    create_elementOutput_arrays = false;
+
+            //For SP Constraints
+
+            int size ;
+
+            size = SPNodes.Size();
+            rank = 1;
+            dims[0] = size;
+            maxdims[0] = size;
+            id_Constrained_Nodes              = createConstantLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_Nodes", " ");
+
+            size = SPDofs.Size();
+            rank = 1;
+            dims[0] = size;
+            maxdims[0] = size;
+            id_Constrained_DOFs               = createConstantLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_DOFs", " ");
+
+            //Write gauss coordinate values
+            dims[0]      = (hsize_t) SPNodes.Size();
+            data_dims[0] = (hsize_t) SPNodes.Size();
+            count[0]     = dims[0];
+            int_data_buffer = SPNodes.data;
+            writeConstantLengthIntegerArray(id_Constrained_Nodes,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+            H5OUTPUTWRITER_COUNT_OBJS;
+
+            //Write gauss coordinate values
+            dims[0]      = (hsize_t) SPDofs.Size();
+            data_dims[0] = (hsize_t) SPDofs.Size();
+            count[0]     = dims[0];
+            int_data_buffer = SPDofs.data;
+            writeConstantLengthIntegerArray(id_Constrained_DOFs,
+                                            datarank,
+                                            dims,
+                                            data_dims,
+                                            offset,
+                                            stride,
+                                            count,
+                                            block,
+                                            int_data_buffer);
+
+        }
+
+        // Added by [Sumeet August, 2016]
+        // OUtput Only Avialable for ProcessId O 
+        #ifdef _PARALLEL_PROCESSING
+
+            if (processID == 0)
+            {
+                
+                
+                datarank =1;
+                stride[0]=1;
+                offset[0]=0;
+                block[0] =1;
+
+                dims[0] = max_element_tag+1;
+                maxdims[0] = max_element_tag+1;
+                id_elements_partition             = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Partition", " ");
+                
+                int_data_buffer = Element_Partition.data;
+                writeConstantLengthIntegerArray(id_elements_partition,
+                                                datarank,
+                                                dims,
+                                                maxdims,
+                                                offset,
+                                                stride,
+                                                dims,
+                                                block,
+                                                int_data_buffer);       
+
+                dims[0] = max_node_tag+1;
+                maxdims[0] = max_node_tag+1;
+                id_nodes_partition                = createConstantLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Partition", " ");
+                
+                int_data_buffer = Node_Partition.data;
+                writeConstantLengthIntegerArray(id_nodes_partition,
+                                                datarank,
+                                                dims,
+                                                maxdims,
+                                                offset,
+                                                stride,
+                                                dims,
+                                                block,
+                                                int_data_buffer);           
+            }
+
+        #endif
+
 
         //================================================================================
         // Material Info
@@ -1109,102 +1414,6 @@ void H5OutputWriter::writeMesh()
         dims[0] = Materials.size();
         maxdims[0] = dims[0];
         id_material = createConstantLengthStringArray(id_model_group, datarank,  dims, maxdims, "Materials", " ");
-        
-        // Write a vector with the number of nodes at a given elements tag
-        datarank     = 1;
-        dims[0]      = (hsize_t) max_element_tag + 1;
-        data_dims[0] = (hsize_t) max_element_tag + 1;
-        offset[0]    = 0;
-        stride[0]    = 1;
-        count[0]     = dims[0];
-        block[0]     = 1;
-        int_data_buffer = Number_of_Nodes.data;
-        writeConstantLengthIntegerArray(id_elements_nnodes,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-
-        //Write index to connectivity
-        dims[0]      = (hsize_t) max_element_tag + 1;
-        data_dims[0] = (hsize_t) max_element_tag + 1;
-        count[0]     = dims[0];
-        int_data_buffer = Index_to_Connectivity.data;
-        writeConstantLengthIntegerArray(id_index_to_elements_connectivity,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-
-        //Write element connectivity
-        dims[0]      = (hsize_t) number_of_connectivity_nodes;
-        data_dims[0] = (hsize_t) number_of_connectivity_nodes;
-        count[0]     = dims[0];
-        int_data_buffer = Connectivity.data;
-        writeConstantLengthIntegerArray(id_elements_connectivity,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-        //Write index to number of outputs
-        dims[0]      = (hsize_t) max_element_tag + 1;
-        data_dims[0] = (hsize_t) max_element_tag + 1;
-        count[0]     = dims[0];
-        int_data_buffer = Number_of_Output_Fields.data;
-        writeConstantLengthIntegerArray(id_elements_noutputs,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-        //Write index to outputs
-        dims[0]      = (hsize_t) max_element_tag + 1;
-        data_dims[0] = (hsize_t) max_element_tag + 1;
-        count[0]     = dims[0];
-        int_data_buffer = Index_to_Outputs.data;
-        writeConstantLengthIntegerArray(id_index_to_elements_output,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-        //Write material tags
-        dims[0]      = (hsize_t) max_element_tag + 1;
-        data_dims[0] = (hsize_t) max_element_tag + 1;
-        count[0]     = dims[0];
-        int_data_buffer = Material_tags.data;
-        writeConstantLengthIntegerArray(id_elements_materialtag,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
 
         //Write material info
         for (int tag = 0; tag < (int) Materials.size(); tag++)
@@ -1218,206 +1427,6 @@ void H5OutputWriter::writeMesh()
                                            mat_info);
         }
 
-        //Writing Class tags
-        dims[0]      = (hsize_t) Class_Tags.Size();
-        data_dims[0] = (hsize_t) Class_Tags.Size();
-        count[0]     = dims[0];
-        int_data_buffer = Class_Tags.data;
-        writeConstantLengthIntegerArray(id_elements_classtag,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-// Added by [Sumeet August, 2016] 
-#ifdef _PARALLEL_PROCESSING
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-    if (processID == 0)
-    {
-        // Global Partiotioning Element info
-        dims[0]      = (hsize_t) max_element_tag + 1;
-        data_dims[0] = (hsize_t) max_element_tag + 1;
-        count[0]     = dims[0];
-        int_data_buffer = Element_Partition.data;
-        writeConstantLengthIntegerArray(id_elements_partition,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-        //  // Global Partiotioning Nodes info
-        dims[0]      = (hsize_t) max_node_tag +1;
-        data_dims[0] = (hsize_t) max_node_tag +1;
-        count[0]     = dims[0];
-        int_data_buffer = Node_Partition.data;
-        writeConstantLengthIntegerArray(id_nodes_partition,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-    }
-
-#endif
-
-        // Creating Element_Class_Tag Description [Sumeet, August, 2016]
-        ELE_TAG_DESC_ARRAY;
-        int ele_class_desc_size = sizeof(ele_tag_desc_array)/sizeof(int);
-        dims[0]      = (hsize_t) ele_class_desc_size;
-        maxdims[0]   = (hsize_t) ele_class_desc_size;
-        count[0]     = dims[0];
-        id_elements_class_desc            = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Element_Class_Desc"," ");
-
-        // Writing Element_Class_Tag Description [Sumeet, August, 2016]
-        writeConstantLengthIntegerArray(id_elements_class_desc,
-                                        datarank,
-                                        dims,
-                                        maxdims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        ele_tag_desc_array);
-
-        //Write number of gauss points
-        dims[0]      = (hsize_t) max_element_tag+1;
-        data_dims[0] = (hsize_t) max_element_tag+1;
-        count[0]     = dims[0];
-        int_data_buffer = Number_of_Gauss_Points.data;
-        writeConstantLengthIntegerArray(id_elements_ngauss,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-        //Write index_to_gauss_coordinate
-        dims[0]      = (hsize_t) max_element_tag+1;
-        data_dims[0] = (hsize_t) max_element_tag+1;
-        count[0]     = dims[0];
-        int_data_buffer = Index_to_Gauss_Point_Coordinates.data;
-        writeConstantLengthIntegerArray(id_index_to_elements_gausscoords,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-
-        //Write gauss coordinate values
-        dims[0]      = (hsize_t) number_of_gausspoints*3;
-        data_dims[0] = (hsize_t) number_of_gausspoints*3;
-        count[0]     = dims[0];
-        float_data_buffer = (float *) Gauss_Point_Coordinates.theData;
-        writeConstantLengthFloatArray(id_elements_gausscoords,
-                                       datarank,
-                                       dims,
-                                       data_dims,
-                                       offset,
-                                       stride,
-                                       count,
-                                       block,
-                                       float_data_buffer);
-        H5OUTPUTWRITER_COUNT_OBJS;
-
-        // =============================================================================================
-        //   CREATE OUTPUT ARRAYS!
-        // =============================================================================================
-
-        {
-            int rank = 2;
-            hsize_t dims[2];
-            hsize_t maxdims[2];
-            dims[0] = (hsize_t) length_nodes_displacements_output;
-            dims[1] = 0;
-            maxdims[0] = (hsize_t)  length_nodes_displacements_output;
-            maxdims[1] = number_of_time_steps + 1;
-
-            id_nodes_displacements = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
-            id_nodes_reaction_forces = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
-        }
-
-        if (number_of_outputs > 0)
-        {
-            int rank = 2;
-            hsize_t dims[2];
-            hsize_t maxdims[2];
-            dims[0] = (hsize_t) number_of_outputs;
-            dims[1] = 0;
-            maxdims[0] = (hsize_t)  number_of_outputs;
-            maxdims[1] = number_of_time_steps + 1;
-
-            if (flag_write_element_output == 1  )
-            {
-                id_elements_output = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
-            }
-
-        }//    create_elementOutput_arrays = false;
-
-        //For SP Constraints
-
-        int size ;
-
-        size = SPNodes.Size();
-        rank = 1;
-        dims[0] = size;
-        maxdims[0] = size;
-        id_Constrained_Nodes              = createConstantLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_Nodes", " ");
-
-        size = SPDofs.Size();
-        rank = 1;
-        dims[0] = size;
-        maxdims[0] = size;
-        id_Constrained_DOFs               = createConstantLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_DOFs", " ");
-
-        //Write gauss coordinate values
-        dims[0]      = (hsize_t) SPNodes.Size();
-        data_dims[0] = (hsize_t) SPNodes.Size();
-        count[0]     = dims[0];
-        int_data_buffer = SPNodes.data;
-        writeConstantLengthIntegerArray(id_Constrained_Nodes,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
-        H5OUTPUTWRITER_COUNT_OBJS;
-
-        //Write gauss coordinate values
-        dims[0]      = (hsize_t) SPDofs.Size();
-        data_dims[0] = (hsize_t) SPDofs.Size();
-        count[0]     = dims[0];
-        int_data_buffer = SPDofs.data;
-        writeConstantLengthIntegerArray(id_Constrained_DOFs,
-                                        datarank,
-                                        dims,
-                                        data_dims,
-                                        offset,
-                                        stride,
-                                        count,
-                                        block,
-                                        int_data_buffer);
     }
     else  //Could not open file
     {
@@ -1974,15 +1983,11 @@ int H5OutputWriter::setTime(float t)
     size[1] = (hsize_t) current_time_step;
 
     status = H5Dset_extent (id_nodes_displacements, size);
+    status = H5Dset_extent (id_nodes_reaction_forces, size);
 
     // /**********************************************************************************/
 
     H5OUTPUTWRITER_COUNT_OBJS;
-
-
-#ifdef _PARALLEL_PROCESSING
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-#endif
 
     return 0;
 }
@@ -2033,14 +2038,6 @@ int H5OutputWriter::write_string(hid_t here, std::string name, std::string conte
                       contents.c_str());
 #endif
     //------------------------
-
-
-    //     status = H5Dwrite(id_data_string,
-    //                       id_type_string,
-    //                       H5S_ALL,
-    //                       H5S_ALL,
-    //                       H5P_DEFAULT,
-    //                       contents.c_str());
 
     H5Sclose(id_dataspace_string);
     H5Dclose(id_data_string);
@@ -2670,14 +2667,6 @@ hid_t H5OutputWriter::writeVariableLengthIntegerArray(hid_t id_array,
 #endif
     //------------------------
 
-    //Write data!
-    //     status = H5Dwrite(
-    //                  id_array,              // Dataset to write to
-    //                  H5T_NATIVE_INT,        // Format of data in memory
-    //                  id_memspace,           // Description of data in memory
-    //                  id_dataspace,          // Description of data in storage (including selection)
-    //                  H5P_DEFAULT,           // Form of writing
-    //                  data                   // The actual data
     hdf5_check_error(status);
 
     //Close stuff

@@ -2614,10 +2614,17 @@ Domain::commit( void )
 {
     // Calls commit() on nodes and elements. Also in charge of storing
     // the data to the outputwriter.
-    int rank = 0;
+    bool Enable_Process_output = false;
+    int rank;
 #ifdef _PARALLEL_PROCESSING
+    
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if(rank!=0)
+        Enable_Process_output=true;
+#else
+    Enable_Process_output = true;
 #endif
+
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
     Element *elePtr;
@@ -2742,76 +2749,67 @@ Domain::commit( void )
             }
 
         }
-        
+    }
+
+    if (Enable_Process_output)
+    {
+
         theOutputWriter.setTime(currentTime);
-    }
+
+        globalESSITimer.stop("Domain_Mesh_Output");
+        globalESSITimer.start("Domain_Node_Commit_and_output");
+
+        //Do the actual commit of nodal displacements
+        theNodeIter = this->getNodes();
+        while ( ( nodePtr = theNodeIter() ) != 0 )
+        {
+            nodePtr->commitState();
+        }
 
 
-
-    globalESSITimer.stop("Domain_Mesh_Output");
-
-
-    globalESSITimer.start("Domain_Node_Commit_and_output");
-
-    //Do the actual commit of nodal displacements
-    theNodeIter = this->getNodes();
-    while ( ( nodePtr = theNodeIter() ) != 0 )
-    {
-        nodePtr->commitState();
-    }
-
-    //Do node output
-    if (output_is_enabled && (countdown_til_output == 0))
-    {
-        if (rank > 0)
+        //Do node output
+        if (output_is_enabled && (countdown_til_output == 0))
         {
             this->calculateNodalReactions(0);
-        }
-        theNodeIter = this->getNodes();
+            theNodeIter = this->getNodes();
 
-        while ((nodePtr = theNodeIter()) != 0)
-        {
-            theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-
-            if (rank > 0)
+            while ((nodePtr = theNodeIter()) != 0)
             {
-                // theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
+                theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
+                theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
             }
-
         }
-    }
 
-    globalESSITimer.stop("Domain_Node_Commit_and_output");
+        globalESSITimer.stop("Domain_Node_Commit_and_output");
+        globalESSITimer.start("Domain_Element_Commit_and_output");
 
-
-    globalESSITimer.start("Domain_Element_Commit_and_output");
-
-    //Commit all elements
-    theElemIter = this->getElements();
-    while ( ( elePtr = theElemIter() ) != 0 )
-    {
-        elePtr->commitState();
-    }
-
-
-    //Do element output!
-    if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
-    {
+        //Commit all elements
         theElemIter = this->getElements();
-
         while ( ( elePtr = theElemIter() ) != 0 )
         {
-            theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
+            elePtr->commitState();
         }
-    }
 
-    globalESSITimer.stop("Domain_Element_Commit_and_output");
 
-    if (countdown_til_output == 0)
-    {
-        countdown_til_output = output_every_nsteps;
+        //Do element output!
+        if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
+        {
+            theElemIter = this->getElements();
+
+            while ( ( elePtr = theElemIter() ) != 0 )
+            {
+                theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
+            }
+        }
+
+        globalESSITimer.stop("Domain_Element_Commit_and_output");
+
+        if (countdown_til_output == 0)
+        {
+            countdown_til_output = output_every_nsteps;
+        }
+        countdown_til_output--;
     }
-    countdown_til_output--;
 
     return 0;
 }
@@ -2822,14 +2820,13 @@ Domain::commit( void )
 * The function commits at every substep i,e the trail displacements and trial element
 * output HDF5 Output file. It does not commit any displacements or element output
 **************************************************************************************/
+
 int
 Domain::commit_substep( int substep_no )
 {
     // gets trial output from the nodes and elements. Also in charge of storing
     // the data to the outputwriter.
-#ifdef _PARALLEL_PROCESSING
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-#endif
+
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
     Element *elePtr;
