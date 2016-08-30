@@ -555,7 +555,6 @@ BandArpackSolver::myMv(int n, double *v, double *result)
     // loop over the DOF_Groups
     DOF_Group *dofPtr;
     DOF_GrpIter &theDofs = theAnalysisModel->getDOFs();
-    Integrator *theIntegrator = 0;
     while ((dofPtr = theDofs()) != 0)
     {
         const Vector &a = dofPtr->getM_Force(x, 1.0);

@@ -100,6 +100,7 @@ public:
 protected:
 
 private:
+
     Vector* data;
     static Vector dataV8;
     static Vector dataV16;

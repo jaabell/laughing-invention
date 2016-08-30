@@ -780,17 +780,18 @@ inline void getPrincipalStresses(DTensor2 & sigma, double& sig1, double& sig2, d
 
 inline void NonlinearIsotropic3DLT::updateModulus()
 {
-    double sig1,  sig3;
-
-    double s1, s3;  // Average stress between previous step and current... (results in a secant stiffness :P)
-    double desv, devfh, strlev, phi, Bmin, G_mod, Ei_el, B_el;
+    
+    double /*s1,*/s3;  // Average stress between previous step and current... (results in a secant stiffness :P)
+    // double s1, desv, devfh, phi, Bmin, G_mod;
+    double /*sig1,*/  sig3;
+    double strlev , Ei_el, B_el;
 
     double sig1_, sig2_, sig3_;
     getPrincipalStresses(TrialStress, sig1_, sig2_, sig3_);
-    sig1 = -sig3_;
+    // sig1 = -sig3_;
     sig3 = -sig1_;
 
-    s1 = sig1;//0.5*(sig1 + sig1p);
+    // s1 = sig1;//0.5*(sig1 + sig1p);
     s3 = sig3;//0.5*(sig3 + sig3p);
 
 

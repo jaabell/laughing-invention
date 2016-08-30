@@ -78,13 +78,12 @@ BrickSurfaceLoad_from_Contact_Pore_Pressure::BrickSurfaceLoad_from_Contact_Pore_
         int Node_1, int Node_2, int Node_3, int Node_4,
         double ContactElementNumber1, double ContactElementNumber2,
         double ContactElementNumber3, double ContactElementNumber4)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad_from_Contact_Pore_Pressure, theElementTags),
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad_from_Contact_Pore_Pressure, theElementTags),data(0),
       node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
       contact_element_number_1(ContactElementNumber1),
       contact_element_number_2(ContactElementNumber2),
       contact_element_number_3(ContactElementNumber3),
-      contact_element_number_4(ContactElementNumber4),
-      data(0)
+      contact_element_number_4(ContactElementNumber4)
 {
 
     data = &dataV8;
@@ -101,7 +100,7 @@ BrickSurfaceLoad_from_Contact_Pore_Pressure::BrickSurfaceLoad_from_Contact_Pore_
         double ContactElementNumber3, double ContactElementNumber4,
         double ContactElementNumber5, double ContactElementNumber6,
         double ContactElementNumber7, double ContactElementNumber8)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad_from_Contact_Pore_Pressure, theElementTags),
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad_from_Contact_Pore_Pressure, theElementTags),data(0),
       node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
       node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8),
       contact_element_number_1(ContactElementNumber1),
@@ -111,8 +110,7 @@ BrickSurfaceLoad_from_Contact_Pore_Pressure::BrickSurfaceLoad_from_Contact_Pore_
       contact_element_number_5(ContactElementNumber5),
       contact_element_number_6(ContactElementNumber6),
       contact_element_number_7(ContactElementNumber7),
-      contact_element_number_8(ContactElementNumber8),
-      data(0)
+      contact_element_number_8(ContactElementNumber8)
 {
 
     data = &dataV16;
@@ -131,7 +129,7 @@ BrickSurfaceLoad_from_Contact_Pore_Pressure::BrickSurfaceLoad_from_Contact_Pore_
         double ContactElementNumber5, double ContactElementNumber6,
         double ContactElementNumber7, double ContactElementNumber8,
         double ContactElementNumber9)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad_from_Contact_Pore_Pressure, theElementTags),
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad_from_Contact_Pore_Pressure, theElementTags),data(0),
       node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
       node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8), node9(Node_9),
       contact_element_number_1(ContactElementNumber1),
@@ -142,8 +140,7 @@ BrickSurfaceLoad_from_Contact_Pore_Pressure::BrickSurfaceLoad_from_Contact_Pore_
       contact_element_number_6(ContactElementNumber6),
       contact_element_number_7(ContactElementNumber7),
       contact_element_number_8(ContactElementNumber8),
-      contact_element_number_9(ContactElementNumber9),
-      data(0)
+      contact_element_number_9(ContactElementNumber9)
 {
 
     data = &dataV18;

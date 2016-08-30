@@ -927,7 +927,6 @@ NewShellMITC4::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
 
     int type;
-    const Vector &data = theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_ElementSelfWeight)
     {
@@ -1210,8 +1209,6 @@ NewShellMITC4::formResidAndTangent( int tang_flag )
     int i,  j,  k, p, q ;
     int jj, kk ;
 
-    int success ;
-
     double volume = 0.0 ;
 
     static double xsj ;  // determinant jacaobian matrix
@@ -1430,10 +1427,10 @@ NewShellMITC4::formResidAndTangent( int tang_flag )
 
 
         //send the strain to the material
-        success = materialPointers[i]->setTrialSectionDeformation( strain ) ;
+        materialPointers[i]->setTrialSectionDeformation( strain ) ;
 
         //compute the stress
-        stress = materialPointers[i]->getStressResultant( ) ;
+        materialPointers[i]->getStressResultant( ) ;
 
         //drilling "stress"
         tauDrill = Ktt * epsDrill ;

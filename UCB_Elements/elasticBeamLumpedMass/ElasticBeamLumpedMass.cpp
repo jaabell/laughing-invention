@@ -94,9 +94,9 @@ ElasticBeamLumpedMass::ElasticBeamLumpedMass(int tag, double a, double e, double
         double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
         double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
     : Element(tag, ELE_TAG_ElasticBeamLumpedMass),
-      A(a), E(e), G(g), Jx(jx), Iy(iy), Iz(iz), rho(r), sectionTag(sectTag), nodeIOffset(0), nodeJOffset(0),
-      R(3, 3),
-      Q(12), q(6), connectedExternalNodes(2), L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      A(a), E(e), G(g), Jx(jx), Iy(iy), Iz(iz), rho(r), R(3, 3), sectionTag(sectTag),
+      Q(12), q(6),connectedExternalNodes(2), nodeIOffset(0), nodeJOffset(0),
+      L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
     connectedExternalNodes(0) = Nd1;
     connectedExternalNodes(1) = Nd2;
@@ -158,8 +158,8 @@ ElasticBeamLumpedMass::ElasticBeamLumpedMass(int tag, int Nd1, int Nd2, SectionF
         double rigJntOffset1_x, double rigJntOffset1_y, double rigJntOffset1_z,
         double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
     : Element(tag, ELE_TAG_ElasticBeamLumpedMass),
-      R(3, 3),
-      Q(12), q(6), connectedExternalNodes(2), L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      R(3, 3), Q(12), q(6), connectedExternalNodes(2), 
+      L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
     if (section != 0)
     {
@@ -375,7 +375,7 @@ ElasticBeamLumpedMass::update(void)
 const Matrix &
 ElasticBeamLumpedMass::getTangentStiff(void)
 {
-    const Vector &v = this->getBasicTrialDisp();
+    // const Vector &v = this->getBasicTrialDisp();
 
     double oneOverL = 1.0 / L;
     double EoverL   = E * oneOverL;
@@ -797,7 +797,7 @@ ElasticBeamLumpedMass::Print(ostream &s, int flag)
     {
         int counter = (flag + 1) * -1;
         int eleTag = this->getTag();
-        const Vector &force = this->getResistingForce();
+        // const Vector &force = this->getResistingForce();
 
         double P, MZ1, MZ2, VY, MY1, MY2, VZ, T;
 

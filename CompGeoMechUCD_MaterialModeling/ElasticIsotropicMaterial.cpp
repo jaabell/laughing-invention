@@ -381,7 +381,7 @@ const stresstensor &ElasticIsotropicMaterial::getStressTensor (void)
     exit(-1);
 
     // Just to make it compile
-    stresstensor *t = new stresstensor();
+    Tensor *t = new Tensor;
     return *t;
 }
 
@@ -391,7 +391,7 @@ const straintensor &ElasticIsotropicMaterial::getStrainTensor (void)
     exit(-1);
 
     // Just to make it compile
-    stresstensor *t = new stresstensor();
+    Tensor *t = new Tensor;
     return *t;
 }
 
@@ -401,7 +401,7 @@ const straintensor &ElasticIsotropicMaterial::getPlasticStrainTensor (void)
     exit(-1);
 
     // Just to make it compile
-    stresstensor *t = new stresstensor();
+    Tensor *t = new Tensor;
     return *t;
 }
 

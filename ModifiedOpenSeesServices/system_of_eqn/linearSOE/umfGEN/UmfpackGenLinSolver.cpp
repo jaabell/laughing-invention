@@ -126,10 +126,10 @@ UmfpackGenLinSolver::solve(void)
     int* Ai = theSOE->colA;
     int status = 0;
 
-    int Asize2 = theSOE->Asize;
-    int Bsize2 = theSOE->Bsize;
-    int Apsize2 = Bsize2 + 1;
-    int Aisize2 = theSOE->nnz;
+    // int Asize2 = theSOE->Asize;
+    // int Bsize2 = theSOE->Bsize;
+    // int Apsize2 = Bsize2 + 1;
+    // int Aisize2 = theSOE->nnz;
 
 
     //**************************************************************************

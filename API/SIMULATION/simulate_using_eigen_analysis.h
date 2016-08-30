@@ -198,7 +198,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
     if((StageName.compare(""))==0){
         StageName = "Eigen_Mode_Analysis";
         filename = ModelName + "_" + StageName + ".h5.feioutput";
-        int numSteps = 1;
+        // int numSteps = 1;
         theDomain.setOutputWriter(filename,
                                   ModelName,
                                   "Eigen_Mode_Analysis",

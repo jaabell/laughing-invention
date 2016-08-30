@@ -613,7 +613,7 @@ int Pisano_model::Explicit(const straintensor& strain_incr)
 
     double arg_den = fabs(beta - beta0);
 
-    double arg_den_min =  1.0e3 * check_for_zero;
+    // double arg_den_min =  1.0e3 * check_for_zero;
 
     double H;
 

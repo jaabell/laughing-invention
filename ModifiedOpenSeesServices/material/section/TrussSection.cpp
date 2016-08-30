@@ -947,12 +947,12 @@ TrussSection::Print(ostream &s, int flag)
         }
     }
 
-    double temp;
+    // double temp;
     int numDOF2 = numDOF / 2;
 
     for (int i = 0; i < dimension; i++)
     {
-        temp = force * cosX[i];
+        // temp = force * cosX[i];
         (*theVector)(i) = -force;
         (*theVector)(i + numDOF2) = force;
     }

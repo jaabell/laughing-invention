@@ -54,7 +54,8 @@ public:
 protected:
 
 private:
-    int size, numSuperD, numSubD;
+
+    int size, numSubD, numSuperD;
     double *A;
     int Asize;
     bool factored;

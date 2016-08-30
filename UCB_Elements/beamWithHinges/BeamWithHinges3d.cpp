@@ -1350,7 +1350,7 @@ BeamWithHinges3d::Print(ostream &s, int flag)
 
     if (section[1] != 0)
     {
-        s << "Hinge 2, section tag: " << section[2]->getTag() <<
+        s << "Hinge 2, section tag: " << section[1]->getTag() <<
           ", length: " << beta2 *L << endln;
         section[1]->Print(s, flag);
     }

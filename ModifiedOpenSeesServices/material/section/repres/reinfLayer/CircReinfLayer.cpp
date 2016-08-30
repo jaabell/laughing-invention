@@ -49,8 +49,8 @@ CircReinfLayer::CircReinfLayer(int materialID, int numReinfBars,
                                double arcRadius, double initialAngle,
                                double finalAngle):
     nReinfBars(numReinfBars),
-    matID(materialID), area(reinfBarArea),
-    barDiam(0.0), centerPosit(centerPosition),
+    matID(materialID), barDiam(0.0), 
+    area(reinfBarArea), centerPosit(centerPosition),
     arcRad(arcRadius), initAng(initialAngle),
     finalAng(finalAngle)
 {
@@ -58,8 +58,8 @@ CircReinfLayer::CircReinfLayer(int materialID, int numReinfBars,
 
 CircReinfLayer::CircReinfLayer(int materialID, int numReinfBars, double  reinfBarArea,
                                const Vector& centerPosition, double radius):
-    nReinfBars(numReinfBars), matID(materialID), area(reinfBarArea),
-    barDiam(0.0), centerPosit(centerPosition), arcRad(radius),
+    nReinfBars(numReinfBars), matID(materialID), barDiam(0.0), 
+    area(reinfBarArea), centerPosit(centerPosition), arcRad(radius),
     initAng(0.0), finalAng(0.0)
 {
     // Figure out final angle so that complete circle does not put

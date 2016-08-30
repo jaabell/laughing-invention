@@ -1980,8 +1980,6 @@ int H5OutputWriter::setTime(float t)
     H5OUTPUTWRITER_COUNT_OBJS;
 
 
-    int processID = 1; //
-
 #ifdef _PARALLEL_PROCESSING
     MPI_Comm_rank(MPI_COMM_WORLD, &processID);
 #endif

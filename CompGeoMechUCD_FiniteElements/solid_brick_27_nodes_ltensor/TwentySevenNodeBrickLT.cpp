@@ -3499,7 +3499,7 @@ TwentySevenNodeBrickLT::CheckMesh( ofstream &checkmesh_file )
 Vector *
 TwentySevenNodeBrickLT::getStress( void )
 {
-    DTensor2 stress;
+    DTensor2 stress(3, 3, 0.0);
     Vector *stresses = new Vector( 162 );   // FIXME: Who deallocates this guy???
 
     for ( short gp = 0 ; gp < 27 ; gp++ )

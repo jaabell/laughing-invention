@@ -352,7 +352,7 @@ void BarSlipMaterial::getBarSlipEnvelope(void)
     double As = Ab * nbars;
 
     double frP = 0.0;
-    double frN = 0.0;
+    // double frN = 0.0;
     double geo = 0.0;
     double let = 0.0;
     double lec = 0.0;
@@ -369,7 +369,7 @@ void BarSlipMaterial::getBarSlipEnvelope(void)
     eN.Zero();
 
     frP = tauR * ld * PI * db * As / Ab;
-    frN = -tauR * ld * PI * db * As / Ab;
+    // frN = -tauR * ld * PI * db * As / Ab;
 
     geo = PI * db / Ab;
     let = fy / (tauET * geo);   // length of elastic part in tension

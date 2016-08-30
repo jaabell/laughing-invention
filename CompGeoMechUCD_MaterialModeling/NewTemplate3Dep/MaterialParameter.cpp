@@ -473,7 +473,7 @@ int MaterialParameter::receiveSelf(int commitTag, Channel& theChannel, FEM_Objec
     static ID idData(3);
     static Vector* data = NULL;
     static Vector* data_internal_scalar = NULL;
-    static Vector* data_internal_tensor = NULL;
+    // static Vector* data_internal_tensor = NULL;
     idData.Zero();
 
     if (theChannel.receiveID(dataTag, commitTag, idData) < 0)

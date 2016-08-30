@@ -2567,7 +2567,7 @@ TwentyNodeBrickLT::CheckMesh(ofstream &checkmesh_file)
 Vector *
 TwentyNodeBrickLT::getStress( void )
 {
-    DTensor2 stress;
+    DTensor2 stress(3, 3, 0.0);
     Vector *stresses = new Vector( 162 );   // FIXME: Who deallocates this guy???
     // auto stresses = std::make_shared<Vector>( 162 );
 

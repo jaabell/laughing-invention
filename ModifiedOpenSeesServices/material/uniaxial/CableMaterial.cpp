@@ -76,7 +76,8 @@ CableMaterial::setTrialStrain(double strain, double strainRate)
     double derivE, derivG, stress;
 
     // Check if out side the range of inportance
-    double testStress, dP, curstrain, e0;
+    // double testStress;
+    double dP, curstrain, e0;
     int i = 0;
 
     // Perameters for bisection
@@ -90,7 +91,7 @@ CableMaterial::setTrialStrain(double strain, double strainRate)
     else
     {
         U_bound = E * trialStrain + Ps;
-        testStress = U_bound;
+        // testStress = U_bound;
     }
 
     // Check if slack in cable has been taken out and it is a bar

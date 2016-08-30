@@ -2822,13 +2822,11 @@ Domain::commit( void )
 * The function commits at every substep i,e the trail displacements and trial element
 * output HDF5 Output file. It does not commit any displacements or element output
 **************************************************************************************/
-
 int
 Domain::commit_substep( int substep_no )
 {
     // gets trial output from the nodes and elements. Also in charge of storing
     // the data to the outputwriter.
-    int rank = 0;
 #ifdef _PARALLEL_PROCESSING
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 #endif

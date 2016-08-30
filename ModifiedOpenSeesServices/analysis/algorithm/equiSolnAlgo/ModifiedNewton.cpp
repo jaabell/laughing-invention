@@ -127,7 +127,7 @@ ModifiedNewton::solveCurrentStep(void)
 
     // repeat until convergence is obtained or reach max num iterations
     int result = -1;
-    int count = 0;
+    // int count = 0;
 
     do
     {

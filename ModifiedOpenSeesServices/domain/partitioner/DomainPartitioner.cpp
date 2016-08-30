@@ -246,7 +246,6 @@ DomainPartitioner::partition(int numParts)
     // we now iterate through the nodes to first determine
     // min and max node numbers
 
-    NodeIter &theNodes = myDomain->getNodes();
     Node *nodePtr;
 
     maxNodeTag = myDomain->maxNodesTag;   // [Sumeet August 2016]

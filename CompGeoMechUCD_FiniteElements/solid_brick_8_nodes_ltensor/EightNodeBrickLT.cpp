@@ -2008,8 +2008,7 @@ EightNodeBrickLT::CheckMesh( ofstream &checkmesh_file )
 Vector *
 EightNodeBrickLT::getStress( void )
 {
-    cout << "EightNodeBrickLT::getStress( void ) got called!\n\n";
-    DTensor2 stress;
+    DTensor2 stress(3, 3, 0.0);
     Vector *stresses = new Vector( 48 );   // FIXME: Who deallocates this guy???
 
     for ( short gp = 0 ; gp < 8 ; gp++ )

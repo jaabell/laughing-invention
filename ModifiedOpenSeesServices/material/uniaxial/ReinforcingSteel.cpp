@@ -53,8 +53,8 @@ ReinforcingSteel::ReinforcingSteel(int tag, double fy, double fsu, double Es, do
                                    int buckModel, double slenderness, double alpha, double r, double gama,
                                    double Fatigue1, double Fatigue2, double Degrade, double rc1, double rc2, double rc3,
                                    double A1, double HardLim)
-    : UniaxialMaterial(tag, MAT_TAG_ReinforcingSteel), esh(esh_), Esh(Esh_), a1(A1), hardLim(HardLim),
-      BuckleModel(buckModel), LDratio(slenderness), beta(alpha), fsu_fraction(gama), Fat1(Fatigue1), RC1(rc1), RC2(rc2), RC3(rc3)
+    : UniaxialMaterial(tag, MAT_TAG_ReinforcingSteel), beta(alpha), fsu_fraction(gama), esh(esh_), Esh(Esh_), a1(A1), hardLim(HardLim),
+      BuckleModel(buckModel), LDratio(slenderness), Fat1(Fatigue1), RC1(rc1), RC2(rc2), RC3(rc3)
 {
     if((r >= 0.0) & (r <= 1.0))
     {

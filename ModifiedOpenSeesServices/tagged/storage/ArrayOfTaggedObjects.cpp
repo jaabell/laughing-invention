@@ -196,7 +196,7 @@ ArrayOfTaggedObjects::addComponent_graph(TaggedObject* newComponent)
 
     if (sizeComponentArray >= newComponentTag)
     {
-        int maxTemp = sizeComponentArray;
+        maxTemp = sizeComponentArray;
     }
 
     if (numComponents <= maxTemp )
@@ -323,6 +323,7 @@ ArrayOfTaggedObjects::removeComponent(int tag)
 
     // first check to see if object is located at pos given by tag
     if ((tag >= 0) && (tag < sizeComponentArray))
+    {
 
         // if all objects in nicely then has to be at location given by tag
         if (fitFlag == true)
@@ -339,18 +340,22 @@ ArrayOfTaggedObjects::removeComponent(int tag)
                 if (positionLastEntry == tag)
                 {
                     for (int i = positionLastEntry; i >= 0; i--)
+                    {
                         if (theComponents[i] != 0)
                         {
                             positionLastEntry = i;
                             i = -1; // break out of loop
                         }
+                    }
                 }
             }
 
             return removed;
         }
         else     // it still may be at nice location so do as above
+        {
             if (theComponents[tag] != 0)
+            {
                 if ((theComponents[tag]->getTag()) == tag)
                 {
                     removed = theComponents[tag];
@@ -359,22 +364,29 @@ ArrayOfTaggedObjects::removeComponent(int tag)
                     if (positionLastEntry == tag)
                     {
                         for (int i = positionLastEntry; i >= 0; i--)
+                        {
                             if (theComponents[i] != 0)
                             {
                                 positionLastEntry = i;
                                 i = -1; // break out of loop
                             }
+                        }
                     }
 
                     positionLastNoFitEntry = 0;
                     numComponents--;
                     return removed;
                 }
+            }
+        }
+    }
 
     // else we have to look through array until we find it or
     // reach lastPosition used
     for (int i = 0; i <= positionLastEntry; i++)
+    {
         if (theComponents[i] != 0)
+        {
             if (theComponents[i]->getTag() == tag)
             {
 
@@ -386,17 +398,21 @@ ArrayOfTaggedObjects::removeComponent(int tag)
                 if (positionLastEntry == i)
                 {
                     for (int j = positionLastEntry; j >= 0; j--)
+                    {
                         if (theComponents[j] != 0)
                         {
                             positionLastEntry = j;
                             j = -1; // break out of loop
                         }
+                    }
                 }
 
                 positionLastNoFitEntry = 0;
                 numComponents--;
                 return removed;
             }
+        }
+    }
 
     // if get here the object is not stored in the array
     return 0;

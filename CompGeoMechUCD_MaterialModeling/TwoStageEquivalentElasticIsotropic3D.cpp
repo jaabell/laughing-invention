@@ -508,6 +508,9 @@ inline void TwoStageEquivalentElasticIsotropic3D::nextStage()
 
 inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
 {
+
+double B_min,Et_el,B_el,nu_el;
+
 #ifdef _TSEL_Debug_Mode
     cout << "=====================================" << endl;
     cout << "Update Modulus call" << endl;
@@ -536,7 +539,7 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
         cout << "--->  Static analysis" << endl;
 #endif
         double s1, s3;  // Average stress between previous step and current... (results in a secant stiffness :P)
-        double desv, devfh, strlev, phi, Bmin, G_mod, Ei_el;
+        double desv, devfh, strlev, phi, G_mod, Ei_el;
 
         if (stage == 0)
         {
@@ -648,10 +651,7 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
             strlev = 10;
         }
 
-        double B_min;
-        Bmin = B_calc ( Kb, pa, n, ( 0.25 * pa) );
-
-        double B_el, Et_el, nu_el;
+        B_min = B_calc ( Kb, pa, n, ( 0.25 * pa) );
 
         //Tension Failure
         if (s3 < -0.1 * pa)
@@ -716,9 +716,12 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
                     cout << "--->  Primary loading (strlev = " << strlev <<  ")" << endl;
 #endif
 
+                    
+
                     //Primary loading
                     if ( s3 > 0. )
                     {
+
                         if ( (c <= 0.) & (s3 < ( 0.25 * pa)))
                         {
                             Ei_el = Ei_calc(K, pa, n, 0.25 * pa);
@@ -738,7 +741,7 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
         }
 
         E = Et_el;
-        //v = nu_el;
+        v = nu_el;
 
         if (strlev > strlev_max)
         {
@@ -751,8 +754,6 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
 #endif
         //cout << "   strlev     = " << strlev << endl;
 
-
-        ////  END TCL
 
     }
     // ============================================================================================

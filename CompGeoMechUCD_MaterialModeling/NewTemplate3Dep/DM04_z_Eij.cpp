@@ -366,7 +366,7 @@ const tensor& DM04_z_Eij::DHij_Dkin(const PlasticFlow& plastic_flow, const stres
     double J3D;
     double cos3theta = 0.0;
     double z_n = 0.0;
-    double alpha_n = 0.0;
+    // double alpha_n = 0.0;
     double s_n = 0.0;
 
     double p = Stre.p_hydrostatic();
@@ -409,7 +409,7 @@ const tensor& DM04_z_Eij::DHij_Dkin(const PlasticFlow& plastic_flow, const stres
 
     expnd = exp(nd * stateParameter);
 
-    alpha_n = (alpha("ij") * n("ij")).trace();
+    // alpha_n = (alpha("ij") * n("ij")).trace();
     s_n = (s("ij") * n("ij")).trace();
 
     // way 1
@@ -494,7 +494,7 @@ const tensor& DM04_z_Eij::DHij_Dkin2(const PlasticFlow& plastic_flow, const stre
     double J3D;
     double cos3theta = 0.0;
     double z_n = 0.0;
-    double alpha_n = 0.0;
+    // double alpha_n = 0.0;
     double s_n = 0.0;
 
     double p = Stre.p_hydrostatic();
@@ -537,7 +537,7 @@ const tensor& DM04_z_Eij::DHij_Dkin2(const PlasticFlow& plastic_flow, const stre
 
     expnd = exp(nd * stateParameter);
 
-    alpha_n = (alpha("ij") * n("ij")).trace();
+    // alpha_n = (alpha("ij") * n("ij")).trace();
     s_n = (s("ij") * n("ij")).trace();
 
     // way 1
@@ -564,7 +564,7 @@ const tensor& DM04_z_Eij::DHij_Dkin2(const PlasticFlow& plastic_flow, const stre
         return TensorEvolution::TE_tensorR4;
     }
 
-    alpha_n = (alpha("ij") * n("ij")).trace();
+    // alpha_n = (alpha("ij") * n("ij")).trace();
 
     tensor n_n = n("ik") * n("kj");
     n_n.null_indices();
