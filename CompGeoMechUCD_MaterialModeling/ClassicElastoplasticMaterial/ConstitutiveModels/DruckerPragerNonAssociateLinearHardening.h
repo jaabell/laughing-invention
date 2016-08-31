@@ -69,12 +69,7 @@ struct supports_pre_integration_callback<DruckerPragerNonAssociateLinearHardenin
 {
     static const bool value = true;
 };
-//Activate to handle tension case
-template< >
-struct requires_DruckerPrager_Apex_Tension_check<DruckerPragerNonAssociateLinearHardening>
-{
-    static const bool require = true;
-};
+
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPNALHVarsType;
 typedef DruckerPrager_YF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPNALH_YFType;

@@ -161,6 +161,15 @@ public:
         return dbl_result;
     }
 
+    bool hasCorner() const{
+        return true;
+    }
+    double get_k() const{
+        return k_.getVariableConstReference();
+    }
+    DTensor2 const& get_alpha() const{
+        return alpha_.getVariableConstReference();
+    }
     // ==================================================================
     // Legacy: should be removed later.
     // DTensor4 const& dalpha_over_dsigma(DTensor2 const& sigma){

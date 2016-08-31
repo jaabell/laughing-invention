@@ -869,43 +869,6 @@ private:
         //     return retval;
         // }
         
-        // vonMises does NOT enter this part.
-        // DruckerPrager requries this part.
-        if(requires_DruckerPrager_Apex_Tension_check_()){
-            double I1 = TrialStress(i,i);
-            double p= - I1/3.0;
-            if (p < 0)
-            {
-            //     stress *= 0;
-            //     stiff *= 0;
-                static DTensor2 small_stress(3,3,0.0);
-                small_stress*=0;
-                small_stress(0, 0) = -0.1;
-                small_stress(1, 1) = -0.1;
-                small_stress(2, 2) = -0.1;
-                static DTensor2 dstress(3,3,0.0);
-                dstress(i,j) = small_stress(i,j) - sigma(i,j);
-                static DTensor2 depsilon_Inv(3,3,0.0);
-                depsilon_Inv = depsilon.Inv();
-                
-                // Return results (member variables) :
-                Stiffness(i,j,k,l) = dstress(i,j) * depsilon_Inv(k,l);
-                TrialStress(i,j) = small_stress(i,j);
-
-                // Question?
-                // (1) How to increase the plastic_strain? 
-                // (2) Should we restart the internal variables? (k and alpha)
-                //     //Reuse the 'stress' variable now to reset the backstress to zero
-                //     stress *= 0;
-                //     alpha.setVar(stress);
-                //     alpha.commit_tmp();
-
-                return 0;
-            }
-
-        }
-
-
         if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
         {
             DTensor4& Eelastic = et(TrialStress);
@@ -960,9 +923,42 @@ private:
             //     // return -1;
             // }
 
-            //Update the trial plastic strain.
+            // Update the trial plastic strain.
             TrialPlastic_Strain(i, j) += dLambda * m(i, j);
+            // Update the internal variables (k and alpha)
+            vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
+            vars.commit_tmp();
+            // vonMises does NOT enter this part.
+            // DruckerPrager requries this part.
+            if(yf.hasCorner()){
+                if (in_DruckerPrager_Apex(TrialStress))
+                {
+                    static DTensor2 small_stress(3,3,0.0);
+                    small_stress*=0;
+                    // The small value 50*Pa refers to the lowest confinement test:
+                    // http://science.nasa.gov/science-news/science-at-nasa/1998/msad27may98_2/
+                    double DP_k = yf.get_k();
+                    double DP_p = 50 ;
+                    // To make it on the yield surface, the q is equal to k*p. 
+                    double DP_q = DP_k * DP_p ; 
+                    // Assume the triaxial conditions sigma_2 = sigma_3. 
+                    small_stress(0, 0) = DP_p + 2./3.0 * DP_q;
+                    small_stress(1, 1) = DP_p - 1./3.0 * DP_q;
+                    small_stress(2, 2) = DP_p - 1./3.0 * DP_q;
+                    static DTensor2 dstress(3,3,0.0);
+                    dstress(i,j) = small_stress(i,j) - sigma(i,j);
+                    static DTensor2 depsilon_Inv(3,3,0.0);
+                    depsilon_Inv = depsilon.Inv();
+                    
+                    // Return results (member variables) :
+                    Stiffness(i,j,k,l) = dstress(i,j) * depsilon_Inv(k,l);
+                    TrialStress(i,j) = small_stress(i,j);
+                    // plastic_strain and internal variables are already updated. 
+                    return 0;
+                }
 
+            }
+            
             //Correct the trial stress
             TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
             // printTensor("  CommitStress", CommitStress);
@@ -972,10 +968,6 @@ private:
             // std::cout << "   * xi_star_h_star = " << xi_star_h_star << std::endl;
             // std::cout << "   * den = " << den << std::endl;
 
-
-            // Update the internal variables (k and alpha)
-            vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
-            vars.commit_tmp();
             // Calculate the stiffness for the global iteration:
             Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
 
@@ -1089,42 +1081,6 @@ private:
         //     return retval;
         // }
         
-        // vonMises does NOT enter this part.
-        // DruckerPrager requries this part.
-        if(requires_DruckerPrager_Apex_Tension_check_()){
-            double I1 = TrialStress(i,i);
-            double p= - I1/3.0;
-            if (p < 0)
-            {
-            //     stress *= 0;
-            //     stiff *= 0;
-                static DTensor2 small_stress(3,3,0.0);
-                small_stress*=0;
-                small_stress(0, 0) = -0.1;
-                small_stress(1, 1) = -0.1;
-                small_stress(2, 2) = -0.1;
-                static DTensor2 dstress(3,3,0.0);
-                dstress(i,j) = small_stress(i,j) - sigma(i,j);
-                static DTensor2 depsilon_Inv(3,3,0.0);
-                depsilon_Inv = depsilon.Inv();
-                
-                // Return results(member variables) :
-                Stiffness(i,j,k,l) = dstress(i,j) * depsilon_Inv(k,l);
-                TrialStress(i,j)   = small_stress(i,j);
-
-                // Question?
-                // (1) How to increase the plastic_strain? 
-                // (2) Should we update the internal variables? (k and alpha)
-                //     //Reuse the 'stress' variable now to reset the backstress to zero
-                //     stress *= 0;
-                //     alpha.setVar(stress);
-                //     alpha.commit_tmp();
-                
-                return 0;
-            }
-
-        }
-
         if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
         {
             DTensor4& Eelastic = et(TrialStress);
@@ -1188,23 +1144,54 @@ private:
                 // Add the elastic predictor.
                 TrialStress(i, j)  += Eelastic(i, j, k, l) * sub_depsilon_elpl(k, l) ;
 
-                //Update the trial plastic strain.
+                // Update the trial plastic strain.
                 TrialPlastic_Strain(i, j) += dLambda * m(i, j);
+                // Update the internal variables
+                vars.evolve(dLambda, sub_depsilon_elpl, m, TrialStress);
+                vars.commit_tmp();
+                // Update the stiffness
+                static DTensor4 Stiffness_substep(3,3,3,3,0.0); Stiffness_substep*=0;
+                // vonMises does NOT enter this part.
+                // DruckerPrager requries this part.
+                if(yf.hasCorner()){
+                    if (in_DruckerPrager_Apex(TrialStress))
+                    {
+                        static DTensor2 small_stress(3,3,0.0);
+                        small_stress*=0;
+                        // The small value 50*Pa refers to the lowest confinement test:
+                        // http://science.nasa.gov/science-news/science-at-nasa/1998/msad27may98_2/
+                        double DP_k = yf.get_k();
+                        double DP_p = 50 ;
+                        // To make it on the yield surface, the q is equal to k*p. 
+                        double DP_q = DP_k * DP_p ; 
+                        // Assume the triaxial conditions sigma_2 = sigma_3. 
+                        small_stress(0, 0) = DP_p + 2./3.0 * DP_q;
+                        small_stress(1, 1) = DP_p - 1./3.0 * DP_q;
+                        small_stress(2, 2) = DP_p - 1./3.0 * DP_q;
+                        static DTensor2 dstress(3,3,0.0);
+                        dstress(i,j) = small_stress(i,j) - sigma(i,j);
+                        static DTensor2 depsilon_Inv(3,3,0.0);
+                        depsilon_Inv = depsilon.Inv();
+                        
+                        // Return results (member variables) :
+                        Stiffness_substep(i,j,k,l) = dstress(i,j) * depsilon_Inv(k,l);
+                        Stiffness(i, j, k, l) += Stiffness_substep(i, j, k, l)/Nsubsteps;
+                        TrialStress(i,j) = small_stress(i,j);
+                        // plastic_strain and internal variables are already updated. 
+                        
+                        // Go to the next sub-step directly:
+                        continue;
+                    }
 
+                }
                 //Correct the trial stress
                 TrialStress(i, j) = TrialStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
-        
-
-
-                vars.evolve(dLambda, sub_depsilon_elpl, m, TrialStress);
-                vars.commit_tmp();
                 // =================================================================================
                 // According to Crisfield(1996) Page 172. Section 6.6.4.
                 // The stiffness for the entire step should be the average of the substeps'
                 // stiffness
                 // =================================================================================
-                static DTensor4 Stiffness_substep(3,3,3,3,0.0);
                 if(!with_return2yield_surface){
                     Stiffness_substep(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / den;
                     Stiffness(i, j, k, l) += Stiffness_substep(i, j, k, l)/Nsubsteps;
@@ -1212,7 +1199,8 @@ private:
                     // ============================================================================================
                     // Add the additional step: returning to the yield surface. 
                     // This algorithm is based on Crisfield(1996). Page 171. Section 6.6.3
-                    // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated to the yield surface. 
+                    // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated again 
+                    // to the yield surface. 
                     // In addition, each substep will have this behavior of returning to yield surface.
                     // ============================================================================================
                     // In the evolve function, only dLambda and m are used. Other arguments are not used at all.
@@ -1617,42 +1605,6 @@ private:
         // {
         //     return retval;
         // }
-        
-        // vonMises does NOT enter this part.
-        // DruckerPrager requries this part.
-        if(requires_DruckerPrager_Apex_Tension_check_()){
-            double I1 = TrialStress(i,i);
-            double p= - I1/3.0;
-            if (p < 0)
-            {
-            //     stress *= 0;
-            //     stiff *= 0;
-                static DTensor2 small_stress(3,3,0.0);
-                small_stress*=0;
-                small_stress(0, 0) = -0.1;
-                small_stress(1, 1) = -0.1;
-                small_stress(2, 2) = -0.1;
-                static DTensor2 dstress(3,3,0.0);
-                dstress(i,j) = small_stress(i,j) - sigma(i,j);
-                static DTensor2 depsilon_Inv(3,3,0.0);
-                depsilon_Inv = depsilon.Inv();
-                
-                // Return results (member variables):
-                Stiffness(i,j,k,l) = dstress(i,j) * depsilon_Inv(k,l);
-                TrialStress(i,j) = small_stress(i,j);
-
-                // Question?
-                // (1) How to increase the plastic_strain? 
-                // (2) Should we restart the internal variables? (k and alpha)
-                //     //Reuse the 'stress' variable now to reset the backstress to zero
-                //     stress *= 0;
-                //     alpha.setVar(stress);
-                //     alpha.commit_tmp();
-                
-                return 0;
-            }
-
-        }
 
             if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
             {
@@ -1675,7 +1627,47 @@ private:
 
                 double yf_PredictorStress = yf(PredictorStress);
                 double yf_TrialStress = yf(TrialStress);
-                // double yf_TrialStress_prev = 0;
+                // vonMises does NOT enter this part.
+                // DruckerPrager requries this part.
+                if(yf.hasCorner()){
+                    if (in_DruckerPrager_Apex(PredictorStress))
+                    {
+                        static DTensor2 small_stress(3,3,0.0);
+                        small_stress*=0;
+                        // The small value 50*Pa refers to the lowest confinement test:
+                        // http://science.nasa.gov/science-news/science-at-nasa/1998/msad27may98_2/
+                        double DP_k = yf.get_k();
+                        double DP_p = 50 ;
+                        // To make it on the yield surface, the q is equal to k*p. 
+                        double DP_q = DP_k * DP_p ; 
+                        // Assume the triaxial conditions sigma_2 = sigma_3. 
+                        small_stress(0, 0) = DP_p + 2./3.0 * DP_q;
+                        small_stress(1, 1) = DP_p - 1./3.0 * DP_q;
+                        small_stress(2, 2) = DP_p - 1./3.0 * DP_q;
+                        
+                        // (1) Update the trial stress
+                        TrialStress(i,j) = small_stress(i,j);
+                        // (2) Update the trial plastic strain 
+                        const DTensor2& n = yf.df_dsigma_ij(small_stress);
+                        const DTensor2& m = pf(depsilon, small_stress);
+                        const double xi_star_h_star = yf.xi_star_h_star( depsilon, m,  small_stress);
+                        double denominator = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+                        double dLambda = yf_PredictorStress / denominator;
+                        TrialPlastic_Strain(i, j) += dLambda * m(i, j);
+                        // (3) Update the internal variables
+                        vars.evolve(dLambda, depsilon, m, TrialStress);
+                        vars.commit_tmp();
+                        // (4) Update the stiffness.  
+                        // Backward_Euler use the inconsistent stiffness.
+                        // Full_Backward_Euler use the consistent stiffness.
+                        Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / denominator;
+
+                        return 0;
+                    }
+
+                }
+
+
                 double f_relative_error=this->f_relative_tol*10;
 
                 while ((stress_relative_error > this-> stress_relative_tol ||
@@ -1778,7 +1770,6 @@ private:
                 // vars.evolve(dLambda, depsilon, m, TrialStress);
                 vars.commit_tmp();
 
-                //Report inconsistent stiffness for now. Dear coder, the responsibility of implementing a consistent stiffness now rests on your shoulders. :P
                 Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / denominator;
 
                 // if (not converged && !debugrun )
@@ -1844,104 +1835,6 @@ private:
                 // cout <<      " yf_val_end          = " << yf_val_end << endl;
                 // printTensor (" TrialStress        " , TrialStress);
 
-                // vonMises does NOT enter this part.
-                // DruckerPrager requries this part.
-                if(requires_DruckerPrager_Apex_Tension_check_()){
-                    double I1 = TrialStress(i,i);
-                    double p  = - I1/3.0;
-                    if (p < 0)
-                    {
-                        static DTensor2 small_stress(3,3,0.0);
-                        small_stress*=0;
-                        small_stress(0, 0) = -0.1;
-                        small_stress(1, 1) = -0.1;
-                        small_stress(2, 2) = -0.1;
-                        static DTensor2 dstress(3,3,0.0);
-                        dstress(i,j) = small_stress(i,j) - sigma(i,j);
-                        
-
-
-                        double yf_PredictorStress = yf(PredictorStress);
-                        const DTensor2& nf = yf.df_dsigma_ij(small_stress);
-                        const DTensor2& mf = pf(depsilon, small_stress);
-                        double xi_star_h_star = yf.xi_star_h_star( depsilon, mf,  small_stress);
-                        double denominator = nf(p, q) * Eelastic(p, q, r, s) * mf(r, s) - xi_star_h_star;
-
-                        //Compute the plastic multiplier
-                        if (denominator == 0)
-                        {
-                            cout << "CEP - requires_DruckerPrager_Apex_Tension_check_ : denominator= 0\n";
-                            printTensor("mf", mf);
-                            printTensor("nf", nf);
-                            cout << "xi_star_h_star" << xi_star_h_star << endl;
-                            cout << "denominator" << denominator << endl;
-                            printTensor("depsilon", depsilon);
-                            return -1;
-                        }
-                        // dLambda =  n(i, j) * Eelastic(i, j, k, l) * depsilon(k, l);
-                        double dLambda =  yf_PredictorStress / denominator;
-                        cout<< "requires_DruckerPrager_Apex_Tension_check --> dLambda: "<<dLambda<<endl;
-                        // ============================================================
-                        // Question?
-                        // (1) How to increase the plastic_strain? 
-                        // (2) Should we restart the internal variables? (k and alpha)
-                        //     //Reuse the 'stress' variable now to reset the backstress to zero
-                        //     stress *= 0;
-                        //     alpha.setVar(stress);
-                        //     alpha.commit_tmp();
-                        // ============================================================
-                        // TrialPlastic_Strain(i, j) += dLambda * mf(i, j);
-
-                        // // vars.evolve(dLambda, depsilon, m, TrialStress);
-                        // vars.commit_tmp();
-
-                        // The inconsistent stiffness tensor
-                        Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * mf(p, q)) * (nf(r, s) * Eelastic(r, s, k, l) ) / denominator;
-
-                        // // ===================================================================
-                        // // Working on consistent stiffness
-                        // // ===================================================================
-                        // // Construct the Tensor T
-                        static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize to integer later.
-                        IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
-
-                        static DTensor4 dm_dsigma(3,3,3,3,0.0);
-                        dm_dsigma = pf.dm_over_dsigma(TrialStress);
-                        static DTensor4 Ts(3,3,3,3,0.0);
-                        Ts(i, j, k, l) = IdentityTensor4(i,k,j,l) + dLambda * Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l);
-
-                        // // printTensor4 (" IdentityTensor4     " , IdentityTensor4 );
-                        // // printTensor4 (" dm_dsigma           " , dm_dsigma );
-                        // // printTensor4 (" Ts                  " , Ts );
-                        // // ===================================================================
-                        // // Construct the Tensor H
-                        static DTensor2 dm_dq_star_h_star(3,3,0.0);
-                        dm_dq_star_h_star = pf.dm_over_dq_start_h_star(TrialStress);
-                        static DTensor2 H(3,3,0.0);
-                        H(k,l) = mf(k,l) + dLambda * dm_dq_star_h_star(k,l);
-                        
-                        static DTensor4 invT(3,3,3,3,0.0);
-                        // // If cannot inverse T, return directly. 
-                        // // So "Stiffness" is the inconsistent stiffness tensor. 
-                        if( !inverse4thTensor(Ts, invT) ) return 0;
-                        static DTensor4 R(3,3,3,3,0.0);
-                        R(p, q, r, s)=invT(k, l, p, q)*Eelastic(k, l, r, s);
-
-                        // // ===================================================================
-                        // // Construct the consistent stiffness
-                        double denomin{0.0};
-                        denomin = nf(p, q) * R(p, q, r, s) * H(r, s) - xi_star_h_star ; 
-                        Stiffness(i, j, k, l) = R(i, j, k, l) - ((R(i, j, p, q)*H(p, q)) * (nf(r, s)*R(r, s, k, l))) /denomin; 
-
-                        // // ===================================================================
-                        // // Working on consistent stiffness  END
-                        // // ===================================================================
-                        
-                        return 0;
-                    }
-
-                }
-
                 if ((yf_val_start <= 0.0 && yf_val_end <= 0.0) || yf_val_start > yf_val_end) //Elasticity
                 {
                     DTensor4& Eelastic = et(TrialStress);
@@ -1963,7 +1856,85 @@ private:
 
                     double yf_PredictorStress = yf(PredictorStress);
                     double yf_TrialStress = yf(TrialStress);
-                    // double yf_TrialStress_prev = 0;
+                    // vonMises does NOT enter this part.
+                    // DruckerPrager requries this part.
+                    if(yf.hasCorner()){
+                        if (in_DruckerPrager_Apex(PredictorStress))
+                        {
+                            static DTensor2 small_stress(3,3,0.0);
+                            small_stress*=0;
+                            // The small value 50*Pa refers to the lowest confinement test:
+                            // http://science.nasa.gov/science-news/science-at-nasa/1998/msad27may98_2/
+                            double DP_k = yf.get_k();
+                            double DP_p = 50 ;
+                            // To make it on the yield surface, the q is equal to k*p. 
+                            double DP_q = DP_k * DP_p ; 
+                            // Assume the triaxial conditions sigma_2 = sigma_3. 
+                            small_stress(0, 0) = DP_p + 2./3.0 * DP_q;
+                            small_stress(1, 1) = DP_p - 1./3.0 * DP_q;
+                            small_stress(2, 2) = DP_p - 1./3.0 * DP_q;
+                            
+                            // (1) Update the trial stress
+                            TrialStress(i,j) = small_stress(i,j);
+                            // (2) Update the trial plastic strain 
+                            const DTensor2& n = yf.df_dsigma_ij(small_stress);
+                            const DTensor2& m = pf(depsilon, small_stress);
+                            const double xi_star_h_star = yf.xi_star_h_star( depsilon, m,  small_stress);
+                            double denominator = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
+                            double dLambda = yf_PredictorStress / denominator;
+                            TrialPlastic_Strain(i, j) += dLambda * m(i, j);
+                            // (3) Update the internal variables
+                            vars.evolve(dLambda, depsilon, m, TrialStress);
+                            vars.commit_tmp();
+                            // (4) Update the stiffness.  
+                            // Backward_Euler use the inconsistent stiffness.
+                            // Full_Backward_Euler use the consistent stiffness.
+                            Stiffness(i, j, k, l) = Eelastic(i, j, k, l) - (Eelastic(i, j, p, q) * m(p, q)) * (n(r, s) * Eelastic(r, s, k, l) ) / denominator;
+                            
+
+                            // // ===================================================================
+                            // // Working on consistent stiffness
+                            // // ===================================================================
+                            // // Construct the Tensor T
+                            static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize to integer later.
+                            IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
+
+                            static DTensor4 dm_dsigma(3,3,3,3,0.0);
+                            dm_dsigma = pf.dm_over_dsigma(TrialStress);
+                            static DTensor4 Ts(3,3,3,3,0.0);
+                            Ts(i, j, k, l) = IdentityTensor4(i,k,j,l) + dLambda * Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l);
+
+                            // // printTensor4 (" IdentityTensor4     " , IdentityTensor4 );
+                            // // printTensor4 (" dm_dsigma           " , dm_dsigma );
+                            // // printTensor4 (" Ts                  " , Ts );
+                            // // ===================================================================
+                            // // Construct the Tensor H
+                            static DTensor2 dm_dq_star_h_star(3,3,0.0);
+                            dm_dq_star_h_star = pf.dm_over_dq_start_h_star(TrialStress);
+                            static DTensor2 H(3,3,0.0);
+                            H(k,l) = m(k,l) + dLambda * dm_dq_star_h_star(k,l);
+                            
+                            static DTensor4 invT(3,3,3,3,0.0);
+                            // // If cannot inverse T, return directly with the inconsistent stiffness tensor. 
+                            if( !inverse4thTensor(Ts, invT) ) return 0;
+                            static DTensor4 R(3,3,3,3,0.0);
+                            R(p, q, r, s)=invT(k, l, p, q)*Eelastic(k, l, r, s);
+
+                            // // ===================================================================
+                            // // Construct the consistent stiffness
+                            double denomin{0.0};
+                            denomin = n(p, q) * R(p, q, r, s) * H(r, s) - xi_star_h_star ; 
+                            Stiffness(i, j, k, l) = R(i, j, k, l) - ((R(i, j, p, q)*H(p, q)) * (n(r, s)*R(r, s, k, l))) /denomin; 
+
+                            // // ===================================================================
+                            // // Working on consistent stiffness  END
+                            // // ===================================================================
+                            
+                            return 0;
+                        }
+
+                    }
+
                     double f_relative_error=this->f_relative_tol*10;
 
                     while ((stress_relative_error > this-> stress_relative_tol ||
@@ -2144,29 +2115,6 @@ private:
         return static_cast<U*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
     }
 
-
-// ================================================================================
-// DruckerPrager Apex check
-// ================================================================================
-// If the stress is outside the DruckerPrager apex, set the stress to a small number
-// (-0.1, -0.1, -0.1). Then, according to the incremental stress, calculate the 
-// stiffness tensor. 
-// ================================================================================
-    template <typename U = T>
-    typename std::enable_if < !requires_DruckerPrager_Apex_Tension_check<U>::require, bool >::type
-    requires_DruckerPrager_Apex_Tension_check_(){
-        return false;
-    }
-
-    template <typename U = T>
-    typename std::enable_if<requires_DruckerPrager_Apex_Tension_check<U>::require, bool>::type
-    requires_DruckerPrager_Apex_Tension_check_(){
-        return true;
-    }
-// ================================================================================
-// DruckerPrager Apex check   END
-// ================================================================================
-
 private:
 // Routine used by yield_surface_cross to find the stresstensor at cross point
 //================================================================================
@@ -2306,6 +2254,38 @@ private:
         return 0.0;
     }
 
+    bool in_DruckerPrager_Apex(DTensor2 const& TrialStress)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        double I1 = TrialStress(i,i);
+        double sigma_m  = I1/3.0;
+        double DP_p = -sigma_m;
+        static DTensor2 DP_s(3,3,0.0);
+        DP_s(i,j)=TrialStress(i,j)-kronecker_delta(i,j)*sigma_m;
+        double DP_k =yf.get_k();
+        static DTensor2 DP_alpha(3,3,0.0);
+        DP_alpha    = yf.get_alpha();
+        static DTensor2 relative_s(3,3,0.0);
+        // Remove the influence of kinematic hardening:
+        relative_s(i,j) = DP_s(i,j) - DP_p * DP_alpha(i,j);
+        double J2   = 0.5*relative_s(i,j)*relative_s(i,j) ;
+        double DP_q = sqrt(3 * J2);
+
+        if(DP_k<MACHINE_EPSILON){
+            cout<<"DP_k (denominator) = 0! Error in ClassicElastoplasticMaterial-->requires_DruckerPrager_Apex_Tension_check_\n ";
+        }
+
+        // In this range (condition 1 && 2), DP stress state cannot be returned correctly. 
+        // So the the trick (return to small_stress) will be applied. 
+        bool condition1 = (  (1.0/DP_k*DP_p + DP_q) <0  );
+        bool condition2 = (  (1.0/DP_k*DP_p - DP_q) <0  );
+
+        if (condition1 && condition2){
+            cout<<"PredictorStress in DruckerPrager apex region. Return to a small stress.\n";
+            return true;
+        }
+        return false;
+    }
 
 private:
 

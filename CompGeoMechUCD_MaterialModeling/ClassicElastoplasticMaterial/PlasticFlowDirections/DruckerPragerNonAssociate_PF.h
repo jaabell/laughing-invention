@@ -116,9 +116,9 @@ public:
         double p=0.0;
         sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
         p=-p;
-        if(p<MACHINE_EPSILON){
-            cout<<"DruckerPragerNonAssociate_PF:: pressuse < 0 ! The Drucker-Prager has tensile force.";
-        }
+        // if(p<MACHINE_EPSILON){
+        //     cout<<"DruckerPragerNonAssociate_PF:: pressuse < 0 ! The Drucker-Prager has tensile force.\n";
+        // }
         static DTensor2 s_minus_palpha(3,3,0.0);
         s_minus_palpha(i,j) = s(i,j) - p*alpha(i,j);
         double s_minus_p_alpha_square = s_minus_palpha(i,j) * s_minus_palpha(i,j) ; 
