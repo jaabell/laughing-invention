@@ -2662,11 +2662,13 @@ Domain::commit( void )
 
             SP_Constraint *sp_ptr = 0;
             SP_ConstraintIter &theSP_Iter = this->getSPs();
+            this->Number_of_Constrained_Dofs=0;
 
             while ( ( sp_ptr = theSP_Iter() ) != 0 )
             {
                 int nodetag = sp_ptr->getNodeTag();
                 int dof = sp_ptr->getDOF_Number();
+                Number_of_Constrained_Dofs ++;
 
                 theOutputWriter.writeSPConstraintsData(nodetag, dof);
             }
@@ -2767,16 +2769,15 @@ Domain::commit( void )
         }
 
 
-        //Do node output
+        //Do node Output 
         if (output_is_enabled && (countdown_til_output == 0))
         {
-            this->calculateNodalReactions(0);
             theNodeIter = this->getNodes();
 
             while ((nodePtr = theNodeIter()) != 0)
             {
                 theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-                theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
+                // theOutputWriter.writeUnbalancedForces(nodePtr->getTag(), nodePtr->getReaction()); // Disabled by Sumeet August, 2016
             }
         }
 
@@ -2800,6 +2801,21 @@ Domain::commit( void )
             {
                 theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
             }
+        }
+
+        //Do Support Reactions Output [Sumeet August,2016]
+        SP_Constraint *sp_ptr = 0;
+        SP_ConstraintIter &theSP_Iter = this->getSPs();
+        this->calculateNodalReactions(0);
+
+        vector<float> Support_Reactions(Number_of_Constrained_Dofs);
+        int index = 0;
+
+        while ( ( sp_ptr = theSP_Iter() ) != 0 )
+        {
+            Support_Reactions[index++]= this->getNode(sp_ptr->getNodeTag())->getReaction()(sp_ptr->getDOF_Number());
+
+            theOutputWriter.writeSupportReactions( Number_of_Constrained_Dofs, Support_Reactions);
         }
 
         globalESSITimer.stop("Domain_Element_Commit_and_output");

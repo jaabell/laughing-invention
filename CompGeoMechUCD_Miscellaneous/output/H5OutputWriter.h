@@ -128,7 +128,8 @@ public:  // To meet with OutputWriter interfacec
     virtual int writeDummyDisplacements() ;
     virtual int writeVelocities(     int nodeTag, const Vector &velocities) ;
     virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) ;
-    virtual int writeReactionForces( int nodeTag, const Vector &reactionForces) ;
+    virtual int writeUnbalancedForces( int nodeTag, const Vector &reactionForces) ;
+    virtual int writeSupportReactions( int number_of_constrained_dofs, std::vector<float> reactionForces) ;
 
     // Results for Elements
     virtual int writeElementOutput(int elementTag, const Vector &output) ;
@@ -348,7 +349,8 @@ private:
     hid_t id_nodes_partition     ;
     hid_t id_nodes_velocities    ;
     hid_t id_nodes_accelerations ;
-    hid_t id_nodes_reaction_forces ;
+    hid_t id_unbalanced_forces ;
+    hid_t id_support_reactions;
 
     //For Elements
     hid_t id_elements_nnodes;

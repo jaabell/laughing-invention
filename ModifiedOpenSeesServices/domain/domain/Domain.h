@@ -482,6 +482,7 @@ public:
 
     int number_of_eigen_modes=-1;                // added by sumeet 1st Asugust, 2016
     int save_number_of_non_converged_substeps=0; // added by sumeet 5th August, 2016
+    int Number_of_Constrained_Dofs;              // added by sumeet 30 August, 2016
 
 };
 

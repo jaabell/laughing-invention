@@ -67,10 +67,12 @@ public:
     virtual int writeMaterialMeshData(int         tag,
                                       std::string type) = 0;
     // Results for Nodes
-    virtual int writeDisplacements(  int nodeTag, const Vector &displacements) = 0;
-    virtual int writeVelocities(     int nodeTag, const Vector &velocities) = 0;
-    virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) = 0;
-    virtual int writeReactionForces( int nodeTag, const Vector &reactionForces) = 0;
+    virtual int writeDisplacements(    int nodeTag, const Vector &displacements) = 0;
+    virtual int writeVelocities(       int nodeTag, const Vector &velocities) = 0;
+    virtual int writeAccelerations(    int nodeTag, const Vector &accelerations) = 0;
+    virtual int writeUnbalancedForces(   int nodeTag, const Vector &reactionForces) = 0;
+    virtual int writeSupportReactions( int number_of_constrained_dofs, std::vector<float> reactionForces)=0;
+
 
     // Results for Elements
     virtual int writeElementOutput(int elementTag, const Vector &output) = 0;

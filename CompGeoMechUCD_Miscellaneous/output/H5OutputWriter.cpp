@@ -1291,9 +1291,9 @@ void H5OutputWriter::writeMesh()
                 maxdims[0] = (hsize_t)  length_nodes_displacements_output;
                 maxdims[1] = number_of_time_steps + 1;
 
-                id_nodes_displacements = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
-                id_nodes_reaction_forces = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Forces", " ", 1);
-            }
+                id_nodes_displacements  = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+                // id_unbalanced_forces    = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Unbalanced_Forces", " ");          // [Disabled by Sumeet August, 2016]
+            }            
 
             if (number_of_outputs > 0)
             {
@@ -1327,6 +1327,19 @@ void H5OutputWriter::writeMesh()
             dims[0] = size;
             maxdims[0] = size;
             id_Constrained_DOFs               = createConstantLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_DOFs", " ");
+
+            {
+                int rank = 2;
+                hsize_t dims[2];
+                hsize_t maxdims[2];
+                dims[0] = (hsize_t) SPDofs.Size();
+                dims[1] = 0;
+                maxdims[0] = (hsize_t)  SPDofs.Size();
+                maxdims[1] = number_of_time_steps + 1;
+
+                id_support_reactions = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Support_Reactions", " ");
+            }
+
 
             //Write gauss coordinate values
             dims[0]      = (hsize_t) SPNodes.Size();
@@ -1682,16 +1695,9 @@ int H5OutputWriter::writeAccelerations(  int nodeTag, const Vector &acceleration
     return 0;
 }
 
-
-int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForces)
+int H5OutputWriter::writeUnbalancedForces( int nodeTag, const Vector &reactionForces)
 {
 
-#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
-    int processID;
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-    // cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
-#endif
     int pos, ndofs;
 
     // Read NDOFS from HDF5 file
@@ -1720,9 +1726,8 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
 
 
     //Write data
-    // hsize_t dims[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step};
-    hsize_t *dims;
-    dims = 0;   // This is to disable array extension (would not be done collectively)
+    hsize_t dims[0];
+    dims[1] = (hsize_t) ndofs;   
     data_dims[0] = (hsize_t) ndofs;
 
     offset[0]    = (hsize_t) pos;
@@ -1734,15 +1739,11 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
     block[0]     = 1;
     block[1]     = 1;
 
-#if _PARALLEL_PROCESSING_COLLECTIVE_IO
-    // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
-#endif
-
     std::vector<float> float_reactionForces(reactionForces.Size());
     for (int i = 0; i < reactionForces.Size(); ++i)
         float_reactionForces[i]=reactionForces(i);
 
-    writeVariableLengthFloatArray(id_nodes_reaction_forces,
+    writeConstantLengthFloatArray(id_unbalanced_forces,
                                    datarank,
                                    dims,
                                    data_dims,
@@ -1756,6 +1757,36 @@ int H5OutputWriter::writeReactionForces( int nodeTag, const Vector &reactionForc
     H5Sclose(id_memspace);
     H5OUTPUTWRITER_COUNT_OBJS;
     return 0;
+}
+
+int H5OutputWriter::writeSupportReactions( int number_of_constrained_dofs, std::vector<float> reactionForces){
+
+    int datarank         = 1;
+    hsize_t data_dims[1] = {(hsize_t) number_of_constrained_dofs};
+    hsize_t offset[2]    = {0 , (hsize_t) current_time_step-1};
+    hsize_t stride[2]    = {1 , 1};
+    hsize_t count[2]     = {(hsize_t) number_of_constrained_dofs , 1};
+    hsize_t block[2]     = {1 , 1};
+
+    hsize_t dims[0];
+    dims[1] = (hsize_t) number_of_constrained_dofs;  
+
+    hsize_t size[2] = {(hsize_t) number_of_constrained_dofs, (hsize_t) current_time_step};
+
+    H5Dset_extent (id_support_reactions, size);
+
+    writeConstantLengthFloatArray(id_support_reactions,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   &reactionForces[0]);
+
+    H5OUTPUTWRITER_COUNT_OBJS;
+
     return 0;
 }
 
@@ -1990,7 +2021,7 @@ int H5OutputWriter::setTime(float t)
     size[1] = (hsize_t) current_time_step;
 
     status = H5Dset_extent (id_nodes_displacements, size);
-    status = H5Dset_extent (id_nodes_reaction_forces, size);
+    // status = H5Dset_extent (id_unbalanced_forces, size); // [Disabled by Sumeet August, 2016]
 
     // /**********************************************************************************/
 
