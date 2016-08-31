@@ -3206,3 +3206,39 @@ int H5OutputWriter::setSubStep(int substep_no){
     return 0;
 }
 
+/*********************************************************************************
+* Sumeet August, 2016
+* This function deletes all the temporaray mesh array
+**********************************************************************************/
+void H5OutputWriter::DeleteMeshArrays(){
+
+     ID voidId;
+
+    //For nodes
+    Number_of_DOFs=voidId;
+    Coordinates.clear();
+    Index_to_Coordinates=voidId;
+    Index_to_Generalized_Displacements=voidId;
+    Node_Partition=voidId;
+    SPNodes=voidId;
+    SPDofs=voidId;
+
+    //For Elements
+    Number_of_Nodes=voidId;
+    Connectivity=voidId;
+    Index_to_Connectivity=voidId;
+    Number_of_Output_Fields=voidId;
+    Index_to_Outputs=voidId;
+    Number_of_Gauss_Points=voidId;
+    Gauss_Point_Coordinates.clear();
+    Index_to_Gauss_Point_Coordinates=voidId;
+    LoadPattern_names.clear();
+    Material_tags=voidId;
+    Class_Tags=voidId;
+    Element_Partition=voidId;
+
+    //For Materials
+    Materials.clear();
+
+}
+

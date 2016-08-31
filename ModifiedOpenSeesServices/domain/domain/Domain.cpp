@@ -2750,6 +2750,9 @@ Domain::commit( void )
                 theOutputWriter.writeEigenMesh(number_of_eigen_modes);
             }
 
+            // Erase all temporaray arrays 
+            theOutputWriter.DeleteMeshArrays();
+
         }
     }
 

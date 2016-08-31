@@ -275,6 +275,7 @@ public:  //Additional stuff
                                           int *data);
 
     void writeMesh(void);
+    void DeleteMeshArrays(); // [Sumeet August, 2016] 
     void syncWriters(); //Used in parallel
 
 
