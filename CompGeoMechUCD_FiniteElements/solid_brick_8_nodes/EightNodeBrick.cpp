@@ -2042,10 +2042,6 @@ void EightNodeBrick::setDomain (Domain *theDomain)
             exit(-1);
         }
 
-        // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-        theDomain->add_Gauss_Points(8);
-        theDomain->add_Connectivity_Nodes(8);
-        ///---------------------------------------------------------------------//
         this->DomainComponent::setDomain(theDomain);
     }
 

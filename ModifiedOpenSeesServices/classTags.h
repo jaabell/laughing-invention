@@ -296,6 +296,8 @@
 #define MAT_TAG_OrthotropicLinElastic       1003
 #define MAT_TAG_OrthotropicLinElasticPoint  1004
 
+/********************************** Class Desc Noyt Added ***********************************/
+
 #define ELE_TAG_CST                                              4050
 
 #define ELE_TAG_Subdomain                                        1
@@ -324,7 +326,6 @@
 
 #define ELE_TAG_PenaltyElement                                   5009
 #define ELE_TAG_PenaltyElementApplyDisplacement                  5010
-#define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam     5012  // Nima Tafazzoli, December 2012
 #define ELE_TAG_LargeDispBeamColumn3d                            6002
 #define ELE_TAG_FourNodeQuad                                     1010
 #define ELE_TAG_BeamWithHinges3d                                  402
@@ -336,9 +337,6 @@
 #define ELE_TAG_TwentySevenNodeBrickVariableGP                   7021
 #define ELE_TAG_TwentyNodeBrickElastic                           7017
 #define ELE_TAG_VariableNodeBrick                                7018
-#define ELE_TAG_EightNodeBrick_u_p_U                             7003
-#define ELE_TAG_EightNodeBrick_u_p_U_LT                          7022
-#define ELE_TAG_TwentyNodeBrick_u_p_U                            7004
 #define ELE_TAG_FourNodeQuadUP                                   7005
 #define ELE_TAG_TotalLagrangianFD20NodeBrick                     7006 // ZC added
 #define ELE_TAG_TotalLagrangianFD8NodeBrick                      7007
@@ -365,13 +363,10 @@
 #define ELE_TAG_HingedBeam3d                                     9873
 #define ELE_TAG_TwoPointHingedBeam3d                             9875
 #define ELE_TAG_OnePointHingedBeam3d                             9877
-#define ELE_TAG_BeamColumnJoint3d                                4445
-                
-
-                
-                
-                
+#define ELE_TAG_BeamColumnJoint3d                                4445              
 #define ELE_TAG_Joint3D                                          9903
+
+/******************************** No Class Desc Added Above *************************/
 
 // Reorganizing Element Tag Numbers  [Sumeet August,2016]
 
@@ -384,49 +379,71 @@
 *				1-> 1-dimension
 *				2-> 2-dimension
 *				3-> 3-dimension
-*				4-> special elements
+* 				4-> Point Elements
+*				4-> Special elements
 *
 * [N. Nodes]  = <num_of_digits = 2> Number of nodes in elements
 *				xx-> number of nodes
 *
-* [Dof per nodes]  = <num_of_digits = 2> Degree of freedom per node
-*					 xx-> DOFS per node
+* [Dof per nodes]  = <num_of_digits = 1> Degree of freedom per node
+*					 x-> DOFS per node
 *
 * [N. Gauss]  = <num_of_digits = 2> Number of gauss points in elements
 *				xx-> number of gauss points
 *
-* [No.of Outputs]  = <num_of_digits = 3> Number of outputs for elements
-*					 xxx-> number of outputs for elements
+* [No.of Outputs]  = <num_of_digits = 3> no. of outputs other than at gauss points.
+*					 xxx-> no. of outputs other than at gauss points.
 *
+* Default Features 
+* - - - - - -- - -
+* 1) Per gauss point there are in toltal 18 outputs of stress, plsatic strain and total strain
+* 2) No.of Outputs -> here means the extra outputs by an element except gauss points. For example:
+*					  for eight node brick there is 000 No. of Outputs.
 ***************************************************************************/
 
+//###---------------------------------------------------------------------------------------------
+//###  NOTE!! :- Every Element have a responsibility to set their tag_description Array. 
+//###            Based on the above encoding
+//###  NOTE!! :- Also increase the ELE_TAG_DESC_ARRAY_SIZE to the number of elements
+//### --------------------------------------------------------------------------------------------
                                                               //New  //Old       //Desc
 #define ELE_TAG_Truss                                            1   //4001    102300002
 #define ELE_TAG_ElasticBeam                                      2   //5011    102600024         // Nima Tafazzoli, December 2012
-#define ELE_TAG_FrictionalPenaltyContact                         3   //5015    102300009         // J.Abell
+#define ELE_TAG_HardContact				                         3   //5015    102300009         // Sumeet June 2016
 #define ELE_TAG_ThreeNodeAndesShell                              4   //2026    203600006
 #define ELE_TAG_FourNodeAndesShell                               5   //2029    204600006               
-#define ELE_TAG_EightNodeBrickLT                                 6   //8001    308308144
-#define ELE_TAG_TwentySevenNodeBrickLT                           7   //8002    327327486
-#define ELE_TAG_ShearBeamLT                                      8   //8003    302301018
+#define ELE_TAG_EightNodeBrickLT                                 6   //8001    308308000
+#define ELE_TAG_TwentySevenNodeBrickLT                           7   //8002    327327000
+#define ELE_TAG_ShearBeamLT                                      8   //8003    302301000
 #define ELE_TAG_EightNodeBrickLT_NoOutput                        9   //8004    308308000
-#define ELE_TAG_TwentyNodeBrickLT                                10  //8005    320320486
-#define ELE_TAG_HardContact              						5015      // Sumeet added on June 26 2016
-#define ELE_TAG_SoftContact         	 						5016      // Sumeet added on June 26 2016
+#define ELE_TAG_TwentyNodeBrickLT                                10  //8005    320327000
+#define ELE_TAG_SoftContact         	 						 11  //5016    102300009         // Sumeet added on July 2016
+#define ELE_TAG_EightNodeBrick_u_p_U                             12  //7003    308708000   
+#define ELE_TAG_EightNodeBrick_u_p_U_LT                          13  //7022    308708000   
+#define ELE_TAG_TwentyNodeBrick_u_p_U                            14  //7004    320727000 
+#define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam     15  //5012    102600009		// Nima Tafazzoli, December 2012
 
-/********* Writing Element Description Array [Sumeet August,2016] ***********************/
-#define ELE_TAG_DESC_ARRAY      int ele_tag_desc_array[] =  {  	-1		 , \
-																102300002, \
-																102600024, \
-																102300009, \
-																203600006, \
-																204600006, \
-																308308144, \
-																327327486, \
-																302301018, \
-																308308000, \
-																320320486, \
-															}
+#define ELE_TAG_DESC_ARRAY_SIZE 15
+
+/*Initializeing Writing Element Description Array [Sumeet August,2016] ***********************/
+/* Copy and paste the above descriptions in Serial Order *************************************/
+#define ELE_TAG_DESC_ARRAY      int ele_tag_desc_array[] =  \
+{  	-1	 , \
+102300002, \
+102600024, \
+102300009, \
+203600006, \
+204600006, \
+308308000, \
+327327000, \
+302301000, \
+308308000, \
+320327000, \
+102300009, \
+308708000, \
+308708000, \
+320727000, \
+}
 
 
 /******************************************************************************************/

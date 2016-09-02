@@ -255,6 +255,8 @@ Subdomain::addNode(Node *node)
     {
         node->setDomain(this);
         this->domainChange();
+        numberOfDomainNodeDOFs += node->getNumberDOF();  // Sumeet August, 2016
+
     }
     else
     {
@@ -297,24 +299,6 @@ Subdomain::addExternalNode(Node *thePtr)
     }
 
 #endif
-    // create a dummy Node & try adding it to the external nodes
-    //GZ Node *newDummy = new Node(*thePtr, false);
-    //GZ if (newDummy == 0) {
-    //GZ    cerr << "Subdomain::addExternalNode - failed to copy Node " << thePtr->getTag() << "\n";
-    //GZ    return false;
-    //GZ }
-    //GZ
-    //GZ bool result = externalNodes->addComponent(newDummy);
-    //GZ
-    //GZ if (result == true) {
-    //GZ   //   result = realExternalNodes->addComponent(thePtr);
-    //GZ    newDummy->setDomain(this);
-    //GZ    this->domainChange();
-    //GZ } else {
-    //GZ    cerr << "Subdomain::addExternalNode - failed to add Node " << thePtr->getTag() << "\n";
-    //GZ    return -1;
-    //GZ }
-
 
     // create a dummy Node & try adding it to the external nodes
     bool result = externalNodes->addComponent(thePtr);
@@ -324,6 +308,8 @@ Subdomain::addExternalNode(Node *thePtr)
         //    result = realExternalNodes->addComponent(thePtr);
         thePtr->setDomain(this);
         this->domainChange();
+        numberOfDomainNodeDOFs += thePtr->getNumberDOF();  // Sumeet August, 2016
+
     }
     else
     {

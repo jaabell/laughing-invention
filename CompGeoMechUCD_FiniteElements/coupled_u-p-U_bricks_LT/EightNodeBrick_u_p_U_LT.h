@@ -58,15 +58,8 @@
 #define EightNodeBrick_u_p_U_LT_H_LT
 
 
-
-// Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point,
-// and one of pore pressure at each gauss
-#define EightNodeBrick_u_p_U_LT_NUMBER_OF_GAUSSPOINTS 8
-#define EightNodeBrick_u_p_U_LT_OUTPUT_SIZE EightNodeBrick_u_p_U_LT_NUMBER_OF_GAUSSPOINTS*(6*3 + 1)
-
-
 #include <Information.h>
-// #include <ElementResponse.h>
+// #include <ElementResponse.h
 #include <ElementalLoad.h>
 #include <Domain.h>
 #include <Node.h>
@@ -178,8 +171,11 @@ private:
 
     //Jose Added for output
     Matrix &getGaussCoordinates(void);
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput() ;
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has only outputs at gauss points so no needto have the "getElementOutput()" function
+    *********************************************************************************************************************/
+    virtual const vector<float> &getGaussOutput() ;
 
 private:
     ID  connectedExternalNodes;    // tags of nodes
@@ -206,14 +202,13 @@ private:
     double rho_f;                  // Fluid density
     double ks;                     // Bulk modulus of solid
     double kf;                     // Bulk modulus of fluid
-    //     double pressure;               // Normal surface traction (pressure) over entire element  //?
 
     Vector *Q;
     Matrix *Ki;
 
 
     Matrix gauss_points;
-    Vector outputVector;
+    vector<float> Gauss_Output_Vector;
 };
 
 

@@ -52,30 +52,25 @@ public:
                                     unsigned int Total_Number_of_Gauss_Points,
                                     unsigned int Total_Number_of_Connectivity_Nodes)=0;
 
-    // virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
-    // virtual int writeNum
     virtual int writeNodeMeshData(int tag,
                                   const Vector &coords,
                                   int ndofs ) = 0;
     virtual int writeElementMeshData(int         tag,
-                                     std::string  type,
                                      const        ID &connectivity,
                                      int          materialtag,
                                      const        Matrix &gausscoordinates,
-                                     int          length_of_output,
                                      int class_tag) = 0;
     virtual int writeMaterialMeshData(int         tag,
                                       std::string type) = 0;
     // Results for Nodes
     virtual int writeDisplacements(    int nodeTag, const Vector &displacements) = 0;
-    virtual int writeVelocities(       int nodeTag, const Vector &velocities) = 0;
-    virtual int writeAccelerations(    int nodeTag, const Vector &accelerations) = 0;
-    virtual int writeUnbalancedForces(   int nodeTag, const Vector &reactionForces) = 0;
-    virtual int writeSupportReactions( int number_of_constrained_dofs, std::vector<float> reactionForces)=0;
+    virtual int writeUnbalancedForces( int nodeTag, const Vector &unbalancedForces) = 0;
+    virtual int writeSupportReactions( int number_of_constrained_dofs, const std::vector<float> &reactionForces)=0;
 
 
     // Results for Elements
-    virtual int writeElementOutput(int elementTag, const Vector &output) = 0;
+    virtual int writeElementOutput(int elementTag, const vector<float> &output,int class_tag) = 0;
+    virtual int writeGaussOutput(int elementTag, const vector<float> &output,int class_tag) = 0;
 
 
 private:

@@ -48,8 +48,7 @@ double EightNodeBrickLT::SurfaceLoadValues_in_function;         // Nima added fo
 DTensor2 EightNodeBrickLT::gp_coords(8, 3, 0.0);
 DTensor1 EightNodeBrickLT::gp_weight(8, 0.0);
 Matrix EightNodeBrickLT::gauss_points(8, 3);
-Vector EightNodeBrickLT::outputVector(EightNodeBrickLT_OUTPUT_SIZE );
-
+vector<float> EightNodeBrickLT::Gauss_Output_Vector(144);
 
 Vector EightNodeBrickLT::ShapeFunctionValues_in_function( 4 );  // Nima added for surface load (July 2012)
 Vector EightNodeBrickLT::J_vector_in_function( 3 );             // Nima added for surface load (July 2012)
@@ -142,7 +141,6 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
     }
 
     this->setNumberOfBoundaryNodes(4);
-
 }
 
 
@@ -610,7 +608,7 @@ void EightNodeBrickLT::computeGaussPoint()
         gauss_points( gp, 1 ) = material_arrayCoord( 1, gp );
         gauss_points( gp, 2 ) = material_arrayCoord( 2, gp );
     }
-    // return gauss_points;
+
 }
 
 
@@ -767,10 +765,6 @@ void EightNodeBrickLT::setDomain ( Domain *theDomain )
             exit( -1 );
         }
 
-        // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-        theDomain->add_Gauss_Points(8);
-        theDomain->add_Connectivity_Nodes(8);
-        ///---------------------------------------------------------------------//
         this->DomainComponent::setDomain( theDomain );
     }
 
@@ -1510,23 +1504,6 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
         return -1;
     }
 
-    //Send the gauss points
-    // if ( theChannel.sendMatrix( 0, commitTag, gauss_points ) < 0 )
-    // {
-    //     cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss point coordinates\n";
-    //     return -1;
-    // }
-
-    // //Send outputVector
-    // if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
-    // {
-    //     cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
-    //     return -1;
-    // }
-
-
-
-
     return 0;
 
 }
@@ -1639,22 +1616,6 @@ int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_Obje
         return -1;
     }
 
-    // gauss_points
-    // if ( theChannel.receiveMatrix( 0, commitTag, gauss_points ) < 0 )
-    // {
-    //     cerr << "EightNodeBrickLT::receiveSelf() - failed to recv gauss_points!\n";
-    //     return -1;
-    // }
-
-    // // outputVector
-    // if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
-    // {
-    //     cerr << "EightNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
-    //     return -1;
-    // }
-
-
-
     return 0;
 
 }
@@ -1700,8 +1661,8 @@ int EightNodeBrickLT::getObjectSize()
     size += sizeof(double) * bf.Size();
     // Matrix gauss_points   NOT INCLUDED IN MEMORY COUNT... THEY're Static (J. Abell);
     // size += sizeof(gauss_points);
-    // // Vector outputVector;
-    // size += sizeof(outputVector);
+    // // Vector Gauss_Output_Vector;
+    // size += sizeof(Gauss_Output_Vector);
     // Index < 'i' > i;
     size += sizeof(i);
     // Index < 'j' > j;
@@ -2025,25 +1986,22 @@ EightNodeBrickLT::getStress( void )
     return stresses;
 }
 
-
-
-
 Matrix &EightNodeBrickLT::getGaussCoordinates(void)
 {
     computeGaussPoint();
     return gauss_points;
 }
 
-int EightNodeBrickLT::getOutputSize() const
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &EightNodeBrickLT::getGaussOutput()
 {
-    return EightNodeBrickLT_OUTPUT_SIZE ;
-}
-
-
-
-const Vector &EightNodeBrickLT::getOutput()
-{
-
     //Form the output vector
     int ii = 0;
     for (int gp = 0; gp < 8; gp++)
@@ -2053,33 +2011,31 @@ const Vector &EightNodeBrickLT::getOutput()
         const DTensor2 & stress = material_array[gp]->getStressTensor();
 
         //Write strain
-        outputVector(ii++) = strain(0, 0);
-        outputVector(ii++) = strain(1, 1);
-        outputVector(ii++) = strain(2, 2);
-        outputVector(ii++) = strain(0, 1);
-        outputVector(ii++) = strain(0, 2);
-        outputVector(ii++) = strain(1, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 0);
+        Gauss_Output_Vector[ii++] = strain(1, 1);
+        Gauss_Output_Vector[ii++] = strain(2, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 1);
+        Gauss_Output_Vector[ii++] = strain(0, 2);
+        Gauss_Output_Vector[ii++] = strain(1, 2);
 
         //Write plastic strain
-        outputVector(ii++) = plstrain(0, 0);
-        outputVector(ii++) = plstrain(1, 1);
-        outputVector(ii++) = plstrain(2, 2);
-        outputVector(ii++) = plstrain(0, 1);
-        outputVector(ii++) = plstrain(0, 2);
-        outputVector(ii++) = plstrain(1, 2);
-
+        Gauss_Output_Vector[ii++] = plstrain(0, 0);
+        Gauss_Output_Vector[ii++] = plstrain(1, 1);
+        Gauss_Output_Vector[ii++] = plstrain(2, 2);
+        Gauss_Output_Vector[ii++] = plstrain(0, 1);
+        Gauss_Output_Vector[ii++] = plstrain(0, 2);
+        Gauss_Output_Vector[ii++] = plstrain(1, 2);
 
         //Write stress
-        outputVector(ii++) = stress(0, 0);
-        outputVector(ii++) = stress(1, 1);
-        outputVector(ii++) = stress(2, 2);
-        outputVector(ii++) = stress(0, 1);
-        outputVector(ii++) = stress(0, 2);
-        outputVector(ii++) = stress(1, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 0);
+        Gauss_Output_Vector[ii++] = stress(1, 1);
+        Gauss_Output_Vector[ii++] = stress(2, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 1);
+        Gauss_Output_Vector[ii++] = stress(0, 2);
+        Gauss_Output_Vector[ii++] = stress(1, 2);
     }
 
-    // outputVector(ii++) = update_time_taken;
-    return outputVector;
+    return Gauss_Output_Vector;
 }
 
 void EightNodeBrickLT::zeroStrain()

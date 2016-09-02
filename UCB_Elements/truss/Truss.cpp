@@ -56,6 +56,7 @@ Matrix Truss::trussM6(6, 6);
 Matrix Truss::trussM12(12, 12);
 Vector Truss::trussV6(6);
 Vector Truss::trussV12(12);
+vector<float> Truss::Element_Output_Vector(2);
 
 // constructor:
 //  responsible for allocating the necessary space needed by each object
@@ -68,9 +69,9 @@ Truss::Truss(int tag,
       theMaterial(0), connectedExternalNodes(2),
       numDOF(0), theLoad(0),
       theMatrix(0), theVector(0),
-      L(0.0), A(a), rho(r), outputVector(Truss_OUTPUT_SIZE)
+      L(0.0), A(a), rho(r)
 {
-    // get a copy of the material and check we obtained a valid copy
+    // get a copy of the material and check we obtained a valid copy [Sumeet 2016]
     theMaterial = theMat.getCopy();
 
     if (theMaterial == 0)
@@ -109,7 +110,7 @@ Truss::Truss()
       theMaterial(0), connectedExternalNodes(2),
       numDOF(0), theLoad(0),
       theMatrix(0), theVector(0),
-      L(0.0), A(0.0), rho(0.0), outputVector(Truss_OUTPUT_SIZE)
+      L(0.0), A(0.0), rho(0.0)
 {
     // ensure the connectedExternalNode ID is of correct size
     if (connectedExternalNodes.Size() != 2)
@@ -225,12 +226,6 @@ Truss::setDomain(Domain *theDomain)
         exit(-1);
 
     }
-
-    // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-
-    theDomain->add_Gauss_Points(0);
-    theDomain->add_Connectivity_Nodes(2);
-
 
     // call the base class method
     this->DomainComponent::setDomain(theDomain);
@@ -999,16 +994,10 @@ Truss::getForce(void)
 
 }
 
-int Truss::getOutputSize() const
+const vector<float> &Truss::getElementOutput()
 {
-    return Truss_OUTPUT_SIZE;
-}
+    Element_Output_Vector[0] = theMaterial->getStrain() * L;
+    Element_Output_Vector[1] = theMaterial->getStress() * A;
 
-const Vector &Truss::getOutput()
-{
-    outputVector(0) = theMaterial->getStrain() * L;
-    outputVector(1) = theMaterial->getStress() * A;
-
-
-    return outputVector;
+    return Element_Output_Vector;
 }

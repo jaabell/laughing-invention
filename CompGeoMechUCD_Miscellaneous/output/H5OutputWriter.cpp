@@ -57,7 +57,7 @@ H5OutputWriter::H5OutputWriter():
     max_node_tag(0),
     max_element_tag(0),
     number_of_dofs(0),
-    number_of_outputs(0),
+    number_of_element_outputs(0),
     file_name(""),
     model_name(""),
     stage_name(""),
@@ -73,11 +73,6 @@ H5OutputWriter::H5OutputWriter():
     max_node_tag                         = 0;
     max_element_tag                      = 0;
 
-    length_nodes_displacements_output    = 0;
-    length_nodes_velocities_output       = 0;
-    length_nodes_accelerations_output    = 0;
-    length_nodes_reaction_forcess_output = 0;
-    length_element_output                = 0;
     pos_nodes_outputs                    = 0;
     pos_nodes_coordinates                = 0;
     pos_elements_outputs                 = 0;
@@ -113,7 +108,7 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
     max_node_tag(0),
     max_element_tag(0),
     number_of_dofs(0),
-    number_of_outputs(0),
+    number_of_element_outputs(0),
     file_name(""),
     model_name(""),
     stage_name(""),
@@ -129,11 +124,6 @@ H5OutputWriter::H5OutputWriter(std::string filename_in,
     max_node_tag                         = 0;
     max_element_tag                      = 0;
 
-    length_nodes_displacements_output    = 0;
-    length_nodes_velocities_output       = 0;
-    length_nodes_accelerations_output    = 0;
-    length_nodes_reaction_forcess_output = 0;
-    length_element_output                = 0;
     pos_nodes_outputs                    = 0;
     pos_nodes_coordinates                = 0;
     pos_elements_outputs                 = 0;
@@ -291,12 +281,6 @@ void H5OutputWriter::initialize(std::string filename_in,
 
     number_of_eigen_modes                = -1;
 
-    length_nodes_displacements_output    = 0;
-    length_nodes_velocities_output       = 0;
-    length_nodes_accelerations_output    = 0;
-    length_nodes_reaction_forcess_output = 0;
-    length_element_output                = 0;
-
     pos_nodes_outputs                    = 0;
     pos_nodes_coordinates                = 0;
     pos_elements_outputs                 = 0;
@@ -305,7 +289,7 @@ void H5OutputWriter::initialize(std::string filename_in,
 
     number_of_gausspoints                =0;
     number_of_connectivity_nodes         =0;
-    number_of_outputs                    =0;
+    number_of_element_outputs            =0;
 
     create_nodeMeshData_arrays           = true;
     create_nodeDisplacements_arrays      = true;
@@ -339,22 +323,13 @@ void H5OutputWriter::set_number_of_time_steps(int nsteps)
     number_of_time_steps = nsteps;
 }
 
-
-
-
-
-
-
-
 // Mesh output
-
-
 int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
                                         unsigned int number_of_elements_in,
                                         unsigned int max_node_tag_in,
                                         unsigned int max_element_tag_in,
                                         unsigned int number_of_dofs_in,
-                                        unsigned int number_of_outputs_in,
+                                        unsigned int number_of_element_outputs_in,
                                         unsigned int Total_Number_of_Gauss_Points,
                                         unsigned int Total_Number_of_Connectivity_Nodes)
 {
@@ -374,7 +349,7 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
 #endif
 
         number_of_dofs = number_of_dofs_in;
-        number_of_outputs = number_of_outputs_in;
+        number_of_element_outputs = number_of_element_outputs_in;
         number_of_gausspoints = Total_Number_of_Gauss_Points;
         number_of_connectivity_nodes = Total_Number_of_Connectivity_Nodes;
 
@@ -384,11 +359,9 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
         // cout << "max_node_tag       = " << max_node_tag       << endl;
         // cout << "max_element_tag    = " << max_element_tag    << endl;
         // cout << "number_of_dofs     = " << number_of_dofs     << endl;
-        // cout << "number_of_outputs  = " << number_of_outputs  << endl;
+        // cout << "number_of_element_outputs  = " << number_of_element_outputs  << endl;
 
         //Initialize data
-
-
 
         Coordinates.resize(number_of_nodes * 3);
 
@@ -403,32 +376,29 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
         }
 
         //For Elements
-        Number_of_Nodes.resize(max_element_tag + 1);
         Index_to_Connectivity.resize(max_element_tag + 1);
-        Index_to_Outputs.resize(max_element_tag + 1);
-        Number_of_Gauss_Points.resize(max_element_tag + 1);
+        Index_to_Element_Outputs.resize(max_element_tag + 1);
         Index_to_Gauss_Point_Coordinates.resize(max_element_tag + 1);
 
         Class_Tags.resize(max_element_tag + 1);
         Material_tags.resize(max_element_tag+1);
-        Number_of_Output_Fields.resize(max_element_tag + 1);
 
         for (int i = 0; i < max_element_tag; i++)
         {
-            Number_of_Nodes[i] = -1;
             Index_to_Connectivity[i] = -1;
-            Index_to_Outputs[i] = -1;
-            Number_of_Gauss_Points[i] = -1;
+            Index_to_Element_Outputs[i] = -1;
             Index_to_Gauss_Point_Coordinates[i] = -1;
             Class_Tags[i] = -1;
             Material_tags[i] = -1;
-            Number_of_Output_Fields[i] = -1;
         }
 
         // Exact pre-allocation for these arrays fixed by sumeet 30th July, 2016
 
         Connectivity.resize(number_of_connectivity_nodes);
         Gauss_Point_Coordinates.resize(number_of_gausspoints*3);
+
+        ELE_TAG_DESC_ARRAY;
+        Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
 
     return 0;
 }
@@ -462,107 +432,54 @@ int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int
     Index_to_Generalized_Displacements[tag] = pos_nodes_outputs;
     pos_nodes_outputs += ndofs;
 
-    length_nodes_accelerations_output    = pos_nodes_outputs;
-    length_nodes_velocities_output       = pos_nodes_outputs;
-    length_nodes_displacements_output    = pos_nodes_outputs;
-    length_nodes_reaction_forcess_output = pos_nodes_outputs;
     return 0;
 }
-
-int H5OutputWriter::writeElementMeshData(int tag  , std::string type , const ID &connectivity , int materialtag , const Matrix &gausscoordinates,
-        int length_of_output, int class_tag)
+/******************************************************************************************************************************************
+* Sumeet Auguts, 2016 [Acoording to new Output and Class_Desc Encoding see classTags.h]
+* The information about the element like number of nodes, no. of outputs, no. of gauss points can be 
+* easily extracted from the element-tag_description encoding.
+* For more details about the encoding see classtags.h
+********************************************************************************************************************************************/
+int H5OutputWriter::writeElementMeshData(int tag , const ID &connectivity , int materialtag , const Matrix &gausscoordinates, int class_tag)
 {
 
-    if (tag < 0)
-    {
-        cerr << "H5OutputWriter::writeElementMeshData - Error: got tag = " << tag << " < 0" << endl;
-    }
+    int class_dec = Element_Class_Desc[class_tag];
+    int nele_output = class_dec%1000;
+    int nnodes      = (class_dec/1000000)%100;
+    int ngauss      = (class_dec%100000)/1000;
+    int i=0;
 
-    int nnodes, ntags;
-    ntags = Number_of_Nodes.Size();
-    int addzeros = tag - ntags;
-
-    //Extend arrays if necessary
-    for (int i = 0; i <= addzeros; i++)
-    {
-        cout << "ntags = " << ntags << " tag = " << tag;
-        cout << " H5OutputWriter::writeElementMeshData() -- Should not happen!!\n\n";
-        Number_of_Nodes[ntags + i]                  = -1;
-        Index_to_Connectivity[ntags + i]            = -1;
-        Index_to_Outputs[ntags + i]                 = -1;
-        Number_of_Gauss_Points[ntags + i]           = -1;
-        Index_to_Gauss_Point_Coordinates[ntags + i] = -1;
-        Material_tags[ntags + i]                    = -1;
-        Number_of_Output_Fields[ntags + i]          = -1;
-        Class_Tags[ntags + i]                       = -1;
-    }
-
-    nnodes =  connectivity.Size();
-    Number_of_Nodes[tag] = nnodes;
-
-
-    if (Number_of_Nodes[tag] > 0 && nnodes != Number_of_Nodes[tag])
-    {
-        cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " number of nodes changed in database."  << endl;
-    }
-
-    if (Index_to_Connectivity[tag] > 0 && pos_elements_connectivity != Index_to_Connectivity[tag])
-    {
-        cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " index to connectivity changed in database."  << endl;
-    }
-
-    if (Index_to_Outputs[tag] > 0 && pos_elements_outputs != Index_to_Outputs[tag])
-    {
-        cerr << "H5OutputWriter::writeElementMeshData() - Element tag " << tag <<  " index to output changed in database."  << endl;
-    }
-
-    // Writing Connectivity;
-    // int pos_connect = Connectivity.Size();
-    for (int n = 0; n < nnodes; n++)
-    {
-        Connectivity[pos_elements_connectivity + n] = connectivity(n);
-    }
-
+    // Writing Material_tags;
+    Material_tags[tag] = materialtag;
 
     // Writing Index_to_Connectivity;
     Index_to_Connectivity[tag] = pos_elements_connectivity;
-    pos_elements_connectivity +=  nnodes;
 
-    // Writing Number_of_Output_Fields;
-    Number_of_Output_Fields[tag] = length_of_output;
+    // Writing Connectivity;
+    while(nnodes--)
+        Connectivity[pos_elements_connectivity++] = connectivity(i++);
+
+    // Writing Index_to_Gauss_Point_Coordinates;
+    Index_to_Gauss_Point_Coordinates[tag] = pos_elements_gausscoords;
+
+    i=0;
+    // Writing Gauss_Point_Coordinates;
+    while(ngauss--){
+        Gauss_Point_Coordinates[pos_elements_gausscoords++] = gausscoordinates(i, 0);
+        Gauss_Point_Coordinates[pos_elements_gausscoords++] = gausscoordinates(i, 1);
+        Gauss_Point_Coordinates[pos_elements_gausscoords++] = gausscoordinates(i, 2);
+        i++;
+    }
 
     // Writing Class_Tags;
     Class_Tags[tag] = class_tag;
 
-    // Writing Index_to_Outputs;
-    Index_to_Outputs[tag] = pos_elements_outputs;
-    pos_elements_outputs += length_of_output;
+    // Writing Index_to_Element_Outputs;
+    Index_to_Element_Outputs[tag] = pos_elements_outputs;
+    pos_elements_outputs += nele_output;
 
-    length_element_output = pos_elements_outputs;
-
-    // Writing Number_of_Gauss_Points;
-    int ngauss = gausscoordinates.noRows();
-    Number_of_Gauss_Points[tag] = ngauss;
-
-
-    // Writing Gauss_Point_Coordinates;
-    int i = 0;
-    for (int n = 0; n < ngauss; n++)
-    {
-        Gauss_Point_Coordinates[pos_elements_gausscoords + (i++)] = gausscoordinates(n, 0);
-        Gauss_Point_Coordinates[pos_elements_gausscoords + (i++)] = gausscoordinates(n, 1);
-        Gauss_Point_Coordinates[pos_elements_gausscoords + (i++)] = gausscoordinates(n, 2);
-    }
-
-    // Writing Index_to_Gauss_Point_Coordinates;
-    Index_to_Gauss_Point_Coordinates[tag] = pos_elements_gausscoords;
-    pos_elements_gausscoords += ngauss * 3;
-
-    // Writing Material_tags;
-    Material_tags[tag] = materialtag;
     return 0;
 }
-
 
 int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
 {
@@ -582,18 +499,6 @@ int H5OutputWriter::writeLoadPatternData(int tag , std::string name)
 int H5OutputWriter::writeSPConstraintsData(int nodetag , int dof)
 {
     int nsps = SPNodes.Size();
-
-    // int ntags;
-    // ntags = LoadPattern_names.Size();
-    // int addzeros = tag - ntags;
-
-    // //Extend arrays
-    // for (int i = 0; i <= addzeros; i++)
-    // {
-    //     LoadPattern_names.push_back(" not defined ");
-    // }
-    // LoadPattern_names.push_back(name);
-
     SPNodes[nsps] = nodetag;
     SPDofs[nsps] = dof;
 
@@ -844,8 +749,9 @@ void H5OutputWriter::writeMesh()
         rank = 1;
         dims[0] = 1;
         maxdims[0] = 1;
-        id_number_of_elements   = createConstantLengthIntegerArray(id_file, rank, dims, maxdims,  "Number_of_Elements", " ");
+        id_number_of_elements   = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Elements", " ");
         id_number_of_nodes      = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Nodes", " ");
+        id_number_of_gauss_points = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
         id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
         hsize_t id_my_proc_rank = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Process_Number", " ");
         hsize_t id_number_of_procs = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Processes_Used", " ");
@@ -970,7 +876,7 @@ void H5OutputWriter::writeMesh()
                                             int_data_buffer);
 
             //================================================================================
-            // Create number of elements and nodes
+            // Create number of elements, nodes and gauss points
             //================================================================================
 
             rank        = 1;
@@ -987,6 +893,8 @@ void H5OutputWriter::writeMesh()
             writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, data_dims, offset, stride, count, block,
                                             &number_of_elements);
 
+            writeConstantLengthIntegerArray(id_number_of_gauss_points, rank, dims, data_dims, offset, stride, count, block,
+                                &number_of_gausspoints);
 
             rank        = 1;
             dims[0]     = 1;
@@ -1085,11 +993,8 @@ void H5OutputWriter::writeMesh()
             dims[0] = max_element_tag+1;
             maxdims[0] = max_element_tag+1;
 
-            id_elements_nnodes                = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Nodes", " ");
             id_index_to_elements_connectivity = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Connectivity", " ");
-            id_elements_noutputs              = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Output_Fields", " ");
-            id_index_to_elements_output       = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
-            id_elements_ngauss                = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
+            id_index_to_elements_output       = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Element_Outputs", " ");
             id_index_to_elements_gausscoords  = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
             id_elements_materialtag           = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
             id_elements_classtag              = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
@@ -1102,25 +1007,6 @@ void H5OutputWriter::writeMesh()
             maxdims[0] = this->number_of_connectivity_nodes;
             id_elements_connectivity          = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Connectivity", " ");
            
-            // Write a vector with the number of nodes at a given elements tag
-            datarank     = 1;
-            dims[0]      = (hsize_t) max_element_tag + 1;
-            data_dims[0] = (hsize_t) max_element_tag + 1;
-            offset[0]    = 0;
-            stride[0]    = 1;
-            count[0]     = dims[0];
-            block[0]     = 1;
-            int_data_buffer = Number_of_Nodes.data;
-            writeConstantLengthIntegerArray(id_elements_nnodes,
-                                            datarank,
-                                            dims,
-                                            data_dims,
-                                            offset,
-                                            stride,
-                                            count,
-                                            block,
-                                            int_data_buffer);
-
 
             //Write index to connectivity
             dims[0]      = (hsize_t) max_element_tag + 1;
@@ -1153,26 +1039,11 @@ void H5OutputWriter::writeMesh()
                                             block,
                                             int_data_buffer);
 
-            //Write index to number of outputs
-            dims[0]      = (hsize_t) max_element_tag + 1;
-            data_dims[0] = (hsize_t) max_element_tag + 1;
-            count[0]     = dims[0];
-            int_data_buffer = Number_of_Output_Fields.data;
-            writeConstantLengthIntegerArray(id_elements_noutputs,
-                                            datarank,
-                                            dims,
-                                            data_dims,
-                                            offset,
-                                            stride,
-                                            count,
-                                            block,
-                                            int_data_buffer);
-
             //Write index to outputs
             dims[0]      = (hsize_t) max_element_tag + 1;
             data_dims[0] = (hsize_t) max_element_tag + 1;
             count[0]     = dims[0];
-            int_data_buffer = Index_to_Outputs.data;
+            int_data_buffer = Index_to_Element_Outputs.data;
             writeConstantLengthIntegerArray(id_index_to_elements_output,
                                             datarank,
                                             dims,
@@ -1214,10 +1085,8 @@ void H5OutputWriter::writeMesh()
                                             int_data_buffer);
 
             // Creating Element_Class_Tag Description [Sumeet, August, 2016]
-            ELE_TAG_DESC_ARRAY;
-            int ele_class_desc_size = sizeof(ele_tag_desc_array)/sizeof(int);
-            dims[0]      = (hsize_t) ele_class_desc_size;
-            maxdims[0]   = (hsize_t) ele_class_desc_size;
+            dims[0]      = (hsize_t) ELE_TAG_DESC_ARRAY_SIZE;
+            maxdims[0]   = dims[0] ;
             count[0]     = dims[0];
             id_elements_class_desc            = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Element_Class_Desc"," ");
 
@@ -1230,22 +1099,7 @@ void H5OutputWriter::writeMesh()
                                             stride,
                                             count,
                                             block,
-                                            ele_tag_desc_array);
-
-            //Write number of gauss points
-            dims[0]      = (hsize_t) max_element_tag+1;
-            data_dims[0] = (hsize_t) max_element_tag+1;
-            count[0]     = dims[0];
-            int_data_buffer = Number_of_Gauss_Points.data;
-            writeConstantLengthIntegerArray(id_elements_ngauss,
-                                            datarank,
-                                            dims,
-                                            data_dims,
-                                            offset,
-                                            stride,
-                                            count,
-                                            block,
-                                            int_data_buffer);
+                                            &Element_Class_Desc[0]);
 
             //Write index_to_gauss_coordinate
             dims[0]      = (hsize_t) max_element_tag+1;
@@ -1286,31 +1140,46 @@ void H5OutputWriter::writeMesh()
                 int rank = 2;
                 hsize_t dims[2];
                 hsize_t maxdims[2];
-                dims[0] = (hsize_t) length_nodes_displacements_output;
-                dims[1] = 0;
-                maxdims[0] = (hsize_t)  length_nodes_displacements_output;
+                dims[0] = (hsize_t) number_of_dofs ; 
+                dims[1] = (hsize_t) number_of_time_steps + 1;
+                maxdims[0] = (hsize_t)  number_of_dofs;
                 maxdims[1] = number_of_time_steps + 1;
 
-                id_nodes_displacements  = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+                id_nodes_displacements  = createConstantLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
                 // id_unbalanced_forces    = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Unbalanced_Forces", " ");          // [Disabled by Sumeet August, 2016]
             }            
 
-            if (number_of_outputs > 0)
+            if (number_of_element_outputs > 0)
             {
                 int rank = 2;
                 hsize_t dims[2];
                 hsize_t maxdims[2];
-                dims[0] = (hsize_t) number_of_outputs;
-                dims[1] = 0;
-                maxdims[0] = (hsize_t)  number_of_outputs;
+                dims[0] = (hsize_t) number_of_element_outputs;
+                dims[1] = (hsize_t) number_of_time_steps + 1;
+                maxdims[0] = (hsize_t)  number_of_element_outputs;
                 maxdims[1] = number_of_time_steps + 1;
 
                 if (flag_write_element_output == 1  )
                 {
-                    id_elements_output = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+                    id_elements_output = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Element_Outputs", " ");
                 }
 
-            }//    create_elementOutput_arrays = false;
+            }
+
+            if (number_of_gausspoints > 0)
+            {
+                int rank = 2;
+                hsize_t dims[2];
+                hsize_t maxdims[2];
+                dims[0] = (hsize_t) number_of_gausspoints*18;
+                dims[1] = (hsize_t) number_of_time_steps + 1;
+                maxdims[0] = (hsize_t)  number_of_gausspoints*18;
+                maxdims[1] = number_of_time_steps + 1;
+
+                id_gauss_output = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Gauss_Outputs", " ");
+
+            }
+
 
             //For SP Constraints
 
@@ -1333,11 +1202,11 @@ void H5OutputWriter::writeMesh()
                 hsize_t dims[2];
                 hsize_t maxdims[2];
                 dims[0] = (hsize_t) SPDofs.Size();
-                dims[1] = 0;
+                dims[1] = (hsize_t) number_of_time_steps + 1;
                 maxdims[0] = (hsize_t)  SPDofs.Size();
                 maxdims[1] = number_of_time_steps + 1;
 
-                id_support_reactions = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Support_Reactions", " ");
+                id_support_reactions = createConstantLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Support_Reactions", " ");
             }
 
 
@@ -1557,6 +1426,11 @@ int H5OutputWriter::writeDisplacements(  int nodeTag, const Vector &displacement
     for (int i = 0; i < displacements.Size(); ++i)
         float_displacements[i]=displacements(i);
 
+    // cout << "nodeTag " << nodeTag << endl;
+    // cout << "pos " << pos << endl;
+    // cout << "ndofs " <<ndofs <<  endl;
+    // cout << "#####################" << endl;
+
     writeConstantLengthFloatArray(id_nodes_displacements,
                                    datarank,
                                    dims,
@@ -1681,20 +1555,6 @@ int H5OutputWriter::writeDummyDisplacements(  )
     return 0;
 }
 
-
-int H5OutputWriter::writeVelocities(     int nodeTag, const Vector &velocities)
-{
-    cout << "H5OutputWriter::writeVelocities()  -- Not available. Implement by copying writeDisplacements.\n ";
-    return 0;
-}
-
-
-int H5OutputWriter::writeAccelerations(  int nodeTag, const Vector &accelerations)
-{
-    cout << "H5OutputWriter::writeAccelerations()  -- Not available. Implement by copying writeDisplacements.\n ";
-    return 0;
-}
-
 int H5OutputWriter::writeUnbalancedForces( int nodeTag, const Vector &reactionForces)
 {
 
@@ -1759,7 +1619,7 @@ int H5OutputWriter::writeUnbalancedForces( int nodeTag, const Vector &reactionFo
     return 0;
 }
 
-int H5OutputWriter::writeSupportReactions( int number_of_constrained_dofs, std::vector<float> reactionForces){
+int H5OutputWriter::writeSupportReactions( int number_of_constrained_dofs, const std::vector<float> &reactionForces){
 
     int datarank         = 1;
     hsize_t data_dims[1] = {(hsize_t) number_of_constrained_dofs};
@@ -1770,10 +1630,6 @@ int H5OutputWriter::writeSupportReactions( int number_of_constrained_dofs, std::
 
     hsize_t dims[0];
     dims[1] = (hsize_t) number_of_constrained_dofs;  
-
-    hsize_t size[2] = {(hsize_t) number_of_constrained_dofs, (hsize_t) current_time_step};
-
-    H5Dset_extent (id_support_reactions, size);
 
     writeConstantLengthFloatArray(id_support_reactions,
                                    datarank,
@@ -1790,13 +1646,13 @@ int H5OutputWriter::writeSupportReactions( int number_of_constrained_dofs, std::
     return 0;
 }
 
-
-
-// Results for Elements
-int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
+// Results for Elements which are not available at gauss points i.e other than stress, strain and plastic strain
+// Look at classTags.h for more details about the output
+// Sumeet Auguts, 2016
+int H5OutputWriter::writeElementOutput(int elementTag, const  vector<float> &output, int class_tag)
 {
 
-    if (length_element_output > 0) // If there is nothing to output, there is nothing to output
+    if (number_of_element_outputs > 0) // If there is nothing to output, there is nothing to output
     {
         int pos, noutputs;
 
@@ -1807,7 +1663,7 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
         hsize_t count[2]     = {1, 0};
         hsize_t block[2]     = {1, 0};
 
-        hsize_t id_dataspace = H5Dget_space(id_elements_noutputs);
+        hsize_t id_dataspace = H5Dget_space(id_index_to_elements_output);
         hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
         status = H5Sselect_hyperslab(
                      id_dataspace,          // Id of the parent dataspace
@@ -1819,9 +1675,12 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
                  );
 
         hdf5_check_error(status);
-
-        H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
         H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+        H5Sclose(id_dataspace);
+        H5Sclose(id_memspace);
+
+        // pos = Index_to_Element_Outputs[elementTag];
+        noutputs = Element_Class_Desc[class_tag]%1000;
 
         hsize_t dims[0];
         dims[1] = (hsize_t) noutputs;  
@@ -1835,10 +1694,6 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
         block[0]     = 1;
         block[1]     = 1;
 
-        std::vector<float> float_output(output.Size());
-        for (int i = 0; i < output.Size(); ++i)
-            float_output[i]=output(i);
-
         writeConstantLengthFloatArray(id_elements_output,
                                        datarank,
                                        dims,
@@ -1847,28 +1702,24 @@ int H5OutputWriter::writeElementOutput(int elementTag, const  Vector &output)
                                        stride,
                                        count,
                                        block,
-                                       &float_output[0]);
+                                       &output[0]);
 
-        H5Sclose(id_dataspace);
-        H5Sclose(id_memspace);
+
         H5OUTPUTWRITER_COUNT_OBJS;
     }
     return 0;
 }
 
-/************************************************************************************************************
-* Added by Sumeet 3rd August, 2016
-* It outputs the trial substep iteration results for elements output.
-**************************************************************************************************************/
-// Results for Elements
-int H5OutputWriter::writeTrialElementOutput(int elementTag, const  Vector &output)
+// Results for Elements which are available at gauss points i.e otress, strain and plastic strain i. 
+// 18 per gauss points. Look at classTags.h for more details about the output
+// Sumeet Auguts, 2016
+int H5OutputWriter::writeGaussOutput(int elementTag, const  vector<float> &output, int class_tag)
 {
 
-    if (length_element_output > 0) // If there is nothing to output, there is nothing to output
+    if (number_of_gausspoints > 0) // If there is nothing to output, there is nothing to output
     {
         int pos, noutputs;
 
-        // Read NOUTPUTS from HDF5 file
         int datarank         = 1;
         hsize_t data_dims[1] = {1};
         hsize_t offset[2]    = {(hsize_t) elementTag , 0};
@@ -1876,7 +1727,7 @@ int H5OutputWriter::writeTrialElementOutput(int elementTag, const  Vector &outpu
         hsize_t count[2]     = {1, 0};
         hsize_t block[2]     = {1, 0};
 
-        hsize_t id_dataspace = H5Dget_space(id_elements_noutputs);
+        hsize_t id_dataspace = H5Dget_space(id_index_to_elements_gausscoords);
         hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
         status = H5Sselect_hyperslab(
                      id_dataspace,          // Id of the parent dataspace
@@ -1889,9 +1740,80 @@ int H5OutputWriter::writeTrialElementOutput(int elementTag, const  Vector &outpu
 
         hdf5_check_error(status);
 
-        H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
-        H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+        H5Dread(id_index_to_elements_gausscoords, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+        H5Sclose(id_dataspace);
+        H5Sclose(id_memspace);
 
+        // pos = Index_to_Gauss_Point_Coordinates[elementTag];
+        noutputs =((Element_Class_Desc[class_tag]%100000)/1000)*18;
+        pos      = pos*6;
+
+        hsize_t dims[0];
+        dims[1] = (hsize_t) noutputs;  
+        data_dims[0] = (hsize_t) noutputs;
+        offset[0]    = (hsize_t) pos;
+        offset[1]    = (hsize_t) current_time_step - 1;
+        stride[0]    = 1;
+        stride[1]    = 1;
+        count[0]     = (hsize_t) noutputs;
+        count[1]     = 1;
+        block[0]     = 1;
+        block[1]     = 1;
+
+        writeConstantLengthFloatArray(id_gauss_output,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       &output[0]);
+
+        H5OUTPUTWRITER_COUNT_OBJS;
+    }
+    return 0;
+}
+
+/************************************************************************************************************
+* Added by Sumeet 3rd August, 2016
+* It outputs the trial substep iteration results for elements output.
+**************************************************************************************************************/
+// Results for Elements
+int H5OutputWriter::writeTrialElementOutput(int elementTag, const  vector<float> &output, int class_tag)
+{
+
+    if (number_of_element_outputs > 0) // If there is nothing to output, there is nothing to output
+    {
+        int pos, noutputs;
+
+        // Read NOUTPUTS from HDF5 file
+        int datarank         = 1;
+        hsize_t data_dims[1] = {1};
+        hsize_t offset[2]    = {(hsize_t) elementTag , 0};
+        hsize_t stride[2]    = {1, 0};
+        hsize_t count[2]     = {1, 0};
+        hsize_t block[2]     = {1, 0};
+
+        hsize_t id_dataspace = H5Dget_space(id_index_to_elements_output);
+        hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+        status = H5Sselect_hyperslab(
+                     id_dataspace,          // Id of the parent dataspace
+                     H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                     offset,                // start of selection
+                     stride,                // stride in each dimension, NULL  is select everything
+                     count ,                // how many blocks to select in each direction
+                     block                  // little block selected per selection
+                 );
+
+        hdf5_check_error(status);
+
+        H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+        H5Sclose(id_dataspace);
+        H5Sclose(id_memspace);
+
+
+        noutputs = Element_Class_Desc[class_tag]%1000;
 
         hsize_t dims[1];
         dims[0] = (hsize_t) noutputs;  
@@ -1905,10 +1827,6 @@ int H5OutputWriter::writeTrialElementOutput(int elementTag, const  Vector &outpu
         block[0]     = 1;
         block[1]     = 1;
 
-        std::vector<float> float_output(output.Size());
-        for (int i = 0; i < output.Size(); ++i)
-            float_output[i]=output(i);
-
         writeConstantLengthFloatArray(id_trial_elements_output,
                                        datarank,
                                        dims,
@@ -1917,10 +1835,9 @@ int H5OutputWriter::writeTrialElementOutput(int elementTag, const  Vector &outpu
                                        stride,
                                        count,
                                        block,
-                                       &float_output[0]);
+                                       &output[0]);
 
-        H5Sclose(id_dataspace);
-        H5Sclose(id_memspace);
+
         H5OUTPUTWRITER_COUNT_OBJS;
     }
     return 0;
@@ -2003,27 +1920,6 @@ int H5OutputWriter::setTime(float t)
     offset[0]=0;
     writeConstantLengthIntegerArray(id_number_of_time_steps, 1, dims, data_dims, offset, stride, count, block,
                                 &current_time_step);
-
-    // ===============================================================================
-    // Extending the output dataset (By Sumeet)
-    // ===============================================================================
-
-    // cout << "current_time_step " << current_time_step << endl;
-
-    hsize_t      size[2];
-    size[0] = (hsize_t) number_of_outputs;
-    size[1] = (hsize_t) current_time_step;
-
-    status = H5Dset_extent (id_elements_output, size);
-
-
-    size[0] = (hsize_t) length_nodes_displacements_output;
-    size[1] = (hsize_t) current_time_step;
-
-    status = H5Dset_extent (id_nodes_displacements, size);
-    // status = H5Dset_extent (id_unbalanced_forces, size); // [Disabled by Sumeet August, 2016]
-
-    // /**********************************************************************************/
 
     H5OUTPUTWRITER_COUNT_OBJS;
 
@@ -2853,7 +2749,65 @@ hid_t H5OutputWriter::writeConstantLengthFloatArray(hid_t id_array,
     return id_array;
 }
 
+hid_t H5OutputWriter::writeConstantLengthFloatArray(hid_t id_array,
+        int datarank,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        const float *data)
+{
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = H5Dget_space(id_array);
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
 
+    //Select the region of data to output to
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+    hdf5_check_error(status);
+
+
+
+    //Added By Babak 5/31/14
+    //------------------------
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_FLOAT,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 dataset_xfer_plist,           // Form of writing
+                 data                   // The actual data
+             );
+#else
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_FLOAT,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 data                   // The actual data
+             );
+#endif
+
+    hdf5_check_error(status);
+
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+    return id_array;
+}
 
 
 
@@ -3052,6 +3006,8 @@ int H5OutputWriter::writeEigenModes( int nodeTag, const Matrix &displacements){
 
     H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
     H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
 
     datarank =2;
     hsize_t *dims;
@@ -3090,8 +3046,6 @@ int H5OutputWriter::writeEigenModes( int nodeTag, const Matrix &displacements){
                                    block,
                                    data);
 
-    H5Sclose(id_dataspace);
-    H5Sclose(id_memspace);
     H5OUTPUTWRITER_COUNT_OBJS;
 
     return 0;
@@ -3160,16 +3114,16 @@ int H5OutputWriter::writeSubstepMesh(int number_of_substeps){
         hsize_t dims[2];
         hsize_t maxdims[2];
         dims[0] = (hsize_t) number_of_dofs;
-        dims[1] = 0;
+        dims[1] = (hsize_t) number_of_substeps;
         maxdims[0] = (hsize_t)  number_of_dofs;
-        maxdims[1] = number_of_substeps;
+        maxdims[1] = (hsize_t) number_of_substeps;
 
-        id_trial_nodes_displacements = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Substep_Generalized_Displacements", " ");
+        id_trial_nodes_displacements = createConstantLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Substep_Generalized_Displacements", " ");
 
-        dims[0] = (hsize_t) number_of_outputs;
-        maxdims[0] = (hsize_t) number_of_outputs;
+        dims[0] = (hsize_t) number_of_element_outputs;
+        maxdims[0] = (hsize_t) number_of_element_outputs;
 
-        id_trial_elements_output     = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Substep_Outputs", " ");
+        id_trial_elements_output     = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Substep_Outputs", " ");
 
         this->current_sub_step = 0;
     }
@@ -3191,17 +3145,17 @@ int H5OutputWriter::setSubStep(int substep_no){
 
     this->current_sub_step = substep_no ;
 
-    hsize_t      size[2];
-    size[0] = (hsize_t) number_of_outputs;
-    size[1] = (hsize_t) current_sub_step;
+    // hsize_t      size[2];
+    // size[0] = (hsize_t) number_of_element_outputs;
+    // size[1] = (hsize_t) current_sub_step;
 
-    status = H5Dset_extent (id_trial_elements_output, size);
+    // status = H5Dset_extent (id_trial_elements_output, size);
 
 
-    size[0] = (hsize_t) number_of_dofs;
-    size[1] = (hsize_t) current_sub_step;
+    // size[0] = (hsize_t) number_of_dofs;
+    // size[1] = (hsize_t) current_sub_step;
 
-    status = H5Dset_extent (id_trial_nodes_displacements, size);
+    // status = H5Dset_extent (id_trial_nodes_displacements, size);
 
     return 0;
 }
@@ -3212,7 +3166,7 @@ int H5OutputWriter::setSubStep(int substep_no){
 **********************************************************************************/
 void H5OutputWriter::DeleteMeshArrays(){
 
-     ID voidId;
+    ID voidId;
 
     //For nodes
     Number_of_DOFs=voidId;
@@ -3224,12 +3178,9 @@ void H5OutputWriter::DeleteMeshArrays(){
     SPDofs=voidId;
 
     //For Elements
-    Number_of_Nodes=voidId;
     Connectivity=voidId;
     Index_to_Connectivity=voidId;
-    Number_of_Output_Fields=voidId;
-    Index_to_Outputs=voidId;
-    Number_of_Gauss_Points=voidId;
+    Index_to_Element_Outputs=voidId;
     Gauss_Point_Coordinates.clear();
     Index_to_Gauss_Point_Coordinates=voidId;
     LoadPattern_names.clear();
@@ -3239,6 +3190,7 @@ void H5OutputWriter::DeleteMeshArrays(){
 
     //For Materials
     Materials.clear();
+    Element_Class_Desc.clear();
 
 }
 

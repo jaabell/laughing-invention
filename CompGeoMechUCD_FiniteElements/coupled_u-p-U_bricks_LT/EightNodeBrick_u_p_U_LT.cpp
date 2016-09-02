@@ -72,6 +72,7 @@ const double EightNodeBrick_u_p_U_LT::pts[2] = { -0.577350269189626, +0.57735026
 const double EightNodeBrick_u_p_U_LT::wts[2] = {1.0, 1.0};
 Matrix EightNodeBrick_u_p_U_LT::MCK(Num_ElemDof, Num_ElemDof);
 Vector EightNodeBrick_u_p_U_LT::P(Num_ElemDof);
+vector<float> EightNodeBrick_u_p_U_LT::Gauss_Output_Vector(144);
 
 //======================================================================
 EightNodeBrick_u_p_U_LT::EightNodeBrick_u_p_U_LT(int element_number,
@@ -104,7 +105,7 @@ EightNodeBrick_u_p_U_LT::EightNodeBrick_u_p_U_LT(int element_number,
       ks(kks),
       kf(kkf),
       Q(0),
-      Ki(0), gauss_points(8, 3), outputVector(EightNodeBrick_u_p_U_LT_OUTPUT_SIZE)
+      Ki(0), gauss_points(8, 3)
 {
    
      this->setMaterialTag(Globalmmodel->getTag());
@@ -163,7 +164,7 @@ EightNodeBrick_u_p_U_LT::EightNodeBrick_u_p_U_LT(int element_number,
 EightNodeBrick_u_p_U_LT::EightNodeBrick_u_p_U_LT ()
     : Element(0, ELE_TAG_EightNodeBrick_u_p_U_LT ),
       connectedExternalNodes(Num_Nodes), perm(Num_Dim),
-      poro(0.0), alpha(1.0), rho_s(0.0), rho_f(0.0), ks(0.0), kf(0.0), Q(0), Ki(0), gauss_points(8, 3), outputVector(EightNodeBrick_u_p_U_LT_OUTPUT_SIZE)
+      poro(0.0), alpha(1.0), rho_s(0.0), rho_f(0.0), ks(0.0), kf(0.0), Q(0), Ki(0), gauss_points(8, 3)
 {
     theMaterial = 0;
 
@@ -253,11 +254,6 @@ void EightNodeBrick_u_p_U_LT::setDomain (Domain *theDomain)
             return ;
         }
     }
-
-    // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-    theDomain->add_Gauss_Points(Num_TotalGaussPts);
-    theDomain->add_Connectivity_Nodes(Num_Nodes);
-    ///---------------------------------------------------------------------//
     
     this->DomainComponent::setDomain(theDomain);
     tensor gp = getGaussPts();
@@ -300,34 +296,29 @@ int EightNodeBrick_u_p_U_LT::commitState (void)
                 const straintensor &plstrain = theMaterial[gp]->getPlasticStrainTensor();
 
                 //Write strain
-                outputVector(ii++) = strain.cval(1, 1);
-                outputVector(ii++) = strain.cval(2, 2);
-                outputVector(ii++) = strain.cval(3, 3);
-                outputVector(ii++) = strain.cval(1, 2);
-                outputVector(ii++) = strain.cval(1, 3);
-                outputVector(ii++) = strain.cval(2, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 3);
 
                 //Write strain
-                outputVector(ii++) = plstrain.cval(1, 1);
-                outputVector(ii++) = plstrain.cval(2, 2);
-                outputVector(ii++) = plstrain.cval(3, 3);
-                outputVector(ii++) = plstrain.cval(1, 2);
-                outputVector(ii++) = plstrain.cval(1, 3);
-                outputVector(ii++) = plstrain.cval(2, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 3);
 
                 //Write stress
-                outputVector(ii++) = stress.cval(1, 1);
-                outputVector(ii++) = stress.cval(2, 2);
-                outputVector(ii++) = stress.cval(3, 3);
-                outputVector(ii++) = stress.cval(1, 2);
-                outputVector(ii++) = stress.cval(1, 3);
-                outputVector(ii++) = stress.cval(2, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 1);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(3, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 3);
 
-                //Pore pressure at gauss points
-                double x1 = pts[GP_c_r];
-                double x2 = pts[GP_c_s];
-                double x3 = pts[GP_c_t];
-                outputVector(ii++) = getPorePressure(x1, x2, x3);
                 gp++;
             }
         }
@@ -1649,22 +1640,18 @@ Matrix &EightNodeBrick_u_p_U_LT::getGaussCoordinates(void)
     return gauss_points;
 }
 
-
-
-int EightNodeBrick_u_p_U_LT::getOutputSize() const
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &EightNodeBrick_u_p_U_LT::getGaussOutput()
 {
-    return EightNodeBrick_u_p_U_LT_OUTPUT_SIZE;
+    return Gauss_Output_Vector;
 }
-
-
-
-const Vector &EightNodeBrick_u_p_U_LT::getOutput()
-{
-
-
-    return outputVector;
-}
-
 
 
 

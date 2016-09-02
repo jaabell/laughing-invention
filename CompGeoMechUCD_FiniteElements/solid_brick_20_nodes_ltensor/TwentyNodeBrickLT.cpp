@@ -38,7 +38,7 @@ double TwentyNodeBrickLT::SurfaceLoadValues_in_function; // Nima added for surfa
 DTensor2 TwentyNodeBrickLT::gp_coords(27, 3, 0.0);
 DTensor2 TwentyNodeBrickLT::gp_weight(27, 3, 0.0);
 Matrix TwentyNodeBrickLT::gauss_points(27, 3);
-Vector TwentyNodeBrickLT::outputVector(TwentyNodeBrickLT_OUTPUT_SIZE);
+vector<float> TwentyNodeBrickLT::Gauss_Output_Vector(486);
 
 Vector TwentyNodeBrickLT::ShapeFunctionValues_in_function(8); // Nima added for surface load (July 2012)
 Vector TwentyNodeBrickLT::J_vector_in_function(3); // Nima added for surface load (July 2012)
@@ -969,34 +969,12 @@ void TwentyNodeBrickLT::setDomain (Domain *theDomain)
             exit(-1);
         }
 
-        // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-        theDomain->add_Gauss_Points(27);
-        theDomain->add_Connectivity_Nodes(20);
-        ///---------------------------------------------------------------------//
         this->DomainComponent::setDomain(theDomain);
     }
 
     ComputeVolume();
     computeGaussPoint();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //=============================================================================
 int TwentyNodeBrickLT::commitState ()
@@ -2030,12 +2008,12 @@ int TwentyNodeBrickLT::sendSelf (int commitTag, Channel &theChannel)
         return -1;
     }
 
-    //Send outputVector
-    if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
-    {
-        cerr << "WARNING TwentyNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
-        return -1;
-    }
+    // //Send Gauss_Output_Vector
+    // if ( theChannel.sendVector( 0, commitTag, Gauss_Output_Vector ) < 0 )
+    // {
+    //     cerr << "WARNING TwentyNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss_Output_Vector\n";
+    //     return -1;
+    // }
 
     return 0;
 }
@@ -2136,12 +2114,12 @@ int TwentyNodeBrickLT::receiveSelf (int commitTag, Channel &theChannel, FEM_Obje
         return -1;
     }
 
-    // outputVector
-    if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
-    {
-        cerr << "TwentyNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
-        return -1;
-    }
+    // // Gauss_Output_Vector
+    // if ( theChannel.receiveVector( 0, commitTag, Gauss_Output_Vector ) < 0 )
+    // {
+    //     cerr << "TwentyNodeBrickLT::receiveSelf() - failed to recv Gauss_Output_Vector!\n";
+    //     return -1;
+    // }
 
 
     return 0;
@@ -2189,8 +2167,8 @@ int TwentyNodeBrickLT::getObjectSize()
     size += sizeof(double) * bf.Size();
     // Matrix gauss_points   NOT INCLUDED IN MEMORY COUNT... THEY're Static (J. Abell);
     // size += sizeof(gauss_points);
-    // // Vector outputVector;
-    // size += sizeof(outputVector);
+    // // Vector Gauss_Output_Vector;
+    // size += sizeof(Gauss_Output_Vector);
     // Index < 'i' > i;
     size += sizeof(i);
     // Index < 'j' > j;
@@ -2597,17 +2575,15 @@ Matrix &TwentyNodeBrickLT::getGaussCoordinates(void)
     return gauss_points;
 }
 
-int TwentyNodeBrickLT::getOutputSize() const
-{
-    return TwentyNodeBrickLT_OUTPUT_SIZE;
-}
-
-
-
-
-
-
-const Vector &TwentyNodeBrickLT::getOutput()
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &TwentyNodeBrickLT::getGaussOutput()
 {
 
 
@@ -2619,43 +2595,34 @@ const Vector &TwentyNodeBrickLT::getOutput()
         const DTensor2 & stress = material_array[gp]->getStressTensor();
 
         //Write strain
-        outputVector(ii++) = strain(0, 0);
-        outputVector(ii++) = strain(1, 1);
-        outputVector(ii++) = strain(2, 2);
-        outputVector(ii++) = strain(0, 1);
-        outputVector(ii++) = strain(0, 2);
-        outputVector(ii++) = strain(1, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 0);
+        Gauss_Output_Vector[ii++] = strain(1, 1);
+        Gauss_Output_Vector[ii++] = strain(2, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 1);
+        Gauss_Output_Vector[ii++] = strain(0, 2);
+        Gauss_Output_Vector[ii++] = strain(1, 2);
 
         //Write strain
-        outputVector(ii++) = plstrain(0, 0);
-        outputVector(ii++) = plstrain(1, 1);
-        outputVector(ii++) = plstrain(2, 2);
-        outputVector(ii++) = plstrain(0, 1);
-        outputVector(ii++) = plstrain(0, 2);
-        outputVector(ii++) = plstrain(1, 2);
+        Gauss_Output_Vector[ii++] = plstrain(0, 0);
+        Gauss_Output_Vector[ii++] = plstrain(1, 1);
+        Gauss_Output_Vector[ii++] = plstrain(2, 2);
+        Gauss_Output_Vector[ii++] = plstrain(0, 1);
+        Gauss_Output_Vector[ii++] = plstrain(0, 2);
+        Gauss_Output_Vector[ii++] = plstrain(1, 2);
 
 
         //Write stress
-        outputVector(ii++) = stress(0, 0);
-        outputVector(ii++) = stress(1, 1);
-        outputVector(ii++) = stress(2, 2);
-        outputVector(ii++) = stress(0, 1);
-        outputVector(ii++) = stress(0, 2);
-        outputVector(ii++) = stress(1, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 0);
+        Gauss_Output_Vector[ii++] = stress(1, 1);
+        Gauss_Output_Vector[ii++] = stress(2, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 1);
+        Gauss_Output_Vector[ii++] = stress(0, 2);
+        Gauss_Output_Vector[ii++] = stress(1, 2);
     }
-    // //Cycle material outputs and place them appropriately
-    // int nmaterial_output = material_array[0]->getOutputSize();
-    // if (nmaterial_output > 0)
-    // {
-    //     const Vector & matOutput = material_array[gp]->getOutput();
-    //     for (int jj = 0; jj < nmaterial_output ; jj++)
-    //     {
-    //         outputVector(ii++) = matOutput(jj);
-    //     }
-    // }
 
-    return outputVector;
+    return Gauss_Output_Vector;
 }
+
 
 
 

@@ -108,7 +108,7 @@ public:  // To meet with OutputWriter interfacec
                             unsigned int max_node_tag_in,
                             unsigned int max_element_tag_in,
                             unsigned int number_of_dofs_in,
-                            unsigned int number_of_outputs_in,
+                            unsigned int number_of_element_outputs_in,
                             unsigned int Total_Number_of_Gauss_Points,
                             unsigned int Total_Number_of_Connectivity_Nodes);
 
@@ -117,7 +117,7 @@ public:  // To meet with OutputWriter interfacec
     int reserveSpaceForDatasets(unsigned int number_of_materials);
 
     virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
-    virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity, int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
+    virtual int writeElementMeshData(int tag,const ID &connectivity, int  materialtag, const  Matrix &gausscoordinates, int class_tag);
     virtual int writeLoadPatternData(int tag , std::string name) ;
     virtual int writeSPConstraintsData(int nodetag , int dof) ;
     virtual int writeMaterialMeshData(int tag , std::string type ); //[Sumeet August,2016]
@@ -126,14 +126,13 @@ public:  // To meet with OutputWriter interfacec
     virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
     virtual int writeTrialDisplacements(  int nodeTag, const Vector &displacements) ;
     virtual int writeDummyDisplacements() ;
-    virtual int writeVelocities(     int nodeTag, const Vector &velocities) ;
-    virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) ;
     virtual int writeUnbalancedForces( int nodeTag, const Vector &reactionForces) ;
-    virtual int writeSupportReactions( int number_of_constrained_dofs, std::vector<float> reactionForces) ;
+    virtual int writeSupportReactions( int number_of_constrained_dofs, const std::vector<float> &reactionForces);
 
     // Results for Elements
-    virtual int writeElementOutput(int elementTag, const Vector &output) ;
-    virtual int writeTrialElementOutput(int elementTag, const Vector &output) ;
+    virtual int writeElementOutput(int elementTag, const vector<float> &outputint , int class_tag) ;
+    virtual int writeGaussOutput(int elementTag, const vector<float> &outputint , int class_tag) ;
+    virtual int writeTrialElementOutput(int elementTag, const vector<float> &output,  int class_tag);
     virtual int writeDummyElementOutput() ;  //Needed for collective HDF5 calls
 
     // Results for Eigen Value Analysis   // Sumeet 1st August, 2016
@@ -263,6 +262,16 @@ public:  //Additional stuff
                                          hsize_t *block,
                                          float *data);
 
+hid_t writeConstantLengthFloatArray(hid_t id_array,
+        int datarank,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        const float *data);
+
 
     hid_t writeConstantLengthIntegerArray(hid_t id_array,
                                           int datarank,
@@ -300,23 +309,18 @@ private:
 
     int number_of_nodes;
     int number_of_elements;
-    int number_of_gausspoints;
-    int current_time_step;              
     int number_of_time_steps;
-    int current_sub_step;               // Added by sumeet 3rd August, 2016
-    int number_of_connectivity_nodes;   // Added by sumeet 
     int max_node_tag;
     int max_element_tag;
     int number_of_dofs;
-    int number_of_outputs;
+    int number_of_element_outputs;
+    int number_of_gausspoints;
+    int number_of_connectivity_nodes;   // Added by sumeet 
+    int current_time_step;              
+
+    int current_sub_step;               // Added by sumeet 3rd August, 2016
 
     int number_of_eigen_modes;          // added by sumeet 1st August, 2016
-
-    int length_nodes_displacements_output;
-    int length_nodes_velocities_output;
-    int length_nodes_accelerations_output;
-    int length_nodes_reaction_forcess_output;
-    int length_element_output;
 
     float current_time;
 
@@ -341,6 +345,7 @@ private:
     hid_t id_number_of_time_steps;
     hid_t id_number_of_elements;
     hid_t id_number_of_nodes;
+    hid_t id_number_of_gauss_points;
     hid_t id_analysis_options;
 
     // For Nodes
@@ -348,24 +353,20 @@ private:
     hid_t id_nodes_coordinates   , id_index_to_nodes_coordinates;
     hid_t id_nodes_displacements , id_index_to_nodes_outputs;
     hid_t id_nodes_partition     ;
-    hid_t id_nodes_velocities    ;
-    hid_t id_nodes_accelerations ;
     hid_t id_unbalanced_forces ;
     hid_t id_support_reactions;
+    hid_t id_Constrained_Nodes;
+    hid_t id_Constrained_DOFs;
 
     //For Elements
-    hid_t id_elements_nnodes;
     hid_t id_elements_connectivity , id_index_to_elements_connectivity;
-    hid_t id_elements_noutputs;
-    hid_t id_elements_ngauss;
     hid_t id_elements_gausscoords  , id_index_to_elements_gausscoords;
     hid_t id_elements_output       , id_index_to_elements_output;
+    hid_t id_gauss_output;
     hid_t id_elements_class_desc;
     hid_t id_elements_materialtag;
     hid_t id_elements_classtag;
     hid_t id_elements_partition;
-    hid_t id_Constrained_Nodes;
-    hid_t id_Constrained_DOFs;
 
     //For Eigen Value Analysis [sumeet 1st august, 2016]
     hid_t id_eigen_analysis_group; 
@@ -378,6 +379,7 @@ private:
     // added by sumeet 3rd August, 2016 for substeps output
     hid_t id_trial_nodes_displacements; 
     hid_t id_trial_elements_output;
+    hid_t id_trial_gauss_output;
 
     //Some property lists
     hid_t group_creation_plist;
@@ -397,11 +399,9 @@ private:
     //Positions within some arrays
     int pos_nodes_outputs;
     int pos_nodes_coordinates;
-
     int pos_elements_outputs;
     int pos_elements_gausscoords;
     int pos_elements_connectivity;
-
     int pos_loadpatterns_names;
 
     //Temporary mesh arrays
@@ -413,12 +413,9 @@ private:
     ID Index_to_Generalized_Displacements;
 
     //For Elements
-    ID Number_of_Nodes;
     ID Connectivity;
     ID Index_to_Connectivity;
-    ID Number_of_Output_Fields;
-    ID Index_to_Outputs;
-    ID Number_of_Gauss_Points;
+    ID Index_to_Element_Outputs;
     std::vector<float> Gauss_Point_Coordinates;
     ID Index_to_Gauss_Point_Coordinates;
     std::vector<std::string> LoadPattern_names;
@@ -428,6 +425,7 @@ private:
     ID Node_Partition;
     ID SPNodes;
     ID SPDofs;
+    std::vector<int> Element_Class_Desc;
 
     //For Materials
     hid_t id_material;

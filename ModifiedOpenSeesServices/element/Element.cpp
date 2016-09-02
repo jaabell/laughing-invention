@@ -57,6 +57,8 @@ string Element::stiffness_type;
 string Element::damping_type;
 
 Matrix Element::zero_gauss_coordinates(0, 0);
+vector<float> Element::zero_Element_output(0);
+vector<float> Element::zero_Gauss_output(0);
 
 Element::Element(int tag, int cTag)
     : DomainComponent(tag, cTag), a0(0.0),
@@ -958,16 +960,34 @@ int Element::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &t
     return -1;
 }
 
-int Element::getOutputSize() const
+const vector<float> &Element::getElementOutput()
 {
-    cerr << "Element::getOutputSize() -- Subclass responsability.\n\n";
-    return 0;
+    /*************************************************************************
+    * Sumeet August, 2016
+    * No. of ElementOutputs should be as per the Element_Class_tag_Desc 
+    * See the classtags.h for more decription of encoding of 
+    * Class_tag Descriptions.
+    * For Optimization all the information about elements are encoded
+    * in the Element_Class_tag Description 
+    * NOTE:- If there is output for element other than at gauss points (stress/strain)
+    *        output, then only implement this function inside element
+    **************************************************************************/
+    return zero_Element_output;
 }
 
-const Vector &Element::getOutput()
+const vector<float> &Element::getGaussOutput()
 {
-    cerr << "Element::getOutput() -- Subclass responsability.\n\n";
-    return *SizedVector1;
+    /*************************************************************************
+    * Sumeet August, 2016
+    * No. of ElementOutputs should be as per the Element_Class_tag_Desc 
+    * See the classtags.h for more decription of encoding of 
+    * Class_tag Descriptions.
+    * For Optimization all the information about elements are encoded
+    * in the Element_Class_tag Description 
+    * NOTE:- If there is a gauss point for the element then only you need to implement this 
+    *        function inside the element
+    **************************************************************************/
+    return zero_Gauss_output;
 }
 
 void Element::zeroStrain()

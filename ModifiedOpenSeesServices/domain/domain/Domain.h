@@ -390,8 +390,6 @@ public:
     virtual void removeStrainFromElement(int tag);
     virtual void removeDisplacementFromNode(int tag);
 
-    virtual void add_Gauss_Points(int number_of_gauss_points);
-    virtual void add_Connectivity_Nodes( int Number_of_Connectivity_Nodes);
     virtual void set_number_of_non_converged_substeps(int);
     void add_Element_Partition_Info(int tag, int Partition_no); // Added by [Sumeet August,2016]
     void add_Node_Partition_Info(int tag, int Partition_no);    // Added by [Sumeet August,2016]
@@ -414,7 +412,6 @@ protected:
     double currentTime;               // current pseudo time
 
     //added by sumeet 30th July, 2016
-
     int Number_of_Gauss_Points=0;
     int Number_of_Connectivity_Nodes=0;
 
@@ -484,6 +481,15 @@ public:
     int save_number_of_non_converged_substeps=0; // added by sumeet 5th August, 2016
     int Number_of_Constrained_Dofs;              // added by sumeet 30 August, 2016
 
+    /****************************************************************
+    * Sumeet August, 2016
+    * Contains the description about the elements tag
+    * Desc contains -> Number_of_nodes, Number_of_gauss_Points,
+    * Number_of_Element outputs other than at gauss points, No_of_Dofs per node.
+    * See classtag for more details.
+    * NOTE:- Output per gauss point is always 18
+    ***************************************************************/
+    std::vector<int> Element_Class_Desc; 
 };
 
 #endif

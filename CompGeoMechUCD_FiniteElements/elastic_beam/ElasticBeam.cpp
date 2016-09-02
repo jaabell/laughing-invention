@@ -37,17 +37,15 @@
 #include <stdlib.h>
 // #include <HDF5_Channel.h>
 
+vector<float> ElasticBeam::Element_Output_Vector(24);
 
 ElasticBeam::ElasticBeam()
     : Element(0, ELE_TAG_ElasticBeam),
       A(0), E(0), G(0), Jx(0), Iy(0), Iz(0), rho(0.0), L(0),
       nodeIOffset(0), nodeJOffset(0), Mass(12, 12), Stiffness(12, 12),
-      builtK(0), builtM(0),  R(3, 3), P(12), Q(12), outputVector(ELASTIC_BEAM_OUTPUT_SIZE),
-      connectedExternalNodes(2),
+      builtK(0), builtM(0),  R(3, 3), P(12), Q(12),connectedExternalNodes(2),
       nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
-
-
     // set node pointers to NULL
     for (int i = 0; i < 2; i++)
     {
@@ -57,7 +55,6 @@ ElasticBeam::ElasticBeam()
     R.Zero();
 
     this->setNumberOfBoundaryNodes(1);
-
 
 }
 
@@ -70,8 +67,7 @@ ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
     : Element(tag, ELE_TAG_ElasticBeam),
       A(a), E(e), G(g), Jx(jx), Iy(iy), Iz(iz), rho(r), L(0), nodeIOffset(0), nodeJOffset(0),
       Mass(12, 12), Stiffness(12, 12), builtK(0), builtM(0), R(3, 3), P(12),
-      Q(12), outputVector(ELASTIC_BEAM_OUTPUT_SIZE),
-      connectedExternalNodes(2), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      Q(12),connectedExternalNodes(2), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
     connectedExternalNodes(0) = Nd1;
     connectedExternalNodes(1) = Nd2;
@@ -98,6 +94,7 @@ ElasticBeam::ElasticBeam(int tag, double a, double e, double g,
     (*nodeJOffset)(2) = rigJntOffset2_z;
 
     this->setNumberOfBoundaryNodes(1);
+
 }
 
 
@@ -108,8 +105,7 @@ ElasticBeam::ElasticBeam(int tag, int Nd1, int Nd2, SectionForceDeformation *sec
                          double rigJntOffset2_x, double rigJntOffset2_y, double rigJntOffset2_z)
     : Element(tag, ELE_TAG_ElasticBeam),
       L(0), nodeIOffset(0), nodeJOffset(0), Mass(12, 12), Stiffness(12, 12), builtK(0), builtM(0), R(3, 3),  P(12),
-      Q(12), outputVector(ELASTIC_BEAM_OUTPUT_SIZE),
-      connectedExternalNodes(2),  nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+      Q(12), connectedExternalNodes(2),  nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
 
     if (Jx == 0.0)
@@ -215,11 +211,6 @@ ElasticBeam::setDomain(Domain *theDomain)
                      << " has incorrect number of DOF\n";
         exit(-1);
     }
-
-    // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-    theDomain->add_Gauss_Points(0);
-    theDomain->add_Connectivity_Nodes(2);
-    ///---------------------------------------------------------------------//
 
     this->DomainComponent::setDomain(theDomain);
 
@@ -1325,20 +1316,14 @@ ElasticBeam::getForce(void)
     return elementForces;
 }
 
-
-int ElasticBeam::getOutputSize() const
+const vector<float> &ElasticBeam::getElementOutput()
 {
-    return ELASTIC_BEAM_OUTPUT_SIZE;
-}
-
-const Vector &ElasticBeam::getOutput()
-{
-    formOutputVector();
-    return outputVector;
+    Form_Element_Output_Vector();
+    return Element_Output_Vector;
 }
 
 
-void ElasticBeam::formOutputVector()
+void ElasticBeam::Form_Element_Output_Vector()
 {
     static Vector LocalDisplacements(12);
 
@@ -1481,28 +1466,28 @@ void ElasticBeam::formOutputVector()
     }
 
     //Output Vector
-    outputVector(0) = LocalDisplacements(0);
-    outputVector(1) = LocalDisplacements(1);
-    outputVector(2) = LocalDisplacements(2);
-    outputVector(3) = LocalDisplacements(3);
-    outputVector(4) = LocalDisplacements(4);
-    outputVector(5) = LocalDisplacements(5);
-    outputVector(6) = LocalDisplacements(6);
-    outputVector(7) = LocalDisplacements(7);
-    outputVector(8) = LocalDisplacements(8);
-    outputVector(9) = LocalDisplacements(9);
-    outputVector(10) = LocalDisplacements(10);
-    outputVector(11) = LocalDisplacements(11);
-    outputVector(12) = LocalForces(0);
-    outputVector(13) = LocalForces(1);
-    outputVector(14) = LocalForces(2);
-    outputVector(15) = LocalForces(3);
-    outputVector(16) = LocalForces(4);
-    outputVector(17) = LocalForces(5);
-    outputVector(18) = LocalForces(6);
-    outputVector(19) = LocalForces(7);
-    outputVector(20) = LocalForces(8);
-    outputVector(21) = LocalForces(9);
-    outputVector(22) = LocalForces(10);
-    outputVector(23) = LocalForces(11);
+    Element_Output_Vector[0 ] = LocalDisplacements(0);
+    Element_Output_Vector[1 ] = LocalDisplacements(1);
+    Element_Output_Vector[2 ] = LocalDisplacements(2);
+    Element_Output_Vector[3 ] = LocalDisplacements(3);
+    Element_Output_Vector[4 ] = LocalDisplacements(4);
+    Element_Output_Vector[5 ] = LocalDisplacements(5);
+    Element_Output_Vector[6 ] = LocalDisplacements(6);
+    Element_Output_Vector[7 ] = LocalDisplacements(7);
+    Element_Output_Vector[8 ] = LocalDisplacements(8);
+    Element_Output_Vector[9 ] = LocalDisplacements(9);
+    Element_Output_Vector[10] = LocalDisplacements(10);
+    Element_Output_Vector[11] = LocalDisplacements(11);
+    Element_Output_Vector[12] = LocalForces(0);
+    Element_Output_Vector[13] = LocalForces(1);
+    Element_Output_Vector[14] = LocalForces(2);
+    Element_Output_Vector[15] = LocalForces(3);
+    Element_Output_Vector[16] = LocalForces(4);
+    Element_Output_Vector[17] = LocalForces(5);
+    Element_Output_Vector[18] = LocalForces(6);
+    Element_Output_Vector[19] = LocalForces(7);
+    Element_Output_Vector[20] = LocalForces(8);
+    Element_Output_Vector[21] = LocalForces(9);
+    Element_Output_Vector[22] = LocalForces(10);
+    Element_Output_Vector[23] = LocalForces(11);
 }

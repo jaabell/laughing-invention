@@ -96,10 +96,12 @@ public:
         return "SoftContact";
     }
 
-    // Output interface functions
-    int getOutputSize() const;
-    const Vector &getOutput();
-    // Matrix &getGaussCoordinates(void);
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has no gauss points and thus no outputs at gauss points 
+    * so no needto have the "getGaussOutput()" function
+    *********************************************************************************************************************/
+    const vector<float> &getElementOutput() ;
 
 
 
@@ -142,6 +144,8 @@ private:
     Vector *g_commit;               // Current gap
     Vector *g_elastic;              // Elastic Displacement
     Vector *tC_pred_commit;         // Commited predicter
+
+    static vector<float> Element_Output_Vector;
 
 };
 

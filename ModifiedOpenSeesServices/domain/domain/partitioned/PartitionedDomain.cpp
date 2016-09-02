@@ -272,9 +272,14 @@ PartitionedDomain::addElement(Element *elePtr)
         //----
     }
 
-    // cout << "numberOfDomainElementOutputs = " << numberOfDomainElementOutputs << " | ";
-    numberOfDomainElementOutputs += elePtr->getOutputSize();
-    // cout << numberOfDomainElementOutputs << endl;
+    //Sumeet Auguts, 2016
+    // look at classTags.h for the class_description encoding and how the modulus 
+    // with 1000 gets back the no. of element outputs and similarly gauss point
+    // and number of connectivitynodes..
+    int class_dec = Element_Class_Desc[elePtr->getClassTag()];
+    numberOfDomainElementOutputs += class_dec%1000;
+    Number_of_Connectivity_Nodes += (class_dec/1000000)%100;
+    Number_of_Gauss_Points       += (class_dec%100000)/1000;
 
 
     if (eleTag > maxElementsTag)
@@ -291,7 +296,14 @@ PartitionedDomain::addElement(Element *elePtr)
 bool
 PartitionedDomain::addNode(Node *nodePtr)
 {
-    return (this->Domain::addNode(nodePtr));
+    if(this->Domain::addNode(nodePtr)){
+        numberOfDomainNodeDOFs += nodePtr->getNumberDOF();
+        return true;
+    }
+
+    return false;
+
+
 }
 
 

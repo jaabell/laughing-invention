@@ -32,7 +32,7 @@
 #include <cmath> // for checking if the vlue is nan
 
 
-/************************************* Previous Code **************************************************************************/
+vector<float> HardContact::Element_Output_Vector(9);
 
 //==================================================================================================
 // Constructor. Receive all input parameters. Should not allocate resources!
@@ -339,12 +339,7 @@ void HardContact::setDomain(Domain *theDomain)
 		}
 
 				
-		// add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-
-		theDomain->add_Gauss_Points(0);
-		theDomain->add_Connectivity_Nodes(2);
-
-		// All is good, we can set the domain.
+     	// All is good, we can set the domain.
 		this->DomainComponent::setDomain(theDomain);
 		initialize();
 		C->Zero(); (*C)(0, 0) = kt;	(*C)(1, 1) = kt; (*C)(2, 2) = kn;
@@ -1043,64 +1038,25 @@ int HardContact::CheckMesh(ofstream &)
 }
 
 
-
-//==================================================================================================
-// Output interface functions
-//   * Input: void
-//   * Output: number of double outputs for the element (size of the output vector)
-
-#define HardContact_NOUTPUT 9
-
-int HardContact::getOutputSize() const
-{
-	return  HardContact_NOUTPUT;
-}
-
-
-
-
-
 //==================================================================================================
 // Output interface functions
 //   * Input: void
 //   * Output: Vector (array of doubles) with the element output.
-const Vector &HardContact::getOutput()
+const vector<float> &HardContact::getElementOutput()
 {
-	static Vector output_vector(HardContact_NOUTPUT);
 
-	output_vector(0) = (*g_commit)(0);
-	output_vector(1) = (*g_commit)(1);
-	output_vector(2) = (*g_commit)(2);
-	output_vector(3) = (*tA)(0);
-	output_vector(4) = (*tA)(1);
-	output_vector(5) = (*tA)(2);
-	output_vector(6) = (*g_elastic)(0);
-	output_vector(7) = (*g_elastic)(1);
-	output_vector(8) = (*g_elastic)(2);
+	Element_Output_Vector[0] = (*g_commit)(0);
+	Element_Output_Vector[1] = (*g_commit)(1);
+	Element_Output_Vector[2] = (*g_commit)(2);
+	Element_Output_Vector[3] = (*tA)(0);
+	Element_Output_Vector[4] = (*tA)(1);
+	Element_Output_Vector[5] = (*tA)(2);
+	Element_Output_Vector[6] = (*g_elastic)(0);
+	Element_Output_Vector[7] = (*g_elastic)(1);
+	Element_Output_Vector[8] = (*g_elastic)(2);
 
-	return output_vector;
+	return Element_Output_Vector;
 }
-
-
-//==================================================================================================
-// Return a Matrix with the coordinates of Gauss points (or points where outputs are generated, could be the endpoints of a beam)
-//   * Input: void
-//   * Output: Matrix (array of doubles) with the gauss coordinates
-//  Note:  Format is
-//    gauss_coordinates[0,:] = [x_0,y_0,z_0]  -- Coordinates of first Gauss point
-//    gauss_coordinates[1,:] = [x_1,y_1,z_1]  -- Coordinates of second Gauss point
-//     ...
-//    gauss_coordinates[Ngauss,:] = [x_Ngauss,y_Ngauss,z_Ngauss]  -- Coordinates of Ngauss-th Gauss point
-// Matrix &HardContact::getGaussCoordinates(void)
-// {
-// 	// you must implement
-// 	static Matrix gauss_coordinates(2, 3);
-// 	return gauss_coordinates;
-// }
-
-
-
-
 
 //==================================================================================================
 // Add you own member functions at the end!

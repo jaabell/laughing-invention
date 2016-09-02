@@ -30,8 +30,6 @@
 #ifndef ElasticBeam_h
 #define ElasticBeam_h
 
-#define ELASTIC_BEAM_OUTPUT_SIZE 24
-
 #include <Element.h>
 #include <Node.h>
 #include <Matrix.h>
@@ -89,8 +87,12 @@ public:
     const Vector &getResistingForce(void);
     const Vector &getResistingForceIncInertia(void);
 
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput() ;
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has no gauss points and thus no outputs at gauss points 
+    * so no needto have the "getGaussOutput()" function
+    *********************************************************************************************************************/
+    const vector<float> &getElementOutput() ;
 
 
     // int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
@@ -117,7 +119,7 @@ public:
 
 private:
 
-    void formOutputVector();
+    void Form_Element_Output_Vector();
 
     double A, E, G, Jx, Iy, Iz;
     double rho;
@@ -136,7 +138,7 @@ private:
     Vector Q;
     // Vector LocalDisplacements;
     // Vector LocalEndForces;
-    Vector outputVector;
+    static vector<float> Element_Output_Vector;
 
     ID  connectedExternalNodes;
 

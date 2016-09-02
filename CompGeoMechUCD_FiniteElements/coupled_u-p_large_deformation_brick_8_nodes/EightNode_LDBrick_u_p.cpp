@@ -229,11 +229,6 @@ void EightNode_LDBrick_u_p::setDomain (Domain *theDomain)
             return ;
         }
     }
-
-    // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-    theDomain->add_Gauss_Points(Num_TotalGaussPts);
-    theDomain->add_Connectivity_Nodes(Num_Nodes);
-    ///---------------------------------------------------------------------//
     
     this->DomainComponent::setDomain(theDomain);
 

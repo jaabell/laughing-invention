@@ -48,14 +48,6 @@
 // #include <ElementResponse.h>
 #include <ElementalLoad.h>
 
-
-
-// Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point
-#define TwentySevenNodeBrickLT_NUMBER_OF_GAUSSPOINTS 27
-#define TwentySevenNodeBrickLT_OUTPUT_SIZE TwentySevenNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*3)
-
-
-
 class Node;
 
 class TwentySevenNodeBrickLT: public Element
@@ -153,8 +145,11 @@ public:
     Vector *getStress( void );
 
     Matrix &getGaussCoordinates(void);
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput() ;
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has only outputs at gauss points so no needto have the "getElementOutput()" function
+    *********************************************************************************************************************/
+    virtual const vector<float> &getGaussOutput() ;
 
 
     std::string getElementName() const
@@ -213,7 +208,7 @@ private:
     static DTensor2 gp_weight; //Weights of 1D Gaussian quadrature rule
 
     static Matrix gauss_points;
-    static Vector outputVector;
+    static vector<float> Gauss_Output_Vector;
 
     Index < 'i' > i;
     Index < 'j' > j;

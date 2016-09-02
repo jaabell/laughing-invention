@@ -176,6 +176,7 @@
 #include <SectionRepres.h>
 
 #include <MultiSupportPattern.h>
+#include <classTags.h>
 
 #include <AccelerationField.h>
 #include <Damping.h>
@@ -266,7 +267,6 @@ Domain::Domain()
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
     theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
-
     // check that there was space to create the data structures
     if ( theElements == 0 || theNodes == 0 ||
             theSPs == 0 || theMPs == 0 ||
@@ -300,6 +300,10 @@ Domain::Domain()
     maxSPsTag = 0;
     maxMPsTag = 0;
     maxLoadPatternsTag = 0;
+
+
+    ELE_TAG_DESC_ARRAY;
+    Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
 
 }
 
@@ -358,7 +362,6 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
     theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
-
     // check that there was space to create the data structures
     if ( theElements == 0 || theNodes == 0 ||
             theSPs == 0 || theMPs == 0 ||
@@ -377,6 +380,10 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
     theBounds( 3 ) = -std::numeric_limits<double>::infinity();
     theBounds( 4 ) = std::numeric_limits<double>::infinity();
     theBounds( 5 ) = -std::numeric_limits<double>::infinity();
+
+
+    ELE_TAG_DESC_ARRAY;
+    Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
 }
 
 
@@ -432,7 +439,6 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
     theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
-
     // check that the containers are empty
     if ( theElements->getNumComponents() != 0 ||
             theNodes->getNumComponents() != 0 ||
@@ -464,6 +470,10 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
     theBounds( 3 ) = -std::numeric_limits<double>::infinity();
     theBounds( 4 ) = std::numeric_limits<double>::infinity();
     theBounds( 5 ) = -std::numeric_limits<double>::infinity();
+
+
+    ELE_TAG_DESC_ARRAY;
+    Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
 }
 
 
@@ -517,7 +527,6 @@ Domain::Domain( TaggedObjectStorage &theStorage )
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
     theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
-
     // check that there was space to create the data structures
     if ( theElements == 0 || theNodes == 0 ||
             theSPs == 0 || theMPs == 0 ||
@@ -537,11 +546,9 @@ Domain::Domain( TaggedObjectStorage &theStorage )
     theBounds( 4 ) = std::numeric_limits<double>::infinity();
     theBounds( 5 ) = -std::numeric_limits<double>::infinity();
 
-    // dbEle = 0;
-    // dbNod = 0;
-    // dbSPs = 0;
-    // dbMPs = 0;
-    // dbLPs = 0;
+
+    ELE_TAG_DESC_ARRAY;
+    Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
 }
 
 
@@ -813,9 +820,14 @@ Domain::addElement( Element *element )
             maxElementsTag = eleTag;
         }
 
-        // cout << "numberOfDomainElementOutputs = " << numberOfDomainElementOutputs << " | ";
-        numberOfDomainElementOutputs += element->getOutputSize();
-        // cout << numberOfDomainElementOutputs << endl;
+        //Sumeet Auguts, 2016
+        // look at classTags.h for the class_description encoding and how the modulus 
+        // with 1000 gets back the no. of element outputs and similarly gauss point
+        // and number of connectivitynodes..
+        int class_dec = Element_Class_Desc[element->getClassTag()];
+        numberOfDomainElementOutputs += class_dec%1000;
+        Number_of_Connectivity_Nodes += (class_dec/1000000)%100;
+        Number_of_Gauss_Points       += (class_dec%100000)/1000;
     }
     else
     {
@@ -1538,9 +1550,15 @@ Domain::removeElement( int tag )
     // this container, 0 the Elements DomainPtr and return the result of the cast
     Element *result = ( Element *)mc;
 
-    numberOfDomainElementOutputs -= result->getOutputSize();
+    //Sumeet Auguts, 2016
+    // look at classTags.h for the class_description encoding and how the modulus 
+    // with 1000 gets back the no. of element outputs and similarly gauss point
+    // and number of connectivitynodes..
+    int class_dec = Element_Class_Desc[result->getClassTag()];
+    numberOfDomainElementOutputs -= class_dec%1000;
+    Number_of_Connectivity_Nodes -= (class_dec/1000000)%100;
+    Number_of_Gauss_Points       -= (class_dec%100000)/1000;
 
-    //  result->setDomain(0);
     return result;
 }
 
@@ -2612,6 +2630,7 @@ Domain::setDampingFactorsforNode( int NodeTag, int DampingTag )
 int
 Domain::commit( void )
 {
+    
     // Calls commit() on nodes and elements. Also in charge of storing
     // the data to the outputwriter.
     bool Enable_Process_output = false;
@@ -2640,9 +2659,14 @@ Domain::commit( void )
         {
 #ifdef _PARALLEL_PROCESSING
             theOutputWriter.syncWriters();
+            cout << " and  (" << rank << ")" ;
 #endif
-            cout << " and  (" << rank << ") - Outputting mesh.\n";
+            cout << " - Outputting mesh.\n";
             globalESSITimer.start("HDF5_write_global_data");
+
+            // cout  << " numberOfDomainElementOutputs " << numberOfDomainElementOutputs << endl;
+            // cout  << " Number_of_Gauss_Points " << Number_of_Gauss_Points << endl;
+            // cout  << " Number_of_Connectivity_Nodes " << Number_of_Connectivity_Nodes << endl;
             theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
                                                 this->getNumElements(),
                                                 maxNodesTag,
@@ -2685,11 +2709,9 @@ Domain::commit( void )
             {
 
                 theOutputWriter.writeElementMeshData(elePtr->getTag() ,
-                                                     elePtr->getElementName(),
                                                      elePtr->getExternalNodes(),
                                                      elePtr->getMaterialTag() ,
                                                      elePtr->getGaussCoordinates(),
-                                                     elePtr->getOutputSize(),
                                                      elePtr->getElementclassTag());
             }
 
@@ -2771,7 +2793,6 @@ Domain::commit( void )
             nodePtr->commitState();
         }
 
-
         //Do node Output 
         if (output_is_enabled && (countdown_til_output == 0))
         {
@@ -2794,7 +2815,6 @@ Domain::commit( void )
             elePtr->commitState();
         }
 
-
         //Do element output!
         if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
         {
@@ -2802,7 +2822,8 @@ Domain::commit( void )
 
             while ( ( elePtr = theElemIter() ) != 0 )
             {
-                theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
+                theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getElementOutput(),elePtr->getClassTag() );
+                theOutputWriter.writeGaussOutput(elePtr->getTag(), elePtr->getGaussOutput(),elePtr->getClassTag() );
             }
         }
 
@@ -2839,7 +2860,6 @@ Domain::commit( void )
 * The function commits at every substep i,e the trail displacements and trial element
 * output HDF5 Output file. It does not commit any displacements or element output
 **************************************************************************************/
-
 int
 Domain::commit_substep( int substep_no )
 {
@@ -2902,7 +2922,7 @@ Domain::commit_substep( int substep_no )
 
         while ( ( elePtr = theElemIter() ) != 0 )
         {
-            theOutputWriter.writeTrialElementOutput(elePtr->getTag(), elePtr->getOutput());
+            // theOutputWriter.writeTrialElementOutput(elePtr->getTag(), elePtr->getOutput());
             // cout << " element_tag " <<  elePtr->getTag() << endl;
         }
     }
@@ -4799,29 +4819,6 @@ void Domain::removeDisplacementFromNode(int tag)
     {
         cerr << "Domain::removeDisplacementFromNode - node tag = " <<  tag << " not found!\n";
     }
-    return;
-}
-
-/*************************************************************************************************
-* Added by Sumeet 30th July 2016
-* This function basically, adds the number of gauss points in the model 
-* when elemnts are added to domain
-***************************************************************************************************/
-void Domain::add_Gauss_Points(int add_number_of_gauss_points)
-{
-    this->Number_of_Gauss_Points = this->Number_of_Gauss_Points + add_number_of_gauss_points;
-    return;
-}
-
-
-/*************************************************************************************************
-* Added by Sumeet 30th July 2016
-* This function basically, adds the number of connectivity nodes in the model 
-* when elemnts are added to domain
-***************************************************************************************************/
-void Domain::add_Connectivity_Nodes( int add_number_of_Connectivity_Nodes)
-{
-    this->Number_of_Connectivity_Nodes = this->Number_of_Connectivity_Nodes + add_number_of_Connectivity_Nodes;
     return;
 }
 

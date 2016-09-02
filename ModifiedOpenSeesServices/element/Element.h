@@ -135,9 +135,18 @@ public:
     virtual Vector *getForce(void);
     void printSomeInformation(void); // Added by Babak to print
 
-
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput();
+    /*************************************************************************
+    * Sumeet August, 2016
+    * No. of ElementOutputs should be as per the Element_Class_tag_Desc 
+    * See the classtags.h for more decription of encoding of 
+    * Class_tag Descriptions.
+    * For Optimization all the information about elements are encoded
+    * in the Element_Class_tag Description 
+    * NOTE:- Must Obey the Element_Class_Description [see classTags.h]
+    **************************************************************************/
+    /**/virtual const vector<float> &getElementOutput();
+    /**/virtual const vector<float> &getGaussOutput();
+    /**************************************************************************/
 
     //virtual int describeSelf(int commitTag, HDF5_Channel &theHDF5_Channel);
     virtual int sendSelf ( int commitTag, Channel &theChannel );
@@ -189,6 +198,9 @@ private:
     int numberOfBoundaryNodes;
 
     static Matrix zero_gauss_coordinates;
+    static vector<float> zero_Element_output;      // added by sumeet 30th July , 2016
+    static vector<float> zero_Gauss_output;        // added by sumeet 30th July , 2016
+
 };
 
 

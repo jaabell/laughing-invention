@@ -80,6 +80,7 @@ using namespace std;
 
 // Initialize static variables
 unsigned int FourNodeAndesShell::number_of_four_node_andes_shells = 0;
+vector<float> FourNodeAndesShell::Element_Output_Vector(6);
 
 // This array relates the DOFs of each sub-triangle to the DOFs of the parent quad. pl is for "placement array"
 const unsigned int FourNodeAndesShell::pl[4][18] =
@@ -101,9 +102,7 @@ FourNodeAndesShell::FourNodeAndesShell()
     K(24, 24), M(24, 24),
     P(24), Q(24), internal_forces(6), bf(3),  thickness(0.0), x0(3), T_lg(3, 3),
     is_stiffness_calculated(false),
-    is_mass_calculated(false),
-    gauss_points(1, 3),
-    outputVector(FourNodeAndesShell_OUTPUT_SIZE)
+    is_mass_calculated(false)
 {
     // zero node pointers
     for (int i = 0; i < 4; i++)
@@ -142,13 +141,11 @@ FourNodeAndesShell::FourNodeAndesShell(int element_number,
     K(24, 24), M(24, 24),
     P(24), Q(24), internal_forces(6), bf(3), thickness(t), x0(3), T_lg(3, 3),
     is_stiffness_calculated(false),
-    is_mass_calculated(false),
-    gauss_points(1, 3),
-    outputVector(FourNodeAndesShell_OUTPUT_SIZE)
+    is_mass_calculated(false)
 {
 
     this->setMaterialTag(Globalmmodel->getTag());
-    
+
     // Set connected external node IDs
     connectedExternalNodes(0) = node_numb_1;
     connectedExternalNodes(1) = node_numb_2;
@@ -269,14 +266,7 @@ void FourNodeAndesShell::setDomain(Domain *theDomain)
         triangle3 -> setDomain(theDomain);
         triangle4 -> setDomain(theDomain);
 
-        // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-        theDomain->add_Gauss_Points(1);
-        theDomain->add_Connectivity_Nodes(4);
-        ///---------------------------------------------------------------------//
-
         this->DomainComponent::setDomain(theDomain);
-
-
 
         // ========================================================
         // Compute the local coordinate system
@@ -1029,33 +1019,29 @@ void FourNodeAndesShell::compute_internal_forces()
     internal_forces(4) = m(1);   // m22
     internal_forces(5) = m(2);   // m12
 
-    outputVector = internal_forces;
 }
 
-
-
-
-Matrix &FourNodeAndesShell::getGaussCoordinates(void)
+const vector<float> &FourNodeAndesShell::getElementOutput()
 {
-    gauss_points(0, 0) = x0(0);
-    gauss_points(0, 1) = x0(1);
-    gauss_points(0, 2) = x0(2);
-    return gauss_points;
-}
+    // Hold moment fields from each subtriangle and master quad
+    Vector m1(3), m2(3), m3(3), m4(3), m(3);
 
+    m1 = triangle1->get_moment_field();
+    m2 = triangle2->get_moment_field();
+    m3 = triangle3->get_moment_field();
+    m4 = triangle4->get_moment_field();
 
+    // Average fields over master quad (NOTE: Who knows if this is correct?) Ask Felippa.... good luck with that
+    m = 0.25 * (m1 + m2 + m3 + m4);
 
-int FourNodeAndesShell::getOutputSize() const
-{
-    return FourNodeAndesShell_OUTPUT_SIZE;
-}
+    Element_Output_Vector[0] = 0.0;    // p11 TODO:implement this
+    Element_Output_Vector[1] = 0.0;    // p22 TODO:implement this
+    Element_Output_Vector[2] = 0.0;    // p12 TODO:implement this
+    Element_Output_Vector[3] = m(0);   // m11
+    Element_Output_Vector[4] = m(1);   // m22
+    Element_Output_Vector[5] = m(2);   // m12
 
-
-
-const Vector &FourNodeAndesShell::getOutput()
-{
-    compute_internal_forces();
-    return outputVector;
+    return Element_Output_Vector;
 }
 
 
@@ -1109,10 +1095,6 @@ int FourNodeAndesShell::getObjectSize()
     // bool is_mass_calculated;
     size += 2 * sizeof(bool);
 
-    // Matrix gauss_points;
-    // size += 3 * FourNodeAndesShell_NUMBER_OF_GAUSSPOINTS * sizeof(double);
-    // Vector outputVector;
-    // size += FourNodeAndesShell_OUTPUT_SIZE*
     return size;
 }
 

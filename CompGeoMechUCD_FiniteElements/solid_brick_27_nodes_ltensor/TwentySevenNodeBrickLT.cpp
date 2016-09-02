@@ -50,7 +50,7 @@ Vector TwentySevenNodeBrickLT::Info_Stress(27 * 6 + 1); // Stress 8*6+1  2X2X2
 Vector TwentySevenNodeBrickLT::Info_GaussCoordinates(27 * 3 + 1);      //Gauss point coordinates
 Vector TwentySevenNodeBrickLT::Info_Strain(27 * 6 + 1);
 Matrix TwentySevenNodeBrickLT::gauss_points(27, 3);
-Vector TwentySevenNodeBrickLT::outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE);
+vector<float> TwentySevenNodeBrickLT::Gauss_Output_Vector(486);
 Matrix TwentySevenNodeBrickLT::K(81, 81);
 Matrix TwentySevenNodeBrickLT::M( 81, 81);
 
@@ -1936,10 +1936,6 @@ void TwentySevenNodeBrickLT::setDomain ( Domain *theDomain )
             exit( -1 );
         }
 
-        // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-        theDomain->add_Gauss_Points(27);
-        theDomain->add_Connectivity_Nodes(27);
-        ///---------------------------------------------------------------------//
         this->DomainComponent::setDomain( theDomain );
     }
 
@@ -1987,29 +1983,29 @@ void TwentySevenNodeBrickLT::formOutput()
         stress = material_array[gp]->getStressTensor();
 
         //Write strain
-        outputVector(ii++) = strain(0, 0);
-        outputVector(ii++) = strain(1, 1);
-        outputVector(ii++) = strain(2, 2);
-        outputVector(ii++) = strain(0, 1);
-        outputVector(ii++) = strain(0, 2);
-        outputVector(ii++) = strain(1, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 0);
+        Gauss_Output_Vector[ii++] = strain(1, 1);
+        Gauss_Output_Vector[ii++] = strain(2, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 1);
+        Gauss_Output_Vector[ii++] = strain(0, 2);
+        Gauss_Output_Vector[ii++] = strain(1, 2);
 
         //Write strain
-        outputVector(ii++) = plstrain(0, 0);
-        outputVector(ii++) = plstrain(1, 1);
-        outputVector(ii++) = plstrain(2, 2);
-        outputVector(ii++) = plstrain(0, 1);
-        outputVector(ii++) = plstrain(0, 2);
-        outputVector(ii++) = plstrain(1, 2);
+        Gauss_Output_Vector[ii++] = plstrain(0, 0);
+        Gauss_Output_Vector[ii++] = plstrain(1, 1);
+        Gauss_Output_Vector[ii++] = plstrain(2, 2);
+        Gauss_Output_Vector[ii++] = plstrain(0, 1);
+        Gauss_Output_Vector[ii++] = plstrain(0, 2);
+        Gauss_Output_Vector[ii++] = plstrain(1, 2);
 
 
         //Write stress
-        outputVector(ii++) = stress(0, 0);
-        outputVector(ii++) = stress(1, 1);
-        outputVector(ii++) = stress(2, 2);
-        outputVector(ii++) = stress(0, 1);
-        outputVector(ii++) = stress(0, 2);
-        outputVector(ii++) = stress(1, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 0);
+        Gauss_Output_Vector[ii++] = stress(1, 1);
+        Gauss_Output_Vector[ii++] = stress(2, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 1);
+        Gauss_Output_Vector[ii++] = stress(0, 2);
+        Gauss_Output_Vector[ii++] = stress(1, 2);
     }
 }
 
@@ -3002,12 +2998,12 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
         return -1;
     }
 
-    //Send outputVector
-    if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
-    {
-        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
-        return -1;
-    }
+    // //Send Gauss_Output_Vector
+    // if ( theChannel.sendVector( 0, commitTag, Gauss_Output_Vector ) < 0 )
+    // {
+    //     cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss_Output_Vector\n";
+    //     return -1;
+    // }
 
 
 
@@ -3126,12 +3122,12 @@ int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FE
         return -1;
     }
 
-    // outputVector
-    if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
-    {
-        cerr << "TwentySevenNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
-        return -1;
-    }
+    // // Gauss_Output_Vector
+    // if ( theChannel.receiveVector( 0, commitTag, Gauss_Output_Vector ) < 0 )
+    // {
+    //     cerr << "TwentySevenNodeBrickLT::receiveSelf() - failed to recv Gauss_Output_Vector!\n";
+    //     return -1;
+    // }
 
 
 
@@ -3516,36 +3512,25 @@ TwentySevenNodeBrickLT::getStress( void )
     return stresses;
 }
 
-
-
-
-
 Matrix &TwentySevenNodeBrickLT::getGaussCoordinates(void)
 {
     computeGaussPoint();
     return gauss_points;
 }
 
-int TwentySevenNodeBrickLT::getOutputSize() const
-{
-    if (produces_output)
-    {
-        return TwentySevenNodeBrickLT_OUTPUT_SIZE;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-
-
-const Vector &TwentySevenNodeBrickLT::getOutput()
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &TwentySevenNodeBrickLT::getGaussOutput()
 {
     formOutput();
-    return outputVector;
+    return Gauss_Output_Vector;
 }
-
 
 #endif
 

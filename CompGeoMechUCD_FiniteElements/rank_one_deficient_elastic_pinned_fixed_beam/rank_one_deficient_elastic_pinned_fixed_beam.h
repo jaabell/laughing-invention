@@ -38,12 +38,6 @@
 #ifndef rank_one_deficient_elastic_pinned_fixed_beam_h
 #define rank_one_deficient_elastic_pinned_fixed_beam_h
 
-
-// Output is 6 components of strain 6 components of plastic strain and 6 of stress per gauss point
-#define rank_one_deficient_elastic_pinned_fixed_beam_NUMBER_OF_GAUSSPOINTS 0
-#define rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE 9
-
-
 #include <Domain.h>
 #include <Channel.h>
 #include <FEM_ObjectBroker.h>
@@ -137,9 +131,12 @@ public:
     }
 
 
-    // Matrix &getGaussCoordinates(void);
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput() ;
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has no gauss points and thus no outputs at gauss points 
+    * so no needto have the "getGaussOutput()" function
+    *********************************************************************************************************************/
+    virtual const vector<float> &getElementOutput() ;
 
 private:
     double A, E, G, Jx, Iy, Iz;
@@ -170,7 +167,7 @@ private:
 
     Node *theNodes[2];
 
-    Vector outputVector;
+    static vector<float> Element_Output_Vector;
 
 };
 

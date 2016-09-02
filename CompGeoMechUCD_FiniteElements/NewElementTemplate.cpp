@@ -56,10 +56,11 @@
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
 NewElementTemplate::NewElementTemplate(int tag, int node1, .....):
-    Element(tag, ELE_TAG_NewElementTemplate),   //ATTENTION! Define the class tag in classTags.h
+    Element(tag, ELE_TAG_NewElementTemplate),   //ATTENTION! Define the class tag in classTags.h with provided encoding formula [Sumeet,2016] 
     // add more initializers
 {
     this->setMaterialTag(material->getTag());   // for setting the material id to the element
+
     you must implement
 }
 
@@ -70,7 +71,7 @@ NewElementTemplate::NewElementTemplate(int tag, int node1, .....):
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
 NewElementTemplate::NewElementTemplate():
-    Element(0, ELE_TAG_NewElementTemplate), //ATTENTION! Define the class tag in classTags.h
+    Element(0, ELE_TAG_NewElementTemplate), //ATTENTION! Define the class tag in classTags.h with provided encoding formula [Sumeet,2016]
     // add more initializers setting internal variables to null values
 {
     you must implement
@@ -174,14 +175,8 @@ void NewElementTemplate::setDomain(Domain *theDomain)
         //
         // Set the base class domain pointer
         
-        // add the number of gauss node and the number of connectivity nodes -- Added by Sumeet 30th July, 2016
-        theDomain->add_Gauss_Points(8);
-        theDomain->add_Connectivity_Nodes(8);
-        ///---------------------------------------------------------------------//
         this->DomainComponent::setDomain(theDomain);
     }
-
-}
 
 //Additionally one can allocate resources at this point.
 you must implement
@@ -502,7 +497,7 @@ int NewElementTemplate::getOutputSize() const
 // Output interface functions
 //   * Input: void
 //   * Output: Vector (array of doubles) with the element output.
-const Vector &NewElementTemplate::getOutput()
+const vector<float> &NewElementTemplate::getElementOutput()
 {
     you must implement
 }
