@@ -45,7 +45,7 @@ class NodeIter
     public:
         NodeIter() {};
         virtual ~NodeIter() {};
-
+        virtual void reset(void)=0;
         virtual Node* operator()(void) = 0;
 
     protected:

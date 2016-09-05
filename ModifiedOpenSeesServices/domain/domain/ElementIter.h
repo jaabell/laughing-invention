@@ -45,7 +45,7 @@ class ElementIter
     public:
         ElementIter() {};
         virtual ~ElementIter() {};
-
+        virtual void reset(void)=0;
         virtual Element* operator()(void) = 0;
 
     protected:

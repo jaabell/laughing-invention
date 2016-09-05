@@ -116,23 +116,23 @@ public:  // To meet with OutputWriter interfacec
     // Can be used to reserve space for datasets 
     int reserveSpaceForDatasets(unsigned int number_of_materials);
 
-    virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
+    virtual int writeNodeMeshData(int tag, const Vector &coords , int ndofs ) ;
     virtual int writeElementMeshData(int tag,const ID &connectivity, int  materialtag, const  Matrix &gausscoordinates, int class_tag);
     virtual int writeLoadPatternData(int tag , std::string name) ;
     virtual int writeSPConstraintsData(int nodetag , int dof) ;
     virtual int writeMaterialMeshData(int tag , std::string type ); //[Sumeet August,2016]
 
     // Results for Nodes
-    virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
-    virtual int writeTrialDisplacements(  int nodeTag, const Vector &displacements) ;
+    virtual int writeDisplacements(  int nodeTag, const Vector &displacements, int ndofs ) ;
+    virtual int writeTrialDisplacements( int nodeTag, const Vector &displacements, int ndofs ) ;
     virtual int writeDummyDisplacements() ;
-    virtual int writeUnbalancedForces( int nodeTag, const Vector &reactionForces) ;
     virtual int writeSupportReactions( int number_of_constrained_dofs, const std::vector<float> &reactionForces);
 
     // Results for Elements
-    virtual int writeElementOutput(int elementTag, const vector<float> &outputint , int class_tag) ;
-    virtual int writeGaussOutput(int elementTag, const vector<float> &outputint , int class_tag) ;
-    virtual int writeTrialElementOutput(int elementTag, const vector<float> &output,  int class_tag);
+    virtual int writeElementOutput(int elementTag, const vector<float> &outputint , int noutputs) ;
+    virtual int writeGaussOutput(int elementTag, const vector<float> &outputint , int noutputs) ;
+    virtual int writeTrialElementOutput(int elementTag, const vector<float> &output,  int noutputs);
+    virtual int writeTrialGaussOutput(int elementTag, const vector<float> &outputint , int noutputs) ;
     virtual int writeDummyElementOutput() ;  //Needed for collective HDF5 calls
 
     // Results for Eigen Value Analysis   // Sumeet 1st August, 2016
@@ -143,6 +143,20 @@ public:  // To meet with OutputWriter interfacec
     // Results of Substeps                // Sumeet 3rd August, 2016 
     virtual int writeSubstepMesh(int);       
     virtual int setSubStep(int substep_no);
+
+    // General function to output arrays of nodes, gauss, element etc. [Sumeet September 2016]
+    virtual int Output( hid_t output_dataset, const Vector        &OutputVector, int pos, int noutputs );
+    virtual int Output( hid_t output_dataset, const vector<float> &OutputVector, int pos, int noutputs );
+    virtual int SubStepOutput( hid_t output_dataset, const Vector        &OutputVector, int pos, int noutputs );
+    virtual int SubStepOutput( hid_t output_dataset, const vector<float> &OutputVector, int pos, int noutputs );
+
+    // Getting back datasets id [Sumeet September 2016]
+    virtual hid_t getDisplacementId();
+    virtual hid_t getGaussOutputId();
+    virtual hid_t getElementOutputId();
+    virtual hid_t getTrialDisplacementId();
+    virtual hid_t getTrialGaussOutputId();
+    virtual hid_t getTrialElementOutputId();
 
     // Partition Info in master file output // [Sumeet August,2016]
     void writeNodePartitionData(int tag  , int partition) ;
@@ -262,15 +276,15 @@ public:  //Additional stuff
                                          hsize_t *block,
                                          float *data);
 
-hid_t writeConstantLengthFloatArray(hid_t id_array,
-        int datarank,
-        hsize_t *dims,
-        hsize_t *data_dims,
-        hsize_t *offset,
-        hsize_t *stride,
-        hsize_t *count,
-        hsize_t *block,
-        const float *data);
+    hid_t writeConstantLengthFloatArray(hid_t id_array,
+                                        int datarank,
+                                        hsize_t *dims,
+                                        hsize_t *data_dims,
+                                        hsize_t *offset,
+                                        hsize_t *stride,
+                                        hsize_t *count,
+                                        hsize_t *block,
+                                        const float *data);
 
 
     hid_t writeConstantLengthIntegerArray(hid_t id_array,
@@ -285,6 +299,7 @@ hid_t writeConstantLengthFloatArray(hid_t id_array,
 
     void writeMesh(void);
     void DeleteMeshArrays(); // [Sumeet August, 2016] 
+    void EnableReactionOutput(bool status);  // [Sumeet August, 2016]
     void syncWriters(); //Used in parallel
 
 
@@ -306,6 +321,7 @@ hid_t writeConstantLengthFloatArray(hid_t id_array,
 private:
 
     bool file_is_open;
+    bool reaction_output_is_enabled;
 
     int number_of_nodes;
     int number_of_elements;
@@ -345,7 +361,8 @@ private:
     hid_t id_number_of_time_steps;
     hid_t id_number_of_elements;
     hid_t id_number_of_nodes;
-    hid_t id_number_of_gauss_points;
+    hid_t id_number_of_gauss_points;  // Added by sumeet
+    hid_t id_number_of_element_outputs;  // Added by sumeer
     hid_t id_analysis_options;
 
     // For Nodes
@@ -377,6 +394,7 @@ private:
     hid_t id_eigen_periods;
 
     // added by sumeet 3rd August, 2016 for substeps output
+    hid_t id_number_of_substeps;
     hid_t id_trial_nodes_displacements; 
     hid_t id_trial_elements_output;
     hid_t id_trial_gauss_output;

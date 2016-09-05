@@ -48,6 +48,10 @@
 
 
 
+//NOTE!! Follow the Element_Class_Desc Encoding
+//       See classTags.h for more details about encoding
+vector<float> NewElementTemplate::Element_Output_Vector(number_of_Element_outputs) ; // Declare if there is element output except at gauss points
+vector<float> NewElementTemplate::Gauss_Output_Vector(number_of_gauss_points*18);    // Declare only if there is any gauss point and there is 18 outputs per gauss points i.e stress, strain and plastic strain
 
 
 
@@ -460,10 +464,6 @@ void NewElementTemplate::Print(ostream &s, int flag = 0)
     you must implement
 }
 
-
-
-
-
 //==================================================================================================
 // Check element correctness
 //   * Input: an ostream to print stuff into (print details of what is being checked here.)
@@ -475,35 +475,30 @@ int NewElementTemplate::CheckMesh(ofstream &)
 }
 
 
-
-
-
-
-
-//==================================================================================================
-// Output interface functions
-//   * Input: void
-//   * Output: number of double outputs for the element (size of the output vector)
-int NewElementTemplate::getOutputSize() const
-{
-    you must implement
-}
-
-
-
-
-
 //==================================================================================================
 // Output interface functions
 //   * Input: void
 //   * Output: Vector (array of doubles) with the element output.
 const vector<float> &NewElementTemplate::getElementOutput()
 {
-    you must implement
+    
+    Fill the Element_Output_Vector
+    
+    return Element_Output_Vector;
 }
 
+//==================================================================================================
+// Output interface functions
+//   * Input: void
+//   * Output: Vector (array of doubles) with the element output.
+const vector<float> &NewElementTemplate::getGaussOutput()
+{
+    Fill the Gauss_Output_Vector
+    
+    NOTE!!! - Exactly 18 outputs should be there per gauss point
 
-
+    return Gauss_Output_Vector;
+}
 
 
 //==================================================================================================

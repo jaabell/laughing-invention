@@ -208,100 +208,100 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
 
     theDomain.setNumberOfOutputSteps(0);
     
-    theDomain.commit(); // Four outputting mesh in HDF% Output
+    // theDomain.commit(); // Four outputting mesh in HDF% Output
 
-    theDomain.Commit_Eigen_Analysis();
+    // theDomain.Commit_Eigen_Analysis();
     
-    ////////////////// Not Required (Sumeet 1st August, 2016 ) ///////////////////////
-    // const Vector &eigenvalues = theDomain.getEigenvalues();
-    // Vector periodvalues(number_of_eigen_values);
-    // Vector frequencyvalues(number_of_eigen_values);
+    //////////////// Not Required (Sumeet 1st August, 2016 ) ///////////////////////
+    const Vector &eigenvalues = theDomain.getEigenvalues();
+    Vector periodvalues(number_of_eigen_values);
+    Vector frequencyvalues(number_of_eigen_values);
 
-    // double Pi = 2 * asin(1.0);
-
-
-    // for (int i = 0; i < number_of_eigen_values; i++)
-    // {
-    //     double sqrtEigen = sqrt(eigenvalues(i));
-    //     periodvalues(i) = 2 * Pi / sqrtEigen;
-    //     frequencyvalues(i) = sqrtEigen / (2 * Pi);
-    // }
+    double Pi = 2 * asin(1.0);
 
 
-    // //     for (int i=0; i<number_of_eigen_values; i++)
-    // //        {
-    // //           cout.flush() << "Period(" << i+1 << ")= " << periodvalues(i) << endl;
-    // //           cout.flush() << "Frequency(" << i+1 << ")= " << frequencyvalues(i) << endl;
-    // //           cout.flush() << "Eigen Value(" << i+1 << ")= " << eigenvalues(i) << endl;
-    // //           cout.flush() << endl;
-    // //        }
+    for (int i = 0; i < number_of_eigen_values; i++)
+    {
+        double sqrtEigen = sqrt(eigenvalues(i));
+        periodvalues(i) = 2 * Pi / sqrtEigen;
+        frequencyvalues(i) = sqrtEigen / (2 * Pi);
+    }
 
 
-    // //============================================================
-
-    // ofstream periodsfile;
-    // string periodsnamestring = ModelName + "_" + "Periods.feioutput";
-    // const char *periodfilename = periodsnamestring.c_str();
-    // periodsfile.open(periodfilename , ios::out);
-
-
-    // ofstream frequenciesfile;
-    // string frequenciesnamestring = ModelName + "_" + "Frequencies.feioutput";
-    // const char *frequencyfilename = frequenciesnamestring.c_str();
-    // frequenciesfile.open(frequencyfilename , ios::out);
-
-
-    // ofstream eigenvaluefile;
-    // string eigenvaluesnamestring = ModelName + "_" + "EigenValue.feioutput";
-    // const char *eigenvaluefilename = eigenvaluesnamestring.c_str();
-    // eigenvaluefile.open(eigenvaluefilename , ios::out);
-
-
-
-    // for (int i = 0; i < number_of_eigen_values; i++)
-    // {
-    //     periodsfile << periodvalues(i) << endl;
-    //     frequenciesfile << frequencyvalues(i) << endl;
-    //     eigenvaluefile << eigenvalues(i) << endl;
-    // }
-
-
-
-    // for (int i = 0; i < number_of_eigen_values; i++)
-    // {
-    //     // converting integer to string
-    //     string integertostring;
-    //     stringstream out;
-    //     out << i + 1;
-    //     integertostring = out.str();
-
-    //     string filenamestring = ModelName + "_" + "EigenMode" + integertostring + ".feioutput";
-    //     const char *filename = filenamestring.c_str();
-    //     ofstream eigenmodefile;
-    //     eigenmodefile.open(filename , ios::out);
-
-
-    //     Node *nodePtr;
-    //     NodeIter &theNodeIter = theDomain.getNodes();
-
-    //     while ((nodePtr = theNodeIter()) != 0)
-    //     {
-    //         const Matrix &theEigenvectors = nodePtr->getEigenvectors();
-    //         int ndof = (*nodePtr).getNumberDOF();
-
-    //         for (int j = 0; j < ndof; j++)
-    //         {
-    //             eigenmodefile << theEigenvectors(j, i) << "  ";
-    //         }
-
-    //         eigenmodefile << endl;
-    //     }
-
-
-    // }
+    //     for (int i=0; i<number_of_eigen_values; i++)
+    //        {
+    //           cout.flush() << "Period(" << i+1 << ")= " << periodvalues(i) << endl;
+    //           cout.flush() << "Frequency(" << i+1 << ")= " << frequencyvalues(i) << endl;
+    //           cout.flush() << "Eigen Value(" << i+1 << ")= " << eigenvalues(i) << endl;
+    //           cout.flush() << endl;
+    //        }
 
 
     //============================================================
+
+    ofstream periodsfile;
+    string periodsnamestring = ModelName + "_" + "Periods.feioutput";
+    const char *periodfilename = periodsnamestring.c_str();
+    periodsfile.open(periodfilename , ios::out);
+
+
+    ofstream frequenciesfile;
+    string frequenciesnamestring = ModelName + "_" + "Frequencies.feioutput";
+    const char *frequencyfilename = frequenciesnamestring.c_str();
+    frequenciesfile.open(frequencyfilename , ios::out);
+
+
+    ofstream eigenvaluefile;
+    string eigenvaluesnamestring = ModelName + "_" + "EigenValue.feioutput";
+    const char *eigenvaluefilename = eigenvaluesnamestring.c_str();
+    eigenvaluefile.open(eigenvaluefilename , ios::out);
+
+
+
+    for (int i = 0; i < number_of_eigen_values; i++)
+    {
+        periodsfile << periodvalues(i) << endl;
+        frequenciesfile << frequencyvalues(i) << endl;
+        eigenvaluefile << eigenvalues(i) << endl;
+    }
+
+
+
+    for (int i = 0; i < number_of_eigen_values; i++)
+    {
+        // converting integer to string
+        string integertostring;
+        stringstream out;
+        out << i + 1;
+        integertostring = out.str();
+
+        string filenamestring = ModelName + "_" + "EigenMode" + integertostring + ".feioutput";
+        const char *filename = filenamestring.c_str();
+        ofstream eigenmodefile;
+        eigenmodefile.open(filename , ios::out);
+
+
+        Node *nodePtr;
+        NodeIter &theNodeIter = theDomain.getNodes();
+
+        while ((nodePtr = theNodeIter()) != 0)
+        {
+            const Matrix &theEigenvectors = nodePtr->getEigenvectors();
+            int ndof = (*nodePtr).getNumberDOF();
+
+            for (int j = 0; j < ndof; j++)
+            {
+                eigenmodefile << theEigenvectors(j, i) << "  ";
+            }
+
+            eigenmodefile << endl;
+        }
+
+
+    }
+
+
+    // ============================================================
 
 
     return 0;

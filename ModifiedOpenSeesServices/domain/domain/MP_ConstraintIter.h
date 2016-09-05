@@ -45,7 +45,7 @@ class MP_ConstraintIter
     public:
         MP_ConstraintIter() {};
         virtual ~MP_ConstraintIter() {};
-
+        virtual void reset(void)=0;
         virtual MP_Constraint* operator()(void) = 0;
 
     protected:

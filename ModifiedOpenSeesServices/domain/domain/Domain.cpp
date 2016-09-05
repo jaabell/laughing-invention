@@ -304,6 +304,7 @@ Domain::Domain()
 
     ELE_TAG_DESC_ARRAY;
     Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
+    reaction_output_is_enabled = false;
 
 }
 
@@ -384,6 +385,7 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
 
     ELE_TAG_DESC_ARRAY;
     Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
+    reaction_output_is_enabled = false;
 }
 
 
@@ -474,6 +476,7 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
 
     ELE_TAG_DESC_ARRAY;
     Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
+    reaction_output_is_enabled = false;
 }
 
 
@@ -549,6 +552,7 @@ Domain::Domain( TaggedObjectStorage &theStorage )
 
     ELE_TAG_DESC_ARRAY;
     Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
+    reaction_output_is_enabled = false;
 }
 
 
@@ -2667,6 +2671,7 @@ Domain::commit( void )
             // cout  << " numberOfDomainElementOutputs " << numberOfDomainElementOutputs << endl;
             // cout  << " Number_of_Gauss_Points " << Number_of_Gauss_Points << endl;
             // cout  << " Number_of_Connectivity_Nodes " << Number_of_Connectivity_Nodes << endl;
+
             theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
                                                 this->getNumElements(),
                                                 maxNodesTag,
@@ -2678,10 +2683,10 @@ Domain::commit( void )
             globalESSITimer.stop("HDF5_write_global_data");
             globalESSITimer.start("HDF5_buffer_nodes");
 
-            //Write Node Mesh data!
-            while ( ( nodePtr = theNodeIter() ) != 0 )
-            {
-                theOutputWriter.writeNodeMeshData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
+            //Write Node Mesh data! 
+            for(int i =0 ; i<=maxNodesTag; i++){
+                nodePtr = this->getNode(i);
+                if(nodePtr) theOutputWriter.writeNodeMeshData(i, nodePtr->getCrds(), nodePtr->getNumberDOF());
             }
 
             SP_Constraint *sp_ptr = 0;
@@ -2704,7 +2709,6 @@ Domain::commit( void )
 
 
             //Write Element Mesh data!
-
             while ( ( elePtr = theElemIter() ) != 0 )
             {
 
@@ -2729,9 +2733,9 @@ Domain::commit( void )
             // //////////////////////////////////////////////////////////////////////////
 
             Material *matPtr;
-            NDMaterialIter &theMatIter = this->getNDMaterials();
-            NDMaterialLTIter &theMatLTIter = this->getNDMaterialLTs();
-            UniaxialMaterialIter &theUniMatIter = this->getUniaxialMaterials();
+            NDMaterialIter &theMatIter = this->getNDMaterials();                theMatIter.reset();
+            NDMaterialLTIter &theMatLTIter = this->getNDMaterialLTs();          theMatLTIter.reset();
+            UniaxialMaterialIter &theUniMatIter = this->getUniaxialMaterials(); theUniMatIter.reset();
 
             std::stringstream material_info;
 
@@ -2796,13 +2800,21 @@ Domain::commit( void )
         //Do node Output 
         if (output_is_enabled && (countdown_til_output == 0))
         {
+            int noutputs;
             theNodeIter = this->getNodes();
 
-            while ((nodePtr = theNodeIter()) != 0)
-            {
-                theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-                // theOutputWriter.writeUnbalancedForces(nodePtr->getTag(), nodePtr->getReaction()); // Disabled by Sumeet August, 2016
+            int pos=0; hid_t id_displacement = theOutputWriter.getDisplacementId(); 
+
+            for(int i =0 ; i<=maxNodesTag; i++){
+
+                nodePtr = this->getNode(i);
+                if(nodePtr){ 
+                    noutputs = nodePtr->getNumberDOF();
+                    theOutputWriter.Output(id_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                    pos = pos + noutputs;
+                }
             }
+
         }
 
         globalESSITimer.stop("Domain_Node_Commit_and_output");
@@ -2818,28 +2830,41 @@ Domain::commit( void )
         //Do element output!
         if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
         {
+            int noutputs;
             theElemIter = this->getElements();
 
+            int pos1=0; hid_t id_Elements_Output = theOutputWriter.getElementOutputId(); 
+            int pos2=0; hid_t id_Gauss_Output = theOutputWriter.getGaussOutputId(); 
             while ( ( elePtr = theElemIter() ) != 0 )
             {
-                theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getElementOutput(),elePtr->getClassTag() );
-                theOutputWriter.writeGaussOutput(elePtr->getTag(), elePtr->getGaussOutput(),elePtr->getClassTag() );
+                
+                noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
+                if(noutputs) theOutputWriter.Output(id_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
+                pos1 = pos1 + noutputs;
+
+                noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
+                if(noutputs) theOutputWriter.Output(id_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
+                pos2 = pos2 + noutputs;
+
             }
         }
 
-        //Do Support Reactions Output [Sumeet August,2016]
-        SP_Constraint *sp_ptr = 0;
-        SP_ConstraintIter &theSP_Iter = this->getSPs();
-        this->calculateNodalReactions(0);
+        theOutputWriter.EnableReactionOutput(reaction_output_is_enabled);
 
-        vector<float> Support_Reactions(Number_of_Constrained_Dofs);
-        int index = 0;
-
-        while ( ( sp_ptr = theSP_Iter() ) != 0 )
+        if(reaction_output_is_enabled)
         {
-            Support_Reactions[index++]= this->getNode(sp_ptr->getNodeTag())->getReaction()(sp_ptr->getDOF_Number());
+            //Do Support Reactions Output [Sumeet August,2016]
+            SP_Constraint *sp_ptr = 0;
+            SP_ConstraintIter &theSP_Iter = this->getSPs();
 
-            theOutputWriter.writeSupportReactions( Number_of_Constrained_Dofs, Support_Reactions);
+            this->calculateNodalReactions(0);
+            vector<float> Support_Reactions(Number_of_Constrained_Dofs);
+            int index = 0;
+            while ( ( sp_ptr = theSP_Iter() ) != 0 )
+            {
+                Support_Reactions[index++]= this->getNode(sp_ptr->getNodeTag())->getReaction()(sp_ptr->getDOF_Number());
+                theOutputWriter.writeSupportReactions( Number_of_Constrained_Dofs, Support_Reactions);
+            }
         }
 
         globalESSITimer.stop("Domain_Element_Commit_and_output");
@@ -2882,14 +2907,13 @@ Domain::commit_substep( int substep_no )
 #ifdef _PARALLEL_PROCESSING
             theOutputWriter.syncWriters();
 #endif
+        
         theOutputWriter.writeSubstepMesh(save_number_of_non_converged_substeps);
 
         }
         
         theOutputWriter.setSubStep(substep_no);
     }
-
-
 
     globalESSITimer.stop("Domain_Mesh_Output");
 
@@ -2899,13 +2923,18 @@ Domain::commit_substep( int substep_no )
     //get Trail Results from nodes
     if (output_is_enabled && (countdown_til_output == 0))
     {
-        // this->calculateNodalReactions(0);
-        theNodeIter = this->getNodes();
+        int noutputs;
+        theNodeIter.reset();
 
-        while ((nodePtr = theNodeIter()) != 0)
-        {
-            theOutputWriter.writeTrialDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-            // theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
+        int pos=0; hid_t id_trial_displacement = theOutputWriter.getTrialDisplacementId(); 
+        for(int i =0 ; i<=maxNodesTag; i++){
+
+            nodePtr = this->getNode(i);
+            if(nodePtr){ 
+                noutputs = nodePtr->getNumberDOF();
+                theOutputWriter.SubStepOutput(id_trial_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                pos = pos + noutputs;
+            }
         }
     }
 
@@ -2918,13 +2947,24 @@ Domain::commit_substep( int substep_no )
     //get Trail Results from nodes
     if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
     {
-        theElemIter = this->getElements();
+        int noutputs;
+        theElemIter.reset();
 
+        int pos1=0; hid_t id_Trial_Elements_Output = theOutputWriter.getTrialElementOutputId(); 
+        int pos2=0; hid_t id_Trial_Gauss_Output = theOutputWriter.getTrialGaussOutputId(); 
         while ( ( elePtr = theElemIter() ) != 0 )
         {
-            // theOutputWriter.writeTrialElementOutput(elePtr->getTag(), elePtr->getOutput());
-            // cout << " element_tag " <<  elePtr->getTag() << endl;
+            
+            noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
+            if(noutputs) theOutputWriter.SubStepOutput(id_Trial_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
+            pos1 = pos1 + noutputs;
+
+            noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
+            if(noutputs) theOutputWriter.SubStepOutput(id_Trial_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
+            pos2 = pos2 + noutputs;
+
         }
+
     }
 
     globalESSITimer.stop("Domain_Element_Commit_and_output");

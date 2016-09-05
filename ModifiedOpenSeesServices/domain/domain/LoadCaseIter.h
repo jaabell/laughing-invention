@@ -45,7 +45,7 @@ class LoadCaseIter
     public:
         LoadCaseIter() {};
         virtual ~LoadCaseIter() {};
-
+        virtual void reset(void)=0;
         virtual LoadCase* operator()(void) = 0;
 
     protected:

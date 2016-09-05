@@ -30,6 +30,8 @@
 #include <ID.h>
 #include <Vector.h>
 #include <Matrix.h>
+#include <hdf5.h>
+#include <hdf5_hl.h>
 
 #ifndef OutputWriter_H
 #define OutputWriter_H
@@ -63,15 +65,17 @@ public:
     virtual int writeMaterialMeshData(int         tag,
                                       std::string type) = 0;
     // Results for Nodes
-    virtual int writeDisplacements(    int nodeTag, const Vector &displacements) = 0;
-    virtual int writeUnbalancedForces( int nodeTag, const Vector &unbalancedForces) = 0;
+    virtual int writeDisplacements( int nodeTag, const Vector &displacements, int ndofs ) = 0;
     virtual int writeSupportReactions( int number_of_constrained_dofs, const std::vector<float> &reactionForces)=0;
 
 
     // Results for Elements
-    virtual int writeElementOutput(int elementTag, const vector<float> &output,int class_tag) = 0;
-    virtual int writeGaussOutput(int elementTag, const vector<float> &output,int class_tag) = 0;
+    virtual int writeElementOutput(int elementTag, const vector<float> &output,int noutputs) = 0;
+    virtual int writeGaussOutput(int elementTag, const vector<float> &output,int noutputs) = 0;
 
+    // General Function for all element and nodes output
+    virtual int Output( hid_t output_dataset, const Vector &displacements, int pos, int noutputs ) = 0;
+    virtual int Output( hid_t output_dataset, const vector<float> &displacements, int pos, int noutputs ) = 0;
 
 private:
 
