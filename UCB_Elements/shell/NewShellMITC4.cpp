@@ -54,7 +54,7 @@
 
 #define min(a,b) ( (a)<(b) ? (a):(b) )
 
-static int numNewShellMITC4 = 0;
+// static int numNewShellMITC4 = 0;
 
 //void *
 //OPS_NewNewShellMITC4(void)
@@ -927,6 +927,7 @@ NewShellMITC4::addLoad(ElementalLoad *theLoad, double loadFactor)
 {
 
     int type;
+    theLoad->getData(type, loadFactor);
 
     if (type == LOAD_TAG_ElementSelfWeight)
     {

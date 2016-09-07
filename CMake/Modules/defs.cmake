@@ -185,7 +185,7 @@ if(NOT $ENV{BOOST_ROOT} STREQUAL "")
 endif()
 
 
-## Common flags for goth debug and no debug
+## Common flags for both debug and no debug
 set(COMPILER_FLAGS "-Wall")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -D_LINUX")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -D_UNIX")

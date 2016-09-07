@@ -2665,9 +2665,8 @@ Domain::output_step( void )
 {
     
     bool Enable_Process_output = false;
-    int rank;
-#ifdef _PARALLEL_PROCESSING
-    
+    int rank=0; 
+#ifdef _PARALLEL_PROCESSING  
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     if(rank!=0)
         Enable_Process_output=true;
@@ -2690,8 +2689,8 @@ Domain::output_step( void )
         {
 #ifdef _PARALLEL_PROCESSING
             theOutputWriter.syncWriters();
-            cout << " and  (" << rank << ")" ;
 #endif
+            cout << " and  (" << rank << ")" ;
             cout << " - Outputting mesh.\n";
             globalESSITimer.start("HDF5_write_global_data");
 
@@ -2906,9 +2905,8 @@ Domain::output_iteration( int global_iteration_no )
     // the data to the outputwriter.
 
     bool Enable_Process_output = false;
-    int rank;
 #ifdef _PARALLEL_PROCESSING
-    
+    int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     if(rank!=0)
         Enable_Process_output=true;

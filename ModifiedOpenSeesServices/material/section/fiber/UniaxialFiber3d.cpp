@@ -57,7 +57,7 @@ Matrix UniaxialFiber3d::ks(3, 3);
 Vector UniaxialFiber3d::fs(3);
 ID UniaxialFiber3d::code(3);
 
-static int numUniaxialFiber3d = 0;
+// static int numUniaxialFiber3d = 0; // Uncomment when want to use it [Sumeet September, 2016]
 
 // constructor:
 UniaxialFiber3d::UniaxialFiber3d()

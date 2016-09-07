@@ -631,11 +631,9 @@ Element::addResistingForceToNodalReaction(int flag)
 
         const Vector *theResistingForce;
 
-        if (flag == 0)
-        {
-            theResistingForce = &(this->getResistingForce());
-        }
-        else if (flag == 1)
+        theResistingForce = &(this->getResistingForce());
+
+        if (flag == 1)
         {
             theResistingForce = &(this->getResistingForceIncInertia());
         }

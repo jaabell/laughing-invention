@@ -200,7 +200,6 @@ const stresstensor& DP_YF::InTensorDerivative(const stresstensor& Stre,
 {
 
 
-    stresstensor nij;
     double p;
 
     if (alpha_which == 2 || which == 1)
@@ -213,11 +212,13 @@ const stresstensor& DP_YF::InTensorDerivative(const stresstensor& Stre,
 
         if (s_norm != 0.0)
         {
+           stresstensor nij;
             nij = s_bar * (1.0 / s_norm);
+            DP_YF::DPst = nij * (-p);
         }
     }
 
-    DP_YF::DPst = nij * (-p);
+    
 
 
     // Nima

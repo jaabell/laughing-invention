@@ -194,30 +194,31 @@ ParMetis::partition(Graph *theGraph, int numPart)
         int *partition_METIS  = new int [numVertex_METIS + 1];
         int *xadj_METIS  = new int [numVertex_METIS + 2];
         int *adjncy_METIS  = new int [2 * numEdge_METIS];
-        int *vwgts_METIS  = 0;
-        int *ewgts_METIS  = 0;
-        int numbering_METIS  = 0;
-        int weightflag_METIS  = 0; // no weights on our graphs yet
-        int ncon_METIS = 1;
-        int *vsize_METIS = NULL;
-        int *adjwgt_METIS = NULL;
-        int *ubvec_METIS = NULL;
+        // int *vwgts_METIS  = 0;     // Uncomment when want to use it [Sumeet September, 2016]
+        // int *ewgts_METIS  = 0;     // Uncomment when want to use it [Sumeet September, 2016]
+        // int numbering_METIS  = 0;  // Uncomment when want to use it [Sumeet September, 2016]
+        // int weightflag_METIS  = 0; // no weights on our graphs yet // Uncomment when want to use it [Sumeet September, 2016]
+        int ncon_METIS = 1;        
+        // int *vsize_METIS = NULL;   // Uncomment when want to use it [Sumeet September, 2016]
+        // int *adjwgt_METIS = NULL;  // Uncomment when want to use it [Sumeet September, 2016]
+        // int *ubvec_METIS = NULL;   // Uncomment when want to use it [Sumeet September, 2016]
         float *tpwgts_METIS = NULL;
 
-        if (START_VERTEX_NUM == 0)
-        {
-            numbering_METIS  = 0;
-        }
-        else if (START_VERTEX_NUM == 1)
-        {
-            numbering_METIS  = 1;
-        }
-        else
-        {
-            cerr << "WARNING Metis::partition - No partitioning done";
-            cerr << " vertex numbering must start at 0 or 1\n";
-            return (-2);
-        }
+        // Uncomment when want to use it [Sumeet September, 2016]
+        // if (START_VERTEX_NUM == 0)
+        // {
+        //     numbering_METIS  = 0;
+        // }
+        // else if (START_VERTEX_NUM == 1)
+        // {
+        //     numbering_METIS  = 1;
+        // }
+        // else
+        // {
+        //     cerr << "WARNING Metis::partition - No partitioning done";
+        //     cerr << " vertex numbering must start at 0 or 1\n";
+        //     return (-2);
+        // }
 
         int edgecut_METIS ;
 
@@ -320,7 +321,7 @@ ParMetis::partition(Graph *theGraph, int numPart)
         if ( PID != 0 )
         {
             //Initialize these arrays needed later in ParMeTiS
-            int edgecut;
+            // int edgecut;  // Uncomment when want to use it [Sumeet September, 2016]
             wgtflag = 2;
             numflag = 0;
             ncon = 1;
@@ -340,9 +341,13 @@ ParMetis::partition(Graph *theGraph, int numPart)
                 ubvec[i] = 1.05;
             }
         }
+
+        return 0;
     }
 
 # endif
+
+    return 0;
 }
 
 int
@@ -498,14 +503,14 @@ ParMetis::repartition(Graph *theGraph, int numPart)
 
             for (int j = globalXadj[oldVertexTag]; j < globalXadj[oldVertexTag + 1]; j++)
             {
-                const int oldVertexTag = globalAdjncy[j];
+                // const int oldVertexTag = globalAdjncy[j];    // Uncomment when want to use it [Sumeet September, 2016]
                 adjncy[count++] = OldToNewLabel[globalAdjncy[j]];
             }
         }
     }
 
     itr = 0.001;
-
+// 
     //for debug purpose;
     //if ( mype == 1 ) {
     //for (int i = 0; i<nvtxs; i++) {

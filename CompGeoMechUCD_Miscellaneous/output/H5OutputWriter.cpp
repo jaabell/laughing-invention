@@ -402,18 +402,6 @@ int H5OutputWriter::writeGlobalMeshData(unsigned int number_of_nodes_in,
 
 int H5OutputWriter::writeNodeMeshData(int tag     , const Vector &coords   , int ndofs )
 {
-    int ntags = Number_of_DOFs.Size();
-    int addzeros = tag - ntags;
-
-    //Extend arrays
-    for (int i = 0; i < addzeros; i++)
-    {
-        cout << "ntags = " << ntags << " tag = " << tag;
-        cout << " H5OutputWriter::writeNodeMeshData() -- Should not happen!!\n\n"; //[sumeet August, 2016]
-        Number_of_DOFs[ntags + i] = -1;
-        Index_to_Generalized_Displacements[ntags + i] = -1;
-        Index_to_Coordinates[ntags + i] = -1;
-    }
 
     //Form Number_of_DOFs
     Number_of_DOFs[tag] = ndofs;
@@ -737,7 +725,7 @@ void H5OutputWriter::writeMesh()
         dims[0] = (hsize_t) number_of_time_steps+1;
         maxdims[0] = (hsize_t) number_of_time_steps+1;
 
-        id_time_vector = createConstantLengthFloatArray(id_file, rank, dims, maxdims, "time", "s");
+        id_time_vector = createVariableLengthFloatArray(id_file, rank, dims, maxdims, "time", "s",1); // DataArray is still constant. This function enables chunking and compression
 
 
         //================================================================================
@@ -858,7 +846,7 @@ void H5OutputWriter::writeMesh()
 
             dims[0]    = number_of_nodes*3;
             maxdims[0] = number_of_nodes*3;      
-            id_nodes_coordinates          = createConstantLengthFloatArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ");
+            id_nodes_coordinates          = createVariableLengthFloatArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ",1); // DataArray is still constant. This function enables chunking and compression
             
             // Write a vector with the number of DOFS for node at a given tag
             dims[0]      = (hsize_t) Number_of_DOFs.Size();
@@ -925,7 +913,7 @@ void H5OutputWriter::writeMesh()
             // rank = 1;
             // dims[0] = 6;
             // maxdims[0] = 6;
-            // hsize_t id_model_bounds = createConstantLengthFloatArray(id_model_group, rank, dims, maxdims, "Model_Bounds", " ");
+            // hsize_t id_model_bounds = createVariableLengthFloatArray(id_model_group, rank, dims, maxdims, "Model_Bounds", " ",1); // DataArray is still constant. This function enables chunking and compression
 
 
             // // =============================================================================================
@@ -1007,7 +995,7 @@ void H5OutputWriter::writeMesh()
 
             dims[0]    = this->number_of_gausspoints*3;
             maxdims[0] = this->number_of_gausspoints*3;
-            id_elements_gausscoords           = createConstantLengthFloatArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
+            id_elements_gausscoords           = createVariableLengthFloatArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ",1); // DataArray is still constant. This function enables chunking and compression
 
             dims[0]    = this->number_of_connectivity_nodes;
             maxdims[0] = this->number_of_connectivity_nodes;
@@ -1134,7 +1122,7 @@ void H5OutputWriter::writeMesh()
                 maxdims[0] = (hsize_t)  number_of_dofs;
                 maxdims[1] = number_of_time_steps + 1;
 
-                id_nodes_displacements  = createConstantLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+                id_nodes_displacements  = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ",1); // DataArray is still constant. This function enables chunking and compression
             }            
 
             if (number_of_element_outputs > 0)
@@ -1149,7 +1137,7 @@ void H5OutputWriter::writeMesh()
 
                 if (flag_write_element_output == 1  )
                 {
-                    id_elements_output = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Element_Outputs", " ");
+                    id_elements_output = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Element_Outputs", " ",1); // DataArray is still constant. This function enables chunking and compression
                 }
 
             }
@@ -1164,7 +1152,7 @@ void H5OutputWriter::writeMesh()
                 maxdims[0] = (hsize_t)  number_of_gausspoints*18;
                 maxdims[1] = number_of_time_steps + 1;
 
-                id_gauss_output = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Gauss_Outputs", " ");
+                id_gauss_output = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Gauss_Outputs", " ",1); // DataArray is still constant. This function enables chunking and compression
 
             }
 
@@ -1195,7 +1183,7 @@ void H5OutputWriter::writeMesh()
                 maxdims[0] = (hsize_t)  SPDofs.Size();
                 maxdims[1] = number_of_time_steps + 1;
 
-                id_support_reactions = createConstantLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Support_Reactions", " ");
+                id_support_reactions = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Support_Reactions", " ",1); // DataArray is still constant. This function enables chunking and compression
             }
 
 
@@ -1340,23 +1328,6 @@ void H5OutputWriter::writeNodePartitionData(int tag  , int partition)
 // Added by Sumeet August 2016
 int H5OutputWriter::writeMaterialMeshData(int tag , std::string material_info )
 {
-
-    if (tag < 0)
-    {
-        cerr << "H5OutputWriter::writeElementMeshData - Error: got tag = " << tag << " < 0" << endl;
-    }
-
-    int ntags, addzeros;
-    ntags = (int) Materials.size();
-    addzeros = tag - ntags;
-
-    //Extend arrays if necessary
-    for (int i = 0; i <= addzeros; i++)
-    {
-        cout << "ntags = " << ntags << " tag = " << tag;
-        cout << " H5OutputWriter::writeMaterialMeshData() -- Should not happen!!\n\n";
-        Materials.push_back("-1");
-    }
 
     Materials[tag] = material_info;
 
@@ -2242,6 +2213,9 @@ hid_t H5OutputWriter::createConstantLengthFloatArray(hid_t here,
         cout << "       maxdims[" << i << "] = " << maxdims[i] << "\n";
     }
 #endif
+
+
+
     float fill_value = 0.0;
 
     //Setup the creation property list
@@ -2870,9 +2844,9 @@ int H5OutputWriter::writeEigenMesh (int number_of_modes){
         dims[0] = number_of_modes;
         maxdims[0] = number_of_modes;
 
-        id_eigen_values      = createConstantLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "values", " ");
-        id_eigen_frequencies = createConstantLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "frequencies", " ");
-        id_eigen_periods     = createConstantLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "periods", " ");
+        id_eigen_values      = createVariableLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "values", " ",1); // DataArray is still constant. This function enables chunking and compression
+        id_eigen_frequencies = createVariableLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "frequencies", " ",1); // DataArray is still constant. This function enables chunking and compression
+        id_eigen_periods     = createVariableLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "periods", " ",1); // DataArray is still constant. This function enables chunking and compression
 
         {
             int rank = 2;
@@ -2883,7 +2857,7 @@ int H5OutputWriter::writeEigenMesh (int number_of_modes){
             maxdims[0] = (hsize_t)  number_of_dofs;
             maxdims[1] = number_of_modes;
 
-            id_eigen_modes = createConstantLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "modes", " ");
+            id_eigen_modes = createVariableLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "modes", " ",1); // DataArray is still constant. This function enables chunking and compression
         }
 
         dims[0] = 1;
@@ -3003,17 +2977,6 @@ int H5OutputWriter::writeEigen_Value_Frequency_Period ( vector<float> &eigenvalu
 *********************************************************************************************/
 int H5OutputWriter::writeIterationMesh(){
   
-      int numProcesses, processID;
-    numProcesses = 1;
-    processID = 0;
-#ifdef _PARALLEL_PROCESSING
-    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
-    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
-
-    cout << "Process_ID " <<processID   << "--- Completed " << endl;
-
-#endif
-
     if (id_file > 0 )
     {
         int rank = 2;
@@ -3024,33 +2987,27 @@ int H5OutputWriter::writeIterationMesh(){
         maxdims[0] = (hsize_t)  number_of_dofs;
         maxdims[1] = (hsize_t) 1000;
 
-        id_trial_nodes_displacements = createConstantLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Iterative_Generalized_Displacements", " ");
+        id_trial_nodes_displacements = createVariableLengthFloatArray(id_nodes_group, rank, dims, maxdims, "Iterative_Generalized_Displacements", " ",1); // DataArray is still constant. This function enables chunking and compression
 
         if (number_of_element_outputs > 0){
 
             dims[0] = (hsize_t) number_of_element_outputs;
             maxdims[0] = (hsize_t) number_of_element_outputs;
                 
-            id_trial_elements_output     = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Iterative_Element_Outputs", " ");
-            cout << processID << " Iterative_Element_Outputs created " << endl;
+            id_trial_elements_output     = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Iterative_Element_Outputs", " ",1); // DataArray is still constant. This function enables chunking and compression
         }
 
         if (number_of_gausspoints > 0){
             dims[0] = (hsize_t) number_of_gausspoints*18;
             maxdims[0] = (hsize_t) number_of_gausspoints*18;
 
-            id_trial_gauss_output        = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Iterative_Gauss_Outputs", " ");
-
-            cout << processID << " Iterative_Gauss_Outputs created " << endl;
+            id_trial_gauss_output        = createVariableLengthFloatArray(id_elements_group, rank, dims, maxdims, "Iterative_Gauss_Outputs", " ",1); // DataArray is still constant. This function enables chunking and compression
         }
 
 
     }
 
     H5OUTPUTWRITER_COUNT_OBJS;  
-
-
-
 
     return 0;
 
