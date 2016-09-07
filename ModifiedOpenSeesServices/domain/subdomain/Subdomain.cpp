@@ -547,6 +547,31 @@ Subdomain::commit(void)
     return 0;
 }
 
+/*************************************************************************************
+* Added by Sumeet 3rd September, 2016, to output converged step 
+* Call this function to output at every converged step and write in HDF5 file
+**************************************************************************************/
+int
+Subdomain::output_step(void)
+{
+    this->Domain::output_step();
+
+    return 0;
+}
+
+/*************************************************************************************
+* Added by Sumeet 3rd August, 2016, to output substep iteration steps for debugging 
+* The function commits at every substep i,e the trail displacements and trial element
+* output HDF5 Output file. It does not commit any displacements or element output
+**************************************************************************************/
+int
+Subdomain::output_iteration(int global_iteration_no)
+{
+
+    this->Domain::output_iteration(global_iteration_no);
+    return 0;
+}
+
 int
 Subdomain::revertToLastCommit(void)
 {

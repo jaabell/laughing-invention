@@ -309,7 +309,7 @@ public:
     virtual  int  CheckMesh(const char *);
 
     virtual  int  commit(void);
-    virtual  int  output_step(void);
+    virtual  int  output_step(void);                     // Added by Sumeet September, 2016 
     virtual  int  output_iteration( int );               // Added by Sumeet 3rd August, 2016 for substep output
     virtual  int  revertToLastCommit(void);
     virtual  int  revertToStart(void);
@@ -480,9 +480,9 @@ public:
     bool reaction_output_is_enabled; // enabling or disabling the reaction output [sumeet August, 2016]]
     bool energy_output_is_enabled;   // may be will be used in future [sumeet August, 2016]
 
-    int number_of_eigen_modes=-1;                // added by sumeet 1st Asugust, 2016
-    int save_number_of_non_converged_iterations=0; // added by sumeet 5th August, 2016
-    int Number_of_Constrained_Dofs;              // added by sumeet 30 August, 2016
+    int number_of_eigen_modes=-1;                   // added by sumeet 1st Asugust, 2016
+    int save_number_of_non_converged_iterations=0;  // added by sumeet 5th August, 2016
+    int Number_of_Constrained_Dofs;                 // added by sumeet 30 August, 2016
 
     /****************************************************************
     * Sumeet August, 2016

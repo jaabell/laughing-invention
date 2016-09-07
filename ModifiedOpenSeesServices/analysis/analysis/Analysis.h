@@ -64,7 +64,6 @@ protected:
 
 private:
     Domain* theDomain;
-    int Number_of_substeps_output; // Added by Sumeet 2nd August, 2016
 };
 
 #endif

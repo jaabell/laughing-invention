@@ -72,7 +72,7 @@ StaticDomainDecompositionAnalysis::StaticDomainDecompositionAnalysis(Subdomain& 
       theSOE(0),
       theIntegrator(0),
       theTest(0),
-      domainStamp(0)
+      domainStamp(0),whether_initial_step(true)
 {
 
 }
@@ -94,7 +94,7 @@ StaticDomainDecompositionAnalysis::StaticDomainDecompositionAnalysis(Subdomain& 
       theSOE(&theLinSOE),
       theIntegrator(&theStaticIntegrator),
       theTest(theConvergenceTest),
-      domainStamp(0)
+      domainStamp(0),whether_initial_step(true)
 {
 
     if (setLinks == true)
@@ -185,6 +185,13 @@ StaticDomainDecompositionAnalysis::analyze(double dT)
     int result = 0;
     Domain* the_Domain = this->getDomainPtr();
 
+    if(whether_initial_step){
+        cout << "Writing Initial Conditions " << " " ;
+        result = theIntegrator->output_step();  // Sumeet September, 2016
+        whether_initial_step = false;
+    }
+
+
     // check for change in Domain since last step. As a change can
     // occur in a commit() in a domaindecomp with load balancing
     // this must now be inside the loop
@@ -236,16 +243,28 @@ StaticDomainDecompositionAnalysis::analyze(double dT)
         cerr << "StaticDomainDecompositionAnalysis::analyze() - the Algorithm failed";
         cerr << " with domain at load factor ";
         cerr << the_Domain->getCurrentTime() << endln;
+        
         the_Domain->revertToLastCommit();
         theIntegrator->revertToLastStep();
+
+        /****************************************************************************************************
+        * Adde by Sumeet 2nd August, 2016
+        * This function basically, saves and performs the iterations of a current analysis_step from the 
+        * beginning of that step and also save sthe output to hdf5 file
+        *****************************************************************************************************/
+
+        cout << endl << "################## Started Writing Iteration Output ######################" << endl;; 
+        theAlgorithm->switchOutputIterationOption(true);  // Switch on the writer to write incremental output
+        theIntegrator->newStep();
+        theAlgorithm->solveCurrentStep();  
 
         return -3;
     }
 
 
 
-
     result = theIntegrator->commit();
+    result = theIntegrator->output_step();  // Sumeet September, 2016
 
     if (result < 0)
     {

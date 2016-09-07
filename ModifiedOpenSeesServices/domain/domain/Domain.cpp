@@ -2905,63 +2905,75 @@ Domain::output_iteration( int global_iteration_no )
     // gets trial output from the nodes and elements. Also in charge of storing
     // the data to the outputwriter.
 
-    Node *nodePtr;
-    NodeIter &theNodeIter = this->getNodes();
-    Element *elePtr;
-    ElementIter &theElemIter = this->getElements();
+    bool Enable_Process_output = false;
+    int rank;
+#ifdef _PARALLEL_PROCESSING
+    
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if(rank!=0)
+        Enable_Process_output=true;
+#else
+    Enable_Process_output = true;
+#endif
 
-    globalESSITimer.start("Domain_Mesh_Output");
-
-
-    if (output_is_enabled && countdown_til_output == 0)
+    if(Enable_Process_output)
     {
-        //Write out static mesh data once!
-        if (global_iteration_no==1) {       
-            theOutputWriter.writeIterationMesh();
-        }        
-    }
 
-    theOutputWriter.setGlobalIterationNo(global_iteration_no);
+        Node *nodePtr;
+        NodeIter &theNodeIter = this->getNodes();
+        Element *elePtr;
+        ElementIter &theElemIter = this->getElements();
 
-    //get Trail Results from nodes
-    if (output_is_enabled && (countdown_til_output == 0))
-    {
-        int noutputs;
-        theNodeIter.reset();
+        if (output_is_enabled)
+        {
+            //Write out static mesh data once!
+            if (global_iteration_no==1) {       
+                theOutputWriter.writeIterationMesh();
+            }        
+        }
 
-        int pos=0; hid_t id_trial_displacement = theOutputWriter.getTrialDisplacementId(); 
-        for(int i =0 ; i<=maxNodesTag; i++){
+        theOutputWriter.setGlobalIterationNo(global_iteration_no);
 
-            nodePtr = this->getNode(i);
-            if(nodePtr){ 
-                noutputs = nodePtr->getNumberDOF();
-                theOutputWriter.IterationOutput(id_trial_displacement, nodePtr->getTrialDisp(), pos,noutputs);
-                pos = pos + noutputs;
+        //get Trail Results from nodes
+        if (output_is_enabled)
+        {
+            int noutputs;
+            theNodeIter.reset();
+
+            int pos=0; hid_t id_trial_displacement = theOutputWriter.getTrialDisplacementId(); 
+            for(int i =0 ; i<=maxNodesTag; i++){
+
+                nodePtr = this->getNode(i);
+                if(nodePtr){ 
+                    noutputs = nodePtr->getNumberDOF();
+                    theOutputWriter.IterationOutput(id_trial_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                    pos = pos + noutputs;
+                }
             }
         }
-    }
 
-    //get Trail Results from nodes
-    if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
-    {
-        int noutputs;
-        theElemIter.reset();
-
-        int pos1=0; hid_t id_Trial_Elements_Output = theOutputWriter.getTrialElementOutputId(); 
-        int pos2=0; hid_t id_Trial_Gauss_Output = theOutputWriter.getTrialGaussOutputId(); 
-        while ( ( elePtr = theElemIter() ) != 0 )
+        //get Trail Results from nodes
+        if (output_is_enabled && element_output_is_enabled )
         {
-            
-            noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
-            if(noutputs) theOutputWriter.IterationOutput(id_Trial_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
-            pos1 = pos1 + noutputs;
+            int noutputs;
+            theElemIter.reset();
 
-            noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
-            if(noutputs) theOutputWriter.IterationOutput(id_Trial_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
-            pos2 = pos2 + noutputs;
+            int pos1=0; hid_t id_Trial_Elements_Output = theOutputWriter.getTrialElementOutputId(); 
+            int pos2=0; hid_t id_Trial_Gauss_Output = theOutputWriter.getTrialGaussOutputId(); 
+            while ( ( elePtr = theElemIter() ) != 0 )
+            {
+                
+                noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
+                if(noutputs) theOutputWriter.IterationOutput(id_Trial_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
+                pos1 = pos1 + noutputs;
+
+                noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
+                if(noutputs) theOutputWriter.IterationOutput(id_Trial_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
+                pos2 = pos2 + noutputs;
+
+            }
 
         }
-
     }
 
     cout << "................... completed!!" << endl;;

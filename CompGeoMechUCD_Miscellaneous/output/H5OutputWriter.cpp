@@ -3002,7 +3002,18 @@ int H5OutputWriter::writeEigen_Value_Frequency_Period ( vector<float> &eigenvalu
 * This function is used to create the outputmesh
 *********************************************************************************************/
 int H5OutputWriter::writeIterationMesh(){
-    
+  
+      int numProcesses, processID;
+    numProcesses = 1;
+    processID = 0;
+#ifdef _PARALLEL_PROCESSING
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
+    cout << "Process_ID " <<processID   << "--- Completed " << endl;
+
+#endif
+
     if (id_file > 0 )
     {
         int rank = 2;
@@ -3021,6 +3032,7 @@ int H5OutputWriter::writeIterationMesh(){
             maxdims[0] = (hsize_t) number_of_element_outputs;
                 
             id_trial_elements_output     = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Iterative_Element_Outputs", " ");
+            cout << processID << " Iterative_Element_Outputs created " << endl;
         }
 
         if (number_of_gausspoints > 0){
@@ -3028,11 +3040,17 @@ int H5OutputWriter::writeIterationMesh(){
             maxdims[0] = (hsize_t) number_of_gausspoints*18;
 
             id_trial_gauss_output        = createConstantLengthFloatArray(id_elements_group, rank, dims, maxdims, "Iterative_Gauss_Outputs", " ");
+
+            cout << processID << " Iterative_Gauss_Outputs created " << endl;
         }
+
 
     }
 
     H5OUTPUTWRITER_COUNT_OBJS;  
+
+
+
 
     return 0;
 

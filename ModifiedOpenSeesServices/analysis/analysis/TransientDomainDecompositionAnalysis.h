@@ -113,6 +113,7 @@ class TransientDomainDecompositionAnalysis: public DomainDecompositionAnalysis
         TransientIntegrator* theIntegrator;
         ConvergenceTest*     theTest;
         int domainStamp;
+        bool whether_initial_step;
 };
 
 #endif

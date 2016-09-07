@@ -307,8 +307,8 @@
 #define ELE_TAG_TrussSection                                     4005
 #define ELE_TAG_CorotTruss                                       4003
 #define ELE_TAG_CorotTrussSection                                4004
-#define ELE_TAG_fElmt05                                          5
-#define ELE_TAG_fElmt02                                          2
+#define ELE_TAG_fElmt05                                          15
+#define ELE_TAG_fElmt02                                          12
 #define ELE_TAG_ZeroLength                                       5000
 #define ELE_TAG_ZeroLengthSection                                5001
 #define ELE_TAG_ZeroLengthND                                     5002

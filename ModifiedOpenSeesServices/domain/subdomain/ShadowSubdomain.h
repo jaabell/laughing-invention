@@ -111,6 +111,8 @@ public:
     virtual  int update(void);
     virtual  int update(double newTime, double dT);
     virtual  int commit(void);
+    virtual  int output_step(void);                     // Added by Sumeet September, 2016 
+    virtual  int output_iteration( int );               // Added by Sumeet 3rd August, 2016 for substep output
     virtual  int revertToLastCommit(void);
     virtual  int revertToStart(void);
     virtual  int barrierCheckIN(void);
