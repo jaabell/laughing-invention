@@ -49,8 +49,8 @@ public:
     ~NewtonLineSearch( );
 
     int solveCurrentStep(void);
-    int solveSubStep(int substep_no);
     int setConvergenceTest(ConvergenceTest *theNewTest);
+    void switchOutputIterationOption(bool status);                     // Sumeet September 2016
     ConvergenceTest *getConvergenceTest(void);
 
     virtual int sendSelf(int commitTag, Channel &theChannel);
@@ -68,6 +68,10 @@ private:
     AnalysisModel   *theAnaModel;
     IncrementalIntegrator *theIntegrator;
     LinearSOE  *theSOE;
+
+    // Sumeet September, 2016 for writing iteration outputs
+    int global_iteration_no;
+    bool output_iterations;
 };
 
 #endif

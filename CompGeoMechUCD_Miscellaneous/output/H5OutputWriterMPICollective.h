@@ -362,7 +362,7 @@ private:
     hid_t id_eigen_frequencies;
     hid_t id_eigen_periods;
 
-    // added by sumeet 3rd August, 2016 for substeps output
+    // added by sumeet 3rd August, 2016 for iterations output
     hid_t id_trial_nodes_displacements; 
     hid_t id_trial_elements_output;
     

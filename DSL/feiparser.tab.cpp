@@ -2337,9 +2337,9 @@ namespace yy {
     {
 		args.clear(); signature.clear();
 		args.push_back((yystack_[1].value.exp)); signature.push_back
-		(this_signature("non_converged_substeps", &isAdimensional));
+		(this_signature("non_converged_iterations", &isAdimensional));
 
-		(yylhs.value.exp) = new FeiDslCaller1<int>(&save_non_converged_substeps, args, signature, "save_non_converged_substeps");
+		(yylhs.value.exp) = new FeiDslCaller1<int>(&save_non_converged_iterations, args, signature, "save_non_converged_iterations");
 
 		nodes.pop();
 		nodes.push((yylhs.value.exp));
@@ -7819,7 +7819,7 @@ namespace yy {
   "a2", "a3", "a4", "R0", "cR1", "cR2", "MASS", "mx", "my", "mz", "Imx",
   "Imy", "Imz", "equaldof", "master", "slave", "dof_to_constrain", "of",
   "OUTPUT", "BINARY", "TEXT", "ENABLE", "DISABLE", "COMPRESSION", "SAVE",
-  "NON_CONVERGED_SUBSTEPS", "'('", "','", "')'", "'['", "']'", "'.'",
+  "NON_CONVERGED_ITERATIONS", "'('", "','", "')'", "'['", "']'", "'.'",
   "';'", "'{'", "'}'", "$accept", "dsl", "CMD_add", "CMD_fix", "dofchain",
   "explist", "CMD_define", "CMD_misc", "CMD_remove", "ADD_material",
   "ADD_element", "prompt", "exp", "stmt", "cpd_stmt", "list", YY_NULLPTR

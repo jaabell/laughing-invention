@@ -594,7 +594,7 @@ namespace yy {
         DISABLE = 697,
         COMPRESSION = 698,
         SAVE = 699,
-        NON_CONVERGED_SUBSTEPS = 700
+        NON_CONVERGED_ITERATIONS = 700
       };
     };
 

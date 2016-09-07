@@ -137,18 +137,18 @@ public:  // To meet with OutputWriter interfacec
 
     // Results for Eigen Value Analysis   // Sumeet 1st August, 2016
     virtual int writeEigenMesh (  int number_of_modes) ;
-    virtual int writeEigenModes(  int nodeTag, const Matrix &eigenvectors) ;
-    virtual int writeEigen_Value_Frequency_Period ( const Vector &eigenvalues, Vector periodvalues, Vector frequencyvalues) ;
+    virtual int writeEigenModes( float *eigenvectors, int pos, int noutputs) ;
+    virtual int writeEigen_Value_Frequency_Period ( vector<float> &eigenvalues, vector<float> &periodvalues, vector<float> &frequencyvalues) ;
 
-    // Results of Substeps                // Sumeet 3rd August, 2016 
-    virtual int writeSubstepMesh(int);       
-    virtual int setSubStep(int substep_no);
+    // Results of Iterations   // Sumeet 3rd August, 2016 
+    virtual int writeIterationMesh();       
+    virtual int setGlobalIterationNo(int global_iteration_no);
 
     // General function to output arrays of nodes, gauss, element etc. [Sumeet September 2016]
-    virtual int Output( hid_t output_dataset, const Vector        &OutputVector, int pos, int noutputs );
-    virtual int Output( hid_t output_dataset, const vector<float> &OutputVector, int pos, int noutputs );
-    virtual int SubStepOutput( hid_t output_dataset, const Vector        &OutputVector, int pos, int noutputs );
-    virtual int SubStepOutput( hid_t output_dataset, const vector<float> &OutputVector, int pos, int noutputs );
+    virtual int StepOutput( hid_t output_dataset, const Vector        &OutputVector, int pos, int noutputs );
+    virtual int StepOutput( hid_t output_dataset, const vector<float> &OutputVector, int pos, int noutputs );
+    virtual int IterationOutput( hid_t output_dataset, const Vector        &OutputVector, int pos, int noutputs );
+    virtual int IterationOutput( hid_t output_dataset, const vector<float> &OutputVector, int pos, int noutputs );
 
     // Getting back datasets id [Sumeet September 2016]
     virtual hid_t getDisplacementId();
@@ -334,7 +334,7 @@ private:
     int number_of_connectivity_nodes;   // Added by sumeet 
     int current_time_step;              
 
-    int current_sub_step;               // Added by sumeet 3rd August, 2016
+    int current_iteration_no;           // Added by sumeet 3rd August, 2016
 
     int number_of_eigen_modes;          // added by sumeet 1st August, 2016
 

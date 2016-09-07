@@ -1598,7 +1598,7 @@ int H5OutputWriterMPICollective::writeDisplacements(  int nodeTag, const Vector 
 
 /************************************************************************************************************
 * Added by Sumeet 3rd August, 2016
-* It outputs the trial substep iteration results for nodes.
+* It outputs the trial iterations results for nodes.
 **************************************************************************************************************/
 
 int H5OutputWriterMPICollective::writeTrialDisplacements(  int nodeTag, const Vector &displacements)
@@ -1796,7 +1796,7 @@ int H5OutputWriterMPICollective::writeElementOutput(int elementTag, const  Vecto
 
 /************************************************************************************************************
 * Added by Sumeet 3rd August, 2016
-* It outputs the trial substep iteration results for elements output.
+* It outputs the trial iterations results for elements output.
 **************************************************************************************************************/
 // Results for Elements
 int H5OutputWriterMPICollective::writeTrialElementOutput(int elementTag, const  Vector &output)
@@ -3148,7 +3148,7 @@ int H5OutputWriterMPICollective::writeEigen_Value_Frequency_Period ( const Vecto
 
 /********************************************************************************************
 * Added by sumeet 3rd August, 2016 
-* This function is used to create the substep outputmesh
+* This function is used to create the iterations outputmesh
 *********************************************************************************************/
 int H5OutputWriterMPICollective::writeSubstepMesh(int number_of_substeps){
     

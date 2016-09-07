@@ -220,7 +220,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
     cout << "\n Writing Initial Conditions " << " " ;
 
-    result = theIntegrator->commit();
+    result = theIntegrator->output_step();
 
     if (result < 0)
     {
@@ -308,10 +308,19 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         {
             cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
             cerr << " Algorithm failed at time " << the_Domain->getCurrentTime() << endln;
+
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
 
-            this->save_substeps(the_Domain->save_number_of_non_converged_substeps, dT); 
+            /****************************************************************************************************
+            * Adde by Sumeet 2nd August, 2016
+            * This function basically, saves and performs the iterations of a current analysis_step from the 
+            * beginning of that step and also save sthe output to hdf5 file
+            *****************************************************************************************************/
+
+            cout << endl << "################## Started Writing Iteration Output ######################" << endl;; 
+            theAlgorithm->switchOutputIterationOption(true);  // Switch on the writer to write incremental output
+            theAlgorithm->solveCurrentStep();   
 
             return -3;
         }
@@ -320,6 +329,7 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
         globalESSITimer.start("Output");
         result = theIntegrator->commit();
+        result = theIntegrator->output_step();
         globalESSITimer.stop("Output");
         if (result < 0)
         {
@@ -338,37 +348,6 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
     return result;
 }
-
-/****************************************************************************************************
-* Adde by Sumeet 4nd August, 2016
-* This function basically, saves and performs the substeps of a current analysis_step from the 
-* beginning of that step till "number_of_sub_steps" as its parameter.
-*****************************************************************************************************/
-int DirectIntegrationAnalysis::save_substeps(int num_of_sub_steps, double dT){
-
-
-  if ( num_of_sub_steps <0)
-    return 0;
-
-  cout << endl << "################## Started Writing SubStep Output ######################" << endl;;
-  
-  int result=-1, sub_step_no =1;
-
-    while (result == -1 and sub_step_no <= num_of_sub_steps){
-
-        result = theAnalysisModel->newStepDomain();
-        result = theIntegrator->newStep(dT);
-        result = theAlgorithm->solveSubStep(sub_step_no);
-        theIntegrator->commit_substep(sub_step_no);
-        sub_step_no++;
-    }
-
-    this->getDomainPtr()->save_number_of_non_converged_substeps=0; // setting number_of_substeps output back to zero
-
-
-    return 0;
-} 
-
 
 int
 DirectIntegrationAnalysis::domainChanged(void)

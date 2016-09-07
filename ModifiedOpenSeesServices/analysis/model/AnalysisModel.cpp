@@ -586,8 +586,12 @@ AnalysisModel::commitDomain(void)
     return 0;
 }
 
+/*****************************************************************************************
+* Sumeet September, 2016
+* Calls the domain to output the current converged step
+******************************************************************************************/
 int
-AnalysisModel::commit_sub_step_Domain(int substep_no)
+AnalysisModel::Output_Domain_Step()
 {
     // check to see there is a Domain linked to the Model
     if (myDomain == 0)
@@ -597,7 +601,31 @@ AnalysisModel::commit_sub_step_Domain(int substep_no)
     }
 
     // invoke the method
-    if (myDomain->commit_substep(substep_no) < 0)
+    if (myDomain->output_step() < 0)
+    {
+        cerr << "WARNING: AnalysisModel::commitDomain - Domain::commit() failed\n";
+        return -2;
+    }
+
+    return 0;
+}
+
+/*****************************************************************************************
+* Sumeet September, 2016
+* Calls the domain to output the current global iteration_no
+******************************************************************************************/
+int
+AnalysisModel::Output_Domain_Iteration(int global_iteration_no)
+{
+    // check to see there is a Domain linked to the Model
+    if (myDomain == 0)
+    {
+        cerr << "WARNING: AnalysisModel::commitDomain. No Domain linked.\n";
+        return -1;
+    }
+
+    // invoke the method
+    if (myDomain->output_iteration(global_iteration_no) < 0)
     {
         cerr << "WARNING: AnalysisModel::commitDomain - Domain::commit() failed\n";
         return -2;

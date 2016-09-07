@@ -683,8 +683,8 @@ remove strain from element # $1;
 // runTest;
 runTest;
 
-// save <.> non_converged_substeps;
-save $1 non_converged_substeps;
+// save <.> non_converged_iterations;
+save $1 non_converged_iterations;
 
 // set output compression level to <.>;
 set output compression level to $1;

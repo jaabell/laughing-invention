@@ -165,7 +165,7 @@ StaticAnalysis::analyze(int numSteps)
 
     cout << "Writing Initial Conditions " << " " ;
 
-    result = theIntegrator->commit();
+    result = theIntegrator->output_step();
 
     if (result < 0)
     {
@@ -261,17 +261,28 @@ StaticAnalysis::analyze(int numSteps)
             cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
             cerr << "The Algorithm failed at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
+
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
 
-            this->save_substeps(the_Domain->save_number_of_non_converged_substeps);  
+            /****************************************************************************************************
+            * Adde by Sumeet 2nd August, 2016
+            * This function basically, saves and performs the iterations of a current analysis_step from the 
+            * beginning of that step and also save sthe output to hdf5 file
+            *****************************************************************************************************/
+
+            cout << endl << "################## Started Writing Iteration Output ######################" << endl;; 
+            theAlgorithm->switchOutputIterationOption(true);  // Switch on the writer to write incremental output
+            theIntegrator->newStep();
+            theAlgorithm->solveCurrentStep();       
 
             return -3;
         }
 
 
         globalESSITimer.start("Output");
-        result = theIntegrator->commit();
+        result = theIntegrator->commit(); 
+        result = theIntegrator->output_step();
         globalESSITimer.stop("Output");
         if (result < 0)
         {
@@ -304,36 +315,6 @@ StaticAnalysis::analyze(int numSteps)
 
     return 0;
 }
-
-/****************************************************************************************************
-* Adde by Sumeet 2nd August, 2016
-* This function basically, saves and performs the substeps of a current analysis_step from the 
-* beginning of that step till "number_of_sub_steps" as its parameter.
-*****************************************************************************************************/
-int StaticAnalysis::save_substeps(int num_of_sub_steps){
-
-
-  if ( num_of_sub_steps <=0)
-    return 0;
-
-  cout << endl << "################## Started Writing SubStep Output ######################" << endl;;
-
-  int result=-1, sub_step_no =1;
-
-    while (result == -1 and sub_step_no <= num_of_sub_steps){
-
-        result = theAnalysisModel->newStepDomain();
-        result = theIntegrator->newStep();
-        result = theAlgorithm->solveSubStep(sub_step_no);
-        theIntegrator->commit_substep(sub_step_no);
-        sub_step_no++;
-    }
-
-    this->getDomainPtr()->save_number_of_non_converged_substeps=0; // setting number_of_substeps output back to zero
-
-    return 0;
-} 
-
 
 
 int

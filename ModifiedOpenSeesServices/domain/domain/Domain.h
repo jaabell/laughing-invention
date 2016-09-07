@@ -304,12 +304,13 @@ public:
 
     virtual  int  eigenAnalysis(int numodes);
 
-    virtual  int  Commit_Eigen_Analysis();              // Added by Sumeet 1st August, 2016
+    virtual  int  Output_Eigen_Analysis();              // Added by Sumeet 1st August, 2016
 
     virtual  int  CheckMesh(const char *);
 
     virtual  int  commit(void);
-    virtual  int  commit_substep( int );               // Added by Sumeet 3rd August, 2016 for substep output
+    virtual  int  output_step(void);
+    virtual  int  output_iteration( int );               // Added by Sumeet 3rd August, 2016 for substep output
     virtual  int  revertToLastCommit(void);
     virtual  int  revertToStart(void);
     virtual  int  update(void);
@@ -391,7 +392,7 @@ public:
     virtual void removeStrainFromElement(int tag);
     virtual void removeDisplacementFromNode(int tag);
 
-    virtual void set_number_of_non_converged_substeps(int);
+    virtual void set_number_of_non_converged_iterations(int);
     void add_Element_Partition_Info(int tag, int Partition_no); // Added by [Sumeet August,2016]
     void add_Node_Partition_Info(int tag, int Partition_no);    // Added by [Sumeet August,2016]
 
@@ -480,7 +481,7 @@ public:
     bool energy_output_is_enabled;   // may be will be used in future [sumeet August, 2016]
 
     int number_of_eigen_modes=-1;                // added by sumeet 1st Asugust, 2016
-    int save_number_of_non_converged_substeps=0; // added by sumeet 5th August, 2016
+    int save_number_of_non_converged_iterations=0; // added by sumeet 5th August, 2016
     int Number_of_Constrained_Dofs;              // added by sumeet 30 August, 2016
 
     /****************************************************************

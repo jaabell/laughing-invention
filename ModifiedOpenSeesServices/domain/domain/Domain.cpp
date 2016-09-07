@@ -2634,9 +2634,36 @@ Domain::setDampingFactorsforNode( int NodeTag, int DampingTag )
 int
 Domain::commit( void )
 {
+
+    Node *nodePtr;
+    NodeIter &theNodeIter = this->getNodes();
+    Element *elePtr;
+    ElementIter &theElemIter = this->getElements();
     
-    // Calls commit() on nodes and elements. Also in charge of storing
-    // the data to the outputwriter.
+    //Do the actual commit of nodal displacements
+    while ( ( nodePtr = theNodeIter() ) != 0 )
+    {
+        nodePtr->commitState();
+    }
+
+    //Commit all elements
+    while ( ( elePtr = theElemIter() ) != 0 )
+    {
+        elePtr->commitState();
+    }
+
+    return 0;
+}
+
+
+/*************************************************************************************
+* Added by Sumeet 3rd September, 2016, to output converged step 
+* Call this function to output at every converged step and write in HDF5 file
+**************************************************************************************/
+int
+Domain::output_step( void )
+{
+    
     bool Enable_Process_output = false;
     int rank;
 #ifdef _PARALLEL_PROCESSING
@@ -2782,20 +2809,13 @@ Domain::commit( void )
         }
     }
 
+    theOutputWriter.setTime(currentTime);
+
     if (Enable_Process_output)
     {
 
-        theOutputWriter.setTime(currentTime);
-
         globalESSITimer.stop("Domain_Mesh_Output");
         globalESSITimer.start("Domain_Node_Commit_and_output");
-
-        //Do the actual commit of nodal displacements
-        theNodeIter = this->getNodes();
-        while ( ( nodePtr = theNodeIter() ) != 0 )
-        {
-            nodePtr->commitState();
-        }
 
         //Do node Output 
         if (output_is_enabled && (countdown_til_output == 0))
@@ -2810,7 +2830,7 @@ Domain::commit( void )
                 nodePtr = this->getNode(i);
                 if(nodePtr){ 
                     noutputs = nodePtr->getNumberDOF();
-                    theOutputWriter.Output(id_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                    theOutputWriter.StepOutput(id_displacement, nodePtr->getTrialDisp(), pos,noutputs);
                     pos = pos + noutputs;
                 }
             }
@@ -2819,13 +2839,6 @@ Domain::commit( void )
 
         globalESSITimer.stop("Domain_Node_Commit_and_output");
         globalESSITimer.start("Domain_Element_Commit_and_output");
-
-        //Commit all elements
-        theElemIter = this->getElements();
-        while ( ( elePtr = theElemIter() ) != 0 )
-        {
-            elePtr->commitState();
-        }
 
         //Do element output!
         if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
@@ -2839,11 +2852,11 @@ Domain::commit( void )
             {
                 
                 noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
-                if(noutputs) theOutputWriter.Output(id_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
+                if(noutputs) theOutputWriter.StepOutput(id_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
                 pos1 = pos1 + noutputs;
 
                 noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
-                if(noutputs) theOutputWriter.Output(id_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
+                if(noutputs) theOutputWriter.StepOutput(id_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
                 pos2 = pos2 + noutputs;
 
             }
@@ -2880,13 +2893,14 @@ Domain::commit( void )
 }
 
 
+
 /*************************************************************************************
 * Added by Sumeet 3rd August, 2016, to output substep iteration steps for debugging 
 * The function commits at every substep i,e the trail displacements and trial element
 * output HDF5 Output file. It does not commit any displacements or element output
 **************************************************************************************/
 int
-Domain::commit_substep( int substep_no )
+Domain::output_iteration( int global_iteration_no )
 {
     // gets trial output from the nodes and elements. Also in charge of storing
     // the data to the outputwriter.
@@ -2902,23 +2916,12 @@ Domain::commit_substep( int substep_no )
     if (output_is_enabled && countdown_til_output == 0)
     {
         //Write out static mesh data once!
-        if (substep_no==1)
-        {
-#ifdef _PARALLEL_PROCESSING
-            theOutputWriter.syncWriters();
-#endif
-        
-        theOutputWriter.writeSubstepMesh(save_number_of_non_converged_substeps);
-
-        }
-        
-        theOutputWriter.setSubStep(substep_no);
+        if (global_iteration_no==1) {       
+            theOutputWriter.writeIterationMesh();
+        }        
     }
 
-    globalESSITimer.stop("Domain_Mesh_Output");
-
-
-    globalESSITimer.start("Domain_Node_Commit_and_output");
+    theOutputWriter.setGlobalIterationNo(global_iteration_no);
 
     //get Trail Results from nodes
     if (output_is_enabled && (countdown_til_output == 0))
@@ -2932,17 +2935,11 @@ Domain::commit_substep( int substep_no )
             nodePtr = this->getNode(i);
             if(nodePtr){ 
                 noutputs = nodePtr->getNumberDOF();
-                theOutputWriter.SubStepOutput(id_trial_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                theOutputWriter.IterationOutput(id_trial_displacement, nodePtr->getTrialDisp(), pos,noutputs);
                 pos = pos + noutputs;
             }
         }
     }
-
-    globalESSITimer.stop("Domain_Node_Commit_and_output");
-
-
-    globalESSITimer.start("Domain_Element_Commit_and_output");
-
 
     //get Trail Results from nodes
     if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
@@ -2956,26 +2953,18 @@ Domain::commit_substep( int substep_no )
         {
             
             noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
-            if(noutputs) theOutputWriter.SubStepOutput(id_Trial_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
+            if(noutputs) theOutputWriter.IterationOutput(id_Trial_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
             pos1 = pos1 + noutputs;
 
             noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
-            if(noutputs) theOutputWriter.SubStepOutput(id_Trial_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
+            if(noutputs) theOutputWriter.IterationOutput(id_Trial_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
             pos2 = pos2 + noutputs;
 
         }
 
     }
 
-    globalESSITimer.stop("Domain_Element_Commit_and_output");
-
     cout << "................... completed!!" << endl;;
-
-    if (countdown_til_output == 0)
-    {
-        countdown_til_output = output_every_nsteps;
-    }
-    countdown_til_output--;
 
     return 0;
 }
@@ -4489,31 +4478,49 @@ Domain::eigenAnalysis(int numodes)
 
 /*********************************************************************************
 * sumeet 1st August, 2016
-* Prints out the eigen_value analysis to hdf5 outpout file.
+* Outputs the eigen_value analysis to hdf5 outpout file.
 *********************************************************************************/ 
-int Domain::Commit_Eigen_Analysis()
+int Domain::Output_Eigen_Analysis()
 {
 
     Node *nodePtr;
-    NodeIter &theNodeIter = this->getNodes();
+    int noutputs;
+    int pos=0;
 
-    while ((nodePtr = theNodeIter()) != 0)
-    {
-        int nodeTag =  nodePtr->getTag();
-        theOutputWriter.writeEigenModes( nodeTag, nodePtr->getEigenvectors());
+    for(int i =0 ; i<=maxNodesTag; i++){
+        nodePtr = this->getNode(i);
+        if(nodePtr){ 
+
+            noutputs = nodePtr->getNumberDOF();
+            Matrix matrix = nodePtr->getEigenvectors();
+
+            int n = noutputs * number_of_eigen_modes;
+            float data[n];
+
+            for(int j =0; j<number_of_eigen_modes; j++){
+                for(int k=0; k<noutputs; k++){
+                    data[k*number_of_eigen_modes+j] = matrix(k,j);
+                }
+            }
+            theOutputWriter.writeEigenModes(data,pos, noutputs);
+            pos = pos + noutputs;
+        }
     }
 
-    const Vector &eigenvalues = this->getEigenvalues();
-    Vector periodvalues(number_of_eigen_modes);
-    Vector frequencyvalues(number_of_eigen_modes);
+
+    const Vector &eigen_values = this->getEigenvalues();
+    vector<float>  periodvalues(number_of_eigen_modes);
+    vector<float>  frequencyvalues(number_of_eigen_modes);
+    vector<float>  eigenvalues(number_of_eigen_modes);
 
     double Pi = 2 * asin(1.0);
 
     for (int i = 0; i < number_of_eigen_modes; i++)
     {
-        double sqrtEigen = sqrt(eigenvalues(i));
-        periodvalues(i) = 2 * Pi / sqrtEigen;
-        frequencyvalues(i) = sqrtEigen / (2 * Pi);
+        double sqrtEigen = sqrt(eigen_values(i));
+        eigenvalues    [i]    = eigen_values(i);
+        periodvalues   [i]    = 2 * Pi / sqrtEigen;
+        frequencyvalues[i]    = sqrtEigen / (2 * Pi);
     }
 
     theOutputWriter.writeEigen_Value_Frequency_Period ( eigenvalues, periodvalues, frequencyvalues);
@@ -4667,7 +4674,7 @@ Domain::setOutputWriter(std::string filename_in,
 {
     theOutputWriter.initialize(filename_in, model_name_in, stage_name_in, nsteps);
     have_written_static_mesh_data = false;
-    save_number_of_non_converged_substeps =0;    // Added by summet for substep output
+    save_number_of_non_converged_iterations =0;    // Added by summet for substep output
     return 0;
 }
 
@@ -4864,11 +4871,11 @@ void Domain::removeDisplacementFromNode(int tag)
 
 /*************************************************************************************************
 * Added by Sumeet 5th August 2016
-* This function basically sets the number of substeps output in the non_converged state
+* This function basically sets the number of iterations output in the non_converged state
 ***************************************************************************************************/
-void Domain:: set_number_of_non_converged_substeps(int Num_Sub_Steps){
+void Domain:: set_number_of_non_converged_iterations(int Number_Of_Iterations){
 
-    this->save_number_of_non_converged_substeps =  Num_Sub_Steps > 0 ? Num_Sub_Steps : 0;
+    this->save_number_of_non_converged_iterations =  Number_Of_Iterations > 0 ? Number_Of_Iterations : 0;
 
     return;
 }

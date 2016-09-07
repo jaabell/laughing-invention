@@ -54,7 +54,7 @@ using namespace std;
 // Constructor
 ModifiedNewton::ModifiedNewton(int theTangentToUse)
     : EquiSolnAlgo(EquiALGORITHM_TAGS_ModifiedNewton),
-      theTest(0), tangent(theTangentToUse)
+      theTest(0), tangent(theTangentToUse),global_iteration_no(0), output_iterations(false)
 {
 
 }
@@ -62,7 +62,7 @@ ModifiedNewton::ModifiedNewton(int theTangentToUse)
 
 ModifiedNewton::ModifiedNewton(ConvergenceTest& theT, int theTangentToUse)
     : EquiSolnAlgo(EquiALGORITHM_TAGS_ModifiedNewton),
-      theTest(&theT), tangent(theTangentToUse)
+      theTest(&theT), tangent(theTangentToUse),global_iteration_no(0), output_iterations(false)
 {
 
 }
@@ -160,95 +160,11 @@ ModifiedNewton::solveCurrentStep(void)
         // this->record(count++);
         result = theTest->test();
 
+        if(output_iterations) // Added by Sumeet September, 2016
+            theIncIntegratorr->output_iteration(++global_iteration_no);
+
     }
     while (result == -1);
-
-    //timer1.pause();
-    //cerr << "TIMER::solveCurrentStep - " << timer1;
-
-    if (result == -2)
-    {
-        cerr << "ModifiedNewton::solveCurrentStep() -";
-        cerr << "the ConvergenceTest object failed in test()\n";
-        return -3;
-    }
-
-    return result;
-}
-
-int
-ModifiedNewton::solveSubStep(int substep_no)
-{
-    
-    if(substep_no==1){
-        // set up some pointers and check they are valid
-        // NOTE this could be taken away if we set Ptrs as protecetd in superclass
-        AnalysisModel*       theAnalysisModel = this->getAnalysisModelPtr();
-        IncrementalIntegrator* theIncIntegratorr = this->getIncrementalIntegratorPtr();
-        LinearSOE*           theSOE = this->getLinearSOEptr();
-
-        if ((theAnalysisModel == 0) || (theIncIntegratorr == 0) || (theSOE == 0)
-                || (theTest == 0))
-        {
-            cerr << "WARNING ModifiedNewton::solveCurrentStep() - setLinks() has";
-            cerr << " not been called - or no ConvergenceTest has been set\n";
-            return -5;
-        }
-
-
-        if (theIncIntegratorr->formUnbalance() < 0)
-        {
-            cerr << "WARNING ModifiedNewton::solveCurrentStep() -";
-            cerr << "the Integrator failed in formUnbalance()\n";
-            return -2;
-        }
-
-        if (theIncIntegratorr->formTangent(tangent) < 0)
-        {
-            cerr << "WARNING ModifiedNewton::solveCurrentStep() -";
-            cerr << "the Integrator failed in formTangent()\n";
-            return -1;
-        }
-
-        // set itself as the ConvergenceTest objects EquiSolnAlgo
-        theTest->setEquiSolnAlgo(*this);
-
-        if (theTest->start() < 0)
-        {
-            cerr << "ModifiedNewton::solveCurrentStep() -";
-            cerr << "the ConvergenceTest object failed in start()\n";
-            return -3;
-        }
-    }
-
-    //Timer timer2;
-    //timer2.start();
-    if (theSOE->solve() < 0)
-    {
-        cerr << "WARNING ModifiedNewton::solveCurrentStep() -";
-        cerr << "the LinearSysOfEqn failed in solve()\n";
-        return -3;
-    }
-
-    //timer2.pause();
-    //cerr << "TIMER::SOLVE()- " << timer2;
-
-    if (theIncIntegratorr->update(theSOE->getX()) < 0)
-    {
-        cerr << "WARNING ModifiedNewton::solveCurrentStep() -";
-        cerr << "the Integrator failed in update()\n";
-        return -4;
-    }
-
-    if (theIncIntegratorr->formUnbalance() < 0)
-    {
-        cerr << "WARNING ModifiedNewton::solveCurrentStep() -";
-        cerr << "the Integrator failed in formUnbalance()\n";
-        return -2;
-    }
-
-    // this->record(count++);
-    int result = theTest->test();
 
     //timer1.pause();
     //cerr << "TIMER::solveCurrentStep - " << timer1;
@@ -295,4 +211,14 @@ ModifiedNewton::Print(ostream& s, int flag)
     {
         s << "ModifiedNewton";
     }
+}
+
+/***********************************************************************
+* Sumeet September, 2016
+* Switch on/off the saving of output of iterations 
+************************************************************************/
+void 
+ModifiedNewton::switchOutputIterationOption(bool status){
+
+    output_iterations=status;
 }

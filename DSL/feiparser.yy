@@ -264,7 +264,7 @@
 %token equaldof master slave dof_to_constrain of
 
 // for output control
-%token OUTPUT BINARY TEXT ENABLE DISABLE COMPRESSION SAVE NON_CONVERGED_SUBSTEPS
+%token OUTPUT BINARY TEXT ENABLE DISABLE COMPRESSION SAVE NON_CONVERGED_ITERATIONS
 
 // for mysql
 //%token mysql databasename host password username port socket STATE
@@ -1915,14 +1915,14 @@ CMD_misc
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC save <.> non_converged_substeps;
-	| SAVE exp NON_CONVERGED_SUBSTEPS
+	//!FEIDOC save <.> non_converged_iterations;
+	| SAVE exp NON_CONVERGED_ITERATIONS
 	{
 		args.clear(); signature.clear();
 		args.push_back($2); signature.push_back
-		(this_signature("non_converged_substeps", &isAdimensional));
+		(this_signature("non_converged_iterations", &isAdimensional));
 
-		$$ = new FeiDslCaller1<int>(&save_non_converged_substeps, args, signature, "save_non_converged_substeps");
+		$$ = new FeiDslCaller1<int>(&save_non_converged_iterations, args, signature, "save_non_converged_iterations");
 
 		nodes.pop();
 		nodes.push($$);

@@ -794,7 +794,7 @@ EXP	([Ee][-+]?[0-9]+)
 "disable"                           {return token::DISABLE;}
 "compression"                       {return token::COMPRESSION;}
 "save"								{return token::SAVE;}
-"non_converged_substeps"			{return token::NON_CONVERGED_SUBSTEPS;}
+"non_converged_iterations"			{return token::NON_CONVERGED_ITERATIONS;}
 
  /* ================================================================================================= */
  /* ========                    AUXILLIARY WORDS                                            ========= */

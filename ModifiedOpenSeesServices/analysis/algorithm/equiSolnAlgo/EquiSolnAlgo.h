@@ -61,9 +61,9 @@ class EquiSolnAlgo: public SolutionAlgorithm
 
         // virtual functions
         virtual int solveCurrentStep(void) = 0;
-        virtual int solveSubStep(int substep_no) =0;
         virtual int setConvergenceTest(ConvergenceTest* theTest) = 0;
         virtual ConvergenceTest* getConvergenceTest(void) = 0;
+        virtual void switchOutputIterationOption(bool status)=0; // Sumeet September, 2016
 
         virtual void Print(ostream& s, int flag = 0) = 0;
 

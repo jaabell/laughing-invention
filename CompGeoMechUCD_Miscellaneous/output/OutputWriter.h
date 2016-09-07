@@ -74,8 +74,8 @@ public:
     virtual int writeGaussOutput(int elementTag, const vector<float> &output,int noutputs) = 0;
 
     // General Function for all element and nodes output
-    virtual int Output( hid_t output_dataset, const Vector &displacements, int pos, int noutputs ) = 0;
-    virtual int Output( hid_t output_dataset, const vector<float> &displacements, int pos, int noutputs ) = 0;
+    virtual int StepOutput( hid_t output_dataset, const Vector &displacements, int pos, int noutputs ) = 0;
+    virtual int StepOutput( hid_t output_dataset, const vector<float> &displacements, int pos, int noutputs ) = 0;
 
 private:
 

@@ -119,7 +119,7 @@ remove load # <.>;
 remove node # <.>;
 remove strain from element # <.>;
 runTest;
-save <.> non_converged_substeps;
+save <.> non_converged_iterations;
 set output compression level to <.>;
 simulate <.> steps using static algorithm;
 simulate <.> steps using transient algorithm time_step = <time>;

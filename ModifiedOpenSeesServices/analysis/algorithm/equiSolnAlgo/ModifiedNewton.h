@@ -51,8 +51,8 @@ class ModifiedNewton: public EquiSolnAlgo
         ~ModifiedNewton();
 
         int solveCurrentStep(void);
-        int solveSubStep(int substep_no);
         int setConvergenceTest(ConvergenceTest* theTest);
+        void switchOutputIterationOption(bool status);                     // Sumeet September 2016
         ConvergenceTest* getConvergenceTest(void);
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
@@ -69,6 +69,10 @@ class ModifiedNewton: public EquiSolnAlgo
         IncrementalIntegrator* theIncIntegratorr;
         LinearSOE*  theSOE ;
         int tangent;
+
+        // Sumeet September, 2016 for writing iteration outputs
+        int global_iteration_no;
+        bool output_iterations;
 };
 
 #endif
