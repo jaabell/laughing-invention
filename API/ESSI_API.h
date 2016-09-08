@@ -344,8 +344,11 @@ static StaticIntegrator                           *theStaticIntegrator          
 static TransientIntegrator                        *theTransientIntegrator               = 0;
 static ConvergenceTest                            *theConvergenceTest                   = 0;
 static EigenSOE                                   *theEigenSOE                          = 0;
-static RCM                                        *theRCM                               = new RCM();  // Not used in parallel  // Commenting it [Sumeet Septemebr, 2016]
 
+#ifdef _PARALLEL_PROCESSING
+#else
+static RCM                                        *theRCM                               = new RCM();  // Not used in parallel  
+#endif
 
 // Store names of model and stages
 static string StageName;

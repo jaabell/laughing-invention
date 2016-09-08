@@ -1298,7 +1298,7 @@ PartitionedDomain::partition(int numPartitions)
 
     // need to create element graph before create new subdomains
     // DO NOT REMOVE THIS LINE __ EVEN IF COMPILER WARNING ABOUT UNUSED VARIABLE
-    Graph *theEleGraph = this->getElementGraph();
+    /*Graph *theEleGraph = */this->getElementGraph();
 
     // check to see that they have ones with the correct tags
     if (theSubdomains != 0)
