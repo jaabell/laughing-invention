@@ -2568,7 +2568,7 @@ char *yytext;
 	#include <fenv.h>  // For feenableexcept()
     #include <cmath>
     #include <cerrno>
-    #pragma STDC FENV_ACCESS ON 
+    #pragma STDC FENV_ACCESS ON
     #include <stacktrace.h>
     #include <cstdlib>
 	#include <cstring>

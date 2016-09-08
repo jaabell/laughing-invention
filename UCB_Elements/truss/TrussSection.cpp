@@ -51,7 +51,7 @@
 #include <stdlib.h>
 
 // initialise the class wide variables
-Matrix TrussSection::trussM2(2, 2);
+Matrix TrussSection::trussM2(2, 2); 
 Matrix TrussSection::trussM3(3, 3);
 Matrix TrussSection::trussM4(4, 4);
 Matrix TrussSection::trussM6(6, 6);
@@ -64,7 +64,7 @@ Vector TrussSection::trussV12(12);
 
 TrussSection::TrussSection(int tag,
                            int dim,
-                           int Nd1, int Nd2,
+                           int Nd1,int Nd2,
                            SectionForceDeformation &theSect,
                            double r)
     : Element(tag, ELE_TAG_TrussSection),
