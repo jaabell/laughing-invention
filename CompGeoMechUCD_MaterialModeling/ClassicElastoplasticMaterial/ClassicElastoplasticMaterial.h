@@ -1949,7 +1949,7 @@ private:
 
                     double f_relative_error=this->f_relative_tol*10;
 
-                    while ((stress_relative_error > this-> stress_relative_tol ||
+                    while ((stress_relative_error > this-> stress_relative_tol &&
                             f_relative_error > this->f_relative_tol) &&
                             iteration_count++ < this->n_max_iterations
                           )
@@ -1988,7 +1988,17 @@ private:
                         // yf_TrialStress_prev = yf(TrialStress_prev) ;
 
                         TrialStress(i, j) = PredictorStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
-
+                        // ============================================================
+                        // Line search in the constitutive level
+                        // ============================================================
+                        double subdLambda = dLambda;
+                        while(yf(TrialStress) > yf(PredictorStress) && subdLambda > MACHINE_EPSILON*10){
+                            // cout<<"Using local line search!\n";
+                            subdLambda *= 0.5;
+                            // cout<<"subdLambda = " << subdLambda <<endl;
+                            TrialStress(i, j) = PredictorStress(i, j) - subdLambda * Eelastic(i, j, k, l) * m(k, l);
+                        }
+                        // ============================================================
                         vars.evolve(dLambda, depsilon, m, TrialStress);
                         yf_TrialStress = yf(TrialStress);
 
