@@ -1709,6 +1709,18 @@ private:
 
                     TrialStress(i, j) = PredictorStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
 
+                    // ============================================================
+                    // Line search in the constitutive level
+                    // ============================================================
+                    double subdLambda = dLambda;
+                    while(yf(TrialStress) > yf(PredictorStress) && subdLambda > MACHINE_EPSILON*10){
+                        // cout<<"Using local line search!\n";
+                        subdLambda *= 0.5;
+                        // cout<<"subdLambda = " << subdLambda <<endl;
+                        TrialStress(i, j) = PredictorStress(i, j) - subdLambda * Eelastic(i, j, k, l) * m(k, l);
+                    }
+                    // ============================================================
+
                     vars.evolve(dLambda, depsilon, m, TrialStress);
                     yf_TrialStress = yf(TrialStress);
 
