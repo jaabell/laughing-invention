@@ -2798,12 +2798,13 @@ Domain::output_step( void )
             
             have_written_static_mesh_data = true;
 
-            if(number_of_eigen_modes>=0){
-                theOutputWriter.writeEigenMesh(number_of_eigen_modes);
-            }
-
             // Erase all temporaray arrays 
             theOutputWriter.DeleteMeshArrays();
+            
+            if(number_of_eigen_modes>=0){
+                theOutputWriter.writeEigenMesh(number_of_eigen_modes);
+                return 0;
+            }
 
         }
     }

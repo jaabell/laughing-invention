@@ -995,7 +995,7 @@ void H5OutputWriter::writeMesh()
 
             dims[0]    = this->number_of_gausspoints*3;
             maxdims[0] = this->number_of_gausspoints*3;
-            id_elements_gausscoords           = createVariableLengthFloatArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ",1); // DataArray is still constant. This function enables chunking and compression
+            id_elements_gausscoords           = createConstantLengthFloatArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " "); // DataArray is still constant. This function enables chunking and compression
 
             dims[0]    = this->number_of_connectivity_nodes;
             maxdims[0] = this->number_of_connectivity_nodes;
@@ -1173,7 +1173,7 @@ void H5OutputWriter::writeMesh()
             maxdims[0] = size;
             id_Constrained_DOFs               = createConstantLengthIntegerArray(id_nodes_group, rank, dims, maxdims, "Constrained_DOFs", " ");
 
-            if(reaction_output_is_enabled)
+            if(reaction_output_is_enabled && size)
             {
                 int rank = 2;
                 hsize_t dims[2];
@@ -1508,27 +1508,34 @@ int H5OutputWriter::writeDummyDisplacements(  )
     return 0;
 }
 
+/******************************************************************************
+* Sumeet September, 2016
+* Writes Support Reactions to HDF5 file 
+******************************************************************************/
 int H5OutputWriter::writeSupportReactions( int number_of_constrained_dofs, const std::vector<float> &reactionForces){
 
-    int datarank         = 1;
-    hsize_t data_dims[1] = {(hsize_t) number_of_constrained_dofs};
-    hsize_t offset[2]    = {0 , (hsize_t) current_time_step-1};
-    hsize_t stride[2]    = {1 , 1};
-    hsize_t count[2]     = {(hsize_t) number_of_constrained_dofs , 1};
-    hsize_t block[2]     = {1 , 1};
+    if(number_of_constrained_dofs)
+    {
+        int datarank         = 1;
+        hsize_t data_dims[1] = {(hsize_t) number_of_constrained_dofs};
+        hsize_t offset[2]    = {0 , (hsize_t) current_time_step-1};
+        hsize_t stride[2]    = {1 , 1};
+        hsize_t count[2]     = {(hsize_t) number_of_constrained_dofs , 1};
+        hsize_t block[2]     = {1 , 1};
 
-    hsize_t dims[0];
-    dims[1] = (hsize_t) number_of_constrained_dofs;  
+        hsize_t dims[0];
+        dims[1] = (hsize_t) number_of_constrained_dofs;  
 
-    writeConstantLengthFloatArray(id_support_reactions,
-                                   datarank,
-                                   dims,
-                                   data_dims,
-                                   offset,
-                                   stride,
-                                   count,
-                                   block,
-                                   &reactionForces[0]);
+        writeConstantLengthFloatArray(id_support_reactions,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       &reactionForces[0]);
+    }
 
     H5OUTPUTWRITER_COUNT_OBJS;
 
@@ -2844,9 +2851,9 @@ int H5OutputWriter::writeEigenMesh (int number_of_modes){
         dims[0] = number_of_modes;
         maxdims[0] = number_of_modes;
 
-        id_eigen_values      = createVariableLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "values", " ",1); // DataArray is still constant. This function enables chunking and compression
-        id_eigen_frequencies = createVariableLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "frequencies", " ",1); // DataArray is still constant. This function enables chunking and compression
-        id_eigen_periods     = createVariableLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "periods", " ",1); // DataArray is still constant. This function enables chunking and compression
+        id_eigen_values      = createConstantLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "values", " ");
+        id_eigen_frequencies = createConstantLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "frequencies", " ");
+        id_eigen_periods     = createConstantLengthFloatArray(id_eigen_analysis_group, rank, dims, maxdims, "periods", " ");
 
         {
             int rank = 2;

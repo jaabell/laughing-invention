@@ -283,52 +283,6 @@ int EightNodeBrick_u_p_U::commitState (void)
         retVal += theMaterial[i]->commitState();
     }
 
-    //Forming output
-    // stresstensor stress;
-    // straintensor strain;
-    // straintensor plstrain;
-    int ii = 0;
-    int gp = 0;
-    for ( short GP_c_r = 1 ; GP_c_r <= Num_IntegrationPts ; GP_c_r++ )
-    {
-        for ( short GP_c_s = 1 ; GP_c_s <= Num_IntegrationPts ; GP_c_s++ )
-        {
-            for ( short GP_c_t = 1 ; GP_c_t <= Num_IntegrationPts ; GP_c_t++ )
-            {
-                // i = ((GP_c_r - 1) * Num_IntegrationPts + GP_c_s - 1) * Num_IntegrationPts + GP_c_t - 1;
-
-                const stresstensor &stress = theMaterial[gp]->getStressTensor();
-                const straintensor &strain = theMaterial[gp]->getStrainTensor();
-                const straintensor &plstrain = theMaterial[gp]->getPlasticStrainTensor();
-
-                //Write strain
-                Gauss_Output_Vector[ii++] = strain.cval(1, 1);
-                Gauss_Output_Vector[ii++] = strain.cval(2, 2);
-                Gauss_Output_Vector[ii++] = strain.cval(3, 3);
-                Gauss_Output_Vector[ii++] = strain.cval(1, 2);
-                Gauss_Output_Vector[ii++] = strain.cval(1, 3);
-                Gauss_Output_Vector[ii++] = strain.cval(2, 3);
-
-                //Write strain
-                Gauss_Output_Vector[ii++] = plstrain.cval(1, 1);
-                Gauss_Output_Vector[ii++] = plstrain.cval(2, 2);
-                Gauss_Output_Vector[ii++] = plstrain.cval(3, 3);
-                Gauss_Output_Vector[ii++] = plstrain.cval(1, 2);
-                Gauss_Output_Vector[ii++] = plstrain.cval(1, 3);
-                Gauss_Output_Vector[ii++] = plstrain.cval(2, 3);
-
-                //Write stress
-                Gauss_Output_Vector[ii++] = stress.cval(1, 1);
-                Gauss_Output_Vector[ii++] = stress.cval(2, 2);
-                Gauss_Output_Vector[ii++] = stress.cval(3, 3);
-                Gauss_Output_Vector[ii++] = stress.cval(1, 2);
-                Gauss_Output_Vector[ii++] = stress.cval(1, 3);
-                Gauss_Output_Vector[ii++] = stress.cval(2, 3);
-
-                gp++;
-            }
-        }
-    }
     return retVal;
 }
 
@@ -1656,6 +1610,54 @@ Matrix &EightNodeBrick_u_p_U::getGaussCoordinates(void)
 ***********************************************************************************/
 const vector<float> &EightNodeBrick_u_p_U::getGaussOutput()
 {
+
+    //Forming output
+    // stresstensor stress;
+    // straintensor strain;
+    // straintensor plstrain;
+    int ii = 0;
+    int gp = 0;
+    for ( short GP_c_r = 1 ; GP_c_r <= Num_IntegrationPts ; GP_c_r++ )
+    {
+        for ( short GP_c_s = 1 ; GP_c_s <= Num_IntegrationPts ; GP_c_s++ )
+        {
+            for ( short GP_c_t = 1 ; GP_c_t <= Num_IntegrationPts ; GP_c_t++ )
+            {
+                // i = ((GP_c_r - 1) * Num_IntegrationPts + GP_c_s - 1) * Num_IntegrationPts + GP_c_t - 1;
+
+                const stresstensor &stress = theMaterial[gp]->getStressTensor();
+                const straintensor &strain = theMaterial[gp]->getStrainTensor();
+                const straintensor &plstrain = theMaterial[gp]->getPlasticStrainTensor();
+
+                //Write strain
+                Gauss_Output_Vector[ii++] = strain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 3);
+
+                //Write strain
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 3);
+
+                //Write stress
+                Gauss_Output_Vector[ii++] = stress.cval(1, 1);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(3, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 3);
+
+                gp++;
+            }
+        }
+    }
+
     return Gauss_Output_Vector;
 }
 
