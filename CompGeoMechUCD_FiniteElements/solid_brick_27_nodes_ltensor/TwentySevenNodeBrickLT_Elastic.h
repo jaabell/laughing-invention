@@ -3,8 +3,8 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:         Jose Abell
-// DATE:               Dec 2015
+// PROGRAMMER:         Boris Jeremic, Zhaohui Yang, Xiaoyan Wu, Nima Tafazzoli, & Jose Abell
+// DATE:               NOv. 2013
 // UPDATE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation
@@ -25,35 +25,35 @@
 /////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////
-// Adapted by Jose Abell, from EightNodeBrick to use the LTensor library for
-// tensorial representation.
+// Adapted by Sumeet, from TwentySevenNodeBrick to use the LTensor library for
+// tensorial representation. [September, 2016]
 /////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef EightNodeBrickLT_NoOutputLT_H
-#define EightNodeBrickLT_NoOutputLT_H
-
-#include "EightNodeBrickLT.h"
+#ifndef TwentySevenNodeBrickLT_ElasticLT_H
+#define TwentySevenNodeBrickLT_ElasticLT_H
 
 
-// This element does not have any outputs 
+#include "TwentySevenNodeBrickLT.h"
 
 class Node;
 
-class EightNodeBrickLT_NoOutput: public EightNodeBrickLT
+class TwentySevenNodeBrickLT_Elastic: public TwentySevenNodeBrickLT
 {
 
 public:
-    EightNodeBrickLT_NoOutput( int element_number,
-                               int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
-                               int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                               NDMaterialLT *Globalmmodel);
+    TwentySevenNodeBrickLT_Elastic( int element_number,
+                      int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
+                      int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
+                      NDMaterialLT *Globalmmodel);
 
-    EightNodeBrickLT_NoOutput ();
+    TwentySevenNodeBrickLT_Elastic ();
 
+    const Matrix &getTangentStiff ();
+    
     std::string getElementName() const
     {
-        return "EightNodeBrickLT_NoOutput";
+        return "TwentySevenNodeBrickLT_Elastic";
     }
 };
 

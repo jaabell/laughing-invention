@@ -393,8 +393,8 @@ private:
     hid_t id_eigen_frequencies;
     hid_t id_eigen_periods;
 
-    // added by sumeet 3rd August, 2016 for substeps output
-    hid_t id_number_of_substeps;
+    // added by sumeet 3rd August, 2016 for non_converged iterations output
+    hid_t id_number_of_iterations;
     hid_t id_trial_nodes_displacements; 
     hid_t id_trial_elements_output;
     hid_t id_trial_gauss_output;

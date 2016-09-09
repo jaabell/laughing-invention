@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
@@ -178,8 +178,9 @@ public:
     * Sumeet August, 2016
     * This element has no gauss points and thus no outputs at gauss points 
     * so no needto have the "getGaussOutput()" function
+    * Disabled as we don't know what is the correct output -> Also No. of outputs in calss_Tag_Desc in classtags.h made to 0.
     *********************************************************************************************************************/
-    virtual const vector<float> &getElementOutput() ;
+    // virtual const vector<float> &getElementOutput() ;
 
 
 
@@ -219,7 +220,7 @@ private:
     bool is_stiffness_calculated;
     bool is_mass_calculated;
 
-    static vector<float> Element_Output_Vector;
+    // static vector<float> Element_Output_Vector;
 };
 
 

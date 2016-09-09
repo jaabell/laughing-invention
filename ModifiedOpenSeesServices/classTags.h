@@ -411,11 +411,11 @@
 #define ELE_TAG_ElasticBeam                                      2   //5011    102600024         // Nima Tafazzoli, December 2012
 #define ELE_TAG_HardContact				                         3   //5015    102300009         // Sumeet June 2016
 #define ELE_TAG_ThreeNodeAndesShell                              4   //2026    203600006
-#define ELE_TAG_FourNodeAndesShell                               5   //2029    204600006               
+#define ELE_TAG_FourNodeAndesShell                               5   //2029    204600000               
 #define ELE_TAG_EightNodeBrickLT                                 6   //8001    308308000
 #define ELE_TAG_TwentySevenNodeBrickLT                           7   //8002    327327000
 #define ELE_TAG_ShearBeamLT                                      8   //8003    302301000
-#define ELE_TAG_EightNodeBrickLT_NoOutput                        9   //8004    308308000
+#define ELE_TAG_EightNodeBrickLT_NoOutput                        9   //8004    308300000
 #define ELE_TAG_TwentyNodeBrickLT                                10  //8005    320327000
 #define ELE_TAG_SoftContact         	 						 11  //5016    102300009         // Sumeet added on July 2016
 #define ELE_TAG_EightNodeBrick_u_p_U                             12  //7003    308708000   
@@ -433,7 +433,7 @@
 102600024, \
 102300009, \
 203600006, \
-204600006, \
+204600000, \
 308308000, \
 327327000, \
 302301000, \

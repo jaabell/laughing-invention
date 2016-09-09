@@ -80,7 +80,7 @@ using namespace std;
 
 // Initialize static variables
 unsigned int FourNodeAndesShell::number_of_four_node_andes_shells = 0;
-vector<float> FourNodeAndesShell::Element_Output_Vector(6);
+// vector<float> FourNodeAndesShell::Element_Output_Vector(6);
 
 // This array relates the DOFs of each sub-triangle to the DOFs of the parent quad. pl is for "placement array"
 const unsigned int FourNodeAndesShell::pl[4][18] =
@@ -1021,28 +1021,29 @@ void FourNodeAndesShell::compute_internal_forces()
 
 }
 
-const vector<float> &FourNodeAndesShell::getElementOutput()
-{
-    // Hold moment fields from each subtriangle and master quad
-    Vector m1(3), m2(3), m3(3), m4(3), m(3);
+// Sumeet Yuan and Boris Removed on 8th September as we do not know output
+// const vector<float> &FourNodeAndesShell::getElementOutput()
+// {
+//     // Hold moment fields from each subtriangle and master quad
+//     Vector m1(3), m2(3), m3(3), m4(3), m(3);
 
-    m1 = triangle1->get_moment_field();
-    m2 = triangle2->get_moment_field();
-    m3 = triangle3->get_moment_field();
-    m4 = triangle4->get_moment_field();
+//     m1 = triangle1->get_moment_field();
+//     m2 = triangle2->get_moment_field();
+//     m3 = triangle3->get_moment_field();
+//     m4 = triangle4->get_moment_field();
 
-    // Average fields over master quad (NOTE: Who knows if this is correct?) Ask Felippa.... good luck with that
-    m = 0.25 * (m1 + m2 + m3 + m4);
+//     // Average fields over master quad (NOTE: Who knows if this is correct?) Ask Felippa.... good luck with that
+//     m = 0.25 * (m1 + m2 + m3 + m4);
 
-    Element_Output_Vector[0] = 0.0;    // p11 TODO:implement this
-    Element_Output_Vector[1] = 0.0;    // p22 TODO:implement this
-    Element_Output_Vector[2] = 0.0;    // p12 TODO:implement this
-    Element_Output_Vector[3] = m(0);   // m11
-    Element_Output_Vector[4] = m(1);   // m22
-    Element_Output_Vector[5] = m(2);   // m12
+//     Element_Output_Vector[0] = 0.0;    // p11 TODO:implement this
+//     Element_Output_Vector[1] = 0.0;    // p22 TODO:implement this
+//     Element_Output_Vector[2] = 0.0;    // p12 TODO:implement this
+//     Element_Output_Vector[3] = m(0);   // m11
+//     Element_Output_Vector[4] = m(1);   // m22
+//     Element_Output_Vector[5] = m(2);   // m12
 
-    return Element_Output_Vector;
-}
+//     return Element_Output_Vector;
+// }
 
 
 int FourNodeAndesShell::getObjectSize()

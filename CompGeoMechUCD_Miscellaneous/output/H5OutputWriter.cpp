@@ -739,7 +739,7 @@ void H5OutputWriter::writeMesh()
         id_number_of_gauss_points = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
         id_number_of_element_outputs = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Element_Outputs", " ");
         id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
-        id_number_of_substeps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Sub_Steps", " ");
+        id_number_of_iterations = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Iterations", " ");
         hsize_t id_my_proc_rank = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Process_Number", " ");
         hsize_t id_number_of_procs = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Processes_Used", " ");
 
@@ -798,7 +798,7 @@ void H5OutputWriter::writeMesh()
         count[0]     = 1;
          
         
-        writeConstantLengthIntegerArray(id_number_of_substeps, rank, dims, data_dims, offset, stride, count, block,
+        writeConstantLengthIntegerArray(id_number_of_iterations, rank, dims, data_dims, offset, stride, count, block,
                             &current_iteration_no);
 
         writeConstantLengthIntegerArray(id_my_proc_rank, rank, dims, data_dims, offset, stride, count, block,
@@ -3035,7 +3035,7 @@ int H5OutputWriter::setGlobalIterationNo(int global_iteration_no){
     hsize_t dims0[1]={0};
     int rank =1;
 
-    writeConstantLengthIntegerArray(id_number_of_substeps, rank, dims, dims, dims0, dims, dims, dims,&current_iteration_no);
+    writeConstantLengthIntegerArray(id_number_of_iterations, rank, dims, dims, dims0, dims, dims, dims,&current_iteration_no);
 
     // hsize_t      size[2];
     // size[0] = (hsize_t) number_of_gausspoints*18;
