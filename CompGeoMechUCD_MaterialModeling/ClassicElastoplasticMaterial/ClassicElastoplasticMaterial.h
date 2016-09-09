@@ -1670,7 +1670,7 @@ private:
 
                 double f_relative_error=this->f_relative_tol*10;
 
-                while ((stress_relative_error > this-> stress_relative_tol ||
+                while ((stress_relative_error > this-> stress_relative_tol &&
                         f_relative_error > this->f_relative_tol) &&
                         iteration_count++ < this->n_max_iterations
                       )
