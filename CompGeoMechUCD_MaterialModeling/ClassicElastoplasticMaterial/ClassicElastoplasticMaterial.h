@@ -48,7 +48,7 @@
 
 #include "ClassicElastoplasticityGlobals.h"
 // for print p, q, theta
-// #include <tuple> 
+#include <tuple> 
 // for debugging printing
 #include <fstream> 
 
@@ -140,38 +140,38 @@ namespace
     // q = sqrt(3* J2)
     // cos(3*theta) = 3/2 * sqrt(3) * J3 / J2^(3/2)
     // ------------------------------------------------------------
-    // std::tuple<double,double,double> getpqtheta(const DTensor2 &mystress)  {
-    //     // ------------------------------------------------------------
-    //     // preliminary
-    //     const double I1 = mystress(0,0)+mystress(1,1)+mystress(2,2);
-    //     const double sigma_m=I1/3.0;
-    //     DTensor2 s = mystress; 
-    //     s(0,0)-=sigma_m;
-    //     s(1,1)-=sigma_m;
-    //     s(2,2)-=sigma_m;
-    //     // J2=0.5*s(i,j)*s(i,j)
-    //     const double J2 = 0.5 * ( 
-    //         s(0,0)*s(0,0) +  s(0,1)*s(0,1)  + s(0,2)*s(0,2)
-    //     +   s(1,0)*s(1,0) +  s(1,1)*s(1,1)  + s(1,2)*s(1,2)
-    //     +   s(2,0)*s(2,0) +  s(2,1)*s(2,1)  + s(2,2)*s(2,2)   );
-    //     // 3by3 Determinant: Refer to http://www.brown.edu/Departments/Engineering/Courses/En221/Notes/Tensors/Tensors.htm
-    //     const double J3 = s(0,0)*(s(1,1)*s(2,2)-s(1,2)*s(2,1))
-    //                    +  s(0,1)*(s(1,2)*s(2,0)-s(1,0)*s(2,2))
-    //                    +  s(0,2)*(s(1,0)*s(2,1)-s(2,0)*s(1,1));
-    //     // ------------------------------------------------------------
+    std::tuple<double,double,double> getpqtheta(const DTensor2 &mystress)  {
+        // ------------------------------------------------------------
+        // preliminary
+        const double I1 = mystress(0,0)+mystress(1,1)+mystress(2,2);
+        const double sigma_m=I1/3.0;
+        DTensor2 s = mystress; 
+        s(0,0)-=sigma_m;
+        s(1,1)-=sigma_m;
+        s(2,2)-=sigma_m;
+        // J2=0.5*s(i,j)*s(i,j)
+        const double J2 = 0.5 * ( 
+            s(0,0)*s(0,0) +  s(0,1)*s(0,1)  + s(0,2)*s(0,2)
+        +   s(1,0)*s(1,0) +  s(1,1)*s(1,1)  + s(1,2)*s(1,2)
+        +   s(2,0)*s(2,0) +  s(2,1)*s(2,1)  + s(2,2)*s(2,2)   );
+        // 3by3 Determinant: Refer to http://www.brown.edu/Departments/Engineering/Courses/En221/Notes/Tensors/Tensors.htm
+        const double J3 = s(0,0)*(s(1,1)*s(2,2)-s(1,2)*s(2,1))
+                       +  s(0,1)*(s(1,2)*s(2,0)-s(1,0)*s(2,2))
+                       +  s(0,2)*(s(1,0)*s(2,1)-s(2,0)*s(1,1));
+        // ------------------------------------------------------------
 
-    //     // (1) calculate p
-    //     const double p = -I1/3;
-    //     // (2) calculate q
-    //     const double q = sqrt(3 * J2);
-    //     // (3) calculate theta
-    //     const double cos3theta = 1.5 * sqrt(3) * J3 / pow(J2,1.5);
-    //     // const static double PI=3.14159265358979323846; //20 digits from Wiki.
-    //     const double theta = acos(cos3theta)/3.0 * 180/PI;  //theta is in degree.
+        // (1) calculate p
+        const double p = -I1/3;
+        // (2) calculate q
+        const double q = sqrt(3 * J2);
+        // (3) calculate theta
+        const double cos3theta = 1.5 * sqrt(3) * J3 / pow(J2,1.5);
+        // const static double PI=3.14159265358979323846; //20 digits from Wiki.
+        const double theta = acos(cos3theta)/3.0 * 180/PI;  //theta is in degree.
 
-    //     return std::make_tuple(p,q,theta);
-    //     // return result;
-    // }
+        return std::make_tuple(p,q,theta);
+        // return result;
+    }
 
     bool inverse4thTensor(DTensor4 const& rhs, DTensor4& ret){
         using namespace ClassicElastoplasticityGlobals;
@@ -1670,11 +1670,12 @@ private:
 
                 double f_relative_error=this->f_relative_tol*10;
 
-                while ((stress_relative_error > this-> stress_relative_tol &&
+                while ((stress_relative_error > this-> stress_relative_tol ||
                         f_relative_error > this->f_relative_tol) &&
-                        iteration_count++ < this->n_max_iterations
+                        iteration_count < this->n_max_iterations
                       )
                 {
+                    iteration_count++ ; 
                     vars.revert_tmp();
 
 
@@ -1734,34 +1735,55 @@ private:
 
 
                     // double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
-                    if (true) //norm_trial_stress != norm_trial_stress || debugrun)// || denf <= 0 ) //check for nan
+                    if (debugrun) //norm_trial_stress != norm_trial_stress || debugrun)// || denf <= 0 ) //check for nan
                     {
+                        cout << "=============================================================" << endl;
+                        cout << "\nIteration # " << iteration_count <<  endl;
+                        printTensor (" CommitStress       " , CommitStress);
+                        double p,q,theta;
+                        std::tie(p,q,theta) = getpqtheta(CommitStress);
+                        fprintf(stderr, "CommitStress_p    = %16.8f\n"  , p );
+                        fprintf(stderr, "CommitStress_q    = %16.8f\n"  , q );
+                        fprintf(stderr, "CommitStress_theta= %16.8f\n"  , theta ); 
+                        printTensor (" depsilon           " , depsilon);
+                        printTensor (" dsigma             " , dsigma);
+                        printTensor (" PredictorStress    " , PredictorStress);
+                        std::tie(p,q,theta) = getpqtheta(PredictorStress);
+                        fprintf(stderr, "PredictorStress_p    = %16.8f\n"  , p );
+                        fprintf(stderr, "PredictorStress_q    = %16.8f\n"  , q );
+                        fprintf(stderr, "PredictorStress_theta= %16.8f\n"  , theta ); 
+                        cout <<      " yf_val_start        = " << yf_val_start << endl;
+                        cout <<      " yf_val_end          = " << yf_val_end << endl;
+                        printTensor (" n                  " , n );
+                        printTensor (" m                  " , m );
+                        cout <<      " xi_star_h_star      = " << xi_star_h_star << endl;
+                        cout <<      " denominator         = " << denominator << endl;
+                        cout <<      " dLambda             = " << dLambda << endl;
+                        printTensor (" TrialStress        " , TrialStress);
+                        std::tie(p,q,theta) = getpqtheta(TrialStress);
+                        fprintf(stderr, "TrialStress_p    = %16.8f\n"  , p );
+                        fprintf(stderr, "TrialStress_q    = %16.8f\n"  , q );
+                        fprintf(stderr, "TrialStress_theta= %16.8f\n"  , theta ); 
 
-                        // cout <<      " ==========================================================" << endl;
-                        // printTensor (" CommitStress       " , CommitStress);
-                        // printTensor (" depsilon           " , depsilon);
-                        // printTensor (" dsigma             " , dsigma);
-                        // printTensor (" PredictorStress    " , PredictorStress);
-                        // cout <<      " yf_val_start        = " << yf_val_start << endl;
-                        // cout <<      " yf_val_end          = " << yf_val_end << endl;
-                        // printTensor (" n                  " , n );
-                        // printTensor (" m                  " , m );
-                        // cout <<      " xi_star_h_star      = " << xi_star_h_star << endl;
-                        // cout <<      " denominator         = " << denominator << endl;
-                        // cout <<      " dLambda             = " << dLambda << endl;
-                        // printTensor (" TrialStress        " , TrialStress);
-                        // printTensor (" TrialStress_prev   " , TrialStress_prev);
-                        // printTensor (" ResidualStress     " , ResidualStress );
-                        // cout <<      " normResidualStress  = " << normResidualStress << endl;
-                        // cout <<      " stress_relative_error      = " << stress_relative_error << endl;
-                        // cout <<      " f_relative_error      = " <<f_relative_error << endl;
-                        // cout <<      " iteration_count     = " << iteration_count << endl;
-                        // cout <<      " .........................................................." << endl;
-                        // cout <<      "  Internal variables:" << endl;
-                        // vars.print();
-                        // cout <<      " ==========================================================" << endl;
+                        printTensor (" TrialStress_prev   " , TrialStress_prev);
+                        std::tie(p,q,theta) = getpqtheta(TrialStress_prev);
+                        fprintf(stderr, "TrialStress_prev_p    = %16.8f\n"  , p );
+                        fprintf(stderr, "TrialStress_prev_q    = %16.8f\n"  , q );
+                        fprintf(stderr, "TrialStress_prev_theta= %16.8f\n"  , theta ); 
 
-                        // errorcode = -1;
+                        printTensor (" ResidualStress     " , ResidualStress );
+                        cout <<      " normResidualStress  = " << normResidualStress << endl;
+                        cout <<      " stress_relative_error      = " << stress_relative_error << endl;
+                        cout <<      " f_relative_error      = " <<f_relative_error << endl;
+                        cout <<      " iteration_count     = " << iteration_count << endl;
+                        cout <<      " .........................................................." << endl;
+                        cout <<      "  Internal variables:" << endl;
+                        printTensor (" back_stress (alpha)      " , yf.get_alpha() );
+                        cout <<      " DP_k or VM_radius      " << yf.get_k() <<endl;
+                        cout<<"back_stress(0,1) = " << (yf.get_alpha())(0,1) <<endl ;
+                        cout<<"PredictorStress(0,1) = " << PredictorStress(0,1) <<endl ;
+                        cout << "===============================================END===========" << endl;
+                        cout << endl<<endl; 
                     }
 
                 } // while for el-pl this step
@@ -1949,11 +1971,12 @@ private:
 
                     double f_relative_error=this->f_relative_tol*10;
 
-                    while ((stress_relative_error > this-> stress_relative_tol &&
+                    while ((stress_relative_error > this-> stress_relative_tol ||
                             f_relative_error > this->f_relative_tol) &&
-                            iteration_count++ < this->n_max_iterations
+                            iteration_count < this->n_max_iterations
                           )
                     {
+                        iteration_count++;
                         vars.revert_tmp();
 
 
@@ -2012,34 +2035,55 @@ private:
 
 
                         // double norm_trial_stress = TrialStress(i, j) * TrialStress(i, j);
-                        if (true) //norm_trial_stress != norm_trial_stress || debugrun)// || denf <= 0 ) //check for nan
+                        if (debugrun) //norm_trial_stress != norm_trial_stress || debugrun)// || denf <= 0 ) //check for nan
                         {
+                            cout << "=============================================================" << endl;
+                            cout << "\nIteration # " << iteration_count <<  endl;
+                            printTensor (" CommitStress       " , CommitStress);
+                            double p,q,theta;
+                            std::tie(p,q,theta) = getpqtheta(CommitStress);
+                            fprintf(stderr, "CommitStress_p    = %16.8f\n"  , p );
+                            fprintf(stderr, "CommitStress_q    = %16.8f\n"  , q );
+                            fprintf(stderr, "CommitStress_theta= %16.8f\n"  , theta ); 
+                            printTensor (" depsilon           " , depsilon);
+                            printTensor (" dsigma             " , dsigma);
+                            printTensor (" PredictorStress    " , PredictorStress);
+                            std::tie(p,q,theta) = getpqtheta(PredictorStress);
+                            fprintf(stderr, "PredictorStress_p    = %16.8f\n"  , p );
+                            fprintf(stderr, "PredictorStress_q    = %16.8f\n"  , q );
+                            fprintf(stderr, "PredictorStress_theta= %16.8f\n"  , theta ); 
+                            cout <<      " yf_val_start        = " << yf_val_start << endl;
+                            cout <<      " yf_val_end          = " << yf_val_end << endl;
+                            printTensor (" n                  " , n );
+                            printTensor (" m                  " , m );
+                            cout <<      " xi_star_h_star      = " << xi_star_h_star << endl;
+                            cout <<      " denominator         = " << denominator << endl;
+                            cout <<      " dLambda             = " << dLambda << endl;
+                            printTensor (" TrialStress        " , TrialStress);
+                            std::tie(p,q,theta) = getpqtheta(TrialStress);
+                            fprintf(stderr, "TrialStress_p    = %16.8f\n"  , p );
+                            fprintf(stderr, "TrialStress_q    = %16.8f\n"  , q );
+                            fprintf(stderr, "TrialStress_theta= %16.8f\n"  , theta ); 
 
-                            // cout <<      " ==========================================================" << endl;
-                            // printTensor (" CommitStress       " , CommitStress);
-                            // printTensor (" depsilon           " , depsilon);
-                            // printTensor (" dsigma             " , dsigma);
-                            // printTensor (" PredictorStress    " , PredictorStress);
-                            // cout <<      " yf_val_start        = " << yf_val_start << endl;
-                            // cout <<      " yf_val_end          = " << yf_val_end << endl;
-                            // printTensor (" n                  " , n );
-                            // printTensor (" m                  " , m );
-                            // cout <<      " xi_star_h_star      = " << xi_star_h_star << endl;
-                            // cout <<      " denominator         = " << denominator << endl;
-                            // cout <<      " dLambda             = " << dLambda << endl;
-                            // printTensor (" TrialStress        " , TrialStress);
-                            // printTensor (" TrialStress_prev   " , TrialStress_prev);
-                            // printTensor (" ResidualStress     " , ResidualStress );
-                            // cout <<      " normResidualStress  = " << normResidualStress << endl;
-                            // cout <<      " stress_relative_error      = " << stress_relative_error << endl;
-                            // cout <<      " f_relative_error      = " <<f_relative_error << endl;
-                            // cout <<      " iteration_count     = " << iteration_count << endl;
-                            // cout <<      " .........................................................." << endl;
-                            // cout <<      "  Internal variables:" << endl;
-                            // vars.print();
-                            // cout <<      " ==========================================================" << endl;
+                            printTensor (" TrialStress_prev   " , TrialStress_prev);
+                            std::tie(p,q,theta) = getpqtheta(TrialStress_prev);
+                            fprintf(stderr, "TrialStress_prev_p    = %16.8f\n"  , p );
+                            fprintf(stderr, "TrialStress_prev_q    = %16.8f\n"  , q );
+                            fprintf(stderr, "TrialStress_prev_theta= %16.8f\n"  , theta ); 
 
-                            // errorcode = -1;
+                            printTensor (" ResidualStress     " , ResidualStress );
+                            cout <<      " normResidualStress  = " << normResidualStress << endl;
+                            cout <<      " stress_relative_error      = " << stress_relative_error << endl;
+                            cout <<      " f_relative_error      = " <<f_relative_error << endl;
+                            cout <<      " iteration_count     = " << iteration_count << endl;
+                            cout <<      " .........................................................." << endl;
+                            cout <<      "  Internal variables:" << endl;
+                            printTensor (" back_stress (alpha)      " , yf.get_alpha() );
+                            cout <<      " DP_k or VM_radius      " << yf.get_k() <<endl;
+                            cout<<"back_stress(0,1) = " << (yf.get_alpha())(0,1) <<endl ;
+                            cout<<"PredictorStress(0,1) = " << PredictorStress(0,1) <<endl ;
+                            cout << "===============================================END===========" << endl;
+                            cout << endl<<endl; 
                         }
 
                     } // while for el-pl this step
