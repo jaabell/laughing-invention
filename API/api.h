@@ -80,6 +80,8 @@
 #include "MODELING/add_element_brick_20node_elastic.h"
 #include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"
 #include "MODELING/add_element_brick_20node_upU.h"
+#include "MODELING/add_element_brick_20node_upULT.h"
+#include "MODELING/add_element_brick_27node_upULT.h"
 #include "MODELING/add_element_brick_27node.h"
 #include "MODELING/add_element_brick_27node_elastic.h"
 #include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"

@@ -366,6 +366,8 @@ EXP	([Ee][-+]?[0-9]+)
 "8NodeBrick_upULT"                  {return token::EightNodeBrick_upULT;}
 "8NodeBrick_up"                     {return token::EightNodeBrick_up;}
 "20NodeBrick_upU"                   {return token::TwentyNodeBrick_uPU;}
+"20NodeBrick_upULT"                 {return token::TwentyNodeBrick_uPULT;}
+"27NodeBrick_upULT"                 {return token::TwentySevenNodeBrick_uPULT;}
 "beam_displacement_based"           {return token::beam_displacement_based;}
 "BeamColumnDispFiber3d"           	{return token::BeamColumnDispFiber3d;}
 "beam_elastic"                      {return token::beam_elastic;}

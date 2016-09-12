@@ -76,6 +76,7 @@ const double TwentyNodeBrick_u_p_U::pts[3] = { -0.774596669241483, 0.0, +0.77459
 const double TwentyNodeBrick_u_p_U::wts[3] = {5.0 / 9.0, 8.0 / 9.0, 5.0 / 9.0};
 Matrix TwentyNodeBrick_u_p_U::MCK(Num_ElemDof, Num_ElemDof);
 Vector TwentyNodeBrick_u_p_U::P(Num_ElemDof);
+vector<float> TwentyNodeBrick_u_p_U::Gauss_Output_Vector(Num_TotalGaussPts*18);
 
 //======================================================================
 TwentyNodeBrick_u_p_U::TwentyNodeBrick_u_p_U(int element_number,
@@ -120,7 +121,7 @@ TwentyNodeBrick_u_p_U::TwentyNodeBrick_u_p_U(int element_number,
       ks(kks),
       kf(kkf),
       Q(0),
-      Ki(0)
+      Ki(0), gauss_points(27, 3)
 {
     // permeability
     perm(0) = permb_x;
@@ -192,7 +193,7 @@ TwentyNodeBrick_u_p_U::TwentyNodeBrick_u_p_U(int element_number,
 TwentyNodeBrick_u_p_U::TwentyNodeBrick_u_p_U ()
     : Element(0, ELE_TAG_TwentyNodeBrick_u_p_U ),
       connectedExternalNodes(Num_Nodes), perm(Num_Dim),
-      poro(0.0), alpha(1.0), rho_s(0.0), rho_f(0.0), ks(0.0), kf(0.0), Q(0), Ki(0)
+      poro(0.0), alpha(1.0), rho_s(0.0), rho_f(0.0), ks(0.0), kf(0.0), Q(0), Ki(0), gauss_points(27, 3)
 {
     theMaterial = 0;
 
@@ -1559,7 +1560,7 @@ tensor TwentyNodeBrick_u_p_U::getGaussPts(void)
     int i, j, where;
 
     int GP_c_r, GP_c_s, GP_c_t;
-
+    int gp=0;
     for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
     {
         r = pts[GP_c_r];
@@ -1583,6 +1584,10 @@ tensor TwentyNodeBrick_u_p_U::getGaussPts(void)
                         Gs.val(where + 1, j + 1) += shp.cval(i + 1) * T_Crds(j);
                     }
                 }
+                gauss_points(gp, 0) = Gs.val(where + 1,  1);
+                gauss_points(gp, 1) = Gs.val(where + 1,  2);
+                gauss_points(gp, 2) = Gs.val(where + 1,  3);
+                gp++;
             }
         }
     }
@@ -1630,6 +1635,72 @@ TwentyNodeBrick_u_p_U::getStress(void)
 
 }
 
+
+Matrix &TwentyNodeBrick_u_p_U::getGaussCoordinates(void)
+{
+    return gauss_points;
+}
+
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &TwentyNodeBrick_u_p_U::getGaussOutput()
+{
+
+    //Forming output
+    // stresstensor stress;
+    // straintensor strain;
+    // straintensor plstrain;
+    int ii = 0;
+    int gp = 0;
+    for ( short GP_c_r = 1 ; GP_c_r <= Num_IntegrationPts ; GP_c_r++ )
+    {
+        for ( short GP_c_s = 1 ; GP_c_s <= Num_IntegrationPts ; GP_c_s++ )
+        {
+            for ( short GP_c_t = 1 ; GP_c_t <= Num_IntegrationPts ; GP_c_t++ )
+            {
+                // i = ((GP_c_r - 1) * Num_IntegrationPts + GP_c_s - 1) * Num_IntegrationPts + GP_c_t - 1;
+
+                const stresstensor &stress = theMaterial[gp]->getStressTensor();
+                const straintensor &strain = theMaterial[gp]->getStrainTensor();
+                const straintensor &plstrain = theMaterial[gp]->getPlasticStrainTensor();
+
+                //Write strain
+                Gauss_Output_Vector[ii++] = strain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 3);
+
+                //Write strain
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 3);
+
+                //Write stress
+                Gauss_Output_Vector[ii++] = stress.cval(1, 1);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(3, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 3);
+
+                gp++;
+            }
+        }
+    }
+
+    return Gauss_Output_Vector;
+}
 
 
 

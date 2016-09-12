@@ -422,6 +422,7 @@
 #define ELE_TAG_EightNodeBrick_u_p_U_LT                          13  //7022    308708000   
 #define ELE_TAG_TwentyNodeBrick_u_p_U                            14  //7004    320727000 
 #define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam     15  //5012    102600009		// Nima Tafazzoli, December 2012
+// #define ELE_TAG_TwentySevenNodeBrick_u_p_U                       16  //New    
 
 #define ELE_TAG_DESC_ARRAY_SIZE 15
 
