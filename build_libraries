@@ -1,0 +1,34 @@
+#!/bin/bash
+
+###########################################################################################################################
+#                                                                                                                         #
+#  The Real ESSI (Real Earthquake-Soil-Structure Interaction) Simulator Dependencies                                      #
+#  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                      #
+#                                                                                                                         #
+#  This makefile builds all the necessary libraries needed by REAL ESSI                                                   #
+#  for sequential as well as parallel version. All the libraries are created/                                             #
+#  linked in lib folder.                                                                                                  #
+#                                                                                                                         #
+#  ***Targets for building dependencies***                                                                                #
+#                                                                                                                         #
+#  build_libraries help              -> show all the avilable options                                                     #
+#  build_libraries download          -> downloads all the dependencies                                                               #
+#  build_libraries list_dependencies -> show the versions of all dependencies that is to be build                         #
+#  build_libraries                   -> builds all the necessary libraries for both sequential and parallel ESSI          #
+#  build_libraries sequential        -> builds all the necessary libraries for sequential ESSI                            #
+#  build_libraries parallel          -> builds all the necessary libraries for parallel ESSI                              #
+#  build_libraries $(LIBNAME)        -> builds individual libraries                                                       #
+#  build_libraries check_sequential  -> checks if all sequential libraries are build                                      #
+#  build_libraries check_parallel    -> checks if all parallel libraries are build                                        #
+#                                                                                                                         #
+#  Sumeet Kumar Sinha (August,2016)                                                                                       #
+#  Computational Geomechanics Group                                                                                       #
+#  University of California, Davis                                                                                        #
+#  s u m e e t k s i n h a . c o m                                                                                        #
+###########################################################################################################################
+
+target=$1
+
+LIB=$PWD/Makefile.Dependencies/lib/
+
+make -f Makefile.Dependencies $1
