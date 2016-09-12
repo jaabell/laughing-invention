@@ -283,13 +283,13 @@ public:
         // cout << "Copy ctor in CEP" << endl;
         //Set initial stress to some value. Needed for models
         // like Drucker-Prager which blow up at sigma_ii = 0 :)
-        TrialStress(0, 0) =  p0;
-        TrialStress(1, 1) =  p0;
-        TrialStress(2, 2) = p0;
+        TrialStress(0, 0) =  - p0;
+        TrialStress(1, 1) =  - p0;
+        TrialStress(2, 2) = - p0;
 
-        CommitStress(0, 0) = -0.9995 * p0;
-        CommitStress(1, 1) = -0.9995 * p0;
-        CommitStress(2, 2) = -1.001 * p0;
+        CommitStress(0, 0) = - p0;
+        CommitStress(1, 1) = - p0;
+        CommitStress(2, 2) = - p0;
 
         first_step = true;
     }
@@ -2440,15 +2440,15 @@ private:
                             denomina_ddlambda = n_new(r,s) * (E_times_H(p, q) * invTnew(p, q, r, s)) - xi_star_h_star_new ; 
                             double numerator_ddlambda = 0.0;
                             numerator_ddlambda = yf(TrialStress) - n_new(r,s) * (ResidualStress(i,j) * invTnew(i,j,r,s)) ;
-                            double ddlambda = zeta * numerator_ddlambda / denomina_ddlambda ;
-                            dLambda += ddlambda ; 
+                            double ddlambda =   numerator_ddlambda / denomina_ddlambda ;
+                            dLambda = zeta * (dLambda + ddlambda) ; 
                             static DTensor2 dSigma_(3,3,0.0);
                             dSigma_(r,s) = - 
                                 (
                                     ResidualStress(i,j) + ddlambda * Eelastic(i,j,p,q) * H_new(p,q)
                                 ) 
                                 *invTnew(i,j,r,s) ; 
-                            TrialStress(i,j) += zeta * dSigma_(i,j) ; 
+                            TrialStress(i,j) +=  zeta * dSigma_(i,j) ; 
 
                             vars.evolve(dLambda, depsilon, m, TrialStress);
                             vars.commit_tmp();
