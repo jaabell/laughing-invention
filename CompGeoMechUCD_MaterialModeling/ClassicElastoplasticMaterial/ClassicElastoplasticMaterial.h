@@ -420,10 +420,10 @@ public:
             exitflag = this->Modified_Euler_Error_Control(strain_increment);
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Backward_Euler :
-            exitflag = this->Backward_Euler(strain_increment);;
+            exitflag = this->Backward_Euler_ddlambda(strain_increment);;
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Full_Backward_Euler :
-            exitflag = this->Backward_Euler_ddlambda(strain_increment);;
+            exitflag = this->Full_Backward_Euler(strain_increment);;
             break;
         case NDMaterialLT_Constitutive_Integration_Method::Runge_Kutta_45_Error_Control :
             // exitflag = this->Runge_Kutta_45_Error_Control(strain_increment);;
@@ -2208,16 +2208,7 @@ private:
             {
                 using namespace ClassicElastoplasticityGlobals;
                 int errorcode = 0;
-                // // =====Sub-increments =====
-                // // Problem is in the stiffness 
-                // double max_comp = Max_abs_Component(strain_incr)/ (double)NSteps;
-                // double allowed_increment_magnitude = 1E-5; 
-                // if(max_comp > allowed_increment_magnitude){
-                //     int required_Nstep = (int)(max_comp/ allowed_increment_magnitude)+1 ; 
-                //     Backward_Euler(strain_incr, false, required_Nstep);
-                //     return 0;
-                // }
-                // // =====Sub-increments =====END
+
                 vars.revert();
                 vars.commit_tmp();
                 static DTensor2 depsilon(3, 3, 0);
@@ -2386,23 +2377,26 @@ private:
                             TrialStress_prev(i, j) = TrialStress(i, j);
                             TrialStress(i, j) = PredictorStress(i, j) - dLambda * Eelastic(i, j, k, l) * m(k, l);
                             // =======Line Search ====
-                            // double subdLambda = dLambda;
-                            // bool local_LineSearch_ON = false;
-                            // while(yf(TrialStress) > yf(TrialStress_prev) && subdLambda > MACHINE_EPSILON*10){
-                            //     local_LineSearch_ON = true;
+                            double subdLambda = dLambda;
+                            // Zeta is the cooefficent for line search. 
+                            double zeta = 1.0;
+                            bool local_LineSearch_ON = false;
+                            while(yf(TrialStress) > yf(PredictorStress) && subdLambda > MACHINE_EPSILON*10){
+                                local_LineSearch_ON = true;
                             //     // cout<<"Using local line search!\n";
-                            //     subdLambda *= 0.5;
+                                subdLambda *= 0.5;
+                                zeta *=0.5; 
                             //     // cout<<"subdLambda = " << subdLambda <<endl;
-                            //     TrialStress(i, j) = PredictorStress(i, j) - subdLambda * Eelastic(i, j, k, l) * m(k, l);
-                            //     // update the internal variables with subdLambda and commit to update yield surface.
-                            //     vars.evolve(subdLambda, depsilon, m, TrialStress);
-                            //     vars.commit_tmp();
-                            // }
-                            // ResidualStress(i, j) = TrialStress(i, j) - TrialStress_prev(i, j);
-                            // if (!local_LineSearch_ON){
+                                TrialStress(i, j) = PredictorStress(i, j) - subdLambda * Eelastic(i, j, k, l) * m(k, l);
+                                // update the internal variables with subdLambda and commit to update yield surface.
+                                vars.evolve(subdLambda, depsilon, m, TrialStress);
+                                vars.commit_tmp();
+                            }
+                            ResidualStress(i, j) = TrialStress(i, j) - TrialStress_prev(i, j);
+                            if (!local_LineSearch_ON){
                                 vars.evolve(dLambda, depsilon, m, TrialStress);
                                 vars.commit_tmp();
-                            // }
+                            }
                             // =======Line Search ====
                             // =============================================================================
                             // Works on the ddlambda approach
@@ -2419,7 +2413,7 @@ private:
                             static DTensor4 dm_dsigma(3,3,3,3,0.0);
                             dm_dsigma = pf.dm_over_dsigma(TrialStress);
                             static DTensor4 T_new(3,3,3,3,0.0);
-                            T_new(i, j, k, l) = IdentityTensor4(i,k,j,l) + dLambda * Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l);
+                            T_new(i, j, k, l) = IdentityTensor4(i,k,j,l) + zeta * dLambda * Eelastic(i,j,p,q) * dm_dsigma(p,q,k,l);
 
                             static DTensor4 invTnew(3,3,3,3,0.0);
                             if( !inverse4thTensor(T_new, invTnew) ){
@@ -2435,7 +2429,7 @@ private:
                             static DTensor2 dm_dq_star_h_star(3,3,0.0);
                             dm_dq_star_h_star = pf.dm_over_dq_start_h_star(TrialStress);
                             static DTensor2 H_new(3,3,0.0);
-                            H_new(k,l) = m_new(k,l) + dLambda * dm_dq_star_h_star(k,l);
+                            H_new(k,l) = m_new(k,l) + zeta * dLambda * dm_dq_star_h_star(k,l);
 
                             double const& xi_star_h_star_new = yf.xi_star_h_star( depsilon, m_new,  TrialStress);
 
@@ -2446,7 +2440,7 @@ private:
                             denomina_ddlambda = n_new(r,s) * (E_times_H(p, q) * invTnew(p, q, r, s)) - xi_star_h_star_new ; 
                             double numerator_ddlambda = 0.0;
                             numerator_ddlambda = yf(TrialStress) - n_new(r,s) * (ResidualStress(i,j) * invTnew(i,j,r,s)) ;
-                            double ddlambda = numerator_ddlambda / denomina_ddlambda ;
+                            double ddlambda = zeta * numerator_ddlambda / denomina_ddlambda ;
                             dLambda += ddlambda ; 
                             static DTensor2 dSigma_(3,3,0.0);
                             dSigma_(r,s) = - 
@@ -2454,7 +2448,7 @@ private:
                                     ResidualStress(i,j) + ddlambda * Eelastic(i,j,p,q) * H_new(p,q)
                                 ) 
                                 *invTnew(i,j,r,s) ; 
-                            TrialStress(i,j) += dSigma_(i,j) ; 
+                            TrialStress(i,j) += zeta * dSigma_(i,j) ; 
 
                             vars.evolve(dLambda, depsilon, m, TrialStress);
                             vars.commit_tmp();
