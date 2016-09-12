@@ -317,7 +317,9 @@ int EightNodeBrick_u_p_U::revertToStart (void)
 //======================================================================
 const Matrix &EightNodeBrick_u_p_U::getTangentStiff (void)
 {
+
     return this->getStiff(1);
+
 }
 
 //======================================================================

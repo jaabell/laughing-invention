@@ -1167,9 +1167,12 @@ const Matrix &TwentyNodeBrickLT::getInitialStiff ()
     return *Ki;
 }
 
-
-
-
+//=============================================================================
+// Returns the matrix K [Sumeet September, 2016]
+const Matrix &TwentyNodeBrickLT::getConstStiff()   
+{
+    return K;
+}
 
 ////#############################################################################
 //  tensor TwentyNodeBrickLT::mass_tensor(Elastic  mmodel)

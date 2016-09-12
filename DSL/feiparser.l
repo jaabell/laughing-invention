@@ -363,6 +363,7 @@ EXP	([Ee][-+]?[0-9]+)
 "20NodeBrick_elastic"               {return token::TwentyNodeBrickElastic;}
 "27NodeBrick_elastic"               {return token::TwentySevenNodeBrickElastic;}
 "8NodeBrick_upU"                    {return token::EightNodeBrick_upU;}
+"8NodeBrick_upULT"                  {return token::EightNodeBrick_upULT;}
 "8NodeBrick_up"                     {return token::EightNodeBrick_up;}
 "20NodeBrick_upU"                   {return token::TwentyNodeBrick_uPU;}
 "beam_displacement_based"           {return token::beam_displacement_based;}
@@ -676,8 +677,7 @@ EXP	([Ee][-+]?[0-9]+)
 									}
 
  /* Constraint types */
-"equal dof"                         {return token::equaldof;}
-"equaldof"                          {return token::equaldof;}
+"equal_dof"                         {return token::equal_dof;}
 
  /* Constraint options */
 "master"                            {return token::master;}

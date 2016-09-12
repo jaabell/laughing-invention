@@ -71,8 +71,7 @@ element
 elements
 else
 enable
-equal
-equaldof
+equal_dof
 every
 exp
 factor

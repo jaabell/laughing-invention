@@ -71,8 +71,7 @@ element
 elements
 else
 enable
-equal
-equaldof
+equal_dof
 every
 exp
 factor
@@ -307,6 +306,7 @@ yield_strength
 8NodeBrick_elastic
 8NodeBrick_up
 8NodeBrick_upU
+8NodeBrick_upULT
 8NodeBrickLT
 Backward_Euler
 beam_9dof_elastic

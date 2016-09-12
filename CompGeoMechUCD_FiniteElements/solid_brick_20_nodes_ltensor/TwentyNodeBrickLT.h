@@ -90,6 +90,7 @@ public:
 
     const Matrix &getTangentStiff ();
     const Matrix &getInitialStiff();
+    const Matrix &getConstStiff();    // Returns the matrix K [Sumeet September, 2016]
     const Matrix &getMass ();
 
 

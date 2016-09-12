@@ -2093,6 +2093,14 @@ const Matrix &TwentySevenNodeBrickLT::getInitialStiff ()
 }
 
 //=============================================================================
+// Returns the matrix K [Sumeet September, 2016]
+const Matrix &TwentySevenNodeBrickLT::getConstStiff()   
+{
+    return K;
+}
+
+
+//=============================================================================
 
 const Matrix &TwentySevenNodeBrickLT::getMass ()
 {

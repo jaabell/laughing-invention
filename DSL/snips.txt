@@ -4,11 +4,11 @@ add acceleration field # $1
 	ay = $3 
 	az = $4 ;
 
-// add constraint equal dof with master node # <.> and slave node # <.> dof to constrain <.>;
-add constraint equal dof with master node # $1 and slave node # $2 dof to constrain $3;
+// add constraint equal_dof with master node # <.> and slave node # <.> dof to constrain <.>;
+add constraint equal_dof with master node # $1 and slave node # $2 dof to constrain $3;
 
-// add constraint equal dof with node # <.> dof <.> master and node # <.> dof <.> slave;
-add constraint equal dof with node # $1 dof $2 master and node # $3 dof $4 slave;
+// add constraint equal_dof with node # <.> dof <.> master and node # <.> dof <.> slave;
+add constraint equal_dof with node # $1 dof $2 master and node # $3 dof $4 slave;
 
 // add damping # <.> to element # <.>;
 add damping # $1 to element # $2;
@@ -121,6 +121,18 @@ add element # $1 type 8NodeBrick_up with nodes ($2, $3, $4, $5, $6, $7, $8, $9) 
 
 // add element # <.> type 8NodeBrick_upU with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
 add element # $1 type 8NodeBrick_upU with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10 
+	porosity = $11 
+	alpha = $12  
+	rho_s = $13  
+	rho_f = $14 
+	k_x = $15  
+	k_y = $16  
+	k_z = $17  
+	K_s = $18 
+	K_f = $19;
+
+// add element # <.> type 8NodeBrick_upULT with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+add element # $1 type 8NodeBrick_upULT with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10 
 	porosity = $11 
 	alpha = $12  
 	rho_s = $13  
@@ -659,8 +671,8 @@ print material # $1;
 // print node # <.>;
 print node # $1;
 
-// remove constraint equaldof node # <.>;
-remove constraint equaldof node # $1;
+// remove constraint equal_dof node # <.>;
+remove constraint equal_dof node # $1;
 
 // remove displacement from  node # <.>;
 remove displacement from  node # $1;

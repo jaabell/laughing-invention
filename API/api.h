@@ -75,6 +75,7 @@
 #include "MODELING/add_element_brick_8node_elastic.h"
 #include "MODELING/add_element_brick_8node_up.h"
 #include "MODELING/add_element_brick_8node_upU.h"
+#include "MODELING/add_element_brick_8node_upULT.h"
 #include "MODELING/add_element_brick_20node.h"
 #include "MODELING/add_element_brick_20node_elastic.h"
 #include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"

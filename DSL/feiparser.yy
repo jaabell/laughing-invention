@@ -208,10 +208,10 @@
 
 
 // Tokens for elements
-%token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
+%token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU  TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
 %token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based BeamColumnDispFiber3d beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact HardContact FrictionalPenaltyContact SoftContact
-%token EightNodeBrickLT EightNodeBrickLTNoOutput TwentyNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT 
+%token EightNodeBrickLT EightNodeBrickLTNoOutput TwentyNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT  EightNodeBrick_upULT
 
 // Element options tokens
 %token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
@@ -261,7 +261,7 @@
 %token MASS mx my mz Imx Imy Imz
 
 // for constraints
-%token equaldof master slave dof_to_constrain of
+%token equal_dof master slave dof_to_constrain of
 
 // for output control
 %token OUTPUT BINARY TEXT ENABLE DISABLE COMPRESSION SAVE NON_CONVERGED_ITERATIONS
@@ -1111,8 +1111,8 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add constraint equal dof with master node # <.> and slave node # <.> dof to constrain <.>;
-	| ADD CONSTRAINT equaldof WITH master NODE TEXTNUMBER exp AND slave NODE TEXTNUMBER exp dof_to_constrain dofchain
+	//!FEIDOC add constraint equal_dof with master node # <.> and slave node # <.> dof to constrain <.>;
+	| ADD CONSTRAINT equal_dof WITH master NODE TEXTNUMBER exp AND slave NODE TEXTNUMBER exp dof_to_constrain dofchain
 	{
 		args.clear(); signature.clear();
 
@@ -1148,8 +1148,8 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add constraint equal dof with node # <.> dof <.> master and node # <.> dof <.> slave;
-	| ADD CONSTRAINT equaldof WITH NODE TEXTNUMBER exp dof DOF master AND NODE TEXTNUMBER exp dof DOF slave
+	//!FEIDOC add constraint equal_dof with node # <.> dof <.> master and node # <.> dof <.> slave;
+	| ADD CONSTRAINT equal_dof WITH NODE TEXTNUMBER exp dof DOF master AND NODE TEXTNUMBER exp dof DOF slave
 	{
 		args.clear(); signature.clear();
 
@@ -2141,8 +2141,8 @@ CMD_remove
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC remove constraint equaldof node # <.>;
-	| REMOVE CONSTRAINT equaldof NODE TEXTNUMBER exp
+	//!FEIDOC remove constraint equal_dof node # <.>;
+	| REMOVE CONSTRAINT equal_dof NODE TEXTNUMBER exp
 	{
 		args.clear(); signature.clear();
 		args.push_back($6); signature.push_back(this_signature("number", &isAdimensional));
@@ -3413,6 +3413,53 @@ ADD_element:
 								int,int,int,int,
 								double,double,double,double,
 								double,double,double,double,double>(&add_element_brick_8node_upU, args, signature, "add_element_brick_8node_upU");
+
+		for(int ii = 1;ii <=19; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [8NodeBrick_upULT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE EightNodeBrick_upULT WITH NODES
+		'(' exp ',' exp ',' exp ',' exp ','
+			exp ',' exp ',' exp ',' exp ')'
+			USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp
+			alpha '=' exp
+			rho_s '=' exp
+			rho_f '=' exp
+			k_x '=' exp
+			k_y '=' exp
+			k_z '=' exp
+			K_s '=' exp
+			K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($27); signature.push_back(this_signature("material", &isAdimensional));
+
+		args.push_back($30); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($33); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($39); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($42); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));  //L^3*T/M
+		args.push_back($45); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($48); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($51); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($54); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller19<int,int,int,int,int,int,
+								int,int,int,int,
+								double,double,double,double,
+								double,double,double,double,double>(&add_element_brick_8node_upULT, args, signature, "add_element_brick_8node_upULT");
 
 		for(int ii = 1;ii <=19; ii++) nodes.pop();
 		nodes.push($$);

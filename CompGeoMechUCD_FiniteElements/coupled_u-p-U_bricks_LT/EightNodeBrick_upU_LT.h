@@ -3,7 +3,7 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:         Boris Jeremic, Zhaohui Yang, Xiaoyan Wu, Nima Tafazzoli, & Jose Abell
+// PROGRAMMER:         Boris Jeremic, Zhaohui Yang, Xiaoyan Wu, Zhao Cheng & Sumeet Kumar Sinha
 // DATE:               NOv. 2013
 // UPDATE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
@@ -25,13 +25,13 @@
 /////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////
-// Adapted by Jose Abell, from EightNodeBrick to use the LTensor library for
+// Adapted by Sumeet Kumar Sinha, from EightNodeBrick to use the LTensor library for
 // tensorial representation.
 /////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef EightNodeBrickLTLT_H
-#define EightNodeBrickLTLT_H
+#ifndef EightNodeBrick_upU_LTLT_H
+#define EightNodeBrick_upU_LTLT_H
 
 
 #include <Element.h>
@@ -57,17 +57,32 @@
 
 class Node;
 
-class EightNodeBrickLT: public Element
+class EightNodeBrick_upU_LT: public Element
 {
 
 public:
-    EightNodeBrickLT( int element_number,
-                      int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
-                      int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                      NDMaterialLT *Globalmmodel);
+    EightNodeBrick_upU_LT(int element_number,
+        int node_numb_1,
+        int node_numb_2,
+        int node_numb_3,
+        int node_numb_4,
+        int node_numb_5,
+        int node_numb_6,
+        int node_numb_7,
+        int node_numb_8,
+        NDMaterialLT *Globalmmodel,
+        double nn,
+        double alf,
+        double rs,
+        double rf,
+        double permb_x,
+        double permb_y,
+        double permb_z,
+        double kks,
+        double kkf);
 
-    EightNodeBrickLT ();
-    ~EightNodeBrickLT();
+    EightNodeBrick_upU_LT ();
+    ~EightNodeBrick_upU_LT();
 
     // ===================================================================================================================
     // Implements interface to Element
@@ -89,6 +104,7 @@ public:
     const Matrix &getInitialStiff();
     const Matrix &getConstStiff();    // Returns the matrix K [Sumeet September, 2016]
     const Matrix &getMass();
+    const Matrix &getDamp();
 
     void zeroLoad ();
     int addLoad( ElementalLoad *theLoad, double loadFactor );
@@ -98,12 +114,12 @@ public:
     const Vector  FormEquiBodyForce( void );
     const Vector &getResistingForce ();
     const Vector &getResistingForceIncInertia ();
-    int getObjectSize();
+    // int getObjectSize();
 
     //Used in parallel and in saving model
-    int sendSelf ( int commitTag, Channel &theChannel );
-    int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
-                      &theBroker );
+    // int sendSelf ( int commitTag, Channel &theChannel );
+    // int receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBroker
+    //                   &theBroker );
 
     //General reporting of element status
     void Print( ostream &s, int flag = 0 );
@@ -118,7 +134,7 @@ public:
     double SurfaceShapeFunctionValues( double Xi , double Eta, int whichcomponent );
     double SurfaceLoadValues( double Xi , double Eta, Vector Pressure );
     const Vector &getBodyForce( double loadFactor, const Vector &data );
-    const Vector &getSurfaceForce( double loadFactor, const Vector &data );
+    // const Vector &getSurfaceForce( double loadFactor, const Vector &data );
 
 
     // ===================================================================================================================
@@ -143,6 +159,10 @@ public:
     const DTensor2 &incr_disp( void ) const;
     const DTensor2 &total_disp( void ) const ;
     const DTensor2 &nodal_forces( void ) const;
+    void getStiffnessTensorKep();
+    void getStiffnessTensorG12();
+    void getDampTensorC123();
+    void getMassTensorMsf();
 
 
     Matrix &getGaussCoordinates(void);
@@ -154,7 +174,7 @@ public:
 
     std::string getElementName() const
     {
-        return "EightNodeBrickLT";
+        return "EightNodeBrick_upU_LT";
     }
 
     Vector *getStress( void );
@@ -165,45 +185,49 @@ public:
     // Data members
     // ===================================================================================================================
 private:
-    bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
 
-    int numDOF;
-    int nodes_in_brick;
-    int order;
+    bool is_mass_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
+    bool is_damping_computed;  //Mass will be computed just once... its plain silly to compute the same mass infinite times
 
     double Volume;
-    double e_p;
-    double determinant_of_Jacobian;
-    double rho;
-
-    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet 
 
     ID  connectedExternalNodes;
-
-    DTensor2 stress[8];
-    Matrix *Ki;
 
     Node *theNodes[8];
     NDMaterialLT *mmodel;
     NDMaterialLT *material_array[8];
 
+    Vector perm;                   // Permeability = k/(rho_f*g)
+    double poro;                   // Porosity
+    double alpha;                  // Coefficient for soil (approximate equal 1)
+    double rho_s;                  // Solid density
+    double rho_f;                  // Fluid density
+    double ks;                     // Bulk modulus of solid
+    double kf;                     // Bulk modulus of fluid
+
     Vector Q;
-    Vector bf;
 
-    Matrix M;
-    Vector P;
+    Matrix M;                      // Mass
+    Matrix C;                      // Damping
+    Matrix *Ki;                    // Initial Stiffness
+    static Matrix K;               // Tangentialia Stiffness
 
-    static double SurfaceLoadValues_in_function;
-    static Vector ShapeFunctionValues_in_function;
-    static Vector J_vector_in_function;
+    Vector P;                      // Resisting Force
 
-    static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
-    static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
+    // static double SurfaceLoadValues_in_function;
+    // static Vector ShapeFunctionValues_in_function;
+    // static Vector J_vector_in_function;
+    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet 
+
+    static DTensor2 gp_coords;  // Coordinates of 1D Gaussian quadrature rule
+    static DTensor1 gp_weight;  // Weights of 1D Gaussian quadrature rule
+    static DTensor4 TensorKep;  // Stiffness Tensor [see lecture notes]
+    static DTensor3 TensorG12;  // Stiffness Tensor [see lecture notes]
+    static DTensor4 TensorC123; // Damping Stiffness tensor [see lecture notes]
+    static DTensor2 TensorMsf;  // Mass Tensor [see lecture notes]
 
     static Matrix gauss_points;
     static vector<float> Gauss_Output_Vector;  // Sumeet August, 2016
-
-    static Matrix K;
 
     double update_time_taken;
 

@@ -31,6 +31,7 @@
 #include "./solid_brick_8_nodes_variable_number_of_gauss_points/EightNodeBrickVariableGP.h"
 #include "./solid_brick_8_nodes_elastic/EightNodeBrickElastic.h"
 #include "./coupled_u-p-U_brick_8_nodes/EightNodeBrick_u_p_U.h"
+#include "./coupled_u-p-U_bricks_LT/EightNodeBrick_upU_LT.h"
 #include "./coupled_u-p_brick_8_nodes/EightNode_Brick_u_p.h"
 #include "./coupled_u-p_large_deformation_brick_8_nodes/EightNode_LDBrick_u_p.h"
 #include "./coupled_u-p-U_brick_20_nodes/TwentyNodeBrick_u_p_U.h"

@@ -831,9 +831,6 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
 {
     DTensor4 stifftensor(8, 3, 3, 8, 0.0);
 
-
-
-
     double r  = 0.0;
     double w_r = 0.0;
     double s  = 0.0;
@@ -952,6 +949,13 @@ const Matrix &EightNodeBrickLT::getInitialStiff ()
     }
 
     return *Ki;
+}
+
+//=============================================================================
+// Returns the matrix K [Sumeet September, 2016]
+const Matrix &EightNodeBrickLT::getConstStiff()   
+{
+    return K;
 }
 
 //=============================================================================

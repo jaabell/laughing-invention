@@ -34,7 +34,7 @@
 EightNodeBrickLT_Elastic::EightNodeBrickLT_Elastic( int element_number,
         int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
         int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-        NDMaterialLT *Globalmmodel)eleme
+        NDMaterialLT *Globalmmodel)
     : EightNodeBrickLT( element_number,
                         node_numb_1,  node_numb_2,  node_numb_3,  node_numb_4,
                         node_numb_5,  node_numb_6,  node_numb_7,  node_numb_8,
@@ -52,7 +52,7 @@ EightNodeBrickLT_Elastic::EightNodeBrickLT_Elastic(): EightNodeBrickLT()
 //=============================================================================
 const Matrix &EightNodeBrickLT_Elastic::getTangentStiff()
 {
-    return K;
+    return EightNodeBrickLT::getConstStiff();
 }
 
 
