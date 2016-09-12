@@ -1,0 +1,338 @@
+###########################################################################################################################
+#                                                                                                                         #
+#  The Real ESSI (Real Earthquake-Soil-Structure Interaction) Simulator Dependencies                                      #
+#  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -                                      #
+#                                                                                                                         #
+#  This makefile builds all the necessary libraries needed by REAL ESSI                                                   #
+#  for sequential as well as parallel version. All the libraries are created/                                             #
+#  linked in lib folder.                                                                                                  #
+#                                                                                                                         #
+#  ***Targets for building dependencies***                                                                                #
+#                                                                                                                         #
+#  make help              -> show all the avilable options                                                                #
+#  make download          -> downloads all the dependencies                                                               #
+#  make list_dependencies -> show the versions of all dependencies that is to be build                                    #
+#  make                   -> builds all the necessary libraries for both sequential and parallel ESSI                     #
+#  make sequential        -> builds all the necessary libraries for sequential ESSI                                       #
+#  make parallel          -> builds all the necessary libraries for parallel ESSI                                         #
+#  make $(LIBNAME)        -> builds individual libraries                                                                  #
+#  make check_sequential  -> checks if all sequential libraries are build                                                 #
+#  make check_parallel    -> checks if all parallel libraries are build                                                   #
+#                                                                                                                         #
+#  Sumeet Kumar Sinha (August,2016)                                                                                       #
+#  Computational Geomechanics Group                                                                                       #
+#  University of California, Davis                                                                                        #
+#  s u m e e t k s i n h a . c o m                                                                                        #
+###########################################################################################################################
+
+# Real_ESSI_Dependencies directory
+pwd=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+home= $(pwd)/../RealESSI_Dependencies
+
+# Metis Directory
+SRC_METIS=$(shell ls $(home)/SRC| grep 'metis-.*tar.gz')
+SRC_METIS_VER=$(shell ls $(home)/SRC| awk -F"metis-" '{ print $$2 }'|awk -F".tar.gz" '{ print $$1 }')
+
+# Parmetis Directory
+SRC_PARMETIS=$(shell ls $(home)/SRC| grep 'parmetis-.*tar.gz')
+SRC_PARMETIS_VER=$(shell ls $(home)/SRC| awk -F"parmetis-" '{ print $$2 }'|awk -F".tar.gz" '{ print $$1 }')
+
+# Atlas Directory
+SRC_ATLAS=$(shell ls $(home)/SRC| grep 'atlas.*tar.bz2')
+SRC_ATLAS_VER=$(shell ls $(home)/SRC| awk -F"atlas" '{ print $$2 }'|awk -F".tar.bz2" '{ print $$1 }')
+
+# Hdf5 Directory
+SRC_HDF5=$(shell ls $(home)/SRC| grep 'hdf5-.*tar')
+SRC_HDF5_VER=$(shell ls $(home)/SRC| awk -F"hdf5-" '{ print $$2 }'|awk -F".tar" '{ print $$1 }')
+
+# Petsc Directory
+SRC_PETSC=$(shell ls $(home)/SRC| grep 'petsc-.*tar.gz')
+SRC_PETSC_VER=$(shell ls $(home)/SRC| awk -F"petsc-" '{ print $$2 }'|awk -F".tar.gz" '{ print $$1 }')
+
+# Slepc Directory
+SRC_SLEPC=$(shell ls $(home)/SRC| grep 'slepc-.*tar.gz')
+SRC_SLEPC_VER=$(shell ls $(home)/SRC| awk -F"slepc-" '{ print $$2 }'|awk -F".tar.gz" '{ print $$1 }')
+
+# Suitesparse Directory
+SRC_SUITESPARSE=$(shell ls $(home)/SRC| grep 'SuiteSparse-.*tar.gz')
+SRC_SUITESPARSE_VER=$(shell ls $(home)/SRC| awk -F"SuiteSparse-" '{ print $$2 }'|awk -F".tar.gz" '{ print $$1 }')
+
+# Arpack Directory
+SRC_ARPACK=$(shell ls $(home)/SRC| grep 'arpack.*tar.Z')
+SRC_ARPACK_VER=$(shell ls $(home)/SRC| awk -F"arpack" '{ print $$2 }'|awk -F".tar.Z" '{ print $$1 }')
+
+# Lapack Directory
+SRC_LAPACK=$(shell ls $(home)/SRC| grep 'lapack-.*tgz')
+SRC_LAPACK_VER=$(shell ls $(home)/SRC| awk -F"lapack-" '{ print $$2 }'|awk -F".tgz" '{ print $$1 }')
+
+# Number of Processes 
+NPROC=$(shell echo $(nproc))
+
+# Libraries that would sucessfully get build
+SEQUENTIAL_LIBS=libamd.a libarpack.a libbtf.a libcamd.a libcblas.a libccolamd.a libcholmod.a libcolamd.a libcsparse.a libcxsparse.a libfblas.a libflapack.a libklu.a liblapack.a liblapacke.a libldl.a libmetis.a libparmetis.a libpetsc.a librbio.a librefblas.a libscalapack.a libspai.a libspqr.a libsuitesparseconfig.a libsuperlu.a libsuperlu_dist.a libumfpack.a
+PARALLEL_LIBS=libamd.a libatlas.a libbtf.a libcamd.a libcblas.a libccolamd.a libcholmod.a libcolamd.a libcsparse.a libcxsparse.a libf77blas.a libf77refblas.a libfblas.a libflapack.a libklu.a liblapack.a libldl.a libmetis.a libparmetis.a libpetsc.a libptcblas.a libptf77blas.a libptlapack.a librbio.a libscalapack.a libspai.a libspqr.a libsuitesparseconfig.a libsuperlu.a libsuperlu_dist.a libtstatlas.a libumfpack.a 
+
+all: all_libs	##@Default Builds all the necessary libraries for both sequential and parallel ESSI
+
+all_libs: initialize suitesparse arpack hdf5_parallel hdf5_sequential petsc atlas parmetis list_build_dependencies	##@Default Builds all the necessary libraries for both sequential and parallel ESSI
+
+sequential: initialize suitesparse arpack hdf5_sequential petsc lapack parmetis list_build_dependencies   ##@Sequential Builds all the necessary libraries for sequential ESSI
+
+parallel: initialize hdf5_parallel suitesparse atlas petsc parmetis list_build_dependencies	##@Parallel Builds all the necessary libraries for parallel ESSI
+
+parmetis: initialize	##@Sequential Builds parmetis and metis
+	@mkdir -p $(home)/parmetis
+	@tar -xzvf $(home)/SRC/$(SRC_PARMETIS) -C $(home)/parmetis --strip-components 1
+	@gnome-terminal -x sh -c 'cd $(home)/parmetis; make config BUILDDIR=build ; make -j 16 BUILDDIR=build ; ln -sf  $(home)/parmetis/build/libmetis/libmetis.a $(home)/lib;  ln -sf  $(home)/parmetis/build/libparmetis/libparmetis.a $(home)/lib; ' && cd $(home)
+
+clean_parmetis:	##@Clean Clean parmetis and metis
+	@cd $(home)/parmetis  && make distclean BUILDDIR=build
+	@rm -rf $(home)/lib/libmetis.a  $(home)/lib/libparmetis.a
+	@cd $(home)
+
+# sudo apt-get install libatlas-base-dev
+# sudo apt install liblapack-dev liblapack3 libopenblas-base libopenblas-dev
+suitesparse: initialize	##@Sequential Builds suitesparse
+	@mkdir -p $(home)/suitesparse
+	@tar -xzvf $(home)/SRC/$(SRC_SUITESPARSE) -C $(home)/suitesparse --strip-components 1	
+	@cd $(home)/suitesparse  && make -j 16 && make library  
+	@find $(home)/suitesparse -name 'lib*.a' -exec ln -sf  {} $(home)/lib  \;
+	@cd $(home)/suitesparse/include &&  cp -f $(home)/suitesparse/include/*.h $(home)/include 
+	@cd $(home)	
+
+clean_suitesparse:	##@Clean Clean suitesparse libraries
+	@cd $(home)/suitesparse  && make distclean
+	@cd $(home)/lib && rm -rf libcamd.a libcolamd.a libcxsparse.a libccolamd.a libbtf.a libcholmod.a librbio.a \
+	libsuitesparseconfig.a libklu.a libcsparse.a libspqr.a libumfpack.a libldl.a libamd.a 
+	@cd $(home)
+
+arpack: initialize	##@Sequential Builds arpack
+	@mkdir -p $(home)/arpack
+	@tar -xzvf $(home)/SRC/$(SRC_ARPACK) -C $(home)/arpack --strip-components 1
+	@sed -i -e 's/      EXTERNAL           ETIME/*     EXTERNAL           ETIME/' $(home)/arpack/UTIL/second.f 
+	@cd $(home)/arpack && make lib home=$(home)/arpack MAKE=make FC=gfortran FFLAGS="-O3 -std=legacy" PLAT="" ARPACKLIB=$(home)/lib/libarpack.a
+	@cd $(home)
+
+clean_arpack:	##@Clean Clean arpack libraries
+	@cd $(home)/arpack  && make cleanlib home=$(home)/arpack MAKE=make FC=gfortran FFLAGS="-O3 -std=legacy" PLAT="" ARPACKLIB=$(home)/lib/libarpack.a
+	@rm -rf $(home)/lib/libarpack.a
+	@cd $(home)
+
+hdf5_sequential: initialize ##@Sequential Builds sequential hdf5 
+	@mkdir -p $(home)/hdf5
+	@tar -xvf $(home)/SRC/$(SRC_HDF5) -C $(home)/hdf5 --strip-components 1
+	@$(MAKE) distclean -C $(home)/hdf5
+	@cd $(home)/hdf5 && CFLAGS=-O3 ./configure --prefix=$(home)/hdf5_sequential && make -j 24  && make install 
+	# @ln -sf $(home)/hdf5_sequential/lib/*.a $(home)/lib
+	@cd $(home)/hdf5_sequential/include &&  cp -f $(home)/hdf5_sequential/include/*.h $(home)/include 
+	@cd $(home) 
+
+clean_hdf5_sequential:	##@Clean Cleans hdf5_sequential libraries  
+	@cd $(home)/hdf5  && make clean
+	@rm -rf $(home)/hdf5_sequential
+	@cd $(home)
+
+lapack: initialize	##@Sequential Builds lapack
+	@mkdir -p $(home)/lapack
+	@tar -xzvf $(home)/SRC/$(SRC_LAPACK) -C $(home)/lapack --strip-components 1	
+	@cp "$(home)/lapack/make.inc.example" "$(home)/lapack/make.inc"
+	@cd $(home)/lapack && make blaslib cblaslib lapacklib lapackelib FORTRAN="gfortran" OPTS="-g -O2 -funroll-loops" DRVOPTS="-g -O2 -funroll-loops" NOOPT="-g" LOADER="gfortran"
+	@ln -sf $(home)/lapack/*.a $(home)/lib
+	@cd $(home)	
+
+clean_lapack: ##@Clean Cleans lapack
+	@cd $(home)/lapack  && make cleanall
+	@cd $(home)/lib && rm -f libcblas.a liblapack.a liblapacke.a librefblas.a
+	@cd $(home)
+
+hdf5_parallel: initialize	##@Parallel Builds parallel hdf5 
+	@mkdir -p $(home)/hdf5
+	@tar -xvf $(home)/SRC/$(SRC_HDF5) -C $(home)/hdf5 --strip-components 1
+	@$(MAKE) distclean -C $(home)/hdf5
+	@cd $(home)/hdf5 && CFLAGS=-O3 ./configure --prefix=$(home)/hdf5_parallel --enable-parallel && make -j 24  && make install 
+	# @ln -sf $(home)/hdf5_parallel/lib/*.a $(home)/lib
+	@cd $(home)/hdf5_parallel/include &&  cp -f $(home)/hdf5_parallel/include/*.h $(home)/include 
+	@cd $(home) 
+
+clean_hdf5_parallel:	##@Clean Cleans hdf5_parallel libraries 
+	@cd $(home)/hdf5  && make clean
+	@rm -rf $(home)/hdf5_parallel
+	@cd $(home)
+
+atlas: initialize	##@Sequential Builds tuned LAPACK and BLAS
+	@mkdir -p $(home)/atlas
+	@tar -xvf $(home)/SRC/$(SRC_ATLAS) -C $(home)/atlas --strip-components 1
+	@mkdir -p $(home)/atlas/build	
+	@cd $(home)/atlas/build && $(home)/atlas/configure -b 64 -D c -DWALL --cripple-atlas-performance --prefix=$(home)/lib  --with-netlib-lapack-tarfile=$(home)/SRC/$(SRC_LAPACK)  && make
+	# @cd atlas/build && $(home)/atlas/configure -b 64 -D c -DWALL --cripple-atlas-performance --with-netlib-lapack-tarfile=$(home)/SRC/$(SRC_LAPACK)  && make
+	@ln -sf $(home)/atlas/build/lib/*.a $(home)/lib
+	@cd $(home)/atlas/include &&  cp -f $(home)/atlas/include/*.h $(home)/include 
+	@cd $(home)	
+
+clean_atlas: 
+	@cd $(home)/atlas/build  && make clean 
+	@cd $(home)/lib && rm -rf libatlas.a libcblas.a libf77blas.a libf77refblas.a liblapack.a libptcblas.a libptf77blas.a libptlapack.a libtstatlas.a
+	@cd $(home)
+
+#sudo apt-get install valgrind
+petsc: initialize ##@Parallel Builds petsc
+	@mkdir -p $(home)/petsc
+	@tar -xzvf $(home)/SRC/$(SRC_PETSC) -C $(home)/petsc --strip-components 1 
+	@cd $(home)/petsc && ./configure \
+	PETSC_ARCH="build" \
+	--with-x=0 \
+	--with-debugging=0 COPTFLAGS='-O3 -march=native -mtune=native' \
+	CXXOPTFLAGS='-O3 -march=native -mtune=native' FOPTFLAGS='-O3 -march=native -mtune=native' \
+	--with-shared-libraries=0 \
+	--with-cxx=mpic++ \
+	--with-cc=mpicc \
+	--with-fc=mpif77 \
+	--with-blacs=1 \
+	--download-blacs=yes \
+	--with-scalapack=1 \
+	--download-scalapack=yes \
+	--with-spai=1 \
+	--download-spai=yes \
+	--with-hypre=0 \
+	--download-hypre=no \
+	--with-plapack=1 \
+	--download-plapack=yes \
+	--download-fblaslapack=1 \
+	--download-plapack=1 \
+	--with-superlu_dist=1 \
+	--download-superlu_dist=yes \
+	--download-superlu=yes \
+	--download-superlu_dist \
+	--with-spooles=1 \
+	--download-spooles \
+	--download-metis \
+	--download-parmetis \
+	--with-metis \
+	--with-parmetis 
+	@cd $(home)/petsc && make PETSC_DIR=$(home)/petsc PETSC_ARCH=build all
+	@cd $(home)/petsc && make PETSC_DIR=$(home)/petsc PETSC_ARCH=build test
+	@cd $(home)/petsc && make PETSC_DIR=$(home)/petsc PETSC_ARCH=build streams NPMAX=$(NPROC)
+	@ln -sf $(home)/petsc/build/lib/*.a $(home)/lib
+	@cd $(home)/petsc/build/include &&  cp -f $(home)/petsc/build/include/*.h $(home)/include 
+	@cd $(home)/petsc/include &&  cp -f $(home)/petsc/include/*.h $(home)/include 
+	@cd $(home)
+
+clean_petsc: ##@Clean Cleans petsc
+	@cd $(home)/petsc  && make clean PETSC_DIR=$(home)/petsc  PETSC_ARCH=build
+	@cd $(home)/lib && rm -rf libfblas.a libflapack.a libmetis.a  libparmetis.a libpetsc.a libscalapack.a libspai.a libsuperlu.a libsuperlu_dist.a || true
+	@cd $(home)	
+
+slepc: initialize 
+	@mkdir -p $(home)/slepc
+	@tar -xzvf $(home)/SRC/$(SRC_SLEPC) -C $(home)/slepc --strip-components 1 
+	@cd $(home)/slepc && export SLEPC_DIR=$(home)/slepc \
+	&& export PETSC_DIR=$(home)/petsc \
+	&& export PETSC_ARCH=build \
+	&& ./configure 
+	@cd $(home)/slepc && make SLEPC_DIR=$(home)/slepc PETSC_DIR=$(home)/petsc PETSC_ARCH=build
+	@ln -sf $(home)/slepc/build/lib/*.a $(home)/lib
+	@cd $(home)/slepc/build/include &&  cp -f-rf  $(home)/slepc/build/include/*.h $(home)/include 
+	@cd $(home)/slepc/include &&  cp -f $(home)/slepc/include/*.h $(home)/include 	
+	@cd $(home)
+
+clean_slepc:
+	@cd $(home)/slepc && make clean SLEPC_DIR=$(home)/slepc PETSC_DIR=$(home)/petsc PETSC_ARCH=build
+	@cd $(home)
+
+list_dependencies:  ##@Miscellaneous Lists all the available dependencies version from SRC folder 
+	@echo "------------------------------------------------------------"
+	@echo "  Listing down all dependencies with their current version  "
+	@echo "------------------------------------------------------------"
+	@echo 
+	@echo "PARMETIS VERSION IS " $(SRC_PARMETIS_VER)
+	@echo "ATLAS VERSION IS " $(SRC_ATLAS_VER)
+	@echo "HDF5 VERSION IS " $(SRC_HDF5_VER)
+	@echo "PETSC VERSION IS " $(SRC_PETSC_VER)
+	@echo "SUITESPARSE VERSION IS " $(SRC_SUITESPARSE_VER)
+	@echo "ARPACK VERSION IS " $(SRC_ARPACK_VER)
+	@echo "LAPACK VERSION IS " $(SRC_LAPACK_VER)
+	@echo
+
+list_build_dependencies:initialize   ##@Miscellaneous Lists all the dependencies library allready build in lib folder
+	@echo ""
+	@echo "======================================================================"
+	@echo "Summary of available libaries "
+	@echo "======================================================================"
+	@cd $(home)/lib && ls -1
+	@echo "======================================================================"
+
+initialize: 
+	@mkdir -p $(home)/include   
+	@mkdir -p $(home)/lib     
+
+clean_sequential: clean_parmetis clean_suitesparse clean_arpack clean_hdf5_sequential clean_lapack clean_atlas clean_petsc ##@Sequential Cleans sequential libraries
+
+clean_parallel: clean_hdf5_parallel clean_petsc ##@Parallel Cleans parallel libraries
+
+clean_all: clean_parmetis clean_suitesparse clean_arpack clean_hdf5_sequential clean_lapack clean_hdf5_parallel clean_atlas clean_petsc ##@Default Cleans everything
+	@rm -rf lib include hdf5 lapack atlas petsc parmetis arpack suitesparse hdf5_parallel hdf5_sequential
+
+HELP_FUN = \
+	 %help; \
+	 while(<>) { push @{$$help{$$2 // 'options'}}, [$$1, $$3] if /^(\w+)\s*:.*\#\#(?:@(\w+))?\s(.*)$$/ }; \
+	 print "usage: make [target]\n\n"; \
+	for (keys %help) { \
+	 print "$$_:\n"; $$sep = " " x (20 - length $$_->[0]); \
+	 printf("  %-30s %s\n", $$_->[0], $$_->[1]) for @{$$help{$$_}}; \
+	 print "\n"; }     
+
+help: ##@Miscellaneous Show this help.
+	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
+
+check_sequential: ##@Check Checks if all sequential libraries are build
+	@ for lib in $(SEQUENTIAL_LIBS); do \
+		if  [ ! -f "$(home)/lib/$$lib" ]; then echo "ERROR:: $$lib not found "; exit 1; fi \
+	  done
+	@echo ""
+	@echo "███████╗██╗   ██╗ ██████╗ ██████╗███████╗███████╗███████╗██╗"
+	@echo "██╔════╝██║   ██║██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝██║"
+	@echo "███████╗██║   ██║██║     ██║     █████╗  ███████╗███████╗██║"
+	@echo "╚════██║██║   ██║██║     ██║     ██╔══╝  ╚════██║╚════██║╚═╝"
+	@echo "███████║╚██████╔╝╚██████╗╚██████╗███████╗███████║███████║██╗"
+	@echo "╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝╚══════╝╚══════╝╚══════╝╚═╝"
+	@echo "                                                            "
+	@echo "                Sequential Libraries are build              "
+	@echo ""
+
+
+check_parallel:##@Check Checks if all parallel libraries are build 
+	@ for lib in $(PARALLEL_LIBS); do \
+		if  [ ! -f "$(home)/lib/$$lib" ]; then echo "ERROR:: $$lib not found "; exit 1; fi \
+	  done
+	@echo ""
+	@echo "███████╗██╗   ██╗ ██████╗ ██████╗███████╗███████╗███████╗██╗"
+	@echo "██╔════╝██║   ██║██╔════╝██╔════╝██╔════╝██╔════╝██╔════╝██║"
+	@echo "███████╗██║   ██║██║     ██║     █████╗  ███████╗███████╗██║"
+	@echo "╚════██║██║   ██║██║     ██║     ██╔══╝  ╚════██║╚════██║╚═╝"
+	@echo "███████║╚██████╔╝╚██████╗╚██████╗███████╗███████║███████║██╗"
+	@echo "╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝╚══════╝╚══════╝╚══════╝╚═╝"
+	@echo "                                                            "
+	@echo "               Parallel Lilbraries are build                "
+	@echo ""
+
+download: ##@Miscellaneous Downloads the Dependencies Sources
+	@mkdir -p $(home)/SRC 
+	@cd $(home)/SRC && rm -rf *
+	# SuiteSparse Source
+	@cd $(home)/SRC && wget http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-4.5.3.tar.gz
+	# Arpack Source
+	@cd $(home)/SRC && wget http://www.caam.rice.edu/software/ARPACK/SRC/arpack96.tar.Z	
+	# HDF5 Source		
+	@cd $(home)/SRC && wget http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.17.tar
+	# Petsc Source
+	@cd $(home)/SRC && wget http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-3.7.3.tar.gz
+	# Parmetis Source
+	@cd $(home)/SRC && wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/parmetis/parmetis-4.0.3.tar.gz
+	# Lapack Source 
+	@cd $(home)/SRC && wget http://www.netlib.org/lapack/lapack-3.6.1.tgz
+	# Atlas Source
+	@cd $(home)/SRC && wget http://downloads.sourceforge.net/project/math-atlas/Stable/3.10.3/atlas3.10.3.tar.bz2
+	# Blas Source 
+	@cd $(home)/SRC && wget http://www.netlib.org/blas/blas-3.6.0.tgz
+	# Slepc Source
+	@cd $(home)/SRC && wget http://slepc.upv.es/download/download.php?filename=slepc-3.7.2.tar.gz -O slepc-3.7.2.tar.gz
