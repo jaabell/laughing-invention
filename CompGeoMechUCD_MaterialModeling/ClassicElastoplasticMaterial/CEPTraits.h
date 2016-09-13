@@ -59,4 +59,3 @@ struct supports_implicit_integration
 {
     static const bool value = false;
 };
-

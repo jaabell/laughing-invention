@@ -65,7 +65,6 @@ struct supports_pre_integration_callback<DruckerPragerVonMisesLinearHardening>
 {
     static const bool value = true;
 };
-
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLHVarsType;
 typedef DruckerPrager_YF < LinearHardeningTensor_EV, LinearHardeningScalar_EV> DPLH_YFType;

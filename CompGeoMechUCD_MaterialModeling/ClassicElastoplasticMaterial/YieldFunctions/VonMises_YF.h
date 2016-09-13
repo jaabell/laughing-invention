@@ -134,27 +134,14 @@ public:
 
         return dbl_result;
     }
-
-    // DTensor4 const& dalpha_over_dsigma(DTensor2 const& sigma){
-
-    // }
-    // DTensor4 const& dalpha_over_dalpha(DTensor2 const& sigma){
-
-    // }
-    int getHardeningType(){
-        double H_alpha=alpha_.getHardeningType();
-        double H_k=k_.getHardeningType();
-        int HARDENING_TYPE=0;
-        if( abs(H_alpha)< MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
-          HARDENING_TYPE = Perfectly_Plastic;
-        }else if(abs(H_alpha)<MACHINE_EPSILON &&  abs(H_k)>MACHINE_EPSILON){
-          HARDENING_TYPE = One_Isotropic_Hardening_Only;
-        }else if(abs(H_alpha)>MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
-          HARDENING_TYPE = One_Kinematic_Hardening_Only;
-        }else{
-          HARDENING_TYPE = Both_One_Isotropic_One_Kinematic_Hardening;
-        }
-        return HARDENING_TYPE;
+    bool hasCorner() const{
+        return false;
+    }
+    double get_k() const{
+        return k_.getVariableConstReference();
+    }
+    DTensor2 const& get_alpha() const{
+        return alpha_.getVariableConstReference();
     }
 private:
 

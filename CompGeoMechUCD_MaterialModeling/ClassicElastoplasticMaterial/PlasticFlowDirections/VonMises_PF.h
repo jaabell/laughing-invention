@@ -112,33 +112,34 @@ public:
         p=-p;
         static DTensor2 s_minus_alpha(3,3,0.0);
         s_minus_alpha(i,j) = s(i,j) - alpha(i,j);
-        double intermediate = s_minus_alpha(i,j) * s_minus_alpha(i,j) ; 
+        double s_minus_alpha_square = s_minus_alpha(i,j) * s_minus_alpha(i,j) ; 
 
-
-
+        static DTensor4 dm__dsigma(3,3,3,3,0.0);
+        dm__dsigma*=0;
         for (int ig = 0; ig < 3; ++ig)
-            for (int mg = 0; mg < 3; ++mg)
-                for (int jg = 0; jg < 3; ++jg)
+            for (int jg = 0; jg < 3; ++jg)
+                for (int mg = 0; mg < 3; ++mg)
                     for (int ng = 0; ng < 3; ++ng){
                         dm__dsigma(ig,jg,mg,ng) = 
                             (
-                                kronecker_delta(ig,mg) * kronecker_delta(jg,ng) - 1.0/3.0 * kronecker_delta(ig,jg) * kronecker_delta(mg,ng) 
-                            ) * pow(intermediate, -0.5) - 
+                                kronecker_delta(ig,mg) * kronecker_delta(jg,ng) 
+                                - 1.0/3.0 * kronecker_delta(ig,jg) * kronecker_delta(mg,ng) 
+                            ) * pow(s_minus_alpha_square, -0.5) - 
                             (
-                                (s(ig,jg)-alpha(ig,jg)) * (s(mg,ng)-alpha(mg,ng))
-                            ) * pow(intermediate, -1.5); 
+                                (s_minus_alpha(ig,jg)) * (s_minus_alpha(mg,ng))
+                            ) * pow(s_minus_alpha_square, -1.5); 
                     }
 
         // // ==============
-        // //  Backup . LTensor do not accept this. Change to the naive for-loop.
+        // //  Legacy . LTensor do not accept this. Change to the naive for-loop.
         // // ==============
         // dm__dsigma(i,j,m,n) = 
         //     (
         //         kronecker_delta(i,m) * kronecker_delta(j,n) - 1.0/3.0 * kronecker_delta(i,j) * kronecker_delta(m,n) 
-        //     ) * pow(intermediate, -0.5) - 
+        //     ) * pow(s_minus_alpha_square, -0.5) - 
         //     (
         //         (s(i,j)-alpha(i,j)) * (s(m,n)-alpha(m,n))
-        //     ) * pow(intermediate, -1.5); 
+        //     ) * pow(s_minus_alpha_square, -1.5); 
         // // ==============
         // =========================================
         // minimal failed example
@@ -146,12 +147,45 @@ public:
         // test(i,j,m,n)=kronecker_delta(i,m) * kronecker_delta(j,n) - 1.0/3.0 * kronecker_delta(i,j) * kronecker_delta(m,n) ;
         // =========================================
 
+        // static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize this to global later.
+        // IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
+
+        // dm__dsigma(i,j,k,l) = 
+        //     (
+        //         IdentityTensor4(i,k,j,l) - 1.0/3.0 * IdentityTensor4(i,j,k,l) 
+        //     ) * pow(s_minus_alpha_square, -0.5) - 
+        //     (
+        //         (s_minus_alpha(i,j)) * (s_minus_alpha(k,l))
+        //     ) * pow(s_minus_alpha_square, -1.5); 
+
         return dm__dsigma;
     }
-    // DTensor4 const& dm_over_dalpha(DTensor2 const& sigma){
-        
-    // }
 
+    DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress){
+        static DTensor2 s(3, 3, 0.0);
+        const DTensor2 &alpha = alpha_.getVariableConstReference();
+        // const double &k = k_.getVariableConstReference();
+        double p=0;
+        stress.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+        p=-p;
+
+        static DTensor4 IdentityTensor4(3,3,3,3, 0.0); //optimize this to global later.
+        IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
+        // (1) von Mises material always has this part zero. 
+        // double dm_dk=0.0; 
+        // (2) dm_dalpha part
+        static DTensor4 dm_dalpha(3,3,3,3,0.0);
+        static DTensor2 s_minus_alpha(3,3,0.0);
+        s_minus_alpha(i,j) = s(i,j) - alpha(i,j);
+        double s_minus_alpha_square = s_minus_alpha(i,j) * s_minus_alpha(i,j) ; 
+
+        dm_dalpha(i,j,m,n) = - IdentityTensor4(i,m,j,n) * pow(s_minus_alpha_square,-0.5) 
+            + s_minus_alpha(i,j)*s_minus_alpha(m,n) * pow(s_minus_alpha_square,-1.5);
+        static DTensor2 ret(3,3,0.0);
+        ret(i,j) = dm_dalpha(i,j,m,n)*alpha(m,n);
+
+        return ret;
+    }
 
 
 private:
@@ -161,7 +195,7 @@ private:
 
     static DTensor2 s; //sigma deviator
     static DTensor2 result; //For returning Dtensor2s
-    static DTensor4 dm__dsigma; //For returning dm_over_dsigma
+    // static DTensor4 dm__dsigma; //For returning dm_over_dsigma
 
 };
 
@@ -170,7 +204,7 @@ template<class AlphaHardeningType, class KHardeningType>
 DTensor2 VonMises_PF<AlphaHardeningType , KHardeningType >::s(3, 3, 0.0);
 template<class AlphaHardeningType, class KHardeningType>
 DTensor2 VonMises_PF<AlphaHardeningType , KHardeningType >::result(3, 3, 0.0);
-template<typename AlphaHardeningType, typename KHardeningType>
-DTensor4 VonMises_PF<AlphaHardeningType , KHardeningType >::dm__dsigma(3, 3, 3, 3, 0.0);
+// template<typename AlphaHardeningType, typename KHardeningType>
+// DTensor4 VonMises_PF<AlphaHardeningType , KHardeningType >::dm__dsigma(3, 3, 3, 3, 0.0);
 
 #endif
