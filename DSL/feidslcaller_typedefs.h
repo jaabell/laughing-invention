@@ -34,7 +34,7 @@
 #include <vector>
 #include <string>
 
-typedef bool(*UnitCheckerFunctionPointerType)(const Quantity&) ;
+typedef bool(*UnitCheckerFunctionPointerType)(const string&, const Quantity&) ;
 typedef std::vector<Expression*> ArgumentType;
 typedef std::vector<Expression*>::const_iterator ArgumentIterator;
 typedef std::pair<string, UnitCheckerFunctionPointerType> SignatureElementType;

@@ -163,7 +163,7 @@ ArcLength1::update(const Vector& dU)
 
     // determine delta lambda(i)
     double a = (*deltaUstep) ^ (*deltaUbar);
-    double b = (*deltaUstep) ^ (*deltaUhat) + alpha2 * deltaLambdaStep;
+    double b = ((*deltaUstep) ^ (*deltaUhat)) + alpha2 * deltaLambdaStep;
 
     if (b == 0)
     {

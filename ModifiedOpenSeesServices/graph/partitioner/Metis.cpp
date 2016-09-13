@@ -264,6 +264,7 @@ Metis::checkOptions(void)
     }
 
     if (myPtype == 1)
+    {
         if ((myRtype != 1) || (myRtype != 2) || (myRtype != 3) ||
                 (myRtype != 11) || (myRtype != 12) || (myRtype != 13) ||
                 (myRtype != 20))
@@ -274,6 +275,7 @@ Metis::checkOptions(void)
             cerr << " for Ptype " << myPtype << endln;
         }
         else if (myPtype == 2)
+        {
             if ((myRtype != 11) || (myRtype != 12) || (myRtype != 20))
             {
                 okFlag = false;
@@ -281,6 +283,8 @@ Metis::checkOptions(void)
                 cerr << " - Illegal Rtype " << myRtype << endln;
                 cerr << " for Ptype " << myPtype << endln;
             }
+        }
+    }
 
     if ((myIPtype != 1) || (myIPtype != 2) || (myIPtype != 3) ||
             (myIPtype != 4))

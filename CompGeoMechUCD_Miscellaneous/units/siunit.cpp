@@ -211,142 +211,224 @@ ostream& operator<<(ostream& out, const SIUnit& unit)
 }
 
 
-
-
-
-
 // ============================================================================================================
 // Auxiliary helper functions (tests)
 // ============================================================================================================
+
 bool isAdimensional(const SIUnit& u)
 {
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 0 ) &
-            ( u.Getdim_t() == 0 ));
-}
-bool isMass(const SIUnit& u)
-{
-    return (( u.Getdim_m() == 1 ) &
+    return  (( u.Getdim_m() == 0 ) &
             ( u.Getdim_l() == 0 ) &
             ( u.Getdim_t() == 0 ));
 }
 
-bool isLength(const SIUnit& u)
+bool isAdimensional(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 1 ) &
-            ( u.Getdim_t() == 0 ));
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 0 ) &
+                   ( u.Getdim_t() == 0 ));
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should be dimensionless" << endl;
+
+    return verified;
 }
 
-bool isTime(const SIUnit& u)
+bool isMass(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 0 ) &
-            ( u.Getdim_t() == 1 ) );
-}
+    bool verified = (( u.Getdim_m() == 1 ) &
+                   ( u.Getdim_l() == 0 ) &
+                   ( u.Getdim_t() == 0 ));
 
-bool isTime3(const SIUnit& u)
-{
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 0 ) &
-            ( u.Getdim_t() == 3 ) );
-}
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Mass [kg]" << endl;
 
-bool isTime5(const SIUnit& u)
-{
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 0 ) &
-            ( u.Getdim_t() == 5 ) );
-}
-
-bool isFrequency(const SIUnit& u)
-{
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 0 ) &
-            ( u.Getdim_t() == -1 ) );
+    return verified;
 }
 
 
-bool isArea(const SIUnit& u)
+bool isLength(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 2 ) &
-            ( u.Getdim_t() == 0 ) );
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 1 ) &
+                   ( u.Getdim_t() == 0 ));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Length i.e. [m]" << endl;
+
+    return verified;
 }
 
-bool isVolume(const SIUnit& u)
+bool isTime(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 3 ) &
-            ( u.Getdim_t() == 0 ) );
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 0 ) &
+                   ( u.Getdim_t() == 1 ));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Time i.e. [s]" << endl;
+
+    return verified;
 }
 
-bool isForce(const SIUnit& u)
+bool isFrequency(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 1 ) &
-            ( u.Getdim_l() == 1 ) &
-            ( u.Getdim_t() == -2 ) );
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 0 ) &
+                   ( u.Getdim_t() == -1));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Frequency i.e. [s^(-1)] " << endl;
+
+    return verified;
 }
 
-bool isEnergy(const SIUnit& u)
+
+bool isArea(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 1 ) &
-            ( u.Getdim_l() == 2 ) &
-            ( u.Getdim_t() == -2 ) );
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 2 ) &
+                   ( u.Getdim_t() == 0 ));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Area i.e. [m^(2)]" << endl;
+
+    return verified;
+
 }
 
-bool isTorque(const SIUnit& u)
+bool isVolume(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 1 ) &
-            ( u.Getdim_l() == 2 ) &
-            ( u.Getdim_t() == -2 ) );
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 3 ) &
+                   ( u.Getdim_t() == 0 ));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Volume i.e. [m^(3)] " << endl;
+
+    return verified;
 }
 
-bool isPressure(const SIUnit& u)
+bool isForce(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 1 ) &
-            ( u.Getdim_l() == -1 ) &
-            ( u.Getdim_t() == -2 ) );
+    bool verified = (( u.Getdim_m() == 1 ) &
+                   ( u.Getdim_l() == 1 ) &
+                   ( u.Getdim_t() == -2));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Force i.e. [kg*m/s^(2)] " << endl;
+
+    return verified;
 }
 
-bool isBodyForce(const SIUnit& u)
+bool isEnergy(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 1 ) &
-            ( u.Getdim_l() == -2 ) &
-            ( u.Getdim_t() == -2 ) );
+    bool verified = (( u.Getdim_m() == 1 ) &
+                   ( u.Getdim_l() == 2 ) &
+                   ( u.Getdim_t() == -2));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Energy i.e. [kg*m^(2)/s^(2)] " << endl;
+
+    return verified;
 }
 
-bool isDensity(const SIUnit& u)
+bool isTorque(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 1 ) &
-            ( u.Getdim_l() == -3 ) &
-            ( u.Getdim_t() == 0 ) );
+    bool verified = (( u.Getdim_m() == 1 ) &
+                   ( u.Getdim_l() == 2 ) &
+                   ( u.Getdim_t() == -2));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Torque i.e. [kg*m^(2)/s^(2)] " << endl;
+
+    return verified;
 }
 
-bool isVelocity(const SIUnit& u)
+bool isPressure(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 1 ) &
-            ( u.Getdim_t() == -1 ) );
+    bool verified = (( u.Getdim_m() == 1 ) &
+                   ( u.Getdim_l() == -1) &
+                   ( u.Getdim_t() == -2));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Pressure i.e. [kg/m/s^(2)] " << endl;
+
+    return verified;
 }
 
-bool isAcceleration(const SIUnit& u)
+bool isBodyForce(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 1 ) &
-            ( u.Getdim_t() == -2 ));
+    bool verified = (( u.Getdim_m() == 1 ) &
+                   ( u.Getdim_l() == -2 )&
+                   ( u.Getdim_t() == -2));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Body Force i.e. [kg/m^(2)/s^(2)] " << endl;
+
+    return verified;
+
 }
 
-bool isAreaMomentOfInertia(const SIUnit& u)
+bool isDensity(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 0 ) &
-            ( u.Getdim_l() == 4 ) &
-            ( u.Getdim_t() == 0 ));
+    bool verified = (( u.Getdim_m() == 1 ) &
+                   ( u.Getdim_l() == -3) &
+                   ( u.Getdim_t() == 0 ));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Density i.e. [kg/m^(3)] " << endl;
+
+    return verified;
+
 }
 
-bool isMassMomentOfInertia(const SIUnit& u)
+bool isVelocity(const string& var_name, const SIUnit& u)
 {
-    return (( u.Getdim_m() == 1 ) &
-            ( u.Getdim_l() == 2 ) &
-            ( u.Getdim_t() == 0 ));
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 1 ) &
+                   ( u.Getdim_t() == -1));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Force i.e. [kg*m/s^(2)] " << endl;
+
+    return verified;
 }
+
+bool isAcceleration(const string& var_name, const SIUnit& u)
+{
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 1 ) &
+                   ( u.Getdim_t() == -2));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of acceleration i.e. [m/s^(2)] " << endl;
+
+    return verified;
+}
+
+bool isAreaMomentOfInertia(const string& var_name, const SIUnit& u)
+{
+    bool verified = (( u.Getdim_m() == 0 ) &
+                   ( u.Getdim_l() == 4 ) &
+                   ( u.Getdim_t() == 0 ));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Area Moment of Interia i.e. [m^(4)] " << endl;
+
+    return verified;
+}
+
+
+bool isMassMomentOfInertia(const string& var_name, const SIUnit& u)
+{
+    bool verified = (( u.Getdim_m() == 1 ) &
+                   ( u.Getdim_l() == 2 ) &
+                   ( u.Getdim_t() == 0 ));
+
+    if (!verified)
+         cout << endl << endl << "     Error: " << var_name << " should have unit of Mass Moment of Intertia i.e. [kg*m^(2)] " << endl;
+
+    return verified;
+
+}
+

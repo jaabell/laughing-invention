@@ -160,10 +160,6 @@ Joint3D::Joint3D(int tag, int nd1, int nd2, int nd3, int nd4, int nd5, int nd6, 
     Center2 = Center2 - end4Crd;
     Center3 = Center3 - end6Crd;
 
-    double L1 = Center1.Norm();
-    double L2 = Center2.Norm();
-    double L3 = Center3.Norm();
-
     if ( Center1.Norm() < 1e-12  || Center2.Norm() < 1e-12  || Center3.Norm() < 1e-12 )
     {
         std::cerr << "WARNING Joint3D::(): zero length\n";
@@ -328,12 +324,13 @@ Joint3D::~Joint3D()
             }
         }
 
-        if ( theNodes[7] != NULL )
-        {
-            int intnodetag = theNodes[7]->getTag();
-            TheDomain->removeNode( intnodetag );
-            delete theNodes[7];
-        }
+        // [Sumeet August, 2016] Array[id] is above its length which is 6 here
+        // if ( theNodes[7] != NULL )
+        // {
+        //     int intnodetag = theNodes[7]->getTag();
+        //     TheDomain->removeNode( intnodetag );
+        //     delete theNodes[7];
+        // }
     }
 
     for (int i = 0 ; i < 3 ; i++)

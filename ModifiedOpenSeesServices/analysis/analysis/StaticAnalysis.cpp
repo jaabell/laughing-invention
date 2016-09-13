@@ -152,7 +152,6 @@ StaticAnalysis::clearAll(void)
     theSOE = 0;
     theTest = 0;
 
-
 }
 
 
@@ -162,28 +161,42 @@ StaticAnalysis::analyze(int numSteps)
     int result = 0;
     Domain *the_Domain = this->getDomainPtr();
 
+    //////////////////// Added by Sumeet (Initial Conditions ) ///////////
+
+    cout << "Writing Initial Conditions " << " " ;
+
+    result = theIntegrator->output_step();
+
+    if (result < 0)
+    {
+        cout << "\nStatic Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+        cerr << "the Integrator failed to commit";
+        cerr << the_Domain->getCurrentTime() << endln;
+
+        return -4;
+    }
+
+    ////////////////////////////////////////////////////////////////////
 
     for (int i = 0; i < numSteps; i++)
     {
-        cout << "Static Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
+        cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+        // std::chrono::high_resolution_clock::time_point step_start;
+        // std::chrono::high_resolution_clock::duration estimated_time_to_completion;
+        // step_start = std::chrono::high_resolution_clock::now();
 
-        std::chrono::high_resolution_clock::time_point step_start;
-        std::chrono::high_resolution_clock::duration estimated_time_to_completion;
-        step_start = std::chrono::high_resolution_clock::now();
 
-
-        if (i > 0)
-        {
-            cout << " [ETA: "
-                 << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
-                 << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
-                 << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
-        }
-        else
-        {
+        // if (i > 0)
+        // {
+        //     cout << " [ETA: "
+        //          << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
+        //          << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
+        //          << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
+        // }
+        // else
+        // {
             cout << "\n";
-        }
-
+        // }
 
         globalESSITimer.start("Domain_Step");
         result = theAnalysisModel->newStepDomain();
@@ -193,8 +206,8 @@ StaticAnalysis::analyze(int numSteps)
 
         if (result < 0)
         {
-            cerr << "StaticAnalysis::analyze() - the AnalysisModel failed";
-            cerr << " at iteration: " << i << " with domain at load factor ";
+            cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << "The AnalysisModel failed at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
 
@@ -215,8 +228,10 @@ StaticAnalysis::analyze(int numSteps)
 
             if (result < 0)
             {
-                cerr << "StaticAnalysis::analyze() - domainChanged failed";
-                cerr << " at step " << i << " of " << numSteps << endln;
+                cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+                cerr << "DomainChange FAILED at load factor";
+                cerr << the_Domain->getCurrentTime() << endln;
+                the_Domain->revertToLastCommit();
                 return -1;
             }
         }
@@ -228,8 +243,8 @@ StaticAnalysis::analyze(int numSteps)
         globalESSITimer.stop("Integrator_Step");
         if (result < 0)
         {
-            cerr << "StaticAnalysis::analyze() - the Integrator failed";
-            cerr << " at iteration: " << i << " with domain at load factor ";
+            cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << "The AnalysisModel failed with domain at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
 
@@ -243,26 +258,36 @@ StaticAnalysis::analyze(int numSteps)
         globalESSITimer.stop("SOE_Solution");
         if (result < 0)
         {
-            cerr << "StaticAnalysis::analyze() - the Algorithm failed";
-            cerr << " at iteration: " << i << " with domain at load factor ";
+            cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << "The Algorithm failed at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
+
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
+
+            /****************************************************************************************************
+            * Adde by Sumeet 2nd August, 2016
+            * This function basically, saves and performs the iterations of a current analysis_step from the 
+            * beginning of that step and also save sthe output to hdf5 file
+            *****************************************************************************************************/
+
+            cout << endl << "################## Started Writing Iteration Output ######################" << endl;; 
+            theAlgorithm->switchOutputIterationOption(true);  // Switch on the writer to write incremental output
+            theIntegrator->newStep();
+            theAlgorithm->solveCurrentStep();       
 
             return -3;
         }
 
 
-
-
         globalESSITimer.start("Output");
-        result = theIntegrator->commit();
+        result = theIntegrator->commit(); 
+        result = theIntegrator->output_step();
         globalESSITimer.stop("Output");
         if (result < 0)
         {
-            cerr << "StaticAnalysis::analyze() - ";
-            cerr << "the Integrator failed to commit";
-            cerr << " at iteration: " << i << " with domain at load factor ";
+            cout << "\nStatic Analysis: ["<< std::setw(5) << i + 1 << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << "The AnalysisModel failed with domain at load factor ";
             cerr << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
@@ -281,7 +306,7 @@ StaticAnalysis::analyze(int numSteps)
 # endif
 
 
-        estimated_time_to_completion = std::chrono::high_resolution_clock::now() - step_start;
+        // estimated_time_to_completion = std::chrono::high_resolution_clock::now() - step_start;
 
     }
 

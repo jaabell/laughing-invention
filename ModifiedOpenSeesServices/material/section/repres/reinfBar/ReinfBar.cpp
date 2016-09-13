@@ -35,15 +35,14 @@
 
 
 ReinfBar::ReinfBar (void):
-    diameter(0.0), area(0.0), matID(0), posit(2)
+    matID(0), diameter(0.0), area(0.0), posit(2)
 {
 
 }
 
 
 ReinfBar::ReinfBar(double barArea, int materialID, const Vector& position):
-    diameter(0.0), area(barArea),
-    matID(materialID), posit(position)
+     matID(materialID),diameter(0.0), area(barArea),posit(position)
 {
 }
 

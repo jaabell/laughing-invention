@@ -58,6 +58,8 @@ TwentySevenNodeBrickVariableGP::TwentySevenNodeBrickVariableGP(int element_numbe
       connectedExternalNodes(27), Ki(0), Q(81), rho(0.0)
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+
     //================================================================
     rho = Globalmmodel->getRho();
     //================================================================

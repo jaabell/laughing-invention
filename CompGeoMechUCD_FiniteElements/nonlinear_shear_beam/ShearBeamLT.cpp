@@ -37,6 +37,7 @@
 
 DTensor2 ShearBeamLT::gp_coords(1, 3, 0.0);
 DTensor1 ShearBeamLT::gp_weight(1, 0.0);
+vector<float> ShearBeamLT::Gauss_Output_Vector(18);
 
 // Matrix ShearBeamLT::K( 6, 6);
 // Matrix ShearBeamLT::M( 6, 6);
@@ -49,9 +50,11 @@ ShearBeamLT::ShearBeamLT( int element_number,
     : Element( element_number, ELE_TAG_ShearBeamLT ),
       rho( 0.0 ), connectedExternalNodes( 2 ),
       Ki( 0 ), Q( 6 ), bf(3), K( 6, 6),
-      M( 6, 6), P(6), gauss_points(1, 3), outputVector(ShearBeamLT_OUTPUT_SIZE)
+      M( 6, 6), P(6), gauss_points(1, 3)
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     rho = Globalmmodel->getRho();
     mmodel = Globalmmodel;
     Area = area;
@@ -76,8 +79,7 @@ ShearBeamLT::ShearBeamLT(): Element( 0, ELE_TAG_ShearBeamLT ),
     rho( 0.0 ), connectedExternalNodes( 2 ) , Ki( 0 ), mmodel( 0 ),
     Q( 6 ), bf(3), K( 6, 6),
     M( 6, 6), P(6),
-    gauss_points(1, 3),
-    outputVector(ShearBeamLT_OUTPUT_SIZE)
+    gauss_points(1, 3)
 {
     // initialized = false;
     is_mass_computed = false;
@@ -256,29 +258,29 @@ void ShearBeamLT::formOutput()
     stress = material_array[0]->getStressTensor();
 
     //Write strain
-    outputVector(ii++) = strain(0, 0);
-    outputVector(ii++) = strain(1, 1);
-    outputVector(ii++) = strain(2, 2);
-    outputVector(ii++) = strain(0, 1);
-    outputVector(ii++) = strain(0, 2);
-    outputVector(ii++) = strain(1, 2);
+    Gauss_Output_Vector[ii++] = strain(0, 0);
+    Gauss_Output_Vector[ii++] = strain(1, 1);
+    Gauss_Output_Vector[ii++] = strain(2, 2);
+    Gauss_Output_Vector[ii++] = strain(0, 1);
+    Gauss_Output_Vector[ii++] = strain(0, 2);
+    Gauss_Output_Vector[ii++] = strain(1, 2);
 
     //Write plastic strain
-    outputVector(ii++) = plstrain(0, 0);
-    outputVector(ii++) = plstrain(1, 1);
-    outputVector(ii++) = plstrain(2, 2);
-    outputVector(ii++) = plstrain(0, 1);
-    outputVector(ii++) = plstrain(0, 2);
-    outputVector(ii++) = plstrain(1, 2);
+    Gauss_Output_Vector[ii++] = plstrain(0, 0);
+    Gauss_Output_Vector[ii++] = plstrain(1, 1);
+    Gauss_Output_Vector[ii++] = plstrain(2, 2);
+    Gauss_Output_Vector[ii++] = plstrain(0, 1);
+    Gauss_Output_Vector[ii++] = plstrain(0, 2);
+    Gauss_Output_Vector[ii++] = plstrain(1, 2);
 
 
     //Write stress
-    outputVector(ii++) = stress(0, 0);
-    outputVector(ii++) = stress(1, 1);
-    outputVector(ii++) = stress(2, 2);
-    outputVector(ii++) = stress(0, 1);
-    outputVector(ii++) = stress(0, 2);
-    outputVector(ii++) = stress(1, 2);
+    Gauss_Output_Vector[ii++] = stress(0, 0);
+    Gauss_Output_Vector[ii++] = stress(1, 1);
+    Gauss_Output_Vector[ii++] = stress(2, 2);
+    Gauss_Output_Vector[ii++] = stress(0, 1);
+    Gauss_Output_Vector[ii++] = stress(0, 2);
+    Gauss_Output_Vector[ii++] = stress(1, 2);
 
 }
 
@@ -699,10 +701,10 @@ int ShearBeamLT::sendSelf ( int commitTag, Channel &theChannel )
     //     return -1;
     // }
 
-    // //Send outputVector
-    // if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
+    // //Send Gauss_Output_Vector
+    // if ( theChannel.sendVector( 0, commitTag, Gauss_Output_Vector ) < 0 )
     // {
-    //     cerr << "WARNING ShearBeamLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
+    //     cerr << "WARNING ShearBeamLT::sendSelf() - " << this->getTag() << " failed to send its Gauss_Output_Vector\n";
     //     return -1;
     // }
 
@@ -801,10 +803,10 @@ int ShearBeamLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_ObjectBro
     //     return -1;
     // }
 
-    // // outputVector
-    // if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
+    // // Gauss_Output_Vector
+    // if ( theChannel.receiveVector( 0, commitTag, Gauss_Output_Vector ) < 0 )
     // {
-    //     cerr << "ShearBeamLT::receiveSelf() - failed to recv outputVector!\n";
+    //     cerr << "ShearBeamLT::receiveSelf() - failed to recv Gauss_Output_Vector!\n";
     //     return -1;
     // }
 
@@ -912,16 +914,18 @@ Matrix &ShearBeamLT::getGaussCoordinates(void)
     return gauss_points;
 }
 
-int ShearBeamLT::getOutputSize() const
-{
-    return ShearBeamLT_OUTPUT_SIZE;
-}
-
-
-const Vector &ShearBeamLT::getOutput()
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &ShearBeamLT::getGaussOutput()
 {
     formOutput();
-    return outputVector;
+    return Gauss_Output_Vector;
 }
 
 int ShearBeamLT::startNewStage()

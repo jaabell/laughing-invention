@@ -176,6 +176,7 @@
 #include <SectionRepres.h>
 
 #include <MultiSupportPattern.h>
+#include <classTags.h>
 
 #include <AccelerationField.h>
 #include <Damping.h>
@@ -266,7 +267,6 @@ Domain::Domain()
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
     theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
-
     // check that there was space to create the data structures
     if ( theElements == 0 || theNodes == 0 ||
             theSPs == 0 || theMPs == 0 ||
@@ -300,6 +300,11 @@ Domain::Domain()
     maxSPsTag = 0;
     maxMPsTag = 0;
     maxLoadPatternsTag = 0;
+
+
+    ELE_TAG_DESC_ARRAY;
+    Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
+    reaction_output_is_enabled = false;
 
 }
 
@@ -358,7 +363,6 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
     theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
-
     // check that there was space to create the data structures
     if ( theElements == 0 || theNodes == 0 ||
             theSPs == 0 || theMPs == 0 ||
@@ -377,6 +381,11 @@ Domain::Domain( int numNodes, int numElements, int numSPs, int numMPs,
     theBounds( 3 ) = -std::numeric_limits<double>::infinity();
     theBounds( 4 ) = std::numeric_limits<double>::infinity();
     theBounds( 5 ) = -std::numeric_limits<double>::infinity();
+
+
+    ELE_TAG_DESC_ARRAY;
+    Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
+    reaction_output_is_enabled = false;
 }
 
 
@@ -432,7 +441,6 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
     theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
-
     // check that the containers are empty
     if ( theElements->getNumComponents() != 0 ||
             theNodes->getNumComponents() != 0 ||
@@ -464,6 +472,11 @@ Domain::Domain( TaggedObjectStorage &theNodesStorage,
     theBounds( 3 ) = -std::numeric_limits<double>::infinity();
     theBounds( 4 ) = std::numeric_limits<double>::infinity();
     theBounds( 5 ) = -std::numeric_limits<double>::infinity();
+
+
+    ELE_TAG_DESC_ARRAY;
+    Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
+    reaction_output_is_enabled = false;
 }
 
 
@@ -517,7 +530,6 @@ Domain::Domain( TaggedObjectStorage &theStorage )
     theNDMaterialIter  = new SingleDomNDMaterialIter( theNDMaterials );
     theNDMaterialLTIter  = new SingleDomNDMaterialLTIter( theNDMaterialLTs );
 
-
     // check that there was space to create the data structures
     if ( theElements == 0 || theNodes == 0 ||
             theSPs == 0 || theMPs == 0 ||
@@ -537,11 +549,10 @@ Domain::Domain( TaggedObjectStorage &theStorage )
     theBounds( 4 ) = std::numeric_limits<double>::infinity();
     theBounds( 5 ) = -std::numeric_limits<double>::infinity();
 
-    // dbEle = 0;
-    // dbNod = 0;
-    // dbSPs = 0;
-    // dbMPs = 0;
-    // dbLPs = 0;
+
+    ELE_TAG_DESC_ARRAY;
+    Element_Class_Desc.assign(ele_tag_desc_array,ele_tag_desc_array+ELE_TAG_DESC_ARRAY_SIZE);
+    reaction_output_is_enabled = false;
 }
 
 
@@ -790,7 +801,7 @@ Domain::addElement( Element *element )
     if ( result == true )
     {
         element->setDomain( this );
-        // element->update();   // Jose asks: Why is this necessary?
+        //element->update(); // Jose and Sumeet: Thinks its not requird, needs to be taken care by element itself?
 
         // finally check the ele has correct number of dof
 #ifdef _G3DEBUG
@@ -807,22 +818,25 @@ Domain::addElement( Element *element )
 
         // mark the Domain as having been changed
         this->domainChange();
+
+        if (eleTag > maxElementsTag)
+        {
+            maxElementsTag = eleTag;
+        }
+
+        //Sumeet Auguts, 2016
+        // look at classTags.h for the class_description encoding and how the modulus 
+        // with 1000 gets back the no. of element outputs and similarly gauss point
+        // and number of connectivitynodes..
+        int class_dec = Element_Class_Desc[element->getClassTag()];
+        numberOfDomainElementOutputs += class_dec%1000;
+        Number_of_Connectivity_Nodes += (class_dec/1000000)%100;
+        Number_of_Gauss_Points       += (class_dec%100000)/1000;
     }
     else
     {
         cerr << "Domain::addElement - element " << eleTag << "could not be added to container\n";
     }
-
-    // cout << "numberOfDomainElementOutputs = " << numberOfDomainElementOutputs << " | ";
-    numberOfDomainElementOutputs += element->getOutputSize();
-    // cout << numberOfDomainElementOutputs << endl;
-
-
-    if (eleTag > maxElementsTag)
-    {
-        maxElementsTag = eleTag;
-    }
-
 
     return result;
 }
@@ -845,14 +859,17 @@ Domain::addNode( Node *node )
 
     bool result = theNodes->addComponent( node );
 
-    // cout << "numberOfDomainNodeDOFs = " << numberOfDomainNodeDOFs << " | ";
     numberOfDomainNodeDOFs += node->getNumberDOF();
-    // cout << numberOfDomainNodeDOFs << endl;
 
     if ( result == true )
     {
         node->setDomain( this );
         this->domainChange();
+
+        if ( nodTag > maxNodesTag)
+        {
+            maxNodesTag = nodTag;
+        }
 
         // see if the physical bounds are changed
         // note this assumes 0,0,0,0,0,0 as startup min,max values
@@ -902,11 +919,6 @@ Domain::addNode( Node *node )
         cerr << "Domain::addNode - node with tag " << nodTag << "could not be added to container\n";
     }
 
-    if ( nodTag > maxNodesTag)
-    {
-        maxNodesTag = nodTag;
-    }
-
     return result;
 }
 
@@ -917,7 +929,6 @@ int
 Domain::addUniaxialMaterial( UniaxialMaterial &theMaterial )
 {
     int materialTag = theMaterial.getTag();
-
 
     // check if a Material with a similar tag already exists in the Domain
     TaggedObject *other = theUniaxialMaterials->getComponentPtr( materialTag );
@@ -933,6 +944,10 @@ Domain::addUniaxialMaterial( UniaxialMaterial &theMaterial )
 
     if ( result == true )
     {
+        if ( materialTag > maxUniaxialMaterialsTag)
+        {
+            maxUniaxialMaterialsTag = materialTag;
+        }
         return 0;
     }
     else
@@ -941,10 +956,6 @@ Domain::addUniaxialMaterial( UniaxialMaterial &theMaterial )
         return -1;
     }
 
-    if ( materialTag > maxUniaxialMaterialsTag)
-    {
-        maxUniaxialMaterialsTag = materialTag;
-    }
 }
 // *****************************************************************************************
 
@@ -955,7 +966,6 @@ int
 Domain::addNDMaterial( NDMaterial &theMaterial )
 {
     int materialTag = theMaterial.getTag();
-
 
     // check if a Material with a similar tag already exists in the Domain
     TaggedObject *other = theNDMaterials->getComponentPtr( materialTag );
@@ -971,17 +981,16 @@ Domain::addNDMaterial( NDMaterial &theMaterial )
 
     if ( result == true )
     {
+        if (materialTag > maxNDMaterialsTag)
+        {
+            maxNDMaterialsTag = materialTag;
+        }
         return 0;
     }
     else
     {
         cerr << "Domain::NDMaterial - material with tag " << materialTag << "could not be added to container\n";
         return -1;
-    }
-
-    if (materialTag > maxNDMaterialsTag)
-    {
-        maxNDMaterialsTag = materialTag;
     }
 
 }
@@ -993,8 +1002,8 @@ Domain::addNDMaterial( NDMaterial &theMaterial )
 int
 Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
 {
+    
     int materialTag = theMaterial.getTag();
-
 
     // check if a Material with a similar tag already exists in the Domain
     TaggedObject *other = theNDMaterialLTs->getComponentPtr( materialTag );
@@ -1010,6 +1019,10 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
 
     if ( result == true )
     {
+        if (materialTag > maxNDMaterialLTsTag)
+        {
+            maxNDMaterialLTsTag = materialTag;
+        }
         return 0;
     }
     else
@@ -1018,10 +1031,8 @@ Domain::addNDMaterialLT( NDMaterialLT &theMaterial )
         return -1;  // end Jose Abell addition
     }// end Jose Abell addition
 
-    if (materialTag > maxNDMaterialLTsTag)
-    {
-        maxNDMaterialLTsTag = materialTag;
-    }
+
+
 }// end Jose Abell addition
 
 // *****************************************************************************************
@@ -1034,14 +1045,13 @@ Domain::addMultipleSupport( MultiSupportPattern &theMultiSupportPattern )
 
     bool result = theMultipleSupports->addComponent( &theMultiSupportPattern );
 
-    int tag = theMultiSupportPattern.getTag();
-    if (tag > maxMultipleSupportsTag)
-    {
-        maxMultipleSupportsTag = tag;
-    }
-
     if ( result == true )
     {
+        int tag = theMultiSupportPattern.getTag();
+        if (tag > maxMultipleSupportsTag)
+        {
+            maxMultipleSupportsTag = tag;
+        }
         return 0;
     }
     else
@@ -1060,14 +1070,13 @@ Domain::addSection( SectionForceDeformation &theSection )
 {
     bool result = theSections->addComponent( &theSection );
 
-    int tag = theSection.getTag();
-    if (tag > maxSectionsTag)
-    {
-        maxSectionsTag = tag;
-    }
-
     if ( result == true )
     {
+        int tag = theSection.getTag();
+        if (tag > maxSectionsTag)
+        {
+            maxSectionsTag = tag;
+        }
         return 0;
     }
     else
@@ -1084,14 +1093,15 @@ int
 Domain::addSectionRepres( SectionRepres &theSectionRepres )
 {
     bool result = theSectionRepresents->addComponent( &theSectionRepres );
-    int tag = theSectionRepres.getTag();
-    if (tag > maxSectionRepresentsTag)
-    {
-        maxSectionRepresentsTag = tag;
-    }
+
 
     if ( result == true )
     {
+        int tag = theSectionRepres.getTag();
+        if (tag > maxSectionRepresentsTag)
+        {
+            maxSectionRepresentsTag = tag;
+        }
         return 0;
     }
     else
@@ -1111,14 +1121,14 @@ int
 Domain::addAccelerationField( AccelerationField *theAccelerationField )
 {
     bool result = theAccelerationFields->addComponent( theAccelerationField );
-    int tag = theAccelerationField->getTag();
-    if (tag > maxAccelerationFieldsTag)
-    {
-        maxAccelerationFieldsTag = tag;
-    }
 
     if ( result == true )
     {
+        int tag = theAccelerationField->getTag();
+        if (tag > maxAccelerationFieldsTag)
+        {
+            maxAccelerationFieldsTag = tag;
+        }
         return 0;
     }
     else
@@ -1134,14 +1144,14 @@ int
 Domain::addDamping( Damping *theDamping )
 {
     bool result = theDampings->addComponent( theDamping );
-    int tag = theDamping->getTag();
-    if (tag > maxDampingsTag)
-    {
-        maxDampingsTag = tag;
-    }
 
     if ( result == true )
     {
+        int tag = theDamping->getTag();
+        if (tag > maxDampingsTag)
+        {
+            maxDampingsTag = tag;
+        }
         return 0;
     }
     else
@@ -1245,14 +1255,14 @@ Domain::addMP_Constraint( MP_Constraint *mpConstraint )
     {
         mpConstraint->setDomain( this );
         this->domainChange();
+        if (tag > maxMPsTag)
+        {
+            maxMPsTag = tag;
+        }
     }
-    else
+    else{
         cerr << "Domain::addMP_Constraint - cannot add constraint with tag" <<
              tag << "to the container\n";
-
-    if (tag > maxMPsTag)
-    {
-        maxMPsTag = tag;
     }
 
     return result;
@@ -1280,16 +1290,16 @@ Domain::addLoadPattern( LoadPattern *load )
     {
         load->setDomain( this );
         this->domainChange();
+        if (tag > maxLoadPatternsTag)
+        {
+            maxLoadPatternsTag = tag;
+        }
+
     }
-    else
+    else{
         cerr << "Domain::addLoadPattern - cannot add LoadPattern with tag" <<
              tag << "to the container\n";
-
-    if (tag > maxLoadPatternsTag)
-    {
-        maxLoadPatternsTag = tag;
     }
-
 
     return result;
 }
@@ -1544,9 +1554,15 @@ Domain::removeElement( int tag )
     // this container, 0 the Elements DomainPtr and return the result of the cast
     Element *result = ( Element *)mc;
 
-    numberOfDomainElementOutputs -= result->getOutputSize();
+    //Sumeet Auguts, 2016
+    // look at classTags.h for the class_description encoding and how the modulus 
+    // with 1000 gets back the no. of element outputs and similarly gauss point
+    // and number of connectivitynodes..
+    int class_dec = Element_Class_Desc[result->getClassTag()];
+    numberOfDomainElementOutputs -= class_dec%1000;
+    Number_of_Connectivity_Nodes -= (class_dec/1000000)%100;
+    Number_of_Gauss_Points       -= (class_dec%100000)/1000;
 
-    //  result->setDomain(0);
     return result;
 }
 
@@ -2318,29 +2334,6 @@ Domain::getPhysicalBounds( void )
     return theBounds;
 }
 
-
-// int
-// Domain::getNumberof8GPBrickElements( void )
-// {
-//     return number_of_8GP_brick_elements;
-// }
-
-
-// int
-// Domain::getNumberof27GPBrickElements( void )
-// {
-//     return number_of_27GP_brick_elements;
-// }
-
-
-// int
-// Domain::getNumberofLineElements( void )
-// {
-//     return number_of_line_elements;
-// }
-
-
-
 Graph *
 Domain::getElementGraph( void )
 {
@@ -2377,6 +2370,10 @@ Domain::getElementGraph( void )
             cerr << "Domain::getElementGraph() - failed to build the element graph\n";
         }
     }
+
+    
+    theOutputWriter.initializePartitionData(maxNodesTag, maxElementsTag);
+
 
     // return the Graph
     return theElementGraph;
@@ -2637,12 +2634,46 @@ Domain::setDampingFactorsforNode( int NodeTag, int DampingTag )
 int
 Domain::commit( void )
 {
-    // Calls commit() on nodes and elements. Also in charge of storing
-    // the data to the outputwriter.
-    int rank = 0;
-#ifdef _PARALLEL_PROCESSING
+
+    Node *nodePtr;
+    NodeIter &theNodeIter = this->getNodes();
+    Element *elePtr;
+    ElementIter &theElemIter = this->getElements();
+    
+    //Do the actual commit of nodal displacements
+    while ( ( nodePtr = theNodeIter() ) != 0 )
+    {
+        nodePtr->commitState();
+    }
+
+    //Commit all elements
+    while ( ( elePtr = theElemIter() ) != 0 )
+    {
+        elePtr->commitState();
+    }
+
+    return 0;
+}
+
+
+/*************************************************************************************
+* Added by Sumeet 3rd September, 2016, to output converged step 
+* Call this function to output at every converged step and write in HDF5 file
+**************************************************************************************/
+int
+Domain::output_step( void )
+{
+    
+    bool Enable_Process_output = false;
+    int rank=0; 
+#ifdef _PARALLEL_PROCESSING  
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if(rank!=0)
+        Enable_Process_output=true;
+#else
+    Enable_Process_output = true;
 #endif
+
     Node *nodePtr;
     NodeIter &theNodeIter = this->getNodes();
     Element *elePtr;
@@ -2659,30 +2690,40 @@ Domain::commit( void )
 #ifdef _PARALLEL_PROCESSING
             theOutputWriter.syncWriters();
 #endif
-            cout << "  (" << rank << ") - Outputting mesh.\n";
+            cout << " and  (" << rank << ")" ;
+            cout << " - Outputting mesh.\n";
             globalESSITimer.start("HDF5_write_global_data");
+
+            // cout  << " numberOfDomainElementOutputs " << numberOfDomainElementOutputs << endl;
+            // cout  << " Number_of_Gauss_Points " << Number_of_Gauss_Points << endl;
+            // cout  << " Number_of_Connectivity_Nodes " << Number_of_Connectivity_Nodes << endl;
+
             theOutputWriter.writeGlobalMeshData(this->getNumNodes(),
                                                 this->getNumElements(),
                                                 maxNodesTag,
                                                 maxElementsTag,
                                                 numberOfDomainNodeDOFs,
-                                                numberOfDomainElementOutputs);
+                                                numberOfDomainElementOutputs,
+                                                this->Number_of_Gauss_Points,
+                                                this->Number_of_Connectivity_Nodes);
             globalESSITimer.stop("HDF5_write_global_data");
             globalESSITimer.start("HDF5_buffer_nodes");
 
-            //Write Node Mesh data!
-            while ( ( nodePtr = theNodeIter() ) != 0 )
-            {
-                theOutputWriter.writeNodeMeshData(nodePtr->getTag(), nodePtr->getCrds(), nodePtr->getNumberDOF());
+            //Write Node Mesh data! 
+            for(int i =0 ; i<=maxNodesTag; i++){
+                nodePtr = this->getNode(i);
+                if(nodePtr) theOutputWriter.writeNodeMeshData(i, nodePtr->getCrds(), nodePtr->getNumberDOF());
             }
 
             SP_Constraint *sp_ptr = 0;
             SP_ConstraintIter &theSP_Iter = this->getSPs();
+            this->Number_of_Constrained_Dofs=0;
 
             while ( ( sp_ptr = theSP_Iter() ) != 0 )
             {
                 int nodetag = sp_ptr->getNodeTag();
                 int dof = sp_ptr->getDOF_Number();
+                Number_of_Constrained_Dofs ++;
 
                 theOutputWriter.writeSPConstraintsData(nodetag, dof);
             }
@@ -2694,95 +2735,247 @@ Domain::commit( void )
 
 
             //Write Element Mesh data!
-
             while ( ( elePtr = theElemIter() ) != 0 )
             {
-                int materialtag = 0;
+
                 theOutputWriter.writeElementMeshData(elePtr->getTag() ,
-                                                     elePtr->getElementName(),
                                                      elePtr->getExternalNodes(),
-                                                     materialtag ,
+                                                     elePtr->getMaterialTag() ,
                                                      elePtr->getGaussCoordinates(),
-                                                     elePtr->getOutputSize(),
                                                      elePtr->getElementclassTag());
             }
 
+            /*********************** Write Material Data   - By Sumeet 30th July, 2016 */
+            
+            int number_of_materials = max(maxNDMaterialsTag,maxNDMaterialLTsTag);
+            number_of_materials = max(number_of_materials,maxUniaxialMaterialsTag);
+            theOutputWriter.reserveSpaceForDatasets(number_of_materials);
+
+            // ///////////////////////// For Debugging //////////////////////////////////
+            // cout << " maxNDMaterialsTag " << maxNDMaterialsTag << endl;
+            // cout << " maxNDMaterialLTsTag " << maxNDMaterialLTsTag <<endl;
+            // cout << " maxUniaxialMaterialsTag " << maxUniaxialMaterialsTag << endl;
+            // cout << " number of materials " << number_of_materials << endl;
+            // //////////////////////////////////////////////////////////////////////////
+
+            Material *matPtr;
+            NDMaterialIter &theMatIter = this->getNDMaterials();                theMatIter.reset();
+            NDMaterialLTIter &theMatLTIter = this->getNDMaterialLTs();          theMatLTIter.reset();
+            UniaxialMaterialIter &theUniMatIter = this->getUniaxialMaterials(); theUniMatIter.reset();
+
+            std::stringstream material_info;
+
+            while ( ( matPtr = theMatIter() ) != 0 )
+            {
+                material_info.str("") ;
+                matPtr->Print(material_info,0);
+                theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
+
+            }
+
+            while ( ( matPtr = theMatLTIter() ) != 0 )
+            {
+                material_info.str("") ;
+                matPtr->Print(material_info,0);
+                theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
+
+            }
+
+            while ( ( matPtr = theUniMatIter() ) != 0 )
+            {
+                material_info.str("") ;
+                matPtr->Print(material_info,0);
+                theOutputWriter.writeMaterialMeshData(matPtr->getTag(),material_info.str());
+
+            }
+
+            /**************************************************************************************/
 
             globalESSITimer.stop("HDF5_buffer_elements");
-
             globalESSITimer.start("HDF5_write");
             theOutputWriter.writeMesh();
             globalESSITimer.stop("HDF5_write");
-
+            
             have_written_static_mesh_data = true;
+
+            // Erase all temporaray arrays 
+            theOutputWriter.DeleteMeshArrays();
+            
+            if(number_of_eigen_modes>=0){
+                theOutputWriter.writeEigenMesh(number_of_eigen_modes);
+                return 0;
+            }
+
         }
-        theOutputWriter.setTime(currentTime);
     }
 
+    theOutputWriter.setTime(currentTime);
 
-
-    globalESSITimer.stop("Domain_Mesh_Output");
-
-
-    globalESSITimer.start("Domain_Node_Commit_and_output");
-
-    //Do the actual commit of nodal displacements
-    theNodeIter = this->getNodes();
-    while ( ( nodePtr = theNodeIter() ) != 0 )
+    if (Enable_Process_output)
     {
-        nodePtr->commitState();
-    }
 
-    //Do element output
-    if (output_is_enabled && (countdown_til_output == 0))
-    {
-        if (rank > 0)
+        globalESSITimer.stop("Domain_Mesh_Output");
+        globalESSITimer.start("Domain_Node_Commit_and_output");
+
+        //Do node Output 
+        if (output_is_enabled && (countdown_til_output == 0))
         {
-            this->calculateNodalReactions(0);
+            int noutputs;
+            theNodeIter = this->getNodes();
+
+            int pos=0; hid_t id_displacement = theOutputWriter.getDisplacementId(); 
+
+            for(int i =0 ; i<=maxNodesTag; i++){
+
+                nodePtr = this->getNode(i);
+                if(nodePtr){ 
+                    noutputs = nodePtr->getNumberDOF();
+                    theOutputWriter.StepOutput(id_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                    pos = pos + noutputs;
+                }
+            }
+
         }
-        theNodeIter = this->getNodes();
 
-        while ((nodePtr = theNodeIter()) != 0)
+        globalESSITimer.stop("Domain_Node_Commit_and_output");
+        globalESSITimer.start("Domain_Element_Commit_and_output");
+
+        //Do element output!
+        if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
         {
-            theOutputWriter.writeDisplacements(nodePtr->getTag(), nodePtr->getTrialDisp());
-            if (rank > 0)
+            int noutputs;
+            theElemIter = this->getElements();
+
+            int pos1=0; hid_t id_Elements_Output = theOutputWriter.getElementOutputId(); 
+            int pos2=0; hid_t id_Gauss_Output = theOutputWriter.getGaussOutputId(); 
+            while ( ( elePtr = theElemIter() ) != 0 )
             {
-                theOutputWriter.writeReactionForces(nodePtr->getTag(), nodePtr->getReaction());
+                
+                noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
+                if(noutputs) theOutputWriter.StepOutput(id_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
+                pos1 = pos1 + noutputs;
+
+                noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
+                if(noutputs) theOutputWriter.StepOutput(id_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
+                pos2 = pos2 + noutputs;
+
             }
         }
-    }
 
-    globalESSITimer.stop("Domain_Node_Commit_and_output");
+        theOutputWriter.EnableReactionOutput(reaction_output_is_enabled);
 
-
-    globalESSITimer.start("Domain_Element_Commit_and_output");
-
-    //Commit all elements
-    theElemIter = this->getElements();
-    while ( ( elePtr = theElemIter() ) != 0 )
-    {
-        elePtr->commitState();
-    }
-
-
-    //Do element output!
-    if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
-    {
-        theElemIter = this->getElements();
-
-        while ( ( elePtr = theElemIter() ) != 0 )
+        if(reaction_output_is_enabled)
         {
-            theOutputWriter.writeElementOutput(elePtr->getTag(), elePtr->getOutput());
+            //Do Support Reactions Output [Sumeet August,2016]
+            SP_Constraint *sp_ptr = 0;
+            SP_ConstraintIter &theSP_Iter = this->getSPs();
+
+            this->calculateNodalReactions(0);
+            vector<float> Support_Reactions(Number_of_Constrained_Dofs);
+            int index = 0;
+            while ( ( sp_ptr = theSP_Iter() ) != 0 )
+            {
+                Support_Reactions[index++]= this->getNode(sp_ptr->getNodeTag())->getReaction()(sp_ptr->getDOF_Number());
+                theOutputWriter.writeSupportReactions( Number_of_Constrained_Dofs, Support_Reactions);
+            }
+        }
+
+        globalESSITimer.stop("Domain_Element_Commit_and_output");
+
+        if (countdown_til_output == 0)
+        {
+            countdown_til_output = output_every_nsteps;
+        }
+        countdown_til_output--;
+    }
+
+    return 0;
+}
+
+
+
+/*************************************************************************************
+* Added by Sumeet 3rd August, 2016, to output substep iteration steps for debugging 
+* The function commits at every substep i,e the trail displacements and trial element
+* output HDF5 Output file. It does not commit any displacements or element output
+**************************************************************************************/
+int
+Domain::output_iteration( int global_iteration_no )
+{
+    // gets trial output from the nodes and elements. Also in charge of storing
+    // the data to the outputwriter.
+
+    bool Enable_Process_output = false;
+#ifdef _PARALLEL_PROCESSING
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if(rank!=0)
+        Enable_Process_output=true;
+#else
+    Enable_Process_output = true;
+#endif
+
+    if(Enable_Process_output)
+    {
+
+        Node *nodePtr;
+        NodeIter &theNodeIter = this->getNodes();
+        Element *elePtr;
+        ElementIter &theElemIter = this->getElements();
+
+        if (output_is_enabled)
+        {
+            //Write out static mesh data once!
+            if (global_iteration_no==1) {       
+                theOutputWriter.writeIterationMesh();
+            }        
+        }
+
+        theOutputWriter.setGlobalIterationNo(global_iteration_no);
+
+        //get Trail Results from nodes
+        if (output_is_enabled)
+        {
+            int noutputs;
+            theNodeIter.reset();
+
+            int pos=0; hid_t id_trial_displacement = theOutputWriter.getTrialDisplacementId(); 
+            for(int i =0 ; i<=maxNodesTag; i++){
+
+                nodePtr = this->getNode(i);
+                if(nodePtr){ 
+                    noutputs = nodePtr->getNumberDOF();
+                    theOutputWriter.IterationOutput(id_trial_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                    pos = pos + noutputs;
+                }
+            }
+        }
+
+        //get Trail Results from nodes
+        if (output_is_enabled && element_output_is_enabled )
+        {
+            int noutputs;
+            theElemIter.reset();
+
+            int pos1=0; hid_t id_Trial_Elements_Output = theOutputWriter.getTrialElementOutputId(); 
+            int pos2=0; hid_t id_Trial_Gauss_Output = theOutputWriter.getTrialGaussOutputId(); 
+            while ( ( elePtr = theElemIter() ) != 0 )
+            {
+                
+                noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
+                if(noutputs) theOutputWriter.IterationOutput(id_Trial_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
+                pos1 = pos1 + noutputs;
+
+                noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
+                if(noutputs) theOutputWriter.IterationOutput(id_Trial_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
+                pos2 = pos2 + noutputs;
+
+            }
+
         }
     }
 
-    globalESSITimer.stop("Domain_Element_Commit_and_output");
-
-    if (countdown_til_output == 0)
-    {
-        countdown_til_output = output_every_nsteps;
-    }
-    countdown_til_output--;
+    cout << "................... completed!!" << endl;;
 
     return 0;
 }
@@ -2873,7 +3066,7 @@ Domain::update( void )
 
     NanoTimer myTime;
     Graph *theEleGraph = this->getElementGraph();
-    VertexIter &theVertexIter = theEleGraph->getVertices();
+    // VertexIter &theVertexIter = theEleGraph->getVertices();
     Vertex *vertexPtr;
     ElementIter &theEles = this->getElements(); //has to be put here in order to reset the eleIter(), which firstly called by getElementGraph without rewind!!!!
     Element *theEle;
@@ -3096,14 +3289,6 @@ Domain::buildEleGraph( Graph * theEleGraph )
 
     int *theElementTagVertices = 0;
     int maxEleNum = maxElementsTag;
-    Element *elePtr;
-    ElementIter &eleIter = this->getElements();
-
-    while ( ( elePtr = eleIter() ) != 0 )
-        if ( elePtr->getTag() > maxEleNum )
-        {
-            maxEleNum = elePtr->getTag();
-        }
 
     theElementTagVertices = new int[maxEleNum + 1];
 
@@ -3127,10 +3312,11 @@ Domain::buildEleGraph( Graph * theEleGraph )
     // now create the vertices with a reference equal to the element number.
     // and a tag which ranges from 0 through numVertex-1
 
-    ElementIter &eleIter2 = this->getElements();
+    ElementIter &eleIter = this->getElements();
+    Element *elePtr;
     int count = START_VERTEX_NUM;  // = 0 Defined in Vertex.h
 
-    while ( ( elePtr = eleIter2() ) != 0 )
+    while ( ( elePtr = eleIter() ) != 0 )
     {
         int ElementTag = elePtr->getTag();
         Vertex *vertexPtr = new Vertex( count, ElementTag );
@@ -3161,14 +3347,6 @@ Domain::buildEleGraph( Graph * theEleGraph )
     Vertex **theNodeTagVertices = 0;
     int maxNodNum = maxNodesTag;
     Node *nodPtr;
-    NodeIter &nodeIter = this->getNodes();
-
-    while ( ( nodPtr = nodeIter() ) != 0 )
-        if ( nodPtr->getTag() > maxNodNum )
-        {
-            maxNodNum = nodPtr->getTag();
-        }
-
     theNodeTagVertices = new Vertex *[maxNodNum + 1];
 
     if ( theNodeTagVertices == 0 )
@@ -3187,10 +3365,10 @@ Domain::buildEleGraph( Graph * theEleGraph )
     // and a tag which ranges from 0 through numVertex-1 and placed in
     // theNodeTagVertices at a position equal to the node's tag.
 
-    NodeIter &nodeIter2 = this->getNodes();
+    NodeIter &nodeIter = this->getNodes();
     count = START_VERTEX_NUM;
 
-    while ( ( nodPtr = nodeIter2() ) != 0 )
+    while ( ( nodPtr = nodeIter() ) != 0 )
     {
         int nodeTag = nodPtr->getTag();
         Vertex *vertexPtr = new Vertex( count++, nodeTag );
@@ -3208,9 +3386,9 @@ Domain::buildEleGraph( Graph * theEleGraph )
 
     // now add the the Elements to the nodes
 
-    ElementIter &eleIter3 = this->getElements();
+    ElementIter &eleIter2 = this->getElements();
 
-    while ( ( elePtr = eleIter3() ) != 0 )
+    while ( ( elePtr = eleIter2() ) != 0 )
     {
         int eleTag = elePtr->getTag();
         const ID &id = elePtr->getExternalNodes();
@@ -3386,16 +3564,8 @@ Domain::buildNodeGraph( Graph * theNodeGraph )
     // create another vertices array which aids in adding edges
 
     int *theNodeTagVertices = 0;
-    int maxNodNum = 0;
+    int maxNodNum = maxNodesTag;
     Node *nodPtr;
-    NodeIter &nodeIter = this->getNodes();
-
-    while ( ( nodPtr = nodeIter() ) != 0 )
-        if ( nodPtr->getTag() > maxNodNum )
-        {
-            maxNodNum = nodPtr->getTag();
-        }
-
     theNodeTagVertices = new int [maxNodNum + 1];
 
     if ( theNodeTagVertices == 0 )
@@ -3414,10 +3584,10 @@ Domain::buildNodeGraph( Graph * theNodeGraph )
     // and a tag which ranges from START_VERTEX_NUM through
     // numNodes+START_VERTEX_NUM
 
-    NodeIter &nodeIter2 = this->getNodes();
+    NodeIter &nodeIter = this->getNodes();
     int count = START_VERTEX_NUM;
 
-    while ( ( nodPtr = nodeIter2() ) != 0 )
+    while ( ( nodPtr = nodeIter() ) != 0 )
     {
         int nodeTag = nodPtr->getTag();
         Vertex *vertexPtr = new Vertex( count, nodeTag );
@@ -4243,7 +4413,7 @@ Domain::receiveSelf( int cTag, Channel & theChannel, FEM_ObjectBroker & theBroke
     maxNodesTag              = domainData( 12 );
     maxUniaxialMaterialsTag  = domainData( 13 );
     maxNDMaterialsTag        = domainData( 14 );
-    maxNDMaterialLTsTag        = domainData( 15 );
+    maxNDMaterialLTsTag      = domainData( 15 );
     maxSectionsTag           = domainData( 16 );
     maxSectionRepresentsTag  = domainData( 17 );
     maxMultipleSupportsTag   = domainData( 18 );
@@ -4310,14 +4480,65 @@ Domain::calculateNodalReactions( int flag )
     return 0;
 }
 
-
-
 // Nima Tafazzoli added for eigen analysis, June 2012
 int
-Domain::eigenAnalysis( int nuMode )
+Domain::eigenAnalysis(int numodes)
 {
-    return 0; // empty
-} //
+    return 0;
+}
+
+/*********************************************************************************
+* sumeet 1st August, 2016
+* Outputs the eigen_value analysis to hdf5 outpout file.
+*********************************************************************************/ 
+int Domain::Output_Eigen_Analysis()
+{
+
+    Node *nodePtr;
+    int noutputs;
+    int pos=0;
+
+    for(int i =0 ; i<=maxNodesTag; i++){
+        nodePtr = this->getNode(i);
+        if(nodePtr){ 
+
+            noutputs = nodePtr->getNumberDOF();
+            Matrix matrix = nodePtr->getEigenvectors();
+
+            int n = noutputs * number_of_eigen_modes;
+            float data[n];
+
+            for(int j =0; j<number_of_eigen_modes; j++){
+                for(int k=0; k<noutputs; k++){
+                    data[k*number_of_eigen_modes+j] = matrix(k,j);
+                }
+            }
+            theOutputWriter.writeEigenModes(data,pos, noutputs);
+            pos = pos + noutputs;
+        }
+    }
+
+
+    const Vector &eigen_values = this->getEigenvalues();
+    vector<float>  periodvalues(number_of_eigen_modes);
+    vector<float>  frequencyvalues(number_of_eigen_modes);
+    vector<float>  eigenvalues(number_of_eigen_modes);
+
+    double Pi = 2 * asin(1.0);
+
+    for (int i = 0; i < number_of_eigen_modes; i++)
+    {
+        double sqrtEigen = sqrt(eigen_values(i));
+        eigenvalues    [i]    = eigen_values(i);
+        periodvalues   [i]    = 2 * Pi / sqrtEigen;
+        frequencyvalues[i]    = sqrtEigen / (2 * Pi);
+    }
+
+    theOutputWriter.writeEigen_Value_Frequency_Period ( eigenvalues, periodvalues, frequencyvalues);
+
+    this->number_of_eigen_modes=-1;
+    return 0;
+}
 
 
 
@@ -4426,7 +4647,7 @@ int Domain::CheckMesh( const char *check_mesh_file )
     checkmesh_file.close();
 
 
-    cout << "Outputting mesh. \n";
+    cout << " Outputting mesh. \n";
     this->commit();
 
     cout << "\n\nDone checking mesh \n";
@@ -4464,6 +4685,7 @@ Domain::setOutputWriter(std::string filename_in,
 {
     theOutputWriter.initialize(filename_in, model_name_in, stage_name_in, nsteps);
     have_written_static_mesh_data = false;
+    save_number_of_non_converged_iterations =0;    // Added by summet for substep output
     return 0;
 }
 
@@ -4656,4 +4878,41 @@ void Domain::removeDisplacementFromNode(int tag)
         cerr << "Domain::removeDisplacementFromNode - node tag = " <<  tag << " not found!\n";
     }
     return;
+}
+
+/*************************************************************************************************
+* Added by Sumeet 5th August 2016
+* This function basically sets the number of iterations output in the non_converged state
+***************************************************************************************************/
+void Domain:: set_number_of_non_converged_iterations(int Number_Of_Iterations){
+
+    this->save_number_of_non_converged_iterations =  Number_Of_Iterations > 0 ? Number_Of_Iterations : 0;
+
+    return;
+}
+
+/*************************************************************************************************
+* Added by Sumeet 30th August 2016
+* This function basically appendds the proces id information to Element_Partition 
+* vector in H5OutputWriter. only for static Decomposition
+***************************************************************************************************/
+void Domain::add_Element_Partition_Info(int tag, int Partition_no){ // Added by [Sumeet August,2016]
+
+   theOutputWriter.writeElementPartitionData(tag,Partition_no);
+
+   return;
+
+}
+
+/*************************************************************************************************
+* Added by Sumeet 30th August 2016
+* This function basically appendds the procces id information to Node_Partition 
+* vector in H5OutputWriter. only for static Decomposition
+***************************************************************************************************/
+void Domain::add_Node_Partition_Info(int tag, int Partition_no){    // Added by [Sumeet August,2016]
+
+    theOutputWriter.writeNodePartitionData(tag,Partition_no);
+
+    return;
+
 }

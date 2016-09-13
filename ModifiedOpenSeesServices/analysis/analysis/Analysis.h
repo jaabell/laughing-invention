@@ -22,6 +22,11 @@
 // $Date: 2000/09/15 08:23:16 $
 // $Source: /usr/local/cvs/OpenSees/SRC/analysis/analysis/Analysis.h,v $
 
+#include <AnalysisModel.h>
+#include <Integrator.h>
+#include <StaticIntegrator.h>
+#include <TransientIntegrator.h>
+#include <EquiSolnAlgo.h>
 
 #ifndef Analysis_h
 #define Analysis_h
@@ -59,7 +64,6 @@ protected:
 
 private:
     Domain* theDomain;
-    // ESSITimer timers;
 };
 
 #endif

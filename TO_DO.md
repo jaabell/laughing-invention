@@ -99,8 +99,6 @@ Testing
 What has been done
 =============================
 
-
-
 Features
 ---------
 
@@ -110,7 +108,6 @@ Performance enhancements
 ------------------------
 
 * Link to ATLAS-tuned BLAS and LAPACK. (PAPI - through HPCToolkit - is [was] showing large ammouunt of L2 data-cache misses in the PETSc solver)
-
 
 
 Bug fixes

@@ -197,6 +197,7 @@ ActorSubdomain::run(void)
             if (theEle != 0)
             {
                 theEle->setDbTag(dbTag);
+                theEle->setMaterialTag(msgData(3));
                 this->receiveObject(*theEle);
                 bool result = this->addElement(theEle);
 
@@ -774,9 +775,27 @@ ActorSubdomain::run(void)
             this->computeNodalResponse();
 
 
-
         case ShadowActorSubdomain_commit:
             this->commit();
+            break;
+
+        /*************************************************************************************
+        * Added by Sumeet 3rd September, 2016, to output converged step 
+        * Call this function to output at every converged step and write in HDF5 file
+        **************************************************************************************/
+        case ShadowActorSubdomain_output_step:
+            this->output_step();
+            break;
+
+        /*************************************************************************************
+        * Added by Sumeet 3rd August, 2016, to output substep iteration steps for debugging 
+        * The function commits at every substep i,e the trail displacements and trial element
+        * output HDF5 Output file. It does not commit any displacements or element output
+        **************************************************************************************/
+        case ShadowActorSubdomain_output_iteration:
+            this->receiveVector(theVect);
+            this->output_iteration(theVect(0));
+
             break;
 
         case ShadowActorSubdomain_revertToLastCommit:

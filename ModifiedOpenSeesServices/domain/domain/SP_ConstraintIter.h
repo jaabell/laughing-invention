@@ -45,7 +45,7 @@ class SP_ConstraintIter
     public:
         SP_ConstraintIter() {};
         virtual ~SP_ConstraintIter() {};
-
+        virtual void reset(void)=0;
         virtual SP_Constraint* operator()(void) = 0;
 
     protected:

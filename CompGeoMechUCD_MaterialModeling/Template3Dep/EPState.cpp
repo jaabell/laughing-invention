@@ -104,7 +104,7 @@ EPState::EPState(
       dElasticStrain(dEstrainp), dPlasticStrain(dPstrainp), Eep(Eepp),
       Stress_commit(Stress_commitp), Strain_commit(Strain_commitp), ElasticStrain_commit(ElasticStrain_commitp),
       Eep_commit(Eep_commitp), Stress_init(Stress_initp), Strain_init(Strain_initp),
-      Eep_init(Eep_initp), Converged (Convergedp), e(ep), psi(psip), integratorFlag(flag)
+      Eep_init(Eep_initp), Converged (Convergedp), integratorFlag(flag), e(ep), psi(psip)
 {
 
     //Eo               = Eod;

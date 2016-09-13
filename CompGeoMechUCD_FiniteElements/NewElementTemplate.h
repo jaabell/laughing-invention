@@ -118,9 +118,17 @@ public:
         return "NewElementTemplate";
     }
 
-    // Output interface functions
-    int getOutputSize() const;
-    const Vector &getOutput() ;
+    /*************************************************************************
+    * Sumeet August, 2016
+    * No. of ElementOutputs should be as per the Element_Class_tag_Desc 
+    * See the classtags.h for more decription of encoding of 
+    * Class_tag Descriptions.
+    * For Optimization all the information about elements are encoded
+    * in the Element_Class_tag Description 
+    * NOTE:- Must Obey the Element_Class_Description [see classTags.h]
+    **************************************************************************/
+    const vector<float> &getElementOutput() ; // Declare if there is element output except at gauss points
+    const vector<float> &getGaussOutput();    // Declare only if there is any gauss point and there is 18 outputs per gauss points i.e stress, strain and plastic strain
     Matrix &getGaussCoordinates(void);
 
 
@@ -136,6 +144,10 @@ protected:
 private:
     // All data must be private. Provide setter and getter methods if
     // this class interacts with other classes.
+
+    static vector<float> Element_Output_Vector() ; // Declare if there is element output except at gauss points
+    static vector<float> Gauss_Output_Vector();    // Declare only if there is any gauss point and there is 18 outputs per gauss points i.e stress, strain and plastic strain
+
 
 };
 

@@ -36,9 +36,7 @@
 #include "EightNodeBrickLT.h"
 
 
-// Output is 6 components of strain 6 components of plastic strain and 6 of stress per gauss point + 1 for update time
-#define EightNodeBrickLT_NoOutput_NUMBER_OF_GAUSSPOINTS 8
-#define EightNodeBrickLT_NoOutput_OUTPUT_SIZE 0
+// This element does not have any outputs 
 
 class Node;
 
@@ -52,9 +50,6 @@ public:
                                NDMaterialLT *Globalmmodel);
 
     EightNodeBrickLT_NoOutput ();
-
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput() ;
 
     std::string getElementName() const
     {

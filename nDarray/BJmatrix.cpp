@@ -203,7 +203,10 @@ BJmatrix::BJmatrix(const char *initfile):
         for ( int col = 1 ; col <= columns ; col++ )
         {
             char nb[20];
-            fscanf(from, "%s", nb); // scan for space-delimited string
+            if(fscanf(from, "%s", nb)!=1){ // scan for space-delimited string
+                error("Expected at least 1 inout file\n");
+                exit(1);
+            }
             val(row, col) = (double) atof(nb); // convert it to a double
 
             if (ferror(from))
@@ -234,7 +237,10 @@ BJmatrix::BJmatrix(const char *initfile, const char *outfile):
 
     //  char buf[BSIZE];
     char  cp[32];
-    fscanf(from, "%s", cp); // scan for space-delimited string
+    if(fscanf(from, "%s", cp)!=1){ // scan for space-delimited string
+        error("Expected at least 1 inout file\n");
+        exit(1);
+    }
     //  cp = strpbrk( buf, "0123456789")
     rows = columns = atoi(cp);
     // create the structure:
@@ -263,7 +269,11 @@ BJmatrix::BJmatrix(const char *initfile, const char *outfile):
         for ( int col = 1 ; col <= columns ; col++ )
         {
             char nb[20];
-            fscanf(from, "%s", nb); // scan for space-delimited string
+            if(fscanf(from, "%s", nb)!=1){ // scan for space-delimited string
+                error("Expected at least 1 inout file\n");
+                exit(1);
+            }
+
             val(row, col) = (double) atof(nb); // convert it to a double
 
             if (ferror(from))

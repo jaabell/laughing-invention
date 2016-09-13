@@ -121,6 +121,7 @@ class ElasticBeamLumpedMass : public Element
         double A, E, G, Jx, Iy, Iz;
 
         double rho;
+        Matrix R;       // Transformation matrix [Nima Tafazzoli (Nov. 2012)]
         int sectionTag;
 
         static Matrix K;
@@ -138,13 +139,12 @@ class ElasticBeamLumpedMass : public Element
 
 
         // Nima Tafazzoli (Nov. 2012) moved from transformation
-        Matrix R;       // Transformation matrix
+        Vector *nodeIOffset; // rigid joint offsets
+        Vector *nodeJOffset; // rigid joint offsets
         double L;       // undeformed element length
         Vector *nodeIInitialDisp;
         Vector *nodeJInitialDisp;
         bool initialDispChecked;
-        Vector *nodeIOffset; // rigid joint offsets
-        Vector *nodeJOffset; // rigid joint offsets
 
 };
 

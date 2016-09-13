@@ -201,6 +201,40 @@ IncrementalIntegrator::commit(void)
     return theAnalysisModel->commitDomain();
 }
 
+/*******************************************************************
+* Sumeet  September, 2016
+* Call the Analysis model to output the current step
+********************************************************************/
+int
+IncrementalIntegrator::output_step(void)
+{
+    if (theAnalysisModel == 0)
+    {
+        cerr << "WARNING IncrementalIntegrator::commit() -";
+        cerr << "no AnalysisModel object associated with this object\n";
+        return -1;
+    }
+
+    return theAnalysisModel->Output_Domain_Step();
+}
+
+/*******************************************************************
+* Sumeet  September, 2016
+* Call the Analysis model to output the current iteration
+********************************************************************/
+int
+IncrementalIntegrator::output_iteration( int global_iteration_no )
+{
+    if (theAnalysisModel == 0)
+    {
+        cerr << "WARNING IncrementalIntegrator::commit() -";
+        cerr << "no AnalysisModel object associated with this object\n";
+        return -1;
+    }
+
+    return theAnalysisModel->Output_Domain_Iteration(global_iteration_no);
+}
+
 
 int
 IncrementalIntegrator::revertToLastStep(void)

@@ -113,6 +113,7 @@ class StaticDomainDecompositionAnalysis: public DomainDecompositionAnalysis
         StaticIntegrator*    theIntegrator;
         ConvergenceTest*    theTest;
         int domainStamp;
+        bool whether_initial_step;
 };
 
 #endif

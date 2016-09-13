@@ -209,12 +209,11 @@ int simulate_using_static_multistep(int numSteps)
 
 
     cout << "\n\n\n";
-    cout << "> Analysis Start -----------------------------------------------------------------------------";
+    cout << "> Analysis Start -----------------------------------------------------------------------------\n";
 
 
     if ( OPS_REDEFINE_ANALYSIS == true )
     {
-
         DomainDecompositionAnalysis *theSubAnalysis;
         SubdomainIter &theSubdomains = theDomain.getSubdomains();
         Subdomain *theSub = 0;
@@ -244,7 +243,7 @@ int simulate_using_static_multistep(int numSteps)
 
     result = theStaticAnalysis->analyze(numSteps);
 
-    cout << "> Analysis End -------------------------------------------------------------------------------";
+    cout << "> Analysis End -------------------------------------------------------------------------------\n";
 
 
     //=====================================================================================
@@ -256,7 +255,6 @@ int simulate_using_static_multistep(int numSteps)
     cout << "> Analysis End -------------------------------------------------------------------------------\n";
 
 #endif
-
 
     globalESSITimer.report();
 

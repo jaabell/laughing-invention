@@ -337,10 +337,16 @@ ElasticCrossAnisotropic::receiveSelf(int commitTag, Channel& theChannel,
 void
 ElasticCrossAnisotropic::Print (ostream& s, int flag)
 {
-    s << "Elastic Cross-Anisotropic Material Model\n";
-    s << "\tEh:  " << Eh << "\tEv:  " << Ev << "\n";
-    s << "\tnuhv:  " << nuhv << "\tnuhh:  " << nuhh << "\n";
-    s << "\tGhv:  " << Ghv << "\trho:  " << rho << "\n";
+    s << "ElasticCrossAnisotropic::" << endln;
+    s << "\tTag: " << this->getTag() << endln;
+    s << "\tElastic_Modulus_H: " << Eh << endln;
+    s << "\tElastic_Modulus_V: " << Ev << endln;
+    s << "\tPoissons_Ratio: " << nuhh << endln;
+    s << "\tPoissons_Ratio_HV: " << nuhv << endln;
+    s << "\tShear_Modulus_HV: " << Ghv << endln;
+    s << "\tDensity: " << rho << endln;
+
+
     return;
 }
 

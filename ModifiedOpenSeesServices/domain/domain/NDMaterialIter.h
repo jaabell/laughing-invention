@@ -33,7 +33,7 @@ class NDMaterialIter
     public:
         NDMaterialIter() {};
         virtual ~NDMaterialIter() {};
-
+        virtual void reset(void)=0;
         virtual NDMaterial* operator()(void) = 0;
 
     protected:

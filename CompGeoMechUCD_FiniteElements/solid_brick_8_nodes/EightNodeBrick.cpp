@@ -68,6 +68,9 @@ EightNodeBrick::EightNodeBrick(int element_number,
       connectedExternalNodes(8), Ki(0), Q(24),
       rho(0.0), epEnergy(0.0), gauss_points(8, 3), outputVector(EightNodeBrick_OUTPUT_SIZE)
 {
+    
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     rho = Globalmmodel->getRho();
 
     determinant_of_Jacobian = 0.0;

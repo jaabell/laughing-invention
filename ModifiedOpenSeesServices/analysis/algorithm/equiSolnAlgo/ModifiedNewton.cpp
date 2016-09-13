@@ -54,7 +54,7 @@ using namespace std;
 // Constructor
 ModifiedNewton::ModifiedNewton(int theTangentToUse)
     : EquiSolnAlgo(EquiALGORITHM_TAGS_ModifiedNewton),
-      theTest(0), tangent(theTangentToUse)
+      theTest(0), tangent(theTangentToUse),global_iteration_no(0), output_iterations(false)
 {
 
 }
@@ -62,7 +62,7 @@ ModifiedNewton::ModifiedNewton(int theTangentToUse)
 
 ModifiedNewton::ModifiedNewton(ConvergenceTest& theT, int theTangentToUse)
     : EquiSolnAlgo(EquiALGORITHM_TAGS_ModifiedNewton),
-      theTest(&theT), tangent(theTangentToUse)
+      theTest(&theT), tangent(theTangentToUse),global_iteration_no(0), output_iterations(false)
 {
 
 }
@@ -127,7 +127,7 @@ ModifiedNewton::solveCurrentStep(void)
 
     // repeat until convergence is obtained or reach max num iterations
     int result = -1;
-    int count = 0;
+    // int count = 0;
 
     do
     {
@@ -159,6 +159,9 @@ ModifiedNewton::solveCurrentStep(void)
 
         // this->record(count++);
         result = theTest->test();
+
+        if(output_iterations) // Added by Sumeet September, 2016
+            theIncIntegratorr->output_iteration(++global_iteration_no);
 
     }
     while (result == -1);
@@ -208,4 +211,14 @@ ModifiedNewton::Print(ostream& s, int flag)
     {
         s << "ModifiedNewton";
     }
+}
+
+/***********************************************************************
+* Sumeet September, 2016
+* Switch on/off the saving of output of iterations 
+************************************************************************/
+void 
+ModifiedNewton::switchOutputIterationOption(bool status){
+
+    output_iterations=status;
 }

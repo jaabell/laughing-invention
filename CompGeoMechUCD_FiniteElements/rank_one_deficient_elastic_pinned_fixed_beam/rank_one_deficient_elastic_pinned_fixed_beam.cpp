@@ -35,6 +35,7 @@
 
 #include <rank_one_deficient_elastic_pinned_fixed_beam.h>
 
+vector<float> rank_one_deficient_elastic_pinned_fixed_beam::Element_Output_Vector(9);
 
 rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_fixed_beam()
     : Element(0, ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam),
@@ -42,8 +43,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
       nodeIOffset(0), nodeJOffset(0), Mass(9, 9), Stiffness(9, 9),
       builtK(0), builtM(0), R(3, 3), P(9), Q(9), q(6),
       connectedExternalNodes(2), L(0),
-      nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false),
-      outputVector(rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE)
+      nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
 
     // set node pointers to NULL
@@ -72,8 +72,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
     : Element(tag, ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam),
       A(a), E(e), G(g), Jx(jx), Iy(iy), Iz(iz), rho(r), sectionTag(sectTag), nodeIOffset(0), nodeJOffset(0),
       Mass(9, 9), Stiffness(9, 9), builtK(0), builtM(0), R(3, 3), P(9),
-      Q(9), q(6), connectedExternalNodes(2), L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false),
-      outputVector(rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE)
+      Q(9), q(6), connectedExternalNodes(2), L(0), nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
     connectedExternalNodes(0) = Nd1;
     connectedExternalNodes(1) = Nd2;
@@ -123,8 +122,7 @@ rank_one_deficient_elastic_pinned_fixed_beam::rank_one_deficient_elastic_pinned_
     : Element(tag, ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam),
       nodeIOffset(0), nodeJOffset(0), Mass(9, 9), Stiffness(9, 9), builtK(0), builtM(0), R(3, 3), P(9),
       Q(9), q(6), connectedExternalNodes(2), L(0),
-      nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false),
-      outputVector(rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE)
+      nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 {
     if (section != 0)
     {
@@ -302,8 +300,6 @@ rank_one_deficient_elastic_pinned_fixed_beam::commitState()
     {
         cerr.flush() << "rank_one_deficient_elastic_pinned_fixed_beam::commitState () - failed in base class";
     }
-
-    outputVector = *getForce();
 
     return retVal;
 }
@@ -1160,18 +1156,18 @@ rank_one_deficient_elastic_pinned_fixed_beam::getGlobalConsistentMassMatrix(cons
 Vector *
 rank_one_deficient_elastic_pinned_fixed_beam::getForce(void)
 {
-    Vector *elementForces = new Vector(12);
+    Vector *elementForces = new Vector (12);
 
-    (*elementForces)(0)  = P(0);
-    (*elementForces)(1)  = P(1);
-    (*elementForces)(2)  = P(2);
-    (*elementForces)(3)  = 0.0;
-    (*elementForces)(4)  = 0.0;
-    (*elementForces)(5)  = 0.0;
-    (*elementForces)(6)  = P(3);
-    (*elementForces)(7)  = P(4);
-    (*elementForces)(8)  = P(5);
-    (*elementForces)(9)  = P(6);
+    (*elementForces)(0 )  = P(0);
+    (*elementForces)(1 )  = P(1);
+    (*elementForces)(2 )  = P(2);
+    (*elementForces)(3 )  = 0.0;
+    (*elementForces)(4 )  = 0.0;
+    (*elementForces)(5 )  = 0.0;
+    (*elementForces)(6 )  = P(3);
+    (*elementForces)(7 )  = P(4);
+    (*elementForces)(8 )  = P(5);
+    (*elementForces)(9 )  = P(6);
     (*elementForces)(10) = P(7);
     (*elementForces)(11) = P(8);
 
@@ -1179,22 +1175,31 @@ rank_one_deficient_elastic_pinned_fixed_beam::getForce(void)
     return elementForces;
 }
 
-
-// Matrix &rank_one_deficient_elastic_pinned_fixed_beam::getGaussCoordinates(void)
-// {
-//     return gauss_points;
-// }
-
-int rank_one_deficient_elastic_pinned_fixed_beam::getOutputSize() const
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output for element other than at gauss points
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &rank_one_deficient_elastic_pinned_fixed_beam::getElementOutput()
 {
-    return rank_one_deficient_elastic_pinned_fixed_beam_OUTPUT_SIZE;
-}
 
+    Element_Output_Vector[0 ]  = P(0);
+    Element_Output_Vector[1 ]  = P(1);
+    Element_Output_Vector[2 ]  = P(2);
+    Element_Output_Vector[3 ]  = 0.0;
+    Element_Output_Vector[4 ]  = 0.0;
+    Element_Output_Vector[5 ]  = 0.0;
+    Element_Output_Vector[6 ]  = P(3);
+    Element_Output_Vector[7 ]  = P(4);
+    Element_Output_Vector[8 ]  = P(5);
+    Element_Output_Vector[9 ]  = P(6);
+    Element_Output_Vector[10] = P(7);
+    Element_Output_Vector[11] = P(8);
 
-
-const Vector &rank_one_deficient_elastic_pinned_fixed_beam::getOutput()
-{
-    return outputVector;
+    return Element_Output_Vector;
 }
 
 

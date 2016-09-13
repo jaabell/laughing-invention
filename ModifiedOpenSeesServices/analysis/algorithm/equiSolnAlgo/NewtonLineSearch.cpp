@@ -47,7 +47,7 @@
 //Null Constructor
 NewtonLineSearch::NewtonLineSearch( )
     : EquiSolnAlgo(EquiALGORITHM_TAGS_NewtonLineSearch),
-      theTest(0), theOtherTest(0), theLineSearch(0)
+      theTest(0), theOtherTest(0), theLineSearch(0),global_iteration_no(0), output_iterations(false)
 {
 }
 
@@ -56,7 +56,7 @@ NewtonLineSearch::NewtonLineSearch( )
 NewtonLineSearch::NewtonLineSearch( ConvergenceTest &theT,
                                     LineSearch *theSearch)
     : EquiSolnAlgo(EquiALGORITHM_TAGS_NewtonLineSearch),
-      theTest(&theT), theLineSearch(theSearch)
+      theTest(&theT), theLineSearch(theSearch),global_iteration_no(0), output_iterations(false)
 {
     theOtherTest = theTest->getCopy(10);
     theOtherTest->setEquiSolnAlgo(*this);
@@ -203,6 +203,9 @@ NewtonLineSearch::solveCurrentStep(void)
 
         result = theTest->test();
 
+        if(output_iterations) // Added by Sumeet September, 2016
+            theIntegrator->output_iteration(++global_iteration_no);
+
     }
     while (result == -1);
 
@@ -299,7 +302,15 @@ NewtonLineSearch::Print(std::ostream &s, int flag)
 }
 
 
+/***********************************************************************
+* Sumeet September, 2016
+* Switch on/off the saving of output of iterations 
+************************************************************************/
+void 
+NewtonLineSearch::switchOutputIterationOption(bool status){
 
+    output_iterations=status;
+}
 
 
 

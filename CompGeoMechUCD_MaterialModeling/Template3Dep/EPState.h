@@ -50,6 +50,7 @@
 class EPState : public TaggedObject, MovableObject //Guanzhou changed
 {
     public:
+
         //ZC05/2004    // Elastic parameters
         //ZC05/2004    double Eo;                    // Young's modulus when p = p_atmosphere  -- [in-plane] in terms of cross-anisotropic material
         //ZC05/2004    double E_Young;            // Young's modulus -- [in-plane] in terms of cross-anisotropic material

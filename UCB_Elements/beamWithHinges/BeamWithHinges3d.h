@@ -134,6 +134,14 @@ class BeamWithHinges3d: public Element
         Vector qCommit;
         Vector eCommit[2];
 
+        // Nima Tafazzoli (Nov. 2012) moved from transformation
+        double R[3][3];  // Transformation matrix
+        double *nodeIInitialDisp, *nodeJInitialDisp;
+        bool initialDispChecked;
+        double *nodeIOffset, *nodeJOffset;  // rigid joint offsets
+        double L;           // undeformed element length
+
+
         int initialFlag;
 
         int maxIter;
@@ -146,15 +154,6 @@ class BeamWithHinges3d: public Element
         static Matrix theMatrix;
         static Vector theVector;
         static double workArea[];
-
-
-        // Nima Tafazzoli (Nov. 2012) moved from transformation
-        double R[3][3];  // Transformation matrix
-        double L;           // undeformed element length
-        double *nodeIInitialDisp, *nodeJInitialDisp;
-        bool initialDispChecked;
-        double *nodeIOffset, *nodeJOffset;  // rigid joint offsets
-
 };
 
 #endif

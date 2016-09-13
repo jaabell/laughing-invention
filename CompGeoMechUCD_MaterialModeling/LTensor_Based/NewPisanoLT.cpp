@@ -1271,8 +1271,8 @@ int NewPisanoLT::Modified_Euler_Error_Control(const DTensor2& strain_increment)
     while (T < 1)
     {
 
-        double beta = getBeta(Trial_alpha0);
-        double H = getH(Trial_alpha0);
+        // double beta = getBeta(Trial_alpha0);
+        // double H = getH(Trial_alpha0);
 
         // cout << "================\n" ;
         // cout << "T = " << T << ", q = " << q << ", dT = " << dT << ", beta = " << beta << ", H = " << H <<  endl;

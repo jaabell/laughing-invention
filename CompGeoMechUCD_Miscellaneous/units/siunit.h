@@ -68,32 +68,36 @@ private:
 // Auxiliary helper functions (tests)
 // ============================================================================================================
 
-
 bool isAdimensional(const SIUnit& u);
-bool isMass     (const SIUnit& u);
-bool isLength   (const SIUnit& u);
-bool isTime     (const SIUnit& u);
-bool isTime3     (const SIUnit& u);
-bool isTime5     (const SIUnit& u);
-bool isFrequency(const SIUnit& u);
-bool isArea     (const SIUnit& u);
-bool isVolume   (const SIUnit& u);
-bool isForce    (const SIUnit& u);
-bool isEnergy   (const SIUnit& u);
-bool isTorque   (const SIUnit& u);
-bool isPressure (const SIUnit& u);
-bool isBodyForce(const SIUnit& u);
-bool isDensity  (const SIUnit& u);
-bool isVelocity (const SIUnit& u);
-bool isAcceleration(const SIUnit& u);
-bool isAreaMomentOfInertia(const SIUnit& u);
-bool isMassMomentOfInertia(const SIUnit& u);
+bool isAdimensional(const std::string& var_name, const SIUnit& u);
+bool isMass     (const std::string& var_name, const SIUnit& u);
+bool isLength   (const std::string& var_name, const SIUnit& u);
+bool isTime     (const std::string& var_name, const SIUnit& u);
+bool isFrequency(const std::string& var_name, const SIUnit& u);
+bool isArea     (const std::string& var_name, const SIUnit& u);
+bool isVolume   (const std::string& var_name, const SIUnit& u);
+bool isForce    (const std::string& var_name, const SIUnit& u);
+bool isEnergy   (const std::string& var_name, const SIUnit& u);
+bool isTorque   (const std::string& var_name, const SIUnit& u);
+bool isPressure (const std::string& var_name, const SIUnit& u);
+bool isBodyForce(const std::string& var_name, const SIUnit& u);
+bool isDensity  (const std::string& var_name, const SIUnit& u);
+bool isVelocity (const std::string& var_name, const SIUnit& u);
+bool isAcceleration(const std::string& var_name, const SIUnit& u);
+bool isAreaMomentOfInertia(const std::string& var_name, const SIUnit& u);
+bool isMassMomentOfInertia(const std::string& var_name, const SIUnit& u);
 
 template<short int m, short int l, short int t>
-bool isThisUnit(const SIUnit& u )
+bool isThisUnit(const std::string& var_name, const SIUnit& u )
 {
-    return (( u.Getdim_m() == m ) &
-            ( u.Getdim_l() == l ) &
-            ( u.Getdim_t() == t ));
+    bool verified = (( u.Getdim_m() == m ) &
+                   ( u.Getdim_l() == l ) &
+                   ( u.Getdim_t() == t ));
+
+    if (!verified)
+         std::cout << std::endl << std::endl << "     Error: " << var_name << " should have unit as " << "[kg^("<<m<<")*m^(" << l << ")*s^(" << t << ")] " << std::endl;
+
+    return verified;
 }
 #endif // SIUNIT_H
+

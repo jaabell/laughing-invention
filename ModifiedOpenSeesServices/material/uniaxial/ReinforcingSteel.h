@@ -87,8 +87,8 @@ class ReinforcingSteel : public UniaxialMaterial
 
         double ZeroTol;
         double reduction;
-        double fsu_fraction;
         double beta;
+        double fsu_fraction;
         int theBarFailed;
 
         // natural stress-strain variables
@@ -123,12 +123,13 @@ class ReinforcingSteel : public UniaxialMaterial
         //double Nbf;               // Cyclic Backbone factor used correct backbone proporsional to return strain
         double TFatDamage;
         double CFatDamage;
-        double LDratio;
-        double Fat1;
         double Fat2;
         double Deg1;
         int    BuckleModel;
+        double LDratio;
+        double Fat1;
         double BackStress;
+
 
         // Menegotto-Pinto Calibration Constants
         double RC1;

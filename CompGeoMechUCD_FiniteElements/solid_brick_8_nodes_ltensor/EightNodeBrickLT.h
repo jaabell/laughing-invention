@@ -41,6 +41,9 @@
 #include <NDMaterialLT.h>
 #include <Damping.h>
 #include <MatPoint3D.h>
+#include <map>
+#include <set>
+#include <vector>
 
 #include <ID.h>
 #include <OPS_Globals.h>
@@ -50,13 +53,7 @@
 #include <FEM_ObjectBroker.h>
 
 
-// #include <ElementResponse.h>
 #include <ElementalLoad.h>
-
-
-// Output is 6 components of strain 6 components of plastic strain and 6 of stress per gauss point + 1 for update time
-#define EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS 8
-#define EightNodeBrickLT_OUTPUT_SIZE EightNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*3) 
 
 class Node;
 
@@ -90,7 +87,8 @@ public:
     // These NEED to return fmk Matrices
     const Matrix &getTangentStiff ();
     const Matrix &getInitialStiff();
-    const Matrix &getMass ();
+    const Matrix &getConstStiff();    // Returns the matrix K [Sumeet September, 2016]
+    const Matrix &getMass();
 
     void zeroLoad ();
     int addLoad( ElementalLoad *theLoad, double loadFactor );
@@ -148,8 +146,11 @@ public:
 
 
     Matrix &getGaussCoordinates(void);
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput() ;
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has only outputs at gauss points so no needto have the "getElementOutput()" function
+    *********************************************************************************************************************/
+    virtual const vector<float> &getGaussOutput();
 
     std::string getElementName() const
     {
@@ -159,7 +160,6 @@ public:
     Vector *getStress( void );
 
     virtual void zeroStrain();
-
 
     // ===================================================================================================================
     // Data members
@@ -175,6 +175,8 @@ private:
     double e_p;
     double determinant_of_Jacobian;
     double rho;
+
+    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet 
 
     ID  connectedExternalNodes;
 
@@ -199,7 +201,7 @@ private:
     static DTensor1 gp_weight; //Weights of 1D Gaussian quadrature rule
 
     static Matrix gauss_points;
-    static Vector outputVector;
+    static vector<float> Gauss_Output_Vector;  // Sumeet August, 2016
 
     static Matrix K;
 

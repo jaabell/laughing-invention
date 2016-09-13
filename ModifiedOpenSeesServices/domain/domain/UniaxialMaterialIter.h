@@ -33,7 +33,7 @@ class UniaxialMaterialIter
     public:
         UniaxialMaterialIter() {};
         virtual ~UniaxialMaterialIter() {};
-
+        virtual void reset(void)=0;
         virtual UniaxialMaterial* operator()(void) = 0;
 
     protected:

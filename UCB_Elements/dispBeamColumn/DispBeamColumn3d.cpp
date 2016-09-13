@@ -1348,8 +1348,6 @@ Matrix &
 DispBeamColumn3d::getGaussCoordinates(void)
 {
     static Matrix gaussPoints(2, 3);
-    const Vector &crd1 = theNodes[0]->getCrds();
-    const Vector &crd2 = theNodes[1]->getCrds();
     for (int i = 0; i < 2; i++)
     {
         const Vector &crds = theNodes[i]->getCrds();

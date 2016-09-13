@@ -174,8 +174,12 @@ FatigueMaterial::setTrialStrain(double strain, double strainRate)
 double
 FatigueMaterial::getStress(void)
 {
-    double modifier = 1.0;
-    double damageloc = 1.0 - Dmax + DL;
+
+    /*
+    // This portion of the code was added by Kevin Mackie, Ph.D.
+    //  This is appropriate for steel material.  Uncomment to use.
+    // double modifier = 1.0;
+    // double damageloc = 1.0 - Dmax + DL;*/
 
     if (Cfailed)
         // Reduce stress to 0.0
@@ -207,8 +211,13 @@ FatigueMaterial::getStress(void)
 double
 FatigueMaterial::getTangent(void)
 {
+
     double modifier = 1.0;
-    double damageloc = 1.0 - Dmax + DL;
+
+    /*
+    // This portion of the code was added by Kevin Mackie, Ph.D.
+    //  This is appropriate for steel material.  Uncomment to use.
+    // double damageloc = 1.0 - Dmax + DL;*/
 
     if (Cfailed)
         // Reduce tangent to 0.0

@@ -220,7 +220,7 @@ PetscSOE::setSize(Graph &theGraph)
                 PetscPopSignalHandler();
             }
 
-            PetscLogBegin();
+            PetscLogAllBegin();
         }
         else
         {

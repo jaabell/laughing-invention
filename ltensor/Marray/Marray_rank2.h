@@ -674,7 +674,7 @@ public:
                 signDet *= -1;			  // Flip sign of determinant
             }
             //assert(fabs(A(indexJ,k))>0);  //matrix is not invertible
-            if (!fabs(A(indexJ, k)) > 0)
+            if (!(fabs(A(indexJ, k)) > 0))
             {
                 return 0.0;
             }

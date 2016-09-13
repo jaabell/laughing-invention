@@ -59,9 +59,10 @@ public:
 protected:
 
 private:
+
+    int damptag;
     double a0;
     double a1;
-    int damptag;
     string damping_type;
     string stiffness_type;
 };

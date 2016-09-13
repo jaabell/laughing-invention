@@ -41,6 +41,7 @@ EightNodeBrickLT_NoOutput::EightNodeBrickLT_NoOutput( int element_number,
                         Globalmmodel)
 {
 
+
 }
 
 
@@ -51,21 +52,6 @@ EightNodeBrickLT_NoOutput::EightNodeBrickLT_NoOutput( int element_number,
 EightNodeBrickLT_NoOutput::EightNodeBrickLT_NoOutput(): EightNodeBrickLT()
 {
 
-}
-
-
-
-
-int EightNodeBrickLT_NoOutput::getOutputSize() const
-{
-    return 0 ;
-}
-
-
-
-const Vector &EightNodeBrickLT_NoOutput::getOutput()
-{
-    return *Element::SizedVector1;
 }
 
 

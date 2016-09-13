@@ -25,11 +25,48 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "./Contact_Elements/FrictionalPenaltyContact.h"
+#include "./Contact_Elements/HardContact.h"
+#include "./Contact_Elements/SoftContact.h"
 #include "./solid_brick_8_nodes/EightNodeBrick.h"
 #include "./solid_brick_8_nodes_variable_number_of_gauss_points/EightNodeBrickVariableGP.h"
 #include "./solid_brick_8_nodes_elastic/EightNodeBrickElastic.h"
 #include "./coupled_u-p-U_brick_8_nodes/EightNodeBrick_u_p_U.h"
+
+
+// Coupled Elements 
+
+// Eight Node Brick
+#include "./coupled_u-p-U_bricks_LT/EightNodeBrick_upU_LT.h"
+#include "./coupled_u-p-U_bricks_LT/EightNodeBrick_upU_LT_Elastic.h"
+
+// Twenty Node Brick
+#include "./coupled_u-p-U_bricks_LT/TwentyNodeBrick_upU_LT.h"
+#include "./coupled_u-p-U_bricks_LT/TwentyNodeBrick_upU_LT_Elastic.h"
+
+// Twenty Seven Node Brick
+#include "./coupled_u-p-U_bricks_LT/TwentySevenNodeBrick_upU_LT.h"
+#include "./coupled_u-p-U_bricks_LT/TwentySevenNodeBrick_upU_LT_Elastic.h"
+
+
+// General Brick Elements
+
+// Eight Node Brick
+#include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT.h"
+#include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT_Elastic.h"
+#include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT_NoOutput.h"
+
+// Twenty Node Brick
+#include "./solid_brick_20_nodes_ltensor/TwentyNodeBrickLT.h"
+#include "./solid_brick_20_nodes_ltensor/TwentyNodeBrickLT_Elastic.h"
+
+// Twenty Seven Node Brick
+#include "./solid_brick_27_nodes_ltensor/TwentySevenNodeBrickLT.h"
+#include "./solid_brick_27_nodes_ltensor/TwentySevenNodeBrickLT_Elastic.h"
+
+
+
+
+
 #include "./coupled_u-p_brick_8_nodes/EightNode_Brick_u_p.h"
 #include "./coupled_u-p_large_deformation_brick_8_nodes/EightNode_LDBrick_u_p.h"
 #include "./coupled_u-p-U_brick_20_nodes/TwentyNodeBrick_u_p_U.h"
@@ -38,7 +75,6 @@
 #include "./solid_brick_20_nodes_variable_number_of_gauss_points/TwentyNodeBrickVariableGP.h"
 #include "./solid_brick_27_nodes_variable_number_of_gauss_points/TwentySevenNodeBrickVariableGP.h"
 #include "./solid_brick_27_nodes/TwentySevenNodeBrick.h"
-#include "./solid_brick_27_nodes_ltensor/TwentySevenNodeBrickLT.h"
 #include "./solid_brick_27_nodes_elastic/TwentySevenNodeBrickElastic.h"
 // #include "./penalty_element_apply_displacement/PenaltyElementApplyDisplacement.h"
 // #include "./penalty_element/PenaltyElement.h"
@@ -52,9 +88,6 @@
 #include "./solid_brick_large_deformation_total_Lagrangian_8_nodes/TotalLagrangianFD8NodeBrick.h"
 #include "./solid_brick_large_deformation_total_Lagrangian_20_nodes/TotalLagrangianFD20NodeBrick.h"
 
-#include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT.h"
-#include "./solid_brick_20_nodes_ltensor/TwentyNodeBrickLT.h"
-#include "./solid_brick_8_nodes_ltensor/EightNodeBrickLT_NoOutput.h"
 
 
 // #include "./coupled_u-p-U_bricks_LT/EightNodeBrick_u_p_U_LT.h"

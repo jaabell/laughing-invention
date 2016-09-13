@@ -79,6 +79,8 @@ TwentyNodeBrickElastic::TwentyNodeBrickElastic(int element_number,
 {
     //elem_numb = element_number;
 
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     //================================================================
     // added by Nima Tafazzoli (October 2010)
     // replacing the input density with the one defined in material
@@ -2934,7 +2936,7 @@ void TwentyNodeBrickElastic::setDomain (Domain *theDomain)
                  "), has differing number of DOFs at its nodes\n";
             exit(-1);
         }
-
+      
         this->DomainComponent::setDomain(theDomain);
     }
 }

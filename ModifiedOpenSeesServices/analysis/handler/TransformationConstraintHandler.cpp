@@ -357,7 +357,13 @@ TransformationConstraintHandler::handle(const ID* nodesLast)
             int nodesSize = nodes.Size();
             int isConstrainedNode = 0;
 
-            for (int i = 0; i < nodesSize; i++)
+
+            /*********** Added by Sumeet September, 2016 **********************/
+            /** In place of commented code below because of compiler warning **/
+
+            int i=-1;
+            bool in_flag =  true;
+            while(i++<nodesSize && in_flag)
             {
                 int nodeTag = nodes(i);
 
@@ -368,7 +374,7 @@ TransformationConstraintHandler::handle(const ID* nodesLast)
                     if (loc >= 0)
                     {
                         isConstrainedNode = 1;
-                        i = nodesSize;
+                        in_flag=false;
                     }
                 }
 
@@ -379,10 +385,37 @@ TransformationConstraintHandler::handle(const ID* nodesLast)
                     if (loc >= 0)
                     {
                         isConstrainedNode = 1;
-                        i = nodesSize;
+                        in_flag=false;
                     }
                 }
             }
+
+            // for (int i = 0; i < nodesSize; i++)
+            // {
+            //     int nodeTag = nodes(i);
+
+            //     if (numMPConstraints != 0)
+            //     {
+            //         int loc = constrainedNodesMP.getLocation(nodeTag);
+
+            //         if (loc >= 0)
+            //         {
+            //             isConstrainedNode = 1;
+            //             i = nodesSize;
+            //         }
+            //     }
+
+            //     if (numSPConstraints != 0 && isConstrainedNode == 0)
+            //     {
+            //         int loc = constrainedNodesSP.getLocation(nodeTag);
+
+            //         if (loc >= 0)
+            //         {
+            //             isConstrainedNode = 1;
+            //             i = nodesSize;
+            //         }
+            //     }
+            // }
 
             if (isConstrainedNode == 1)
             {

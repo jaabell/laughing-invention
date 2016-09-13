@@ -33,7 +33,7 @@ class NDMaterialLTIter
     public:
         NDMaterialLTIter() {};
         virtual ~NDMaterialLTIter() {};
-
+        virtual void reset(void)=0;
         virtual NDMaterialLT *operator()(void) = 0;
 
     protected:

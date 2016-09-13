@@ -54,7 +54,7 @@ using namespace std;
 // Constructor
 NewtonRaphson::NewtonRaphson(int theTangentToUse)
     : EquiSolnAlgo(EquiALGORITHM_TAGS_NewtonRaphson),
-      theTest(0), tangent(theTangentToUse)
+      theTest(0), tangent(theTangentToUse),global_iteration_no(0), output_iterations(false)
 {
 
 }
@@ -62,7 +62,7 @@ NewtonRaphson::NewtonRaphson(int theTangentToUse)
 
 NewtonRaphson::NewtonRaphson(ConvergenceTest& theT, int theTangentToUse)
     : EquiSolnAlgo(EquiALGORITHM_TAGS_NewtonRaphson),
-      theTest(&theT), tangent(theTangentToUse)
+      theTest(&theT), tangent(theTangentToUse),global_iteration_no(0), output_iterations(false)
 {
 
 }
@@ -175,7 +175,9 @@ NewtonRaphson::solveCurrentStep(void)
         }
 
         result = theTest->test();
-        // this->record(count++);
+
+        if(output_iterations) // Added by Sumeet September, 2016
+            theIntegrator->output_iteration(++global_iteration_no);
 
     }
     while (result == -1);
@@ -191,6 +193,7 @@ NewtonRaphson::solveCurrentStep(void)
     // which should be the number of iterations
     return result;
 }
+
 
 ConvergenceTest*
 NewtonRaphson::getConvergenceTest(void)
@@ -227,8 +230,15 @@ NewtonRaphson::Print(ostream& s, int flag)
     }
 }
 
+/***********************************************************************
+* Sumeet September, 2016
+* Switch on/off the saving of output of iterations 
+************************************************************************/
+void 
+NewtonRaphson::switchOutputIterationOption(bool status){
 
-
+    output_iterations=status;
+}
 
 
 

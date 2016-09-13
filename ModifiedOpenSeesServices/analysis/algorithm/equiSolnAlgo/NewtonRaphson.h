@@ -51,6 +51,7 @@ public:
     int solveCurrentStep(void);
 
     int setConvergenceTest(ConvergenceTest* theTest);
+    void switchOutputIterationOption(bool status);                     // Sumeet September 2016
     ConvergenceTest* getConvergenceTest(void);
 
     virtual int sendSelf(int commitTag, Channel& theChannel);
@@ -62,8 +63,12 @@ protected:
 
 private:
     ConvergenceTest* theTest;
+    AnalysisModel*   theAnaModel;
+    IncrementalIntegrator* theIntegrator;
+    LinearSOE*  theSOE ;
     int tangent;
-
+    int global_iteration_no;
+    bool output_iterations;
 };
 
 #endif

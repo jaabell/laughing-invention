@@ -281,7 +281,12 @@ int vonMisesPPLT::receiveSelf( int commitTag, Channel &theChannel, FEM_ObjectBro
 //================================================================================
 void vonMisesPPLT::Print( ostream &s, int flag )
 {
-    s << ( *this );
+    s << "vonMisesPPLT::" << endl;
+    s << "\tTag: " << this->getTag() << endln;
+    s << "\tElastic_Modulus: " << E << endln;
+    s << "\tPoissons_Ratio: " << v << endln;
+    s << "\tDensity: " << rho << endln;
+    s << "!!Please Implement me!! " << endl;
 }
 
 //================================================================================

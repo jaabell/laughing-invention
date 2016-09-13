@@ -86,6 +86,7 @@ class DirectIntegrationAnalysis: public TransientAnalysis
         // Nima Tafazzoli added for engein analysis, June 2012
         int setEigenSOE(EigenSOE& theSOE);
         int eigen(int numMode);
+        
 
     protected:
 
@@ -100,9 +101,6 @@ class DirectIntegrationAnalysis: public TransientAnalysis
         EigenSOE*        theEigenSOE;
 
         int domainStamp;
-
-
-
 };
 
 #endif

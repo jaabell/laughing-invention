@@ -155,6 +155,14 @@ public:
         return "TwentyNodeBrick_u_p_U";
     }
 
+    //Jose Added for output
+    Matrix &getGaussCoordinates(void);
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has only outputs at gauss points so no needto have the "getElementOutput()" function
+    *********************************************************************************************************************/
+    virtual const vector<float> &getGaussOutput() ;
+
 
 private:
     tensor shapeFunction(double, double, double);
@@ -204,6 +212,10 @@ private:
 
     Vector *Q;
     Matrix *Ki;
+
+    Matrix gauss_points;
+    static vector<float> Gauss_Output_Vector;  // Sumeet August, 2016
+
 };
 
 

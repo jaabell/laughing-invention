@@ -75,6 +75,7 @@ class StraightReinfLayer : public ReinfLayer
     protected:
 
     private:
+
         int    nReinfBars;
         int    matID;
         double barDiam;

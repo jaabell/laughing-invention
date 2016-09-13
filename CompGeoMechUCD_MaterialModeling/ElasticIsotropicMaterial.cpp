@@ -381,7 +381,7 @@ const stresstensor &ElasticIsotropicMaterial::getStressTensor (void)
     exit(-1);
 
     // Just to make it compile
-    stresstensor *t = new stresstensor();
+    Tensor *t = new Tensor;
     return *t;
 }
 
@@ -391,7 +391,7 @@ const straintensor &ElasticIsotropicMaterial::getStrainTensor (void)
     exit(-1);
 
     // Just to make it compile
-    stresstensor *t = new stresstensor();
+    Tensor *t = new Tensor;
     return *t;
 }
 
@@ -401,7 +401,7 @@ const straintensor &ElasticIsotropicMaterial::getPlasticStrainTensor (void)
     exit(-1);
 
     // Just to make it compile
-    stresstensor *t = new stresstensor();
+    Tensor *t = new Tensor;
     return *t;
 }
 
@@ -505,10 +505,11 @@ ElasticIsotropicMaterial::receiveSelf (int commitTag, Channel &theChannel,
 void
 ElasticIsotropicMaterial::Print (ostream &s, int flag)
 {
-    s << "Elastic Isotropic Material Model" << endln;
-    s << "\tE:  " << E << endln;
-    s << "\tv:  " << v << endln;
-    s << "\trho:  " << rho << endln;
+    s << "ElasticIsotropicMaterial::" << endln;
+    s << "\tTag: " << this->getTag() << endln;
+    s << "\tElastic_Modulus: " << E << endln;
+    s << "\tPoissons_Ratio: " << v << endln;
+    s << "\tDensity: " << rho << endln;
 
     return;
 }

@@ -1,4 +1,4 @@
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 //
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
@@ -62,11 +62,6 @@ These documents all mirror published works in indexed journals.
 
 #ifndef FourNodeAndesShell_H
 #define FourNodeAndesShell_H
-
-
-// Output is 6 components of internal forces (p11 p22 p12 m11 m22 m12)
-#define FourNodeAndesShell_NUMBER_OF_GAUSSPOINTS 1
-#define FourNodeAndesShell_OUTPUT_SIZE FourNodeAndesShell_NUMBER_OF_GAUSSPOINTS*(6*1)
 
 #ifndef _bool_h
 #include "bool.h"
@@ -179,15 +174,17 @@ public:
         return "FourNodeAndesShell";
     }
 
-    //Jose Added for output
-    Matrix &getGaussCoordinates(void);
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput() ;
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has no gauss points and thus no outputs at gauss points 
+    * so no needto have the "getGaussOutput()" function
+    * Disabled as we don't know what is the correct output -> Also No. of outputs in calss_Tag_Desc in classtags.h made to 0.
+    *********************************************************************************************************************/
+    // virtual const vector<float> &getElementOutput() ;
 
 
 
 private:
-
 
     //===================================================================================
     // Internal variables
@@ -223,8 +220,7 @@ private:
     bool is_stiffness_calculated;
     bool is_mass_calculated;
 
-    Matrix gauss_points;
-    Vector outputVector;
+    // static vector<float> Element_Output_Vector;
 };
 
 

@@ -106,7 +106,7 @@ QuadPatch::getCells (void) const
     int i, j, k, r, s;
     int numCells;
     Cell** cells;
-    int error = 0;
+    // int error = 0;
 
     if (nDivIJ > 0  && nDivJK > 0)
     {

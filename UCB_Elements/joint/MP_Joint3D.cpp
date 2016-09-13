@@ -427,7 +427,7 @@ const Matrix& MP_Joint3D::getConstraint(void)
         NewLocation(4) = dispC(4);
         NewLocation(5) = dispC(5);
 
-        int dummy = ConstrainedNode->setTrialDisp( NewLocation );
+        ConstrainedNode->setTrialDisp( NewLocation );
     }
 
     // end of length correction procedure

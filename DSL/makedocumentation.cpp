@@ -68,6 +68,10 @@ int main()
     ofstream out("available_commands.txt");
     ofstream keywords_list("keywords.list");
 
+    // Addded by sumeet 22nd August, 2016
+    ofstream first_level_keywords("./snippets/First_Level_Keywords.txt");
+    ofstream second_level_keywords("./snippets/Second_Level_Keywords.txt");
+
     // This defines the separator for keyword identification
     boost::char_separator<char> sep(" .");   //break down words by spaces and points using boost::tokenizer
 
@@ -239,6 +243,7 @@ int main()
     for (iter = keywords.begin(); iter != keywords.end(); iter++)
     {
         keywords_list << *iter << endl;
+        first_level_keywords << *iter << endl;
     }
 
     keywords_list << endl << endl;
@@ -246,6 +251,7 @@ int main()
     for (iter = keywords2.begin(); iter != keywords2.end(); iter++)
     {
         keywords_list << *iter << endl;
+        second_level_keywords << *iter << endl;
     }
 
     keywords_list.close();

@@ -36,7 +36,7 @@
 #include <NDMaterialLT.h>
 #include <Damping.h>
 #include <MatPoint3D.h>
-
+#include <map>
 #include <ID.h>
 #include <OPS_Globals.h>
 #include <Domain.h>
@@ -47,14 +47,6 @@
 
 // #include <ElementResponse.h>
 #include <ElementalLoad.h>
-
-
-
-// Output is 6 components of strain, 6 components of plastic strain, and 6 of stress per gauss point
-#define TwentySevenNodeBrickLT_NUMBER_OF_GAUSSPOINTS 27
-#define TwentySevenNodeBrickLT_OUTPUT_SIZE TwentySevenNodeBrickLT_NUMBER_OF_GAUSSPOINTS*(6*3)
-
-
 
 class Node;
 
@@ -93,6 +85,7 @@ public:
     // These NEED to return fmk Matrices
     const Matrix &getTangentStiff ();
     const Matrix &getInitialStiff();
+    const Matrix &getConstStiff();    // Returns the matrix K [Sumeet September, 2016]
     const Matrix &getMass ();
 
     void zeroLoad ();
@@ -153,8 +146,11 @@ public:
     Vector *getStress( void );
 
     Matrix &getGaussCoordinates(void);
-    virtual int getOutputSize() const;
-    virtual const Vector &getOutput() ;
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has only outputs at gauss points so no needto have the "getElementOutput()" function
+    *********************************************************************************************************************/
+    virtual const vector<float> &getGaussOutput() ;
 
 
     std::string getElementName() const
@@ -180,6 +176,8 @@ private:
     double e_p;
     double determinant_of_Jacobian;
     double rho;
+
+    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet
 
     ID  connectedExternalNodes;
 
@@ -211,7 +209,7 @@ private:
     static DTensor2 gp_weight; //Weights of 1D Gaussian quadrature rule
 
     static Matrix gauss_points;
-    static Vector outputVector;
+    static vector<float> Gauss_Output_Vector;
 
     Index < 'i' > i;
     Index < 'j' > j;

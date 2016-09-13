@@ -148,3 +148,11 @@ int DruckerPragerArmstrongFrederick::pre_integration_callback(const DTensor2 &de
     }
     return 0;
 }
+
+void
+DruckerPragerArmstrongFrederick::Print(ostream& s, int flag)
+{
+    s << "DruckerPragerArmstrongFrederick" << endln;
+    s << "\tTag: " << this->getTag() << endln;
+    s << " Please Implement Me !!! " << endl;
+}

@@ -85,3 +85,17 @@ VonMisesLinearHardening::VonMisesLinearHardening() :
 {}
 
 
+void
+VonMisesLinearHardening::Print(ostream& s, int flag)
+{
+    s << "VonMisesLinearHardening::" << endln;
+    s << "\tTag: " << this->getTag() << endln;
+    s << " Please Implement Me !!! " << endl;
+    // s << "\tElastic_Modulus: " << E << endln;
+    // s << "\tPoissons_Ratio: " << v << endln;
+    // s << "\tDensity: " << rho << endln;
+    // s << "\tVon_Mises_radius: "
+    // s << "\tKinematic_hardening_rate: "
+    // s << "\tIsotropic_hardening_rate: "
+}
+

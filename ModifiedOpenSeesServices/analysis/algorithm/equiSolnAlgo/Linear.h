@@ -50,6 +50,7 @@ class Linear: public EquiSolnAlgo
 
         int solveCurrentStep(void);
         int setConvergenceTest(ConvergenceTest* theTest);
+        void switchOutputIterationOption(bool status);                     // Sumeet September 2016
         ConvergenceTest* getConvergenceTest(void);
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
@@ -61,6 +62,8 @@ class Linear: public EquiSolnAlgo
     protected:
 
     private:
+        int global_iteration_no;
+        bool output_iterations;
 
 };
 

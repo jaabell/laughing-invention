@@ -77,8 +77,6 @@ class StaticAnalysis: public Analysis
         StaticIntegrator* getIntegrator(void);
         ConvergenceTest*  getConvergenceTest(void);
 
-
-
     protected:
 
     private:
@@ -91,8 +89,6 @@ class StaticAnalysis: public Analysis
         ConvergenceTest*     theTest;
 
         int domainStamp;
-
-
 
 };
 

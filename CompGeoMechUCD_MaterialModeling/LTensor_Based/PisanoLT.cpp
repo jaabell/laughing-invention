@@ -371,7 +371,12 @@ int PisanoLT::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &
 
 void PisanoLT::Print(ostream &s, int flag)
 {
-    s << (*this);
+    s << "PisanoLT::" << endl;
+    s << "\tTag: " << this->getTag() << endln;
+    s << "\tElastic_Modulus: " << E << endln;
+    s << "\tPoissons_Ratio: " << v << endln;
+    s << "\tDensity: " << rho << endln;
+    s << "!!Please Implement me!! " << endl;
 }
 
 //================================================================================

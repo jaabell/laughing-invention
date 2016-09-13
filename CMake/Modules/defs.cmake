@@ -81,17 +81,13 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
     set( PROGRAMMING_FLAG "${PROGRAMMING_FLAG} -DPETSC_USE_BOPT_O ")
     set( PROGRAMMING_FLAG "${PROGRAMMING_FLAG} -DPETSC_USE_EXTERN_CXX ") 
     
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/petsc-3.6.0/include")
-    list(APPEND EXT_INCLUDE "${RealESSI_DEP}/petsc-3.6.0/arch-linux2-c-opt/include")
     list(APPEND EXT_INCLUDE "${RealESSI_DEP}/include")
-    # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/parmetis-4.0.2_install/include")
-    # list(APPEND EXT_INCLUDE "${RealESSI_DEP}/metis-4.0.2_install/include")
     list(APPEND EXT_INCLUDE "${RealESSI_DEP}/hdf5_sequential/include")
     # set( EXT_INCLUDE "${EXT_INCLUDE} ${RealESSI_DEP}/hdf5_parallel/include")
 
     list(APPEND NUMERIC_LIBS "petsc")
-    list(APPEND NUMERIC_LIBS "superlu_4.3")
-    list(APPEND NUMERIC_LIBS "superlu_dist_4.0")
+    list(APPEND NUMERIC_LIBS "superlu")
+    list(APPEND NUMERIC_LIBS "superlu_dist")
     list(APPEND NUMERIC_LIBS "spai")
 
     if(PETSC_HAS_MUMPS)
@@ -185,7 +181,7 @@ if(NOT $ENV{BOOST_ROOT} STREQUAL "")
 endif()
 
 
-## Common flags for goth debug and no debug
+## Common flags for both debug and no debug
 set(COMPILER_FLAGS "-Wall")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -D_LINUX")
 set(COMPILER_FLAGS "${COMPILER_FLAGS} -D_UNIX")

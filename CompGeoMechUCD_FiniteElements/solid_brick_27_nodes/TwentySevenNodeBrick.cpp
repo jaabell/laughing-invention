@@ -75,6 +75,8 @@ TwentySevenNodeBrick::TwentySevenNodeBrick(int element_number,
       outputVector(TwentySevenNodeBrick_OUTPUT_SIZE)
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+
     rho = Globalmmodel->getRho();
     determinant_of_Jacobian = 0.0;
 

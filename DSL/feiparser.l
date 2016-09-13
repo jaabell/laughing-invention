@@ -363,8 +363,11 @@ EXP	([Ee][-+]?[0-9]+)
 "20NodeBrick_elastic"               {return token::TwentyNodeBrickElastic;}
 "27NodeBrick_elastic"               {return token::TwentySevenNodeBrickElastic;}
 "8NodeBrick_upU"                    {return token::EightNodeBrick_upU;}
+"8NodeBrick_upULT"                  {return token::EightNodeBrick_upULT;}
 "8NodeBrick_up"                     {return token::EightNodeBrick_up;}
 "20NodeBrick_upU"                   {return token::TwentyNodeBrick_uPU;}
+"20NodeBrick_upULT"                 {return token::TwentyNodeBrick_uPULT;}
+"27NodeBrick_upULT"                 {return token::TwentySevenNodeBrick_uPULT;}
 "beam_displacement_based"           {return token::beam_displacement_based;}
 "BeamColumnDispFiber3d"           	{return token::BeamColumnDispFiber3d;}
 "beam_elastic"                      {return token::beam_elastic;}
@@ -376,7 +379,11 @@ EXP	([Ee][-+]?[0-9]+)
 "4NodeShell_ANDES"                  {return token::FourNodeShellANDES;}
 "truss"                             {return token::truss;}
 "contact"                           {return token::contact;}
-"FrictionalPenaltyContact"          {return token::FrictionalPenaltyContact;}
+"HardContact"          				{return token::HardContact;}
+"HardContact"          				|
+"FrictionalPenaltyContact"          {yylval->ident = new string(yytext);
+									return token::HardContact;}
+"SoftContact"          				{return token::SoftContact;}
 "variable_node_brick_8_to_27"       {return token::variable_node_brick_8_to_27;}
 "ShearBeamLT"                       {return token::ShearBeamLT;}
 
@@ -409,7 +416,8 @@ EXP	([Ee][-+]?[0-9]+)
 "friction_ratio"                    {return token::friction_ratio;}
 "maximum_gap"                       {return token::maximum_gap;}
 "contact_plane_vector"              {return token::contact_plane_vector;}
-
+"initial_normal_stiffness"          {return token::initial_normal_stiffness;} 
+"stiffning_rate"					{return token::stiffning_rate;}
 
  /* section types */
 "Membrane_Plate_Fiber"              {return token::MembranePlateFiber;}
@@ -671,8 +679,7 @@ EXP	([Ee][-+]?[0-9]+)
 									}
 
  /* Constraint types */
-"equal dof"                         {return token::equaldof;}
-"equaldof"                          {return token::equaldof;}
+"equal_dof"                         {return token::equal_dof;}
 
  /* Constraint options */
 "master"                            {return token::master;}
@@ -788,7 +795,8 @@ EXP	([Ee][-+]?[0-9]+)
 "enable"                            {return token::ENABLE;}
 "disable"                           {return token::DISABLE;}
 "compression"                       {return token::COMPRESSION;}
-
+"save"								{return token::SAVE;}
+"non_converged_iterations"			{return token::NON_CONVERGED_ITERATIONS;}
 
  /* ================================================================================================= */
  /* ========                    AUXILLIARY WORDS                                            ========= */
@@ -993,7 +1001,7 @@ int newstdin()
 	yylineno = 1;
 	curfilename = initial;
 
-	cout << "Input: STDIN" << endl << endl;
+	// cout << "Input: STDIN" << endl << endl;
 	prompt = thePrompt;
 	//cout << prompt ;
 	return 1;

@@ -106,18 +106,27 @@ public:  // To meet with OutputWriter interfacec
 	                        unsigned int max_node_tag_in,
 	                        unsigned int max_element_tag_in,
 	                        unsigned int number_of_dofs_in,
-	                        unsigned int number_of_outputs_in);
+	                        unsigned int number_of_outputs_in,
+	                        unsigned int Total_Number_of_Gauss_Points,
+                            unsigned int Total_Number_of_Connectivity_Nodes);
+
+	// Added by sumeet on 30th ju;y, 2016 
+    // Can be used to reserve space for datasets just increase the parameter . 
+    // While foing so need to sync the function in H5OutputWriterMPICollective and  H5OutputWriter
+    int reserveSpaceForDatasets(unsigned int number_of_materials);
+
 	// virtual int writeNumberOfNodes(unsigned int numberOfNodes_ ) ;
 	// virtual int writeNumberOfElements(unsigned int numberOfElements_ ) ;
-
 	virtual int writeNodeMeshData(int tag     , const Vector &coords   , int ndofs ) ;
 	virtual int writeElementMeshData(int tag  , std::string type , const ID &connectivity         , int materialtag , const Matrix &gausscoordinates, int length_of_output, int class_tag) ;
 	virtual int writeElementPartitionData(int tag  , int partition) ;
 	virtual int writeMaterialMeshData(int tag , std::string type , Vector &parameters) ;
+	virtual int writeMaterialMeshData(int tag , std::string type);
 	virtual int writeLoadPatternData(int tag , std::string name) ;
 
 	// Results for Nodes
 	virtual int writeDisplacements(  int nodeTag, const Vector &displacements) ;
+    virtual int writeTrialDisplacements(  int nodeTag, const Vector &displacements) ;
 	virtual int writeDummyDisplacements() ;
 	virtual int writeVelocities(     int nodeTag, const Vector &velocities) ;
 	virtual int writeAccelerations(  int nodeTag, const Vector &accelerations) ;
@@ -125,8 +134,13 @@ public:  // To meet with OutputWriter interfacec
 
 	// Results for Elements
 	virtual int writeElementOutput(int elementTag, const Vector &output) ;
+    virtual int writeTrialElementOutput(int elementTag, const Vector &output) ;
 	virtual int writeDummyElementOutput() ;  //Needed for collective HDF5 calls
 
+    // Results for Eigen Value Analysis   // Sumeet 1st August, 2016
+    virtual int writeEigenMesh (  int number_of_modes) ;
+    virtual int writeEigenModes(  int nodeTag, const Matrix &eigenvectors) ;
+    virtual int writeEigen_Value_Frequency_Period ( const Vector & periodvalues, const Vector & frequencyvalues, const Vector & eigenvalues) ;
 
 public:  //Additional stuff
 	void initialize(std::string filename_in,
@@ -204,6 +218,16 @@ public:  //Additional stuff
 	                                     hsize_t *block,
 	                                     double *data);
 
+    hid_t writeConstantLengthDoubleMatrix(hid_t id_array,
+                                        int datarank,
+                                        hsize_t *dims,
+                                        hsize_t *data_dims,
+                                        hsize_t *offset,
+                                        hsize_t *stride,
+                                        hsize_t *count,
+                                        hsize_t *block,
+                                        double *data);
+
 	hid_t writeVariableLengthIntegerArray(hid_t id_array,
 	                                      int datarank,
 	                                      hsize_t *dims,
@@ -270,10 +294,14 @@ private:
 	int number_of_gausspoints;
 	int current_time_step;
 	int number_of_time_steps;
+    int current_sub_step;               // Added by sumeet 3rd August, 2016
+    int number_of_connectivity_nodes;   // Adde by sumeet 
 	int max_node_tag;
 	int max_element_tag;
 	int number_of_dofs;
 	int number_of_outputs;
+
+    int number_of_eigen_modes;          // added by sumeet 1st August, 2016
 
 	int length_nodes_displacements_output;
 	int length_nodes_velocities_output;
@@ -326,9 +354,19 @@ private:
 	hid_t id_elements_classtag;
 	hid_t id_elements_partition;
 
+    //For Eigen Value Analysis [sumeet 1st august, 2016]
+    hid_t id_eigen_analysis_group; 
+    hid_t id_number_of_modes;
+    hid_t id_eigen_modes;
+    hid_t id_eigen_values;
+    hid_t id_eigen_frequencies;
+    hid_t id_eigen_periods;
 
-
-	//Some property lists
+    // added by sumeet 3rd August, 2016 for iterations output
+    hid_t id_trial_nodes_displacements; 
+    hid_t id_trial_elements_output;
+    
+    //Some property lists
 	hid_t group_creation_plist;
 	hid_t dataset_creation_plist;
 	hid_t dataset_access_plist;

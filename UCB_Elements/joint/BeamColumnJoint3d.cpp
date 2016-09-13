@@ -64,10 +64,11 @@ BeamColumnJoint3d::BeamColumnJoint3d(int tag, int Nd1, int Nd2, int Nd3, int Nd4
                                      UniaxialMaterial &theMat12,
                                      UniaxialMaterial &theMat13):
     Element(tag, ELE_TAG_BeamColumnJoint3d),
-    connectedExternalNodes(4), elemActHeight(0.0), elemActWidth(0.0),
+    connectedExternalNodes(4), Node1(3), Node2(3), Node3(3), Node4(3),
+    elemActHeight(0.0), elemActWidth(0.0),
     elemWidth(0.0), elemHeight(0.0), HgtFac(1.0), WdtFac(1.0),
     Uecommit(24), UeIntcommit(4), UeprCommit(24), UeprIntCommit(4),
-    BCJoint(13, 16), dg_df(4, 13), dDef_du(13, 4), K(24, 24), R(24), Node1(3), Node2(3), Node3(3), Node4(3)
+    BCJoint(13, 16), dg_df(4, 13), dDef_du(13, 4), K(24, 24), R(24)
 {
     // ensure the connectedExternalNode ID is of correct size & set values
     if (connectedExternalNodes.Size() != 4)
@@ -216,10 +217,11 @@ BeamColumnJoint3d::BeamColumnJoint3d(int tag, int Nd1, int Nd2, int Nd3, int Nd4
                                      UniaxialMaterial &theMat13,
                                      double elHgtFac, double elWdtFac):
     Element(tag, ELE_TAG_BeamColumnJoint3d),
-    connectedExternalNodes(4), elemActHeight(0.0), elemActWidth(0.0),
-    elemWidth(0), elemHeight(0), HgtFac(elHgtFac), WdtFac(elWdtFac),
+    connectedExternalNodes(4), Node1(3), Node2(3), Node3(3), Node4(3),
+    elemActHeight(0.0), elemActWidth(0.0),
+    elemWidth(0.0), elemHeight(0.0), HgtFac(1.0), WdtFac(1.0),
     Uecommit(24), UeIntcommit(4), UeprCommit(24), UeprIntCommit(4),
-    BCJoint(13, 16), dg_df(4, 13), dDef_du(13, 4), K(24, 24), R(24), Node1(3), Node2(3), Node3(3), Node4(3)
+    BCJoint(13, 16), dg_df(4, 13), dDef_du(13, 4), K(24, 24), R(24)
 {
     // ensure the connectedExternalNode ID is of correct size & set values
     if (connectedExternalNodes.Size() != 4)
@@ -354,10 +356,11 @@ BeamColumnJoint3d::BeamColumnJoint3d(int tag, int Nd1, int Nd2, int Nd3, int Nd4
 // default constructor:
 BeamColumnJoint3d::BeamColumnJoint3d():
     Element(0, ELE_TAG_BeamColumnJoint3d),
-    connectedExternalNodes(4), elemActHeight(0.0), elemActWidth(0.0),
-    elemWidth(0), elemHeight(0), HgtFac(1.0), WdtFac(1.0),
+    connectedExternalNodes(4), Node1(3), Node2(3), Node3(3), Node4(3),
+    elemActHeight(0.0), elemActWidth(0.0),
+    elemWidth(0.0), elemHeight(0.0), HgtFac(1.0), WdtFac(1.0),
     Uecommit(24), UeIntcommit(4), UeprCommit(24), UeprIntCommit(4),
-    BCJoint(13, 16), dg_df(4, 13), dDef_du(13, 4), K(24, 24), R(24), Node1(3), Node2(3), Node3(3), Node4(3)
+    BCJoint(13, 16), dg_df(4, 13), dDef_du(13, 4), K(24, 24), R(24)
 {
     nodePtr[0] = 0;
     nodePtr[1] = 0;
@@ -677,7 +680,7 @@ void BeamColumnJoint3d::getGlobalDispls(Vector &dg)
     double tolIntEq = tol;
     double toluInt = (tol > tol * uInt.Norm()) ? tol : tol * uInt.Norm();
     double tolIntEqdU = tol;
-    double ctolIntEqdU = tol;
+    // double ctolIntEqdU = tol;
     double ctolIntEq = tol;
     double normDuInt = toluInt;
     double normIntEq = tolIntEq;
@@ -762,7 +765,7 @@ void BeamColumnJoint3d::getGlobalDispls(Vector &dg)
                 tolIntEqdU = (tol > tol * normIntEqdU) ? tol : tol * normIntEqdU;
             }
 
-            ctolIntEqdU = (tolIntEqdU * dLoadStep > tol) ? tolIntEqdU * dLoadStep : tol;
+            // ctolIntEqdU = (tolIntEqdU * dLoadStep > tol) ? tolIntEqdU * dLoadStep : tol;
             ctolIntEq   = (tolIntEq * dLoadStep > tol) ? tolIntEq * dLoadStep : tol;
 
             // check for convergence starts
@@ -1225,7 +1228,7 @@ double BeamColumnJoint3d::getStepSize(double s0, double s1, Vector uExt, Vector 
     double r = r0;
     double etaJ = 1.0;
 
-    double minEta = 0.1;
+    // double minEta = 0.1;
     double maxEta = 10.0;
     int maxIter = 20;
 

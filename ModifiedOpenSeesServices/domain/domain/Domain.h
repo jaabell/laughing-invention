@@ -66,7 +66,7 @@
 // DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF
 // THE POSSIBILITY OF SUCH DAMAGE. THE UNIVERSITY OF CALIFORNIA SPECIFICALLY
 // DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTImax_eleCULAR PURPOSE. THE
 // SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
 // ENHANCEMENTS, OR MODIFICATIONS.
@@ -120,7 +120,8 @@
 
 #include <iostream>
 #include <Vector.h>
-
+#include <hdf5.h>
+#include <hdf5_hl.h>
 #ifndef _bool_h
 #include <bool.h>
 #endif
@@ -301,11 +302,15 @@ public:
     virtual  int  setDampingFactorsforElement(int ElementTag, int DampingTag);
     virtual  int  setDampingFactorsforNode(int NodeTag, int DampingTag);
 
-    virtual  int  eigenAnalysis(int numMode);
+    virtual  int  eigenAnalysis(int numodes);
+
+    virtual  int  Output_Eigen_Analysis();              // Added by Sumeet 1st August, 2016
 
     virtual  int  CheckMesh(const char *);
 
     virtual  int  commit(void);
+    virtual  int  output_step(void);                     // Added by Sumeet September, 2016 
+    virtual  int  output_iteration( int );               // Added by Sumeet 3rd August, 2016 for substep output
     virtual  int  revertToLastCommit(void);
     virtual  int  revertToStart(void);
     virtual  int  update(void);
@@ -387,6 +392,11 @@ public:
     virtual void removeStrainFromElement(int tag);
     virtual void removeDisplacementFromNode(int tag);
 
+    virtual void set_number_of_non_converged_iterations(int);
+    void add_Element_Partition_Info(int tag, int Partition_no); // Added by [Sumeet August,2016]
+    void add_Node_Partition_Info(int tag, int Partition_no);    // Added by [Sumeet August,2016]
+
+
 protected:
     virtual int buildEleGraph(Graph *theEleGraph);
     virtual int buildNodeGraph(Graph *theNodeGraph);
@@ -400,6 +410,10 @@ protected:
     int  countdown_til_output;
 
     double currentTime;               // current pseudo time
+
+    //added by sumeet 30th July, 2016
+    int Number_of_Gauss_Points=0;
+    int Number_of_Connectivity_Nodes=0;
 
 private:
     double committedTime;             // the committed pseudo time
@@ -415,14 +429,14 @@ private:
 
     TaggedObjectStorage  *theElements;
     TaggedObjectStorage  *theNodes;
-    TaggedObjectStorage *theUniaxialMaterials;
-    TaggedObjectStorage *theNDMaterials;
-    TaggedObjectStorage *theNDMaterialLTs;
-    TaggedObjectStorage *theSections;
-    TaggedObjectStorage *theSectionRepresents;
-    TaggedObjectStorage *theMultipleSupports;
-    TaggedObjectStorage *theAccelerationFields;
-    TaggedObjectStorage *theDampings;
+    TaggedObjectStorage  *theUniaxialMaterials;
+    TaggedObjectStorage  *theNDMaterials;
+    TaggedObjectStorage  *theNDMaterialLTs;
+    TaggedObjectStorage  *theSections;
+    TaggedObjectStorage  *theSectionRepresents;
+    TaggedObjectStorage  *theMultipleSupports;
+    TaggedObjectStorage  *theAccelerationFields;
+    TaggedObjectStorage  *theDampings;
     TaggedObjectStorage  *theSPs;
     TaggedObjectStorage  *theMPs;
     TaggedObjectStorage  *theLoadPatterns;
@@ -433,9 +447,9 @@ private:
     SingleDomMP_Iter      *theMP_Iter;
     LoadPatternIter       *theLoadPatternIter;
     SingleDomAllSP_Iter   *allSP_Iter;
-    SingleDomUniaxialMaterialIter  *theUniMaterialIter;
-    SingleDomNDMaterialIter        *theNDMaterialIter;
-    SingleDomNDMaterialLTIter        *theNDMaterialLTIter;
+    SingleDomUniaxialMaterialIter   *theUniMaterialIter;
+    SingleDomNDMaterialIter         *theNDMaterialIter;
+    SingleDomNDMaterialLTIter       *theNDMaterialLTIter;
 
 
     int commitTag;
@@ -463,6 +477,22 @@ public:
     int numberOfDomainNodeDOFs;
     int numberOfDomainElementOutputs;
 
+    bool reaction_output_is_enabled; // enabling or disabling the reaction output [sumeet August, 2016]]
+    bool energy_output_is_enabled;   // may be will be used in future [sumeet August, 2016]
+
+    int number_of_eigen_modes=-1;                   // added by sumeet 1st Asugust, 2016
+    int save_number_of_non_converged_iterations=0;  // added by sumeet 5th August, 2016
+    int Number_of_Constrained_Dofs;                 // added by sumeet 30 August, 2016
+
+    /****************************************************************
+    * Sumeet August, 2016
+    * Contains the description about the elements tag
+    * Desc contains -> Number_of_nodes, Number_of_gauss_Points,
+    * Number_of_Element outputs other than at gauss points, No_of_Dofs per node.
+    * See classtag for more details.
+    * NOTE:- Output per gauss point is always 18
+    ***************************************************************/
+    std::vector<int> Element_Class_Desc; 
 };
 
 #endif

@@ -51,7 +51,7 @@ class TrussSection : public Element
     public:
         TrussSection(int tag,
                      int dimension,
-                     int Nd1, int Nd2,
+                     int Nd1,int Nd2,
                      SectionForceDeformation &theSection,
                      double rho = 0.0);
 

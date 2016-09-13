@@ -99,6 +99,7 @@ class BrickSurfaceLoad_from_Contact_Pore_Pressure : public ElementalLoad
     protected:
 
     private:
+
         Vector* data;
         static Vector dataV8;
         static Vector dataV16;

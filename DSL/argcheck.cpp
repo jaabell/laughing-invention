@@ -42,7 +42,7 @@ bool argcheck(ArgumentType arguments, SignatureType signature)
 {
     SignatureIterator sig_it;
     ArgumentIterator  arg_it;
-    bool (*checkunit)(const Quantity&);
+    bool (*checkunit)(const string&, const Quantity&);
 
     if (arguments.size() != signature.size())
     {
@@ -60,9 +60,9 @@ bool argcheck(ArgumentType arguments, SignatureType signature)
         checkunit = sig_it -> second;   // This is a function pointer to the respective unit checker
         Quantity qty = (*arg_it) -> value();
 
-        if ( checkunit(qty) != 1)
+        if ( !checkunit(name,qty))
         {
-            cout << endl << endl << "     Error: " << name << " = " << qty << " does not have the required units." << endl;
+            // cout << endl << endl << "     Error: " << name << " = " << qty << " does not have the required units." << endl;
             return false;
         }
 

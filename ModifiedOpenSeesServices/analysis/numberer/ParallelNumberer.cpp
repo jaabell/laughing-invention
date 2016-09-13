@@ -266,7 +266,7 @@ ParallelNumberer::numberDOF(int lastDOF)
                 retainedDOFIDs_array[ParallelNumberer_MAXDOFS * (processID_world - 1) + i] = retainedDOFIDs(i);  // (processID_world - 1) is because process numbers must be within current communicator, that is worker_comm
             }
 
-            int status = MPI_Allgatherv(MPI_IN_PLACE, ParallelNumberer_MAXDOFS,
+            /*int status = */MPI_Allgatherv(MPI_IN_PLACE, ParallelNumberer_MAXDOFS,
                                         MPI_INT, retainedDOFIDs_array, recvcount,
                                         displs, MPI_INT, worker_comm);
 
@@ -681,7 +681,8 @@ ParallelNumberer::numberDOF(int lastDOF)
 #else
     cerr << "ParallelNumberer::numberDOF : This numberer should not be used in sequential case.\n";
     return -1;
-#endif _PARALLEL_PROCESSING
+#endif
+
 }
 
 

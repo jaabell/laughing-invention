@@ -50,7 +50,7 @@ Vector TwentySevenNodeBrickLT::Info_Stress(27 * 6 + 1); // Stress 8*6+1  2X2X2
 Vector TwentySevenNodeBrickLT::Info_GaussCoordinates(27 * 3 + 1);      //Gauss point coordinates
 Vector TwentySevenNodeBrickLT::Info_Strain(27 * 6 + 1);
 Matrix TwentySevenNodeBrickLT::gauss_points(27, 3);
-Vector TwentySevenNodeBrickLT::outputVector(TwentySevenNodeBrickLT_OUTPUT_SIZE);
+vector<float> TwentySevenNodeBrickLT::Gauss_Output_Vector(486);
 Matrix TwentySevenNodeBrickLT::K(81, 81);
 Matrix TwentySevenNodeBrickLT::M( 81, 81);
 
@@ -73,6 +73,8 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
       Ki( 0 ),
       bf(3), Q( 81 ), P( 81 )
 {
+
+    this->setMaterialTag(Globalmmodel->getTag());
 
     rho = Globalmmodel->getRho();
     //     bf = bodyforce->getBodyForceVector();
@@ -230,6 +232,34 @@ TwentySevenNodeBrickLT::TwentySevenNodeBrickLT( int element_number,
     connectedExternalNodes(24) = node_numb_25;
     connectedExternalNodes(25) = node_numb_26;
     connectedExternalNodes(26) = node_numb_27;
+
+    Global_to_Local_Node_Mapping[node_numb_1] =0;
+    Global_to_Local_Node_Mapping[node_numb_2] =1;
+    Global_to_Local_Node_Mapping[node_numb_3] =2;
+    Global_to_Local_Node_Mapping[node_numb_4] =3;
+    Global_to_Local_Node_Mapping[node_numb_5] =4;
+    Global_to_Local_Node_Mapping[node_numb_6] =5;
+    Global_to_Local_Node_Mapping[node_numb_7] =6;
+    Global_to_Local_Node_Mapping[node_numb_8] =7;
+    Global_to_Local_Node_Mapping[node_numb_9] =8;
+    Global_to_Local_Node_Mapping[node_numb_10] =9;
+    Global_to_Local_Node_Mapping[node_numb_11] =10;
+    Global_to_Local_Node_Mapping[node_numb_12] =11;
+    Global_to_Local_Node_Mapping[node_numb_13] =12;
+    Global_to_Local_Node_Mapping[node_numb_14] =13;
+    Global_to_Local_Node_Mapping[node_numb_15] =14;
+    Global_to_Local_Node_Mapping[node_numb_16] =15;
+    Global_to_Local_Node_Mapping[node_numb_17] =16;
+    Global_to_Local_Node_Mapping[node_numb_18] =17;
+    Global_to_Local_Node_Mapping[node_numb_19] =18;
+    Global_to_Local_Node_Mapping[node_numb_20] =19;
+    Global_to_Local_Node_Mapping[node_numb_21] =20;
+    Global_to_Local_Node_Mapping[node_numb_22] =21;
+    Global_to_Local_Node_Mapping[node_numb_23] =22;
+    Global_to_Local_Node_Mapping[node_numb_24] =23;
+    Global_to_Local_Node_Mapping[node_numb_25] =24;
+    Global_to_Local_Node_Mapping[node_numb_26] =25;
+    Global_to_Local_Node_Mapping[node_numb_27] =26;
 
     nodes_in_brick = 27;
 
@@ -1953,29 +1983,29 @@ void TwentySevenNodeBrickLT::formOutput()
         stress = material_array[gp]->getStressTensor();
 
         //Write strain
-        outputVector(ii++) = strain(0, 0);
-        outputVector(ii++) = strain(1, 1);
-        outputVector(ii++) = strain(2, 2);
-        outputVector(ii++) = strain(0, 1);
-        outputVector(ii++) = strain(0, 2);
-        outputVector(ii++) = strain(1, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 0);
+        Gauss_Output_Vector[ii++] = strain(1, 1);
+        Gauss_Output_Vector[ii++] = strain(2, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 1);
+        Gauss_Output_Vector[ii++] = strain(0, 2);
+        Gauss_Output_Vector[ii++] = strain(1, 2);
 
         //Write strain
-        outputVector(ii++) = plstrain(0, 0);
-        outputVector(ii++) = plstrain(1, 1);
-        outputVector(ii++) = plstrain(2, 2);
-        outputVector(ii++) = plstrain(0, 1);
-        outputVector(ii++) = plstrain(0, 2);
-        outputVector(ii++) = plstrain(1, 2);
+        Gauss_Output_Vector[ii++] = plstrain(0, 0);
+        Gauss_Output_Vector[ii++] = plstrain(1, 1);
+        Gauss_Output_Vector[ii++] = plstrain(2, 2);
+        Gauss_Output_Vector[ii++] = plstrain(0, 1);
+        Gauss_Output_Vector[ii++] = plstrain(0, 2);
+        Gauss_Output_Vector[ii++] = plstrain(1, 2);
 
 
         //Write stress
-        outputVector(ii++) = stress(0, 0);
-        outputVector(ii++) = stress(1, 1);
-        outputVector(ii++) = stress(2, 2);
-        outputVector(ii++) = stress(0, 1);
-        outputVector(ii++) = stress(0, 2);
-        outputVector(ii++) = stress(1, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 0);
+        Gauss_Output_Vector[ii++] = stress(1, 1);
+        Gauss_Output_Vector[ii++] = stress(2, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 1);
+        Gauss_Output_Vector[ii++] = stress(0, 2);
+        Gauss_Output_Vector[ii++] = stress(1, 2);
     }
 }
 
@@ -2061,6 +2091,14 @@ const Matrix &TwentySevenNodeBrickLT::getInitialStiff ()
 
     return *Ki;
 }
+
+//=============================================================================
+// Returns the matrix K [Sumeet September, 2016]
+const Matrix &TwentySevenNodeBrickLT::getConstStiff()   
+{
+    return K;
+}
+
 
 //=============================================================================
 
@@ -2246,73 +2284,94 @@ const Vector &TwentySevenNodeBrickLT::getBodyForce( double loadFactor, const Vec
 const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const Vector &data )
 {
 
-    int node_exist = 0;
-    Vector node_local( 9 );
-
-    // check if the nodes of the surface belong to the element
-    for ( int i = 0; i < 9; i++ )
-    {
-
-        for ( int j = 0; j < 27; j++ )
-        {
-            if ( data( i ) == connectedExternalNodes( j ) )
-            {
-                node_exist = 1;
-                node_local( i ) = j;
-                break;
-            }
-        }
-
-        if ( node_exist != 1 )
-        {
-            cerr << "\nERROR: Node " << data( i ) << " defined for the BrickSurfaceLoad does not belong to element " << this->getTag() << endl;
+    map<int,int> local_nodes_map; int local_nodes[9];
+    //note -> the user at least should start with a node on the corner edge (sumeet)
+    
+    /////////////////////////////////////////// Edited by Sumeet 30/03/2016 //////////////////////////////
+    // checking if node exists in the element
+    for ( int i =0; i<9 ;i++){
+        std::map<int,int>::iterator it;
+        it=Global_to_Local_Node_Mapping.find(data(i));
+        if (it == Global_to_Local_Node_Mapping.end()){
+            cerr << "\nERROR: Node " <<  data(i) << " defined for the BrickSurfaceLoad does not belong to element \n" ;
             exit( 1 );
         }
+        local_nodes_map[it->second]=i;
+        local_nodes[i]=it->second;
     }
 
-
-    int node1_local = node_local( 0 );
-    int node2_local = node_local( 1 );
-    int node3_local = node_local( 2 );
-    int node4_local = node_local( 3 );
-    int node5_local = node_local(4);
-    int node6_local = node_local(5);
-    int node7_local = node_local(6);
-    int node8_local = node_local(7);
-    int node9_local = node_local(8);
-
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    static const int Node_to_Surface_Number[27][4]={{3,0,2,4},{3,0,2,5},{3,0,3,5},{3,0,3,4},
+                                                    {3,1,2,4},{3,1,2,5},{3,1,3,5},{3,1,3,4},
+                                                    {2,0,2,0},{2,0,5,0},{2,0,3,0},{2,0,4,0},
+                                                    {2,1,2,0},{2,1,5,0},{2,1,3,0},{2,1,4,0},
+                                                    {0,0,0,0},{1,2,0,0},{1,5,0,0},{1,3,0,0},
+                                                    {1,4,0,0},{1,0,0,0},{1,1,0,0}};
+    static const int Surface_Number_to_Node_order[6][9]={{1,2,3,0,9 ,10,11,8 ,25},
+                                                         {5,4,7,6,12,15,14,13,26},
+                                                         {5,1,0,4,17,8 ,16,12,21},
+                                                         {2,6,7,3,18,14,19,10,23},
+                                                         {0,3,7,4,11,19,15,16,24},
+                                                         {1,5,6,2,17,13,18,9 ,22}};                                            
+    ////////////////////////////////////// Edited by Sumeet 30/3/2016 /////////////////////////////////////
+    //  Finding the correct surface nodes order
+    int success =0; int surface_nodes_order[9]={0,0,0,0,0,0,0,0,0};
+    int number_of_surfaces = Node_to_Surface_Number[local_nodes[0]][0];
+ 
+    for ( int i =0; i<number_of_surfaces ;i++){
+        int surface_no = Node_to_Surface_Number[local_nodes[0]][i+1];
+        for( int j=0; j<9;j++){
+            std::map<int,int>::iterator it;
+            int node=Surface_Number_to_Node_order[surface_no][j];
+            it=local_nodes_map.find(node);
+            if (it == local_nodes_map.end()){
+                success=0;break;
+            }
+            success=success+1;
+            surface_nodes_order[j]= it->second;
+        }
+        if(success==9) break;
+    }
+    if (success == 0){
+        cerr << "\nERROR: Nodes  defined for the BrickSurfaceLoad does not belong to elements surface  \n" ;
+        exit( 1 );
+    }      
+    // //////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // cout << "surface_nodes_order ";
+    // for ( int i =0; i < 9 ; i++)
+    //     cout << local_nodes[i] << " ";
+    //     // cout << surface_nodes_order[i] << " ";
+    // cout << "\n";
+    // for ( int i =0; i < 9 ; i++)
+    //     cout << local_nodes[surface_nodes_order[i]] << " ";
+    // cout << "\n";
+    //////////////////////////////////////////////////////////////////////////////////////////////////
 
     // get the surface nodal coordinates
-    const Vector &coordnode1 = theNodes[node1_local]->getCrds();
-    const Vector &coordnode2 = theNodes[node2_local]->getCrds();
-    const Vector &coordnode3 = theNodes[node3_local]->getCrds();
-    const Vector &coordnode4 = theNodes[node4_local]->getCrds();
-    const Vector &coordnode5 = theNodes[node5_local]->getCrds();
-    const Vector &coordnode6 = theNodes[node6_local]->getCrds();
-    const Vector &coordnode7 = theNodes[node7_local]->getCrds();
-    const Vector &coordnode8 = theNodes[node8_local]->getCrds();
-    const Vector &coordnode9 = theNodes[node9_local]->getCrds();
-
-
+    const Vector &coordnode1 = theNodes[local_nodes[(surface_nodes_order[0])]]->getCrds();
+    const Vector &coordnode2 = theNodes[local_nodes[(surface_nodes_order[1])]]->getCrds();
+    const Vector &coordnode3 = theNodes[local_nodes[(surface_nodes_order[2])]]->getCrds();
+    const Vector &coordnode4 = theNodes[local_nodes[(surface_nodes_order[3])]]->getCrds();
+    const Vector &coordnode5 = theNodes[local_nodes[(surface_nodes_order[4])]]->getCrds();
+    const Vector &coordnode6 = theNodes[local_nodes[(surface_nodes_order[5])]]->getCrds();
+    const Vector &coordnode7 = theNodes[local_nodes[(surface_nodes_order[6])]]->getCrds();
+    const Vector &coordnode8 = theNodes[local_nodes[(surface_nodes_order[7])]]->getCrds();
+    const Vector &coordnode9 = theNodes[local_nodes[(surface_nodes_order[8])]]->getCrds();
 
     double ShapeFunctionValues;
     double LoadValue;
     Vector J_vector( 3 );
     Vector Pressure( 9 );
 
-
-
-    Pressure(0) = data(9)  * loadFactor;
-    Pressure(1) = data(10) * loadFactor;
-    Pressure(2) = data(11) * loadFactor;
-    Pressure(3) = data(12) * loadFactor;
-    Pressure(4) = data(13) * loadFactor;
-    Pressure(5) = data(14) * loadFactor;
-    Pressure(6) = data(15) * loadFactor;
-    Pressure(7) = data(16) * loadFactor;
-    Pressure(8) = data(17) * loadFactor;
-
-
+    Pressure(0) = data(surface_nodes_order[0]+9) * loadFactor;
+    Pressure(1) = data(surface_nodes_order[1]+9) * loadFactor;
+    Pressure(2) = data(surface_nodes_order[2]+9) * loadFactor;
+    Pressure(3) = data(surface_nodes_order[3]+9) * loadFactor;
+    Pressure(4) = data(surface_nodes_order[4]+9) * loadFactor;
+    Pressure(5) = data(surface_nodes_order[5]+9) * loadFactor;
+    Pressure(6) = data(surface_nodes_order[6]+9) * loadFactor;
+    Pressure(7) = data(surface_nodes_order[7]+9) * loadFactor;
+    Pressure(8) = data(surface_nodes_order[8]+9) * loadFactor;
 
     static Vector NodalForces( 81 );
 
@@ -2321,10 +2380,11 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
         NodalForces( m ) = 0;
     }
 
-
-
     double Root3Over5 = sqrt(3.0 / 5.0);
-    Matrix GsPts( 9, 2 );
+    double W5Over9 = 5.0 / 9.0;
+    double W8Over9 = 8.0 / 9.0;
+    Matrix GsPts(9, 2);
+    Matrix Weight(9, 2);
 
     GsPts(0, 0) =  Root3Over5;
     GsPts(0, 1) =  Root3Over5;
@@ -2345,10 +2405,27 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
     GsPts(8, 0) =  0.0;
     GsPts(8, 1) =  0.0;
 
+    Weight(0, 0) = W5Over9;
+    Weight(0, 1) = W5Over9;
+    Weight(1, 0) = W5Over9;
+    Weight(1, 1) = W5Over9;
+    Weight(2, 0) = W5Over9;
+    Weight(2, 1) = W5Over9;
+    Weight(3, 0) = W5Over9;
+    Weight(3, 1) = W5Over9;
+    Weight(4, 0) = W8Over9;
+    Weight(4, 1) = W5Over9;
+    Weight(5, 0) = W5Over9;
+    Weight(5, 1) = W8Over9;
+    Weight(6, 0) = W8Over9;
+    Weight(6, 1) = W5Over9;
+    Weight(7, 0) = W5Over9;
+    Weight(7, 1) = W8Over9;
+    Weight(8, 0) = W8Over9;
+    Weight(8, 1) = W8Over9;
 
 
     int r = 0;
-
 
     // loop over dof
     for ( int k = 0; k < 3; k++ )
@@ -2356,29 +2433,24 @@ const Vector &TwentySevenNodeBrickLT::getSurfaceForce( double loadFactor, const 
         // loop over nodes
         for ( int j = 0; j < 9; j++ )
         {
-
-            for ( int v = 0; v < 27; v++ )
-            {
-                if ( data( j ) == connectedExternalNodes( v ) )
-                {
-                    r = v;
-                    break;
-                }
-            }
-
+            r = local_nodes[(surface_nodes_order[j])] ;
             // loop over Gauss points
             for ( int i = 0; i < 9; i++ )
             {
-
                 ShapeFunctionValues = SurfaceShapeFunctionValues( GsPts( i, 0 ) , GsPts( i, 1 ), j );
                 J_vector = Direction_Weight( GsPts( i, 0 ) , GsPts( i, 1 ), coordnode1, coordnode2, coordnode3, coordnode4, coordnode5, coordnode6, coordnode7, coordnode8, coordnode9 );
                 LoadValue = SurfaceLoadValues( GsPts( i, 0 ) , GsPts( i, 1 ), Pressure );
-
-
-                NodalForces( r * 3 + k ) = NodalForces( r * 3 + k ) + LoadValue * J_vector( k ) * ShapeFunctionValues;
+                NodalForces( r * 3 + k ) = NodalForces( r * 3 + k ) + LoadValue * J_vector( k ) * ShapeFunctionValues * Weight(i, 0) * Weight(i, 1);
             }
         }
     }
+
+    // ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // for ( int i =0; i < 27 ; i++)
+    //     cout << NodalForces(3*i)<< " " << NodalForces(3*i+1) << " " << NodalForces(3*i+2) <<   "\n";
+    // cout << "\n\n******************************************************************************\n\n";
+    // /////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     return NodalForces;
 }
@@ -2934,12 +3006,12 @@ int TwentySevenNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
         return -1;
     }
 
-    //Send outputVector
-    if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
-    {
-        cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
-        return -1;
-    }
+    // //Send Gauss_Output_Vector
+    // if ( theChannel.sendVector( 0, commitTag, Gauss_Output_Vector ) < 0 )
+    // {
+    //     cerr << "WARNING TwentySevenNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss_Output_Vector\n";
+    //     return -1;
+    // }
 
 
 
@@ -3058,12 +3130,12 @@ int TwentySevenNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FE
         return -1;
     }
 
-    // outputVector
-    if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
-    {
-        cerr << "TwentySevenNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
-        return -1;
-    }
+    // // Gauss_Output_Vector
+    // if ( theChannel.receiveVector( 0, commitTag, Gauss_Output_Vector ) < 0 )
+    // {
+    //     cerr << "TwentySevenNodeBrickLT::receiveSelf() - failed to recv Gauss_Output_Vector!\n";
+    //     return -1;
+    // }
 
 
 
@@ -3255,10 +3327,10 @@ int TwentySevenNodeBrickLT::update( void )
 //NOTE: Can me templatized to improve performance
 double TwentySevenNodeBrickLT::SurfaceShapeFunctionValues( double Xi , double Eta, int whichcomponent )
 {
-    ShapeFunctionValues_in_function( 0 ) = 0.25 * ( 1 + Xi ) * ( 1 + Eta );
-    ShapeFunctionValues_in_function( 1 ) = 0.25 * ( 1 - Xi ) * ( 1 + Eta );
-    ShapeFunctionValues_in_function( 2 ) = 0.25 * ( 1 - Xi ) * ( 1 - Eta );
-    ShapeFunctionValues_in_function( 3 ) = 0.25 * ( 1 + Xi ) * ( 1 - Eta );
+    ShapeFunctionValues_in_function(0) = 0.25 * (1 + Xi) * (1 + Eta) - 0.25 * (1 - Xi * Xi) * (1 + Eta)  - 0.25 * (1 - Eta * Eta) * (1 + Xi)  + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
+    ShapeFunctionValues_in_function(1) = 0.25 * (1 - Xi) * (1 + Eta) - 0.25 * (1 - Xi * Xi) * (1 + Eta)  - 0.25 * (1 - Eta * Eta) * (1 - Xi)  + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
+    ShapeFunctionValues_in_function(2) = 0.25 * (1 - Xi) * (1 - Eta) - 0.25 * (1 - Eta * Eta) * (1 - Xi) - 0.25 * (1 - Xi * Xi) * (1 - Eta)   + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
+    ShapeFunctionValues_in_function(3) = 0.25 * (1 + Xi) * (1 - Eta) - 0.25 * (1 - Xi * Xi) * (1 - Eta)  - 0.25 * (1 - Eta * Eta) * (1 + Xi) + 0.25 * (1 - Eta * Eta) * (1 - Xi * Xi);
     ShapeFunctionValues_in_function(4) = 0.5 * (1 - Xi * Xi) * (1 + Eta)  - 0.5 * (1 - Eta * Eta) * (1 - Xi * Xi);
     ShapeFunctionValues_in_function(5) = 0.5 * (1 - Eta * Eta) * (1 - Xi) - 0.5 * (1 - Eta * Eta) * (1 - Xi * Xi);
     ShapeFunctionValues_in_function(6) = 0.5 * (1 - Xi * Xi) * (1 - Eta)  - 0.5 * (1 - Eta * Eta) * (1 - Xi * Xi);
@@ -3431,7 +3503,7 @@ TwentySevenNodeBrickLT::CheckMesh( ofstream &checkmesh_file )
 Vector *
 TwentySevenNodeBrickLT::getStress( void )
 {
-    DTensor2 stress;
+    DTensor2 stress(3, 3, 0.0);
     Vector *stresses = new Vector( 162 );   // FIXME: Who deallocates this guy???
 
     for ( short gp = 0 ; gp < 27 ; gp++ )
@@ -3448,48 +3520,25 @@ TwentySevenNodeBrickLT::getStress( void )
     return stresses;
 }
 
-
-
-
-
 Matrix &TwentySevenNodeBrickLT::getGaussCoordinates(void)
 {
     computeGaussPoint();
     return gauss_points;
 }
 
-int TwentySevenNodeBrickLT::getOutputSize() const
-{
-    if (produces_output)
-    {
-        return TwentySevenNodeBrickLT_OUTPUT_SIZE;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-
-
-const Vector &TwentySevenNodeBrickLT::getOutput()
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &TwentySevenNodeBrickLT::getGaussOutput()
 {
     formOutput();
-    return outputVector;
+    return Gauss_Output_Vector;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif
 

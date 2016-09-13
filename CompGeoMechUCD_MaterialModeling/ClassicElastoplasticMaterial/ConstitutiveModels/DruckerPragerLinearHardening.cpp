@@ -136,3 +136,13 @@ int DruckerPragerLinearHardening::pre_integration_callback(const DTensor2 &depsi
     }
     return 0;
 }
+
+void
+DruckerPragerLinearHardening::Print(ostream& s, int flag)
+{
+    s << "DruckerPragerLinearHardening" << endln;
+    s << "\ttag: " << this->getTag() << endln;
+    // s << "\tE: " << E << endln;
+    // s << "\tv: " << v << endln;
+    // s << "\trho: " << rho << endln;
+}

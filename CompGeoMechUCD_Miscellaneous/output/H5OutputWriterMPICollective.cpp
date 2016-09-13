@@ -40,6 +40,7 @@
 
 # include <ESSITimer.h>
 
+#define VERIFY(a) do { if((a)<0) { fprintf(stderr,"Failure line %d.\n",__LINE__); exit(-1);}}while(0)
 
 bool H5OutputWriterMPICollective::call_hdf5_flush = false;
 
@@ -271,19 +272,12 @@ void H5OutputWriterMPICollective::initialize(std::string filename_in,
         int nsteps)
 {
 
+    file_name = filename_in;
+    model_name = model_name_in;
+    stage_name = stage_name_in;
 
-	if (previous_stage_name.compare("!!none") == 0)
-	{
-		cout << "changing previous_stage_name from " << previous_stage_name << " to " << stage_name
-		     << endl;
-		previous_stage_name = stage_name;
-	}
-	file_name = "";
-	model_name = "";
-	stage_name = "";
-	file_name += filename_in;
-	model_name += model_name_in;
-	stage_name += stage_name_in;
+	cout << "changing previous_stage_name from " << previous_stage_name << " to " << stage_name
+	previous_stage_name = stage_name;
 
 	current_time                         = 0.0;
 	current_time_step                    = 0;
@@ -291,6 +285,8 @@ void H5OutputWriterMPICollective::initialize(std::string filename_in,
 	number_of_elements                   = 0;
 	max_node_tag                         = 0;
 	max_element_tag                      = 0;
+
+    number_of_eigen_modes                = -1;
 
 	length_nodes_displacements_output    = 0;
 	length_nodes_velocities_output       = 0;
@@ -345,7 +341,9 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
         unsigned int max_node_tag_in,
         unsigned int max_element_tag_in,
         unsigned int number_of_dofs_in,
-        unsigned int number_of_outputs_in)
+        unsigned int number_of_outputs_in,
+        unsigned int Total_Number_of_Gauss_Points,
+        unsigned int Total_Number_of_Connectivity_Nodes)
 {
 	number_of_nodes = number_of_nodes_in;
 	number_of_elements = number_of_elements_in;
@@ -353,6 +351,8 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
 	max_element_tag = max_element_tag_in;
 	number_of_dofs = number_of_dofs_in;
 	number_of_outputs = number_of_outputs_in;
+    number_of_gausspoints = Total_Number_of_Gauss_Points;
+    number_of_connectivity_nodes = Total_Number_of_Connectivity_Nodes;
 
 
 	// cout << "number_of_nodes    = " << number_of_nodes    << endl;
@@ -389,6 +389,7 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
 // Element_types.resize(max_element_tag+1);
 	Class_Tags.resize(max_element_tag + 1);
 	Partition.resize(max_element_tag + 1);
+	Material_tags.resize(max_element_tag+1);
 	Number_of_Output_Fields.resize(max_element_tag + 1);
 	for (int i = 0; i < max_element_tag; i++)
 	{
@@ -399,16 +400,19 @@ int H5OutputWriterMPICollective::writeGlobalMeshData(unsigned int number_of_node
 		Index_to_Gauss_Point_Coordinates[i] = -1;
 		// Element_types[i] = -1;
 		Class_Tags[i] = -1;
+		Material_tags[i] = -1;
 		Partition[i] = -1;
 		Number_of_Output_Fields[i] = -1;
 	}
-//NOTE: This is wasting some memory.
-//FIXME: Make pre-allocation for these arrays be exact
-	Connectivity.resize(27 * number_of_elements);
-	Gauss_Point_Coordinates.resize(27 * number_of_elements * 3);
+
+	//NOTE: This is wasting some memory. 
+	//FIXME: Make pre-allocation for these arrays be exact
+	//FIX : Fix added by sumeet 30th July, 2016
+
+	Connectivity.resize(number_of_connectivity_nodes);
+	Gauss_Point_Coordinates.resize(number_of_gausspoints*3);
 
 // LoadPattern_names.resize();
-// Material_tags.resize();
 
 	return 0;
 }
@@ -567,7 +571,8 @@ int H5OutputWriterMPICollective::writeElementMeshData(int tag  , std::string typ
 	// Element_types.push_back(type);
 
 	// Writing Material_tags;
-	// Material_tags[tag] = 0;
+	 Material_tags[tag] = materialtag;
+	 
 	return 0;
 }
 
@@ -1030,34 +1035,44 @@ void H5OutputWriterMPICollective::writeMesh()
 		// Create time array
 		//================================================================================
 
-		hsize_t dims[1], maxdims[1];
-		int rank = 1;
-		dims[0] = number_of_time_steps;
-		maxdims[0] = H5S_UNLIMITED;
-		id_time_vector = createVariableLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
+        hsize_t dims[1], maxdims[1];
+        int rank = 1;
+        dims[0] = number_of_time_steps+1;
+        maxdims[0] = number_of_time_steps+1;
 
-
-
+        id_time_vector = createConstantLengthDoubleArray(id_file, rank, dims, maxdims, "time", "s");
 
 		//================================================================================
 		// Domain metadata
 		//================================================================================
-		rank = 1;
-		dims[0] = 1;
-		maxdims[0] = 1;
-		id_number_of_elements   = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Elements", " ");
-		id_number_of_nodes      = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Nodes", " ");
-		id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = 1;
+        id_number_of_elements   = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Elements", " ");
+        id_number_of_nodes      = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Nodes", " ");
+        id_number_of_time_steps = createConstantLengthIntegerArray(id_file, rank, dims, maxdims, "Number_of_Time_Steps", " ");
 
-		//Write time of creation
-		time_t current;
-		time(&current);
-		char *timestring;
-		timestring = ctime(&current);
-		timestring[strlen(timestring) - 1] = '\0';
-		write_string(id_file, "Date_and_Time_Start", timestring);
+        //================================================================================
+        // Material Info
+        //================================================================================
+        rank = 1;
+        dims[0] = 1;
+        maxdims[0] = H5S_UNLIMITED;
+        id_material = createVariableLengthStringArray(id_model_group, "Materials", " ");
 
+        //================================================================================
+        // Time of Creation
+        //================================================================================
+        time_t current;
+        time(&current);
+        char *timestring;
+        timestring = ctime(&current);
+        timestring[strlen(timestring) - 1] = '\0';
+        write_string(id_file, "Date_and_Time_Start", timestring);
 
+        //================================================================================
+        // Analysis Options
+        //================================================================================
 		createVariableLengthStringArray(id_file, "Analysis_Options", " ");
 
 
@@ -1069,120 +1084,113 @@ void H5OutputWriterMPICollective::writeMesh()
 		// =============================================================================================
 
 
-		rank = 1;
-		int datarank         = 1;
-		int *int_data_buffer = 0;
-		double *double_data_buffer = 0;
-		//hsize_t dims[1];
-		//hsize_t maxdims[1];
-		hsize_t data_dims[1];
-		hsize_t offset[1];
-		hsize_t stride[1];
-		hsize_t count[1];
-		hsize_t block[1];
 
-		//Create arrays
-		dims[0] = 1;
-		maxdims[0] = H5S_UNLIMITED;
-		id_nodes_ndofs                = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Number_of_DOFs"                     , " ");
-		id_nodes_coordinates          = createVariableLengthDoubleArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ");
-		id_index_to_nodes_coordinates = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
-		id_index_to_nodes_outputs     = createVariableLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
+        rank = 1;
+        int datarank         = 1;
+        int *int_data_buffer = 0;
+        double *double_data_buffer = 0;
+        //hsize_t dims[1];
+        //hsize_t maxdims[1];
+        hsize_t data_dims[1];
+        hsize_t offset[1];
+        hsize_t stride[1];
+        hsize_t count[1];
+        hsize_t block[1];
 
-		// #ifdef _PARALLEL_PROCESSING
-		//     // int processID;
-		//     // MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+        //Create arrays
+        dims[0]    = max_node_tag+1;
+        maxdims[0] = max_node_tag+1;
+        id_nodes_ndofs                = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Number_of_DOFs"                     , " ");
+        id_index_to_nodes_coordinates = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Coordinates"               , " ");
+        id_index_to_nodes_outputs     = createConstantLengthIntegerArray(id_nodes_group , rank , dims , maxdims , "Index_to_Generalized_Displacements" , " ");
 
-		//     if (processID == 0)
-		//     {
-		//         //
-		// #endif
-		// Write a vector with the number of DOFS for node at a given tag
-		dims[0]      = (hsize_t) Number_of_DOFs.Size();
-		data_dims[0] = (hsize_t) Number_of_DOFs.Size();
-		offset[0]    = 0;
-		stride[0]    = 1;
-		count[0]     = dims[0];
-		block[0]     = 1;
-		int_data_buffer = Number_of_DOFs.data;
-		writeVariableLengthIntegerArray(id_nodes_ndofs,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
-
-		dims[0]      = (hsize_t) Coordinates.Size();
-		data_dims[0] = (hsize_t) Coordinates.Size();
-		count[0]     = dims[0];
-		double_data_buffer = Coordinates.theData;
-		writeVariableLengthDoubleArray(id_nodes_coordinates,
-		                               datarank,
-		                               dims,
-		                               data_dims,
-		                               offset,
-		                               stride,
-		                               count,
-		                               block,
-		                               double_data_buffer);
-
-		dims[0]      = (hsize_t) Index_to_Coordinates.Size();
-		data_dims[0] = (hsize_t) Index_to_Coordinates.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Index_to_Coordinates.data;
-		writeVariableLengthIntegerArray(id_index_to_nodes_coordinates,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
-
-		dims[0]      = (hsize_t) Index_to_Generalized_Displacements.Size();
-		data_dims[0] = (hsize_t) Index_to_Generalized_Displacements.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Index_to_Generalized_Displacements.data;
-		writeVariableLengthIntegerArray(id_index_to_nodes_outputs,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        dims[0]    = max_node_tag*3;
+        maxdims[0] = max_node_tag*3;      
+        id_nodes_coordinates          = createConstantLengthDoubleArray(id_nodes_group  , rank , dims , maxdims , "Coordinates"                        , " ");
 
 
+        // Write a vector with the number of DOFS for node at a given tag
+        dims[0]      = (hsize_t) Number_of_DOFs.Size();
+        data_dims[0] = (hsize_t) Number_of_DOFs.Size();
+        offset[0]    = 0;
+        stride[0]    = 1;
+        count[0]     = dims[0];
+        block[0]     = 1;
+        int_data_buffer = Number_of_DOFs.data;
+        writeConstantLengthIntegerArray(id_nodes_ndofs,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+        dims[0]      = (hsize_t) Coordinates.Size();
+        data_dims[0] = (hsize_t) Coordinates.Size();
+        count[0]     = dims[0];
+        double_data_buffer = Coordinates.theData;
+        writeConstantLengthDoubleArray(id_nodes_coordinates,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       double_data_buffer);
+
+        dims[0]      = (hsize_t) Index_to_Coordinates.Size();
+        data_dims[0] = (hsize_t) Index_to_Coordinates.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Coordinates.data;
+        writeConstantLengthIntegerArray(id_index_to_nodes_coordinates,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
+
+        dims[0]      = (hsize_t) Index_to_Generalized_Displacements.Size();
+        data_dims[0] = (hsize_t) Index_to_Generalized_Displacements.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Generalized_Displacements.data;
+        writeConstantLengthIntegerArray(id_index_to_nodes_outputs,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
 
 		//================================================================================
 		// Create number of elements and nodes
 		//================================================================================
 
-		rank        = 1;
-		dims[0]     = 1;
-		data_dims[0] = 1;
-		offset[0]   = 0;
-		stride[0]   = 1;
-		count[0]    = 1;
-		block[0]    = 1;
 
-		writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, data_dims, offset, stride, count, block,
-		                                &number_of_nodes);
+        rank        = 1;
+        dims[0]     = 1;
+        data_dims[0] = 1;
+        offset[0]   = 0;
+        stride[0]   = 1;
+        count[0]    = 1;
+        block[0]    = 1;
 
-		writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, data_dims, offset, stride, count, block,
-		                                &number_of_elements);
+        writeConstantLengthIntegerArray(id_number_of_nodes, rank, dims, data_dims, offset, stride, count, block,
+                                        &number_of_nodes);
+
+        writeConstantLengthIntegerArray(id_number_of_elements, rank, dims, data_dims, offset, stride, count, block,
+                                        &number_of_elements);
 
 
 
-		// #ifdef _PARALLEL_PROCESSING
-		//     }
-		// #endif
 		H5OutputWriterMPICollective_COUNT_OBJS;
 
 		// =============================================================================================
@@ -1190,135 +1198,153 @@ void H5OutputWriterMPICollective::writeMesh()
 		// =============================================================================================
 
 
-		rank = 1;
-		dims[0] = 1;
-		maxdims[0] = H5S_UNLIMITED;
+        rank = 1;
+        dims[0] = max_element_tag+1;
+        maxdims[0] = max_element_tag+1;
 
-		id_elements_nnodes                = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Nodes", " ");
-		id_elements_connectivity          = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Connectivity", " ");
-		id_index_to_elements_connectivity = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Connectivity", " ");
-		id_elements_noutputs              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Output_Fields", " ");
-		id_index_to_elements_output       = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
-		id_elements_ngauss                = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
-		id_elements_gausscoords           = createVariableLengthDoubleArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
-		id_index_to_elements_gausscoords  = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
-		id_elements_type                  = createVariableLengthStringArray (id_elements_group,  "Element_types", " ");
-		id_elements_materialtag           = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
-		id_elements_classtag              = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
+        id_elements_nnodes                = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Nodes", " ");
+        id_index_to_elements_connectivity = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Connectivity", " ");
+        id_elements_noutputs              = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Output_Fields", " ");
+        id_index_to_elements_output       = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Outputs", " ");
+        id_elements_ngauss                = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Number_of_Gauss_Points", " ");
+        id_index_to_elements_gausscoords  = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Index_to_Gauss_Point_Coordinates", " ");
+        id_elements_type                  = createVariableLengthStringArray (id_elements_group,  "Element_types", " ");
+        id_elements_materialtag           = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Material_tags", " ");
+        id_elements_classtag              = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Class_Tags", " ");
 
-#ifdef _PARALLEL_PROCESSING // Only write partition if in parallel mode
-		id_elements_partition             = createVariableLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Partition", " ");
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO // Only write partition if in parallel mode
+        id_elements_partition             = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Partition", " ");
 #endif
 
-		// Write a vector with the number of nodes at a given elements tag
-		datarank     = 1;
-		dims[0]      = (hsize_t) Number_of_Nodes.Size();
-		data_dims[0] = (hsize_t) Number_of_Nodes.Size();
-		offset[0]    = 0;
-		stride[0]    = 1;
-		count[0]     = dims[0];
-		block[0]     = 1;
-		int_data_buffer = Number_of_Nodes.data;
-		writeVariableLengthIntegerArray(id_elements_nnodes,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        dims[0]    = this->number_of_gausspoints*3;
+        maxdims[0] = this->number_of_gausspoints*3;
+        id_elements_gausscoords           = createConstantLengthDoubleArray (id_elements_group, rank, dims, maxdims, "Gauss_Point_Coordinates", " ");
+
+        dims[0]    = this->number_of_connectivity_nodes;
+        maxdims[0] = this->number_of_connectivity_nodes;
+        id_elements_connectivity          = createConstantLengthIntegerArray(id_elements_group, rank, dims, maxdims, "Connectivity", " ");
+
+        // Write a vector with the number of nodes at a given elements tag
+        datarank     = 1;
+        dims[0]      = (hsize_t) Number_of_Nodes.Size();
+        data_dims[0] = (hsize_t) Number_of_Nodes.Size();
+        offset[0]    = 0;
+        stride[0]    = 1;
+        count[0]     = dims[0];
+        block[0]     = 1;
+        int_data_buffer = Number_of_Nodes.data;
+        writeConstantLengthIntegerArray(id_elements_nnodes,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
 
-		//Write index to connectivity
-		dims[0]      = (hsize_t) Index_to_Connectivity.Size();
-		data_dims[0] = (hsize_t) Index_to_Connectivity.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Index_to_Connectivity.data;
-		writeVariableLengthIntegerArray(id_index_to_elements_connectivity,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        //Write index to connectivity
+        dims[0]      = (hsize_t) Index_to_Connectivity.Size();
+        data_dims[0] = (hsize_t) Index_to_Connectivity.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Connectivity.data;
+        writeConstantLengthIntegerArray(id_index_to_elements_connectivity,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
 
-		//Write element connectivity
-		dims[0]      = (hsize_t) Connectivity.Size();
-		data_dims[0] = (hsize_t) Connectivity.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Connectivity.data;
-		writeVariableLengthIntegerArray(id_elements_connectivity,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        //Write element connectivity
+        dims[0]      = (hsize_t) Connectivity.Size();
+        data_dims[0] = (hsize_t) Connectivity.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Connectivity.data;
+        writeConstantLengthIntegerArray(id_elements_connectivity,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
-		//Write index to number of outputs
-		dims[0]      = (hsize_t) Number_of_Output_Fields.Size();
-		data_dims[0] = (hsize_t) Number_of_Output_Fields.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Number_of_Output_Fields.data;
-		writeVariableLengthIntegerArray(id_elements_noutputs,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        //Write index to number of outputs
+        dims[0]      = (hsize_t) Number_of_Output_Fields.Size();
+        data_dims[0] = (hsize_t) Number_of_Output_Fields.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Number_of_Output_Fields.data;
+        writeConstantLengthIntegerArray(id_elements_noutputs,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
-		//Write index to outputs
-		dims[0]      = (hsize_t) Index_to_Outputs.Size();
-		data_dims[0] = (hsize_t) Index_to_Outputs.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Index_to_Outputs.data;
-		writeVariableLengthIntegerArray(id_index_to_elements_output,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        //Write index to outputs
+        dims[0]      = (hsize_t) Index_to_Outputs.Size();
+        data_dims[0] = (hsize_t) Index_to_Outputs.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Outputs.data;
+        writeConstantLengthIntegerArray(id_index_to_elements_output,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
-		//Write material tags
-		dims[0]      = (hsize_t) Material_tags.Size();
-		data_dims[0] = (hsize_t) Material_tags.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Material_tags.data;
-		// writeVariableLengthIntegerArray(id_elements_materialtag,
-		//                                 datarank,
-		//                                 dims,
-		//                                 data_dims,
-		//                                 offset,
-		//                                 stride,
-		//                                 count,
-		//                                 block,
-		//                                 int_data_buffer);
+        //Write material tags
+        dims[0]      = (hsize_t) Material_tags.Size();
+        data_dims[0] = (hsize_t) Material_tags.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Material_tags.data;
+        writeConstantLengthIntegerArray(id_elements_materialtag,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
-		dims[0]      = (hsize_t) Class_Tags.Size();
-		data_dims[0] = (hsize_t) Class_Tags.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Class_Tags.data;
-		writeVariableLengthIntegerArray(id_elements_classtag,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        //Write material info
+        for (int tag = 0; tag < (int) Materials.size(); tag++)
+        {
+            std::string mat_info = Materials[tag];
+            writeVariableLengthStringArray(id_material,
+                                           tag,
+                                           mat_info.size(),
+                                           mat_info);
+        }
+
+
+        //Writing Class tags
+        dims[0]      = (hsize_t) Class_Tags.Size();
+        data_dims[0] = (hsize_t) Class_Tags.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Class_Tags.data;
+        writeConstantLengthIntegerArray(id_elements_classtag,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
 
 #ifdef _PARALLEL_PROCESSING
@@ -1332,117 +1358,109 @@ void H5OutputWriterMPICollective::writeMesh()
 		data_dims[0] = (hsize_t) Partition.Size();
 		count[0]     = dims[0];
 		int_data_buffer = Partition.data;
-		writeVariableLengthIntegerArray(id_elements_partition,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        writeConstantLengthIntegerArray(id_elements_partition,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 		// }
 		// cout << "Processor " << processID << " went through. \n";
 #endif
 
-		// TODO: Bring back element types
-		// //Write material tags
-		// for (int tag = 0; tag < (int) Element_types.size(); tag++)
-		// {
-		//     std::string type = Element_types[tag];
-		//     writeVariableLengthStringArray(id_elements_type,
-		//                                    tag,
-		//                                    type.size(),
-		//                                    type);
-		// }
+        for (int tag = 0; tag < (int) Element_types.size(); tag++)
+        {
+            std::string type = Element_types[tag];
+            writeVariableLengthStringArray(id_elements_type,
+                                           tag,
+                                           type.size(),
+                                           type);
+        }
 
 
-		//Write index to gauss coordinates (if any)
-		dims[0]      = (hsize_t) Number_of_Gauss_Points.Size();
-		data_dims[0] = (hsize_t) Number_of_Gauss_Points.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Number_of_Gauss_Points.data;
-		writeVariableLengthIntegerArray(id_elements_ngauss,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        //Write index to gauss coordinates (if any)
+        dims[0]      = (hsize_t) Number_of_Gauss_Points.Size();
+        data_dims[0] = (hsize_t) Number_of_Gauss_Points.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Number_of_Gauss_Points.data;
+        writeConstantLengthIntegerArray(id_elements_ngauss,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
 
-		dims[0]      = (hsize_t) Index_to_Gauss_Point_Coordinates.Size();
-		data_dims[0] = (hsize_t) Index_to_Gauss_Point_Coordinates.Size();
-		count[0]     = dims[0];
-		int_data_buffer = Index_to_Gauss_Point_Coordinates.data;
-		writeVariableLengthIntegerArray(id_index_to_elements_gausscoords,
-		                                datarank,
-		                                dims,
-		                                data_dims,
-		                                offset,
-		                                stride,
-		                                count,
-		                                block,
-		                                int_data_buffer);
+        dims[0]      = (hsize_t) Index_to_Gauss_Point_Coordinates.Size();
+        data_dims[0] = (hsize_t) Index_to_Gauss_Point_Coordinates.Size();
+        count[0]     = dims[0];
+        int_data_buffer = Index_to_Gauss_Point_Coordinates.data;
+        writeConstantLengthIntegerArray(id_index_to_elements_gausscoords,
+                                        datarank,
+                                        dims,
+                                        data_dims,
+                                        offset,
+                                        stride,
+                                        count,
+                                        block,
+                                        int_data_buffer);
 
-		//Write gauss coordinate values
-		dims[0]      = (hsize_t) Gauss_Point_Coordinates.Size();
-		data_dims[0] = (hsize_t) Gauss_Point_Coordinates.Size();
-		count[0]     = dims[0];
-		double_data_buffer = Gauss_Point_Coordinates.theData;
-		writeVariableLengthDoubleArray(id_elements_gausscoords,
-		                               datarank,
-		                               dims,
-		                               data_dims,
-		                               offset,
-		                               stride,
-		                               count,
-		                               block,
-		                               double_data_buffer);
+        //Write gauss coordinate values
+        dims[0]      = (hsize_t) Gauss_Point_Coordinates.Size();
+        data_dims[0] = (hsize_t) Gauss_Point_Coordinates.Size();
+        count[0]     = dims[0];
+        double_data_buffer = Gauss_Point_Coordinates.theData;
+        writeConstantLengthDoubleArray(id_elements_gausscoords,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       double_data_buffer);
+
 		H5OutputWriterMPICollective_COUNT_OBJS;
 
 
+        // =============================================================================================
+        //   CREATE OUTPUT ARRAYS!
+        // =============================================================================================
 
+        {
+            int rank = 2;
+            hsize_t dims[2];
+            hsize_t maxdims[2];
+            dims[0] = (hsize_t) length_nodes_displacements_output;
+            dims[1] =  number_of_time_steps + 1;
+            maxdims[0] = (hsize_t)  length_nodes_displacements_output;
+            maxdims[1] = number_of_time_steps + 1;
 
+            id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ");
+        }
 
+        if (number_of_outputs > 0)
+        {
+            int rank = 2;
+            hsize_t dims[2];
+            hsize_t maxdims[2];
+            dims[0] = (hsize_t) number_of_outputs;
+            dims[1] =  number_of_time_steps + 1;
+            maxdims[0] = (hsize_t)  number_of_outputs;
+            maxdims[1] = number_of_time_steps + 1;
 
-		// =============================================================================================
-		//   CREATE OUTPUT ARRAYS!
-		// =============================================================================================
+            if (flag_write_element_output == 1  )
+            {
+                id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ");
+            }
 
-		{
-			int rank = 2;
-			hsize_t dims[2];
-			hsize_t maxdims[2];
-			dims[0] = (hsize_t) length_nodes_displacements_output;
-			dims[1] = number_of_time_steps + 1;
-			maxdims[0] = (hsize_t)  length_nodes_displacements_output;
-			maxdims[1] = number_of_time_steps + 1;
-
-			id_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Generalized_Displacements", " ", 1);
-		}
-
-		{
-			int rank = 2;
-			hsize_t dims[2];
-			hsize_t maxdims[2];
-			dims[0] = (hsize_t) length_element_output;
-			dims[1] = number_of_time_steps + 1;
-			maxdims[0] = (hsize_t)  length_element_output;
-			maxdims[1] = number_of_time_steps + 1;
-
-			if (flag_write_element_output == 1)
-			{
-				// dims[1] = 1;
-				// maxdims[1] = 1;
-				id_elements_output = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Outputs", " ", 1);
-			}
-
-		}//    create_elementOutput_arrays = false;
-
-		// cout << "subgroupname" << subgroupname << endl;
+        }
 	}
 	else  //Could not open file
 	{
@@ -1477,6 +1495,31 @@ int H5OutputWriterMPICollective::writeElementPartitionData(int tag  , int partit
 int H5OutputWriterMPICollective::writeMaterialMeshData(int tag , std::string type , Vector &parameters)
 {
 	return 0;
+}
+
+int H5OutputWriterMPICollective::writeMaterialMeshData(int tag , std::string material_info )
+{
+
+    if (tag < 0)
+    {
+        cerr << "H5OutputWriter::writeElementMeshData - Error: got tag = " << tag << " < 0" << endl;
+    }
+
+    int ntags, addzeros;
+    ntags = (int) Materials.size();
+    addzeros = tag - ntags;
+
+    //Extend arrays if necessary
+    for (int i = 0; i <= addzeros; i++)
+    {
+        cout << "ntags = " << ntags << " tag = " << tag;
+        cout << " H5OutputWriter::writeMaterialMeshData() -- Should not happen!!\n\n";
+        Materials.push_back("-1");
+    }
+
+    Materials[tag] = material_info;
+
+    return 0;
 }
 
 // Results for Nodes
@@ -1537,15 +1580,15 @@ int H5OutputWriterMPICollective::writeDisplacements(  int nodeTag, const Vector 
 
 
 	double *data = displacements.theData;
-	writeVariableLengthDoubleArray(id_nodes_displacements,
-	                               datarank,
-	                               dims,
-	                               data_dims,
-	                               offset,
-	                               stride,
-	                               count,
-	                               block,
-	                               data);
+    writeConstantLengthDoubleArray(id_nodes_displacements,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   data);
 
 	H5Sclose(id_dataspace);
 	H5Sclose(id_memspace);
@@ -1553,6 +1596,90 @@ int H5OutputWriterMPICollective::writeDisplacements(  int nodeTag, const Vector 
 	return 0;
 }
 
+/************************************************************************************************************
+* Added by Sumeet 3rd August, 2016
+* It outputs the trial iterations results for nodes.
+**************************************************************************************************************/
+
+int H5OutputWriterMPICollective::writeTrialDisplacements(  int nodeTag, const Vector &displacements)
+{
+
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+    int processID;
+    MPI_Comm_rank(MPI_COMM_WORLD, &processID);
+
+    // cout << setw(5) << nodeTag << " == " << processID << " == " << ": (" << displacements[0] << ", " << displacements[1] << ", " << displacements[2] << ")\n ";
+#endif
+    int pos, ndofs;
+
+    // Read NDOFS from HDF5 file
+    int datarank         = 1;
+    hsize_t data_dims[1] = {1};
+    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
+    hsize_t stride[2]    = {1, 0};
+    hsize_t count[2]     = {1, 0};
+    hsize_t block[2]     = {1, 0};
+
+    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+
+    hdf5_check_error(status);
+
+    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
+    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+
+
+    hsize_t dims[0];
+    dims[1] = (hsize_t) ndofs;  
+    data_dims[0] = (hsize_t) ndofs;
+    offset[0]    = (hsize_t) pos;
+    offset[1]    = (hsize_t) current_sub_step - 1;
+    stride[0]    = 1;
+    stride[1]    = 1;
+    count[0]     = (hsize_t) ndofs;
+    count[1]     = 1;
+    block[0]     = 1;
+    block[1]     = 1;
+
+#if _PARALLEL_PROCESSING_COLLECTIVE_IO
+    // cout << "   pos = " << pos << " step = " << current_time_step << " ndofs = " << ndofs << endl;
+#endif
+
+    // ///////////////////////// Fotr Debugging Sumeet 1st August, 2016 ////////////////////////
+    // cout << "offset[0] " << offset[0] <<endl;
+    // cout << "offset[1] " << offset[1] << endl;
+    // cout << "stride[0] " << stride[0] <<endl;
+    // cout << "stride[1] " << stride[1] << endl;
+    // cout << " count[0] " <<  count[0] <<endl;
+    // cout << " count[1] " <<  count[1] << endl;   
+    // cout << "-------------------------------------------------" <<endl; 
+    // /////////////////////////////////////////////////////////////////////////////////////////
+
+
+    double *data = displacements.theData;
+    writeConstantLengthDoubleArray(id_trial_nodes_displacements,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   data);
+
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OUTPUTWRITER_COUNT_OBJS;
+    return 0;
+}
 
 // Results for Nodes
 int H5OutputWriterMPICollective::writeDummyDisplacements(  )
@@ -1650,15 +1777,15 @@ int H5OutputWriterMPICollective::writeElementOutput(int elementTag, const  Vecto
 		block[0]     = 1;
 		block[1]     = 1;
 		double *data = output.theData;
-		writeVariableLengthDoubleArray(id_elements_output,
-		                               datarank,
-		                               dims,
-		                               data_dims,
-		                               offset,
-		                               stride,
-		                               count,
-		                               block,
-		                               data);
+        writeConstantLengthDoubleArray(id_elements_output,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       data);
 
 		H5Sclose(id_dataspace);
 		H5Sclose(id_memspace);
@@ -1667,9 +1794,71 @@ int H5OutputWriterMPICollective::writeElementOutput(int elementTag, const  Vecto
 	return 0;
 }
 
+/************************************************************************************************************
+* Added by Sumeet 3rd August, 2016
+* It outputs the trial iterations results for elements output.
+**************************************************************************************************************/
+// Results for Elements
+int H5OutputWriterMPICollective::writeTrialElementOutput(int elementTag, const  Vector &output)
+{
+
+    if (length_element_output > 0) // If there is nothing to output, there is nothing to output
+    {
+        int pos, noutputs;
+
+        // Read NOUTPUTS from HDF5 file
+        int datarank         = 1;
+        hsize_t data_dims[1] = {1};
+        hsize_t offset[2]    = {(hsize_t) elementTag , 0};
+        hsize_t stride[2]    = {1, 0};
+        hsize_t count[2]     = {1, 0};
+        hsize_t block[2]     = {1, 0};
+
+        hsize_t id_dataspace = H5Dget_space(id_elements_noutputs);
+        hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+        status = H5Sselect_hyperslab(
+                     id_dataspace,          // Id of the parent dataspace
+                     H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                     offset,                // start of selection
+                     stride,                // stride in each dimension, NULL  is select everything
+                     count ,                // how many blocks to select in each direction
+                     block                  // little block selected per selection
+                 );
+
+        hdf5_check_error(status);
+
+        H5Dread(id_elements_noutputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &noutputs);
+        H5Dread(id_index_to_elements_output, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
 
 
+        hsize_t dims[0];
+        dims[0] = (hsize_t) noutputs;  
+        data_dims[0] = (hsize_t) noutputs;
+        offset[0]    = (hsize_t) pos;
+        offset[1]    = (hsize_t) current_sub_step - 1;
+        stride[0]    = 1;
+        stride[1]    = 1;
+        count[0]     = (hsize_t) noutputs;
+        count[1]     = 1;
+        block[0]     = 1;
+        block[1]     = 1;
+        double *data = output.theData;
+        writeConstantLengthDoubleArray(id_trial_elements_output,
+                                       datarank,
+                                       dims,
+                                       data_dims,
+                                       offset,
+                                       stride,
+                                       count,
+                                       block,
+                                       data);
 
+        H5Sclose(id_dataspace);
+        H5Sclose(id_memspace);
+        H5OUTPUTWRITER_COUNT_OBJS;
+    }
+    return 0;
+}
 
 // Results for Elements
 int H5OutputWriterMPICollective::writeDummyElementOutput()
@@ -1733,37 +1922,51 @@ int H5OutputWriterMPICollective::setTime(double t)
 	hsize_t count[1]     = {1};
 	hsize_t block[1]     = {1};
 
-	writeVariableLengthDoubleArray(id_time_vector,
-	                               1, //datarank
-	                               dims,
-	                               data_dims,
-	                               offset,
-	                               stride,
-	                               count,
-	                               block,
-	                               &current_time);
+    writeConstantLengthDoubleArray(id_time_vector,
+                                   1, //datarank
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   &current_time);
 
-	offset[0]   = 0;
+    current_time_step++;
 
-	writeConstantLengthIntegerArray(id_number_of_time_steps, 1, dims, data_dims, offset, stride, count, block,
-	                                &number_of_time_steps);
+    //===============================================================================
+    // Writing Number of time steps  
+    //===============================================================================
+    dims[0]=1;
+    offset[0]=0;
+    writeConstantLengthIntegerArray(id_number_of_time_steps, 1, dims, data_dims, offset, stride, count, block,
+                                &current_time_step);
 
-	current_time_step++;
-	H5OutputWriterMPICollective_COUNT_OBJS;
+    // ===============================================================================
+    // Extending the output dataset (By Sumeet)
+    // ===============================================================================
+
+    hsize_t      size[2];
+    size[0] = (hsize_t) number_of_outputs;
+    size[1] = (hsize_t) current_time_step;
+
+    status = H5Dset_extent (id_elements_output, size);
 
 
-	//Extend objects
-	hsize_t dims_new[2]      =  { (hsize_t)  length_nodes_displacements_output, (hsize_t)  current_time_step + 1};
+    size[0] = (hsize_t) number_of_dofs;
+    size[1] = (hsize_t) current_time_step;
 
-	status =  H5Dset_extent( id_nodes_displacements, dims_new );
+    status = H5Dset_extent (id_nodes_displacements, size);
+
+    // /**********************************************************************************/
 
 
-	if ( flag_write_element_output == 1 ) //extend element output array depending on whether the flag is enabled.
-	{
-		dims_new[0] = length_element_output;
-		dims_new[1] = current_time_step + 1;
-		status =  H5Dset_extent( id_elements_output, dims_new );
-	}
+	// if ( flag_write_element_output == 1 ) //extend element output array depending on whether the flag is enabled.
+	// {
+	// 	dims_new[0] = length_element_output;
+	// 	dims_new[1] = current_time_step + 1;
+	// 	status =  H5Dset_extent( id_elements_output, dims_new );
+	// }
 
 
 	return 0;
@@ -2211,6 +2414,7 @@ hid_t H5OutputWriterMPICollective::writeVariableLengthDoubleArray(hid_t id_array
 	{
 		status =  H5Dset_extent( id_array, dims ); // Needs to be avoided for Displacement and Outputs arrays, they are
 		//extended collectively in setTime() function
+		cout << "Warning !!! I am in wronh place. Please Fix Me" << endl;
 		hdf5_check_error(status);
 	}
 
@@ -2292,6 +2496,99 @@ hid_t H5OutputWriterMPICollective::writeVariableLengthDoubleArray(hid_t id_array
 	return id_array;
 }
 
+/****************************************************************************
+* Added by Sumeet 1st Augustt, 2016 
+* It takes a matrix in the form of 1-D array and converts in matrix and 
+* write it to output file
+*****************************************************************************/
+hid_t H5OutputWriterMPICollective::writeConstantLengthDoubleMatrix(hid_t id_array,
+        int datarank,
+        hsize_t *dims,
+        hsize_t *data_dims,
+        hsize_t *offset,
+        hsize_t *stride,
+        hsize_t *count,
+        hsize_t *block,
+        double* matrix_data_in_linear_fashion)
+{
+
+    double data[6][3];
+    for(int i=0; i < count[1]; i++) {
+        for(int j=0; j < count[0]; j++) {
+            data[i][j] = matrix_data_in_linear_fashion[j*count[0]+i];
+        }
+    }
+
+    //Get pointer to the dataspace and create the memory space
+    hsize_t id_dataspace = 0;
+    hsize_t id_memspace = 0;
+
+    id_dataspace = H5Dget_space(id_array); VERIFY(id_dataspace);
+    id_memspace = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+
+    //Select the region of data to output to
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+
+    hdf5_check_error(status);
+
+#ifdef _PARALLEL_PROCESSING_COLLECTIVE_IO
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_DOUBLE,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 dataset_xfer_plist,           // Form of writing
+                 data                   // The actual data
+             );
+
+    H5D_mpio_actual_io_mode_t actual_io_mode;
+    H5Pget_mpio_actual_io_mode( dataset_xfer_plist, &actual_io_mode);
+
+    switch (actual_io_mode)
+    {
+
+    case H5D_MPIO_NO_COLLECTIVE: //     No collective I/O was performed. Collective I/O was not requested or collective I/O isn't possible on this dataset.
+        numof_NO_COLLECTIVE_calls++;
+        break;
+    case H5D_MPIO_CHUNK_INDEPENDENT:        // HDF5 performed one the chunk collective optimization schemes and each chunk was accessed independently.
+        numof_CHUNK_INDEPENDENT_calls++;
+        break;
+    case H5D_MPIO_CHUNK_COLLECTIVE:     // HDF5 performed one the chunk collective optimization schemes and each chunk was accessed collectively.
+        numof_CHUNK_COLLECTIVE_calls++;
+        break;
+    case H5D_MPIO_CHUNK_MIXED:            // HDF5 performed one the chunk collective optimization schemes and some chunks were accessed independently, some collectively.
+        numof_CHUNK_MIXED_calls++;
+        break;
+    }
+#else
+
+    status = H5Dwrite(
+                 id_array,              // Dataset to write to
+                 H5T_NATIVE_DOUBLE,     // Format of data in memory
+                 id_memspace,           // Description of data in memory
+                 id_dataspace,          // Description of data in storage (including selection)
+                 H5P_DEFAULT,           // Form of writing
+                 data                   // The actual data
+             );
+#endif
+//------------------------
+
+    hdf5_check_error(status);
+
+    //Close stuff
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OutputWriterMPICollective_COUNT_OBJS;
+    return id_array;
+}
 
 hid_t H5OutputWriterMPICollective::writeVariableLengthIntegerArray(hid_t id_array,
         int datarank,
@@ -2634,3 +2931,276 @@ inline void hdf5_check_error(herr_t status)
 		cout << "status = " << status << endl;
 	}
 }
+
+
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* Can be used to reserve space for datasets 
+***********************************************************************************/
+int H5OutputWriterMPICollective::reserveSpaceForDatasets(unsigned int number_of_materials){
+
+    cout << "number of materials " << number_of_materials << endl;
+    Materials.resize(number_of_materials + 1);
+
+    for (int i = 0; i < number_of_materials; i++)
+    {
+        Materials[i] = "0";
+    }
+
+    return 0;
+}
+
+
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* Creates datasets for eigen analysis outputs 
+***********************************************************************************/
+int H5OutputWriterMPICollective::writeEigenMesh (int number_of_modes){
+
+	this->number_of_eigen_modes = number_of_modes;
+
+    if (id_file > 0)
+    {
+
+        //================================================================================
+        // Creating Eigen Value Analysis Group
+        //================================================================================
+
+        id_eigen_analysis_group = create_group(id_file, "Eigen_Mode_Analysis");
+
+        //================================================================================
+        // Create Eigen Vaule Analysis Datasets
+        //================================================================================
+
+        hsize_t dims[1], maxdims[1];
+        int rank = 1;
+        dims[0] = number_of_modes;
+        maxdims[0] = number_of_modes;
+
+        id_eigen_values      = createConstantLengthDoubleArray(id_eigen_analysis_group, rank, dims, maxdims, "values", " ");
+        id_eigen_frequencies = createConstantLengthDoubleArray(id_eigen_analysis_group, rank, dims, maxdims, "frequencies", " ");
+        id_eigen_periods     = createConstantLengthDoubleArray(id_eigen_analysis_group, rank, dims, maxdims, "periods", " ");
+
+
+        {
+            int rank = 2;
+            hsize_t dims[2];
+            hsize_t maxdims[2];
+            dims[0] = (hsize_t) number_of_nodes*3;
+            dims[1] = number_of_modes;
+            maxdims[0] = (hsize_t)  number_of_nodes*3;
+            maxdims[1] = number_of_modes;
+
+            id_eigen_modes = createConstantLengthDoubleArray(id_eigen_analysis_group, rank, dims, maxdims, "modes", " ", 1);
+        }
+
+
+        dims[0] = 1;
+        maxdims[0] = 1;
+        id_number_of_modes = createConstantLengthIntegerArray(id_eigen_analysis_group, rank, dims, maxdims, "number_of_modes", " ");
+
+        dims[0]     = 1;
+        hsize_t data_dims[1] = {1};
+        hsize_t offset[1]    = {0};
+        hsize_t stride[1]    = {1};
+        hsize_t count[1]     = {1};
+        hsize_t block[1]     = {1};
+
+        writeConstantLengthIntegerArray(id_number_of_modes, rank, dims, data_dims, offset, stride, count, block,
+                                        &number_of_eigen_modes);
+
+
+    }
+
+    H5OutputWriterMPICollective_COUNT_OBJS;
+
+    return 0; 
+}
+
+
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* Writes eigen modes
+***********************************************************************************/
+int H5OutputWriterMPICollective::writeEigenModes( int nodeTag, const Matrix &displacements){
+
+    int pos, ndofs;
+
+    // Read NDOFS from HDF5 file
+    int datarank         = 1;
+    hsize_t data_dims[1] = {1};
+    hsize_t offset[2]    = {(hsize_t) nodeTag , 0};
+    hsize_t stride[2]    = {1, 0};
+    hsize_t count[2]     = {1, 0};
+    hsize_t block[2]     = {1, 0};
+
+    hsize_t id_dataspace = H5Dget_space(id_nodes_ndofs);
+    hsize_t id_memspace  = H5Screate_simple(datarank   , data_dims, data_dims);       // create dataspace
+    status = H5Sselect_hyperslab(
+                 id_dataspace,          // Id of the parent dataspace
+                 H5S_SELECT_SET,        // Selection operatior H5S_SELECT_<>, where <> = {SET, OR, AND, XOR, NOTB, NOTA}
+                 offset,                // start of selection
+                 stride,                // stride in each dimension, NULL  is select everything
+                 count ,                // how many blocks to select in each direction
+                 block                  // little block selected per selection
+             );
+
+    hdf5_check_error(status);
+
+    H5Dread(id_nodes_ndofs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &ndofs);
+    H5Dread(id_index_to_nodes_outputs, H5T_NATIVE_INT, id_memspace, id_dataspace, H5P_DEFAULT, &pos);
+
+    datarank =2;
+    hsize_t *dims;
+    hsize_t data_2dims[2];
+    dims = 0;                           // This is to disable array extension (would not be done collectively)
+    data_2dims[0] = (hsize_t) ndofs;
+    data_2dims[1] = (hsize_t) this->number_of_eigen_modes;
+
+    offset[0]    = (hsize_t) pos;
+    offset[1]    = 0;
+    stride[0]    = 1;
+    stride[1]    = 1;
+    count[0]     = (hsize_t) ndofs;
+    count[1]     = (hsize_t) this->number_of_eigen_modes;
+    block[0]     = 1;
+    block[1]     = 1;
+
+    // ///////////////////////// Fotr Debugging Sumeet 1st August, 2016 ////////////////////////
+    // cout << "offset[0] " << offset[0] <<endl;
+    // cout << "offset[1] " << offset[1] << endl;
+    // cout << "stride[0] " << stride[0] <<endl;
+    // cout << "stride[1] " << stride[1] << endl;
+    // cout << " count[0] " <<  count[0] <<endl;
+    // cout << " count[1] " <<  count[1] << endl;   
+    // cout << "-------------------------------------------------" <<endl; 
+    // /////////////////////////////////////////////////////////////////////////////////////////
+
+    double *data = displacements.data;
+    writeConstantLengthDoubleMatrix(id_eigen_modes,
+                                   datarank,
+                                   dims,
+                                   data_2dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   data);
+
+    H5Sclose(id_dataspace);
+    H5Sclose(id_memspace);
+    H5OutputWriterMPICollective_COUNT_OBJS;
+
+    return 0;
+}
+
+
+/**********************************************************************************
+* Added by Sumeet 1st August, 2016
+* writes eigen period, frequencies and values 
+***********************************************************************************/
+int H5OutputWriterMPICollective::writeEigen_Value_Frequency_Period ( const Vector & eigenvalues, Vector periodvalues, Vector frequencyvalues){
+
+    int datarank         = 1;
+    hsize_t *dims; dims=0;
+    hsize_t data_dims[1] = {this->number_of_eigen_modes};
+    hsize_t offset[2]    = {0, 0};
+    hsize_t stride[2]    = {1, 0};
+    hsize_t count[2]     = {this->number_of_eigen_modes, 0};
+    hsize_t block[2]     = {1, 0};
+
+    writeConstantLengthDoubleArray(id_eigen_values,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   periodvalues.theData);
+
+    writeConstantLengthDoubleArray(id_eigen_frequencies,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   frequencyvalues.theData);
+
+    writeConstantLengthDoubleArray(id_eigen_periods,
+                                   datarank,
+                                   dims,
+                                   data_dims,
+                                   offset,
+                                   stride,
+                                   count,
+                                   block,
+                                   eigenvalues.theData);
+
+    H5OutputWriterMPICollective_COUNT_OBJS;
+
+    return 0; 
+
+}
+
+
+/********************************************************************************************
+* Added by sumeet 3rd August, 2016 
+* This function is used to create the iterations outputmesh
+*********************************************************************************************/
+int H5OutputWriterMPICollective::writeSubstepMesh(int number_of_substeps){
+    
+    if (id_file > 0)
+    {
+        int rank = 2;
+        hsize_t dims[2];
+        hsize_t maxdims[2];
+        dims[0] = (hsize_t) number_of_dofs;
+        dims[1] = 0;
+        maxdims[0] = (hsize_t)  number_of_dofs;
+        maxdims[1] = number_of_substeps;
+
+        id_trial_nodes_displacements = createVariableLengthDoubleArray(id_nodes_group, rank, dims, maxdims, "Substep_Generalized_Displacements", " ");
+
+        dims[0] = (hsize_t) number_of_outputs;
+        maxdims[0] = (hsize_t) number_of_outputs;
+
+        id_trial_elements_output     = createVariableLengthDoubleArray(id_elements_group, rank, dims, maxdims, "Substep_Outputs", " ");
+
+        this->current_sub_step = 0;
+    }
+
+    H5OUTPUTWRITER_COUNT_OBJS;  
+
+    return 0;
+
+}
+
+/********************************************************************************************
+* Added by sumeet 3rd August, 2016 
+* Basically saves the current sub_step_number i.e the column index of HDF5 output file.
+* and also extends the dimension of the dataset
+*********************************************************************************************/
+int H5OutputWriterMPICollective::setSubStep(int substep_no){
+
+    cout << "Writing Substep " <<"[" << substep_no << "]" << " ....................."; 
+
+    this->current_sub_step = substep_no ;
+
+    hsize_t      size[2];
+    size[0] = (hsize_t) number_of_outputs;
+    size[1] = (hsize_t) current_sub_step;
+
+    status = H5Dset_extent (id_trial_elements_output, size);
+
+
+    size[0] = (hsize_t) number_of_dofs;
+    size[1] = (hsize_t) current_sub_step;
+
+    status = H5Dset_extent (id_trial_nodes_displacements, size);
+
+    return 0;
+}
+

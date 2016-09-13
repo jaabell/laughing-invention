@@ -26,9 +26,6 @@
 #ifndef Truss_h
 #define Truss_h
 
-#define Truss_OUTPUT_SIZE 2
-
-
 // File: ~/element/truss/Truss.h
 //
 // Written: fmk
@@ -103,9 +100,13 @@ public:
         return "Truss";
     }
 
-    //Jose Added for output
-    int getOutputSize() const;
-    const Vector &getOutput() ;
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has no gauss points and thus no outputs at gauss points 
+    * so no needto have the "getGaussOutput()" function
+    *********************************************************************************************************************/
+    const vector<float> &getElementOutput() ;
+
 protected:
 
 private:
@@ -135,7 +136,9 @@ private:
     static Vector trussV6;   // class wide Vector for size 6
     static Vector trussV12;  // class wide Vector for size 12
 
-    Vector outputVector;
+    // Sumeet August, 2016
+    // Initialize only if there is any output for element except at gauss points
+    static vector<float> Element_Output_Vector; 
 };
 
 #endif

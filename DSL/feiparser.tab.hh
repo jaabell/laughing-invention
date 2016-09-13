@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.2.
+// A Bison parser, made by GNU Bison 3.0.4.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2013 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -41,10 +41,11 @@
 # define YY_YY_FEIPARSER_TAB_HH_INCLUDED
 
 
-# include <vector>
+# include <cstdlib> // std::abort
 # include <iostream>
 # include <stdexcept>
 # include <string>
+# include <vector>
 # include "stack.hh"
 # include "location.hh"
 
@@ -109,7 +110,7 @@
 
 
 namespace yy {
-#line 113 "feiparser.tab.hh" // lalr1.cc:372
+#line 114 "feiparser.tab.hh" // lalr1.cc:377
 
 
 
@@ -123,7 +124,7 @@ namespace yy {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 143 "feiparser.yy" // lalr1.cc:372
+    #line 143 "feiparser.yy" // lalr1.cc:377
 
   Expression    *exp;           /* For the expressions. Since it is a pointer, no problem. */
   Quantity      *value;         /* For the lexical analyser. NUMBER tokens */
@@ -131,7 +132,7 @@ namespace yy {
   int           fn;
   int           errcode;
 
-#line 135 "feiparser.tab.hh" // lalr1.cc:372
+#line 136 "feiparser.tab.hh" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -333,264 +334,281 @@ namespace yy {
         point = 437,
         single = 438,
         value = 439,
-        EightNodeBrick = 440,
-        TwentySevenNodeBrick = 441,
-        EightNodeBrick_upU = 442,
-        TwentyNodeBrick_uPU = 443,
-        TwentyNodeBrick = 444,
-        TwentyNodeBrickElastic = 445,
-        EightNodeBrick_up = 446,
-        variable_node_brick_8_to_27 = 447,
-        EightNodeBrickElastic = 448,
-        TwentySevenNodeBrickElastic = 449,
-        beam_displacement_based = 450,
-        BeamColumnDispFiber3d = 451,
-        beam_elastic = 452,
-        beam_elastic_lumped_mass = 453,
-        beam_9dof_elastic = 454,
-        FourNodeShellMITC4 = 455,
-        FourNodeShellNewMITC4 = 456,
-        ThreeNodeShellANDES = 457,
-        FourNodeShellANDES = 458,
-        truss = 459,
-        contact = 460,
-        FrictionalPenaltyContact = 461,
-        EightNodeBrickLT = 462,
-        EightNodeBrickLTNoOutput = 463,
-        TwentyNodeBrickLT = 464,
-        TwentySevenNodeBrickLT = 465,
-        ShearBeamLT = 466,
-        porosity = 467,
-        alpha = 468,
-        rho_s = 469,
-        rho_f = 470,
-        k_x = 471,
-        k_y = 472,
-        k_z = 473,
-        K_s = 474,
-        K_f = 475,
-        pressure = 476,
-        cross_section = 477,
-        shear_modulus = 478,
-        torsion_Jx = 479,
-        bending_Iz = 480,
-        bending_Iy = 481,
-        IntegrationRule = 482,
-        number_of_integration_points = 483,
-        stiffness = 484,
-        normal_stiffness = 485,
-        tangential_stiffness = 486,
-        normal_damping = 487,
-        tangential_damping = 488,
-        friction_ratio = 489,
-        maximum_gap = 490,
-        xz_plane_vector = 491,
-        joint_1_offset = 492,
-        joint_2_offset = 493,
-        direction = 494,
-        contact_plane_vector = 495,
-        MembranePlateFiber = 496,
-        ElasticMembranePlate = 497,
-        elastic3d = 498,
-        FIBER = 499,
-        FiberSection = 500,
-        Section = 501,
-        fiber_cross_section = 502,
-        fiber_location_Y = 503,
-        fiber_location_Z = 504,
-        fiber_location = 505,
-        TorsionConstant_GJ = 506,
-        thickness = 507,
-        integration_rule = 508,
-        section_number = 509,
-        NDMaterialLT = 510,
-        linear_elastic_isotropic_3d = 511,
-        linear_elastic_isotropic_3d_LT = 512,
-        NonlinearIsotropic3DLT = 513,
-        sanisand2008 = 514,
-        camclay = 515,
-        camclay_accelerated = 516,
-        sanisand2004 = 517,
-        linear_elastic_crossanisotropic = 518,
-        uniaxial_concrete02 = 519,
-        uniaxial_elastic_1d = 520,
-        uniaxial_steel01 = 521,
-        uniaxial_steel02 = 522,
-        pisano = 523,
-        PisanoLT = 524,
-        VonMisesLT = 525,
-        VonMisesArmstrongFrederickLT = 526,
-        DruckerPragerLT = 527,
-        DruckerPragerNonAssociateLinearHardeningLT = 528,
-        DruckerPragerVonMisesLT = 529,
-        DruckerPragerArmstrongFrederickLT = 530,
-        DruckerPragerNonAssociateArmstrongFrederickLT = 531,
-        mass_density = 532,
-        elastic_modulus = 533,
-        viscoelastic_modulus = 534,
-        poisson_ratio = 535,
-        von_mises_radius = 536,
-        druckerprager_angle = 537,
-        druckerprager_k = 538,
-        armstrong_frederick_ha = 539,
-        armstrong_frederick_cr = 540,
-        initial_confining_stress = 541,
-        isotropic_hardening_rate = 542,
-        kinematic_hardening_rate = 543,
-        poisson_ratio_h_v = 544,
-        poisson_ratio_h_h = 545,
-        shear_modulus_h_v = 546,
-        elastic_modulus_horizontal = 547,
-        elastic_modulus_vertical = 548,
-        pressure_reference_p0 = 549,
-        plastic_flow_kd = 550,
-        plastic_flow_xi = 551,
-        initial_void_ratio = 552,
-        initial_shear_modulus = 553,
-        initial_bulk_modulus = 554,
-        sanisand2008_Pat = 555,
-        sanisand2008_k_c = 556,
-        sanisand2008_K0 = 557,
-        sanisand2008_alpha_cc = 558,
-        sanisand2008_c = 559,
-        sanisand2008_xi = 560,
-        sanisand2008_lambda = 561,
-        sanisand2008_ec_ref = 562,
-        sanisand2008_m = 563,
-        sanisand2008_h0 = 564,
-        sanisand2008_ch = 565,
-        sanisand2008_nb = 566,
-        sanisand2008_A0 = 567,
-        sanisand2008_nd = 568,
-        sanisand2008_p_r = 569,
-        sanisand2008_rho_c = 570,
-        sanisand2008_theta_c = 571,
-        sanisand2008_X = 572,
-        sanisand2008_z_max = 573,
-        sanisand2008_cz = 574,
-        sanisand2008_p0 = 575,
-        sanisand2008_p_in = 576,
-        sanisand2008_G0 = 577,
-        sanisand2004_K0 = 578,
-        sanisand2004_Pat = 579,
-        e0 = 580,
-        sanisand2004_G0 = 581,
-        sanisand2004_p_cut = 582,
-        sanisand2004_Mc = 583,
-        sanisand2004_c = 584,
-        sanisand2004_lambda_c = 585,
-        sanisand2004_xi = 586,
-        sanisand2004_ec_ref = 587,
-        sanisand2004_m = 588,
-        sanisand2004_h0 = 589,
-        sanisand2004_ch = 590,
-        sanisand2004_nb = 591,
-        sanisand2004_A0 = 592,
-        sanisand2004_nd = 593,
-        sanisand2004_z_max = 594,
-        sanisand2004_cz = 595,
-        reference_void_ratio = 596,
-        critical_stress_ratio_M = 597,
-        minimum_bulk_modulus = 598,
-        initial_mean_pressure = 599,
-        yield_strength = 600,
-        strain_hardening_ratio = 601,
-        compressive_strength = 602,
-        strain_at_compressive_strength = 603,
-        crushing_strength = 604,
-        strain_at_crushing_strength = 605,
-        tensile_strength = 606,
-        tension_softening_stiffness = 607,
-        M_in = 608,
-        kd_in = 609,
-        xi_in = 610,
-        h_in = 611,
-        m_in = 612,
-        beta_min = 613,
-        n_in = 614,
-        a_in = 615,
-        elastic_modulus_1atm = 616,
-        eplcum_cr_in = 617,
-        Niso3d_K = 618,
-        Niso3d_Kur = 619,
-        Niso3d_n = 620,
-        Niso3d_c = 621,
-        Niso3d_phi0 = 622,
-        Niso3d_dphi = 623,
-        Niso3d_Rf = 624,
-        Niso3d_K0 = 625,
-        Niso3d_Kb = 626,
-        Niso3d_m = 627,
-        Niso3d_pa = 628,
-        Niso3d_K2 = 629,
-        Niso3d_B = 630,
-        Niso3d_Et = 631,
-        Niso3d_Ei = 632,
-        Niso3d_Er = 633,
-        ax = 634,
-        ay = 635,
-        az = 636,
-        verbose_level = 637,
-        maximum_iterations = 638,
-        tolerance = 639,
-        yield_function_relative_tolerance = 640,
-        stress_relative_tolerance = 641,
-        beta = 642,
-        gamma = 643,
-        kappa = 644,
-        lambda = 645,
-        delta = 646,
-        DOMAIN_ = 647,
-        startTime = 648,
-        endTime = 649,
-        Period = 650,
-        Phase = 651,
-        Amplitude = 652,
-        frequency = 653,
-        MaxTime = 654,
-        frequency1 = 655,
-        frequency2 = 656,
-        frequency3 = 657,
-        frequency4 = 658,
-        stiffness_to_use_opt = 659,
-        DAMPING_RAYLEIGH = 660,
-        DAMPING_CAUGHEY3 = 661,
-        DAMPING_CAUGHEY4 = 662,
-        a0 = 663,
-        a1 = 664,
-        stiffness_to_use = 665,
-        a2 = 666,
-        a3 = 667,
-        a4 = 668,
-        R0 = 669,
-        cR1 = 670,
-        cR2 = 671,
-        MASS = 672,
-        mx = 673,
-        my = 674,
-        mz = 675,
-        Imx = 676,
-        Imy = 677,
-        Imz = 678,
-        equaldof = 679,
-        master = 680,
-        slave = 681,
-        dof_to_constrain = 682,
-        of = 683,
-        OUTPUT = 684,
-        BINARY = 685,
-        TEXT = 686,
-        ENABLE = 687,
-        DISABLE = 688,
-        COMPRESSION = 689
+        initial_normal_stiffness = 440,
+        stiffning_rate = 441,
+        number_of_integration_points = 442,
+        EightNodeBrick = 443,
+        TwentySevenNodeBrick = 444,
+        EightNodeBrick_upU = 445,
+        TwentyNodeBrick_uPU = 446,
+        TwentyNodeBrick = 447,
+        TwentyNodeBrickElastic = 448,
+        EightNodeBrick_up = 449,
+        variable_node_brick_8_to_27 = 450,
+        EightNodeBrickElastic = 451,
+        TwentySevenNodeBrickElastic = 452,
+        beam_displacement_based = 453,
+        BeamColumnDispFiber3d = 454,
+        beam_elastic = 455,
+        beam_elastic_lumped_mass = 456,
+        beam_9dof_elastic = 457,
+        FourNodeShellMITC4 = 458,
+        FourNodeShellNewMITC4 = 459,
+        ThreeNodeShellANDES = 460,
+        FourNodeShellANDES = 461,
+        truss = 462,
+        contact = 463,
+        HardContact = 464,
+        FrictionalPenaltyContact = 465,
+        SoftContact = 466,
+        EightNodeBrickLT = 467,
+        EightNodeBrickLTNoOutput = 468,
+        TwentyNodeBrickLT = 469,
+        TwentySevenNodeBrickLT = 470,
+        ShearBeamLT = 471,
+        EightNodeBrick_upULT = 472,
+        TwentyNodeBrick_uPULT = 473,
+        TwentySevenNodeBrick_uPULT = 474,
+        porosity = 475,
+        alpha = 476,
+        rho_s = 477,
+        rho_f = 478,
+        k_x = 479,
+        k_y = 480,
+        k_z = 481,
+        K_s = 482,
+        K_f = 483,
+        pressure = 484,
+        cross_section = 485,
+        shear_modulus = 486,
+        torsion_Jx = 487,
+        bending_Iz = 488,
+        bending_Iy = 489,
+        IntegrationRule = 490,
+        stiffness = 491,
+        normal_stiffness = 492,
+        tangential_stiffness = 493,
+        normal_damping = 494,
+        tangential_damping = 495,
+        friction_ratio = 496,
+        maximum_gap = 497,
+        xz_plane_vector = 498,
+        joint_1_offset = 499,
+        joint_2_offset = 500,
+        direction = 501,
+        contact_plane_vector = 502,
+        power = 503,
+        linear = 504,
+        exponential = 505,
+        factorial = 506,
+        inverse = 507,
+        MembranePlateFiber = 508,
+        ElasticMembranePlate = 509,
+        elastic3d = 510,
+        FIBER = 511,
+        FiberSection = 512,
+        Section = 513,
+        fiber_cross_section = 514,
+        fiber_location_Y = 515,
+        fiber_location_Z = 516,
+        fiber_location = 517,
+        TorsionConstant_GJ = 518,
+        thickness = 519,
+        integration_rule = 520,
+        section_number = 521,
+        NDMaterialLT = 522,
+        linear_elastic_isotropic_3d = 523,
+        linear_elastic_isotropic_3d_LT = 524,
+        NonlinearIsotropic3DLT = 525,
+        sanisand2008 = 526,
+        camclay = 527,
+        camclay_accelerated = 528,
+        sanisand2004 = 529,
+        linear_elastic_crossanisotropic = 530,
+        uniaxial_concrete02 = 531,
+        uniaxial_elastic_1d = 532,
+        uniaxial_steel01 = 533,
+        uniaxial_steel02 = 534,
+        pisano = 535,
+        PisanoLT = 536,
+        VonMisesLT = 537,
+        VonMisesArmstrongFrederickLT = 538,
+        DruckerPragerLT = 539,
+        DruckerPragerNonAssociateLinearHardeningLT = 540,
+        DruckerPragerVonMisesLT = 541,
+        DruckerPragerArmstrongFrederickLT = 542,
+        DruckerPragerNonAssociateArmstrongFrederickLT = 543,
+        mass_density = 544,
+        elastic_modulus = 545,
+        viscoelastic_modulus = 546,
+        poisson_ratio = 547,
+        von_mises_radius = 548,
+        druckerprager_angle = 549,
+        druckerprager_k = 550,
+        armstrong_frederick_ha = 551,
+        armstrong_frederick_cr = 552,
+        initial_confining_stress = 553,
+        isotropic_hardening_rate = 554,
+        kinematic_hardening_rate = 555,
+        poisson_ratio_h_v = 556,
+        poisson_ratio_h_h = 557,
+        shear_modulus_h_v = 558,
+        elastic_modulus_horizontal = 559,
+        elastic_modulus_vertical = 560,
+        pressure_reference_p0 = 561,
+        plastic_flow_kd = 562,
+        plastic_flow_xi = 563,
+        initial_void_ratio = 564,
+        initial_shear_modulus = 565,
+        initial_bulk_modulus = 566,
+        sanisand2008_Pat = 567,
+        sanisand2008_k_c = 568,
+        sanisand2008_K0 = 569,
+        sanisand2008_alpha_cc = 570,
+        sanisand2008_c = 571,
+        sanisand2008_xi = 572,
+        sanisand2008_lambda = 573,
+        sanisand2008_ec_ref = 574,
+        sanisand2008_m = 575,
+        sanisand2008_h0 = 576,
+        sanisand2008_ch = 577,
+        sanisand2008_nb = 578,
+        sanisand2008_A0 = 579,
+        sanisand2008_nd = 580,
+        sanisand2008_p_r = 581,
+        sanisand2008_rho_c = 582,
+        sanisand2008_theta_c = 583,
+        sanisand2008_X = 584,
+        sanisand2008_z_max = 585,
+        sanisand2008_cz = 586,
+        sanisand2008_p0 = 587,
+        sanisand2008_p_in = 588,
+        sanisand2008_G0 = 589,
+        sanisand2004_K0 = 590,
+        sanisand2004_Pat = 591,
+        e0 = 592,
+        sanisand2004_G0 = 593,
+        sanisand2004_p_cut = 594,
+        sanisand2004_Mc = 595,
+        sanisand2004_c = 596,
+        sanisand2004_lambda_c = 597,
+        sanisand2004_xi = 598,
+        sanisand2004_ec_ref = 599,
+        sanisand2004_m = 600,
+        sanisand2004_h0 = 601,
+        sanisand2004_ch = 602,
+        sanisand2004_nb = 603,
+        sanisand2004_A0 = 604,
+        sanisand2004_nd = 605,
+        sanisand2004_z_max = 606,
+        sanisand2004_cz = 607,
+        reference_void_ratio = 608,
+        critical_stress_ratio_M = 609,
+        minimum_bulk_modulus = 610,
+        initial_mean_pressure = 611,
+        yield_strength = 612,
+        strain_hardening_ratio = 613,
+        compressive_strength = 614,
+        strain_at_compressive_strength = 615,
+        crushing_strength = 616,
+        strain_at_crushing_strength = 617,
+        tensile_strength = 618,
+        tension_softening_stiffness = 619,
+        M_in = 620,
+        kd_in = 621,
+        xi_in = 622,
+        h_in = 623,
+        m_in = 624,
+        beta_min = 625,
+        n_in = 626,
+        a_in = 627,
+        elastic_modulus_1atm = 628,
+        eplcum_cr_in = 629,
+        Niso3d_K = 630,
+        Niso3d_Kur = 631,
+        Niso3d_n = 632,
+        Niso3d_c = 633,
+        Niso3d_phi0 = 634,
+        Niso3d_dphi = 635,
+        Niso3d_Rf = 636,
+        Niso3d_K0 = 637,
+        Niso3d_Kb = 638,
+        Niso3d_m = 639,
+        Niso3d_pa = 640,
+        Niso3d_K2 = 641,
+        Niso3d_B = 642,
+        Niso3d_Et = 643,
+        Niso3d_Ei = 644,
+        Niso3d_Er = 645,
+        ax = 646,
+        ay = 647,
+        az = 648,
+        verbose_level = 649,
+        maximum_iterations = 650,
+        tolerance = 651,
+        yield_function_relative_tolerance = 652,
+        stress_relative_tolerance = 653,
+        beta = 654,
+        gamma = 655,
+        kappa = 656,
+        lambda = 657,
+        delta = 658,
+        DOMAIN_ = 659,
+        startTime = 660,
+        endTime = 661,
+        Period = 662,
+        Phase = 663,
+        Amplitude = 664,
+        frequency = 665,
+        MaxTime = 666,
+        frequency1 = 667,
+        frequency2 = 668,
+        frequency3 = 669,
+        frequency4 = 670,
+        stiffness_to_use_opt = 671,
+        DAMPING_RAYLEIGH = 672,
+        DAMPING_CAUGHEY3 = 673,
+        DAMPING_CAUGHEY4 = 674,
+        a0 = 675,
+        a1 = 676,
+        stiffness_to_use = 677,
+        a2 = 678,
+        a3 = 679,
+        a4 = 680,
+        R0 = 681,
+        cR1 = 682,
+        cR2 = 683,
+        MASS = 684,
+        mx = 685,
+        my = 686,
+        mz = 687,
+        Imx = 688,
+        Imy = 689,
+        Imz = 690,
+        equal_dof = 691,
+        master = 692,
+        slave = 693,
+        dof_to_constrain = 694,
+        of = 695,
+        OUTPUT = 696,
+        BINARY = 697,
+        TEXT = 698,
+        ENABLE = 699,
+        DISABLE = 700,
+        COMPRESSION = 701,
+        SAVE = 702,
+        NON_CONVERGED_ITERATIONS = 703
       };
     };
 
     /// (External) token type, as returned by yylex.
     typedef token::yytokentype token_type;
 
-    /// Internal symbol number.
+    /// Symbol type: an internal symbol number.
     typedef int symbol_number_type;
+
+    /// The symbol type number to denote an empty symbol.
+    enum { empty_symbol = -2 };
 
     /// Internal symbol number for tokens (subsumed by symbol_number_type).
     typedef unsigned short int token_number_type;
@@ -622,7 +640,14 @@ namespace yy {
                     const semantic_type& v,
                     const location_type& l);
 
+      /// Destroy the symbol.
       ~basic_symbol ();
+
+      /// Destroy contents, and record that is empty.
+      void clear ();
+
+      /// Whether empty.
+      bool empty () const;
 
       /// Destructive move, \a s is emptied into this.
       void move (basic_symbol& s);
@@ -653,21 +678,23 @@ namespace yy {
       /// Constructor from (external) token numbers.
       by_type (kind_type t);
 
+      /// Record that this symbol is empty.
+      void clear ();
+
       /// Steal the symbol type from \a that.
       void move (by_type& that);
 
       /// The (internal) type number (corresponding to \a type).
-      /// -1 when this symbol is empty.
+      /// \a empty when empty.
       symbol_number_type type_get () const;
 
       /// The token.
       token_type token () const;
 
-      enum { empty = 0 };
-
       /// The symbol type.
-      /// -1 when this symbol is empty.
-      token_number_type type;
+      /// \a empty_symbol when empty.
+      /// An int, not token_number_type, to be able to store empty_symbol.
+      int type;
     };
 
     /// "External" symbols: returned by the scanner.
@@ -714,9 +741,9 @@ namespace yy {
 
     /// Generate an error message.
     /// \param yystate   the state where the error occurred.
-    /// \param yytoken   the lookahead token type, or yyempty_.
+    /// \param yyla      the lookahead token.
     virtual std::string yysyntax_error_ (state_type yystate,
-                                         symbol_number_type yytoken) const;
+                                         const symbol_type& yyla) const;
 
     /// Compute post-reduction state.
     /// \param yystate   the current state
@@ -816,16 +843,21 @@ namespace yy {
       /// Copy constructor.
       by_state (const by_state& other);
 
+      /// Record that this symbol is empty.
+      void clear ();
+
       /// Steal the symbol type from \a that.
       void move (by_state& that);
 
       /// The (internal) type number (corresponding to \a state).
-      /// "empty" when empty.
+      /// \a empty_symbol when empty.
       symbol_number_type type_get () const;
 
-      enum { empty = 0 };
+      /// The state number used to denote an empty symbol.
+      enum { empty_state = -1 };
 
       /// The state.
+      /// \a empty when empty.
       state_type state;
     };
 
@@ -866,17 +898,16 @@ namespace yy {
     /// Pop \a n symbols the three stacks.
     void yypop_ (unsigned int n = 1);
 
-    // Constants.
+    /// Constants.
     enum
     {
       yyeof_ = 0,
-      yylast_ = 9437,     ///< Last index in yytable_.
+      yylast_ = 10269,     ///< Last index in yytable_.
       yynnts_ = 16,  ///< Number of nonterminal symbols.
-      yyempty_ = -2,
-      yyfinal_ = 121, ///< Termination state number.
+      yyfinal_ = 123, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 452  ///< Number of tokens.
+      yyntokens_ = 466  ///< Number of tokens.
     };
 
 
@@ -885,7 +916,7 @@ namespace yy {
 
 
 } // yy
-#line 889 "feiparser.tab.hh" // lalr1.cc:372
+#line 920 "feiparser.tab.hh" // lalr1.cc:377
 
 
 

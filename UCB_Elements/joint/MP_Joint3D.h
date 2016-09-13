@@ -78,33 +78,40 @@ class MP_Joint3D : public MP_Constraint
     protected:
 
     private:
+
+        Domain* thisDomain;     // pointer to domain the MP is defined on
+
         int nodeRetained;
         int nodeConstrained;
         int nodeRotation;          // tag for the node to define the rotation vector
+
         // for shear rotation
         int RotDOF;            // tag for the shear mode that results in rotation
         int nodeDisplacement;      // tag for the node to define the rotation vector
+
         // for shear displacement
         int DispDOF;           // tag for the shear mode that results in displacement
         int LargeDisplacement;     // flag for large displacements
+
+        double Length0;
+
         // 0 for constant constraint matrix(small deformations)
         // 1 for time varying constraint matrix(large deformations)
         // 2 for large deformations with length correction
-        ID* constrDOF;         // ID of constrained DOF at constrained node
-        ID* retainDOF;         // ID of related DOF at retained node
-        Node* RetainedNode;        // to identify the retained node
-        Node* ConstrainedNode;     // to identify  the constrained node
-        Node* RotationNode;
-        Node* DisplacementNode;
+        Matrix* constraint;        // pointer to the constraint matrix
+        ID* constrDOF;             // ID of constrained DOF at constrained node
+        ID* retainDOF;             // ID of related DOF at retained node
 
         Vector RotNormVect;
         Vector DspNormVect;
 
         int dbTag1, dbTag2, dbTag3; // need a dbTag for the two ID's
 
-        double Length0;
-        Matrix* constraint;         // pointer to the constraint matrix
-        Domain* thisDomain;     // pointer to domain the MP is defined on
+        Node* RetainedNode;        // to identify the retained node
+        Node* ConstrainedNode;     // to identify  the constrained node
+        Node* RotationNode;
+        Node* DisplacementNode;
+
 };
 
 #endif

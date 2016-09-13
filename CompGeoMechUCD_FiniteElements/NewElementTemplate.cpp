@@ -48,6 +48,10 @@
 
 
 
+//NOTE!! Follow the Element_Class_Desc Encoding
+//       See classTags.h for more details about encoding
+vector<float> NewElementTemplate::Element_Output_Vector(number_of_Element_outputs) ; // Declare if there is element output except at gauss points
+vector<float> NewElementTemplate::Gauss_Output_Vector(number_of_gauss_points*18);    // Declare only if there is any gauss point and there is 18 outputs per gauss points i.e stress, strain and plastic strain
 
 
 
@@ -56,9 +60,11 @@
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
 NewElementTemplate::NewElementTemplate(int tag, int node1, .....):
-    Element(tag, ELE_TAG_NewElementTemplate),   //ATTENTION! Define the class tag in classTags.h
+    Element(tag, ELE_TAG_NewElementTemplate),   //ATTENTION! Define the class tag in classTags.h with provided encoding formula [Sumeet,2016] 
     // add more initializers
 {
+    this->setMaterialTag(material->getTag());   // for setting the material id to the element
+
     you must implement
 }
 
@@ -69,7 +75,7 @@ NewElementTemplate::NewElementTemplate(int tag, int node1, .....):
 //   * Input: Defined by user. At least should receive an integer tag, so that base class can be initialized.
 //   * Output: void
 NewElementTemplate::NewElementTemplate():
-    Element(0, ELE_TAG_NewElementTemplate), //ATTENTION! Define the class tag in classTags.h
+    Element(0, ELE_TAG_NewElementTemplate), //ATTENTION! Define the class tag in classTags.h with provided encoding formula [Sumeet,2016]
     // add more initializers setting internal variables to null values
 {
     you must implement
@@ -172,10 +178,9 @@ void NewElementTemplate::setDomain(Domain *theDomain)
         // More checks maybe
         //
         // Set the base class domain pointer
+        
         this->DomainComponent::setDomain(theDomain);
     }
-
-}
 
 //Additionally one can allocate resources at this point.
 you must implement
@@ -459,10 +464,6 @@ void NewElementTemplate::Print(ostream &s, int flag = 0)
     you must implement
 }
 
-
-
-
-
 //==================================================================================================
 // Check element correctness
 //   * Input: an ostream to print stuff into (print details of what is being checked here.)
@@ -474,35 +475,30 @@ int NewElementTemplate::CheckMesh(ofstream &)
 }
 
 
-
-
-
-
-
 //==================================================================================================
 // Output interface functions
 //   * Input: void
-//   * Output: number of double outputs for the element (size of the output vector)
-int NewElementTemplate::getOutputSize() const
+//   * Output: Vector (array of doubles) with the element output.
+const vector<float> &NewElementTemplate::getElementOutput()
 {
-    you must implement
+    
+    Fill the Element_Output_Vector
+    
+    return Element_Output_Vector;
 }
-
-
-
-
 
 //==================================================================================================
 // Output interface functions
 //   * Input: void
 //   * Output: Vector (array of doubles) with the element output.
-const Vector &NewElementTemplate::getOutput()
+const vector<float> &NewElementTemplate::getGaussOutput()
 {
-    you must implement
+    Fill the Gauss_Output_Vector
+    
+    NOTE!!! - Exactly 18 outputs should be there per gauss point
+
+    return Gauss_Output_Vector;
 }
-
-
-
 
 
 //==================================================================================================

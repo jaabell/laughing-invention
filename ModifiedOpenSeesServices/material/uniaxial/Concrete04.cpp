@@ -341,8 +341,8 @@ void Concrete04::TensReload()
                 Tstress = TUtenSlope*(Tstrain - TcompStrain);
                 Ttangent = TUtenSlope;
             }
-    //  }
-    /*  else if (Tstrain >= TcompStrain) {
+        }
+       else if (Tstrain >= TcompStrain) {
             Ttangent = TUtenSlope;
             Tstress = Ttangent*(Tstrain-TUtenSlope);
         }

@@ -101,16 +101,16 @@ private:
     const Matrix &getKs2Matrix(const Vector &ri, const Vector &z) const;
 
     // internal data
-    Node *nodeIPtr, *nodeJPtr;  // pointers to the element two endnodes
-
     Vector vAxis;               // Vector that lies in local plane xz
     Vector nodeIOffset, nodeJOffset;    // rigid joint offsets
 
     Vector xAxis;               // local x axis
+    Node *nodeIPtr, *nodeJPtr;  // pointers to the element two endnodes
+    Matrix R0;                  // rotation matrix from local to global coordinates
+
     double L;                   // undeformed element length
     double Ln;                  // deformed element length
 
-    Matrix R0;                  // rotation matrix from local to global coordinates
     // (the columns of which are the element local axes)
     Vector alphaIq;             // quaternion for node I
     Vector alphaJq;             // quaternion for node I
@@ -120,8 +120,8 @@ private:
     Vector alphaI;              // last trial rotations end i
     Vector alphaJ;              // last trial rotatations end j
 
-    Vector ul;                  // local displacements
     Vector ulcommit;            // commited local displacements
+    Vector ul;                  // local displacements
     Vector ulpr;                // previous local displacements
 
     static Matrix RI;           // nodal triad for node 1

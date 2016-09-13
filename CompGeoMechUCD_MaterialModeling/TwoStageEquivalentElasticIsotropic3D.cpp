@@ -319,23 +319,21 @@ void
 TwoStageEquivalentElasticIsotropic3D::Print(ostream& s, int flag)
 {
     s << "TwoStageEquivalentElasticIsotropic3D" << endln;
-    s << "    tag: " << this->getTag() << endln;
-    s << "    stage   = " << stage << endln;
-    s << "    nu      = " << v << endln;
-    s << "    rho     = " << rho << endln;
-    s << "    K       = " << K << endln;
-    s << "    Kur     = " << Kur << endln;
-    s << "    n       = " << n << endln;
-    s << "    c       = " << c << endln;
-    s << "    phi0    = " << phi0 << endln;
-    s << "    dphi    = " << dphi << endln;
-    s << "    Rf      = " << Rf << endln;
-    s << "    K0      = " << K0 << endln;
-    s << "    Kb      = " << Kb << endln;
-    s << "    m       = " << m << endln;
-    s << "    pa      = " << pa << endln;
-    // ======================================
-    //s << "\tD: " << D << endln;
+    s << "\ttag: " << this->getTag() << endln;
+    s << "\tstage: " << stage << endln;
+    s << "\tnu: " << v << endln;
+    s << "\trho: " << rho << endln;
+    s << "\tK: " << K << endln;
+    s << "\tKur: " << Kur << endln;
+    s << "\tn: " << n << endln;
+    s << "\tc: " << c << endln;
+    s << "\tphi0: " << phi0 << endln;
+    s << "\tdphi: " << dphi << endln;
+    s << "\tRf: " << Rf << endln;
+    s << "\tK0: " << K0 << endln;
+    s << "\tKb: " << Kb << endln;
+    s << "\tm: " << m << endln;
+    s << "\tpa: " << pa << endln;
 }
 
 
@@ -510,6 +508,9 @@ inline void TwoStageEquivalentElasticIsotropic3D::nextStage()
 
 inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
 {
+
+double B_min,Et_el,B_el,nu_el;
+
 #ifdef _TSEL_Debug_Mode
     cout << "=====================================" << endl;
     cout << "Update Modulus call" << endl;
@@ -538,7 +539,7 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
         cout << "--->  Static analysis" << endl;
 #endif
         double s1, s3;  // Average stress between previous step and current... (results in a secant stiffness :P)
-        double desv, devfh, strlev, phi, Bmin, G_mod, Ei_el;
+        double desv, devfh, strlev, phi, G_mod, Ei_el;
 
         if (stage == 0)
         {
@@ -650,10 +651,7 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
             strlev = 10;
         }
 
-        double B_min;
-        Bmin = B_calc ( Kb, pa, n, ( 0.25 * pa) );
-
-        double B_el, Et_el, nu_el;
+        B_min = B_calc ( Kb, pa, n, ( 0.25 * pa) );
 
         //Tension Failure
         if (s3 < -0.1 * pa)
@@ -718,9 +716,12 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
                     cout << "--->  Primary loading (strlev = " << strlev <<  ")" << endl;
 #endif
 
+                    
+
                     //Primary loading
                     if ( s3 > 0. )
                     {
+
                         if ( (c <= 0.) & (s3 < ( 0.25 * pa)))
                         {
                             Ei_el = Ei_calc(K, pa, n, 0.25 * pa);
@@ -740,7 +741,7 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
         }
 
         E = Et_el;
-        //v = nu_el;
+        v = nu_el;
 
         if (strlev > strlev_max)
         {
@@ -753,8 +754,6 @@ inline void TwoStageEquivalentElasticIsotropic3D::updateModulus()
 #endif
         //cout << "   strlev     = " << strlev << endl;
 
-
-        ////  END TCL
 
     }
     // ============================================================================================

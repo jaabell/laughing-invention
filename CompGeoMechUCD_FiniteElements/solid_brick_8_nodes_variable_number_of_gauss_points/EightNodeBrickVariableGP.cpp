@@ -64,7 +64,8 @@ EightNodeBrickVariableGP::EightNodeBrickVariableGP(int element_number, int numbe
     //BJ//BJ
     //elem_numb = element_number;
 
-
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     //================================================================
     // added by Nima Tafazzoli (October 2010)
     // replacing the input density with the one defined in material
@@ -1202,23 +1203,6 @@ void EightNodeBrickVariableGP::report(char *msg)
 
     ::printf("\n\n");
 
-
-    int total_number_of_Gauss_points = integration_order *
-                                       integration_order *
-                                       integration_order;
-    //     if ( total_number_of_Gauss_points != 0 )
-    //     {
-    //
-    //         theNodes[0]->Print(cerr);
-    //         theNodes[1]->Print(cerr);
-    //         theNodes[2]->Print(cerr);
-    //         theNodes[3]->Print(cerr);
-    //         theNodes[4]->Print(cerr);
-    //         theNodes[5]->Print(cerr);
-    //         theNodes[6]->Print(cerr);
-    //         theNodes[7]->Print(cerr);
-    //
-    //     }
 
     ::printf("\n\nGauss-Legendre integration order\n");
     ::printf("Integration order in r direction = %d\n", integration_order);

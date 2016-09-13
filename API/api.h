@@ -65,7 +65,8 @@
 
 // Elements
 //--------------------------------------------------------------------------------------------------
-#include "MODELING/add_element_frictional_penalty_contact.h"
+#include "MODELING/add_element_hard_contact.h"
+#include "MODELING/add_element_soft_contact.h"
 // #include "MODELING/add_element_contact_3dof_to_3dof.h"
 // #include "MODELING/add_element_contact_nonlinear_3dof_to_7dof.h"
 // #include "MODELING/add_element_contact_nonlinear_3dof_to_3dof.h"
@@ -74,10 +75,13 @@
 #include "MODELING/add_element_brick_8node_elastic.h"
 #include "MODELING/add_element_brick_8node_up.h"
 #include "MODELING/add_element_brick_8node_upU.h"
+#include "MODELING/add_element_brick_8node_upULT.h"
 #include "MODELING/add_element_brick_20node.h"
 #include "MODELING/add_element_brick_20node_elastic.h"
 #include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"
 #include "MODELING/add_element_brick_20node_upU.h"
+#include "MODELING/add_element_brick_20node_upULT.h"
+#include "MODELING/add_element_brick_27node_upULT.h"
 #include "MODELING/add_element_brick_27node.h"
 #include "MODELING/add_element_brick_27node_elastic.h"
 #include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"
@@ -259,7 +263,7 @@
 #include "MODELING/wipe_model.h"
 #include "MODELING/check_mesh.h"
 #include "SIMULATION/compute_reaction_forces.h"
-
+#include "SIMULATION/save_non_converged_iterations.h"
 
 // #include "./SIMULATION/analyze_static_multistep.h"
 // #include "./SIMULATION/analyze_transient_multistep.h"

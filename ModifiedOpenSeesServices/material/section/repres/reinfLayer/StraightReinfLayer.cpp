@@ -48,8 +48,8 @@ StraightReinfLayer::StraightReinfLayer(int materialID, int numReinfBars,
                                        const Vector& FinalPosition):
     nReinfBars(numReinfBars),
     matID(materialID),
-    area(reinfBarArea),
     barDiam(0.0),
+    area(reinfBarArea),
     initPosit(InitialPosition),
     finalPosit(FinalPosition)
 {

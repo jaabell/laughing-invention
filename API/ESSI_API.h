@@ -344,8 +344,11 @@ static StaticIntegrator                           *theStaticIntegrator          
 static TransientIntegrator                        *theTransientIntegrator               = 0;
 static ConvergenceTest                            *theConvergenceTest                   = 0;
 static EigenSOE                                   *theEigenSOE                          = 0;
-static RCM                                        *theRCM                               = new RCM();  // Not used in parallel
 
+#ifdef _PARALLEL_PROCESSING
+#else
+static RCM                                        *theRCM                               = new RCM();  // Not used in parallel  
+#endif
 
 // Store names of model and stages
 static string StageName;
@@ -355,7 +358,7 @@ static string ModelName;
 // Numberers are hard-coded. For parallel processing use the Parallel numberer
 // for sequential use RCM.
 #ifdef _PARALLEL_PROCESSING
-static ParallelNumberer *theParallelNumberer = new ParallelNumberer();
+// static ParallelNumberer *theParallelNumberer = new ParallelNumberer();  // Not used in parallel  // Commenting it [Sumeet Septemebr, 2016]
 #endif
 
 // The object broker

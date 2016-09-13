@@ -125,6 +125,9 @@ ThreeNodeAndesBending::ThreeNodeAndesBending(int element_number,
     xl1(3), xl2(3), xl3(3), x0(3), T_lg(3, 3),
     rho(0.0), E_planestress(3, 3), is_stiffness_calculated(false)
 {
+    
+    this->setMaterialTag(Globalmmodel->getTag());
+
     // Set connected external node IDs
     connectedExternalNodes(0) = node_numb_1;
     connectedExternalNodes(1) = node_numb_2;
@@ -185,6 +188,9 @@ ThreeNodeAndesBending::ThreeNodeAndesBending(int element_number,
     xl1(3), xl2(3), xl3(3), x0(3), T_lg(3, 3),
     rho(0.0), E_planestress(3, 3), is_stiffness_calculated(false)
 {
+   
+    this->setMaterialTag((*material)->getTag());
+
     // Set connected external node IDs
     connectedExternalNodes(0) = node_numb_1;
     connectedExternalNodes(1) = node_numb_2;

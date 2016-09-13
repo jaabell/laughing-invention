@@ -246,45 +246,19 @@ DomainPartitioner::partition(int numParts)
     // we now iterate through the nodes to first determine
     // min and max node numbers
 
-    NodeIter &theNodes = myDomain->getNodes();
     Node *nodePtr;
 
-    while ((nodePtr = theNodes()) != 0)
-    {
-        int tag = nodePtr->getTag();
-        if (tag > maxNodeTag)
-        {
-            maxNodeTag = tag;
-        }
-        if (tag < minNodeTag)
-        {
-            minNodeTag = tag;  //NOTE: minNodeTag will always be zero!! -JAbell
-        }
-    }
-
-    if (minNodeTag < 0)
-    {
-        //Never happens! :/ -JAbell
-        cerr << "DomainPartitioner::partition(int numParts)";
-        cerr << " - minNodeTag < 0 \n";
-        numPartitions = 0;
-        return -1;
-    }
+    maxNodeTag = myDomain->maxNodesTag;   // [Sumeet August 2016]
+    minNodeTag = 0;                       // minimum node tag will always be zero [Jabell and Sumeet August 2016]
 
     // we now create an ID which will contain information
     // about which partition the node is located in
 
-    if ( nodePartition != NULL )
-    {
-        delete [] nodePartition;
-    }
+    delete [] nodePartition;
     nodePartition = NULL;
     nodePartition = new int[(maxNodeTag + 1) * 8];  //Note:  why *8 here? -JAbell
 
-    if ( ParCount != NULL )
-    {
-        delete [] ParCount;
-    }
+    delete [] ParCount;
     ParCount = NULL;
     ParCount = new int[maxNodeTag + 1];
 
@@ -316,7 +290,8 @@ DomainPartitioner::partition(int numParts)
     //
 
 
-    const int eleNum = theElementGraph->getNumVertex();
+    // const int eleNum = theElementGraph->getNumVer:)tex();
+    const int eleNum =  myDomain->maxElementsTag; // Added by Sumeet August, 2016
     elementPlace = new ID(eleNum);
 
     if ( elementPlace == NULL)
@@ -344,25 +319,24 @@ DomainPartitioner::partition(int numParts)
         cerr << "DomainPartitioner::partition() - cannot allocate memory for ele_node_index\n";
     }
 
-
     ele_node_index[0] = 0;
     for (int i_elem = 1; i_elem <= eleNum ; i_elem++ )
     {
         Element *elePtr = myDomain->getElement(i_elem);
-        const ID &nodes = elePtr->getExternalNodes();
-        i_elem_numNodes = nodes.Size();
-        total_nodes_Num = total_nodes_Num + i_elem_numNodes;
-        ele_node_index [i_elem] = (int)nodes(0);
+        if(elePtr){  // Added by Sumeet August, 2016
+            const ID &nodes = elePtr->getExternalNodes();
+            i_elem_numNodes = nodes.Size();
+            total_nodes_Num = total_nodes_Num + i_elem_numNodes;
+            ele_node_index [i_elem] = (int)nodes(0);
+        }
 
     }
-
 
     ele_nodes = new int [total_nodes_Num];
     if ( ele_nodes == NULL)
     {
         cerr << "DomainPartitioner::partition() - can not allocate memory for ele_nodes\n";
     }
-
 
     VertexIter &theVertexIter = theElementGraph->getVertices();
     Vertex *vertexPtr;
@@ -494,6 +468,7 @@ DomainPartitioner::partition(int numParts)
             {
                 Subdomain *theSubdomain = myDomain->getSubdomainPtr(par);
                 nodePtr = myDomain->Domain::removeNode(nodePtr->getTag());
+                myDomain->add_Node_Partition_Info(nodeTag,par);  // [Sumeet August,2016]
                 theSubdomain->addNode(nodePtr);
                 nodesOnEachPart[par]++;
             }
@@ -510,6 +485,7 @@ DomainPartitioner::partition(int numParts)
                 if ( par != 0 )
                 {
                     theSubdomain = myDomain->getSubdomainPtr(par);
+                    myDomain->add_Node_Partition_Info(nodeTag,par);  // [Sumeet August,2016]
                 }
                 else
                 {
@@ -632,7 +608,7 @@ DomainPartitioner::partition(int numParts)
         int eleTag = vertexPtr->getRef();
         Element *elePtr = myDomain->removeElement(eleTag);
 
-
+        myDomain->add_Element_Partition_Info(eleTag,partition);  // [Sumeet August,2016]
         Subdomain *theSubdomain = myDomain->getSubdomainPtr(partition);
         elementsOnEachPart[partition]++;
 

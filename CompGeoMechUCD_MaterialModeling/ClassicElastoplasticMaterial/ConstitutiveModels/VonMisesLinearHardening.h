@@ -88,6 +88,7 @@ public:
                             VMLHVarsType &vars);
 
     VonMisesLinearHardening();
+    void Print(ostream& s, int flag);
     //The state variables.
 
 private:

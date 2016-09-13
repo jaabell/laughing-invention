@@ -37,7 +37,6 @@
 #include <LTensorDisplay.h>
 #include <HDF5_Channel.h>
 #include <ESSITimer.h>
-
 #include <unistd.h>
 
 
@@ -49,8 +48,7 @@ double EightNodeBrickLT::SurfaceLoadValues_in_function;         // Nima added fo
 DTensor2 EightNodeBrickLT::gp_coords(8, 3, 0.0);
 DTensor1 EightNodeBrickLT::gp_weight(8, 0.0);
 Matrix EightNodeBrickLT::gauss_points(8, 3);
-Vector EightNodeBrickLT::outputVector(EightNodeBrickLT_OUTPUT_SIZE );
-
+vector<float> EightNodeBrickLT::Gauss_Output_Vector(144);
 
 Vector EightNodeBrickLT::ShapeFunctionValues_in_function( 4 );  // Nima added for surface load (July 2012)
 Vector EightNodeBrickLT::J_vector_in_function( 3 );             // Nima added for surface load (July 2012)
@@ -70,6 +68,8 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
       M( 24, 24), P( 24 )
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     rho = Globalmmodel->getRho();
     determinant_of_Jacobian = 0.0;
     mmodel = Globalmmodel;
@@ -115,18 +115,25 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
 
     is_mass_computed = false;
 
-    connectedExternalNodes( 0 ) = node_numb_1;
-    connectedExternalNodes( 1 ) = node_numb_2;
-    connectedExternalNodes( 2 ) = node_numb_3;
-    connectedExternalNodes( 3 ) = node_numb_4;
+    connectedExternalNodes(0) = node_numb_1;
+    connectedExternalNodes(1) = node_numb_2;
+    connectedExternalNodes(2) = node_numb_3;
+    connectedExternalNodes(3) = node_numb_4;
+    connectedExternalNodes(4) = node_numb_5;
+    connectedExternalNodes(5) = node_numb_6;
+    connectedExternalNodes(6) = node_numb_7;
+    connectedExternalNodes(7) = node_numb_8;
 
-    connectedExternalNodes( 4 ) = node_numb_5;
-    connectedExternalNodes( 5 ) = node_numb_6;
-    connectedExternalNodes( 6 ) = node_numb_7;
-    connectedExternalNodes( 7 ) = node_numb_8;
+    Global_to_Local_Node_Mapping[node_numb_1]=0;
+    Global_to_Local_Node_Mapping[node_numb_2]=1;
+    Global_to_Local_Node_Mapping[node_numb_3]=2;
+    Global_to_Local_Node_Mapping[node_numb_4]=3;
+    Global_to_Local_Node_Mapping[node_numb_5]=4;
+    Global_to_Local_Node_Mapping[node_numb_6]=5;
+    Global_to_Local_Node_Mapping[node_numb_7]=6;
+    Global_to_Local_Node_Mapping[node_numb_8]=7;   
 
     nodes_in_brick = 8;
-
 
     for ( int i = 0; i < 8; i++ )
     {
@@ -134,7 +141,6 @@ EightNodeBrickLT::EightNodeBrickLT( int element_number,
     }
 
     this->setNumberOfBoundaryNodes(4);
-
 }
 
 
@@ -602,7 +608,7 @@ void EightNodeBrickLT::computeGaussPoint()
         gauss_points( gp, 1 ) = material_arrayCoord( 1, gp );
         gauss_points( gp, 2 ) = material_arrayCoord( 2, gp );
     }
-    // return gauss_points;
+
 }
 
 
@@ -825,9 +831,6 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
 {
     DTensor4 stifftensor(8, 3, 3, 8, 0.0);
 
-
-
-
     double r  = 0.0;
     double w_r = 0.0;
     double s  = 0.0;
@@ -913,18 +916,6 @@ const Matrix &EightNodeBrickLT::getTangentStiff()
         }
     }
 
-    // for (int ii = 0; ii < 24; ii++)
-    // {
-    //     if (K(ii, ii) <= 0)
-    //     {
-    //         cerr << "Element " << this->getTag() << " - Negative Diagonal at i = " << ii << endl;
-
-    //         cout << "K = " << K << endl;
-
-    //         exit(-1);
-    //     }
-    // }
-
     return K;
 }
 
@@ -958,6 +949,13 @@ const Matrix &EightNodeBrickLT::getInitialStiff ()
     }
 
     return *Ki;
+}
+
+//=============================================================================
+// Returns the matrix K [Sumeet September, 2016]
+const Matrix &EightNodeBrickLT::getConstStiff()   
+{
+    return K;
 }
 
 //=============================================================================
@@ -1086,87 +1084,96 @@ const Vector &EightNodeBrickLT::getBodyForce( double loadFactor, const Vector &d
 const Vector &EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector &data )
 {
 
-    int node_exist = 0;
-    Vector node_local( 4 );
-
-    // check if the nodes of the surface belong to the element
-    for ( int i = 0; i < 4; i++ )
-    {
-
-        for ( int j = 0; j < 8; j++ )
-        {
-            if ( data( i ) == connectedExternalNodes( j ) )
-            {
-                node_exist = 1;
-                node_local( i ) = j;
-                break;
-            }
-        }
-
-        if ( node_exist != 1 )
-        {
-            cerr << "\nERROR: Node " << data( i ) << " defined for the BrickSurfaceLoad does not belong to element " << this->getTag() << endl;
+    map<int,int> local_nodes_map; int local_nodes[4];
+  
+    /////////////////////////////////////////// Edited by Sumeet 30/03/2016 //////////////////////////////
+    // checking if node exists in the element
+    for ( int i =0; i<4 ;i++){
+        std::map<int,int>::iterator it;
+        it=Global_to_Local_Node_Mapping.find(data(i));
+        if (it == Global_to_Local_Node_Mapping.end()){
+            cerr << "\nERROR: Node " <<  data(i) << " defined for the BrickSurfaceLoad does not belong to element \n" ;
             exit( 1 );
         }
+        local_nodes_map[it->second]=i;
+        local_nodes[i]=it->second;
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    static const int Node_to_Surface[8][9]={{1,2,3,4,5,1,3,7,4},
+                                            {2,3,0,0,4,5,5,6,2},
+                                            {3,0,1,6,7,3,1,5,6},
+                                            {0,1,2,2,6,7,7,4,0},
+                                            {7,6,5,5,1,0,0,3,7},
+                                            {4,7,6,1,0,4,6,2,1},
+                                            {5,4,7,7,3,2,2,1,5},
+                                            {6,5,4,4,0,3,3,2,6}};
+    ////////////////////////////////////// Edited by Sumeet 30/3/2016 /////////////////////////////////////
+    //  Finding the correct surface nodes order
+    int success =0; int surface_nodes_order[4]={0,0,0,0};
+    for ( int i =0; i<3 ;i++){
+        for( int j=0; j<3;j++){
+            std::map<int,int>::iterator it;
+            int node=Node_to_Surface[local_nodes[0]][3*i+j];
+            it=local_nodes_map.find(node);
+            if (it == local_nodes_map.end()){
+                success=0;break;
+            }
+            success=success+1;
+            surface_nodes_order[j]= it->second;         
+        }
+        if(success==3) break;
+    }
+    if (success == 0){
+        cerr << "\nERROR: Nodes  defined for the BrickSurfaceLoad does not belong to elements surface  \n" ;
+        exit( 1 );
+    }    
 
-    int node1_local = node_local( 0 );
-    int node2_local = node_local( 1 );
-    int node3_local = node_local( 2 );
-    int node4_local = node_local( 3 );
-
+    ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // cout << "surface_nodes_order ";
+    // for ( int i =0; i < 8 ; i++)
+    //     cout << local_nodes[i] << " ";
+    //     // cout << surface_nodes_order[i] << " ";
+    // cout << "\n";
+    // for ( int i =0; i < 8 ; i++)
+    //     cout << local_nodes[surface_nodes_order[i]] << " ";
+    // cout << "\n";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // get the surface nodal coordinates
-    const Vector &coordnode1 = theNodes[node1_local]->getCrds();
-    const Vector &coordnode2 = theNodes[node2_local]->getCrds();
-    const Vector &coordnode3 = theNodes[node3_local]->getCrds();
-    const Vector &coordnode4 = theNodes[node4_local]->getCrds();
-
-
+    const Vector &coordnode1 = theNodes[local_nodes[(surface_nodes_order[0])]]->getCrds();
+    const Vector &coordnode2 = theNodes[local_nodes[(surface_nodes_order[1])]]->getCrds();
+    const Vector &coordnode3 = theNodes[local_nodes[(surface_nodes_order[2])]]->getCrds();
+    const Vector &coordnode4 = theNodes[local_nodes[(surface_nodes_order[3])]]->getCrds();
 
     double ShapeFunctionValues;
     double LoadValue;
     Vector J_vector( 3 );
     Vector Pressure( 4 );
 
+    Pressure( 0 ) = data( surface_nodes_order[0]+4) * loadFactor;
+    Pressure( 1 ) = data( surface_nodes_order[1]+4) * loadFactor;
+    Pressure( 2 ) = data( surface_nodes_order[2]+4) * loadFactor;
+    Pressure( 3 ) = data( surface_nodes_order[3]+4) * loadFactor;
 
-
-    Pressure( 0 ) = data( 4 ) * loadFactor;
-    Pressure( 1 ) = data( 5 ) * loadFactor;
-    Pressure( 2 ) = data( 6 ) * loadFactor;
-    Pressure( 3 ) = data( 7 ) * loadFactor;
-
-
-
-    static Vector NodalForces( 24 );
-
-    for ( int m = 0; m < 24; m++ )
-    {
-        NodalForces( m ) = 0;
+    static Vector NodalForces(24);
+    for (int m = 0; m < 24; m++){
+        NodalForces(m) = 0;
     }
-
-
 
     double oneOverSquareRoot3 = 1.0 / sqrt( 3.0 );
     Matrix GsPts( 4, 2 );
 
     GsPts( 0, 0 ) =  oneOverSquareRoot3;
     GsPts( 0, 1 ) =  oneOverSquareRoot3;
-
     GsPts( 1, 0 ) = -oneOverSquareRoot3;
     GsPts( 1, 1 ) =  oneOverSquareRoot3;
-
     GsPts( 2, 0 ) = -oneOverSquareRoot3;
     GsPts( 2, 1 ) = -oneOverSquareRoot3;
-
     GsPts( 3, 0 ) =  oneOverSquareRoot3;
     GsPts( 3, 1 ) = -oneOverSquareRoot3;
 
-
-
     int r = 0;
-
 
     // loop over dof
     for ( int k = 0; k < 3; k++ )
@@ -1174,30 +1181,24 @@ const Vector &EightNodeBrickLT::getSurfaceForce( double loadFactor, const Vector
         // loop over nodes
         for ( int j = 0; j < 4; j++ )
         {
-
-            for ( int v = 0; v < 8; v++ )
-            {
-                if ( data( j ) == connectedExternalNodes( v ) )
-                {
-                    r = v;
-                    break;
-                }
-            }
-
+            r = local_nodes[(surface_nodes_order[j])] ;
             // loop over Gauss points
             for ( int i = 0; i < 4; i++ )
             {
-
                 ShapeFunctionValues = SurfaceShapeFunctionValues( GsPts( i, 0 ) , GsPts( i, 1 ), j );
                 J_vector = Direction_Weight( GsPts( i, 0 ) , GsPts( i, 1 ), coordnode1, coordnode2, coordnode3, coordnode4 );
                 LoadValue = SurfaceLoadValues( GsPts( i, 0 ) , GsPts( i, 1 ), Pressure );
-
-
                 NodalForces( r * 3 + k ) = NodalForces( r * 3 + k ) + LoadValue * J_vector( k ) * ShapeFunctionValues;
             }
         }
     }
 
+
+    // ////////////////////////////// For Debugging By Sumeet //////////////////////////////////////////
+    // for ( int i =0; i < 8 ; i++)
+    //     cout << NodalForces(3*i)<< " " << NodalForces(3*i+1) << " " << NodalForces(3*i+2) <<   "\n";
+    // cout << "\n\n******************************************************************************\n\n";
+    // /////////////////////////////////////////////////////////////////////////////////////////////////
     return NodalForces;
 }
 
@@ -1507,23 +1508,6 @@ int EightNodeBrickLT::sendSelf ( int commitTag, Channel &theChannel )
         return -1;
     }
 
-    //Send the gauss points
-    // if ( theChannel.sendMatrix( 0, commitTag, gauss_points ) < 0 )
-    // {
-    //     cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its Gauss point coordinates\n";
-    //     return -1;
-    // }
-
-    // //Send outputVector
-    // if ( theChannel.sendVector( 0, commitTag, outputVector ) < 0 )
-    // {
-    //     cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send its outputVector\n";
-    //     return -1;
-    // }
-
-
-
-
     return 0;
 
 }
@@ -1636,22 +1620,6 @@ int EightNodeBrickLT::receiveSelf ( int commitTag, Channel &theChannel, FEM_Obje
         return -1;
     }
 
-    // gauss_points
-    // if ( theChannel.receiveMatrix( 0, commitTag, gauss_points ) < 0 )
-    // {
-    //     cerr << "EightNodeBrickLT::receiveSelf() - failed to recv gauss_points!\n";
-    //     return -1;
-    // }
-
-    // // outputVector
-    // if ( theChannel.receiveVector( 0, commitTag, outputVector ) < 0 )
-    // {
-    //     cerr << "EightNodeBrickLT::receiveSelf() - failed to recv outputVector!\n";
-    //     return -1;
-    // }
-
-
-
     return 0;
 
 }
@@ -1697,8 +1665,8 @@ int EightNodeBrickLT::getObjectSize()
     size += sizeof(double) * bf.Size();
     // Matrix gauss_points   NOT INCLUDED IN MEMORY COUNT... THEY're Static (J. Abell);
     // size += sizeof(gauss_points);
-    // // Vector outputVector;
-    // size += sizeof(outputVector);
+    // // Vector Gauss_Output_Vector;
+    // size += sizeof(Gauss_Output_Vector);
     // Index < 'i' > i;
     size += sizeof(i);
     // Index < 'j' > j;
@@ -2005,8 +1973,7 @@ EightNodeBrickLT::CheckMesh( ofstream &checkmesh_file )
 Vector *
 EightNodeBrickLT::getStress( void )
 {
-    cout << "EightNodeBrickLT::getStress( void ) got called!\n\n";
-    DTensor2 stress;
+    DTensor2 stress(3, 3, 0.0);
     Vector *stresses = new Vector( 48 );   // FIXME: Who deallocates this guy???
 
     for ( short gp = 0 ; gp < 8 ; gp++ )
@@ -2023,25 +1990,22 @@ EightNodeBrickLT::getStress( void )
     return stresses;
 }
 
-
-
-
 Matrix &EightNodeBrickLT::getGaussCoordinates(void)
 {
     computeGaussPoint();
     return gauss_points;
 }
 
-int EightNodeBrickLT::getOutputSize() const
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &EightNodeBrickLT::getGaussOutput()
 {
-    return EightNodeBrickLT_OUTPUT_SIZE ;
-}
-
-
-
-const Vector &EightNodeBrickLT::getOutput()
-{
-
     //Form the output vector
     int ii = 0;
     for (int gp = 0; gp < 8; gp++)
@@ -2051,33 +2015,31 @@ const Vector &EightNodeBrickLT::getOutput()
         const DTensor2 & stress = material_array[gp]->getStressTensor();
 
         //Write strain
-        outputVector(ii++) = strain(0, 0);
-        outputVector(ii++) = strain(1, 1);
-        outputVector(ii++) = strain(2, 2);
-        outputVector(ii++) = strain(0, 1);
-        outputVector(ii++) = strain(0, 2);
-        outputVector(ii++) = strain(1, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 0);
+        Gauss_Output_Vector[ii++] = strain(1, 1);
+        Gauss_Output_Vector[ii++] = strain(2, 2);
+        Gauss_Output_Vector[ii++] = strain(0, 1);
+        Gauss_Output_Vector[ii++] = strain(0, 2);
+        Gauss_Output_Vector[ii++] = strain(1, 2);
 
         //Write plastic strain
-        outputVector(ii++) = plstrain(0, 0);
-        outputVector(ii++) = plstrain(1, 1);
-        outputVector(ii++) = plstrain(2, 2);
-        outputVector(ii++) = plstrain(0, 1);
-        outputVector(ii++) = plstrain(0, 2);
-        outputVector(ii++) = plstrain(1, 2);
-
+        Gauss_Output_Vector[ii++] = plstrain(0, 0);
+        Gauss_Output_Vector[ii++] = plstrain(1, 1);
+        Gauss_Output_Vector[ii++] = plstrain(2, 2);
+        Gauss_Output_Vector[ii++] = plstrain(0, 1);
+        Gauss_Output_Vector[ii++] = plstrain(0, 2);
+        Gauss_Output_Vector[ii++] = plstrain(1, 2);
 
         //Write stress
-        outputVector(ii++) = stress(0, 0);
-        outputVector(ii++) = stress(1, 1);
-        outputVector(ii++) = stress(2, 2);
-        outputVector(ii++) = stress(0, 1);
-        outputVector(ii++) = stress(0, 2);
-        outputVector(ii++) = stress(1, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 0);
+        Gauss_Output_Vector[ii++] = stress(1, 1);
+        Gauss_Output_Vector[ii++] = stress(2, 2);
+        Gauss_Output_Vector[ii++] = stress(0, 1);
+        Gauss_Output_Vector[ii++] = stress(0, 2);
+        Gauss_Output_Vector[ii++] = stress(1, 2);
     }
 
-    // outputVector(ii++) = update_time_taken;
-    return outputVector;
+    return Gauss_Output_Vector;
 }
 
 void EightNodeBrickLT::zeroStrain()

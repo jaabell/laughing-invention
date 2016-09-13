@@ -75,6 +75,8 @@ TwentySevenNodeBrickElastic::TwentySevenNodeBrickElastic(int element_number,
 {
     //elem_numb = element_number;
 
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     //================================================================
     // added by Nima Tafazzoli (October 2010)
     // replacing the input density with the one defined in material

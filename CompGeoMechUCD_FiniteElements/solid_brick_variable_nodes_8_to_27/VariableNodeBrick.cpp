@@ -66,6 +66,8 @@ VariableNodeBrick::VariableNodeBrick(int element_number,
       connectedExternalNodes(27), node_existance(19)
 {
 
+    this->setMaterialTag(Globalmmodel->getTag());
+
     rho = Globalmmodel->getRho();
 
     determinant_of_Jacobian = 0.0;
@@ -1590,8 +1592,6 @@ void VariableNodeBrick::setDomain (Domain *theDomain)
                 }
             }
         }
-
-
 
         this->DomainComponent::setDomain(theDomain);
     }

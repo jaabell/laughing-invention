@@ -58,7 +58,7 @@ using namespace std;
 #include <ESSITimer.h>
 // Constructor
 Linear::Linear()
-    : EquiSolnAlgo(EquiALGORITHM_TAGS_Linear)
+    : EquiSolnAlgo(EquiALGORITHM_TAGS_Linear),global_iteration_no(0), output_iterations(false)
 {
 
 }
@@ -181,4 +181,14 @@ void
 Linear::Print(ostream &s, int flag)
 {
     s << "\t Linear algorithm";
+}
+
+/***********************************************************************
+* Sumeet September, 2016
+* Switch on/off the saving of output of iterations 
+************************************************************************/
+void 
+Linear::switchOutputIterationOption(bool status){
+
+    output_iterations=status;
 }

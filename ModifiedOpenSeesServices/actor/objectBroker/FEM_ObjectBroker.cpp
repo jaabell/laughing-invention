@@ -425,10 +425,11 @@ FEM_ObjectBroker::getNewElement(int classTag)
     case ELE_TAG_TwentySevenNodeBrickLT:            //Jose added on Oct 9, 2014
         return new TwentySevenNodeBrickLT();
 
-    case ELE_TAG_FrictionalPenaltyContact:            //Jose added on Oct 9, 2014
-        return new FrictionalPenaltyContact();
+    case ELE_TAG_HardContact:                       //Sumeet added on June 28, 2016
+        return new HardContact();
 
-
+    case ELE_TAG_SoftContact:                       //Sumeet added on June 28, 2016
+        return new SoftContact();
 
         break;
 

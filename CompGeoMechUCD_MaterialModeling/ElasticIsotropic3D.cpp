@@ -285,12 +285,11 @@ ElasticIsotropic3D::getOrder (void) const
 void
 ElasticIsotropic3D::Print(ostream& s, int flag)
 {
-    s << "ElasticIsotropic3D" << endln;
-    s << "\ttag: " << this->getTag() << endln;
-    s << "\tE: " << E << endln;
-    s << "\tv: " << v << endln;
-    s << "\trho: " << rho << endln;
-    //s << "\tD: " << D << endln;
+    s << "ElasticIsotropic3D::" << endln;
+    s << "\tTag: " << this->getTag() << endln;
+    s << "\tElastic_Modulus: " << E << endln;
+    s << "\tPoissons_Ratio: " << v << endln;
+    s << "\tDensity: " << rho << endln;
 }
 
 

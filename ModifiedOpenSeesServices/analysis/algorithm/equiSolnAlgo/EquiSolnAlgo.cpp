@@ -97,4 +97,10 @@ EquiSolnAlgo::getLinearSOEptr(void) const
     return theSysOfEqn;
 }
 
+void 
+EquiSolnAlgo::switchOutputIterationOption(bool status){
+
+  return;
+}
+
 

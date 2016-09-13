@@ -272,9 +272,14 @@ PartitionedDomain::addElement(Element *elePtr)
         //----
     }
 
-    // cout << "numberOfDomainElementOutputs = " << numberOfDomainElementOutputs << " | ";
-    numberOfDomainElementOutputs += elePtr->getOutputSize();
-    // cout << numberOfDomainElementOutputs << endl;
+    //Sumeet Auguts, 2016
+    // look at classTags.h for the class_description encoding and how the modulus 
+    // with 1000 gets back the no. of element outputs and similarly gauss point
+    // and number of connectivitynodes..
+    int class_dec = Element_Class_Desc[elePtr->getClassTag()];
+    numberOfDomainElementOutputs += class_dec%1000;
+    Number_of_Connectivity_Nodes += (class_dec/1000000)%100;
+    Number_of_Gauss_Points       += (class_dec%100000)/1000;
 
 
     if (eleTag > maxElementsTag)
@@ -291,7 +296,14 @@ PartitionedDomain::addElement(Element *elePtr)
 bool
 PartitionedDomain::addNode(Node *nodePtr)
 {
-    return (this->Domain::addNode(nodePtr));
+    if(this->Domain::addNode(nodePtr)){
+        numberOfDomainNodeDOFs += nodePtr->getNumberDOF();
+        return true;
+    }
+
+    return false;
+
+
 }
 
 
@@ -1096,6 +1108,83 @@ PartitionedDomain::commit(void)
     return 0;
 }
 
+/*************************************************************************************
+* Added by Sumeet 3rd September, 2016, to output converged step 
+* Call this function to output at every converged step and write in HDF5 file
+**************************************************************************************/
+int
+PartitionedDomain::output_step(void)
+{
+    int result = this->Domain::output_step();
+
+    if (result < 0)
+    {
+        cerr << "PartitionedDomain::output_step(void) - failed in Domain::output_step()\n";
+        return result;
+    }
+
+    // do the same for all the subdomains
+    if (theSubdomains != 0)
+    {
+        ArrayOfTaggedObjectsIter theSubsIter(*theSubdomains);
+        TaggedObject *theObject;
+
+        while ((theObject = theSubsIter()) != 0)
+        {
+            Subdomain *theSub = (Subdomain *)theObject;
+            int res = theSub->output_step();
+
+            if (res < 0)
+            {
+                cerr << "PartitionedDomain::output_step(void)";
+                cerr << " - failed in Subdomain::output_step()\n";
+                return res;
+            }
+        }
+    }
+
+    return 0;
+}
+
+/*************************************************************************************
+* Added by Sumeet 3rd August, 2016, to output substep iteration steps for debugging 
+* The function commits at every substep i,e the trail displacements and trial element
+* output HDF5 Output file. It does not commit any displacements or element output
+**************************************************************************************/
+int
+PartitionedDomain::output_iteration( int global_iteration_no )
+{
+    int result = this->Domain::output_iteration(global_iteration_no);
+
+    if (result < 0)
+    {
+        cerr << "PartitionedDomain::output_iteration(void) - failed in Domain::output_iteration()\n";
+        return result;
+    }
+
+    // do the same for all the subdomains
+    if (theSubdomains != 0)
+    {
+        ArrayOfTaggedObjectsIter theSubsIter(*theSubdomains);
+        TaggedObject *theObject;
+
+        while ((theObject = theSubsIter()) != 0)
+        {
+            Subdomain *theSub = (Subdomain *)theObject;
+            int res = theSub->output_iteration(global_iteration_no);
+
+            if (res < 0)
+            {
+                cerr << "PartitionedDomain::output_iteration(void)";
+                cerr << " - failed in Subdomain::output_iteration()\n";
+                return res;
+            }
+        }
+    }
+
+    return 0;
+}
+
 
 int
 PartitionedDomain::revertToLastCommit(void)
@@ -1202,14 +1291,14 @@ PartitionedDomain::partition(int numPartitions)
 {
     // cout << "\n\nPartitioning Mesh into " << numPartitions << " partitions. \n";
 
-    Node *nodePtr;
-    NodeIter &theNodeIter = this->getNodes();
-    Element *elePtr;
-    ElementIter &theElemIter = this->getElements();
+    // Node *nodePtr;
+    // NodeIter &theNodeIter = this->getNodes();
+    // Element *elePtr;
+    // ElementIter &theElemIter = this->getElements();
 
     // need to create element graph before create new subdomains
     // DO NOT REMOVE THIS LINE __ EVEN IF COMPILER WARNING ABOUT UNUSED VARIABLE
-    Graph *theEleGraph = this->getElementGraph();
+    /*Graph *theEleGraph = */this->getElementGraph();
 
     // check to see that they have ones with the correct tags
     if (theSubdomains != 0)
@@ -1405,7 +1494,8 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 || eleClassTag == ELE_TAG_EightNodeBrickLT
                 || eleClassTag == ELE_TAG_TwentyNodeBrickLT
                 || eleClassTag == ELE_TAG_TwentySevenNodeBrickLT
-                || eleClassTag == ELE_TAG_FrictionalPenaltyContact
+                || eleClassTag == ELE_TAG_HardContact                                               // Sumeet added on June 26 2016
+                || eleClassTag == ELE_TAG_SoftContact                                               // Sumeet added on June 26 2016
            )
         {
             //Guanzhou added
@@ -1465,8 +1555,9 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_FourNodeAndesShell                           // Babak added sometime
                 && eleClassTag != ELE_TAG_EightNodeBrickLT                             // Jose Added Oct 2014
                 && eleClassTag != ELE_TAG_TwentyNodeBrickLT
-                && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                             // Jose Added Oct 2014
-                && eleClassTag != ELE_TAG_FrictionalPenaltyContact
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                       // Jose Added Oct 2014
+                && eleClassTag == ELE_TAG_HardContact                                  // Sumeet added on June 26 2016
+                && eleClassTag == ELE_TAG_SoftContact                                  // Sumeet added on June 26 2016
            )
         {
             cerr << "PartitionedDomain::buildEleGraph() -- (2) Unknown element classTag = " << eleClassTag << " \n";
@@ -1595,7 +1686,8 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_EightNodeBrickLT
                 && eleClassTag != ELE_TAG_TwentyNodeBrickLT
                 && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT
-                && eleClassTag != ELE_TAG_FrictionalPenaltyContact
+                && eleClassTag == ELE_TAG_HardContact                                  // Sumeet added on June 26 2016
+                && eleClassTag == ELE_TAG_SoftContact                                  // Sumeet added on June 26 2016
            )
         {
             cerr << "PartitionedDomain::buildEleGraph() -- (3) Unknown element class tag = " << eleClassTag << "\n";

@@ -216,27 +216,44 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
     int result = 0;
     Domain *the_Domain = this->getDomainPtr();
 
+    //////////////////// Added by Sumeet (Initial Conditions ) ///////////
+
+    cout << "\n Writing Initial Conditions " << " " ;
+
+    result = theIntegrator->output_step();
+
+    if (result < 0)
+    {
+        cout << "\nTransient Analysis: ["<< std::setw(5) << 0 << "/" << left << std::setw(5) << numSteps << "] ";
+        cerr << "the Integrator failed to commit at ";
+        cerr << the_Domain->getCurrentTime() << endln;
+
+        return -4;
+    }
+
+    ////////////////////////////////////////////////////////////////////
+
     for (int i = 0; i < numSteps; i++)
     {
 
-        cout << "Transient Analysis: Step Number is : " << i + 1 << " out of " << numSteps;
+        cout << "\nTransient Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
 
-        std::chrono::high_resolution_clock::time_point step_start;
-        std::chrono::high_resolution_clock::duration estimated_time_to_completion;
-        step_start = std::chrono::high_resolution_clock::now();
+        // std::chrono::high_resolution_clock::time_point step_start;
+        // std::chrono::high_resolution_clock::duration estimated_time_to_completion;
+        // step_start = std::chrono::high_resolution_clock::now();
 
 
-        if (i > 0)
-        {
-            cout << " [ETA: "
-                 << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
-                 << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
-                 << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
-        }
-        else
-        {
+        // if (i > 0)
+        // {
+        //     cout << " [ETA: "
+        //          << std::chrono::duration_cast<std::chrono::hours>(  ((numSteps - i) * estimated_time_to_completion)).count() << " h, "
+        //          << std::chrono::duration_cast<std::chrono::minutes>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::hours(1)).count() << " m, "
+        //          << std::chrono::duration_cast<std::chrono::seconds>(  ((numSteps - i) * estimated_time_to_completion) % std::chrono::minutes(1)).count() << " s]\n";
+        // }
+        // else
+        // {
             cout << "\n";
-        }
+        // }
 
         globalESSITimer.start("Domain_Step");
         result = theAnalysisModel->newStepDomain(dT);
@@ -245,8 +262,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         
         if (result< 0)  //call "theAnalysisModel->newStepDomain(dT)" only once and move that call above for globalESSITimer  --Yuan
         {
-            cerr << "DirectIntegrationAnalysis::analyze() - the AnalysisModel failed";
-            cerr << " at time " << the_Domain->getCurrentTime() << endln;
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << " Integration failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
 
             return -2;
@@ -265,7 +282,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             // cout << "       this->domainChanged() \n";//Jdebug
             if (this->domainChanged() < 0)
             {
-                cerr << "DirectIntegrationAnalysis::analyze() - domainChanged() failed\n";
+                cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
+                cerr << " Domain change failed " << the_Domain->getCurrentTime() << endln;
                 return -1;
             }
         }
@@ -276,8 +294,8 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
         globalESSITimer.stop("Integrator_Step");
         if (result < 0) //call "theIntegrator->newStepDomain(dT)" only once and move that call above for globalESSITimer  --Yuan
         {
-            cerr << "DirectIntegrationAnalysis::analyze() - the Integrator failed";
-            cerr << " at time " << the_Domain->getCurrentTime() << endln;
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << " Integrator failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             return -2;
         }
@@ -288,10 +306,22 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
         if (result < 0)
         {
-            cerr << "DirectIntegrationAnalysis::analyze() - the Algorithm failed";
-            cerr << " at time " << the_Domain->getCurrentTime() << endln;
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << " Algorithm failed at time " << the_Domain->getCurrentTime() << endln;
+
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
+
+            /****************************************************************************************************
+            * Adde by Sumeet 2nd August, 2016
+            * This function basically, saves and performs the iterations of a current analysis_step from the 
+            * beginning of that step and also save sthe output to hdf5 file
+            *****************************************************************************************************/
+
+            cout << endl << "################## Started Writing Iteration Output ######################" << endl;; 
+            theAlgorithm->switchOutputIterationOption(true);  // Switch on the writer to write incremental output
+            theAlgorithm->solveCurrentStep();   
+
             return -3;
         }
 
@@ -299,18 +329,18 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
         globalESSITimer.start("Output");
         result = theIntegrator->commit();
+        result = theIntegrator->output_step();
         globalESSITimer.stop("Output");
         if (result < 0)
         {
-            cerr << "DirectIntegrationAnalysis::analyze() - ";
-            cerr << "the Integrator failed to commit";
-            cerr << " at time " << the_Domain->getCurrentTime() << endln;
+            cout << "\nDirectIntegrationAnalysis Analysis: ["<< std::setw(5) << i + 1  << "/" << left << std::setw(5) << numSteps << "] ";
+            cerr << " Integrator failed at time " << the_Domain->getCurrentTime() << endln;
             the_Domain->revertToLastCommit();
             theIntegrator->revertToLastStep();
             return -4;
         }
 
-        estimated_time_to_completion =  std::chrono::high_resolution_clock::now() - step_start;
+        // estimated_time_to_completion =  std::chrono::high_resolution_clock::now() - step_start;
 
     }
 
@@ -318,7 +348,6 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
 
     return result;
 }
-
 
 int
 DirectIntegrationAnalysis::domainChanged(void)

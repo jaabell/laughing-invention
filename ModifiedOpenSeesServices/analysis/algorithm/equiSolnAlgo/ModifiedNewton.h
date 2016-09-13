@@ -1,4 +1,5 @@
 /* ****************************************************************** **
+** ****************************************************************** **
 **    OpenSees - Open System for Earthquake Engineering Simulation    **
 **          Pacific Earthquake Engineering Research Center            **
 **                                                                    **
@@ -51,6 +52,7 @@ class ModifiedNewton: public EquiSolnAlgo
 
         int solveCurrentStep(void);
         int setConvergenceTest(ConvergenceTest* theTest);
+        void switchOutputIterationOption(bool status);                     // Sumeet September 2016
         ConvergenceTest* getConvergenceTest(void);
 
         virtual int sendSelf(int commitTag, Channel& theChannel);
@@ -63,7 +65,14 @@ class ModifiedNewton: public EquiSolnAlgo
 
     private:
         ConvergenceTest* theTest;
+        AnalysisModel*   theAnaModel;
+        IncrementalIntegrator* theIncIntegratorr;
+        LinearSOE*  theSOE ;
         int tangent;
+
+        // Sumeet September, 2016 for writing iteration outputs
+        int global_iteration_no;
+        bool output_iterations;
 };
 
 #endif

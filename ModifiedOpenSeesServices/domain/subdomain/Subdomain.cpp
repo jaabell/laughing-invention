@@ -255,6 +255,8 @@ Subdomain::addNode(Node *node)
     {
         node->setDomain(this);
         this->domainChange();
+        numberOfDomainNodeDOFs += node->getNumberDOF();  // Sumeet August, 2016
+
     }
     else
     {
@@ -297,24 +299,6 @@ Subdomain::addExternalNode(Node *thePtr)
     }
 
 #endif
-    // create a dummy Node & try adding it to the external nodes
-    //GZ Node *newDummy = new Node(*thePtr, false);
-    //GZ if (newDummy == 0) {
-    //GZ    cerr << "Subdomain::addExternalNode - failed to copy Node " << thePtr->getTag() << "\n";
-    //GZ    return false;
-    //GZ }
-    //GZ
-    //GZ bool result = externalNodes->addComponent(newDummy);
-    //GZ
-    //GZ if (result == true) {
-    //GZ   //   result = realExternalNodes->addComponent(thePtr);
-    //GZ    newDummy->setDomain(this);
-    //GZ    this->domainChange();
-    //GZ } else {
-    //GZ    cerr << "Subdomain::addExternalNode - failed to add Node " << thePtr->getTag() << "\n";
-    //GZ    return -1;
-    //GZ }
-
 
     // create a dummy Node & try adding it to the external nodes
     bool result = externalNodes->addComponent(thePtr);
@@ -324,6 +308,8 @@ Subdomain::addExternalNode(Node *thePtr)
         //    result = realExternalNodes->addComponent(thePtr);
         thePtr->setDomain(this);
         this->domainChange();
+        numberOfDomainNodeDOFs += thePtr->getNumberDOF();  // Sumeet August, 2016
+
     }
     else
     {
@@ -331,6 +317,10 @@ Subdomain::addExternalNode(Node *thePtr)
         return -1;
     }
 
+    if (  thePtr->getTag() > maxNodesTag)
+    {
+        maxNodesTag =  thePtr->getTag();
+    }
 
     return result;
 }
@@ -383,6 +373,11 @@ Subdomain::addInternalNode(Node *thePtr)
     {
         cerr << "Subdomain::addInternalNode - failed to add Node " << thePtr->getTag() << "\n";
         return -1;
+    }
+
+    if (  thePtr->getTag() > maxNodesTag)
+    {
+        maxNodesTag =  thePtr->getTag();
     }
 
     return result;
@@ -539,7 +534,6 @@ Subdomain::commit(void)
     //cerr << "\n\n\n\n Subdomain::commit()" << this->getTag() << "calls Domain::commit()!!\n";
 
     this->Domain::commit();
-    // this->Domain::Dump_All_Nodes_Displacement_Singlefile(); //Added by Babak to dump node Displacements in pos format
 
     NodeIter &theNodes = this->getNodes();
     Node *nodePtr;
@@ -550,6 +544,31 @@ Subdomain::commit(void)
         nodePtr->commitState();
     }
 
+    return 0;
+}
+
+/*************************************************************************************
+* Added by Sumeet 3rd September, 2016, to output converged step 
+* Call this function to output at every converged step and write in HDF5 file
+**************************************************************************************/
+int
+Subdomain::output_step(void)
+{
+    this->Domain::output_step();
+
+    return 0;
+}
+
+/*************************************************************************************
+* Added by Sumeet 3rd August, 2016, to output substep iteration steps for debugging 
+* The function commits at every substep i,e the trail displacements and trial element
+* output HDF5 Output file. It does not commit any displacements or element output
+**************************************************************************************/
+int
+Subdomain::output_iteration(int global_iteration_no)
+{
+
+    this->Domain::output_iteration(global_iteration_no);
     return 0;
 }
 

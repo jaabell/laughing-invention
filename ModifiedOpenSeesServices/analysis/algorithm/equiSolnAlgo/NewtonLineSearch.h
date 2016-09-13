@@ -50,6 +50,7 @@ public:
 
     int solveCurrentStep(void);
     int setConvergenceTest(ConvergenceTest *theNewTest);
+    void switchOutputIterationOption(bool status);                     // Sumeet September 2016
     ConvergenceTest *getConvergenceTest(void);
 
     virtual int sendSelf(int commitTag, Channel &theChannel);
@@ -64,6 +65,13 @@ private:
     ConvergenceTest *theTest;
     ConvergenceTest *theOtherTest;
     LineSearch *theLineSearch;
+    AnalysisModel   *theAnaModel;
+    IncrementalIntegrator *theIntegrator;
+    LinearSOE  *theSOE;
+
+    // Sumeet September, 2016 for writing iteration outputs
+    int global_iteration_no;
+    bool output_iterations;
 };
 
 #endif

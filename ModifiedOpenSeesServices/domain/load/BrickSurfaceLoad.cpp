@@ -76,13 +76,12 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
                                    int Node_1, int Node_2, int Node_3, int Node_4,
                                    double SurfaceLoadMagnitude1, double SurfaceLoadMagnitude2,
                                    double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags), data(0),
       node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
       surface_load_magnitude1(SurfaceLoadMagnitude1),
       surface_load_magnitude2(SurfaceLoadMagnitude2),
       surface_load_magnitude3(SurfaceLoadMagnitude3),
-      surface_load_magnitude4(SurfaceLoadMagnitude4),
-      data(0)
+      surface_load_magnitude4(SurfaceLoadMagnitude4)
 {
 
     data = &dataV8; // Why would anyone do this??????
@@ -99,7 +98,7 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
                                    double SurfaceLoadMagnitude3, double SurfaceLoadMagnitude4,
                                    double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
                                    double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),data(0),
       node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
       node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8),
       surface_load_magnitude1(SurfaceLoadMagnitude1),
@@ -109,8 +108,7 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
       surface_load_magnitude5(SurfaceLoadMagnitude5),
       surface_load_magnitude6(SurfaceLoadMagnitude6),
       surface_load_magnitude7(SurfaceLoadMagnitude7),
-      surface_load_magnitude8(SurfaceLoadMagnitude8),
-      data(0)
+      surface_load_magnitude8(SurfaceLoadMagnitude8)
 {
 
     data = &dataV16;
@@ -129,7 +127,7 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
                                    double SurfaceLoadMagnitude5, double SurfaceLoadMagnitude6,
                                    double SurfaceLoadMagnitude7, double SurfaceLoadMagnitude8,
                                    double SurfaceLoadMagnitude9)
-    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),
+    : ElementalLoad(tag, LOAD_TAG_BrickSurfaceLoad, theElementTags),data(0),
       node1(Node_1), node2(Node_2), node3(Node_3), node4(Node_4),
       node5(Node_5), node6(Node_6), node7(Node_7), node8(Node_8), node9(Node_9),
       surface_load_magnitude1(SurfaceLoadMagnitude1),
@@ -140,8 +138,7 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
       surface_load_magnitude6(SurfaceLoadMagnitude6),
       surface_load_magnitude7(SurfaceLoadMagnitude7),
       surface_load_magnitude8(SurfaceLoadMagnitude8),
-      surface_load_magnitude9(SurfaceLoadMagnitude9),
-      data(0)
+      surface_load_magnitude9(SurfaceLoadMagnitude9)
 {
 
     data = &dataV18;
@@ -151,7 +148,7 @@ BrickSurfaceLoad::BrickSurfaceLoad(int tag,
 
 
 BrickSurfaceLoad::BrickSurfaceLoad()
-    : ElementalLoad(LOAD_TAG_BrickSurfaceLoad),
+    : ElementalLoad(LOAD_TAG_BrickSurfaceLoad),data(0),
       node1(0), node2(0), node3(0), node4(0),
       node5(0), node6(0), node7(0), node8(0), node9(0),
       surface_load_magnitude1(0.0),
@@ -162,8 +159,7 @@ BrickSurfaceLoad::BrickSurfaceLoad()
       surface_load_magnitude6(0.0),
       surface_load_magnitude7(0.0),
       surface_load_magnitude8(0.0),
-      surface_load_magnitude9(0.0),
-      data(0)
+      surface_load_magnitude9(0.0)
 {
     // data = &dataV18;
 }
@@ -311,15 +307,15 @@ BrickSurfaceLoad::receiveSelf(int commitTag, Channel& theChannel,  FEM_ObjectBro
     int nelem = elementtags.Size();
     // cerr << "BrickSurfaceLoad::receiveSelf() - nelem = " << nelem << " \n";
 
-    if (nelem = 4)
+    if (nelem == 4)
     {
         data = &dataV8;
     }
-    else if (nelem = 8)
+    else if (nelem == 8)
     {
         data = &dataV16;
     }
-    else if (nelem = 9)
+    else if (nelem == 9)
 
     {
         data = &dataV18;

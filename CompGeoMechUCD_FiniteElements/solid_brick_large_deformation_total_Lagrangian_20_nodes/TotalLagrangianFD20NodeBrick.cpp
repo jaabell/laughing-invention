@@ -54,6 +54,9 @@ TotalLagrangianFD20NodeBrick::TotalLagrangianFD20NodeBrick(int tag,
     : Element(tag, ELE_TAG_TotalLagrangianFD20NodeBrick ),
       theMaterial(0), connectedExternalNodes(NumNodes), Q(0), bf(NumDof), Ki(0)
 {
+
+    this->setMaterialTag(m.getTag());
+
     connectedExternalNodes( 0) = node_numb_1;
     connectedExternalNodes( 1) = node_numb_2;
     connectedExternalNodes( 2) = node_numb_3;

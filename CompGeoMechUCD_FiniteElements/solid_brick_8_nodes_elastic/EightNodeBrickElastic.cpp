@@ -67,7 +67,8 @@ EightNodeBrickElastic::EightNodeBrickElastic(int element_number,
     //BJ//BJ
     //elem_numb = element_number;
 
-
+    this->setMaterialTag(Globalmmodel->getTag());
+    
     //================================================================
     // added by Nima Tafazzoli (October 2010)
     // replacing the input density with the one defined in material
@@ -2592,8 +2593,8 @@ void EightNodeBrickElastic::computeGaussPoint()
 
     // special case for 8 nodes only
     // special case for 8 nodes only
-    int count;
-    count = FixedOrder * FixedOrder * FixedOrder;
+    // int count;
+    // count = FixedOrder * FixedOrder * FixedOrder;
     //Vector Gsc(count*3+1); //+1: number of Gauss point in element
     // Gsc8Elastic(0) = count;
 

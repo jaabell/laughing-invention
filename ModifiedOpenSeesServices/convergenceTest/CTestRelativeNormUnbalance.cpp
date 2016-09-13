@@ -108,7 +108,7 @@ CTestRelativeNormUnbalance::test(void)
 
     // get the B vector & determine it's norm & save the value in norms vector
     const Vector& x = theSOE->getB();
-    double norm = x.Norm();
+    double norm = x.Norm(); double x_norm = norm;
 
     if (currentIter <= maxNumIter)
     {
@@ -125,17 +125,19 @@ CTestRelativeNormUnbalance::test(void)
     // print the data if required
     if (printFlag == 1)
     {
-        cerr << "\t CTestRelativeNormUnbalance::test() - iteration: " << currentIter;
-        cerr << " norm: " << norm* norm0 << " norm0: " << norm0 << " current ratio (|dR|/|dR0|): " << norm << " (max: " << tol << ")\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormUnbalance::(tol: " << tol << ")\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << x_norm                << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n"; 
     }
 
     // print the data if required
     if (printFlag == 4)
     {
-        cerr << "\t CTestRelativeNormUnbalance::test() - iteration: " << currentIter;
-        cerr << " current ratio (|dR|/|dR0|): " << norm << " (max: " << tol << ")\n";
-        cerr << " Norm deltaX: " << (theSOE->getX()).Norm() << "  Norm deltaR: " << norm << endln;
-        cerr << "deltaX: " << theSOE->getX() << "deltaR: " << x;
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormUnbalance::(tol: " << tol << ")\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << x_norm                << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n"; 
     }
 
     //
@@ -156,8 +158,11 @@ CTestRelativeNormUnbalance::test(void)
             }
             else if (printFlag == 2)
             {
-                cerr << "\t CTestRelativeNormUnbalance::test() - iteration: " << currentIter;
-                cerr << " last ratio (|dR|/|dR0|): " << norm << " (max: " << tol << ")\n";
+                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormUnbalance::(tol: " << tol << ")\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << norm                  << "\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << x_norm                << "\n";
+                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n"; 
+
             }
         }
 
@@ -168,17 +173,24 @@ CTestRelativeNormUnbalance::test(void)
     // algo failed to converged after specified number of iterations - but RETURN OK
     else if (printFlag == 5 && currentIter >= maxNumIter)
     {
-        cerr << "WARNING: CTestUnbalanceIncr::test() - failed to converge but going on - ";
-        cerr << " current ratio (dR/dR0): " << norm << " (max: " << tol << ")\n";
-        cerr << " Norm deltaX: " << (theSOE->getX()).Norm() << "  Norm deltaR: " << x.Norm() << endln;
+
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormUnbalance::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << x_norm                << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n"; 
+
+
         return currentIter;
     }
 
     // algo failed to converged after specified number of iterations - return FAILURE -2
     else if (currentIter >= maxNumIter)   // the algorithm failed to converge
     {
-        cerr << "WARNING: CTestRelativeNormUnbalance::test() - failed to converge \n";
-        cerr << "after: " << currentIter << " iterations\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeNormUnbalance::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   |dR|/|dR1  : " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << x_norm                << "\n";
+        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n"; 
+
         currentIter++;  // we increment in case analysis does not check for convergence
         return -2;
     }
