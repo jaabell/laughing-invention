@@ -362,6 +362,7 @@ BandArpackSolver::solve(int numModes, bool generalized, bool findSmallest)
             cout << "IPARAM(5) returns the size of the current Arnoldi\n";
             cout << "factorization. The user is advised to check that";
             cout << "enough workspace and array storage has been allocated.\n";
+            cout << "IPARAM(5) = " << iparam[5] << endl;
             break;
         default:
             cout << "unrecognised return value\n";

@@ -1156,6 +1156,7 @@ PetscSOE::zeroB(void)
 {
     // if ( processID_world > 0 )
     // {
+
     double *Bptr = B;
 
     for (int i = 0; i < size; i++)
