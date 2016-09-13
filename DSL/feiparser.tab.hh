@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.4.
+// A Bison parser, made by GNU Bison 3.0.2.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015 Free Software Foundation, Inc.
+// Copyright (C) 2002-2013 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -41,11 +41,10 @@
 # define YY_YY_FEIPARSER_TAB_HH_INCLUDED
 
 
-# include <cstdlib> // std::abort
+# include <vector>
 # include <iostream>
 # include <stdexcept>
 # include <string>
-# include <vector>
 # include "stack.hh"
 # include "location.hh"
 
@@ -110,7 +109,7 @@
 
 
 namespace yy {
-#line 114 "feiparser.tab.hh" // lalr1.cc:377
+#line 113 "feiparser.tab.hh" // lalr1.cc:372
 
 
 
@@ -124,7 +123,7 @@ namespace yy {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 143 "feiparser.yy" // lalr1.cc:377
+    #line 143 "feiparser.yy" // lalr1.cc:372
 
   Expression    *exp;           /* For the expressions. Since it is a pointer, no problem. */
   Quantity      *value;         /* For the lexical analyser. NUMBER tokens */
@@ -132,7 +131,7 @@ namespace yy {
   int           fn;
   int           errcode;
 
-#line 136 "feiparser.tab.hh" // lalr1.cc:377
+#line 135 "feiparser.tab.hh" // lalr1.cc:372
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -604,11 +603,8 @@ namespace yy {
     /// (External) token type, as returned by yylex.
     typedef token::yytokentype token_type;
 
-    /// Symbol type: an internal symbol number.
+    /// Internal symbol number.
     typedef int symbol_number_type;
-
-    /// The symbol type number to denote an empty symbol.
-    enum { empty_symbol = -2 };
 
     /// Internal symbol number for tokens (subsumed by symbol_number_type).
     typedef unsigned short int token_number_type;
@@ -640,14 +636,7 @@ namespace yy {
                     const semantic_type& v,
                     const location_type& l);
 
-      /// Destroy the symbol.
       ~basic_symbol ();
-
-      /// Destroy contents, and record that is empty.
-      void clear ();
-
-      /// Whether empty.
-      bool empty () const;
 
       /// Destructive move, \a s is emptied into this.
       void move (basic_symbol& s);
@@ -678,23 +667,21 @@ namespace yy {
       /// Constructor from (external) token numbers.
       by_type (kind_type t);
 
-      /// Record that this symbol is empty.
-      void clear ();
-
       /// Steal the symbol type from \a that.
       void move (by_type& that);
 
       /// The (internal) type number (corresponding to \a type).
-      /// \a empty when empty.
+      /// -1 when this symbol is empty.
       symbol_number_type type_get () const;
 
       /// The token.
       token_type token () const;
 
+      enum { empty = 0 };
+
       /// The symbol type.
-      /// \a empty_symbol when empty.
-      /// An int, not token_number_type, to be able to store empty_symbol.
-      int type;
+      /// -1 when this symbol is empty.
+      token_number_type type;
     };
 
     /// "External" symbols: returned by the scanner.
@@ -741,9 +728,9 @@ namespace yy {
 
     /// Generate an error message.
     /// \param yystate   the state where the error occurred.
-    /// \param yyla      the lookahead token.
+    /// \param yytoken   the lookahead token type, or yyempty_.
     virtual std::string yysyntax_error_ (state_type yystate,
-                                         const symbol_type& yyla) const;
+                                         symbol_number_type yytoken) const;
 
     /// Compute post-reduction state.
     /// \param yystate   the current state
@@ -843,21 +830,16 @@ namespace yy {
       /// Copy constructor.
       by_state (const by_state& other);
 
-      /// Record that this symbol is empty.
-      void clear ();
-
       /// Steal the symbol type from \a that.
       void move (by_state& that);
 
       /// The (internal) type number (corresponding to \a state).
-      /// \a empty_symbol when empty.
+      /// "empty" when empty.
       symbol_number_type type_get () const;
 
-      /// The state number used to denote an empty symbol.
-      enum { empty_state = -1 };
+      enum { empty = 0 };
 
       /// The state.
-      /// \a empty when empty.
       state_type state;
     };
 
@@ -898,12 +880,13 @@ namespace yy {
     /// Pop \a n symbols the three stacks.
     void yypop_ (unsigned int n = 1);
 
-    /// Constants.
+    // Constants.
     enum
     {
       yyeof_ = 0,
       yylast_ = 10269,     ///< Last index in yytable_.
       yynnts_ = 16,  ///< Number of nonterminal symbols.
+      yyempty_ = -2,
       yyfinal_ = 123, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -916,7 +899,7 @@ namespace yy {
 
 
 } // yy
-#line 920 "feiparser.tab.hh" // lalr1.cc:377
+#line 903 "feiparser.tab.hh" // lalr1.cc:372
 
 
 
