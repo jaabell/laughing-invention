@@ -819,7 +819,7 @@ int SoftContact::sendSelf(int commitTag, Channel &theChannel)
 
     if ( theChannel.sendID( 0, commitTag, idData ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID idData\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send ID idData\n";
         return -1;
     }
 
@@ -835,7 +835,7 @@ int SoftContact::sendSelf(int commitTag, Channel &theChannel)
 
     if ( theChannel.sendVector( 0, commitTag, floatData ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
     }
 
@@ -843,25 +843,25 @@ int SoftContact::sendSelf(int commitTag, Channel &theChannel)
 
     if ( theChannel.sendVector( 0, commitTag, *tA ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
     }
 
     if ( theChannel.sendVector( 0, commitTag, *g_commit ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
     }
 
     if ( theChannel.sendVector( 0, commitTag, *tC_pred_commit ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
     }
 
     if (theChannel.sendMatrix( 0,commitTag,	B ) < 0)
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send Vector floatData\n";
         return -1;
     }
 
@@ -878,14 +878,14 @@ int SoftContact::sendSelf(int commitTag, Channel &theChannel)
     tmp_string = stiffness_type;
     if ( theChannel.sendString( 0, commitTag, tmp_string ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String stiffness_type\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send String stiffness_type\n";
         return -1;
     }
 
     tmp_string = damping_type;
     if ( theChannel.sendString( 0, commitTag, damping_type ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send String damping_type\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send String damping_type\n";
         return -1;
     }
 
@@ -893,7 +893,7 @@ int SoftContact::sendSelf(int commitTag, Channel &theChannel)
 
     if ( theChannel.sendID( 0, commitTag, external_nodes ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::sendSelf() - " << this->getTag() << " failed to send ID connectedExternalNodes\n";
+        cerr << "WARNING SoftContact::sendSelf() - " << this->getTag() << " failed to send ID connectedExternalNodes\n";
         return -1;
     }
 
@@ -925,7 +925,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if ( theChannel.receiveID( 0, commitTag, idData ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve ID idData\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve ID idData\n";
         return -1;
     }
 
@@ -936,7 +936,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
     Vector floatData(7);
     if ( theChannel.receiveVector( 0, commitTag, floatData ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
 
@@ -952,7 +952,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if ( theChannel.receiveVector( 0, commitTag, *tA ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
 
@@ -960,7 +960,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if ( theChannel.receiveVector( 0, commitTag, *g_commit ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
 
@@ -968,7 +968,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if ( theChannel.receiveVector( 0, commitTag, *tC_pred_commit ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
 
@@ -976,7 +976,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if (theChannel.receiveMatrix( 0,commitTag,	B ) < 0)
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve Vector floatData\n";
         return -1;
     }
 
@@ -992,14 +992,14 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
     string tmp_string;
     if ( theChannel.receiveString( 0, commitTag,  tmp_string) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String stiffness_type\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve String stiffness_type\n";
         return -1;
     }
     stiffness_type = tmp_string;
 
     if ( theChannel.receiveString( 0, commitTag, tmp_string ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve String damping_type\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve String damping_type\n";
         return -1;
     }
     damping_type = tmp_string;
@@ -1008,7 +1008,7 @@ int SoftContact::receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroke
 
     if ( theChannel.receiveID( 0, commitTag, external_nodes ) < 0 )
     {
-        cerr << "WARNING EightNodeBrickLT::receiveSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
+        cerr << "WARNING SoftContact::receiveSelf() - " << this->getTag() << " failed to recieve ID connectedExternalNodes\n";
         return -1;
     }
 

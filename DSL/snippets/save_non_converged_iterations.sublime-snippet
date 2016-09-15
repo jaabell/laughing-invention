@@ -1,8 +1,8 @@
 <!-- FEI developer aids for Sublime Text  -->
 <snippet>
 	<content><![CDATA[
-// save <.> non_converged_iterations;
-save $1 non_converged_iterations;
+// save non_converged_iterations;
+save non_converged_iterations;
 
 
 	]]></content>

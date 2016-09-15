@@ -28,7 +28,7 @@
 //! Inputs:
 //! - elementTag: unique element object tag
 //! - node_numb_#: eight node coordinates
-//! - materialTag: material tag associated with previsouly-defined NDMaterial object
+//! - materialTag: material tag associated with previsouly-defined NDMaterialLT object
 //! - AccelerationFieldNumber: acceleration field tag associated with previsouly-defined accelerationfield object
 
 
@@ -44,18 +44,18 @@ int add_element_brick_8node(int ElementNumber,
                             int node_numb_8,
                             int MaterialNumber)
 {
-    NDMaterial* ndmaterial = 0;
-    ndmaterial = theDomain.getNDMaterial(MaterialNumber);
+    NDMaterialLT* ndmaterialLT = 0;
+    ndmaterialLT = theDomain.getNDMaterialLT(MaterialNumber);
 
-    if (ndmaterial == NULL)
+    if (ndmaterialLT == NULL)
     {
-        cerr << "Error: (add_element_brick_8node) memory allocation problem for ndmaterial!" << endl;
+        cerr << "Error: (add_element_brick_8node) memory allocation problem for ndmaterialLT!" << endl;
         return -1;
     }
 
 
     Element* theElement = 0;
-    theElement = new EightNodeBrick(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterial);
+    theElement = new EightNodeBrick(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterialLT);
 
     if (theElement == NULL)
     {
@@ -69,6 +69,10 @@ int add_element_brick_8node(int ElementNumber,
         cerr << "Element number: " << ElementNumber << endln;
         return -1;
     }
+
+    if(ndmaterialLT->getClassTag()==ND_TAG_ElasticIsotropic3DLT)// [Sumeet September, 2016]
+        theElement->setElasticMaterialStatus(0);
+
 
     return 0;
 

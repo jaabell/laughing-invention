@@ -353,15 +353,8 @@ EXP	([Ee][-+]?[0-9]+)
 
  /* Element names */
 "8NodeBrick"                        {return token::EightNodeBrick;}
-"8NodeBrickLT"                      {return token::EightNodeBrickLT;}
-"8NodeBrickLTNoOutput"              {return token::EightNodeBrickLTNoOutput;}
 "20NodeBrick"                       {return token::TwentyNodeBrick;}
-"20NodeBrickLT"                     {return token::TwentyNodeBrickLT;}
 "27NodeBrick"                       {return token::TwentySevenNodeBrick;}
-"27NodeBrickLT"                     {return token::TwentySevenNodeBrickLT;}
-"8NodeBrick_elastic"                {return token::EightNodeBrickElastic;}
-"20NodeBrick_elastic"               {return token::TwentyNodeBrickElastic;}
-"27NodeBrick_elastic"               {return token::TwentySevenNodeBrickElastic;}
 "8NodeBrick_upU"                    {return token::EightNodeBrick_upU;}
 "8NodeBrick_upULT"                  {return token::EightNodeBrick_upULT;}
 "8NodeBrick_up"                     {return token::EightNodeBrick_up;}
@@ -385,7 +378,7 @@ EXP	([Ee][-+]?[0-9]+)
 									return token::HardContact;}
 "SoftContact"          				{return token::SoftContact;}
 "variable_node_brick_8_to_27"       {return token::variable_node_brick_8_to_27;}
-"ShearBeamLT"                       {return token::ShearBeamLT;}
+"ShearBeam"                         {return token::ShearBeam;}
 
 
  /* Element options */

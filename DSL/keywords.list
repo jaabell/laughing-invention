@@ -55,7 +55,6 @@ dof
 dofs
 dofs
 domain
-domain
 drained
 druckerprager_k
 dynamic
@@ -95,7 +94,6 @@ imposed
 Imx
 Imy
 Imz
-in
 increment
 initial_confining_stress
 initial_normal_stiffness
@@ -292,24 +290,18 @@ yield_strength
 
 
 20NodeBrick
-20NodeBrick_elastic
 20NodeBrick_upU
 20NodeBrick_upULT
-20NodeBrickLT
 27NodeBrick
-27NodeBrick_elastic
 27NodeBrick_upULT
-27NodeBrickLT
 3NodeShell_ANDES
 4NodeShell_ANDES
 4NodeShell_MITC4
 4NodeShell_NewMITC4
 8NodeBrick
-8NodeBrick_elastic
 8NodeBrick_up
 8NodeBrick_upU
 8NodeBrick_upULT
-8NodeBrickLT
 Backward_Euler
 beam_9dof_elastic
 beam_displacement_based
@@ -324,7 +316,6 @@ DruckerPragerLT
 DruckerPragerNonAssociateArmstrongFrederickLT
 DruckerPragerNonAssociateLinearHardeningLT
 DruckerPragerVonMisesLT
-EightNodeBrickLTNoOutput
 Energy_Increment
 F_fluid_x
 F_fluid_y
@@ -365,7 +356,7 @@ Relative_Norm_Unbalance
 Runge_Kutta_45_Error_Control
 sanisand2004
 sanisand2008
-ShearBeamLT
+ShearBeam
 SoftContact
 static
 transient

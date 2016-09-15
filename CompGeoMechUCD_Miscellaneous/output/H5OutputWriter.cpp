@@ -429,9 +429,9 @@ int H5OutputWriter::writeElementMeshData(int tag , const ID &connectivity , int 
 {
 
     int class_dec = Element_Class_Desc[class_tag];
-    int nele_output = class_dec%1000;
+    int nele_output = class_dec%100;
     int nnodes      = (class_dec/1000000)%100;
-    int ngauss      = (class_dec%100000)/1000;
+    int ngauss      = (class_dec%100000)/100;
     int i=0;
 
     // Writing Material_tags;

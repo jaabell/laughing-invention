@@ -29,10 +29,10 @@
 * is not achieved 
 ******************************************************************************/
 
-int save_non_converged_iterations(int save_number_of_non_converged_substeps)
+int save_non_converged_iterations()
 {
         
-    theDomain.set_number_of_non_converged_iterations(save_number_of_non_converged_substeps);
+    theDomain.set_number_of_non_converged_iterations(1);
 
     return 0;
 }

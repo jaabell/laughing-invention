@@ -146,7 +146,7 @@ if(${PROGRAMMING_MODE} STREQUAL "PARALLEL")
 
     if(PETSC_HAS_MUMPS AND (NOT ON_NERSC))
         SYSTEM_LIBS("mpi_f77" MACHINE_LIBS)   #Needed for MUMPS
-    endif(PETSC_HAS_MUMPS)
+    endif(PETSC_HAS_MUMPS AND (NOT ON_NERSC))
 
 else()  # sequential
     message(STATUS "YES! SEQUENTIAL")

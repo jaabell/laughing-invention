@@ -37,18 +37,35 @@ int add_element_brick_8node_variable_number_of_gauss_points(int ElementNumber,
         int node_numb_8,
         int MaterialNumber)
 {
-    NDMaterial* ndmaterial = 0;
-    ndmaterial = theDomain.getNDMaterial(MaterialNumber);
+    NDMaterialLT* ndmaterialLT = 0;
+    ndmaterialLT = theDomain.getNDMaterialLT(MaterialNumber);
 
-    if (ndmaterial == NULL)
+    if (ndmaterialLT == NULL)
     {
-        cerr << "Error: (add_element_brick_8node_variable_number_of_gauss_points) memory allocation problem for ndmaterial!" << endl;
+        cerr << "Error: (add_element_brick_8node_variable_number_of_gauss_points) memory allocation problem for ndmaterialLT!" << endl;
         return -1;
     }
 
 
     Element* theElement = 0;
-    theElement = new EightNodeBrickVariableGP(ElementNumber, number_of_gauss_points, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterial);
+
+    switch(number_of_gauss_points){
+
+        case 1: theElement = new EightNodeBrickOrderOne(ElementNumber,node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterialLT);
+                break;
+        case 2: theElement = new EightNodeBrickOrderTwo(ElementNumber,node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterialLT);
+                break;
+        case 3: theElement = new EightNodeBrickOrderThree(ElementNumber,node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterialLT);
+                break;
+        case 4: theElement = new EightNodeBrickOrderFour(ElementNumber,node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterialLT);
+                break;
+        case 5: theElement = new EightNodeBrickOrderFive(ElementNumber,node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterialLT);
+                break;
+        case 6: theElement = new EightNodeBrickOrderSix(ElementNumber,node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterialLT);
+                break;
+        default:  cerr << "Error: (add_element_brick_8node_variable_number_of_gauss_points) number_of_gauss_points should be between 1-6!";
+    }
+
 
     if (theElement == NULL)
     {
@@ -62,6 +79,10 @@ int add_element_brick_8node_variable_number_of_gauss_points(int ElementNumber,
         cerr << "Element number: " << ElementNumber << endln;
         return -1;
     }
+
+    if(ndmaterialLT->getClassTag()==ND_TAG_ElasticIsotropic3DLT)// [Sumeet September, 2016]
+        theElement->setElasticMaterialStatus(0);
+
 
     return 0;
 

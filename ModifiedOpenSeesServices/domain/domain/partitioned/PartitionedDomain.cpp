@@ -1477,13 +1477,11 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
     {
         elePtr = (Element *)tagdObjPtr;
         int eleClassTag = elePtr->getClassTag();
-        if ( eleClassTag == ELE_TAG_EightNodeBrick
-                || eleClassTag == ELE_TAG_EightNodeBrick
+        if (       eleClassTag == ELE_TAG_EightNodeBrick
+                || eleClassTag == ELE_TAG_TwentyNodeBrick
                 || eleClassTag == ELE_TAG_TwentySevenNodeBrick
-                || eleClassTag == ELE_TAG_TwentySevenNodeBrickElastic
                 || eleClassTag == ELE_TAG_ElasticBeam
                 || eleClassTag == ELE_TAG_FourNodeAndesShell
-                || eleClassTag == ELE_TAG_EightNodeBrickElastic
                 || eleClassTag == ELE_TAG_ThreeNodeAndesShell
                 || eleClassTag == ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam
                 || eleClassTag == ELE_TAG_PenaltyElement
@@ -1491,11 +1489,26 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 || eleClassTag == ELE_TAG_ContactElement_3DOF_3DOF
                 || eleClassTag == ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF
                 || eleClassTag == ELE_TAG_Truss
-                || eleClassTag == ELE_TAG_EightNodeBrickLT
-                || eleClassTag == ELE_TAG_TwentyNodeBrickLT
-                || eleClassTag == ELE_TAG_TwentySevenNodeBrickLT
                 || eleClassTag == ELE_TAG_HardContact                                               // Sumeet added on June 26 2016
                 || eleClassTag == ELE_TAG_SoftContact                                               // Sumeet added on June 26 2016
+                || eleClassTag == ELE_TAG_EightNodeBrickOrderOne                       // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_EightNodeBrickOrderTwo                       // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_EightNodeBrickOrderThree                     // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_EightNodeBrickOrderFour                      // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_EightNodeBrickOrderFive                      // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_EightNodeBrickOrderSix                       // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentyNodeBrickOrderOne                      // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentyNodeBrickOrderTwo                      // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentyNodeBrickOrderThree                    // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentyNodeBrickOrderFour                     // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentyNodeBrickOrderFive                     // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentyNodeBrickOrderSix                      // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrickOrderOne                 // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrickOrderTwo                 // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrickOrderThree               // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrickOrderFour                // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrickOrderFive                // Sumeet added [September, 2016]
+                || eleClassTag == ELE_TAG_TwentySevenNodeBrickOrderSix                 // Sumeet added [September, 2016]
            )
         {
             //Guanzhou added
@@ -1540,11 +1553,10 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
 
         //if ( elePtr->getClassTag() != ELE_TAG_EightNodeBrick  ) continue;//Guanzhou added //out by Babak on October 17 2012
         int eleClassTag = elePtr->getClassTag();
-        if ( eleClassTag != ELE_TAG_EightNodeBrick
-                && eleClassTag != ELE_TAG_TwentySevenNodeBrick
-                && eleClassTag != ELE_TAG_TwentySevenNodeBrickElastic                  // Babak added on November 16 2012d
+        if (       eleClassTag != ELE_TAG_EightNodeBrick
+                && eleClassTag != ELE_TAG_TwentyNodeBrick
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrick                        // Babak added on November 16 2012d
                 && eleClassTag != ELE_TAG_ElasticBeam                                  // Added by Babak to consider the Elastic Beam Element in the Graph 12/12/12
-                && eleClassTag != ELE_TAG_EightNodeBrickElastic                        // Added by Babak to consider the Elastic eigh node Brick in the Graph 1/18/13
                 && eleClassTag != ELE_TAG_ThreeNodeAndesShell                          // Added by Babak to consider the Three Node Andes Shell in the Graph 2/11/13
                 && eleClassTag != ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam // Added by Babak to consider the ank_one_deficient_elastic_pinned_fixed_beaml in the Graph 5/9/13
                 && eleClassTag != ELE_TAG_PenaltyElement                               // Babak added on June 12 2013
@@ -1553,11 +1565,27 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF           // Babak added on November 25 2013
                 && eleClassTag != ELE_TAG_Truss                                        // Babak added on January  22 2013
                 && eleClassTag != ELE_TAG_FourNodeAndesShell                           // Babak added sometime
-                && eleClassTag != ELE_TAG_EightNodeBrickLT                             // Jose Added Oct 2014
-                && eleClassTag != ELE_TAG_TwentyNodeBrickLT
-                && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT                       // Jose Added Oct 2014
-                && eleClassTag == ELE_TAG_HardContact                                  // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContact                                  // Sumeet added on June 26 2016
+                && eleClassTag != ELE_TAG_HardContact                                  // Sumeet added on June 26 2016
+                && eleClassTag != ELE_TAG_SoftContact                                  // Sumeet added on June 26 2016
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderOne                       // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderTwo                       // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderThree                     // Sumeet added [September, 2016]  
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderFour                      // Sumeet added [September, 2016] 
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderFive                      // Sumeet added [September, 2016] 
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderSix                       // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderOne                      // Sumeet added [September, 2016] 
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderTwo                      // Sumeet added [September, 2016] 
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderThree                    // Sumeet added [September, 2016]   
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderFour                     // Sumeet added [September, 2016]  
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderFive                     // Sumeet added [September, 2016]  
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderSix                      // Sumeet added [September, 2016] 
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderOne                 // Sumeet added [September, 2016]      
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderTwo                 // Sumeet added [September, 2016]      
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderThree               // Sumeet added [September, 2016]        
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderFour                // Sumeet added [September, 2016]       
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderFive                // Sumeet added [September, 2016]       
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderSix                 // Sumeet added [September, 2016]      
+
            )
         {
             cerr << "PartitionedDomain::buildEleGraph() -- (2) Unknown element classTag = " << eleClassTag << " \n";
@@ -1670,11 +1698,10 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
 
         elePtr = (Element *)tagdObjPtr;
         int eleClassTag = elePtr->getClassTag();
-        if ( eleClassTag != ELE_TAG_EightNodeBrick
-                && eleClassTag != ELE_TAG_TwentySevenNodeBrick
-                && eleClassTag != ELE_TAG_TwentySevenNodeBrickElastic                  // Babak added on October 17 2012d                                                                 // Added the elastic on 11/18/12
+        if (       eleClassTag != ELE_TAG_EightNodeBrick
+                && eleClassTag != ELE_TAG_TwentyNodeBrick
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrick                         // Babak added on October 17 2012d                                                                 // Added the elastic on 11/18/12
                 && eleClassTag != ELE_TAG_ElasticBeam                                  // Added by Babak to consider the Beam Element in the Graph 12/12/12
-                && eleClassTag != ELE_TAG_EightNodeBrickElastic                        // Added by Babak to include the Elastic Eight Node Brick in the Graph 1/18/13
                 && eleClassTag != ELE_TAG_ThreeNodeAndesShell                          // Added by Babak to consider the Three Node Andes Shell in the Graph 2/11/13
                 && eleClassTag != ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam // Added by Babak to consider the ank_one_deficient_elastic_pinned_fixed_beaml in the Graph 5/9/13
                 && eleClassTag != ELE_TAG_PenaltyElement                               // Babak added on June 12 2013
@@ -1683,11 +1710,26 @@ PartitionedDomain::buildEleGraph(Graph *theEleGraph)
                 && eleClassTag != ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF           // Babak added on November 25 2013
                 && eleClassTag != ELE_TAG_Truss                                        // Babak added on January  22 2013
                 && eleClassTag != ELE_TAG_FourNodeAndesShell
-                && eleClassTag != ELE_TAG_EightNodeBrickLT
-                && eleClassTag != ELE_TAG_TwentyNodeBrickLT
-                && eleClassTag != ELE_TAG_TwentySevenNodeBrickLT
-                && eleClassTag == ELE_TAG_HardContact                                  // Sumeet added on June 26 2016
-                && eleClassTag == ELE_TAG_SoftContact                                  // Sumeet added on June 26 2016
+                && eleClassTag != ELE_TAG_HardContact                                  // Sumeet added on June 26 2016
+                && eleClassTag != ELE_TAG_SoftContact                                  // Sumeet added on June 26 2016
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderOne                       // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderTwo                       // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderThree                     // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderFour                      // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderFive                      // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_EightNodeBrickOrderSix                       // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderOne                      // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderTwo                      // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderThree                    // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderFour                     // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderFive                     // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentyNodeBrickOrderSix                      // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderOne                 // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderTwo                 // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderThree               // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderFour                // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderFive                // Sumeet added [September, 2016]
+                && eleClassTag != ELE_TAG_TwentySevenNodeBrickOrderSix                 // Sumeet added [September, 2016]
            )
         {
             cerr << "PartitionedDomain::buildEleGraph() -- (3) Unknown element class tag = " << eleClassTag << "\n";
