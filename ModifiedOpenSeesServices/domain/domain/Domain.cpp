@@ -829,9 +829,9 @@ Domain::addElement( Element *element )
         // with 1000 gets back the no. of element outputs and similarly gauss point
         // and number of connectivitynodes..
         int class_dec = Element_Class_Desc[element->getClassTag()];
-        numberOfDomainElementOutputs += class_dec%1000;
+        numberOfDomainElementOutputs += class_dec%100;
         Number_of_Connectivity_Nodes += (class_dec/1000000)%100;
-        Number_of_Gauss_Points       += (class_dec%100000)/1000;
+        Number_of_Gauss_Points       += (class_dec%100000)/100;
     }
     else
     {
@@ -1559,9 +1559,9 @@ Domain::removeElement( int tag )
     // with 1000 gets back the no. of element outputs and similarly gauss point
     // and number of connectivitynodes..
     int class_dec = Element_Class_Desc[result->getClassTag()];
-    numberOfDomainElementOutputs -= class_dec%1000;
+    numberOfDomainElementOutputs -= class_dec%100;
     Number_of_Connectivity_Nodes -= (class_dec/1000000)%100;
-    Number_of_Gauss_Points       -= (class_dec%100000)/1000;
+    Number_of_Gauss_Points       -= (class_dec%100000)/100;
 
     return result;
 }
@@ -2807,11 +2807,11 @@ Domain::output_step( void )
             }
 
         }
+
+        theOutputWriter.setTime(currentTime);
     }
 
-    theOutputWriter.setTime(currentTime);
-
-    if (Enable_Process_output)
+    if (output_is_enabled && Enable_Process_output)
     {
 
         globalESSITimer.stop("Domain_Mesh_Output");
@@ -2851,11 +2851,11 @@ Domain::output_step( void )
             while ( ( elePtr = theElemIter() ) != 0 )
             {
                 
-                noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
+                noutputs = Element_Class_Desc[elePtr->getClassTag()]%100;
                 if(noutputs) theOutputWriter.StepOutput(id_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
                 pos1 = pos1 + noutputs;
 
-                noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
+                noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/100)*18;
                 if(noutputs) theOutputWriter.StepOutput(id_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
                 pos2 = pos2 + noutputs;
 
@@ -2864,7 +2864,7 @@ Domain::output_step( void )
 
         theOutputWriter.EnableReactionOutput(reaction_output_is_enabled);
 
-        if(reaction_output_is_enabled)
+        if(output_is_enabled && reaction_output_is_enabled)
         {
             //Do Support Reactions Output [Sumeet August,2016]
             SP_Constraint *sp_ptr = 0;
@@ -2915,7 +2915,7 @@ Domain::output_iteration( int global_iteration_no )
     Enable_Process_output = true;
 #endif
 
-    if(Enable_Process_output)
+    if(output_is_enabled && Enable_Process_output)
     {
 
         Node *nodePtr;
@@ -2962,11 +2962,11 @@ Domain::output_iteration( int global_iteration_no )
             while ( ( elePtr = theElemIter() ) != 0 )
             {
                 
-                noutputs = Element_Class_Desc[elePtr->getClassTag()]%1000;
+                noutputs = Element_Class_Desc[elePtr->getClassTag()]%100;
                 if(noutputs) theOutputWriter.IterationOutput(id_Trial_Elements_Output, elePtr->getElementOutput(),pos1, noutputs);
                 pos1 = pos1 + noutputs;
 
-                noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/1000)*18;
+                noutputs=((Element_Class_Desc[elePtr->getClassTag()]%100000)/100)*18;
                 if(noutputs) theOutputWriter.IterationOutput(id_Trial_Gauss_Output, elePtr->getGaussOutput(),pos2, noutputs);
                 pos2 = pos2 + noutputs;
 

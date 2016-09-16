@@ -208,10 +208,10 @@
 
 
 // Tokens for elements
-%token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU  TwentyNodeBrick_uPU TwentyNodeBrick TwentyNodeBrickElastic EightNodeBrick_up variable_node_brick_8_to_27
-%token EightNodeBrickElastic TwentySevenNodeBrickElastic beam_displacement_based BeamColumnDispFiber3d beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
+%token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU  TwentyNodeBrick_uPU TwentyNodeBrick EightNodeBrick_up variable_node_brick_8_to_27
+%token beam_displacement_based BeamColumnDispFiber3d beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact HardContact FrictionalPenaltyContact SoftContact
-%token EightNodeBrickLT EightNodeBrickLTNoOutput TwentyNodeBrickLT TwentySevenNodeBrickLT ShearBeamLT  EightNodeBrick_upULT TwentyNodeBrick_uPULT TwentySevenNodeBrick_uPULT
+%token ShearBeam  EightNodeBrick_upULT TwentyNodeBrick_uPULT TwentySevenNodeBrick_uPULT
 
 // Element options tokens
 %token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
@@ -299,7 +299,6 @@ dsl
 	//!=========================================================================================================
 	//!
 	//!FEIDOC print <.>;
-	//!FEIDOC print <.> in <.>;
 	: CMD_print exp
 	{
 		if ( $2 != 0 ) // ... and deliver us from the null pointer
@@ -313,37 +312,17 @@ dsl
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC print domain;
-	| CMD_print DOMAIN_
-	{
-		//theDomain.Print(cerr);
-		cerr << "Not currently working. Should be implemented as API function and used here." << endl;
-		$$ = new Empty();
-		nodes.push($$);
-	}
-	//!=========================================================================================================
-	//!
 	//!FEIDOC print element # <.>;
 	| CMD_print ELEMENT TEXTNUMBER exp
 	{
 		args.clear(); signature.clear();
 		args.push_back($4); signature.push_back(this_signature("number", &isAdimensional));
 
-		$$ = new FeiDslCaller1<int>(&output_of_element_to_screen, args, signature, "output_of_element_to_screen");
+		$$ = new FeiDslCaller1<int>(&output_of_element_to_screen, args, signature, "poutput_of_element_to_screen");
 
 		nodes.pop();
 		nodes.push($$);
 	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC check element # <.>;
-/*    | CMD_check ELEMENT TEXTNUMBER exp
-	{
-		//theDomain.getElement( $4->value().Getvalue() ) -> report("Element report:\n");
-		$$ = new Empty();
-		nodes.pop();
-		nodes.push($$);
-	}*/
 	//!=========================================================================================================
 	//!
 	//!FEIDOC print node # <.>;
@@ -354,17 +333,6 @@ dsl
 
 		$$ = new FeiDslCaller1<int>(&output_of_node_to_screen, args, signature, "output_of_node_to_screen");
 
-		nodes.pop();
-		nodes.push($$);
-	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC print material # <.>;
-	| CMD_print MATERIAL TEXTNUMBER exp
-	{
-		cerr << "Not currently working. Should be implemented a API function and used here." << endl;
-		//theDomain.getNDMaterial( $4->value().Getvalue() ) -> Print(cerr,0);
-		$$ = new Empty();
 		nodes.pop();
 		nodes.push($$);
 	}
@@ -742,7 +710,7 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add load # <.> to node # <.> type [path_time_series] [FORCETYPE] = <force or moment> series_file = "STRING";
+	//!FEIDOC add load # <.> to node # <.> type [path_time_series] [FORCETYPE] = <force or moment> series_file = "filename";
 	| ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_PATH_TIME_SERIES
 			FORCE '=' exp
 			series_file '=' STRING
@@ -775,7 +743,7 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add load # <.> to node # <.> type [path_series] [FORCETYPE] = <force or moment> time_step = <time> series_file = "STRING";
+	//!FEIDOC add load # <.> to node # <.> type [path_series] [FORCETYPE] = <force or moment> time_step = <time> series_file = "filename";
 	| ADD LOAD TEXTNUMBER exp TO NODE TEXTNUMBER exp TYPE TH_PATH_SERIES
 				FORCE '=' exp
 				time_step '=' exp
@@ -841,7 +809,7 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add imposed motion # <.> to node # <.> dof [DOFTYPE] time_step = <t> displacement_scale_unit = <length> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
+	//!FEIDOC add imposed motion # <.> to node # <.> dof [DOFTYPE] time_step = <t> displacement_scale_unit = <length> displacement_file = "disp_filename" velocity_scale_unit = <velocity> velocity_file = "vel_filename" acceleration_scale_unit = <acceleration> acceleration_file = "acc_filename";
 	| ADD IMPOSEDMOTION TEXTNUMBER exp TO NODE TEXTNUMBER exp dof DOF
 			time_step '=' exp
 			displacement_scale_unit '=' exp
@@ -893,7 +861,7 @@ CMD_add
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add imposed motion # <.> to node # <.> dof [DOFTYPE] displacement_scale_unit = <displacement> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
+	//!FEIDOC add imposed motion # <.> to node # <.> dof [DOFTYPE] displacement_scale_unit = <displacement> displacement_file = "disp_filename" velocity_scale_unit = <velocity> velocity_file = "vel_filename" acceleration_scale_unit = <acceleration> acceleration_file = "acc_filename";
 	| ADD IMPOSEDMOTION TEXTNUMBER exp TO NODE TEXTNUMBER exp dof DOF
 			displacement_scale_unit '=' exp
 			displacement_file '=' exp
@@ -1456,28 +1424,6 @@ CMD_define
 		$$ = new FeiDslCaller1<int>(&set_output_compression_level,args,signature,"set_output_compression_level");
 		nodes.push($$);
 	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC disable element output;
-	| DISABLE  ELEMENT OUTPUT 
-	{
-		args.clear(); signature.clear();
-		$$ = new FeiDslCaller0<>(&disable_element_output,args,signature,"disable_element_output");
-		nodes.push($$);
-	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC disable element # <.> output;
-	| DISABLE  ELEMENT TEXTNUMBER exp OUTPUT 
-	{
-		args.clear(); signature.clear();
-		args.push_back($4); signature.push_back(this_signature("tag", &isAdimensional));
-
-		$$ = new FeiDslCaller1<int>(&disable_element_output,args,signature,"disable_element_output");
-		nodes.pop();
-		nodes.push($$);
-	}
-
 	////!=========================================================================================================
 	////!
 	////!FEIDOC define load factor increment <.>;
@@ -1915,17 +1861,13 @@ CMD_misc
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC save <.> non_converged_iterations;
-	| SAVE exp NON_CONVERGED_ITERATIONS
+	//!FEIDOC save non_converged_iterations;
+	| SAVE NON_CONVERGED_ITERATIONS
 	{
 		args.clear(); signature.clear();
-		args.push_back($2); signature.push_back
 		(this_signature("non_converged_iterations", &isAdimensional));
 
-		$$ = new FeiDslCaller1<int>(&save_non_converged_iterations, args, signature, "save_non_converged_iterations");
-
-		nodes.pop();
-		nodes.push($$);
+		$$ = new FeiDslCaller0<>(&save_non_converged_iterations, args, signature, "save_non_converged_iterations");
 	}
 	//!=========================================================================================================
 	//!
@@ -2844,61 +2786,11 @@ ADD_element:
 
 		for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 11 exps
 		nodes.push($$);
-	}
+	}  
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type [8NodeBrickLT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-	| TEXTNUMBER exp TYPE EightNodeBrickLT WITH NODES
-		'(' exp ',' exp ',' exp ',' exp ','
-			exp ',' exp ',' exp ',' exp ')'
-			USE MATERIAL TEXTNUMBER exp
-	{
-		args.clear(); signature.clear();
-		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
-		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
-		args.push_back($27); signature.push_back(this_signature("material", &isAdimensional));
-
-		$$ = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_ltensor, args, signature, "add_element_brick_8node_ltensor");
-
-		for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 10 exps
-		nodes.push($$);
-	}    
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add element # <.> type [EightNodeBrickLTNoOutput] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-	| TEXTNUMBER exp TYPE EightNodeBrickLTNoOutput WITH NODES
-		'(' exp ',' exp ',' exp ',' exp ','
-			exp ',' exp ',' exp ',' exp ')'
-			USE MATERIAL TEXTNUMBER exp
-	{
-		args.clear(); signature.clear();
-		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
-		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
-		args.push_back($27); signature.push_back(this_signature("material", &isAdimensional));
-
-		$$ = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_ltensor_no_output, args, signature, "add_element_brick_8node_ltensor_no_output");
-
-		for(int ii = 1;ii <=10; ii++) nodes.pop(); //pop 10 exps
-		nodes.push($$);
-	} 
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add element # <.> type [ShearBeamLT] with nodes (<.>, <.>) cross_section = <l^2> use material # <.>;
-	| TEXTNUMBER exp TYPE ShearBeamLT WITH NODES
+	//!FEIDOC add element # <.> type [ShearBeam] with nodes (<.>, <.>) cross_section = <l^2> use material # <.>;
+	| TEXTNUMBER exp TYPE ShearBeam WITH NODES
 		'(' exp ',' exp  ')' cross_section '=' exp
 			USE MATERIAL TEXTNUMBER exp
 	{
@@ -2909,34 +2801,9 @@ ADD_element:
 		args.push_back($14); signature.push_back(this_signature("cross_section", &isArea));
 		args.push_back($18); signature.push_back(this_signature("material", &isAdimensional));
 
-		$$ = new FeiDslCaller5<int,int,int,double,int>(&add_element_shear_beam_ltensor, args, signature, "add_element_shear_beam_ltensor");
+		$$ = new FeiDslCaller5<int,int,int,double,int>(&add_element_shear_beam, args, signature, "add_element_shear_beam");
 
 		for(int ii = 1;ii <=5; ii++) nodes.pop(); //pop 5 exps
-		nodes.push($$);
-	}
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add element # <.> type [8NodeBrick_elastic] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-	| TEXTNUMBER exp TYPE EightNodeBrickElastic WITH NODES
-		'(' exp ',' exp ',' exp ',' exp ','
-			exp ',' exp ',' exp ',' exp ')'
-			USE MATERIAL TEXTNUMBER exp
-	{
-		args.clear(); signature.clear();
-		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
-		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
-		args.push_back($27); signature.push_back(this_signature("material", &isAdimensional));
-
-		$$ = new FeiDslCaller10<int,int,int,int,int,int,int,int,int,int>(&add_element_brick_8node_elastic, args, signature, "add_element_brick_8node_elastic");
-
-		for(int ii = 1;ii <=10; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================
@@ -3015,53 +2882,6 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type [27NodeBrickLT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-	| TEXTNUMBER exp TYPE TwentySevenNodeBrickLT WITH NODES
-			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
-				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
-				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
-				USE MATERIAL TEXTNUMBER exp
-	{
-		args.clear(); signature.clear();
-		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
-		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
-		args.push_back($24); signature.push_back(this_signature("node9", &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
-		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
-		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
-		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
-		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
-		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
-		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
-		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
-		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
-		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
-		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
-		args.push_back($48); signature.push_back(this_signature("node21", &isAdimensional));
-		args.push_back($50); signature.push_back(this_signature("node22", &isAdimensional));
-		args.push_back($52); signature.push_back(this_signature("node23", &isAdimensional));
-		args.push_back($54); signature.push_back(this_signature("node24", &isAdimensional));
-		args.push_back($56); signature.push_back(this_signature("node25", &isAdimensional));
-		args.push_back($58); signature.push_back(this_signature("node26", &isAdimensional));
-		args.push_back($60); signature.push_back(this_signature("node27", &isAdimensional));
-		args.push_back($65); signature.push_back(this_signature("material", &isAdimensional));
-
-		$$ = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
-								int,int,int,int,int,int,int,int,int,int,
-								int,int,int,int,int,int,int,int,int>(&add_element_brick_27node_ltensor, args, signature, "add_element_brick_27node_ltensor");
-
-		for(int ii = 1;ii <=29; ii++) nodes.pop();
-		nodes.push($$);
-	}
-	//!=========================================================================================================
-	//!
 	//!FEIDOC add element # <.> type 27NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 	| TEXTNUMBER exp TYPE TwentySevenNodeBrick USING exp Gauss points each direction WITH NODES
 			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
@@ -3106,54 +2926,6 @@ ADD_element:
 								int,int,int,int,int,int,int,int,int,int>(&add_element_brick_27node_variable_number_of_gauss_points, args, signature, "add_element_brick_27node_variable_number_of_gauss_points");
 
 		for(int ii = 1;ii <=30; ii++) nodes.pop();
-		nodes.push($$);
-	}
-
-		//!=========================================================================================================
-	//!
-	//!FEIDOC add element # <.> type [27NodeBrick_elastic] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-	| TEXTNUMBER exp TYPE TwentySevenNodeBrickElastic WITH NODES
-			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
-				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
-				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
-				USE MATERIAL TEXTNUMBER exp
-	{
-		args.clear(); signature.clear();
-		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
-		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
-		args.push_back($24); signature.push_back(this_signature("node9", &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
-		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
-		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
-		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
-		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
-		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
-		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
-		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
-		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
-		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
-		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
-		args.push_back($48); signature.push_back(this_signature("node21", &isAdimensional));
-		args.push_back($50); signature.push_back(this_signature("node22", &isAdimensional));
-		args.push_back($52); signature.push_back(this_signature("node23", &isAdimensional));
-		args.push_back($54); signature.push_back(this_signature("node24", &isAdimensional));
-		args.push_back($56); signature.push_back(this_signature("node25", &isAdimensional));
-		args.push_back($58); signature.push_back(this_signature("node26", &isAdimensional));
-		args.push_back($60); signature.push_back(this_signature("node27", &isAdimensional));
-		args.push_back($65); signature.push_back(this_signature("material", &isAdimensional));
-
-		$$ = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
-								int,int,int,int,int,int,int,int,int,int,
-								int,int,int,int,int,int,int,int,int>(&add_element_brick_27node_elastic, args, signature, "add_element_brick_27node_elastic");
-
-		for(int ii = 1;ii <=29; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================
@@ -3247,47 +3019,6 @@ ADD_element:
 		for(int ii = 1;ii <=22; ii++) nodes.pop();
 		nodes.push($$);
 	}
-
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add element # <.> type [20NodeBrickLT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-	| TEXTNUMBER exp TYPE TwentyNodeBrickLT WITH NODES
-			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
-				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
-				exp ',' exp ')'
-				USE MATERIAL TEXTNUMBER exp
-	{
-		args.clear(); signature.clear();
-		args.push_back($2);  signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back($8);  signature.push_back(this_signature("node1",  &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2",  &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("node3",  &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("node4",  &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("node5",  &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("node6",  &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("node7",  &isAdimensional));
-		args.push_back($22); signature.push_back(this_signature("node8",  &isAdimensional));
-		args.push_back($24); signature.push_back(this_signature("node9",  &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
-		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
-		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
-		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
-		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
-		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
-		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
-		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
-		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
-		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
-		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
-		args.push_back($51); signature.push_back(this_signature("material", &isAdimensional));
-
-		$$ = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
-								int,int,int,int,int,int,int,int,int,int,
-								int,int>(&add_element_brick_20node_ltensor, args, signature, "add_element_brick_20node_ltensor");
-
-		for(int ii = 1;ii <=22; ii++) nodes.pop();
-		nodes.push($$);
-	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type 20NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
@@ -3327,47 +3058,6 @@ ADD_element:
 								int,int,int>(&add_element_brick_20node_variable_number_of_gauss_points, args, signature, "add_element_brick_20node_variable_number_of_gauss_points");
 
 		for(int ii = 1;ii <=23; ii++) nodes.pop();
-		nodes.push($$);
-	}
-
-	//!=========================================================================================================
-	//!
-	//!FEIDOC add element # <.> type [20NodeBrick_elastic] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-	| TEXTNUMBER exp TYPE TwentyNodeBrickElastic WITH NODES
-			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
-				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
-				exp ',' exp ')'
-				USE MATERIAL TEXTNUMBER exp
-	{
-		args.clear(); signature.clear();
-		args.push_back($2);  signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back($8);  signature.push_back(this_signature("node1",  &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2",  &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("node3",  &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("node4",  &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("node5",  &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("node6",  &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("node7",  &isAdimensional));
-		args.push_back($22); signature.push_back(this_signature("node8",  &isAdimensional));
-		args.push_back($24); signature.push_back(this_signature("node9",  &isAdimensional));
-		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
-		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
-		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
-		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
-		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
-		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
-		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
-		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
-		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
-		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
-		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
-		args.push_back($51); signature.push_back(this_signature("material", &isAdimensional));
-
-		$$ = new FeiDslCaller22<int,int,int,int,int,int,int,int,int,int,
-								int,int,int,int,int,int,int,int,int,int,
-								int,int>(&add_element_brick_20node_elastic, args, signature, "add_element_brick_20node_elastic");
-
-		for(int ii = 1;ii <=22; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================

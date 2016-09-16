@@ -52,9 +52,6 @@ add element # $1 type 20NodeBrick using $2 Gauss points each direction with node
 // add element # <.> type 20NodeBrick with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 add element # $1 type 20NodeBrick with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22;
 
-// add element # <.> type 20NodeBrick_elastic with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-add element # $1 type 20NodeBrick_elastic with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22;
-
 // add element # <.> type 20NodeBrick_upU with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
 add element # $1 type 20NodeBrick_upU with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22 and 
 	porosity = $23 
@@ -79,17 +76,11 @@ add element # $1 type 20NodeBrick_upULT with nodes ($2, $3, $4, $5, $6, $7, $8, 
 	K_s = $30 
 	K_f = $31;
 
-// add element # <.> type 20NodeBrickLT with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-add element # $1 type 20NodeBrickLT with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22;
-
 // add element # <.> type 27NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 add element # $1 type 27NodeBrick using $2 Gauss points each direction with nodes ($3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29) use material # $30;
 
 // add element # <.> type 27NodeBrick with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 add element # $1 type 27NodeBrick with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) use material # $29;
-
-// add element # <.> type 27NodeBrick_elastic with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-add element # $1 type 27NodeBrick_elastic with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) use material # $29;
 
 // add element # <.> type 27NodeBrick_upULT with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
 add element # $1 type 27NodeBrick_upULT with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) use material # $22 and 
@@ -102,9 +93,6 @@ add element # $1 type 27NodeBrick_upULT with nodes ($2, $3, $4, $5, $6, $7, $8, 
 	k_z = $29  
 	K_s = $30 
 	K_f = $31;
-
-// add element # <.> type 27NodeBrickLT with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-add element # $1 type 27NodeBrickLT with nodes ($2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) use material # $29;
 
 // add element # <.> type 3NodeShell_ANDES with nodes (<.>, <.>, <.>) use material # <.> thickness = <l> ;
 add element # $1 type 3NodeShell_ANDES with nodes ($2, $3, $4) use material # $5 
@@ -127,9 +115,6 @@ add element # $1 type 8NodeBrick using $2 Gauss points each direction with nodes
 
 // add element # <.> type 8NodeBrick with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 add element # $1 type 8NodeBrick with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10;
-
-// add element # <.> type 8NodeBrick_elastic with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-add element # $1 type 8NodeBrick_elastic with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10;
 
 // add element # <.> type 8NodeBrick_up with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
 add element # $1 type 8NodeBrick_up with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10 
@@ -166,9 +151,6 @@ add element # $1 type 8NodeBrick_upULT with nodes ($2, $3, $4, $5, $6, $7, $8, $
 	k_z = $17  
 	K_s = $18 
 	K_f = $19;
-
-// add element # <.> type 8NodeBrickLT with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-add element # $1 type 8NodeBrickLT with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10;
 
 // add element # <.> type beam_9dof_elastic with nodes (<.>, <.>) cross_section = <area> elastic_modulus = <F/L^2> shear_modulus = <F/L^2> torsion_Jx = <length^4> bending_Iy = <length^4> bending_Iz = <length^4> mass_density = <M/L^3>  xz_plane_vector = (<.>, <.>, <.> ) joint_1_offset = (<L>, <L>, <L> ) joint_2_offset = (<L>, <L>, <L> );
 add element # $1 type beam_9dof_elastic with nodes ($2, $3) 
@@ -226,9 +208,6 @@ add element # $1 type BeamColumnDispFiber3d with nodes ($2, $3)
 	joint_1_offset = ($10, $11, $12 ) 
 	joint_2_offset = ($13, $14, $15 );
 
-// add element # <.> type EightNodeBrickLTNoOutput with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
-add element # $1 type EightNodeBrickLTNoOutput with nodes ($2, $3, $4, $5, $6, $7, $8, $9) use material # $10;
-
 // add element # <.> type HardContact with nodes (<.>, <.>) normal_stiffness = <F/L> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
 add element # $1 type HardContact with nodes ($2, $3) 
 	normal_stiffness = $4 
@@ -238,8 +217,8 @@ add element # $1 type HardContact with nodes ($2, $3)
 	friction_ratio = $8  
 	contact_plane_vector = ($9, $10, $11 );
 
-// add element # <.> type ShearBeamLT with nodes (<.>, <.>) cross_section = <l^2> use material # <.>;
-add element # $1 type ShearBeamLT with nodes ($2, $3) 
+// add element # <.> type ShearBeam with nodes (<.>, <.>) cross_section = <l^2> use material # <.>;
+add element # $1 type ShearBeam with nodes ($2, $3) 
 	cross_section = $4 use material # $5;
 
 // add element # <.> type SoftContact with nodes (<.>, <.>) initial_normal_stiffness = <F/L> stiffning_rate = <m^-1> tangential_stiffness = <F/L> normal_damping = <F/L> tangential_damping = <F/L>  friction_ratio = <.>  contact_plane_vector = (<.>, <.>, <.> );
@@ -265,7 +244,7 @@ add fiber # $1 using material # $2 to section # $3
 	fiber_cross_section = $4 
 	fiber_location = ($5,$6);
 
-// add imposed motion # <.> to node # <.> dof DOFTYPE displacement_scale_unit = <displacement> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
+// add imposed motion # <.> to node # <.> dof DOFTYPE displacement_scale_unit = <displacement> displacement_file = "disp_filename" velocity_scale_unit = <velocity> velocity_file = "vel_filename" acceleration_scale_unit = <acceleration> acceleration_file = "acc_filename";
 add imposed motion # $1 to node # $2 dof DOFTYPE 
 	displacement_scale_unit = $3 
 	displacement_file = $4 
@@ -274,7 +253,7 @@ add imposed motion # $1 to node # $2 dof DOFTYPE
 	acceleration_scale_unit = $7 
 	acceleration_file = $8;
 
-// add imposed motion # <.> to node # <.> dof DOFTYPE time_step = <t> displacement_scale_unit = <length> displacement_file = "filename" velocity_scale_unit = <velocity> velocity_file = "filename" acceleration_scale_unit = <acceleration> acceleration_file = "filename";
+// add imposed motion # <.> to node # <.> dof DOFTYPE time_step = <t> displacement_scale_unit = <length> displacement_file = "disp_filename" velocity_scale_unit = <velocity> velocity_file = "vel_filename" acceleration_scale_unit = <acceleration> acceleration_file = "acc_filename";
 add imposed motion # $1 to node # $2 dof DOFTYPE 
 	time_step = $3 
 	displacement_scale_unit = $4 
@@ -315,13 +294,13 @@ add load # $1 to node # $2 type from_reactions;
 add load # $1 to node # $2 type linear 
 	FORCETYPE = $3; //FORCETYPE = Fx Fy Fz Mx My Mz F_fluid_x F_fluid_y F_fluid_z
 
-// add load # <.> to node # <.> type path_series FORCETYPE = <force or moment> time_step = <time> series_file = "STRING";
+// add load # <.> to node # <.> type path_series FORCETYPE = <force or moment> time_step = <time> series_file = "filename";
 add load # $1 to node # $2 type path_series 
 	FORCETYPE = $3 
 	time_step = $4 
 	series_file = $5;
 
-// add load # <.> to node # <.> type path_time_series FORCETYPE = <force or moment> series_file = "STRING";
+// add load # <.> to node # <.> type path_time_series FORCETYPE = <force or moment> series_file = "filename";
 add load # $1 to node # $2 type path_time_series 
 	FORCETYPE = $3 
 	series_file = $4;
@@ -593,9 +572,6 @@ add uniform acceleration # $1 to all nodes dof $2
 	initial_velocity = $5 
 	acceleration_file = $6;
 
-// check element # <.>;
-check element # $1;
-
 // check mesh filename;
 check mesh filename;
 
@@ -635,12 +611,6 @@ define solver ProfileSPD / UMFPack;
 // define static integrator displacement_control using node # <.> dof DOFTYPE increment <length>;
 define static integrator displacement_control using node # $1 dof DOFTYPE increment $2;
 
-// disable element # <.> output;
-disable element # $1 output;
-
-// disable element output;
-disable element output;
-
 // disable output;
 disable output;
 
@@ -677,20 +647,11 @@ new loading stage $1;
 // output every <.> steps;
 output every $1 steps;
 
-// print <.> in <.>;
-print $1 in $2;
-
 // print <.>;
 print $1;
 
-// print domain;
-print domain;
-
 // print element # <.>;
 print element # $1;
-
-// print material # <.>;
-print material # $1;
 
 // print node # <.>;
 print node # $1;
@@ -719,8 +680,8 @@ remove strain from element # $1;
 // runTest;
 runTest;
 
-// save <.> non_converged_iterations;
-save $1 non_converged_iterations;
+// save non_converged_iterations;
+save non_converged_iterations;
 
 // set output compression level to <.>;
 set output compression level to $1;

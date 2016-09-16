@@ -77,6 +77,16 @@ public:
     virtual int update(void);
     virtual bool isSubdomain(void);
 
+    // Sumeet [September, 2016] For Elastic Materials
+    // Set status of is_elastic_material_status ==1;
+    // Called only while adding element by the user
+    /***[Sumeet September, 2016] // Keeps imformation whether the material applied to this element is elastic or not ***/
+    /* -1 means not an elastic material */
+    /*  0 means elastic material but stiffness has not been calculated yet*/
+    /*  1 means elastic material and stiffness has been calculated */
+    virtual void setElasticMaterialStatus(int i=0);
+    virtual int  getElasticMaterialStatus();
+
     // methods to return the current linearized stiffness,
     // damping and mass matrices
     virtual const Matrix &getTangentStiff(void) = 0;
@@ -133,6 +143,10 @@ public:
     virtual Vector *getStress(void);
     virtual Vector *getStrain(void);
     virtual Vector *getForce(void);
+ 
+    //General reporting of element status
+    virtual void Print( ostream &s, int flag = 0 );
+
     void printSomeInformation(void); // Added by Babak to print
 
     /*************************************************************************
@@ -190,10 +204,16 @@ protected:
 
 private:
 
+    /***[Sumeet September, 2016] // Keeps imformation whether the material applied to this element is elastic or not ***/
+    /* -1 means not an elastic material */
+    /*  0 means elastic material but stiffness has not been calculated yet*/
+    /*  1 means elastic material and stiffness has been calculated */
+    int is_elastic_material_status=-1;  
+
     int classTag;
     int index_sized_matrix_vector;
 
-    int materialTag = -1;            // added by sumeet 30th July , 2016
+    int materialTag = -1;                           // added by sumeet 30th July , 2016
 
     int numberOfBoundaryNodes;
 

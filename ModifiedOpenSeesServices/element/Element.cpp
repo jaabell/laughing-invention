@@ -117,6 +117,20 @@ Element::revertToStart(void)
     return 0;
 }
 
+// Sumeet [September, 2016] For Elastic Materials
+// Set status of is_elastic_material_status ==0;
+// Called only while adding element by the user
+/* -1 means not an elastic material */
+/*  0 means elastic material but stiffness has not been calculated yet*/
+/*  1 means elastic material and stiffness has been calculated */
+void Element::setElasticMaterialStatus(int staus){
+    is_elastic_material_status = staus;
+}
+int Element::getElasticMaterialStatus(){
+    return is_elastic_material_status;
+}
+
+
 
 void
 Element::setSizedMatrix(void)
@@ -927,10 +941,14 @@ double Element::returnPressure(void)
     return this->returnPressure();
 }
 
+//=============================================================================
+void Element::Print( ostream &s, int flag )
+{
+    cout << "Element Responsibility" << endl;
+}
 
 
-
-; // Added by Babak to print
+// Added by Babak to print
 //--------
 void
 Element::printSomeInformation(void)

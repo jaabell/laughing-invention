@@ -300,7 +300,6 @@
 
 #define ELE_TAG_CST                                              4050
 
-#define ELE_TAG_Subdomain                                        1
 #define ELE_TAG_ElasticBeamLumpedMass                            3000
 #define ELE_TAG_beam3d01                                         3001
 #define ELE_TAG_beam3d02                                         3002
@@ -329,21 +328,14 @@
 #define ELE_TAG_LargeDispBeamColumn3d                            6002
 #define ELE_TAG_FourNodeQuad                                     1010
 #define ELE_TAG_BeamWithHinges3d                                  402
-#define ELE_TAG_EightNodeBrick                                   7001
-#define ELE_TAG_EightNodeBrickElastic                            7015
-#define ELE_TAG_EightNodeBrickVariableGP                         7019
-#define ELE_TAG_TwentyNodeBrick                                  7002
-#define ELE_TAG_TwentyNodeBrickVariableGP                        7020
-#define ELE_TAG_TwentySevenNodeBrickVariableGP                   7021
-#define ELE_TAG_TwentyNodeBrickElastic                           7017
+
 #define ELE_TAG_VariableNodeBrick                                7018
 #define ELE_TAG_FourNodeQuadUP                                   7005
 #define ELE_TAG_TotalLagrangianFD20NodeBrick                     7006 // ZC added
 #define ELE_TAG_TotalLagrangianFD8NodeBrick                      7007
 #define ELE_TAG_EightNode_LDBrick_u_p                            7008
 #define ELE_TAG_EightNode_Brick_u_p                              7009
-#define ELE_TAG_TwentySevenNodeBrick                             7010
-#define ELE_TAG_TwentySevenNodeBrickElastic                      7016
+
 #define ELE_TAG_BrickUP                                          7011
 #define ELE_TAG_Nine_Four_Node_QuadUP                            7012
 #define ELE_TAG_Twenty_Eight_Node_BrickUP                        7013
@@ -388,11 +380,11 @@
 * [Dof per nodes]  = <num_of_digits = 1> Degree of freedom per node
 *					 x-> DOFS per node
 *
-* [N. Gauss]  = <num_of_digits = 2> Number of gauss points in elements
-*				xx-> number of gauss points
+* [N. Gauss]  = <num_of_digits = 3> Number of gauss points in elements
+*				xxx-> number of gauss points
 *
-* [No.of Outputs]  = <num_of_digits = 3> no. of outputs other than at gauss points.
-*					 xxx-> no. of outputs other than at gauss points.
+* [No.of Outputs]  = <num_of_digits = 2> no. of outputs other than at gauss points.
+*					 xx-> no. of outputs other than at gauss points.
 *
 * Default Features 
 * - - - - - -- - -
@@ -406,46 +398,90 @@
 //###            Based on the above encoding
 //###  NOTE!! :- Also increase the ELE_TAG_DESC_ARRAY_SIZE to the number of elements
 //### --------------------------------------------------------------------------------------------
-                                                              //New  //Old       //Desc
-#define ELE_TAG_Truss                                            1   //4001    102300002
-#define ELE_TAG_ElasticBeam                                      2   //5011    102600024         // Nima Tafazzoli, December 2012
-#define ELE_TAG_HardContact				                         3   //5015    102300009         // Sumeet June 2016
-#define ELE_TAG_ThreeNodeAndesShell                              4   //2026    203600006
-#define ELE_TAG_FourNodeAndesShell                               5   //2029    204600000               
-#define ELE_TAG_EightNodeBrickLT                                 6   //8001    308308000
-#define ELE_TAG_TwentySevenNodeBrickLT                           7   //8002    327327000
-#define ELE_TAG_ShearBeamLT                                      8   //8003    302301000
-#define ELE_TAG_EightNodeBrickLT_NoOutput                        9   //8004    308300000
-#define ELE_TAG_TwentyNodeBrickLT                                10  //8005    320327000
-#define ELE_TAG_SoftContact         	 						 11  //5016    102300009         // Sumeet added on July 2016
-#define ELE_TAG_EightNodeBrick_u_p_U                             12  //7003    308708000   
-#define ELE_TAG_EightNodeBrick_u_p_U_LT                          13  //7022    308708000   
-#define ELE_TAG_TwentyNodeBrick_u_p_U                            14  //7004    320727000 
-#define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam     15  //5012    102600009		// Nima Tafazzoli, December 2012
-// #define ELE_TAG_TwentySevenNodeBrick_u_p_U                       16  //New    
+                       
+                                                              //New         //Desc
+#define ELE_TAG_Subdomain                                        1    //    100000000  // I think it is fixed and hard coded [Sumeet, Septemberm, 2016]
+#define ELE_TAG_EightNodeBrick                                   2    //    308300800 // Sumeet [September, 2016] 
+#define ELE_TAG_EightNodeBrickOrderOne                           3    //    308300100 // Sumeet [September, 2016] 
+#define ELE_TAG_EightNodeBrickOrderTwo                           4    //    308300800 // Sumeet [September, 2016] 
+#define ELE_TAG_EightNodeBrickOrderThree                         5    //    308302700 // Sumeet [September, 2016] 
+#define ELE_TAG_EightNodeBrickOrderFour                          6    //    308306400 // Sumeet [September, 2016] 
+#define ELE_TAG_EightNodeBrickOrderFive                          7    //    308312500 // Sumeet [September, 2016] 
+#define ELE_TAG_EightNodeBrickOrderSix                           8    //    308321600 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrick                                  9    //    320302700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrickOrderOne                          10   //    320300100 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrickOrderTwo                          11   //    320300800 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrickOrderThree                        12   //    320302700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrickOrderFour                         13   //    320306400 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrickOrderFive                         14   //    320312500 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrickOrderSix                          15   //    320321600 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrick                             16   //    327302700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrickOrderOne                     17   //    327300100 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrickOrderTwo                     18   //    327300800 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrickOrderThree                   19   //    327302700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrickOrderFour                    20   //    327306400 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrickOrderFive                    21   //    327312500 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrickOrderSix                     22   //    327321600 // Sumeet [September, 2016] 
+#define ELE_TAG_Truss                                            23   //    102300002 
+#define ELE_TAG_ElasticBeam                                      24   //    102600024 // Nima Tafazzoli, December 2012
+#define ELE_TAG_HardContact				                         25   //    102300009 // Sumeet June 2016
+#define ELE_TAG_ThreeNodeAndesShell                              26   //    203600006
+#define ELE_TAG_FourNodeAndesShell                               27   //    204600000       
+#define ELE_TAG_ShearBeam                                        28   //    302300100
+#define ELE_TAG_EightNodeBrickNoOutput                           29   //    308300000
+#define ELE_TAG_SoftContact         	 						 30   //    102300009 // Sumeet added on July 2016
+#define ELE_TAG_EightNodeBrick_u_p_U                             31   //    308700800 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrick_u_p_U_LT                          32   //    308700800 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrick_u_p_U                            33   //    320702700 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrick_upU                         34   //    327702700 // Sumeet [September, 2016]
+#define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam     35   //    102600009 // Nima Tafazzoli, December 2012
 
-#define ELE_TAG_DESC_ARRAY_SIZE 15
+#define ELE_TAG_EightNodeBrick_upU        36
+#define ELE_TAG_TwentyNodeBrick_upU       37
+
+
+#define ELE_TAG_DESC_ARRAY_SIZE 36
 
 /*Initializeing Writing Element Description Array [Sumeet August,2016] ***********************/
 /* Copy and paste the above descriptions in Serial Order *************************************/
 #define ELE_TAG_DESC_ARRAY      int ele_tag_desc_array[] =  \
 {  	-1	 , \
-102300002, \
-102600024, \
-102300009, \
-203600006, \
-204600000, \
-308308000, \
-327327000, \
-302301000, \
-308308000, \
-320327000, \
-102300009, \
-308708000, \
-308708000, \
-320727000, \
+100000000,\
+308300800,\
+308300100,\
+308300800,\
+308302700,\
+308306400,\
+308312500,\
+308321600,\
+320302700,\
+320300100,\
+320300800,\
+320302700,\
+320306400,\
+320312500,\
+320321600,\
+327302700,\
+327300100,\
+327300800,\
+327302700,\
+327306400,\
+327312500,\
+327321600,\
+102300002,\
+102600024,\
+102300009,\
+203600006,\
+204600000,\
+302300100,\
+308300000,\
+102300009,\
+308700800,\
+308700800,\
+320702700,\
+327702700,\
+102600009,\
 }
-
 
 /******************************************************************************************/
 #define BEAM_INTEGRATION_TAG_Lobatto         1

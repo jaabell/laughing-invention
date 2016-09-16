@@ -65,32 +65,55 @@
 
 // Elements
 //--------------------------------------------------------------------------------------------------
+
+// #################################################
+// Coupled Elements   [Sumeet July, 2016]
+// #################################################
+
 #include "MODELING/add_element_hard_contact.h"
 #include "MODELING/add_element_soft_contact.h"
+
 // #include "MODELING/add_element_contact_3dof_to_3dof.h"
 // #include "MODELING/add_element_contact_nonlinear_3dof_to_7dof.h"
 // #include "MODELING/add_element_contact_nonlinear_3dof_to_3dof.h"
+
+//#################################################### 
+// General Brick Elements  [Sumeet September, 2016]
+//####################################################
+
+// Eight Node Brick
 #include "MODELING/add_element_brick_8node.h"
 #include "MODELING/add_element_brick_8node_variable_number_of_gauss_points.h"
-#include "MODELING/add_element_brick_8node_elastic.h"
-#include "MODELING/add_element_brick_8node_up.h"
+// Twenty Node Brick
+#include "MODELING/add_element_brick_20node.h"
+#include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"
+// Twenty Seven Node Brick
+#include "MODELING/add_element_brick_27node.h"
+#include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"
+
+#include "MODELING/add_element_brick_variable_node_8_to_27.h"
+
+// ####################################################################
+// Coupled upU Elements   [Sumeet September, 2016]
+// ####################################################################
+
 #include "MODELING/add_element_brick_8node_upU.h"
 #include "MODELING/add_element_brick_8node_upULT.h"
-#include "MODELING/add_element_brick_20node.h"
-#include "MODELING/add_element_brick_20node_elastic.h"
-#include "MODELING/add_element_brick_20node_variable_number_of_gauss_points.h"
 #include "MODELING/add_element_brick_20node_upU.h"
 #include "MODELING/add_element_brick_20node_upULT.h"
 #include "MODELING/add_element_brick_27node_upULT.h"
-#include "MODELING/add_element_brick_27node.h"
-#include "MODELING/add_element_brick_27node_elastic.h"
-#include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"
-#include "MODELING/add_element_brick_variable_node_8_to_27.h"
-#include "MODELING/add_element_brick_8node_ltensor.h"
-#include "MODELING/add_element_brick_8node_ltensor_no_output.h"
-#include "MODELING/add_element_brick_20node_ltensor.h"
-#include "MODELING/add_element_brick_27node_ltensor.h"
-#include "MODELING/add_element_shear_beam_ltensor.h"
+
+// ####################################################################
+// Coupled up Elements   [Sumeet September, 2016]
+// ####################################################################
+
+#include "MODELING/add_element_brick_8node_up.h"
+
+// ####################################################################
+// Structural Elements    [Sumeet September, 2016]
+// ####################################################################
+
+#include "MODELING/add_element_shear_beam.h"
 #include "MODELING/add_element_beam_elastic_lumped_mass.h"
 #include "MODELING/add_element_beam_elastic.h"  // Nima Tafazzoli (Dec. 2012)
 #include "MODELING/add_element_rank_one_deficient_elastic_pinned_fixed_beam.h"  // Nima Tafazzoli (Dec. 2012)

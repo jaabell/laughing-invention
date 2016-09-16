@@ -28,7 +28,7 @@
 //! Inputs:
 //! - ElementNumber: unique element object tag
 //! - node_numb_#: eight node coordinates
-//! - MaterialNumber: material tag associated with previsouly-difined NDMaterial object
+//! - MaterialNumber: material tag associated with previsouly-difined NDMaterialLT object
 
 
 
@@ -64,18 +64,18 @@ int add_element_brick_27node(int ElementNumber,
                              int MaterialNumber)
 
 {
-    NDMaterial* ndmaterial = 0;
-    ndmaterial = theDomain.getNDMaterial(MaterialNumber);
+    NDMaterialLT* ndmaterialLT = 0;
+    ndmaterialLT = theDomain.getNDMaterialLT(MaterialNumber);
 
-    if (ndmaterial == NULL)
+    if (ndmaterialLT == NULL)
     {
-        cerr << "Error: (add_element_brick_27node) memory allocation problem for ndmaterial!" << endl;
+        cerr << "Error: (add_element_brick_27node) memory allocation problem for ndmaterialLT!" << endl;
         return -1;
     }
 
 
     Element* theElement = 0;
-    theElement = new TwentySevenNodeBrick(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, node_numb_9, node_numb_10, node_numb_11, node_numb_12, node_numb_13, node_numb_14, node_numb_15, node_numb_16, node_numb_17, node_numb_18, node_numb_19, node_numb_20, node_numb_21, node_numb_22, node_numb_23, node_numb_24, node_numb_25, node_numb_26, node_numb_27, ndmaterial);
+    theElement = new TwentySevenNodeBrick(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, node_numb_9, node_numb_10, node_numb_11, node_numb_12, node_numb_13, node_numb_14, node_numb_15, node_numb_16, node_numb_17, node_numb_18, node_numb_19, node_numb_20, node_numb_21, node_numb_22, node_numb_23, node_numb_24, node_numb_25, node_numb_26, node_numb_27, ndmaterialLT);
 
     if (theElement == NULL)
     {
@@ -89,6 +89,9 @@ int add_element_brick_27node(int ElementNumber,
         cerr << "Element number: " << ElementNumber << endln;
         return -1;
     }
+
+    if(ndmaterialLT->getClassTag()==ND_TAG_ElasticIsotropic3DLT)// [Sumeet September, 2016]
+        theElement->setElasticMaterialStatus(0);
 
     return 0;
 };

@@ -386,44 +386,93 @@ FEM_ObjectBroker::getNewElement(int classTag)
 {
     switch (classTag)
     {
-    case ELE_TAG_EightNodeBrick:            //Guanzhou added //temp out by babak
-        return new EightNodeBrick();//temp out by babak
 
-    case ELE_TAG_TwentySevenNodeBrick:          //Babak added on 10/18/2012
+    case ELE_TAG_EightNodeBrick:                          // Sumeet [September, 2016]
+        return new EightNodeBrick();
+
+    case ELE_TAG_EightNodeBrickOrderOne:                  // Sumeet [September, 2016]
+        return new EightNodeBrickOrderOne();
+
+    case ELE_TAG_EightNodeBrickOrderTwo:                  // Sumeet [September, 2016]
+        return new EightNodeBrickOrderTwo();
+
+    case ELE_TAG_EightNodeBrickOrderThree:                // Sumeet [September, 2016]
+        return new EightNodeBrickOrderThree();
+
+    case ELE_TAG_EightNodeBrickOrderFour:                 // Sumeet [September, 2016]
+        return new EightNodeBrickOrderFour();
+
+    case ELE_TAG_EightNodeBrickOrderFive:                 // Sumeet [September, 2016]
+        return new EightNodeBrickOrderFive();
+
+    case ELE_TAG_EightNodeBrickOrderSix:                  // Sumeet [September, 2016]
+        return new EightNodeBrickOrderSix();
+
+
+
+    case ELE_TAG_TwentyNodeBrick:                         // Sumeet [September, 2016]
+        return new TwentyNodeBrick();       
+
+    case ELE_TAG_TwentyNodeBrickOrderOne:                 // Sumeet [September, 2016]
+        return new TwentyNodeBrickOrderOne();       
+
+    case ELE_TAG_TwentyNodeBrickOrderTwo:                 // Sumeet [September, 2016]
+        return new TwentyNodeBrickOrderTwo();       
+
+    case ELE_TAG_TwentyNodeBrickOrderThree:               // Sumeet [September, 2016]
+        return new TwentyNodeBrickOrderThree();       
+
+    case ELE_TAG_TwentyNodeBrickOrderFour:                 // Sumeet [September, 2016]
+        return new TwentyNodeBrickOrderFour();       
+
+    case ELE_TAG_TwentyNodeBrickOrderFive:                 // Sumeet [September, 2016]
+        return new TwentyNodeBrickOrderFive();       
+
+    case ELE_TAG_TwentyNodeBrickOrderSix:                  // Sumeet [September, 2016]
+        return new TwentyNodeBrickOrderSix();       
+
+
+
+    case ELE_TAG_TwentySevenNodeBrick:                     // Sumeet [September, 2016]
         return new TwentySevenNodeBrick();
 
-    case ELE_TAG_TwentySevenNodeBrickElastic:           //Babak added on 11/16/2012
-        return new TwentySevenNodeBrickElastic();
+    case ELE_TAG_TwentySevenNodeBrickOrderOne:            // Sumeet [September, 2016]
+        return new TwentySevenNodeBrickOrderOne();
 
-    case ELE_TAG_ElasticBeam:            //Babak added on 12/14/2012
+    case ELE_TAG_TwentySevenNodeBrickOrderTwo:            // Sumeet [September, 2016]
+        return new TwentySevenNodeBrickOrderTwo();
+
+    case ELE_TAG_TwentySevenNodeBrickOrderThree:           // Sumeet [September, 2016]
+        return new TwentySevenNodeBrickOrderThree();
+
+    case ELE_TAG_TwentySevenNodeBrickOrderFour:            // Sumeet [September, 2016]
+        return new TwentySevenNodeBrickOrderFour();
+
+    case ELE_TAG_TwentySevenNodeBrickOrderFive:            // Sumeet [September, 2016]
+        return new TwentySevenNodeBrickOrderFive();
+
+    case ELE_TAG_TwentySevenNodeBrickOrderSix:             // Sumeet [September, 2016]
+        return new TwentySevenNodeBrickOrderSix();
+
+
+
+
+    case ELE_TAG_ElasticBeam:                      //Babak added on 12/14/2012
         return new ElasticBeam();
 
     case ELE_TAG_FourNodeAndesShell:
         return new FourNodeAndesShell();
 
-    case ELE_TAG_ThreeNodeAndesShell:           //Babak added on 2/11/2013
+    case ELE_TAG_ThreeNodeAndesShell:              //Babak added on 2/11/2013
         return new ThreeNodeAndesShell();
 
     case ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam:          //Babak added on 5/8/2013
         return new rank_one_deficient_elastic_pinned_fixed_beam();
 
-    case ELE_TAG_EightNodeBrickElastic:
-        return new EightNodeBrickElastic();
-
     // case ELE_TAG_PenaltyElement:            //Babak added on 6/19/13
     //     return new PenaltyElement();
 
-    case ELE_TAG_EightNodeBrickLT:            //Jose added on Oct 9, 2014
-        return new EightNodeBrickLT();
 
-    case ELE_TAG_EightNodeBrickLT_NoOutput:            //Jose added on Oct 9, 2014
-        return new EightNodeBrickLT_NoOutput();
-
-    case ELE_TAG_TwentyNodeBrickLT:
-        return new TwentyNodeBrickLT();             //Yuan added
-
-    case ELE_TAG_TwentySevenNodeBrickLT:            //Jose added on Oct 9, 2014
-        return new TwentySevenNodeBrickLT();
 
     case ELE_TAG_HardContact:                       //Sumeet added on June 28, 2016
         return new HardContact();

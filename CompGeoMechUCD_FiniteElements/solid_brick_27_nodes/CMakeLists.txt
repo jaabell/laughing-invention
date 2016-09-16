@@ -1,5 +1,5 @@
-# Builds all the CompGeoMechUCD_FiniteElements/solid_brick_27_nodes module
-# message("scanning solid_brick_27_nodes module...")
+# Builds all the CompGeoMechUCD_FiniteElements/solid_brick_27_nodes_ltensor module
+# message("scanning solid_brick_27_nodes_ltensor module...")
 
-BUILD_LIB("solid_brick_27_nodes" ESSI_LIBS)
+BUILD_LIB("solid_brick_27_nodes_ltensor" ESSI_LIBS)
 

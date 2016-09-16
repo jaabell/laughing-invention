@@ -5,6 +5,7 @@ CFLAGS = -c
 all: create makedocumentation generate_command_patterns gen_snips
 
 gen_snips:generate_command_patterns gen_snips.py
+	    @cd snippets && rm -r *
 		@python gen_snips.py >/dev/null 2>&1
 
 generate_command_patterns:makedocumentation generate_command_patterns.cpp
