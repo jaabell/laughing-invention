@@ -1496,7 +1496,7 @@ int EightNodeBrick::receiveSelf ( int commitTag, Channel &theChannel, FEM_Object
     setElasticMaterialStatus(idData(2));
 
     // Recieve the Stiffness matrix for elastic material
-    if (idData(2))
+    if (idData(2) == 1)
     {
         if ( theChannel.sendMatrix( 0, commitTag, K ) < 0 )
         {
@@ -1544,7 +1544,7 @@ int EightNodeBrick::receiveSelf ( int commitTag, Channel &theChannel, FEM_Object
         return -1;
     }
 
-    cout << this->getTag() << " -> EightNodeBrick::receiveSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
+    // cout << this->getTag() << " -> EightNodeBrick::receiveSelf() connectedExternalNodes = " << connectedExternalNodes << "\n";
 
     for ( int i = 0; i < Num_TotalGaussPts; i++ )
     {
