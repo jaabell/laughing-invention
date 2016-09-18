@@ -36,6 +36,8 @@
 
 #include "../../ltensor/LTensor.h"
 #include <limits>
+#include <tuple>
+#include <string>
 namespace ClassicElastoplasticityGlobals
 {
 
@@ -55,16 +57,15 @@ extern DTensor2 kronecker_delta;
 constexpr double SQRT_2_over_3  = 0.816496580928;//sqrt(2.0 / 3.0); because Intel compiler do not take this.
 constexpr double SQRT_2_over_27 = 0.272165526976;//sqrt(2.0 / 27.0);
 
-constexpr double MACHINE_EPSILON= std::numeric_limits<double>::epsilon(); 
+constexpr double MACHINE_EPSILON = std::numeric_limits<double>::epsilon();
 
-// =========================================
-// Legacy: should be removed later.
-// extern int HARDENING_TYPE=0;
-// static const int Perfectly_Plastic=1;
-// static const int One_Isotropic_Hardening_Only=2;
-// static const int One_Kinematic_Hardening_Only=3;
-// static const int Both_One_Isotropic_One_Kinematic_Hardening=4;
 
+void printTensor(std::string const& name, DTensor2 const& v);
+void printTensor4(std::string const& name, DTensor4 const& v);
+std::tuple<double, double, double> getpqtheta(const DTensor2 &mystress);
+bool inverse4thTensor(DTensor4 const& rhs, DTensor4& ret);
+
+static int Nsteps = 0 ;
 }
 
 #endif
