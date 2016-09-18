@@ -3,7 +3,7 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:         Nima Tafazzoli and Boris Jeremic && Sumeet 
+// PROGRAMMER:         Nima Tafazzoli and Boris Jeremic and Jose && Sumeet
 // DATE:               NOv. 2013
 // UPDATE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
@@ -61,9 +61,9 @@ class EightNodeBrick: public Element
 
 public:
     EightNodeBrick( int element_number,
-                      int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
-                      int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
-                      NDMaterialLT *Globalmmodel);
+                    int node_numb_1, int node_numb_2, int node_numb_3, int node_numb_4,
+                    int node_numb_5, int node_numb_6, int node_numb_7, int node_numb_8,
+                    NDMaterialLT *Globalmmodel);
 
     EightNodeBrick ();
     ~EightNodeBrick();
@@ -171,7 +171,7 @@ private:
     double determinant_of_Jacobian;
     double rho;
 
-    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet 
+    std::map<int, int> Global_to_Local_Node_Mapping; // added by sumeet
 
     ID  connectedExternalNodes;
 

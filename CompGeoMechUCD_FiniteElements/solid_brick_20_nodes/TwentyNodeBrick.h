@@ -3,7 +3,7 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:         Nima Tafazzoli and Boris Jeremic && Sumeet 
+// PROGRAMMER:         Nima Tafazzoli and Boris Jeremic and Jose && Sumeet
 // DATE:               Aug. 2001
 // UPDATE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
@@ -74,7 +74,7 @@ public:
     // ===================================================================================================================
     // Implements interface to Element
     // ===================================================================================================================
-   
+
     int update(void);
     int getNumExternalNodes () const;
     const ID &getExternalNodes ();
@@ -182,10 +182,10 @@ private:
     double determinant_of_Jacobian;
     double rho;
 
-    std::map<int,int> Global_to_Local_Node_Mapping; // added by sumeet
+    std::map<int, int> Global_to_Local_Node_Mapping; // added by sumeet
 
     ID  connectedExternalNodes; // Tags of quad nodes
-    
+
     Matrix *Ki;
 
     Node *theNodes[20];
@@ -202,8 +202,8 @@ private:
 
     static Vector ShapeFunctionValues_in_function;
     static Vector J_vector_in_function;
-    static double SurfaceLoadValues_in_function; 
-    
+    static double SurfaceLoadValues_in_function;
+
     static DTensor2 gp_coords; //Coordinates of 1D Gaussian quadrature rule
     static DTensor2 gp_weight; //Weights of 1D Gaussian quadrature rule
 
@@ -216,7 +216,7 @@ private:
     Index < 'j' > j;
     Index < 'k' > k;
     Index < 'l' > l;
-    
+
 
 };
 
