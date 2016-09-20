@@ -263,6 +263,7 @@
 #define ND_TAG_CEM_DruckerPragerNonAssociateLinearHardening 5005
 #define ND_TAG_CEM_DruckerPragerNonAssociateArmstrongFrederick 5006
 #define ND_TAG_CEM_VonMisesArmstrongFrederick 5007
+#define ND_TAG_CEM_CamClayLT 5008
 
 
 
@@ -355,7 +356,7 @@
 #define ELE_TAG_HingedBeam3d                                     9873
 #define ELE_TAG_TwoPointHingedBeam3d                             9875
 #define ELE_TAG_OnePointHingedBeam3d                             9877
-#define ELE_TAG_BeamColumnJoint3d                                4445              
+#define ELE_TAG_BeamColumnJoint3d                                4445
 #define ELE_TAG_Joint3D                                          9903
 
 /******************************** No Class Desc Added Above *************************/
@@ -365,41 +366,41 @@
 // All elements class tags would be in serial numbers from 1-N for optimization
 /***************************************************************************
 * Desc is [Dimension][N. Nodes][Dof per nodes][N. Gauss][No.of Outputs]
-* - - - - - - - - - - - - - -- - - - - - - - -- - - - - - - - - - - - - - -- 
+* - - - - - - - - - - - - - -- - - - - - - - -- - - - - - - - - - - - - - --
 *
 * [Dimension] = <num_of_digits = 1> Dimesnion of the element
-*				1-> 1-dimension
-*				2-> 2-dimension
-*				3-> 3-dimension
-* 				4-> Point Elements
-*				4-> Special elements
+*               1-> 1-dimension
+*               2-> 2-dimension
+*               3-> 3-dimension
+*               4-> Point Elements
+*               4-> Special elements
 *
 * [N. Nodes]  = <num_of_digits = 2> Number of nodes in elements
-*				xx-> number of nodes
+*               xx-> number of nodes
 *
 * [Dof per nodes]  = <num_of_digits = 1> Degree of freedom per node
-*					 x-> DOFS per node
+*                    x-> DOFS per node
 *
 * [N. Gauss]  = <num_of_digits = 3> Number of gauss points in elements
-*				xxx-> number of gauss points
+*               xxx-> number of gauss points
 *
 * [No.of Outputs]  = <num_of_digits = 2> no. of outputs other than at gauss points.
-*					 xx-> no. of outputs other than at gauss points.
+*                    xx-> no. of outputs other than at gauss points.
 *
-* Default Features 
+* Default Features
 * - - - - - -- - -
 * 1) Per gauss point there are in toltal 18 outputs of stress, plsatic strain and total strain
 * 2) No.of Outputs -> here means the extra outputs by an element except gauss points. For example:
-*					  for eight node brick there is 000 No. of Outputs.
+*                     for eight node brick there is 000 No. of Outputs.
 ***************************************************************************/
 
 //###---------------------------------------------------------------------------------------------
-//###  NOTE!! :- Every Element have a responsibility to set their tag_description Array. 
+//###  NOTE!! :- Every Element have a responsibility to set their tag_description Array.
 //###            Based on the above encoding
 //###  NOTE!! :- Also increase the ELE_TAG_DESC_ARRAY_SIZE to the number of elements
 //### --------------------------------------------------------------------------------------------
-                       
-                                                              //New         //Desc
+
+//New         //Desc
 #define ELE_TAG_Subdomain                                        1    //    100000000  // I think it is fixed and hard coded [Sumeet, Septemberm, 2016]
 #define ELE_TAG_EightNodeBrick                                   2    //    308300800 // Sumeet [September, 2016] 
 #define ELE_TAG_EightNodeBrickOrderOne                           3    //    308300100 // Sumeet [September, 2016] 
@@ -424,12 +425,12 @@
 #define ELE_TAG_TwentySevenNodeBrickOrderSix                     22   //    327321600 // Sumeet [September, 2016] 
 #define ELE_TAG_Truss                                            23   //    102300002 
 #define ELE_TAG_ElasticBeam                                      24   //    102600024 // Nima Tafazzoli, December 2012
-#define ELE_TAG_HardContact				                         25   //    102300009 // Sumeet June 2016
+#define ELE_TAG_HardContact                                      25   //    102300009 // Sumeet June 2016
 #define ELE_TAG_ThreeNodeAndesShell                              26   //    203600006
 #define ELE_TAG_FourNodeAndesShell                               27   //    204600000       
 #define ELE_TAG_ShearBeam                                        28   //    302300100
 #define ELE_TAG_EightNodeBrickNoOutput                           29   //    308300000
-#define ELE_TAG_SoftContact         	 						 30   //    102300009 // Sumeet added on July 2016
+#define ELE_TAG_SoftContact                                      30   //    102300009 // Sumeet added on July 2016
 #define ELE_TAG_EightNodeBrick_u_p_U                             31   //    308700800 // Sumeet [September, 2016]
 #define ELE_TAG_EightNodeBrick_u_p_U_LT                          32   //    308700800 // Sumeet [September, 2016]
 #define ELE_TAG_TwentyNodeBrick_u_p_U                            33   //    320702700 // Sumeet [September, 2016]
@@ -445,7 +446,7 @@
 /*Initializeing Writing Element Description Array [Sumeet August,2016] ***********************/
 /* Copy and paste the above descriptions in Serial Order *************************************/
 #define ELE_TAG_DESC_ARRAY      int ele_tag_desc_array[] =  \
-{  	-1	 , \
+{   -1   , \
 100000000,\
 308300800,\
 308300100,\

@@ -31,11 +31,35 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "ConstitutiveModels/VonMisesLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerVonMisesLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerArmstrongFrederick.h"
-#include "ConstitutiveModels/DruckerPragerNonAssociateLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerNonAssociateArmstrongFrederick.h"
-#include "ConstitutiveModels/VonMisesArmstrongFrederick.h"
-#include "ConstitutiveModels/CamClayLT.h"
+#ifndef CamClay_p0_EV_H
+#define CamClay_p0_EV_H
+
+
+#include "../EvolvingVariable.h"
+#include "../ClassicElastoplasticityGlobals.h" // Defines indices i,j,k,l,m,n,p,q,r,s and the kronecker_delta.
+
+
+class CamClay_p0_EV : public EvolvingVariable<double, CamClay_p0_EV> //CRTP on CamClay_p0_EV
+{
+public:
+
+    CamClay_p0_EV( double M_, double lambda_, double kappa_, double e0_, double p0_);
+
+    const double& getDerivative(const DTensor2 &depsilon,
+                                const DTensor2 &m,
+                                const DTensor2& stress) const;
+    // double const& getHardeningType() const;
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+
+
+private:
+    double M;
+    double lambda;
+    double kappa;
+    double e0;
+    static double derivative; //Must return a reference.
+};
+
+
+#endif

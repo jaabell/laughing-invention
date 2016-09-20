@@ -30,12 +30,35 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef CamClay_EL_H
+#define CamClay_EL_H
 
-#include "ConstitutiveModels/VonMisesLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerVonMisesLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerArmstrongFrederick.h"
-#include "ConstitutiveModels/DruckerPragerNonAssociateLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerNonAssociateArmstrongFrederick.h"
-#include "ConstitutiveModels/VonMisesArmstrongFrederick.h"
-#include "ConstitutiveModels/CamClayLT.h"
+#include "../../../ltensor/LTensor.h"
+#include "../EvolvingVariable.h"
+#include "../ElasticityBase.h"
+
+#include <iostream>
+
+
+class CamClay_EL : public ElasticityBase<CamClay_EL> // CRTP on ElasticityBase
+{
+public:
+    CamClay_EL(double e0_, double kappa_, double nu_);
+
+    DTensor4& operator()(const DTensor2& stress); //See note on base class
+
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+
+private:
+
+    double e0;
+    double kappa;
+    double nu;
+    static DTensor4 Ee;  //Provides class-wide storage, which avoids mallocs and allows const returning a const & to this object.
+
+};
+
+
+
+#endif
