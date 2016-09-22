@@ -36,13 +36,13 @@
 double CamClay_p0_EV::derivative = 0.0;
 
 
-CamClay_p0_EV( double M_, double lambda_, double kappa_, double e0_, double p0_)
+CamClay_p0_EV::CamClay_p0_EV( double M_, double lambda_, double kappa_, double e0_, double p0_)
     :
     EvolvingVariable(p0_),
     M(M_),
     lambda(lambda_),
     kappa(kappa_),
-    e0(e0_),
+    e0(e0_)
 {}
 
 const double& CamClay_p0_EV::getDerivative(const DTensor2 &depsilon,

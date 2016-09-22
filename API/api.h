@@ -77,7 +77,7 @@
 // #include "MODELING/add_element_contact_nonlinear_3dof_to_7dof.h"
 // #include "MODELING/add_element_contact_nonlinear_3dof_to_3dof.h"
 
-//#################################################### 
+//####################################################
 // General Brick Elements  [Sumeet September, 2016]
 //####################################################
 
@@ -168,6 +168,7 @@
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager_non_associate_linear_hardening.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager_non_associate_armstrong_frederick.h"
+#include "MODELING/add_constitutive_model_NDMaterialLT_camclay.h"
 
 // Uniaxial
 #include "MODELING/add_constitutive_model_uniaxial_elastic.h"

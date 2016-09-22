@@ -227,7 +227,7 @@ ENDMACRO()
 
 MACRO(FAIL)
     message("LOG:\n${COMP_ERRS_LOG}\n")
-    message("Compilation ")
+    message("Configuration ")
     message("  █████▒ ▄▄▄       ██▓ ██▓    ▓█████ ▓█████▄                ")
     message("▓██   ▒ ▒████▄    ▓██▒▓██▒    ▓█   ▀ ▒██▀ ██▌               ")
     message("▒████ ░ ▒██  ▀█▄  ▒██▒▒██░    ▒███   ░██   █▌               ")

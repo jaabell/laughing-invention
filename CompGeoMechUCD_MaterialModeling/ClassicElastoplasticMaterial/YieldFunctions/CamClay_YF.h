@@ -92,7 +92,7 @@ public:
     {
         double dbl_result = 0.0;
 
-        const DTensor2 &p0 = p0_.getVariableConstReference();
+        // const double &p0 = p0_.getVariableConstReference();
 
         //Compute stress deviator (s) and mean pressure (p)
         double p = -sigma(i, i) / 3;
@@ -106,12 +106,19 @@ public:
 
     bool hasCorner() const
     {
-        return true;
+        return false;
     }
-    double get_p0() const
+
+    double get_k() const
     {
-        return p0_.getVariableConstReference();
+        return 0;
     }
+
+    DTensor2 & get_alpha() const
+    {
+        return s;
+    }
+
 
 
 

@@ -308,6 +308,7 @@ beam_displacement_based
 beam_elastic
 beam_elastic_lumped_mass
 BeamColumnDispFiber3d
+CamClayLT
 Caughey3rd
 Caughey4th
 DOFTYPE

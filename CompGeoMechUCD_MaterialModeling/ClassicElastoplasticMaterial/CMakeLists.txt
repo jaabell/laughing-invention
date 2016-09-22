@@ -12,3 +12,4 @@ ADD_SOURCES(CEPM_SRC OFF)
 
 BUILD_LIB("classicelastoplasticmaterials" ESSI_LIBS CEPM_SRC)
 
+# list(APPEND EXECUTABLE test_nonAssociate_DP_AF)

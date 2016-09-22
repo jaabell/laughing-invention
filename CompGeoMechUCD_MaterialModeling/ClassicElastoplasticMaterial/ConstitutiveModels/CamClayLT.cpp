@@ -51,7 +51,7 @@ CamClayLT::CamClayLT(int tag_in,
                                          CamClay_EL(e0_, kappa_, nu_), // Create Elasticity
                                          CC_PFType(M_, p0),       // Point PF to the internal variables
                                          CCVarsType(p0)),     // Declare the list of internal variables
-    p0(p0_)
+    p0( M_,  lambda_,  kappa_,  e0_,  p0_)
 {
 
 
@@ -60,26 +60,28 @@ CamClayLT::CamClayLT(int tag_in,
 // Second constructor is not called by the user, instead it is called when creating a copy of the
 // material. This must provide an initialization for the state variables and link the components
 // to these variables appropriately.
-CamClayLT::CamClayLT(int tag_in, double initial_confinement, double rho, CC_YFType &yf,
+CamClayLT::CamClayLT(int tag_in, double rho,
+                     double pressure,
+                     CC_YFType &yf,
                      CamClay_EL &el,
                      CC_PFType &pf,
                      CCVarsType &vars) :
-    CCBase::ClassicElastoplasticMaterial(tag_in, this->getRho(), initial_confinement, // Initial confinement
-                                         CC_YFType(p0),     // Point YF to new internal variables
-                                         CamClay_EL(el),  // Create Elasticity -- use copy constructor here
-                                         CC_PFType(p0),     // Point PF to the internal variables
-                                         CCVarsType(p0)),   // Declare the list of internal variables
-    p0(initial_confinement),
+    CCBase::ClassicElastoplasticMaterial(tag_in, this->getRho(), pressure, // Initial confinement
+                                         CC_YFType(0, p0),       // Point YF to internal variables
+                                         CamClay_EL(0, 0, 0), // Create Elasticity
+                                         CC_PFType(0, p0),       // Point PF to the internal variables
+                                         CCVarsType(p0)),     // Declare the list of internal variables
+    p0( 0,  0,  0,  0,  pressure)
 {
 }
 
 CamClayLT::CamClayLT() :
     CCBase::ClassicElastoplasticMaterial(0, 0, 0.0, //Initial confinement
-                                         CC_YFType(p0),       // Point YF to internal variables
+                                         CC_YFType(0, p0),       // Point YF to internal variables
                                          CamClay_EL(0, 0, 0),  // Create Elasticity
-                                         CC_PFType(p0),       // Point PF to the internal variables
+                                         CC_PFType(0, p0),       // Point PF to the internal variables
                                          CCVarsType(p0)),     // Declare the list of internal variables
-    p0(0),
+    p0(0, 0, 0, 0, 0)
 {}
 
 

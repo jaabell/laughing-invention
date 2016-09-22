@@ -48,7 +48,7 @@ class CamClay_PF : public PlasticFlowBase<CamClay_PF<p0HardeningType>> // CRTP
 {
 public:
 
-    typedef EvolvingVariable<DTensor2, p0HardeningType> p0Type;
+    typedef EvolvingVariable<double, p0HardeningType> p0Type;
 
     // PlasticFlowBase<CamClay_PF<HardeningType>>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
     CamClay_PF( double M_in, p0Type& p0_in):

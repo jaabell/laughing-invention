@@ -936,9 +936,11 @@ private:
 
             // Update the trial plastic strain.
             TrialPlastic_Strain(i, j) += dLambda * m(i, j);
+
             // Update the internal variables (k and alpha)
             vars.evolve(dLambda, depsilon_elpl, m, intersection_stress);
             vars.commit_tmp();
+
             // vonMises does NOT enter this part.
             // DruckerPrager requries this part.
             if (yf.hasCorner())
@@ -968,7 +970,6 @@ private:
                     // plastic_strain and internal variables are already updated.
                     return 0;
                 }
-
             }
 
             //Correct the trial stress
@@ -1951,12 +1952,15 @@ private:
                     {
                         static DTensor2 small_stress(3, 3, 0.0);
                         small_stress *= 0;
+
                         // The small value 50*Pa refers to the lowest confinement test:
                         // http://science.nasa.gov/science-news/science-at-nasa/1998/msad27may98_2/
                         double DP_k = yf.get_k();
                         double DP_p = 50 ;
+
                         // To make it on the yield surface, the q is equal to k*p.
                         double DP_q = DP_k * DP_p ;
+
                         // Assume the triaxial conditions sigma_2 = sigma_3.
                         small_stress(0, 0) = DP_p + 2. / 3.0 * DP_q;
                         small_stress(1, 1) = DP_p - 1. / 3.0 * DP_q;
@@ -1964,6 +1968,7 @@ private:
 
                         // (1) Update the trial stress
                         TrialStress(i, j) = small_stress(i, j);
+
                         // (2) Update the trial plastic strain
                         const DTensor2& n = yf.df_dsigma_ij(small_stress);
                         const DTensor2& m = pf(depsilon, small_stress);
@@ -1971,9 +1976,11 @@ private:
                         double denominator = n(p, q) * Eelastic(p, q, r, s) * m(r, s) - xi_star_h_star;
                         double dLambda = yf_PredictorStress / denominator;
                         TrialPlastic_Strain(i, j) += dLambda * m(i, j);
+
                         // (3) Update the internal variables
                         vars.evolve(dLambda, depsilon, m, TrialStress);
                         vars.commit_tmp();
+
                         // (4) Update the stiffness.
                         // Backward_Euler use the inconsistent stiffness.
                         // Full_Backward_Euler use the consistent stiffness.
@@ -2654,6 +2661,25 @@ private:
         // cout << "pre_integration_callback_ enabled\n";
         return static_cast<U*>(this)->pre_integration_callback(depsilon, dsigma, TrialStress, Stiffness,  yf1,  yf2, returns);
     }
+
+
+    // template <typename U = T>
+//     typename std::enable_if < !yf_has_apex<U>::value, int >::type
+// // typename std::enable_if < !std::is_base_of<defines_pre_integration_callback, U>::value, int >::type
+//     apex_return_()
+//     {
+//         returns = false;
+//         return 0;
+//     }
+
+//     template <typename U = T>
+//     typename std::enable_if<yf_has_apex<U>::value, int>::type
+// // typename std::enable_if<std::is_base_of<defines_pre_integration_callback, U>::value, int>::type
+//     apex_return_()
+//     {
+//         return 0;
+//     }
+
 
 private:
 // Routine used by yield_surface_cross to find the stresstensor at cross point

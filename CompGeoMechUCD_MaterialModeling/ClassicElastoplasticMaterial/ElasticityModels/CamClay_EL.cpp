@@ -32,6 +32,7 @@
 
 #include "CamClay_EL.h"
 #include "Vector.h"
+#include "../ClassicElastoplasticityGlobals.h"
 
 DTensor4 CamClay_EL::Ee(3, 3, 3, 3, 0.0);
 
@@ -47,6 +48,8 @@ CamClay_EL::CamClay_EL(double e0_, double kappa_, double nu_) : ElasticityBase<C
 
 DTensor4& CamClay_EL::operator()(const DTensor2& stress) //See note on base class
 {
+    using namespace ClassicElastoplasticityGlobals;
+
     Ee *= 0; //Zero it. It may have values from another instance with different parameters;
     double p = -stress(i, i) / 3;
     double e = e0 - kappa * log(p);

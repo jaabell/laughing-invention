@@ -228,7 +228,7 @@
 %token NDMaterialLT linear_elastic_isotropic_3d linear_elastic_isotropic_3d_LT NonlinearIsotropic3DLT
 %token sanisand2008 camclay camclay_accelerated sanisand2004    
 %token linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
-%token PisanoLT 
+%token PisanoLT CamClayLT
 %token VonMisesLT VonMisesArmstrongFrederickLT DruckerPragerLT DruckerPragerNonAssociateLinearHardeningLT DruckerPragerVonMisesLT DruckerPragerArmstrongFrederickLT DruckerPragerNonAssociateArmstrongFrederickLT
 
 // Material options tokens
@@ -240,6 +240,7 @@
 %token crushing_strength strain_at_crushing_strength tensile_strength tension_softening_stiffness
 %token M_in kd_in xi_in h_in m_in beta_min n_in a_in elastic_modulus_1atm eplcum_cr_in
 %token Niso3d_K Niso3d_Kur Niso3d_n Niso3d_c Niso3d_phi0 Niso3d_dphi Niso3d_Rf Niso3d_K0 Niso3d_Kb Niso3d_m Niso3d_pa Niso3d_K2 Niso3d_B Niso3d_Et Niso3d_Ei Niso3d_Er
+%token CriticalState_M CriticalState_lambda CriticalState_kappa CriticalState_e0 CriticalState_p0
 
 // For acceleration field
 %token ax ay az
@@ -2357,6 +2358,43 @@ ADD_material
 
 		$$ = new FeiDslCaller11<int, double, double, double, double, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_druckerprager_non_associate_armstrong_frederick, args, signature, "add_constitutive_model_NDMaterialLT_druckerprager_non_associate_armstrong_frederick");
 		for(int ii = 1;ii <=11; ii++) nodes.pop();
+		nodes.push($$);
+	}
+			//!=========================================================================================================
+	//!
+	//!FEIDOC add material # <.> type [CamClayLT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2> plastic_flow_xi = <> plastic_flow_kd = <> ;
+	| MATERIAL TEXTNUMBER exp TYPE CamClayLT
+		mass_density '=' exp
+		CriticalState_M '=' exp
+		CriticalState_lambda '=' exp
+		CriticalState_kappa '=' exp
+		CriticalState_e0 '=' exp
+		CriticalState_p0 '=' exp
+		poisson_ratio '=' exp
+		initial_confining_stress '=' exp
+	{
+	//add_constitutive_model_NDMaterialLT_camclay(int MaterialNumber,
+	//        double rho_,
+	//        double M_,
+	//        double lambda_,
+	//        double kappa_,
+	//        double e0_,
+	//        double p0_,
+	//        double nu_,
+	//        double initial_confinement)
+		args.clear(); signature.clear();
+		args.push_back($3); signature.push_back(this_signature("number",            &isAdimensional));    // 1
+		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));  // 2
+		args.push_back($11); signature.push_back(this_signature("CriticalState_M",  &isPressure));  // 3
+		args.push_back($14); signature.push_back(this_signature("CriticalState_lambda",    &isAdimensional));  // 4
+		args.push_back($17); signature.push_back(this_signature("CriticalState_kappa",  &isAdimensional));  // 5
+		args.push_back($20); signature.push_back(this_signature("CriticalState_e0",   &isPressure));  // 6
+		args.push_back($23); signature.push_back(this_signature("CriticalState_p0",   &isPressure));  // 7
+		args.push_back($26); signature.push_back(this_signature("poisson_ratio",   &isPressure));  // 8
+		args.push_back($29); signature.push_back(this_signature("initial_confining_stress",   &isPressure));  // 9
+
+		$$ = new FeiDslCaller9<int, double, double, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_camclay, args, signature, "add_constitutive_model_NDMaterialLT_camclay");
+		for(int ii = 1;ii <=9; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================

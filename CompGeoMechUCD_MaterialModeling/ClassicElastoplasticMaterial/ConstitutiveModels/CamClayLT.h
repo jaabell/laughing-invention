@@ -42,7 +42,7 @@
 #include "../PlasticFlowDirections/CamClay_PF.h"
 
 //Elasticity Models
-#include "../ElasticityModels/CamClay_EL.cpp"
+#include "../ElasticityModels/CamClay_EL.h"
 
 //Evolving variables
 #include "../EvolvingVariables/CamClay_p0_EV.h"
@@ -94,15 +94,10 @@ public:
     // Second constructor is not called by the user, instead it is called when creating a copy of the
     // material. This must provide an initialization for the state variables and link the components
     // to these variables appropriately.
-    CamClayLT(int tag_in, double M,
-              double lambda_,
-              double kappa_,
-              double e0_,
-              double  p0_,
-              double nu_,
-              double initial_confinement,
+    CamClayLT(int tag_in, double rho,
+              double pressure,
               CC_YFType &yf,
-              LinearIsotropic3D_EL &el,
+              CamClay_EL &el,
               CC_PFType &pf,
               CCVarsType &vars);
 

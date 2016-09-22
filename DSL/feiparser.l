@@ -441,6 +441,7 @@ EXP	([Ee][-+]?[0-9]+)
 "DruckerPragerArmstrongFrederickLT"   {return token::DruckerPragerArmstrongFrederickLT;}
 "DruckerPragerNonAssociateArmstrongFrederickLT"   {return token::DruckerPragerNonAssociateArmstrongFrederickLT;}
 "sanisand2008"                      {return token::sanisand2008;}
+"CamClayLT"                           {return token::CamClayLT;}
 "camclay"                           {return token::camclay;}
 "camclay_accelerated"               {return token::camclay_accelerated;}
 "sanisand2004"                      {return token::sanisand2004;}
@@ -588,7 +589,11 @@ EXP	([Ee][-+]?[0-9]+)
 "Niso3d_Et"                         {return token::Niso3d_Et;}
 "Niso3d_Ei"                         {return token::Niso3d_Ei;}
 "Niso3d_Er"                         {return token::Niso3d_Er;}
-
+"CriticalState_M"                   {return token::CriticalState_M;}
+"CriticalState_lambda"             {return token::CriticalState_lambda;}
+"CriticalState_kappa"              {return token::CriticalState_kappa;}
+"CriticalState_e0"                 {return token::CriticalState_e0;}
+"CriticalState_p0"                 {return token::CriticalState_p0;}
 
  /* Pisano Model options  */
 "M_in"                              {return token::M_in;}

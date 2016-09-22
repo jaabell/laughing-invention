@@ -131,10 +131,17 @@ add_executable(${EXECUTABLE} ${EXEC_SRC})
 LINK_LIBS(${EXECUTABLE} ESSI_LIBS)
 # Link external libraries
 LINK_LIBS(${EXECUTABLE} NUMERIC_LIBS)
-# Link standar libraries
+# Link standard libraries
 LINK_LIBS(${EXECUTABLE} MACHINE_LIBS)
 
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION "${RealESSI_SRC}/bin")
+
+# set(EXECUTABLE2 "testCamClay") 
+# add_executable(${EXECUTABLE2} "./CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/test_CamClay.cpp")
+# LINK_LIBS(${EXECUTABLE2} ESSI_LIBS)
+# LINK_LIBS(${EXECUTABLE2} NUMERIC_LIBS)
+# LINK_LIBS(${EXECUTABLE2} MACHINE_LIBS)
+# install(TARGETS ${EXECUTABLE2} RUNTIME DESTINATION "${RealESSI_SRC}/bin")
 
 if(FINAL_SUMMARY)
     # Prints all variables available
@@ -148,4 +155,3 @@ if(COMP_ERRS)
 else()
     SUCCESS()
 endif()
-

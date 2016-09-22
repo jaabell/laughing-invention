@@ -323,6 +323,19 @@ add mass to node # $1
 	my = $3 
 	mz = $4;
 
+// add material # <.> type CamClayLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2> plastic_flow_xi = <> plastic_flow_kd = <> ;
+add material # $1 type CamClayLT 
+	mass_density = $2 
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	druckerprager_k = $5 
+	armstrong_frederick_ha = $6 
+	armstrong_frederick_cr = $7 
+	isotropic_hardening_rate = $8 
+	initial_confining_stress = $9 
+	plastic_flow_xi = $10 
+	plastic_flow_kd = $11 ;
+
 // add material # <.> type DruckerPragerArmstrongFrederickLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
 add material # $1 type DruckerPragerArmstrongFrederickLT 
 	mass_density = $2 
