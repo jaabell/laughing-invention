@@ -88,9 +88,11 @@ CamClayLT::CamClayLT() :
 void
 CamClayLT::Print(ostream& s, int flag)
 {
-    s << "CamClayLT::" << endln;
-    s << "\tTag: " << this->getTag() << endln;
-    s << " Please Implement Me !!! " << endl;
+    const double &p0_ = p0.getVariableConstReference();
+    s << "CamClayLT:  p0 = " << p0_ << endl;
+    // s << "CamClayLT::" << endln;
+    // s << "\tTag: " << this->getTag() << endln;
+    // s << " Please Implement Me !!! " << endl;
     // s << "\tElastic_Modulus: " << E << endln;
     // s << "\tPoissons_Ratio: " << v << endln;
     // s << "\tDensity: " << rho << endln;

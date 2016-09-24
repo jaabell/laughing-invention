@@ -80,9 +80,11 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
         strain_increment(0, 0) = exx;
         strain_increment(1, 1) = eyy;
         strain_increment(2, 2) = ezz;
+
         strain_increment(0, 1) = exy;
         strain_increment(0, 2) = exz;
         strain_increment(1, 2) = eyz;
+
         strain_increment(1, 0) = exy;
         strain_increment(2, 0) = exz;
         strain_increment(2, 1) = eyz;

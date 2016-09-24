@@ -745,7 +745,7 @@ public:
 
     void Print(ostream &s, int flag = 0)
     {
-        //nothin
+        // static_cast<U*>(this)->Print(s);
     }
 
     int getObjectSize()
