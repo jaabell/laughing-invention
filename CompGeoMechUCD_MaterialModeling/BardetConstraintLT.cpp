@@ -346,6 +346,14 @@ void BardetConstraintLT::applyIncrement(double Increment)
         exit(1);
     }
 
+    // cout << "S = "  << S << endl;
+    // cout << "E = "  << E << endl;
+    // cout << "CurrentStiffness = "  << CurrentStiffness << endl;
+    // cout << "S_times_C_plus_E = "  << S_times_C_plus_E << endl;
+    // cout << "Y = "  << Y << endl;
+    // cout << "d_epsilon = "  << d_epsilon << endl;
+    // cout << "CM = "  << CM << endl;
+
     constexpr double sqrthalf = 0.707106781186548;
     d_epsilon_tensor(0, 0) = d_epsilon(0);
     d_epsilon_tensor(1, 1) = d_epsilon(1);

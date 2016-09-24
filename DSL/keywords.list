@@ -25,6 +25,7 @@ at
 ax
 ay
 az
+BARDETMETHOD
 bending_Iy
 bending_Iz
 beta
@@ -41,6 +42,11 @@ control
 convergence
 cR1
 cR2
+CriticalState_e0
+CriticalState_kappa
+CriticalState_lambda
+CriticalState_M
+CriticalState_p0
 cross_section
 crushing_strength
 damping
@@ -231,10 +237,12 @@ scale_factor
 section
 section_number
 self_weight
+series_file
 set
 shear
 shear_modulus
 shear_modulus_h_v
+sigma0
 simple
 simulate
 single

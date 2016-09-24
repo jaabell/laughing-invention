@@ -60,9 +60,10 @@ public:
     void  applyIncrement(double increment);
     const DTensor2 &getStrainIncrement() const ;
     const DTensor2 &getStress() const ;
-    void fillSE(double * S_values, double * E_values);
 
 private:
+    void fillSE(double * S_values, double * E_values);
+
     int type_of_test;
     NDMaterialLT *material;
     Index < 'i' > i;

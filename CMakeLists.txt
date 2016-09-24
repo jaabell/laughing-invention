@@ -136,12 +136,11 @@ LINK_LIBS(${EXECUTABLE} MACHINE_LIBS)
 
 install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION "${RealESSI_SRC}/bin")
 
-# set(EXECUTABLE2 "testCamClay") 
-# add_executable(${EXECUTABLE2} "./CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/test_CamClay.cpp")
-# LINK_LIBS(${EXECUTABLE2} ESSI_LIBS)
-# LINK_LIBS(${EXECUTABLE2} NUMERIC_LIBS)
-# LINK_LIBS(${EXECUTABLE2} MACHINE_LIBS)
-# install(TARGETS ${EXECUTABLE2} RUNTIME DESTINATION "${RealESSI_SRC}/bin")
+# add_executable("test_CamClay" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/test_CamClay.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/LTensor_Based/NDMaterialLT.cpp" "${CMAKE_SOURCE_DIR}/CompGeoMechUCD_MaterialModeling/ClassicElastoplasticMaterial/ClassicElastoplasticityGlobals.cpp" )
+# LINK_LIBS("test_CamClay" ESSI_LIBS)
+# LINK_LIBS("test_CamClay" NUMERIC_LIBS)
+# LINK_LIBS("test_CamClay" MACHINE_LIBS)
+# install(TARGETS ${EXECUTABLE} RUNTIME DESTINATION "${RealESSI_SRC}/bin")
 
 if(FINAL_SUMMARY)
     # Prints all variables available

@@ -87,6 +87,7 @@
 	Number* force2number(string dof);
 	UnitCheckerFunctionPointerType force2signature(string dof);
 	UnitCheckerFunctionPointerType dof2stiffnesschecker(string dof);
+	int bardet_type_parse(string type);
 
 	// Variables
 	std::map<string,Quantity> global_variables;
@@ -184,10 +185,10 @@
 %token ELEMENTNAME MATERIALNAME
 %token ACCELERATION_FIELD
 %token FIX FREE REMOVE
-%token DEFINE ALGORITHM ALGNAME CONSTITUTIVE_ALGNAME CONVERGENCE_TEST TESTNAME SOLVER SOLVERNAME CONSTITUTIVE INTEGRATION
+%token DEFINE ALGORITHM ALGNAME CONSTITUTIVE_ALGNAME CONVERGENCE_TEST TESTNAME SOLVER SOLVERNAME CONSTITUTIVE INTEGRATION 
 %token DYNAMICINTEGRATOR DYNAMICINTEGRATOR_HHT DYNAMICINTEGRATOR_NEWMARK STATICINTEGRATOR STATICINTEGRATOR_DISPLACEMENT
 %token SIMULATE COMPUTE STATIC DYNAMIC USING TRANSIENT EIGEN time_step number_of_modes VARIABLETRANSIENT maximum_time_step minimum_time_step number_of_iterations RUNTEST
-%token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY LEVEL
+%token AT ALL AND WITH TEXTDOFS NEW TEXTNUMBER USE TO DOF TEXTWITH NODES FORCE INTEGRATIONPOINTS dof RESPONSE FILE FROM EVERY LEVEL BARDETMETHOD
 %token LOADING STAGE STEPS TYPE DOFS FACTOR INCREMENT 
 %token TH_GROUNDMOTION TH_LINEAR TH_PATH_SERIES TH_PATH_TIME_SERIES TH_CONSTANT TH_FROM_REACTIONS
 %token self_weight surface load_value
@@ -202,7 +203,7 @@
 // and the program branches depending on these.
 // ie. DOF may take the values {ux, uy, uz, Ux, Uy, Uz, rx, ry, rz, p} as
 // defined in the lexer file (feiparser.l).
-%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FORCE 
+%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FORCE BARDETMETHOD
 %type <ident> DAMPINGTYPE 
 
 
@@ -242,6 +243,7 @@
 %token Niso3d_K Niso3d_Kur Niso3d_n Niso3d_c Niso3d_phi0 Niso3d_dphi Niso3d_Rf Niso3d_K0 Niso3d_Kb Niso3d_m Niso3d_pa Niso3d_K2 Niso3d_B Niso3d_Et Niso3d_Ei Niso3d_Er
 %token CriticalState_M CriticalState_lambda CriticalState_kappa CriticalState_e0 CriticalState_p0
 
+
 // For acceleration field
 %token ax ay az
 
@@ -250,7 +252,7 @@
 
 
 // Greek
-%token beta gamma kappa lambda delta
+%token beta gamma kappa lambda delta sigma0
 
 %token DOMAIN_ startTime endTime Period Phase Amplitude frequency MaxTime frequency1 frequency2 frequency3 frequency4
 
@@ -749,6 +751,7 @@ CMD_add
 				FORCE '=' exp
 				time_step '=' exp
 				series_file '=' STRING
+				sigma0 '=' '(' exp ',' exp ',' exp ',' exp ',' exp ','exp ')'
 	{
 		args.clear(); signature.clear();
 
@@ -2006,6 +2009,46 @@ CMD_misc
 	}
 	//!=========================================================================================================
 	//!
+	//!FEIDOC simulate constitutive testing BARDETMETHOD use material # <.> scale_factor = <.> series_file = <string>  sigma0 = ( <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> )
+	| SIMULATE CONSTITUTIVE testing BARDETMETHOD USE MATERIAL TEXTNUMBER exp
+	  scale_factor '=' exp
+	  series_file '=' STRING
+	  sigma0 '=' '(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+	{
+		args.clear(); signature.clear();
+		//int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, double scale_factor, std::string filein, double sxx0, double syy0, double szz0, double sxy0, double sxz0, double syz0, )
+
+		//Get the string from the parsed string
+		string filename = *$14;
+		//Remove quotes
+		filename.erase(0, 1);
+		filename.erase(filename.length()-1, filename.length());
+
+		//Parse BARDETMETHOD
+		int btype = bardet_type_parse(*$4);
+		Expression* type = new Number( btype, ESSIunits::unitless);
+
+		args.push_back($8); signature.push_back(this_signature("MaterialNumber", &isAdimensional));
+		args.push_back(type); signature.push_back(this_signature("type", &isAdimensional));
+		args.push_back($11); signature.push_back(this_signature("scale_factor", &isAdimensional));
+		args.push_back( new FeiString(filename)); signature.push_back(this_signature("series_file", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("sxx0", &isPressure));
+		args.push_back($20); signature.push_back(this_signature("syy0", &isPressure));
+		args.push_back($22); signature.push_back(this_signature("szz0", &isPressure));
+		args.push_back($24); signature.push_back(this_signature("sxy0", &isPressure));
+		args.push_back($26); signature.push_back(this_signature("sxz0", &isPressure));
+		args.push_back($28); signature.push_back(this_signature("syz0", &isPressure));
+
+
+		$$ = new FeiDslCaller10<int, int, double, std::string, 
+		   	double, double, double, double, double, double>(&simulate_constitutive_testing_BardetLT_path, args, signature, "simulate_constitutive_testing_BardetLT_path");
+
+		for(int ii = 1;ii <=8; ii++) nodes.pop();
+
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
 	//!FEIDOC runTest;
 	| RUNTEST
 	{
@@ -2362,7 +2405,7 @@ ADD_material
 	}
 			//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [CamClayLT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2> plastic_flow_xi = <> plastic_flow_kd = <> ;
+	//!FEIDOC add material # <.> type [CamClayLT] mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>
 	| MATERIAL TEXTNUMBER exp TYPE CamClayLT
 		mass_density '=' exp
 		CriticalState_M '=' exp
@@ -2385,12 +2428,12 @@ ADD_material
 		args.clear(); signature.clear();
 		args.push_back($3); signature.push_back(this_signature("number",            &isAdimensional));    // 1
 		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));  // 2
-		args.push_back($11); signature.push_back(this_signature("CriticalState_M",  &isPressure));  // 3
+		args.push_back($11); signature.push_back(this_signature("CriticalState_M",  &isAdimensional));  // 3
 		args.push_back($14); signature.push_back(this_signature("CriticalState_lambda",    &isAdimensional));  // 4
 		args.push_back($17); signature.push_back(this_signature("CriticalState_kappa",  &isAdimensional));  // 5
-		args.push_back($20); signature.push_back(this_signature("CriticalState_e0",   &isPressure));  // 6
+		args.push_back($20); signature.push_back(this_signature("CriticalState_e0",   &isAdimensional));  // 6
 		args.push_back($23); signature.push_back(this_signature("CriticalState_p0",   &isPressure));  // 7
-		args.push_back($26); signature.push_back(this_signature("poisson_ratio",   &isPressure));  // 8
+		args.push_back($26); signature.push_back(this_signature("poisson_ratio",   &isAdimensional));  // 8
 		args.push_back($29); signature.push_back(this_signature("initial_confining_stress",   &isPressure));  // 9
 
 		$$ = new FeiDslCaller9<int, double, double, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_camclay, args, signature, "add_constitutive_model_NDMaterialLT_camclay");
@@ -4737,6 +4780,19 @@ UnitCheckerFunctionPointerType dof2stiffnesschecker(string dof)
 	if (dof.compare("p") == 0)  return &isPressure;
 
 	return &isAdimensional;
+}
+
+// Returns appropriate bardet-type code
+int bardet_type_parse(string type)
+{
+	if (type.compare("CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL") == 0) return 0;
+	if (type.compare("DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL") == 0) return 1;
+	if (type.compare("DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL") == 0) return 2;
+	if (type.compare("UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL") == 0) return 3;
+	if (type.compare("UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL") == 0) return 4;
+	if (type.compare("UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL") == 0) return 5;
+
+	return -1;
 }
 
 

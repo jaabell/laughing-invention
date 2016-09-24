@@ -84,7 +84,7 @@ public:
 
         double scalar1 = M * M * (p0 - 2 * p) / 3;
 
-        result(i, j) = s(i, j) * 3 + kronecker_delta(i, j) * scalar1;
+        result(i, j) = 3 * s(i, j)  + kronecker_delta(i, j) * scalar1;
         return result;
     }
 

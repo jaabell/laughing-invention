@@ -516,7 +516,13 @@ public:
     }
 
 
-
+    void setStressTensor(DTensor2 &stress)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        CommitStress(i, j) = stress(i, j);
+        TrialStress(i, j) = stress(i, j);
+        return;
+    }
 //==================================================================================================
 //  State commiting and reversion
 //==================================================================================================

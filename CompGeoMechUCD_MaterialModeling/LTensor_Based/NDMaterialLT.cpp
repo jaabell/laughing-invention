@@ -378,3 +378,9 @@ bool NDMaterialLT::set_constitutive_integration_method(int method, double f_rela
         return false;
     }
 }
+
+void NDMaterialLT::setStressTensor(DTensor2 &stress)
+{
+    cerr << "NDMaterialLT::setStressTensor -> Subclass responsability" << endl;
+    return;
+}

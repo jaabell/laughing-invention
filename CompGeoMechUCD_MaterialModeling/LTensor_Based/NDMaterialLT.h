@@ -84,6 +84,8 @@ public:
     virtual const DTensor2 &getStrainTensor(void);
     virtual const DTensor2 &getPlasticStrainTensor(void);
 
+    virtual void setStressTensor(DTensor2 &stress);
+
     virtual int commitState(void);
     virtual int revertToLastCommit(void);
     virtual int revertToStart(void);

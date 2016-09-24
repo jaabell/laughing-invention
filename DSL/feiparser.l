@@ -704,6 +704,18 @@ EXP	([Ee][-+]?[0-9]+)
 "series_file"                {return token::series_file;}
 "time_series_file"           {return token::time_series_file;}
 
+ /* Bardet */ 
+"CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL"  |
+"DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL"  |
+"DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL"  |
+"UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL"  |
+"UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL"  |
+"UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL"  {
+                                        yylval->ident = new string(yytext);
+                                        return token::BARDETMETHOD;
+                                     }
+"sigma0"           {return token::sigma0;}
+
 
  /* ================================================================================================= */
  /* ========                     DEFINE                                                     ========= */

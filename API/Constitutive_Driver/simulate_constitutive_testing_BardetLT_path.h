@@ -74,144 +74,102 @@
 //! - pq.feioutput     : p , q (for all the start_stress, cross_stress, predicted_stress, final_stress)
 
 
-int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, double scale_factor, std::string path_file)
+// #include "../../ltensor/LTensor.h"
+
+int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, double scale_factor, std::string filein, double sxx0, double syy0, double szz0, double sxy0, double sxz0, double syz0)
 {
 
-    //   cout << "\n*** Bardet Constitutive Testing ***" << "\n";
-    cout << "Test condition is: Drained Triaxial \n";
+    BardetConstraintType bardet_type =  CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL;
 
-    // Printing the values of increment size, final strain, type of algorithm, number of cycles, test condition
-    //   printf("Increment size = %f \n", increment_size);
-    //   printf("Final strain = %f \n", strain_cut);
-    //   printf("Algorithm = %i \n", Algorithm);
-    //   printf("Number of cycles = %i \n", number_of_reaching_final_strain);
+    // enum BardetConstraintType
+    // {
+    //     CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL         ,
+    //     DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL         ,
+    //     DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL            ,
+    //     UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL          ,
+    //     UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL   ,
+    //     UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL
+    // };
+    cout << "Bardet Constitutive Driver\n....... ";
+    cout << "Test condition is: ";
+    switch (type)
+    {
+    case 0://CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL
+        cout << "Constant P Triaxial loading with strain control\n";
+        bardet_type = CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL;
+        break;
 
+    case 1: //DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL
+        cout << "Drained Triaxial Loading with Stress Control\n";
+        bardet_type = DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL;
+        break;
 
-    //*************************  Material Models *************************************
+    case 2: //DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL
+        cout << "Drained Triaxial Loading with Strain Control\n";
+        bardet_type = DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL;
+        break;
 
-    NDMaterialLT* FTEP = theDomain.getNDMaterialLT(MaterialNumber);
+    case 3: //UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL
+        cout << "Un-Drained Triaxial Loading with Strain Control\n";
+        bardet_type = UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL;
+        break;
 
+    case 4: //UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL
+        cout << "Un-Drained Cyclic Triaxial Loading with Strain Control\n";
+        bardet_type = UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL;
+        break;
 
-    if (FTEP == NULL)
+    case 5: //UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL
+        cout << "Un-Drained Simple Shear Loading with Strain Control\n";
+        bardet_type = UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL;
+        break;
+    }
+
+//*************************  Material Models *************************************
+
+    NDMaterialLT* material = theDomain.getNDMaterialLT(MaterialNumber);
+    if (material == NULL)
     {
         cerr << "Error: (simulate_constitutive_testing_for_drained_triaxial) material allocation problem!" << endl;
         return -1;
     }
 
-    //*************************  Creating the output files *************************************
+    DTensor2 s0(3, 3, 0);
+    s0(0, 0) = sxx0;
+    s0(1, 1) = syy0;
+    s0(2, 2) = szz0;
+    s0(0, 1) = sxy0;
+    s0(1, 0) = sxz0;
+    s0(0, 2) = syz0;
+    s0(2, 0) = sxy0;
+    s0(1, 2) = sxz0;
+    s0(2, 1) = syz0;
 
-    ofstream outStress("Results.feioutput", fstream::app);
-    ofstream    Strain("Strain.feioutput", fstream::app);
-    ofstream    Stress("Stress.feioutput", fstream::app);
+    material->setStressTensor(s0);
 
-    //********************************************************************************************
-
-    // Define how to limit cycles based on:
-    //   double strain_cut = 0.03;      //  strain
-    //   double  q_cut = 100.0;   //  deviatoric stress
-
-
-    int current_cycle_counter = 0;
-
-    DTensor2 Strain_Increment(3, 3, 0`);
-    DTensor2 tStrain(3, 3, 0);
-    DTensor2 tStress(3, 3, 0);
-
-    // Initialize some of the parameters
-    double pp = 0.0;
-    double qq = 0.0;
-    double MIT_q = 0.0;
-    double E11 = 0.0;
-    double volstrain = 0.0;
-    double devstrain = 0.0;
+    BardetConstraintLT driver(bardet_type, material);
 
 
-    //=============================================================================================
-
-    tStress = FTEP->getStressTensor();
-    tStrain = FTEP->getStrainTensor();
-
-    tStress.compute_deviatoric_tensor()
-    // pp  = tStress.p_hydrostatic();   // mean effective stress
-    pp = -(tStress(i, i)) / 3;
-    MIT_q = -tStress(1, 1) + tStress(2, 2); // deviatoric stress
-    qq  = tStress.q_deviatoric();     // deviatoric stress
-    volstrain = (tStrain.val(1, 1) +
-                 tStrain.val(2, 2) +
-                 tStrain.val(3, 3)); // volumetric strain
-    devstrain = 0.666 * (tStrain.val(1, 1) - tStrain.val(2, 2)); // deviatoric strain
-
-    outStress << -tStrain.val(1, 1) <<  "  "  << -tStrain.val(1, 2) << "  " << -tStrain.val(2, 2) << "  " << -tStrain.val(3, 3) << "  " << -volstrain <<  "  " << -devstrain << "  " << pp << "  " << MIT_q << "  " << qq << endln;
-    Strain    << -tStrain.val(1, 1) <<  "  "  << -tStrain.val(1, 2) << "  " << -tStrain.val(2, 2) << "  " << -tStrain.val(3, 3) << "  " << -volstrain <<  "  " <<  -devstrain << endln;
-    Stress    << -tStress.val(1, 1) <<  "  "  << -tStress.val(1, 2) << "  " << -tStress.val(2, 2) << "  " << -tStress.val(3, 3) << "  " << pp << "  " << MIT_q << "  " << qq << endln;
-
-    //=============================================================================================
+    ofstream outStress("Stress.feioutput");
+    ofstream outStrain("Strain.feioutput");
+    ifstream infile(filein.c_str());
 
 
-
-
-    do
+    int step = 0;
+    double increment;
+    while (infile >> increment )
     {
-
-
-        //******************************  Choice of Testing Conditions ********************************************
-
-        int test_condition = 2;
-        Strain_Increment = BardetConstraint(test_condition, increment_size, FTEP);
-
-        //*********************************************************************************************************
-
-        tStrain = tStrain + Strain_Increment;
-
-        // Do the constitutive integration
-        FTEP->setTrialStrain(tStrain);
-
-        //       fprintf(stderr,"%5d\b\b\b\b\b", current_cycle_counter);
-        //       fprintf(stderr,".");
-
-        //********************************************************************************************
-
-        // Extract stress results
-        tStress = FTEP->getStressTensor();
-        // Extract strain results
-        tStrain = FTEP->getStrainTensor();
-
-
-        // Calculate output variables
-        E11 = tStrain.val(1, 1);         // strain epsilon_xx
-        pp  = tStress.p_hydrostatic();   // mean effective stress
-        qq  = tStress.q_deviatoric();     // deviatoric stress
-        MIT_q = -tStress.val(1, 1) + tStress.val(2, 2); // deviatoric stress
-        volstrain = (tStrain.val(1, 1) +
-                     tStrain.val(2, 2) +
-                     tStrain.val(3, 3)); // volumetric strain
-        devstrain = 0.666 * (tStrain.val(1, 1) - tStrain.val(2, 2)); // deviatoric strain
-
-
-        // Saving the results in the output files
-        //       outStress << -tStrain.val(1,1)  <<  "  "  << -volstrain <<  "  " <<  -devstrain << "  " << pp << "  " << MIT_q << endln;
-        outStress << -tStrain.val(1, 1) <<  "  "  << -tStrain.val(1, 2) << "  " << -tStrain.val(2, 2) << "  " << -tStrain.val(3, 3) << "  " << -volstrain <<  "  " << -devstrain << "  " << pp << "  " << MIT_q << "  " << qq << endln;
-        Strain    << -tStrain.val(1, 1) <<  "  "  << -tStrain.val(1, 2) << "  " << -tStrain.val(2, 2) << "  " << -tStrain.val(3, 3) << "  " << -volstrain <<  "  " <<  -devstrain << endln;
-        Stress    << -tStress.val(1, 1) <<  "  "  << -tStress.val(1, 2) << "  " << -tStress.val(2, 2) << "  " << -tStress.val(3, 3) << "  " << pp << "  " << MIT_q << "  " << qq << endln;
-
-        // Check if the current strain is less than the final strain
-        if (fabs(E11) >= strain_cut)
-        {
-            //if (fabs(qq2) >= q_cut) {
-            //if (fabs(tau) >= q_cut) {
-            //if (fabs(E11) >= strain_cut) {
-            current_cycle_counter++;
-            increment_size *= (-1.0);
-        }
-
-
-        //cout << "eps12= " << -tStrain.val(1,2) << "\n";
-        //cout << "q= " << qq << "\n";
-        //cout << "tau= " << tau << "\n";
-
+        cout << "Step = " << step << " increment = " << increment << endl;
+        const DTensor2 & stress = material->getStressTensor();
+        const DTensor2 & strain = material->getStrainTensor();
+        outStress << stress(0, 0)  << " " << stress(1, 1)  << " " << stress(2, 2)  << " " << stress(0, 1)  << " " << stress(0, 2)  << " " << stress(1, 2) << endl;
+        outStrain << strain(0, 0)  << " " << strain(1, 1)  << " " << strain(2, 2)  << " " << strain(0, 1)  << " " << strain(0, 2)  << " " << strain(1, 2) << endl;
+        driver.applyIncrement( increment);
+        step++;
     }
-    while ( current_cycle_counter < number_of_reaching_final_strain );
-
+    outStress.close();
+    outStrain.close();
+    infile.close();
 
     return 0;
 };

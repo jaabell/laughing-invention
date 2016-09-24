@@ -51,13 +51,15 @@ const double& CamClay_p0_EV::getDerivative(const DTensor2 &depsilon,
 {
     using namespace ClassicElastoplasticityGlobals;
     // Clear the static variables
-    // derivative = 0;
+    derivative = 0;
 
-    double e = e0 + (1.0 + e0) * stress(i, i);
-    // double d_Ev = M * M * (2.0 * p - p0);
+    // double e = e0 + (1.0 + e0) * stress(i, i);
+    double p = -stress(i, i) / 3;
+    double e = e0 - kappa * log(p);
 
     const double &p0 = this->getVariableConstReference();
-    return (1.0 + e) * p0 / (lambda - kappa) * m(i, i) ;
+    derivative = (1.0 + e) * p0 / (lambda - kappa) * m(i, i);
+    return derivative ;
 }
 
 // double const& CamClay_p0_EV::getHardeningType() const
