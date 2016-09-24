@@ -76,7 +76,7 @@
 
 // #include "../../ltensor/LTensor.h"
 
-int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, double scale_factor, std::string filein, double sxx0, double syy0, double szz0, double sxy0, double sxz0, double syz0)
+int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, double scale_factor, std::string filein, double sxx0, double syy0, double szz0, double sxy0, double sxz0, double syz0, int verbose_output)
 {
 
     BardetConstraintType bardet_type =  CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL;
@@ -114,9 +114,9 @@ int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, do
         bardet_type = UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL;
         break;
 
-    case 4: //UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL
-        cout << "Un-Drained Cyclic Triaxial Loading with Strain Control\n";
-        bardet_type = UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL;
+    case 4: //UNDRAINED_TRIAXIAL_LOADING_STRESS_CONTROL
+        cout << "Un-Drained Triaxial Loading with Strain Control\n";
+        bardet_type = UNDRAINED_TRIAXIAL_LOADING_STRESS_CONTROL;
         break;
 
     case 5: //UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL
@@ -152,6 +152,8 @@ int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, do
 
     ofstream outStress("Stress.feioutput");
     ofstream outStrain("Strain.feioutput");
+    ofstream outMaterial("Material_Output.feioutput");
+
     ifstream infile(filein.c_str());
 
 
@@ -164,6 +166,12 @@ int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, do
         const DTensor2 & strain = material->getStrainTensor();
         outStress << stress(0, 0)  << " " << stress(1, 1)  << " " << stress(2, 2)  << " " << stress(0, 1)  << " " << stress(0, 2)  << " " << stress(1, 2) << endl;
         outStrain << strain(0, 0)  << " " << strain(1, 1)  << " " << strain(2, 2)  << " " << strain(0, 1)  << " " << strain(0, 2)  << " " << strain(1, 2) << endl;
+        if (verbose_output > 0 && (step % verbose_output) == 0)
+        {
+            outMaterial << "\nStep = " << step << endl;
+            outMaterial << "-----------------------------" << endl;
+            material->Print(outMaterial);
+        }
         driver.applyIncrement( increment);
         step++;
     }

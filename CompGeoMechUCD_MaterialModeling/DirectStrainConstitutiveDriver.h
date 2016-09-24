@@ -3,8 +3,8 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:         Jose Abell, Nima Tafazzoli  Boris Jeremic
-// DATE:               January 2014
+// PROGRAMMER:         Jose Abell
+// DATE:               September 2016
 // UPDATE HISTORY:     Full update history in git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation
@@ -25,8 +25,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef BardetConstraintLT_H
-#define BardetConstraintLT_H
+#ifndef DirectStrainConstitutiveDriver_H
+#define DirectStrainConstitutiveDriver_H
 
 //#include <iostream>
 
@@ -39,41 +39,19 @@
 
 
 
-enum BardetConstraintType
-{
-    CONSTANT_P_TRIAXIAL_LOADING_STRAIN_CONTROL,
-    DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL,
-    DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL,
-    UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL,
-    UNDRAINED_TRIAXIAL_LOADING_STRESS_CONTROL,
-    UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL
-};
-
-
-// DTensor2 BardetConstraintLT(int , double , NDMaterialLT *);
-
-class BardetConstraintLT
+class DirectStrainConstitutiveDriver
 {
 public:
-    BardetConstraintLT(BardetConstraintType type,  NDMaterialLT *material);
-    ~BardetConstraintLT();
-    void  applyIncrement(double increment);
-    const DTensor2 &getStrainIncrement() const ;
+    DirectStrainConstitutiveDriver(  NDMaterialLT *material);
+    ~DirectStrainConstitutiveDriver();
+    void  applyIncrement(const DTensor2& strain_increment);
     const DTensor2 &getStress() const ;
 
 private:
-    void fillSE(double * S_values, double * E_values);
 
-    int type_of_test;
     NDMaterialLT *material;
     Index < 'i' > i;
     Index < 'j' > j;
-    Index < 'p' > p;
-    DTensor2 S;//(6, 6);
-    DTensor2 E;//(6, 6);
-    DTensor1 Y;//(6, 0.0);
-    DTensor2 CurrentStiffness;
-    DTensor2 d_epsilon_tensor;//(3, 3, 0.0);
 };
 
 

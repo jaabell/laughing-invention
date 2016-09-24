@@ -52,7 +52,7 @@ patterns->push_back("add load # <.> to node # <.> type path_time_series FORCETYP
 patterns->push_back("add load # <.> to node # <.> type self_weight use acceleration field # <.>;");
 patterns->push_back("add mass to node # <.> mx = <mass> my = <mass> mz = <mass> Imx = <mass*length^2> Imy = <mass*length^2> Imz = <mass*length^2>;");
 patterns->push_back("add mass to node # <.> mx = <mass> my = <mass> mz = <mass>;");
-patterns->push_back("add material # <.> type CamClayLT mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>");
+patterns->push_back("add material # <.> type CamClay mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>");
 patterns->push_back("add material # <.> type DruckerPragerArmstrongFrederickLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;");
 patterns->push_back("add material # <.> type DruckerPragerLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;");
 patterns->push_back("add material # <.> type DruckerPragerNonAssociateArmstrongFrederickLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2> plastic_flow_xi = <> plastic_flow_kd = <> ;");
@@ -115,8 +115,9 @@ patterns->push_back("set output compression level to <.>;");
 patterns->push_back("simulate <.> steps using static algorithm;");
 patterns->push_back("simulate <.> steps using transient algorithm time_step = <time>;");
 patterns->push_back("simulate <.> steps using variable transient algorithm time_step = <time> minimum_time_step = <time> maximum_time_step = <time> number_of_iterations = <.>;");
-patterns->push_back("simulate constitutive testing BARDETMETHOD use material # <.> scale_factor = <.> series_file = <string>  sigma0 = ( <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> )");
+patterns->push_back("simulate constitutive testing BARDETMETHOD use material # <.> scale_factor = <.> series_file = <string>  sigma0 = ( <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> )  verbose_output = <.>");
 patterns->push_back("simulate constitutive testing constant mean pressure triaxial strain control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;");
+patterns->push_back("simulate constitutive testing DIRECT_STRAIN use material # <.> scale_factor = <.> series_file = <string>  sigma0 = ( <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> ) verbose_output = <.>");
 patterns->push_back("simulate constitutive testing drained triaxial strain control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;");
 patterns->push_back("simulate constitutive testing undrained simple shear use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;");
 patterns->push_back("simulate constitutive testing undrained triaxial stress control use material # <.> strain_increment_size = <.> maximum_strain = <.> number_of_times_reaching_maximum_strain = <.>;");

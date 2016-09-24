@@ -51,6 +51,7 @@ cross_section
 crushing_strength
 damping
 define
+DIRECT_STRAIN
 direction
 disable
 displacement
@@ -288,6 +289,7 @@ value
 variable_node_brick_8_to_27
 velocity_file
 velocity_scale_unit
+verbose_output
 viscoelastic_modulus
 von_mises_radius
 while
@@ -316,7 +318,7 @@ beam_displacement_based
 beam_elastic
 beam_elastic_lumped_mass
 BeamColumnDispFiber3d
-CamClayLT
+CamClay
 Caughey3rd
 Caughey4th
 DOFTYPE

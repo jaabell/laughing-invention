@@ -197,13 +197,14 @@
 %token element_file boundary_nodes_file exterior_nodes_file displacement_file acceleration_file velocity_file force_file hdf5_file series_file time_series_file MAGNITUDES MAGNITUDE initial_velocity
 %token strain_increment_size maximum_strain  number_of_times_reaching_maximum_strain constitutive testing constant mean triaxial drained undrained simple shear
 %token number_of_subincrements maximum_number_of_iterations tolerance_1 tolerance_2 strain stress control Guass points Gauss each point single value
-%token initial_normal_stiffness stiffning_rate number_of_integration_points
+%token initial_normal_stiffness stiffning_rate number_of_integration_points 
+%token DIRECT_STRAIN
 // Additionally these tokens carry a string type (the above carry no type)
 // This is becuase there are several options to what this token may be
 // and the program branches depending on these.
 // ie. DOF may take the values {ux, uy, uz, Ux, Uy, Uz, rx, ry, rz, p} as
 // defined in the lexer file (feiparser.l).
-%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FORCE BARDETMETHOD
+%type <ident> DOF ELEMENTNAME MATERIALNAME ALGNAME CONSTITUTIVE_ALGNAME TESTNAME SOLVERNAME FORCE BARDETMETHOD 
 %type <ident> DAMPINGTYPE 
 
 
@@ -227,7 +228,7 @@
 
 // Tokens for materials
 %token NDMaterialLT linear_elastic_isotropic_3d linear_elastic_isotropic_3d_LT NonlinearIsotropic3DLT
-%token sanisand2008 camclay camclay_accelerated sanisand2004    
+%token sanisand2008 CamClay  sanisand2004    
 %token linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
 %token PisanoLT CamClayLT
 %token VonMisesLT VonMisesArmstrongFrederickLT DruckerPragerLT DruckerPragerNonAssociateLinearHardeningLT DruckerPragerVonMisesLT DruckerPragerArmstrongFrederickLT DruckerPragerNonAssociateArmstrongFrederickLT
@@ -248,7 +249,7 @@
 %token ax ay az
 
 // Convergence test option tokens
-%token verbose_level maximum_iterations tolerance yield_function_relative_tolerance stress_relative_tolerance
+%token verbose_level maximum_iterations tolerance yield_function_relative_tolerance stress_relative_tolerance verbose_output
 
 
 // Greek
@@ -2009,11 +2010,12 @@ CMD_misc
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC simulate constitutive testing BARDETMETHOD use material # <.> scale_factor = <.> series_file = <string>  sigma0 = ( <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> )
+	//!FEIDOC simulate constitutive testing BARDETMETHOD use material # <.> scale_factor = <.> series_file = <string>  sigma0 = ( <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> )  verbose_output = <.>
 	| SIMULATE CONSTITUTIVE testing BARDETMETHOD USE MATERIAL TEXTNUMBER exp
 	  scale_factor '=' exp
 	  series_file '=' STRING
 	  sigma0 '=' '(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+	  verbose_output '=' exp
 	{
 		args.clear(); signature.clear();
 		//int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, double scale_factor, std::string filein, double sxx0, double syy0, double szz0, double sxy0, double sxz0, double syz0, )
@@ -2038,12 +2040,51 @@ CMD_misc
 		args.push_back($24); signature.push_back(this_signature("sxy0", &isPressure));
 		args.push_back($26); signature.push_back(this_signature("sxz0", &isPressure));
 		args.push_back($28); signature.push_back(this_signature("syz0", &isPressure));
+		args.push_back($32); signature.push_back(this_signature("verbose_out", &isAdimensional));
 
 
-		$$ = new FeiDslCaller10<int, int, double, std::string, 
-		   	double, double, double, double, double, double>(&simulate_constitutive_testing_BardetLT_path, args, signature, "simulate_constitutive_testing_BardetLT_path");
+		$$ = new FeiDslCaller11<int, int, double, std::string, 
+		   	double, double, double, double, double, double, int>(&simulate_constitutive_testing_BardetLT_path, args, signature, "simulate_constitutive_testing_BardetLT_path");
 
-		for(int ii = 1;ii <=8; ii++) nodes.pop();
+		for(int ii = 1;ii <=9; ii++) nodes.pop();
+
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC simulate constitutive testing DIRECT_STRAIN use material # <.> scale_factor = <.> series_file = <string>  sigma0 = ( <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> , <F/L^2> ) verbose_output = <.>
+	| SIMULATE CONSTITUTIVE testing DIRECT_STRAIN USE MATERIAL TEXTNUMBER exp
+	  scale_factor '=' exp
+	  series_file '=' STRING
+	  sigma0 '=' '(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+	  verbose_output '=' exp
+	{
+		args.clear(); signature.clear();
+		//int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double scale_factor, std::string filein, double sxx0, double syy0, double szz0, double sxy0, double sxz0, double syz0, int verbose_output)
+
+		//Get the string from the parsed string
+		string filename = *$14;
+		//Remove quotes
+		filename.erase(0, 1);
+		filename.erase(filename.length()-1, filename.length());
+
+
+		args.push_back($8); signature.push_back(this_signature("MaterialNumber", &isAdimensional));
+		args.push_back($11); signature.push_back(this_signature("scale_factor", &isAdimensional));
+		args.push_back( new FeiString(filename)); signature.push_back(this_signature("series_file", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("sxx0", &isPressure));
+		args.push_back($20); signature.push_back(this_signature("syy0", &isPressure));
+		args.push_back($22); signature.push_back(this_signature("szz0", &isPressure));
+		args.push_back($24); signature.push_back(this_signature("sxy0", &isPressure));
+		args.push_back($26); signature.push_back(this_signature("sxz0", &isPressure));
+		args.push_back($28); signature.push_back(this_signature("syz0", &isPressure));
+		args.push_back($32); signature.push_back(this_signature("verbose_out", &isAdimensional));
+
+
+		$$ = new FeiDslCaller10<int,  double, std::string, 
+		   	double, double, double, double, double, double, int>(&	simulate_constitutive_testing_DirectStrain_path, args, signature, "	simulate_constitutive_testing_DirectStrain_path");
+
+		for(int ii = 1;ii <=9; ii++) nodes.pop();
 
 		nodes.push($$);
 	}
@@ -2405,8 +2446,8 @@ ADD_material
 	}
 			//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [CamClayLT] mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>
-	| MATERIAL TEXTNUMBER exp TYPE CamClayLT
+	//!FEIDOC add material # <.> type [CamClay] mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>
+	| MATERIAL TEXTNUMBER exp TYPE CamClay
 		mass_density '=' exp
 		CriticalState_M '=' exp
 		CriticalState_lambda '=' exp
@@ -4789,7 +4830,7 @@ int bardet_type_parse(string type)
 	if (type.compare("DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL") == 0) return 1;
 	if (type.compare("DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL") == 0) return 2;
 	if (type.compare("UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL") == 0) return 3;
-	if (type.compare("UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL") == 0) return 4;
+	if (type.compare("UNDRAINED_TRIAXIAL_LOADING_STRESS_CONTROL") == 0) return 4;
 	if (type.compare("UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL") == 0) return 5;
 
 	return -1;

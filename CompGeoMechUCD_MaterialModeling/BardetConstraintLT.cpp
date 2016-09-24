@@ -172,9 +172,9 @@ BardetConstraintLT::BardetConstraintLT(BardetConstraintType type_of_test_in, NDM
 
     }
 
-    else if ( type_of_test == UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL )
+    else if ( type_of_test == UNDRAINED_TRIAXIAL_LOADING_STRESS_CONTROL )
     {
-        cout << "BardetConstraint -- Selected \"Undrained_cyclic_triaxial_loading_stress_control_d_epsilon_11\" \n";
+        cout << "BardetConstraint -- Selected \"Undrained_triaxial_loading_stress_control_d_epsilon_11\" \n";
         ////////////////////////////////////////////////////////////////////
         // Undrained_cyclic_triaxial_loading_stress_control_d_epsilon_11
         double S_values[36] =

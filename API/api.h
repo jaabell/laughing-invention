@@ -328,6 +328,7 @@
 #include "Constitutive_Driver/simulate_constitutive_testing_for_undrained_simple_shear.h"
 #include "Constitutive_Driver/simulate_constitutive_testing_for_undrained_triaxial.h"
 #include "Constitutive_Driver/simulate_constitutive_testing_BardetLT_path.h"
+#include "Constitutive_Driver/simulate_constitutive_testing_DirectStrain_path.h"
 
 
 // Adding some by Babak 5/29/14:

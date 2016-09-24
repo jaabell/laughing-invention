@@ -442,8 +442,7 @@ EXP	([Ee][-+]?[0-9]+)
 "DruckerPragerNonAssociateArmstrongFrederickLT"   {return token::DruckerPragerNonAssociateArmstrongFrederickLT;}
 "sanisand2008"                      {return token::sanisand2008;}
 "CamClayLT"                           {return token::CamClayLT;}
-"camclay"                           {return token::camclay;}
-"camclay_accelerated"               {return token::camclay_accelerated;}
+"CamClay"                           {return token::CamClay;}
 "sanisand2004"                      {return token::sanisand2004;}
 "linear_elastic_crossanisotropic"   {return token::linear_elastic_crossanisotropic;}
 "uniaxial_elastic"                  {return token::uniaxial_elastic_1d;}
@@ -709,11 +708,12 @@ EXP	([Ee][-+]?[0-9]+)
 "DRAINED_TRIAXIAL_LOADING_STRESS_CONTROL"  |
 "DRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL"  |
 "UNDRAINED_TRIAXIAL_LOADING_STRAIN_CONTROL"  |
-"UNDRAINED_CYCLIC_TRIAXIAL_LOADING_STRESS_CONTROL"  |
+"UNDRAINED_TRIAXIAL_LOADING_STRESS_CONTROL"  |
 "UNDRAINED_SIMPLE_SHEAR_LOADING_STRAIN_CONTROL"  {
                                         yylval->ident = new string(yytext);
                                         return token::BARDETMETHOD;
                                      }
+"DIRECT_STRAIN"   {return token::DIRECT_STRAIN;}
 "sigma0"           {return token::sigma0;}
 
 
@@ -769,6 +769,7 @@ EXP	([Ee][-+]?[0-9]+)
 "tolerance"                         {return token::tolerance;}
 "maximum_iterations"                {return token::maximum_iterations;}
 "verbose_level"                     {return token::verbose_level;}
+"verbose_output"                     {return token::verbose_output;}
 "minimum_time_step"                 {return token::minimum_time_step;}
 "maximum_time_step"                 {return token::maximum_time_step;}
 "number_of_iterations"              {return token::number_of_iterations;}
