@@ -264,6 +264,7 @@
 #define ND_TAG_CEM_DruckerPragerNonAssociateArmstrongFrederick 5006
 #define ND_TAG_CEM_VonMisesArmstrongFrederick 5007
 #define ND_TAG_CEM_CamClayLT 5008
+#define ND_TAG_CEM_RoundedMohrCoulomb 5009
 
 
 

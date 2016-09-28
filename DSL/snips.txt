@@ -429,8 +429,19 @@ add material # $1 type NonlinearIsotropic3DLT
 	Niso3d_Ei = $17 
 	Niso3d_Er = $18
 
-// add material # <.> type sanisand2004 mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
-add material # $1 type sanisand2004 
+// add material # <.> type roundedMohrCoulomb mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>
+add material # $1 type roundedMohrCoulomb 
+	mass_density = $2 
+	CriticalState_M = $3 
+	CriticalState_lambda = $4 
+	CriticalState_kappa = $5 
+	CriticalState_e0 = $6 
+	CriticalState_p0 = $7 
+	poisson_ratio = $8 
+	initial_confining_stress = $9
+
+// add material # <.> type sanisand2004_legacy mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
+add material # $1 type sanisand2004_legacy 
 	mass_density = $2 
 	e0 = $3 
 	sanisand2004_G0 = $4 

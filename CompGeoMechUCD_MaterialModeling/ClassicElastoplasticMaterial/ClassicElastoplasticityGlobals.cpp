@@ -85,13 +85,8 @@ void ClassicElastoplasticityGlobals::printTensor4(std::string const& name, DTens
     std::cout << "]" << std::endl;
 }
 
-// --------------------------------------------
-// refer to https://en.wikipedia.org/wiki/Yield_surface
-// p = 1/3 * I1
-// q = sqrt(3* J2)
-// cos(3*theta) = 3/2 * sqrt(3) * J3 / J2^(3/2)
-// ------------------------------------------------------------
-std::tuple<double, double, double> ClassicElastoplasticityGlobals::getpqtheta(const DTensor2 &mystress)
+
+std::tuple<double, double, double> ClassicElastoplasticityGlobals::getI1J2J3(const DTensor2 &mystress)
 {
     // ------------------------------------------------------------
     // preliminary
@@ -110,7 +105,23 @@ std::tuple<double, double, double> ClassicElastoplasticityGlobals::getpqtheta(co
     const double J3 = s(0, 0) * (s(1, 1) * s(2, 2) - s(1, 2) * s(2, 1))
                       +  s(0, 1) * (s(1, 2) * s(2, 0) - s(1, 0) * s(2, 2))
                       +  s(0, 2) * (s(1, 0) * s(2, 1) - s(2, 0) * s(1, 1));
-    // ------------------------------------------------------------
+
+
+    return std::make_tuple(I1, J2, J3);
+}
+
+
+// --------------------------------------------
+// refer to https://en.wikipedia.org/wiki/Yield_surface
+// p = 1/3 * I1
+// q = sqrt(3* J2)
+// cos(3*theta) = 3/2 * sqrt(3) * J3 / J2^(3/2)
+// ------------------------------------------------------------
+std::tuple<double, double, double> ClassicElastoplasticityGlobals::getpqtheta(const DTensor2 &sigma)
+{
+    double I1, J2, J3;
+
+    std::tie(I1, J2, J3) = getI1J2J3(sigma);
 
     // (1) calculate p
     const double p = -I1 / 3;
@@ -173,3 +184,90 @@ bool ClassicElastoplasticityGlobals::inverse4thTensor(DTensor4 const& rhs, DTens
     }
 
 }
+
+
+// Some stress derivatives....
+void ClassicElastoplasticityGlobals::dJ2_dsigma_ij(const DTensor2& sigma, DTensor2 &result)   // Stress derivative of second deviatoric stress invariant
+{
+    using namespace ClassicElastoplasticityGlobals;
+    static DTensor2 s(3, 3, 0.0);
+    s *= 0;
+    double p;
+    s.compute_deviatoric_tensor(s, p);
+    p = -p;
+
+    result(i, j) = s(i, j);
+
+    return;
+}
+
+
+void ClassicElastoplasticityGlobals::dJ3_dsigma_ij(const DTensor2& sigma, DTensor2 &result)   // Stress derivative of third deviatoric stress invariant
+{
+    using namespace ClassicElastoplasticityGlobals;
+    static DTensor2 s(3, 3, 0.0);
+    s *= 0;
+    double p;
+    s.compute_deviatoric_tensor(s, p);
+    p = -p;
+
+    double J2 = (s(i, j) * s(i, j)) / 2;
+
+    result(i, j) = s(i, p) * s(p, j);
+    result(0, 0) = s(0, p) * s(p, 0) - (2 * J2) / 3;
+    result(1, 1) = s(1, p) * s(p, 1) - (2 * J2) / 3;
+    result(2, 2) = s(2, p) * s(p, 2) - (2 * J2) / 3;
+
+    return;
+}
+
+
+void ClassicElastoplasticityGlobals::dq_dsigma_ij(const DTensor2& sigma, DTensor2 &result)   // Stress derivative of deviatoric stress q
+{
+    using namespace ClassicElastoplasticityGlobals;
+    static DTensor2 s(3, 3, 0.0);
+    s *= 0;
+    double p;
+    s.compute_deviatoric_tensor(s, p);
+    p = -p;
+
+    double J2 = (s(i, j) * s(i, j)) / 2;
+    double q = sqrt(3 * J2);
+    result(i, j) = 3 / (2 * q) * s(i, j);
+
+    return;
+}
+
+
+void ClassicElastoplasticityGlobals::dtheta_dsigma_ij(const DTensor2& sigma, DTensor2 &result)   // Stress derivative of Lode angle
+{
+    using namespace ClassicElastoplasticityGlobals;
+    double I1, J2, J3;
+
+    std::tie(I1, J2, J3) = getI1J2J3(sigma);
+
+    static DTensor2 s(3, 3, 0.0);
+    static DTensor2 dJ2_ij(3, 3, 0.0);
+    static DTensor2 dJ3_ij(3, 3, 0.0);
+    s *= 0;
+    dJ2_ij *= 0;
+    dJ3_ij *= 0;
+
+    double p;
+    s.compute_deviatoric_tensor(s, p);
+    p = -p;
+
+    dJ2_dsigma_ij(sigma, dJ2_ij);
+    dJ3_dsigma_ij(sigma, dJ3_ij);
+
+    double J2cubed = J2 * J2 * J2;
+    double sqrtJ2cubed = sqrt(J2cubed);
+    double A = (3.*sqrt(3.) ) / ( 2 * J2 * sqrtJ2cubed * sqrt( ( 4.*J2cubed - 27.*J3 * J3 ) / J2cubed ) ) ;
+
+    result(i, j) = A * ( 3 * dJ2_ij(i, j) * J3 - 2 * dJ3_ij(i, j) * J2);
+
+    return;
+}
+
+
+

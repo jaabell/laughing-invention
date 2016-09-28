@@ -39,3 +39,4 @@
 #include "ConstitutiveModels/DruckerPragerNonAssociateArmstrongFrederick.h"
 #include "ConstitutiveModels/VonMisesArmstrongFrederick.h"
 #include "ConstitutiveModels/CamClayLT.h"
+#include "ConstitutiveModels/RoundedMohrCoulomb.h"

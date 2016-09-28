@@ -228,7 +228,7 @@
 
 // Tokens for materials
 %token NDMaterialLT linear_elastic_isotropic_3d linear_elastic_isotropic_3d_LT NonlinearIsotropic3DLT
-%token sanisand2008 CamClay  sanisand2004    
+%token sanisand2008 CamClay  sanisand2004 sanisand2004_legacy roundedMohrCoulomb
 %token linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
 %token PisanoLT CamClayLT
 %token VonMisesLT VonMisesArmstrongFrederickLT DruckerPragerLT DruckerPragerNonAssociateLinearHardeningLT DruckerPragerVonMisesLT DruckerPragerArmstrongFrederickLT DruckerPragerNonAssociateArmstrongFrederickLT
@@ -243,6 +243,7 @@
 %token M_in kd_in xi_in h_in m_in beta_min n_in a_in elastic_modulus_1atm eplcum_cr_in
 %token Niso3d_K Niso3d_Kur Niso3d_n Niso3d_c Niso3d_phi0 Niso3d_dphi Niso3d_Rf Niso3d_K0 Niso3d_Kb Niso3d_m Niso3d_pa Niso3d_K2 Niso3d_B Niso3d_Et Niso3d_Ei Niso3d_Er
 %token CriticalState_M CriticalState_lambda CriticalState_kappa CriticalState_e0 CriticalState_p0
+%token RMC_m RMC_qa RMC_pc RMC_e RMC_eta0 RMC_Heta
 
 
 // For acceleration field
@@ -322,7 +323,7 @@ dsl
 		args.clear(); signature.clear();
 		args.push_back($4); signature.push_back(this_signature("number", &isAdimensional));
 
-		$$ = new FeiDslCaller1<int>(&output_of_element_to_screen, args, signature, "poutput_of_element_to_screen");
+		$$ = new FeiDslCaller1<int>(&output_of_element_to_screen, args, signature, "output_of_element_to_screen");
 
 		nodes.pop();
 		nodes.push($$);
@@ -2444,7 +2445,7 @@ ADD_material
 		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push($$);
 	}
-			//!=========================================================================================================
+	//!=========================================================================================================
 	//!
 	//!FEIDOC add material # <.> type [CamClay] mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>
 	| MATERIAL TEXTNUMBER exp TYPE CamClay
@@ -2479,6 +2480,42 @@ ADD_material
 
 		$$ = new FeiDslCaller9<int, double, double, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_camclay, args, signature, "add_constitutive_model_NDMaterialLT_camclay");
 		for(int ii = 1;ii <=9; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add material # <.> type [roundedMohrCoulomb] mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>
+	| MATERIAL TEXTNUMBER exp TYPE roundedMohrCoulomb
+		mass_density '=' exp
+		elastic_modulus '=' exp
+		poisson_ratio '=' exp
+		RMC_m '=' exp
+		RMC_qa '=' exp
+		RMC_pc '=' exp
+		RMC_e '=' exp
+		RMC_eta0 '=' exp
+		RMC_Heta '=' exp
+		initial_confining_stress '=' exp
+	{
+		//add_constitutive_model_NDMaterialLT_roundedMohrCoulomb(int tag_in, 
+		//double rho_in, double E_in, double nu_in, double m_in, double qa_in, 
+		//double pc_in, double e_in, double H_k, double eta0_in, double p0)
+		args.clear(); signature.clear();
+		args.push_back($3); signature.push_back(this_signature("number",            &isAdimensional));    
+		args.push_back($8); signature.push_back(this_signature("mass_density",      &isDensity));  
+		args.push_back($11); signature.push_back(this_signature("elastic_modulus",  &isPressure));  
+		args.push_back($14); signature.push_back(this_signature("poisson_ratio",    &isAdimensional));  
+		args.push_back($17); signature.push_back(this_signature("RMC_m",  			&isAdimensional));  
+		args.push_back($20); signature.push_back(this_signature("RMC_qa",  			&isPressure));  
+		args.push_back($23); signature.push_back(this_signature("RMC_pc",  			&isPressure));  
+		args.push_back($26); signature.push_back(this_signature("RMC_e",   			&isAdimensional));  
+		args.push_back($29); signature.push_back(this_signature("RMC_eta0",   		&isPressure));  
+		args.push_back($32); signature.push_back(this_signature("RMC_Heta",   		&isPressure));  
+		args.push_back($35); signature.push_back(this_signature("initial_confining_stress",   &isPressure));  
+
+		$$ = new FeiDslCaller11<int, double, double, double, double, double, 
+									 double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_roundedMohrCoulomb, args, signature, "add_constitutive_model_NDMaterialLT_roundedMohrCoulomb");
+		for(int ii = 1;ii <=11; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================
@@ -2566,8 +2603,8 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [sanisand2004] mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
-	| MATERIAL TEXTNUMBER exp TYPE sanisand2004
+	//!FEIDOC add material # <.> type [sanisand2004_legacy] mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
+	| MATERIAL TEXTNUMBER exp TYPE sanisand2004_legacy
 		mass_density '=' exp
 		e0 '=' exp
 		sanisand2004_G0 '=' exp
@@ -4480,6 +4517,12 @@ exp
 		nodes.pop();
 		nodes.push($$);
 	}
+//	| dsl
+//	{
+//		$$ = $1;
+//		args.clear();
+//		signature.clear();
+//	}
 	;
 
 stmt
@@ -4498,6 +4541,7 @@ stmt
 		args.clear();
 		signature.clear();
 	}
+	
 	//!=========================================================================================================
 	//!
 	//!FEIDOC if (.) { };

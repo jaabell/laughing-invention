@@ -169,6 +169,7 @@
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager_non_associate_linear_hardening.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_druckerprager_non_associate_armstrong_frederick.h"
 #include "MODELING/add_constitutive_model_NDMaterialLT_camclay.h"
+#include "MODELING/add_constitutive_model_NDMaterialLT_roundedMohrCoulomb.h"
 
 // Uniaxial
 #include "MODELING/add_constitutive_model_uniaxial_elastic.h"

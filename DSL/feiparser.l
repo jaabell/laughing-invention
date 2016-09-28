@@ -444,11 +444,13 @@ EXP	([Ee][-+]?[0-9]+)
 "CamClayLT"                           {return token::CamClayLT;}
 "CamClay"                           {return token::CamClay;}
 "sanisand2004"                      {return token::sanisand2004;}
+"sanisand2004_legacy"                      {return token::sanisand2004_legacy;}
 "linear_elastic_crossanisotropic"   {return token::linear_elastic_crossanisotropic;}
 "uniaxial_elastic"                  {return token::uniaxial_elastic_1d;}
 "uniaxial_steel01"                  {return token::uniaxial_steel01;}
 "uniaxial_steel02"                  {return token::uniaxial_steel02;}
 "uniaxial_concrete02"               {return token::uniaxial_concrete02;}
+"roundedMohrCoulomb"               {return token::roundedMohrCoulomb;}
 
  /* LTensor based materials */
 
@@ -593,6 +595,12 @@ EXP	([Ee][-+]?[0-9]+)
 "CriticalState_kappa"              {return token::CriticalState_kappa;}
 "CriticalState_e0"                 {return token::CriticalState_e0;}
 "CriticalState_p0"                 {return token::CriticalState_p0;}
+"RMC_m"                             {return token::RMC_m;}
+"RMC_qa"                            {return token::RMC_qa;}
+"RMC_pc"                            {return token::RMC_pc;}
+"RMC_e"                             {return token::RMC_e;}
+"RMC_eta0"                          {return token::RMC_eta0;}
+"RMC_Heta"                          {return token::RMC_Heta;}
 
  /* Pisano Model options  */
 "M_in"                              {return token::M_in;}
