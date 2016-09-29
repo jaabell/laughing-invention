@@ -438,7 +438,8 @@ EXP	([Ee][-+]?[0-9]+)
 "DruckerPragerLT"                   {return token::DruckerPragerLT;}
 "DruckerPragerNonAssociateLinearHardeningLT"                   {return token::DruckerPragerNonAssociateLinearHardeningLT;}
 "DruckerPragerVonMisesLT"           {return token::DruckerPragerVonMisesLT;}
-"DruckerPragerArmstrongFrederickLT"   {return token::DruckerPragerArmstrongFrederickLT;}
+"DruckerPragerArmstrongFrederickLE"   {return token::DruckerPragerArmstrongFrederickLE;}
+"DruckerPragerArmstrongFrederickNE"   {return token::DruckerPragerArmstrongFrederickNE;}
 "DruckerPragerNonAssociateArmstrongFrederickLT"   {return token::DruckerPragerNonAssociateArmstrongFrederickLT;}
 "sanisand2008"                      {return token::sanisand2008;}
 "CamClayLT"                           {return token::CamClayLT;}
@@ -601,6 +602,11 @@ EXP	([Ee][-+]?[0-9]+)
 "RMC_e"                             {return token::RMC_e;}
 "RMC_eta0"                          {return token::RMC_eta0;}
 "RMC_Heta"                          {return token::RMC_Heta;}
+"DuncanCheng_K"                     {return token::DuncanCheng_K;}
+"DuncanCheng_pa"                    {return token::DuncanCheng_pa;}
+"DuncanCheng_n"                     {return token::DuncanCheng_n;}
+"DuncanCheng_sigma3_max"            {return token::DuncanCheng_sigma3_max;}
+"DuncanCheng_nu"                    {return token::DuncanCheng_nu;}
 
  /* Pisano Model options  */
 "M_in"                              {return token::M_in;}

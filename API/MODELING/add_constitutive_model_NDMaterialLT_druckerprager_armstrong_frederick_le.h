@@ -42,13 +42,13 @@ int add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick_le(int
 
     if (theMaterial == NULL)
     {
-        cerr << "Error: (add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening) memory allocation problem!" << endl;
+        cerr << "Error: (add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening_le) memory allocation problem!" << endl;
         return -1;
     }
 
     if ( theDomain.addNDMaterialLT(*theMaterial) != 0 )
     {
-        cerr << "Error: (add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening) Material " << MaterialNumber << " could not be added to the domain " << endl;
+        cerr << "Error: (add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening_le) Material " << MaterialNumber << " could not be added to the domain " << endl;
         return -1;
     }
 

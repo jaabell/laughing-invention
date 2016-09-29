@@ -231,7 +231,7 @@
 %token sanisand2008 CamClay  sanisand2004 sanisand2004_legacy roundedMohrCoulomb
 %token linear_elastic_crossanisotropic uniaxial_concrete02 uniaxial_elastic_1d uniaxial_steel01 uniaxial_steel02 pisano 
 %token PisanoLT CamClayLT
-%token VonMisesLT VonMisesArmstrongFrederickLT DruckerPragerLT DruckerPragerNonAssociateLinearHardeningLT DruckerPragerVonMisesLT DruckerPragerArmstrongFrederickLT DruckerPragerNonAssociateArmstrongFrederickLT
+%token VonMisesLT VonMisesArmstrongFrederickLT DruckerPragerLT DruckerPragerNonAssociateLinearHardeningLT DruckerPragerVonMisesLT DruckerPragerArmstrongFrederickLE DruckerPragerArmstrongFrederickNE DruckerPragerNonAssociateArmstrongFrederickLT
 
 // Material options tokens
 %token mass_density elastic_modulus viscoelastic_modulus poisson_ratio von_mises_radius druckerprager_angle druckerprager_k
@@ -244,7 +244,7 @@
 %token Niso3d_K Niso3d_Kur Niso3d_n Niso3d_c Niso3d_phi0 Niso3d_dphi Niso3d_Rf Niso3d_K0 Niso3d_Kb Niso3d_m Niso3d_pa Niso3d_K2 Niso3d_B Niso3d_Et Niso3d_Ei Niso3d_Er
 %token CriticalState_M CriticalState_lambda CriticalState_kappa CriticalState_e0 CriticalState_p0
 %token RMC_m RMC_qa RMC_pc RMC_e RMC_eta0 RMC_Heta
-
+%token DuncanCheng_K DuncanCheng_pa DuncanCheng_n DuncanCheng_sigma3_max DuncanCheng_nu
 
 // For acceleration field
 %token ax ay az
@@ -2384,8 +2384,47 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [DruckerPragerArmstrongFrederickLT] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
-	| MATERIAL TEXTNUMBER exp TYPE DruckerPragerArmstrongFrederickLT
+	//!FEIDOC add material # <.> type [DruckerPragerArmstrongFrederickNE] mass_density = <M/L^3> DuncanCheng_K = <.> DuncanCheng_pa = <F/L^2> DuncanCheng_n = <.> DuncanCheng_sigma3_max = <F/L^2> DuncanCheng_nu druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
+	| MATERIAL TEXTNUMBER exp TYPE DruckerPragerArmstrongFrederickNE
+		mass_density '=' exp
+		DuncanCheng_K '=' exp
+		DuncanCheng_pa '=' exp
+		DuncanCheng_n '=' exp
+		DuncanCheng_sigma3_max '=' exp
+		DuncanCheng_nu '=' exp
+		druckerprager_k '=' exp
+		armstrong_frederick_ha '=' exp
+		armstrong_frederick_cr '=' exp
+		isotropic_hardening_rate '=' exp
+		initial_confining_stress '=' exp
+	{
+
+		args.clear(); signature.clear();
+//		add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick_ne(tag_in, double k0_in, double ha_alpha, double cr_alpha, double H_k, double K_in, double pa_in, double n_in, double sigma3_max_in, double nu_in, double rho_, double p0)
+		args.push_back($3); signature.push_back(this_signature("number"                    , &isAdimensional));    // 1
+		args.push_back($8); signature.push_back(this_signature("mass_density"              , &isDensity));  // 2
+		args.push_back($11); signature.push_back(this_signature("DuncanCheng_K"            , &isAdimensional));  // 3
+		args.push_back($14); signature.push_back(this_signature("DuncanCheng_pa"           , &isPressure));  // 3
+		args.push_back($17); signature.push_back(this_signature("DuncanCheng_n"            , &isAdimensional));  // 3
+		args.push_back($20); signature.push_back(this_signature("DuncanCheng_sigma3_max"   , &isPressure));  // 3
+		args.push_back($23); signature.push_back(this_signature("DuncanCheng_nu"           , &isAdimensional));  // 3
+		args.push_back($26); signature.push_back(this_signature("druckerprager_k"          , &isAdimensional));  // 5
+		args.push_back($29); signature.push_back(this_signature("armstrong_frederick_ha"   , &isPressure));  // 6
+		args.push_back($32); signature.push_back(this_signature("armstrong_frederick_cr"   , &isPressure));  // 6
+		args.push_back($35); signature.push_back(this_signature("isotropic_hardening_rate" , &isPressure));  // 7
+		args.push_back($38); signature.push_back(this_signature("initial_confining_stress" , &isPressure));  // 7
+
+
+		$$ = new FeiDslCaller12<int, double, double, double, double, 
+		double, double, double, double, 
+		double, double, double>(&add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick_ne, args, signature, "add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick_ne");
+		for(int ii = 1;ii <=12; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add material # <.> type [DruckerPragerArmstrongFrederickLE] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
+	| MATERIAL TEXTNUMBER exp TYPE DruckerPragerArmstrongFrederickLE
 		mass_density '=' exp
 		elastic_modulus '=' exp
 		poisson_ratio '=' exp
@@ -2408,7 +2447,7 @@ ADD_material
 		args.push_back($29); signature.push_back(this_signature("initial_confining_stress",   &isPressure));  // 7
 
 
-		$$ = new FeiDslCaller9<int, double, double, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick, args, signature, "add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick");
+		$$ = new FeiDslCaller9<int, double, double, double, double, double, double, double, double>(&add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick_le, args, signature, "add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick_le");
 		for(int ii = 1;ii <=9; ii++) nodes.pop();
 		nodes.push($$);
 	}

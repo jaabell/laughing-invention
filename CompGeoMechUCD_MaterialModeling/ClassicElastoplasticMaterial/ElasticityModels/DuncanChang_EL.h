@@ -30,14 +30,37 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#ifndef DuncanChang_EL_H
+#define DuncanChang_EL_H
 
-#include "ConstitutiveModels/VonMisesLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerVonMisesLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerArmstrongFrederickLE.h"
-#include "ConstitutiveModels/DruckerPragerArmstrongFrederickNE.h"
-#include "ConstitutiveModels/DruckerPragerNonAssociateLinearHardening.h"
-#include "ConstitutiveModels/DruckerPragerNonAssociateArmstrongFrederick.h"
-#include "ConstitutiveModels/VonMisesArmstrongFrederick.h"
-#include "ConstitutiveModels/CamClayLT.h"
-#include "ConstitutiveModels/RoundedMohrCoulomb.h"
+#include "../../../ltensor/LTensor.h"
+#include "../EvolvingVariable.h"
+#include "../ElasticityBase.h"
+
+#include <iostream>
+
+
+class DuncanChang_EL : public ElasticityBase<DuncanChang_EL> // CRTP on ElasticityBase
+{
+public:
+    DuncanChang_EL(double K_in, double pa_in, double n_in, double nu_in, double sigma3_max_in);
+
+    DTensor4& operator()(const DTensor2& stress); //See note on base class
+
+    int sendSelf(int commitTag, Channel &theChannel);
+    int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
+
+private:
+
+    double K;
+    double pa;
+    double n;
+    double nu;
+    double sigma3_max;
+    static DTensor4 Ee;  //Provides class-wide storage, which avoids mallocs and allows const returning a const & to this object.
+
+};
+
+
+
+#endif

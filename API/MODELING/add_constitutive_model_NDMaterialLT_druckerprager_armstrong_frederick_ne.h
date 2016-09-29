@@ -25,30 +25,22 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-int add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick_le(int MaterialNumber,
-        double rho,
-        double E,
-        double nu,
-        double k,
-        double ha_alpha,
-        double cr_alpha,
-        double H_k,
-        double p0)
+int add_constitutive_model_NDMaterialLT_druckerprager_armstrong_frederick_ne(int tag_in, double rho_, double k0_in, double ha_alpha, double cr_alpha, double H_k, double K_in, double pa_in, double n_in, double sigma3_max_in, double nu_in,  double p0)
 {
 
     NDMaterialLT* theMaterial = 0;
 
-    theMaterial = new   DruckerPragerArmstrongFrederickLE(MaterialNumber,  k,  ha_alpha, cr_alpha,  H_k,  E,  nu, rho, p0);
+    theMaterial = new DruckerPragerArmstrongFrederickNE(tag_in, k0_in,  ha_alpha,  cr_alpha,  H_k, K_in, pa_in, n_in, sigma3_max_in, nu_in,  rho_,  p0);
 
     if (theMaterial == NULL)
     {
-        cerr << "Error: (add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening) memory allocation problem!" << endl;
+        cerr << "Error: (add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening_ne) memory allocation problem!" << endl;
         return -1;
     }
 
     if ( theDomain.addNDMaterialLT(*theMaterial) != 0 )
     {
-        cerr << "Error: (add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening) Material " << MaterialNumber << " could not be added to the domain " << endl;
+        cerr << "Error: (add_constitutive_model_NDMaterialLT_druckerprager_linear_hardening_ne) Material " << tag_in << " could not be added to the domain " << endl;
         return -1;
     }
 

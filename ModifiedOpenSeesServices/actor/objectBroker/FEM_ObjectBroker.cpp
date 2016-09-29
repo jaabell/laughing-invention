@@ -411,25 +411,25 @@ FEM_ObjectBroker::getNewElement(int classTag)
 
 
     case ELE_TAG_TwentyNodeBrick:                         // Sumeet [September, 2016]
-        return new TwentyNodeBrick();       
+        return new TwentyNodeBrick();
 
     case ELE_TAG_TwentyNodeBrickOrderOne:                 // Sumeet [September, 2016]
-        return new TwentyNodeBrickOrderOne();       
+        return new TwentyNodeBrickOrderOne();
 
     case ELE_TAG_TwentyNodeBrickOrderTwo:                 // Sumeet [September, 2016]
-        return new TwentyNodeBrickOrderTwo();       
+        return new TwentyNodeBrickOrderTwo();
 
     case ELE_TAG_TwentyNodeBrickOrderThree:               // Sumeet [September, 2016]
-        return new TwentyNodeBrickOrderThree();       
+        return new TwentyNodeBrickOrderThree();
 
     case ELE_TAG_TwentyNodeBrickOrderFour:                 // Sumeet [September, 2016]
-        return new TwentyNodeBrickOrderFour();       
+        return new TwentyNodeBrickOrderFour();
 
     case ELE_TAG_TwentyNodeBrickOrderFive:                 // Sumeet [September, 2016]
-        return new TwentyNodeBrickOrderFive();       
+        return new TwentyNodeBrickOrderFive();
 
     case ELE_TAG_TwentyNodeBrickOrderSix:                  // Sumeet [September, 2016]
-        return new TwentyNodeBrickOrderSix();       
+        return new TwentyNodeBrickOrderSix();
 
 
 
@@ -817,8 +817,13 @@ FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
         return new VonMisesLinearHardening();
         break;
 
-    case ND_TAG_CEM_DruckerPragerArmstrongFrederick :
-        return new DruckerPragerArmstrongFrederick();
+    case ND_TAG_CEM_DruckerPragerArmstrongFrederickLE :
+        return new DruckerPragerArmstrongFrederickLE();
+
+
+    case ND_TAG_CEM_DruckerPragerArmstrongFrederickNE :
+        return new DruckerPragerArmstrongFrederickNE();
+
 
     case ND_TAG_PisanoLT :
         return new PisanoLT();
