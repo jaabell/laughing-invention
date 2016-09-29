@@ -2840,7 +2840,7 @@ namespace yy {
 		args.push_back((yystack_[15].value.exp)); signature.push_back(this_signature("RMC_qa",  			&isPressure));  
 		args.push_back((yystack_[12].value.exp)); signature.push_back(this_signature("RMC_pc",  			&isPressure));  
 		args.push_back((yystack_[9].value.exp)); signature.push_back(this_signature("RMC_e",   			&isAdimensional));  
-		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("RMC_eta0",   		&isPressure));  
+		args.push_back((yystack_[6].value.exp)); signature.push_back(this_signature("RMC_eta0",   		&isAdimensional));  
 		args.push_back((yystack_[3].value.exp)); signature.push_back(this_signature("RMC_Heta",   		&isPressure));  
 		args.push_back((yystack_[0].value.exp)); signature.push_back(this_signature("initial_confining_stress",   &isPressure));  
 

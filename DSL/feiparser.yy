@@ -2523,7 +2523,7 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [roundedMohrCoulomb] mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>
+	//!FEIDOC add material # <.> type [roundedMohrCoulomb] mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> RMC_m = <.> RMC_qa = <F/L^2> RMC_pc = <F/L^2> RMC_e = <.> RMC_eta0 = <.> RMC_Heta = <F/L^2> initial_confining_stress = <F/L^2>
 	| MATERIAL TEXTNUMBER exp TYPE roundedMohrCoulomb
 		mass_density '=' exp
 		elastic_modulus '=' exp
@@ -2548,7 +2548,7 @@ ADD_material
 		args.push_back($20); signature.push_back(this_signature("RMC_qa",  			&isPressure));  
 		args.push_back($23); signature.push_back(this_signature("RMC_pc",  			&isPressure));  
 		args.push_back($26); signature.push_back(this_signature("RMC_e",   			&isAdimensional));  
-		args.push_back($29); signature.push_back(this_signature("RMC_eta0",   		&isPressure));  
+		args.push_back($29); signature.push_back(this_signature("RMC_eta0",   		&isAdimensional));  
 		args.push_back($32); signature.push_back(this_signature("RMC_Heta",   		&isPressure));  
 		args.push_back($35); signature.push_back(this_signature("initial_confining_stress",   &isPressure));  
 
