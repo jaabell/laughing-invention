@@ -66,7 +66,7 @@ template <class... Qs> struct MaterialInternalVariables
     void revert() { }
     void commit_tmp() { }
     void revert_tmp() { }
-    void print() { }
+    void print(std::ostream &s) { }
 
 };
 
@@ -137,10 +137,10 @@ struct MaterialInternalVariables<Q, Qs...> : MaterialInternalVariables<Qs...>
         static_cast<MaterialInternalVariables<Qs...>*>(this)->revert_tmp();
     }
 
-    void print()
+    void print(std::ostream &s)
     {
-        q_i.print();
-        static_cast<MaterialInternalVariables<Qs...>*>(this)->print();
+        q_i.print( s);
+        static_cast<MaterialInternalVariables<Qs...>*>(this)->print(s);
     }
 
 

@@ -745,7 +745,22 @@ public:
 
     void Print(ostream &s, int flag = 0)
     {
-        // static_cast<U*>(this)->Print(s);
+        static DTensor2 zeros(3, 3, 0.0);
+        s << "Material state at current CommitStresss\n";
+        double yfval = yf(CommitStress);
+        const DTensor2& n = yf.df_dsigma_ij(CommitStress);
+        const DTensor2& m = pf(zeros, CommitStress);
+        double xi_star_h_star = yf.xi_star_h_star( zeros, zeros,  CommitStress);
+        s << "CommitStress = " << CommitStress << endl;
+        s << "CommitStrain = " << CommitStrain << endl;
+        s << "CommitPlasticStrain = " << CommitPlastic_Strain << endl;
+        s << "yf = " << yfval << endl;
+        s << "n = " << n << endl;
+        s << "m = " << m << endl;
+        s << "xi_star_h_star = " << xi_star_h_star << endl;
+        s << "Internal variables:\n";
+        vars.print(s);
+        s << endl;
     }
 
     int getObjectSize()

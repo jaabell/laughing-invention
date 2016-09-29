@@ -2532,8 +2532,8 @@ ADD_material
 		RMC_qa '=' exp
 		RMC_pc '=' exp
 		RMC_e '=' exp
-		RMC_eta0 '=' exp
 		RMC_Heta '=' exp
+		RMC_eta0 '=' exp
 		initial_confining_stress '=' exp
 	{
 		//add_constitutive_model_NDMaterialLT_roundedMohrCoulomb(int tag_in, 
@@ -2548,8 +2548,8 @@ ADD_material
 		args.push_back($20); signature.push_back(this_signature("RMC_qa",  			&isPressure));  
 		args.push_back($23); signature.push_back(this_signature("RMC_pc",  			&isPressure));  
 		args.push_back($26); signature.push_back(this_signature("RMC_e",   			&isAdimensional));  
-		args.push_back($29); signature.push_back(this_signature("RMC_eta0",   		&isAdimensional));  
-		args.push_back($32); signature.push_back(this_signature("RMC_Heta",   		&isPressure));  
+		args.push_back($29); signature.push_back(this_signature("RMC_Heta",   		&isPressure));  
+		args.push_back($32); signature.push_back(this_signature("RMC_eta0",   		&isAdimensional));  
 		args.push_back($35); signature.push_back(this_signature("initial_confining_stress",   &isPressure));  
 
 		$$ = new FeiDslCaller11<int, double, double, double, double, double, 

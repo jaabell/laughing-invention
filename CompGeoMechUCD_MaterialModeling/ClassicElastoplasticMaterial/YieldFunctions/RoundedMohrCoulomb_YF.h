@@ -95,6 +95,15 @@ public:
         result(i, j) = dq_dsij(i, j) * pow(1 + 1 / qa, m - 1) * (1 + q / qa + q * m) -
                        eta * (-kronecker_delta(i, j) / 3 / gg - (p - pc) / (gg * gg) * dgg * dtheta_dsij(i, j) );
 
+        cout << "p = " << p << endl;
+        cout << "q = " << q << endl;
+        cout << "theta = " << theta << endl;
+        cout << "gg = " << gg << endl;
+        cout << "dq_dsij = " << dq_dsij << endl;
+        cout << "dtheta_dsij = " << dtheta_dsij << endl;
+        cout << "df_dsigma_ij = " << result << endl;
+        // cout << "a = " << a << endl;
+
         return result;
     }
 

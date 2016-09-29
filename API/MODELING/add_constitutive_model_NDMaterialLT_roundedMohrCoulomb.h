@@ -25,12 +25,12 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-int add_constitutive_model_NDMaterialLT_roundedMohrCoulomb(int tag_in, double rho_in, double E_in, double nu_in, double m_in, double qa_in, double pc_in, double e_in, double H_k, double eta0_in, double p0)
+int add_constitutive_model_NDMaterialLT_roundedMohrCoulomb(int tag_in, double rho_in, double E_in, double nu_in, double m_in, double qa_in, double pc_in, double e_in, double H_eta, double eta0_in, double p0)
 {
 
     NDMaterialLT* theMaterial = 0;
 
-    theMaterial = new  RoundedMohrCoulomb( tag_in,  rho_in,  E_in,  nu_in,  m_in,  qa_in,  pc_in,  e_in,  H_k,  eta0_in,  p0) ;
+    theMaterial = new  RoundedMohrCoulomb( tag_in,  rho_in,  E_in,  nu_in,  m_in,  qa_in,  pc_in,  e_in,  H_eta,  eta0_in,  p0) ;
 
     if (theMaterial == NULL)
     {

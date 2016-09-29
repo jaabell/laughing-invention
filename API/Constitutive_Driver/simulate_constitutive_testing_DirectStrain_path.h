@@ -95,13 +95,14 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
         outStrain << strain(0, 0)  << " " << strain(1, 1)  << " " << strain(2, 2)  << " " << strain(0, 1)  << " " << strain(0, 2)  << " " << strain(1, 2) << endl;
         if (verbose_output > 0 && (step % verbose_output) == 0)
         {
+            material->Print(outMaterial);
             outMaterial << "\nStep = " << step << endl;
             outMaterial << "-----------------------------" << endl;
-            material->Print(outMaterial);
         }
         driver.applyIncrement( strain_increment);
         step++;
     }
+    material->Print(outMaterial);
     outStress.close();
     outStrain.close();
     infile.close();

@@ -83,4 +83,5 @@ RoundedMohrCoulomb::Print(ostream& s, int flag)
     s << "RoundedMohrCoulomb" << endln;
     s << "\tTag: " << this->getTag() << endln;
     s << " eta =  " <<  eta << endl;
+    RMCBase::Print(s);
 }

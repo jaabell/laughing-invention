@@ -66,7 +66,8 @@ public:
     {
         return static_cast<const T*>(this)->getDerivative(depsilon,  m,  sigma);
     };
-    double const& getHardeningType() const{
+    double const& getHardeningType() const
+    {
         return static_cast<const T*>(this)->getHardeningType();
     };
     EvolvingVariable<VarType, T> & operator= ( const EvolvingVariable<VarType, T> & other)
@@ -145,11 +146,11 @@ public:
         a = 0 * a_tmp;
     }
 
-    void print()
+    void print(std::ostream &s)
     {
-        cout << "     > a           = " << a << endl;
-        cout << "     > a_tmp       = " << a << endl;
-        cout << "     > a_committed = " << a << endl;
+        s << "     > a           = " << a << endl;
+        s << "     > a_tmp       = " << a << endl;
+        s << "     > a_committed = " << a << endl;
     }
 
     //Overloaded operators.

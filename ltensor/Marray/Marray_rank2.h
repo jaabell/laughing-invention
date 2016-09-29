@@ -32,9 +32,9 @@
 #include <assert.h>
 #endif
 
-#define CHECK										\
-	assert( (n1<get_dim1())&& (n2<get_dim2()) );	\
-	assert( (n1>=0) && (n2>=0));
+#define CHECK                                       \
+    assert( (n1<get_dim1())&& (n2<get_dim2()) );    \
+    assert( (n1>=0) && (n2>=0));
 
 
 //#define CHECK_Marray_rank2
@@ -127,15 +127,15 @@ public:
     template <class fType, class b>
     Marray<T, rank, base>& operator=(const Marray<fType, rank, b> &rterm)
     {
-        //	   //make sure sizes are compatible
-        //	   //base::equals(*dynamic_cast<base*>(const_cast<Marray<T,rank,base>*> (&rterm)) );
-        //// 	    #ifdef CHECK_OOB
-        //// 	    assert( (get_dim1() !=0 ) && (get_dim2()!=0));
-        //// 	    #endif
-        //	resize(rterm.get_dim1(),rterm.get_dim2());
-        //		for(int i=0;i<get_dim1();i++)
-        //			for(int j=0;j<get_dim2();j++)
-        //			(*this)(i,j)=rterm(i,j);
+        //     //make sure sizes are compatible
+        //     //base::equals(*dynamic_cast<base*>(const_cast<Marray<T,rank,base>*> (&rterm)) );
+        ////        #ifdef CHECK_OOB
+        ////        assert( (get_dim1() !=0 ) && (get_dim2()!=0));
+        ////        #endif
+        //  resize(rterm.get_dim1(),rterm.get_dim2());
+        //      for(int i=0;i<get_dim1();i++)
+        //          for(int j=0;j<get_dim2();j++)
+        //          (*this)(i,j)=rterm(i,j);
         base::operator=(*dynamic_cast<const b*>(&rterm));
         return *this;
     }
@@ -146,8 +146,8 @@ public:
         //base::equals(*dynamic_cast<base*>(const_cast<Marray<T,rank,base>*> (&rterm)) );
         //resize(rterm.get_dim1(),rterm.get_dim2());
         //for(int i=0;i<get_dim1();i++)
-        //	for(int j=0;j<get_dim2();j++)
-        //	(*this)(i,j)=rterm(i,j);
+        //  for(int j=0;j<get_dim2();j++)
+        //  (*this)(i,j)=rterm(i,j);
         base::operator=(*dynamic_cast<const base*>(&rterm));
         return *this;
 
@@ -230,7 +230,7 @@ public:
     }
 
     //#else
-    //	using base::operator=;
+    //  using base::operator=;
     //#endif
 
 
@@ -470,19 +470,19 @@ public:
     {
         double pi = 2.0 * atan2(1, 0);
         double theta = pi * theta1 / 180.0;
-        (*this)(0, 0) =	cos(theta);
-        (*this)(1, 0) =	sin(theta);
-        (*this)(1, 1) =	cos(theta);
-        (*this)(0, 1) =	-sin(theta);
+        (*this)(0, 0) = cos(theta);
+        (*this)(1, 0) = sin(theta);
+        (*this)(1, 1) = cos(theta);
+        (*this)(0, 1) = -sin(theta);
         (*this)(2, 2) = 1.0;
         return *this;
     }
     Marray<T, rank, base>& RotationMatrix(const double theta)
     {
-        (*this)(0, 0) =	cos(theta);
-        (*this)(1, 0) =	sin(theta);
-        (*this)(1, 1) =	cos(theta);
-        (*this)(0, 1) =	-sin(theta);
+        (*this)(0, 0) = cos(theta);
+        (*this)(1, 0) = sin(theta);
+        (*this)(1, 1) = cos(theta);
+        (*this)(0, 1) = -sin(theta);
         (*this)(2, 2) = 1.0;
         return *this;
     }
@@ -498,7 +498,7 @@ public:
     //    A    -    Matrix A (N by N)
     // Outputs
     //   Ainv  -    Inverse of matrix A (N by N)
-    //  determ -    Determinant of matrix A	(return value)
+    //  determ -    Determinant of matrix A (return value)
     {
         int N = (*this).get_dim1();
         assert( N == (*this).get_dim2() );
@@ -507,7 +507,7 @@ public:
         double  determ;
         int i, j, k;
         Marray<T, 1 > scale(N); // Scale factor
-        Marray<T, rank, base> b(N, N);	 // work array
+        Marray<T, rank, base> b(N, N);   // work array
         int *index;
         index = new int [N + 1];
 
@@ -517,7 +517,7 @@ public:
         //* Set scale factor, scale(i) = max( |a(i,j)| ), for each row
         for ( i = 0; i < N; i++ )
         {
-            index[i] = i;			  // Initialize row index list
+            index[i] = i;             // Initialize row index list
             T scalemax = 0.;
             for ( j = 0; j < N; j++ )
             {
@@ -555,7 +555,7 @@ public:
                 indexJ = index[jPivot];
                 index[jPivot] = index[k];   // Swap index jPivot and k
                 index[k] = indexJ;
-                signDet *= -1;			  // Flip sign of determinant
+                signDet *= -1;            // Flip sign of determinant
             }
             assert(fabs(A(indexJ, k)) > 0); //matrix is not invertible
             //* Perform forward elimination
@@ -574,7 +574,7 @@ public:
             }
         }
         //* Compute determinant as product of diagonal elements
-        determ = signDet;	   // Sign of determinant
+        determ = signDet;      // Sign of determinant
         for ( i = 0; i < N; i++ )
         {
             determ *= A(index[i], i);
@@ -605,7 +605,7 @@ public:
         {
             std::cout << "WARNING: matrix is not invertible, determinant = " << determ <<  std::endl;
         }
-        delete [] index;	// Release allocated memory
+        delete [] index;    // Release allocated memory
         return (Ainv);
     }
 
@@ -614,7 +614,7 @@ public:
     //    A    -    Matrix A (N by N)
     // Outputs
     //   Ainv  -    Inverse of matrix A (N by N)
-    //  determ -    Determinant of matrix A	(return value)
+    //  determ -    Determinant of matrix A (return value)
     {
         int N = (*this).get_dim1();
         assert( N == (*this).get_dim2() );
@@ -623,7 +623,7 @@ public:
 
         int i, j, k;
         Marray<T, 1 > scale(N); // Scale factor
-        Marray<T, rank, base> b(N, N);	 // work array
+        Marray<T, rank, base> b(N, N);   // work array
         int *index;
         index = new int [N + 1];
 
@@ -633,7 +633,7 @@ public:
         //* Set scale factor, scale(i) = max( |a(i,j)| ), for each row
         for ( i = 0; i < N; i++ )
         {
-            index[i] = i;			  // Initialize row index list
+            index[i] = i;             // Initialize row index list
             double scalemax = 0.;
             for ( j = 0; j < N; j++ )
             {
@@ -671,7 +671,7 @@ public:
                 indexJ = index[jPivot];
                 index[jPivot] = index[k];   // Swap index jPivot and k
                 index[k] = indexJ;
-                signDet *= -1;			  // Flip sign of determinant
+                signDet *= -1;            // Flip sign of determinant
             }
             //assert(fabs(A(indexJ,k))>0);  //matrix is not invertible
             if (!(fabs(A(indexJ, k)) > 0))
@@ -694,13 +694,13 @@ public:
             }
         }
         //* Compute determinant as product of diagonal elements
-        double determ = signDet;	   // Sign of determinant
+        double determ = signDet;       // Sign of determinant
         for ( i = 0; i < N; i++ )
         {
             determ *= A(index[i], i);
         }
 
-        delete [] index;	// Release allocated memory
+        delete [] index;    // Release allocated memory
         return (determ);
     }
 
@@ -1831,7 +1831,7 @@ public:
                 f = ((y - z) * (y + z) + (g - h) * (g + h)) / (2.0 * h * y);
                 g = pythag(f, 1.0);
                 f = ((x - z) * (x + z) + h * ((y / (f + copysign(g, f))) - h)) / x;
-                c = s = 1.0;	//Next QR transformation:
+                c = s = 1.0;    //Next QR transformation:
                 for (j = l; j <= nm; j++)
                 {
                     i = j + 1;
@@ -1855,7 +1855,7 @@ public:
                         V(jj, i) = (T)(z * c - x * s);
                     }
                     z = pythag(f, h);
-                    W(j, j) = (T)z;		//Rotation can be arbitrary if z D 0.
+                    W(j, j) = (T)z;     //Rotation can be arbitrary if z D 0.
                     if (z)
                     {
                         z = 1.0 / z;
@@ -1981,7 +1981,7 @@ public:
 template <class Type, class base>
 std::ostream & operator<< (std::ostream & os, const  Marray<Type, rank, base> & v)
 {
-    std::cout << "MArray2[" << v.get_dim1() << "," << v.get_dim2() << "] = " << std::endl << "\t[ " << std::endl;
+    os << "MArray2[" << v.get_dim1() << "," << v.get_dim2() << "] = " << std::endl << "\t[ " << std::endl;
 
     if ((v.get_dim1()*v.get_dim2()) > 0)
     {
@@ -1989,12 +1989,12 @@ std::ostream & operator<< (std::ostream & os, const  Marray<Type, rank, base> & 
         {
             for (int j = 0; j < v.get_dim2(); j++)
             {
-                std::cout << std::setw(10) << std::setprecision(5) << v(i, j) << " ";
+                os << std::setw(10) << std::setprecision(5) << v(i, j) << " ";
             }
-            std::cout << std::endl;
+            os << std::endl;
         }
     }
-    std::cout << "\t]" << std::endl;
+    os << "\t]" << std::endl;
 
     return os;
 }
