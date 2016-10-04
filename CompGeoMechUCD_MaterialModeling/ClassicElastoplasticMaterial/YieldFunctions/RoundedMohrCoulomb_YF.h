@@ -95,6 +95,7 @@ public:
         result(i, j) = dq_dsij(i, j) * pow(1 + 1 / qa, m - 1) * (1 + q / qa + q * m) -
                        eta * (-kronecker_delta(i, j) / 3 / gg - (p - pc) / (gg * gg) * dgg * dtheta_dsij(i, j) );
 
+        cout << "sigma  = " << sigma  << endl;
         cout << "p = " << p << endl;
         cout << "q = " << q << endl;
         cout << "theta = " << theta << endl;
@@ -116,6 +117,7 @@ public:
         std::tie(p, q, theta) = getpqtheta(sigma);
 
         dbl_result += -(p - pc) / g(theta) * eta_.getDerivative(depsilon, m, sigma) ;
+
         return dbl_result;
     }
 
@@ -140,7 +142,7 @@ private:
         double coslode = cos(lode);
         double coslode2 = coslode * coslode;
         double num = 4 * (1 - e * e) * coslode2  + (2 * e - 1) * (2 * e - 1);
-        double den = 2 * (1 - e * e) * coslode + (2 * e - 1) * sqrt(4 * (1 - e * e) * coslode2 + 5 * e * e - 4 * e);
+        double den = 2 * (1 - e * e) * coslode + (2 * e - 1) * sqrt(4 * (1. - e * e) * coslode2 + 5 * e * e - 4 * e);
         return num / den;
     }
 

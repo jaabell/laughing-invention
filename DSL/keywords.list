@@ -64,6 +64,11 @@ dofs
 domain
 drained
 druckerprager_k
+DuncanCheng_K
+DuncanCheng_n
+DuncanCheng_nu
+DuncanCheng_pa
+DuncanCheng_sigma3_max
 dynamic
 e0
 each
@@ -190,6 +195,12 @@ reduction
 remove
 rho_f
 rho_s
+RMC_e
+RMC_eta0
+RMC_Heta
+RMC_m
+RMC_pc
+RMC_qa
 runTest
 rx
 ry

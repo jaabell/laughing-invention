@@ -437,7 +437,7 @@ private:
 public:
 
     //J.Abell added the const qualifier heres
-    void compute_deviatoric_tensor(Marray<T, rank, base> & v, double & mean_trace) const
+    void compute_deviatoric_tensor( Marray<T, rank, base> & v, double & mean_trace) const
     {
 
         Index<'i'> iG;

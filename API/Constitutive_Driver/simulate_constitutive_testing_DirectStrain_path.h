@@ -44,10 +44,10 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
     s0(1, 1) = syy0;
     s0(2, 2) = szz0;
     s0(0, 1) = sxy0;
-    s0(1, 0) = sxz0;
-    s0(0, 2) = syz0;
-    s0(2, 0) = sxy0;
-    s0(1, 2) = sxz0;
+    s0(1, 0) = sxy0;
+    s0(0, 2) = sxz0;
+    s0(2, 0) = sxz0;
+    s0(1, 2) = syz0;
     s0(2, 1) = syz0;
 
     material->setStressTensor(s0);

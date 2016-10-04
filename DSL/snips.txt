@@ -345,16 +345,18 @@ add material # $1 type DruckerPragerArmstrongFrederickLE
 	isotropic_hardening_rate = $8 
 	initial_confining_stress = $9;
 
-// add material # <.> type DruckerPragerArmstrongFrederickNE mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
+// add material # <.> type DruckerPragerArmstrongFrederickNE mass_density = <M/L^3> DuncanCheng_K = <.> DuncanCheng_pa = <F/L^2> DuncanCheng_n = <.> DuncanCheng_sigma3_max = <F/L^2> DuncanCheng_nu druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
 add material # $1 type DruckerPragerArmstrongFrederickNE 
 	mass_density = $2 
-	elastic_modulus = $3 
-	poisson_ratio = $4 
-	druckerprager_k = $5 
-	armstrong_frederick_ha = $6 
-	armstrong_frederick_cr = $7 
-	isotropic_hardening_rate = $8 
-	initial_confining_stress = $9;
+	DuncanCheng_K = $3 
+	DuncanCheng_pa = $4 
+	DuncanCheng_n = $5 
+	DuncanCheng_sigma3_max = $6 DuncanCheng_nu 
+	druckerprager_k = $7 
+	armstrong_frederick_ha = $8 
+	armstrong_frederick_cr = $9 
+	isotropic_hardening_rate = $10 
+	initial_confining_stress = $11;
 
 // add material # <.> type DruckerPragerLT mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> druckerprager_k = <> kinematic_hardening_rate = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = exp;
 add material # $1 type DruckerPragerLT 
@@ -440,16 +442,18 @@ add material # $1 type NonlinearIsotropic3DLT
 	Niso3d_Ei = $17 
 	Niso3d_Er = $18
 
-// add material # <.> type roundedMohrCoulomb mass_density = <M/L^3> CriticalState_M = <.> CriticalState_lambda = <.> CriticalState_kappa = <.> CriticalState_e0 = <.> CriticalState_p0 = <F/L^2> poisson_ratio = <.> initial_confining_stress = <F/L^2>
+// add material # <.> type roundedMohrCoulomb mass_density = <M/L^3> elastic_modulus = <F/L^2> poisson_ratio = <.> RMC_m = <.> RMC_qa = <F/L^2> RMC_pc = <F/L^2> RMC_e = <.> RMC_eta0 = <.> RMC_Heta = <F/L^2> initial_confining_stress = <F/L^2>
 add material # $1 type roundedMohrCoulomb 
 	mass_density = $2 
-	CriticalState_M = $3 
-	CriticalState_lambda = $4 
-	CriticalState_kappa = $5 
-	CriticalState_e0 = $6 
-	CriticalState_p0 = $7 
-	poisson_ratio = $8 
-	initial_confining_stress = $9
+	elastic_modulus = $3 
+	poisson_ratio = $4 
+	RMC_m = $5 
+	RMC_qa = $6 
+	RMC_pc = $7 
+	RMC_e = $8 
+	RMC_eta0 = $9 
+	RMC_Heta = $10 
+	initial_confining_stress = $11
 
 // add material # <.> type sanisand2004_legacy mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
 add material # $1 type sanisand2004_legacy 

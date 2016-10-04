@@ -123,20 +123,33 @@ std::tuple<double, double, double> ClassicElastoplasticityGlobals::getpqtheta(co
 
     std::tie(I1, J2, J3) = getI1J2J3(sigma);
 
-    // (1) calculate p
-    const double p = -I1 / 3;
-    // (2) calculate q
-    const double q = sqrt(3 * J2);
-    // (3) calculate theta
-    const double cos3theta = 1.5 * sqrt(3) * J3 / pow(J2, 1.5);
-    // const static double PI = 3.14159265358979323846; //20 digits from Wiki.
-    const double theta = acos(cos3theta) / 3.0 * 180 / M_PI; //theta is in degree.
+    if (J2 < MACHINE_EPSILON)
+    {
+        J2 = 0;
+        const double p = -I1 / 3;
+        const double q = 0;
+        const double theta = 0;
+        return std::make_tuple(p, q, theta);
+    }
+    else
+    {
+        // (1) calculate p
+        const double p = -I1 / 3;
+        // (2) calculate q
+        const double q = sqrt(3 * J2);
+        // (3) calculate theta
+        double cos3theta = 1.5 * sqrt(3) * J3 / pow(J2, 1.5);
+        // const static double PI = 3.14159265358979323846; //20 digits from Wiki.
+        cos3theta = cos3theta < 1.0 ? cos3theta : 1.0;
+        cos3theta = cos3theta > -1.0 ? cos3theta : -1.0;
+        const double theta = acos(cos3theta) / 3.0 * 180 / M_PI; //theta is in degree.
 
-    return std::make_tuple(p, q, theta);
-    // return result;
+        return std::make_tuple(p, q, theta);
+        // return result;
+    }
 }
 
-bool ClassicElastoplasticityGlobals::inverse4thTensor(DTensor4 const& rhs, DTensor4& ret)
+bool ClassicElastoplasticityGlobals::inverse4thTensor(DTensor4 const & rhs, DTensor4 & ret)
 {
     using namespace ClassicElastoplasticityGlobals;
     static DTensor2 intermediate_matrix(9, 9, 0.0);
@@ -187,14 +200,14 @@ bool ClassicElastoplasticityGlobals::inverse4thTensor(DTensor4 const& rhs, DTens
 
 
 // Some stress derivatives....
-void ClassicElastoplasticityGlobals::dJ2_dsigma_ij(const DTensor2& sigma, DTensor2 &result)   // Stress derivative of second deviatoric stress invariant
+void ClassicElastoplasticityGlobals::dJ2_dsigma_ij(const DTensor2 & sigma, DTensor2 & result) // Stress derivative of second deviatoric stress invariant
 {
     using namespace ClassicElastoplasticityGlobals;
     static DTensor2 s(3, 3, 0.0);
     s *= 0;
     double p;
-    s.compute_deviatoric_tensor(s, p);
-    p = -p;
+    sigma.compute_deviatoric_tensor(s, p);
+    // p = -p;
 
     result(i, j) = s(i, j);
 
@@ -202,70 +215,97 @@ void ClassicElastoplasticityGlobals::dJ2_dsigma_ij(const DTensor2& sigma, DTenso
 }
 
 
-void ClassicElastoplasticityGlobals::dJ3_dsigma_ij(const DTensor2& sigma, DTensor2 &result)   // Stress derivative of third deviatoric stress invariant
+void ClassicElastoplasticityGlobals::dJ3_dsigma_ij(const DTensor2 & sigma, DTensor2 & result) // Stress derivative of third deviatoric stress invariant
 {
     using namespace ClassicElastoplasticityGlobals;
     static DTensor2 s(3, 3, 0.0);
     s *= 0;
     double p;
-    s.compute_deviatoric_tensor(s, p);
+    sigma.compute_deviatoric_tensor(s, p);
     p = -p;
 
     double J2 = (s(i, j) * s(i, j)) / 2;
 
-    result(i, j) = s(i, p) * s(p, j);
-    result(0, 0) = s(0, p) * s(p, 0) - (2 * J2) / 3;
-    result(1, 1) = s(1, p) * s(p, 1) - (2 * J2) / 3;
-    result(2, 2) = s(2, p) * s(p, 2) - (2 * J2) / 3;
+    result(i, j) = s(i, k) * s(k, j);
+    result(0, 0) = result(0, 0) - (2 * J2) / 3;
+    result(1, 1) = result(1, 1) - (2 * J2) / 3;
+    result(2, 2) = result(2, 2) - (2 * J2) / 3;
 
     return;
 }
 
 
-void ClassicElastoplasticityGlobals::dq_dsigma_ij(const DTensor2& sigma, DTensor2 &result)   // Stress derivative of deviatoric stress q
+void ClassicElastoplasticityGlobals::dq_dsigma_ij(const DTensor2 & sigma, DTensor2 & result) // Stress derivative of deviatoric stress q
 {
     using namespace ClassicElastoplasticityGlobals;
     static DTensor2 s(3, 3, 0.0);
     s *= 0;
     double p;
-    s.compute_deviatoric_tensor(s, p);
+    sigma.compute_deviatoric_tensor(s, p);
     p = -p;
 
     double J2 = (s(i, j) * s(i, j)) / 2;
+    J2 = J2 > 0 ? J2 : 0;
     double q = sqrt(3 * J2);
-    result(i, j) = 3 / (2 * q) * s(i, j);
+
+    if (q < MACHINE_EPSILON)
+    {
+        result *= 0;
+    }
+    else
+    {
+        result(i, j) = 3. / (2. * q) * s(i, j);
+    }
 
     return;
 }
 
 
-void ClassicElastoplasticityGlobals::dtheta_dsigma_ij(const DTensor2& sigma, DTensor2 &result)   // Stress derivative of Lode angle
+void ClassicElastoplasticityGlobals::dtheta_dsigma_ij(const DTensor2 & sigma, DTensor2 & result) // Stress derivative of Lode angle
 {
     using namespace ClassicElastoplasticityGlobals;
     double I1, J2, J3;
 
     std::tie(I1, J2, J3) = getI1J2J3(sigma);
 
-    static DTensor2 s(3, 3, 0.0);
-    static DTensor2 dJ2_ij(3, 3, 0.0);
-    static DTensor2 dJ3_ij(3, 3, 0.0);
-    s *= 0;
-    dJ2_ij *= 0;
-    dJ3_ij *= 0;
+    if (J2 < MACHINE_EPSILON)
+    {
+        result *= 0;
+    }
+    else
+    {
+        static DTensor2 s(3, 3, 0.0);
+        static DTensor2 dJ2_ij(3, 3, 0.0);
+        static DTensor2 dJ3_ij(3, 3, 0.0);
+        s *= 0;
+        dJ2_ij *= 0;
+        dJ3_ij *= 0;
 
-    double p;
-    s.compute_deviatoric_tensor(s, p);
-    p = -p;
+        double p;
+        sigma.compute_deviatoric_tensor(s, p);
+        p = -p;
 
-    dJ2_dsigma_ij(sigma, dJ2_ij);
-    dJ3_dsigma_ij(sigma, dJ3_ij);
+        dJ2_dsigma_ij(sigma, dJ2_ij);
+        dJ3_dsigma_ij(sigma, dJ3_ij);
 
-    double J2cubed = J2 * J2 * J2;
-    double sqrtJ2cubed = sqrt(J2cubed);
-    double A = (3.*sqrt(3.) ) / ( 2 * J2 * sqrtJ2cubed * sqrt( ( 4.*J2cubed - 27.*J3 * J3 ) / J2cubed ) ) ;
+        std::cout << "CEPGlob dJ2_dsigma_ij = " << dJ2_ij << std::endl;
+        std::cout << "CEPGlob dJ3_dsigma_ij = " << dJ3_ij << std::endl;
+        double J2cubed = J2 * J2 * J2;
+        double sqrtJ2cubed = sqrt(J2cubed);
+        std::cout << "CEPGlob J2 = " << J2 << std::endl;
+        std::cout << "CEPGlob J3 = " << J3 << std::endl;
+        std::cout << "CEPGlob J2cubed = " << J2cubed << std::endl;
+        std::cout << "CEPGlob sqrtJ2cubed = " << sqrtJ2cubed << std::endl;
 
-    result(i, j) = A * ( 3 * dJ2_ij(i, j) * J3 - 2 * dJ3_ij(i, j) * J2);
+        double den = 2 * J2 * sqrtJ2cubed * sqrt( 4.*J2cubed - 27.*J3 * J3 ) / sqrtJ2cubed ;
+        double A = (3.*sqrt(3.) ) / den ;
 
+        std::cout << "CEPGlob 4.*J2cubed - 27.*J3 * J3 = " << 4.*J2cubed - 27.*J3 * J3 << std::endl;
+        std::cout << "CEPGlob A = " << A << std::endl;
+        std::cout << "CEPGlob den    = " << den << std::endl;
+
+        result(i, j) = A * ( 3 * dJ2_ij(i, j) * J3 - 2 * dJ3_ij(i, j) * J2);
+    }
     return;
 }
 
