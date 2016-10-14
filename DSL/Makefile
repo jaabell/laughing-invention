@@ -21,4 +21,4 @@ makedocumentation:create feiparser.yy makedocumentation.cpp
 		@rm ./makedocumentation.o ./makedocumentation
 
 create:
-		@./create.sh >/dev/null 2>&1
+		@./create.sh

@@ -58,6 +58,8 @@ const double EightNode_Brick_u_p::wts[2] = {1.0, 1.0};
 Matrix EightNode_Brick_u_p::MCK(Num_ElemDof, Num_ElemDof);
 Vector EightNode_Brick_u_p::P(Num_ElemDof);
 tensor EightNode_Brick_u_p::perm(2, def_dim_2, 0.0);
+Matrix EightNode_Brick_u_p::gauss_points(Num_TotalGaussPts, 3);
+vector<float> EightNode_Brick_u_p::Gauss_Output_Vector(Num_TotalGaussPts*18);
 
 //======================================================================
 EightNode_Brick_u_p::EightNode_Brick_u_p(int element_ID,
@@ -79,7 +81,7 @@ EightNode_Brick_u_p::EightNode_Brick_u_p(int element_ID,
         double permb_z,
         double kks,
         double kkf)
-    : Element(element_ID, ELE_TAG_EightNode_Brick_u_p ),
+    : Element(element_ID, ELE_TAG_EightNodeBrick_up ),
       connectedExternalNodes(Num_Nodes), nf(fn), alpha(alphaf),
       rho_s(rs), rho_f(rf), ks(kks), kf(kkf), Q(0), Ki(0)
 {
@@ -145,7 +147,7 @@ EightNode_Brick_u_p::EightNode_Brick_u_p(int element_ID,
 
 //======================================================================
 EightNode_Brick_u_p::EightNode_Brick_u_p ()
-    : Element(0, ELE_TAG_EightNode_Brick_u_p ),
+    : Element(0, ELE_TAG_EightNodeBrick_up ),
       connectedExternalNodes(Num_Nodes),
       nf(0.0), alpha(1.0), rho_s(0.0), rho_f(0.0), ks(0.0), kf(0.0), Q(0), Ki(0)
 {
@@ -584,108 +586,115 @@ int EightNode_Brick_u_p::displaySelf (Renderer &theViewer, int displayMode, floa
     return 0;
 }
 
-//=============================================================================
-// // Response* EightNode_Brick_u_p::setResponse(const char** argv, int argc, Information& eleInfo)
-// {
-//     if ( (strcmp(argv[0], "stresses") == 0) || (strcmp(argv[0], "stress") == 0) )
-//     {
-//         return new ElementResponse(this, 1, Vector(Num_TotalGaussPts * 6) );
-//     }
+Matrix &EightNode_Brick_u_p::getGaussCoordinates(void)
+{
 
-//     else if (strcmp(argv[0], "gausspoint") == 0 || strcmp(argv[0], "GaussPoint") == 0)
-//     {
-//         return new ElementResponse(this, 2, Vector(Num_TotalGaussPts * 3) );
-//     }
+    int dimensions1[] = {Num_TotalGaussPts, Num_Dim};
+    tensor Gs(2, dimensions1, 0.0);
+    int dimensions2[] = {Num_Nodes};
+    tensor shp(1, dimensions2, 0.0);
 
+    double r = 0.0;
+    double s = 0.0;
+    double t = 0.0;
+    int i, j, where;
 
-//     //start changes-Mahdi-Jan07
-//     else if ( (strcmp(argv[0], "strains") == 0) || (strcmp(argv[0], "strain") == 0) )
-//     {
-//         return new ElementResponse(this, 4, Vector(Num_TotalGaussPts * 6) );
-//     }
-//     //end changes-Mahdi-Jan07
+    int GP_c_r, GP_c_s, GP_c_t;
+    int gp = 0;
+    for ( GP_c_r = 0 ; GP_c_r < Num_IntegrationPts; GP_c_r++ )
+    {
+        r = pts[GP_c_r];
 
-//     else
-//     {
-//         return 0;
-//     }
-// }
+        for ( GP_c_s = 0 ; GP_c_s < Num_IntegrationPts; GP_c_s++ )
+        {
+            s = pts[GP_c_s];
 
-// //=============================================================================
-// int EightNode_Brick_u_p::getResponse(int responseID, Information& eleInfo)
-// {
-//     if (responseID == 1)
-//     {
-//         static Vector Str(Num_TotalGaussPts * 6);
-//         stresstensor sigma;
-//         int i;
+            for ( GP_c_t = 0 ; GP_c_t < Num_IntegrationPts; GP_c_t++ )
+            {
+                t = pts[GP_c_t];
+                where = (GP_c_r * Num_IntegrationPts + GP_c_s) * Num_IntegrationPts + GP_c_t;
+                shp = shapeFunction(r, s, t);
 
-//         for (i = 0; i < Num_TotalGaussPts; i++)
-//         {
-//             sigma = theMaterial[i]->getStressTensor();
-//             //sigma.print("C", " ");
-//             Str(i * 6  ) = sigma.cval(1, 1); //xx
-//             Str(i * 6 + 1) = sigma.cval(2, 2); //yy
-//             Str(i * 6 + 2) = sigma.cval(3, 3); //zz
-//             Str(i * 6 + 3) = sigma.cval(2, 3); //yz
-//             Str(i * 6 + 4) = sigma.cval(3, 1); //zx
-//             Str(i * 6 + 5) = sigma.cval(2, 3); //xy
-//         }
+                for (i = 0; i < Num_Nodes; i++)
+                {
+                    const Vector &T_Crds = theNodes[i]->getCrds();
 
-//         return eleInfo.setVector(Str);
-//     }
+                    for (j = 0; j < Num_Dim; j++)
+                    {
+                        Gs.val(where + 1, j + 1) += shp.cval(i + 1) * T_Crds(j);
+                    }
+                }
+                gauss_points(gp, 0) = Gs.val(where + 1,  1);
+                gauss_points(gp, 1) = Gs.val(where + 1,  2);
+                gauss_points(gp, 2) = Gs.val(where + 1,  3);
+                gp++;
+            }
+        }
+    }
 
-//     else if (responseID == 2)
-//     {
-//         static Vector Gpts(Num_TotalGaussPts * Num_Dim);
-//         tensor GCoord;
-//         int cnt = 0;
-//         int i, j;
-//         GCoord = getGaussPts();
-
-//         for (i = 0; i < Num_TotalGaussPts; i++)
-//         {
-//             for (j = 0; j < Num_Dim; j++)
-//             {
-//                 Gpts(cnt++) = GCoord.cval(i + 1, j + 1);
-//             }
-//         }
-
-//         return eleInfo.setVector(Gpts);
-//     }
+    return gauss_points;
+}
 
 
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &EightNode_Brick_u_p::getGaussOutput()
+{
+    //Forming output
+    // stresstensor stress;
+    // straintensor strain;
+    // straintensor plstrain;
+    int ii = 0;
+    int gp = 0;
+    for ( short GP_c_r = 1 ; GP_c_r <= Num_IntegrationPts ; GP_c_r++ )
+    {
+        for ( short GP_c_s = 1 ; GP_c_s <= Num_IntegrationPts ; GP_c_s++ )
+        {
+            for ( short GP_c_t = 1 ; GP_c_t <= Num_IntegrationPts ; GP_c_t++ )
+            {
+                // i = ((GP_c_r - 1) * Num_IntegrationPts + GP_c_s - 1) * Num_IntegrationPts + GP_c_t - 1;
 
-//     //start changes-Mahdi-Jan07
-//     else if (responseID == 4)
-//     {
-//         static Vector strains(Num_TotalGaussPts * 6);
-//         straintensor epsilon;
-//         int cnt = 0;
-//         int i;
+                const stresstensor &stress = theMaterial[gp]->getStressTensor();
+                const straintensor &strain = theMaterial[gp]->getStrainTensor();
+                const straintensor &plstrain = theMaterial[gp]->getPlasticStrainTensor();
 
-//         for (i = 0; i < Num_TotalGaussPts; i++)
-//         {
-//             epsilon = theMaterial[i]->getStrainTensor();
-//             strains(cnt++) = epsilon.cval(1, 1); //xx
-//             strains(cnt++) = epsilon.cval(2, 2); //yy
-//             strains(cnt++) = epsilon.cval(3, 3); //zz
-//             strains(cnt++) = epsilon.cval(2, 3); //yz
-//             strains(cnt++) = epsilon.cval(3, 1); //zx
-//             strains(cnt++) = epsilon.cval(1, 2); //xy
-//         }
+                //Write strain
+                Gauss_Output_Vector[ii++] = strain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 3);
 
-//         return eleInfo.setVector(strains);
-//     }
-// //     //end changes-Mahdi-Jan07
+                //Write strain
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 3);
 
+                //Write stress
+                Gauss_Output_Vector[ii++] = stress.cval(1, 1);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(3, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 3);
 
+                gp++;
+            }
+        }
+    }
 
-// else
-// {
-//     return (-1);
-// }
-// }
+    return Gauss_Output_Vector;
+}
 
 
 

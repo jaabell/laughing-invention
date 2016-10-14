@@ -1,0 +1,8 @@
+MasterEightNodeBrick_up.h
+MasterEightNodeBrick_up.cpp
+MasterTwentyNodeBrick_up.h
+MasterTwentyNodeBrick_up.cpp
+MasterTwentySevenNodeBrick_up.h
+MasterTwentySevenNodeBrick_up.cpp
+VariableNodeBrick_up.h
+VariableNodeBrick_up.cpp

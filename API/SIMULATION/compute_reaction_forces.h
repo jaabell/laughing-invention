@@ -25,7 +25,16 @@
 /////////////////////////////////////////////////////////////////////////////
 int compute_reaction_forces(void)
 {
-    theDomain.reaction_output_is_enabled = true;
+	int errorcode = theDomain.calculateNodalReactions(0);
 
-    return 0;
+	    if (errorcode == 0)
+	    {
+	        cout << "Reaction forces computed successfully.\n";
+	    }
+	    else
+	    {
+	        cout << "Error computing reaction forces. (code = "  << errorcode << ")\n";
+	    }
+
+	return errorcode;
 };

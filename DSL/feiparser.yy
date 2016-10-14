@@ -181,7 +181,7 @@
 %token CMD_print CMD_help CMD_whos CMD_check CMD_save CMD_restore
 
 %token MODEL NAME RESTART MESH
-%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION UNIFORMACCELERATION DAMPING DAMPINGTYPE CONSTRAINT DRM  SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE SET REACTION FORCES DISPLACEMENT
+%token ADD NODE ELEMENT ELEMENTS MATERIAL LOAD TIMEHISTORY IMPOSEDMOTION UNIFORMACCELERATION DAMPING DAMPINGTYPE CONSTRAINT DRM  SECTION LOADPATTERN PENALTYDISPLACEMENT LOADVALUE SET SUPPORT REACTION REACTIONS FORCES DISPLACEMENT
 %token ELEMENTNAME MATERIALNAME
 %token ACCELERATION_FIELD
 %token FIX FREE REMOVE
@@ -210,10 +210,12 @@
 
 
 // Tokens for elements
-%token EightNodeBrick TwentySevenNodeBrick EightNodeBrick_upU  TwentyNodeBrick_uPU TwentyNodeBrick EightNodeBrick_up variable_node_brick_8_to_27
+%token EightNodeBrick      TwentyNodeBrick     TwentySevenNodeBrick      VariableNodeBrick           variable_node_brick_8_to_27
+%token EightNodeBrick_up   TwentyNodeBrick_up  TwentySevenNodeBrick_up   VariableNodeBrick_up 
+%token EightNodeBrick_upU  TwentyNodeBrick_upU TwentySevenNodeBrick_upU  VariableNodeBrick_upU 
 %token beam_displacement_based BeamColumnDispFiber3d beam_elastic beam_elastic_lumped_mass beam_9dof_elastic
 %token FourNodeShellMITC4 FourNodeShellNewMITC4 ThreeNodeShellANDES FourNodeShellANDES truss contact HardContact FrictionalPenaltyContact SoftContact
-%token ShearBeam  EightNodeBrick_upULT TwentyNodeBrick_uPULT TwentySevenNodeBrick_uPULT
+%token ShearBeam 
 
 // Element options tokens
 %token porosity  alpha rho_s rho_f k_x k_y k_z K_s K_f pressure cross_section shear_modulus torsion_Jx bending_Iz bending_Iy IntegrationRule stiffness normal_stiffness tangential_stiffness normal_damping tangential_damping
@@ -269,7 +271,7 @@
 %token equal_dof master slave dof_to_constrain of
 
 // for output control
-%token OUTPUT BINARY TEXT ENABLE DISABLE COMPRESSION SAVE NON_CONVERGED_ITERATIONS
+%token OUTPUT BINARY TEXT ENABLE DISABLE COMPRESSION NON_CONVERGED_ITERATIONS 
 
 // for mysql
 //%token mysql databasename host password username port socket STATE
@@ -1445,7 +1447,82 @@ CMD_define
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Forward_Euler] / [Forward_Euler_Crisfield] / [Multistep_Forward_Euler] / [Multistep_Forward_Euler_Crisfield] / [Modified_Euler_Error_Control] / [Runge_Kutta_45_Error_Control] / [Backward_Euler] / [Full_Backward_Euler] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
+	//!FEIDOC define NDMaterialLT constitutive integration algorithm Forward_Euler;
+	| DEFINE NDMaterialLT CONSTITUTIVE INTEGRATION ALGORITHM CONSTITUTIVE_ALGNAME 
+	{
+
+		string fname;       // name of the DSL called to report
+		args.clear(); signature.clear();
+		
+		//Read the string and turn into lower-case
+		string algname(*$6);
+		//std::transform(algname.begin(), algname.end(), algname.begin(), ::tolower);
+
+		int method = -1;
+		bool good = false;
+
+		if( algname.compare("Forward_Euler") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler;
+			good = true;
+		}
+		
+		else
+		{
+			$$ = new Number(-1, ESSIunits::unitless);
+		}
+
+		if(good)
+		{
+			args.push_back(new Number(method, ESSIunits::unitless)); signature.push_back(this_signature("method", &isAdimensional));
+			$$ = new FeiDslCaller1<int>(&define_NDMaterialLT_constitutive_integration_algorithm_Forward_Euler,args, signature, "define_NDMaterialLT_constitutive_integration_algorithm_Forward_Euler");
+		}
+		
+		for(int i = 0; i < 0; i++)
+			nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC define NDMaterialLT constitutive integration algorithm Forward_Euler_Subincrement number_of_subincrements =<.>;
+	| DEFINE NDMaterialLT CONSTITUTIVE INTEGRATION ALGORITHM CONSTITUTIVE_ALGNAME 
+		number_of_subincrements  '=' exp
+	{
+
+		string fname;       // name of the DSL called to report
+		args.clear(); signature.clear();
+		
+		//Read the string and turn into lower-case
+		string algname(*$6);
+		//std::transform(algname.begin(), algname.end(), algname.begin(), ::tolower);
+
+		int method = -1;
+		bool good = false;
+
+		if( algname.compare("Forward_Euler_Subincrement") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Subincrement;
+			good = true;
+		}
+		else
+		{
+			$$ = new Number(-1, ESSIunits::unitless);
+		}
+
+		if(good)
+		{
+			args.push_back(new Number(method, ESSIunits::unitless)); signature.push_back(this_signature("method", &isAdimensional));
+			args.push_back($9); signature.push_back(this_signature("number_of_subincrements", &isAdimensional));
+			$$ = new FeiDslCaller2<int, int>(&define_NDMaterialLT_constitutive_integration_algorithm_Forward_Euler_Subincrement,args, signature, "define_NDMaterialLT_constitutive_integration_algorithm_Forward_Euler_Subincrement");
+		}
+		
+		for(int i = 0; i < 1; i++)
+			nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC define NDMaterialLT constitutive integration algorithm [Forward_Euler|Forward_Euler_Subincrement|Backward_Euler|Backward_Euler_ddlambda|Backward_Euler_ddlambda_Subincrement] yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
 	| DEFINE NDMaterialLT CONSTITUTIVE INTEGRATION ALGORITHM CONSTITUTIVE_ALGNAME 
 		yield_function_relative_tolerance  '=' exp
 		stress_relative_tolerance '=' exp
@@ -1483,6 +1560,11 @@ CMD_define
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler;
 			good = true;
 		}
+		if( algname.compare("Forward_Euler_Subincrement") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Forward_Euler_Subincrement;
+			good = true;
+		}
 		if( algname.compare("Multistep_Forward_Euler_Crisfield") == 0)
 		{
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Multistep_Forward_Euler_Crisfield;
@@ -1503,10 +1585,14 @@ CMD_define
 			method = (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler;
 			good = true;
 		}
-		
-		if( algname.compare("Full_Backward_Euler") == 0)
+		if( algname.compare("Backward_Euler_ddlambda") == 0)
 		{
-			method = (int) NDMaterialLT_Constitutive_Integration_Method::Full_Backward_Euler;
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler_ddlambda;
+			good = true;
+		}
+		if( algname.compare("Backward_Euler_ddlambda_Subincrement") == 0)
+		{
+			method = (int) NDMaterialLT_Constitutive_Integration_Method::Backward_Euler_ddlambda_Subincrement;
 			good = true;
 		}
 		else
@@ -1867,13 +1953,23 @@ CMD_misc
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC save non_converged_iterations;
-	| SAVE NON_CONVERGED_ITERATIONS
+	//!FEIDOC output non_converged_iterations;
+	| OUTPUT NON_CONVERGED_ITERATIONS
 	{
 		args.clear(); signature.clear();
 		(this_signature("non_converged_iterations", &isAdimensional));
 
-		$$ = new FeiDslCaller0<>(&save_non_converged_iterations, args, signature, "save_non_converged_iterations");
+		$$ = new FeiDslCaller0<>(&output_non_converged_iterations, args, signature, "output_non_converged_iterations");
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC output support reactions;
+	| OUTPUT SUPPORT REACTIONS
+	{
+		args.clear(); signature.clear();
+		(this_signature("output_support_reactions", &isAdimensional));
+
+		$$ = new FeiDslCaller0<>(&output_support_reactions, args, signature, "output_support_reactions");
 	}
 	//!=========================================================================================================
 	//!
@@ -3006,7 +3102,7 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type 8NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	//!FEIDOC add element # <.> type [8NodeBrick] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 	| TEXTNUMBER exp TYPE EightNodeBrick USING exp Gauss points each direction
 		WITH NODES '(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
 			USE MATERIAL TEXTNUMBER exp
@@ -3080,7 +3176,54 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type 27NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	//!FEIDOC add element # <.> type [8_27_NodeBrick] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	| TEXTNUMBER exp TYPE VariableNodeBrick WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node9", &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node27", &isAdimensional));
+		args.push_back($65); signature.push_back(this_signature("material", &isAdimensional));
+
+		$$ = new FeiDslCaller29<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int>(&add_element_brick_variable_node, args, signature, "add_element_brick_27node");
+
+		for(int ii = 1;ii <=29; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [27NodeBrick] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 	| TEXTNUMBER exp TYPE TwentySevenNodeBrick USING exp Gauss points each direction WITH NODES
 			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
@@ -3128,7 +3271,7 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type variable_node_brick_8_to_27 using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	//!FEIDOC add element # <.> type [variable_node_brick_8_to_27] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 	| TEXTNUMBER exp TYPE variable_node_brick_8_to_27 USING exp Gauss points each direction WITH NODES
 			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
@@ -3176,7 +3319,56 @@ ADD_element:
 		for(int ii = 1;ii <=30; ii++) nodes.pop();
 		nodes.push($$);
 	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [8_27_NodeBrick] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	| TEXTNUMBER exp TYPE VariableNodeBrick USING exp Gauss points each direction WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($6); signature.push_back(this_signature("noGP",   &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node9", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($62); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($64); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($66); signature.push_back(this_signature("node27", &isAdimensional));
+		args.push_back($71); signature.push_back(this_signature("material", &isAdimensional));
 
+		$$ = new FeiDslCaller30<int,int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,
+								int>(&add_element_brick_variable_node_variable_number_of_gauss_points, args, signature, "add_element_brick_variable_node_variable_number_of_gauss_points");
+
+
+		for(int ii = 1;ii <=30; ii++) nodes.pop();
+		nodes.push($$);
+	}
 	//!=========================================================================================================
 	//!
 	//!FEIDOC add element # <.> type [20NodeBrick] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
@@ -3219,7 +3411,7 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type 20NodeBrick using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
+	//!FEIDOC add element # <.> type [20NodeBrick] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.>;
 	| TEXTNUMBER exp TYPE TwentyNodeBrick USING exp Gauss points each direction WITH NODES
 			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
@@ -3307,8 +3499,8 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type [8NodeBrick_upULT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
-	| TEXTNUMBER exp TYPE EightNodeBrick_upULT WITH NODES
+	//!FEIDOC add element # <.> type [8NodeBrick_upU] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE EightNodeBrick_upU USING exp Gauss points each direction WITH NODES 
 		'(' exp ',' exp ',' exp ',' exp ','
 			exp ',' exp ',' exp ',' exp ')'
 			USE MATERIAL TEXTNUMBER exp
@@ -3324,32 +3516,33 @@ ADD_element:
 	{
 		args.clear(); signature.clear();
 		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
-		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
-		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
-		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
-		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
-		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
-		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
-		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
-		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
-		args.push_back($27); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($6); signature.push_back(this_signature("noGPs", &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($33); signature.push_back(this_signature("material", &isAdimensional));
 
-		args.push_back($30); signature.push_back(this_signature("porosity", &isAdimensional));
-		args.push_back($33); signature.push_back(this_signature("alpha", &isAdimensional));
-		args.push_back($36); signature.push_back(this_signature("rho_s", &isDensity));
-		args.push_back($39); signature.push_back(this_signature("rho_f", &isDensity));
-		args.push_back($42); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));  //L^3*T/M
-		args.push_back($45); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
-		args.push_back($48); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
-		args.push_back($51); signature.push_back(this_signature("K_s", &isPressure));
-		args.push_back($54); signature.push_back(this_signature("K_f", &isPressure));
+		args.push_back($36); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($39); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($45); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($48); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));  //L^3*T/M
+		args.push_back($51); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($54); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($57); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($60); signature.push_back(this_signature("K_f", &isPressure));
 
-		$$ = new FeiDslCaller19<int,int,int,int,int,int,
-								int,int,int,int,
+		$$ = new FeiDslCaller20<int,int,int,int,int,int,
+								int,int,int,int,int,
 								double,double,double,double,
-								double,double,double,double,double>(&add_element_brick_8node_upULT, args, signature, "add_element_brick_8node_upULT");
+								double,double,double,double,double>(&add_element_brick_8node_upU_variable_number_of_gauss_points, args, signature, "add_element_brick_8node_upU_variable_number_of_gauss_points");
 
-		for(int ii = 1;ii <=19; ii++) nodes.pop();
+		for(int ii = 1;ii <=20; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================
@@ -3392,8 +3585,56 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
+	//!FEIDOC add element # <.> type [8NodeBrick_up] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE EightNodeBrick_up USING exp Gauss points each direction WITH NODES 
+		'(' exp ',' exp ',' exp ',' exp ','
+			exp ',' exp ',' exp ',' exp ')'
+			USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp
+			alpha '=' exp
+			rho_s '=' exp
+			rho_f '=' exp
+			k_x '=' exp
+			k_y '=' exp
+			k_z '=' exp
+			K_s '=' exp
+			K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($6); signature.push_back(this_signature("noGPs", &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($33); signature.push_back(this_signature("material", &isAdimensional));
+
+		args.push_back($36); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($39); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($45); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($48); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));  //L^3*T/M
+		args.push_back($51); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($54); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($57); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($60); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller20<int,int,int,int,int,int,
+								int,int,int,int,int,
+								double,double,double,double,
+								double,double,double,double,double>(&add_element_brick_8node_up_variable_number_of_gauss_points, args, signature, "add_element_brick_8node_up_variable_number_of_gauss_points");
+
+		for(int ii = 1;ii <=20; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
 	//!FEIDOC add element # <.> type [20NodeBrick_upU] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
-	| TEXTNUMBER exp TYPE TwentyNodeBrick_uPU WITH NODES
+	| TEXTNUMBER exp TYPE TwentyNodeBrick_upU WITH NODES
 			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ')'
@@ -3446,8 +3687,61 @@ ADD_element:
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type [20NodeBrick_upULT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
-	| TEXTNUMBER exp TYPE TwentyNodeBrick_uPULT WITH NODES
+	//!FEIDOC add element # <.> type [20NodeBrick_upU] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>)  use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE TwentyNodeBrick_upU USING exp Gauss points each direction WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2);  signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($6);  signature.push_back(this_signature("noGP", &isAdimensional));
+		args.push_back($14);  signature.push_back(this_signature("node1",  &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2",  &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3",  &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4",  &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5",  &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6",  &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7",  &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8",  &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node9",  &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($57); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($63); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($66); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($69); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($72); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($75); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($78); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($81); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($84); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller32<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int, int,int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_20node_upU_variable_number_of_gauss_points, args, signature, "add_element_brick_20node_upU_variable_number_of_gauss_points");
+
+		for(int ii = 1;ii <=32; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [20NodeBrick_up] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE TwentyNodeBrick_up WITH NODES
 			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ')'
@@ -3477,9 +3771,7 @@ ADD_element:
 		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
 		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
 		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
-
 		args.push_back($51); signature.push_back(this_signature("material", &isAdimensional));
-
 		args.push_back($54); signature.push_back(this_signature("porosity", &isAdimensional));
 		args.push_back($57); signature.push_back(this_signature("alpha", &isAdimensional));
 		args.push_back($60); signature.push_back(this_signature("rho_s", &isDensity));
@@ -3493,15 +3785,68 @@ ADD_element:
 		$$ = new FeiDslCaller31<int,int,int,int,int,int,int,int,int,int,
 								int,int,int,int,int,int,int,int,int,int,
 								int, int,
-								double,double,double,double,double,double,double,double,double>(&add_element_brick_20node_upULT, args, signature, "add_element_brick_20node_upULT");
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_20node_up, args, signature, "add_element_brick_20node_up");
 
 		for(int ii = 1;ii <=31; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add element # <.> type [27NodeBrick_upULT] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
-	| TEXTNUMBER exp TYPE TwentySevenNodeBrick_uPULT WITH NODES
+	//!FEIDOC add element # <.> type [20NodeBrick_up] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE TwentyNodeBrick_up USING exp Gauss points each direction WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2);  signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($6);  signature.push_back(this_signature("noGP", &isAdimensional));
+		args.push_back($14);  signature.push_back(this_signature("node1",  &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2",  &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3",  &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4",  &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5",  &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6",  &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7",  &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8",  &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node9",  &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($57); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($63); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($66); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($69); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($72); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($75); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($78); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($81); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($84); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller32<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int, int,int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_20node_up_variable_number_of_gauss_points, args, signature, "add_element_brick_20node_up_variable_number_of_gauss_points");
+
+		for(int ii = 1;ii <=32; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [27NodeBrick_upU] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE TwentySevenNodeBrick_upU WITH NODES
 			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
 				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
@@ -3553,11 +3898,433 @@ ADD_element:
 
 		$$ = new FeiDslCaller38<int,int,int,int,int,int,int,int,int,int,
 								int,int,int,int,int,int,int,int,int,int,
-								int,int,int,int,int,int,int,
-								int, int,
-								double,double,double,double,double,double,double,double,double>(&add_element_brick_27node_upULT, args, signature, "add_element_brick_27node_upULT");
+								int,int,int,int,int,int,int,int, int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_27node_upU, args, signature, "add_element_brick_27node_upU");
 
 		for(int ii = 1;ii <=38; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [8_27_NodeBrick_upU] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE VariableNodeBrick_upU WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+			USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node9",  &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node27", &isAdimensional));
+
+		args.push_back($65); signature.push_back(this_signature("material", &isAdimensional));
+
+		args.push_back($68); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($71); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($74); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($77); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($80); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($83); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($86); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($89); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($92); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller38<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int, int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_variable_node_upU, args, signature, "add_element_brick_variable_node_upU");
+
+		for(int ii = 1;ii <=38; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [27NodeBrick_upU] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE TwentySevenNodeBrick_upU USING exp Gauss points each direction WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($6); signature.push_back(this_signature("noGP",   &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node9", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($62); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($64); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($66); signature.push_back(this_signature("node27", &isAdimensional));
+		args.push_back($71); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($74); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($77); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($80); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($83); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($86); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($89); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($92); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($95); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($98); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller39<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int, int,int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_27node_upU_variable_number_of_gauss_points, args, signature, "add_element_brick_27node_upU_variable_number_of_gauss_points");
+
+
+		for(int ii = 1;ii <=39; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [8_27_NodeBrick_upU] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE VariableNodeBrick_upU USING exp Gauss points each direction WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($6); signature.push_back(this_signature("noGP",   &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node9", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($62); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($64); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($66); signature.push_back(this_signature("node27", &isAdimensional));
+		args.push_back($71); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($74); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($77); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($80); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($83); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($86); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($89); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($92); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($95); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($98); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller39<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int, int,int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_variable_node_upU_variable_number_of_gauss_points, args, signature, "add_element_brick_variable_node_upU_variable_number_of_gauss_points");
+
+
+		for(int ii = 1;ii <=39; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [27NodeBrick_up] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE TwentySevenNodeBrick_up WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+			USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node9",  &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node27", &isAdimensional));
+		args.push_back($65); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($68); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($71); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($74); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($77); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($80); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($83); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($86); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($89); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($92); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller38<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int, int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_27node_up, args, signature, "add_element_brick_27node_up");
+
+		for(int ii = 1;ii <=38; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [8_27_NodeBrick_up] with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE VariableNodeBrick_up WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+			USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($10); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($12); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node9",  &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node27", &isAdimensional));
+		args.push_back($65); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($68); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($71); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($74); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($77); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($80); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($83); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($86); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($89); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($92); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller38<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_variable_node_up, args, signature, "add_element_brick_variable_node_up");
+
+		for(int ii = 1;ii <=38; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [27NodeBrick_up] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE TwentySevenNodeBrick_up USING exp Gauss points each direction WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($6); signature.push_back(this_signature("noGP",   &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node9", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($62); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($64); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($66); signature.push_back(this_signature("node27", &isAdimensional));
+		args.push_back($71); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($74); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($77); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($80); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($83); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($86); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($89); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($92); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($95); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($98); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller39<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int, int,int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_27node_up_variable_number_of_gauss_points, args, signature, "add_element_brick_27node_up_variable_number_of_gauss_points");
+
+
+		for(int ii = 1;ii <=39; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
+	//!FEIDOC add element # <.> type [8_27_NodeBrick_up] using <.> Gauss points each direction with nodes (<.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>, <.>) use material # <.> and porosity = <.> alpha = <.>  rho_s = <M/L^3>  rho_f = <M/L^3> k_x = <L^3T/M>  k_y = <L^3T/M>  k_z = <L^3T/M>  K_s = <stress> K_f = <stress>;
+	| TEXTNUMBER exp TYPE VariableNodeBrick_up USING exp Gauss points each direction WITH NODES
+			'(' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ','
+				exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ',' exp ')'
+				USE MATERIAL TEXTNUMBER exp
+			porosity '=' exp alpha '=' exp  rho_s '=' exp  rho_f '=' exp
+			k_x '=' exp  k_y '=' exp  k_z '=' exp  K_s '=' exp  K_f '=' exp
+	{
+		args.clear(); signature.clear();
+		args.push_back($2); signature.push_back(this_signature("number", &isAdimensional));
+		args.push_back($6); signature.push_back(this_signature("noGP",   &isAdimensional));
+		args.push_back($14); signature.push_back(this_signature("node1", &isAdimensional));
+		args.push_back($16); signature.push_back(this_signature("node2", &isAdimensional));
+		args.push_back($18); signature.push_back(this_signature("node3", &isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("node4", &isAdimensional));
+		args.push_back($22); signature.push_back(this_signature("node5", &isAdimensional));
+		args.push_back($24); signature.push_back(this_signature("node6", &isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("node7", &isAdimensional));
+		args.push_back($28); signature.push_back(this_signature("node8", &isAdimensional));
+		args.push_back($30); signature.push_back(this_signature("node9", &isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("node10", &isAdimensional));
+		args.push_back($34); signature.push_back(this_signature("node11", &isAdimensional));
+		args.push_back($36); signature.push_back(this_signature("node12", &isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("node13", &isAdimensional));
+		args.push_back($40); signature.push_back(this_signature("node14", &isAdimensional));
+		args.push_back($42); signature.push_back(this_signature("node15", &isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("node16", &isAdimensional));
+		args.push_back($46); signature.push_back(this_signature("node17", &isAdimensional));
+		args.push_back($48); signature.push_back(this_signature("node18", &isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("node19", &isAdimensional));
+		args.push_back($52); signature.push_back(this_signature("node20", &isAdimensional));
+		args.push_back($54); signature.push_back(this_signature("node21", &isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("node22", &isAdimensional));
+		args.push_back($58); signature.push_back(this_signature("node23", &isAdimensional));
+		args.push_back($60); signature.push_back(this_signature("node24", &isAdimensional));
+		args.push_back($62); signature.push_back(this_signature("node25", &isAdimensional));
+		args.push_back($64); signature.push_back(this_signature("node26", &isAdimensional));
+		args.push_back($66); signature.push_back(this_signature("node27", &isAdimensional));
+		args.push_back($71); signature.push_back(this_signature("material", &isAdimensional));
+		args.push_back($74); signature.push_back(this_signature("porosity", &isAdimensional));
+		args.push_back($77); signature.push_back(this_signature("alpha", &isAdimensional));
+		args.push_back($80); signature.push_back(this_signature("rho_s", &isDensity));
+		args.push_back($83); signature.push_back(this_signature("rho_f", &isDensity));
+		args.push_back($86); signature.push_back(this_signature("k_x", &isThisUnit<-1,3,1>));
+		args.push_back($89); signature.push_back(this_signature("k_y", &isThisUnit<-1,3,1>));
+		args.push_back($92); signature.push_back(this_signature("k_z", &isThisUnit<-1,3,1>));
+		args.push_back($95); signature.push_back(this_signature("K_s", &isPressure));
+		args.push_back($98); signature.push_back(this_signature("K_f", &isPressure));
+
+		$$ = new FeiDslCaller39<int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int,int,int,
+								int,int,int,int,int,int,int,int, int,int,
+								double,double,double,double,double,double,double,double,double>(&add_element_brick_variable_node_up_variable_number_of_gauss_points, args, signature, "add_element_brick_variable_node_up_variable_number_of_gauss_points");
+
+
+		for(int ii = 1;ii <=39; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================
@@ -3594,8 +4361,7 @@ ADD_element:
 		args.push_back($44); signature.push_back(this_signature("jntOffsetJ_Y",    &isLength));
 		args.push_back($46); signature.push_back(this_signature("jntOffsetJ_Z",    &isLength));
 		
-		$$ = new FeiDslCaller15<int, int, int, 
-								int, int, 
+		$$ = new FeiDslCaller15<int, int, int, int, int, 
 								double, double, double, double,
 								double, double, double, double, double, double>(&add_element_DispBeamColumn3d, args, signature, "add_element_DispBeamColumn3d");
 

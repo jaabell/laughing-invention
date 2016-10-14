@@ -31,6 +31,9 @@
 
 #include <VariableNodeBrick.h>
 
+Matrix VariableNodeBrick::gauss_points(27, 3);
+vector<float> VariableNodeBrick::Gauss_Output_Vector(27*18);
+
 
 VariableNodeBrick::VariableNodeBrick(int element_number,
                                      int int_order,
@@ -75,7 +78,8 @@ VariableNodeBrick::VariableNodeBrick(int element_number,
     integration_order = int_order; // Gauss-Legendre integration order
 
 
-    Num_TotalGaussPts = integration_order * integration_order * integration_order;
+    // Num_TotalGaussPts  = integration_order * integration_order * integration_order;
+    Num_TotalGaussPts = 27;
 
     GaussCoord = new Vector(Num_TotalGaussPts * 3 + 1);
 
@@ -1405,9 +1409,9 @@ void VariableNodeBrick::computeGaussPoint()
 
     for ( int i = 0 ; i < nodes_in_brick ; i++)
     {
-        NodalCoord.val(i + 1, 1) = ( theNodes[i]->getCrds() )(0);
-        NodalCoord.val(i + 1, 2) = ( theNodes[i]->getCrds() )(1);
-        NodalCoord.val(i + 1, 3) = ( theNodes[i]->getCrds() )(2);
+        NodalCoord.val( 1, i + 1) = ( theNodes[i]->getCrds() )(0);
+        NodalCoord.val( 2, i + 1) = ( theNodes[i]->getCrds() )(1);
+        NodalCoord.val( 3, i + 1) = ( theNodes[i]->getCrds() )(2);
     }
 
 
@@ -1655,6 +1659,36 @@ const Matrix &VariableNodeBrick::getTangentStiff()
     int Ki = 0;
     int Kj = 0;
 
+    /********************* For Debugging **********************/
+    for ( int i = 1 ; i <= 27 ; i++ )
+    {
+        for ( int j = 1 ; j <= 27 ; j++ )
+        {
+            for ( int k = 1 ; k <= 3 ; k++ )
+            {
+                for ( int l = 1 ; l <= 3 ; l++ )
+                {
+                   cout << stifftensor.cval(i, k, l, j) << " " ;
+                }
+
+                cout << endl;
+            }
+
+            cout << endl;
+        }
+
+        cout << endl;
+    }
+    /************************* For debugging ******************/
+
+
+
+
+
+
+
+
+
     static Matrix K_temp(27 * 3, 27 * 3);
     K_temp.Zero();
 
@@ -1743,7 +1777,8 @@ const Matrix &VariableNodeBrick::getTangentStiff()
     //      }
     //       }
 
-
+    cout << "********************************************* Tangent Stiffness *******************" << endl;
+    cout << (*K) << endl;
 
     return *K;
 }
@@ -2617,6 +2652,85 @@ VariableNodeBrick::getStress(void)
 
     return stresses;
 
+}
+
+
+Matrix &VariableNodeBrick::getGaussCoordinates(void)
+{
+
+    computeGaussPoint();
+
+    for(int i =0; i<27; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            gauss_points(i,j)=(*GaussCoord)(i*3+j+1);
+        }
+    }
+
+
+    return gauss_points;
+}
+
+
+/**********************************************************************************
+* Sumeet August, 2016. See classTags.h for class description encoding 
+* Returns the output at gauss points.
+* NOTE!!! = For each gauss point there should be exactly 18 outputs 
+*           6 Total_Strain, 6 Plastic_Strain and 6 Stress
+*           Must be consistent with class description esedncoding.
+*           Fix the class_desc accordingly based on the encoding formula
+***********************************************************************************/
+const vector<float> &VariableNodeBrick::getGaussOutput()
+{
+    //Forming output
+    // stresstensor stress;
+    // straintensor strain;
+    // straintensor plstrain;
+    int ii = 0;
+    int gp = 0;
+    for ( short GP_c_r = 1 ; GP_c_r <= 3 ; GP_c_r++ )
+    {
+        for ( short GP_c_s = 1 ; GP_c_s <= 3 ; GP_c_s++ )
+        {
+            for ( short GP_c_t = 1 ; GP_c_t <= 3 ; GP_c_t++ )
+            {
+                // i = ((GP_c_r - 1) * Num_IntegrationPts + GP_c_s - 1) * Num_IntegrationPts + GP_c_t - 1;
+
+                const stresstensor &stress = matpoint[gp]->getStressTensor();
+                const straintensor &strain = matpoint[gp]->getStrainTensor();
+                const straintensor &plstrain = matpoint[gp]->getPlasticStrainTensor();
+
+                //Write strain
+                Gauss_Output_Vector[ii++] = strain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = strain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = strain.cval(2, 3);
+
+                //Write strain
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 1);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(3, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 2);
+                Gauss_Output_Vector[ii++] = plstrain.cval(1, 3);
+                Gauss_Output_Vector[ii++] = plstrain.cval(2, 3);
+
+                //Write stress
+                Gauss_Output_Vector[ii++] = stress.cval(1, 1);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(3, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 2);
+                Gauss_Output_Vector[ii++] = stress.cval(1, 3);
+                Gauss_Output_Vector[ii++] = stress.cval(2, 3);
+
+                gp++;
+            }
+        }
+    }
+
+    return Gauss_Output_Vector;
 }
 
 

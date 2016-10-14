@@ -317,10 +317,12 @@ DirectIntegrationAnalysis::analyze(int numSteps, double dT)
             * This function basically, saves and performs the iterations of a current analysis_step from the 
             * beginning of that step and also save sthe output to hdf5 file
             *****************************************************************************************************/
-
-            cout << endl << "################## Started Writing Iteration Output ######################" << endl;; 
-            theAlgorithm->switchOutputIterationOption(true);  // Switch on the writer to write incremental output
-            theAlgorithm->solveCurrentStep();   
+            if(the_Domain->non_converged_iterations_output_is_enabled)
+            {
+                cout << endl << "################## Started Writing Iteration Output ######################" << endl;; 
+                theAlgorithm->switchOutputIterationOption(true);  // Switch on the writer to write incremental output
+                theAlgorithm->solveCurrentStep(); 
+            }  
 
             return -3;
         }

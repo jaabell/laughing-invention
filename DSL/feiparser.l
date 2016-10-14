@@ -342,25 +342,31 @@ EXP	([Ee][-+]?[0-9]+)
 "uniform acceleration"              {return token::UNIFORMACCELERATION;}
 "damping"                           {return token::DAMPING;}
 "constraint"                        {return token::CONSTRAINT;}
+"support"                           {return token::SUPPORT;}
 "reaction"                          {return token::REACTION;}
+"reactions"                         {return token::REACTIONS;}
 "forces"                            {return token::FORCES;}
 "domain reduction method"           {return token::DRM;}
 "section"                           {return token::SECTION;}
 "load pattern"                      {return token::LOADPATTERN;}
- /* "penalty displacement"              {return token::PENALTYDISPLACEMENT;} */
+ /* "penalty displacement"          {return token::PENALTYDISPLACEMENT;} */
 "load value"                        {return token::LOADVALUE;}
-"displacement"                        {return token::DISPLACEMENT;}
+"displacement"                      {return token::DISPLACEMENT;}
 
  /* Element names */
 "8NodeBrick"                        {return token::EightNodeBrick;}
 "20NodeBrick"                       {return token::TwentyNodeBrick;}
 "27NodeBrick"                       {return token::TwentySevenNodeBrick;}
-"8NodeBrick_upU"                    {return token::EightNodeBrick_upU;}
-"8NodeBrick_upULT"                  {return token::EightNodeBrick_upULT;}
+"8_27_NodeBrick"                    {return token::VariableNodeBrick;}
 "8NodeBrick_up"                     {return token::EightNodeBrick_up;}
-"20NodeBrick_upU"                   {return token::TwentyNodeBrick_uPU;}
-"20NodeBrick_upULT"                 {return token::TwentyNodeBrick_uPULT;}
-"27NodeBrick_upULT"                 {return token::TwentySevenNodeBrick_uPULT;}
+"20NodeBrick_up"                    {return token::TwentyNodeBrick_up;}
+"27NodeBrick_up"                    {return token::TwentySevenNodeBrick_up;}
+"8_27_NodeBrick_up"                 {return token::VariableNodeBrick_up;}
+"8NodeBrick_upU"                    {return token::EightNodeBrick_upU;}
+"20NodeBrick_upU"                   {return token::TwentyNodeBrick_upU;}
+"27NodeBrick_upU"                   {return token::TwentySevenNodeBrick_upU;}
+"8_27_NodeBrick_upU"                {return token::VariableNodeBrick_upU;}
+
 "beam_displacement_based"           {return token::beam_displacement_based;}
 "BeamColumnDispFiber3d"           	{return token::BeamColumnDispFiber3d;}
 "beam_elastic"                      {return token::beam_elastic;}
@@ -753,6 +759,9 @@ EXP	([Ee][-+]?[0-9]+)
 "Modified_Euler_Error_Control"                    |
 "Runge_Kutta_45_Error_Control"                    |
 "Backward_Euler"                    			  |
+"Forward_Euler_Subincrement"           |
+"Backward_Euler_ddlambda"              |
+"Backward_Euler_ddlambda_Subincrement" |
 "Full_Backward_Euler"                     {yylval->ident = new string(yytext); return token::CONSTITUTIVE_ALGNAME;}
 
  /* Algorithm options*/
@@ -820,7 +829,6 @@ EXP	([Ee][-+]?[0-9]+)
 "enable"                            {return token::ENABLE;}
 "disable"                           {return token::DISABLE;}
 "compression"                       {return token::COMPRESSION;}
-"save"								{return token::SAVE;}
 "non_converged_iterations"			{return token::NON_CONVERGED_ITERATIONS;}
 
  /* ================================================================================================= */

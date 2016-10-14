@@ -90,6 +90,9 @@
 // Twenty Seven Node Brick
 #include "MODELING/add_element_brick_27node.h"
 #include "MODELING/add_element_brick_27node_variable_number_of_gauss_points.h"
+// Variable Node Brick
+#include "MODELING/add_element_brick_variable_node.h"
+#include "MODELING/add_element_brick_variable_node_variable_number_of_gauss_points.h"
 
 #include "MODELING/add_element_brick_variable_node_8_to_27.h"
 
@@ -98,16 +101,33 @@
 // ####################################################################
 
 #include "MODELING/add_element_brick_8node_upU.h"
-#include "MODELING/add_element_brick_8node_upULT.h"
+#include "MODELING/add_element_brick_8node_upU_variable_number_of_gauss_points.h"
+
 #include "MODELING/add_element_brick_20node_upU.h"
-#include "MODELING/add_element_brick_20node_upULT.h"
-#include "MODELING/add_element_brick_27node_upULT.h"
+#include "MODELING/add_element_brick_20node_upU_variable_number_of_gauss_points.h"
+
+#include "MODELING/add_element_brick_27node_upU.h"
+#include "MODELING/add_element_brick_27node_upU_variable_number_of_gauss_points.h"
+
+#include "MODELING/add_element_brick_variable_node_upU.h"
+#include "MODELING/add_element_brick_variable_node_upU_variable_number_of_gauss_points.h"
+
 
 // ####################################################################
 // Coupled up Elements   [Sumeet September, 2016]
 // ####################################################################
 
 #include "MODELING/add_element_brick_8node_up.h"
+#include "MODELING/add_element_brick_8node_up_variable_number_of_gauss_points.h"
+
+#include "MODELING/add_element_brick_20node_up.h"
+#include "MODELING/add_element_brick_20node_up_variable_number_of_gauss_points.h"
+
+#include "MODELING/add_element_brick_27node_up.h"
+#include "MODELING/add_element_brick_27node_up_variable_number_of_gauss_points.h"
+
+#include "MODELING/add_element_brick_variable_node_up.h"
+#include "MODELING/add_element_brick_variable_node_up_variable_number_of_gauss_points.h"
 
 // ####################################################################
 // Structural Elements    [Sumeet September, 2016]
@@ -125,7 +145,6 @@
 #include "MODELING/add_element_shell_NewMITC4.h"     // Jose Added July 12 2012
 #include "MODELING/add_element_shell_andes_3node.h"     // Jose Added July 22 2012
 #include "MODELING/add_element_shell_andes_4node.h"     // Jose Added Sept 20 2012
-// #include "MODELING/add_elements_from_GIDfile_27node_brick_elastic.h" //Added by Babak 5/29/14
 
 #include "MODELING/add_element_DispBeamColumn3d.h" // Yuan (Feb.2016)
 
@@ -192,7 +211,6 @@
 #include "MODELING/remove_element.h"
 #include "MODELING/remove_load.h"
 #include "MODELING/remove_node.h"
-// #include "MODELING/remove_support_from_node_by_fixity_number.h"
 #include "MODELING/remove_support_from_node.h"
 #include "MODELING/remove_equaldof_from_node.h"
 #include "MODELING/remove_strain_from_element.h"
@@ -227,24 +245,23 @@
 #include "SIMULATION/enable_output.h"
 #include "SIMULATION/output_every_nsteps.h"
 #include "SIMULATION/set_output_compression_level.h"
-// #include "SIMULATION/define_output_to_binary.h"
-
-#include "MODELING/start_new_stage.h"
-#include "MODELING/define_model_name.h"
-
-// #include "MODELING/write_domain_state_for_this_step.h"
-// #include "MODELING/StateWriter.h"
+#include "SIMULATION/output_non_converged_iterations.h"
+#include "SIMULATION/output_support_reactions.h"
 #include "MODELING/output_of_node_to_screen.h"
 #include "MODELING/output_of_element_to_screen.h"
-// #include "MODELING/output_of_node_all_dofs_to_file.h"
-// #include "MODELING/output_of_element_to_file.h"
-// #include "MODELING/output_of_elements_and_nodes.h"
-// #include "MODELING/remove_output_of_elements_and_nodes.h"
+
+
+// Model Name and New Stage 
+// -----------------------------------------------------------------------------------------------
+#include "MODELING/start_new_stage.h"
+#include "MODELING/define_model_name.h"
 
 
 // Algorithms
 //--------------------------------------------------------------------------------------------------
 #include "SIMULATION/define_NDMaterialLT_constitutive_integration_algorithm.h"
+#include "SIMULATION/define_NDMaterialLT_constitutive_integration_algorithm_Forward_Euler.h"
+#include "SIMULATION/define_NDMaterialLT_constitutive_integration_algorithm_Forward_Euler_Subincrement.h"
 #include "SIMULATION/define_algorithm_with_no_convergence_check_for_analysis.h"
 #include "SIMULATION/define_algorithm_newton_for_analysis.h"
 #include "SIMULATION/define_algorithm_newtonlinesearch_for_analysis.h"
@@ -289,8 +306,6 @@
 #include "MODELING/wipe_model.h"
 #include "MODELING/check_mesh.h"
 #include "SIMULATION/compute_reaction_forces.h"
-#include "SIMULATION/save_non_converged_iterations.h"
-
 // #include "./SIMULATION/analyze_static_multistep.h"
 // #include "./SIMULATION/analyze_transient_multistep.h"
 

@@ -102,8 +102,12 @@ public:
     int displaySelf(Renderer &theViewer, int displayMode, float fact);
     void Print(ostream &s, int flag = 0);
 
-    // Response* setResponse(const char** argv, int argc, Information& eleInfo);
-    // int getResponse(int responseID, Information& eleInformation);
+    Matrix &getGaussCoordinates(void);
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has only outputs at gauss points so no needto have the "getElementOutput()" function
+    *********************************************************************************************************************/
+    virtual const vector<float> &getGaussOutput();
 
     // Nima Tafazzoli (Feb. 2013)
     Vector *getStress(void);
@@ -161,6 +165,9 @@ private:
     static const double pts[2];    // Stores quadrature points
     static const double wts[2];    // Stores quadrature weights
     static tensor perm;        // Permeability = k/(rho_f*g)
+
+    static Matrix gauss_points;
+    static vector<float> Gauss_Output_Vector;  // For output [Sumeet September, 2016]
 
     double nf;                     // Porosity
     double alpha;              // simga = sigma' + alpha*p

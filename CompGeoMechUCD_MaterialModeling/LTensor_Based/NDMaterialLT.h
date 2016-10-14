@@ -41,7 +41,10 @@ enum struct NDMaterialLT_Constitutive_Integration_Method : int
     Modified_Euler_Error_Control,
     Runge_Kutta_45_Error_Control,
     Backward_Euler,
-    Full_Backward_Euler
+    Full_Backward_Euler,
+    Forward_Euler_Subincrement,
+    Backward_Euler_ddlambda,
+    Backward_Euler_ddlambda_Subincrement
 };
 
 class NDMaterialLT : public Material

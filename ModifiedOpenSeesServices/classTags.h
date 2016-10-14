@@ -292,8 +292,6 @@
 #define PATTERN_TAG_PathTimeSeries_Force_TimeHistory            27
 
 
-
-
 #define MAT_TAG_IsotropicLinElastic         1001
 #define MAT_TAG_IsotropicLinElasticPoint    1002
 #define MAT_TAG_OrthotropicLinElastic       1003
@@ -301,16 +299,11 @@
 
 /********************************** Class Desc Noyt Added ***********************************/
 
-#define ELE_TAG_CST                                              4050
 
 #define ELE_TAG_ElasticBeamLumpedMass                            3000
-#define ELE_TAG_beam3d01                                         3001
-#define ELE_TAG_beam3d02                                         3002
 #define ELE_TAG_TrussSection                                     4005
 #define ELE_TAG_CorotTruss                                       4003
 #define ELE_TAG_CorotTrussSection                                4004
-#define ELE_TAG_fElmt05                                          15
-#define ELE_TAG_fElmt02                                          12
 #define ELE_TAG_ZeroLength                                       5000
 #define ELE_TAG_ZeroLengthSection                                5001
 #define ELE_TAG_ZeroLengthND                                     5002
@@ -322,43 +315,23 @@
 #define ELE_TAG_ContactElement_Nonlinear_3DOF_7DOF               5013
 #define ELE_TAG_ContactElement_Nonlinear_3DOF_3DOF               5014
 
-#define ELE_TAG_Nonlinear_two_functions_ContactElement_3DOF_3DOF 5006
-#define ELE_TAG_Nonlinear_two_functions_ContactElement_3DOF_6DOF 5007
-#define ELE_TAG_Nonlinear_two_functions_ContactElement_6DOF_6DOF 5008
-
 #define ELE_TAG_PenaltyElement                                   5009
 #define ELE_TAG_PenaltyElementApplyDisplacement                  5010
 #define ELE_TAG_LargeDispBeamColumn3d                            6002
-#define ELE_TAG_FourNodeQuad                                     1010
 #define ELE_TAG_BeamWithHinges3d                                  402
 
-#define ELE_TAG_VariableNodeBrick                                7018
-#define ELE_TAG_FourNodeQuadUP                                   7005
 #define ELE_TAG_TotalLagrangianFD20NodeBrick                     7006 // ZC added
 #define ELE_TAG_TotalLagrangianFD8NodeBrick                      7007
 #define ELE_TAG_EightNode_LDBrick_u_p                            7008
-#define ELE_TAG_EightNode_Brick_u_p                              7009
 
-#define ELE_TAG_BrickUP                                          7011
-#define ELE_TAG_Nine_Four_Node_QuadUP                            7012
-#define ELE_TAG_Twenty_Eight_Node_BrickUP                        7013
-#define ELE_TAG_Twenty_Node_Brick                                7014
-#define ELE_TAG_PlateMITC4                                       2023
+
 #define ELE_TAG_ShellMITC4                                       2024
 #define ELE_TAG_NewShellMITC4                                    2025
 #define ELE_TAG_ThreeNodeAndesBending                            2027
 #define ELE_TAG_ThreeNodeAndesMembrane                           2028
-#define ELE_TAG_Plate1                                           2022
-#define ELE_TAG_Brick                                            3458
-#define ELE_TAG_BbarBrick                                        3457
-#define ELE_TAG_EnhancedQuad                                     3459
-#define ELE_TAG_ConstantPressureVolumeQuad                       3456
-#define ELE_TAG_NineNodeMixedQuad                                3359
 #define ELE_TAG_DispBeamColumn3d                                 9871
 #define ELE_TAG_HingedBeam3d                                     9873
-#define ELE_TAG_TwoPointHingedBeam3d                             9875
-#define ELE_TAG_OnePointHingedBeam3d                             9877
-#define ELE_TAG_BeamColumnJoint3d                                4445
+#define ELE_TAG_BeamColumnJoint3d                                4445              
 #define ELE_TAG_Joint3D                                          9903
 
 /******************************** No Class Desc Added Above *************************/
@@ -401,89 +374,212 @@
 //###            Based on the above encoding
 //###  NOTE!! :- Also increase the ELE_TAG_DESC_ARRAY_SIZE to the number of elements
 //### --------------------------------------------------------------------------------------------
-
-//New         //Desc
-#define ELE_TAG_Subdomain                                        1    //    100000000  // I think it is fixed and hard coded [Sumeet, Septemberm, 2016]
+                       
+                                                              //New         //Desc
+#define ELE_TAG_Subdomain                                        1    //    100000000 // I think it is fixed and hard coded [Sumeet, Septemberm, 2016]
 #define ELE_TAG_EightNodeBrick                                   2    //    308300800 // Sumeet [September, 2016] 
-#define ELE_TAG_EightNodeBrickOrderOne                           3    //    308300100 // Sumeet [September, 2016] 
-#define ELE_TAG_EightNodeBrickOrderTwo                           4    //    308300800 // Sumeet [September, 2016] 
-#define ELE_TAG_EightNodeBrickOrderThree                         5    //    308302700 // Sumeet [September, 2016] 
-#define ELE_TAG_EightNodeBrickOrderFour                          6    //    308306400 // Sumeet [September, 2016] 
-#define ELE_TAG_EightNodeBrickOrderFive                          7    //    308312500 // Sumeet [September, 2016] 
-#define ELE_TAG_EightNodeBrickOrderSix                           8    //    308321600 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentyNodeBrick                                  9    //    320302700 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentyNodeBrickOrderOne                          10   //    320300100 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentyNodeBrickOrderTwo                          11   //    320300800 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentyNodeBrickOrderThree                        12   //    320302700 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentyNodeBrickOrderFour                         13   //    320306400 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentyNodeBrickOrderFive                         14   //    320312500 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentyNodeBrickOrderSix                          15   //    320321600 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentySevenNodeBrick                             16   //    327302700 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentySevenNodeBrickOrderOne                     17   //    327300100 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentySevenNodeBrickOrderTwo                     18   //    327300800 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentySevenNodeBrickOrderThree                   19   //    327302700 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentySevenNodeBrickOrderFour                    20   //    327306400 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentySevenNodeBrickOrderFive                    21   //    327312500 // Sumeet [September, 2016] 
-#define ELE_TAG_TwentySevenNodeBrickOrderSix                     22   //    327321600 // Sumeet [September, 2016] 
-#define ELE_TAG_Truss                                            23   //    102300002 
-#define ELE_TAG_ElasticBeam                                      24   //    102600024 // Nima Tafazzoli, December 2012
-#define ELE_TAG_HardContact                                      25   //    102300009 // Sumeet June 2016
-#define ELE_TAG_ThreeNodeAndesShell                              26   //    203600006
-#define ELE_TAG_FourNodeAndesShell                               27   //    204600000       
-#define ELE_TAG_ShearBeam                                        28   //    302300100
-#define ELE_TAG_EightNodeBrickNoOutput                           29   //    308300000
-#define ELE_TAG_SoftContact                                      30   //    102300009 // Sumeet added on July 2016
-#define ELE_TAG_EightNodeBrick_u_p_U                             31   //    308700800 // Sumeet [September, 2016]
-#define ELE_TAG_EightNodeBrick_u_p_U_LT                          32   //    308700800 // Sumeet [September, 2016]
-#define ELE_TAG_TwentyNodeBrick_u_p_U                            33   //    320702700 // Sumeet [September, 2016]
-#define ELE_TAG_TwentySevenNodeBrick_upU                         34   //    327702700 // Sumeet [September, 2016]
-#define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam     35   //    102600009 // Nima Tafazzoli, December 2012
+#define ELE_TAG_EightNodeBrick_up                                3    //    308400800 // Sumeet [September, 2016] 
+#define ELE_TAG_EightNodeBrick_upU                               4    //    308700800 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrick                                  5    //    320302700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrick_up                               6    //    320402700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentyNodeBrick_upU                              7    //    320702700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrick                             8    //    327302700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrick_up                          9    //    327402700 // Sumeet [September, 2016] 
+#define ELE_TAG_TwentySevenNodeBrick_upU                         10   //    327702700 // Sumeet [September, 2016] 
+#define ELE_TAG_VariableNodeBrick                                11   //    327302700 // Sumeet [September, 2016] 
+#define ELE_TAG_VariableNodeBrick_up                             12   //    327402700 // Sumeet [September, 2016] 
+#define ELE_TAG_VariableNodeBrick_upU                            13   //    327702700 // Sumeet [September, 2016] 
 
-#define ELE_TAG_EightNodeBrick_upU        36
-#define ELE_TAG_TwentyNodeBrick_upU       37
+#define ELE_TAG_EightNodeBrickOrderOne                           14   //    308300100 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderOne_up                        15   //    308400100 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderOne_upU                       16   //    308700100 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderOne                          17   //    320300100 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderOne_up                       18   //    320400100 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderOne_upU                      19   //    320700100 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderOne                     20   //    327300100 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderOne_up                  21   //    327400100 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderOne_upU                 22   //    327700100 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderOne                        23   //    327300100 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderOne_up                     24   //    327400100 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderOne_upU                    25   //    327700100 // Sumeet [September, 2016]
+
+#define ELE_TAG_EightNodeBrickOrderTwo                           26   //    308300800 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderTwo_up                        27   //    308400800 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderTwo_upU                       28   //    308700800 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderTwo                          29   //    320300800 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderTwo_up                       30   //    320400800 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderTwo_upU                      31   //    320700800 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderTwo                     32   //    327300800 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderTwo_up                  33   //    327400800 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderTwo_upU                 34   //    327700800 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderTwo                        35   //    327300800 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderTwo_up                     36   //    327400800 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderTwo_upU                    37   //    327700800 // Sumeet [September, 2016]
+
+#define ELE_TAG_EightNodeBrickOrderThree                         38   //    308302700 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderThree_up                      39   //    308402700 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderThree_upU                     40   //    308702700 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderThree                        41   //    320302700 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderThree_up                     42   //    320402700 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderThree_upU                    43   //    320702700 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderThree                   44   //    327302700 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderThree_up                45   //    327402700 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderThree_upU               46   //    327702700 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderThree                      47   //    327302700 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderThree_up                   48   //    327402700 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderThree_upU                  49   //    327702700 // Sumeet [September, 2016]
+
+#define ELE_TAG_EightNodeBrickOrderFour                          50   //    308306400 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderFour_up                       51   //    308406400 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderFour_upU                      52   //    308706400 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderFour                         53   //    320306400 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderFour_up                      54   //    320406400 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderFour_upU                     55   //    320706400 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderFour                    56   //    327306400 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderFour_up                 57   //    327406400 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderFour_upU                58   //    327706400 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderFour                       59   //    327306400 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderFour_up                    60   //    327406400 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderFour_upU                   61   //    327706400 // Sumeet [September, 2016]
+
+#define ELE_TAG_EightNodeBrickOrderFive                          62   //    308312500 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderFive_up                       63   //    308412500 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderFive_upU                      64   //    308712500 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderFive                         65   //    320312500 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderFive_up                      66   //    320412500 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderFive_upU                     67   //    320712500 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderFive                    68   //    327312500 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderFive_up                 69   //    327412500 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderFive_upU                70   //    327712500 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderFive                       71   //    327312500 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderFive_up                    72   //    327412500 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderFive_upU                   73   //    327712500 // Sumeet [September, 2016]
+
+#define ELE_TAG_EightNodeBrickOrderSix                           74   //    308321600 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderSix_up                        75   //    308421600 // Sumeet [September, 2016]
+#define ELE_TAG_EightNodeBrickOrderSix_upU                       76   //    308721600 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderSix                          77   //    320321600 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderSix_up                       78   //    320421600 // Sumeet [September, 2016]
+#define ELE_TAG_TwentyNodeBrickOrderSix_upU                      79   //    320721600 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderSix                     80   //    327321600 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderSix_up                  81   //    327421600 // Sumeet [September, 2016]
+#define ELE_TAG_TwentySevenNodeBrickOrderSix_upU                 82   //    327721600 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderSix                        83   //    327321600 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderSix_up                     84   //    327421600 // Sumeet [September, 2016]
+#define ELE_TAG_VariableNodeBrickOrderSix_upU                    85   //    327721600 // Sumeet [September, 2016]
+
+#define ELE_TAG_HardContact				                         86   //    102300009 // Sumeet [June, 2016]
+#define ELE_TAG_SoftContact         	 						 87   //    102300009 // Sumeet [July, 2016]
+
+#define ELE_TAG_Truss                                            88   //    102300002 //
+#define ELE_TAG_ElasticBeam                                      89   //    102600024 // Nima Tafazzoli [December, 2012]
+
+#define ELE_TAG_ThreeNodeAndesShell                              90   //    203600006 // 
+#define ELE_TAG_FourNodeAndesShell                               91   //    204600000 //        
+#define ELE_TAG_ShearBeam                                        92   //    302300100 // 
+
+#define ELE_TAG_rank_one_deficient_elastic_pinned_fixed_beam     93   //    102600009 // Nima Tafazzoli [December, 2012]
 
 
-#define ELE_TAG_DESC_ARRAY_SIZE 36
+#define ELE_TAG_DESC_ARRAY_SIZE 94
 
 /*Initializeing Writing Element Description Array [Sumeet August,2016] ***********************/
 /* Copy and paste the above descriptions in Serial Order *************************************/
 #define ELE_TAG_DESC_ARRAY      int ele_tag_desc_array[] =  \
-{   -1   , \
-100000000,\
-308300800,\
-308300100,\
-308300800,\
-308302700,\
-308306400,\
-308312500,\
-308321600,\
-320302700,\
-320300100,\
-320300800,\
-320302700,\
-320306400,\
-320312500,\
-320321600,\
-327302700,\
-327300100,\
-327300800,\
-327302700,\
-327306400,\
-327312500,\
-327321600,\
-102300002,\
-102600024,\
-102300009,\
-203600006,\
-204600000,\
-302300100,\
-308300000,\
-102300009,\
-308700800,\
-308700800,\
-320702700,\
-327702700,\
-102600009,\
+{  	-1	 , \
+100000000, \
+308300800, \
+308400800, \
+308700800, \
+320302700, \
+320402700, \
+320702700, \
+327302700, \
+327402700, \
+327702700, \
+327302700, \
+327402700, \
+327702700, \
+308300100, \
+308400100, \
+308700100, \
+320300100, \
+320400100, \
+320700100, \
+327300100, \
+327400100, \
+327700100, \
+327300100, \
+327400100, \
+327700100, \
+308300800, \
+308400800, \
+308700800, \
+320300800, \
+320400800, \
+320700800, \
+327300800, \
+327400800, \
+327700800, \
+327300800, \
+327400800, \
+327700800, \
+308302700, \
+308402700, \
+308702700, \
+320302700, \
+320402700, \
+320702700, \
+327302700, \
+327402700, \
+327702700, \
+327302700, \
+327402700, \
+327702700, \
+308306400, \
+308406400, \
+308706400, \
+320306400, \
+320406400, \
+320706400, \
+327306400, \
+327406400, \
+327706400, \
+327306400, \
+327406400, \
+327706400, \
+308312500, \
+308412500, \
+308712500, \
+320312500, \
+320412500, \
+320712500, \
+327312500, \
+327412500, \
+327712500, \
+327312500, \
+327412500, \
+327712500, \
+308321600, \
+308421600, \
+308721600, \
+320321600, \
+320421600, \
+320721600, \
+327321600, \
+327421600, \
+327721600, \
+327321600, \
+327421600, \
+327721600, \
+102300009, \
+102300009, \
+102300002, \
+102600024, \
+203600006, \
+204600000, \
+302300100, \
+102600009, \
 }
 
 /******************************************************************************************/

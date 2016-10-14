@@ -1,0 +1,8 @@
+MasterEightNodeBrick_upU.h
+MasterEightNodeBrick_upU.cpp
+MasterTwentyNodeBrick_upU.h
+MasterTwentyNodeBrick_upU.cpp
+MasterTwentySevenNodeBrick_upU.h
+MasterTwentySevenNodeBrick_upU.cpp
+VariableNodeBrick_upU.h
+VariableNodeBrick_upU.cpp

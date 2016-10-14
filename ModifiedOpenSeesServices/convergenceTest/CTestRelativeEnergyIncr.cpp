@@ -150,10 +150,10 @@ CTestRelativeEnergyIncr::test(void)
 
     if (printFlag == 4)
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeEnergyIncr::(tol: " << tol <<")\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   dX.dR/dX1.dR1: " << setprecision(5) << product               << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX  : " << setprecision(5) << x.Norm()              << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF  : " << setprecision(5) << b.Norm()              << "\n";      
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestRelativeEnergyIncr::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   dX.dR/dX1.dR1: " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX  : " << setprecision(5) << x.Norm()              << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF  : " << setprecision(5) << b.Norm()              << "\n";      
     }
 
     //
@@ -173,10 +173,10 @@ CTestRelativeEnergyIncr::test(void)
             }
             else if (printFlag == 2)
             {
-                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeEnergyIncr::(tol: " << tol <<")\n";
-                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   dX.dR/dX1.dR1: " << setprecision(5) << product               << "\n";
-                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX  : " << setprecision(5) << x.Norm()              << "\n";
-                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF  : " << setprecision(5) << b.Norm()              << "\n";  
+                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestRelativeEnergyIncr::(tol: " << tol <<")\n";
+                cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   dX.dR/dX1.dR1: " << setprecision(5) << product               << "\n";
+                cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX  : " << setprecision(5) << x.Norm()              << "\n";
+                cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF  : " << setprecision(5) << b.Norm()              << "\n";  
             }
         }
 
@@ -188,10 +188,10 @@ CTestRelativeEnergyIncr::test(void)
     else if (printFlag == 5 && currentIter >= maxNumIter)
     {
 
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeEnergyIncr::(tol: " << tol <<")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   dX.dR/dX1.dR1: " << setprecision(5) << product               << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX  : " << setprecision(5) << x.Norm()              << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF  : " << setprecision(5) << b.Norm()              << "\n";  
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestRelativeEnergyIncr::(tol: " << tol <<")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   dX.dR/dX1.dR1: " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX  : " << setprecision(5) << x.Norm()              << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF  : " << setprecision(5) << b.Norm()              << "\n";  
 
         return currentIter;
     }
@@ -199,10 +199,10 @@ CTestRelativeEnergyIncr::test(void)
     // algo failed to converged after specified number of iterations - return FAILURE -2
     else if (currentIter >= maxNumIter)   // >= in case algorithm does not check
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestRelativeEnergyIncr::(tol: " << tol <<")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   dX.dR/dX1.dR1: " << setprecision(5) << product               << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX  : " << setprecision(5) << x.Norm()              << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF  : " << setprecision(5) << b.Norm()              << "\n";  
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestRelativeEnergyIncr::(tol: " << tol <<")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
+        cerr << std::setw(5) << "\t \t          " << std::setw(5) << " "         << std::setw(10) << "   dX.dR/dX1.dR1: " << setprecision(5) << product               << "\n";
+        cerr << std::setw(5) << "\t \t          " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX  : " << setprecision(5) << x.Norm()              << "\n";
+        cerr << std::setw(5) << "\t \t          " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF  : " << setprecision(5) << b.Norm()              << "\n";  
         currentIter++;
         return -2;
     }

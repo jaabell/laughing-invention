@@ -455,7 +455,8 @@ FEM_ObjectBroker::getNewElement(int classTag)
         return new TwentySevenNodeBrickOrderSix();
 
 
-
+    case ELE_TAG_EightNodeBrick_upU:             // Sumeet [September, 2016]
+        return new EightNodeBrick_upU();
 
     case ELE_TAG_ElasticBeam:                      //Babak added on 12/14/2012
         return new ElasticBeam();

@@ -793,7 +793,12 @@ int Element::CalculateDamping(Matrix *theMatrix)
 
         else if (stiffness_type.compare("Initial_Stiffness") == 0)
         {
-            theMatrix->addMatrix(1.0, this->getInitialStiff(), a1);
+
+            int numDOF = this->getNumDOF();            
+            Matrix ktemp(numDOF, numDOF);
+            ktemp = this->getInitialStiff();
+            
+            theMatrix->addMatrix(1.0, ktemp, a1);
 
             //          for (int i=0; i<numDOF; i++)
             //          {
@@ -805,7 +810,7 @@ int Element::CalculateDamping(Matrix *theMatrix)
             //          }
 
 
-            theMatrix->addMatrixTripleProduct(1.0, this->getInitialStiff(), InvertedMassMatrix, a2);
+            theMatrix->addMatrixTripleProduct(1.0, ktemp, InvertedMassMatrix, a2);
 
 
             //          for (int i=0; i<numDOF; i++)

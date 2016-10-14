@@ -1,11 +1,8 @@
 <!-- FEI developer aids for Sublime Text  -->
 <snippet>
 	<content><![CDATA[
-// define NDMaterialLT constitutive integration algorithm Forward_Euler / Forward_Euler_Crisfield / Multistep_Forward_Euler / Multistep_Forward_Euler_Crisfield / Modified_Euler_Error_Control / Runge_Kutta_45_Error_Control / Backward_Euler / Full_Backward_Euler yield_function_relative_tolerance  = <.> stress_relative_tolerance = <.> maximum_iterations = <.>;
-define NDMaterialLT constitutive integration algorithm Forward_Euler / Forward_Euler_Crisfield / Multistep_Forward_Euler / Multistep_Forward_Euler_Crisfield / Modified_Euler_Error_Control / Runge_Kutta_45_Error_Control / Backward_Euler / Full_Backward_Euler 
-	yield_function_relative_tolerance = $1 
-	stress_relative_tolerance = $2 
-	maximum_iterations = $3;
+// define NDMaterialLT constitutive integration algorithm Forward_Euler;
+define NDMaterialLT constitutive integration algorithm Forward_Euler;
 
 
 	]]></content>

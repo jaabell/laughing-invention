@@ -2681,6 +2681,8 @@ Domain::output_step( void )
 
     globalESSITimer.start("Domain_Mesh_Output");
 
+    // Sumeet [September, 2016], to disable non_converged_iterations when output itself is disabled.
+    non_converged_iterations_output_is_enabled = (output_is_enabled and non_converged_iterations_output_is_enabled); 
 
     if (output_is_enabled && countdown_til_output == 0)
     {
@@ -2715,6 +2717,8 @@ Domain::output_step( void )
                 if(nodePtr) theOutputWriter.writeNodeMeshData(i, nodePtr->getCrds(), nodePtr->getNumberDOF());
             }
 
+            theOutputWriter.EnableReactionOutput(reaction_output_is_enabled);  // enable/disable reactions output  [Sumeet]
+
             SP_Constraint *sp_ptr = 0;
             SP_ConstraintIter &theSP_Iter = this->getSPs();
             this->Number_of_Constrained_Dofs=0;
@@ -2727,6 +2731,7 @@ Domain::output_step( void )
 
                 theOutputWriter.writeSPConstraintsData(nodetag, dof);
             }
+
 
 
             globalESSITimer.stop("HDF5_buffer_nodes");
@@ -2811,37 +2816,33 @@ Domain::output_step( void )
         theOutputWriter.setTime(currentTime);
     }
 
-    if (output_is_enabled && Enable_Process_output)
+    if (output_is_enabled && Enable_Process_output && (countdown_til_output == 0))
     {
 
         globalESSITimer.stop("Domain_Mesh_Output");
         globalESSITimer.start("Domain_Node_Commit_and_output");
 
         //Do node Output 
-        if (output_is_enabled && (countdown_til_output == 0))
-        {
-            int noutputs;
-            theNodeIter = this->getNodes();
+        int noutputs;
+        theNodeIter = this->getNodes();
 
-            int pos=0; hid_t id_displacement = theOutputWriter.getDisplacementId(); 
+        int pos=0; hid_t id_displacement = theOutputWriter.getDisplacementId(); 
 
-            for(int i =0 ; i<=maxNodesTag; i++){
+        for(int i =0 ; i<=maxNodesTag; i++){
 
-                nodePtr = this->getNode(i);
-                if(nodePtr){ 
-                    noutputs = nodePtr->getNumberDOF();
-                    theOutputWriter.StepOutput(id_displacement, nodePtr->getTrialDisp(), pos,noutputs);
-                    pos = pos + noutputs;
-                }
+            nodePtr = this->getNode(i);
+            if(nodePtr){ 
+                noutputs = nodePtr->getNumberDOF();
+                theOutputWriter.StepOutput(id_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                pos = pos + noutputs;
             }
-
         }
 
         globalESSITimer.stop("Domain_Node_Commit_and_output");
         globalESSITimer.start("Domain_Element_Commit_and_output");
 
         //Do element output!
-        if (output_is_enabled && element_output_is_enabled && (countdown_til_output == 0))
+        if (element_output_is_enabled)
         {
             int noutputs;
             theElemIter = this->getElements();
@@ -2862,9 +2863,7 @@ Domain::output_step( void )
             }
         }
 
-        theOutputWriter.EnableReactionOutput(reaction_output_is_enabled);
-
-        if(output_is_enabled && reaction_output_is_enabled)
+        if(reaction_output_is_enabled)
         {
             //Do Support Reactions Output [Sumeet August,2016]
             SP_Constraint *sp_ptr = 0;
@@ -2934,25 +2933,21 @@ Domain::output_iteration( int global_iteration_no )
         theOutputWriter.setGlobalIterationNo(global_iteration_no);
 
         //get Trail Results from nodes
-        if (output_is_enabled)
-        {
-            int noutputs;
-            theNodeIter.reset();
+        int noutputs;
+        theNodeIter.reset();
+        int pos=0; hid_t id_trial_displacement = theOutputWriter.getTrialDisplacementId(); 
+        for(int i =0 ; i<=maxNodesTag; i++){
 
-            int pos=0; hid_t id_trial_displacement = theOutputWriter.getTrialDisplacementId(); 
-            for(int i =0 ; i<=maxNodesTag; i++){
-
-                nodePtr = this->getNode(i);
-                if(nodePtr){ 
-                    noutputs = nodePtr->getNumberDOF();
-                    theOutputWriter.IterationOutput(id_trial_displacement, nodePtr->getTrialDisp(), pos,noutputs);
-                    pos = pos + noutputs;
-                }
+            nodePtr = this->getNode(i);
+            if(nodePtr){ 
+                noutputs = nodePtr->getNumberDOF();
+                theOutputWriter.IterationOutput(id_trial_displacement, nodePtr->getTrialDisp(), pos,noutputs);
+                pos = pos + noutputs;
             }
         }
 
         //get Trail Results from nodes
-        if (output_is_enabled && element_output_is_enabled )
+        if (element_output_is_enabled )
         {
             int noutputs;
             theElemIter.reset();
@@ -2973,9 +2968,11 @@ Domain::output_iteration( int global_iteration_no )
             }
 
         }
+
+        cout << "................... completed!!" << endl;;
     }
 
-    cout << "................... completed!!" << endl;;
+
 
     return 0;
 }
@@ -4685,7 +4682,6 @@ Domain::setOutputWriter(std::string filename_in,
 {
     theOutputWriter.initialize(filename_in, model_name_in, stage_name_in, nsteps);
     have_written_static_mesh_data = false;
-    save_number_of_non_converged_iterations =0;    // Added by summet for substep output
     return 0;
 }
 
@@ -4877,17 +4873,6 @@ void Domain::removeDisplacementFromNode(int tag)
     {
         cerr << "Domain::removeDisplacementFromNode - node tag = " <<  tag << " not found!\n";
     }
-    return;
-}
-
-/*************************************************************************************************
-* Added by Sumeet 5th August 2016
-* This function basically sets the number of iterations output in the non_converged state
-***************************************************************************************************/
-void Domain:: set_number_of_non_converged_iterations(int Number_Of_Iterations){
-
-    this->save_number_of_non_converged_iterations =  Number_Of_Iterations > 0 ? Number_Of_Iterations : 0;
-
     return;
 }
 

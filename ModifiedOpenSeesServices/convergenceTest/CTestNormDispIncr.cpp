@@ -123,16 +123,16 @@ CTestNormDispIncr::test(void)
     // print the data if required
     if (printFlag == 1)
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol <<")\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestNormDispIncr::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t  \t          " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t  \t          " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
     }
 
     if (printFlag == 4)
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol <<")\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestNormDispIncr::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t  \t          " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t  \t          " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
     }
 
     // if converged - print & return ok
@@ -148,9 +148,9 @@ CTestNormDispIncr::test(void)
             }
             else if (printFlag == 2)
             {
-                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol <<")\n";
-                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
-                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
+                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]   CTestNormDispIncr::(tol: " << tol <<")\n";
+                cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+                cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
 
             }
         }
@@ -162,18 +162,18 @@ CTestNormDispIncr::test(void)
     // algo failed to converged after specified number of iterations - but RETURN OK
     else if (printFlag == 5 && currentIter >= maxNumIter)
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]   CTestNormDispIncr::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
         return currentIter;
     }
 
     // algo failed to converged after specified number of iterations - return FAILURE -2
     else if (currentIter >= maxNumIter)   // failes to converge
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormDispIncr::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]   CTestNormDispIncr::(tol: " << tol << ")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << theSOE->getB().Norm() << "\n";
         currentIter++;
         return -2;
     }

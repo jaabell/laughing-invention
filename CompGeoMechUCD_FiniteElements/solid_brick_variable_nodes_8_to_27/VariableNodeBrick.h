@@ -185,6 +185,13 @@ public:
     void reportCIPIC(char *);
     void reportTensorF(FILE *);
 
+    Matrix &getGaussCoordinates(void);
+    /********************************************************************************************************************
+    * Sumeet August, 2016
+    * This element has only outputs at gauss points so no needto have the "getElementOutput()" function
+    *********************************************************************************************************************/
+    virtual const vector<float> &getGaussOutput();
+
     Vector *getStress(void);
 
     std::string getElementName() const
@@ -226,6 +233,9 @@ private:
     int integration_order; // Gauss-Legendre integration order
 
     int Num_TotalGaussPts;
+
+    static Matrix gauss_points;
+    static vector<float> Gauss_Output_Vector;
 
     // Now I want 3D array of Material points!
     // MatPoint3D[r_integration_order][s_integration_order][t_integration_order]

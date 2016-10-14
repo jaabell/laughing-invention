@@ -162,12 +162,15 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
     if (theEigenSOE == 0)
     {
 
+        /////////////////////////// Old Eigen Solver /////////////////////////////////
+        // FullGenEigenSolver *theEigenSolver = new FullGenEigenSolver();
+        // theEigenSOE = new FullGenEigenSOE(*theEigenSolver, *theAnalysisModel);
+        //////////////////////////////////////////////////////////////////////////////
 
-        // BandArpackSolver *theEigenSolver = new BandArpackSolver(number_of_eigen_values);
-        FullGenEigenSolver *theEigenSolver = new FullGenEigenSolver();
-        // theEigenSOE = new BandArpackSOE(*theEigenSolver, *theAnalysisModel);
-        theEigenSOE = new FullGenEigenSOE(*theEigenSolver, *theAnalysisModel);
-
+        /////////////// Band Arpack Solver [Added by Jose] ////////////////////////////
+        BandArpackSolver *theEigenSolver = new BandArpackSolver(number_of_eigen_values);
+        theEigenSOE = new BandArpackSOE(*theEigenSolver, *theAnalysisModel);
+        ///////////////////////////////////////////////////////////////////////////////
 
         if (theEigenSOE == NULL)
         {

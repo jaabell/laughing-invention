@@ -145,17 +145,17 @@ CTestNormUnbalance::test(void)
     // print the data if required
     if (printFlag == 1)
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormUnbalance::(tol: " << tol <<")\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestNormUnbalance::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
     }
 
     // print the data if required
     if (printFlag == 4)
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormUnbalance::(tol: " << tol <<")\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestNormUnbalance::(tol: " << tol <<")\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
     }
 
     //
@@ -175,9 +175,9 @@ CTestNormUnbalance::test(void)
             }
             else if (printFlag == 2)
             {
-                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormUnbalance::(tol: " << tol <<")\n";
-                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
-                cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
+                cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestNormUnbalance::(tol: " << tol <<")\n";
+                cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
+                cerr << std::setw(5) << "\t \t          " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
             }
         }
 
@@ -188,18 +188,18 @@ CTestNormUnbalance::test(void)
     // algo failed to converged after specified number of iterations - but RETURN OK
     else if (printFlag == 5 && currentIter >= maxNumIter)
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormUnbalance::(tol: " << setprecision(5) << tol << ")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestNormUnbalance::(tol: " << setprecision(5) << tol << ")     !!!FAILED TO CONVERGE!!! [PROCEEDING..]"<<"\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
         return currentIter;
     }
 
     // algo failed to converged after specified number of iterations - return FAILURE -2
     else if (currentIter >= maxNumIter)   // the algorithm failed to converge
     {
-        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << std::setw(10) << "]  CTestNormUnbalance::(tol: " << setprecision(5) << tol << ")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
-        cerr << std::setw(5) << "\t            " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
+        cerr << std::setw(5) << "\t [iteration " << std::setw(5) << currentIter << "/" << left << std::setw(5) << maxNumIter << "]  CTestNormUnbalance::(tol: " << setprecision(5) << tol << ")     !!!FAILED TO CONVERGE!!! [EXITING..]"<<"\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaF: " << setprecision(5) << norm                  << "\n";
+        cerr << std::setw(5) << "\t \t           " << std::setw(5) << " "         << std::setw(10) << "   Norm deltaX: " << setprecision(5) << theSOE->getX().Norm() << "\n";
         currentIter++;  // we increment in case analysis does not check for convergence
         return -2;
     }

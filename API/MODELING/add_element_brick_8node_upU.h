@@ -28,7 +28,7 @@
 //! Inputs:
 //! - ElementNumber: unique element object tag
 //! - node_numb_#: eight node coordinates
-//! - MaterialNumber: material tag associated with previsouly-difined NDMaterial object
+//! - MaterialNumber: material tag associated with previsouly-difined NDMaterialLT object
 //! - porosity: porosity
 //! - alpha: 1-Ks/Kt (ratio of void space =1 for soils, =0.6 for concrete...)
 //! - rho_s: solid density
@@ -58,17 +58,17 @@ int add_element_brick_8node_upU(int ElementNumber,
                                 double K_s,
                                 double K_f)
 {
-    NDMaterial* ndmaterial = 0;
-    ndmaterial = theDomain.getNDMaterial(MaterialNumber);
+    NDMaterialLT* ndmaterialLT = 0;
+    ndmaterialLT = theDomain.getNDMaterialLT(MaterialNumber);
 
-    if (ndmaterial == NULL)
+    if (ndmaterialLT == NULL)
     {
-        cerr << "Error: (add_element_brick_8node_upU) memory allocation problem for ndmaterial!" << endl;
+        cerr << "Error: (add_element_brick_8node_upU) memory allocation problem for ndmaterialLT!" << endl;
         return -1;
     }
 
     Element* theElement = 0;
-    theElement = new EightNodeBrick_u_p_U(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterial, porosity, alpha, rho_s, rho_f, k_x, k_y, k_z, K_s, K_f);
+    theElement = new EightNodeBrick_upU(ElementNumber, node_numb_1, node_numb_2, node_numb_3, node_numb_4, node_numb_5, node_numb_6, node_numb_7, node_numb_8, ndmaterialLT, porosity, alpha, rho_s, rho_f, k_x, k_y, k_z, K_s, K_f);
 
     if (theElement == NULL)
     {
@@ -82,6 +82,9 @@ int add_element_brick_8node_upU(int ElementNumber,
         cerr << "Element number: " << ElementNumber << endln;
         return -1;
     }
+
+    if(ndmaterialLT->getClassTag()==ND_TAG_ElasticIsotropic3DLT)// [Sumeet September, 2016]
+        theElement->setElasticMaterialStatus(0);
 
     return 0;
 };
