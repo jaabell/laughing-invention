@@ -175,7 +175,7 @@ bool ClassicElastoplasticityGlobals::inverse4thTensor(DTensor4 const & rhs, DTen
 
     if (det < MACHINE_EPSILON)
     {
-        std::cout << "ClassicElastoplasticMaterial matrix T is not invertible to get the consistent stiffness tensor. Use the inconsistent stiffness instead! " << std::endl;
+        // std::cout << "ClassicElastoplasticMaterial matrix T is not invertible to get the consistent stiffness tensor. Use the inconsistent stiffness instead! " << std::endl;
         return false;
     }
     else
@@ -261,52 +261,103 @@ void ClassicElastoplasticityGlobals::dq_dsigma_ij(const DTensor2 & sigma, DTenso
 }
 
 
-void ClassicElastoplasticityGlobals::dtheta_dsigma_ij(const DTensor2 & sigma, DTensor2 & result) // Stress derivative of Lode angle
+void ClassicElastoplasticityGlobals::dtheta_dsigma_ij(const DTensor2 & sigma, DTensor2 & ret) // Stress derivative of Lode angle
 {
     using namespace ClassicElastoplasticityGlobals;
-    double I1, J2, J3;
+    double I1, J2D, J3D, q, theta;
+    double trace;
 
-    std::tie(I1, J2, J3) = getI1J2J3(sigma);
+    // ===============================================================
+    //Following implementation in stresst.cpp
+    // ===============================================================
+    // tensor ret(2, def_dim_2, 0.0); //Defined above
+    // stresstensor s( 0.0);
+    static DTensor2 s(3, 3, 0);
+    // stresstensor t( 0.0);
+    static DTensor2 t(3, 3, 0);
+    s *= 0;
+    t *= 0;
 
-    if (J2 < MACHINE_EPSILON)
-    {
-        result *= 0;
-    }
-    else
-    {
-        static DTensor2 s(3, 3, 0.0);
-        static DTensor2 dJ2_ij(3, 3, 0.0);
-        static DTensor2 dJ3_ij(3, 3, 0.0);
-        s *= 0;
-        dJ2_ij *= 0;
-        dJ3_ij *= 0;
+    // tensor I2("I", 2, def_dim_2);
+    const DTensor2& I2 = kronecker_delta;
 
-        double p;
-        sigma.compute_deviatoric_tensor(s, p);
-        p = -p;
+    // double J2D   = this->Jinvariant2();
+    // double q     = this->q_deviatoric();
+    // double theta = this->theta();
 
-        dJ2_dsigma_ij(sigma, dJ2_ij);
-        dJ3_dsigma_ij(sigma, dJ3_ij);
+    std::tie(I1, J2D, J3D) = getI1J2J3(sigma);
+    std::tie(trace, q, theta) = getpqtheta(sigma);
 
-        std::cout << "CEPGlob dJ2_dsigma_ij = " << dJ2_ij << std::endl;
-        std::cout << "CEPGlob dJ3_dsigma_ij = " << dJ3_ij << std::endl;
-        double J2cubed = J2 * J2 * J2;
-        double sqrtJ2cubed = sqrt(J2cubed);
-        std::cout << "CEPGlob J2 = " << J2 << std::endl;
-        std::cout << "CEPGlob J3 = " << J3 << std::endl;
-        std::cout << "CEPGlob J2cubed = " << J2cubed << std::endl;
-        std::cout << "CEPGlob sqrtJ2cubed = " << sqrtJ2cubed << std::endl;
+    theta = theta * M_PI / 180; /// getpqtheta returns in degrees
 
-        double den = 2 * J2 * sqrtJ2cubed * sqrt( 4.*J2cubed - 27.*J3 * J3 ) / sqrtJ2cubed ;
-        double A = (3.*sqrt(3.) ) / den ;
+    double c3t = cos(3.0 * theta);
+    double s3t = sin(3.0 * theta);
 
-        std::cout << "CEPGlob 4.*J2cubed - 27.*J3 * J3 = " << 4.*J2cubed - 27.*J3 * J3 << std::endl;
-        std::cout << "CEPGlob A = " << A << std::endl;
-        std::cout << "CEPGlob den    = " << den << std::endl;
+    double tempS = (3.0 / 2.0) * (c3t / (q * q * s3t));
+    double tempT = (9.0 / 2.0) * (1.0 / (q * q * q * s3t));
 
-        result(i, j) = A * ( 3 * dJ2_ij(i, j) * J3 - 2 * dJ3_ij(i, j) * J2);
-    }
-    return;
+    // s = this->deviator();
+    sigma.compute_deviatoric_tensor(s, trace);
+
+    // t = s("qk") * s("kp") - I2 * (J2D * (2.0 / 3.0));
+    t(q, p) = s(q, k) * s(k, p) - I2(q, p) * (J2D * (2.0 / 3.0));
+
+    // s.null_indices();
+    // t.null_indices();
+
+    ret(i, j) = s(i, j) * tempS - t(i, j) * tempT;
+    // ret.null_indices();
+    // return ret;
+
+    // ===============================================================
+    // ===============================================================
+    // ===============================================================
+
+    //Old implementation
+
+    // std::tie(I1, J2, J3) = getI1J2J3(sigma);
+
+    // if (J2 < MACHINE_EPSILON)
+    // {
+    //     result *= 0;
+    // }
+    // else
+    // {
+    //     static DTensor2 s(3, 3, 0.0);
+    //     static DTensor2 dJ2_ij(3, 3, 0.0);
+    //     static DTensor2 dJ3_ij(3, 3, 0.0);
+    //     s *= 0;
+    //     dJ2_ij *= 0;
+    //     dJ3_ij *= 0;
+
+    //     double p;
+    //     sigma.compute_deviatoric_tensor(s, p);
+    //     p = -p;
+
+    //     dJ2_dsigma_ij(sigma, dJ2_ij);
+    //     dJ3_dsigma_ij(sigma, dJ3_ij);
+
+    //     std::cout << "CEPGlob dJ2_dsigma_ij = " << dJ2_ij << std::endl;
+    //     std::cout << "CEPGlob dJ3_dsigma_ij = " << dJ3_ij << std::endl;
+
+    //     double J2cubed = J2 * J2 * J2;
+    //     double sqrtJ2cubed = sqrt(J2cubed);
+
+    //     std::cout << "CEPGlob J2 = " << J2 << std::endl;
+    //     std::cout << "CEPGlob J3 = " << J3 << std::endl;
+    //     std::cout << "CEPGlob J2cubed = " << J2cubed << std::endl;
+    //     std::cout << "CEPGlob sqrtJ2cubed = " << sqrtJ2cubed << std::endl;
+
+    //     double den = 2 * J2 * sqrtJ2cubed * sqrt( 4.*J2cubed - 27.*J3 * J3 ) / sqrtJ2cubed ;
+    //     double A = (3.*sqrt(3.) ) / den ;
+
+    //     std::cout << "CEPGlob 4.*J2cubed - 27.*J3 * J3 = " << 4.*J2cubed - 27.*J3 * J3 << std::endl;
+    //     std::cout << "CEPGlob A = " << A << std::endl;
+    //     std::cout << "CEPGlob den    = " << den << std::endl;
+
+    //     result(i, j) = A * ( 3 * dJ2_ij(i, j) * J3 - 2 * dJ3_ij(i, j) * J2);
+    // }
+    // return;
 }
 
 
