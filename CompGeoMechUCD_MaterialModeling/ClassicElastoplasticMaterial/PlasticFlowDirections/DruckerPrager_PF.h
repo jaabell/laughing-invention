@@ -38,7 +38,7 @@
 
 // Defines indices i,j,k,l,m,n,p,q,r,s and the kronecker_delta.
 #include "../ClassicElastoplasticityGlobals.h"
-
+#include "../EvolvingVariable.h"
 #include <cmath>
 
 
@@ -198,49 +198,48 @@ public:
     }
 
 
-    DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress)
-    {
+
+    DTensor2 const& dm_over_dq_start_h_star(DTensor2 const& depsilon, DTensor2 const& pf_m, const DTensor2& stress){
         static DTensor2 s(3, 3, 0.0);
         const DTensor2 &alpha = alpha_.getVariableConstReference();
-        const double &_k_ = k_.getVariableConstReference();
-        double p = 0;
+        // const double &_k_ = k_.getVariableConstReference();
+        double p=0;
         stress.compute_deviatoric_tensor(s, p); // here p is positive if in tension
-        p = -p;
+        p=-p;
 
-        static DTensor4 IdentityTensor4(3, 3, 3, 3, 0); //optimize this to global later.
-        IdentityTensor4(i, j, k, l) = kronecker_delta(i, j) * kronecker_delta(k, l);
-        // (1) von Mises material always has this part zero.
-        static DTensor2 dm_dk(3, 3, 0.0);
-        dm_dk(i, j) = SQRT_2_over_27 * kronecker_delta(i, j) ;
+        static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize this to global later.
+        IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
+        // (1) isotropic hardening part. 
+        static DTensor2 dm_dk(3,3,0.0);
+        dm_dk(i,j) = SQRT_2_over_27 * kronecker_delta(i, j) ; 
 
-        // (2) dm_dalpha part
-        static DTensor4 dm_dalpha(3, 3, 3, 3, 0.0);
-        static DTensor2 s_minus_p_alpha(3, 3, 0.0);
-        s_minus_p_alpha(i, j) = s(i, j) - p * alpha(i, j);
-        double s_minus_p_alpha_square = s_minus_p_alpha(i, j) * s_minus_p_alpha(i, j) ;
-        double alpha_times_s_minus_p_alpha = s_minus_p_alpha(i, j) * alpha(i, j);
+        // (2) kinematic hardening part: dm_dalpha
+        static DTensor4 dm_dalpha(3,3,3,3,0.0);
+        static DTensor2 s_minus_p_alpha(3,3,0.0);
+        s_minus_p_alpha(i,j) = s(i,j) - p * alpha(i,j);
+        double s_minus_p_alpha_square = s_minus_p_alpha(i,j) * s_minus_p_alpha(i,j) ; 
+        double alpha_times_s_minus_p_alpha = s_minus_p_alpha(i,j) * alpha(i,j);
         for (int ig = 0; ig < 3; ++ig)
             for (int jg = 0; jg < 3; ++jg)
                 for (int kg = 0; kg < 3; ++kg)
-                    for (int lg = 0; lg < 3; ++lg)
-                    {
-                        dm_dalpha(ig, jg, kg, lg) =
+                    for (int lg = 0; lg < 3; ++lg){
+                        dm_dalpha(ig,jg,kg,lg) = 
                             (
-                                - p * IdentityTensor4(kg, ig, lg, jg)
-                                + 1. / 3. * kronecker_delta(ig, jg) *  s_minus_p_alpha(kg, lg)
-                                - 1. / 3. * p * kronecker_delta(ig, jg) *  alpha(kg, lg)
-                            ) * pow(s_minus_p_alpha_square, -0.5)
+                                - p * IdentityTensor4(kg,ig,lg,jg) 
+                                + 1./3. * kronecker_delta(ig, jg) *  s_minus_p_alpha(kg,lg)  
+                                - 1./3. * p * kronecker_delta(ig, jg) *  alpha(kg,lg) 
+                            ) * pow(s_minus_p_alpha_square,-0.5) 
                             -
                             (
-                                (s_minus_p_alpha(ig, jg) + 1. / 3.*kronecker_delta(ig, jg) * alpha_times_s_minus_p_alpha)
-                                * (- p *  s_minus_p_alpha(kg, lg) )
-                                * pow(s_minus_p_alpha_square, -1.5)
+                                (s_minus_p_alpha(ig,jg) + 1./3.*kronecker_delta(ig,jg) * alpha_times_s_minus_p_alpha)
+                                *(- p *  s_minus_p_alpha(kg,lg) )
+                                * pow(s_minus_p_alpha_square,-1.5)
                             );
-                    }
+                        }
 
-        static DTensor2 ret(3, 3, 0.0);
-        ret(i, j) = dm_dalpha(i, j, m, n) * alpha(m, n);
-        ret(i, j) += dm_dk(i, j) * _k_;
+        static DTensor2 ret(3,3,0.0);
+        ret(i,j) = dm_dalpha(i,j,m,n) * alpha_.getDerivative(depsilon, pf_m, stress)(m,n);
+        ret(i,j) += dm_dk(i,j) * k_.getDerivative(depsilon, pf_m, stress) ;
 
         return ret;
     }

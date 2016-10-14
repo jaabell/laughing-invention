@@ -56,9 +56,6 @@ const double& LinearHardeningScalar_EV::getDerivative(const DTensor2 &depsilon,
     derivative = H * m_eq;
     return derivative ;
 }
-double const& LinearHardeningScalar_EV::getHardeningType() const{
-    return H;
-}
 
 
 int LinearHardeningScalar_EV::sendSelf(int commitTag, Channel &theChannel)

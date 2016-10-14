@@ -37,7 +37,12 @@
 #include "../EvolvingVariable.h"
 #include "../ClassicElastoplasticityGlobals.h" // Defines indices i,j,k,l,m,n,p,q,r,s and the kronecker_delta.
 
-
+class ArmstrongFrederickTensor_EV;
+template< >
+struct requires_hardening_saturation_limit_check<ArmstrongFrederickTensor_EV>
+{
+    static const bool requires = true;
+};
 
 class ArmstrongFrederickTensor_EV : public EvolvingVariable<DTensor2, ArmstrongFrederickTensor_EV> //CRTP on ArmstrongFrederickTensor_EV
 {
@@ -49,7 +54,7 @@ public:
     const DTensor2& getDerivative(const DTensor2 &depsilon,
                                   const DTensor2 &m,
                                   const DTensor2& stress) const;
-    double const& getHardeningType() const;
+    void check_hardening_saturation_limit(DTensor2& backstress, DTensor2 const& plasticFlow_m );
     int sendSelf(int commitTag, Channel &theChannel);
     int receiveSelf(int commitTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
 

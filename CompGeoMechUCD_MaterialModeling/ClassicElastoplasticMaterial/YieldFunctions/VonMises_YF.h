@@ -137,6 +137,11 @@ public:
     bool hasCorner() const{
         return false;
     }
+    bool in_Apex(DTensor2 const& TrialStress)
+    {
+        std::cout<<"von Mises yield surface does not have a corner. This function should never be callled!"<<std::endl;
+        return false;
+    }
     double get_k() const{
         return k_.getVariableConstReference();
     }

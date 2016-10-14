@@ -35,7 +35,7 @@
 
 #include "../../../ltensor/LTensor.h"
 #include "../PlasticFlowBase.h"
-
+#include "../EvolvingVariable.h"
 // Defines indices i,j,k,l,m,n,p,q,r,s and the kronecker_delta.
 #include "../ClassicElastoplasticityGlobals.h"
 
@@ -174,7 +174,7 @@ public:
 
 
     // placeholder:
-    DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress){
+    DTensor2 const& dm_over_dq_start_h_star(DTensor2 const& depsilon, DTensor2 const& pf_m, const DTensor2& stress){
         static DTensor2 s(3, 3, 0.0);
         const DTensor2 &alpha = alpha_.getVariableConstReference();
         // const double &k = k_.getVariableConstReference();
@@ -182,13 +182,13 @@ public:
         stress.compute_deviatoric_tensor(s, p); // here p is positive if in tension
         p=-p;
 
-        static DTensor4 IdentityTensor4(3,3,3,3, 0); //optimize this to global later.
+        static DTensor4 IdentityTensor4(3,3,3,3, 0); 
         IdentityTensor4(i,j,k,l)=kronecker_delta(i, j)*kronecker_delta(k,l);
-        // (1) von Mises material always has this part zero. 
+        // (1) isotropic hardening part. 
         static DTensor2 dm_dk(3,3,0.0);
         dm_dk(i,j) = SQRT_2_over_27 * kronecker_delta(i, j) ; 
 
-        // (2) dm_dalpha part
+        // (2) kinematic hardening part
         static DTensor4 dm_dalpha(3,3,3,3,0.0);
         static DTensor2 s_minus_p_alpha(3,3,0.0);
         s_minus_p_alpha(i,j) = s(i,j) - p * alpha(i,j);
@@ -211,7 +211,8 @@ public:
                         }
 
         static DTensor2 ret(3,3,0.0);
-        ret(i,j) = dm_dalpha(i,j,m,n)*alpha(m,n);
+        ret(i,j) = dm_dalpha(i,j,m,n) * alpha_.getDerivative(depsilon, pf_m, stress)(m,n);
+        ret(i,j) += dm_dk(i,j) * k_.getDerivative(depsilon, pf_m, stress) ;
 
         return ret;
     }

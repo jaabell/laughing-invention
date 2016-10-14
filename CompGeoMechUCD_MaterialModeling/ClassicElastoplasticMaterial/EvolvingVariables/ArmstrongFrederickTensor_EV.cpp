@@ -65,8 +65,29 @@ const DTensor2& ArmstrongFrederickTensor_EV::getDerivative(const DTensor2 &depsi
     return derivative;
 }
 
-double const& ArmstrongFrederickTensor_EV::getHardeningType() const{
-    return ha;
+void ArmstrongFrederickTensor_EV::check_hardening_saturation_limit(DTensor2& backstress, DTensor2 const& plasticFlow_m ){
+    using namespace ClassicElastoplasticityGlobals;
+    double limit_length = SQRT_2_over_3 * ha / cr ;
+
+    // Limit direction is unit vector in the plastic flow direction.
+    static DTensor2 limit_direction(3,3,0.0);
+    limit_direction(i,j) = plasticFlow_m(i,j) / sqrt (plasticFlow_m(k,l) * plasticFlow_m(k,l)) ;
+
+    // Limit each component
+    for (int i_ = 0; i_ < 3; ++i_)
+        for (int j_ = 0; j_ < 3; ++j_){
+            if(limit_direction(i_,j_) < 0) limit_direction(i_,j_) = - limit_direction(i_,j_);
+            if(backstress(i_,j_) > +limit_length*limit_direction(i_,j_) ) backstress(i_,j_) = +limit_length*limit_direction(i_,j_);
+            if(backstress(i_,j_) < -limit_length*limit_direction(i_,j_) ) backstress(i_,j_) = -limit_length*limit_direction(i_,j_);
+        }
+    // // // ====================================================
+    // // // debug purpose printing
+    // // // ====================================================
+    // cout<<"backstress(0,1)"<<backstress(0,1)<<endl;
+    // cout<<"new"<<endl;
+    // cout<<backstress<<endl;
+    // cout<<"---------------------------------\n";
+    // // // ====================================================
 }
 
 

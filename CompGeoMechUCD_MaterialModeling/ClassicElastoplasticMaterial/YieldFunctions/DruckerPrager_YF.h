@@ -109,7 +109,7 @@ public:
         {
             result(i, j) =
                 (
-                    (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n) )/ 3
+                    (s(i, j) - p * alpha(i, j)) + alpha(m, n) * kronecker_delta(i, j) * (s(m, n) - p * alpha(m, n) ) / 3
                 )
                 / den;
         }
@@ -161,39 +161,53 @@ public:
         return dbl_result;
     }
 
-    bool hasCorner() const{
+    bool hasCorner() const
+    {
         return true;
     }
-    double get_k() const{
+    bool in_Apex(DTensor2 const& TrialStress)
+    {
+        using namespace ClassicElastoplasticityGlobals;
+        double I1 = TrialStress(i, i);
+        double sigma_m  = I1 / 3.0;
+        double DP_p = -sigma_m;
+        static DTensor2 DP_s(3, 3, 0.0);
+        DP_s(i, j) = TrialStress(i, j) - kronecker_delta(i, j) * sigma_m;
+        double DP_k = k_.getVariableConstReference();
+        static DTensor2 DP_alpha(3, 3, 0.0);
+        DP_alpha    =  alpha_.getVariableConstReference();
+        static DTensor2 relative_s(3, 3, 0.0);
+        // Remove the influence of kinematic hardening:
+        relative_s(i, j) = DP_s(i, j) - DP_p * DP_alpha(i, j);
+        double J2   = 0.5 * relative_s(i, j) * relative_s(i, j) ;
+        double DP_q = sqrt(3 * J2);
+
+        if (DP_k < MACHINE_EPSILON)
+        {
+            cout << "DP_k (denominator) = 0! Error in ClassicElastoplasticMaterial-->requires_DruckerPrager_Apex_Tension_check_\n ";
+        }
+
+        // In this range (condition 1 && 2), DP stress state cannot be returned correctly.
+        // So the the trick (return to small_stress) will be applied.
+        bool condition1 = (  (1.0 / DP_k * DP_p + DP_q) < 0  );
+        bool condition2 = (  (1.0 / DP_k * DP_p - DP_q) < 0  );
+
+        if (condition1 && condition2)
+        {
+            // cout<<"PredictorStress in DruckerPrager apex region. Return to a small stress.\n";
+            return true;
+        }
+        return false;
+    }
+
+    double get_k() const
+    {
         return k_.getVariableConstReference();
     }
-    DTensor2 const& get_alpha() const{
+    DTensor2 const& get_alpha() const
+    {
         return alpha_.getVariableConstReference();
     }
-    // ==================================================================
-    // Legacy: should be removed later.
-    // DTensor4 const& dalpha_over_dsigma(DTensor2 const& sigma){
-
-    // }
-    // DTensor4 const& dalpha_over_dalpha(DTensor2 const& sigma){
-
-    // }
-    // int getHardeningType(){
-    //     double H_alpha=alpha_.getHardeningType();
-    //     double H_k=k_.getHardeningType();
-    //     int HARDENING_TYPE=0;
-    //     if( abs(H_alpha)< MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
-    //       HARDENING_TYPE = Perfectly_Plastic;
-    //     }else if(abs(H_alpha)<MACHINE_EPSILON &&  abs(H_k)>MACHINE_EPSILON){
-    //       HARDENING_TYPE = One_Isotropic_Hardening_Only;
-    //     }else if(abs(H_alpha)>MACHINE_EPSILON &&  abs(H_k)<MACHINE_EPSILON){
-    //       HARDENING_TYPE = One_Kinematic_Hardening_Only;
-    //     }else{
-    //       HARDENING_TYPE = Both_One_Isotropic_One_Kinematic_Hardening;
-    //     }
-    //     return HARDENING_TYPE;
-    // }
-    // ==================================================================
 
 private:
 
