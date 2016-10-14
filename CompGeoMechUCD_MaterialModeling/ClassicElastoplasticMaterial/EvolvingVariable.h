@@ -36,6 +36,7 @@
 #include "../../ltensor/LTensor.h"
 #include <Channel.h>
 #include <iostream>
+#include "CEPTraits.h"
 using namespace std;
 
 //Forward declaration needed for declaring the operator overload << (friend)
@@ -66,10 +67,6 @@ public:
     {
         return static_cast<const T*>(this)->getDerivative(depsilon,  m,  sigma);
     };
-    double const& getHardeningType() const
-    {
-        return static_cast<const T*>(this)->getHardeningType();
-    };
     EvolvingVariable<VarType, T> & operator= ( const EvolvingVariable<VarType, T> & other)
     {
         //Check self-assignment
@@ -85,10 +82,12 @@ public:
         return *this;
     }
 
-    void evolve(double dlambda,
-                const DTensor2& depsilon,
-                const DTensor2& m,
-                const DTensor2& sigma)
+    template <typename U = T>
+    typename std::enable_if < !evolving_variable_implements_custom_evolve_function<U>::value, void >::type
+    evolve(double dlambda,
+           const DTensor2& depsilon,
+           const DTensor2& m,
+           const DTensor2& sigma)
     {
         const VarType& h = getDerivative(depsilon, m, sigma);
         static VarType aux(a);
@@ -96,6 +95,17 @@ public:
         aux *= dlambda;
         a +=  aux;
     }
+
+    template <typename U = T>
+    typename std::enable_if < evolving_variable_implements_custom_evolve_function<U>::value, void >::type
+    evolve(double dlambda,
+           const DTensor2& depsilon,
+           const DTensor2& m,
+           const DTensor2& sigma)
+    {
+        static_cast<U*>(this)->evolve(dlambda, depsilon, m, sigma);
+    }
+
 
     const VarType& getVariableConstReference() const
     {
@@ -170,7 +180,22 @@ public:
         return static_cast<T*>(this)->receiveSelf(commitTag, theChannel, theBroker);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////////////
+    // Set the limit for the hardening saturation.
+    // With small strain increment, the hardening saturation is implemented smoothly.
+    // With great strain increment, the overshooting creates problems. So set limitation.
+    // //////////////////////////////////////////////////////////////////////////////////
+    template <typename U = T>
+    typename std::enable_if < !requires_hardening_saturation_limit_check<U>::requires >::type
+    check_hardening_saturation_limit_(VarType& a, DTensor2 const& plasticFlow_m) {}
 
+    template <typename U = T>
+    typename std::enable_if<requires_hardening_saturation_limit_check<U>::requires>::type
+    check_hardening_saturation_limit_(VarType& a, DTensor2 const& plasticFlow_m)
+    {
+        static_cast<U*>(this)->check_hardening_saturation_limit(a, plasticFlow_m);
+    }
+    // ///////////////////////////////////////////////////////////////////////////////////
 private:
     VarType a;
     VarType a_committed;

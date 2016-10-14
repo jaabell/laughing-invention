@@ -31,6 +31,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 //Some basic trait classes to aid with implementation of CEP
+#ifndef CEPTraits_H
+#define CEPTraits_H
 
 template< typename T >
 struct supports_pre_integration_callback
@@ -59,3 +61,18 @@ struct supports_implicit_integration
 {
     static const bool value = false;
 };
+
+template< typename VarType >
+struct requires_hardening_saturation_limit_check
+{
+    static const bool requires = false;
+};
+
+template< typename VarType >
+struct evolving_variable_implements_custom_evolve_function
+{
+    static const bool value = false;
+};
+
+
+#endif
