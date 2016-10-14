@@ -93,10 +93,10 @@ public:
     }
 
 
-    DTensor2 const& dm_over_dq_start_h_star(const DTensor2& stress)
+    DTensor2 const& dm_over_dq_start_h_star(const DTensor2&dumb1, const DTensor2&dumb2, const DTensor2& stress)
     {
         result *= 0;
-        const double &p0 = p0_.getVariableConstReference();
+        // const double &p0 = p0_.getVariableConstReference();
 
         result(i, j) = (M * M) / 3 * kronecker_delta(i, j) * p0_.getDerivative(stress, stress, stress);  // Will only use last entry, which is sigma
 

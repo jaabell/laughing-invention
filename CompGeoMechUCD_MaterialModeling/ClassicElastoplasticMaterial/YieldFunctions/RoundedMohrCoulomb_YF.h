@@ -95,14 +95,14 @@ public:
         result(i, j) = dq_dsij(i, j) * pow(1 + 1 / qa, m - 1) * (1 + q / qa + q * m) -
                        eta * (-kronecker_delta(i, j) / 3 / gg - (p - pc) / (gg * gg) * dgg * dtheta_dsij(i, j) );
 
-        cout << "sigma  = " << sigma  << endl;
-        cout << "p = " << p << endl;
-        cout << "q = " << q << endl;
-        cout << "theta = " << theta << endl;
-        cout << "gg = " << gg << endl;
-        cout << "dq_dsij = " << dq_dsij << endl;
-        cout << "dtheta_dsij = " << dtheta_dsij << endl;
-        cout << "df_dsigma_ij = " << result << endl;
+        // cout << "sigma  = " << sigma  << endl;
+        // cout << "p = " << p << endl;
+        // cout << "q = " << q << endl;
+        // cout << "theta = " << theta << endl;
+        // cout << "gg = " << gg << endl;
+        // cout << "dq_dsij = " << dq_dsij << endl;
+        // cout << "dtheta_dsij = " << dtheta_dsij << endl;
+        // cout << "df_dsigma_ij = " << result << endl;
         // cout << "a = " << a << endl;
 
         return result;
@@ -115,25 +115,38 @@ public:
         double dbl_result = 0;
         double p, q, theta;
         std::tie(p, q, theta) = getpqtheta(sigma);
-
+        theta *= M_PI / 180;
         dbl_result += -(p - pc) / g(theta) * eta_.getDerivative(depsilon, m, sigma) ;
+
+        // cout << "RMC -> theta = " << theta << endl;
+        // cout << "RMC -> g(theta) = " << g(theta) << endl;
+        // cout << "RMC -> (p - pc) = " << (p - pc) << endl;
+        // cout << "RMC -> dbl_result = " << dbl_result << endl;
 
         return dbl_result;
     }
-
     bool hasCorner() const
     {
-        return true;
+        return false;
     }
+
     double get_k() const
     {
-        return eta_.getVariableConstReference();
+        return 0;
     }
-    DTensor2 const& get_alpha() const
+
+    DTensor2 & get_alpha() const
     {
-        result *= 0;
-        return result;
+        return s;
     }
+
+    bool in_Apex(DTensor2 const& TrialStress)
+    {
+
+        return false;
+    }
+
+
 private:
 
     //================================================================================

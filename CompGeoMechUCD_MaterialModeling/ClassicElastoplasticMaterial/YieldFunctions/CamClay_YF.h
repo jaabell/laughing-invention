@@ -119,7 +119,11 @@ public:
         return s;
     }
 
+    bool in_Apex(DTensor2 const& TrialStress)
+    {
 
+        return false;
+    }
 
 
 private:
