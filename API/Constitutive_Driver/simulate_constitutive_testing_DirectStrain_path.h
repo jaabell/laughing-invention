@@ -58,24 +58,44 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
     ofstream outStress("Stress.feioutput");
     ofstream outStrain("Strain.feioutput");
     ofstream outMaterial("Material_Output.feioutput");
-    ifstream infile(filein.c_str());
+    std::fstream infile(filein.c_str(), std::ios::in);
 
 
     int step = 0;
     DTensor2 strain_increment(3, 3, 0);
+    double strains[6];
     double exx;
     double eyy;
     double ezz;
     double exy;
     double exz;
     double eyz;
-    while (infile >> exx
-            >> eyy
-            >> ezz
-            >> exy
-            >> exz
-            >> eyz )
+    while ( !infile.eof() and infile.good() )
     {
+
+        // infile >> exx
+        // >> eyy
+        // >> ezz
+        // >> exy
+        // >> exz
+        // >> eyz;
+        int i = 0;
+        while ( !infile.eof() and infile.good() and i < 6)
+        {
+            infile >> strains[i];
+            i ++;
+        }
+        if (i < 6)
+        {
+            cout << "simulate_constitutive_testing_DirectStrain_path() - Error in inputfile \"" << filein << "\" at step = " << step << " ( line = " << step + 1 << ")" << endl;
+            return (-1);
+        }
+        exx = strains[0];
+        eyy = strains[1];
+        ezz = strains[2];
+        exy = strains[3];
+        exz = strains[4];
+        eyz = strains[5];
         cout << "Step = " << step << " eps = [" << exx << ", " << eyy << ", " << ezz << ", " << exy << ", " << exz << ", " << eyz << "]" << endl;
         strain_increment(0, 0) = exx;
         strain_increment(1, 1) = eyy;
@@ -97,15 +117,24 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
         {
             material->Print(outMaterial);
             outMaterial << "\nStep = " << step << endl;
-            outMaterial << "-----------------------------" << endl;
+            outMaterial << "-----------------------------";// << endl;
         }
         driver.applyIncrement( strain_increment);
+        outMaterial << "!" << endl;
         step++;
     }
+    cout << "Done! - Printing." << endl;
     material->Print(outMaterial);
+    cout << "      - Closing files: ";
+    outStress.flush();
+    cout << "1, ";// << endl;
     outStress.close();
+    cout << "2, ";// << endl;
     outStrain.close();
+    cout << "3 ";// << endl;
+    infile.clear();
     infile.close();
+    cout << "\n      - Exiting." << endl;
 
     return 0;
 };
