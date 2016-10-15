@@ -41,3 +41,4 @@
 #include "ConstitutiveModels/VonMisesArmstrongFrederick.h"
 #include "ConstitutiveModels/CamClayLT.h"
 #include "ConstitutiveModels/RoundedMohrCoulomb.h"
+#include "ConstitutiveModels/sanisand2004.h"

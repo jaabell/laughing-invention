@@ -31,26 +31,28 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#ifndef sanisand2004_alpha_EV_H
-#define sanisand2004_alpha_EV_H
+#ifndef sanisand2004_z_EV_H
+#define sanisand2004_z_EV_H
 
 #include "../EvolvingVariable.h"
 #include "../ClassicElastoplasticityGlobals.h" // Defines indices i,j,k,l,m,n,p,q,r,s and the kronecker_delta.
 
 
-class sanisand2004_alpha_EV : public EvolvingVariable<DTensor2, sanisand2004_alpha_EV> //CRTP on sanisand2004_alpha_EV
+class sanisand2004_z_EV : public EvolvingVariable<DTensor2, sanisand2004_z_EV> //CRTP on sanisand2004_z_EV
 {
 public:
 
-    sanisand2004_alpha_EV(double G0_, double h0_, double ch_, double patm_,
-                          double Me_, double Mc_, double ec0_, double lambda_c_, double xi_, double nb_, double m_,
-                          const double* e_ptr_,
-                          const DTensor2* alpha_in_ptr_);
-    sanisand2004_alpha_EV(double G0_, double h0_, double ch_, double patm_,
-                          double Me_, double Mc_, double ec0_, double lambda_c_, double xi_, double nb_, double m_,
-                          const double* e_ptr_,
-                          const DTensor2* alpha_in_ptr_,
-                          DTensor2& alpha0);
+    sanisand2004_z_EV(double A0_, double cz_, double zmax_, double patm_,
+                      double Me_, double Mc_, double ec0_, double lambda_c_, double xi_, double nd_,
+                      const double* m_,
+                      const double* e_,
+                      const DTensor2* alpha_);
+    sanisand2004_z_EV(double A0_, double cz_, double zmax_, double patm_,
+                      double Me_, double Mc_, double ec0_, double lambda_c_, double xi_, double nd_,
+                      const double* m_,
+                      const double* e_,
+                      const DTensor2* alpha_,
+                      DTensor2& z0);
 
     const DTensor2& getDerivative(const DTensor2 &depsilon,
                                   const DTensor2 &m,
@@ -61,14 +63,15 @@ public:
 
 private:
     //Hardening parameters
-    double G0, h0, ch, patm;
+    double A0, cz, zmax, patm;
 
     //Critical state parameters
-    double Me, Mc, ec0, lambda_c, xi, nb, m;
+    double Me, Mc, ec0, lambda_c, xi, nd;
 
-    //References to other internal variables in the model (Pointers have to be used here so that default assignment operator works)
-    const double *e_ptr;
-    const DTensor2* alpha_in_ptr;
+    //References to other internal variables in the model
+    const double * m_ptr;
+    const double * e_ptr;
+    const DTensor2*  alpha_ptr;
 };
 
 

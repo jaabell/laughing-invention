@@ -838,6 +838,11 @@ FEM_ObjectBroker::getNewNDMaterialLT(int classTag)
         return new NonlinearIsotropic3DLT();
         break;
 
+    case ND_TAG_CEM_sanisand2004:
+        return new sanisand2004();
+        break;
+
+
 
 
     default:

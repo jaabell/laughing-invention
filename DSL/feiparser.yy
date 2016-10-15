@@ -2738,6 +2738,77 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
+	//!FEIDOC add material # <.> type [sanisand2004] mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
+	| MATERIAL TEXTNUMBER exp TYPE sanisand2004
+		mass_density '=' exp
+		e0 '=' exp
+		sanisand2004_G0 '=' exp
+		poisson_ratio '=' exp
+		sanisand2004_Pat '=' exp
+		sanisand2004_p_cut '=' exp
+		sanisand2004_Mc '=' exp
+		sanisand2004_c '=' exp
+		sanisand2004_lambda_c '=' exp
+		sanisand2004_xi '=' exp
+		sanisand2004_ec_ref '=' exp
+		sanisand2004_m '=' exp
+		sanisand2004_h0 '=' exp
+		sanisand2004_ch '=' exp
+		sanisand2004_nb '=' exp
+		sanisand2004_A0 '=' exp
+		sanisand2004_nd '=' exp
+		sanisand2004_z_max '=' exp
+		sanisand2004_cz '=' exp
+		initial_confining_stress '=' exp
+	{
+		//add_constitutive_model_NDMaterialLT_sanisand_2004(int MaterialNumber, double rho_, double initial_confinement_p0,
+        //			double G0_in, double patm_in, double nu_in,
+        //			double h0_in, double ch_in,
+        //			double c_in, double Mc_in, double ec0_in, double lambda_c_in,
+        //			double xi_in,
+        //			double nb_in,
+        //			double A0_in, double cz_in, double zmax_in, double nd_in,
+        //			double m_in, double e_in)
+		args.clear(); signature.clear();
+
+		args.push_back($3); signature.push_back(this_signature("number",                        & isAdimensional));
+		args.push_back($8); signature.push_back(this_signature("mass_density",                  & isDensity));
+		args.push_back($65); signature.push_back(this_signature("initial_confining_stress",     & isPressure));
+		args.push_back($14); signature.push_back(this_signature("sanisand2004_G0",              & isAdimensional));
+		args.push_back($20); signature.push_back(this_signature("sanisand2004_Pat",             & isPressure));
+		args.push_back($17); signature.push_back(this_signature("poisson_ratio",                & isAdimensional));
+		args.push_back($44); signature.push_back(this_signature("sanisand2004_h0",              & isAdimensional));
+		args.push_back($47); signature.push_back(this_signature("sanisand2004_ch",              & isAdimensional));
+		args.push_back($29); signature.push_back(this_signature("sanisand2004_c",               & isAdimensional));
+		args.push_back($26); signature.push_back(this_signature("sanisand2004_Mc",              & isAdimensional));
+		args.push_back($38); signature.push_back(this_signature("sanisand2004_ec_ref",          & isAdimensional));
+		args.push_back($32); signature.push_back(this_signature("sanisand2004_lambda_c",        & isAdimensional));
+		args.push_back($35); signature.push_back(this_signature("sanisand2004_xi",              & isAdimensional));
+		args.push_back($50); signature.push_back(this_signature("sanisand2004_nb",              & isAdimensional));
+		args.push_back($53); signature.push_back(this_signature("sanisand2004_A0",              & isAdimensional));
+		args.push_back($62); signature.push_back(this_signature("sanisand2004_cz",              & isAdimensional));
+		args.push_back($59); signature.push_back(this_signature("sanisand2004_z_max",           & isAdimensional));
+		args.push_back($56); signature.push_back(this_signature("sanisand2004_nd",              & isAdimensional));
+		args.push_back($41); signature.push_back(this_signature("sanisand2004_m",               & isAdimensional));
+		args.push_back($11); signature.push_back(this_signature("e0",       				    & isAdimensional));
+		//args.push_back($23); signature.push_back(this_signature("sanisand2004_p_cut",           & isAdimensional));
+
+/*         cout << "\n\n\n ******************************************** \n\n" ; */
+/*         cout << "WARNING ON Dafalias-Manzari!!! Names of parameters are not definitive! Also the unit checking is not correct! :)"; */
+/*         cout << "\n\n\n ******************************************** \n\n" ; */
+
+		$$ = new FeiDslCaller26<int, int,
+								double, double, double, double, double,
+								double, double, double, double, double,
+								double, double, double, double, double,
+								double, double, double, double, double,
+								int, int, double, double>(&add_constitutive_model_NDMaterial_sanisand_2004, args, signature, "add_constitutive_model_NDMaterial_sanisand_2004");
+
+		for(int ii = 1;ii <= 26; ii++) nodes.pop();
+		nodes.push($$);
+	}
+	//!=========================================================================================================
+	//!
 	//!FEIDOC add material # <.> type [sanisand2004_legacy] mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
 	| MATERIAL TEXTNUMBER exp TYPE sanisand2004_legacy
 		mass_density '=' exp

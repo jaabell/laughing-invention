@@ -55,7 +55,7 @@ int run_test()
     //     printTensor("stress", stress);
     //     mat.commitState();
     // }
-    // return 0;
+    return 0;
 };
 
 

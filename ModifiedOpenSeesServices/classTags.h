@@ -266,6 +266,7 @@
 #define ND_TAG_CEM_CamClayLT 5008
 #define ND_TAG_CEM_RoundedMohrCoulomb 5009
 #define ND_TAG_CEM_DruckerPragerArmstrongFrederickNE 5010
+#define ND_TAG_CEM_sanisand2004 5011
 
 
 
@@ -331,7 +332,7 @@
 #define ELE_TAG_ThreeNodeAndesMembrane                           2028
 #define ELE_TAG_DispBeamColumn3d                                 9871
 #define ELE_TAG_HingedBeam3d                                     9873
-#define ELE_TAG_BeamColumnJoint3d                                4445              
+#define ELE_TAG_BeamColumnJoint3d                                4445
 #define ELE_TAG_Joint3D                                          9903
 
 /******************************** No Class Desc Added Above *************************/
@@ -374,8 +375,8 @@
 //###            Based on the above encoding
 //###  NOTE!! :- Also increase the ELE_TAG_DESC_ARRAY_SIZE to the number of elements
 //### --------------------------------------------------------------------------------------------
-                       
-                                                              //New         //Desc
+
+//New         //Desc
 #define ELE_TAG_Subdomain                                        1    //    100000000 // I think it is fixed and hard coded [Sumeet, Septemberm, 2016]
 #define ELE_TAG_EightNodeBrick                                   2    //    308300800 // Sumeet [September, 2016] 
 #define ELE_TAG_EightNodeBrick_up                                3    //    308400800 // Sumeet [September, 2016] 
@@ -468,8 +469,8 @@
 #define ELE_TAG_VariableNodeBrickOrderSix_up                     84   //    327421600 // Sumeet [September, 2016]
 #define ELE_TAG_VariableNodeBrickOrderSix_upU                    85   //    327721600 // Sumeet [September, 2016]
 
-#define ELE_TAG_HardContact				                         86   //    102300009 // Sumeet [June, 2016]
-#define ELE_TAG_SoftContact         	 						 87   //    102300009 // Sumeet [July, 2016]
+#define ELE_TAG_HardContact                                      86   //    102300009 // Sumeet [June, 2016]
+#define ELE_TAG_SoftContact                                      87   //    102300009 // Sumeet [July, 2016]
 
 #define ELE_TAG_Truss                                            88   //    102300002 //
 #define ELE_TAG_ElasticBeam                                      89   //    102600024 // Nima Tafazzoli [December, 2012]
@@ -486,7 +487,7 @@
 /*Initializeing Writing Element Description Array [Sumeet August,2016] ***********************/
 /* Copy and paste the above descriptions in Serial Order *************************************/
 #define ELE_TAG_DESC_ARRAY      int ele_tag_desc_array[] =  \
-{  	-1	 , \
+{   -1   , \
 100000000, \
 308300800, \
 308400800, \

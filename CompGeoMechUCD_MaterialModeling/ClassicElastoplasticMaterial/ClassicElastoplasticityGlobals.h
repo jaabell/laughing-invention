@@ -72,6 +72,11 @@ void dq_dsigma_ij(const DTensor2& sigma, DTensor2 &result);   // Stress derivati
 void dtheta_dsigma_ij(const DTensor2& sigma, DTensor2 &result);   // Stress derivative of Lode angle
 
 
+// Macaulay Bracket < >  operator. (Integral of Heaviside function)
+inline double macaulay_bracket(double x)
+{
+    return x > 0 ? x : 0;
+}
 // static int Nsteps = 0 ;  // Removes warning
 }
 

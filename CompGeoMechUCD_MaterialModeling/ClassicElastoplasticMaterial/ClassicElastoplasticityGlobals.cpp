@@ -359,6 +359,3 @@ void ClassicElastoplasticityGlobals::dtheta_dsigma_ij(const DTensor2 & sigma, DT
     // }
     // return;
 }
-
-
-
