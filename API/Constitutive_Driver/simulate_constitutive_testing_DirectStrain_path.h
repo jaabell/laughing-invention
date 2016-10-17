@@ -107,7 +107,8 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
         if (ret < 6)
         {
             cout << "simulate_constitutive_testing_DirectStrain_path() - Error in inputfile \"" << filein << "\" at step = " << step << " ( line = " << step + 1 << ")" << endl;
-            return (-1);
+            REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
         }
 
         // exx = strains[0];
