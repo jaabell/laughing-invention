@@ -2797,14 +2797,13 @@ ADD_material
 /*         cout << "WARNING ON Dafalias-Manzari!!! Names of parameters are not definitive! Also the unit checking is not correct! :)"; */
 /*         cout << "\n\n\n ******************************************** \n\n" ; */
 
-		$$ = new FeiDslCaller26<int, int,
+		$$ = new FeiDslCaller20<int,
 								double, double, double, double, double,
 								double, double, double, double, double,
 								double, double, double, double, double,
-								double, double, double, double, double,
-								int, int, double, double>(&add_constitutive_model_NDMaterial_sanisand_2004, args, signature, "add_constitutive_model_NDMaterial_sanisand_2004");
+								double, double, double, double>(&add_constitutive_model_NDMaterialLT_sanisand_2004, args, signature, "add_constitutive_model_NDMaterialLT_sanisand_2004");
 
-		for(int ii = 1;ii <= 26; ii++) nodes.pop();
+		for(int ii = 1;ii <= 21; ii++) nodes.pop();
 		nodes.push($$);
 	}
 	//!=========================================================================================================

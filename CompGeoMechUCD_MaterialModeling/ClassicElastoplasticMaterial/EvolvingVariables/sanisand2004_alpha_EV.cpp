@@ -88,8 +88,12 @@ const DTensor2& sanisand2004_alpha_EV::getDerivative(const DTensor2 &depsilon,
     double norm_ndev = sqrt(n_dev(i, j) * n_dev(i, j));
     n_dev(i, j) = n_dev(i, j) / norm_ndev;
 
+    cout << "n_dev = " << n_dev << endl;
+    cout << "alpha ("  << &alpha << ") = " << alpha << endl;
+
     //Hardening coefficient
     const DTensor2& alpha_in = *alpha_in_ptr;
+    cout << "alpha_in ("  << &alpha_in << ")= " << alpha_in << endl;
     const double& e = *e_ptr;
     double unload_prod = (alpha(i, j) - alpha_in(i, j) ) * n_dev(i, j);
     double b0 = G0 * h0 * (1.0 - ch * e) / sqrt(p / patm);     // Andrade Eqn 9, Dafalias Eqn 6
@@ -103,8 +107,8 @@ const DTensor2& sanisand2004_alpha_EV::getDerivative(const DTensor2 &depsilon,
         h = b0 / UNLOAD_PROD_MIN;
     }
 
-    double tr_n_dev = n_dev(i, i);
-    double cos3theta = -sqrt(6.) * tr_n_dev * tr_n_dev * tr_n_dev;      //Andrade parragraph after Eq 12
+    double tr_n_dev_cubed = n_dev(i, j) * n_dev(j, k) * n_dev(k, i);
+    double cos3theta = -sqrt(6.) * tr_n_dev_cubed;      //Andrade parragraph after Eq 12
     double c = Me / Mc;                                                 //Andrade parragraph after Eq 12
     double g = 2 * c / ((1. + c) - (1 - c) * cos3theta);                //Andrade Eq 12
     double M = g * Mc;                                                  //Andrade Eq 12
@@ -112,6 +116,21 @@ const DTensor2& sanisand2004_alpha_EV::getDerivative(const DTensor2 &depsilon,
     double psi = e - ec;                                                //State paramter (Andrade parragraph after Eq 11)
     double alpha0_b = M * exp(-nb * psi) - m;                           //Andrade Eqn 10
     b(i, j) = SQRT_2_over_3 * alpha0_b * n_dev(i, j) - alpha(i, j);     //Andrade Eqn 10
+
+    cout << "p           = "  << p << endl;
+    cout << "norm_ndev   = "  << norm_ndev << endl;
+    cout << "e           = "  << e << endl;
+    cout << "unload_prod = "  << unload_prod << endl;
+    cout << "b0          = "  << b0 << endl;
+    cout << "h           = "  << h << endl;
+    cout << "tr_n_dev_cubed = "  << tr_n_dev_cubed << endl;
+    cout << "cos3theta   = "  << cos3theta << endl;
+    cout << "c           = "  << c << endl;
+    cout << "g           = "  << g << endl;
+    cout << "M           = "  << M << endl;
+    cout << "ec          = "  << ec << endl;
+    cout << "psi         = "  << psi << endl;
+    cout << "alpha0_b    = "  << alpha0_b << endl;
 
     //Compute the derivative (hardening function)
     derivative(i, j) =  (2 * h) * b(i, j) / 3;                 // Andrade Eqn 9, Dafalias Table 2 Eqn for Backstress evolution

@@ -100,14 +100,14 @@ const DTensor2& sanisand2004_z_EV::getDerivative(const DTensor2 &depsilon,
     double norm_ndev = sqrt(n_dev(i, j) * n_dev(i, j));
     n_dev(i, j) = n_dev(i, j) / norm_ndev;
 
-    double tr_n_dev = n_dev(i, i);
-    double cos3theta = -sqrt(6.) * tr_n_dev * tr_n_dev * tr_n_dev;      //Andrade parragraph after Eq 12
+    double tr_n_dev_cubed = n_dev(i, j) * n_dev(j, k) * n_dev(k, i);
+    double cos3theta = -sqrt(6.) * tr_n_dev_cubed;      //Andrade parragraph after Eq 12
     double c = Me / Mc;                                                 //Andrade parragraph after Eq 12
     double g = 2 * c / ((1. + c) - (1 - c) * cos3theta);                //Andrade Eq 12
     double M = g * Mc;                                                  //Andrade Eq 12
     double ec = ec0 - lambda_c * pow(p / patm, xi);                     //Andrade Eq 11
     double psi = e - ec;                                                //State paramter (Andrade parragraph after Eq 11)
-    double alpha0_d = M * exp(-nd * psi) - m;                           //Andrade Eqn 10
+    double alpha0_d = M * exp(nd * psi) - m;                           //Andrade Eqn 10
     d(i, j) = SQRT_2_over_3 * alpha0_d * n_dev(i, j) - alpha(i, j);     //Andrade Eqn 10
 
     //Compute the derivative (hardening function)
@@ -117,6 +117,21 @@ const DTensor2& sanisand2004_z_EV::getDerivative(const DTensor2 &depsilon,
     double D = Ad * d(i, j) * n_dev(i, j) ;
     double brak_minus_D = macaulay_bracket(-D);                                 // <D> operator
     derivative(i, j) =  -cz * brak_minus_D * (zmax * n_dev(i, j) + z(i, j));           // Andrade Eqn 16
+
+
+    cout << "norm_ndev      = " << norm_ndev  << endl;
+    cout << "tr_n_dev_cubed = " << tr_n_dev_cubed  << endl;
+    cout << "cos3theta      = " << cos3theta  << endl;
+    cout << "c              = " << c  << endl;
+    cout << "g              = " << g  << endl;
+    cout << "M              = " << M  << endl;
+    cout << "ec             = " << ec  << endl;
+    cout << "psi            = " << psi  << endl;
+    cout << "alpha0_d       = " << alpha0_d  << endl;
+    cout << "brak_zn        = " << brak_zn  << endl;
+    cout << "Ad             = " << Ad  << endl;
+    cout << "D              = " << D  << endl;
+    cout << "brak_minus_D   = " << brak_minus_D  << endl;
 
     return derivative;
 }

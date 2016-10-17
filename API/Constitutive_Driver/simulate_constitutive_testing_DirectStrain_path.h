@@ -58,19 +58,24 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
     ofstream outStress("Stress.feioutput");
     ofstream outStrain("Strain.feioutput");
     ofstream outMaterial("Material_Output.feioutput");
-    std::fstream infile(filein.c_str(), std::ios::in);
+    // std::fstream infile(filein.c_str(), std::ios::in);
+
+    FILE * infile;
+
+    infile = fopen (filein.c_str(), "r");
 
 
     int step = 0;
     DTensor2 strain_increment(3, 3, 0);
-    double strains[6];
+    // double strains[6];
     double exx;
     double eyy;
     double ezz;
     double exy;
     double exz;
     double eyz;
-    while ( !infile.eof() and infile.good() )
+    // while ( !infile.eof() and infile.good() )
+    while ( true )
     {
 
         // infile >> exx
@@ -79,23 +84,37 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
         // >> exy
         // >> exz
         // >> eyz;
-        int i = 0;
-        while ( !infile.eof() and infile.good() and i < 6)
+        // int i = 0;
+        // int ret = 0;
+        // // while ( !infile.eof() and infile.good() and i < 6)
+        // while (fscanf(infile, &strains[i]) != EOF && i < 6)
+        // {
+        //     // fscanf(infile, &strains[i])
+        //     // infile >> strains[i];
+        //     i ++;
+        // }
+
+        // int ret = fscanf(infile, "%lf %lf %lf %lf %lf %lf", strains + 0, strains + 1, strains + 2, strains + 3, strains + 4, strains + 5 ) ;
+        int ret = fscanf(infile, "%lf %lf %lf %lf %lf %lf", &exx, &eyy, &ezz, &exy, &exz, &eyz) ;
+
+        if (ret == EOF)
         {
-            infile >> strains[i];
-            i ++;
+            // cout << "simulate_constitutive_testing_DirectStrain_path() - Error in inputfile \"" << filein << "\" at step = " << step << " ( line = " << step + 1 << ")" << endl;
+            break;
         }
-        if (i < 6)
+
+        if (ret < 6)
         {
             cout << "simulate_constitutive_testing_DirectStrain_path() - Error in inputfile \"" << filein << "\" at step = " << step << " ( line = " << step + 1 << ")" << endl;
             return (-1);
         }
-        exx = strains[0];
-        eyy = strains[1];
-        ezz = strains[2];
-        exy = strains[3];
-        exz = strains[4];
-        eyz = strains[5];
+
+        // exx = strains[0];
+        // eyy = strains[1];
+        // ezz = strains[2];
+        // exy = strains[3];
+        // exz = strains[4];
+        // eyz = strains[5];
         cout << "Step = " << step << " eps = [" << exx << ", " << eyy << ", " << ezz << ", " << exy << ", " << exz << ", " << eyz << "]" << endl;
         strain_increment(0, 0) = exx;
         strain_increment(1, 1) = eyy;
@@ -132,8 +151,8 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
     cout << "2, ";// << endl;
     outStrain.close();
     cout << "3 ";// << endl;
-    infile.clear();
-    infile.close();
+    // infile.clear();
+    // infile.close();
     cout << "\n      - Exiting." << endl;
 
     return 0;

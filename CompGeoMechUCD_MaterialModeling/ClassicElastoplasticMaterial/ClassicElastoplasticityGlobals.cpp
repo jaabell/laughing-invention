@@ -46,7 +46,6 @@ Index<'s'> ClassicElastoplasticityGlobals::s;
 DTensor2 ClassicElastoplasticityGlobals::kronecker_delta(3, 3, "identity");
 
 
-
 void ClassicElastoplasticityGlobals::printTensor(std::string const& name, DTensor2 const& v)
 {
 

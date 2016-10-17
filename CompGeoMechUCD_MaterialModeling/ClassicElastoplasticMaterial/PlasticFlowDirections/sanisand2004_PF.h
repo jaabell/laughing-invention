@@ -51,20 +51,27 @@
 
 
 
-template<class AlphaHardeningType, class ZHardeningType, class MHardeningType>
-class sanisand2004_PF : public PlasticFlowBase<sanisand2004_PF<AlphaHardeningType, ZHardeningType, MHardeningType>> // CRTP
+template<class AlphaHardeningType, class ZHardeningType, class MHardeningType, class EHardeningType>
+class sanisand2004_PF : public PlasticFlowBase<sanisand2004_PF<AlphaHardeningType, ZHardeningType, MHardeningType, EHardeningType>> // CRTP
 {
 public:
 
     typedef EvolvingVariable<DTensor2, AlphaHardeningType> AlphaType;
     typedef EvolvingVariable<DTensor2, ZHardeningType> ZType;
     typedef EvolvingVariable<double, MHardeningType> MType;
+    typedef EvolvingVariable<double, EHardeningType> EType;
 
 
     // PlasticFlowBase<sanisand2004_PF<HardeningType>>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
-    sanisand2004_PF( AlphaType &alpha_in, ZType &z_in, MType &m_in):
-        PlasticFlowBase<sanisand2004_PF<AlphaHardeningType , ZHardeningType, MHardeningType >>::PlasticFlowBase(),
-                alpha_(alpha_in), z_(z_in), m_(m_in)
+    sanisand2004_PF( double Me_, double Mc_, double A0_,
+                     double ec0, double lambda_c, double patm, double  xi, double nd,
+                     EType &e_in,
+                     AlphaType &alpha_in, ZType &z_in, MType &m_in):
+        PlasticFlowBase<sanisand2004_PF<AlphaHardeningType , ZHardeningType, MHardeningType, EHardeningType>>::PlasticFlowBase(),
+                Me(Me_),
+                Mc(Mc_),
+                A0(A0_),
+                e_(e_in), alpha_(alpha_in), z_(z_in), m_(m_in)
     {
 
     }
@@ -97,17 +104,41 @@ public:
 
         //Identical to derivative of VonMises_YF wrt sigma (a.k.a nij)
 
-        double tr_n_dev = n_dev(i, i);
-        double cos3theta = -sqrt(6.) * tr_n_dev * tr_n_dev * tr_n_dev;      //Andrade parragraph after Eq 12
+        double tr_n_dev_cubed = n_dev(i, j) * n_dev(j, k) * n_dev(k, i);
+        double cos3theta = -sqrt(6.) * tr_n_dev_cubed;      //Andrade parragraph after Eq 12
         double c = Me / Mc;                                                 //Andrade parragraph after Eq 12
         double g = 2 * c / ((1. + c) - (1 - c) * cos3theta);                //Andrade Eq 12
-        double B = 1. + 3 * (1 - c) / (2 * c * g * cos3theta);              //Andrade parragraph after Eq 13
-        double C = (2 / SQRT_2_over_3) * (1 - c) / (c * g);                 //Andrade parragraph after Eq 13
+        double B = 1. + 3 * (1 - c) / (2 * c) * g * cos3theta;              //Andrade parragraph after Eq 13
+        double C = (3 / SQRT_2_over_3) * (1 - c) / c * g;                 //Andrade parragraph after Eq 13
 
+        double M = g * Mc;                                                  //Andrade Eq 12
+        double ec = ec0 - lambda_c * pow(p / patm, xi);                     //Andrade Eq 11
+        const double &e = e_.getVariableConstReference();
+        double psi = e - ec;
         const DTensor2 &z = z_.getVariableConstReference();
         double brak_zn = macaulay_bracket(z(i, j) * n_dev(i, j));           // <zn> operator
         double Ad = A0 * (1. + brak_zn);                                    //Andrade eqn 15
+
+        const double & m = m_.getVariableConstReference();
+        double alpha0_d = M * exp(nd * psi) - m;                           //Andrade Eqn 10
+        d(i, j) = SQRT_2_over_3 * alpha0_d * n_dev(i, j) - alpha(i, j);     //Andrade Eqn 10
+
+
         double D = Ad * d(i, j) * n_dev(i, j) ;
+
+        cout << "Me = " << Me << endl;
+        cout << "Mc = " << Mc << endl;
+        cout << "A0 = " << A0 << endl;
+        cout << "norm_ndev = " << norm_ndev << endl;
+        cout << "tr_n_dev_cubed  = " << tr_n_dev_cubed << endl;
+        cout << "cos3theta = " << cos3theta << endl;
+        cout << "c         = " << c << endl;
+        cout << "g         = " << g << endl;
+        cout << "B         = " << B << endl;
+        cout << "C         = " << C << endl;
+        cout << "brak_zn   = " << brak_zn << endl;
+        cout << "Ad        = " << Ad << endl;
+        cout << "D         = " << D << endl;
 
         R(i, j) = B * n_dev(i, j) + C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) - D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
 
@@ -140,10 +171,13 @@ private:
 
     //Non evolving variables
     double Me, Mc, A0;
+    double ec0, lambda_c, patm, xi, nd;
 
+    EType & e_;
     AlphaType &alpha_;
     ZType &z_;
     MType &m_;
+
 
 };
 

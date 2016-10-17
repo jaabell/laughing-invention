@@ -48,6 +48,7 @@
 #include "../EvolvingVariables/sanisand2004_alpha_EV.h"
 #include "../EvolvingVariables/sanisand2004_e_EV.h"
 #include "../EvolvingVariables/sanisand2004_z_EV.h"
+#include "../EvolvingVariables/sanisand2004_alpha_in_EV.h"
 #include "../EvolvingVariables/LinearHardeningScalar_EV.h"
 
 
@@ -60,10 +61,11 @@ class sanisand2004;  //This model we will define
 
 
 //Typedefs for internal variables list, yield function, and plastic flow function
-typedef MaterialInternalVariables < sanisand2004_alpha_EV,
+typedef MaterialInternalVariables <sanisand2004_alpha_in_EV,
+        sanisand2004_alpha_EV,
         sanisand2004_z_EV,
         sanisand2004_e_EV,
-        LinearHardeningScalar_EV>
+        LinearHardeningScalar_EV >
         sanisand2004VarsType;
 
 typedef DruckerPrager_YF < sanisand2004_alpha_EV,
@@ -72,7 +74,8 @@ typedef DruckerPrager_YF < sanisand2004_alpha_EV,
 
 typedef sanisand2004_PF <sanisand2004_alpha_EV,
         sanisand2004_z_EV,
-        LinearHardeningScalar_EV >
+        LinearHardeningScalar_EV,
+        sanisand2004_e_EV >
         sanisand2004_PFType;
 
 //Create a helpful typedef for the base class from which we will inherit to create the n
@@ -111,6 +114,7 @@ public:
     //The state variables.
 private:
     sanisand2004_alpha_EV alpha;    // SAniSand backstress
+    sanisand2004_alpha_in_EV alpha_in;    // SAniSand backstress at last reload
     sanisand2004_z_EV z;            // SAniSand fabric dilatancy tensor
     LinearHardeningScalar_EV m;     //  size of the Drucker-Prager cone (k elsewhere)
     sanisand2004_e_EV e;     //  void ratio

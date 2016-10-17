@@ -117,12 +117,12 @@ public:
         return a_committed;
     }
 
-    void setVar(VarType& v)
+    void setVar(const VarType& v)
     {
         a = v;
     }
 
-    void setCommittedVar(VarType& v)
+    void setCommittedVar(const VarType& v)
     {
         a_committed = v;
     }

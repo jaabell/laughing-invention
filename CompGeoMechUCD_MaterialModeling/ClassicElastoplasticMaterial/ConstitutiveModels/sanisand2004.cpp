@@ -33,43 +33,6 @@
 #include "sanisand2004.h"
 
 
-// sanisand2004_alpha_EV( G0_,  h0_,  ch_,  patm_,
-//                        Me_,  Mc_,  ec0_,  lambda_c_,  xi_,  nb_,  m_,
-//                       e_,
-//                       alpha_in)
-// sanisand2004_alpha_EV( G0_,  h0_,  ch_,  patm_,
-//                        Me_,  Mc_,  ec0_,  lambda_c_,  xi_,  nb_,  m_,
-//                       e_,
-//                       alpha_in,
-//                       alpha0)
-
-
-// sanisand2004_z_EV(double A0_, double cz_, double zmax_, double patm_,
-//                   double Me_, double Mc_, double ec0_, double lambda_c_, double xi_, double nd_,
-//                   const double& m_,
-//                   const double& e_,
-//                   const DTensor2& alpha_);
-// sanisand2004_z_EV(double A0_, double cz_, double zmax_, double patm_,
-//                   double Me_, double Mc_, double ec0_, double lambda_c_, double xi_, double nd_,
-//                   const double& m_,
-//                   const double& e_,
-//                   const DTensor2& alpha_,
-//                   DTensor2& alpha0);
-
-// sanisand2004_z_EV( A0_,  cz_,  zmax_,  patm_,
-//                    Me_,  Mc_,  ec0_,  lambda_c_,  xi_,  nd_,
-//                    m_,
-//                    e_,
-//                    alpha_);
-// sanisand2004_z_EV( A0_,  cz_,  zmax_,  patm_,
-//                    Me_,  Mc_,  ec0_,  lambda_c_,  xi_,  nd_,
-//                    m_,
-//                    e_,
-//                    alpha_,
-//                    DTensor2& alpha0);
-
-// sanisand2004_EL(double G0_in, double patm_in, double nu_in, const double& e_in);
-
 //First constructor, creates a material at its "ground state" from its parameters.
 sanisand2004::sanisand2004(int tag_in, double rho_, double initial_confinement_p0,
                            double G0_in, double patm_in, double nu_in,
@@ -82,13 +45,17 @@ sanisand2004::sanisand2004(int tag_in, double rho_, double initial_confinement_p
     sanisand2004Base::ClassicElastoplasticMaterial(tag_in, rho_, initial_confinement_p0,
             sanisand2004_YFType(alpha, m),       // Point YF to internal variables
             sanisand2004_EL(G0_in, patm_in, nu_in, e), // Create Elasticity
-            sanisand2004_PFType(alpha, z, m),       // Point PF to the internal variables
-            sanisand2004VarsType(alpha, z,  e, m)),     // Declare the list of internal variables
+            sanisand2004_PFType(Me_in, Mc_in, A0_in,
+                                ec0_in, lambda_c_in, patm_in, xi_in, nd_in,
+                                e,
+                                alpha, z, m),       // Point PF to the internal variables
+            sanisand2004VarsType(alpha_in, alpha , z,  e, m)),   // Declare the list of internal variables
     alpha( G0_in,  h0_in,  ch_in,  patm_in,
            Me_in,  Mc_in,  ec0_in,  lambda_c_in,  xi_in,  nb_in,
            m.getVariableConstReference(),
            &e.getVariableConstReference(),
-           &alpha.getVariableConstReference()),
+           &alpha_in.getVariableConstReference()),
+    alpha_in(&alpha.getVariableConstReference()),
     z(A0_in,  cz_in,  zmax_in,  patm_in,
       Me_in,  Mc_in,  ec0_in,  lambda_c_in,  xi_in,  nd_in,
       &m.getVariableConstReference(),
@@ -111,13 +78,15 @@ sanisand2004::sanisand2004(int tag_in, double rho_, double initial_confinement_p
             initial_confinement_p0,     //Sets p0
             sanisand2004_YFType(alpha, m),    // Point YF to new internal variables
             sanisand2004_EL(0, 0, 0, e), // Create Elasticity -- use copy constructor here
-            sanisand2004_PFType(alpha, z, m),    // Point PF to the internal variables
-            sanisand2004VarsType(alpha, z, e, m)),   // Declare the list of internal variables
+            sanisand2004_PFType(0, 0, 0,
+                                0, 0, 0, 0, 0, e, alpha, z, m),    // Point PF to the internal variables
+            sanisand2004VarsType( alpha_in, alpha, z, e, m)),  // Declare the list of internal variables
     alpha( 0.0,  0.0,  0.0,  0.0,
            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
            m.getVariableConstReference(),
            &e.getVariableConstReference(), //Need to dereference these pointers
-           &alpha.getVariableConstReference()), //Need to dereference these pointers
+           &alpha_in.getVariableConstReference()), //Need to dereference these pointers
+    alpha_in(&alpha.getVariableConstReference()),
     z(0.0,  0.0,  0.0,  0.0,
       0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
       &m.getVariableConstReference(),
@@ -133,13 +102,15 @@ sanisand2004::sanisand2004() :
     sanisand2004Base::ClassicElastoplasticMaterial(0, 0, 0,
             sanisand2004_YFType(alpha, m),    // Point YF to new internal variables
             sanisand2004_EL(0, 0, 0, e), // Create Elasticity -- use copy constructor here
-            sanisand2004_PFType(alpha, z, m),    // Point PF to the internal variables
-            sanisand2004VarsType(alpha, z, e, m)),   // Declare the list of internal variables
+            sanisand2004_PFType(0, 0, 0,
+                                0, 0, 0, 0, 0, e, alpha, z, m),    // Point PF to the internal variables
+            sanisand2004VarsType( alpha_in, alpha, z, e, m)),  // Declare the list of internal variables
     alpha( 0.0,  0.0,  0.0,  0.0,
            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
            m.getVariableConstReference(),
            &e.getVariableConstReference(),
-           &alpha.getVariableConstReference()),
+           &alpha_in.getVariableConstReference()),
+    alpha_in(&alpha.getVariableConstReference()),
     z(0.0,  0.0,  0.0,  0.0,
       0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
       &m.getVariableConstReference(),
@@ -155,7 +126,17 @@ sanisand2004::sanisand2004() :
 void
 sanisand2004::Print(ostream& s, int flag)
 {
-    s << "sanisand2004" << endln;
-    s << "\tTag: " << this->getTag() << endln;
-    s << " Please Implement Me !!! " << endl;
+    s << "sanisand2004" << endl;
+    s << "\tTag: " << this->getTag() << endl;
+    // s << " Please Implement Me !!! " << endl;
+    ClassicElastoplasticMaterial::Print(s);
+    s << "Internal Variables: " << this->getTag() << endl;
+    s << "alpha: ";
+    alpha.print(s);
+    s << "z: ";
+    z.print(s);
+    s << "e: ";
+    e.print(s);
+    s << "m: ";
+    m.print(s);
 }

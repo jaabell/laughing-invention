@@ -743,7 +743,16 @@ public:
     }
     void Print(ostream &s, int flag = 0)
     {
-        //nothin
+        using namespace ClassicElastoplasticityGlobals;
+        static DTensor2 zeroTensor(3, 3, 0);
+        s << "TrialStress =  " <<  TrialStress << endl;
+        s << "CommitStress = " <<  CommitStress << endl;
+        s << "yf  = " << yf(CommitStress) << endl;
+        const DTensor2& n = yf.df_dsigma_ij(CommitStress);
+        const DTensor2& m = pf(zeroTensor, CommitStress);
+        s << "n = " <<  n  << endl;
+        s << "m = " <<  m  << endl;
+        s << "xi_star_h_star  = " << yf.xi_star_h_star(zeroTensor, m, CommitStress) << endl;
     }
 
     int getObjectSize()
