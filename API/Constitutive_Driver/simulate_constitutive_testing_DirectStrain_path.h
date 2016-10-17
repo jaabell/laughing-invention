@@ -36,7 +36,8 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
     if (material == NULL)
     {
         cerr << "Error: (simulate_constitutive_testing_BardetLT_path) material allocation problem!" << endl;
-        return -1;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
     DTensor2 s0(3, 3, 0);
@@ -138,7 +139,13 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
             outMaterial << "\nStep = " << step << endl;
             outMaterial << "-----------------------------";// << endl;
         }
-        driver.applyIncrement( strain_increment);
+        int status = driver.applyIncrement( strain_increment);
+        if (status < 0)
+        {
+            cerr << "simulate_constitutive_testing_DirectStrain_path - applyIncrement() failed with error code " << status << endl;
+            REALESSIGLOBAL_SIMULATE_RETURN_FLAG =  status;
+            return status;
+        }
         outMaterial << "!" << endl;
         step++;
     }
@@ -155,7 +162,8 @@ int simulate_constitutive_testing_DirectStrain_path(int MaterialNumber, double s
     // infile.close();
     cout << "\n      - Exiting." << endl;
 
-    return 0;
+    REALESSIGLOBAL_SIMULATE_RETURN_FLAG = 0;
+    return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
 };
 
 

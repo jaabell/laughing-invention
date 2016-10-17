@@ -53,7 +53,7 @@ int simulate_using_static_multistep(int numSteps)
     if (theAnalysisModel == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -61,7 +61,7 @@ int simulate_using_static_multistep(int numSteps)
     if (theHandler == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -69,7 +69,7 @@ int simulate_using_static_multistep(int numSteps)
     if (theNumberer == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -78,7 +78,7 @@ int simulate_using_static_multistep(int numSteps)
     if (theAlgorithm == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -86,7 +86,7 @@ int simulate_using_static_multistep(int numSteps)
     if (theSOE == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -94,7 +94,7 @@ int simulate_using_static_multistep(int numSteps)
     if (theStaticIntegrator == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -124,7 +124,7 @@ int simulate_using_static_multistep(int numSteps)
     if (theStaticAnalysis == NULL)
     {
         cerr << "Error: (simulate_using_static_multistep) memory for theStaticAnalysis can not be allocated!" << endl;
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
 
 
@@ -158,7 +158,7 @@ int simulate_using_static_multistep(int numSteps)
             if (theSubAnalysis == NULL)
             {
                 cout << "Fail!\n";
-                return -1;
+                return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
             }
 
             theSub->setDomainDecompAnalysis(*theSubAnalysis);
@@ -257,8 +257,8 @@ int simulate_using_static_multistep(int numSteps)
 #endif
 
     globalESSITimer.report();
-
-    return result;
+    REALESSIGLOBAL_SIMULATE_RETURN_FLAG = result;
+    return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
 
 };
 

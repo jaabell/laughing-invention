@@ -240,6 +240,7 @@
 #include "MODELING/get_nodal_coordinate.h"
 #include "MODELING/obtain_pseudo_time.h"
 #include "MODELING/query_domain.h"
+#include "SIMULATION/query_simlate_flag.h"
 
 // Output control
 //--------------------------------------------------------------------------------------------------

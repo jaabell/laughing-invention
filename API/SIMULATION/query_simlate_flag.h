@@ -3,9 +3,9 @@
 // COPYRIGHT (C):      Version of a Creative Commons License,
 //                     for details contact Boris Jeremic, jeremic@ucdavis.edu
 // PROJECT:            Real ESSI Simulator
-// PROGRAMMER:         Jose Abell
-// DATE:               September 2016
-// UPDATE HISTORY:     Full update history in git repository.
+// PROGRAMMER:         CompGeoMech
+// DATE:               October 2009 - Aug 2015
+// UPDATE HISTORY:     See git repository.
 // QUALITY ASSURANCE:  Developers have worked really hard to develop
 //                     an extensive verification of developed implementation
 //                     and with that can claim quality and fitness for intended
@@ -24,35 +24,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-
-#ifndef DirectStrainConstitutiveDriver_H
-#define DirectStrainConstitutiveDriver_H
-
-//#include <iostream>
-
-#include "../ltensor/LTensor.h"
-
-#include <NDMaterialLT.h>
-#include <G3Globals.h>
-
-#include <Channel.h>
-
-
-
-class DirectStrainConstitutiveDriver
+int query_simulate_flag()
 {
-public:
-    DirectStrainConstitutiveDriver(  NDMaterialLT *material);
-    ~DirectStrainConstitutiveDriver();
-    int  applyIncrement(const DTensor2& strain_increment);
-    const DTensor2 &getStress() const ;
+    return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
+}
 
-private:
-
-    NDMaterialLT *material;
-    Index < 'i' > i;
-    Index < 'j' > j;
-};
-
-
-#endif

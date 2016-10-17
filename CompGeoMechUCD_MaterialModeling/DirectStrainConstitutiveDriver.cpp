@@ -43,11 +43,12 @@ DirectStrainConstitutiveDriver::~DirectStrainConstitutiveDriver()
 }
 
 
-void DirectStrainConstitutiveDriver::applyIncrement(const DTensor2& strain_increment)
+int DirectStrainConstitutiveDriver::applyIncrement(const DTensor2& strain_increment)
 {
     //Send increment to the material
-    material->setTrialStrainIncr(strain_increment);
+    int errorcode = material->setTrialStrainIncr(strain_increment);
     material->commitState();
+    return errorcode;
 }
 
 

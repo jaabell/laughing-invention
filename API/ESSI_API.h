@@ -347,7 +347,7 @@ static EigenSOE                                   *theEigenSOE                  
 
 #ifdef _PARALLEL_PROCESSING
 #else
-static RCM                                        *theRCM                               = new RCM();  // Not used in parallel  
+static RCM                                        *theRCM                               = new RCM();  // Not used in parallel
 #endif
 
 // Store names of model and stages
@@ -389,6 +389,7 @@ Domain theDomain;
 
 #endif
 
+int REALESSIGLOBAL_SIMULATE_RETURN_FLAG = 0;
 
 // LoadPattern *DRM_LOAD_PATTERN      = 0 ; //Pointer to DRM Load pattern to be available ftom everywhere ...
 Channel          **OPS_theChannels = 0;

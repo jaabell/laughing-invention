@@ -49,7 +49,7 @@ sanisand2004::sanisand2004(int tag_in, double rho_, double initial_confinement_p
                                 ec0_in, lambda_c_in, patm_in, xi_in, nd_in,
                                 e,
                                 alpha, z, m),       // Point PF to the internal variables
-            sanisand2004VarsType(alpha_in, alpha , z,  e, m)),   // Declare the list of internal variables
+            sanisand2004VarsType( alpha_in,  z, alpha, e, m)), // Declare the list of internal variables
     alpha( G0_in,  h0_in,  ch_in,  patm_in,
            Me_in,  Mc_in,  ec0_in,  lambda_c_in,  xi_in,  nb_in,
            m.getVariableConstReference(),
@@ -80,7 +80,7 @@ sanisand2004::sanisand2004(int tag_in, double rho_, double initial_confinement_p
             sanisand2004_EL(0, 0, 0, e), // Create Elasticity -- use copy constructor here
             sanisand2004_PFType(0, 0, 0,
                                 0, 0, 0, 0, 0, e, alpha, z, m),    // Point PF to the internal variables
-            sanisand2004VarsType( alpha_in, alpha, z, e, m)),  // Declare the list of internal variables
+            sanisand2004VarsType( alpha_in, z, alpha, e, m)),  // Declare the list of internal variables
     alpha( 0.0,  0.0,  0.0,  0.0,
            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
            m.getVariableConstReference(),
@@ -104,7 +104,7 @@ sanisand2004::sanisand2004() :
             sanisand2004_EL(0, 0, 0, e), // Create Elasticity -- use copy constructor here
             sanisand2004_PFType(0, 0, 0,
                                 0, 0, 0, 0, 0, e, alpha, z, m),    // Point PF to the internal variables
-            sanisand2004VarsType( alpha_in, alpha, z, e, m)),  // Declare the list of internal variables
+            sanisand2004VarsType( alpha_in, z, alpha, e, m)),  // Declare the list of internal variables
     alpha( 0.0,  0.0,  0.0,  0.0,
            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
            m.getVariableConstReference(),

@@ -64,13 +64,14 @@ public:
 
     // PlasticFlowBase<sanisand2004_PF<HardeningType>>::PlasticFlowBase(), // Note here that we need to fully-qualify the type of YieldFunctionBase, e.g. use scope resolution :: to tell compiler which instance of YieldFunctionBase will be used :/
     sanisand2004_PF( double Me_, double Mc_, double A0_,
-                     double ec0, double lambda_c, double patm, double  xi, double nd,
+                     double ec0_, double lambda_c_, double patm_, double  xi_, double nd_,
                      EType &e_in,
                      AlphaType &alpha_in, ZType &z_in, MType &m_in):
         PlasticFlowBase<sanisand2004_PF<AlphaHardeningType , ZHardeningType, MHardeningType, EHardeningType>>::PlasticFlowBase(),
                 Me(Me_),
                 Mc(Mc_),
                 A0(A0_),
+                ec0(ec0_), lambda_c(lambda_c_), patm(patm_), xi(xi_), nd(nd_),
                 e_(e_in), alpha_(alpha_in), z_(z_in), m_(m_in)
     {
 
@@ -125,23 +126,34 @@ public:
 
 
         double D = Ad * d(i, j) * n_dev(i, j) ;
+        cout << "  pf -> A0             = " << A0  << endl;
+        cout << "  pf -> nd             = " << nd  << endl;
+        cout << "  pf -> Me             = " << Me << endl;
+        cout << "  pf -> Mc             = " << Mc << endl;
+        cout << "  pf -> M              = " << M << endl;
+        cout << "  pf -> A0             = " << A0 << endl;
+        cout << "  pf -> norm_ndev      = " << norm_ndev << endl;
+        cout << "  pf -> tr_n_dev_cubed = " << tr_n_dev_cubed << endl;
+        cout << "  pf -> cos3theta      = " << cos3theta << endl;
+        cout << "  pf -> c              = " << c << endl;
+        cout << "  pf -> g              = " << g << endl;
+        cout << "  pf -> B              = " << B << endl;
+        cout << "  pf -> C              = " << C << endl;
+        cout << "  pf -> ec             = " << ec  << endl;
+        cout << "  pf -> ec0            = " << ec0  << endl;
+        cout << "  pf -> lambda_c       = " << lambda_c  << endl;
+        cout << "  pf -> p              = " << p  << endl;
+        cout << "  pf -> patm           = " << patm  << endl;
+        cout << "  pf -> xi             = " << xi  << endl;
+        cout << "  pf -> e              = " << e  << endl;
+        cout << "  pf -> psi            = " << psi  << endl;
+        cout << "  pf -> alpha0_d       = " << alpha0_d  << endl;
+        cout << "  pf -> brak_zn        = " << brak_zn  << endl;
+        cout << "  pf -> Ad             = " << Ad  << endl;
+        cout << "  pf -> D              = " << D << endl;
 
-        cout << "  pf -> Me = " << Me << endl;
-        cout << "  pf -> Mc = " << Mc << endl;
-        cout << "  pf -> A0 = " << A0 << endl;
-        cout << "  pf -> norm_ndev = " << norm_ndev << endl;
-        cout << "  pf -> tr_n_dev_cubed  = " << tr_n_dev_cubed << endl;
-        cout << "  pf -> cos3theta = " << cos3theta << endl;
-        cout << "  pf -> c         = " << c << endl;
-        cout << "  pf -> g         = " << g << endl;
-        cout << "  pf -> B         = " << B << endl;
-        cout << "  pf -> C         = " << C << endl;
-        cout << "  pf -> brak_zn   = " << brak_zn << endl;
-        cout << "  pf -> Ad        = " << Ad << endl;
-        cout << "  pf -> D         = " << D << endl;
-
-        // R(i, j) = B * n_dev(i, j) + C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) - D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
-        R(i, j) = B * n_dev(i, j) - C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) + D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
+        R(i, j) = B * n_dev(i, j) + C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) - D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
+        // R(i, j) = B * n_dev(i, j) - C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) + D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
 
         return R;
     }

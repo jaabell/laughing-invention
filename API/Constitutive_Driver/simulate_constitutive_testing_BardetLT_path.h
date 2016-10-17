@@ -130,8 +130,9 @@ int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, do
     NDMaterialLT* material = theDomain.getNDMaterialLT(MaterialNumber);
     if (material == NULL)
     {
-        cerr << "Error: (simulate_constitutive_testing_for_drained_triaxial) material allocation problem!" << endl;
-        return -1;
+        cerr << "Error: (simulate_constitutive_testing_BardetLT_path) material allocation problem!" << endl;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
     DTensor2 s0(3, 3, 0);
@@ -173,7 +174,13 @@ int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, do
             outMaterial << "-----------------------------" << endl;
         }
 
-        driver.applyIncrement( increment);
+        int status = driver.applyIncrement( increment);
+        if (status < 0)
+        {
+            cerr << "simulate_constitutive_testing_BardetLT_path - applyIncrement() failed with error code " << status << endl;
+            REALESSIGLOBAL_SIMULATE_RETURN_FLAG =  status;
+            return status;
+        }
         step++;
     }
     material->Print(outMaterial);
@@ -181,7 +188,8 @@ int simulate_constitutive_testing_BardetLT_path(int MaterialNumber, int type, do
     outStrain.close();
     infile.close();
 
-    return 0;
+    REALESSIGLOBAL_SIMULATE_RETURN_FLAG = 0;
+    return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
 };
 
 

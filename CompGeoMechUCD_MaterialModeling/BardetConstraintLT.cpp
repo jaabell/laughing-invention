@@ -263,7 +263,7 @@ void BardetConstraintLT::fillSE(double * S_values, double * E_values)
     }
 }
 
-void BardetConstraintLT::applyIncrement(double Increment)
+int BardetConstraintLT::applyIncrement(double Increment)
 {
 
     //Get tangent from material and convert it to a format amenable to the formulation
@@ -343,7 +343,7 @@ void BardetConstraintLT::applyIncrement(double Increment)
         cout << "d_epsilon = "  << d_epsilon << endl;
         cout << "CM = "  << CM << endl;
 
-        exit(1);
+        return -1;
     }
 
     // cout << "S = "  << S << endl;
@@ -366,8 +366,9 @@ void BardetConstraintLT::applyIncrement(double Increment)
     d_epsilon_tensor(2, 0) = d_epsilon(5) * sqrthalf;
 
     //Send increment to the material
-    material->setTrialStrainIncr(d_epsilon_tensor);            // Explicit integration takes place here
+    int errorcode = material->setTrialStrainIncr(d_epsilon_tensor);            // Explicit integration takes place here
     material->commitState();
+    return errorcode;
 }
 
 

@@ -53,7 +53,7 @@ int simulate_using_transient_multistep(double dT,
     if (theAnalysisModel == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -61,7 +61,7 @@ int simulate_using_transient_multistep(double dT,
     if (theHandler == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -69,7 +69,7 @@ int simulate_using_transient_multistep(double dT,
     if (theNumberer == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -78,7 +78,7 @@ int simulate_using_transient_multistep(double dT,
     if (theAlgorithm == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -86,7 +86,7 @@ int simulate_using_transient_multistep(double dT,
     if (theSOE == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -94,7 +94,7 @@ int simulate_using_transient_multistep(double dT,
     if (theTransientIntegrator == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Pass!\n";
 
@@ -115,7 +115,7 @@ int simulate_using_transient_multistep(double dT,
     if (theTransientAnalysis == NULL)
     {
         cout << "Fail!\n";
-        return -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
     }
     cout << "Done!\n";
 
@@ -156,7 +156,7 @@ int simulate_using_transient_multistep(double dT,
             if (theSubAnalysis == NULL)
             {
                 cout << "Fail!\n";
-                return -1;
+                return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
             }
 
             theSub->setDomainDecompAnalysis(*theSubAnalysis);
@@ -266,6 +266,6 @@ int simulate_using_transient_multistep(double dT,
 
 #endif
     //=====================================================================================
-
+    REALESSIGLOBAL_SIMULATE_RETURN_FLAG = result;
     return result;
 };

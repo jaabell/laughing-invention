@@ -36,7 +36,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
 
 #ifdef _PARALLEL_PROCESSING
     cerr << "simulate_using_eigen_analysis():: Not available in _PARALLEL_PROCESSING" << endl;
-    return -1;
+    return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
 #else
     if (theEigenSOE != 0)
     {
@@ -59,7 +59,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
         if (theAnalysisModel == NULL)
         {
             cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theAnalysisModel!" << endl;
-            return -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
         }
 
         if (theConvergenceTest == 0)
@@ -70,7 +70,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
         if (theConvergenceTest == NULL)
         {
             cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theConvergenceTest!" << endl;
-            return -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
         }
 
         if (theAlgorithm == 0)
@@ -81,7 +81,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
         if (theAlgorithm == NULL)
         {
             cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theAlgorithm!" << endl;
-            return -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
         }
 
         if (theHandler == 0)
@@ -92,7 +92,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
         if (theHandler == NULL)
         {
             cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theHandler!" << endl;
-            return -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
         }
 
         if (theNumberer == 0)
@@ -103,7 +103,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
         if (theNumberer == NULL)
         {
             cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theNumberer!" << endl;
-            return -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
         }
 
         if (theTransientIntegrator == 0)
@@ -114,7 +114,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
         if (theTransientIntegrator == NULL)
         {
             cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theTransientIntegrator!" << endl;
-            return -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
         }
 
         if (theSOE == 0)
@@ -125,7 +125,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
             if (theSolver == NULL)
             {
                 cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theSolver!" << endl;
-                return -1;
+                return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
             }
 
             theSOE = new ProfileSPDLinSOE(*theSolver);
@@ -133,7 +133,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
             if (theSOE == NULL)
             {
                 cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theSOE!" << endl;
-                return -1;
+                return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
             }
 
         }
@@ -151,7 +151,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
         if (theTransientAnalysis == NULL)
         {
             cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theTransientAnalysis!" << endl;
-            return -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
         }
 
 
@@ -175,7 +175,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
         if (theEigenSOE == NULL)
         {
             cerr << "Error: (simulate_using_eigen_analysis) memory allocation problem for theEigenSOE!" << endl;
-            return -1;
+            return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
         }
 
 
@@ -190,7 +190,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
 
     if (theTransientAnalysis != 0)
     {
-        theTransientAnalysis->eigen(number_of_eigen_values);
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = theTransientAnalysis->eigen(number_of_eigen_values);
     }
 
     /*********************** Added By Sumeet 1st August, 2016 *****************************/
@@ -199,7 +199,8 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
     theDomain.number_of_eigen_modes = number_of_eigen_values;
 
     string filename("");
-    if((StageName.compare(""))==0){
+    if ((StageName.compare("")) == 0)
+    {
         StageName = "Eigen_Mode_Analysis";
         filename = ModelName + "_" + StageName + ".h5.feioutput";
         theDomain.setOutputWriter(filename,
@@ -210,11 +211,11 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
     }
 
     theDomain.setNumberOfOutputSteps(0);
-    theDomain.output_step();              // Four outputting mesh in HDF5 Output; Also writes initial conditions 
+    theDomain.output_step();              // Four outputting mesh in HDF5 Output; Also writes initial conditions
     theDomain.Output_Eigen_Analysis();    // Writing Eigen value resuslts in HDF5 file
 
     /***************************************************************************************/
-    
+
     //////////////// Not Required (Sumeet 1st August, 2016 ) ///////////////////////
     // const Vector &eigenvalues = theDomain.getEigenvalues();
     // Vector periodvalues(number_of_eigen_values);
@@ -306,8 +307,7 @@ int simulate_using_eigen_analysis(int number_of_eigen_values)
 
     // // ============================================================
 
-
-    return 0;
+    return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
 #endif
 };
 

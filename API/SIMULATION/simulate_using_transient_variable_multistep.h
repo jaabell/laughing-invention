@@ -53,21 +53,24 @@ int simulate_using_transient_variable_multistep(double dT,
     if (theAnalysisModel == NULL)
     {
         cerr << "Error: (analyze_transient_variable_multistep) memory for analysismodel can not be allocated!" << endl;
-        return -1;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
 
     if (theHandler == NULL)
     {
         cerr << "Error: (analyze_transient_variable_multistep) theHandler!" << endl;
-        return -1;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
 
     if (theNumberer == NULL)
     {
         cerr << "Error: (analyze_transient_variable_multistep) theNumberer!" << endl;
-        return -1;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
 
@@ -75,21 +78,24 @@ int simulate_using_transient_variable_multistep(double dT,
     if (theAlgorithm == NULL)
     {
         cerr << "Error: (analyze_transient_variable_multistep) theAlgorithm!" << endl;
-        return -1;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
 
     if (theSOE == NULL)
     {
         cerr << "Error: (analyze_transient_variable_multistep) theSOE!" << endl;
-        return -1;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
 
     if (theTransientIntegrator == NULL)
     {
         cerr << "Error: (analyze_transient_variable_multistep) theTransientIntegrator!" << endl;
-        return -1;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
 
@@ -111,7 +117,8 @@ int simulate_using_transient_variable_multistep(double dT,
     if (theVariableTimeStepTransientAnalysis == NULL)
     {
         cerr << "Error: (analyze_transient_variable_multistep) memory for theVariableTimeStepTransientAnalysis can not be allocated!" << endl;
-        return -1;
+        REALESSIGLOBAL_SIMULATE_RETURN_FLAG = -1;
+        return REALESSIGLOBAL_SIMULATE_RETURN_FLAG;
     }
 
 
@@ -121,7 +128,7 @@ int simulate_using_transient_variable_multistep(double dT,
     //remove_output_of_elements_and_nodes();
 
 
-    return 0;
+    return REALESSIGLOBAL_SIMULATE_RETURN_FLAG = 0;
 
 };
 

@@ -118,20 +118,32 @@ const DTensor2& sanisand2004_z_EV::getDerivative(const DTensor2 &depsilon,
     double brak_minus_D = macaulay_bracket(-D);                                 // <D> operator
     derivative(i, j) =  -cz * brak_minus_D * (zmax * n_dev(i, j) + z(i, j));           // Andrade Eqn 16
 
+    cout << "  z -> n_dev = " << n_dev << endl;
+    cout << "  z -> alpha ("  << &alpha << ") = " << alpha << endl;
 
-    cout << "norm_ndev      = " << norm_ndev  << endl;
-    cout << "tr_n_dev_cubed = " << tr_n_dev_cubed  << endl;
-    cout << "cos3theta      = " << cos3theta  << endl;
-    cout << "c              = " << c  << endl;
-    cout << "g              = " << g  << endl;
-    cout << "M              = " << M  << endl;
-    cout << "ec             = " << ec  << endl;
-    cout << "psi            = " << psi  << endl;
-    cout << "alpha0_d       = " << alpha0_d  << endl;
-    cout << "brak_zn        = " << brak_zn  << endl;
-    cout << "Ad             = " << Ad  << endl;
-    cout << "D              = " << D  << endl;
-    cout << "brak_minus_D   = " << brak_minus_D  << endl;
+    cout << "  z -> A0             = " << A0  << endl;
+    cout << "  z -> nd             = " << nd  << endl;
+    cout << "  z -> zmax           = " << zmax  << endl;
+    cout << "  z -> cz             = " << cz  << endl;
+    cout << "  z -> norm_ndev      = " << norm_ndev  << endl;
+    cout << "  z -> tr_n_dev_cubed = " << tr_n_dev_cubed  << endl;
+    cout << "  z -> cos3theta      = " << cos3theta  << endl;
+    cout << "  z -> c              = " << c  << endl;
+    cout << "  z -> g              = " << g  << endl;
+    cout << "  z -> M              = " << M  << endl;
+    cout << "  z -> ec             = " << ec  << endl;
+    cout << "  z -> ec0            = " << ec0  << endl;
+    cout << "  z -> lambda_c       = " << lambda_c  << endl;
+    cout << "  z -> p              = " << p  << endl;
+    cout << "  z -> patm           = " << patm  << endl;
+    cout << "  z -> xi             = " << xi  << endl;
+    cout << "  z -> e              = " << e  << endl;
+    cout << "  z -> psi            = " << psi  << endl;
+    cout << "  z -> alpha0_d       = " << alpha0_d  << endl;
+    cout << "  z -> brak_zn        = " << brak_zn  << endl;
+    cout << "  z -> Ad             = " << Ad  << endl;
+    cout << "  z -> D              = " << D  << endl;
+    cout << "  z -> brak_minus_D   = " << brak_minus_D  << endl;
 
     return derivative;
 }

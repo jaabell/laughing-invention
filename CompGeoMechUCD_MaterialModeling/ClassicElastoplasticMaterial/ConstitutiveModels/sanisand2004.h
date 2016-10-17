@@ -62,8 +62,8 @@ class sanisand2004;  //This model we will define
 
 //Typedefs for internal variables list, yield function, and plastic flow function
 typedef MaterialInternalVariables <sanisand2004_alpha_in_EV,
-        sanisand2004_alpha_EV,
         sanisand2004_z_EV,
+        sanisand2004_alpha_EV,
         sanisand2004_e_EV,
         LinearHardeningScalar_EV >
         sanisand2004VarsType;

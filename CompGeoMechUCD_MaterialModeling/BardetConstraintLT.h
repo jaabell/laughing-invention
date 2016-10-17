@@ -57,7 +57,7 @@ class BardetConstraintLT
 public:
     BardetConstraintLT(BardetConstraintType type,  NDMaterialLT *material);
     ~BardetConstraintLT();
-    void  applyIncrement(double increment);
+    int  applyIncrement(double increment);
     const DTensor2 &getStrainIncrement() const ;
     const DTensor2 &getStress() const ;
 

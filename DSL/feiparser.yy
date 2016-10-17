@@ -153,7 +153,8 @@
 %token IDENT NUMBER STRING VECTOR EOL ISUNITTYPE FUNCTION
 %token IF THEN ELSE WHILE DO LET EXITSAFEMODE CONTINUE BYE IN REQUIRE
 %token PLUSEQUAL MINUSEQUAL TIMESEQUAL DIVIDEEQUAL MODULUSEQUAL POWEQUAL
-%token NUMBER_OF_NODES NUMBER_OF_ELEMENTS CURRENT_TIME NUMBER_OF_SP_CONSTRAINTS NUMBER_OF_MP_CONSTRAINTS NUMBER_OF_LOADS IS_PARALLEL
+%token NUMBER_OF_NODES NUMBER_OF_ELEMENTS CURRENT_TIME NUMBER_OF_SP_CONSTRAINTS NUMBER_OF_MP_CONSTRAINTS 
+%token NUMBER_OF_LOADS IS_PARALLEL SIMULATE_EXIT_FLAG
 
 // Inform Bison about the type of each terminal and non-terminal (rule or token)
 %type <exp>     exp stmt list cpd_stmt dsl CMD_add CMD_fix CMD_misc CMD_define CMD_remove
@@ -5359,6 +5360,11 @@ exp
 	| IS_PARALLEL
 	{
 		$$ = new FeiDslCaller0<>(&query_domain_is_parallel, args, signature, "query_domain_is_parallel");
+		nodes.push($$);
+	}
+	| SIMULATE_EXIT_FLAG
+	{
+		$$ = new FeiDslCaller0<>(&query_simulate_flag, args, signature, "query_simulate_flag");
 		nodes.push($$);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////
