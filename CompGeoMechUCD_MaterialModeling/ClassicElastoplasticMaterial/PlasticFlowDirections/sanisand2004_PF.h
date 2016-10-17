@@ -126,21 +126,22 @@ public:
 
         double D = Ad * d(i, j) * n_dev(i, j) ;
 
-        cout << "Me = " << Me << endl;
-        cout << "Mc = " << Mc << endl;
-        cout << "A0 = " << A0 << endl;
-        cout << "norm_ndev = " << norm_ndev << endl;
-        cout << "tr_n_dev_cubed  = " << tr_n_dev_cubed << endl;
-        cout << "cos3theta = " << cos3theta << endl;
-        cout << "c         = " << c << endl;
-        cout << "g         = " << g << endl;
-        cout << "B         = " << B << endl;
-        cout << "C         = " << C << endl;
-        cout << "brak_zn   = " << brak_zn << endl;
-        cout << "Ad        = " << Ad << endl;
-        cout << "D         = " << D << endl;
+        cout << "  pf -> Me = " << Me << endl;
+        cout << "  pf -> Mc = " << Mc << endl;
+        cout << "  pf -> A0 = " << A0 << endl;
+        cout << "  pf -> norm_ndev = " << norm_ndev << endl;
+        cout << "  pf -> tr_n_dev_cubed  = " << tr_n_dev_cubed << endl;
+        cout << "  pf -> cos3theta = " << cos3theta << endl;
+        cout << "  pf -> c         = " << c << endl;
+        cout << "  pf -> g         = " << g << endl;
+        cout << "  pf -> B         = " << B << endl;
+        cout << "  pf -> C         = " << C << endl;
+        cout << "  pf -> brak_zn   = " << brak_zn << endl;
+        cout << "  pf -> Ad        = " << Ad << endl;
+        cout << "  pf -> D         = " << D << endl;
 
-        R(i, j) = B * n_dev(i, j) + C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) - D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
+        // R(i, j) = B * n_dev(i, j) + C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) - D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
+        R(i, j) = B * n_dev(i, j) - C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) + D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
 
         return R;
     }
