@@ -786,6 +786,9 @@ EXP	([Ee][-+]?[0-9]+)
 "ProfileSPD"                        |
 "profilespd"                        |
 "parallel"                          |
+"Parallel"                          |
+"PetSc"                          |
+"petsc"                          |
 "umfpack"                           |
 "UMFPack"                           {
 										yylval->ident = new string(yytext);

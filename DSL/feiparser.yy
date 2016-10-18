@@ -1763,7 +1763,12 @@ CMD_define
 			f = &define_solver_umfpack_for_analysis;
 			fname = "define_solver_umfpack_for_analysis";
 		}
-		if($3->compare("parallel") == 0)
+		if(
+			($3->compare("parallel") == 0) ||
+			($3->compare("Parallel") == 0) ||
+			($3->compare("PetSc") == 0) ||
+			($3->compare("petsc") == 0) ||
+			)
 		{
 			 f = &define_solver_parallel_for_analysis; 
 			 fname = "define_solver_parallel_for_analysis"; 
