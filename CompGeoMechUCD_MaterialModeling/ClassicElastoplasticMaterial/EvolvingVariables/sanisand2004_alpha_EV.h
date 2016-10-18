@@ -45,10 +45,12 @@ public:
     sanisand2004_alpha_EV(double G0_, double h0_, double ch_, double patm_,
                           double Me_, double Mc_, double ec0_, double lambda_c_, double xi_, double nb_, double m_,
                           const double* e_ptr_,
+                          const double* m_ptr_,
                           const DTensor2* alpha_in_ptr_);
     sanisand2004_alpha_EV(double G0_, double h0_, double ch_, double patm_,
                           double Me_, double Mc_, double ec0_, double lambda_c_, double xi_, double nb_, double m_,
                           const double* e_ptr_,
+                          const double* m_ptr_,
                           const DTensor2* alpha_in_ptr_,
                           DTensor2& alpha0);
 
@@ -64,10 +66,11 @@ private:
     double G0, h0, ch, patm;
 
     //Critical state parameters
-    double Me, Mc, ec0, lambda_c, xi, nb, m;
+    double Me, Mc, ec0, lambda_c, xi, nb;
 
     //References to other internal variables in the model (Pointers have to be used here so that default assignment operator works)
     const double *e_ptr;
+    const double * m_ptr;
     const DTensor2* alpha_in_ptr;
 };
 

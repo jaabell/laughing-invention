@@ -84,12 +84,12 @@ public:
         static DTensor2 s(3, 3, 0);
         static DTensor2 n_dev(3, 3, 0);
         static DTensor2 n_dev2(3, 3, 0);
-        static DTensor2 d(3, 3, 0);
+        // static DTensor2 d(3, 3, 0);
         R *= 0;
         s *= 0;
         n_dev *= 0;
         n_dev2 *= 0;
-        d *= 0;
+        // d *= 0;
 
         //Compute stress deviator and mean stress
         double p;
@@ -107,10 +107,11 @@ public:
 
         double tr_n_dev_cubed = n_dev(i, j) * n_dev(j, k) * n_dev(k, i);
         double cos3theta = -sqrt(6.) * tr_n_dev_cubed;      //Andrade parragraph after Eq 12
+        cos3theta = p <= 0 ? 1 : cos3theta;
+
+
         double c = Me / Mc;                                                 //Andrade parragraph after Eq 12
         double g = 2 * c / ((1. + c) - (1 - c) * cos3theta);                //Andrade Eq 12
-        double B = 1. + 3 * (1 - c) / (2 * c) * g * cos3theta;              //Andrade parragraph after Eq 13
-        double C = (3 / SQRT_2_over_3) * (1 - c) / c * g;                 //Andrade parragraph after Eq 13
 
         double M = g * Mc;                                                  //Andrade Eq 12
         double ec = ec0 - lambda_c * pow(p / patm, xi);                     //Andrade Eq 11
@@ -121,38 +122,45 @@ public:
         double Ad = A0 * (1. + brak_zn);                                    //Andrade eqn 15
 
         const double & m = m_.getVariableConstReference();
-        double alpha0_d = M * exp(nd * psi) - m;                           //Andrade Eqn 10
-        d(i, j) = SQRT_2_over_3 * alpha0_d * n_dev(i, j) - alpha(i, j);     //Andrade Eqn 10
+        // double alpha0_d = M * exp(nd * psi) - m;                           //Andrade Eqn 10
+        // d(i, j) = SQRT_2_over_3 * alpha0_d * n_dev(i, j) - alpha(i, j);     //Andrade Eqn 10
+
+        // D0 = d(i, j) * n_dev(i, j) ;
+        double D0 = SQRT_2_over_3 * M * exp(nd * psi) - (s(i, j) * n_dev(i, j)) / p;
 
 
-        double D = Ad * d(i, j) * n_dev(i, j) ;
-        cout << "  pf -> A0             = " << A0  << endl;
-        cout << "  pf -> nd             = " << nd  << endl;
-        cout << "  pf -> Me             = " << Me << endl;
-        cout << "  pf -> Mc             = " << Mc << endl;
-        cout << "  pf -> M              = " << M << endl;
-        cout << "  pf -> A0             = " << A0 << endl;
-        cout << "  pf -> norm_ndev      = " << norm_ndev << endl;
-        cout << "  pf -> tr_n_dev_cubed = " << tr_n_dev_cubed << endl;
-        cout << "  pf -> cos3theta      = " << cos3theta << endl;
-        cout << "  pf -> c              = " << c << endl;
-        cout << "  pf -> g              = " << g << endl;
-        cout << "  pf -> B              = " << B << endl;
-        cout << "  pf -> C              = " << C << endl;
-        cout << "  pf -> ec             = " << ec  << endl;
-        cout << "  pf -> ec0            = " << ec0  << endl;
-        cout << "  pf -> lambda_c       = " << lambda_c  << endl;
-        cout << "  pf -> p              = " << p  << endl;
-        cout << "  pf -> patm           = " << patm  << endl;
-        cout << "  pf -> xi             = " << xi  << endl;
-        cout << "  pf -> e              = " << e  << endl;
-        cout << "  pf -> psi            = " << psi  << endl;
-        cout << "  pf -> alpha0_d       = " << alpha0_d  << endl;
-        cout << "  pf -> brak_zn        = " << brak_zn  << endl;
-        cout << "  pf -> Ad             = " << Ad  << endl;
-        cout << "  pf -> D              = " << D << endl;
+        double B = 1. + 1.5 * ((1. - c) / c) * g * cos3theta;              //Andrade parragraph after Eq 13
+        double C = (3.0 * sqrt(1.5)) * ((1. - c) / c) * g;                 //Andrade parragraph after Eq 13
+        double D = -Ad * D0;
 
-        R(i, j) = B * n_dev(i, j) + C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) - D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
+        // cout << "  pf -> A0             = " << A0  << endl;
+        // cout << "  pf -> nd             = " << nd  << endl;
+        // cout << "  pf -> Me             = " << Me << endl;
+        // cout << "  pf -> Mc             = " << Mc << endl;
+        // cout << "  pf -> M              = " << M << endl;
+        // cout << "  pf -> A0             = " << A0 << endl;
+        // cout << "  pf -> norm_ndev      = " << norm_ndev << endl;
+        // cout << "  pf -> tr_n_dev_cubed = " << tr_n_dev_cubed << endl;
+        // cout << "  pf -> cos3theta      = " << cos3theta << endl;
+        // cout << "  pf -> c              = " << c << endl;
+        // cout << "  pf -> g              = " << g << endl;
+        // cout << "  pf -> B              = " << B << endl;
+        // cout << "  pf -> C              = " << C << endl;
+        // cout << "  pf -> ec             = " << ec  << endl;
+        // cout << "  pf -> ec0            = " << ec0  << endl;
+        // cout << "  pf -> lambda_c       = " << lambda_c  << endl;
+        // cout << "  pf -> p              = " << p  << endl;
+        // cout << "  pf -> patm           = " << patm  << endl;
+        // cout << "  pf -> xi             = " << xi  << endl;
+        // cout << "  pf -> e              = " << e  << endl;
+        // cout << "  pf -> m              = " << m  << endl;
+        // cout << "  pf -> psi            = " << psi  << endl;
+        // cout << "  pf -> alpha0_d       = " << alpha0_d  << endl;
+        // cout << "  pf -> brak_zn        = " << brak_zn  << endl;
+        // cout << "  pf -> Ad             = " << Ad  << endl;
+        // cout << "  pf -> D              = " << D << endl;
+
+        R(i, j) = B * n_dev(i, j) + C * n_dev2(i, j) + kronecker_delta(i, j)  * (D - C) / 3 ; // Andrade Eqn 13
         // R(i, j) = B * n_dev(i, j) - C * (n_dev2(i, j) - kronecker_delta(i, j) / 3) + D * kronecker_delta(i, j) / 3 ;  // Andrade Eqn 13
 
         return R;

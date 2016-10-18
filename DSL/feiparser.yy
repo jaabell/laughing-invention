@@ -2480,7 +2480,7 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [DruckerPragerArmstrongFrederickNE] mass_density = <M/L^3> DuncanCheng_K = <.> DuncanCheng_pa = <F/L^2> DuncanCheng_n = <.> DuncanCheng_sigma3_max = <F/L^2> DuncanCheng_nu druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
+	//!FEIDOC add material # <.> type [DruckerPragerArmstrongFrederickNE] mass_density = <M/L^3> DuncanCheng_K = <.> DuncanCheng_pa = <F/L^2> DuncanCheng_n = <.> DuncanCheng_sigma3_max = <F/L^2> DuncanCheng_nu = <.> druckerprager_k = <> armstrong_frederick_ha = <F/L^2> armstrong_frederick_cr = <F/L^2> isotropic_hardening_rate = <F/L^2> initial_confining_stress = <F/L^2>;
 	| MATERIAL TEXTNUMBER exp TYPE DruckerPragerArmstrongFrederickNE
 		mass_density '=' exp
 		DuncanCheng_K '=' exp
@@ -2738,7 +2738,7 @@ ADD_material
 	}
 	//!=========================================================================================================
 	//!
-	//!FEIDOC add material # <.> type [sanisand2004] mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress>  algorithm = <explicit|implicit>  number_of_subincrements = <.>  maximum_number_of_iterations = <.>  tolerance_1 = <.>  tolerance_2 = <.>;
+	//!FEIDOC add material # <.> type [sanisand2004] mass_density = <M/L^3> e0 = <.> sanisand2004_G0 = <.> poisson_ratio = <.> sanisand2004_Pat = <stress>  sanisand2004_p_cut = <.>  sanisand2004_Mc = <.>  sanisand2004_c = <.> sanisand2004_lambda_c = <.> sanisand2004_xi = <.>  sanisand2004_ec_ref = <.>  sanisand2004_m = <.>  sanisand2004_h0 = <.> sanisand2004_ch = <.>  sanisand2004_nb = <.> sanisand2004_A0 = <.> sanisand2004_nd = <.> sanisand2004_z_max = <.>  sanisand2004_cz = <.> initial_confining_stress = <stress> ;
 	| MATERIAL TEXTNUMBER exp TYPE sanisand2004
 		mass_density '=' exp
 		e0 '=' exp

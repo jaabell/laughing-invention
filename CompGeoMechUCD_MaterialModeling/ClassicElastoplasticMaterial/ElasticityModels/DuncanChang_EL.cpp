@@ -59,7 +59,7 @@ DTensor4& DuncanChang_EL::operator()(const DTensor2& stress) //See note on base 
         sigma3 = sigma3_max;
     }
 
-    double E = K * pa * pow(sigma3_max / pa, n);
+    double E = K * pa * pow(abs(sigma3) / pa, n);
     double lambda = ( nu * E ) / ( ( 1.0 + nu ) * ( 1.0 - 2.0 * nu ) );
     double mu = E / ( 2.0 * ( 1.0 + nu ) );
 

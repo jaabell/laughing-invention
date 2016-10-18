@@ -827,7 +827,7 @@ protected:
 private:
 
 
-    // int Forward_Euler(const DTensor2 &strain_incr, bool const& with_return2yield_surface)
+    // int Forward_Euler(const DTensor2 &strain_incr, bool const& with`_return2yield_surface)
     int Forward_Euler(const DTensor2 &strain_incr)
     {
         using namespace ClassicElastoplasticityGlobals;
@@ -979,6 +979,8 @@ private:
             // // After this step, the TrialStress(solution), TrialPlastic_Strain, and Stiffness will be updated to the yield surface.
             // // ============================================================================================
             // if(with_return2yield_surface){
+            // if (true)
+            // {
             //     // In the evolve function, only dLambda and m are used. Other arguments are not used at all.
             //     // Make surface the internal variables are already updated. And then, return to the yield surface.
             //     double yf_val_after_corrector = yf(TrialStress);
@@ -987,8 +989,8 @@ private:
             //     // In the function below, depsilon_elpl is actually not used at all in xi_star_h_star
             //     double xi_star_h_star_after_corrector = yf.xi_star_h_star( depsilon_elpl, m_after_corrector,  TrialStress);
             //     double dLambda_after_corrector = yf_val_after_corrector / (
-            //         n_after_corrector(i,j)*Eelastic(i,j,k,l)*m_after_corrector(k,l) - xi_star_h_star_after_corrector
-            //         );
+            //                                          n_after_corrector(i, j) * Eelastic(i, j, k, l) * m_after_corrector(k, l) - xi_star_h_star_after_corrector
+            //                                      );
             //     TrialStress(i, j) = TrialStress(i, j) - dLambda_after_corrector * Eelastic(i, j, k, l) * m_after_corrector(k, l);
             //     TrialPlastic_Strain(i, j) += dLambda_after_corrector * m_after_corrector(i, j);
 

@@ -90,7 +90,6 @@ public:
         result *= 0;
 
         double p;
-
         sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
         p = -p;
 
@@ -100,6 +99,28 @@ public:
         n(i, j) = (r(i, j) - alpha(i, j)) / den;
         double nr = n(i, j) * r(i, j);
         result(i, j) = n(i, j) - nr * kronecker_delta(i, j) / 3;
+
+        // static DTensor2 n(3, 3, 0.0);
+        // static DTensor2 sbar(3, 3, 0.0);
+        // const DTensor2 &alpha = alpha_.getVariableConstReference();
+        // const double &k = k_.getVariableConstReference();
+
+        // n *= 0;
+        // sbar *= 0;
+
+        // double p;
+        // result *= 0;
+        // sigma.compute_deviatoric_tensor(s, p); // here p is positive if in tension
+        // p = -p;
+
+        // sbar(i, j) = s(i, j) - p * alpha(i, j);
+        // double s_norm = sqrt(sbar(i, j) * sbar(i, j));
+
+        // n(i, j) = sbar(i, j) / s_norm;
+
+        // double a_n = alpha(i, j) * n(i, j);
+
+        // result(i, j) = n(i, j) + kronecker_delta(i, j) * (k * sqrt(2.0 / 27.) + a_n / 3);
 
         return result;
     }
@@ -127,6 +148,11 @@ public:
 
         //This is for the hardening of alpha
         dbl_result +=  (( p * alpha(i, j) - s(i, j)) / den) * alpha_.getDerivative(depsilon, m, sigma)(i, j);
+        // static DTensor2 sbar(3, 3, 0);
+        // sbar *= 0;
+        // sbar(i, j) = s(i, j) - p * alpha(i, j);
+        // double s_norm = sqrt(sbar(i, j) * sbar(i, j));
+        // dbl_result +=  sbar(i, j) / s_norm * (-p) * alpha_.getDerivative(depsilon, m, sigma)(i, j);
 
         return dbl_result;
     }

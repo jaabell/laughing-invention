@@ -54,6 +54,7 @@ sanisand2004::sanisand2004(int tag_in, double rho_, double initial_confinement_p
            Me_in,  Mc_in,  ec0_in,  lambda_c_in,  xi_in,  nb_in,
            m.getVariableConstReference(),
            &e.getVariableConstReference(),
+           &m.getVariableConstReference(),
            &alpha_in.getVariableConstReference()),
     alpha_in(&alpha.getVariableConstReference()),
     z(A0_in,  cz_in,  zmax_in,  patm_in,
@@ -85,6 +86,7 @@ sanisand2004::sanisand2004(int tag_in, double rho_, double initial_confinement_p
            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
            m.getVariableConstReference(),
            &e.getVariableConstReference(), //Need to dereference these pointers
+           &m.getVariableConstReference(),
            &alpha_in.getVariableConstReference()), //Need to dereference these pointers
     alpha_in(&alpha.getVariableConstReference()),
     z(0.0,  0.0,  0.0,  0.0,
@@ -109,6 +111,7 @@ sanisand2004::sanisand2004() :
            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
            m.getVariableConstReference(),
            &e.getVariableConstReference(),
+           &m.getVariableConstReference(),
            &alpha_in.getVariableConstReference()),
     alpha_in(&alpha.getVariableConstReference()),
     z(0.0,  0.0,  0.0,  0.0,
